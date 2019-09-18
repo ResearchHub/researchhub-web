@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "Running pre-push hook\n"
+
+./scripts/run-tests
+
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+

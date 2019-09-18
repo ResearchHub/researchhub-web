@@ -1,0 +1,9 @@
+#!/bin/sh
+
+git_dir=$(git rev-parse --git-dir)
+
+echo "Installing git hooks..."
+
+ln -s ../../scripts/pre-push $git_dir/hooks/pre-push
+echo "Done!"
+

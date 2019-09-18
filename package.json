@@ -1,0 +1,23 @@
+{
+  "name": "create-next-example-app",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "cypress:open": "cypress open --project $PWD/tests",
+    "test": "cypress run --project $PWD/tests"
+  },
+  "dependencies": {
+    "aphrodite": "^2.4.0",
+    "next": "^9.0.6",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0"
+  },
+  "devDependencies": {
+    "cypress": "^3.4.1"
+  }
+}
