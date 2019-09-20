@@ -8,16 +8,27 @@
     "test": "cypress run --project $PWD/tests"
   },
   "dependencies": {
+    "@zeit/next-css": "^1.0.1",
     "aphrodite": "^2.4.0",
+    "draft-js": "0.10.0",
     "next": "^9.0.6",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-draft-wysiwyg": "^1.13.2",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "cypress": "^3.4.1"
+    "cypress": "^3.4.1",
+    "husky": "^3.0.5",
+    "prettier": "1.18.2",
+    "pretty-quick": "^1.11.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }
