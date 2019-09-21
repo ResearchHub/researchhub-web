@@ -11,6 +11,7 @@
     "@zeit/next-css": "^1.0.1",
     "aphrodite": "^2.4.0",
     "draft-js": "0.10.0",
+    "katex": "^0.11.1",
     "next": "^9.0.6",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",

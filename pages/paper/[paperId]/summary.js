@@ -3,7 +3,11 @@ import Router, { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 
 // Components
-import DraftEditor from "../../../components/DraftEditor/DraftEditor";
+import dynamic from "next/dynamic";
+const DraftEditor = dynamic(
+  () => import("../../../components/DraftEditor/DraftEditor"),
+  { ssr: false }
+);
 
 class Summary extends React.Component {
   constructor(props) {
