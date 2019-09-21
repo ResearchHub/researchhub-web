@@ -1,10 +1,9 @@
-import * as config from "q5-web-config";
+import * as config from "@quantfive/js-web-config";
 
 const apiRoot = {
   production: "localhost:8000",
   staging: "localhost:8000",
   dev: "localhost:8000"
-  //dev: 'https://staging.solestage.com/api/',
 };
 
 const extraRoutes = BASE_URL => {
@@ -16,8 +15,5 @@ const extraRoutes = BASE_URL => {
   };
 };
 
-export default config.API({
-  authTokenName: "researchhub_token",
-  apiRoot,
-  extraRoutes
-});
+console.log(config);
+export default {};

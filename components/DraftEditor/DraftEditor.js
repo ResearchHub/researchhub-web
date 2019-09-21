@@ -12,7 +12,7 @@ import {
 
 //Config
 import API from "../../config/api";
-import * as config from "q5-web-config";
+import * as config from "@quantfive/js-web-config";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 const options = {
   options: ["inline", "blockType", "fontSize", "list", "textAlign", "history"],

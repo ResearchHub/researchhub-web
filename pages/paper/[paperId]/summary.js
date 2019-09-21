@@ -1,9 +1,11 @@
 import Link from "next/link";
 import Router, { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
+import * as config from "@quantfive/js-web-config";
 
 // Components
 import dynamic from "next/dynamic";
+
 const DraftEditor = dynamic(
   () => import("../../../components/DraftEditor/DraftEditor"),
   { ssr: false }
@@ -20,6 +22,7 @@ class Summary extends React.Component {
 
   render() {
     let { query } = this.props.router;
+    console.log(config);
     return (
       <div className={css(styles.container)}>
         <DraftEditor />
