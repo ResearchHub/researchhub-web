@@ -3,8 +3,6 @@ import { Editor } from "react-draft-wysiwyg";
 import { StyleSheet, css } from "aphrodite";
 import { Map } from "immutable";
 
-import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
 // Components
 import TeXBlock from "./ToolbarOptions/TeXBlock";
 import {
@@ -12,6 +10,10 @@ import {
   removeTeXBlock
 } from "./ToolbarOptions/TexBlockFunctions";
 
+//Config
+import API from "../../config/api";
+import * as config from "q5-web-config";
+import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 const options = {
   options: ["inline", "blockType", "fontSize", "list", "textAlign", "history"],
   inline: {
@@ -74,7 +76,21 @@ class DraftEditor extends React.Component {
   _TeXBlockButton = () => {
     return <div onClick={this.insertTeX}>TeX</div>;
   };
+
+  save = () => {
+    let contentState = this.state.editorState.getCurrentContent();
+    let raw = convertToRaw(contentState);
+
+    // let param = {summary: raw}
+    // fetch((API.SUMMARY(), API.POST(param)))
+    // .then(Helpers.checkStatus)
+    // .then(Helpers.parseJSON)
+    // .then(resp => {
+    //   debugger
+    // })
+  };
   render() {
+    console.log(config);
     return (
       <div>
         <Editor
