@@ -12,7 +12,7 @@ import {
 
 //Config
 import API from "../../config/api";
-import * as config from "@quantfive/js-web-config";
+import { Helpers } from "@quantfive/js-web-config";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 const options = {
   options: ["inline", "blockType", "fontSize", "list", "textAlign", "history"],
@@ -90,7 +90,6 @@ class DraftEditor extends React.Component {
     // })
   };
   render() {
-    console.log(config);
     return (
       <div>
         <Editor
@@ -100,30 +99,11 @@ class DraftEditor extends React.Component {
           //customBlockRenderFunc={this._TeXBlockRenderer}
           //toolbarCustomButtons={this._TeXBlockButton}
         />
-        ;{/*<div onClick={this.insertTeX}>
-          TeX
-        </div>*/}
       </div>
     );
   }
 }
 
-var styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    minHeight: 500,
-    padding: 50,
-    display: "flex",
-    boxSizing: "border-box"
-  },
-  megadraftContainer: {
-    border: "1px solid",
-    borderRadius: 8,
-    flex: 1,
-    boxSizing: "border-box",
-    padding: 10,
-    cursor: "text"
-  }
-});
+var styles = StyleSheet.create({});
 
 export default DraftEditor;
