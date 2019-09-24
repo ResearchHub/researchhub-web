@@ -5,11 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 
 class Index extends React.Component {
   render() {
-    return (
-      <div className="hero">
-        <div onClick={() => Router.push(`/paper/[paperId]/summary`)}></div>
-      </div>
-    );
+    return <div className="hero"></div>;
   }
 }
 
