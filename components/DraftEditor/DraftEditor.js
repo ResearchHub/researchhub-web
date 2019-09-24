@@ -2,7 +2,6 @@ import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { StyleSheet, css } from "aphrodite";
 import { Map } from "immutable";
-import fetch from "isomorphic-unfetch";
 
 // Components
 import TeXBlock from "./ToolbarOptions/TeXBlock";
@@ -12,10 +11,8 @@ import {
 } from "./ToolbarOptions/TexBlockFunctions";
 
 //Config
-import API from "../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-const options = {
+const DEFAULT_OPTIONS = {
   options: ["inline", "blockType", "fontSize", "list", "textAlign", "history"],
   inline: {
     options: ["bold", "italic", "underline", "strikethrough", "monospace"]
@@ -26,16 +23,16 @@ class DraftEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty(),
-      liveTeXEdits: Map()
+      //liveTeXEdits: Map(),
+      options: { ...DEFAULT_OPTIONS }
     };
   }
 
   onEditorStateChange = editorState => {
-    this.setState({ editorState });
+    this.props.onEditorStateChange(editorState);
   };
 
-  _TeXBlockRenderer = block => {
+  /*  _TeXBlockRenderer = block => {
     if (block.getType() === "atomic") {
       return {
         component: TeXBlock,
@@ -76,43 +73,43 @@ class DraftEditor extends React.Component {
 
   _TeXBlockButton = () => {
     return <div onClick={this.insertTeX}>TeX</div>;
-  };
+  };*/
 
   save = () => {
     let contentState = this.state.editorState.getCurrentContent();
     let raw = convertToRaw(contentState);
 
-    let param = { summary: raw, paper: this.props.paper_id };
-    let api = API;
-    fetch(API.SUMMARY(), API.POST_CONFIG(param))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(resp => {
-        debugger;
-      });
+    this.props.save({ raw });
   };
+
   render() {
     return (
       <div className={css(styles.editorContainer)}>
         <Editor
-          editorState={this.state.editorState}
+          editorState={this.props.editorState}
           onEditorStateChange={this.onEditorStateChange}
-          toolbar={options}
+          toolbar={this.state.options}
+          readOnly={this.props.readOnly}
+          toolbarHidden={this.props.readOnly}
           //customBlockRenderFunc={this._TeXBlockRenderer}
           //toolbarCustomButtons={this._TeXBlockButton}
         />
-        <div className={css(styles.editorActions)}>
-          <button className={css(styles.button)} onClick={() => this.save()}>
-            Submit
-          </button>
-        </div>
+        {!this.props.readOnly && (
+          <div className={css(styles.editorActions)}>
+            <button className={css(styles.button)} onClick={() => this.save()}>
+              Submit
+            </button>
+          </div>
+        )}
       </div>
     );
   }
 }
 
 var styles = StyleSheet.create({
-  editorContainer: {}
+  editorContainer: {
+    width: "100%"
+  }
 });
 
 export default DraftEditor;
