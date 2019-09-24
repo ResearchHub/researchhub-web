@@ -2,6 +2,7 @@ import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { StyleSheet, css } from "aphrodite";
 import { Map } from "immutable";
+import fetch from "isomorphic-unfetch";
 
 // Components
 import TeXBlock from "./ToolbarOptions/TeXBlock";
@@ -81,17 +82,18 @@ class DraftEditor extends React.Component {
     let contentState = this.state.editorState.getCurrentContent();
     let raw = convertToRaw(contentState);
 
-    // let param = {summary: raw}
-    // fetch((API.SUMMARY(), API.POST(param)))
-    // .then(Helpers.checkStatus)
-    // .then(Helpers.parseJSON)
-    // .then(resp => {
-    //   debugger
-    // })
+    let param = { summary: raw, paper: this.props.paper_id };
+    let api = API;
+    fetch(API.SUMMARY(), API.POST_CONFIG(param))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(resp => {
+        debugger;
+      });
   };
   render() {
     return (
-      <div>
+      <div className={css(styles.editorContainer)}>
         <Editor
           editorState={this.state.editorState}
           onEditorStateChange={this.onEditorStateChange}
@@ -99,11 +101,18 @@ class DraftEditor extends React.Component {
           //customBlockRenderFunc={this._TeXBlockRenderer}
           //toolbarCustomButtons={this._TeXBlockButton}
         />
+        <div className={css(styles.editorActions)}>
+          <button className={css(styles.button)} onClick={() => this.save()}>
+            Submit
+          </button>
+        </div>
       </div>
     );
   }
 }
 
-var styles = StyleSheet.create({});
+var styles = StyleSheet.create({
+  editorContainer: {}
+});
 
 export default DraftEditor;
