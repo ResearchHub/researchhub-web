@@ -23,7 +23,7 @@ class Summary extends React.Component {
     let { query } = this.props.router;
     return (
       <div className={css(styles.container)}>
-        <DraftEditor />
+        <DraftEditor paper_id={query.paperId} />
       </div>
     );
   }
