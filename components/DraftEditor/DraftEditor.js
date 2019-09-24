@@ -2,6 +2,7 @@ import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { StyleSheet, css } from "aphrodite";
 import { Map } from "immutable";
+import fetch from "isomorphic-unfetch";
 
 // Components
 import TeXBlock from "./ToolbarOptions/TeXBlock";
@@ -12,7 +13,7 @@ import {
 
 //Config
 import API from "../../config/api";
-import * as config from "@quantfive/js-web-config";
+import { Helpers } from "@quantfive/js-web-config";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 const options = {
   options: ["inline", "blockType", "fontSize", "list", "textAlign", "history"],
@@ -81,18 +82,18 @@ class DraftEditor extends React.Component {
     let contentState = this.state.editorState.getCurrentContent();
     let raw = convertToRaw(contentState);
 
-    // let param = {summary: raw}
-    // fetch((API.SUMMARY(), API.POST(param)))
-    // .then(Helpers.checkStatus)
-    // .then(Helpers.parseJSON)
-    // .then(resp => {
-    //   debugger
-    // })
+    let param = { summary: raw, paper: this.props.paper_id };
+    let api = API;
+    fetch(API.SUMMARY(), API.POST_CONFIG(param))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(resp => {
+        debugger;
+      });
   };
   render() {
-    console.log(config);
     return (
-      <div>
+      <div className={css(styles.editorContainer)}>
         <Editor
           editorState={this.state.editorState}
           onEditorStateChange={this.onEditorStateChange}
@@ -100,30 +101,18 @@ class DraftEditor extends React.Component {
           //customBlockRenderFunc={this._TeXBlockRenderer}
           //toolbarCustomButtons={this._TeXBlockButton}
         />
-        ;{/*<div onClick={this.insertTeX}>
-          TeX
-        </div>*/}
+        <div className={css(styles.editorActions)}>
+          <button className={css(styles.button)} onClick={() => this.save()}>
+            Submit
+          </button>
+        </div>
       </div>
     );
   }
 }
 
 var styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    minHeight: 500,
-    padding: 50,
-    display: "flex",
-    boxSizing: "border-box"
-  },
-  megadraftContainer: {
-    border: "1px solid",
-    borderRadius: 8,
-    flex: 1,
-    boxSizing: "border-box",
-    padding: 10,
-    cursor: "text"
-  }
+  editorContainer: {}
 });
 
 export default DraftEditor;
