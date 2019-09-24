@@ -9,8 +9,15 @@ const apiRoot = {
 
 const routes = BASE_URL => {
   return {
-    SUMMARY: () => {
+    SUMMARY: ({ summaryId }) => {
       let url = BASE_URL + `summary/`;
+
+      if (summaryId) {
+        url += `${summaryId}/?`;
+      } else {
+        url += "?";
+      }
+
       return url;
     }
   };
