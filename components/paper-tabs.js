@@ -6,7 +6,6 @@ const PaperTabs = (props) => {
   return (
     <nav>
       <ul>{tabs.map((link) => renderTabs(link, selectedTab))}</ul>
-      <style jsx>{``}</style>
     </nav>
   );
 };
