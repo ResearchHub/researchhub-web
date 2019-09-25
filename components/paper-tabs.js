@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     ":hover": {
       color: paperTabColors.HOVER_FONT,
       cursor: "pointer",
-    }
+    },
   },
   link: {
     textAlign: "center",
