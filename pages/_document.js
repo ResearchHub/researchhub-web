@@ -40,7 +40,7 @@ export default class MyDocument extends Document {
             rel="stylesheet"
           />
         </Head>
-        <body style={{ margin: 0 }}>
+        <body style={{ margin: 0, "font-family": "Roboto, sans-serif" }}>
           <Main />
           <NextScript />
         </body>

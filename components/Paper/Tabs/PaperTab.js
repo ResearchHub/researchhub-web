@@ -34,7 +34,6 @@ function PaperTab(props) {
 var styles = StyleSheet.create({
   container: {
     width: "100%",
-    padding: 50,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

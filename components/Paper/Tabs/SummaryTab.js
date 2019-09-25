@@ -32,8 +32,7 @@ class SummaryTab extends React.Component {
   };
 
   save = ({ raw }) => {
-    let { query } = this.props.router;
-    let param = { summary: raw, paper: query.paperId };
+    let param = { summary: raw, paper: this.props.paperId };
     fetch(API.SUMMARY({}), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -41,8 +40,7 @@ class SummaryTab extends React.Component {
   };
 
   getSummary = () => {
-    let { query } = this.props.router;
-    fetch(API.SUMMARY({ summaryId: query.paperId }), API.GET_CONFIG())
+    fetch(API.SUMMARY({ summaryId: this.props.paperId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -64,7 +62,6 @@ class SummaryTab extends React.Component {
     this.getSummary();
   };
   render() {
-    let { query } = this.props.router;
     return (
       <div className={css(styles.container)}>
         <div className={css(styles.summaryActions)}>
@@ -77,7 +74,7 @@ class SummaryTab extends React.Component {
           </div>
         </div>
         <DraftEditor
-          paperId={query.paperId}
+          paperId={this.props.paperId}
           readOnly={this.state.readOnly}
           editorState={this.state.editorState}
           onEditorStateChange={this.onEditorStateChange}
@@ -91,8 +88,7 @@ class SummaryTab extends React.Component {
 var styles = StyleSheet.create({
   container: {
     width: "100%",
-    minHeight: 500,
-    padding: 50,
+    padding: "30px 70px",
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
