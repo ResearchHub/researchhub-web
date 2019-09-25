@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import { tabBarColors } from "~/config/themes/colors";
+import { paperTabFont } from "~/config/themes/fonts";
 
 const PaperTabs = (props) => {
   const selectedTab = props.selectedTab;
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     color: tabBarColors.TEXT,
+    fontFamily: paperTabFont,
     padding: "1rem",
     marginRight: "80px",
   },
