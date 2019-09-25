@@ -1,4 +1,5 @@
 const colors = {
+  BLACK: (opacity = 1) => `rgba(36, 31, 58, ${opacity})`,
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
   PURPLE: (opacity = 1) => `rgba(36, 31, 58, ${opacity})`,
   GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`,
