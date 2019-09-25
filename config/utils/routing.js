@@ -23,6 +23,9 @@ export function endsWithSlash(text) {
   if (!text) {
     return false;
   }
+  if (typeof text !== "string") {
+    throw TypeError("Requires argument of type string");
+  }
   const lastChar = text.charAt(text.length - 1);
   return lastChar === "/";
 }
