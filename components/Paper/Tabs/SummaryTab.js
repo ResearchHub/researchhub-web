@@ -11,8 +11,10 @@ import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 const DraftEditor = dynamic(() => import("../../DraftEditor/DraftEditor"), {
-  ssr: false
+  ssr: false,
 });
+
+const PDFViewer = dynamic(import("../../Paper/Tabs/PaperTab"), { ssr: false });
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -21,20 +23,21 @@ class SummaryTab extends React.Component {
     this.state = {
       readOnly: true,
       editorState: EditorState.createEmpty(),
-      menuOpen: false
+      menuOpen: false,
     };
   }
 
-  onEditorStateChange = editorState => {
+  onEditorStateChange = (editorState) => {
     this.setState({ editorState });
   };
 
   save = ({ raw }) => {
-    let param = { summary: raw, paper: this.props.paperId };
-    fetch(API.SUMMARY(), API.POST_CONFIG(param))
+    let { query } = this.props.router;
+    let param = { summary: raw, paper: query.paperId };
+    fetch(API.SUMMARY({}), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then(resp => {});
+      .then((resp) => {});
   };
 
   getSummary = () => {
@@ -42,18 +45,18 @@ class SummaryTab extends React.Component {
     fetch(API.SUMMARY({ summaryId: query.paperId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then(resp => {
+      .then((resp) => {
         let contentState = convertFromRaw(resp.summary);
         let editorState = EditorState.createWithContent(contentState);
         this.setState({
-          editorState
+          editorState,
         });
       });
   };
 
   edit = () => {
     this.setState({
-      readOnly: false
+      readOnly: false,
     });
   };
 
@@ -93,25 +96,25 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    boxSizing: "border-box"
+    boxSizing: "border-box",
   },
   summaryActions: {
     width: 280,
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10
+    marginBottom: 10,
   },
   action: {
     color: "#241F3A",
     fontSize: 16,
     opacity: 0.6,
     display: "flex",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   pencilIcon: {
-    marginRight: 5
-  }
+    marginRight: 5,
+  },
 });
 
 export default withRouter(SummaryTab);

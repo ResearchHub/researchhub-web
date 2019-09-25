@@ -7,7 +7,7 @@ import { Map } from "immutable";
 import TeXBlock from "./ToolbarOptions/TeXBlock";
 import {
   insertTeXBlock,
-  removeTeXBlock
+  removeTeXBlock,
 } from "./ToolbarOptions/TexBlockFunctions";
 
 //Config
@@ -15,8 +15,8 @@ import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 const DEFAULT_OPTIONS = {
   options: ["inline", "blockType", "fontSize", "list", "textAlign", "history"],
   inline: {
-    options: ["bold", "italic", "underline", "strikethrough", "monospace"]
-  }
+    options: ["bold", "italic", "underline", "strikethrough", "monospace"],
+  },
 };
 
 class DraftEditor extends React.Component {
@@ -24,11 +24,11 @@ class DraftEditor extends React.Component {
     super(props);
     this.state = {
       //liveTeXEdits: Map(),
-      options: { ...DEFAULT_OPTIONS }
+      options: { ...DEFAULT_OPTIONS },
     };
   }
 
-  onEditorStateChange = editorState => {
+  onEditorStateChange = (editorState) => {
     this.props.onEditorStateChange(editorState);
   };
 
@@ -76,9 +76,9 @@ class DraftEditor extends React.Component {
   };*/
 
   save = () => {
-    let contentState = this.state.editorState.getCurrentContent();
+    let contentState = this.props.editorState.getCurrentContent();
     let raw = convertToRaw(contentState);
-
+    debugger;
     this.props.save({ raw });
   };
 
@@ -108,8 +108,8 @@ class DraftEditor extends React.Component {
 
 var styles = StyleSheet.create({
   editorContainer: {
-    width: "100%"
-  }
+    width: "100%",
+  },
 });
 
 export default DraftEditor;

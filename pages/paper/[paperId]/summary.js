@@ -11,10 +11,9 @@ import SummaryTab from "../../../components/Paper/Tabs/SummaryTab";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-const DraftEditor = dynamic(
-  () => import("../../../components/DraftEditor/DraftEditor"),
-  { ssr: false }
-);
+const PaperTab = dynamic(import("../../../components/Paper/Tabs/PaperTab"), {
+  ssr: false,
+});
 
 class Summary extends React.Component {
   render() {
@@ -22,6 +21,7 @@ class Summary extends React.Component {
     return (
       <div className={css(styles.container)}>
         <SummaryTab />
+        <PaperTab />
       </div>
     );
   }
@@ -35,11 +35,11 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    boxSizing: "border-box"
+    boxSizing: "border-box",
   },
   summaryActions: {
-    width: 50
-  }
+    width: 50,
+  },
 });
 
 export default withRouter(Summary);
