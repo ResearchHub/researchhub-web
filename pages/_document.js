@@ -31,6 +31,10 @@ export default class MyDocument extends Document {
             data-aphrodite
             dangerouslySetInnerHTML={{ __html: this.props.css.content }}
           />
+          <script
+            src="https://kit.fontawesome.com/f57f706c59.js"
+            crossorigin="anonymous"
+          ></script>
         </Head>
         <body>
           <Main />
