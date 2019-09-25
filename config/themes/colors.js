@@ -12,7 +12,8 @@ const colors = {
 };
 
 export const paperTabColors = {
-  TEXT: colors.BLACK(0.5),
+  FONT: colors.BLACK(0.5),
+  HOVER_FONT: colors.BLACK(1),
   SELECTED: colors.BLUE(1),
   BACKGROUND: `rgba(243, 243, 248, 1)`,
 };
