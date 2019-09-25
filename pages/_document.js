@@ -35,6 +35,10 @@ export default class MyDocument extends Document {
             src="https://kit.fontawesome.com/f57f706c59.js"
             crossorigin="anonymous"
           ></script>
+          <link
+            href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />
