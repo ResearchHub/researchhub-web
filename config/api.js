@@ -1,19 +1,30 @@
-import * as config from "@quantfive/js-web-config";
+import { API } from "@quantfive/js-web-config";
 
 const apiRoot = {
   production: "localhost:8000",
   staging: "localhost:8000",
   dev: "localhost:8000"
+  //dev: 'https://staging.solestage.com/api/',
 };
 
-const extraRoutes = BASE_URL => {
+const routes = BASE_URL => {
   return {
-    SUMMARY: () => {
+    SUMMARY: ({ summaryId }) => {
       let url = BASE_URL + `summary/`;
+
+      if (summaryId) {
+        url += `${summaryId}/?`;
+      } else {
+        url += "?";
+      }
+
       return url;
     }
   };
 };
 
-console.log(config);
-export default {};
+export default API({
+  authTokenName: "researchhub_token",
+  apiRoot,
+  routes
+});

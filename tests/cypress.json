@@ -1,3 +1,4 @@
 {
-  "ignoreTestFiles": "**/examples/*"
+  "ignoreTestFiles": "**/examples/*",
+  "video": false
 }
