@@ -57,10 +57,14 @@ const styles = StyleSheet.create({
     maxWidth: "70%",
   },
   tab: {
-    color: paperTabColors.TEXT,
+    color: paperTabColors.FONT,
     fontFamily: paperTabFont,
     padding: "1rem",
     marginRight: "80px",
+    ":hover": {
+      color: paperTabColors.HOVER_FONT,
+      cursor: "pointer",
+    }
   },
   link: {
     textAlign: "center",
