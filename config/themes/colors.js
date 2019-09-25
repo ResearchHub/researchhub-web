@@ -11,4 +11,10 @@ const colors = {
   RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`,
 };
 
+export const tabBarColors = {
+  TEXT: colors.BLACK(0.5),
+  SELECTED: colors.BLUE(1),
+  BACKGROUND: `rgba(243, 243, 248, 1)`,
+};
+
 export default colors;
