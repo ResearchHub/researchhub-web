@@ -34,11 +34,11 @@ function renderTabs({ key, href, label }, selected) {
   }
 
   return (
-    <div key={key} className={css(classNames)}>
-      <Link href={href}>
+    <Link href={href}>
+      <div key={key} className={css(classNames)}>
         <div className={css(styles.link)}>{label}</div>
-      </Link>
-    </div>
+      </div>
+    </Link>
   );
 }
 
