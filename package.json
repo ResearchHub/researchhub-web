@@ -8,15 +8,15 @@
     "test": "cypress run --project $PWD/tests"
   },
   "dependencies": {
-    "@quantfive/js-web-config": "^1.0.1",
+    "@quantfive/js-web-config": "^1.0.3",
     "@zeit/next-css": "^1.0.1",
     "aphrodite": "^2.4.0",
     "draft-js": "0.10.0",
+    "isomorphic-unfetch": "^3.0.0",
     "katex": "^0.11.1",
     "next": "^9.0.6",
     "next-compose-plugins": "^2.2.0",
     "next-transpile-modules": "^2.3.1",
-    "q5-web-config": "https://github.com/quantfive/q5-web-config.git",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-draft-wysiwyg": "^1.13.2",

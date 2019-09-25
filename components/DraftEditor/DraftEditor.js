@@ -11,10 +11,8 @@ import {
 } from "./ToolbarOptions/TexBlockFunctions";
 
 //Config
-import API from "../../config/api";
-import * as config from "@quantfive/js-web-config";
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-const options = {
+const DEFAULT_OPTIONS = {
   options: ["inline", "blockType", "fontSize", "list", "textAlign", "history"],
   inline: {
     options: ["bold", "italic", "underline", "strikethrough", "monospace"]
@@ -25,16 +23,16 @@ class DraftEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty(),
-      liveTeXEdits: Map()
+      //liveTeXEdits: Map(),
+      options: { ...DEFAULT_OPTIONS }
     };
   }
 
   onEditorStateChange = editorState => {
-    this.setState({ editorState });
+    this.props.onEditorStateChange(editorState);
   };
 
-  _TeXBlockRenderer = block => {
+  /*  _TeXBlockRenderer = block => {
     if (block.getType() === "atomic") {
       return {
         component: TeXBlock,
@@ -75,54 +73,42 @@ class DraftEditor extends React.Component {
 
   _TeXBlockButton = () => {
     return <div onClick={this.insertTeX}>TeX</div>;
-  };
+  };*/
 
   save = () => {
     let contentState = this.state.editorState.getCurrentContent();
     let raw = convertToRaw(contentState);
 
-    // let param = {summary: raw}
-    // fetch((API.SUMMARY(), API.POST(param)))
-    // .then(Helpers.checkStatus)
-    // .then(Helpers.parseJSON)
-    // .then(resp => {
-    //   debugger
-    // })
+    this.props.save({ raw });
   };
+
   render() {
-    console.log(config);
     return (
-      <div>
+      <div className={css(styles.editorContainer)}>
         <Editor
-          editorState={this.state.editorState}
+          editorState={this.props.editorState}
           onEditorStateChange={this.onEditorStateChange}
-          toolbar={options}
+          toolbar={this.state.options}
+          readOnly={this.props.readOnly}
+          toolbarHidden={this.props.readOnly}
           //customBlockRenderFunc={this._TeXBlockRenderer}
           //toolbarCustomButtons={this._TeXBlockButton}
         />
-        ;{/*<div onClick={this.insertTeX}>
-          TeX
-        </div>*/}
+        {!this.props.readOnly && (
+          <div className={css(styles.editorActions)}>
+            <button className={css(styles.button)} onClick={() => this.save()}>
+              Submit
+            </button>
+          </div>
+        )}
       </div>
     );
   }
 }
 
 var styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    minHeight: 500,
-    padding: 50,
-    display: "flex",
-    boxSizing: "border-box"
-  },
-  megadraftContainer: {
-    border: "1px solid",
-    borderRadius: 8,
-    flex: 1,
-    boxSizing: "border-box",
-    padding: 10,
-    cursor: "text"
+  editorContainer: {
+    width: "100%"
   }
 });
 
