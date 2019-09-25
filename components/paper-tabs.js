@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
-import { tabBarColors } from "~/config/themes/colors";
+import { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 
 const PaperTabs = (props) => {
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     justifyContent: "center",
-    background: tabBarColors.BACKGROUND,
+    background: paperTabColors.BACKGROUND,
   },
   tabContainer: {
     display: "flex",
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     maxWidth: "70%",
   },
   tab: {
-    color: tabBarColors.TEXT,
+    color: paperTabColors.TEXT,
     fontFamily: paperTabFont,
     padding: "1rem",
     marginRight: "80px",
@@ -68,9 +68,9 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   selected: {
-    color: tabBarColors.SELECTED,
+    color: paperTabColors.SELECTED,
     borderBottom: "solid 3px",
-    borderColor: tabBarColors.SELECTED,
+    borderColor: paperTabColors.SELECTED,
   },
 });
 
