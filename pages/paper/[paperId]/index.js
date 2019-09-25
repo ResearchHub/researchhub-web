@@ -3,27 +3,30 @@ import { endsWithSlash } from "~/config/utils";
 
 function Paper() {}
 
-Paper.getInitialProps = async ({ query, res }) => {
+Paper.getInitialProps = async (ctx) => {
   const redirectPath = "summary";
-  const baseUrl = query.paperId;
 
-  redirect(redirectPath, baseUrl, res);
+  redirect(ctx, "paperId", redirectPath);
   return {};
 };
 
-function redirect(path, base, res, query) {
+function redirect(ctx, baseKey, path) {
+  path = buildRedirectPath(ctx, baseKey, path);
+  const { res } = ctx;
   if (res) {
-    if (endsWithSlash(query)) {
-      redirectUrl = path;
-    } else {
-      redirectUrl = base + "/" + path;
-    }
-
-    res.writeHead(302, { Location: redirectUrl });
+    res.writeHead(302, { Location: path });
     res.end();
   } else {
     Router.push(path);
   }
+}
+
+function buildRedirectPath({ asPath, query }, baseKey, path) {
+  if (!endsWithSlash(asPath)) {
+    const base = query[baseKey];
+    path = base + "/" + path;
+  }
+  return path;
 }
 
 export default Paper;
