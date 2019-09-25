@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import PaperTabs from "../../../../components/paper-tabs";
+import PaperTabs from "~/components/paper-tabs";
 
 const Paper = () => {
   const router = useRouter();
