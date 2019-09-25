@@ -20,7 +20,7 @@ module.exports = withPlugins(
         fs: "empty",
       };
 
-      config.resolve.alias["~"] = path.join(__dirname);
+      config.resolve.alias["~"] = path.resolve(__dirname);
 
       return config;
     },
