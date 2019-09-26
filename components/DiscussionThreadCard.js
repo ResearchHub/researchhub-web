@@ -1,26 +1,34 @@
+import Link from "next/link";
 import { css, StyleSheet } from "aphrodite";
 
 import VoteWidget from "./VoteWidget";
 import { doesNotExist } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { timeAgo } from "../config/utils";
 
 const DiscussionThreadCard = () => {
   const title =
     "Bitcoin falls 12% as one of the world's biggest cryptocurrency markets readies a bill to ban trading on all exchanges.";
+  let date = Date.now();
+  const username = "Julia Kinderman";
+  const threadId = 1;
 
   return (
     <div className={css(styles.container)}>
-      <VoteWidget score={5} fontSize={16} width={"44px"} />
+      <div className={css(styles.topContainer)}>
+        <VoteWidget score={5} fontSize={16} width={"44px"} />
+        <User name={username} />
+        <Timestamp date={date} />
+        <ReadButton threadId={threadId} />
+      </div>
       <div className={css(styles.infoContainer)}>
-        <User name={"Julia Kinderman"} />
         <Title text={title} />
         <div className={css(styles.actionContainer)}>
           <CommentCount count={2} />
           <Share />
         </div>
       </div>
-      <ReadButton />
     </div>
   );
 };
@@ -35,6 +43,21 @@ const User = (props) => {
     </div>
   );
 };
+
+const Timestamp = (props) => {
+  const timestamp = formatTimestamp(props.date);
+  return (
+    <div className={css(styles.timestampContainer)}>
+      <span className={css(styles.timestampDivider)}>•</span>
+      {timestamp}
+    </div>
+  );
+};
+
+function formatTimestamp(date) {
+  date = new Date(date);
+  return timeAgo.format(Date.now() - date);
+}
 
 const Title = (props) => {
   const title = formatTitle(props.text);
@@ -74,28 +97,43 @@ const Share = () => {
   return <div className={css(styles.shareContainer)}>{icons.share} Share</div>;
 };
 
-const ReadButton = () => {
+const ReadButton = (props) => {
+  const { threadId } = props;
+  const basePath = "/"; // TODO: get base path from props
   return (
-    <div className={css(styles.readContainer)}>
-      Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
-    </div>
+    <Link href={basePath + threadId}>
+      <div className={css(styles.readContainer)}>
+        Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
+      </div>
+    </Link>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container: {},
+  topContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    alignItems: "center",
   },
   infoContainer: {
     width: "100%",
-    padding: "18px 12px 0px 12px",
+    paddingLeft: "46px",
   },
   userContainer: {
     display: "flex",
     flexDirection: "row",
+    marginLeft: "12px",
+    whiteSpace: "nowrap",
+  },
+  timestampContainer: {
+    width: "100%",
+    color: colors.GREY(1),
+    fontWeight: "normal",
+  },
+  timestampDivider: {
+    padding: "0px 10px",
   },
   actionContainer: {
     display: "flex",
@@ -118,6 +156,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 12,
     fontWeight: "lighter",
+    boxSizing: "border-box",
   },
   readArrow: {
     fontSize: 10,
@@ -125,7 +164,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: "22px",
-    padding: "10px 0px",
+    paddingBottom: "10px",
   },
 });
 
