@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import PaperTabs from "~/components/paper-tabs";
+import PaperTabBar from "~/components/PaperTabBar";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
@@ -26,7 +26,7 @@ const Paper = () => {
   return (
     <div>
       <div>Paper: {paperId}</div>
-      <PaperTabs baseUrl={paperId} selectedTab={tabName} />
+      <PaperTabBar baseUrl={paperId} selectedTab={tabName} />
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
     </div>
   );

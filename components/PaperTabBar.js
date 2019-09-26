@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 
-const PaperTabs = (props) => {
+const PaperTabBar = (props) => {
   const selectedTab = props.selectedTab;
   return (
     <div className={css(styles.container)}>
@@ -78,4 +78,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaperTabs;
+export default PaperTabBar;
