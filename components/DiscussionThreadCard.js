@@ -1,7 +1,9 @@
+import VoteWidget from "./VoteWidget";
+
 const DiscussionThreadCard = () => {
   return (
     <div>
-      <div>Upvotes</div>
+      <VoteWidget score={5} />
       <div>User component</div>
       <div>Thread title</div>
       <div>Number of comments</div>
