@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
-const PaperEntry = ({ title, date }) => {
+const PaperEntry = ({ title, date, onClick }) => {
   return (
-    <div className={css(styles.entry)}>
+    <div className={css(styles.entry)} onClick={onClick && onClick}>
       <div className={css(styles.title, styles.text)}>{title && title}</div>
       <div className={css(styles.date, styles.text)}>{date && date}</div>
     </div>
@@ -12,7 +12,7 @@ const PaperEntry = ({ title, date }) => {
 
 const styles = StyleSheet.create({
   entry: {
-    width: "calc(100% - 32px)",
+    width: "calc(100% - 35px)",
     height: 58,
     padding: 16,
     display: "flex",
