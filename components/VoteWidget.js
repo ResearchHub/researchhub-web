@@ -6,17 +6,16 @@ import { voteWidgetIcons } from "~/config/themes/icons";
 
 const VoteWidget = (props) => {
   const score = getScore(props);
-
-  const { fontSize, width } = props;
+  const { onUpvote, onDownvote, fontSize, width } = props;
 
   return (
     <div
       className={css(styles.container)}
       style={{ fontSize: fontSize, width: width }}
     >
-      <UpvoteButton />
+      <UpvoteButton onClick={onUpvote} />
       <ScorePill score={score} />
-      <DownvoteButton />
+      <DownvoteButton onClick={onDownvote} />
     </div>
   );
 };
@@ -31,10 +30,12 @@ const ScorePill = (props) => {
 };
 
 const UpvoteButton = () => {
+  // TODO: execute onClick function
   return <div className={css(styles.icon)}>{voteWidgetIcons.upvote}</div>;
 };
 
 const DownvoteButton = () => {
+  // TODO: execute onClick function
   return <div className={css(styles.icon)}>{voteWidgetIcons.downvote}</div>;
 };
 
