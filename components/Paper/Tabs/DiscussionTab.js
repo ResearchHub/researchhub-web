@@ -6,7 +6,9 @@ const DiscussionTab = () => {
 };
 
 function renderThreads(threads) {
-  return threads.map((data) => <DiscussionThreadCard data={data} />);
+  return threads.map((data, i) => {
+    return <DiscussionThreadCard key={i} data={data} />;
+  });
 }
 
 export default DiscussionTab;
