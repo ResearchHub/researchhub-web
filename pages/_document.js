@@ -36,7 +36,11 @@ export default class MyDocument extends Document {
             crossorigin="anonymous"
           ></script>
           <link
+<<<<<<< HEAD
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+=======
+            href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap"
+>>>>>>> add 400 and 500 font weight for roboto
             rel="stylesheet"
           />
         </Head>
