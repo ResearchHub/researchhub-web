@@ -18,4 +18,9 @@ export const paperTabColors = {
   BACKGROUND: `rgba(243, 243, 248, 1)`,
 };
 
+export const voteWidgetColors = {
+  BACKGROUND: `rgba(233, 250, 234, 1)`,
+  ARROW: `rgba(210, 210, 218, 1)`,
+};
+
 export default colors;
