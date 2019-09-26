@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 
 import PaperTabs from "~/components/paper-tabs";
+import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import { css, StyleSheet } from "aphrodite";
@@ -14,7 +15,7 @@ const Paper = () => {
       case "summary":
         return <SummaryTab paperId={paperId} />;
       case "discussion":
-        return null;
+        return <DiscussionTab paperId={paperId} />;
       case "full":
         return <PaperTab />;
       case "citations":
