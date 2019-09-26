@@ -20,7 +20,7 @@ const DiscussionThreadCard = () => {
           <Share />
         </div>
       </div>
-      <div>read button</div>
+      <ReadButton />
     </div>
   );
 };
@@ -74,6 +74,14 @@ const Share = () => {
   return <div className={css(styles.shareContainer)}>{icons.share} Share</div>;
 };
 
+const ReadButton = () => {
+  return (
+    <div className={css(styles.readContainer)}>
+      Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
+    </div>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     display: "flex",
@@ -97,6 +105,23 @@ const styles = StyleSheet.create({
   },
   commentCountContainer: {
     marginRight: "28px",
+  },
+  readContainer: {
+    border: "solid 1px",
+    borderColor: colors.BLUE(1),
+    color: colors.BLUE(1),
+    borderRadius: "2px",
+    height: "30px",
+    width: "90px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 12,
+    fontWeight: "lighter",
+  },
+  readArrow: {
+    fontSize: 10,
+    marginLeft: "9px",
   },
   title: {
     fontSize: "22px",
