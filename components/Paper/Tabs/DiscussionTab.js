@@ -1,5 +1,12 @@
+import DiscussionThreadCard from "~/components/DiscussionThreadCard";
+
 const DiscussionTab = () => {
-  return <div>Discussions</div>;
+  const threads = [{}];
+  return <div>{renderThreads(threads)}</div>;
 };
+
+function renderThreads(threads) {
+  return threads.map((data) => <DiscussionThreadCard data={data} />);
+}
 
 export default DiscussionTab;
