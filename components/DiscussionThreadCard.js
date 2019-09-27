@@ -7,12 +7,13 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { timeAgo } from "../config/utils";
 
-const DiscussionThreadCard = () => {
+const DiscussionThreadCard = (props) => {
   const title =
     "Bitcoin falls 12% as one of the world's biggest cryptocurrency markets readies a bill to ban trading on all exchanges.";
   let date = Date.now();
   const username = "Julia Kinderman";
   const threadId = 1;
+  const { path } = props;
 
   return (
     <div className={css(styles.container)}>
@@ -20,7 +21,7 @@ const DiscussionThreadCard = () => {
         <VoteWidget score={5} fontSize={16} width={"44px"} />
         <User name={username} />
         <Timestamp date={date} />
-        <ReadButton threadId={threadId} />
+        <ReadButton threadPath={path} threadId={threadId} />
       </div>
       <div className={css(styles.infoContainer)}>
         <Title text={title} />
@@ -98,10 +99,9 @@ const Share = () => {
 };
 
 const ReadButton = (props) => {
-  const { threadId } = props;
-  const basePath = "/"; // TODO: get base path from props
+  const { threadPath } = props;
   return (
-    <Link href={basePath + threadId}>
+    <Link href={threadPath}>
       <div className={css(styles.readContainer)}>
         Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
       </div>
