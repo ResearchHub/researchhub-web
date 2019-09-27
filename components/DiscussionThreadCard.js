@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { css, StyleSheet } from "aphrodite";
+import Link from "next/link";
+import PropTypes from "prop-types";
 
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
 import VoteWidget from "./VoteWidget";
@@ -11,7 +12,6 @@ const DiscussionThreadCard = (props) => {
     "Bitcoin falls 12% as one of the world's biggest cryptocurrency markets readies a bill to ban trading on all exchanges.";
   let date = Date.now();
   const username = "Julia Kinderman";
-  const threadId = 1;
   const { path } = props;
 
   return (
@@ -19,7 +19,7 @@ const DiscussionThreadCard = (props) => {
       <div className={css(styles.topContainer)}>
         <VoteWidget score={5} fontSize={16} width={"44px"} />
         <DiscussionPostMetadata username={username} date={date} />
-        <ReadButton threadPath={path} threadId={threadId} />
+        <ReadButton threadPath={path} />
       </div>
       <div className={css(styles.infoContainer)}>
         <Title text={title} />
@@ -27,6 +27,13 @@ const DiscussionThreadCard = (props) => {
       </div>
     </div>
   );
+};
+
+DiscussionThreadCard.propTypes = {
+  date: PropTypes.object,
+  path: PropTypes.string,
+  title: PropTypes.string,
+  username: PropTypes.string,
 };
 
 const Title = (props) => {
