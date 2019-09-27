@@ -192,7 +192,7 @@ class UploadPaperModal extends React.Component {
           className={css(styles.modalContent, transition && styles.transition)}
         >
           <img
-            src={"/static/close.png"}
+            src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
             // onClick={this.closeModal}
           />
@@ -202,7 +202,7 @@ class UploadPaperModal extends React.Component {
               onClick={this.toggleUploadView}
             >
               <img
-                src={"/static/back-arrow.png"}
+                src={"/static/icons/back-arrow.png"}
                 className={css(styles.backButton)}
               />
               Go back to search
