@@ -2,15 +2,21 @@ import { css, StyleSheet } from "aphrodite";
 
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import VoteWidget from "~/components/VoteWidget";
+import DiscussionCard from "~/components/DiscussionCard";
 
 const DiscussionThreadPage = () => {
+  const comments = [
+    { key: "key", data: "data", text: "a comment" },
+    { key: "key", data: "data", text: "a much longer comment with a lot of stuff" },
+  ];
+
   return (
     <div>
       <Thread
         title={"This is the thread title"}
         body={"This is the body of the thread"}
       />
-      <Comments />
+      {renderComments(comments)}
     </div>
   );
 };
@@ -32,9 +38,16 @@ const Thread = (props) => {
   );
 };
 
-const Comments = () => {
-  return <div>Comments</div>;
-};
+function renderComments(comments) {
+  return comments.map((c) => {
+    return (
+      <DiscussionCard
+        key={c.key}
+        info={c.text}
+      />
+    );
+  });
+}
 
 const ShareButton = () => {
   return <div>share</div>;
