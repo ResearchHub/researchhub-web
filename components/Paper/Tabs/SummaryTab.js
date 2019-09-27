@@ -2,8 +2,6 @@ import Link from "next/link";
 import Router, { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { EditorState, convertFromRaw } from "draft-js";
-
-// Components
 import dynamic from "next/dynamic";
 
 // Config
@@ -39,8 +37,17 @@ class SummaryTab extends React.Component {
       .then((resp) => {});
   };
 
+  cancel = () => {
+    this.setState({
+      readOnly: true,
+    });
+  };
+
   getSummary = () => {
-    fetch(API.SUMMARY({ summaryId: this.props.paperId }), API.GET_CONFIG())
+    fetch(
+      API.SUMMARY({ summaryId: this.props.paper.summary.id }),
+      API.GET_CONFIG()
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -58,8 +65,10 @@ class SummaryTab extends React.Component {
     });
   };
 
-  componentDidMount = () => {
-    this.getSummary();
+  componentDidUpdate = (prevProps) => {
+    if (prevProps.paper !== this.props.paper) {
+      this.getSummary();
+    }
   };
   render() {
     return (
@@ -79,6 +88,7 @@ class SummaryTab extends React.Component {
           editorState={this.state.editorState}
           onEditorStateChange={this.onEditorStateChange}
           save={this.save}
+          cancel={this.cancel}
         />
       </div>
     );

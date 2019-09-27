@@ -12,6 +12,8 @@ import {
 
 //Config
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import colors from "~/config/themes/colors";
+
 const DEFAULT_OPTIONS = {
   options: ["inline", "blockType", "fontSize", "list", "textAlign", "history"],
   inline: {
@@ -78,8 +80,11 @@ class DraftEditor extends React.Component {
   save = () => {
     let contentState = this.props.editorState.getCurrentContent();
     let raw = convertToRaw(contentState);
-    debugger;
     this.props.save({ raw });
+  };
+
+  cancel = () => {
+    this.props.cancel();
   };
 
   render() {
@@ -96,8 +101,17 @@ class DraftEditor extends React.Component {
         />
         {!this.props.readOnly && (
           <div className={css(styles.editorActions)}>
-            <button className={css(styles.button)} onClick={() => this.save()}>
-              Submit
+            <button
+              className={css(styles.button, styles.cancel)}
+              onClick={() => this.cancel()}
+            >
+              Cancel
+            </button>
+            <button
+              className={css(styles.button, styles.submit)}
+              onClick={() => this.save()}
+            >
+              Propose Change
             </button>
           </div>
         )}
@@ -109,6 +123,31 @@ class DraftEditor extends React.Component {
 var styles = StyleSheet.create({
   editorContainer: {
     width: "100%",
+  },
+  editorActions: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+  },
+  button: {
+    width: 180,
+    height: 55,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "none",
+    borderRadius: 8,
+    fontSize: 16,
+    outline: "none",
+    cursor: "pointer",
+  },
+  cancel: {
+    background: "transparent",
+    color: colors.BLUE(),
+  },
+  submit: {
+    background: colors.BLUE(),
+    color: "#fff",
   },
 });
 
