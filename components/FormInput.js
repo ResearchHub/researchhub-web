@@ -44,7 +44,8 @@ class FormInput extends React.Component {
           className={css(
             styles.inputLabel,
             labelStyle && labelStyle,
-            styles.text
+            styles.text,
+            !label && styles.hide
           )}
         >
           {label && label}
@@ -108,6 +109,9 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "Roboto",
     fontSize: 16,
+  },
+  hide: {
+    display: "none",
   },
 });
 
