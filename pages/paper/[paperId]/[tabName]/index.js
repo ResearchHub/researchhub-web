@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { StyleSheet, css } from "aphrodite";
+import { useSelector, useDispatch } from "react-redux";
 import dynamic from "next/dynamic";
 import moment from "moment";
 import Avatar from "react-avatar";
@@ -10,19 +11,25 @@ import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 
+// Redux
+import { PaperActions } from "~/redux/paper";
+
 //Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-const Paper = () => {
+const Paper = (props) => {
   const router = useRouter();
   const { paperId, tabName } = router.query;
-  const [paper, setPaper] = useState({ authors: [] });
+  const dispatch = useDispatch();
+  const getPaper = useCallback(PaperActions.getPaper(paperId), []);
+  const paper = useSelector((state) => state.paper);
 
   useEffect(() => {
-    getPaper();
+    if (!paper.id) {
+      getPaper(dispatch);
+    }
   }, []);
-
   function renderTabContent() {
     switch (tabName) {
       case "summary":
@@ -36,28 +43,21 @@ const Paper = () => {
     }
   }
 
-  function getPaper() {
-    fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        setPaper(resp);
-      });
-  }
-
   function renderAuthors() {
-    let authors = paper.authors.map((author, index) => {
-      return (
-        <div className={css(styles.authorContainer)}>
-          <Avatar
-            name={`${author.first_name} ${author.last_name}`}
-            size={30}
-            round={true}
-            textSizeRatio="1"
-          />
-        </div>
-      );
-    });
+    let authors =
+      paper &&
+      paper.authors.map((author, index) => {
+        return (
+          <div className={css(styles.authorContainer)}>
+            <Avatar
+              name={`${author.first_name} ${author.last_name}`}
+              size={30}
+              round={true}
+              textSizeRatio="1"
+            />
+          </div>
+        );
+      });
     return authors;
   }
 
@@ -65,13 +65,14 @@ const Paper = () => {
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.header)}>
-        <div className={css(styles.title)}>{paper.title}</div>
+        <div className={css(styles.title)}>{paper && paper.title}</div>
         <div className={css(styles.authors)}>{renderAuthors()}</div>
         <div className={css(styles.infoSection)}>
           <div className={css(styles.info)}>
-            Published {moment(paper.paper_publish_date).format("DD MMMM, YYYY")}
+            Published{" "}
+            {moment(paper && paper.paper_publish_date).format("DD MMMM, YYYY")}
           </div>
-          <div className={css(styles.info)}>DOI: {paper.doi}</div>
+          <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
         </div>
       </div>
       <PaperTabBar baseUrl={paperId} selectedTab={tabName} />
