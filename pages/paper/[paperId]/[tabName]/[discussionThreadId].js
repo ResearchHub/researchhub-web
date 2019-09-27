@@ -7,7 +7,11 @@ import DiscussionCard from "~/components/DiscussionCard";
 const DiscussionThreadPage = () => {
   const comments = [
     { key: "key", data: "data", text: "a comment" },
-    { key: "key", data: "data", text: "a much longer comment with a lot of stuff" },
+    {
+      key: "key",
+      data: "data",
+      text: "a much longer comment with a lot of stuff",
+    },
   ];
 
   return (
@@ -40,12 +44,7 @@ const Thread = (props) => {
 
 function renderComments(comments) {
   return comments.map((c) => {
-    return (
-      <DiscussionCard
-        key={c.key}
-        info={c.text}
-      />
-    );
+    return <DiscussionCard key={c.key} info={c.text} />;
   });
 }
 
