@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
+import Avatar from "react-avatar";
 
 import colors from "~/config/themes/colors";
 import { timeAgo } from "~/config/utils";
@@ -25,6 +26,7 @@ const User = (props) => {
   return (
     <div className={css(styles.userContainer)}>
       <img src={image} />
+      <Avatar name={name} size={30} round={true} textSizeRatio="1" />
       <div>{name}</div>
     </div>
   );
