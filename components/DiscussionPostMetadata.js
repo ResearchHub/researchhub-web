@@ -17,7 +17,7 @@ const DiscussionPostMetadata = (props) => {
 
 DiscussionPostMetadata.propTypes = {
   username: PropTypes.string,
-  date: PropTypes.object,
+  date: PropTypes.any,
 };
 
 const User = (props) => {
@@ -25,7 +25,7 @@ const User = (props) => {
 
   return (
     <div className={css(styles.userContainer)}>
-      <Avatar name={name} size={30} round={true} textSizeRatio="1" />
+      <Avatar name={name} size={30} round={true} textSizeRatio={1} />
       <div>{name}</div>
     </div>
   );
