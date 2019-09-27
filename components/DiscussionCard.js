@@ -1,4 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
+import PropTypes from "prop-types";
 
 import colors from "~/config/themes/colors";
 
@@ -12,6 +13,12 @@ const DiscussionCard = (props) => {
       </div>
     </div>
   );
+};
+
+DiscussionCard.propTypes = {
+  top: PropTypes.node,
+  info: PropTypes.node,
+  action: PropTypes.node,
 };
 
 const styles = StyleSheet.create({
