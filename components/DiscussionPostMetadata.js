@@ -25,7 +25,6 @@ const User = (props) => {
 
   return (
     <div className={css(styles.userContainer)}>
-      <img src={image} />
       <Avatar name={name} size={30} round={true} textSizeRatio="1" />
       <div>{name}</div>
     </div>
@@ -52,11 +51,13 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "row",
+    alignItems: "center",
   },
   userContainer: {
     display: "flex",
     flexDirection: "row",
     whiteSpace: "nowrap",
+    alignItems: "center",
   },
   timestampContainer: {
     width: "100%",
