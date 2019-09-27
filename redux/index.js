@@ -1,6 +1,6 @@
-import { combineReducers } from 'redux';
-import testReducer from './test';
+import { combineReducers } from "redux";
+import paperReducer from "./paper";
 
 export default combineReducers({
-  testReducer
+  paper: paperReducer,
 });

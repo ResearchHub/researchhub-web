@@ -65,9 +65,20 @@ class SummaryTab extends React.Component {
     });
   };
 
+  componentDidMount() {
+    let contentState = convertFromRaw(this.props.paper.summary.summary);
+    let editorState = EditorState.createWithContent(contentState);
+    this.setState({
+      editorState,
+    });
+  }
   componentDidUpdate = (prevProps) => {
-    if (prevProps.paper !== this.props.paper) {
-      this.getSummary();
+    if (prevProps.paper.summary !== this.props.paper.summary) {
+      let contentState = convertFromRaw(this.props.paper.summary.summary);
+      let editorState = EditorState.createWithContent(contentState);
+      this.setState({
+        editorState,
+      });
     }
   };
   render() {
