@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { css, StyleSheet } from "aphrodite";
 
+import DiscussionPostMetadata from "./DiscussionPostMetadata";
 import VoteWidget from "./VoteWidget";
 import { doesNotExist } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { timeAgo } from "../config/utils";
 
 const DiscussionThreadCard = (props) => {
   const title =
@@ -19,8 +19,7 @@ const DiscussionThreadCard = (props) => {
     <div className={css(styles.container)}>
       <div className={css(styles.topContainer)}>
         <VoteWidget score={5} fontSize={16} width={"44px"} />
-        <User name={username} />
-        <Timestamp date={date} />
+        <DiscussionPostMetadata username={username} date={date} />
         <ReadButton threadPath={path} threadId={threadId} />
       </div>
       <div className={css(styles.infoContainer)}>
@@ -33,32 +32,6 @@ const DiscussionThreadCard = (props) => {
     </div>
   );
 };
-
-const User = (props) => {
-  const { image, name } = props;
-
-  return (
-    <div className={css(styles.userContainer)}>
-      <img src={image} />
-      <div>{name}</div>
-    </div>
-  );
-};
-
-const Timestamp = (props) => {
-  const timestamp = formatTimestamp(props.date);
-  return (
-    <div className={css(styles.timestampContainer)}>
-      <span className={css(styles.timestampDivider)}>•</span>
-      {timestamp}
-    </div>
-  );
-};
-
-function formatTimestamp(date) {
-  date = new Date(date);
-  return timeAgo.format(Date.now() - date);
-}
 
 const Title = (props) => {
   const title = formatTitle(props.text);
