@@ -3,7 +3,6 @@ import { css, StyleSheet } from "aphrodite";
 
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
 import VoteWidget from "./VoteWidget";
-import { doesNotExist } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
@@ -24,10 +23,7 @@ const DiscussionThreadCard = (props) => {
       </div>
       <div className={css(styles.infoContainer)}>
         <Title text={title} />
-        <div className={css(styles.actionContainer)}>
-          <CommentCount count={2} />
-          <Share />
-        </div>
+        <div className={css(styles.actionContainer)}>{props.children}</div>
       </div>
     </div>
   );
@@ -46,30 +42,6 @@ function formatTitle(title) {
   }
   return title;
 }
-
-const CommentCount = (props) => {
-  return (
-    <div className={css(styles.commentCountContainer)}>
-      {icons.chat} {formatCommentCount(props.count)}
-    </div>
-  );
-};
-
-function formatCommentCount(count) {
-  const suffix = "comment";
-  const s = "s";
-
-  if (count < 1 || doesNotExist(count)) {
-    return;
-  } else if (count < 2) {
-    return count + " " + suffix;
-  }
-  return count + " " + suffix + s;
-}
-
-const Share = () => {
-  return <div className={css(styles.shareContainer)}>{icons.share} Share</div>;
-};
 
 const ReadButton = (props) => {
   const { threadPath } = props;
@@ -114,9 +86,7 @@ const styles = StyleSheet.create({
     color: colors.GREY(1),
     fontSize: 14,
   },
-  commentCountContainer: {
-    marginRight: "28px",
-  },
+
   readContainer: {
     border: "solid 1px",
     borderColor: colors.BLUE(1),
