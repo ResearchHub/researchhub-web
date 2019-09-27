@@ -6,7 +6,6 @@ import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
 
 // Next
-import Link from "next/link";
 import Router from "next/router";
 
 // Redux
@@ -66,7 +65,7 @@ class UploadPaperModal extends React.Component {
 
   /**
    * search user input among paper titles or DOI
-   * @param { }
+   * @param {String} value - the paper title the user is typing
    */
   searchTitle = (value) => {
     setTimeout(async () => {
@@ -154,6 +153,16 @@ class UploadPaperModal extends React.Component {
     this.setState({
       ...this.initialState,
       uploadView: true,
+    });
+  };
+
+  navigateToPaperUploadInfo = () => {
+    let { uploadedPaper } = this.state;
+    Router.push({
+      pathname: "/paper/upload/info",
+      query: {
+        uploadedPaper,
+      },
     });
   };
 
@@ -264,7 +273,9 @@ class UploadPaperModal extends React.Component {
             customLabelStyle={styles.label}
             disabled={uploadView && !uploadFinish}
             onClick={() => {
-              uploadView ? this.navigateTo : this.toggleUploadView();
+              uploadView
+                ? this.navigateToPaperUploadInfo()
+                : this.toggleUploadView();
             }}
           />
         </div>
