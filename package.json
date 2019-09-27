@@ -28,6 +28,7 @@
     "react-pdf": "^4.1.0",
     "react-dropzone": "^10.1.9",
     "react-modal": "^3.10.1",
+    "react-progressbar": "^15.4.1",
     "react-redux": "^7.1.1",
     "react-spinners": "^0.6.1",
     "redux": "^4.0.4",
