@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 
+import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import VoteWidget from "~/components/VoteWidget";
 
 const DiscussionThreadPage = () => {
@@ -25,6 +26,7 @@ const Thread = (props) => {
       </div>
       <div className={css(styles.threadBodyContainer)}>
         <div>{body}</div>
+        <DiscussionPostMetadata username={"Cindy Loo Hoo"} date={Date.now()} />
       </div>
     </div>
   );
