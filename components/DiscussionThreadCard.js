@@ -17,7 +17,7 @@ const DiscussionThreadCard = (props) => {
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.topContainer)}>
-        <VoteWidget score={5} fontSize={16} width={"44px"} />
+        <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
         <DiscussionPostMetadata username={username} date={date} />
         <ReadButton threadPath={path} />
       </div>
