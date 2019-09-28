@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, connect } from "react-redux";
 import dynamic from "next/dynamic";
 import moment from "moment";
 import Avatar from "react-avatar";
@@ -21,16 +21,9 @@ import { Helpers } from "@quantfive/js-web-config";
 const Paper = (props) => {
   const router = useRouter();
   const { paperId, tabName } = router.query;
-  const dispatch = useDispatch();
-  const getPaper = useCallback(PaperActions.getPaper(paperId), []);
-  const paper = useSelector((state) => state.paper);
+  let { paper } = props;
 
-  useEffect(() => {
-    if (!paper.id) {
-      getPaper(dispatch);
-    }
-  }, []);
-  function renderTabContent() {
+  let renderTabContent = () => {
     switch (tabName) {
       case "summary":
         return <SummaryTab paperId={paperId} paper={paper} />;
@@ -41,14 +34,14 @@ const Paper = (props) => {
       case "citations":
         return null;
     }
-  }
+  };
 
   function renderAuthors() {
     let authors =
       paper &&
       paper.authors.map((author, index) => {
         return (
-          <div className={css(styles.authorContainer)}>
+          <div className={css(styles.authorContainer)} key={`author_${index}`}>
             <Avatar
               name={`${author.first_name} ${author.last_name}`}
               size={30}
@@ -79,6 +72,16 @@ const Paper = (props) => {
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
     </div>
   );
+};
+
+Paper.getInitialProps = async ({ store, isServer, query }) => {
+  let { paper } = store.getState();
+
+  if (!paper.id) {
+    await store.dispatch(PaperActions.getPaper(query.paperId));
+  }
+
+  return { isServer };
 };
 
 const styles = StyleSheet.create({
@@ -113,4 +116,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Paper;
+const mapStateToProps = (state) => ({
+  paper: state.paper,
+});
+
+export default connect(mapStateToProps)(Paper);

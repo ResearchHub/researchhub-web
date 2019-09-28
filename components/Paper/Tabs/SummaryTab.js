@@ -74,6 +74,7 @@ class SummaryTab extends React.Component {
       });
     }
   }
+
   componentDidUpdate = (prevProps) => {
     if (prevProps.paper.summary !== this.props.paper.summary) {
       let contentState = convertFromRaw(this.props.paper.summary.summary);
