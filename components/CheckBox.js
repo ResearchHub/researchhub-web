@@ -4,14 +4,27 @@ import { StyleSheet, css } from "aphrodite";
 // Config
 import colors from "../config/themes/colors";
 
-const CheckBox = ({ id, active, label, onClick }) => {
+const CheckBox = ({ id, active, label, isSquare, onClick }) => {
   return (
     <div className={css(styles.checkboxContainer)}>
       <div
-        className={css(styles.checkBox, active && styles.active)}
-        onClick={() => onClick && onClick(id)}
+        className={css(
+          styles.checkBox,
+          active && styles.active,
+          isSquare && styles.square
+        )}
+        onClick={() => {
+          let state = !active;
+          onClick && onClick(id, state);
+        }}
       >
-        <div className={css(styles.dot)} />
+        <div
+          className={css(
+            styles.dot,
+            active && styles.white,
+            isSquare && styles.centered
+          )}
+        />
       </div>
       <p className={css(styles.label)}>{label && label}</p>
     </div>
@@ -22,9 +35,9 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     height: 24,
-    width: 87,
+    minWidth: 87,
   },
   checkBox: {
     height: 23,
@@ -45,15 +58,25 @@ const styles = StyleSheet.create({
     left: "50%",
     transform: "translate(-53%, -44.5%)",
   },
+  centered: {
+    transform: "translate(-47%, -44.5%)",
+  },
   active: {
     backgroundColor: colors.BLUE(1),
     border: `1px solid ${colors.BLUE(1)}`,
+  },
+  square: {
+    borderRadius: 0,
+  },
+  white: {
+    backgroundColor: "#FFF",
   },
   label: {
     fontFamily: "Roboto",
     fontSize: 16,
     margin: 0,
     padding: 0,
+    marginLeft: 10,
   },
 });
 
