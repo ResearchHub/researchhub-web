@@ -5,10 +5,11 @@ import { paperTabFont } from "~/config/themes/fonts";
 
 const PaperTabBar = (props) => {
   const selectedTab = props.selectedTab;
+  const { baseUrl } = props;
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.tabContainer)}>
-        {tabs.map((link) => renderTabs(link, selectedTab))}
+        {tabs.map((link) => renderTabs(link, selectedTab, baseUrl))}
       </div>
     </div>
   );
@@ -26,7 +27,7 @@ function formatTabs(tab) {
   return tab;
 }
 
-function renderTabs({ key, href, label }, selected) {
+function renderTabs({ key, href, label }, selected, baseUrl) {
   let classNames = [styles.tab];
 
   if (href === selected) {
@@ -34,7 +35,12 @@ function renderTabs({ key, href, label }, selected) {
   }
 
   return (
-    <Link key={key} href={href}>
+    <Link
+      key={key}
+      href={`/paper/[paperId]/[tabName]`}
+      as={`/paper/${baseUrl}/${href}`}
+      prefetch
+    >
       <div className={css(classNames)}>
         <div className={css(styles.link)}>{label}</div>
       </div>

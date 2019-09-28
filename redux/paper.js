@@ -12,7 +12,7 @@ export const PaperConstants = {
 export const PaperActions = {
   getPaper: (paperId) => {
     return (dispatch) => {
-      fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+      return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
