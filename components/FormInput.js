@@ -35,6 +35,7 @@ class FormInput extends React.Component {
       containerStyle,
       labelStyle,
       inputStyle,
+      search,
     } = this.props;
     return (
       <div
@@ -56,9 +57,20 @@ class FormInput extends React.Component {
           value={this.props.value}
           required={required ? required : false}
           placeholder={placeholder ? placeholder : ""}
-          className={css(styles.input, inputStyle && inputStyle, styles.text)}
+          className={css(
+            styles.input,
+            inputStyle && inputStyle,
+            styles.text,
+            search && styles.search
+          )}
           onChange={this.handleChange}
         />
+        {search && (
+          <img
+            src={"/static/icons/search.png"}
+            className={css(styles.searchIcon)}
+          />
+        )}
       </div>
     );
   }
@@ -73,6 +85,7 @@ const styles = StyleSheet.create({
     alignItems: "space-between",
     marginTop: 20,
     marginBottom: 20,
+    position: "relative",
   },
   inputLabel: {
     height: 19,
@@ -112,6 +125,17 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: "none",
+  },
+  search: {
+    paddingLeft: 45,
+    paddingRight: 0,
+  },
+  searchIcon: {
+    height: 18,
+    width: 18,
+    position: "absolute",
+    left: 15,
+    bottom: 10,
   },
 });
 
