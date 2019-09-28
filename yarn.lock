@@ -829,10 +829,10 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@quantfive/js-web-config@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/@quantfive/js-web-config/-/js-web-config-1.0.3.tgz#36080c1999b42fa345d5e82754a5d0f5e5d40a24"
-  integrity sha512-Iyv2aBVbxEwygD9Y9Ikh/hCGVCGDxZf821ZFw/a/V+ZDKwmrrq/XRVcdSjtHCMF+E5pSmSktISneV5MLUN1iqQ==
+"@quantfive/js-web-config@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/@quantfive/js-web-config/-/js-web-config-1.0.4.tgz#516728d505afe07de8ec2b047be4160519c36bd8"
+  integrity sha512-bYiy24RWUjhfbxgE7avvrHC5CtgltiNN8fnMQL4gSNi+TCBUjcxfrHBlGFjcL9OmpIax8mBwVsmFEm5LuYqZIA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
