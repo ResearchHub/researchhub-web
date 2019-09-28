@@ -13,8 +13,10 @@ const PaperEntry = ({
   onRemove,
 }) => {
   if (fileUpload) {
-    let { name, size, type } = file;
-    let fileSize = size / 1000000;
+    if (file) {
+      let { name, size, type } = file;
+      let fileSize = size / 1000000;
+    }
 
     return (
       <div
@@ -24,10 +26,10 @@ const PaperEntry = ({
         <img src={"/static/icons/pdf.png"} className={css(styles.pdfIcon)} />
         <div className={css(styles.fileDataContainer)}>
           <div className={css(styles.fileName, styles.text)}>
-            {name && name}
+            {/* {name && name} */}
           </div>
           <div className={css(styles.fileSize, styles.text)}>
-            {fileSize && `${fileSize} MB`}
+            {/* {fileSize && `${fileSize} MB`} */}
           </div>
         </div>
         <img
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "initial",
     cursor: "default",
+    borderRadius: 3,
   },
   fileName: {
     height: 41,
