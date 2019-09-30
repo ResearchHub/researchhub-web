@@ -1,4 +1,4 @@
-import { doesNotExist, getNestedValue } from "../../../../config/utils";
+import { doesNotExist, getNestedValue, isEmpty } from "../../../../config/utils";
 
 describe("General Utils", function() {
   context("doesNotExist", function() {
@@ -76,6 +76,45 @@ describe("General Utils", function() {
       expect(res1).to.equal(null);
       expect(res2).to.equal(null);
       expect(res3).to.equal(null);
+    });
+
+  });
+
+  context("isEmpty", function() {
+    it("returns true given an empty string", () => {
+      const string = "";
+      const result = isEmpty(string);
+      expect(result).to.be.true;
+    });
+
+    it("returns false given a NOT empty string", () => {
+      const string = " ";
+      const result = isEmpty(string);
+      expect(result).to.be.false;
+    });
+
+    it("returns true given an empty object", () => {
+      const obj = {};
+      const result = isEmpty(obj);
+      expect(result).to.be.true;
+    });
+
+    it("returns false given a NOT empty object", () => {
+      const obj = { hello: "world" };
+      const result = isEmpty(obj);
+      expect(result).to.be.false;
+    });
+
+    it("returns false given a number", () => {
+      const n0 = 0;
+      const res0 = isEmpty(n0);
+      expect(res0).to.be.false;
+      const n1 = 1;
+      const res1 = isEmpty(n1);
+      expect(res1).to.be.false;
+      const n2 = -1;
+      const res2 = isEmpty(n2);
+      expect(res2).to.be.false;
     });
 
   });
