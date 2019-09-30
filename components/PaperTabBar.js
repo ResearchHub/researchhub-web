@@ -20,6 +20,8 @@ const PaperTabBar = (props) => {
   );
 };
 
+const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
+
 const tabs = [
   { href: "summary", label: "summary" },
   { href: "discussion", label: "discussions" },
@@ -28,7 +30,7 @@ const tabs = [
 ].map(formatTabs);
 
 function formatTabs(tab) {
-  tab.key = `nav-link-${tab.href}-${tab.label}`;
+  tab.key = `nav-link-${tab.href}`;
   return tab;
 }
 
@@ -40,12 +42,7 @@ function renderTabs({ key, href, label }, selected, baseUrl) {
   }
 
   return (
-    <Link
-      key={key}
-      href={`/paper/[paperId]/[tabName]`}
-      as={`/paper/${baseUrl}/${href}`}
-      prefetch
-    >
+    <Link key={key} href={DYNAMIC_HREF} as={href}>
       <div className={css(classNames)}>
         <div className={css(styles.link)}>{label}</div>
       </div>
