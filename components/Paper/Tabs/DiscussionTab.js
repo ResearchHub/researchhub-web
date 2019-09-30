@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import DiscussionThreadActionBar from "~/components/DiscussionThreadActionBar";
 import { endsWithSlash } from "~/config/utils/routing";
+import { doesNotExist } from "~/config/utils";
 
 const DiscussionTab = () => {
   const router = useRouter();
@@ -29,5 +30,16 @@ function renderThreads(threads) {
     );
   });
 }
+
+DiscussionTab.getInitialProps = async ({ store, query }) => {
+  let { discussion } = store.getState();
+
+  if (doesNotExist(discussion.id)) {
+    const { paperId, threadId } = query;
+    await store.dispatch(DiscussionActions.fetchThread(paperId, threadId));
+  }
+
+  return {};
+};
 
 export default DiscussionTab;

@@ -1,7 +1,7 @@
 import * as actions from "./actions";
 
 export const DiscussionActions = {
-  fetchThread: () => {
+  fetchThread: (paperId, threadId) => {
     return (dispatch) => {
       const result = fetch();
 
@@ -13,7 +13,7 @@ export const DiscussionActions = {
     };
   },
 
-  fetchComments: (threadId) => {
+  fetchComments: (threadId, page) => {
     return (dispatch) => {
       const result = fetch();
 
