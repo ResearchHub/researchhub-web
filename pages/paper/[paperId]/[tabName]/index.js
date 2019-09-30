@@ -21,13 +21,14 @@ const Paper = (props) => {
   let { paper } = props;
 
   const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
+  const discussionThreads = getNestedValue(paper, ["discussion", "threads"]);
 
   let renderTabContent = () => {
     switch (tabName) {
       case "summary":
         return <SummaryTab paperId={paperId} paper={paper} />;
       case "discussion":
-        return <DiscussionTab paperId={paperId} />;
+        return <DiscussionTab paperId={paperId} threads={discussionThreads} />;
       case "full":
         return <PaperTab />;
       case "citations":
