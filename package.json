@@ -8,7 +8,7 @@
     "test": "cypress run --project $PWD/tests"
   },
   "dependencies": {
-    "@quantfive/js-web-config": "^1.0.3",
+    "@quantfive/js-web-config": "^1.0.4",
     "@zeit/next-css": "^1.0.1",
     "aphrodite": "^2.4.0",
     "draft-js": "0.10.0",
@@ -18,6 +18,7 @@
     "moment": "^2.24.0",
     "next": "^9.0.6",
     "next-compose-plugins": "^2.2.0",
+    "next-redux-wrapper": "^4.0.0",
     "next-transpile-modules": "^2.3.1",
     "react": "^16.9.0",
     "react-avatar": "^3.7.0",
