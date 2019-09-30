@@ -1,33 +1,50 @@
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
 import PropTypes from "prop-types";
+import { Fragment } from "react";
 
+import DiscussionCard from "./DiscussionCard";
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
 import VoteWidget from "./VoteWidget";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { getNestedValue } from "~/config/utils";
 
 const DiscussionThreadCard = (props) => {
-  const title =
-    "Bitcoin falls 12% as one of the world's biggest cryptocurrency markets readies a bill to ban trading on all exchanges.";
   let date = Date.now();
-  const username = "Julia Kinderman";
   const { path } = props;
 
+  const data = getNestedValue(props, ["data"]);
+
+  let title = "";
+  let username = "";
+
+  if (data) {
+    // If data exists, we assume it has all expected properties.
+    title = data.title;
+    username = createUsername(data);
+  }
+
   return (
-    <div className={css(styles.container)}>
-      <div className={css(styles.topContainer)}>
-        <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
-        <DiscussionPostMetadata username={username} date={date} />
-        <ReadButton threadPath={path} />
-      </div>
-      <div className={css(styles.infoContainer)}>
-        <Title text={title} />
-        <div className={css(styles.actionContainer)}>{props.children}</div>
-      </div>
-    </div>
+    <DiscussionCard
+      top={
+        <Fragment>
+          <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
+          <DiscussionPostMetadata username={username} date={date} />
+          <ReadButton threadPath={path} />
+        </Fragment>
+      }
+      info={<Title text={title} />}
+      action={props.children}
+    />
   );
 };
+
+function createUsername({ created_by }) {
+  const firstName = getNestedValue(created_by, ["first_name"], "Anonymous");
+  const lastName = getNestedValue(created_by, ["last_name"], "");
+  return `${firstName} ${lastName}`;
+}
 
 DiscussionThreadCard.propTypes = {
   date: PropTypes.object,
