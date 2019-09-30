@@ -1,4 +1,4 @@
-import { doesNotExist } from "../../../../config/utils";
+import { doesNotExist, getNestedValue } from "../../../../config/utils";
 
 describe("General Utils", function() {
   context("doesNotExist", function() {
@@ -31,6 +31,53 @@ describe("General Utils", function() {
       const result = doesNotExist(val);
       expect(result).to.be.false;
     });
+  });
+
+  context.only("getNestedValue", function() {
+    it("returns the value nested 3 layers deep", () => {
+      const obj = { a: { b: { c: 42 } } };
+      const result = getNestedValue(obj, ["a", "b", "c"]);
+      expect(result).to.equal(42);
+    });
+
+    it("returns the value nested 1 layer deep", () => {
+      const obj = { a: 24 };
+      const result = getNestedValue(obj, ["a"]);
+      expect(result).to.equal(24);
+    });
+
+    it("returns the defaultValue if the end value does not exist", () => {
+      const defaultValue = 33;
+      const obj0 = { a: 24 };
+      const obj1 = { a: 24, b: { c: 42 } };
+      const obj2 = { a: { b: { c: 42 } } };
+      const obj3 = undefined;
+      const res0 = getNestedValue(obj0, ["b"], defaultValue);
+      const res1 = getNestedValue(obj1, ["a", "b"], defaultValue);
+      const res2 = getNestedValue(obj2, ["a", "b", "d"], defaultValue);
+      const res3 = getNestedValue(obj3, ["a", "b", "d"], defaultValue);
+      const expected = 33;
+      expect(res0).to.equal(expected);
+      expect(res1).to.equal(expected);
+      expect(res2).to.equal(expected);
+      expect(res3).to.equal(expected);
+    });
+
+    it("returns null if the end value does not exist and no defaultValue is provided", () => {
+      const obj0 = { a: 24 };
+      const obj1 = { a: 24, b: { c: 42 } };
+      const obj2 = { a: { b: { c: 42 } } };
+      const obj3 = undefined;
+      const res0 = getNestedValue(obj0, ["b"]);
+      const res1 = getNestedValue(obj1, ["a", "b"]);
+      const res2 = getNestedValue(obj2, ["a", "b", "d"]);
+      const res3 = getNestedValue(obj3, ["a", "b", "d"]);
+      expect(res0).to.equal(null);
+      expect(res1).to.equal(null);
+      expect(res2).to.equal(null);
+      expect(res3).to.equal(null);
+    });
 
   });
+
 });
