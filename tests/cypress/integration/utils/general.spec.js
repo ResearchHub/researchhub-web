@@ -33,7 +33,7 @@ describe("General Utils", function() {
     });
   });
 
-  context.only("getNestedValue", function() {
+  context("getNestedValue", function() {
     it("returns the value nested 3 layers deep", () => {
       const obj = { a: { b: { c: 42 } } };
       const result = getNestedValue(obj, ["a", "b", "c"]);
