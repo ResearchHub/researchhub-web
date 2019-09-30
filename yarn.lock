@@ -829,10 +829,10 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@quantfive/js-web-config@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/@quantfive/js-web-config/-/js-web-config-1.0.3.tgz#36080c1999b42fa345d5e82754a5d0f5e5d40a24"
-  integrity sha512-Iyv2aBVbxEwygD9Y9Ikh/hCGVCGDxZf821ZFw/a/V+ZDKwmrrq/XRVcdSjtHCMF+E5pSmSktISneV5MLUN1iqQ==
+"@quantfive/js-web-config@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/@quantfive/js-web-config/-/js-web-config-1.0.4.tgz#516728d505afe07de8ec2b047be4160519c36bd8"
+  integrity sha512-bYiy24RWUjhfbxgE7avvrHC5CtgltiNN8fnMQL4gSNi+TCBUjcxfrHBlGFjcL9OmpIax8mBwVsmFEm5LuYqZIA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -4089,6 +4089,11 @@ next-compose-plugins@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/next-compose-plugins/-/next-compose-plugins-2.2.0.tgz#95cd8eb40ab0652070d76572fb648354191628b0"
   integrity sha512-ChUlpT9tWfJ7YxqGw/WQ2T1gf8EeX93n1XqeQw0lkvGa7seszahvF4eOZUJoq7Hetsbzg4UHVnPoCXfXTyQR3g==
+
+next-redux-wrapper@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/next-redux-wrapper/-/next-redux-wrapper-4.0.0.tgz#f7f513aa38a77ee1de58cd7eda5c83d3e374347d"
+  integrity sha512-VzuREqB299f5pfzP4IfnGrUH6Qut+wvk+86g1SzpGu+oGutAySfGn5i6iwLs348lIoADaUUVROIBWXdpWOALRQ==
 
 next-transpile-modules@^2.3.1:
   version "2.3.1"
