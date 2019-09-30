@@ -16,14 +16,14 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 // Redux
 import { PaperActions } from "~/redux/paper";
 
-import { doesNotExist } from "~/config/utils";
+import { getNestedValue } from "~/config/utils";
 
 const Paper = (props) => {
   const router = useRouter();
   const { paperId, tabName } = router.query;
   let { paper } = props;
 
-  const threadCount = getThreadCount(paper);
+  const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
 
   let renderTabContent = () => {
     switch (tabName) {
@@ -74,21 +74,15 @@ const Paper = (props) => {
           </div>
         </div>
       </ComponentWrapper>
-      <PaperTabBar baseUrl={paperId} selectedTab={tabName} threadCount={threadCount} />
+      <PaperTabBar
+        baseUrl={paperId}
+        selectedTab={tabName}
+        threadCount={threadCount}
+      />
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
     </div>
   );
 };
-
-function getThreadCount(paper) {
-  if (doesNotExist(paper.discussion)) {
-    return 0;
-  }
-  if (doesNotExist(paper.discussion.count)) {
-    return 0;
-  }
-  return paper.discussion.count;
-}
 
 Paper.getInitialProps = async ({ store, isServer, query }) => {
   let { paper } = store.getState();
