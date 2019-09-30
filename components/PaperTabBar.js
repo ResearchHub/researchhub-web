@@ -58,6 +58,9 @@ function renderTabs({ key, href, label, ui }, selected, baseUrl) {
 
 const Count = (props) => {
   const { amount } = props;
+  if (amount < 1) {
+    return <span />;
+  }
   return <span>{amount}</span>;
 };
 
