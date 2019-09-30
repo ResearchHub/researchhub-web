@@ -8,11 +8,15 @@ import ComponentWrapper from "./ComponentWrapper";
 
 const PaperTabBar = (props) => {
   const selectedTab = props.selectedTab;
-  const { baseUrl } = props;
+  const { baseUrl, threadCount } = props;
 
   const tabs = [
     { href: "summary", label: "summary" },
-    { href: "discussion", label: "discussions", ui: <Count amount={0} /> },
+    {
+      href: "discussion",
+      label: "discussions",
+      ui: <Count amount={threadCount} />,
+    },
     { href: "full", label: "full paper" },
     { href: "citations", label: "citations" },
   ].map(formatTabs);
