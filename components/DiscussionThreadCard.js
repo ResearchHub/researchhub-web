@@ -55,8 +55,9 @@ const ReadButton = (props) => {
   const DYNAMIC_HREF = "/paper/[paperId]/discussion/[threadId]";
   return (
     <Link href={DYNAMIC_HREF} as={threadPath}>
+      <a className={css(styles.readContainer)}>
         Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
-      </div>
+      </a>
     </Link>
   );
 };
@@ -107,6 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "lighter",
     boxSizing: "border-box",
+    textDecoration: "none",
   },
   readArrow: {
     fontSize: 10,
