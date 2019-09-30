@@ -52,9 +52,9 @@ function formatTitle(title) {
 
 const ReadButton = (props) => {
   const { threadPath } = props;
+  const DYNAMIC_HREF = "/paper/[paperId]/discussion/[threadId]";
   return (
-    <Link href={threadPath}>
-      <div className={css(styles.readContainer)}>
+    <Link href={DYNAMIC_HREF} as={threadPath}>
         Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
       </div>
     </Link>
