@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { useSelector, connect } from "react-redux";
-import dynamic from "next/dynamic";
+import { connect } from "react-redux";
 import moment from "moment";
 import Avatar from "react-avatar";
 
@@ -13,7 +11,6 @@ import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import ComponentWrapper from "~/components/ComponentWrapper";
 
-// Redux
 import { PaperActions } from "~/redux/paper";
 
 import { getNestedValue } from "~/config/utils";
@@ -56,7 +53,6 @@ const Paper = (props) => {
     return authors;
   }
 
-  // TODO: Display different tab content based on tabName
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper>
