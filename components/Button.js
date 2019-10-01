@@ -25,7 +25,7 @@ const Button = ({
       )}
       onClick={onClick ? onClick : null}
     >
-      <div
+      <p
         className={css(
           styles.label,
           isWhite && styles.isWhiteLabel,
@@ -33,7 +33,7 @@ const Button = ({
         )}
       >
         {label && label}
-      </div>
+      </p>
     </button>
   );
 };
@@ -57,19 +57,22 @@ const styles = StyleSheet.create({
   isWhite: {
     backgroundColor: "#FFF",
     border: `1px solid ${colors.BLUE(1)}`,
+    color: colors.BLUE(1),
     ":hover": {
       backgroundColor: colors.BLUE(1),
       color: "#FFF",
     },
-  },
-  isWhiteLabel: {
-    color: colors.BLUE(1),
   },
   label: {
     color: "#FFF",
     fontFamily: "Roboto",
     fontWeight: 400,
     fontSize: 15,
+    margin: 0,
+    padding: 0,
+  },
+  isWhiteLabel: {
+    color: "inherit",
   },
   small: {
     width: 126,
