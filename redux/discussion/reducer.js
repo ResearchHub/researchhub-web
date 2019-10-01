@@ -1,11 +1,6 @@
 import * as types from "./types";
 
-export const initialState = {
-  threadId: null,
-  commentCount: 0,
-  comments: [],
-  commentPage: null,
-};
+export const initialState = {};
 
 export default function(state = initialState, action) {
   switch (action.type) {
@@ -21,18 +16,21 @@ export default function(state = initialState, action) {
       };
     case types.FETCH_THREAD_SUCCESS:
       return {
+        ...state,
         ...action.payload,
       };
 
+    case types.FETCH_COMMENTS_PENDING:
+      return {
+        ...state,
+        commentPage: { ...action.payload },
+      };
     case types.FETCH_COMMENTS_FAILURE:
       return state;
     case types.FETCH_COMMENTS_SUCCESS:
-      const { commentCount, comments, commentPage } = action.payload;
       return {
         ...state,
-        commentCount,
-        comments,
-        commentPage,
+        commentPage: { ...action.payload },
       };
 
     default:
