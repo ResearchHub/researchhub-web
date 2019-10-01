@@ -1,7 +1,8 @@
 const icons = {
   chat: <i className="fas fa-comment"></i>,
-  share: <i className="fas fa-share"></i>,
   chevronRight: <i className="far fa-chevron-right"></i>,
+  longArrowLeft: <i class="fal fa-long-arrow-left"></i>,
+  share: <i className="fas fa-share"></i>,
 };
 
 export const voteWidgetIcons = {
