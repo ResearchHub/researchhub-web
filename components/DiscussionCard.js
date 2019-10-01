@@ -4,10 +4,17 @@ import PropTypes from "prop-types";
 import colors from "~/config/themes/colors";
 
 const DiscussionCard = (props) => {
+  const infoStyles = [styles.infoContainer];
+
+  const { infoStyle } = props;
+  if (infoStyle) {
+    infoStyles.push(infoStyle);
+  }
+
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.topContainer)}>{props.top}</div>
-      <div className={css(styles.infoContainer)}>
+      <div className={css(infoStyles)}>
         {props.info}
         <div className={css(styles.actionContainer)}>{props.action}</div>
       </div>
@@ -18,6 +25,7 @@ const DiscussionCard = (props) => {
 DiscussionCard.propTypes = {
   top: PropTypes.node,
   info: PropTypes.node,
+  infoStyle: PropTypes.object,
   action: PropTypes.node,
 };
 
