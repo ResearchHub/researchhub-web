@@ -3,12 +3,12 @@ import Dropzone from "react-dropzone";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
-import colors from "../config/themes/colors";
+import colors from "../../config/themes/colors";
 
 // Component
 import FormInput from "./FormInput";
-import Loader from "./Loader/Loader";
-import PaperEntry from "./SearchSuggestion/PaperEntry";
+import Loader from "../Loader/Loader";
+import PaperEntry from "../SearchSuggestion/PaperEntry";
 
 class DragNDrop extends React.Component {
   constructor(props) {

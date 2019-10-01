@@ -1,0 +1,151 @@
+import React from "react";
+import Select from "react-select";
+import { StyleSheet, css } from "aphrodite";
+
+// Config
+import * as Options from "../../config/utils/options";
+import colors from "../../config/themes/colors";
+
+class FormSelect extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  handleOnChange = (id, option) => {
+    this.props.onChange && this.props.onChange(id, option);
+  };
+
+  render() {
+    let {
+      id,
+      required,
+      label,
+      placeholder,
+      containerStyle,
+      labelStyle,
+      options,
+      inputStyle,
+      value,
+      ref,
+      error,
+    } = this.props;
+
+    const defaultValue = {
+      value: null,
+      label: placeholder,
+    };
+
+    const colorStyles = {
+      control: (styles) => ({
+        ...styles,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        border: error ? `1px solid ${colors.RED(1)}` : "1px solid #E8E8F2",
+        backgroundColor: "#FBFBFD",
+        height: 50,
+        width: 188,
+        backgroundColor: "#FBFBFD",
+        paddingLeft: 15,
+        fontWeight: "400",
+        borderRadius: 2,
+        color: "#232038",
+        highlight: "none",
+        outline: "none",
+        ":focus": {
+          borderColor: "#D2D2E6",
+        },
+      }),
+      placeholder: (styles) => ({
+        ...styles,
+        color: "#8e8d9a",
+        fontWeight: 400,
+      }),
+    };
+
+    return (
+      <div
+        className={css(styles.inputContainer, containerStyle && containerStyle)}
+        id={id && id}
+        ref={ref}
+      >
+        <div
+          className={css(
+            styles.inputLabel,
+            labelStyle && labelStyle,
+            styles.text,
+            !label && styles.hide
+          )}
+        >
+          {label && label}
+          {required && <div className={css(styles.asterick)}>*</div>}
+        </div>
+        <Select
+          defaultValue={placeholder && defaultValue}
+          options={options && options}
+          onChange={(option) => this.handleOnChange(id, option)}
+          styles={colorStyles}
+          placeholder={placeholder}
+          value={value}
+          required={required ? required : "false"}
+        />
+      </div>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    height: 75,
+    width: 525,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "space-between",
+    marginTop: 20,
+    marginBottom: 20,
+    position: "relative",
+    cursor: "pointer",
+  },
+  inputLabel: {
+    height: 19,
+    fontWeight: "500",
+    marginBottom: 10,
+    color: "#232038",
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  input: {
+    // height: 50,
+    // width: 495,
+    display: "flex",
+    alignItems: "center",
+    border: "1px solid #E8E8F2",
+    backgroundColor: "#FBFBFD",
+    padding: 15,
+    fontWeight: "400",
+    borderRadius: 2,
+    color: "#232038",
+    highlight: "none",
+    outline: "none",
+    ":focus": {
+      borderColor: "#D2D2E6",
+    },
+  },
+  asterick: {
+    color: colors.BLUE(1),
+  },
+  placeholder: {
+    color: "#8e8d9a",
+    fontWeight: 400,
+  },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 16,
+  },
+  hide: {
+    display: "none",
+  },
+});
+
+export default FormSelect;

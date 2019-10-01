@@ -2,9 +2,10 @@ import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
-import colors from "../config/themes/colors";
+import colors from "../../config/themes/colors";
 
 const Button = ({
+  type,
   label,
   isWhite,
   size,
@@ -12,6 +13,7 @@ const Button = ({
   customButtonStyle,
   customLabelStyle,
   onClick,
+  onSubmit,
 }) => {
   // size is a enum; type string: ['small', 'med', 'big']
   return (
@@ -23,7 +25,9 @@ const Button = ({
         customButtonStyle && customButtonStyle,
         disabled && styles.disabled
       )}
+      type={type ? type : "button"}
       onClick={onClick ? onClick : null}
+      onSubmit={onSubmit ? onSubmit : null}
     >
       <p
         className={css(
