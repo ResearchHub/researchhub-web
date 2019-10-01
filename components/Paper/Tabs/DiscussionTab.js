@@ -1,9 +1,7 @@
 import { useRouter } from "next/router";
 
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
-import DiscussionThreadActionBar from "~/components/DiscussionThreadActionBar";
 import { endsWithSlash } from "~/config/utils/routing";
-import { doesNotExist } from "~/config/utils";
 
 const DiscussionTab = (props) => {
   const { threads } = props;
@@ -33,11 +31,7 @@ function formatThreads(threads, basePath) {
 
 function renderThreads(threads) {
   return threads.map((t, i) => {
-    return (
-      <DiscussionThreadCard key={t.key} data={t.data} path={t.path}>
-        <DiscussionThreadActionBar />
-      </DiscussionThreadCard>
-    );
+    return <DiscussionThreadCard key={t.key} data={t.data} path={t.path} />;
   });
 }
 
