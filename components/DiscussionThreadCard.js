@@ -5,22 +5,25 @@ import { Fragment } from "react";
 
 import DiscussionCard from "./DiscussionCard";
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
+import DiscussionThreadActionBar from "~/components/DiscussionThreadActionBar";
 import VoteWidget from "./VoteWidget";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
 
 const DiscussionThreadCard = (props) => {
-  let date = Date.now();
   const { path } = props;
 
   const data = getNestedValue(props, ["data"]);
 
+  let date = "";
   let title = "";
   let username = "";
+  let commentCount = "";
 
   if (data) {
-    // If data exists, we assume it has all expected properties.
+    commentCount = data.commentCount;
+    date = data.createdDate;
     title = data.title;
     username = createUsername(data);
   }
@@ -35,14 +38,13 @@ const DiscussionThreadCard = (props) => {
         </Fragment>
       }
       info={<Title text={title} />}
-      action={props.children}
+      action={<DiscussionThreadActionBar count={commentCount} />}
     />
   );
 };
 
-function createUsername({ created_by }) {
-  const firstName = getNestedValue(created_by, ["first_name"], "Anonymous");
-  const lastName = getNestedValue(created_by, ["last_name"], "");
+function createUsername({ createdBy }) {
+  const { firstName, lastName } = createdBy;
   return `${firstName} ${lastName}`;
 }
 
