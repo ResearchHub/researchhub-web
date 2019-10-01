@@ -4,10 +4,10 @@ import { Fragment } from "react";
 import icons from "~/config/themes/icons";
 import { doesNotExist } from "~/config/utils";
 
-const DiscussionThreadActionBar = () => {
+const DiscussionThreadActionBar = (props) => {
   return (
     <Fragment>
-      <CommentCount count={3} />
+      <CommentCount {...props} />
       <Share />
     </Fragment>
   );
@@ -16,13 +16,13 @@ const DiscussionThreadActionBar = () => {
 const CommentCount = (props) => {
   const { count } = props;
   return (
-    <div className={css(styles.commentCountContainer)}>
-      {count && (
-        <Fragment>
+    <Fragment>
+      {count > 0 && (
+        <div className={css(styles.commentCountContainer)}>
           {icons.chat} {formatCommentCount(props.count)}
-        </Fragment>
+        </div>
       )}
-    </div>
+    </Fragment>
   );
 };
 
