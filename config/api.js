@@ -9,11 +9,11 @@ const apiRoot = {
 
 const routes = (BASE_URL) => {
   return {
-    SUMMARY: ({ summaryId }) => {
-      let url = BASE_URL + `summary/`;
+    PAPER: ({ paperId }) => {
+      let url = BASE_URL + `paper/`;
 
-      if (summaryId) {
-        url += `${summaryId}/?`;
+      if (paperId) {
+        url += `${paperId}/?`;
       } else {
         url += "?";
       }
@@ -27,14 +27,20 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    PAPER: ({ paperId }) => {
-      let url = BASE_URL + `paper/`;
+    SUMMARY: ({ summaryId }) => {
+      let url = BASE_URL + `summary/`;
 
-      if (paperId) {
-        url += `${paperId}/?`;
+      if (summaryId) {
+        url += `${summaryId}/?`;
       } else {
         url += "?";
       }
+
+      return url;
+    },
+
+    THREAD: (paperId, threadId) => {
+      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}`;
 
       return url;
     },
