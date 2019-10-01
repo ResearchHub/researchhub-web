@@ -41,10 +41,17 @@ const DiscussionThreadPage = () => {
 DiscussionThreadPage.getInitialProps = async ({ isServer, store, query }) => {
   let { discussion } = store.getState();
 
-  if (doesNotExist(discussion) || isEmpty(discussion)) {
-    const { paperId, threadId } = query;
+  if (!discussion.id) {
+    const { paperId, discussionThreadId } = query;
+    const page = 1;
     store.dispatch(DiscussionActions.fetchThreadPending());
-    await store.dispatch(DiscussionActions.fetchThread(paperId, threadId));
+    store.dispatch(DiscussionActions.fetchCommentsPending());
+    await store.dispatch(
+      DiscussionActions.fetchThread(paperId, discussionThreadId)
+    );
+    await store.dispatch(
+      DiscussionActions.fetchComments(discussionThreadId, page)
+    );
   }
 
   return { isServer };
