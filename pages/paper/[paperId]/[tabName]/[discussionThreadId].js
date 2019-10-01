@@ -2,19 +2,22 @@ import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
+
 import DiscussionCard from "~/components/DiscussionCard";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import VoteWidget from "~/components/VoteWidget";
 
+import DiscussionActions from "~/redux/discussion";
+
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { isEmpty } from "~/config/utils";
+import { doesNotExist, isEmpty } from "~/config/utils";
 
 const DiscussionThreadPage = () => {
   const comments = [
     { key: "key", data: "data", text: "a comment" },
     {
-      key: "key",
+      key: "key2",
       data: "data",
       text: "a much longer comment with a lot of stuff",
     },
@@ -35,12 +38,21 @@ const DiscussionThreadPage = () => {
   );
 };
 
+DiscussionThreadPage.getInitialProps = async ({ isServer, store, query }) => {
+  let { discussion } = store.getState();
+
+  if (doesNotExist(discussion) || isEmpty(discussion)) {
+    const { paperId, threadId } = query;
+    store.dispatch(DiscussionActions.fetchThreadPending());
+    await store.dispatch(DiscussionActions.fetchThread(paperId, threadId));
+  }
+
+  return { isServer };
+};
 
 function renderComments(comments) {
   return comments.map((c) => {
-    return (
-      <Comment key={c.key} data={c}/>
-    );
+    return <Comment key={c.key} data={c} />;
   });
 }
 
@@ -57,12 +69,13 @@ const Thread = (props) => {
             <ShareButton />
           </Fragment>
         }
-        info={
-          <div>{body}</div>
-        }
+        info={<div>{body}</div>}
         infoStyle={styles.threadInfo}
         action={
-          <DiscussionPostMetadata username={"Cindy Loo Hoo"} date={Date.now()} />
+          <DiscussionPostMetadata
+            username={"Cindy Loo Hoo"}
+            date={Date.now()}
+          />
         }
       />
     </div>
@@ -76,10 +89,7 @@ const BackButton = () => {
   const message = "Go back to all discussions";
   return (
     <div className={css(styles.backButtonContainer)}>
-      <Link
-        href={"/paper/[paperId]/discussion"}
-        as={url}
-      >
+      <Link href={"/paper/[paperId]/discussion"} as={url}>
         <a className={css(styles.backButton)}>
           {icons.longArrowLeft} {message}
         </a>
@@ -113,21 +123,24 @@ const Comment = (props) => {
       top={
         <Fragment>
           <VoteWidget score={0} />
-          <DiscussionPostMetadata username={"Severus Snape"} date={Date.now()} />
+          <DiscussionPostMetadata
+            username={"Severus Snape"}
+            date={Date.now()}
+          />
         </Fragment>
       }
       info={text}
       action={"Reply"}
     />
   );
-}
+};
 
 const styles = StyleSheet.create({
   backButtonContainer: {
     paddingLeft: "60px",
   },
   backButton: {
-    color: colors.BLACK(.5),
+    color: colors.BLACK(0.5),
     textDecoration: "none",
   },
   threadContainer: {
