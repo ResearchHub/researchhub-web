@@ -38,4 +38,5 @@ export function isEmpty(value) {
   } else if (typeof value === "number") {
     return false;
   }
+  return false;
 }
