@@ -1,5 +1,6 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { paperShim } from "./paper/shim";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -18,7 +19,10 @@ export const PaperActions = {
         .then((resp) => {
           return dispatch({
             type: PaperConstants.GET_PAPER,
-            payload: { ...resp, doneFetching: true },
+            payload: {
+              ...paperShim(resp),
+              doneFetching: true,
+            },
           });
         });
     };
