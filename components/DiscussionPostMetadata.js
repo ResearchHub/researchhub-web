@@ -43,7 +43,7 @@ const Timestamp = (props) => {
 
 function formatTimestamp(date) {
   date = new Date(date);
-  return timeAgo.format(Date.now() - date);
+  return timeAgo.format(date);
 }
 
 const styles = StyleSheet.create({
