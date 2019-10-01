@@ -40,7 +40,7 @@ function transformDate(date) {
 
 function transformUser(user) {
   return {
-    id: user.id,
+    id: getNestedValue(user, ["id"], null),
     firstName: getNestedValue(user, ["first_name"], ""),
     lastName: getNestedValue(user, ["last_name"], ""),
   };
