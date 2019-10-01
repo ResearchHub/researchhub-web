@@ -2,9 +2,9 @@ import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
-import colors from "../config/themes/colors";
+import colors from "../../config/themes/colors";
 
-const CheckBox = ({ id, active, label, isSquare, onClick }) => {
+const CheckBox = ({ id, active, label, isSquare, onChange }) => {
   return (
     <div className={css(styles.checkboxContainer)}>
       <div
@@ -15,7 +15,7 @@ const CheckBox = ({ id, active, label, isSquare, onClick }) => {
         )}
         onClick={() => {
           let state = !active;
-          onClick && onClick(id, state);
+          onChange && onChange(id, state);
         }}
       >
         <div

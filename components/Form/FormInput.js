@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
+import colors from "../../config/themes/colors";
 
 class FormInput extends React.Component {
   constructor(props) {
@@ -21,12 +22,15 @@ class FormInput extends React.Component {
   // }
 
   handleChange = (e) => {
+    let id = e.target.id;
     let value = e.target.value;
-    this.props.onChange && this.props.onChange(value);
+    this.props.onChange && this.props.onChange(id, value);
   };
 
   render() {
     let {
+      id,
+      ref,
       label,
       placeholder,
       type,
@@ -36,7 +40,9 @@ class FormInput extends React.Component {
       labelStyle,
       inputStyle,
       search,
+      error,
     } = this.props;
+
     return (
       <div
         className={css(styles.inputContainer, containerStyle && containerStyle)}
@@ -53,10 +59,12 @@ class FormInput extends React.Component {
           {required && <div className={css(styles.asterick)}>*</div>}
         </div>
         <input
+          id={id && id}
           type={type ? type : "text"}
           value={this.props.value}
           required={required ? required : false}
           placeholder={placeholder ? placeholder : ""}
+          ref={ref && ref}
           className={css(
             styles.input,
             inputStyle && inputStyle,
@@ -65,6 +73,7 @@ class FormInput extends React.Component {
           )}
           onChange={this.handleChange}
         />
+        {error && <p className={css(styles, text, styles.error)}>{error}</p>}
         {search && (
           <img
             src={"/static/icons/search.png"}
@@ -113,7 +122,7 @@ const styles = StyleSheet.create({
     },
   },
   asterick: {
-    color: "#4E53FF",
+    color: colors.BLUE(1),
   },
   placeholder: {
     color: "#8e8d9a",
@@ -136,6 +145,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 15,
     bottom: 10,
+  },
+  error: {
+    margin: 0,
+    padding: 0,
+    color: colors.RED(1),
+    fontSize: 12,
   },
 });
 
