@@ -1,31 +1,44 @@
 import * as actions from "./actions";
+import * as shims from "./shims";
 import API from "~/config/api";
 import { logFetchError } from "~/config/utils";
 
 export function fetchThread(paperId, threadId) {
   return async (dispatch) => {
-    const res = await fetch(
+    const response = await fetch(
       API.THREAD(paperId, threadId),
       API.GET_CONFIG()
     ).catch((err) => console.log("Fetch error caught in promise", err));
 
-    if (!res.ok) {
-      logFetchError(res);
+    if (!response.ok) {
+      logFetchError(response);
       return dispatch(actions.setThreadFailure());
     }
-    return dispatch(actions.setThread(res.json()));
+
+    const body = await response.json();
+    const thread = shims.thread(body);
+
+    return dispatch(actions.setThread(thread));
   };
 }
 
 export function fetchComments(threadId, page) {
-  return (dispatch) => {
-    const result = fetch();
+  return async (dispatch) => {
+    const response = await fetch(
+      API.THREAD_COMMENT(threadId, page),
+      API.GET_CONFIG()
+    ).catch((err) => console.log("Fetch error caught in promise", err));
 
-    if (result) {
-      dispatch(actions.setComments(result));
-    } else {
-      dispatch(actions.setCommentsFailure());
+    if (!response.ok) {
+      logFetchError(response);
+      return dispatch(actions.setCommentsFailure());
     }
+
+    const body = await response.json();
+    const comments = shims.comments(body);
+    comments.page = page;
+
+    return dispatch(actions.setComments(comments));
   };
 }
 
