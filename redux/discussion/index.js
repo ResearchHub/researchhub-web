@@ -1,27 +1,39 @@
 import * as actions from "./actions";
+import API from "~/config/api";
+import { logFetchError } from "~/config/utils";
 
-export const DiscussionActions = {
-  fetchThread: (paperId, threadId) => {
-    return (dispatch) => {
-      const result = fetch();
+export function fetchThread(paperId, threadId) {
+  return async (dispatch) => {
+    const res = await fetch(
+      API.THREAD(paperId, threadId),
+      API.GET_CONFIG()
+    ).catch((err) => console.log("Fetch error caught in promise", err));
 
-      if (result) {
-        dispatch(actions.setThread(result));
-      } else {
-        dispatch(actions.setThreadFailure());
-      }
-    };
-  },
+    if (!res.ok) {
+      logFetchError(res);
+      return dispatch(actions.setThreadFailure());
+    }
+    return dispatch(actions.setThread(res.json()));
+  };
+}
 
-  fetchComments: (threadId, page) => {
-    return (dispatch) => {
-      const result = fetch();
+export function fetchComments(threadId, page) {
+  return (dispatch) => {
+    const result = fetch();
 
-      if (result) {
-        dispatch(actions.setComments(result));
-      } else {
-        dispatch(actions.setCommentsFailure());
-      }
-    };
-  },
+    if (result) {
+      dispatch(actions.setComments(result));
+    } else {
+      dispatch(actions.setCommentsFailure());
+    }
+  };
+}
+
+const DiscussionActions = {
+  fetchThread,
+  fetchThreadPending: actions.setThreadPending,
+  fetchComments,
+  fetchCommentsPending: actions.setCommentsPending,
 };
+
+export default DiscussionActions;
