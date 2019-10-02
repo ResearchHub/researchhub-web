@@ -61,6 +61,7 @@ const TextEditor = (props) => {
 };
 
 TextEditor.propTypes = {
+  canEdit: PropTypes.bool,
   canCancel: PropTypes.bool,
   canSubmit: PropTypes.bool,
   cancelButtonStyles: PropTypes.object,
@@ -69,6 +70,7 @@ TextEditor.propTypes = {
   submitButtonText: PropTypes.string,
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
+  initialValue: PropTypes.object,
   placeholder: PropTypes.string,
   readOnly: PropTypes.bool,
 };
