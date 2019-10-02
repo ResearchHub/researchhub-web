@@ -1,7 +1,8 @@
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import DiscussionCard from "~/components/DiscussionCard";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
@@ -158,7 +159,9 @@ const Comment = (props) => {
             <DiscussionPostMetadata username={username} date={date} />
           </Fragment>
         }
-        info={text}
+        info={
+          text // replace with texteditor
+        }
         infoStyle={styles.commentInfo}
         action={"Reply"}
       />
@@ -172,13 +175,16 @@ const MoreButton = () => {
 };
 
 const CommentBox = () => {
-  function onSubmit(value) {
-    console.log("CommentBox", value);
+  const dispatch = useDispatch();
+
+  function onSubmit(comment) {
+    console.log(comment);
+    // dispatch(DiscussionActions.postComment(comment));
   }
 
   return (
     <div className={css(styles.commentBoxContainer)}>
-      <TextEditor submitButton={<SubmitButton onClick={onSubmit} />} />
+      <TextEditor canSubmit={true} onSubmit={onSubmit} />
     </div>
   );
 };
