@@ -49,6 +49,21 @@ export function fetchComments(paperId, threadId, page) {
   };
 }
 
+export function postComment(paperId, threadId, text) {
+  return async (dispatch) => {
+    const response = await fetch(
+      API.THREAD_COMMENT(paperId, threadId, text),
+      API.POST_CONFIG()
+    ).catch(handleCatch);
+
+    // return dispatchResult(
+    //   response,
+    //   dispatch(actions.setPostCommentFailure()),
+    //   dispatch(actions.setPostCommentSuccess())
+    // );
+  };
+}
+
 function handleCatch(err) {
   console.log(FETCH_ERROR_MESSAGE, err);
   return err;
