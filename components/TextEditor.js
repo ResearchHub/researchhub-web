@@ -4,7 +4,7 @@ import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 
 const TextEditor = (props) => {
-  let { placeholder } = props;
+  let { placeholder, submitButton } = props;
 
   if (!placeholder) {
     placeholder = "Enter some text...";
@@ -20,7 +20,7 @@ const TextEditor = (props) => {
   return (
     <Fragment>
       <Editor value={value} onChange={(change) => setValue(change.value)} />
-      {props.submitButton}
+      {submitButton}
     </Fragment>
   );
 };
