@@ -13,6 +13,7 @@
     "aphrodite": "^2.4.0",
     "draft-js": "0.10.0",
     "immutable": "^4.0.0-rc.12",
+    "is-hotkey": "^0.1.6",
     "isomorphic-unfetch": "^3.0.0",
     "javascript-time-ago": "^2.0.2",
     "katex": "^0.11.1",
