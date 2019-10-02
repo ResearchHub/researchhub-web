@@ -23,7 +23,7 @@ const DiscussionThreadPage = (props) => {
   let username = "";
   let createdDate = "";
 
-  if (discussion) {
+  if (discussion.success) {
     title = discussion.title;
     body = discussion.text;
     comments = discussion.commentPage.comments;
