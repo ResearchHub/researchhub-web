@@ -5,8 +5,7 @@ import { Editor } from "slate-react";
 import Plain from "slate-plain-serializer";
 
 const TextEditor = (props) => {
-  let {
-    placeholder,
+  const {
     canCancel,
     canSubmit,
     cancelButtonStyles,
@@ -15,13 +14,13 @@ const TextEditor = (props) => {
     submitButtonText,
     onCancel,
     onSubmit,
+    placeholder,
+    readOnly,
   } = props;
 
-  if (!placeholder) {
-    placeholder = "Enter some text...";
-  }
+  defaultPlaceholder = "Enter some text...";
 
-  const initialValue = Plain.deserialize(placeholder);
+  const initialValue = Plain.deserialize(placeholder || defaultPlaceholder);
   const [value, setValue] = useState(initialValue);
 
   function cancel() {
@@ -36,7 +35,11 @@ const TextEditor = (props) => {
 
   return (
     <Fragment>
-      <Editor value={value} onChange={(change) => setValue(change.value)} />
+      <Editor
+        value={value}
+        readOnly={readOnly || false}
+        onChange={(change) => setValue(change.value)}
+      />
       <div className={css(styles.buttonContainer)}>
         {canCancel && (
           <button className={css(cancelButtonStyles)} onClick={cancel}>
@@ -54,7 +57,6 @@ const TextEditor = (props) => {
 };
 
 TextEditor.propTypes = {
-  placeholder: PropTypes.string,
   canCancel: PropTypes.bool,
   canSubmit: PropTypes.bool,
   cancelButtonStyles: PropTypes.object,
@@ -63,6 +65,8 @@ TextEditor.propTypes = {
   submitButtonText: PropTypes.string,
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
+  placeholder: PropTypes.string,
+  readOnly: PropTypes.bool,
 };
 
 const styles = StyleSheet.create({
