@@ -27,9 +27,11 @@ export const comments = (page) => {
 function transformComments(comments) {
   return comments.map((comment) => {
     return {
+      id: comment.id,
       text: comment.text,
       thread: comment.parent,
-      createdBy: comment.created_by,
+      createdBy: transformUser(comment.created_by),
+      createdDate: comment.created_date,
     };
   });
 }
