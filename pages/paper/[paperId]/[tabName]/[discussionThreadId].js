@@ -9,7 +9,7 @@ import VoteWidget from "~/components/VoteWidget";
 
 import DiscussionActions from "~/redux/discussion";
 
-import colors from "~/config/themes/colors";
+import colors, { discussionPageColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { isEmpty } from "~/config/utils";
 
@@ -30,6 +30,21 @@ const DiscussionThreadPage = (props) => {
     username = createUsername(discussion);
   }
 
+  function renderComments(comments) {
+    return comments.map((c, i) => {
+      let divider = <div className={css(styles.divider)} />;
+      if (i === 0) {
+        divider = null;
+      }
+      return (
+        <Fragment>
+          {divider}
+          <Comment key={c.id} data={c} />
+        </Fragment>
+      );
+    });
+  }
+
   return (
     <div>
       <div className={css(styles.threadContainer)}>
@@ -40,18 +55,15 @@ const DiscussionThreadPage = (props) => {
           date={createdDate}
         />
       </div>
+      <div className={css(styles.divider)} />
       <div className={css(styles.contentContainer)}>
         {renderComments(comments)}
+        <MoreButton />
+        <CommentBox />
       </div>
     </div>
   );
 };
-
-function renderComments(comments) {
-  return comments.map((c) => {
-    return <Comment key={c.id} data={c} />;
-  });
-}
 
 DiscussionThreadPage.getInitialProps = async ({ isServer, store, query }) => {
   let { discussion } = store.getState();
@@ -73,6 +85,29 @@ DiscussionThreadPage.getInitialProps = async ({ isServer, store, query }) => {
   }
 
   return { discussion };
+};
+
+const BackButton = () => {
+  const message = "Go back to all discussions";
+  const router = useRouter();
+  const url = getBackUrl(router.asPath);
+
+  function getBackUrl(url) {
+    let parts = url.split("/");
+    parts.pop();
+    parts = parts.join("/");
+    return parts;
+  }
+
+  return (
+    <div className={css(styles.backButtonContainer)}>
+      <Link href={"/paper/[paperId]/discussion"} as={url}>
+        <a className={css(styles.backButton)}>
+          {icons.longArrowLeft} {message}
+        </a>
+      </Link>
+    </div>
+  );
 };
 
 const Thread = (props) => {
@@ -97,29 +132,6 @@ const Thread = (props) => {
   );
 };
 
-const BackButton = () => {
-  const message = "Go back to all discussions";
-  const router = useRouter();
-  const url = getBackUrl(router.asPath);
-
-  return (
-    <div className={css(styles.backButtonContainer)}>
-      <Link href={"/paper/[paperId]/discussion"} as={url}>
-        <a className={css(styles.backButton)}>
-          {icons.longArrowLeft} {message}
-        </a>
-      </Link>
-    </div>
-  );
-};
-
-function getBackUrl(url) {
-  let parts = url.split("/");
-  parts.pop();
-  parts = parts.join("/");
-  return parts;
-}
-
 const ShareButton = () => {
   return <div className={css(styles.shareContainer)}>{icons.share}</div>;
 };
@@ -137,17 +149,29 @@ const Comment = (props) => {
   }
 
   return (
-    <DiscussionCard
-      top={
-        <Fragment>
-          <VoteWidget score={0} />
-          <DiscussionPostMetadata username={username} date={date} />
-        </Fragment>
-      }
-      info={text}
-      action={"Reply"}
-    />
+    <div className={css(styles.commentContainer)}>
+      <DiscussionCard
+        top={
+          <Fragment>
+            <VoteWidget score={0} />
+            <DiscussionPostMetadata username={username} date={date} />
+          </Fragment>
+        }
+        info={text}
+        infoStyle={styles.commentInfo}
+        action={"Reply"}
+      />
+    </div>
   );
+};
+
+const MoreButton = () => {
+  // TODO: Fetch more comments
+  return <div>Show More Comments</div>;
+};
+
+const CommentBox = () => {
+  return <div></div>;
 };
 
 function createUsername({ createdBy }) {
@@ -170,6 +194,7 @@ const styles = StyleSheet.create({
   },
   threadInfo: {
     paddingLeft: "80px",
+    color: colors.BLACK(0.8),
   },
   threadTitle: {
     width: "100%",
@@ -178,6 +203,10 @@ const styles = StyleSheet.create({
     width: "70%",
     padding: "30px 0px",
     margin: "auto",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   shareContainer: {
     background: colors.LIGHT_GREY(),
@@ -189,6 +218,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+  },
+  commentContainer: {
+    padding: "30px 30px 36px 30px",
+    width: "100%",
+  },
+  commentInfo: {
+    color: colors.BLACK(0.8),
+  },
+  divider: {
+    borderBottom: "1px solid",
+    display: "block",
+    borderColor: discussionPageColors.DIVIDER,
   },
 });
 
