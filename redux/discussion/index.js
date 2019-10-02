@@ -49,10 +49,6 @@ export function fetchComments(paperId, threadId, page) {
   };
 }
 
-
-  };
-}
-
 function handleCatch(err) {
   console.log(FETCH_ERROR_MESSAGE, err);
   return err;
