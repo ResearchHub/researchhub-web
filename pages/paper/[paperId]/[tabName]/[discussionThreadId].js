@@ -38,7 +38,7 @@ const DiscussionThreadPage = (props) => {
         divider = null;
       }
       return (
-        <Fragment>
+        <Fragment key={c.id}>
           {divider}
           <Comment key={c.id} data={c} />
         </Fragment>
