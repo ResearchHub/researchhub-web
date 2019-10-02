@@ -1,8 +1,10 @@
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { Fragment, useState } from "react";
-import { Editor } from "slate-react";
 import Plain from "slate-plain-serializer";
+
+import ReadOnlyEdtior from "./ReadOnlyEditor";
+import RichTextEditor from "./RichTextEditor";
 
 const TextEditor = (props) => {
   const {
@@ -14,14 +16,17 @@ const TextEditor = (props) => {
     submitButtonText,
     onCancel,
     onSubmit,
+    initialValue,
     placeholder,
     readOnly,
   } = props;
 
   const defaultPlaceholder = "Enter some text...";
+  const defaultInitialValue = Plain.deserialize(
+    placeholder || defaultPlaceholder
+  );
 
-  const initialValue = Plain.deserialize(placeholder || defaultPlaceholder);
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState(initialValue || defaultInitialValue);
 
   function cancel() {
     onCancel && onCancel();
@@ -33,13 +38,11 @@ const TextEditor = (props) => {
     console.log(value);
   }
 
+  const Editor = readOnly ? ReadOnlyEdtior : RichTextEditor;
+
   return (
     <Fragment>
-      <Editor
-        value={value}
-        readOnly={readOnly || false}
-        onChange={(change) => setValue(change.value)}
-      />
+      <Editor />
       <div className={css(styles.buttonContainer)}>
         {canCancel && (
           <button className={css(cancelButtonStyles)} onClick={cancel}>
