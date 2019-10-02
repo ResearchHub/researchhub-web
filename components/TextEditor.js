@@ -18,7 +18,7 @@ const TextEditor = (props) => {
     readOnly,
   } = props;
 
-  defaultPlaceholder = "Enter some text...";
+  const defaultPlaceholder = "Enter some text...";
 
   const initialValue = Plain.deserialize(placeholder || defaultPlaceholder);
   const [value, setValue] = useState(initialValue);
