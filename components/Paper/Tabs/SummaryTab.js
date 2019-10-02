@@ -66,12 +66,26 @@ class SummaryTab extends React.Component {
   };
 
   componentDidMount() {
-    if (this.props.paper.summary) {
-      let contentState = convertFromRaw(this.props.paper.summary.summary);
-      let editorState = EditorState.createWithContent(contentState);
-      this.setState({
-        editorState,
-      });
+    /*
+
+    TODO: Let's refactor this.
+
+    Foremost this needs a shim to accomodate backend api changes.
+
+    It may be best to move all of this fetching logic to redux and
+    keep track of (at least) fetch failure/success and (probably) the summary
+    content in global state.
+
+    */
+    const { paper } = this.props;
+    if (paper.summary) {
+      if (paper.summary.summary) {
+        let contentState = convertFromRaw(paper.summary.summary);
+        let editorState = EditorState.createWithContent(contentState);
+        this.setState({
+          editorState,
+        });
+      }
     }
   }
 
