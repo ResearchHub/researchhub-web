@@ -11,24 +11,33 @@ import DiscussionActions from "~/redux/discussion";
 
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { doesNotExist, isEmpty } from "~/config/utils";
+import { isEmpty } from "~/config/utils";
 
-const DiscussionThreadPage = () => {
-  const comments = [
-    { key: "key", data: "data", text: "a comment" },
-    {
-      key: "key2",
-      data: "data",
-      text: "a much longer comment with a lot of stuff",
-    },
-  ];
+const DiscussionThreadPage = (props) => {
+  const { discussion } = props;
+
+  let title = "";
+  let body = "";
+  let comments = [];
+  let username = "";
+  let createdDate = "";
+
+  if (discussion) {
+    title = discussion.title;
+    body = discussion.text;
+    comments = discussion.commentPage.comments;
+    createdDate = discussion.createdDate;
+    username = createUsername(discussion);
+  }
 
   return (
     <div>
       <div className={css(styles.threadContainer)}>
         <Thread
-          title={"This is the thread title"}
-          body={"This is the body of the thread"}
+          title={title}
+          body={body}
+          username={username}
+          date={createdDate}
         />
       </div>
       <div className={css(styles.contentContainer)}>
@@ -38,33 +47,37 @@ const DiscussionThreadPage = () => {
   );
 };
 
+function renderComments(comments) {
+  return comments.map((c) => {
+    return <Comment key={c.id} data={c} />;
+  });
+}
+
 DiscussionThreadPage.getInitialProps = async ({ isServer, store, query }) => {
   let { discussion } = store.getState();
 
-  if (!discussion.id) {
+  if (isEmpty(discussion)) {
     const { paperId, discussionThreadId } = query;
     const page = 1;
+
     store.dispatch(DiscussionActions.fetchThreadPending());
     store.dispatch(DiscussionActions.fetchCommentsPending());
     await store.dispatch(
       DiscussionActions.fetchThread(paperId, discussionThreadId)
     );
     await store.dispatch(
-      DiscussionActions.fetchComments(discussionThreadId, page)
+      DiscussionActions.fetchComments(paperId, discussionThreadId, page)
     );
+
+    discussion = store.getState().discussion;
   }
 
-  return { isServer };
+  return { discussion };
 };
 
-function renderComments(comments) {
-  return comments.map((c) => {
-    return <Comment key={c.key} data={c} />;
-  });
-}
-
 const Thread = (props) => {
-  const { title, body } = props;
+  const { title, body, username, date } = props;
+
   return (
     <div>
       <BackButton />
@@ -78,22 +91,17 @@ const Thread = (props) => {
         }
         info={<div>{body}</div>}
         infoStyle={styles.threadInfo}
-        action={
-          <DiscussionPostMetadata
-            username={"Cindy Loo Hoo"}
-            date={Date.now()}
-          />
-        }
+        action={<DiscussionPostMetadata username={username} date={date} />}
       />
     </div>
   );
 };
 
 const BackButton = () => {
+  const message = "Go back to all discussions";
   const router = useRouter();
   const url = getBackUrl(router.asPath);
 
-  const message = "Go back to all discussions";
   return (
     <div className={css(styles.backButtonContainer)}>
       <Link href={"/paper/[paperId]/discussion"} as={url}>
@@ -117,12 +125,15 @@ const ShareButton = () => {
 };
 
 const Comment = (props) => {
+  let date = "";
   let text = "";
+  let username = "";
 
   const { data } = props;
   if (data && !isEmpty(data)) {
-    // If data exists, we assume it has all of the expected fields.
+    date = data.createdDate;
     text = data.text;
+    username = createUsername(data);
   }
 
   return (
@@ -130,10 +141,7 @@ const Comment = (props) => {
       top={
         <Fragment>
           <VoteWidget score={0} />
-          <DiscussionPostMetadata
-            username={"Severus Snape"}
-            date={Date.now()}
-          />
+          <DiscussionPostMetadata username={username} date={date} />
         </Fragment>
       }
       info={text}
@@ -141,6 +149,11 @@ const Comment = (props) => {
     />
   );
 };
+
+function createUsername({ createdBy }) {
+  const { firstName, lastName } = createdBy;
+  return `${firstName} ${lastName}`;
+}
 
 const styles = StyleSheet.create({
   backButtonContainer: {
