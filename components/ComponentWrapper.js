@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
   componentWrapper: {
     margin: "auto",
     width: 600,
+    boxSizing: "border-box",
 
     "@media only screen and (min-width: 300px)": {
       width: "100%",
@@ -20,11 +21,17 @@ const styles = StyleSheet.create({
     },
 
     "@media only screen and (min-width: 768px)": {
-      width: 700,
+      width: 680,
+      paddingRight: 0,
+      paddingLeft: 0,
     },
 
     "@media only screen and (min-width: 1280px)": {
       width: 900,
+    },
+
+    "@media only screen and (min-width: 1480px)": {
+      width: 1150,
     },
   },
 });

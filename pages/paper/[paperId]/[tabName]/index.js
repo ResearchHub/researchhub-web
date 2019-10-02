@@ -11,7 +11,6 @@ import PaperTabBar from "~/components/PaperTabBar";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
-import PageWrapper from "~/components/PageWrapper";
 import ComponentWrapper from "~/components/ComponentWrapper";
 
 // Redux
@@ -59,27 +58,25 @@ const Paper = (props) => {
 
   // TODO: Display different tab content based on tabName
   return (
-    <PageWrapper>
-      <div className={css(styles.container)}>
-        <ComponentWrapper>
-          <div className={css(styles.header)}>
-            <div className={css(styles.title)}>{paper && paper.title}</div>
-            <div className={css(styles.authors)}>{renderAuthors()}</div>
-            <div className={css(styles.infoSection)}>
-              <div className={css(styles.info)}>
-                Published{" "}
-                {moment(paper && paper.paper_publish_date).format(
-                  "DD MMMM, YYYY"
-                )}
-              </div>
-              <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
+    <div className={css(styles.container)}>
+      <ComponentWrapper>
+        <div className={css(styles.header)}>
+          <div className={css(styles.title)}>{paper && paper.title}</div>
+          <div className={css(styles.authors)}>{renderAuthors()}</div>
+          <div className={css(styles.infoSection)}>
+            <div className={css(styles.info)}>
+              Published{" "}
+              {moment(paper && paper.paper_publish_date).format(
+                "DD MMMM, YYYY"
+              )}
             </div>
+            <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
           </div>
-        </ComponentWrapper>
-        <PaperTabBar baseUrl={paperId} selectedTab={tabName} />
-        <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
-      </div>
-    </PageWrapper>
+        </div>
+      </ComponentWrapper>
+      <PaperTabBar baseUrl={paperId} selectedTab={tabName} />
+      <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
+    </div>
   );
 };
 
