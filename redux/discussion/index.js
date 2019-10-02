@@ -22,10 +22,10 @@ export function fetchThread(paperId, threadId) {
   };
 }
 
-export function fetchComments(threadId, page) {
+export function fetchComments(paperId, threadId, page) {
   return async (dispatch) => {
     const response = await fetch(
-      API.THREAD_COMMENT(threadId, page),
+      API.THREAD_COMMENT(paperId, threadId, page),
       API.GET_CONFIG()
     ).catch((err) => console.log("Fetch error caught in promise", err));
 
