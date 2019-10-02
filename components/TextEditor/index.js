@@ -8,6 +8,7 @@ import RichTextEditor from "./RichTextEditor";
 
 const TextEditor = (props) => {
   const {
+    canEdit,
     canCancel,
     canSubmit,
     cancelButtonStyles,
@@ -38,11 +39,11 @@ const TextEditor = (props) => {
     console.log(value);
   }
 
-  const Editor = readOnly ? ReadOnlyEdtior : RichTextEditor;
+  const Editor = canEdit ? RichTextEditor : ReadOnlyEdtior;
 
   return (
     <Fragment>
-      <Editor />
+      <Editor readOnly={readOnly || false} />
       <div className={css(styles.buttonContainer)}>
         {canCancel && (
           <button className={css(cancelButtonStyles)} onClick={cancel}>
