@@ -5,6 +5,7 @@ import { Fragment } from "react";
 
 import DiscussionCard from "~/components/DiscussionCard";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
+import TextEditor from "~/components/TextEditor";
 import VoteWidget from "~/components/VoteWidget";
 
 import DiscussionActions from "~/redux/discussion";
@@ -171,7 +172,20 @@ const MoreButton = () => {
 };
 
 const CommentBox = () => {
-  return <div></div>;
+  function onSubmit(value) {
+    console.log("CommentBox", value);
+  }
+
+  return (
+    <div className={css(styles.commentBoxContainer)}>
+      <TextEditor submitButton={<SubmitButton onClick={onSubmit} />} />
+    </div>
+  );
+};
+
+const SubmitButton = (props) => {
+  const { onClick } = props;
+  return <button onClick={onClick}>Submit</button>;
 };
 
 function createUsername({ createdBy }) {
@@ -225,6 +239,9 @@ const styles = StyleSheet.create({
   },
   commentInfo: {
     color: colors.BLACK(0.8),
+  },
+  commentBoxContainer: {
+    width: "100%",
   },
   divider: {
     borderBottom: "1px solid",
