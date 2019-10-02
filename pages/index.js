@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Router from "next/router";
-import "isomorphic-unfetch";
 
 import { StyleSheet, css } from "aphrodite";
 
