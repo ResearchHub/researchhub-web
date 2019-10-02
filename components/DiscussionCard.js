@@ -31,6 +31,7 @@ DiscussionCard.propTypes = {
 
 const styles = StyleSheet.create({
   topContainer: {
+    color: colors.BLACK(),
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
