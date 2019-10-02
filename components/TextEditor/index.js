@@ -31,12 +31,10 @@ const TextEditor = (props) => {
 
   function cancel() {
     onCancel && onCancel();
-    console.log("cancel clicked");
   }
 
   function submit() {
     onSubmit && onSubmit(value);
-    console.log(value);
   }
 
   const Editor = canEdit ? RichTextEditor : ReadOnlyEdtior;
