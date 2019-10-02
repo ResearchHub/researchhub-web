@@ -3,14 +3,19 @@ import { StyleSheet, css } from "aphrodite";
 import { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 
+// Components
+import ComponentWrapper from "./ComponentWrapper";
+
 const PaperTabBar = (props) => {
   const selectedTab = props.selectedTab;
   const { baseUrl } = props;
   return (
     <div className={css(styles.container)}>
-      <div className={css(styles.tabContainer)}>
-        {tabs.map((link) => renderTabs(link, selectedTab, baseUrl))}
-      </div>
+      <ComponentWrapper>
+        <div className={css(styles.tabContainer)}>
+          {tabs.map((link) => renderTabs(link, selectedTab, baseUrl))}
+        </div>
+      </ComponentWrapper>
     </div>
   );
 };
@@ -60,7 +65,6 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     minWidth: 200,
-    maxWidth: "70%",
   },
   tab: {
     color: paperTabColors.FONT,

@@ -21,6 +21,12 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    PROPOSE_EDIT: ({}) => {
+      let url = BASE_URL + `summary/propose_edit/`;
+
+      return url;
+    },
+
     PAPER: ({ paperId }) => {
       let url = BASE_URL + `paper/`;
 

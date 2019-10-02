@@ -4,6 +4,9 @@ import { StyleSheet, css } from "aphrodite";
 import { EditorState, convertFromRaw } from "draft-js";
 import dynamic from "next/dynamic";
 
+// Components
+import ComponentWrapper from "~/components/ComponentWrapper";
+
 // Config
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -30,8 +33,12 @@ class SummaryTab extends React.Component {
   };
 
   save = ({ raw }) => {
-    let param = { summary: raw, paper: this.props.paperId };
-    fetch(API.SUMMARY({}), API.POST_CONFIG(param))
+    let param = {
+      summary: raw,
+      paper: this.props.paperId,
+      previousSummaryId: this.props.paper.summary.id,
+    };
+    fetch(API.PROPOSE_EDIT({}), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {});
@@ -100,25 +107,27 @@ class SummaryTab extends React.Component {
   };
   render() {
     return (
-      <div className={css(styles.container)}>
-        <div className={css(styles.summaryActions)}>
-          <div className={css(styles.action)}>View Edit History</div>
-          <div className={css(styles.action)} onClick={this.edit}>
-            <div className={css(styles.pencilIcon)}>
-              <i className="fas fa-pencil"></i>
+      <ComponentWrapper>
+        <div className={css(styles.container)}>
+          <div className={css(styles.summaryActions)}>
+            <div className={css(styles.action)}>View Edit History</div>
+            <div className={css(styles.action)} onClick={this.edit}>
+              <div className={css(styles.pencilIcon)}>
+                <i className="fas fa-pencil"></i>
+              </div>
+              Edit Summary
             </div>
-            Edit Summary
           </div>
+          <DraftEditor
+            paperId={this.props.paperId}
+            readOnly={this.state.readOnly}
+            editorState={this.state.editorState}
+            onEditorStateChange={this.onEditorStateChange}
+            save={this.save}
+            cancel={this.cancel}
+          />
         </div>
-        <DraftEditor
-          paperId={this.props.paperId}
-          readOnly={this.state.readOnly}
-          editorState={this.state.editorState}
-          onEditorStateChange={this.onEditorStateChange}
-          save={this.save}
-          cancel={this.cancel}
-        />
-      </div>
+      </ComponentWrapper>
     );
   }
 }
@@ -126,7 +135,6 @@ class SummaryTab extends React.Component {
 var styles = StyleSheet.create({
   container: {
     width: "100%",
-    padding: "30px 70px",
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
