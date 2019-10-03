@@ -1,14 +1,19 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import Router, { withRouter } from "next/router";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { EditorState, convertFromRaw } from "draft-js";
 import dynamic from "next/dynamic";
 import { Value } from "slate";
+import moment from "moment";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import TextEditor from "~/components/TextEditor";
+
+// Redux
+import { PaperActions } from "~/redux/paper";
 
 // Config
 import API from "../../../config/api";
@@ -22,6 +27,12 @@ const DraftEditor = dynamic(() => import("../../DraftEditor/DraftEditor"), {
 const PDFViewer = dynamic(import("../../Paper/Tabs/PaperTab"), { ssr: false });
 
 class SummaryTab extends React.Component {
+  static async getInitialProps({ store, isServer, query }) {
+    const { paper } = store.getState();
+
+    return { isServer, paper };
+  }
+
   constructor(props) {
     super(props);
 
@@ -94,6 +105,27 @@ class SummaryTab extends React.Component {
     });
   };
 
+  viewEditHistory = async () => {
+    let { getEditHistory, paperId } = this.props;
+    let param = {
+      paper: paperId,
+    };
+    getEditHistory(paperId).then(() => {
+      this.setState({
+        viewEditHistory: true,
+      });
+    });
+  };
+
+  changeEditView = (selectedIndex, summary) => {
+    let contentState = convertFromRaw(summary);
+    let editorState = EditorState.createWithContent(contentState);
+    this.setState({
+      selectedEdit: selectedIndex,
+      editorState,
+    });
+  };
+
   componentDidMount() {
     /*
 
@@ -118,7 +150,7 @@ class SummaryTab extends React.Component {
       }
     }
   }
-
+  
   // componentDidUpdate = (prevProps) => {
   //   if (prevProps.paper.summary !== this.props.paper.summary) {
   //     let contentState = convertFromRaw(this.props.paper.summary.summary);
@@ -222,9 +254,8 @@ var styles = StyleSheet.create({
   container: {
     width: "100%",
     display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-end",
     boxSizing: "border-box",
+    position: "relative",
   },
   noSummaryContainer: {
     alignItems: "center",
@@ -287,6 +318,44 @@ var styles = StyleSheet.create({
   pencilIcon: {
     marginRight: 5,
   },
+  draftContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+  },
+  editHistoryContainer: {
+    position: "absolute",
+    right: -250,
+    background: "#F9F9FC",
+  },
+  selectedEdit: {
+    background: "#F0F1F7",
+  },
+  editHistoryCard: {
+    width: 200,
+    padding: "5px 10px",
+    cursor: "pointer",
+  },
+  date: {
+    fontSize: 14,
+    fontWeight: 500,
+  },
+  user: {
+    fontSize: 12,
+    opacity: 0.5,
+  },
+  revisionTitle: {
+    padding: 10,
+  },
 });
 
-export default withRouter(SummaryTab);
+const mapDispatchToProps = {
+  getEditHistory: PaperActions.getEditHistory,
+};
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps
+  )(SummaryTab)
+);
