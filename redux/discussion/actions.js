@@ -37,3 +37,22 @@ export function setCommentsFailure() {
     payload: { doneFetching: true, success: false },
   };
 }
+
+export function setPostCommentPending() {
+  return {
+    type: types.POST_COMMENT_PENDING,
+    payload: { donePosting: false },
+  };
+}
+export function setPostCommentFailure() {
+  return {
+    type: types.POST_COMMENT_FAILURE,
+    payload: { donePosting: true, success: false },
+  };
+}
+export function setPostCommentSuccess() {
+  return {
+    type: types.POST_COMMENT_SUCCESS,
+    payload: { donePosting: true, success: true },
+  };
+}

@@ -4,3 +4,6 @@ export const FETCH_THREAD_SUCCESS = "@@discussion/FETCH_THREAD_SUCCESS";
 export const FETCH_COMMENTS_PENDING = "@@discussion/FETCH_COMMENTS_PENDING";
 export const FETCH_COMMENTS_FAILURE = "@@discussion/FETCH_COMMENTS_FAILURE";
 export const FETCH_COMMENTS_SUCCESS = "@@discussion/FETCH_COMMENTS_SUCCESS";
+export const POST_COMMENT_PENDING = "@@discussion/POST_COMMENT_PENDING";
+export const POST_COMMENT_FAILURE = "@@discussion/POST_COMMENT_FAILURE";
+export const POST_COMMENT_SUCCESS = "@@discussion/POST_COMMENT_SUCCESS";
