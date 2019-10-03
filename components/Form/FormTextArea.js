@@ -14,6 +14,7 @@ const FormTextArea = (props) => {
     containerStyle,
     labelStyle,
     inputStyle,
+    onChange,
   } = props;
 
   return (
@@ -33,9 +34,11 @@ const FormTextArea = (props) => {
         {required && <div className={css(styles.asterick)}>*</div>}
       </div>
       <TextareaAutosize
+        className={css(styles.input, styles.text)}
         required={required && required}
         placeholder={placeholder && placeholder}
         style={inputStyle && inputStyle}
+        onChange={(e) => onChange && onChange(id, e.target.value)}
       />
     </div>
   );
@@ -43,8 +46,8 @@ const FormTextArea = (props) => {
 
 const styles = StyleSheet.create({
   inputContainer: {
-    height: 75,
-    width: 525,
+    // height: 75,
+    width: 600,
     display: "flex",
     flexDirection: "column",
     alignItems: "space-between",
@@ -61,8 +64,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   input: {
-    height: 50,
-    width: 495,
+    minHeight: 130,
+    width: 570,
     display: "flex",
     alignItems: "center",
     border: "1px solid #E8E8F2",

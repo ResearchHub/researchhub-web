@@ -472,11 +472,9 @@ class PaperUploadInfo extends React.Component {
                 id={"title"}
                 onChange={this.handleDiscussionInputChange}
               />
-              <FormInput
+              <FormTextArea
                 label={"Question"}
-                placeholder="Leave a question or a comment"
-                containerStyle={styles.container}
-                inputStyle={styles.inputStyle}
+                placeholder="Leave a question or a comment"
                 value={discussion.question}
                 id={"question"}
                 onChange={this.handleDiscussionInputChange}
