@@ -1,0 +1,171 @@
+{
+  "object": "value",
+  "document": {
+    "object": "document",
+    "data": {},
+    "nodes": [
+      {
+        "object": "block",
+        "type": "heading-one",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "Summary",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "What is the paper trying to solve?",
+            "marks": [
+              {
+                "object": "mark",
+                "type": "italic",
+                "data": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "",
+            "marks": [
+              {
+                "object": "mark",
+                "type": "italic",
+                "data": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "",
+            "marks": [
+              {
+                "object": "mark",
+                "type": "italic",
+                "data": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "heading-one",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "Results",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "What conclusion did the paper come to, how did it get there?",
+            "marks": [
+              {
+                "object": "mark",
+                "type": "italic",
+                "data": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "",
+            "marks": [
+              {
+                "object": "mark",
+                "type": "italic",
+                "data": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "",
+            "marks": [
+              {
+                "object": "mark",
+                "type": "italic",
+                "data": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "heading-one",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "Significance",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "How does the paper help our previous understanding and where do we go from here? Is there any impact on the domain, or certain industries?",
+            "marks": [
+              {
+                "object": "mark",
+                "type": "italic",
+                "data": {}
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

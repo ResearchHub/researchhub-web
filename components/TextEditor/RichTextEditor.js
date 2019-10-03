@@ -13,26 +13,11 @@ import { Button, Icon, ToolBar } from "./ToolBar";
 import { textEditorIcons } from "~/config/themes/icons";
 import "./stylesheets/RichTextEditor.css";
 
-const defaultInitialValue = Value.fromJSON({
-  document: {
-    nodes: [
-      {
-        object: "block",
-        type: "paragraph",
-        nodes: [
-          {
-            object: "text",
-            leaves: [
-              {
-                text: "",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-});
+// Scaffold
+import summaryScaffold from "./summaryScaffold.json";
+import colors from "../../config/themes/colors";
+
+const defaultInitialValue = Value.fromJSON(summaryScaffold);
 
 /**
  * Define the default node type.
@@ -112,36 +97,78 @@ class RichTextEditor extends React.Component {
   render() {
     return (
       <div className={css(styles.editor)}>
-        <Editor
-          readOnly={this.props.readOnly}
-          spellCheck
-          autoFocus
-          placeholder="What are your thoughts?"
-          ref={this.ref}
-          value={this.state.value}
-          className={css(styles.editSection)}
-          onChange={this.onChange}
-          onKeyDown={this.onKeyDown}
-          renderBlock={this.renderBlock}
-          renderMark={this.renderMark}
-        />
-        <ToolBar cancel={this.props.cancel} submit={this.props.submit}>
-          {this.renderMarkButton("bold", textEditorIcons.bold, true)}
-          {this.renderMarkButton("italic", textEditorIcons.italic)}
-          {this.renderMarkButton("underlined", textEditorIcons.underline)}
-          {this.renderMarkButton("code", textEditorIcons.code)}
-          {this.renderBlockButton("heading-one", textEditorIcons.h1)}
-          {this.renderBlockButton("heading-two", textEditorIcons.h2)}
-          {this.renderBlockButton("block-quote", textEditorIcons.quote)}
-          {this.renderBlockButton(
-            "numbered-list",
-            textEditorIcons.numberedList
-          )}
-          {this.renderBlockButton(
-            "bulleted-list",
-            textEditorIcons.bulletedList
-          )}
-        </ToolBar>
+        {this.props.commentEditor ? (
+          <div className={css(styles.commentEditor)}>
+            <Editor
+              readOnly={this.props.readOnly}
+              spellCheck
+              autoFocus
+              commentEditor={this.props.commentEditor}
+              placeholder="What are your thoughts?"
+              ref={this.ref}
+              value={this.state.value}
+              className={css(styles.editSection)}
+              onChange={this.onChange}
+              onKeyDown={this.onKeyDown}
+              renderBlock={this.renderBlock}
+              renderMark={this.renderMark}
+            />
+            <ToolBar cancel={this.props.cancel} submit={this.props.submit}>
+              {this.renderMarkButton("bold", textEditorIcons.bold, true)}
+              {this.renderMarkButton("italic", textEditorIcons.italic)}
+              {this.renderMarkButton("underlined", textEditorIcons.underline)}
+              {this.renderMarkButton("code", textEditorIcons.code)}
+              {this.renderBlockButton("heading-one", textEditorIcons.h1)}
+              {this.renderBlockButton("heading-two", textEditorIcons.h2)}
+              {this.renderBlockButton("block-quote", textEditorIcons.quote)}
+              {this.renderBlockButton(
+                "numbered-list",
+                textEditorIcons.numberedList
+              )}
+              {this.renderBlockButton(
+                "bulleted-list",
+                textEditorIcons.bulletedList
+              )}
+            </ToolBar>
+          </div>
+        ) : (
+          <div className={css(styles.summaryEditor)}>
+            <ToolBar
+              cancel={this.props.cancel}
+              submit={this.props.submit}
+              summaryEditor={true}
+            >
+              {this.renderMarkButton("bold", textEditorIcons.bold, true)}
+              {this.renderMarkButton("italic", textEditorIcons.italic)}
+              {this.renderMarkButton("underlined", textEditorIcons.underline)}
+              {this.renderMarkButton("code", textEditorIcons.code)}
+              {this.renderBlockButton("heading-one", textEditorIcons.h1)}
+              {this.renderBlockButton("heading-two", textEditorIcons.h2)}
+              {this.renderBlockButton("block-quote", textEditorIcons.quote)}
+              {this.renderBlockButton(
+                "numbered-list",
+                textEditorIcons.numberedList
+              )}
+              {this.renderBlockButton(
+                "bulleted-list",
+                textEditorIcons.bulletedList
+              )}
+            </ToolBar>
+            <Editor
+              readOnly={this.props.readOnly}
+              spellCheck
+              autoFocus
+              commentEditor={this.props.commentEditor}
+              ref={this.ref}
+              value={this.state.value}
+              className={css(styles.editSection)}
+              onChange={this.onChange}
+              onKeyDown={this.onKeyDown}
+              renderBlock={this.renderBlock}
+              renderMark={this.renderMark}
+            />
+          </div>
+        )}
       </div>
     );
   }
@@ -260,6 +287,8 @@ class RichTextEditor extends React.Component {
    */
 
   onChange = ({ value }) => {
+    console.log(value.toJSON());
+    window.value = value;
     this.setState({ value });
     this.props.onChange(value);
   };
@@ -360,6 +389,12 @@ class RichTextEditor extends React.Component {
 
 const styles = StyleSheet.create({
   editor: {
+    width: "100%",
+  },
+  summaryEditor: {
+    width: "100%",
+  },
+  commentEditor: {
     background: "#FBFBFD",
     border: "1px solid #E7E7E7",
     borderRadius: 4,
@@ -367,6 +402,28 @@ const styles = StyleSheet.create({
   editSection: {
     padding: 16,
     minHeight: 122,
+  },
+  button: {
+    width: 180,
+    height: 55,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "none",
+    borderRadius: 8,
+    fontSize: 16,
+    outline: "none",
+    cursor: "pointer",
+  },
+  cancel: {
+    background: "transparent",
+    color: colors.PURPLE(),
+    border: "1px solid",
+    marginRight: 24,
+  },
+  submit: {
+    background: colors.PURPLE(),
+    color: "#fff",
   },
 });
 

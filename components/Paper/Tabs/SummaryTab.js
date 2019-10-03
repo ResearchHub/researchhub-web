@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import Router, { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
@@ -6,10 +7,12 @@ import dynamic from "next/dynamic";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
+import TextEditor from "~/components/TextEditor";
 
 // Config
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import colors from "../../../config/themes/colors";
 
 const DraftEditor = dynamic(() => import("../../DraftEditor/DraftEditor"), {
   ssr: false,
@@ -25,8 +28,19 @@ class SummaryTab extends React.Component {
       readOnly: true,
       editorState: EditorState.createEmpty(),
       menuOpen: false,
+      addSummary: false,
     };
   }
+
+  /**
+   * Opens the add summary
+   */
+  addSummary = () => {
+    this.setState({
+      addSummary: true,
+      readOnly: false,
+    });
+  };
 
   onEditorStateChange = (editorState) => {
     this.setState({ editorState });
@@ -47,6 +61,7 @@ class SummaryTab extends React.Component {
   cancel = () => {
     this.setState({
       readOnly: true,
+      addSummary: false,
     });
   };
 
@@ -107,27 +122,80 @@ class SummaryTab extends React.Component {
   };
 
   render() {
+    let { paper } = this.props;
     return (
       <ComponentWrapper>
-        <div className={css(styles.container)}>
-          <div className={css(styles.summaryActions)}>
-            <div className={css(styles.action)}>View Edit History</div>
-            <div className={css(styles.action)} onClick={this.edit}>
-              <div className={css(styles.pencilIcon)}>
-                <i className="fas fa-pencil"></i>
+        {paper.summary.summary ? (
+          <div className={css(styles.container)}>
+            <div className={css(styles.summaryActions)}>
+              <div className={css(styles.action)}>View Edit History</div>
+              <div className={css(styles.action)} onClick={this.edit}>
+                <div className={css(styles.pencilIcon)}>
+                  <i className="fas fa-pencil"></i>
+                </div>
+                Edit Summary
               </div>
-              Edit Summary
             </div>
+            <DraftEditor
+              paperId={this.props.paperId}
+              readOnly={this.state.readOnly}
+              editorState={this.state.editorState}
+              onEditorStateChange={this.onEditorStateChange}
+              save={this.save}
+              cancel={this.cancel}
+            />
           </div>
-          {/* <DraftEditor
-            paperId={this.props.paperId}
-            readOnly={this.state.readOnly}
-            editorState={this.state.editorState}
-            onEditorStateChange={this.onEditorStateChange}
-            save={this.save}
-            cancel={this.cancel}
-          /> */}
-        </div>
+        ) : (
+          <div className={css(styles.container, styles.noSummaryContainer)}>
+            {this.state.addSummary ? (
+              <div className={css(styles.summaryEdit)}>
+                <div className={css(styles.guidelines)}>
+                  Please review our{" "}
+                  <a
+                    className={css(styles.authorGuidelines)}
+                    href="#"
+                    target="_blank"
+                  >
+                    Author Guidelines
+                  </a>{" "}
+                  to see how to write for ResearchHub
+                </div>
+                <TextEditor
+                  canEdit={true}
+                  canSubmit={true}
+                  commentEditor={false}
+                />
+                {/* <DraftEditor
+                      paperId={this.props.paperId}
+                      readOnly={this.state.readOnly}
+                      editorState={this.state.editorState}
+                      onEditorStateChange={this.onEditorStateChange}
+                      save={this.save}
+                      cancel={this.cancel}
+                    /> */}
+              </div>
+            ) : (
+              <div className={css(styles.box)}>
+                <img
+                  className={css(styles.img)}
+                  src={"/static/icons/sad.png"}
+                />
+                <h2 className={css(styles.noSummaryTitle)}>
+                  A summary hasn't been filled in yet!
+                </h2>
+                <div className={css(styles.text)}>
+                  Please add a summary to this paper
+                </div>
+                <button
+                  className={css(styles.button)}
+                  onClick={this.addSummary}
+                >
+                  Add Summary
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </ComponentWrapper>
     );
   }
@@ -141,6 +209,30 @@ var styles = StyleSheet.create({
     alignItems: "flex-end",
     boxSizing: "border-box",
   },
+  noSummaryContainer: {
+    alignItems: "center",
+  },
+  guidelines: {
+    color: "rgba(36, 31, 58, 0.8)",
+    textAlign: "center",
+    letterSpacing: 0.7,
+    marginBottom: 16,
+  },
+  box: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  noSummaryTitle: {
+    color: colors.BLACK(1),
+    fontSize: 20,
+    fontWeight: 500,
+  },
+  text: {
+    fontSize: 16,
+    color: colors.BLACK(0.8),
+  },
   summaryActions: {
     width: 280,
     display: "flex",
@@ -148,12 +240,29 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 10,
   },
+  summaryEdit: {
+    marginBottom: 50,
+    width: "100%",
+  },
   action: {
     color: "#241F3A",
     fontSize: 16,
     opacity: 0.6,
     display: "flex",
     cursor: "pointer",
+  },
+  button: {
+    border: "1px solid",
+    borderColor: colors.PURPLE(1),
+    padding: "8px 32px",
+    color: colors.PURPLE(1),
+    marginTop: 24,
+    fontSize: 16,
+    borderRadius: 4,
+    height: 45,
+    outline: "none",
+    cursor: "pointer",
+    // width: 135,
   },
   pencilIcon: {
     marginRight: 5,

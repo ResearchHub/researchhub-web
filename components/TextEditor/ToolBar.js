@@ -5,7 +5,6 @@ export const Button = (props) => {
   const { active, onMouseDown, first } = props;
 
   const classNames = [styles.button];
-  console.log(active);
 
   if (active) {
     classNames.push(styles.buttonActive);
@@ -32,7 +31,12 @@ export const Icon = (props) => {
 
 export const ToolBar = (props) => {
   return (
-    <div className={css(styles.toolbar)}>
+    <div
+      className={css(
+        styles.toolbar,
+        props.summaryEditor && styles.toolbarSummary
+      )}
+    >
       <div>{props.children}</div>
       <button className={css(styles.submit)} onClick={props.submit}>
         Submit
@@ -48,7 +52,12 @@ const styles = StyleSheet.create({
   button: {
     color: "rgb(204, 204, 204)",
     cursor: "pointer",
-    marginLeft: 15,
+    marginLeft: 24,
+  },
+  toolbarSummary: {
+    borderBottom: "1px solid",
+    borderTop: 0,
+    borderColor: "rgb(235, 235, 235)",
   },
   toolbar: {
     borderTop: "1px solid",
@@ -68,5 +77,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     outline: "none",
     borderRadius: 4,
+  },
+  first: {
+    marginLeft: 0,
   },
 });

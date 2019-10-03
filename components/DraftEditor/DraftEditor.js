@@ -15,7 +15,7 @@ import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import colors from "~/config/themes/colors";
 
 const DEFAULT_OPTIONS = {
-  options: ["inline", "blockType", "fontSize", "list", "textAlign", "history"],
+  options: ["inline", "blockType", "list", "textAlign", "history"],
   inline: {
     options: ["bold", "italic", "underline", "strikethrough", "monospace"],
   },
@@ -144,6 +144,8 @@ var styles = StyleSheet.create({
   cancel: {
     background: "transparent",
     color: colors.BLUE(),
+    border: "1px solid",
+    marginRight: 24,
   },
   submit: {
     background: colors.BLUE(),
