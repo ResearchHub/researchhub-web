@@ -141,6 +141,12 @@ class PaperUploadInfo extends React.Component {
     this.setState({ form, error });
   };
 
+  handleDiscussionInputChange = (id, value) => {
+    let discussion = { ...this.state.discussion };
+    discussion[id] = value;
+    this.setState({ dicussion });
+  };
+
   handleHubSelection = (id, value) => {
     let form = JSON.parse(JSON.stringify(this.state.form));
     let error = { ...this.state.error };
@@ -442,8 +448,8 @@ class PaperUploadInfo extends React.Component {
                 containerStyle={styles.container}
                 inputStyle={styles.inputStyle}
                 value={discussion.title}
-                // id={'published.month'}
-                // onChange={this.handleInputChange}
+                id={"title"}
+                onChange={this.handleDiscussionInputChange}
               />
               <FormInput
                 label={"Question"}
@@ -451,8 +457,8 @@ class PaperUploadInfo extends React.Component {
                 containerStyle={styles.container}
                 inputStyle={styles.inputStyle}
                 value={discussion.question}
-                // id={'published.month'}
-                // onChange={this.handleInputChange}
+                id={"question"}
+                onChange={this.handleDiscussionInputChange}
               />
             </div>
           </span>
