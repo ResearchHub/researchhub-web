@@ -91,6 +91,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderColor: colors.RED(1),
   },
+  searchIcon: {
+    height: 18,
+    width: 18,
+    position: "absolute",
+    left: 15,
+    bottom: 10,
+  },
 });
 
 export default AuthorInput;
