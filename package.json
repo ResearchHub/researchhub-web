@@ -13,7 +13,6 @@
     "aphrodite": "^2.4.0",
     "draft-js": "0.10.0",
     "immutable": "^4.0.0-rc.12",
-    "is-hotkey": "^0.1.6",
     "isomorphic-unfetch": "^3.0.0",
     "javascript-time-ago": "^2.0.2",
     "katex": "^0.11.1",
@@ -22,9 +21,9 @@
     "next-compose-plugins": "^2.2.0",
     "next-redux-wrapper": "^4.0.0",
     "next-transpile-modules": "^2.3.1",
-    "react": "^16.9.0",
+    "react": "^16.10.1",
     "react-avatar": "^3.7.0",
-    "react-dom": "^16.9.0",
+    "react-dom": "^16.10.1",
     "react-draft-wysiwyg": "^1.13.2",
     "react-pdf": "^4.1.0",
     "react-redux": "^7.1.1",
@@ -33,7 +32,6 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "slate": "^0.47.8",
-    "slate-plain-serializer": "^0.7.10",
     "slate-react": "^0.22.9"
   },
   "devDependencies": {

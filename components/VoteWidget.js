@@ -1,4 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
+import PropTypes from "prop-types";
 
 import { doesNotExist } from "~/config/utils";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
@@ -18,6 +19,14 @@ const VoteWidget = (props) => {
       <DownvoteButton onClick={onDownvote} />
     </div>
   );
+};
+
+VoteWidget.propTypes = {
+  fontSize: PropTypes.string,
+  onUpvote: PropTypes.func,
+  onDownvote: PropTypes.func,
+  score: PropTypes.number,
+  width: PropTypes.string,
 };
 
 const ScorePill = (props) => {
