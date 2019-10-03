@@ -1,13 +1,14 @@
 import React from "react";
-import { useRouter } from "next/router";
+import Link from "next/link";
+import Router, { useRouter } from "next/router";
 
 // Component
 import PaperUploadInfo from "../../../../components/Paper/PaperUploadInfo";
 
-const Info = () => {
-  const router = useRouter();
-  const { uploadedPaper } = router.query;
-  return <PaperUploadInfo uploadedPaper={uploadedPaper} />;
-};
+class Index extends React.Component {
+  render() {
+    return <PaperUploadInfo />;
+  }
+}
 
-export default Info;
+export default Index;

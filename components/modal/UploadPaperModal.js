@@ -10,13 +10,14 @@ import Router from "next/router";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
+import { PaperActions } from "../../redux/paper";
 
 // Component
-import FormInput from "../FormInput";
+import FormInput from "../Form/FormInput";
 import PaperEntry from "../SearchSuggestion/PaperEntry";
 import Loader from "../Loader/Loader";
-import Button from "../Button";
-import DragNDrop from "../DragNDrop";
+import Button from "../Form/Button";
+import DragNDrop from "../Form/DragNDrop";
 
 const TRANSITION_TIME = 300;
 
@@ -44,10 +45,11 @@ class UploadPaperModal extends React.Component {
    * closes the modal on button click
    */
   closeModal = () => {
-    let { modalActions } = this.props;
+    let { modalActions, paperActions } = this.props;
     this.setState({
       ...this.initialState,
     });
+    paperActions.removePaperFromState();
     modalActions.openUploadPaperModal(false);
   };
 
@@ -55,7 +57,7 @@ class UploadPaperModal extends React.Component {
    * handles the query string for author
    * @param { String } value - the value sent up from the FormInput
    */
-  handleSearchInput = async (value) => {
+  handleSearchInput = async (id, value) => {
     await this.setState({
       search: value,
       searching: value === "" ? false : true,
@@ -127,10 +129,12 @@ class UploadPaperModal extends React.Component {
    * function is called as a callback when a file is dropped
    */
   uploadPaper = async (acceptedFiles, binaryStr) => {
+    let { paperActions } = this.props;
     let paper = acceptedFiles[0];
     let name = paper.name;
-    await this.setState({ uploading: true, uploadedPaper: paper });
-    //send paper to backend
+    await this.setState({ uploading: true });
+    //save paper to redux
+    await paperActions.uploadPaperToState(paper);
     let grabName = () => {
       let arr = name.split(".");
       arr.pop();
@@ -141,6 +145,7 @@ class UploadPaperModal extends React.Component {
         search: grabName(),
         uploading: false,
         uploadFinish: true,
+        uploadedPaper: paper,
       });
     }, 300);
   };
@@ -150,19 +155,11 @@ class UploadPaperModal extends React.Component {
    * when a user chooses to upload another file
    */
   resetStateToUploadView = async () => {
+    let { paperActions } = this.props;
+    await paperActions.removePaperFromState();
     this.setState({
       ...this.initialState,
       uploadView: true,
-    });
-  };
-
-  navigateToPaperUploadInfo = () => {
-    let { uploadedPaper } = this.state;
-    Router.push({
-      pathname: "/paper/upload/info",
-      query: {
-        uploadedPaper,
-      },
     });
   };
 
@@ -225,6 +222,7 @@ class UploadPaperModal extends React.Component {
             value={search}
             label={"Paper Title"}
             placeholder={"Enter paper title or DOI"}
+            id={"search"}
           />
           {uploadView ? (
             <div className={css(styles.uploadContainer)}>
@@ -272,11 +270,12 @@ class UploadPaperModal extends React.Component {
             customButtonStyle={styles.button}
             customLabelStyle={styles.label}
             disabled={uploadView && !uploadFinish}
-            onClick={() => {
+            onClick={this.toggleUploadView}
+            isLink={
               uploadView
-                ? this.navigateToPaperUploadInfo()
-                : this.toggleUploadView();
-            }}
+                ? { href: "/paper/upload/info", linkAs: "/paper/upload/info" }
+                : null
+            }
           />
         </div>
       </Modal>
@@ -430,10 +429,12 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
+  paper: state.paper,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
+  paperActions: bindActionCreators(PaperActions, dispatch),
 });
 
 export default connect(
