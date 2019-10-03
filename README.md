@@ -4,7 +4,9 @@ Find the most recent version of this guide at [here](https://github.com/segmenti
 
 ## Setup
 
-### General
+### Git hooks
+
+(**_Skip these steps to let husky do it instead._**)
 
 Set executable permissions on scripts
 
@@ -13,6 +15,19 @@ Set executable permissions on scripts
 Install git hooks
 
 `$ ./scripts/install-hooks`
+
+**Migrating to husky**
+
+To use husky instead of git hooks manually:
+1. Delete or move the original git hooks `$ mkdir .git/hooks-old && cp -R .git/hooks .git/hooks-old`
+2. Re-add husky `$ yarn remove husky` `$ yarn add husky --dev`
+3. Husky should write the hook files for you. You can check this by printing the hook file `$ cat .git/hooks/pre-push` and checking it starts with this:
+```
+#!/bin/sh
+# husky
+```
+
+For more info see https://github.com/typicode/husky
 
 ## Making Changes
 
