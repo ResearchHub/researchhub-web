@@ -119,14 +119,14 @@ class SummaryTab extends React.Component {
               Edit Summary
             </div>
           </div>
-          <DraftEditor
+          {/* <DraftEditor
             paperId={this.props.paperId}
             readOnly={this.state.readOnly}
             editorState={this.state.editorState}
             onEditorStateChange={this.onEditorStateChange}
             save={this.save}
             cancel={this.cancel}
-          />
+          /> */}
         </div>
       </ComponentWrapper>
     );
