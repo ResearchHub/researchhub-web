@@ -635,6 +635,7 @@ class PaperUploadInfo extends React.Component {
         <AddAuthorModal isOpen={modals.openAddAuthorModal} />
         {this.renderTitle()}
         <form
+          className={css(styles.form)}
           onSubmit={(e) => {
             e.preventDefault();
             activeStep === 1 && this.nextStep();
@@ -683,6 +684,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 80,
     marginBottom: 60,
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   pageContent: {
     width: "70%",
@@ -832,6 +839,13 @@ const styles = StyleSheet.create({
   },
   draftEditor: {
     marginTop: 25,
+    height: 800,
+    minHeight: 800,
+    maxHeight: 800,
+    overflowY: "scroll",
+    "::-webkit-scrollbar": {
+      marginLeft: 15,
+    },
   },
 });
 
