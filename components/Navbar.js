@@ -10,6 +10,7 @@ import { ModalActions } from "../redux/modals";
 // Components
 import ResearchHubLogo from "./ResearchHubLogo";
 import LoginModal from "../components/modal/LoginModal";
+import UploadPaperModal from "../components/modal/UploadPaperModal";
 
 const Navbar = (props) => {
   const tabData = [
@@ -33,6 +34,7 @@ const Navbar = (props) => {
 
   return (
     <div className={css(styles.navbarContainer)}>
+      <UploadPaperModal />
       <LoginModal isOpen={props.modals.openLoginModal} />
       <div className={css(styles.logo)}>
         <ResearchHubLogo />
@@ -49,7 +51,10 @@ const Navbar = (props) => {
         >
           Log In
         </button>
-        <button className={css(styles.button, styles.addPaper)}>
+        <button
+          className={css(styles.button, styles.addPaper)}
+          onClick={() => props.modalActions.openUploadPaperModal(true)}
+        >
           Add Paper
         </button>
       </div>

@@ -179,8 +179,7 @@ class UploadPaperModal extends React.Component {
 
     return (
       <Modal
-        // isOpen={modals.openUploadPaperModal}
-        isOpen={true}
+        isOpen={modals.openUploadPaperModal}
         closeModal={this.closeModal}
         className={css(styles.modal)}
         style={overlayStyles}
@@ -191,7 +190,7 @@ class UploadPaperModal extends React.Component {
           <img
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
-            // onClick={this.closeModal}
+            onClick={this.closeModal}
           />
           {uploadView && (
             <div
