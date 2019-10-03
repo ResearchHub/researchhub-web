@@ -11,6 +11,8 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
 
+const DYNAMIC_HREF = "/paper/[paperId]/discussion/[threadId]";
+
 const DiscussionThreadCard = (props) => {
   const { path } = props;
 
@@ -29,17 +31,19 @@ const DiscussionThreadCard = (props) => {
   }
 
   return (
-    <DiscussionCard
-      top={
-        <Fragment>
-          <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
-          <DiscussionPostMetadata username={username} date={date} />
-          <ReadButton threadPath={path} />
-        </Fragment>
-      }
-      info={<Title text={title} />}
-      action={<DiscussionThreadActionBar count={commentCount} />}
-    />
+    <Link href={DYNAMIC_HREF} as={path}>
+      <DiscussionCard
+        top={
+          <Fragment>
+            <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
+            <DiscussionPostMetadata username={username} date={date} />
+            <ReadButton threadPath={path} />
+          </Fragment>
+        }
+        info={<Title text={title} />}
+        action={<DiscussionThreadActionBar count={commentCount} />}
+      />
+    </Link>
   );
 };
 
@@ -71,7 +75,6 @@ function formatTitle(title) {
 
 const ReadButton = (props) => {
   const { threadPath } = props;
-  const DYNAMIC_HREF = "/paper/[paperId]/discussion/[threadId]";
   return (
     <Link href={DYNAMIC_HREF} as={threadPath}>
       <a className={css(styles.readContainer)}>

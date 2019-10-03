@@ -5,6 +5,7 @@ import { paperTabFont } from "~/config/themes/fonts";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
+import colors from "../config/themes/colors";
 
 const PaperTabBar = (props) => {
   const selectedTab = props.selectedTab;
@@ -47,15 +48,18 @@ function renderTabs({ key, href, label, ui }, selected, baseUrl, index) {
     classNames.push(styles.selected);
   }
 
-  if (index === 0) {
-    classNames.push(styles.firstTab);
-  }
-
   return (
     <Link key={key} href={DYNAMIC_HREF} as={href}>
       <div className={css(classNames)}>
         <div className={css(styles.link)}>
-          {label} {ui}
+          {label}{" "}
+          {ui && (
+            <span
+              className={css(styles.ui, href === selected && styles.selectedUi)}
+            >
+              {ui}
+            </span>
+          )}
         </div>
       </div>
     </Link>
@@ -65,9 +69,9 @@ function renderTabs({ key, href, label, ui }, selected, baseUrl, index) {
 const Count = (props) => {
   const { amount } = props;
   if (amount < 1) {
-    return <span />;
+    return null;
   }
-  return <span>{amount}</span>;
+  return <span className={css(styles.count)}>{amount}</span>;
 };
 
 const styles = StyleSheet.create({
@@ -81,6 +85,9 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     justifyContent: "flex-start",
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "space-between",
+    },
     minWidth: 200,
   },
   firstTab: {
@@ -90,11 +97,29 @@ const styles = StyleSheet.create({
     color: paperTabColors.FONT,
     fontFamily: paperTabFont,
     padding: "1rem",
-    marginRight: "80px",
+
+    "@media only screen and (min-width: 768px)": {
+      marginRight: 28,
+    },
+
+    "@media only screen and (min-width: 1288px)": {
+      marginRight: 80,
+    },
     ":hover": {
       color: paperTabColors.HOVER_FONT,
       cursor: "pointer",
     },
+  },
+  count: {
+    padding: "3px 8px",
+    borderRadius: 3,
+    fontSize: 14,
+  },
+  ui: {
+    border: "1px solid #AAA7B9",
+  },
+  selectedUi: {
+    borderColor: colors.PURPLE(1),
   },
   link: {
     textAlign: "center",
