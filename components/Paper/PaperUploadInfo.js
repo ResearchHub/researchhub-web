@@ -580,7 +580,7 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.dnd = true;
     }
-    if (author.self_author === false || this.state.tags) {
+    if (author.self_author === false && this.state.tags.length < 1) {
       pass = false;
       error.author = true;
     }
