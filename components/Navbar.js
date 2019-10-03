@@ -35,7 +35,7 @@ const Navbar = (props) => {
   return (
     <div className={css(styles.navbarContainer)}>
       <UploadPaperModal />
-      <LoginModal isOpen={props.modals.openLoginModal} />
+      <LoginModal />
       <div className={css(styles.logo)}>
         <ResearchHubLogo />
       </div>
