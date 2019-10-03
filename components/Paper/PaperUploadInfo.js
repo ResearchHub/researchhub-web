@@ -35,29 +35,6 @@ const DraftEditor = dynamic(() => import("../DraftEditor/DraftEditor"), {
   ssr: false,
 });
 
-const authors = [
-  {
-    first_name: "Amanda",
-    last_name: "Collins",
-    email: "amandacollins@gmail.com",
-  },
-  {
-    first_name: "Kevin",
-    last_name: "Miller",
-    email: "kevinwest4852@gmail.com",
-  },
-  {
-    first_name: "Amanda",
-    last_name: "Collins",
-    email: "amandacollins@gmail.com",
-  },
-  {
-    first_name: "Kevin",
-    last_name: "Miller",
-    email: "kevinwest4852@gmail.com",
-  },
-];
-
 class PaperUploadInfo extends React.Component {
   constructor(props) {
     super(props);
@@ -98,9 +75,10 @@ class PaperUploadInfo extends React.Component {
       activeStep: 1,
       searchAuthor: "",
       authors: [],
-      tags: [],
+      selectedAuthors: [],
       loading: false,
       uploadingPaper: false,
+      suggestedHubs: [],
     };
     this.state = {
       ...initialState,
@@ -115,23 +93,24 @@ class PaperUploadInfo extends React.Component {
     let contentState = convertFromRaw(DEFAULT_SUMMARY);
     let editorState = EditorState.createWithContent(contentState);
     this.setState({ summary: editorState, form });
+    this.getHubs();
   }
 
   handleAuthorSelect = (value) => {
-    if (this.state.tags.length !== 3) {
+    if (this.state.selectedAuthors.length !== 3) {
       let error = { ...this.state.error };
       error.author = false;
       this.setState({
-        tags: [...this.state.tags, value],
+        selectedAuthors: [...this.state.selectedAuthors, value],
         searchAuthor: "",
         error,
       });
     }
   };
 
-  handleAuthorChange = (tags) => {
-    if (tags.length < this.state.tags.length) {
-      this.setState({ tags });
+  handleAuthorChange = (selectedAuthors) => {
+    if (selectedAuthors.length < this.state.selectedAuthors.length) {
+      this.setState({ selectedAuthors });
     }
   };
 
@@ -188,7 +167,8 @@ class PaperUploadInfo extends React.Component {
     this.setState({ summary: editorState });
   };
 
-  searchAuthors = async (value) => {
+  searchAuthors = (value) => {
+    clearTimeout(this.searchAuthorsTimeout);
     if (value === "") {
       return this.setState({
         loading: false,
@@ -196,19 +176,24 @@ class PaperUploadInfo extends React.Component {
         searchAuthor: value,
       });
     }
-    // api call
-    await this.setState({
+
+    this.setState({
+      searchAuthor: value,
       loading: true,
       showAuthorList: true,
-      searchAuthor: value,
     });
 
-    setTimeout(() => {
-      this.setState({
-        authors: authors,
-        loading: false,
-      });
-    }, 400);
+    this.searchAuthorsTimeout = setTimeout(() => {
+      fetch(API.AUTHOR({ search: value }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          this.setState({
+            authors: resp.results,
+            loading: false,
+          });
+        });
+    }, 1000);
   };
 
   uploadPaper = async (acceptedFiles, binaryStr) => {
@@ -280,6 +265,32 @@ class PaperUploadInfo extends React.Component {
     }
   };
 
+  addNewUser = (params) => {
+    fetch(API.AUTHOR({}), API.POST_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        let selectedAuthors = [...this.state.selectedAuthors, resp];
+        this.setState({
+          selectedAuthors,
+        });
+      });
+  };
+
+  getHubs = () => {
+    fetch(API.HUB({}), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        let hubs = resp.results.map((hub, index) => {
+          return { ...hub, value: hub.id, label: hub.name };
+        });
+        this.setState({
+          suggestedHubs: hubs,
+        });
+      });
+  };
+
   renderHeader = (label, header = false) => {
     return (
       <div className={css(styles.header, styles.text)}>
@@ -303,6 +314,7 @@ class PaperUploadInfo extends React.Component {
       uploadingPaper,
       error,
       searchAuthor,
+      authors,
     } = this.state;
     switch (activeStep) {
       case 1:
@@ -342,7 +354,7 @@ class PaperUploadInfo extends React.Component {
                 onChange={this.handleInputChange}
               />
               <AuthorInput
-                tags={this.state.tags}
+                tags={this.state.selectedAuthors}
                 onChange={this.handleAuthorChange}
                 onChangeInput={this.searchAuthors}
                 inputValue={searchAuthor}
@@ -438,7 +450,7 @@ class PaperUploadInfo extends React.Component {
                 isMulti={true}
                 value={form.hubs}
                 id={"hubs"}
-                options={Options.months}
+                options={this.state.suggestedHubs}
                 onChange={this.handleHubSelection}
                 error={error.hubs}
               />
@@ -579,7 +591,7 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.dnd = true;
     }
-    if (author.self_author === false && this.state.tags.length < 1) {
+    if (author.self_author === false && this.state.selectedAuthors.length < 1) {
       pass = false;
       error.author = true;
     }
@@ -630,7 +642,10 @@ class PaperUploadInfo extends React.Component {
     let { modals } = this.props;
     return (
       <div className={css(styles.background)}>
-        <AddAuthorModal isOpen={modals.openAddAuthorModal} />
+        <AddAuthorModal
+          isOpen={modals.openAddAuthorModal}
+          addNewUser={this.addNewUser}
+        />
         {this.renderTitle()}
         <form
           className={css(styles.form)}

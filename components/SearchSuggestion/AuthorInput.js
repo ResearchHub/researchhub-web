@@ -15,6 +15,17 @@ const AuthorInput = ({
   onChange,
   onChangeInput,
 }) => {
+  function renderTag(props) {
+    let { tag, key, disabled, onRemove, classNameRemove, ...other } = props;
+    return (
+      <span key={key} {...other}>
+        {`${tag.first_name} ${tag.last_name}`}
+        {!disabled && (
+          <a className={classNameRemove} onClick={(e) => onRemove(key)} />
+        )}
+      </span>
+    );
+  }
   return (
     <div
       className={css(styles.container, containerStyle && styles.containerStyle)}
@@ -38,6 +49,7 @@ const AuthorInput = ({
         inputValue={inputValue}
         className={error ? css(styles.error) : "react-tagsinput"}
         maxTags={3}
+        renderTag={(props) => renderTag(props)}
         inputProps={{
           placeholder:
             tags.length !== 3 ? "Search for author" : "Max authors reached",

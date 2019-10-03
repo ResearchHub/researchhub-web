@@ -9,13 +9,17 @@ const apiRoot = {
 
 const routes = (BASE_URL) => {
   return {
-    PAPER: ({ paperId }) => {
+    PAPER: ({ paperId, search }) => {
       let url = BASE_URL + `paper/`;
 
       if (paperId) {
         url += `${paperId}/?`;
       } else {
         url += "?";
+      }
+
+      if (search) {
+        url += `search=${search}`;
       }
 
       return url;
@@ -50,6 +54,38 @@ const routes = (BASE_URL) => {
 
       if (typeof page === "number") {
         url += `?page=${page}`;
+      }
+
+      return url;
+    },
+
+    AUTHOR: ({ authorId, search }) => {
+      let url = BASE_URL + `author/`;
+
+      if (authorId) {
+        url += `${authorId}/?`;
+      } else {
+        url += "?";
+      }
+
+      if (search) {
+        url += `search=${search}`;
+      }
+
+      return url;
+    },
+
+    HUB: ({ hubId, search }) => {
+      let url = BASE_URL + `hub/`;
+
+      if (hubId) {
+        url += `${hubId}/?`;
+      } else {
+        url += "?";
+      }
+
+      if (search) {
+        url += `search=${search}`;
       }
 
       return url;

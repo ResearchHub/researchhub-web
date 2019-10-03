@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
+import moment from "moment";
 
 const PaperEntry = ({
   index,
@@ -49,7 +50,9 @@ const PaperEntry = ({
         onClick={() => onClick && onClick(index)}
       >
         <div className={css(styles.title, styles.text)}>{title && title}</div>
-        <div className={css(styles.date, styles.text)}>{date && date}</div>
+        <div className={css(styles.date, styles.text)}>
+          Published: {date && moment(date).format("DD MMMM, YYYY")}
+        </div>
       </div>
     );
   }

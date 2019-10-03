@@ -19,6 +19,10 @@ import Loader from "../Loader/Loader";
 import Button from "../Form/Button";
 import DragNDrop from "../Form/DragNDrop";
 
+// Config
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+
 const TRANSITION_TIME = 300;
 
 class UploadPaperModal extends React.Component {
@@ -57,12 +61,17 @@ class UploadPaperModal extends React.Component {
    * handles the query string for author
    * @param { String } value - the value sent up from the FormInput
    */
-  handleSearchInput = async (id, value) => {
-    await this.setState({
+  handleSearchInput = (id, value) => {
+    clearTimeout(this.searchPaperTimeout);
+
+    this.setState({
       search: value,
       searching: value === "" ? false : true,
     });
-    this.searchTitle(value);
+
+    this.searchPaperTimeout = setTimeout(() => {
+      this.searchTitle(value);
+    }, 1000);
   };
 
   /**
@@ -70,10 +79,19 @@ class UploadPaperModal extends React.Component {
    * @param {String} value - the paper title the user is typing
    */
   searchTitle = (value) => {
-    setTimeout(async () => {
-      let num = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
-      await this.setState({ papers: new Array(num).fill(0), searching: false });
-    }, 2000);
+    fetch(API.PAPER({ search: value }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        this.setState({
+          papers: resp.results,
+          searching: false,
+        });
+      });
+    // setTimeout(async () => {
+    //   let num = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
+    //   await this.setState({ papers: new Array(num).fill(0), searching: false });
+    // }, 2000);
   };
 
   /**
@@ -177,6 +195,18 @@ class UploadPaperModal extends React.Component {
     } = this.state;
     let { modals } = this.props;
 
+    let suggestedPapers = this.state.papers.map((paper, index) => {
+      return (
+        <PaperEntry
+          key={index}
+          title={paper.title}
+          date={paper.paper_publish_date}
+          index={index}
+          selected={index === selectedPaper}
+          onClick={this.handlePaperEntryClick}
+        />
+      );
+    });
     return (
       <Modal
         isOpen={modals.openUploadPaperModal}
@@ -247,19 +277,7 @@ class UploadPaperModal extends React.Component {
                 {searching ? (
                   <Loader loading={true} />
                 ) : (
-                  search !== "" &&
-                  this.state.papers.map((el, i) => {
-                    return (
-                      <PaperEntry
-                        key={i}
-                        title={"Genre features of movies in Canada"}
-                        date={"Published: 19 July, 2019"}
-                        index={i}
-                        selected={i === selectedPaper}
-                        onClick={this.handlePaperEntryClick}
-                      />
-                    );
-                  })
+                  search !== "" && suggestedPapers
                 )}
               </div>
             </div>
