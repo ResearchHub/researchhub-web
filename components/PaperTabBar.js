@@ -8,7 +8,19 @@ import ComponentWrapper from "./ComponentWrapper";
 
 const PaperTabBar = (props) => {
   const selectedTab = props.selectedTab;
-  const { baseUrl } = props;
+  const { baseUrl, threadCount } = props;
+
+  const tabs = [
+    { href: "summary", label: "summary" },
+    {
+      href: "discussion",
+      label: "discussions",
+      ui: <Count amount={threadCount} />,
+    },
+    { href: "full", label: "full paper" },
+    { href: "citations", label: "citations" },
+  ].map(formatTabs);
+
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper>
@@ -20,19 +32,13 @@ const PaperTabBar = (props) => {
   );
 };
 
-const tabs = [
-  { href: "summary", label: "summary" },
-  { href: "discussion", label: "discussions" },
-  { href: "full", label: "full paper" },
-  { href: "citations", label: "citations" },
-].map(formatTabs);
-
 function formatTabs(tab) {
-  tab.key = `nav-link-${tab.href}-${tab.label}`;
+  tab.key = `nav-link-${tab.href}`;
   return tab;
 }
 
-function renderTabs({ key, href, label }, selected, baseUrl) {
+function renderTabs({ key, href, label, ui }, selected, baseUrl) {
+  const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
   let classNames = [styles.tab];
 
   if (href === selected) {
@@ -40,18 +46,23 @@ function renderTabs({ key, href, label }, selected, baseUrl) {
   }
 
   return (
-    <Link
-      key={key}
-      href={`/paper/[paperId]/[tabName]`}
-      as={`/paper/${baseUrl}/${href}`}
-      prefetch
-    >
+    <Link key={key} href={DYNAMIC_HREF} as={href}>
       <div className={css(classNames)}>
-        <div className={css(styles.link)}>{label}</div>
+        <div className={css(styles.link)}>
+          {label} {ui}
+        </div>
       </div>
     </Link>
   );
 }
+
+const Count = (props) => {
+  const { amount } = props;
+  if (amount < 1) {
+    return <span />;
+  }
+  return <span>{amount}</span>;
+};
 
 const styles = StyleSheet.create({
   container: {

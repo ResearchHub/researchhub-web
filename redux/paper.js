@@ -1,6 +1,6 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { paperShim } from "./paper/shim";
+import { paperShim } from "./paper/shims";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -26,6 +26,9 @@ export const PaperActions = {
               doneFetching: true,
             },
           });
+        })
+        .catch((error) => {
+          console.log(error);
         });
     };
   },
