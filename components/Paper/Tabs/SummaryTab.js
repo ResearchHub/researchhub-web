@@ -326,14 +326,14 @@ var styles = StyleSheet.create({
   },
   editHistoryContainer: {
     position: "absolute",
-    right: -250,
+    right: -280,
     background: "#F9F9FC",
   },
   selectedEdit: {
     background: "#F0F1F7",
   },
   editHistoryCard: {
-    width: 200,
+    width: 250,
     padding: "5px 10px",
     cursor: "pointer",
   },
