@@ -24,6 +24,7 @@
     "next-transpile-modules": "^2.3.1",
     "q5-js-config": "^1.4.1",
     "react": "^16.9.0",
+    "react-autosize-textarea": "^7.0.0",
     "react-avatar": "^3.7.0",
     "react-dom": "^16.9.0",
     "react-draft-wysiwyg": "^1.13.2",
