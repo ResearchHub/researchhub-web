@@ -149,14 +149,17 @@ const Comment = (props) => {
 
   if (data && !isEmpty(data)) {
     date = data.createdDate;
-    text = data.text;
+    text = deserializeComment(data.text);
     username = createUsername(data);
   }
 
-  if (typeof text === "string") {
-    text = Plain.deserialize(text);
-  } else {
-    text = Value.fromJSON(text);
+  function deserializeComment(text) {
+    try {
+      text = Value.fromJSON(JSON.parse(text));
+    } catch (SyntaxError) {
+      text = Plain.deserialize(text);
+    }
+    return text;
   }
 
   return (
