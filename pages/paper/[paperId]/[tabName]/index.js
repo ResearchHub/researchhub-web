@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { useSelector, connect } from "react-redux";
-import dynamic from "next/dynamic";
+import { connect } from "react-redux";
 import moment from "moment";
 import Avatar from "react-avatar";
 
@@ -13,24 +11,24 @@ import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import ComponentWrapper from "~/components/ComponentWrapper";
 
-// Redux
 import { PaperActions } from "~/redux/paper";
 
-//Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { getNestedValue } from "~/config/utils";
 
 const Paper = (props) => {
   const router = useRouter();
   const { paperId, tabName } = router.query;
   let { paper } = props;
 
+  const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
+  const discussionThreads = getNestedValue(paper, ["discussion", "threads"]);
+
   let renderTabContent = () => {
     switch (tabName) {
       case "summary":
         return <SummaryTab paperId={paperId} paper={paper} />;
       case "discussion":
-        return <DiscussionTab paperId={paperId} />;
+        return <DiscussionTab paperId={paperId} threads={discussionThreads} />;
       case "full":
         return <PaperTab />;
       case "citations":
@@ -56,7 +54,6 @@ const Paper = (props) => {
     return authors;
   }
 
-  // TODO: Display different tab content based on tabName
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper>
@@ -74,7 +71,11 @@ const Paper = (props) => {
           </div>
         </div>
       </ComponentWrapper>
-      <PaperTabBar baseUrl={paperId} selectedTab={tabName} />
+      <PaperTabBar
+        baseUrl={paperId}
+        selectedTab={tabName}
+        threadCount={threadCount}
+      />
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
     </div>
   );

@@ -23,4 +23,8 @@ export const voteWidgetColors = {
   ARROW: `rgba(210, 210, 218, 1)`,
 };
 
+export const discussionPageColors = {
+  DIVIDER: `rgba(235, 235, 235, 1)`,
+};
+
 export default colors;
