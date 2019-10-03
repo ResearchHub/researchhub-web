@@ -56,20 +56,27 @@
 }
 
 .react-tagsinput-tag {
-  background-color: rgb(251, 251, 253);
+  background-color: #e6e6e6;
   border-radius: 2px;
-  border: 1px solid rgb(78, 83, 255);
-  color: rgb(78, 83, 255);
+  border: 1px solid #e6e6e6;
+  color: #000000;
   display: inline-block;
   font-family: Roboto;
-  font-size: 15px;
+  font-size: 14x;
   font-weight: 400;
   margin-bottom: 5px;
   margin-right: 5px;
-  padding: 6px;
+  padding: 5px;
+  user-select: none;
 }
 
 .react-tagsinput-remove {
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 400;
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+.react-tagsinput-remove:hover {
+  color: #cd4424;
 }
