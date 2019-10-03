@@ -203,11 +203,6 @@ const CommentBox = () => {
   );
 };
 
-const SubmitButton = (props) => {
-  const { onClick } = props;
-  return <button onClick={onClick}>Submit</button>;
-};
-
 function createUsername({ createdBy }) {
   const { firstName, lastName } = createdBy;
   return `${firstName} ${lastName}`;
