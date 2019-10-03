@@ -1,9 +1,16 @@
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+// Redux
+import { ModalActions } from "../redux/modals";
 
 // Components
 import ResearchHubLogo from "./ResearchHubLogo";
+import LoginModal from "../components/modal/LoginModal";
+import UploadPaperModal from "../components/modal/UploadPaperModal";
 
 const Navbar = (props) => {
   const tabData = [
@@ -27,6 +34,8 @@ const Navbar = (props) => {
 
   return (
     <div className={css(styles.navbarContainer)}>
+      <UploadPaperModal />
+      <LoginModal />
       <div className={css(styles.logo)}>
         <ResearchHubLogo />
       </div>
@@ -36,8 +45,16 @@ const Navbar = (props) => {
         <i className={css(styles.searchIcon) + " far fa-search"}></i>
       </div>
       <div className={css(styles.actions)}>
-        <button className={css(styles.button, styles.login)}>Log In</button>
-        <button className={css(styles.button, styles.addPaper)}>
+        <button
+          className={css(styles.button, styles.login)}
+          onClick={() => props.modalActions.openLoginModal(true)}
+        >
+          Log In
+        </button>
+        <button
+          className={css(styles.button, styles.addPaper)}
+          onClick={() => props.modalActions.openUploadPaperModal(true)}
+        >
           Add Paper
         </button>
       </div>
@@ -127,4 +144,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Navbar;
+const mapStateToProps = (state) => ({
+  modals: state.modals,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  modalActions: bindActionCreators(ModalActions, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Navbar);

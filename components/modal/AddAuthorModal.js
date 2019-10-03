@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
     width: 240,
   },
 });
+
 const mapStateToProps = (state) => ({
   modals: state.modals,
 });
