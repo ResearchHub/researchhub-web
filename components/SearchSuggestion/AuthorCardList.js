@@ -25,7 +25,14 @@ class AuthorCardList extends React.Component {
       let { first_name, last_name, email, avatar, onRemove } = author;
 
       return (
-        <div className={css(styles.authorCard)} key={`${i}-${email}`}>
+        <div
+          className={css(styles.authorCard)}
+          key={`${i}-${email}`}
+          onClick={() =>
+            this.props.onAuthorClick &&
+            this.props.onAuthorClick(`${first_name} ${last_name}`)
+          }
+        >
           {avatar ? (
             <img className={css(styles.avatar)} src={uri(avatar)} />
           ) : (
@@ -69,15 +76,15 @@ class AuthorCardList extends React.Component {
         ) : (
           <span>{this.renderAuthorCard(authors)}</span>
         )}
-        <div className={css(styles.authorCard, styles.addAuthorCard)}>
-          <div
-            className={css(styles.addButtonWrapper)}
-            onClick={this.props.addAuthor && this.props.addAuthor}
-          >
+        <div
+          className={css(styles.authorCard, styles.addAuthorCard)}
+          onClick={this.props.addAuthor && this.props.addAuthor}
+        >
+          <div className={css(styles.addButtonWrapper)}>
             <i
               className="fal fa-plus"
               style={{ color: colors.BLUE(1), height: 12, width: 12 }}
-            ></i>
+            />
           </div>
           <div className={css(styles.nameContactWrapper, styles.marginLeft)}>
             <div className={css(styles.name)}>Add New User</div>
