@@ -61,9 +61,8 @@ const DiscussionThreadPage = (props) => {
       </div>
       <div className={css(styles.divider)} />
       <div className={css(styles.contentContainer)}>
-        {renderComments(comments)}
-        <MoreButton />
         <CommentBox />
+        {renderComments(comments)}
       </div>
     </div>
   );
@@ -123,12 +122,17 @@ const Thread = (props) => {
       <DiscussionCard
         top={
           <Fragment>
-            <VoteWidget score={123} fontSize={"16px"} width={"58px"} />
+            <VoteWidget
+              styles={styles.voteWidget}
+              score={123}
+              fontSize={"16px"}
+              width={"58px"}
+            />
             <div className={css(styles.threadTitle)}>{title}</div>
             <ShareButton />
           </Fragment>
         }
-        info={<div>{body}</div>}
+        info={<div className={css(styles.body)}>{body}</div>}
         infoStyle={styles.threadInfo}
         action={<DiscussionPostMetadata username={username} date={date} />}
       />
@@ -210,7 +214,7 @@ function createUsername({ createdBy }) {
 
 const styles = StyleSheet.create({
   backButtonContainer: {
-    paddingLeft: "60px",
+    paddingLeft: 68,
   },
   backButton: {
     color: colors.BLACK(0.5),
@@ -221,12 +225,25 @@ const styles = StyleSheet.create({
     padding: "30px 0px",
     margin: "auto",
   },
+  voteWidget: {
+    marginRight: 18,
+  },
   threadInfo: {
-    paddingLeft: "80px",
+    paddingLeft: 68,
     color: colors.BLACK(0.8),
+    "@media only screen and (min-width: 1024px)": {
+      width: "calc(100% - 68px - 170px)",
+    },
   },
   threadTitle: {
     width: "100%",
+    fontSize: 33,
+  },
+  body: {
+    marginBottom: 28,
+    marginTop: 14,
+    fontSize: 16,
+    lineHeight: "24px",
   },
   contentContainer: {
     width: "70%",

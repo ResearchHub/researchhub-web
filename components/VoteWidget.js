@@ -11,7 +11,7 @@ const VoteWidget = (props) => {
 
   return (
     <div
-      className={css(styles.container)}
+      className={css(styles.container, props.styles)}
       style={{ fontSize: fontSize, width: width }}
     >
       <UpvoteButton onClick={onUpvote} />
@@ -62,13 +62,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     textAlign: "center",
+    marginRight: 12,
   },
   pillContainer: {
     background: voteWidgetColors.BACKGROUND,
     color: colors.GREEN(),
     fontWeight: "bold",
-    borderRadius: ".7em",
-    padding: ".2em .4em",
+    borderRadius: 24,
+    padding: ".2em .7em",
   },
   icon: {
     color: voteWidgetColors.ARROW,

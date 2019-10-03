@@ -25,7 +25,9 @@ const PaperTabBar = (props) => {
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
-          {tabs.map((link) => renderTabs(link, selectedTab, baseUrl))}
+          {tabs.map((link, index) =>
+            renderTabs(link, selectedTab, baseUrl, index)
+          )}
         </div>
       </ComponentWrapper>
     </div>
@@ -37,12 +39,16 @@ function formatTabs(tab) {
   return tab;
 }
 
-function renderTabs({ key, href, label, ui }, selected, baseUrl) {
+function renderTabs({ key, href, label, ui }, selected, baseUrl, index) {
   const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
   let classNames = [styles.tab];
 
   if (href === selected) {
     classNames.push(styles.selected);
+  }
+
+  if (index === 0) {
+    classNames.push(styles.firstTab);
   }
 
   return (
@@ -76,6 +82,9 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     minWidth: 200,
+  },
+  firstTab: {
+    paddingLeft: 0,
   },
   tab: {
     color: paperTabColors.FONT,

@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
   commentCountContainer: {
     marginRight: "28px",
   },
+  shareContainer: {
+    cursor: "pointer",
+  },
 });
 
 export default DiscussionThreadActionBar;
