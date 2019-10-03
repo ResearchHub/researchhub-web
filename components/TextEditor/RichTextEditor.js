@@ -1,10 +1,17 @@
+import React from "react";
+
+// NPM Components
 import { Editor } from "slate-react";
 import { Value } from "slate";
-import React from "react";
+import { css, StyleSheet } from "aphrodite";
 import { isKeyHotkey } from "is-hotkey";
+
+// Components
 import { Button, Icon, ToolBar } from "./ToolBar";
 
+// Styles
 import { textEditorIcons } from "~/config/themes/icons";
+import "./stylesheets/RichTextEditor.css";
 
 const defaultInitialValue = Value.fromJSON({
   document: {
@@ -47,11 +54,10 @@ const isUnderlinedHotkey = isKeyHotkey("mod+u");
 const isCodeHotkey = isKeyHotkey("mod+`");
 
 /**
- * The rich text example.
+ * The rich text Component.
  *
  * @type {Component}
  */
-
 class RichTextEditor extends React.Component {
   /**
    * Deserialize the initial editor value.
@@ -105,9 +111,22 @@ class RichTextEditor extends React.Component {
 
   render() {
     return (
-      <div>
-        <ToolBar>
-          {this.renderMarkButton("bold", textEditorIcons.bold)}
+      <div className={css(styles.editor)}>
+        <Editor
+          readOnly={this.props.readOnly}
+          spellCheck
+          autoFocus
+          placeholder="What are your thoughts?"
+          ref={this.ref}
+          value={this.state.value}
+          className={css(styles.editSection)}
+          onChange={this.onChange}
+          onKeyDown={this.onKeyDown}
+          renderBlock={this.renderBlock}
+          renderMark={this.renderMark}
+        />
+        <ToolBar cancel={this.props.cancel} submit={this.props.submit}>
+          {this.renderMarkButton("bold", textEditorIcons.bold, true)}
           {this.renderMarkButton("italic", textEditorIcons.italic)}
           {this.renderMarkButton("underlined", textEditorIcons.underline)}
           {this.renderMarkButton("code", textEditorIcons.code)}
@@ -123,18 +142,6 @@ class RichTextEditor extends React.Component {
             textEditorIcons.bulletedList
           )}
         </ToolBar>
-        <Editor
-          readOnly={this.props.readOnly}
-          spellCheck
-          autoFocus
-          placeholder="Enter some rich text..."
-          ref={this.ref}
-          value={this.state.value}
-          onChange={this.onChange}
-          onKeyDown={this.onKeyDown}
-          renderBlock={this.renderBlock}
-          renderMark={this.renderMark}
-        />
       </div>
     );
   }
@@ -144,15 +151,17 @@ class RichTextEditor extends React.Component {
    *
    * @param {String} type
    * @param {String} icon
+   * @param { Boolean } first -- whether the mark button is the first element in the list or not
    * @return {Element}
    */
 
-  renderMarkButton = (type, icon) => {
+  renderMarkButton = (type, icon, first) => {
     const isActive = this.hasMark(type);
 
     return (
       <Button
         active={isActive}
+        first={first}
         onMouseDown={(event) => this.onClickMark(event, type)}
       >
         <Icon>{icon}</Icon>
@@ -349,8 +358,16 @@ class RichTextEditor extends React.Component {
   };
 }
 
-/**
- * Export.
- */
+const styles = StyleSheet.create({
+  editor: {
+    background: "#FBFBFD",
+    border: "1px solid #E7E7E7",
+    borderRadius: 4,
+  },
+  editSection: {
+    padding: 16,
+    minHeight: 122,
+  },
+});
 
 export default RichTextEditor;

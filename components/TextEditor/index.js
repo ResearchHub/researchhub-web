@@ -1,8 +1,12 @@
+import { Fragment, useState } from "react";
+
+// NPM Components
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import { Fragment, useState } from "react";
 import Plain from "slate-plain-serializer";
+import { connect } from "react-redux";
 
+// Components
 import ReadOnlyEdtior from "./ReadOnlyEditor";
 import RichTextEditor from "./RichTextEditor";
 
@@ -20,6 +24,7 @@ const TextEditor = (props) => {
     initialValue,
     placeholder,
     readOnly,
+    isLoggedIn,
   } = props;
 
   const defaultPlaceholder = "Enter some text...";
@@ -34,7 +39,12 @@ const TextEditor = (props) => {
   }
 
   function submit() {
-    onSubmit && onSubmit(JSON.stringify(value.toJSON()));
+    if (!isLoggedIn) {
+      // TODO: pop login modal
+      alert("Not logged in!");
+    } else {
+      onSubmit && onSubmit(JSON.stringify(value.toJSON()));
+    }
   }
 
   const Editor = canEdit ? RichTextEditor : ReadOnlyEdtior;
@@ -45,19 +55,11 @@ const TextEditor = (props) => {
         readOnly={readOnly || false}
         onChange={setValue}
         initialValue={value}
+        canCancel={canCancel}
+        canSubmit={canSubmit}
+        cancel={cancel}
+        submit={submit}
       />
-      <div className={css(styles.buttonContainer)}>
-        {canCancel && (
-          <button className={css(cancelButtonStyles)} onClick={cancel}>
-            {cancelButtonText || "Cancel"}
-          </button>
-        )}
-        {canSubmit && (
-          <button className={css(submitButtonStyles)} onClick={submit}>
-            {submitButtonText || "Submit"}
-          </button>
-        )}
-      </div>
     </Fragment>
   );
 };
@@ -83,4 +85,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TextEditor;
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.auth.isLoggedIn,
+});
+
+export default connect(mapStateToProps)(TextEditor);

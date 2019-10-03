@@ -25,8 +25,8 @@ const User = (props) => {
 
   return (
     <div className={css(styles.userContainer)}>
-      <Avatar name={name} size={30} round={true} textSizeRatio={1} />
-      <div>{name}</div>
+      <Avatar name={name} size={30} round={true} textSizeRatio={2.5} />
+      <div className={css(styles.name)}>{name}</div>
     </div>
   );
 };
@@ -61,8 +61,11 @@ const styles = StyleSheet.create({
   },
   timestampContainer: {
     width: "100%",
-    color: colors.GREY(1),
     fontWeight: "normal",
+  },
+  name: {
+    marginLeft: 8,
+    color: colors.BLACK(1),
   },
   timestampDivider: {
     padding: "0px 10px",

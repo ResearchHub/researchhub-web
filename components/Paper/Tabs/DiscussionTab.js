@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import { endsWithSlash } from "~/config/utils/routing";
+import ComponentWrapper from "../../ComponentWrapper";
 
 const DiscussionTab = (props) => {
   const { threads } = props;
@@ -9,7 +10,7 @@ const DiscussionTab = (props) => {
   const basePath = formatBasePath(router.asPath);
   const formattedThreads = formatThreads(threads, basePath);
 
-  return <div>{renderThreads(formattedThreads)}</div>;
+  return <ComponentWrapper>{renderThreads(formattedThreads)}</ComponentWrapper>;
 };
 
 function formatBasePath(path) {
