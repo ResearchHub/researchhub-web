@@ -46,7 +46,7 @@ class DragNDrop extends React.Component {
   };
 
   render() {
-    let { loading, uploadedPaper, uploadFinish } = this.props;
+    let { loading, uploadedPaper, uploadFinish, error, isDynamic } = this.props;
     const style = {
       dropZone: {
         display: "flex",
@@ -54,8 +54,10 @@ class DragNDrop extends React.Component {
         alignItems: "center",
         height: 163,
         width: 525,
+        padding: isDynamic && this.state.dragOver ? 15 : 0,
         backgroundColor: this.state.dragOver ? "#FFF" : "#FBFBFD",
-        border: `0.5px dashed ${colors.BLUE(1)}`,
+        border: `0.5px dashed ${error ? colors.RED(1) : colors.BLUE(1)}`,
+        transition: "all ease-in-out 0.3s",
       },
       inputWrapper: {
         highlight: "none",
@@ -73,12 +75,14 @@ class DragNDrop extends React.Component {
     };
 
     return (
-      <div className={css(styles.container)}>
+      <div
+        className={css(styles.container)}
+        onDragLeave={this.unsetDragOverState}
+      >
         <Dropzone
           onDrop={(acceptedFiles) => this.handleDrop(acceptedFiles)}
           onDragEnter={this.setDragOverState}
           onDragOver={this.setDragOverState}
-          onDragLeave={this.unsetDragOverState}
         >
           {({ getRootProps, getInputProps }) => (
             <section
@@ -156,6 +160,7 @@ const styles = StyleSheet.create({
   icon: {
     height: 29.87,
     width: 38.53,
+    cursor: "pointer",
   },
   pasteInstruction: {
     fontFamily: "Roboto",

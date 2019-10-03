@@ -19,15 +19,17 @@ class FormSelect extends React.Component {
   render() {
     let {
       id,
+      ref,
       required,
       label,
       placeholder,
       containerStyle,
       labelStyle,
-      options,
       inputStyle,
       value,
-      ref,
+      options,
+      isMulti,
+      isDisabled,
       error,
     } = this.props;
 
@@ -43,7 +45,6 @@ class FormSelect extends React.Component {
         justifyContent: "center",
         alignItems: "center",
         border: error ? `1px solid ${colors.RED(1)}` : "1px solid #E8E8F2",
-        backgroundColor: "#FBFBFD",
         height: 50,
         width: 188,
         backgroundColor: "#FBFBFD",
@@ -56,6 +57,7 @@ class FormSelect extends React.Component {
         ":focus": {
           borderColor: "#D2D2E6",
         },
+        ...inputStyle,
       }),
       placeholder: (styles) => ({
         ...styles,
@@ -89,6 +91,9 @@ class FormSelect extends React.Component {
           placeholder={placeholder}
           value={value}
           required={required ? required : "false"}
+          isMulti={isMulti}
+          isSearchable={true}
+          isDisabled={isDisabled}
         />
       </div>
     );
