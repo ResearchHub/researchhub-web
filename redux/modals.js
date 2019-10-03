@@ -2,9 +2,10 @@
  *        ACTIONS SECTION         *
  **********************************/
 
-const ModalConstants = {
+export const ModalConstants = {
   UPLOAD_PAPER_MODAL_TOGGLE: "@@modal/UPLOAD_PAPER_MODAL_TOGGLE",
-  ADD_AUTHOR_MODAL_TOGGLE: "@@MODAL/ADD_AUTHOR_MODAL_TOGGLE",
+  ADD_AUTHOR_MODAL_TOGGLE: "@@modal/ADD_AUTHOR_MODAL_TOGGLE",
+  LOGIN_MODAL_TOGGLE: "@@modal/LOGIN_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -32,18 +33,29 @@ export const ModalActions = {
       });
     };
   },
+  openLoginModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.LOGIN_MODAL_TOGGLE,
+        payload: {
+          openLoginModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
  *        REDUCER SECTION         *
  **********************************/
 
-const defaultState = {
+const defaultModalState = {
   openUploadPaperModal: false,
   openAddAuthorModal: false,
+  openLoginModal: false,
 };
 
-const ModalReducer = (state = defaultState, action) => {
+const ModalReducer = (state = defaultModalState, action) => {
   switch (action.type) {
     case ModalConstants.UPLOAD_PAPER_MODAL_TOGGLE:
       return {
@@ -51,6 +63,11 @@ const ModalReducer = (state = defaultState, action) => {
         ...action.payload,
       };
     case ModalConstants.ADD_AUTHOR_MODAL_TOGGLE:
+      return {
+        ...state,
+        ...action.payload,
+      };
+    case ModalConstants.LOGIN_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
