@@ -2,7 +2,7 @@ import moment from "moment";
 
 import { getNestedValue } from "~/config/utils";
 
-export const paperShim = (paper) => {
+export const paper = (paper) => {
   return {
     ...paper,
     discussion: {
@@ -10,6 +10,33 @@ export const paperShim = (paper) => {
       count: paper.discussion.count,
       threads: transformThreads(paper.discussion.threads),
     },
+  };
+};
+
+export const paperPost = ({
+  authors,
+  doi,
+  file,
+  hubs,
+  publishDate,
+  title,
+  url,
+}) => {
+  return {
+    authors,
+    doi,
+    file,
+    hubs,
+    paper_publish_date: publishDate,
+    title,
+    url,
+  };
+};
+
+export const paperSummaryPost = ({ paperId, text }) => {
+  return {
+    paper: paperId,
+    summary: text,
   };
 };
 
