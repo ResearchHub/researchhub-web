@@ -99,7 +99,7 @@ class DraftEditor extends React.Component {
           //customBlockRenderFunc={this._TeXBlockRenderer}
           //toolbarCustomButtons={this._TeXBlockButton}
         />
-        {!this.props.readOnly && (
+        {!this.props.readOnly && !this.props.hideButtons && (
           <div className={css(styles.editorActions)}>
             <button
               className={css(styles.button, styles.cancel)}

@@ -25,7 +25,7 @@ class AuthorCardList extends React.Component {
       let { first_name, last_name, email, avatar, onRemove } = author;
 
       return (
-        <div className={css(styles.authorCard)}>
+        <div className={css(styles.authorCard)} key={`${i}-${email}`}>
           {avatar ? (
             <img className={css(styles.avatar)} src={uri(avatar)} />
           ) : (

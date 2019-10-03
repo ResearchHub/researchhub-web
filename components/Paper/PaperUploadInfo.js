@@ -2,173 +2,622 @@ import React from "react";
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import Progress from "react-progressbar";
-import "./progressbar.css";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { EditorState, convertFromRaw } from "draft-js";
 
 // Component
-import CheckBox from "../CheckBox";
-import FormInput from "../FormInput";
+import CheckBox from "../Form/CheckBox";
+import FormInput from "../Form/FormInput";
 import PaperEntry from "../SearchSuggestion/PaperEntry";
-import Button from "../Button";
-// TODO: make component for author suggestion
+import DragNDrop from "../Form/DragNDrop";
+import Button from "../Form/Button";
+import AuthorCardList from "../SearchSuggestion/AuthorCardList";
+import FormSelect from "../Form/FormSelect";
+import dynamic from "next/dynamic";
+
+// Modal
+import AddAuthorModal from "../modal/AddAuthorModal";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
+import { PaperActions } from "../../redux/paper";
 
 // Config
 import colors from "../../config/themes/colors";
+import API from "../../config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import { DEFAULT_SUMMARY } from "../DraftEditor/DefaultSummary";
+import * as Options from "../../config/utils/options";
+
+const DraftEditor = dynamic(() => import("../DraftEditor/DraftEditor"), {
+  ssr: false,
+});
+
+const authors = [
+  {
+    first_name: "Amanda",
+    last_name: "Collins",
+    email: "amandacollins@gmail.com",
+  },
+  {
+    first_name: "Kevin",
+    last_name: "Miller",
+    email: "kevinwest4852@gmail.com",
+  },
+  {
+    first_name: "Amanda",
+    last_name: "Collins",
+    email: "amandacollins@gmail.com",
+  },
+  {
+    first_name: "Kevin",
+    last_name: "Miller",
+    email: "kevinwest4852@gmail.com",
+  },
+];
 
 class PaperUploadInfo extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    let initialState = {
       form: {
         paper_title: "",
-        authors: [],
         published: {
-          year: "",
-          month: "",
-          day: "",
+          year: null,
+          month: null,
+          day: null,
+        },
+        author: {
+          self_author: false,
         },
         type: {
           journal: false,
-          confernce: false,
+          conference: false,
           other: false,
         },
         hubs: [],
-        summary: "",
       },
       discussion: {
         title: "",
         question: "",
       },
+      error: {
+        year: false,
+        month: false,
+        day: false,
+        hubs: false,
+        dnd: false,
+      },
+
+      summary: EditorState.createEmpty(),
+      showAuthorList: false,
       progress: 33.33,
+      activeStep: 1,
+      searchAuthor: "",
+      authors: [],
+      loading: false,
+      uploadingPaper: false,
+    };
+    this.state = {
+      ...initialState,
     };
   }
 
+  componentDidMount() {
+    let { paper } = this.props;
+    let form = { ...this.state.form };
+    form.paper_title = paper.uploadedPaper.name;
+    let contentState = convertFromRaw(DEFAULT_SUMMARY);
+    let editorState = EditorState.createWithContent(contentState);
+    this.setState({ summary: editorState, form });
+  }
+
+  handleAuthorSelect = (id, value) => {};
+
   handleCheckBoxToggle = (id, state) => {
-    let { form } = this.state;
+    let form = JSON.parse(JSON.stringify(this.state.form));
     let type = { ...form.type };
-    // set everything to false
-    // set active to true // false
-    // set state with new form object
+    // set all values to false (so only 1 option can be selected)
+    type.journal = false;
+    type.conference = false;
+    type.other = false;
+    // set appropriate button to correct state
+    type[id] = state;
+    form.type = type;
+    this.setState({ form });
+  };
+
+  handleInputChange = (id, value) => {
+    let form = JSON.parse(JSON.stringify(this.state.form));
+    let error = { ...this.state.error };
+    let keys = id.split(".");
+    if (keys.length < 2) {
+      form[keys[0]] = value;
+    } else {
+      form[keys[0]][keys[1]] = value;
+      keys[0] === "published" ? (error[keys[1]] = false) : null; // removes red border on select fields
+    }
+    this.setState({ form, error });
+  };
+
+  handleHubSelection = (id, value) => {
+    let form = JSON.parse(JSON.stringify(this.state.form));
+    let error = { ...this.state.error };
+    value = value || [];
+    if (value.length > 3) {
+      let mostRecent = [...value].pop();
+      form.hubs[2] = mostRecent;
+    } else {
+      form.hubs = [...value];
+    }
+    if (error.hubs) {
+      error.hubs = form.hubs.length > 0 ? false : true;
+    }
+    this.setState({ form, error });
+  };
+
+  onEditorStateChange = (editorState) => {
+    this.setState({ editorState });
+  };
+
+  searchAuthors = async (id, value) => {
+    if (value === "") {
+      return this.setState({
+        loading: false,
+        showAuthorList: false,
+        searchAuthor: value,
+      });
+    }
+    // api call
+    await this.setState({
+      loading: true,
+      showAuthorList: true,
+      searchAuthor: value,
+    });
+
+    setTimeout(() => {
+      this.setState({
+        authors: authors,
+        loading: false,
+      });
+    }, 400);
+  };
+
+  uploadPaper = async (acceptedFiles, binaryStr) => {
+    let { paperActions } = this.props;
+    let error = { ...this.state.error };
+    let form = JSON.parse(JSON.stringify(this.state.form));
+    let uploadedFile = acceptedFiles[0];
+    await this.setState({ uploadingPaper: true });
+
+    let grabName = () => {
+      let arr = uploadedFile.name.split(".");
+      arr.pop();
+      return arr.join(".");
+    };
+    let name = grabName();
+    form.paper_title = name;
+    setTimeout(async () => {
+      await paperActions.uploadPaperToState(uploadedFile);
+      error.dnd = false;
+      this.setState({
+        uploadingPaper: false,
+        form,
+        error,
+      });
+    }, 400);
+  };
+
+  openAddAuthorModal = async () => {
+    let { modals, modalActions } = this.props;
+    await modalActions.openAddAuthorModal(true);
+  };
+
+  removePaper = () => {
+    let { paperActions } = this.props;
+    paperActions.removePaperFromState();
   };
 
   renderTitle = () => {
+    let { activeStep } = this.state;
+    switch (activeStep) {
+      case 1:
+        return (
+          <div className={css(styles.titleContainer)}>
+            <div className={css(styles.title, styles.text)}>Paper Upload</div>
+            <div className={css(styles.subtitle, styles.text)}>
+              Step 1: Main Information
+            </div>
+          </div>
+        );
+      case 2:
+        return (
+          <div className={css(styles.titleContainer)}>
+            <div className={css(styles.title, styles.text)}>Paper Upload</div>
+            <div className={css(styles.subtitle, styles.text)}>
+              Step 2: Add a summary that concisely highlights the main aspects
+              of the paper
+            </div>
+          </div>
+        );
+      case 3:
+        return (
+          <div className={css(styles.titleContainer)}>
+            <div className={css(styles.title, styles.text)}>Paper Upload</div>
+            <div className={css(styles.subtitle, styles.text)}>
+              Step 3: Start a discussion on the paper
+            </div>
+          </div>
+        );
+    }
+  };
+
+  renderHeader = (label, header = false) => {
     return (
-      <div className={css(styles.titleContainer)}>
-        <div className={css(styles.title, styles.text)}>Paper Upload</div>
-        <div className={css(styles.subtitle, styles.text)}>
-          Step 1: Main Information
-        </div>
+      <div className={css(styles.header, styles.text)}>
+        {label}
+        {header && (
+          <div className={css(styles.headerButton, styles.text)}>{header}</div>
+        )}
       </div>
     );
   };
 
-  renderHeader = (label) => {
-    return <div className={css(styles.header, styles.text)}>{label}</div>;
+  renderContent = () => {
+    let {
+      progress,
+      form,
+      discussion,
+      summary,
+      showAuthorList,
+      loading,
+      activeStep,
+      uploadingPaper,
+      error,
+    } = this.state;
+    switch (activeStep) {
+      case 1:
+        return (
+          <span>
+            {this.renderHeader("Academic Paper")}
+            <div className={css(styles.section)}>
+              <div className={css(styles.paper)}>
+                <div className={css(styles.label)}>
+                  Paper PDF
+                  <span className={css(styles.asterick)}>*</span>
+                </div>
+                <DragNDrop
+                  pasteUrl={false}
+                  handleDrop={this.uploadPaper}
+                  p
+                  loading={uploadingPaper}
+                  uploadFinish={
+                    Object.keys(this.props.paper.uploadedPaper).length > 0
+                  }
+                  uploadedPaper={this.props.paper.uploadedPaper}
+                  reset={this.removePaper}
+                  error={error.dnd}
+                  isDynamic={true}
+                />
+              </div>
+            </div>
+            {this.renderHeader("Main Information")}
+            <div className={css(styles.section, styles.padding)}>
+              <FormInput
+                label={"Paper Title"}
+                placeholder="Enter title of paper"
+                required={true}
+                containerStyle={styles.container}
+                inputStyle={styles.inputStyle}
+                value={form.paper_title}
+                id={"paper_title"}
+                onChange={this.handleInputChange}
+              />
+              <FormInput
+                label={"Authors"}
+                placeholder="Search for author"
+                required={true}
+                containerStyle={styles.container}
+                inputStyle={styles.search}
+                search={true}
+                id={"searchAuthor"}
+                onChange={this.searchAuthors}
+              />
+              <AuthorCardList
+                show={showAuthorList}
+                authors={authors}
+                loading={loading}
+                addAuthor={this.openAddAuthorModal}
+              />
+              <div className={css(styles.row, styles.authorCheckboxContainer)}>
+                <CheckBox
+                  isSquare={true}
+                  active={form.author.self_author}
+                  label={"I am an author of this paper"}
+                  id={"author.self_author"}
+                  onChange={this.handleInputChange}
+                />
+              </div>
+              <div className={css(styles.row)}>
+                <FormSelect
+                  label={"Year of Publication"}
+                  placeholder="yyyy"
+                  required={true}
+                  containerStyle={styles.smallContainer}
+                  inputStyle={styles.smallInput}
+                  value={form.published.year}
+                  id={"published.year"}
+                  options={Options.range(1960, 2019)}
+                  onChange={this.handleInputChange}
+                  error={error.year}
+                />
+                <FormSelect
+                  label={"Month of Publication"}
+                  placeholder="month"
+                  required={true}
+                  containerStyle={styles.smallContainer}
+                  inputStyle={styles.smallInput}
+                  value={form.published.month}
+                  id={"published.month"}
+                  options={Options.months}
+                  onChange={this.handleInputChange}
+                  error={error.month}
+                />
+                <FormSelect
+                  label={"Day of Publication"}
+                  placeholder="dd"
+                  required={true}
+                  containerStyle={styles.smallContainer}
+                  inputStyle={styles.smallInput}
+                  value={form.published.day}
+                  id={"published.day"}
+                  options={Options.range(1, 31)}
+                  onChange={this.handleInputChange}
+                  error={error.day}
+                />
+              </div>
+              <div className={css(styles.section, styles.leftAlign)}>
+                <p className={css(styles.label)}>Type</p>
+                <div className={css(styles.row)}>
+                  <div className={css(styles.checkboxRow)}>
+                    <CheckBox
+                      active={form.type.journal}
+                      label={"Journal"}
+                      id={"journal"}
+                      onChange={this.handleCheckBoxToggle}
+                    />
+                    <CheckBox
+                      active={form.type.conference}
+                      label={"Conference"}
+                      id={"conference"}
+                      onChange={this.handleCheckBoxToggle}
+                    />
+                    <CheckBox
+                      active={form.type.other}
+                      label={"Other"}
+                      id={"other"}
+                      onChange={this.handleCheckBoxToggle}
+                    />
+                  </div>
+                </div>
+              </div>
+              <FormSelect
+                label={"Hubs"}
+                placeholder="Select up to 3 hubs"
+                required={true}
+                containerStyle={styles.container}
+                inputStyle={customStyles.input}
+                isMulti={true}
+                value={form.hubs}
+                id={"hubs"}
+                options={Options.months}
+                onChange={this.handleHubSelection}
+                error={error.hubs}
+              />
+            </div>
+          </span>
+        );
+      case 2:
+        return (
+          <span>
+            {this.renderHeader("Summary", "Summary Guideline")}
+            <div className={css(styles.draftEditor)}>
+              <DraftEditor
+                onEditorStateChange={this.onEditorStateChange}
+                editorState={summary}
+                hideButtons={true}
+              />
+            </div>
+          </span>
+        );
+      case 3:
+        return (
+          <span>
+            {this.renderHeader("Discussion")}
+            <div className={css(styles.section)}>
+              <FormInput
+                label={"Title"}
+                placeholder="Title of discussion"
+                containerStyle={styles.container}
+                inputStyle={styles.inputStyle}
+                value={discussion.title}
+                // id={'published.month'}
+                // onChange={this.handleInputChange}
+              />
+              <FormInput
+                label={"Question"}
+                placeholder="Leave a question or a comment"
+                containerStyle={styles.container}
+                inputStyle={styles.inputStyle}
+                value={discussion.question}
+                // id={'published.month'}
+                // onChange={this.handleInputChange}
+              />
+            </div>
+          </span>
+        );
+    }
   };
 
-  nextStep = () => {
-    this.setState({ progress: this.state.progress + 33.33 });
+  renderButtons = () => {
+    let { activeStep } = this.state;
+    switch (activeStep) {
+      case 1:
+        return (
+          <div className={css(styles.buttonRow, styles.buttons)}>
+            <div className={css(styles.button, styles.buttonLeft)}>
+              <span className={css(styles.buttonLabel, styles.text)}>
+                Cancel
+              </span>
+            </div>
+            <Button
+              label={"Next Step"}
+              customButtonStyle={styles.button}
+              type={"submit"}
+            />
+          </div>
+        );
+      case 2:
+        return (
+          <div className={css(styles.buttonRow, styles.buttons)}>
+            <div className={css(styles.backButton)} onClick={this.prevStep}>
+              <img
+                src={"/static/icons/back-arrow-blue.png"}
+                className={css(styles.backButtonIcon)}
+              />
+              Back to previous step
+            </div>
+            <div className={css(styles.button, styles.buttonLeft)}>
+              <Button
+                label={"Skip for now"}
+                customButtonStyle={styles.button}
+                isWhite={true}
+              />
+            </div>
+            <Button
+              label={"Save"}
+              customButtonStyle={styles.button}
+              onClick={this.nextStep}
+            />
+          </div>
+        );
+      case 3:
+        return (
+          <div className={css(styles.buttonRow, styles.buttons)}>
+            <div className={css(styles.backButton)} onClick={this.prevStep}>
+              <img
+                src={"/static/icons/back-arrow-blue.png"}
+                className={css(styles.backButtonIcon)}
+              />
+              Back to previous step
+            </div>
+            <div className={css(styles.button, styles.buttonLeft)}>
+              <Button
+                label={"Skip for now"}
+                customButtonStyle={styles.button}
+                isWhite={true}
+              />
+            </div>
+            <Button
+              label={"Save"}
+              customButtonStyle={styles.button}
+              onClick={this.nextStep}
+            />
+          </div>
+        );
+    }
+  };
+
+  validateSelectors = async () => {
+    let { published, hubs } = this.state.form;
+    let { paper } = this.props;
+    let error = { ...this.state.error };
+    let pass = true;
+    if (!published.year) {
+      pass = false;
+      error.year = true;
+    }
+    if (!published.month) {
+      pass = false;
+      error.month = true;
+    }
+    if (!published.day) {
+      pass = false;
+      error.day = true;
+    }
+    if (hubs.length < 1) {
+      pass = false;
+      error.hubs = true;
+    }
+    if (!(Object.keys(paper.uploadedPaper).length > 0)) {
+      pass = false;
+      error.dnd = true;
+    }
+    await this.setState({ error });
+    return pass;
+  };
+
+  nextStep = async () => {
+    let { activeStep } = this.state;
+    //make sure activeStep doesn't exceed 3
+    // if (await this.validateSelectors()) {
+    this.setState({
+      progress: this.state.progress + 33.33,
+      activeStep: activeStep + 1,
+    });
+    // }
+  };
+
+  prevStep = () => {
+    let { activeStep } = this.state;
+    this.setState({
+      progress: this.state.progress - 33.33,
+      activeStep: activeStep - 1,
+    });
+  };
+
+  saveSummary = () => {
+    let contentState = this.state.summary.getCurrentContent();
+    let raw = convertToRaw(contentState);
+    // let param = { summary: raw, paper: this.props.paperId };
+    let param = { summary: raw };
+    fetch(API.SUMMARY({}), API.POST_CONFIG(param))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {});
   };
 
   render() {
-    let { progress } = this.state;
+    let {
+      progress,
+      form,
+      discussion,
+      showAuthorList,
+      loading,
+      activeStep,
+      error,
+    } = this.state;
+    let { modals } = this.props;
     return (
       <div className={css(styles.background)}>
+        <AddAuthorModal isOpen={modals.openAddAuthorModal} />
         {this.renderTitle()}
-        <div className={css(styles.pageContent)}>
-          <div className={css(styles.progressBar)}>
-            <Progress completed={progress} />
-          </div>
-          {this.renderHeader("Academic Paper")}
-          <div className={css(styles.section)}>
-            <div className={css(styles.paper)}>
-              <div className={css(styles.label)}>
-                Paper PDF
-                <span className={css(styles.asterick)}>*</span>
-              </div>
-              <PaperEntry fileUpload={true} file={this.props.uploadedPaper} />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            activeStep === 1 && this.nextStep();
+          }}
+        >
+          <div className={css(styles.pageContent)}>
+            <div className={css(styles.progressBar)}>
+              <Progress completed={progress} />
             </div>
+            {this.renderContent()}
+            {/* {errorMessage && <div className={css(styles.errorMessage)}>Oops! Looks like your form is incomplete.</div>} */}
           </div>
-          {this.renderHeader("Main Information")}
-          <div className={css(styles.section, styles.padding)}>
-            <FormInput
-              label={"Paper Title"}
-              placeholder="Enter title of paper"
-              required={true}
-              containerStyle={styles.container}
-              inputStyle={styles.inputStyle}
-            />
-            <FormInput
-              label={"Authors"}
-              placeholder="Search for author"
-              required={true}
-              containerStyle={styles.container}
-              inputStyle={styles.search}
-              search={true}
-            />
-            <div className={css(styles.row, styles.authorCheckboxContainer)}>
-              <CheckBox
-                isSquare={true}
-                active={false}
-                label={"I am an author of this paper"}
-              />
-            </div>
-            <div className={css(styles.row)}>
-              <FormInput
-                label={"Year of Publication"}
-                placeholder="yyyy"
-                required={true}
-                containerStyle={styles.smallContainer}
-                inputStyle={styles.smallInput}
-              />
-              <FormInput
-                label={"Month of Publication"}
-                placeholder="mm"
-                required={true}
-                containerStyle={styles.smallContainer}
-                inputStyle={styles.smallInput}
-              />
-              <FormInput
-                label={"Day of Publication"}
-                placeholder="dd"
-                required={true}
-                containerStyle={styles.smallContainer}
-                inputStyle={styles.smallInput}
-              />
-            </div>
-            <div className={css(styles.section, styles.leftAlign)}>
-              <p className={css(styles.label)}>Type</p>
-              <div className={css(styles.row)}>
-                <div className={css(styles.checkboxRow)}>
-                  <CheckBox active={false} label={"Journal"} />
-                  <CheckBox active={false} label={"Conference"} />
-                  <CheckBox active={false} label={"Other"} />
-                </div>
-              </div>
-            </div>
-            <FormInput
-              label={"Hubs"}
-              placeholder="Select up to 3 hubs"
-              required={true}
-              containerStyle={styles.container}
-              inputStyle={styles.inputStyle}
-            />
-          </div>
-        </div>
-        <div className={css(styles.row, styles.buttons)}>
-          <div className={css(styles.button, styles.buttonLeft)}>
-            <span className={css(styles.buttonLabel, styles.text)}>Cancel</span>
-          </div>
-          <Button
-            label={"Next Step"}
-            customButtonStyle={styles.button}
-            onClick={this.nextStep}
-          />
-        </div>
+          {this.renderButtons()}
+        </form>
       </div>
     );
   }
@@ -177,7 +626,6 @@ class PaperUploadInfo extends React.Component {
 const styles = StyleSheet.create({
   background: {
     backgroundColor: "#FCFCFC",
-    // padding: '182px 320px 182px 320px',
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -208,8 +656,8 @@ const styles = StyleSheet.create({
   pageContent: {
     width: "70%",
     minWidth: 820,
-    minHeight: 928,
-    maxHeight: 1128,
+    minHeight: 500,
+    // maxHeight: 1128,
     position: "relative",
     backgroundColor: "#FFF",
     // todo: fix shadow properties
@@ -228,7 +676,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     width: "100%",
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     paddingBottom: 8,
     borderBottom: `1px solid #EBEBEB`,
   },
@@ -253,7 +701,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontWeight: 500,
     fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 10,
   },
   asterick: {
     color: colors.BLUE(1),
@@ -292,10 +740,19 @@ const styles = StyleSheet.create({
   leftAlign: {
     alignItems: "flex-start",
   },
-  buttons: {
-    marginTop: 50,
+  buttonRow: {
+    width: "70%",
+    minWidth: 820,
+    display: "flex",
     justifyContent: "center",
-    width: "100%",
+    alignItems: "center",
+    position: "relative",
+    padding: 60,
+  },
+  buttons: {
+    marginTop: 20,
+    justifyContent: "center",
+    // width: "100%",
     marginBottom: 80,
   },
   button: {
@@ -306,6 +763,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 20,
   },
   buttonLabel: {
     color: colors.BLUE(1),
@@ -314,6 +772,59 @@ const styles = StyleSheet.create({
       textDecoration: "underline",
     },
   },
+  backButton: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    color: colors.BLUE(1),
+    fontFamily: "Roboto",
+    fontSize: 16,
+    position: "absolute",
+    left: 0,
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
+  backButtonIcon: {
+    height: 12,
+    width: 7,
+    marginRight: 10,
+  },
+  headerButton: {
+    fontSize: 16,
+    color: colors.BLUE(1),
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
+  draftEditor: {
+    marginTop: 25,
+  },
 });
 
-export default PaperUploadInfo;
+const customStyles = {
+  container: {
+    width: 600,
+  },
+  input: {
+    width: 600,
+    display: "flex",
+  },
+};
+
+const mapStateToProps = (state) => ({
+  modals: state.modals,
+  paper: state.paper,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  modalActions: bindActionCreators(ModalActions, dispatch),
+  paperActions: bindActionCreators(PaperActions, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PaperUploadInfo);
