@@ -52,15 +52,18 @@ export function fetchComments(paperId, threadId, page) {
 export function postComment(paperId, threadId, text) {
   return async (dispatch) => {
     const response = await fetch(
-      API.THREAD_COMMENT(paperId, threadId, text),
-      API.POST_CONFIG()
+      API.THREAD_COMMENT(paperId, threadId),
+      API.POST_CONFIG({
+        text,
+        parent: threadId,
+      })
     ).catch(handleCatch);
 
-    // return dispatchResult(
-    //   response,
-    //   dispatch(actions.setPostCommentFailure()),
-    //   dispatch(actions.setPostCommentSuccess())
-    // );
+    return dispatchResult(
+      response,
+      dispatch(actions.setPostCommentFailure()),
+      dispatch(actions.setPostCommentSuccess())
+    );
   };
 }
 
@@ -73,8 +76,9 @@ function dispatchResult(response, failure, success) {
   if (!response.ok) {
     logFetchError(response);
     return failure;
+  } else {
+    return success;
   }
-  return success;
 }
 
 const DiscussionActions = {
@@ -82,6 +86,8 @@ const DiscussionActions = {
   fetchThreadPending: actions.setThreadPending,
   fetchComments,
   fetchCommentsPending: actions.setCommentsPending,
+  postComment,
+  postCommentPending: actions.setPostCommentPending,
 };
 
 export default DiscussionActions;
