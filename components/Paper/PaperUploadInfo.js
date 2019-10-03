@@ -15,6 +15,7 @@ import Button from "../Form/Button";
 import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import FormSelect from "../Form/FormSelect";
 import dynamic from "next/dynamic";
+import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 
 // Modal
 import AddAuthorModal from "../modal/AddAuthorModal";
@@ -88,6 +89,7 @@ class PaperUploadInfo extends React.Component {
         day: false,
         hubs: false,
         dnd: false,
+        author: false,
       },
 
       summary: EditorState.createEmpty(),
@@ -96,6 +98,7 @@ class PaperUploadInfo extends React.Component {
       activeStep: 1,
       searchAuthor: "",
       authors: [],
+      tags: [],
       loading: false,
       uploadingPaper: false,
     };
@@ -113,7 +116,23 @@ class PaperUploadInfo extends React.Component {
     this.setState({ summary: editorState, form });
   }
 
-  handleAuthorSelect = (id, value) => {};
+  handleAuthorSelect = (value) => {
+    if (this.state.tags.length !== 3) {
+      let error = { ...this.state.error };
+      error.author = false;
+      this.setState({
+        tags: [...this.state.tags, value],
+        searchAuthor: "",
+        error,
+      });
+    }
+  };
+
+  handleAuthorChange = (tags) => {
+    if (tags.length < this.state.tags.length) {
+      this.setState({ tags });
+    }
+  };
 
   handleCheckBoxToggle = (id, state) => {
     let form = JSON.parse(JSON.stringify(this.state.form));
@@ -137,6 +156,7 @@ class PaperUploadInfo extends React.Component {
     } else {
       form[keys[0]][keys[1]] = value;
       keys[0] === "published" ? (error[keys[1]] = false) : null; // removes red border on select fields
+      keys[0] === "author" ? (error[keys[0]] = false) : null;
     }
     this.setState({ form, error });
   };
@@ -167,7 +187,7 @@ class PaperUploadInfo extends React.Component {
     this.setState({ editorState });
   };
 
-  searchAuthors = async (id, value) => {
+  searchAuthors = async (value) => {
     if (value === "") {
       return this.setState({
         loading: false,
@@ -281,6 +301,7 @@ class PaperUploadInfo extends React.Component {
       activeStep,
       uploadingPaper,
       error,
+      searchAuthor,
     } = this.state;
     switch (activeStep) {
       case 1:
@@ -296,7 +317,6 @@ class PaperUploadInfo extends React.Component {
                 <DragNDrop
                   pasteUrl={false}
                   handleDrop={this.uploadPaper}
-                  p
                   loading={uploadingPaper}
                   uploadFinish={
                     Object.keys(this.props.paper.uploadedPaper).length > 0
@@ -320,21 +340,21 @@ class PaperUploadInfo extends React.Component {
                 id={"paper_title"}
                 onChange={this.handleInputChange}
               />
-              <FormInput
+              <AuthorInput
+                tags={this.state.tags}
+                onChange={this.handleAuthorChange}
+                onChangeInput={this.searchAuthors}
+                inputValue={searchAuthor}
                 label={"Authors"}
-                placeholder="Search for author"
                 required={true}
-                containerStyle={styles.container}
-                inputStyle={styles.search}
-                search={true}
-                id={"searchAuthor"}
-                onChange={this.searchAuthors}
+                error={error.author}
               />
               <AuthorCardList
                 show={showAuthorList}
                 authors={authors}
                 loading={loading}
                 addAuthor={this.openAddAuthorModal}
+                onAuthorClick={this.handleAuthorSelect}
               />
               <div className={css(styles.row, styles.authorCheckboxContainer)}>
                 <CheckBox
@@ -536,7 +556,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   validateSelectors = async () => {
-    let { published, hubs } = this.state.form;
+    let { published, hubs, author } = this.state.form;
     let { paper } = this.props;
     let error = { ...this.state.error };
     let pass = true;
@@ -560,6 +580,10 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.dnd = true;
     }
+    if (author.self_author === false || this.state.tags) {
+      pass = false;
+      error.author = true;
+    }
     await this.setState({ error });
     return pass;
   };
@@ -567,12 +591,12 @@ class PaperUploadInfo extends React.Component {
   nextStep = async () => {
     let { activeStep } = this.state;
     //make sure activeStep doesn't exceed 3
-    // if (await this.validateSelectors()) {
-    this.setState({
-      progress: this.state.progress + 33.33,
-      activeStep: activeStep + 1,
-    });
-    // }
+    if (await this.validateSelectors()) {
+      this.setState({
+        progress: this.state.progress + 33.33,
+        activeStep: activeStep + 1,
+      });
+    }
   };
 
   prevStep = () => {
