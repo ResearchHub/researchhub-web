@@ -61,13 +61,17 @@ const Paper = (props) => {
           <div className={css(styles.title)}>{paper && paper.title}</div>
           <div className={css(styles.authors)}>{renderAuthors()}</div>
           <div className={css(styles.infoSection)}>
-            <div className={css(styles.info)}>
-              Published{" "}
-              {moment(paper && paper.paper_publish_date).format(
-                "DD MMMM, YYYY"
-              )}
-            </div>
-            <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
+            {paper.paper_publish_date && (
+              <div className={css(styles.info)}>
+                Published{" "}
+                {moment(paper && paper.paper_publish_date).format(
+                  "DD MMMM, YYYY"
+                )}
+              </div>
+            )}
+            {paper.doi && (
+              <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
+            )}
           </div>
         </div>
       </ComponentWrapper>

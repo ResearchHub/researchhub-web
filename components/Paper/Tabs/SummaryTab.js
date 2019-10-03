@@ -105,6 +105,7 @@ class SummaryTab extends React.Component {
       });
     }
   };
+
   render() {
     return (
       <ComponentWrapper>

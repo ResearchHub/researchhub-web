@@ -5,6 +5,7 @@ export const Button = (props) => {
   const { active, onMouseDown, first } = props;
 
   const classNames = [styles.button];
+  console.log(active);
 
   if (active) {
     classNames.push(styles.buttonActive);
@@ -14,13 +15,12 @@ export const Button = (props) => {
     classNames.push(styles.first);
   }
 
-  function onClick(e) {
-    console.log(onMouseDown);
-    onMouseDown(e);
-  }
+  // function onClick(e) {
+  //   onMouseDown(e);
+  // }
 
   return (
-    <span className={css(classNames)} onClick={onClick}>
+    <span className={css(classNames)} onMouseDown={onMouseDown}>
       {props.children}
     </span>
   );
@@ -44,9 +44,6 @@ export const ToolBar = (props) => {
 const styles = StyleSheet.create({
   buttonActive: {
     color: colors.BLACK(1),
-  },
-  first: {
-    marginLeft: 0,
   },
   button: {
     color: "rgb(204, 204, 204)",
