@@ -16,6 +16,8 @@ const Button = ({
   customLabelStyle,
   onClick,
   onSubmit,
+  icon,
+  customIconStyle,
 }) => {
   // size is a enum; type string: ['small', 'med', 'big']
 
@@ -36,6 +38,12 @@ const Button = ({
             disabled && styles.disabled
           )}
         >
+          {icon && (
+            <img
+              src={icon}
+              className={css(styles.icon, iconStyle && iconStyle)}
+            />
+          )}
           <p
             className={css(
               styles.label,
@@ -62,6 +70,12 @@ const Button = ({
         onClick={onClick ? onClick : null}
         onSubmit={onSubmit ? onSubmit : null}
       >
+        {icon && (
+          <img
+            src={icon}
+            className={css(styles.icon, customIconStyle && customIconStyle)}
+          />
+        )}
         <p
           className={css(
             styles.label,
@@ -127,6 +141,9 @@ const styles = StyleSheet.create({
   disabled: {
     pointerEvents: "none",
     opacity: 0.4,
+  },
+  icon: {
+    marginRight: 10,
   },
 });
 
