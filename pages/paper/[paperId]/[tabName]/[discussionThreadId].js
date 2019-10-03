@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Value } from "slate";
+import Plain from "slate-plain-serializer";
 
 import DiscussionCard from "~/components/DiscussionCard";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
@@ -144,10 +146,17 @@ const Comment = (props) => {
   let username = "";
 
   const { data } = props;
+
   if (data && !isEmpty(data)) {
     date = data.createdDate;
     text = data.text;
     username = createUsername(data);
+  }
+
+  if (typeof text === "string") {
+    text = Plain.deserialize(text);
+  } else {
+    text = Value.fromJSON(text);
   }
 
   return (
@@ -159,9 +168,7 @@ const Comment = (props) => {
             <DiscussionPostMetadata username={username} date={date} />
           </Fragment>
         }
-        info={
-          text // replace with texteditor
-        }
+        info={<TextEditor canEdit={false} initialValue={text} />}
         infoStyle={styles.commentInfo}
         action={"Reply"}
       />
@@ -176,15 +183,19 @@ const MoreButton = () => {
 
 const CommentBox = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const { paperId, discussionThreadId } = router.query;
 
-  function onSubmit(comment) {
-    console.log(comment);
-    // dispatch(DiscussionActions.postComment(comment));
+  async function onSubmit(comment) {
+    dispatch(DiscussionActions.postCommentPending());
+    await dispatch(
+      DiscussionActions.postComment(paperId, discussionThreadId, comment)
+    );
   }
 
   return (
     <div className={css(styles.commentBoxContainer)}>
-      <TextEditor canSubmit={true} onSubmit={onSubmit} />
+      <TextEditor canEdit={true} canSubmit={true} onSubmit={onSubmit} />
     </div>
   );
 };
