@@ -42,16 +42,19 @@ const styles = StyleSheet.create({
   checkBox: {
     height: 23,
     width: 23,
-    borderRadius: "50%",
+    borderRadius: 12,
     border: "1px solid #e8e8f1",
     cursor: "pointer",
     position: "relative",
     backgroundColor: "#FBFBFD",
+    ":hover": {
+      borderColor: "#D2D2E6",
+    },
   },
   dot: {
     height: 12,
     width: 12,
-    borderRadius: "50%",
+    borderRadius: 6,
     backgroundColor: "#FBFBFD",
     position: "absolute",
     top: "50%",
@@ -59,11 +62,14 @@ const styles = StyleSheet.create({
     transform: "translate(-53%, -44.5%)",
   },
   centered: {
-    transform: "translate(-47%, -44.5%)",
+    transform: "translate(-53%, -44.5%)",
   },
   active: {
     backgroundColor: colors.BLUE(1),
     border: `1px solid ${colors.BLUE(1)}`,
+    ":hover": {
+      borderColor: colors.BLUE(1),
+    },
   },
   square: {
     borderRadius: 0,

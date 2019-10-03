@@ -41,6 +41,8 @@ class FormInput extends React.Component {
       inputStyle,
       search,
       error,
+      icon,
+      iconStyles,
     } = this.props;
 
     return (
@@ -69,7 +71,8 @@ class FormInput extends React.Component {
             styles.input,
             inputStyle && inputStyle,
             styles.text,
-            search && styles.search
+            search && styles.search,
+            icon && styles.search
           )}
           onChange={this.handleChange}
         />
@@ -78,6 +81,12 @@ class FormInput extends React.Component {
           <img
             src={"/static/icons/search.png"}
             className={css(styles.searchIcon)}
+          />
+        )}
+        {icon && (
+          <img
+            src={icon}
+            className={css(styles.searchIcon, iconStyles && iconStyles)}
           />
         )}
       </div>

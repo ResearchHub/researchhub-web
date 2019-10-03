@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
+import Link from "next/link";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -10,36 +11,69 @@ const Button = ({
   isWhite,
   size,
   disabled,
+  isLink,
   customButtonStyle,
   customLabelStyle,
   onClick,
   onSubmit,
 }) => {
   // size is a enum; type string: ['small', 'med', 'big']
-  return (
-    <button
-      className={css(
-        styles.button,
-        isWhite && styles.isWhite,
-        size && styles[size],
-        customButtonStyle && customButtonStyle,
-        disabled && styles.disabled
-      )}
-      type={type ? type : "button"}
-      onClick={onClick ? onClick : null}
-      onSubmit={onSubmit ? onSubmit : null}
-    >
-      <p
-        className={css(
-          styles.label,
-          isWhite && styles.isWhiteLabel,
-          customLabelStyle && customLabelStyle
-        )}
+
+  if (isLink) {
+    let { href, linkAs } = isLink;
+    return (
+      <Link
+        href={href && href}
+        as={linkAs && linkAs}
+        // as={href && href}
       >
-        {label && label}
-      </p>
-    </button>
-  );
+        <div
+          className={css(
+            styles.button,
+            isWhite && styles.isWhite,
+            size && styles[size],
+            customButtonStyle && customButtonStyle,
+            disabled && styles.disabled
+          )}
+        >
+          <p
+            className={css(
+              styles.label,
+              isWhite && styles.isWhiteLabel,
+              customLabelStyle && customLabelStyle
+            )}
+          >
+            {label && label}
+          </p>
+        </div>
+      </Link>
+    );
+  } else {
+    return (
+      <button
+        className={css(
+          styles.button,
+          isWhite && styles.isWhite,
+          size && styles[size],
+          customButtonStyle && customButtonStyle,
+          disabled && styles.disabled
+        )}
+        type={type ? type : "button"}
+        onClick={onClick ? onClick : null}
+        onSubmit={onSubmit ? onSubmit : null}
+      >
+        <p
+          className={css(
+            styles.label,
+            isWhite && styles.isWhiteLabel,
+            customLabelStyle && customLabelStyle
+          )}
+        >
+          {label && label}
+        </p>
+      </button>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
