@@ -164,7 +164,7 @@ class PaperUploadInfo extends React.Component {
   handleDiscussionInputChange = (id, value) => {
     let discussion = { ...this.state.discussion };
     discussion[id] = value;
-    this.setState({ dicussion });
+    this.setState({ discussion });
   };
 
   handleHubSelection = (id, value) => {
