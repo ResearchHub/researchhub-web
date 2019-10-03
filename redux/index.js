@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
 import paperReducer from "./paper";
-import modals from "./modals";
+import modalReducer from "./modals";
 
 export default combineReducers({
-  modals,
+  modals: modalReducer,
   paper: paperReducer,
 });
