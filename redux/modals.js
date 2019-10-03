@@ -4,6 +4,7 @@
 
 const ModalConstants = {
   UPLOAD_PAPER_MODAL_TOGGLE: "@@modal/UPLOAD_PAPER_MODAL_TOGGLE",
+  ADD_AUTHOR_MODAL_TOGGLE: "@@MODAL/ADD_AUTHOR_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -13,9 +14,21 @@ export const ModalActions = {
    */
   openUploadPaperModal: (openModal) => {
     return (dispatch) => {
-      dispatch({
+      return dispatch({
         type: ModalConstants.UPLOAD_PAPER_MODAL_TOGGLE,
-        openUploadPaperModal: openModal,
+        payload: {
+          openUploadPaperModal: openModal,
+        },
+      });
+    };
+  },
+  openAddAuthorModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.ADD_AUTHOR_MODAL_TOGGLE,
+        payload: {
+          openAddAuthorModal: openModal,
+        },
       });
     };
   },
@@ -27,14 +40,20 @@ export const ModalActions = {
 
 const defaultState = {
   openUploadPaperModal: false,
+  openAddAuthorModal: false,
 };
 
 const ModalReducer = (state = defaultState, action) => {
   switch (action.type) {
-    case ModalConstants.OPEN_UPLOAD_PAPER_MODAL:
+    case ModalConstants.UPLOAD_PAPER_MODAL_TOGGLE:
       return {
         ...state,
-        ...action,
+        ...action.payload,
+      };
+    case ModalConstants.ADD_AUTHOR_MODAL_TOGGLE:
+      return {
+        ...state,
+        ...action.payload,
       };
     default:
       return state;
