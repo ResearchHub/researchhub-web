@@ -34,14 +34,18 @@ const TextEditor = (props) => {
   }
 
   function submit() {
-    onSubmit && onSubmit(value);
+    onSubmit && onSubmit(JSON.stringify(value.toJSON()));
   }
 
   const Editor = canEdit ? RichTextEditor : ReadOnlyEdtior;
 
   return (
     <Fragment>
-      <Editor readOnly={readOnly || false} />
+      <Editor
+        readOnly={readOnly || false}
+        onChange={setValue}
+        initialValue={value}
+      />
       <div className={css(styles.buttonContainer)}>
         {canCancel && (
           <button className={css(cancelButtonStyles)} onClick={cancel}>
