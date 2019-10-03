@@ -202,7 +202,12 @@ const CommentBox = () => {
 
   return (
     <div className={css(styles.commentBoxContainer)}>
-      <TextEditor canEdit={true} canSubmit={true} onSubmit={onSubmit} />
+      <TextEditor
+        canEdit={true}
+        canSubmit={true}
+        onSubmit={onSubmit}
+        commentEditor={true}
+      />
     </div>
   );
 };

@@ -25,6 +25,7 @@ const TextEditor = (props) => {
     placeholder,
     readOnly,
     isLoggedIn,
+    commentEditor,
   } = props;
 
   const defaultPlaceholder = "Enter some text...";
@@ -50,17 +51,16 @@ const TextEditor = (props) => {
   const Editor = canEdit ? RichTextEditor : ReadOnlyEdtior;
 
   return (
-    <Fragment>
-      <Editor
-        readOnly={readOnly || false}
-        onChange={setValue}
-        initialValue={value}
-        canCancel={canCancel}
-        canSubmit={canSubmit}
-        cancel={cancel}
-        submit={submit}
-      />
-    </Fragment>
+    <Editor
+      readOnly={readOnly || false}
+      onChange={setValue}
+      initialValue={value}
+      canCancel={canCancel}
+      canSubmit={canSubmit}
+      cancel={cancel}
+      submit={submit}
+      commentEditor={commentEditor}
+    />
   );
 };
 

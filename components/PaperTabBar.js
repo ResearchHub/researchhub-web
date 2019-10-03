@@ -102,6 +102,10 @@ const styles = StyleSheet.create({
       marginRight: 28,
     },
 
+    "@media only screen and (min-width: 1024px)": {
+      marginRight: 45,
+    },
+
     "@media only screen and (min-width: 1288px)": {
       marginRight: 80,
     },
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
   },
   ui: {
     border: "1px solid #AAA7B9",
+    borderRadius: 3,
   },
   selectedUi: {
     borderColor: colors.PURPLE(1),
