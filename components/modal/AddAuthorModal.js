@@ -47,6 +47,13 @@ class AddAuthorModal extends React.Component {
     this.setState({ [id]: value });
   };
 
+  addNewUser = () => {
+    let params = {
+      ...this.state,
+    };
+    this.props.addNewUser(params);
+    this.closeModal();
+  };
   render() {
     let { first_name, last_name, university, email, social_media } = this.state;
     let { modals } = this.props;
@@ -142,7 +149,7 @@ class AddAuthorModal extends React.Component {
           <Button
             label={"Add user"}
             customButtonStyle={styles.button}
-            // onClick={}
+            onClick={this.addNewUser}
           />
         </div>
       </Modal>

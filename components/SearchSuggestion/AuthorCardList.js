@@ -23,14 +23,12 @@ class AuthorCardList extends React.Component {
   renderAuthorCard = (authors) => {
     return authors.map((author, i) => {
       let { first_name, last_name, email, avatar, onRemove } = author;
-
       return (
         <div
           className={css(styles.authorCard)}
           key={`${i}-${email}`}
           onClick={() =>
-            this.props.onAuthorClick &&
-            this.props.onAuthorClick(`${first_name} ${last_name}`)
+            this.props.onAuthorClick && this.props.onAuthorClick(author)
           }
         >
           {avatar ? (
