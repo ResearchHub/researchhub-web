@@ -1,7 +1,8 @@
 import { Value } from "slate";
 import { Editor } from "slate-react";
+import Plain from "slate-plain-serializer";
 
-const defaultInitialValue = Value.fromJSON({
+const defaultValue = Value.fromJSON({
   document: {
     nodes: [
       {
@@ -12,7 +13,7 @@ const defaultInitialValue = Value.fromJSON({
             object: "text",
             leaves: [
               {
-                text: "No initial value",
+                text: "No value provided",
               },
             ],
           },
@@ -24,7 +25,7 @@ const defaultInitialValue = Value.fromJSON({
 
 const ReadOnlyEdtior = (props) => {
   const { initialValue } = props;
-  return <Editor value={initialValue || defaultInitialValue} readOnly={true} />;
+  return <Editor value={initialValue || defaultValue} readOnly={true} />;
 };
 
 export default ReadOnlyEdtior;
