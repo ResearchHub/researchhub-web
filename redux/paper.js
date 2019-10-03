@@ -8,6 +8,8 @@ import { paperShim } from "./paper/shim";
 
 export const PaperConstants = {
   GET_PAPER: "@@paper/GET_PAPER",
+  UPLOAD_PAPER_TO_STATE: "@@paper/SAVE_PAPER_TO_STATE",
+  REMOVE_PAPER_FROM_STATE: "@@paper/REMOVE_PAPER_FROM_STATE",
 };
 
 export const PaperActions = {
@@ -27,6 +29,32 @@ export const PaperActions = {
         });
     };
   },
+  /**
+   * saves the paper to redux state (not backend)
+   */
+  uploadPaperToState: (paperFile) => {
+    return (dispatch) => {
+      return dispatch({
+        type: PaperConstants.UPLOAD_PAPER_TO_STATE,
+        payload: {
+          uploadedPaper: paperFile,
+        },
+      });
+    };
+  },
+  /**
+   * removes the paper from redux state (not backend)
+   */
+  removePaperFromState: () => {
+    return (dispatch) => {
+      return dispatch({
+        type: PaperConstants.REMOVE_PAPER_FROM_STATE,
+        payload: {
+          uploadedPaper: {},
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -35,11 +63,22 @@ export const PaperActions = {
 
 const defaultPaperState = {
   authors: [],
+  uploadedPaper: {},
 };
 
 const PaperReducer = (state = defaultPaperState, action) => {
   switch (action.type) {
     case PaperConstants.GET_PAPER:
+      return {
+        ...state,
+        ...action.payload,
+      };
+    case PaperConstants.UPLOAD_PAPER_TO_STATE:
+      return {
+        ...state,
+        uploadedPaper: action.payload.uploadedPaper,
+      };
+    case PaperConstants.REMOVE_PAPER_FROM_STATE:
       return {
         ...state,
         ...action.payload,
