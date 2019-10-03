@@ -9,11 +9,11 @@ import { EditorState, convertFromRaw } from "draft-js";
 // Component
 import CheckBox from "../Form/CheckBox";
 import FormInput from "../Form/FormInput";
-import PaperEntry from "../SearchSuggestion/PaperEntry";
+import FormSelect from "../Form/FormSelect";
+import FormTextArea from "../Form/FormTextArea";
 import DragNDrop from "../Form/DragNDrop";
 import Button from "../Form/Button";
 import AuthorCardList from "../SearchSuggestion/AuthorCardList";
-import FormSelect from "../Form/FormSelect";
 import dynamic from "next/dynamic";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 
@@ -184,7 +184,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   onEditorStateChange = (editorState) => {
-    this.setState({ editorState });
+    this.setState({ summary: editorState });
   };
 
   searchAuthors = async (value) => {
