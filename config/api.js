@@ -64,6 +64,11 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    GET_EDITS: ({}) => {
+      let url = BASE_URL + `summary/get_edits/`;
+      return url;
+    },
+    
     THREAD_COMMENT: (paperId, threadId, page) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/`;
 
