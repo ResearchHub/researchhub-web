@@ -24,6 +24,9 @@ export const PaperActions = {
               doneFetching: true,
             },
           });
+        })
+        .catch((error) => {
+          console.log(error);
         });
     };
   },
