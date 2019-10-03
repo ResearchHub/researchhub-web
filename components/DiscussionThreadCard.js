@@ -1,63 +1,59 @@
-import Link from "next/link";
 import { css, StyleSheet } from "aphrodite";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import { Fragment } from "react";
 
+import DiscussionCard from "./DiscussionCard";
+import DiscussionPostMetadata from "./DiscussionPostMetadata";
+import DiscussionThreadActionBar from "~/components/DiscussionThreadActionBar";
 import VoteWidget from "./VoteWidget";
-import { doesNotExist } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { timeAgo } from "../config/utils";
+import { getNestedValue } from "~/config/utils";
 
-const DiscussionThreadCard = () => {
-  const title =
-    "Bitcoin falls 12% as one of the world's biggest cryptocurrency markets readies a bill to ban trading on all exchanges.";
-  let date = Date.now();
-  const username = "Julia Kinderman";
-  const threadId = 1;
+const DiscussionThreadCard = (props) => {
+  const { path } = props;
+
+  const data = getNestedValue(props, ["data"]);
+
+  let date = "";
+  let title = "";
+  let username = "";
+  let commentCount = "";
+
+  if (data) {
+    commentCount = data.commentCount;
+    date = data.createdDate;
+    title = data.title;
+    username = createUsername(data);
+  }
 
   return (
-    <div className={css(styles.container)}>
-      <div className={css(styles.topContainer)}>
-        <VoteWidget score={5} fontSize={16} width={"44px"} />
-        <User name={username} />
-        <Timestamp date={date} />
-        <ReadButton threadId={threadId} />
-      </div>
-      <div className={css(styles.infoContainer)}>
-        <Title text={title} />
-        <div className={css(styles.actionContainer)}>
-          <CommentCount count={2} />
-          <Share />
-        </div>
-      </div>
-    </div>
+    <DiscussionCard
+      top={
+        <Fragment>
+          <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
+          <DiscussionPostMetadata username={username} date={date} />
+          <ReadButton threadPath={path} />
+        </Fragment>
+      }
+      info={<Title text={title} />}
+      action={<DiscussionThreadActionBar count={commentCount} />}
+    />
   );
 };
 
-const User = (props) => {
-  const { image, name } = props;
-
-  return (
-    <div className={css(styles.userContainer)}>
-      <img src={image} />
-      <div>{name}</div>
-    </div>
-  );
-};
-
-const Timestamp = (props) => {
-  const timestamp = formatTimestamp(props.date);
-  return (
-    <div className={css(styles.timestampContainer)}>
-      <span className={css(styles.timestampDivider)}>•</span>
-      {timestamp}
-    </div>
-  );
-};
-
-function formatTimestamp(date) {
-  date = new Date(date);
-  return timeAgo.format(Date.now() - date);
+function createUsername({ createdBy }) {
+  const { firstName, lastName } = createdBy;
+  return `${firstName} ${lastName}`;
 }
+
+DiscussionThreadCard.propTypes = {
+  date: PropTypes.object,
+  path: PropTypes.string,
+  title: PropTypes.string,
+  username: PropTypes.string,
+};
 
 const Title = (props) => {
   const title = formatTitle(props.text);
@@ -73,38 +69,14 @@ function formatTitle(title) {
   return title;
 }
 
-const CommentCount = (props) => {
-  return (
-    <div className={css(styles.commentCountContainer)}>
-      {icons.chat} {formatCommentCount(props.count)}
-    </div>
-  );
-};
-
-function formatCommentCount(count) {
-  const suffix = "comment";
-  const s = "s";
-
-  if (count < 1 || doesNotExist(count)) {
-    return;
-  } else if (count < 2) {
-    return count + " " + suffix;
-  }
-  return count + " " + suffix + s;
-}
-
-const Share = () => {
-  return <div className={css(styles.shareContainer)}>{icons.share} Share</div>;
-};
-
 const ReadButton = (props) => {
-  const { threadId } = props;
-  const basePath = "/"; // TODO: get base path from props
+  const { threadPath } = props;
+  const DYNAMIC_HREF = "/paper/[paperId]/discussion/[threadId]";
   return (
-    <Link href={basePath + threadId}>
-      <div className={css(styles.readContainer)}>
+    <Link href={DYNAMIC_HREF} as={threadPath}>
+      <a className={css(styles.readContainer)}>
         Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
-      </div>
+      </a>
     </Link>
   );
 };
@@ -141,9 +113,7 @@ const styles = StyleSheet.create({
     color: colors.GREY(1),
     fontSize: 14,
   },
-  commentCountContainer: {
-    marginRight: "28px",
-  },
+
   readContainer: {
     border: "solid 1px",
     borderColor: colors.BLUE(1),
@@ -157,6 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "lighter",
     boxSizing: "border-box",
+    textDecoration: "none",
   },
   readArrow: {
     fontSize: 10,
