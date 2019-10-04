@@ -53,7 +53,7 @@ const routes = (BASE_URL) => {
     },
 
     THREAD: (paperId, threadId) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}`;
+      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/`;
 
       return url;
     },

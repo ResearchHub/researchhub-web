@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
   timestampContainer: {
     width: "100%",
     fontWeight: "normal",
+    color: colors.GREY(1),
   },
   name: {
     marginLeft: 8,
