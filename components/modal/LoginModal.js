@@ -38,6 +38,7 @@ class LoginModal extends React.Component {
         isOpen={modals.openLoginModal}
         closeModal={this.closeModal}
         className={css(styles.modal)}
+        shouldCloseOnOverlayClick={true}
         style={overlayStyles}
       >
         <div className={css(styles.modalContent)}>

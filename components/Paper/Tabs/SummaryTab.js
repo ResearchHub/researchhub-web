@@ -255,6 +255,7 @@ var styles = StyleSheet.create({
     border: "1px solid",
     borderColor: colors.PURPLE(1),
     padding: "8px 32px",
+    background: "#fff",
     color: colors.PURPLE(1),
     marginTop: 24,
     fontSize: 16,
