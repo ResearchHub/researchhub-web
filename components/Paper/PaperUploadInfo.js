@@ -1,5 +1,5 @@
 import React from "react";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import Progress from "react-progressbar";
 import { connect } from "react-redux";
@@ -54,22 +54,18 @@ class PaperUploadInfo extends React.Component {
         },
         hubs: [],
       },
-
       discussion: {
         title: "",
         question: "",
       },
-
       error: {
         year: false,
         month: false,
-        day: false,
         hubs: false,
         dnd: false,
         author: false,
       },
-
-      summary: EditorState.createEmpty(),
+      summary: {},
       showAuthorList: false,
       progress: 33.33,
       activeStep: 1,
@@ -85,6 +81,7 @@ class PaperUploadInfo extends React.Component {
     this.state = {
       ...initialState,
     };
+    this.titleRef = React.createRef();
   }
 
   componentDidMount() {
@@ -349,7 +346,6 @@ class PaperUploadInfo extends React.Component {
                 placeholder="Enter title of paper"
                 required={true}
                 containerStyle={styles.container}
-                inputStyle={styles.inputStyle}
                 value={form.title}
                 id={"paper_title"}
                 onChange={this.handleInputChange}
@@ -404,18 +400,6 @@ class PaperUploadInfo extends React.Component {
                   onChange={this.handleInputChange}
                   error={error.month}
                 />
-                <FormSelect
-                  label={"Day of Publication"}
-                  placeholder="dd"
-                  required={true}
-                  containerStyle={styles.smallContainer}
-                  inputStyle={styles.smallInput}
-                  value={form.published.day}
-                  id={"published.day"}
-                  options={Options.range(1, 31)}
-                  onChange={this.handleInputChange}
-                  error={error.day}
-                />
               </div>
               <div className={css(styles.section, styles.leftAlign)}>
                 <p className={css(styles.label)}>Type</p>
@@ -445,7 +429,7 @@ class PaperUploadInfo extends React.Component {
               <FormSelect
                 label={"Hubs"}
                 placeholder="Select up to 3 hubs"
-                required={true}
+                // required={true}
                 containerStyle={styles.container}
                 inputStyle={customStyles.input}
                 isMulti={true}
@@ -463,7 +447,12 @@ class PaperUploadInfo extends React.Component {
           <span>
             {this.renderHeader("Summary", "Summary Guideline")}
             <div className={css(styles.draftEditor)}>
-              <TextEditor canEdit={true} readOnly={false} />
+              <TextEditor
+                canEdit={true}
+                readOnly={false}
+                onChange={this.handleSummaryChange}
+                hideButton={true}
+              />
             </div>
           </span>
         );
@@ -476,7 +465,6 @@ class PaperUploadInfo extends React.Component {
                 label={"Title"}
                 placeholder="Title of discussion"
                 containerStyle={styles.container}
-                inputStyle={styles.inputStyle}
                 value={discussion.title}
                 id={"title"}
                 onChange={this.handleDiscussionInputChange}
@@ -509,7 +497,6 @@ class PaperUploadInfo extends React.Component {
               label={"Next Step"}
               customButtonStyle={styles.button}
               type={"submit"}
-              onClick={this.submitForm}
             />
           </div>
         );
@@ -528,12 +515,13 @@ class PaperUploadInfo extends React.Component {
                 label={"Skip for now"}
                 customButtonStyle={styles.button}
                 isWhite={true}
+                onClick={this.nextStep}
               />
             </div>
             <Button
               label={"Save"}
               customButtonStyle={styles.button}
-              onClick={this.nextStep}
+              onClick={this.saveSummary}
             />
           </div>
         );
@@ -552,12 +540,13 @@ class PaperUploadInfo extends React.Component {
                 label={"Skip for now"}
                 customButtonStyle={styles.button}
                 isWhite={true}
+                onClick={this.navigateToSummary}
               />
             </div>
             <Button
               label={"Save"}
               customButtonStyle={styles.button}
-              onClick={this.nextStep}
+              onClick={this.saveDiscussion}
             />
           </div>
         );
@@ -584,14 +573,10 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.month = true;
     }
-    if (!published.day) {
-      pass = false;
-      error.day = true;
-    }
-    if (hubs.length < 1) {
-      pass = false;
-      error.hubs = true;
-    }
+    // if (hubs.length < 1) {
+    //   pass = false;
+    //   error.hubs = true;
+    // }
     if (!(Object.keys(paper.uploadedPaper).length > 0)) {
       pass = false;
       error.dnd = true;
@@ -609,7 +594,8 @@ class PaperUploadInfo extends React.Component {
     body.authors = this.state.selectedAuthors.map((author) => author.id); // TODO: Add self to this array if that box is checked
     body.doi = ""; // TODO: Add this required field
     body.file = this.props.paper.uploadedPaper;
-    body.hubs = body.hubs.map((hub) => hub.id);
+    // body.hubs = body.hubs.map((hub) => hub.id);
+    body.hubs = 1; //hardcoded this for now
     body.publishDate = this.formatPublishDate(body.published);
     body.url = ""; // TODO: Add this optional field
     // TODO: Add publicationType
@@ -618,24 +604,78 @@ class PaperUploadInfo extends React.Component {
   };
 
   formatPublishDate = (published) => {
-    return `${published.year.value}-${published.month.value}-${published.day.value}`;
+    return `${published.year.value}-${published.month.value}-01`;
   };
 
-  nextStep = () => {
+  nextStep = async () => {
     let { activeStep } = this.state;
-
-    this.setState({
-      progress: this.state.progress + 33.33,
-      activeStep: activeStep + 1,
-    });
+    if (activeStep < 3) {
+      await this.setState({
+        progress: this.state.progress + 33.33,
+        activeStep: activeStep + 1,
+      });
+      window.scrollTo(0, this.titleRef.current.offsetTop);
+    }
   };
 
-  prevStep = () => {
+  prevStep = async () => {
     let { activeStep } = this.state;
-    this.setState({
+    await this.setState({
       progress: this.state.progress - 33.33,
       activeStep: activeStep - 1,
     });
+    window.scrollTo(0, this.titleRef.current.offsetTop);
+  };
+
+  handleSummaryChange = (summary) => {
+    this.setState({ summary });
+  };
+
+  saveSummary = async () => {
+    let param = {
+      summary: JSON.stringify(this.state.summary.toJSON()),
+      paper: this.props.paper.postedPaper.id,
+    };
+    let config = await API.POST_CONFIG(param);
+    return fetch(API.SUMMARY({}), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        this.nextStep();
+      });
+  };
+
+  saveDiscussion = async () => {
+    if (
+      this.state.discussion.title === "" ||
+      this.state.discussion.question === ""
+    ) {
+      this.navigateToSummary();
+    }
+    let paperId = this.props.paper.postedPaper.id;
+    let param = {
+      title: this.state.discussion.title,
+      text: this.state.discussion.question,
+      paper: paperId,
+    };
+
+    let config = await API.POST_CONFIG(param);
+    return fetch(API.DISCUSSION(paperId), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        Router.push(
+          "/paper/[paperId]/[tabName]/",
+          `/paper/${this.props.paper.postedPaper.id}/summary`
+        );
+      });
+  };
+
+  navigateToSummary = () => {
+    Router.push(
+      "/paper/[paperId]/[tabName]/",
+      `/paper/${this.props.paper.postedPaper.id}/summary`
+    );
   };
 
   render() {
@@ -650,7 +690,7 @@ class PaperUploadInfo extends React.Component {
     } = this.state;
     let { modals } = this.props;
     return (
-      <div className={css(styles.background)}>
+      <div className={css(styles.background)} ref={this.titleRef}>
         <AddAuthorModal
           isOpen={modals.openAddAuthorModal}
           addNewUser={this.addNewUser}
@@ -660,7 +700,7 @@ class PaperUploadInfo extends React.Component {
           className={css(styles.form)}
           onSubmit={(e) => {
             e.preventDefault();
-            activeStep === 1 && this.nextStep();
+            activeStep === 1 && this.submitForm();
           }}
         >
           <div className={css(styles.pageContent)}>
@@ -668,7 +708,6 @@ class PaperUploadInfo extends React.Component {
               <Progress completed={progress} />
             </div>
             {this.renderContent()}
-            {/* {errorMessage && <div className={css(styles.errorMessage)}>Oops! Looks like your form is incomplete.</div>} */}
           </div>
           {this.renderButtons()}
         </form>
@@ -684,6 +723,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
+    scrollBehavior: "smooth",
   },
   text: {
     fontFamily: "Roboto",
@@ -785,7 +825,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   smallContainer: {
-    width: 186,
+    width: 290,
   },
   smallInput: {
     width: 156,
