@@ -197,7 +197,9 @@ const Comment = (props) => {
             <DiscussionPostMetadata username={username} date={date} />
           </Fragment>
         }
-        info={<TextEditor canEdit={false} initialValue={text} />}
+        info={
+          <TextEditor readOnly={true} canEdit={false} initialValue={text} />
+        }
         infoStyle={styles.commentInfo}
         action={
           <div className={css(styles.actionBar)}>
