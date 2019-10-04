@@ -88,7 +88,6 @@ class PaperUploadInfo extends React.Component {
     let { paper, modalActions } = this.props;
     modalActions.openUploadPaperModal(false);
     let form = { ...this.state.form };
-    console.log("paper", paper);
     form.title = paper.uploadedPaperTitle;
     this.setState({ form });
     this.getHubs();
@@ -201,13 +200,13 @@ class PaperUploadInfo extends React.Component {
     let uploadedFile = acceptedFiles[0];
     await this.setState({ uploadingPaper: true });
 
-    let grabName = () => {
-      let arr = uploadedFile.name.split(".");
-      arr.pop();
-      return arr.join(".");
-    };
-    let name = grabName();
-    form.title = name;
+    // let grabName = () => {
+    //   let arr = uploadedFile.name.split(".");
+    //   arr.pop();
+    //   return arr.join(".");
+    // };
+    // let name = grabName();
+    // form.title = name;
 
     setTimeout(async () => {
       await paperActions.uploadPaperToState(uploadedFile);
