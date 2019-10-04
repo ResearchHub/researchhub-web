@@ -9,7 +9,7 @@ import colors from "../config/themes/colors";
 
 const PaperTabBar = (props) => {
   const selectedTab = props.selectedTab;
-  const { baseUrl, threadCount } = props;
+  const { threadCount } = props;
 
   const tabs = [
     { href: "summary", label: "summary" },
@@ -19,6 +19,7 @@ const PaperTabBar = (props) => {
       ui: <Count amount={threadCount} />,
     },
     { href: "full", label: "full paper" },
+    // TODO: Add citations tab
     // { href: "citations", label: "citations" },
   ].map(formatTabs);
 
@@ -26,8 +27,8 @@ const PaperTabBar = (props) => {
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
-          {tabs.map((link, index) =>
-            renderTabs(link, selectedTab, baseUrl, index)
+          {tabs.map((tab) =>
+            renderTab(tab, selectedTab)
           )}
         </div>
       </ComponentWrapper>
@@ -40,7 +41,7 @@ function formatTabs(tab) {
   return tab;
 }
 
-function renderTabs({ key, href, label, ui }, selected, baseUrl, index) {
+function renderTab({ key, href, label, ui }, selected) {
   const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
   let classNames = [styles.tab];
 
