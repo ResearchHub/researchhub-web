@@ -347,7 +347,7 @@ class PaperUploadInfo extends React.Component {
                 required={true}
                 containerStyle={styles.container}
                 value={form.title}
-                id={"paper_title"}
+                id={"title"}
                 onChange={this.handleInputChange}
               />
               <AuthorInput
