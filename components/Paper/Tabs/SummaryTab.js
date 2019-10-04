@@ -47,7 +47,7 @@ class SummaryTab extends React.Component {
     this.setState({ editorState });
   };
 
-  save = (raw) => {
+  saveEdit = (raw) => {
     let param = {
       summary: raw,
       paper: this.props.paperId,
@@ -147,7 +147,7 @@ class SummaryTab extends React.Component {
                 canSubmit={true}
                 commentEditor={false}
                 initialValue={this.state.editorState}
-                onSubmit={this.save}
+                onSubmit={this.saveEdit}
               />
             )}
           </div>
@@ -170,7 +170,7 @@ class SummaryTab extends React.Component {
                   canEdit={true}
                   canSubmit={true}
                   commentEditor={false}
-                  onSubmit={this.save}
+                  onSubmit={this.createSummary}
                 />
               </div>
             ) : (
