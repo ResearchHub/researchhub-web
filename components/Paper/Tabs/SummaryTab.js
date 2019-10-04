@@ -170,7 +170,7 @@ class SummaryTab extends React.Component {
                   canEdit={true}
                   canSubmit={true}
                   commentEditor={false}
-                  onSubmit={this.createSummary}
+                  onSubmit={this.saveEdit}
                 />
               </div>
             ) : (
