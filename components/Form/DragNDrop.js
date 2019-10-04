@@ -146,6 +146,7 @@ class DragNDrop extends React.Component {
             placeholder={"Paste a url for the paper"}
             containerStyle={styles.noMargin}
             inputStyle={styles.urlInput}
+            disabled={true}
           />
         )}
       </div>
