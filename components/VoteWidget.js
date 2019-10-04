@@ -34,6 +34,7 @@ const ScorePill = (props) => {
   return (
     <div className={css(styles.pillContainer)}>
       <div>{score}</div>
+      {/* <div className={css(styles.coins)}> coins </div> */}
     </div>
   );
 };
@@ -51,7 +52,7 @@ const DownvoteButton = () => {
 function getScore(props) {
   const { score } = props;
   if (doesNotExist(score)) {
-    return "--";
+    return 0;
   }
   return score;
 }
@@ -73,6 +74,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: voteWidgetColors.ARROW,
+  },
+  coins: {
+    fontSize: 10,
   },
 });
 
