@@ -22,15 +22,16 @@ export const paperPost = ({
   title,
   url,
 }) => {
-  return {
-    authors: [1],
-    doi: "",
-    file,
-    hubs: [1],
-    paper_publish_date: "2018-10-01",
-    title,
-    url: "",
-  };
+  let formData = new FormData();
+  formData.append("authors", authors);
+  formData.append("doi", doi);
+  formData.append("hubs", hubs);
+  formData.append("title", title);
+  formData.append("file", file);
+  formData.append("paper_publish_date", publishDate);
+  formData.append("url", url);
+  // TODO: Add publication type
+  return formData;
 };
 
 export const paperSummaryPost = ({ paperId, text }) => {

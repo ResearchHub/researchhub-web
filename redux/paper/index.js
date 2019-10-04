@@ -34,7 +34,7 @@ export const PaperActions = {
     return async (dispatch) => {
       const response = await fetch(
         API.POST_PAPER(),
-        API.POST_CONFIG(shims.paperPost(body))
+        API.POST_FILE_CONFIG(shims.paperPost(body))
       ).catch(utils.handleCatch);
 
       return utils.dispatchResult(
