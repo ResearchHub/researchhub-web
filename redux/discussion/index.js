@@ -1,7 +1,7 @@
 import * as actions from "./actions";
 import * as shims from "./shims";
 import API from "~/config/api";
-import { logFetchError } from "~/config/utils";
+import * as utils from "../utils";
 
 const FETCH_ERROR_MESSAGE = "Fetch error caught in promise";
 
@@ -10,17 +10,18 @@ export function fetchThread(paperId, threadId) {
     const response = await fetch(
       API.THREAD(paperId, threadId),
       API.GET_CONFIG()
-    ).catch(handleCatch);
+    ).catch(utils.handleCatch);
 
     const successDispatch = async () => {
       const body = await response.json();
       const thread = shims.thread(body);
-      return dispatch(actions.setThread(thread));
+      return actions.setThread(thread);
     };
 
-    return dispatchResult(
+    return utils.dispatchResult(
       response,
-      dispatch(actions.setThreadFailure()),
+      dispatch,
+      actions.setThreadFailure(),
       successDispatch()
     );
   };
@@ -31,19 +32,20 @@ export function fetchComments(paperId, threadId, page) {
     const response = await fetch(
       API.THREAD_COMMENT(paperId, threadId, page),
       API.GET_CONFIG()
-    ).catch(handleCatch);
+    ).catch(utils.handleCatch);
 
     const successDispatch = async () => {
       const body = await response.json();
       const comments = shims.comments(body);
       comments.page = page;
 
-      return dispatch(actions.setComments(comments));
+      return actions.setComments(comments);
     };
 
-    return dispatchResult(
+    return utils.dispatchResult(
       response,
-      dispatch(actions.setCommentsFailure()),
+      dispatch,
+      actions.setCommentsFailure(),
       successDispatch()
     );
   };
@@ -57,28 +59,15 @@ export function postComment(paperId, threadId, text) {
         text,
         parent: threadId,
       })
-    ).catch(handleCatch);
+    ).catch(utils.handleCatch);
 
-    return dispatchResult(
+    return utils.dispatchResult(
       response,
-      dispatch(actions.setPostCommentFailure()),
-      dispatch(actions.setPostCommentSuccess())
+      dispatch,
+      actions.setPostCommentFailure(),
+      actions.setPostCommentSuccess()
     );
   };
-}
-
-function handleCatch(err) {
-  console.log(FETCH_ERROR_MESSAGE, err);
-  return err;
-}
-
-function dispatchResult(response, failure, success) {
-  if (!response.ok) {
-    logFetchError(response);
-    return failure;
-  } else {
-    return success;
-  }
 }
 
 const DiscussionActions = {
