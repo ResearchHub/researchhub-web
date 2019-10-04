@@ -31,12 +31,7 @@ const TextEditor = (props) => {
     passedValue,
   } = props;
 
-  const defaultPlaceholder = "Enter some text...";
-  const defaultInitialValue = Plain.deserialize(
-    placeholder || defaultPlaceholder
-  );
-
-  const [value, setValue] = useState(initialValue || defaultInitialValue);
+  const [value, setValue] = useState(initialValue);
 
   function cancel() {
     onCancel && onCancel();
