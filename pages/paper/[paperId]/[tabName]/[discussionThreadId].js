@@ -32,14 +32,17 @@ const DiscussionThreadPage = (props) => {
   let username = "";
   let createdDate = "";
 
+  if (discussion.success) {
+    title = discussion.title;
+    body = discussion.text;
+    createdDate = discussion.createdDate;
+    username = createUsername(discussion);
+  }
+
   useEffect(() => {
     if (discussion.success) {
-      title = discussion.title;
-      body = discussion.text;
-      let currentComments = discussion.commentPage.comments;
+      const currentComments = discussion.commentPage.comments;
       setComments(currentComments);
-      createdDate = discussion.createdDate;
-      username = createUsername(discussion);
     }
   }, [discussion.success]);
 
