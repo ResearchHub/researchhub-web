@@ -3,6 +3,7 @@ import * as types from "./types";
 const defaultPaperState = {
   authors: [],
   uploadedPaper: {},
+  hubs: [],
 };
 
 const PaperReducer = (state = defaultPaperState, action) => {
