@@ -72,12 +72,13 @@ export const PaperActions = {
   /**
    * saves the paper to redux state (not backend)
    */
-  uploadPaperToState: (paperFile) => {
+  uploadPaperToState: (paperFile, paperTitle) => {
     return (dispatch) => {
       return dispatch({
         type: types.UPLOAD_PAPER_TO_STATE,
         payload: {
           uploadedPaper: paperFile,
+          uploadedPaperTitle: paperTitle,
         },
       });
     };

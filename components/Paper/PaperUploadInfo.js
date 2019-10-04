@@ -88,7 +88,8 @@ class PaperUploadInfo extends React.Component {
     let { paper, modalActions } = this.props;
     modalActions.openUploadPaperModal(false);
     let form = { ...this.state.form };
-    form.title = paper.uploadedPaper.name;
+    console.log("paper", paper);
+    form.title = paper.uploadedPaperTitle;
     this.setState({ form });
     this.getHubs();
   }

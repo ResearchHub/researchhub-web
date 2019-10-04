@@ -145,18 +145,18 @@ class UploadPaperModal extends React.Component {
   uploadPaper = async (acceptedFiles, binaryStr) => {
     let { paperActions } = this.props;
     let paper = acceptedFiles[0];
-    let name = paper.name;
+    let name = this.state.search;
     await this.setState({ uploading: true });
     //save paper to redux
-    await paperActions.uploadPaperToState(paper);
-    let grabName = () => {
-      let arr = name.split(".");
-      arr.pop();
-      return arr.join(".");
-    };
+    await paperActions.uploadPaperToState(paper, name);
+    // let grabName = () => {
+    //   let arr = name.split(".");
+    //   arr.pop();
+    //   return arr.join(".");
+    // };
     setTimeout(() => {
       this.setState({
-        search: grabName(),
+        // search: grabName(),
         uploading: false,
         uploadFinish: true,
         uploadedPaper: paper,
