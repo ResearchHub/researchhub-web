@@ -3,6 +3,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import * as shims from "./shims";
 import * as types from "./types";
 import * as actions from "./actions";
+import * as utils from "../utils";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -32,14 +33,15 @@ export const PaperActions = {
   postPaper: (body) => {
     return async (dispatch) => {
       const response = await fetch(
-        API.PAPER(),
+        API.POST_PAPER(),
         API.POST_CONFIG(shims.paperPost(body))
-      ).catch(handleCatch);
+      ).catch(utils.handleCatch);
 
-      return dispatchResult(
+      return utils.dispatchResult(
         response,
-        dispatch(actions.setPostPaperFailure()),
-        dispatch(actions.setPostPaperSuccess())
+        dispatch,
+        actions.setPostPaperFailure(),
+        actions.setPostPaperSuccess()
       );
     };
   },
@@ -49,12 +51,13 @@ export const PaperActions = {
       const response = await fetch(
         API.PAPER(),
         API.POST_CONFIG(shims.paperSummaryPost(body))
-      ).catch(handleCatch);
+      ).catch(utils.handleCatch);
 
-      return dispatchResult(
+      return utils.dispatchResult(
         response,
-        dispatch(actions.setPostPaperSummaryFailure()),
-        dispatch(actions.setPostPaperSummarySuccess())
+        dispatch,
+        actions.setPostPaperSummaryFailure(),
+        actions.setPostPaperSummarySuccess()
       );
     };
   },
@@ -86,17 +89,3 @@ export const PaperActions = {
     };
   },
 };
-
-function handleCatch(err) {
-  console.log(FETCH_ERROR_MESSAGE, err);
-  return err;
-}
-
-function dispatchResult(response, failure, success) {
-  if (!response.ok) {
-    logFetchError(response);
-    return failure;
-  } else {
-    return success;
-  }
-}

@@ -23,13 +23,13 @@ export const paperPost = ({
   url,
 }) => {
   return {
-    authors,
-    doi,
+    authors: [1],
+    doi: "",
     file,
-    hubs,
-    paper_publish_date: publishDate,
+    hubs: [1],
+    paper_publish_date: "2018-10-01",
     title,
-    url,
+    url: "",
   };
 };
 
