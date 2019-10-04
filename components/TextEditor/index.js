@@ -7,7 +7,6 @@ import Plain from "slate-plain-serializer";
 import { connect } from "react-redux";
 
 // Components
-import ReadOnlyEdtior from "./ReadOnlyEditor";
 import RichTextEditor from "./RichTextEditor";
 import { ModalActions } from "../../redux/modals";
 
@@ -34,6 +33,7 @@ const TextEditor = (props) => {
   } = props;
 
   const [value, setValue] = useState(initialValue);
+  const [editorRef, setEditorRef] = useState(null);
 
   function handleChange(value) {
     setValue(value);
@@ -44,12 +44,8 @@ const TextEditor = (props) => {
     onCancel && onCancel();
   }
 
-  function onEditorChange(value) {
-    setValue(value);
-    onChange;
-  }
-
   function submit() {
+    let success = false;
     if (!isLoggedIn) {
       // TODO: pop login modal
       openLoginModal(
@@ -57,14 +53,16 @@ const TextEditor = (props) => {
         "Please login with Google to submit a summary revision."
       );
     } else {
-      onSubmit && onSubmit(JSON.stringify(value.toJSON()));
+      onSubmit && (success = onSubmit(JSON.stringify(value.toJSON())));
+      if (success) {
+        editorRef.clear();
+      }
     }
   }
 
-  const Editor = RichTextEditor;
-
   return (
-    <Editor
+    <RichTextEditor
+      ref={setEditorRef}
       readOnly={readOnly || false}
       onChange={handleChange}
       initialValue={value}
