@@ -4,7 +4,7 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import Router, { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { Document, Page } from "react-pdf";
+import { Document, Page, PageInternal } from "react-pdf";
 
 // Config
 import API from "../../../config/api";
@@ -12,48 +12,19 @@ import { Helpers } from "@quantfive/js-web-config";
 
 function PaperTab(props) {
   const { paperUrl } = props;
-  const [pageNumber, setPageNumber] = useState(0);
+  const [loadSuccess, setLoadSuccess] = useState(false);
   const [numPages, setNumPages] = useState(0);
   function onLoadSuccess({ numPages }) {
     setNumPages(numPages);
-    setPageNumber(1);
-  }
-
-  function nextPage() {
-    if (pageNumber >= numPages) {
-      return;
-    }
-    setPageNumber(pageNumber + 1);
-  }
-
-  function prevPage() {
-    if (pageNumber <= 1) {
-      return;
-    }
-    setPageNumber(pageNumber - 1);
+    setLoadSuccess(true);
   }
   return (
     <div className={css(styles.container)}>
       <Document file={paperUrl} onLoadSuccess={onLoadSuccess}>
-        <Page pageNumber={pageNumber} width={800} />
+        {Array.from(new Array(numPages), (el, index) => (
+          <Page pageNumber={index + 1} width={800} key={`page_${index + 1}`} />
+        ))}
       </Document>
-      <div className={css(styles.pageNavigator)}>
-        <i
-          className={
-            css(styles.icon, pageNumber <= 1 && styles.disable) +
-            " fas fa-caret-left"
-          }
-          onClick={prevPage}
-        ></i>
-        Page {pageNumber} of {numPages}
-        <i
-          className={
-            css(styles.icon, pageNumber >= numPages && styles.disable) +
-            " fas fa-caret-right"
-          }
-          onClick={nextPage}
-        ></i>
-      </div>
     </div>
   );
 }
