@@ -15,26 +15,37 @@ class DragNDrop extends React.Component {
     super(props);
     this.state = {
       dragOver: false,
+      isPDF: true,
     };
   }
 
   handleDrop = async (acceptedFiles) => {
     await this.setState({ dragOver: false });
+    let isPDF = true;
+    let file = acceptedFiles[0];
+    let type = file.type.split("/").pop();
+    if (type !== "pdf") {
+      isPDF = false;
+    }
+
     const reader = new FileReader();
 
     reader.onabort = () => console.log("file reading was aborted");
     reader.onerror = () => console.log("file reading has failed");
     reader.onload = () => {
       const binaryStr = reader.result;
-      this.props.handleDrop && this.props.handleDrop(acceptedFiles, binaryStr);
-      this.setState({ loading: false });
+      if (isPDF) {
+        this.props.handleDrop &&
+          this.props.handleDrop(acceptedFiles, binaryStr);
+      }
+      this.setState({ loading: false, isPDF });
     };
 
     acceptedFiles.forEach((file) => reader.readAsBinaryString(file));
   };
 
   setDragOverState = (e) => {
-    !this.state.dragOver && this.setState({ dragOver: true });
+    !this.state.dragOver && this.setState({ dragOver: true, isPDF: true });
   };
 
   unsetDragOverState = (e) => {
@@ -109,11 +120,17 @@ class DragNDrop extends React.Component {
                       src={"/static/icons/dragNdrop.png"}
                     />
                   )}
-                  <p className={css(styles.label)}>
-                    {"Drag & drop or "}
-                    <span className={css(styles.browse)}>browse</span>
-                    {" PDF to upload"}
-                  </p>
+                  {this.state.isPDF ? (
+                    <p className={css(styles.label)}>
+                      {"Drag & drop or "}
+                      <span className={css(styles.browse)}>browse</span>
+                      {" PDF to upload"}
+                    </p>
+                  ) : (
+                    <p className={css(styles.label, styles.error)}>
+                      File type is not a PDF. Please try again
+                    </p>
+                  )}
                 </div>
               )}
             </section>
@@ -161,6 +178,7 @@ const styles = StyleSheet.create({
     height: 29.87,
     width: 38.53,
     cursor: "pointer",
+    marginBottom: 8,
   },
   pasteInstruction: {
     fontFamily: "Roboto",
@@ -185,6 +203,9 @@ const styles = StyleSheet.create({
   },
   urlInput: {
     // height: 20,
+  },
+  error: {
+    color: colors.RED(1),
   },
 });
 
