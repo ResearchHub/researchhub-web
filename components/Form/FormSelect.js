@@ -46,7 +46,7 @@ class FormSelect extends React.Component {
         alignItems: "center",
         border: error ? `1px solid ${colors.RED(1)}` : "1px solid #E8E8F2",
         height: 50,
-        width: 188,
+        width: "100%",
         backgroundColor: "#FBFBFD",
         paddingLeft: 15,
         fontWeight: "400",
