@@ -82,23 +82,6 @@ class LoginModal extends React.Component {
               />
             )}
           />
-          {/* <div className={css(styles.titleContainer, styles.noMargin)}>
-            <div className={css(styles.subtitle, styles.text)}>
-              or register with email
-            </div>
-          </div>
-          <FormInput
-            label={'Email'}
-            placeholder={'johndoe@email.com'}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.input}
-          />
-          <Button
-            customButtonStyle={styles.button}
-            isWhite={true}
-            customIconStyle={styles.iconStyle}
-            label={"Register"}
-          /> */}
         </div>
       </Modal>
     );
