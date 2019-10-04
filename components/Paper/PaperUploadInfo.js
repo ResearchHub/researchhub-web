@@ -511,6 +511,7 @@ class PaperUploadInfo extends React.Component {
                 label={"Skip for now"}
                 customButtonStyle={styles.button}
                 isWhite={true}
+                onClick={this.nextStep}
               />
             </div>
             <Button
@@ -535,6 +536,7 @@ class PaperUploadInfo extends React.Component {
                 label={"Skip for now"}
                 customButtonStyle={styles.button}
                 isWhite={true}
+                onClick={this.nextStep}
               />
             </div>
             <Button
