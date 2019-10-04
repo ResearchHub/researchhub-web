@@ -29,7 +29,7 @@
 .react-tagsinput {
   background-color: rgb(251, 251, 253);
   border: 1px solid rgb(232, 232, 242);
-  overflow: hidden;
+  overflow: scroll;
   padding-left: 15px;
   padding-top: 0px;
   width: 585px;
@@ -38,6 +38,7 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .react-tagsinput-input {
