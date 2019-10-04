@@ -29,7 +29,7 @@ function saveToLocalStorage(key, value) {
   return;
 }
 
-const TOKEN = "researchhub.auth.token";
+export const AUTH_TOKEN = "researchhub.auth.token";
 
 let getUserHelper = (dispatch, dispatchFetching) => {
   if (!dispatchFetching) {
@@ -81,7 +81,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          saveToLocalStorage(TOKEN, json.token);
+          saveToLocalStorage(AUTH_TOKEN, json.token);
           return dispatch({
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
@@ -124,7 +124,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          saveToLocalStorage(TOKEN, json.key);
+          saveToLocalStorage(AUTH_TOKEN, json.key);
 
           return dispatch({
             type: AuthConstants.REGISTER,
@@ -150,6 +150,37 @@ export const AuthActions = {
   },
 
   /**
+   * Login with Google
+   * @params { params } --
+   */
+  googleLogin: (params) => {
+    return (dispatch) => {
+      let postConfig = API.POST_CONFIG(params);
+      delete postConfig["headers"]["Authorization"];
+      return fetch(API.GOOGLE_LOGIN, postConfig)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((json) => {
+          saveToLocalStorage(AUTH_TOKEN, json.key);
+          return dispatch({
+            type: AuthConstants.LOGIN,
+            isLoggedIn: true,
+            isFetchingLogin: false,
+          });
+        })
+        .catch((error) => {
+          // TODO: what to do with errors?
+          if (error.response && error.response.status === 401) {
+            console.log(error.response);
+            return error.response;
+          } else {
+            console.log(error);
+          }
+        });
+    };
+  },
+
+  /**
    * Signs a user out
    */
   signout: () => {
@@ -158,7 +189,7 @@ export const AuthActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((json) => {
-          window.localStorage.removeItem(TOKEN);
+          window.localStorage.removeItem(AUTH_TOKEN);
           window.location.replace("/");
         });
     };

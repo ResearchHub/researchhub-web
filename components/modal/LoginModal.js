@@ -31,16 +31,22 @@ class LoginModal extends React.Component {
    * closes the modal on button click
    */
   closeModal = () => {
-    let { modalActions } = this.props;
+    let { openLoginModal } = this.props;
     this.setState({
       ...this.initialState,
     });
-    modalActions.openLoginModal(false);
+    openLoginModal(false);
   };
 
   responseGoogle = (response) => {
     //TODO: do something after google oauth api responds
-    console.log(response);
+    let { googleLogin, getUser } = this.props;
+    response["access_token"] = response["accessToken"];
+    googleLogin(response).then((_) => {
+      getUser().then((_) => {
+        this.closeModal();
+      });
+    });
   };
 
   render() {
@@ -51,6 +57,7 @@ class LoginModal extends React.Component {
         closeModal={this.closeModal}
         className={css(styles.modal)}
         shouldCloseOnOverlayClick={true}
+        onRequestClose={this.closeModal}
         style={overlayStyles}
       >
         <div className={css(styles.modalContent)}>
@@ -62,12 +69,14 @@ class LoginModal extends React.Component {
           <div className={css(styles.titleContainer)}>
             <div className={css(styles.title, styles.text)}>Please, log in</div>
             <div className={css(styles.subtitle, styles.text)}>
-              Log in with your Google account to leave a comment
+              {modals.loginModal.flavorText
+                ? modals.loginModal.flavorText
+                : "Log in with your Google account"}
             </div>
           </div>
           <GoogleLogin
             clientId={
-              "37669104615-06ciqe15d41qugg0nhpe60b7kn3vsi84.apps.googleusercontent.com"
+              "192509748493-amjlt30mbpo9lq5gppn7bfd5c52i0ioe.apps.googleusercontent.com"
             }
             onSuccess={this.responseGoogle}
             onFailure={this.responseGoogle}
@@ -185,10 +194,11 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  modalActions: bindActionCreators(ModalActions, dispatch),
-  authActions: bindActionCreators(AuthActions, dispatch),
-});
+const mapDispatchToProps = {
+  openLoginModal: ModalActions.openLoginModal,
+  googleLogin: AuthActions.googleLogin,
+  getUser: AuthActions.getUser,
+};
 
 export default connect(
   mapStateToProps,

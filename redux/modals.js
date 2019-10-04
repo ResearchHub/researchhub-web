@@ -33,12 +33,15 @@ export const ModalActions = {
       });
     };
   },
-  openLoginModal: (openModal) => {
+  openLoginModal: (openModal, flavorText) => {
     return (dispatch) => {
       return dispatch({
         type: ModalConstants.LOGIN_MODAL_TOGGLE,
         payload: {
           openLoginModal: openModal,
+          loginModal: {
+            flavorText,
+          },
         },
       });
     };
@@ -53,6 +56,7 @@ const defaultModalState = {
   openUploadPaperModal: false,
   openAddAuthorModal: false,
   openLoginModal: false,
+  loginModal: {},
 };
 
 const ModalReducer = (state = defaultModalState, action) => {

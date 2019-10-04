@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 // Components
 import ReadOnlyEdtior from "./ReadOnlyEditor";
 import RichTextEditor from "./RichTextEditor";
+import { ModalActions } from "../../redux/modals";
 
 const TextEditor = (props) => {
   const {
@@ -26,6 +27,7 @@ const TextEditor = (props) => {
     readOnly,
     isLoggedIn,
     commentEditor,
+    openLoginModal,
   } = props;
 
   const defaultPlaceholder = "Enter some text...";
@@ -42,7 +44,10 @@ const TextEditor = (props) => {
   function submit() {
     if (!isLoggedIn) {
       // TODO: pop login modal
-      alert("Not logged in!");
+      openLoginModal(
+        true,
+        "Please login with Google to submit a summary revision."
+      );
     } else {
       onSubmit && onSubmit(JSON.stringify(value.toJSON()));
     }
@@ -89,4 +94,11 @@ const mapStateToProps = (state) => ({
   isLoggedIn: state.auth.isLoggedIn,
 });
 
-export default connect(mapStateToProps)(TextEditor);
+const mapDispatchToProps = {
+  openLoginModal: ModalActions.openLoginModal,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TextEditor);

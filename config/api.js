@@ -1,5 +1,7 @@
 import { API } from "@quantfive/js-web-config";
 
+import { AUTH_TOKEN } from "../redux/auth";
+
 const apiRoot = {
   production: "localhost:8000",
   staging: "localhost:8000",
@@ -9,6 +11,8 @@ const apiRoot = {
 
 const routes = (BASE_URL) => {
   return {
+    USER: BASE_URL + "user/",
+    GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     PAPER: ({ paperId, search }) => {
       let url = BASE_URL + `paper/`;
 
@@ -99,7 +103,7 @@ const routes = (BASE_URL) => {
 };
 
 export default API({
-  authTokenName: "researchhub_token",
+  authTokenName: AUTH_TOKEN,
   apiRoot,
   routes,
 });
