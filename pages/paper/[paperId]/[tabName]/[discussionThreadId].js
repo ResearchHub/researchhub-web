@@ -233,7 +233,6 @@ const CommentBox = (props) => {
 
     const comment = store.getState().discussion.postedComment;
     onSubmit(comment);
-    return true;
   }
 
   return (
@@ -243,7 +242,6 @@ const CommentBox = (props) => {
         canSubmit={true}
         onSubmit={postComment}
         commentEditor={true}
-        initialValue={""}
       />
     </div>
   );
