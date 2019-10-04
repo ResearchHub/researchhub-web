@@ -19,7 +19,7 @@ const PaperTabBar = (props) => {
       ui: <Count amount={threadCount} />,
     },
     { href: "full", label: "full paper" },
-    { href: "citations", label: "citations" },
+    // { href: "citations", label: "citations" },
   ].map(formatTabs);
 
   return (

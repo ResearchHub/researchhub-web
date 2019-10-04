@@ -11,7 +11,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
 
-const DYNAMIC_HREF = "/paper/[paperId]/discussion/[threadId]";
+const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionThreadCard = (props) => {
   const { path } = props;
@@ -32,17 +32,19 @@ const DiscussionThreadCard = (props) => {
 
   return (
     <Link href={DYNAMIC_HREF} as={path}>
-      <DiscussionCard
-        top={
-          <Fragment>
-            <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
-            <DiscussionPostMetadata username={username} date={date} />
-            <ReadButton threadPath={path} />
-          </Fragment>
-        }
-        info={<Title text={title} />}
-        action={<DiscussionThreadActionBar count={commentCount} />}
-      />
+      <a className={css(styles.discussionContainer)}>
+        <DiscussionCard
+          top={
+            <Fragment>
+              <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
+              <DiscussionPostMetadata username={username} date={date} />
+              <ReadButton threadPath={path} />
+            </Fragment>
+          }
+          info={<Title text={title} />}
+          action={<DiscussionThreadActionBar count={commentCount} />}
+        />
+      </a>
     </Link>
   );
 };
@@ -94,7 +96,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     width: "100%",
-    paddingLeft: "46px",
+    paddingLeft: 51,
   },
   userContainer: {
     display: "flex",
@@ -116,7 +118,9 @@ const styles = StyleSheet.create({
     color: colors.GREY(1),
     fontSize: 14,
   },
-
+  discussionContainer: {
+    textDecoration: "none",
+  },
   readContainer: {
     border: "solid 1px",
     borderColor: colors.BLUE(1),

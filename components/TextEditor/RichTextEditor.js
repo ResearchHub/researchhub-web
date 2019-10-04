@@ -18,7 +18,26 @@ import summaryScaffold from "./summaryScaffold.json";
 import colors from "../../config/themes/colors";
 
 const defaultInitialValue = Value.fromJSON(summaryScaffold);
-
+const commentInitialValue = Value.fromJSON({
+  document: {
+    nodes: [
+      {
+        object: "block",
+        type: "paragraph",
+        nodes: [
+          {
+            object: "text",
+            leaves: [
+              {
+                text: "",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+});
 /**
  * Define the default node type.
  *
@@ -51,7 +70,7 @@ class RichTextEditor extends React.Component {
    */
 
   state = {
-    value: Value.fromJSON(defaultInitialValue),
+    value: this.props.commentEditor ? commentInitialValue : defaultInitialValue,
   };
 
   /**
@@ -287,8 +306,6 @@ class RichTextEditor extends React.Component {
    */
 
   onChange = ({ value }) => {
-    console.log(value.toJSON());
-    window.value = value;
     this.setState({ value });
     this.props.onChange(value);
   };

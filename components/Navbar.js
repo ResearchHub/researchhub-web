@@ -1,18 +1,37 @@
+import { useEffect } from "react";
+
+// NPM Components
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
-import colors from "~/config/themes/colors";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import Avatar from "react-avatar";
 
 // Redux
 import { ModalActions } from "../redux/modals";
+import { AuthActions } from "../redux/auth";
 
 // Components
 import ResearchHubLogo from "./ResearchHubLogo";
 import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
 
+// Styles
+import colors from "~/config/themes/colors";
+
 const Navbar = (props) => {
+  const {
+    isLoggedIn,
+    user,
+    openLoginModal,
+    getUser,
+    authChecked,
+    openUploadPaperModal,
+  } = props;
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   const tabData = [
     { label: "About", route: "/about" },
     { label: "Hubs", route: "/hubs" },
@@ -22,10 +41,8 @@ const Navbar = (props) => {
   function renderTabs() {
     let tabs = tabData.map((tab, index) => {
       return (
-        <Link href={tab.route}>
-          <div className={css(styles.tab)} key={`navbar_tab_${index}`}>
-            {tab.label}
-          </div>
+        <Link href={tab.route} key={`navbar_tab_${index}`}>
+          <div className={css(styles.tab)}>{tab.label}</div>
         </Link>
       );
     });
@@ -45,15 +62,30 @@ const Navbar = (props) => {
         <i className={css(styles.searchIcon) + " far fa-search"}></i>
       </div>
       <div className={css(styles.actions)}>
-        <button
-          className={css(styles.button, styles.login)}
-          onClick={() => props.modalActions.openLoginModal(true)}
-        >
-          Log In
-        </button>
+        <div className={css(styles.buttonLeft)}>
+          {!isLoggedIn ? (
+            authChecked ? (
+              <button
+                className={css(styles.button, styles.login)}
+                onClick={() => openLoginModal(true)}
+              >
+                Log In
+              </button>
+            ) : null
+          ) : (
+            <div className={css(styles.userDropdown)}>
+              <Avatar
+                name={user.first_name + " " + user.last_name}
+                size={34}
+                round={true}
+                textSizeRatio={2.5}
+              />
+            </div>
+          )}
+        </div>
         <button
           className={css(styles.button, styles.addPaper)}
-          onClick={() => props.modalActions.openUploadPaperModal(true)}
+          onClick={() => openUploadPaperModal(true)}
         >
           Add Paper
         </button>
@@ -65,7 +97,7 @@ const Navbar = (props) => {
 const styles = StyleSheet.create({
   navbarContainer: {
     width: "100%",
-    padding: 20,
+    padding: "20px 50px",
     boxSizing: "border-box",
     display: "flex",
     height: 80,
@@ -75,6 +107,12 @@ const styles = StyleSheet.create({
   },
   tabs: {
     display: "flex",
+  },
+  buttonLeft: {
+    marginLeft: 35,
+    "@media only screen and (min-width: 1024px)": {
+      marginLeft: 70,
+    },
   },
   tab: {
     marginLeft: 20,
@@ -94,6 +132,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     position: "relative",
+  },
+  userDropdown: {
+    marginRight: 35,
   },
   searchbar: {
     padding: 10,
@@ -119,10 +160,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     outline: "none",
-    borderRadius: 8,
+    borderRadius: 4,
     fontSize: 16,
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 16,
+    marginRight: 16,
     cursor: "pointer",
   },
   login: {
@@ -146,11 +187,16 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
+  user: state.auth.user,
+  isLoggedIn: state.auth.isLoggedIn,
+  authChecked: state.auth.authChecked,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  modalActions: bindActionCreators(ModalActions, dispatch),
-});
+const mapDispatchToProps = {
+  openLoginModal: ModalActions.openLoginModal,
+  getUser: AuthActions.getUser,
+  openUploadPaperModal: ModalActions.openUploadPaperModal,
+};
 
 export default connect(
   mapStateToProps,
