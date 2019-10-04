@@ -52,7 +52,7 @@ class PaperUploadInfo extends React.Component {
           conference: false,
           other: false,
         },
-        hubs: ["hub"],
+        hubs: [],
       },
       discussion: {
         title: "",
@@ -429,7 +429,7 @@ class PaperUploadInfo extends React.Component {
               <FormSelect
                 label={"Hubs"}
                 placeholder="Select up to 3 hubs"
-                required={true}
+                // required={true}
                 containerStyle={styles.container}
                 inputStyle={customStyles.input}
                 isMulti={true}
@@ -569,10 +569,10 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.month = true;
     }
-    if (hubs.length < 1) {
-      pass = false;
-      error.hubs = true;
-    }
+    // if (hubs.length < 1) {
+    //   pass = false;
+    //   error.hubs = true;
+    // }
     if (!(Object.keys(paper.uploadedPaper).length > 0)) {
       pass = false;
       error.dnd = true;
