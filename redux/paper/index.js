@@ -37,12 +37,15 @@ export const PaperActions = {
         API.POST_FILE_CONFIG(shims.paperPost(body))
       ).catch(utils.handleCatch);
 
-      return utils.dispatchResult(
-        response,
-        dispatch,
-        actions.setPostPaperFailure(),
-        actions.setPostPaperSuccess()
-      );
+      let action = actions.setPostPaperFailure();
+
+      if (response.ok) {
+        action = actions.setPostPaperSuccess();
+      } else {
+        utils.logFetchError(response);
+      }
+
+      return dispatch(action);
     };
   },
 
@@ -53,12 +56,15 @@ export const PaperActions = {
         API.POST_CONFIG(shims.paperSummaryPost(body))
       ).catch(utils.handleCatch);
 
-      return utils.dispatchResult(
-        response,
-        dispatch,
-        actions.setPostPaperSummaryFailure(),
-        actions.setPostPaperSummarySuccess()
-      );
+      let action = actions.setPostPaperSummaryFailure();
+
+      if (response.ok) {
+        action = actions.setPostPaperSummarySuccess();
+      } else {
+        utils.logFetchError(response);
+      }
+
+      return dispatch(action);
     };
   },
 
