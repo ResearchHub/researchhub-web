@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
-import { paperTabColors } from "~/config/themes/colors";
+import colors, { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
-import colors from "../config/themes/colors";
 
 const PaperTabBar = (props) => {
   const selectedTab = props.selectedTab;
@@ -16,7 +15,9 @@ const PaperTabBar = (props) => {
     {
       href: "discussion",
       label: "discussions",
-      ui: <Count amount={threadCount} />,
+      ui: (isSelected) => (
+        <Count isSelected={isSelected} amount={threadCount} />
+      ),
     },
     { href: "full", label: "full paper" },
     // TODO: Add citations tab
@@ -41,9 +42,12 @@ function formatTabs(tab) {
 
 function renderTab({ key, href, label, ui }, selected) {
   const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
+
+  let isSelected = false;
   let classNames = [styles.tab];
 
   if (href === selected) {
+    isSelected = true;
     classNames.push(styles.selected);
   }
 
@@ -51,15 +55,7 @@ function renderTab({ key, href, label, ui }, selected) {
     <Link key={key} href={DYNAMIC_HREF} as={href}>
       <div className={css(classNames)}>
         <div className={css(styles.link)}>
-          {label}{" "}
-          {ui && (
-            <span
-              id={label + "_ui"}
-              className={css(styles.ui, href === selected && styles.selectedUi)}
-            >
-              {ui}
-            </span>
-          )}
+          {label} {ui && ui(isSelected)}
         </div>
       </div>
     </Link>
@@ -67,11 +63,26 @@ function renderTab({ key, href, label, ui }, selected) {
 }
 
 const Count = (props) => {
-  const { amount } = props;
+  const { amount, isSelected } = props;
   if (amount < 1) {
-    return null;
+    return <span id="discussion_count"></span>;
   }
-  return <span className={css(styles.count)}>{amount}</span>;
+  return (
+    <UIStyling isSelected={isSelected}>
+      <span id="discussion_count" className={css(styles.count)}>
+        {amount}
+      </span>
+    </UIStyling>
+  );
+};
+
+const UIStyling = (props) => {
+  const { isSelected, label } = props;
+  return (
+    <span className={css(styles.ui, isSelected && styles.selectedUi)}>
+      {props.children}
+    </span>
+  );
 };
 
 const styles = StyleSheet.create({

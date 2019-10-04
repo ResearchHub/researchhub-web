@@ -3,7 +3,7 @@ describe("Discussion Thread Card", function() {
     let path = "/paper/1/discussion";
     cy.visit(path);
 
-    cy.get("#discussions_ui").as("count").invoke("text").then((count) => {
+    cy.get("#discussion_count").invoke("text").then((count) => {
       if (count) {
         cy.get("a").contains("Read").as("button");
 
