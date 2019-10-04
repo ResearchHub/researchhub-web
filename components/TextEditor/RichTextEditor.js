@@ -3,6 +3,7 @@ import React from "react";
 // NPM Components
 import { Editor } from "slate-react";
 import { Value } from "slate";
+import Plain from "slate-plain-serializer";
 import { css, StyleSheet } from "aphrodite";
 import { isKeyHotkey } from "is-hotkey";
 
@@ -75,6 +76,20 @@ class RichTextEditor extends React.Component {
       : this.props.commentEditor
       ? commentInitialValue
       : summaryScaffoldInitialValue,
+  };
+
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.submittedSuccess &&
+      this.props.submittedSuccess !== prevProps.submittedSuccess
+    ) {
+      this.clear();
+    }
+  }
+
+  clear = () => {
+    const value = Plain.deserialize("");
+    this.setState({ value });
   };
 
   /**
