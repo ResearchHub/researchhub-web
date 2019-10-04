@@ -43,11 +43,16 @@ class FormInput extends React.Component {
       error,
       icon,
       iconStyles,
+      disabled,
     } = this.props;
 
     return (
       <div
-        className={css(styles.inputContainer, containerStyle && containerStyle)}
+        className={css(
+          styles.inputContainer,
+          containerStyle && containerStyle,
+          disabled && styles.disabled
+        )}
       >
         <div
           className={css(
@@ -159,6 +164,10 @@ const styles = StyleSheet.create({
     padding: 0,
     color: colors.RED(1),
     fontSize: 12,
+  },
+  disabled: {
+    pointerEvents: "none",
+    opacity: 0.6,
   },
 });
 
