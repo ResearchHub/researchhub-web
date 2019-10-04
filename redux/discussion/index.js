@@ -2,34 +2,25 @@ import * as actions from "./actions";
 import * as shims from "./shims";
 import API from "~/config/api";
 import * as utils from "../utils";
-import { Helpers } from "@quantfive/js-web-config";
-
-const FETCH_ERROR_MESSAGE = "Fetch error caught in promise";
 
 export function fetchThread(paperId, threadId) {
   return async (dispatch) => {
     const response = await fetch(
       API.THREAD(paperId, threadId),
       API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .catch(utils.handleCatch);
+    ).catch(utils.handleCatch);
 
-    const successDispatch = () => {
-      console.log(response);
-      const thread = shims.thread(response);
-      return actions.setThread(thread);
-    };
+    let action = actions.setThreadFailure();
 
-    console.log();
+    if (response.ok) {
+      const body = await response.json();
+      const thread = shims.thread(body);
+      action = actions.setThread(thread);
+    } else {
+      utils.logFetchError(response);
+    }
 
-    return utils.dispatchResult(
-      response,
-      dispatch,
-      actions.setThreadFailure(),
-      successDispatch()
-    );
+    return dispatch(action);
   };
 }
 
@@ -38,24 +29,20 @@ export function fetchComments(paperId, threadId, page) {
     const response = await fetch(
       API.THREAD_COMMENT(paperId, threadId, page),
       API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .catch(utils.handleCatch);
+    ).catch(utils.handleCatch);
 
-    const successDispatch = async () => {
-      const comments = shims.comments(response);
+    let action = actions.setCommentsFailure();
+
+    if (response.ok) {
+      const body = await response.json();
+      const comments = shims.comments(body);
       comments.page = page;
+      action = actions.setComments(comments);
+    } else {
+      utils.logFetchError(response);
+    }
 
-      return actions.setComments(comments);
-    };
-
-    return utils.dispatchResult(
-      response,
-      dispatch,
-      actions.setCommentsFailure(),
-      successDispatch()
-    );
+    return dispatch(action);
   };
 }
 
@@ -69,12 +56,15 @@ export function postComment(paperId, threadId, text) {
       })
     ).catch(utils.handleCatch);
 
-    return utils.dispatchResult(
-      response,
-      dispatch,
-      actions.setPostCommentFailure(),
-      actions.setPostCommentSuccess()
-    );
+    let action = actions.setPostCommentFailure();
+
+    if (response.ok) {
+      action = actions.setPostCommentSuccess();
+    } else {
+      utils.logFetchError(response);
+    }
+
+    return dispatch(action);
   };
 }
 
