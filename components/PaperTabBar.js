@@ -27,9 +27,7 @@ const PaperTabBar = (props) => {
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
-          {tabs.map((tab) =>
-            renderTab(tab, selectedTab)
-          )}
+          {tabs.map((tab) => renderTab(tab, selectedTab))}
         </div>
       </ComponentWrapper>
     </div>
@@ -56,6 +54,7 @@ function renderTab({ key, href, label, ui }, selected) {
           {label}{" "}
           {ui && (
             <span
+              id={label + "_ui"}
               className={css(styles.ui, href === selected && styles.selectedUi)}
             >
               {ui}
