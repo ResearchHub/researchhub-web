@@ -1,5 +1,5 @@
 import React from "react";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import Progress from "react-progressbar";
 import { connect } from "react-redux";
@@ -65,7 +65,7 @@ class PaperUploadInfo extends React.Component {
         dnd: false,
         author: false,
       },
-      summary: EditorState.createEmpty(),
+      summary: {},
       showAuthorList: false,
       progress: 33.33,
       activeStep: 1,
@@ -447,7 +447,12 @@ class PaperUploadInfo extends React.Component {
           <span>
             {this.renderHeader("Summary", "Summary Guideline")}
             <div className={css(styles.draftEditor)}>
-              <TextEditor canEdit={true} readOnly={false} />
+              <TextEditor
+                canEdit={true}
+                readOnly={false}
+                onChange={this.handleSummaryChange}
+                hideButton={true}
+              />
             </div>
           </span>
         );
@@ -492,7 +497,6 @@ class PaperUploadInfo extends React.Component {
               label={"Next Step"}
               customButtonStyle={styles.button}
               type={"submit"}
-              // onSubmit={this.submitForm}
             />
           </div>
         );
@@ -517,7 +521,7 @@ class PaperUploadInfo extends React.Component {
             <Button
               label={"Save"}
               customButtonStyle={styles.button}
-              onClick={this.nextStep}
+              onClick={this.saveSummary}
             />
           </div>
         );
@@ -536,13 +540,13 @@ class PaperUploadInfo extends React.Component {
                 label={"Skip for now"}
                 customButtonStyle={styles.button}
                 isWhite={true}
-                onClick={this.nextStep}
+                onClick={this.navigateToSummary}
               />
             </div>
             <Button
               label={"Save"}
               customButtonStyle={styles.button}
-              onClick={this.nextStep}
+              onClick={this.saveDiscussion}
             />
           </div>
         );
@@ -590,7 +594,8 @@ class PaperUploadInfo extends React.Component {
     body.authors = this.state.selectedAuthors.map((author) => author.id); // TODO: Add self to this array if that box is checked
     body.doi = ""; // TODO: Add this required field
     body.file = this.props.paper.uploadedPaper;
-    body.hubs = body.hubs.map((hub) => hub.id);
+    // body.hubs = body.hubs.map((hub) => hub.id);
+    body.hubs = 1; //hardcoded this for now
     body.publishDate = this.formatPublishDate(body.published);
     body.url = ""; // TODO: Add this optional field
     // TODO: Add publicationType
@@ -599,19 +604,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   formatPublishDate = (published) => {
-    return `${published.year.value}-${published.month.value}`;
-  };
-
-  createFormData = () => {
-    let { paper } = this.props;
-    let form = JSON.parse(JSON.stringify(this.state.form));
-    let keys = Object.keys(form);
-    let formData = new FormData();
-    formData.append("userfile", paper.uploadPaper);
-    keys.forEach((key) => {
-      formData.append(`${key}`, JSON.stringify(form[key]));
-    });
-    return formData;
+    return `${published.year.value}-${published.month.value}-01`;
   };
 
   nextStep = async () => {
@@ -632,6 +625,57 @@ class PaperUploadInfo extends React.Component {
       activeStep: activeStep - 1,
     });
     window.scrollTo(0, this.titleRef.current.offsetTop);
+  };
+
+  handleSummaryChange = (summary) => {
+    this.setState({ summary });
+  };
+
+  saveSummary = async () => {
+    let param = {
+      summary: JSON.stringify(this.state.summary.toJSON()),
+      paper: this.props.paper.postedPaper.id,
+    };
+    let config = await API.POST_CONFIG(param);
+    return fetch(API.SUMMARY({}), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        this.nextStep();
+      });
+  };
+
+  saveDiscussion = async () => {
+    if (
+      this.state.discussion.title === "" ||
+      this.state.discussion.question === ""
+    ) {
+      this.navigateToSummary();
+    }
+    let paperId = this.props.paper.postedPaper.id;
+    let param = {
+      title: this.state.discussion.title,
+      text: this.state.discussion.question,
+      paper: paperId,
+    };
+
+    let config = await API.POST_CONFIG(param);
+    return fetch(API.DISCUSSION(paperId), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        Router.push(
+          "/paper/[paperId]/[tabName]/",
+          `/paper/${this.props.paper.postedPaper.id}/summary`
+        );
+      });
+  };
+
+  navigateToSummary = () => {
+    Router.push(
+      "/paper/[paperId]/[tabName]/",
+      `/paper/${this.props.paper.postedPaper.id}/summary`
+    );
   };
 
   render() {
@@ -664,7 +708,6 @@ class PaperUploadInfo extends React.Component {
               <Progress completed={progress} />
             </div>
             {this.renderContent()}
-            {/* {errorMessage && <div className={css(styles.errorMessage)}>Oops! Looks like your form is incomplete.</div>} */}
           </div>
           {this.renderButtons()}
         </form>

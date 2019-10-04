@@ -40,6 +40,12 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    DISCUSSION: (paperId) => {
+      let url = `${BASE_URL}paper/${paperId}/discussion/`;
+
+      return url;
+    },
+
     SUMMARY: ({ summaryId }) => {
       let url = BASE_URL + `summary/`;
 
