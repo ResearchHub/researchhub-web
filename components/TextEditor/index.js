@@ -28,6 +28,7 @@ const TextEditor = (props) => {
     isLoggedIn,
     commentEditor,
     openLoginModal,
+    passedValue,
   } = props;
 
   const defaultPlaceholder = "Enter some text...";
@@ -39,6 +40,11 @@ const TextEditor = (props) => {
 
   function cancel() {
     onCancel && onCancel();
+  }
+
+  function onEditorChange(value) {
+    setValue(value);
+    onChange;
   }
 
   function submit() {
@@ -53,7 +59,7 @@ const TextEditor = (props) => {
     }
   }
 
-  const Editor = canEdit ? RichTextEditor : ReadOnlyEdtior;
+  const Editor = RichTextEditor;
 
   return (
     <Editor
@@ -65,6 +71,7 @@ const TextEditor = (props) => {
       cancel={cancel}
       submit={submit}
       commentEditor={commentEditor}
+      value={passedValue ? passedValue : value}
     />
   );
 };
