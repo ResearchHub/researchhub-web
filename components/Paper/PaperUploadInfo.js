@@ -94,7 +94,7 @@ class PaperUploadInfo extends React.Component {
   }
 
   handleAuthorSelect = (value) => {
-    if (this.state.selectedAuthors.length !== 3) {
+    if (!this.state.selectedAuthors.includes(value)) {
       let error = { ...this.state.error };
       error.author = false;
       this.setState({
