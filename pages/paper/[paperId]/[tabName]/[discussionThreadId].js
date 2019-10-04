@@ -62,7 +62,12 @@ const DiscussionThreadPage = (props) => {
       <div className={css(styles.divider)} />
       <div className={css(styles.contentContainer)}>
         <CommentBox />
-        {renderComments(comments)}
+        <div
+          id="all_comments_container"
+          className={css(styles.allCommentsContainer)}
+        >
+          {renderComments(comments)}
+        </div>
       </div>
     </div>
   );
@@ -183,11 +188,6 @@ const Comment = (props) => {
   );
 };
 
-const MoreButton = () => {
-  // TODO: Fetch more comments
-  return <div>Show More Comments</div>;
-};
-
 const CommentBox = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -269,6 +269,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+  },
+  allCommentsContainer: {
+    width: "100%",
   },
   commentContainer: {
     padding: "30px 30px 36px 30px",
