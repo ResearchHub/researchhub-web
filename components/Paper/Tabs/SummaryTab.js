@@ -27,7 +27,7 @@ class SummaryTab extends React.Component {
 
     this.state = {
       readOnly: true,
-      editorState: EditorState.createEmpty(),
+      editorState: null,
       menuOpen: false,
       addSummary: false,
     };
@@ -140,14 +140,6 @@ class SummaryTab extends React.Component {
                 Edit Summary
               </div>
             </div>
-            {/*<DraftEditor
-                          paperId={this.props.paperId}
-                          readOnly={this.state.readOnly}
-                          editorState={this.state.editorState}
-                          onEditorStateChange={this.onEditorStateChange}
-                          save={this.save}
-                          cancel={this.cancel}
-                        />*/}
             {this.state.finishedLoading && (
               <TextEditor
                 canEdit={true}
@@ -180,14 +172,6 @@ class SummaryTab extends React.Component {
                   commentEditor={false}
                   onSubmit={this.save}
                 />
-                {/* <DraftEditor
-                      paperId={this.props.paperId}
-                      readOnly={this.state.readOnly}
-                      editorState={this.state.editorState}
-                      onEditorStateChange={this.onEditorStateChange}
-                      save={this.save}
-                      cancel={this.cancel}
-                    /> */}
               </div>
             ) : (
               <div className={css(styles.box)}>

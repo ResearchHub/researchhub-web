@@ -17,7 +17,7 @@ import "./stylesheets/RichTextEditor.css";
 import summaryScaffold from "./summaryScaffold.json";
 import colors from "../../config/themes/colors";
 
-const defaultInitialValue = Value.fromJSON(summaryScaffold);
+const summaryScaffoldInitialValue = Value.fromJSON(summaryScaffold);
 const commentInitialValue = Value.fromJSON({
   document: {
     nodes: [
@@ -74,7 +74,7 @@ class RichTextEditor extends React.Component {
       ? this.props.initialValue
       : this.props.commentEditor
       ? commentInitialValue
-      : defaultInitialValue,
+      : summaryScaffoldInitialValue,
   };
 
   /**
