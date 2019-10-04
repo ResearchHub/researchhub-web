@@ -94,10 +94,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  infoContainer: {
-    width: "100%",
-    paddingLeft: 51,
-  },
   userContainer: {
     display: "flex",
     flexDirection: "row",
