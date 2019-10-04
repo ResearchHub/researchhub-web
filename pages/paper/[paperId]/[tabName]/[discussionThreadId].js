@@ -1,10 +1,10 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 // NPM Modules
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 
@@ -25,19 +25,23 @@ import { isEmpty } from "~/config/utils";
 const DiscussionThreadPage = (props) => {
   const { discussion } = props;
 
+  const [comments, setComments] = useState([]);
+
   let title = "";
   let body = "";
-  let comments = [];
   let username = "";
   let createdDate = "";
 
-  if (discussion.success) {
-    title = discussion.title;
-    body = discussion.text;
-    comments = discussion.commentPage.comments;
-    createdDate = discussion.createdDate;
-    username = createUsername(discussion);
-  }
+  useEffect(() => {
+    if (discussion.success) {
+      title = discussion.title;
+      body = discussion.text;
+      let currentComments = discussion.commentPage.comments;
+      setComments(currentComments);
+      createdDate = discussion.createdDate;
+      username = createUsername(discussion);
+    }
+  }, [discussion.success]);
 
   function renderComments(comments) {
     return comments.map((c, i) => {
@@ -54,6 +58,12 @@ const DiscussionThreadPage = (props) => {
     });
   }
 
+  function addSubmittedComment(comment) {
+    let newComments = [comment];
+    newComments = newComments.concat(comments);
+    setComments(newComments);
+  }
+
   return (
     <div>
       <div className={css(styles.threadContainer)}>
@@ -66,7 +76,7 @@ const DiscussionThreadPage = (props) => {
       </div>
       <div className={css(styles.divider)} />
       <div className={css(styles.contentContainer)}>
-        <CommentBox />
+        <CommentBox onSubmit={addSubmittedComment} />
         <div
           id="all_comments_container"
           className={css(styles.allCommentsContainer)}
@@ -205,16 +215,22 @@ const Comment = (props) => {
   );
 };
 
-const CommentBox = () => {
+const CommentBox = (props) => {
+  const { onSubmit } = props;
+
   const dispatch = useDispatch();
+  const store = useStore();
   const router = useRouter();
   const { paperId, discussionThreadId } = router.query;
 
-  async function onSubmit(comment) {
+  async function postComment(text) {
     dispatch(DiscussionActions.postCommentPending());
     await dispatch(
-      DiscussionActions.postComment(paperId, discussionThreadId, comment)
+      DiscussionActions.postComment(paperId, discussionThreadId, text)
     );
+
+    const comment = store.getState().discussion.postedComment;
+    onSubmit(comment);
   }
 
   return (
@@ -222,7 +238,7 @@ const CommentBox = () => {
       <TextEditor
         canEdit={true}
         canSubmit={true}
-        onSubmit={onSubmit}
+        onSubmit={postComment}
         commentEditor={true}
       />
     </div>
