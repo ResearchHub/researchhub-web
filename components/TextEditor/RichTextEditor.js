@@ -136,51 +136,52 @@ class RichTextEditor extends React.Component {
               renderBlock={this.renderBlock}
               renderMark={this.renderMark}
             />
-            {!this.props.readOnly && (
-              <ToolBar cancel={this.props.cancel} submit={this.props.submit}>
-                {this.renderMarkButton("bold", textEditorIcons.bold, true)}
-                {this.renderMarkButton("italic", textEditorIcons.italic)}
-                {this.renderMarkButton("underlined", textEditorIcons.underline)}
-                {this.renderMarkButton("code", textEditorIcons.code)}
-                {this.renderBlockButton("heading-one", textEditorIcons.h1)}
-                {this.renderBlockButton("heading-two", textEditorIcons.h2)}
-                {this.renderBlockButton("block-quote", textEditorIcons.quote)}
-                {this.renderBlockButton(
-                  "numbered-list",
-                  textEditorIcons.numberedList
-                )}
-                {this.renderBlockButton(
-                  "bulleted-list",
-                  textEditorIcons.bulletedList
-                )}
-              </ToolBar>
-            )}
+            <ToolBar
+              cancel={this.props.cancel}
+              submit={this.props.submit}
+              hideButton={this.props.hideButton}
+            >
+              {this.renderMarkButton("bold", textEditorIcons.bold, true)}
+              {this.renderMarkButton("italic", textEditorIcons.italic)}
+              {this.renderMarkButton("underlined", textEditorIcons.underline)}
+              {this.renderMarkButton("code", textEditorIcons.code)}
+              {this.renderBlockButton("heading-one", textEditorIcons.h1)}
+              {this.renderBlockButton("heading-two", textEditorIcons.h2)}
+              {this.renderBlockButton("block-quote", textEditorIcons.quote)}
+              {this.renderBlockButton(
+                "numbered-list",
+                textEditorIcons.numberedList
+              )}
+              {this.renderBlockButton(
+                "bulleted-list",
+                textEditorIcons.bulletedList
+              )}
+            </ToolBar>
           </div>
         ) : (
           <div className={css(styles.summaryEditor)}>
-            {!this.props.readOnly && (
-              <ToolBar
-                cancel={this.props.cancel}
-                submit={this.props.submit}
-                summaryEditor={true}
-              >
-                {this.renderMarkButton("bold", textEditorIcons.bold, true)}
-                {this.renderMarkButton("italic", textEditorIcons.italic)}
-                {this.renderMarkButton("underlined", textEditorIcons.underline)}
-                {this.renderMarkButton("code", textEditorIcons.code)}
-                {this.renderBlockButton("heading-one", textEditorIcons.h1)}
-                {this.renderBlockButton("heading-two", textEditorIcons.h2)}
-                {this.renderBlockButton("block-quote", textEditorIcons.quote)}
-                {this.renderBlockButton(
-                  "numbered-list",
-                  textEditorIcons.numberedList
-                )}
-                {this.renderBlockButton(
-                  "bulleted-list",
-                  textEditorIcons.bulletedList
-                )}
-              </ToolBar>
-            )}
+            <ToolBar
+              cancel={this.props.cancel}
+              submit={this.props.submit}
+              summaryEditor={true}
+              hideButton={this.props.hideButton}
+            >
+              {this.renderMarkButton("bold", textEditorIcons.bold, true)}
+              {this.renderMarkButton("italic", textEditorIcons.italic)}
+              {this.renderMarkButton("underlined", textEditorIcons.underline)}
+              {this.renderMarkButton("code", textEditorIcons.code)}
+              {this.renderBlockButton("heading-one", textEditorIcons.h1)}
+              {this.renderBlockButton("heading-two", textEditorIcons.h2)}
+              {this.renderBlockButton("block-quote", textEditorIcons.quote)}
+              {this.renderBlockButton(
+                "numbered-list",
+                textEditorIcons.numberedList
+              )}
+              {this.renderBlockButton(
+                "bulleted-list",
+                textEditorIcons.bulletedList
+              )}
+            </ToolBar>
             <Editor
               readOnly={this.props.readOnly}
               spellCheck

@@ -115,7 +115,6 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    width: "100%",
     display: "flex",
     alignItems: "center",
     border: "1px solid #E8E8F2",
