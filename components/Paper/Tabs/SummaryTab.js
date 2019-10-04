@@ -58,7 +58,11 @@ class SummaryTab extends React.Component {
     fetch(API.PROPOSE_EDIT({}), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((resp) => {});
+      .then((resp) => {
+        this.setState({
+          readOnly: true,
+        });
+      });
   };
 
   cancel = () => {
@@ -131,15 +135,29 @@ class SummaryTab extends React.Component {
       <ComponentWrapper>
         {paper.summary.summary ? (
           <div className={css(styles.container)}>
-            <div className={css(styles.summaryActions)}>
-              <div className={css(styles.action)}>View Edit History</div>
-              <div className={css(styles.action)} onClick={this.edit}>
-                <div className={css(styles.pencilIcon)}>
-                  <i className="fas fa-pencil"></i>
+            {this.state.readOnly ? (
+              <div className={css(styles.summaryActions)}>
+                <div className={css(styles.action)}>View Edit History</div>
+                <div className={css(styles.action)} onClick={this.edit}>
+                  <div className={css(styles.pencilIcon)}>
+                    <i className="fas fa-pencil"></i>
+                  </div>
+                  Edit Summary
                 </div>
-                Edit Summary
               </div>
-            </div>
+            ) : (
+              <div className={css(styles.guidelines)}>
+                Please review our{" "}
+                <a
+                  className={css(styles.authorGuidelines)}
+                  href="#"
+                  target="_blank"
+                >
+                  Author Guidelines
+                </a>{" "}
+                to see how to write for ResearchHub
+              </div>
+            )}
             {this.state.finishedLoading && (
               <TextEditor
                 canEdit={true}
@@ -216,6 +234,7 @@ var styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 0.7,
     marginBottom: 16,
+    width: "100%",
   },
   box: {
     display: "flex",
@@ -234,6 +253,7 @@ var styles = StyleSheet.create({
   },
   summaryActions: {
     width: 280,
+    padding: 16,
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
