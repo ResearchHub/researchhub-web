@@ -29,9 +29,16 @@ const TextEditor = (props) => {
     commentEditor,
     openLoginModal,
     passedValue,
+    onChange,
+    hideButton,
   } = props;
 
   const [value, setValue] = useState(initialValue);
+
+  function handleChange(value) {
+    setValue(value);
+    onChange && onChange(value);
+  }
 
   function cancel() {
     onCancel && onCancel();
@@ -59,7 +66,7 @@ const TextEditor = (props) => {
   return (
     <Editor
       readOnly={readOnly || false}
-      onChange={setValue}
+      onChange={handleChange}
       initialValue={value}
       canCancel={canCancel}
       canSubmit={canSubmit}
@@ -67,6 +74,7 @@ const TextEditor = (props) => {
       submit={submit}
       commentEditor={commentEditor}
       value={passedValue ? passedValue : value}
+      hideButton={hideButton}
     />
   );
 };
@@ -84,6 +92,7 @@ TextEditor.propTypes = {
   initialValue: PropTypes.object,
   placeholder: PropTypes.string,
   readOnly: PropTypes.bool,
+  hideButton: PropTypes.bool,
 };
 
 const styles = StyleSheet.create({
