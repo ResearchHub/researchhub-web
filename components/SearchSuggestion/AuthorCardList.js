@@ -84,6 +84,8 @@ class AuthorCardList extends React.Component {
         className={css(
           styles.authorsList,
           show && styles.reveal,
+          authors.length < 2 && authors.length !== 0 && styles.minHeight,
+          authors.length >= 2 && styles.maxHeight,
           loading && styles.loading
         )}
       >
@@ -132,6 +134,12 @@ const styles = StyleSheet.create({
     minHeight: 80,
     maxHeight: 260,
     transition: `all ease-in-out ${DEFAULT_TRANSITION_TIME}s`,
+  },
+  minHeight: {
+    height: 80,
+  },
+  maxHeight: {
+    height: 260,
   },
   loading: {
     display: "flex",
