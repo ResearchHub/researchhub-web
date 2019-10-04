@@ -23,6 +23,7 @@ const PaperReducer = (state = defaultPaperState, action) => {
       return {
         ...state,
         uploadedPaper: action.payload.uploadedPaper,
+        uploadedPaperTitle: action.payload.uploadedPaperTitle,
       };
     case types.REMOVE_PAPER_FROM_STATE:
       return {
