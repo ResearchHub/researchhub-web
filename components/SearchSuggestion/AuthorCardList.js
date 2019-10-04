@@ -10,8 +10,16 @@ const DEFAULT_TRANSITION_TIME = 0.4;
 class AuthorCardList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      removed: {},
+    };
   }
+
+  componentWillUpdate = (prevProps) => {
+    if (prevProps !== this.props) {
+      this.setState({ removed: {} });
+    }
+  };
 
   getInitials = (first_name, last_name) => {
     let initials = "";
@@ -20,12 +28,21 @@ class AuthorCardList extends React.Component {
     return initials;
   };
 
+  onRemove = (i) => {
+    let removed = { ...this.state.removed };
+    removed[i] = true;
+    this.setState({ removed });
+  };
+
   renderAuthorCard = (authors) => {
     return authors.map((author, i) => {
       let { first_name, last_name, email, avatar, onRemove } = author;
       return (
         <div
-          className={css(styles.authorCard)}
+          className={css(
+            styles.authorCard,
+            this.state.removed[i] && styles.hide
+          )}
           key={`${i}-${email}`}
           onClick={() =>
             this.props.onAuthorClick && this.props.onAuthorClick(author)
@@ -49,7 +66,10 @@ class AuthorCardList extends React.Component {
           <img
             src={"/static/icons/delete.png"}
             className={css(styles.deleteIcon)}
-            onClick={onRemove && onRemove}
+            onClick={(e) => {
+              e.stopPropagation();
+              this.onRemove(i);
+            }}
           />
         </div>
       );
@@ -199,6 +219,9 @@ const styles = StyleSheet.create({
   },
   marginLeft: {
     marginLeft: 21,
+  },
+  hide: {
+    display: "none",
   },
 });
 
