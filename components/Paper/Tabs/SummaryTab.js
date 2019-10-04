@@ -4,6 +4,7 @@ import Router, { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { EditorState, convertFromRaw } from "draft-js";
 import dynamic from "next/dynamic";
+import { Value } from "slate";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -46,11 +47,13 @@ class SummaryTab extends React.Component {
     this.setState({ editorState });
   };
 
-  save = ({ raw }) => {
+  save = (raw) => {
     let param = {
       summary: raw,
       paper: this.props.paperId,
-      previousSummaryId: this.props.paper.summary.id,
+      previousSummaryId: this.props.paper.summary
+        ? this.props.paper.summary.id
+        : null,
     };
     fetch(API.PROPOSE_EDIT({}), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
@@ -65,21 +68,21 @@ class SummaryTab extends React.Component {
     });
   };
 
-  getSummary = () => {
-    fetch(
-      API.SUMMARY({ summaryId: this.props.paper.summary.id }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        let contentState = convertFromRaw(resp.summary);
-        let editorState = EditorState.createWithContent(contentState);
-        this.setState({
-          editorState,
-        });
-      });
-  };
+  // getSummary = () => {
+  //   fetch(
+  //     API.SUMMARY({ summaryId: this.props.paper.summary.id }),
+  //     API.GET_CONFIG()
+  //   )
+  //     .then(Helpers.checkStatus)
+  //     .then(Helpers.parseJSON)
+  //     .then((resp) => {
+  //       let contentState = convertFromRaw(resp.summary);
+  //       let editorState = EditorState.createWithContent(contentState);
+  //       this.setState({
+  //         editorState,
+  //       });
+  //     });
+  // };
 
   edit = () => {
     this.setState({
@@ -102,24 +105,25 @@ class SummaryTab extends React.Component {
     const { paper } = this.props;
     if (paper.summary) {
       if (paper.summary.summary) {
-        let contentState = convertFromRaw(paper.summary.summary);
-        let editorState = EditorState.createWithContent(contentState);
+        let summaryJSON = JSON.parse(paper.summary.summary);
+        let editorState = Value.fromJSON(summaryJSON);
         this.setState({
           editorState,
+          finishedLoading: true,
         });
       }
     }
   }
 
-  componentDidUpdate = (prevProps) => {
-    if (prevProps.paper.summary !== this.props.paper.summary) {
-      let contentState = convertFromRaw(this.props.paper.summary.summary);
-      let editorState = EditorState.createWithContent(contentState);
-      this.setState({
-        editorState,
-      });
-    }
-  };
+  // componentDidUpdate = (prevProps) => {
+  //   if (prevProps.paper.summary !== this.props.paper.summary) {
+  //     let contentState = convertFromRaw(this.props.paper.summary.summary);
+  //     let editorState = EditorState.createWithContent(contentState);
+  //     this.setState({
+  //       editorState,
+  //     });
+  //   }
+  // };
 
   render() {
     let { paper } = this.props;
@@ -136,14 +140,24 @@ class SummaryTab extends React.Component {
                 Edit Summary
               </div>
             </div>
-            <DraftEditor
-              paperId={this.props.paperId}
-              readOnly={this.state.readOnly}
-              editorState={this.state.editorState}
-              onEditorStateChange={this.onEditorStateChange}
-              save={this.save}
-              cancel={this.cancel}
-            />
+            {/*<DraftEditor
+                          paperId={this.props.paperId}
+                          readOnly={this.state.readOnly}
+                          editorState={this.state.editorState}
+                          onEditorStateChange={this.onEditorStateChange}
+                          save={this.save}
+                          cancel={this.cancel}
+                        />*/}
+            {this.state.finishedLoading && (
+              <TextEditor
+                canEdit={true}
+                readOnly={this.state.readOnly}
+                canSubmit={true}
+                commentEditor={false}
+                initialValue={this.state.editorState}
+                onSubmit={this.save}
+              />
+            )}
           </div>
         ) : (
           <div className={css(styles.container, styles.noSummaryContainer)}>
@@ -164,6 +178,7 @@ class SummaryTab extends React.Component {
                   canEdit={true}
                   canSubmit={true}
                   commentEditor={false}
+                  onSubmit={this.save}
                 />
                 {/* <DraftEditor
                       paperId={this.props.paperId}
