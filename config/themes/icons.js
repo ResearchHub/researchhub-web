@@ -11,15 +11,15 @@ export const voteWidgetIcons = {
 };
 
 export const textEditorIcons = {
-  bold: <i class="fas fa-bold"></i>,
-  italic: <i class="fas fa-italic"></i>,
-  underline: <i class="fas fa-underline"></i>,
-  code: <i class="fas fa-brackets-curly"></i>,
-  h1: <i class="fas fa-h1"></i>,
-  h2: <i class="fas fa-h2"></i>,
-  quote: <i class="fas fa-quote-right"></i>,
-  bulletedList: <i class="fas fa-list-ul"></i>,
-  numberedList: <i class="fas fa-list-ol"></i>,
+  bold: <i className="fas fa-bold"></i>,
+  italic: <i className="fas fa-italic"></i>,
+  underline: <i className="fas fa-underline"></i>,
+  code: <i className="fas fa-brackets-curly"></i>,
+  h1: <i className="fas fa-h1"></i>,
+  h2: <i className="fas fa-h2"></i>,
+  quote: <i className="fas fa-quote-right"></i>,
+  bulletedList: <i className="fas fa-list-ul"></i>,
+  numberedList: <i className="fas fa-list-ol"></i>,
 };
 
 export default icons;

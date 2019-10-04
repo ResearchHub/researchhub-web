@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     width: "100%",
-    paddingLeft: "46px",
+    paddingLeft: 51,
   },
   actionContainer: {
     display: "flex",

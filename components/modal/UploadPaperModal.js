@@ -208,6 +208,8 @@ class UploadPaperModal extends React.Component {
       <Modal
         isOpen={modals.openUploadPaperModal}
         closeModal={this.closeModal}
+        onRequestClose={this.closeModal}
+        shouldCloseOnOverlayClick={true}
         className={css(styles.modal)}
         style={overlayStyles}
       >
@@ -370,7 +372,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
-    height: 346,
   },
   uploadContainer: {
     display: "flex",
@@ -395,7 +396,6 @@ const styles = StyleSheet.create({
   searchResults: {
     overflowY: "scroll",
     width: 526,
-    height: 300,
     maxHeight: 300,
     paddingTop: 10,
     position: "relative",
