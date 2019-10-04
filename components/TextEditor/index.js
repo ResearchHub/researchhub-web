@@ -7,7 +7,6 @@ import Plain from "slate-plain-serializer";
 import { connect } from "react-redux";
 
 // Components
-import ReadOnlyEdtior from "./ReadOnlyEditor";
 import RichTextEditor from "./RichTextEditor";
 import { ModalActions } from "../../redux/modals";
 
@@ -34,7 +33,7 @@ const TextEditor = (props) => {
   } = props;
 
   const [value, setValue] = useState(initialValue);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [editorRef, setEditorRef] = useState(null);
 
   function handleChange(value) {
     setValue(value);
@@ -43,11 +42,6 @@ const TextEditor = (props) => {
 
   function cancel() {
     onCancel && onCancel();
-  }
-
-  function onEditorChange(value) {
-    setValue(value);
-    onChange;
   }
 
   function submit() {
@@ -61,15 +55,14 @@ const TextEditor = (props) => {
     } else {
       onSubmit && (success = onSubmit(JSON.stringify(value.toJSON())));
       if (success) {
-        setSubmitSuccess(true);
+        editorRef.clear();
       }
     }
   }
 
-  const Editor = RichTextEditor;
-
   return (
-    <Editor
+    <RichTextEditor
+      ref={setEditorRef}
       readOnly={readOnly || false}
       onChange={handleChange}
       initialValue={value}
