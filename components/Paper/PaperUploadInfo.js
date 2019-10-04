@@ -31,29 +31,6 @@ import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "../../config/utils/options";
 
-const authors = [
-  {
-    first_name: "Amanda",
-    last_name: "Collins",
-    email: "amandacollins@gmail.com",
-  },
-  {
-    first_name: "Kevin",
-    last_name: "Miller",
-    email: "kevinwest4852@gmail.com",
-  },
-  {
-    first_name: "Amanda",
-    last_name: "Collins",
-    email: "amandacollins@gmail.com",
-  },
-  {
-    first_name: "Kevin",
-    last_name: "Miller",
-    email: "kevinwest4852@gmail.com",
-  },
-];
-
 class PaperUploadInfo extends React.Component {
   constructor(props) {
     super(props);
@@ -629,9 +606,19 @@ class PaperUploadInfo extends React.Component {
 
   postPaper = async () => {
     const body = this.state.form;
+    body.authors = this.state.selectedAuthors.map((author) => author.id); // TODO: Add self to this array if that box is checked
+    body.doi = ""; // TODO: Add this required field
     body.file = this.props.paper.uploadedPaper;
-    console.log("postPaper body", body);
+    body.hubs = body.hubs.map((hub) => hub.id);
+    body.publishDate = this.formatPublishDate(body.published);
+    body.url = ""; // TODO: Add this optional field
+    // TODO: Add publicationType
+
     await this.props.paperActions.postPaper(body);
+  };
+
+  formatPublishDate = (published) => {
+    return `${published.year.value}-${published.month.value}-${published.day.value}`;
   };
 
   nextStep = () => {
