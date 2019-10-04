@@ -12,10 +12,10 @@ export function setPostPaperFailure() {
     payload: { donePosting: true, success: false },
   };
 }
-export function setPostPaperSuccess() {
+export function setPostPaperSuccess(postedPaper) {
   return {
     type: types.POST_PAPER_SUCCESS,
-    payload: { donePosting: true, success: true },
+    payload: { donePosting: true, success: true, postedPaper },
   };
 }
 
