@@ -59,7 +59,9 @@ export function postComment(paperId, threadId, text) {
     let action = actions.setPostCommentFailure();
 
     if (response.ok) {
-      action = actions.setPostCommentSuccess();
+      const body = await response.json();
+      const comment = shims.postCommentResponse(body);
+      action = actions.setPostCommentSuccess(comment);
     } else {
       utils.logFetchError(response);
     }

@@ -50,9 +50,9 @@ export function setPostCommentFailure() {
     payload: { donePosting: true, success: false },
   };
 }
-export function setPostCommentSuccess() {
+export function setPostCommentSuccess(comment) {
   return {
     type: types.POST_COMMENT_SUCCESS,
-    payload: { donePosting: true, success: true },
+    payload: { donePosting: true, success: true, postedComment: comment },
   };
 }
