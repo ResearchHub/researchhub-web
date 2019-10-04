@@ -87,7 +87,7 @@ const Paper = (props) => {
           </div>
           <div className={css(styles.tags)}>
             <div className={css(styles.authors)}>{renderAuthors()}</div>
-            <div className={css(styles.hubs)}>{renderHubs()}</div>
+            {/*<div className={css(styles.hubs)}>{renderHubs()}</div>*/}
           </div>
           <div className={css(styles.tagline)}>{paper && paper.tagline}</div>
           <div className={css(styles.infoSection)}>
