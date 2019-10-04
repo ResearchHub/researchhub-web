@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   infoContainer: {
-    width: "100%",
+    // width: "100%",
     paddingLeft: 51,
   },
   actionContainer: {

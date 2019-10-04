@@ -315,7 +315,6 @@ const styles = StyleSheet.create({
   },
   commentContainer: {
     padding: "30px 30px 36px 30px",
-    width: "100%",
   },
   commentInfo: {
     color: colors.BLACK(0.8),
