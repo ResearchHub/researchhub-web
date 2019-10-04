@@ -1,18 +1,23 @@
+import { Fragment, useState } from "react";
+
+// NPM Modules
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 
+// components
 import DiscussionCard from "~/components/DiscussionCard";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import TextEditor from "~/components/TextEditor";
 import VoteWidget from "~/components/VoteWidget";
 
+// Redux
 import DiscussionActions from "~/redux/discussion";
 
+// Utils
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { isEmpty } from "~/config/utils";
@@ -154,6 +159,8 @@ const Comment = (props) => {
   let text = "";
   let username = "";
 
+  const [reply, setReply] = useState(false);
+
   const { data } = props;
 
   if (data && !isEmpty(data)) {
@@ -182,7 +189,17 @@ const Comment = (props) => {
         }
         info={<TextEditor canEdit={false} initialValue={text} />}
         infoStyle={styles.commentInfo}
-        action={"Reply"}
+        action={
+          <div className={css(styles.actionBar)}>
+            {!reply ? (
+              <div className={css(styles.reply)} onClick={() => setReply(true)}>
+                Reply
+              </div>
+            ) : (
+              <TextEditor canEdit={true} commentEditor={true} />
+            )}
+          </div>
+        }
       />
     </div>
   );
@@ -240,6 +257,10 @@ const styles = StyleSheet.create({
       width: "calc(100% - 68px - 170px)",
     },
   },
+  actionBar: {
+    marginTop: 8,
+    width: "100%",
+  },
   threadTitle: {
     width: "100%",
     fontSize: 33,
@@ -249,6 +270,9 @@ const styles = StyleSheet.create({
     marginTop: 14,
     fontSize: 16,
     lineHeight: "24px",
+  },
+  reply: {
+    cursor: "pointer",
   },
   contentContainer: {
     width: "70%",

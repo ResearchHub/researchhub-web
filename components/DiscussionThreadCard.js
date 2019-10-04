@@ -104,11 +104,6 @@ const styles = StyleSheet.create({
     marginLeft: "12px",
     whiteSpace: "nowrap",
   },
-  timestampContainer: {
-    width: "100%",
-    color: colors.GREY(1),
-    fontWeight: "normal",
-  },
   timestampDivider: {
     padding: "0px 10px",
   },
@@ -138,11 +133,12 @@ const styles = StyleSheet.create({
   },
   readArrow: {
     fontSize: 10,
-    marginLeft: "9px",
+    marginLeft: 9,
   },
   title: {
-    fontSize: "22px",
-    paddingBottom: "10px",
+    fontSize: 22,
+    paddingBottom: 10,
+    color: colors.BLACK(1),
   },
 });
 
