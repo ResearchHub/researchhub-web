@@ -187,10 +187,12 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     display: "flex",
+    alignItems: "center",
   },
   topHeader: {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
   },
 });
 
