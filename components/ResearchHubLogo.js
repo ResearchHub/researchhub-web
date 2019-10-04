@@ -1,23 +1,18 @@
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
+import ResearchHubIcon from "~/static/ResearchHubIcon.js";
 
 const ResearchHubLogo = (props) => {
   return (
     <div className={css(styles.researchHubLogo)}>
-      <img
-        className={css(styles.icon)}
-        src={"/static/ResearchHubIcon.png"}
-        height={20}
-      />
-      <span className={css(styles.text, styles.bold)}>Research</span>
-      <span className={css(styles.text)}>Hub</span>
+      <ResearchHubIcon />
     </div>
   );
 };
 
 const styles = StyleSheet.create({
   researchHubLogo: {
-    width: "100%",
+    width: 220,
     height: "100%",
     display: "flex",
     alignItems: "center",
