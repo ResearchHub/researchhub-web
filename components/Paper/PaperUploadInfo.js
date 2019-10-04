@@ -16,37 +16,58 @@ import Button from "../Form/Button";
 import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import dynamic from "next/dynamic";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
+import TextEditor from "~/components/TextEditor";
 
 // Modal
 import AddAuthorModal from "../modal/AddAuthorModal";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
-import { PaperActions } from "../../redux/paper";
+import { PaperActions } from "~/redux/paper";
 
 // Config
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { DEFAULT_SUMMARY } from "../DraftEditor/DefaultSummary";
 import * as Options from "../../config/utils/options";
 
-const DraftEditor = dynamic(() => import("../DraftEditor/DraftEditor"), {
-  ssr: false,
-});
+const authors = [
+  {
+    first_name: "Amanda",
+    last_name: "Collins",
+    email: "amandacollins@gmail.com",
+  },
+  {
+    first_name: "Kevin",
+    last_name: "Miller",
+    email: "kevinwest4852@gmail.com",
+  },
+  {
+    first_name: "Amanda",
+    last_name: "Collins",
+    email: "amandacollins@gmail.com",
+  },
+  {
+    first_name: "Kevin",
+    last_name: "Miller",
+    email: "kevinwest4852@gmail.com",
+  },
+];
 
 class PaperUploadInfo extends React.Component {
   constructor(props) {
     super(props);
     let initialState = {
       form: {
-        paper_title: "",
+        title: "",
+        doi: "",
         published: {
           year: null,
           month: null,
           day: null,
         },
         author: {
+          // TODO: Use authors as a list instead
           self_author: false,
         },
         type: {
@@ -56,10 +77,12 @@ class PaperUploadInfo extends React.Component {
         },
         hubs: [],
       },
+
       discussion: {
         title: "",
         question: "",
       },
+
       error: {
         year: false,
         month: false,
@@ -74,12 +97,14 @@ class PaperUploadInfo extends React.Component {
       progress: 33.33,
       activeStep: 1,
       searchAuthor: "",
-      authors: [],
       selectedAuthors: [],
+      authors: [], // TODO: Rename this to inididcate authors from search result
+      tags: [], // TODO: Remove this and use form.authors instead
       loading: false,
       uploadingPaper: false,
       suggestedHubs: [],
     };
+
     this.state = {
       ...initialState,
     };
@@ -89,10 +114,8 @@ class PaperUploadInfo extends React.Component {
     let { paper, modalActions } = this.props;
     modalActions.openUploadPaperModal(false);
     let form = { ...this.state.form };
-    form.paper_title = paper.uploadedPaper.name;
-    let contentState = convertFromRaw(DEFAULT_SUMMARY);
-    let editorState = EditorState.createWithContent(contentState);
-    this.setState({ summary: editorState, form });
+    form.title = paper.uploadedPaper.name;
+    this.setState({ form });
     this.getHubs();
   }
 
@@ -209,7 +232,8 @@ class PaperUploadInfo extends React.Component {
       return arr.join(".");
     };
     let name = grabName();
-    form.paper_title = name;
+    form.title = name;
+
     setTimeout(async () => {
       await paperActions.uploadPaperToState(uploadedFile);
       error.dnd = false;
@@ -349,7 +373,7 @@ class PaperUploadInfo extends React.Component {
                 required={true}
                 containerStyle={styles.container}
                 inputStyle={styles.inputStyle}
-                value={form.paper_title}
+                value={form.title}
                 id={"paper_title"}
                 onChange={this.handleInputChange}
               />
@@ -462,11 +486,7 @@ class PaperUploadInfo extends React.Component {
           <span>
             {this.renderHeader("Summary", "Summary Guideline")}
             <div className={css(styles.draftEditor)}>
-              <DraftEditor
-                onEditorStateChange={this.onEditorStateChange}
-                editorState={summary}
-                hideButtons={true}
-              />
+              <TextEditor canEdit={true} readOnly={false} />
             </div>
           </span>
         );
@@ -512,6 +532,7 @@ class PaperUploadInfo extends React.Component {
               label={"Next Step"}
               customButtonStyle={styles.button}
               type={"submit"}
+              onClick={this.submitForm}
             />
           </div>
         );
@@ -566,7 +587,14 @@ class PaperUploadInfo extends React.Component {
     }
   };
 
-  validateSelectors = async () => {
+  submitForm = async () => {
+    if (this.validateSelectors()) {
+      await this.postPaper();
+      this.nextStep();
+    }
+  };
+
+  validateSelectors = () => {
     let { published, hubs, author } = this.state.form;
     let { paper } = this.props;
     let error = { ...this.state.error };
@@ -595,19 +623,24 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.author = true;
     }
-    await this.setState({ error });
+    this.setState({ error });
     return pass;
   };
 
-  nextStep = async () => {
+  postPaper = async () => {
+    const body = this.state.form;
+    body.file = this.props.paper.uploadedPaper;
+    console.log("postPaper body", body);
+    await this.props.paperActions.postPaper(body);
+  };
+
+  nextStep = () => {
     let { activeStep } = this.state;
-    //make sure activeStep doesn't exceed 3
-    if (await this.validateSelectors()) {
-      this.setState({
-        progress: this.state.progress + 33.33,
-        activeStep: activeStep + 1,
-      });
-    }
+
+    this.setState({
+      progress: this.state.progress + 33.33,
+      activeStep: activeStep + 1,
+    });
   };
 
   prevStep = () => {
@@ -616,17 +649,6 @@ class PaperUploadInfo extends React.Component {
       progress: this.state.progress - 33.33,
       activeStep: activeStep - 1,
     });
-  };
-
-  saveSummary = () => {
-    let contentState = this.state.summary.getCurrentContent();
-    let raw = convertToRaw(contentState);
-    // let param = { summary: raw, paper: this.props.paperId };
-    let param = { summary: raw };
-    fetch(API.SUMMARY({}), API.POST_CONFIG(param))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {});
   };
 
   render() {
