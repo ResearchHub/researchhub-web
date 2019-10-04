@@ -24,16 +24,24 @@ export const comments = (page) => {
   };
 };
 
+export const postCommentResponse = (comment) => {
+  return transformComment(comment);
+};
+
 function transformComments(comments) {
   return comments.map((comment) => {
-    return {
-      id: comment.id,
-      text: comment.text,
-      thread: comment.parent,
-      createdBy: transformUser(comment.created_by),
-      createdDate: comment.created_date,
-    };
+    return transformComment(comment);
   });
+}
+
+function transformComment(comment) {
+  return {
+    id: comment.id,
+    text: comment.text,
+    thread: comment.parent,
+    createdBy: transformUser(comment.created_by),
+    createdDate: comment.created_date,
+  };
 }
 
 function transformDate(date) {
