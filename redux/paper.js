@@ -67,6 +67,7 @@ export const PaperActions = {
 const defaultPaperState = {
   authors: [],
   uploadedPaper: {},
+  summary: {},
 };
 
 const PaperReducer = (state = defaultPaperState, action) => {
