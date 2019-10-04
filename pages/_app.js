@@ -11,15 +11,14 @@ import "../components/SearchSuggestion/authorinput.css";
 
 // Components
 import Navbar from "~/components/Navbar";
+import Base from "./Base";
+
 class MyApp extends App {
   render() {
     const { Component, pageProps, store } = this.props;
     return (
       <Provider store={store}>
-        <div className={css(styles.pageWrapper)}>
-          <Navbar />
-          <Component {...pageProps} />
-        </div>
+        <Base {...this.props} />
       </Provider>
     );
   }

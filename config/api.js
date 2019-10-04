@@ -1,6 +1,6 @@
 import { API } from "@quantfive/js-web-config";
 
-import { AUTH_TOKEN } from "../redux/auth";
+import { AUTH_TOKEN } from "../config/constants";
 
 const apiRoot = {
   production: "localhost:8000",

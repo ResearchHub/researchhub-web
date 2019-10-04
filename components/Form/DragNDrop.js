@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   urlInput: {
-    height: 20,
+    // height: 20,
   },
 });
 

@@ -104,7 +104,7 @@ const BackButton = () => {
 
   return (
     <div className={css(styles.backButtonContainer)}>
-      <Link href={"/paper/[paperId]/discussion"} as={url}>
+      <Link href={"/paper/[paperId]/[tabName]"} as={url}>
         <a className={css(styles.backButton)}>
           {icons.longArrowLeft} {message}
         </a>

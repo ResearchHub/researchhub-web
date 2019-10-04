@@ -8,6 +8,7 @@
 
 import API from "../config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { AUTH_TOKEN } from "../config/constants";
 
 export const AuthConstants = {
   LOGIN: "@@auth/LOGIN",
@@ -28,8 +29,6 @@ function saveToLocalStorage(key, value) {
   storage.setItem(key, value);
   return;
 }
-
-export const AUTH_TOKEN = "researchhub.auth.token";
 
 let getUserHelper = (dispatch, dispatchFetching) => {
   if (!dispatchFetching) {
