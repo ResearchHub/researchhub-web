@@ -34,6 +34,7 @@ const TextEditor = (props) => {
   } = props;
 
   const [value, setValue] = useState(initialValue);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   function handleChange(value) {
     setValue(value);
@@ -50,6 +51,7 @@ const TextEditor = (props) => {
   }
 
   function submit() {
+    let success = false;
     if (!isLoggedIn) {
       // TODO: pop login modal
       openLoginModal(
@@ -57,7 +59,10 @@ const TextEditor = (props) => {
         "Please login with Google to submit a summary revision."
       );
     } else {
-      onSubmit && onSubmit(JSON.stringify(value.toJSON()));
+      onSubmit && (success = onSubmit(JSON.stringify(value.toJSON())));
+      if (success) {
+        setSubmitSuccess(true);
+      }
     }
   }
 
