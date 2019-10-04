@@ -38,9 +38,11 @@ export const ToolBar = (props) => {
       )}
     >
       <div>{props.children}</div>
-      <button className={css(styles.submit)} onClick={props.submit}>
-        Submit
-      </button>
+      {!props.hideButton && (
+        <button className={css(styles.submit)} onClick={props.submit}>
+          Submit
+        </button>
+      )}
     </div>
   );
 };

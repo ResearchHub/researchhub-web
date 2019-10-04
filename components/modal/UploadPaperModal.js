@@ -241,7 +241,7 @@ class UploadPaperModal extends React.Component {
             </div>
             <div className={css(styles.subtitle, styles.text)}>
               {uploadView
-                ? "Upload a PDF, Word Document, or paste a URL below"
+                ? "Upload a PDF or paste a URL below"
                 : "Papers that are already on our platform don't need to be re-uploaded"}
             </div>
           </div>

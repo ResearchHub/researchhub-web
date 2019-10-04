@@ -38,9 +38,10 @@ export const PaperActions = {
       ).catch(utils.handleCatch);
 
       let action = actions.setPostPaperFailure();
-
       if (response.ok) {
-        action = actions.setPostPaperSuccess();
+        const body = await response.json();
+        const paper = shims.paper(body);
+        action = actions.setPostPaperSuccess(paper);
       } else {
         utils.logFetchError(response);
       }
