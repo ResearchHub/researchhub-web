@@ -28,20 +28,20 @@ class AuthorCardList extends React.Component {
     return initials;
   };
 
-  onRemove = (i) => {
+  onRemove = (id) => {
     let removed = { ...this.state.removed };
-    removed[i] = true;
+    removed[id] = true;
     this.setState({ removed });
   };
 
   renderAuthorCard = (authors) => {
     return authors.map((author, i) => {
-      let { first_name, last_name, email, avatar, onRemove } = author;
+      let { first_name, last_name, email, avatar, onRemove, id } = author;
       return (
         <div
           className={css(
             styles.authorCard,
-            this.state.removed[i] && styles.hide
+            this.state.removed[id] && styles.hide
           )}
           key={`${i}-${email}`}
           onClick={() =>
@@ -68,7 +68,7 @@ class AuthorCardList extends React.Component {
             className={css(styles.deleteIcon)}
             onClick={(e) => {
               e.stopPropagation();
-              this.onRemove(i);
+              this.onRemove(id);
             }}
           />
         </div>
@@ -84,8 +84,10 @@ class AuthorCardList extends React.Component {
         className={css(
           styles.authorsList,
           show && styles.reveal,
-          authors.length < 2 && authors.length !== 0 && styles.minHeight,
-          authors.length >= 2 && styles.maxHeight,
+          show &&
+            (authors.length < 2 && authors.length !== 0) &&
+            styles.minHeight,
+          show && authors.length >= 2 && styles.maxHeight,
           loading && styles.loading
         )}
       >
