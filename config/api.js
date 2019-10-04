@@ -24,6 +24,11 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    POST_PAPER: () => {
+      let url = BASE_URL + `paper/`;
+
+      return url;
+    },
 
     PROPOSE_EDIT: ({}) => {
       let url = BASE_URL + `summary/propose_edit/`;
