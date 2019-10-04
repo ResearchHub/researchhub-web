@@ -1,4 +1,7 @@
 import { useState } from "react";
+
+// NPM Modules
+import { connect } from "react-redux";
 import Router, { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { Document, Page } from "react-pdf";
@@ -8,6 +11,7 @@ import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 function PaperTab(props) {
+  const { paperUrl } = props;
   const [pageNumber, setPageNumber] = useState(0);
   const [numPages, setNumPages] = useState(0);
 
@@ -18,10 +22,7 @@ function PaperTab(props) {
 
   return (
     <div className={css(styles.container)}>
-      <Document
-        file={"http://startupwoman.org/files/pdf-sample(1).pdf"}
-        onLoadSuccess={onLoadSuccess}
-      >
+      <Document file={paperUrl} onLoadSuccess={onLoadSuccess}>
         <Page pageNumber={pageNumber} width={800} />
       </Document>
       <div>
@@ -42,4 +43,8 @@ var styles = StyleSheet.create({
   },
 });
 
-export default withRouter(PaperTab);
+const mapStateToProps = (state) => ({
+  paperUrl: state.paper.file,
+});
+
+export default withRouter(connect(mapStateToProps)(PaperTab));
