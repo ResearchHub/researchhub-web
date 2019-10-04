@@ -88,10 +88,6 @@ class UploadPaperModal extends React.Component {
           searching: false,
         });
       });
-    // setTimeout(async () => {
-    //   let num = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
-    //   await this.setState({ papers: new Array(num).fill(0), searching: false });
-    // }, 2000);
   };
 
   /**
@@ -201,9 +197,10 @@ class UploadPaperModal extends React.Component {
           key={index}
           title={paper.title}
           date={paper.paper_publish_date}
+          paperId={paper.id}
           index={index}
           selected={index === selectedPaper}
-          onClick={this.handlePaperEntryClick}
+          closeModal={this.closeModal}
         />
       );
     });

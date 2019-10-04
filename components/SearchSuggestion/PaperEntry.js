@@ -1,10 +1,12 @@
 import React from "react";
+import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import moment from "moment";
 
 const PaperEntry = ({
   index,
+  paperId,
   title,
   date,
   file,
@@ -12,6 +14,7 @@ const PaperEntry = ({
   onClick,
   fileUpload,
   onRemove,
+  closeModal,
 }) => {
   if (fileUpload) {
     let name = "-";
@@ -45,15 +48,20 @@ const PaperEntry = ({
     );
   } else {
     return (
-      <div
-        className={css(styles.entry, selected && styles.selected)}
-        onClick={() => onClick && onClick(index)}
+      <Link
+        href={"/paper/[paperId]/[tabName]/"}
+        as={`/paper/${paperId}/summary/`}
       >
-        <div className={css(styles.title, styles.text)}>{title && title}</div>
-        <div className={css(styles.date, styles.text)}>
-          Published: {date && moment(date).format("DD MMMM, YYYY")}
+        <div
+          className={css(styles.entry, selected && styles.selected)}
+          onClick={closeModal && closeModal}
+        >
+          <div className={css(styles.title, styles.text)}>{title && title}</div>
+          <div className={css(styles.date, styles.text)}>
+            Published: {date && moment(date).format("DD MMMM, YYYY")}
+          </div>
         </div>
-      </div>
+      </Link>
     );
   }
 };
