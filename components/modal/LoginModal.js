@@ -4,12 +4,15 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
+import { GoogleLogin, GoogleLogout } from "react-google-login";
 
 // Component
 import Button from "../Form/Button";
+import FormInput from "../Form/FormInput";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
+import { AuthActions } from "../../redux/auth";
 
 class LoginModal extends React.Component {
   constructor(props) {
@@ -18,6 +21,10 @@ class LoginModal extends React.Component {
     this.state = {
       ...initialState,
     };
+  }
+
+  componentDidMount() {
+    //TODO: do something with user authentication
   }
 
   /**
@@ -31,8 +38,13 @@ class LoginModal extends React.Component {
     modalActions.openLoginModal(false);
   };
 
+  responseGoogle = (response) => {
+    //TODO: do something after google oauth api responds
+    console.log(response);
+  };
+
   render() {
-    let { modals } = this.props;
+    let { modals, auth } = this.props;
     return (
       <Modal
         isOpen={modals.openLoginModal}
@@ -53,11 +65,23 @@ class LoginModal extends React.Component {
               Log in with your Google account to leave a comment
             </div>
           </div>
-          <Button
-            customButtonStyle={styles.button}
-            icon={"/static/icons/google.png"}
-            customIconStyle={styles.iconStyle}
-            label={"Log in with Google"}
+          <GoogleLogin
+            clientId={
+              "37669104615-06ciqe15d41qugg0nhpe60b7kn3vsi84.apps.googleusercontent.com"
+            }
+            onSuccess={this.responseGoogle}
+            onFailure={this.responseGoogle}
+            cookiePolicy={"single_host_origin"}
+            render={(renderProps) => (
+              <Button
+                disabled={renderProps.disabled}
+                onClick={renderProps.onClick}
+                customButtonStyle={styles.button}
+                icon={"/static/icons/google.png"}
+                customIconStyle={styles.iconStyle}
+                label={"Log in with Google"}
+              />
+            )}
           />
         </div>
       </Modal>
@@ -116,6 +140,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 30,
   },
+  noMargin: {
+    marginBottom: 0,
+  },
   title: {
     fontWeight: "500",
     height: 30,
@@ -137,19 +164,30 @@ const styles = StyleSheet.create({
   button: {
     height: 55,
     width: 230,
+    marginBottom: 15,
   },
   iconStyle: {
     height: 33,
     width: 33,
   },
+  inputContainer: {
+    width: 425,
+    marginTop: 0,
+    marginBottom: 30,
+  },
+  input: {
+    width: 395,
+  },
 });
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
+  authActions: bindActionCreators(AuthActions, dispatch),
 });
 
 export default connect(
