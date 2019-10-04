@@ -18,3 +18,13 @@ describe("Discussion Thread Card", function() {
 
   });
 });
+
+describe.skip("Discussion Thread Page", function() {
+  it("shows thread comments", function() {
+    let path = "/paper/1/discussion/1";
+    cy.visit(path);
+
+    cy.get("#all_comments_container").find("div");
+
+  });
+});
