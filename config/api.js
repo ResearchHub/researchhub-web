@@ -89,7 +89,7 @@ const routes = (BASE_URL) => {
 
       if (excludeIds && excludeIds.length > 0) {
         let ids = excludeIds.join(",");
-        url += `id_ne=${ids}&`;
+        url += `id__ne=${ids}&`;
       }
 
       return url;
