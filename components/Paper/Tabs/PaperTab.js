@@ -30,7 +30,7 @@ function PaperTab(props) {
         onLoadSuccess={onLoadSuccess}
       >
         {Array.from(new Array(numPages), (el, index) => (
-          <Page pageNumber={index + 1} width={800} key={`page_${index + 1}`} />
+          <Page pageNumber={index + 1} width={1000} key={`page_${index + 1}`} />
         ))}
       </Document>
       <Loader loading={!loadSuccess} />
