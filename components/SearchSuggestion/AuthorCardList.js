@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   reveal: {
-    minHeight: 80,
+    minHeight: 90,
     maxHeight: 260,
     transition: `all ease-in-out ${DEFAULT_TRANSITION_TIME}s`,
   },
