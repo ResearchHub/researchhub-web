@@ -232,10 +232,13 @@ class PaperUploadInfo extends React.Component {
       showAuthorList: true,
     });
 
-    // let authors = this.state.selectedAuthors.map(author => author.id);
+    let authors = this.state.selectedAuthors.map((author) => author.id);
 
     this.searchAuthorsTimeout = setTimeout(async () => {
-      return fetch(API.AUTHOR({ search: value }), API.GET_CONFIG())
+      return fetch(
+        API.AUTHOR({ search: value, excludeIds: authors }),
+        API.GET_CONFIG()
+      )
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
