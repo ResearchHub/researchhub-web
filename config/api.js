@@ -74,7 +74,7 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    AUTHOR: ({ authorId, search }) => {
+    AUTHOR: ({ authorId, search, excludeIds }) => {
       let url = BASE_URL + `author/`;
 
       if (authorId) {
@@ -84,7 +84,12 @@ const routes = (BASE_URL) => {
       }
 
       if (search) {
-        url += `search=${search}`;
+        url += `search=${search}&`;
+      }
+
+      if (excludeIds && excludeIds.length > 0) {
+        let ids = excludeIds.join(",");
+        url += `id_ne=${ids}&`;
       }
 
       return url;
