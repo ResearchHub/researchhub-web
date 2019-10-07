@@ -88,6 +88,7 @@ class PaperUploadInfo extends React.Component {
     let { paper, modalActions, paperId, paperTitle } = this.props;
     if (paperId) {
       // this determines whether the user is coming from the upload modal or the summary of the paper
+      await this.setState({ editMode: true });
       this.fetchAndPrefillPaperInfo(paperId);
     } else {
       modalActions.openUploadPaperModal(false);
@@ -99,6 +100,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   fetchAndPrefillPaperInfo = (paperId) => {
+    //show loader here
     fetch(API.PAPER({ paperId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -137,7 +139,6 @@ class PaperUploadInfo extends React.Component {
           selectedAuthors: [...authors],
           summary: summary.summary,
           form,
-          editMode: true,
         });
       });
   };
@@ -153,6 +154,7 @@ class PaperUploadInfo extends React.Component {
       selectedAuthors: [...this.state.selectedAuthors, value],
       suggestedAuthors: [],
       searchAuthor: "",
+      // showAuthorList: false,
       error,
     });
   };
