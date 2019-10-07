@@ -125,10 +125,9 @@ class PaperUploadInfo extends React.Component {
         let { published } = form;
         let published_date = paper_publish_date.split("-"); // ex. 2019-09-20 -> [2010, 09, 20]
         published.year = { value: published_date[0], label: published_date[0] };
-        published.month = {
-          value: published_date[1],
-          label: published_date[1],
-        };
+        published.month = Options.months
+          .filter((month) => month.value === published_date[1])
+          .pop();
         if (published_date.length > 2) {
           published.day = {
             value: published_date[2],
