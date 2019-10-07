@@ -44,7 +44,6 @@ class PaperUploadInfo extends React.Component {
           day: null,
         },
         author: {
-          // TODO: Use authors as a list instead
           self_author: false,
         },
         type: {
@@ -70,12 +69,13 @@ class PaperUploadInfo extends React.Component {
       progress: 33.33,
       activeStep: 1,
       searchAuthor: "",
+      suggestedAuthors: [], // TODO: Rename this to inididcate authors from search result
       selectedAuthors: [],
-      authors: [], // TODO: Rename this to inididcate authors from search result
-      tags: [], // TODO: Remove this and use form.authors instead
       loading: false,
       uploadingPaper: false,
       suggestedHubs: [],
+      editMode: false,
+      paperId: null,
     };
 
     this.state = {
@@ -84,13 +84,65 @@ class PaperUploadInfo extends React.Component {
     this.titleRef = React.createRef();
   }
 
-  componentDidMount() {
-    let { paper, modalActions } = this.props;
-    modalActions.openUploadPaperModal(false);
-    let form = { ...this.state.form };
-    form.title = paper.uploadedPaperTitle;
-    this.setState({ form });
-    this.getHubs();
+  componentDidMount = async () => {
+    let { paper, modalActions, paperId, paperTitle } = this.props;
+    if (paperId) {
+      // this determines whether the user is coming from the upload modal or the summary of the paper
+      this.fetchAndPrefillPaperInfo(paperId);
+    } else {
+      modalActions.openUploadPaperModal(false);
+      let form = { ...this.state.form };
+      form.title = paperTitle;
+      this.setState({ form });
+      this.getHubs();
+    }
+  };
+
+  fetchAndPrefillPaperInfo = (paperId) => {
+    fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(async (res) => {
+        // prefills the form after grabbing the data from the backend
+        let {
+          authors,
+          discussion,
+          doi,
+          file,
+          hubs,
+          paper_publish_date,
+          summary,
+          tagline,
+          title,
+        } = res;
+        let form = JSON.parse(JSON.stringify(this.state.form));
+        form.doi = doi;
+        form.title = title;
+        form.hubs = [...hubs];
+
+        let { published } = form;
+        let published_date = paper_publish_date.split("-"); // ex. 2019-09-20 -> [2010, 09, 20]
+        published.year = { value: published_date[0], label: published_date[0] };
+        published.month = {
+          value: published_date[1],
+          label: published_date[1],
+        };
+        if (published_date.length > 2) {
+          published.day = {
+            value: published_date[2],
+            label: published_date[2],
+          };
+        }
+        this.setState({
+          selectedAuthors: [...authors],
+          summary: summary.summary,
+          form,
+        });
+      });
+  };
+
+  componentWillUnMount() {
+    this.setState({ ...initialState });
   }
 
   handleAuthorSelect = (value) => {
@@ -186,11 +238,11 @@ class PaperUploadInfo extends React.Component {
         .then(Helpers.parseJSON)
         .then((resp) => {
           this.setState({
-            authors: resp.results,
+            suggestedAuthors: resp.results,
             loading: false,
           });
         });
-    }, 1000);
+    }, 800);
   };
 
   uploadPaper = async (acceptedFiles, binaryStr) => {
@@ -199,14 +251,6 @@ class PaperUploadInfo extends React.Component {
     let form = JSON.parse(JSON.stringify(this.state.form));
     let uploadedFile = acceptedFiles[0];
     await this.setState({ uploadingPaper: true });
-
-    // let grabName = () => {
-    //   let arr = uploadedFile.name.split(".");
-    //   arr.pop();
-    //   return arr.join(".");
-    // };
-    // let name = grabName();
-    // form.title = name;
 
     setTimeout(async () => {
       await paperActions.uploadPaperToState(uploadedFile);
@@ -312,7 +356,7 @@ class PaperUploadInfo extends React.Component {
       uploadingPaper,
       error,
       searchAuthor,
-      authors,
+      suggestedAuthors,
     } = this.state;
     switch (activeStep) {
       case 1:
@@ -361,7 +405,7 @@ class PaperUploadInfo extends React.Component {
               />
               <AuthorCardList
                 show={showAuthorList}
-                authors={authors}
+                authors={suggestedAuthors}
                 loading={loading}
                 addAuthor={this.openAddAuthorModal}
                 onAuthorClick={this.handleAuthorSelect}
@@ -590,17 +634,25 @@ class PaperUploadInfo extends React.Component {
   };
 
   postPaper = async () => {
-    const body = this.state.form;
+    const body = { ...this.state.form };
     body.authors = this.state.selectedAuthors.map((author) => author.id); // TODO: Add self to this array if that box is checked
     body.doi = ""; // TODO: Add this required field
-    body.file = this.props.paper.uploadedPaper;
-    // body.hubs = body.hubs.map((hub) => hub.id);
-    body.hubs = 1; //hardcoded this for now
+    body.hubs = body.hubs.map((hub) => hub.id);
     body.publishDate = this.formatPublishDate(body.published);
     body.url = ""; // TODO: Add this optional field
     // TODO: Add publicationType
+    if (!this.state.editMode) {
+      body.file = this.props.paper.uploadedPaper;
+      return this.props.paperActions.postPaper(body);
+    }
+    // send patch request
+    // let patchConfig = await API.PATCH_CONFIG(body)
+    // fetch(API.PAPER({ paperId: }), patchConfig)
+    // .then(Helpers.checkStatus)
+    // .then(Helpers.parseJSON)
+    // .then(res => {
 
-    await this.props.paperActions.postPaper(body);
+    // })
   };
 
   formatPublishDate = (published) => {
