@@ -46,7 +46,7 @@ const AuthorInput = ({
         style={styles.input}
         value={tags && tags}
         onChange={onChange}
-        onChangeInput={(value) => tags.length !== 3 && onChangeInput(value)}
+        onChangeInput={(value) => onChangeInput(value)}
         inputValue={inputValue}
         className={error ? css(styles.error) : "react-tagsinput"}
         maxTags={3}

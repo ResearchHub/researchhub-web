@@ -137,6 +137,7 @@ class PaperUploadInfo extends React.Component {
           selectedAuthors: [...authors],
           summary: summary.summary,
           form,
+          editMode: true,
         });
       });
   };
@@ -146,15 +147,14 @@ class PaperUploadInfo extends React.Component {
   }
 
   handleAuthorSelect = (value) => {
-    if (!this.state.selectedAuthors.includes(value)) {
-      let error = { ...this.state.error };
-      error.author = false;
-      this.setState({
-        selectedAuthors: [...this.state.selectedAuthors, value],
-        searchAuthor: "",
-        error,
-      });
-    }
+    let error = { ...this.state.error };
+    error.author = false;
+    this.setState({
+      selectedAuthors: [...this.state.selectedAuthors, value],
+      suggestedAuthors: [],
+      searchAuthor: "",
+      error,
+    });
   };
 
   handleAuthorChange = (selectedAuthors) => {
@@ -232,8 +232,10 @@ class PaperUploadInfo extends React.Component {
       showAuthorList: true,
     });
 
-    this.searchAuthorsTimeout = setTimeout(() => {
-      fetch(API.AUTHOR({ search: value }), API.GET_CONFIG())
+    // let authors = this.state.selectedAuthors.map(author => author.id);
+
+    this.searchAuthorsTimeout = setTimeout(async () => {
+      return fetch(API.AUTHOR({ search: value }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
@@ -242,7 +244,7 @@ class PaperUploadInfo extends React.Component {
             loading: false,
           });
         });
-    }, 800);
+    }, 400);
   };
 
   uploadPaper = async (acceptedFiles, binaryStr) => {
@@ -274,12 +276,14 @@ class PaperUploadInfo extends React.Component {
   };
 
   renderTitle = () => {
-    let { activeStep } = this.state;
+    let { activeStep, editMode } = this.state;
+    let title = editMode ? "Paper Info Edit" : "Paper Upload";
+
     switch (activeStep) {
       case 1:
         return (
           <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title, styles.text)}>Paper Upload</div>
+            <div className={css(styles.title, styles.text)}>{title}</div>
             <div className={css(styles.subtitle, styles.text)}>
               Step 1: Main Information
             </div>
@@ -288,7 +292,7 @@ class PaperUploadInfo extends React.Component {
       case 2:
         return (
           <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title, styles.text)}>Paper Upload</div>
+            <div className={css(styles.title, styles.text)}>{title}</div>
             <div className={css(styles.subtitle, styles.text)}>
               Step 2: Add a summary that concisely highlights the main aspects
               of the paper
@@ -298,7 +302,7 @@ class PaperUploadInfo extends React.Component {
       case 3:
         return (
           <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title, styles.text)}>Paper Upload</div>
+            <div className={css(styles.title, styles.text)}>{title}</div>
             <div className={css(styles.subtitle, styles.text)}>
               Step 3: Start a discussion on the paper
             </div>
@@ -346,10 +350,8 @@ class PaperUploadInfo extends React.Component {
 
   renderContent = () => {
     let {
-      progress,
       form,
       discussion,
-      summary,
       showAuthorList,
       loading,
       activeStep,
@@ -357,31 +359,34 @@ class PaperUploadInfo extends React.Component {
       error,
       searchAuthor,
       suggestedAuthors,
+      editMode,
     } = this.state;
     switch (activeStep) {
       case 1:
         return (
           <span>
-            {this.renderHeader("Academic Paper")}
+            {!editMode && this.renderHeader("Academic Paper")}
             <div className={css(styles.section)}>
-              <div className={css(styles.paper)}>
-                <div className={css(styles.label)}>
-                  Paper PDF
-                  <span className={css(styles.asterick)}>*</span>
+              {!editMode && (
+                <div className={css(styles.paper)}>
+                  <div className={css(styles.label)}>
+                    Paper PDF
+                    <span className={css(styles.asterick)}>*</span>
+                  </div>
+                  <DragNDrop
+                    pasteUrl={false}
+                    handleDrop={this.uploadPaper}
+                    loading={uploadingPaper}
+                    uploadFinish={
+                      Object.keys(this.props.paper.uploadedPaper).length > 0
+                    }
+                    uploadedPaper={this.props.paper.uploadedPaper}
+                    reset={this.removePaper}
+                    error={error.dnd}
+                    isDynamic={true}
+                  />
                 </div>
-                <DragNDrop
-                  pasteUrl={false}
-                  handleDrop={this.uploadPaper}
-                  loading={uploadingPaper}
-                  uploadFinish={
-                    Object.keys(this.props.paper.uploadedPaper).length > 0
-                  }
-                  uploadedPaper={this.props.paper.uploadedPaper}
-                  reset={this.removePaper}
-                  error={error.dnd}
-                  isDynamic={true}
-                />
-              </div>
+              )}
             </div>
             {this.renderHeader("Main Information")}
             <div className={css(styles.section, styles.padding)}>
@@ -532,7 +537,10 @@ class PaperUploadInfo extends React.Component {
       case 1:
         return (
           <div className={css(styles.buttonRow, styles.buttons)}>
-            <div className={css(styles.button, styles.buttonLeft)}>
+            <div
+              className={css(styles.button, styles.buttonLeft)}
+              onClick={this.cancel}
+            >
               <span className={css(styles.buttonLabel, styles.text)}>
                 Cancel
               </span>
@@ -621,7 +629,10 @@ class PaperUploadInfo extends React.Component {
     //   pass = false;
     //   error.hubs = true;
     // }
-    if (!(Object.keys(paper.uploadedPaper).length > 0)) {
+    if (
+      !this.state.editMode &&
+      !(Object.keys(paper.uploadedPaper).length > 0)
+    ) {
       pass = false;
       error.dnd = true;
     }
@@ -717,7 +728,7 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.parseJSON)
       .then((resp) => {
         Router.push(
-          "/paper/[paperId]/[tabName]/",
+          "/paper/[paperId]/[tabName]",
           `/paper/${this.props.paper.postedPaper.id}/summary`
         );
       });
@@ -725,9 +736,18 @@ class PaperUploadInfo extends React.Component {
 
   navigateToSummary = () => {
     Router.push(
-      "/paper/[paperId]/[tabName]/",
+      "/paper/[paperId]/[tabName]",
       `/paper/${this.props.paper.postedPaper.id}/summary`
     );
+  };
+
+  cancel = () => {
+    if (this.state.editMode) {
+      let { paperId } = this.props;
+      Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
+    } else {
+      Router.back();
+    }
   };
 
   render() {
