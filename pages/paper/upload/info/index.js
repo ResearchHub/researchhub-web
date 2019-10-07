@@ -5,10 +5,10 @@ import Router, { useRouter } from "next/router";
 // Component
 import PaperUploadInfo from "../../../../components/Paper/PaperUploadInfo";
 
-class Index extends React.Component {
-  render() {
-    return <PaperUploadInfo />;
-  }
-}
+const Index = () => {
+  const router = useRouter();
+  const { uploadPaperTitle } = router.query;
+  return <PaperUploadInfo paperTitle={uploadPaperTitle} />;
+};
 
 export default Index;

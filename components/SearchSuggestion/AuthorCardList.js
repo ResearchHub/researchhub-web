@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     transition: `all ease-in-out ${DEFAULT_TRANSITION_TIME}s`,
   },
   minHeight: {
-    height: 80,
+    height: 180,
   },
   maxHeight: {
     height: 260,
@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
     height: 20,
     width: 14,
     marginRight: 21,
+    userSelect: "none",
   },
   marginLeft: {
     marginLeft: 21,
