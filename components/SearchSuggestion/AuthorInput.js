@@ -26,6 +26,7 @@ const AuthorInput = ({
       </span>
     );
   }
+
   return (
     <div
       className={css(styles.container, containerStyle && styles.containerStyle)}
@@ -51,8 +52,7 @@ const AuthorInput = ({
         maxTags={3}
         renderTag={(props) => renderTag(props)}
         inputProps={{
-          placeholder:
-            tags.length !== 3 ? "Search for author" : "Max authors reached",
+          placeholder: "Search for author",
         }}
       />
     </div>

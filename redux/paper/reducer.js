@@ -15,16 +15,7 @@ const PaperReducer = (state = defaultPaperState, action) => {
     case types.POST_PAPER_SUMMARY_PENDING:
     case types.POST_PAPER_SUMMARY_FAILURE:
     case types.POST_PAPER_SUMMARY_SUCCESS:
-      return {
-        ...state,
-        ...action.payload,
-      };
     case types.UPLOAD_PAPER_TO_STATE:
-      return {
-        ...state,
-        uploadedPaper: action.payload.uploadedPaper,
-        uploadedPaperTitle: action.payload.uploadedPaperTitle,
-      };
     case types.REMOVE_PAPER_FROM_STATE:
       return {
         ...state,
