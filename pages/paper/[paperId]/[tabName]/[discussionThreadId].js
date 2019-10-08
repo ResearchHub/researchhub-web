@@ -167,58 +167,117 @@ const ShareButton = () => {
   return <div className={css(styles.shareContainer)}>{icons.share}</div>;
 };
 
-const Comment = (props) => {
-  let date = "";
-  let text = "";
-  let username = "";
+class DiscussionComment extends React.Component {
+  state = {
+    date: this.props.data.createdDate,
+    text: this.props.data.text,
+    username: createUsername(this.props.data),
+  };
 
-  const [reply, setReply] = useState(false);
-
-  const { data } = props;
-
-  if (data && !isEmpty(data)) {
-    date = data.createdDate;
-    text = deserializeComment(data.text);
-    username = createUsername(data);
-  }
-
-  function deserializeComment(text) {
+  deserializeComment = (text) => {
     try {
       text = Value.fromJSON(JSON.parse(text));
     } catch (SyntaxError) {
       text = Plain.deserialize(text);
     }
     return text;
+  };
+
+  renderTop = () => {
+    return (
+      <Fragment>
+        <VoteWidget score={0} />
+        <DiscussionPostMetadata
+          username={this.state.username}
+          date={this.state.date}
+        />
+      </Fragment>
+    );
+  };
+
+  renderInfo = () => {
+    const text = this.deserializeComment(this.state.text);
+    return <TextEditor readOnly={true} canEdit={false} initialValue={text} />;
+  };
+
+  render() {
+    const action = this.renderAction ? this.renderAction() : null;
+    const replies = this.renderReplies ? this.renderReplies() : null;
+
+    return (
+      <Fragment>
+        <DiscussionCard
+          top={this.renderTop()}
+          info={this.renderInfo()}
+          infoStyle={this.props.infoStyle}
+          action={action}
+        />
+        {replies}
+      </Fragment>
+    );
+  }
+}
+
+class Comment extends DiscussionComment {
+  constructor(props) {
+    super(props);
+    this.state.showReplyBox = false;
+    this.state.replies = [];
   }
 
-  return (
-    <div className={css(styles.commentContainer)}>
-      <DiscussionCard
-        top={
-          <Fragment>
-            <VoteWidget score={0} />
-            <DiscussionPostMetadata username={username} date={date} />
-          </Fragment>
-        }
-        info={
-          <TextEditor readOnly={true} canEdit={false} initialValue={text} />
-        }
-        infoStyle={styles.commentInfo}
-        action={
-          <div className={css(styles.actionBar)}>
-            {!reply ? (
-              <div className={css(styles.reply)} onClick={() => setReply(true)}>
-                Reply
-              </div>
-            ) : (
-              <TextEditor canEdit={true} commentEditor={true} />
-            )}
-          </div>
-        }
-      />
-    </div>
-  );
-};
+  renderAction = () => {
+    return (
+      <div className={css(styles.actionBar)}>
+        {!this.state.showReplyBox
+          ? this.renderReplyButton()
+          : this.renderReplyBox()}
+      </div>
+    );
+  };
+
+  renderReplyButton = () => {
+    return (
+      <div className={css(styles.reply)} onClick={this.showReplyBox}>
+        Reply
+      </div>
+    );
+  };
+
+  showReplyBox = () => {
+    this.setState({ showReplyBox: true });
+  };
+
+  renderReplyBox = () => {
+    return <ReplyBox onSubmit={this.addSubmittedReply} />;
+  };
+
+  addSubmittedReply = (reply) => {
+    let newReplies = [reply];
+    newReplies = newReplies.concat(this.state.replies);
+    this.setState({ replies: newReplies });
+  };
+
+  renderReplies = () => {
+    return this.state.replies.map((r, i) => {
+      let divider = <div className={css(styles.divider)} />;
+      if (i === 0) {
+        divider = null;
+      }
+      return (
+        <Fragment key={r.id}>
+          {divider}
+          <Reply key={r.id} data={r} />
+        </Fragment>
+      );
+    });
+  };
+}
+
+class Reply extends DiscussionComment {
+  constructor(props) {
+    super(props);
+  }
+}
 
 const CommentBox = (props) => {
   const { onSubmit } = props;
@@ -244,6 +303,36 @@ const CommentBox = (props) => {
         canEdit={true}
         canSubmit={true}
         onSubmit={postComment}
+        commentEditor={true}
+      />
+    </div>
+  );
+};
+
+const ReplyBox = (props) => {
+  const { onSubmit } = props;
+
+  const dispatch = useDispatch();
+  const store = useStore();
+  const router = useRouter();
+  const { paperId, discussionThreadId } = router.query;
+
+  async function postReply(text) {
+    dispatch(DiscussionActions.postReplyPending());
+    await dispatch(
+      DiscussionActions.postReply(paperId, discussionThreadId, text)
+    );
+
+    const reply = store.getState().discussion.postedReply;
+    onSubmit(reply);
+  }
+
+  return (
+    <div>
+      <TextEditor
+        canEdit={true}
+        canSubmit={true}
+        onSubmit={postReply}
         commentEditor={true}
       />
     </div>
