@@ -10,6 +10,9 @@ export default function(state = initialState, action) {
     case types.POST_COMMENT_PENDING:
     case types.POST_COMMENT_FAILURE:
     case types.POST_COMMENT_SUCCESS:
+    case types.POST_REPLY_PENDING:
+    case types.POST_REPLY_FAILURE:
+    case types.POST_REPLY_SUCCESS:
       return {
         ...state,
         ...action.payload,
@@ -21,6 +24,22 @@ export default function(state = initialState, action) {
       return {
         ...state,
         commentPage: { ...action.payload },
+      };
+
+    case types.FETCH_REPLIES_PENDING:
+    case types.FETCH_REPLIES_FAILURE:
+      return {
+        ...state,
+        replyPage: { ...action.payload },
+      };
+    case types.FETCH_REPLIES_SUCCESS:
+      return {
+        ...state,
+        replyPage: {
+          doneFetching: action.payload.doneFetching,
+          success: action.payload.success,
+        },
+        [`comment_${action.payload.comment}_replyPage`]: { ...action.payload },
       };
 
     default:

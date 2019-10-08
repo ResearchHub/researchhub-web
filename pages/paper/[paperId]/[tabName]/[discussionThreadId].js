@@ -21,7 +21,7 @@ import DiscussionActions from "~/redux/discussion";
 // Utils
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { isEmpty } from "~/config/utils";
+import { doesNotExist, isEmpty } from "~/config/utils";
 
 const DiscussionThreadPage = (props) => {
   const { discussion } = props;
@@ -170,6 +170,7 @@ const ShareButton = () => {
 
 class DiscussionComment extends React.Component {
   state = {
+    id: this.props.data.id,
     date: this.props.data.createdDate,
     text: this.props.data.text,
     username: createUsername(this.props.data),
@@ -249,13 +250,18 @@ class Comment extends DiscussionComment {
   };
 
   renderReplyBox = () => {
-    return <ReplyBox onSubmit={this.addSubmittedReply} />;
+    return (
+      <ReplyBox onSubmit={this.addSubmittedReply} commentId={this.state.id} />
+    );
   };
 
   addSubmittedReply = (reply) => {
-    let newReplies = [reply];
-    newReplies = newReplies.concat(this.state.replies);
-    this.setState({ replies: newReplies });
+    if (!doesNotExist(reply)) {
+      let newReplies = [reply];
+      newReplies = newReplies.concat(this.state.replies);
+      console.log(newReplies);
+      this.setState({ replies: newReplies });
+    }
   };
 
   renderReplies = () => {
