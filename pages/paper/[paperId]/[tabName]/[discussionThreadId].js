@@ -10,6 +10,7 @@ import Plain from "slate-plain-serializer";
 
 // components
 import DiscussionCard from "~/components/DiscussionCard";
+import { CommentBox, ReplyBox } from "~/components/DiscussionCommentBox";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import TextEditor from "~/components/TextEditor";
 import VoteWidget from "~/components/VoteWidget";
@@ -278,66 +279,6 @@ class Reply extends DiscussionComment {
     super(props);
   }
 }
-
-const CommentBox = (props) => {
-  const { onSubmit } = props;
-
-  const dispatch = useDispatch();
-  const store = useStore();
-  const router = useRouter();
-  const { paperId, discussionThreadId } = router.query;
-
-  async function postComment(text) {
-    dispatch(DiscussionActions.postCommentPending());
-    await dispatch(
-      DiscussionActions.postComment(paperId, discussionThreadId, text)
-    );
-
-    const comment = store.getState().discussion.postedComment;
-    onSubmit(comment);
-  }
-
-  return (
-    <div className={css(styles.commentBoxContainer)}>
-      <TextEditor
-        canEdit={true}
-        canSubmit={true}
-        onSubmit={postComment}
-        commentEditor={true}
-      />
-    </div>
-  );
-};
-
-const ReplyBox = (props) => {
-  const { onSubmit } = props;
-
-  const dispatch = useDispatch();
-  const store = useStore();
-  const router = useRouter();
-  const { paperId, discussionThreadId } = router.query;
-
-  async function postReply(text) {
-    dispatch(DiscussionActions.postReplyPending());
-    await dispatch(
-      DiscussionActions.postReply(paperId, discussionThreadId, text)
-    );
-
-    const reply = store.getState().discussion.postedReply;
-    onSubmit(reply);
-  }
-
-  return (
-    <div>
-      <TextEditor
-        canEdit={true}
-        canSubmit={true}
-        onSubmit={postReply}
-        commentEditor={true}
-      />
-    </div>
-  );
-};
 
 function createUsername({ createdBy }) {
   const { firstName, lastName } = createdBy;
