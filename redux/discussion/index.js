@@ -70,6 +70,52 @@ export function postComment(paperId, threadId, text) {
   };
 }
 
+export function fetchReplies(paperId, threadId, commentId, page) {
+  return async (dispatch) => {
+    const response = await fetch(
+      API.THREAD_COMMENT_REPLY(paperId, threadId, commentId, page),
+      API.GET_CONFIG()
+    ).catch(utils.handleCatch);
+
+    let action = actions.setRepliesFailure();
+
+    if (response.ok) {
+      const body = await response.json();
+      const replies = shims.replies(body);
+      replies.page = page;
+      action = actions.setReplies(replie);
+    } else {
+      utils.logFetchError(response);
+    }
+
+    return dispatch(action);
+  };
+}
+
+export function postReply(paperId, threadId, commentId, text) {
+  return async (dispatch) => {
+    const response = await fetch(
+      API.THREAD_COMMENT_REPLY(paperId, threadId, commentId),
+      API.POST_CONFIG({
+        text,
+        parent: commentId,
+      })
+    ).catch(utils.handleCatch);
+
+    let action = actions.setPostReplyFailure();
+
+    if (response.ok) {
+      const body = await response.json();
+      const reply = shims.postReplyResponse(body);
+      action = actions.setPostReplySuccess(reply);
+    } else {
+      utils.logFetchError(response);
+    }
+
+    return dispatch(action);
+  };
+}
+
 const DiscussionActions = {
   fetchThread,
   fetchThreadPending: actions.setThreadPending,
@@ -77,6 +123,10 @@ const DiscussionActions = {
   fetchCommentsPending: actions.setCommentsPending,
   postComment,
   postCommentPending: actions.setPostCommentPending,
+  fetchReplies,
+  fetchRepliesPending: actions.setRepliesPending,
+  postReply,
+  postReplyPending: actions.setPostReplyPending,
 };
 
 export default DiscussionActions;

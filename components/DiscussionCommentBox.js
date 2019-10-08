@@ -12,10 +12,11 @@ const DiscussionComment = (props) => {
   const store = useStore();
   const router = useRouter();
   const { paperId, discussionThreadId } = router.query;
+  const { commentId } = props;
 
   const post = async (text) => {
     await postMethod(
-      { dispatch, store, paperId, discussionThreadId, onSubmit },
+      { dispatch, store, paperId, discussionThreadId, commentId, onSubmit },
       text
     );
   };
@@ -43,11 +44,18 @@ async function postComment(props, text) {
 }
 
 async function postReply(props, text) {
-  const { dispatch, store, paperId, discussionThreadId, onSubmit } = props;
+  const {
+    dispatch,
+    store,
+    paperId,
+    discussionThreadId,
+    commentId,
+    onSubmit,
+  } = props;
 
   dispatch(DiscussionActions.postReplyPending());
   await dispatch(
-    DiscussionActions.postReply(paperId, discussionThreadId, text)
+    DiscussionActions.postReply(paperId, discussionThreadId, commentId, text)
   );
 
   const reply = store.getState().discussion.postedReply;
@@ -58,8 +66,14 @@ export const CommentBox = (props) => {
   const { onSubmit } = props;
   return <DiscussionComment onSubmit={onSubmit} postMethod={postComment} />;
 };
-export const ReplyBox = (props) => {
-  const { onSubmit } = props;
 
-  return <DiscussionComment onSubmit={onSubmit} postMethod={postReply} />;
+export const ReplyBox = (props) => {
+  const { commentId, onSubmit } = props;
+  return (
+    <DiscussionComment
+      onSubmit={onSubmit}
+      postMethod={postReply}
+      commentId={commentId}
+    />
+  );
 };
