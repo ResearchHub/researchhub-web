@@ -74,6 +74,16 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    THREAD_COMMENT_REPLY: (paperId, threadId, commentId, page) => {
+      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/${commentId}/reply`;
+
+      if (typeof page === "number") {
+        url += `?page=${page}`;
+      }
+
+      return url;
+    },
+
     AUTHOR: ({ authorId, search }) => {
       let url = BASE_URL + `author/`;
 

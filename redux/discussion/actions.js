@@ -56,3 +56,41 @@ export function setPostCommentSuccess(comment) {
     payload: { donePosting: true, success: true, postedComment: comment },
   };
 }
+
+export function setRepliesPending() {
+  return {
+    type: types.FETCH_REPLIES_PENDING,
+    payload: { doneFetching: false },
+  };
+}
+export function setReplies(res) {
+  return {
+    type: types.FETCH_REPLIES_SUCCESS,
+    payload: { ...res, doneFetching: true, success: true },
+  };
+}
+export function setRepliesFailure() {
+  return {
+    type: types.FETCH_REPLIES_FAILURE,
+    payload: { doneFetching: true, success: false },
+  };
+}
+
+export function setPostReplyPending() {
+  return {
+    type: types.POST_REPLY_PENDING,
+    payload: { donePosting: false },
+  };
+}
+export function setPostReplyFailure() {
+  return {
+    type: types.POST_REPLY_FAILURE,
+    payload: { donePosting: true, success: false },
+  };
+}
+export function setPostReplySuccess(reply) {
+  return {
+    type: types.POST_REPLY_SUCCESS,
+    payload: { donePosting: true, success: true, postedReply: reply },
+  };
+}

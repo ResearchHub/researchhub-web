@@ -44,6 +44,36 @@ function transformComment(comment) {
   };
 }
 
+export const replies = (page) => {
+  return {
+    page: page.page,
+    count: page.count,
+    nextPage: page.next,
+    previousPage: page.previousPage,
+    replies: transformReplies(page.results),
+  };
+};
+
+export const postReplyResponse = (reply) => {
+  return transformReply(reply);
+};
+
+function transformReplies(replies) {
+  return replies.map((reply) => {
+    return transformReply(reply);
+  });
+}
+
+function transformReply(reply) {
+  return {
+    id: reply.id,
+    text: reply.text,
+    comment: reply.parent,
+    createdBy: transformUser(reply.created_by),
+    createdDate: reply.created_date,
+  };
+}
+
 function transformDate(date) {
   return moment(date);
 }
