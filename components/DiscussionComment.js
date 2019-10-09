@@ -62,14 +62,10 @@ class DiscussionComment extends React.Component {
   updateWidgetUI = (voteResult) => {
     const vote = getNestedValue(voteResult, ["vote"], false);
     if (vote) {
-      console.log(vote);
       const voteType = vote.voteType;
-      console.log(voteType);
       if (voteType === UPVOTE) {
-        console.log("upvote");
         this.setState({ selectedVoteType: UPVOTE });
       } else if (voteType === DOWNVOTE) {
-        console.log("downvote");
         this.setState({ selectedVoteType: DOWNVOTE });
       }
     }
