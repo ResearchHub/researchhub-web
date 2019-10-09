@@ -13,3 +13,6 @@ export const FETCH_REPLIES_SUCCESS = "@@discussion/FETCH_REPLIES_SUCCESS";
 export const POST_REPLY_PENDING = "@@discussion/POST_REPLY_PENDING";
 export const POST_REPLY_FAILURE = "@@discussion/POST_REPLY_FAILURE";
 export const POST_REPLY_SUCCESS = "@@discussion/POST_REPLY_SUCCESS";
+export const POST_VOTE_PENDING = "@@discussion/POST_VOTE_PENDING";
+export const POST_VOTE_FAILURE = "@@discussion/POST_VOTE_FAILURE";
+export const POST_VOTE_SUCCESS = "@@discussion/POST_VOTE_SUCCESS";

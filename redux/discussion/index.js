@@ -116,6 +116,52 @@ export function postReply(paperId, threadId, commentId, text) {
   };
 }
 
+export function postUpvote(paperId, threadId, commentId, replyId) {
+  const isUpvote = true;
+
+  return async (dispatch) => {
+    const response = await fetch(
+      API.UPVOTE(paperId, threadId, commentId, replyId),
+      API.POST_CONFIG()
+    ).catch(utils.handleCatch);
+
+    let action = actions.setPostVoteFailure(isUpvote);
+
+    if (response.ok) {
+      const body = await response.json();
+      const vote = shims.vote(body);
+      action = actions.setPostVoteSuccess(vote);
+    } else {
+      utils.logFetchError(response);
+    }
+
+    return dispatch(action);
+  };
+}
+
+export function postDownvote(paperId, threadId, commentId, replyId) {
+  const isUpvote = false;
+
+  return async (dispatch) => {
+    const response = await fetch(
+      API.DOWNVOTE(paperId, threadId, commentId, replyId),
+      API.POST_CONFIG()
+    ).catch(utils.handleCatch);
+
+    let action = actions.setPostVoteFailure(isUpvote);
+
+    if (response.ok) {
+      const body = await response.json();
+      const vote = shims.vote(body);
+      action = actions.setPostVoteSuccess(vote);
+    } else {
+      utils.logFetchError(response);
+    }
+
+    return dispatch(action);
+  };
+}
+
 const DiscussionActions = {
   fetchThread,
   fetchThreadPending: actions.setThreadPending,
@@ -127,6 +173,10 @@ const DiscussionActions = {
   fetchRepliesPending: actions.setRepliesPending,
   postReply,
   postReplyPending: actions.setPostReplyPending,
+  postUpvote,
+  postUpvotePending: () => actions.setPostVotePending(true),
+  postDownvote,
+  postDownvotePending: () => actions.setPostVotePending(false),
 };
 
 export default DiscussionActions;
