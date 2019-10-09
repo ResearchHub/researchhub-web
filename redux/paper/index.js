@@ -68,7 +68,42 @@ export const PaperActions = {
       return dispatch(action);
     };
   },
+  patchPaper: (paperId, body) => {
+    return async (dispatch) => {
+      const response = await fetch(
+        API.PAPER({ paperId }),
+        API.PATCH_CONFIG(shims.paperSummaryPost(body))
+      ).catch(utils.handleCatch);
 
+      let action = actions.setPostPaperFailure("PATCH");
+      if (response.ok) {
+        const body = await response.json();
+        const paper = shims.paper(body);
+        action = actions.setPostPaperSuccess(paper, "PATCH");
+      } else {
+        utils.logFetchError(response);
+      }
+      return dispatch(action);
+    };
+  },
+  putPaper: (paperId, body) => {
+    return async (dispatch) => {
+      const response = await fetch(
+        API.PAPER({ paperId }),
+        API.PUT_CONFIG(shims.paperSummaryPost(body))
+      ).catch(utils.handleCatch);
+
+      let action = actions.setPostPaperFailure("PUT");
+      if (response.ok) {
+        const body = await response.json();
+        const paper = shims.paper(body);
+        action = actions.setPostPaperSuccess(paper, "PUT");
+      } else {
+        utils.logFetchError(response);
+      }
+      return dispatch(action);
+    };
+  },
   /**
    * saves the paper to redux state (not backend)
    */
