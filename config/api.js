@@ -1,6 +1,7 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
+import { doesNotExist } from "~/config/utils";
 
 const apiRoot = {
   production: "localhost:8000",
@@ -115,7 +116,35 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+
+    UPVOTE: (paperId, threadId, commentId, replyId) => {
+      let url = buildPaperUrl(paperId, threadId, commentId, replyId);
+
+      return url + "upvote/";
+    },
+
+    DOWNVOTE: (paperId, threadId, commentId, replyId) => {
+      let url = buildPaperUrl(paperId, threadId, commentId, replyId);
+
+      return url + "downvote/";
+    },
   };
+
+  function buildPaperUrl(paperId, threadId, commentId, replyId) {
+    let url = `${BASE_URL}paper/${paperId}/`;
+
+    if (!doesNotExist(threadId)) {
+      url += `discussion/${threadId}/`;
+      if (!doesNotExist(commentId)) {
+        url += `comment/${commentId}/`;
+        if (!doesNotExist(replyId)) {
+          url += `reply/${replyId}/`;
+        }
+      }
+    }
+
+    return url;
+  }
 };
 
 export default API({
