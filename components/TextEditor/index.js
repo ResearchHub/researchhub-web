@@ -65,7 +65,7 @@ const TextEditor = (props) => {
       ref={setEditorRef}
       readOnly={readOnly || false}
       onChange={handleChange}
-      initialValue={value}
+      initialValue={passedValue ? passedValue : value}
       canCancel={canCancel}
       canSubmit={canSubmit}
       cancel={cancel}

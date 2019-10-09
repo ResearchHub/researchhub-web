@@ -69,14 +69,17 @@ class RichTextEditor extends React.Component {
    *
    * @type {Object}
    */
+  constructor(props) {
+    super(props);
 
-  state = {
-    value: this.props.initialValue
-      ? this.props.initialValue
-      : this.props.commentEditor
-      ? commentInitialValue
-      : summaryScaffoldInitialValue,
-  };
+    this.state = {
+      value: this.props.initialValue
+        ? this.props.initialValue
+        : this.props.commentEditor
+        ? commentInitialValue
+        : summaryScaffoldInitialValue,
+    };
+  }
 
   componentDidUpdate(prevProps) {
     if (
@@ -84,6 +87,12 @@ class RichTextEditor extends React.Component {
       this.props.submittedSuccess !== prevProps.submittedSuccess
     ) {
       this.clear();
+    }
+
+    if (prevProps.value !== this.props.value) {
+      this.setState({
+        value: this.props.value,
+      });
     }
   }
 
