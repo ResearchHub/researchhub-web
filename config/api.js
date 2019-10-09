@@ -64,11 +64,11 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    GET_EDITS: ({}) => {
-      let url = BASE_URL + `summary/get_edits/`;
+    GET_EDITS: ({ paperId }) => {
+      let url = BASE_URL + `summary/get_edit_history/?paperId=${paperId}`;
       return url;
     },
-    
+
     THREAD_COMMENT: (paperId, threadId, page) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/`;
 
