@@ -1,22 +1,35 @@
+import { useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 
 import { doesNotExist } from "~/config/utils";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
 import { voteWidgetIcons } from "~/config/themes/icons";
+import { UPVOTE, DOWNVOTE } from "../config/constants";
 
 const VoteWidget = (props) => {
   const score = getScore(props);
-  const { onUpvote, onDownvote, fontSize, width } = props;
+  const { onUpvote, onDownvote, fontSize, selected, width } = props;
+
+  const [upvoteSelected, setUpvoteSelected] = useState(false);
+  const [downvoteSelected, setDownvoteSelected] = useState(false);
+
+  useEffect(() => {
+    if (selected === UPVOTE) {
+      setUpvoteSelected(true);
+    } else if (selected === DOWNVOTE) {
+      setDownvoteSelected(true);
+    }
+  }, [selected]);
 
   return (
     <div
       className={css(styles.container, props.styles)}
       style={{ fontSize: fontSize, width: width }}
     >
-      <UpvoteButton onClick={onUpvote} />
+      <UpvoteButton selected={upvoteSelected} onClick={onUpvote} />
       <ScorePill score={score} />
-      <DownvoteButton onClick={onDownvote} />
+      <DownvoteButton selected={downvoteSelected} onClick={onDownvote} />
     </div>
   );
 };
@@ -39,14 +52,34 @@ const ScorePill = (props) => {
   );
 };
 
-const UpvoteButton = () => {
-  // TODO: execute onClick function
-  return <div className={css(styles.icon)}>{voteWidgetIcons.upvote}</div>;
+const UpvoteButton = (props) => {
+  const { onClick, selected } = props;
+
+  const style = [styles.icon];
+  if (selected) {
+    style.push(styles.selected);
+  }
+
+  return (
+    <a className={css(...style)} onClick={onClick}>
+      {voteWidgetIcons.upvote}
+    </a>
+  );
 };
 
-const DownvoteButton = () => {
-  // TODO: execute onClick function
-  return <div className={css(styles.icon)}>{voteWidgetIcons.downvote}</div>;
+const DownvoteButton = (props) => {
+  const { onClick, selected } = props;
+
+  const style = [styles.icon];
+  if (selected) {
+    style.push(styles.selected);
+  }
+
+  return (
+    <a className={css(...style)} onClick={onClick}>
+      {voteWidgetIcons.downvote}
+    </a>
+  );
 };
 
 function getScore(props) {
@@ -77,6 +110,9 @@ const styles = StyleSheet.create({
   },
   coins: {
     fontSize: 10,
+  },
+  selected: {
+    color: colors.GREEN(),
   },
 });
 
