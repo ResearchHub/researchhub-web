@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   checkBox: {
     height: 23,
     width: 23,
-    borderRadius: 12,
+    borderRadius: "50%",
     border: "1px solid #e8e8f1",
     cursor: "pointer",
     position: "relative",
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   dot: {
     height: 12,
     width: 12,
-    borderRadius: 6,
+    borderRadius: "50%",
     backgroundColor: "#FBFBFD",
     position: "absolute",
     top: "50%",
