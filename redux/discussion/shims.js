@@ -1,6 +1,7 @@
 import moment from "moment";
 
-import { getNestedValue } from "~/config/utils";
+import { doesNotExist, getNestedValue } from "~/config/utils";
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
 
 export const thread = (thread) => {
   return {
@@ -11,6 +12,8 @@ export const thread = (thread) => {
     createdBy: transformUser(thread.created_by),
     createdDate: transformDate(thread.created_date),
     isPublic: thread.is_public,
+    score: thread.score,
+    userVote: transformVote(thread.user_vote),
   };
 };
 
@@ -41,6 +44,8 @@ function transformComment(comment) {
     thread: comment.parent,
     createdBy: transformUser(comment.created_by),
     createdDate: comment.created_date,
+    score: comment.score,
+    userVote: transformVote(comment.user_vote),
   };
 }
 
@@ -71,7 +76,35 @@ function transformReply(reply) {
     comment: reply.parent,
     createdBy: transformUser(reply.created_by),
     createdDate: reply.created_date,
+    score: reply.score,
+    userVote: transformVote(reply.user_vote),
   };
+}
+
+export const vote = (vote) => {
+  return transformVote(vote);
+};
+
+function transformVote(vote) {
+  if (!doesNotExist(vote) && vote !== "null") {
+    return {
+      itemId: vote.item,
+      voteType: transformVoteType(vote.vote_type),
+      userId: vote.created_by,
+      createdDate: transformDate(vote.created_date),
+    };
+  } else {
+    return {};
+  }
+}
+
+function transformVoteType(voteType) {
+  if (voteType === 1 || voteType === "1") {
+    return UPVOTE;
+  }
+  if (voteType === 2 || voteType === "2") {
+    return DOWNVOTE;
+  }
 }
 
 function transformDate(date) {

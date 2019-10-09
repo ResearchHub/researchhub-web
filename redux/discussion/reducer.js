@@ -42,6 +42,20 @@ export default function(state = initialState, action) {
         [`comment_${action.payload.comment}_replyPage`]: { ...action.payload },
       };
 
+    case types.POST_VOTE_PENDING:
+    case types.POST_VOTE_FAILURE:
+      return {
+        ...state,
+        vote: { ...action.payload },
+      };
+    case types.POST_VOTE_SUCCESS:
+      return {
+        ...state,
+        voteResult: {
+          ...action.payload,
+        },
+      };
+
     default:
       return state;
   }
