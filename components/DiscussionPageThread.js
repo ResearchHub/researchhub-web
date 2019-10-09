@@ -15,8 +15,10 @@ import VoteWidget from "~/components/VoteWidget";
 import DiscussionActions from "~/redux/discussion";
 
 // Utils
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { getNestedValue } from "~/config/utils";
 
 const Thread = (props) => {
   const { title, body, username, date, score, vote } = props;
@@ -25,20 +27,34 @@ const Thread = (props) => {
   const store = useStore();
   const router = useRouter();
   const { paperId, discussionThreadId } = router.query;
-  const selectedVoteType = vote && vote.voteType;
+  const [selectedVoteType, setSelectedVoteType] = useState(
+    vote && vote.voteType
+  );
 
   async function upvote() {
     dispatch(DiscussionActions.postUpvotePending());
     await dispatch(DiscussionActions.postUpvote(paperId, discussionThreadId));
-
-    const latestVotes = store.getState().discussion.latestVotes;
+    updateWidgetUI();
   }
 
   async function downvote() {
     dispatch(DiscussionActions.postDownvotePending());
     await dispatch(DiscussionActions.postDownvote(paperId, discussionThreadId));
+    updateWidgetUI();
+  }
 
-    const latestVotes = store.getState().discussion.latestVotes;
+  function updateWidgetUI() {
+    const voteResult = store.getState().discussion.voteResult;
+    const vote = getNestedValue(voteResult, ["vote"], false);
+
+    if (vote) {
+      const voteType = vote.voteType;
+      if (voteType === UPVOTE) {
+        setSelectedVoteType(UPVOTE);
+      } else if (voteType === DOWNVOTE) {
+        setSelectedVoteType(DOWNVOTE);
+      }
+    }
   }
 
   return (
