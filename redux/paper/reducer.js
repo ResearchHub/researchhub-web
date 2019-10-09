@@ -4,6 +4,7 @@ const defaultPaperState = {
   authors: [],
   uploadedPaper: {},
   hubs: [],
+  editHistory: [],
 };
 
 const PaperReducer = (state = defaultPaperState, action) => {
@@ -15,6 +16,7 @@ const PaperReducer = (state = defaultPaperState, action) => {
     case types.POST_PAPER_SUMMARY_PENDING:
     case types.POST_PAPER_SUMMARY_FAILURE:
     case types.POST_PAPER_SUMMARY_SUCCESS:
+    case types.GET_EDITS:
       return {
         ...state,
         ...action.payload,

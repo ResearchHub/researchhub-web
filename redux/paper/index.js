@@ -30,6 +30,26 @@ export const PaperActions = {
     };
   },
 
+  getEditHistory: (paperId) => {
+    return (dispatch) => {
+      return fetch(API.GET_EDITS({ paperId }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          return dispatch({
+            type: types.GET_EDITS,
+            payload: {
+              editHistory: resp,
+              doneFetching: true,
+            },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+  },
+
   postPaper: (body) => {
     return async (dispatch) => {
       const response = await fetch(
