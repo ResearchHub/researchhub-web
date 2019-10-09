@@ -54,7 +54,7 @@ export function setPostPaperSuccess(postedPaper, request = "POST") {
 
   return {
     type: type(request),
-    payload: { donePosting: true, success: true, postedPaper },
+    payload: { donePosting: true, success: true, postedPaper: postedPaper },
   };
 }
 export function setPostPaperSummaryPending() {
