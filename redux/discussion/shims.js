@@ -1,7 +1,5 @@
-import moment from "moment";
-
-import { doesNotExist, getNestedValue } from "~/config/utils";
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import { transformDate, transformVote } from "../utils";
+import { getNestedValue } from "~/config/utils";
 
 export const thread = (thread) => {
   return {
@@ -84,32 +82,6 @@ function transformReply(reply) {
 export const vote = (vote) => {
   return transformVote(vote);
 };
-
-function transformVote(vote) {
-  if (!doesNotExist(vote) && vote !== "null") {
-    return {
-      itemId: vote.item,
-      voteType: transformVoteType(vote.vote_type),
-      userId: vote.created_by,
-      createdDate: transformDate(vote.created_date),
-    };
-  } else {
-    return {};
-  }
-}
-
-function transformVoteType(voteType) {
-  if (voteType === 1 || voteType === "1") {
-    return UPVOTE;
-  }
-  if (voteType === 2 || voteType === "2") {
-    return DOWNVOTE;
-  }
-}
-
-function transformDate(date) {
-  return moment(date);
-}
 
 function transformUser(user) {
   return {
