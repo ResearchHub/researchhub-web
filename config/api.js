@@ -75,7 +75,7 @@ const routes = (BASE_URL) => {
     },
 
     THREAD_COMMENT_REPLY: (paperId, threadId, commentId, page) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/${commentId}/reply`;
+      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/${commentId}/reply/`;
 
       if (typeof page === "number") {
         url += `?page=${page}`;
