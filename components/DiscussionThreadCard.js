@@ -1,12 +1,18 @@
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
+import { useDispatch, useStore } from "react-redux";
+
+import DiscussionActions from "~/redux/discussion";
 
 import DiscussionCard from "./DiscussionCard";
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
-import DiscussionThreadActionBar from "~/components/DiscussionThreadActionBar";
+import DiscussionThreadActionBar from "./DiscussionThreadActionBar";
 import VoteWidget from "./VoteWidget";
+
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
@@ -14,6 +20,11 @@ import { getNestedValue } from "~/config/utils";
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionThreadCard = (props) => {
+  const dispatch = useDispatch();
+  const store = useStore();
+  const router = useRouter();
+  const { paperId } = router.query;
+
   const { path } = props;
 
   const data = getNestedValue(props, ["data"]);
@@ -22,29 +33,84 @@ const DiscussionThreadCard = (props) => {
   let title = "";
   let username = "";
   let commentCount = "";
+  let score = 0;
+  let vote = null;
+  let threadId = null;
 
   if (data) {
+    threadId = data.id;
     commentCount = data.commentCount;
     date = data.createdDate;
     title = data.title;
     username = createUsername(data);
+    score = data.score;
+    vote = data.userVote;
+  }
+
+  const [selectedVoteType, setSelectedVoteType] = useState(
+    vote && vote.voteType
+  );
+
+  async function upvote() {
+    dispatch(DiscussionActions.postUpvotePending());
+    await dispatch(DiscussionActions.postUpvote(paperId, threadId));
+    updateWidgetUI();
+  }
+
+  async function downvote() {
+    dispatch(DiscussionActions.postDownvotePending());
+    await dispatch(DiscussionActions.postDownvote(paperId, threadId));
+    updateWidgetUI();
+  }
+
+  function updateWidgetUI() {
+    const voteResult = store.getState().discussion.voteResult;
+    const vote = getNestedValue(voteResult, ["vote"], false);
+
+    if (vote) {
+      const voteType = vote.voteType;
+      if (voteType === UPVOTE) {
+        setSelectedVoteType(UPVOTE);
+      } else if (voteType === DOWNVOTE) {
+        setSelectedVoteType(DOWNVOTE);
+      }
+    }
   }
 
   return (
+    <div className={css(styles.discussionContainer)}>
+      <DiscussionCard
+        top={
+          <Fragment>
+            <VoteWidget
+              score={score}
+              fontSize={"16px"}
+              width={"44px"}
+              selected={selectedVoteType}
+              onUpvote={upvote}
+              onDownvote={downvote}
+            />
+            <DiscussionPostMetadata username={username} date={date} />
+            <ReadButton threadPath={path} />
+          </Fragment>
+        }
+        info={
+          <LinkWrapper>
+            <Title text={title} />
+          </LinkWrapper>
+        }
+        action={<DiscussionThreadActionBar count={commentCount} />}
+      />
+    </div>
+  );
+};
+
+const LinkWrapper = (props) => {
+  const { path } = props;
+
+  return (
     <Link href={DYNAMIC_HREF} as={path}>
-      <a className={css(styles.discussionContainer)}>
-        <DiscussionCard
-          top={
-            <Fragment>
-              <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
-              <DiscussionPostMetadata username={username} date={date} />
-              <ReadButton threadPath={path} />
-            </Fragment>
-          }
-          info={<Title text={title} />}
-          action={<DiscussionThreadActionBar count={commentCount} />}
-        />
-      </a>
+      <a className={css(styles.linkWrapperContainer)}>{props.children}</a>
     </Link>
   );
 };
@@ -87,7 +153,6 @@ const ReadButton = (props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
   topContainer: {
     display: "flex",
     flexDirection: "row",
@@ -110,6 +175,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   discussionContainer: {
+    textDecoration: "none",
+  },
+  linkWrapperContainer: {
     textDecoration: "none",
   },
   readContainer: {
