@@ -105,27 +105,6 @@ class SummaryTab extends React.Component {
     });
   };
 
-  viewEditHistory = async () => {
-    let { getEditHistory, paperId } = this.props;
-    let param = {
-      paper: paperId,
-    };
-    getEditHistory(paperId).then(() => {
-      this.setState({
-        viewEditHistory: true,
-      });
-    });
-  };
-
-  changeEditView = (selectedIndex, summary) => {
-    let contentState = convertFromRaw(summary);
-    let editorState = EditorState.createWithContent(contentState);
-    this.setState({
-      selectedEdit: selectedIndex,
-      editorState,
-    });
-  };
-
   componentDidMount() {
     /*
 
@@ -150,7 +129,7 @@ class SummaryTab extends React.Component {
       }
     }
   }
-  
+
   // componentDidUpdate = (prevProps) => {
   //   if (prevProps.paper.summary !== this.props.paper.summary) {
   //     let contentState = convertFromRaw(this.props.paper.summary.summary);
@@ -254,8 +233,9 @@ var styles = StyleSheet.create({
   container: {
     width: "100%",
     display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
     boxSizing: "border-box",
-    position: "relative",
   },
   noSummaryContainer: {
     alignItems: "center",
