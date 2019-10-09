@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import Progress from "react-progressbar";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { EditorState, convertFromRaw } from "draft-js";
+import { Value } from "slate";
 
 // Component
 import CheckBox from "../Form/CheckBox";
@@ -24,12 +24,16 @@ import AddAuthorModal from "../modal/AddAuthorModal";
 // Redux
 import { ModalActions } from "../../redux/modals";
 import { PaperActions } from "~/redux/paper";
+import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "../../config/utils/options";
+import discussionScaffold from "./discussionScaffold.json";
+
+const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 class PaperUploadInfo extends React.Component {
   constructor(props) {
@@ -55,7 +59,7 @@ class PaperUploadInfo extends React.Component {
       },
       discussion: {
         title: "",
-        question: "",
+        question: {},
       },
       error: {
         year: false,
@@ -65,6 +69,7 @@ class PaperUploadInfo extends React.Component {
         author: false,
       },
       summary: {},
+      summaryId: null,
       showAuthorList: false,
       progress: 33.33,
       activeStep: 1,
@@ -75,7 +80,6 @@ class PaperUploadInfo extends React.Component {
       uploadingPaper: false,
       suggestedHubs: [],
       editMode: false,
-      paperId: null,
     };
 
     this.state = {
@@ -86,6 +90,8 @@ class PaperUploadInfo extends React.Component {
 
   componentDidMount = async () => {
     let { paper, modalActions, paperId, paperTitle } = this.props;
+    this.props.authActions.getUser();
+    this.getHubs();
     if (paperId) {
       // this determines whether the user is coming from the upload modal or the summary of the paper
       await this.setState({ editMode: true });
@@ -95,7 +101,6 @@ class PaperUploadInfo extends React.Component {
       let form = { ...this.state.form };
       form.title = paperTitle;
       this.setState({ form });
-      this.getHubs();
     }
   };
 
@@ -113,18 +118,30 @@ class PaperUploadInfo extends React.Component {
           file,
           hubs,
           paper_publish_date,
+          publication_type,
           summary,
           tagline,
           title,
         } = res;
+
         let form = JSON.parse(JSON.stringify(this.state.form));
         form.doi = doi;
         form.title = title;
-        form.hubs = [...hubs];
-
+        form.hubs = hubs.map((hub) => {
+          return {
+            id: hub.id,
+            name: hub.name,
+            value: hub.id,
+            label: hub.name,
+          };
+        });
+        // TODO: ADD publication type when prefilling;
         let { published } = form;
         let published_date = paper_publish_date.split("-"); // ex. 2019-09-20 -> [2010, 09, 20]
-        published.year = { value: published_date[0], label: published_date[0] };
+        published.year = {
+          value: published_date[0],
+          label: published_date[0],
+        };
         published.month = Options.months
           .filter((month) => month.value === published_date[1])
           .pop();
@@ -134,10 +151,20 @@ class PaperUploadInfo extends React.Component {
             label: published_date[2],
           };
         }
+        // let discussionState = {...this.state.discussion}
+        // discussionState.count = discussion.count;
+
+        if (summary && summary.summary) {
+          let summaryJSON = JSON.parse(summary.summary);
+          let editorState = Value.fromJSON(summaryJSON);
+          this.setState({ summary: editorState });
+        }
+
         this.setState({
           selectedAuthors: [...authors],
-          summary: summary.summary,
+          summaryId: summary.id,
           form,
+          progress: 100,
         });
       });
   };
@@ -153,7 +180,6 @@ class PaperUploadInfo extends React.Component {
       selectedAuthors: [...this.state.selectedAuthors, value],
       suggestedAuthors: [],
       searchAuthor: "",
-      // showAuthorList: false,
       error,
     });
   };
@@ -186,14 +212,50 @@ class PaperUploadInfo extends React.Component {
     } else {
       form[keys[0]][keys[1]] = value;
       keys[0] === "published" ? (error[keys[1]] = false) : null; // removes red border on select fields
-      keys[0] === "author" ? (error[keys[0]] = false) : null;
     }
     this.setState({ form, error });
+  };
+
+  handleSelfAuthorToggle = (id, value) => {
+    let error = { ...this.state.error };
+    let form = JSON.parse(JSON.stringify(this.state.form));
+    let userAuthorId = this.props.auth.user.author_profile.id;
+    form.author.self_author = value;
+    if (value) {
+      error.author = false;
+      this.setState({
+        selectedAuthors: [
+          ...this.state.selectedAuthors,
+          userAuthorId && { ...this.props.auth.user.author_profile },
+        ],
+        suggestedAuthors: [],
+        searchAuthor: "",
+        form,
+        error,
+      });
+    } else {
+      let selectedAuthors = this.state.selectedAuthors.filter(
+        (author) => author.id !== userAuthorId
+      );
+      this.setState({
+        selectedAuthors,
+        suggestedAuthors: [],
+        searchAuthor: "",
+        form,
+        error: !!this.state.selectedAuthors.length < 1,
+      });
+    }
   };
 
   handleDiscussionInputChange = (id, value) => {
     let discussion = { ...this.state.discussion };
     discussion[id] = value;
+    this.setState({ discussion });
+  };
+
+  handleDiscussionTextEditor = (editorState) => {
+    let discussion = { ...this.state.discussion };
+    discussion.question = editorState;
     this.setState({ discussion });
   };
 
@@ -211,10 +273,6 @@ class PaperUploadInfo extends React.Component {
       error.hubs = form.hubs.length > 0 ? false : true;
     }
     this.setState({ form, error });
-  };
-
-  onEditorStateChange = (editorState) => {
-    this.setState({ summary: editorState });
   };
 
   searchAuthors = (value) => {
@@ -281,7 +339,7 @@ class PaperUploadInfo extends React.Component {
 
   renderTitle = () => {
     let { activeStep, editMode } = this.state;
-    let title = editMode ? "Paper Info Edit" : "Paper Upload";
+    let title = editMode ? "Edit Paper Information" : "Paper Upload";
 
     switch (activeStep) {
       case 1:
@@ -425,7 +483,7 @@ class PaperUploadInfo extends React.Component {
                   active={form.author.self_author}
                   label={"I am an author of this paper"}
                   id={"author.self_author"}
-                  onChange={this.handleInputChange}
+                  onChange={this.handleSelfAuthorToggle}
                 />
               </div>
               <div className={css(styles.row)}>
@@ -482,7 +540,7 @@ class PaperUploadInfo extends React.Component {
               <FormSelect
                 label={"Hubs"}
                 placeholder="Select up to 3 hubs"
-                // required={true}
+                required={true}
                 containerStyle={styles.container}
                 inputStyle={customStyles.input}
                 isMulti={true}
@@ -505,6 +563,11 @@ class PaperUploadInfo extends React.Component {
                 readOnly={false}
                 onChange={this.handleSummaryChange}
                 hideButton={true}
+                initialValue={
+                  Object.keys(this.state.summary).length > 0
+                    ? this.state.summary
+                    : null
+                }
               />
             </div>
           </span>
@@ -522,13 +585,22 @@ class PaperUploadInfo extends React.Component {
                 id={"title"}
                 onChange={this.handleDiscussionInputChange}
               />
-              <FormTextArea
-                label={"Question"}
-                placeholder="Leave a question or a comment"
-                value={discussion.question}
-                id={"question"}
-                onChange={this.handleDiscussionInputChange}
-              />
+              <div className={css(styles.discussionInputWrapper)}>
+                <div className={css(styles.label)}>Question</div>
+                <div className={css(styles.discussionTextEditor)}>
+                  <TextEditor
+                    canEdit={true}
+                    readOnly={false}
+                    onChange={this.handleDiscussionTextEditor}
+                    hideButton={true}
+                    initialValue={
+                      Object.keys(this.state.discussion.question).length > 0
+                        ? this.state.discussion.question
+                        : discussionScaffoldInitialValue
+                    }
+                  />
+                </div>
+              </div>
             </div>
           </span>
         );
@@ -536,7 +608,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   renderButtons = () => {
-    let { activeStep } = this.state;
+    let { activeStep, editMode } = this.state;
     switch (activeStep) {
       case 1:
         return (
@@ -550,7 +622,7 @@ class PaperUploadInfo extends React.Component {
               </span>
             </div>
             <Button
-              label={"Next Step"}
+              label={editMode ? "Save" : "Next Step"}
               customButtonStyle={styles.button}
               type={"submit"}
             />
@@ -611,8 +683,19 @@ class PaperUploadInfo extends React.Component {
 
   submitForm = async () => {
     if (this.validateSelectors()) {
-      await this.postPaper();
-      this.nextStep();
+      let { paper } = this.props;
+
+      if (paper.postedPaper && Object.keys(paper.postedPaper).length > 0) {
+        await this.postPaper("PATCH");
+      } else {
+        await this.postPaper();
+      }
+
+      if (this.state.editMode) {
+        return this.navigateToSummary();
+      } else {
+        this.nextStep();
+      }
     }
   };
 
@@ -629,10 +712,10 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.month = true;
     }
-    // if (hubs.length < 1) {
-    //   pass = false;
-    //   error.hubs = true;
-    // }
+    if (hubs.length < 1) {
+      pass = false;
+      error.hubs = true;
+    }
     if (
       !this.state.editMode &&
       !(Object.keys(paper.uploadedPaper).length > 0)
@@ -648,26 +731,29 @@ class PaperUploadInfo extends React.Component {
     return pass;
   };
 
-  postPaper = async () => {
+  postPaper = (request = "POST") => {
+    // prepare form object
     const body = { ...this.state.form };
-    body.authors = this.state.selectedAuthors.map((author) => author.id); // TODO: Add self to this array if that box is checked
+    body.authors = this.state.selectedAuthors.map((author) => author.id);
     body.doi = ""; // TODO: Add this required field
     body.hubs = body.hubs.map((hub) => hub.id);
     body.publishDate = this.formatPublishDate(body.published);
     body.url = ""; // TODO: Add this optional field
-    // TODO: Add publicationType
-    if (!this.state.editMode) {
-      body.file = this.props.paper.uploadedPaper;
-      return this.props.paperActions.postPaper(body);
-    }
-    // send patch request
-    // let patchConfig = await API.PATCH_CONFIG(body)
-    // fetch(API.PAPER({ paperId: }), patchConfig)
-    // .then(Helpers.checkStatus)
-    // .then(Helpers.parseJSON)
-    // .then(res => {
+    body.type = Object.keys(body.type)
+      .filter((type) => body.type[type] && String(type))
+      .pop();
 
-    // })
+    // send form object to the backend
+    if (!this.state.editMode) {
+      let paperId =
+        this.props.paper.postedPaper && this.props.paper.postedPaper.id;
+      body.file = this.props.paper.uploadedPaper;
+      return request === "POST"
+        ? this.props.paperActions.postPaper(body)
+        : this.props.paperActions.putPaper(paperId, body);
+    } else {
+      return this.props.paperActions.putPaper(this.props.paperId, body);
+    }
   };
 
   formatPublishDate = (published) => {
@@ -699,34 +785,58 @@ class PaperUploadInfo extends React.Component {
   };
 
   saveSummary = async () => {
+    let query = {};
+
+    if (this.state.summaryId) {
+      query.summaryId = this.state.summaryId;
+    }
+
     let param = {
       summary: JSON.stringify(this.state.summary.toJSON()),
-      paper: this.props.paper.postedPaper.id,
+      paper: this.props.paperId
+        ? this.props.paperId
+        : this.props.paper.postedPaper.id,
     };
-    let config = await API.POST_CONFIG(param);
-    return fetch(API.SUMMARY({}), config)
+
+    let config = this.state.summaryId // if there is a summaryid, then a paper exists
+      ? await API.PATCH_CONFIG(param)
+      : await API.POST_CONFIG(param);
+
+    return fetch(API.SUMMARY(query), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((resp) => {
+      .then((res) => {
+        let summaryJSON = JSON.parse(res.summary);
+        let editorState = Value.fromJSON(summaryJSON);
+        this.setState({
+          summaryId: res.id,
+          summary: editorState,
+        });
         this.nextStep();
       });
   };
 
   saveDiscussion = async () => {
+    // if there's nothing to save, then don't save
     if (
       this.state.discussion.title === "" ||
-      this.state.discussion.question === ""
+      Object.keys(this.state.discussion.question).length < 1
     ) {
       this.navigateToSummary();
     }
-    let paperId = this.props.paper.postedPaper.id;
+
+    let paperId = this.props.paperId
+      ? this.props.paperId
+      : this.props.paper.postedPaper.id;
+
     let param = {
       title: this.state.discussion.title,
-      text: this.state.discussion.question,
+      text: JSON.stringify(this.state.discussion.question.toJSON()),
       paper: paperId,
     };
 
     let config = await API.POST_CONFIG(param);
+
     return fetch(API.DISCUSSION(paperId), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -739,10 +849,10 @@ class PaperUploadInfo extends React.Component {
   };
 
   navigateToSummary = () => {
-    Router.push(
-      "/paper/[paperId]/[tabName]",
-      `/paper/${this.props.paper.postedPaper.id}/summary`
-    );
+    let paperId = this.state.editMode
+      ? this.props.paperId
+      : this.props.paper.postedPaper.id;
+    Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
   };
 
   cancel = () => {
@@ -985,6 +1095,16 @@ const styles = StyleSheet.create({
       marginLeft: 15,
     },
   },
+  discussionInputWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    marginTop: 20,
+  },
+  discussionTextEditor: {
+    width: 600,
+    border: "1px solid #E8E8F2",
+    backgroundColor: "#FBFBFD",
+  },
 });
 
 const customStyles = {
@@ -1000,11 +1120,13 @@ const customStyles = {
 const mapStateToProps = (state) => ({
   modals: state.modals,
   paper: state.paper,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   paperActions: bindActionCreators(PaperActions, dispatch),
+  authActions: bindActionCreators(AuthActions, dispatch),
 });
 
 export default connect(
