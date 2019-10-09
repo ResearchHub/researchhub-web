@@ -34,12 +34,16 @@ const DiscussionThreadPage = (props) => {
   let body = "";
   let username = "";
   let createdDate = "";
+  let score = 0;
+  let vote = null;
 
   if (discussion.success) {
     title = discussion.title;
     body = discussion.text;
     createdDate = discussion.createdDate;
     username = createUsername(discussion);
+    score = discussion.score;
+    vote = discussion.userVote;
   }
 
   useEffect(() => {
@@ -78,6 +82,8 @@ const DiscussionThreadPage = (props) => {
           body={body}
           username={username}
           date={createdDate}
+          vote={vote}
+          score={score}
         />
       </div>
       <div className={css(styles.divider)} />
