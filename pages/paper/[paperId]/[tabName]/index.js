@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
+import { useState } from "react";
+import { connect, useStore } from "react-redux";
 import moment from "moment";
 import Avatar from "react-avatar";
 
@@ -14,20 +15,53 @@ import VoteWidget from "~/components/VoteWidget";
 import ActionButton from "~/components/ActionButton";
 
 import { PaperActions } from "~/redux/paper";
-
-import { getNestedValue } from "~/config/utils";
+import VoteActions from "~/redux/vote";
 
 // Config
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
+import { getNestedValue } from "~/config/utils";
 
 const Paper = (props) => {
+  const store = useStore();
   const router = useRouter();
   const { paperId, tabName } = router.query;
   let { paper } = props;
 
   const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
   const discussionThreads = getNestedValue(paper, ["discussion", "threads"]);
+  const score = getNestedValue(paper, ["score"], 0);
+  const userVote = getNestedValue(paper, ["userVote"], null);
 
+  const [selectedVoteType, setSelectedVoteType] = useState(
+    userVote && userVote.voteType
+  );
+
+  async function upvote() {
+    props.dispatch(VoteActions.postUpvotePending());
+    await props.dispatch(VoteActions.postUpvote(paperId));
+    updateWidgetUI();
+  }
+
+  async function downvote() {
+    props.dispatch(VoteActions.postDownvotePending());
+    await props.dispatch(VoteActions.postDownvote(paperId));
+    updateWidgetUI();
+  }
+
+  function updateWidgetUI() {
+    const voteResult = store.getState().vote;
+    const vote = getNestedValue(voteResult, ["vote"], false);
+
+    if (vote) {
+      const voteType = vote.voteType;
+      if (voteType === UPVOTE) {
+        setSelectedVoteType(UPVOTE);
+      } else if (voteType === DOWNVOTE) {
+        setSelectedVoteType(DOWNVOTE);
+      }
+    }
+  }
   let renderTabContent = () => {
     switch (tabName) {
       case "summary":
@@ -75,7 +109,12 @@ const Paper = (props) => {
       <ComponentWrapper>
         <div className={css(styles.header)}>
           <div className={css(styles.voting)}>
-            <VoteWidget />
+            <VoteWidget
+              score={score}
+              onUpvote={upvote}
+              onDownvote={downvote}
+              selected={selectedVoteType}
+            />
           </div>
           <div className={css(styles.topHeader)}>
             <div className={css(styles.title)}>{paper && paper.title}</div>
@@ -198,6 +237,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   paper: state.paper,
+  vote: state.vote,
 });
 
 export default connect(mapStateToProps)(Paper);
