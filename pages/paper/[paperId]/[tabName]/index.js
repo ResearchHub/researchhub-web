@@ -71,7 +71,13 @@ const Paper = (props) => {
       case "summary":
         return <SummaryTab paperId={paperId} paper={paper} />;
       case "discussion":
-        return <DiscussionTab paperId={paperId} threads={discussionThreads} />;
+        return (
+          <DiscussionTab
+            hostname={hostname}
+            paperId={paperId}
+            threads={discussionThreads}
+          />
+        );
       case "full":
         return <PaperTab />;
       case "citations":
