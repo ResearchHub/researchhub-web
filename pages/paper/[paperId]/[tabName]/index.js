@@ -62,6 +62,7 @@ const Paper = (props) => {
       }
     }
   }
+
   let renderTabContent = () => {
     switch (tabName) {
       case "summary":
