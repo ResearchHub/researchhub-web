@@ -730,9 +730,11 @@ class PaperUploadInfo extends React.Component {
       if (!this.state.edited) {
         return this.state.editMode ? this.navigateToSummary() : this.nextStep();
       }
-      let { paper, messageActions } = this.props;
-      messageActions.showMessage({ load: true, show: true });
-      if (paper.postedPaper && Object.keys(paper.postedPaper).length > 0) {
+      this.props.messageActions.showMessage({ load: true, show: true });
+      if (
+        this.props.paper.postedPaper &&
+        Object.keys(this.props.paper.postedPaper).length > 0
+      ) {
         await this.postPaper("PATCH");
       } else {
         await this.postPaper();
@@ -782,7 +784,6 @@ class PaperUploadInfo extends React.Component {
   postPaper = async (request = "POST") => {
     const body = { ...this.state.form };
     body.authors = this.state.selectedAuthors.map((author) => author.id);
-    body.doi = ""; // TODO: Add this required field
     body.hubs = body.hubs.map((hub) => hub.id);
     body.publishDate = this.formatPublishDate(body.published);
     body.url = ""; // TODO: Add this optional field
@@ -792,9 +793,9 @@ class PaperUploadInfo extends React.Component {
 
     // send form object to the backend
     if (!this.state.editMode) {
+      body.file = this.props.paper.uploadedPaper;
       let paperId =
         this.props.paper.postedPaper && this.props.paper.postedPaper.id;
-      body.file = this.props.paper.uploadedPaper;
       request === "POST"
         ? await this.props.paperActions.postPaper(body)
         : await this.props.paperActions.patchPaper(paperId, body);
@@ -888,6 +889,7 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        console.log("res", res);
         let summaryJSON = JSON.parse(res.summary);
         let editorState = Value.fromJSON(summaryJSON);
         this.setState({
