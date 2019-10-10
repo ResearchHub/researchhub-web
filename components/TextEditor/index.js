@@ -12,17 +12,12 @@ import { ModalActions } from "../../redux/modals";
 
 const TextEditor = (props) => {
   const {
-    canEdit,
     canCancel,
     canSubmit,
-    cancelButtonStyles,
-    submitButtonStyles,
-    cancelButtonText,
-    submitButtonText,
+    classNames,
     onCancel,
     onSubmit,
     initialValue,
-    placeholder,
     readOnly,
     isLoggedIn,
     commentEditor,
@@ -73,6 +68,7 @@ const TextEditor = (props) => {
       commentEditor={commentEditor}
       value={passedValue ? passedValue : value}
       hideButton={hideButton}
+      classNames={classNames}
     />
   );
 };
