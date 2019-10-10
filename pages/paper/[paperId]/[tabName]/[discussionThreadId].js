@@ -13,10 +13,10 @@ import DiscussionActions from "~/redux/discussion";
 
 // Utils
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import { createUsername, isEmpty } from "~/config/utils";
+import { absoluteUrl, createUsername, isEmpty } from "~/config/utils";
 
 const DiscussionThreadPage = (props) => {
-  const { discussion } = props;
+  const { discussion, hostname } = props;
 
   const [comments, setComments] = useState([]);
 
@@ -68,6 +68,7 @@ const DiscussionThreadPage = (props) => {
     <div>
       <div className={css(styles.threadContainer)}>
         <Thread
+          hostname={hostname}
           title={title}
           body={body}
           username={username}
@@ -90,7 +91,9 @@ const DiscussionThreadPage = (props) => {
   );
 };
 
-DiscussionThreadPage.getInitialProps = async ({ store, query }) => {
+DiscussionThreadPage.getInitialProps = async ({ req, store, query }) => {
+  const { host } = absoluteUrl(req);
+  const hostname = host;
   let { discussion } = store.getState();
 
   if (isEmpty(discussion)) {
@@ -109,7 +112,7 @@ DiscussionThreadPage.getInitialProps = async ({ store, query }) => {
     discussion = store.getState().discussion;
   }
 
-  return { discussion };
+  return { discussion, hostname };
 };
 
 const styles = StyleSheet.create({
