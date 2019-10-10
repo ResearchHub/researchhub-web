@@ -115,7 +115,7 @@ class CommentClass extends DiscussionComment {
   constructor(props) {
     super(props);
     this.state.showReplyBox = false;
-    this.state.replies = [];
+    this.state.replies = this.props.data.replies;
   }
 
   renderAction = () => {
