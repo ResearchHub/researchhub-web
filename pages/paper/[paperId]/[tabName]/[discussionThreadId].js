@@ -2,28 +2,18 @@ import { Fragment, useEffect, useState } from "react";
 
 // NPM Modules
 import { css, StyleSheet } from "aphrodite";
-import Link from "next/link";
-import Router, { useRouter } from "next/router";
-import { connect, useDispatch, useStore } from "react-redux";
-import { Value } from "slate";
-import Plain from "slate-plain-serializer";
 
 // components
-import DiscussionCard from "~/components/DiscussionCard";
-import { Comment, Reply } from "~/components/DiscussionComment";
-import { CommentBox, ReplyBox } from "~/components/DiscussionCommentBox";
+import { Comment } from "~/components/DiscussionComment";
+import { CommentBox } from "~/components/DiscussionCommentBox";
 import Thread from "~/components/DiscussionPageThread";
-import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
-import TextEditor from "~/components/TextEditor";
-import VoteWidget from "~/components/VoteWidget";
 
 // Redux
 import DiscussionActions from "~/redux/discussion";
 
 // Utils
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { createUsername, doesNotExist, isEmpty } from "~/config/utils";
+import { createUsername, isEmpty } from "~/config/utils";
 
 const DiscussionThreadPage = (props) => {
   const { discussion } = props;
@@ -100,7 +90,7 @@ const DiscussionThreadPage = (props) => {
   );
 };
 
-DiscussionThreadPage.getInitialProps = async ({ isServer, store, query }) => {
+DiscussionThreadPage.getInitialProps = async ({ store, query }) => {
   let { discussion } = store.getState();
 
   if (isEmpty(discussion)) {
