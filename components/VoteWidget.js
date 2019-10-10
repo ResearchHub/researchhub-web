@@ -107,6 +107,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: voteWidgetColors.ARROW,
+    cursor: "pointer",
+    ":hover": {
+      color: colors.GREEN(0.3),
+    },
   },
   coins: {
     fontSize: 10,
