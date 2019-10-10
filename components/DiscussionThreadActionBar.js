@@ -1,16 +1,28 @@
 import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
 
+import ShareAction from "~/components/ShareAction";
 import { ServerLinkWrapper } from "~/components/LinkWrapper";
 
 import icons from "~/config/themes/icons";
 import { doesNotExist } from "~/config/utils";
 
 const DiscussionThreadActionBar = (props) => {
+  const { hostname, threadPath } = props;
+  const shareUrl = hostname + threadPath;
+
+  const customButton = (
+    <div className={css(styles.shareContainer)}>{icons.share} Share</div>
+  );
+
   return (
     <Fragment>
       <CommentCount {...props} />
-      <Share />
+      <ShareAction
+        customButton={customButton}
+        title={"Share this discussion"}
+        url={shareUrl}
+      />
     </Fragment>
   );
 };
@@ -41,10 +53,6 @@ function formatCommentCount(count) {
   }
   return count + " " + suffix + s;
 }
-
-const Share = () => {
-  return <div className={css(styles.shareContainer)}>{icons.share} Share</div>;
-};
 
 const styles = StyleSheet.create({
   commentCountContainer: {
