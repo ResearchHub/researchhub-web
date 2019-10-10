@@ -10,7 +10,7 @@ import { connect, useDispatch, useStore } from "react-redux";
 import ActionButton from "~/components/ActionButton";
 import DiscussionCard from "~/components/DiscussionCard";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
-import ShareModal from "~/components/ShareModal";
+import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 
 // Redux
@@ -76,7 +76,7 @@ const Thread = (props) => {
               onDownvote={downvote}
             />
             <div className={css(styles.threadTitle)}>{title}</div>
-            <ShareButton url={currentUrl} />
+            <ShareAction title={"Share this thread"} url={currentUrl} />
           </Fragment>
         }
         info={<div className={css(styles.body)}>{body}</div>}
@@ -107,32 +107,6 @@ const BackButton = () => {
         </a>
       </Link>
     </div>
-  );
-};
-
-const ShareButton = (props) => {
-  const { url } = props;
-
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
-  function openShareModal() {
-    setModalIsOpen(true);
-  }
-
-  function closeShareModal() {
-    setModalIsOpen(false);
-  }
-
-  return (
-    <Fragment>
-      <ActionButton action={openShareModal} iconNode={icons.share} />
-      <ShareModal
-        isOpen={modalIsOpen}
-        close={closeShareModal}
-        title={"Share this thread"}
-        url={url}
-      />
-    </Fragment>
   );
 };
 
