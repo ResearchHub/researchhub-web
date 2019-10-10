@@ -6,13 +6,14 @@ import moment from "moment";
 import Avatar from "react-avatar";
 
 // Components
-import PaperTabBar from "~/components/PaperTabBar";
-import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
-import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import PaperTab from "~/components/Paper/Tabs/PaperTab";
-import ComponentWrapper from "~/components/ComponentWrapper";
-import VoteWidget from "~/components/VoteWidget";
 import ActionButton from "~/components/ActionButton";
+import ComponentWrapper from "~/components/ComponentWrapper";
+import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
+import PaperTab from "~/components/Paper/Tabs/PaperTab";
+import PaperTabBar from "~/components/PaperTabBar";
+import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
+import ShareAction from "~/components/ShareAction";
+import VoteWidget from "~/components/VoteWidget";
 
 import { PaperActions } from "~/redux/paper";
 import VoteActions from "~/redux/vote";
@@ -20,17 +21,19 @@ import VoteActions from "~/redux/vote";
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
-import { getNestedValue } from "~/config/utils";
+import icons from "~/config/themes/icons";
+import { absoluteUrl, getNestedValue } from "~/config/utils";
 
 const Paper = (props) => {
   const store = useStore();
   const router = useRouter();
   const { paperId, tabName } = router.query;
-  let { paper } = props;
+  let { hostname, paper } = props;
 
   const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
   const discussionThreads = getNestedValue(paper, ["discussion", "threads"]);
   const score = getNestedValue(paper, ["score"], 0);
+  const shareUrl = hostname + "/paper/" + paperId;
   const userVote = getNestedValue(paper, ["userVote"], null);
 
   const [selectedVoteType, setSelectedVoteType] = useState(
@@ -121,7 +124,11 @@ const Paper = (props) => {
             <div className={css(styles.title)}>{paper && paper.title}</div>
             <div className={css(styles.actionButtons)}>
               <ActionButton icon={"fas fa-pencil"} action={null} />
-              <ActionButton icon={"fas fa-share-alt"} action={null} />
+              <ShareAction
+                iconNode={icons.shareAlt}
+                title={"Share this paper"}
+                url={shareUrl}
+              />
               <ActionButton icon={"fas fa-bookmark"} action={null} />
             </div>
           </div>
@@ -155,14 +162,16 @@ const Paper = (props) => {
   );
 };
 
-Paper.getInitialProps = async ({ store, isServer, query }) => {
+Paper.getInitialProps = async ({ isServer, req, store, query }) => {
   let { paper } = store.getState();
+  const { host } = absoluteUrl(req);
+  const hostname = host;
 
   if (!paper.id) {
     await store.dispatch(PaperActions.getPaper(query.paperId));
   }
 
-  return { isServer };
+  return { isServer, hostname };
 };
 
 const styles = StyleSheet.create({
