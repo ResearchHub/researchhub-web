@@ -1,5 +1,4 @@
 import { css, StyleSheet } from "aphrodite";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
 import { Fragment, useState } from "react";
@@ -10,14 +9,13 @@ import DiscussionActions from "~/redux/discussion";
 import DiscussionCard from "./DiscussionCard";
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
 import DiscussionThreadActionBar from "./DiscussionThreadActionBar";
+import { ServerLinkWrapper } from "./LinkWrapper";
 import VoteWidget from "./VoteWidget";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
-
-const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();
@@ -95,11 +93,13 @@ const DiscussionThreadCard = (props) => {
           </Fragment>
         }
         info={
-          <LinkWrapper path={path}>
+          <ServerLinkWrapper path={path}>
             <Title text={title} />
-          </LinkWrapper>
+          </ServerLinkWrapper>
         }
-        action={<DiscussionThreadActionBar count={commentCount} />}
+        action={
+          <DiscussionThreadActionBar threadPath={path} count={commentCount} />
+        }
       />
     </div>
   );
@@ -134,36 +134,9 @@ function formatTitle(title) {
 const ReadButton = (props) => {
   const { threadPath } = props;
   return (
-    <LinkWrapper path={threadPath} style={styles.readContainer}>
+    <ServerLinkWrapper path={threadPath} style={styles.readContainer}>
       Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
-    </LinkWrapper>
-  );
-};
-
-const LinkWrapper = (props) => {
-  /**
-   * We are not using the Link component from next.js here for the following
-   * reason:
-   *
-   * The Link component allows for client side routing so that the page
-   * does not have to be fetched from the server upon subsequent visits. This
-   * makes for smooth, quick transitions. It also causes the data on the page
-   * to go unchanged if that data is being fetched only in getInitialProps. To
-   * solve this we can either fetch the data both serverside and clientside in
-   * the page that the link points to, or we must not use the Link component to
-   * ensure the correct data is fetched.
-   */
-  const { path, style } = props;
-
-  const classNames = [styles.linkWrapperContainer];
-  if (style) {
-    classNames.push(style);
-  }
-
-  return (
-    <a href={path} className={css(...classNames)}>
-      {props.children}
-    </a>
+    </ServerLinkWrapper>
   );
 };
 
@@ -190,9 +163,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   discussionContainer: {
-    textDecoration: "none",
-  },
-  linkWrapperContainer: {
     textDecoration: "none",
   },
   readContainer: {
