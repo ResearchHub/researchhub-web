@@ -32,7 +32,7 @@ export const paperPost = ({
   });
   formData.append("doi", doi);
   formData.append("title", title);
-  formData.append("file", file);
+  file && formData.append("file", file);
   formData.append("paper_publish_date", publishDate);
   formData.append("url", url);
   formData.append("publication_type", type);

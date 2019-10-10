@@ -206,6 +206,7 @@ class RichTextEditor extends React.Component {
               spellCheck
               autoFocus
               commentEditor={this.props.commentEditor}
+              placeholder={this.props.placeholder && this.props.placeholder}
               ref={this.ref}
               value={this.state.value}
               className={css(styles.editSection)}
