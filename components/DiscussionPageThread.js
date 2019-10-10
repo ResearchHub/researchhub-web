@@ -6,9 +6,11 @@ import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 
-// components
+// Components
+import ActionButton from "~/components/ActionButton";
 import DiscussionCard from "~/components/DiscussionCard";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
+import ShareModal from "~/components/ShareModal";
 import VoteWidget from "~/components/VoteWidget";
 
 // Redux
@@ -21,11 +23,12 @@ import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
 
 const Thread = (props) => {
-  const { title, body, username, date, score, vote } = props;
+  const { hostname, title, body, username, date, score, vote } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
+  const currentUrl = hostname + router.asPath;
   const { paperId, discussionThreadId } = router.query;
   const [selectedVoteType, setSelectedVoteType] = useState(
     vote && vote.voteType
@@ -73,7 +76,7 @@ const Thread = (props) => {
               onDownvote={downvote}
             />
             <div className={css(styles.threadTitle)}>{title}</div>
-            <ShareButton />
+            <ShareButton url={currentUrl} />
           </Fragment>
         }
         info={<div className={css(styles.body)}>{body}</div>}
@@ -107,8 +110,30 @@ const BackButton = () => {
   );
 };
 
-const ShareButton = () => {
-  return <div className={css(styles.shareContainer)}>{icons.share}</div>;
+const ShareButton = (props) => {
+  const { url } = props;
+
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  function openShareModal() {
+    setModalIsOpen(true);
+  }
+
+  function closeShareModal() {
+    setModalIsOpen(false);
+  }
+
+  return (
+    <Fragment>
+      <ActionButton action={openShareModal} iconNode={icons.share} />
+      <ShareModal
+        isOpen={modalIsOpen}
+        close={closeShareModal}
+        title={"Share this thread"}
+        url={url}
+      />
+    </Fragment>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -159,17 +184,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-  },
-  shareContainer: {
-    background: colors.LIGHT_GREY(),
-    color: colors.GREY(),
-    height: "46px",
-    width: "46px",
-    borderRadius: "50%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
   },
   allCommentsContainer: {
     width: "100%",
