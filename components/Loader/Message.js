@@ -48,7 +48,7 @@ class Message extends Component {
           <Loader loading={true} />
         ) : message.error ? (
           <i
-            class={"far fa-times"}
+            className={"far fa-times"}
             // icon={["far", "times"]}
             style={inlineStyle.check}
             // size="3x"
@@ -56,7 +56,7 @@ class Message extends Component {
           />
         ) : (
           <i
-            class={"far fa-check"}
+            className={"far fa-check"}
             // icon={["far", "check"]}
             style={inlineStyle.check}
             // size="3x"

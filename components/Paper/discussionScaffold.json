@@ -8,19 +8,7 @@
         "object": "block",
         "type": "paragraph",
         "data": {},
-        "nodes": [
-          {
-            "object": "text",
-            "text": "Leave a question or a comment",
-            "marks": [
-              {
-                "object": "mark",
-                "type": "italic",
-                "data": {}
-              }
-            ]
-          }
-        ]
+        "nodes": []
       }
     ]
   }

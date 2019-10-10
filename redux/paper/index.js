@@ -72,7 +72,7 @@ export const PaperActions = {
     return async (dispatch) => {
       const response = await fetch(
         API.PAPER({ paperId }),
-        API.PATCH_CONFIG(shims.paperSummaryPost(body))
+        API.PATCH_FILE_CONFIG(shims.paperPost(body))
       ).catch(utils.handleCatch);
 
       let action = actions.setPostPaperFailure("PATCH");
@@ -90,7 +90,7 @@ export const PaperActions = {
     return async (dispatch) => {
       const response = await fetch(
         API.PAPER({ paperId }),
-        API.PUT_CONFIG(shims.paperSummaryPost(body))
+        API.PUT_FILE_CONFIG(shims.paperPost(body))
       ).catch(utils.handleCatch);
 
       let action = actions.setPostPaperFailure("PUT");

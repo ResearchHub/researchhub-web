@@ -99,10 +99,8 @@ class PaperUploadInfo extends React.Component {
       paperTitle,
     } = this.props;
     this.props.authActions.getUser();
-    console.log("paperId", paperId);
     this.getHubs();
     if (paperId) {
-      console.log("called componentDidMount");
       // this determines whether the user is coming from the upload modal or the summary of the paper
       messageActions.showMessage({ load: true, show: true });
       this.setState({ editMode: true });
@@ -200,7 +198,16 @@ class PaperUploadInfo extends React.Component {
 
   handleAuthorChange = (selectedAuthors) => {
     if (selectedAuthors.length < this.state.selectedAuthors.length) {
-      this.setState({ selectedAuthors, edited: true });
+      let userAuthorId = this.props.auth.user.author_profile.id;
+      let form = { ...this.state.form };
+      if (
+        this.state.selectedAuthors.filter((author) => {
+          author.id === userAuthorId;
+        }).length < 1
+      ) {
+        form.author.self_author = false;
+      }
+      this.setState({ selectedAuthors, form, edited: true });
     }
   };
 
@@ -469,6 +476,7 @@ class PaperUploadInfo extends React.Component {
             </div>
             {this.renderHeader("Main Information")}
             <div className={css(styles.section, styles.padding)}>
+              {/* <span className={css(styles.row)}> */}
               <FormInput
                 label={"Paper Title"}
                 placeholder="Enter title of paper"
@@ -478,6 +486,7 @@ class PaperUploadInfo extends React.Component {
                 id={"title"}
                 onChange={this.handleInputChange}
               />
+              {/* </span> */}
               <AuthorInput
                 tags={this.state.selectedAuthors}
                 onChange={this.handleAuthorChange}
@@ -530,28 +539,45 @@ class PaperUploadInfo extends React.Component {
                 />
               </div>
               <div className={css(styles.section, styles.leftAlign)}>
-                <p className={css(styles.label)}>Type</p>
-                <div className={css(styles.row)}>
-                  <div className={css(styles.checkboxRow)}>
-                    <CheckBox
-                      active={form.type.journal}
-                      label={"Journal"}
-                      id={"journal"}
-                      onChange={this.handleCheckBoxToggle}
+                <div className={css(styles.row, styles.minHeight)}>
+                  <span className={css(styles.section, styles.leftAlign)}>
+                    <p className={css(styles.label)}>Type</p>
+                    <div className={css(styles.checkboxRow)}>
+                      <CheckBox
+                        active={form.type.journal}
+                        label={"Journal"}
+                        id={"journal"}
+                        onChange={this.handleCheckBoxToggle}
+                      />
+                      <CheckBox
+                        active={form.type.conference}
+                        label={"Conference"}
+                        id={"conference"}
+                        onChange={this.handleCheckBoxToggle}
+                      />
+                      <CheckBox
+                        active={form.type.other}
+                        label={"Other"}
+                        id={"other"}
+                        onChange={this.handleCheckBoxToggle}
+                      />
+                    </div>
+                  </span>
+                  <span
+                    className={css(
+                      styles.doi,
+                      this.state.form.type.journal && styles.reveal
+                    )}
+                  >
+                    <FormInput
+                      label={"DOI"}
+                      placeholder="Enter DOI of paper"
+                      id={"doi"}
+                      value={form.doi}
+                      containerStyle={styles.doiInput}
+                      onChange={this.handleInputChange}
                     />
-                    <CheckBox
-                      active={form.type.conference}
-                      label={"Conference"}
-                      id={"conference"}
-                      onChange={this.handleCheckBoxToggle}
-                    />
-                    <CheckBox
-                      active={form.type.other}
-                      label={"Other"}
-                      id={"other"}
-                      onChange={this.handleCheckBoxToggle}
-                    />
-                  </div>
+                  </span>
                 </div>
               </div>
               <FormSelect
@@ -610,6 +636,7 @@ class PaperUploadInfo extends React.Component {
                     readOnly={false}
                     onChange={this.handleDiscussionTextEditor}
                     hideButton={true}
+                    placeholder={"Leave a question or a comment"}
                     initialValue={
                       Object.keys(this.state.discussion.question).length > 0
                         ? this.state.discussion.question
@@ -770,7 +797,7 @@ class PaperUploadInfo extends React.Component {
       body.file = this.props.paper.uploadedPaper;
       request === "POST"
         ? await this.props.paperActions.postPaper(body)
-        : await this.props.paperActions.putPaper(paperId, body);
+        : await this.props.paperActions.patchPaper(paperId, body);
       if (this.props.paper.success) {
         this.props.messageActions.setMessage(
           `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
@@ -786,16 +813,15 @@ class PaperUploadInfo extends React.Component {
         );
       }
     } else {
-      await this.props.paperActions.putPaper(this.props.paperId, body);
+      await this.props.paperActions.patchPaper(this.props.paperId, body);
       if (this.props.paper.success) {
         this.props.messageActions.setMessage(
           `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
         );
         this.props.messageActions.showMessage({ show: true });
         setTimeout(() => {
-          this.props.messageActions.showMessage({ show: false });
           this.navigateToSummary();
-        }, 300);
+        }, 800);
       } else {
         this.props.messageActions.setMessage("Hmm something went wrong");
         this.props.messageActions.showMessage({ show: true, error: true });
@@ -1036,6 +1062,9 @@ const styles = StyleSheet.create({
     width: 600,
     alignItems: "center",
   },
+  minHeight: {
+    height: 90,
+  },
   paper: {
     width: 601,
     marginTop: 40,
@@ -1075,7 +1104,7 @@ const styles = StyleSheet.create({
     width: 156,
   },
   checkboxRow: {
-    width: 326,
+    width: 290,
     height: 40,
     display: "flex",
     justifyContent: "space-between",
@@ -1162,6 +1191,22 @@ const styles = StyleSheet.create({
     width: 600,
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
+  },
+  doiInput: {
+    width: 290,
+    marginTop: 10,
+    marginBottom: 0,
+  },
+  doi: {
+    width: 290,
+    height: 0,
+    transition: "all ease-in-out 0.2s",
+    opacity: 0,
+    overflow: "hidden",
+  },
+  reveal: {
+    height: 90,
+    opacity: 1,
   },
 });
 
