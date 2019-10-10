@@ -90,23 +90,27 @@ class DiscussionComment extends React.Component {
 
   renderInfo = () => {
     const text = this.deserializeComment(this.state.text);
-    return <TextEditor readOnly={true} canEdit={false} initialValue={text} />;
+    return (
+      <TextEditor
+        classNames={[styles.commentEditor]}
+        readOnly={true}
+        initialValue={text}
+      />
+    );
   };
 
   render() {
     const action = this.renderAction ? this.renderAction() : null;
-    const replies = this.renderReplies ? this.renderReplies() : null;
 
     return (
-      <Fragment>
+      <div className={css(styles.commentContainer)}>
         <DiscussionCard
           top={this.renderTop()}
           info={this.renderInfo()}
           infoStyle={this.props.infoStyle}
           action={action}
         />
-        {replies}
-      </Fragment>
+      </div>
     );
   }
 }
@@ -124,6 +128,7 @@ class CommentClass extends DiscussionComment {
         {!this.state.showReplyBox
           ? this.renderReplyButton()
           : this.renderReplyBox()}
+        {this.renderReplies()}
       </div>
     );
   };
@@ -156,18 +161,15 @@ class CommentClass extends DiscussionComment {
 
   renderReplies = () => {
     return this.state.replies.map((r, i) => {
-      let divider = <div className={css(styles.divider)} />;
-      if (i === 0) {
-        divider = null;
-      }
-      return (
-        <Fragment key={r.id}>
-          {divider}
-          <Reply key={r.id} data={r} />
-        </Fragment>
-      );
+      return <Reply key={r.id} data={r} />;
     });
   };
+}
+
+class ReplyClass extends DiscussionComment {
+  constructor(props) {
+    super(props);
+  }
 }
 
 const mapStateToProps = (state) => {
@@ -181,18 +183,19 @@ export const Comment = connect(
   null
 )(CommentClass);
 
-class ReplyClass extends DiscussionComment {
-  constructor(props) {
-    super(props);
-  }
-}
-
 export const Reply = connect(
   mapStateToProps,
   null
 )(ReplyClass);
 
 const styles = StyleSheet.create({
+  commentContainer: {
+    padding: "32px 0px 36px 0px",
+  },
+  commentEditor: {
+    minHeight: "100%",
+    padding: "0px",
+  },
   voteWidget: {
     marginRight: 18,
   },
@@ -202,27 +205,6 @@ const styles = StyleSheet.create({
   },
   reply: {
     cursor: "pointer",
-  },
-  contentContainer: {
-    width: "70%",
-    padding: "30px 0px",
-    margin: "auto",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  allCommentsContainer: {
-    width: "100%",
-  },
-  commentContainer: {
-    padding: "30px 30px 36px 30px",
-  },
-  commentInfo: {
-    color: colors.BLACK(0.8),
-  },
-  commentBoxContainer: {
-    width: "100%",
   },
   divider: {
     borderBottom: "1px solid",
