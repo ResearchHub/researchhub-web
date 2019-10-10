@@ -95,23 +95,13 @@ const DiscussionThreadCard = (props) => {
           </Fragment>
         }
         info={
-          <LinkWrapper>
+          <LinkWrapper path={path}>
             <Title text={title} />
           </LinkWrapper>
         }
         action={<DiscussionThreadActionBar count={commentCount} />}
       />
     </div>
-  );
-};
-
-const LinkWrapper = (props) => {
-  const { path } = props;
-
-  return (
-    <Link href={DYNAMIC_HREF} as={path}>
-      <a className={css(styles.linkWrapperContainer)}>{props.children}</a>
-    </Link>
   );
 };
 
@@ -144,11 +134,36 @@ function formatTitle(title) {
 const ReadButton = (props) => {
   const { threadPath } = props;
   return (
-    <Link href={DYNAMIC_HREF} as={threadPath}>
-      <a className={css(styles.readContainer)}>
-        Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
-      </a>
-    </Link>
+    <LinkWrapper path={threadPath} style={styles.readContainer}>
+      Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
+    </LinkWrapper>
+  );
+};
+
+const LinkWrapper = (props) => {
+  /**
+   * We are not using the Link component from next.js here for the following
+   * reason:
+   *
+   * The Link component allows for client side routing so that the page
+   * does not have to be fetched from the server upon subsequent visits. This
+   * makes for smooth, quick transitions. It also causes the data on the page
+   * to go unchanged if that data is being fetched only in getInitialProps. To
+   * solve this we can either fetch the data both serverside and clientside in
+   * the page that the link points to, or we must not use the Link component to
+   * ensure the correct data is fetched.
+   */
+  const { path, style } = props;
+
+  const classNames = [styles.linkWrapperContainer];
+  if (style) {
+    classNames.push(style);
+  }
+
+  return (
+    <a href={path} className={css(...classNames)}>
+      {props.children}
+    </a>
   );
 };
 
