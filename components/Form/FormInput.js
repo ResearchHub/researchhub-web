@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import colors from "../../config/themes/colors";
+import colors, { formColors } from "../../config/themes/colors";
 
 class FormInput extends React.Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class FormInput extends React.Component {
   render() {
     let {
       id,
-      ref,
+      getRef,
       label,
       placeholder,
       type,
@@ -43,7 +43,9 @@ class FormInput extends React.Component {
       error,
       icon,
       iconStyles,
+      inlineNodeRight,
       disabled,
+      message,
     } = this.props;
 
     return (
@@ -71,7 +73,7 @@ class FormInput extends React.Component {
           value={this.props.value}
           required={required ? required : false}
           placeholder={placeholder ? placeholder : ""}
-          ref={ref && ref}
+          ref={getRef && getRef}
           className={css(
             styles.input,
             inputStyle && inputStyle,
@@ -82,6 +84,7 @@ class FormInput extends React.Component {
           onChange={this.handleChange}
         />
         {error && <p className={css(styles, text, styles.error)}>{error}</p>}
+        {message && <p className={css(styles.message)}>{message}</p>}
         {search && (
           <img
             src={"/static/icons/search.png"}
@@ -93,6 +96,9 @@ class FormInput extends React.Component {
             src={icon}
             className={css(styles.searchIcon, iconStyles && iconStyles)}
           />
+        )}
+        {inlineNodeRight && (
+          <span className={css(styles.inlineNodeRight)}>{inlineNodeRight}</span>
         )}
       </div>
     );
@@ -159,11 +165,23 @@ const styles = StyleSheet.create({
     left: 15,
     bottom: 10,
   },
+  inlineNodeRight: {
+    position: "absolute",
+    right: 0,
+    top: 15,
+    paddingRight: 16,
+  },
   error: {
     margin: 0,
     padding: 0,
     color: colors.RED(1),
     fontSize: 12,
+  },
+  message: {
+    margin: 0,
+    color: formColors.MESSAGE,
+    fontSize: 16,
+    padding: 8,
   },
   disabled: {
     pointerEvents: "none",
