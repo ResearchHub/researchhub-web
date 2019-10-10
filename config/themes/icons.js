@@ -3,6 +3,7 @@ const icons = {
   chevronRight: <i className="far fa-chevron-right"></i>,
   longArrowLeft: <i className="fal fa-long-arrow-left"></i>,
   share: <i className="fas fa-share"></i>,
+  shareAlt: <i className="fas fa-share-alt"></i>,
 };
 
 export const voteWidgetIcons = {
