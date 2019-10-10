@@ -23,7 +23,7 @@ const DiscussionThreadCard = (props) => {
   const router = useRouter();
   const { paperId } = router.query;
 
-  const { path } = props;
+  const { hostname, path } = props;
 
   const data = getNestedValue(props, ["data"]);
 
@@ -98,7 +98,11 @@ const DiscussionThreadCard = (props) => {
           </ServerLinkWrapper>
         }
         action={
-          <DiscussionThreadActionBar threadPath={path} count={commentCount} />
+          <DiscussionThreadActionBar
+            hostname={hostname}
+            threadPath={path}
+            count={commentCount}
+          />
         }
       />
     </div>

@@ -5,12 +5,29 @@ import { endsWithSlash } from "~/config/utils/routing";
 import ComponentWrapper from "../../ComponentWrapper";
 
 const DiscussionTab = (props) => {
-  const { threads } = props;
+  const { hostname, threads } = props;
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
   const formattedThreads = formatThreads(threads, basePath);
 
-  return <ComponentWrapper>{renderThreads(formattedThreads)}</ComponentWrapper>;
+  function renderThreads(threads) {
+    return threads.map((t, i) => {
+      return (
+        <DiscussionThreadCard
+          key={t.key}
+          data={t.data}
+          hostname={hostname}
+          path={t.path}
+        />
+      );
+    });
+  }
+
+  return (
+    <ComponentWrapper>
+      {renderThreads(formattedThreads, hostname)}
+    </ComponentWrapper>
+  );
 };
 
 function formatBasePath(path) {
@@ -27,12 +44,6 @@ function formatThreads(threads, basePath) {
       data: thread,
       path: basePath + thread.id,
     };
-  });
-}
-
-function renderThreads(threads) {
-  return threads.map((t, i) => {
-    return <DiscussionThreadCard key={t.key} data={t.data} path={t.path} />;
   });
 }
 

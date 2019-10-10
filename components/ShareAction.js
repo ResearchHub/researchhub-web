@@ -7,7 +7,7 @@ import ShareModal from "~/components/ShareModal";
 import icons from "~/config/themes/icons";
 
 const ShareAction = (props) => {
-  const { iconNode, title, subtitle, url } = props;
+  const { customButton, iconNode, title, subtitle, url } = props;
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -19,12 +19,22 @@ const ShareAction = (props) => {
     setModalIsOpen(false);
   }
 
+  function renderButton() {
+    if (customButton) {
+      return <a onClick={openShareModal}>{customButton}</a>;
+    } else {
+      return (
+        <ActionButton
+          action={openShareModal}
+          iconNode={iconNode || icons.share}
+        />
+      );
+    }
+  }
+
   return (
     <Fragment>
-      <ActionButton
-        action={openShareModal}
-        iconNode={iconNode || icons.share}
-      />
+      {renderButton()}
       <ShareModal
         isOpen={modalIsOpen}
         close={closeShareModal}
@@ -37,6 +47,7 @@ const ShareAction = (props) => {
 };
 
 ShareAction.propTypes = {
+  customButton: PropTypes.node,
   iconNode: PropTypes.node,
   title: PropTypes.any,
   subtitle: PropTypes.any,
