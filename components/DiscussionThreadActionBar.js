@@ -1,6 +1,8 @@
 import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
 
+import { ServerLinkWrapper } from "~/components/LinkWrapper";
+
 import icons from "~/config/themes/icons";
 import { doesNotExist } from "~/config/utils";
 
@@ -14,12 +16,14 @@ const DiscussionThreadActionBar = (props) => {
 };
 
 const CommentCount = (props) => {
-  const { count } = props;
+  const { count, threadPath } = props;
   return (
     <Fragment>
       {count > 0 && (
         <div className={css(styles.commentCountContainer)}>
-          {icons.chat} {formatCommentCount(props.count)}
+          <ServerLinkWrapper path={threadPath}>
+            {icons.chat} {formatCommentCount(props.count)}
+          </ServerLinkWrapper>
         </div>
       )}
     </Fragment>
