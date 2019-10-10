@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import { useState } from "react";
 import Modal from "react-modal";
+import PropTypes from "prop-types";
 
 import FormInput from "~/components/Form/FormInput";
 
@@ -47,6 +48,14 @@ const ShareModal = (props) => {
       </div>
     </Modal>
   );
+};
+
+ShareModal.propTypes = {
+  close: PropTypes.func,
+  isOpen: PropTypes.bool,
+  title: PropTypes.any,
+  subtitle: PropTypes.any,
+  url: PropTypes.string,
 };
 
 const CopyLink = (props) => {
