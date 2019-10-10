@@ -44,6 +44,7 @@ function transformComment(comment) {
     createdDate: comment.created_date,
     score: comment.score,
     userVote: transformVote(comment.user_vote),
+    replies: transformReplies(comment.replies),
   };
 }
 
