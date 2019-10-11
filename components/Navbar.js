@@ -42,7 +42,15 @@ const Navbar = (props) => {
     let tabs = tabData.map((tab, index) => {
       return (
         <Link href={tab.route} key={`navbar_tab_${index}`}>
-          <div className={css(styles.tab)}>{tab.label}</div>
+          <div
+            className={css(
+              styles.tab,
+              index === 0 && styles.firstTab,
+              index === 2 && styles.lastTab
+            )}
+          >
+            {tab.label}
+          </div>
         </Link>
       );
     });
@@ -97,7 +105,7 @@ const Navbar = (props) => {
 const styles = StyleSheet.create({
   navbarContainer: {
     width: "100%",
-    padding: "20px 50px",
+    padding: "20px 20px",
     boxSizing: "border-box",
     display: "flex",
     height: 80,
@@ -114,6 +122,12 @@ const styles = StyleSheet.create({
       marginLeft: 70,
     },
   },
+  firstTab: {
+    marginLeft: 30,
+  },
+  lastTab: {
+    marginRight: 30,
+  },
   tab: {
     marginLeft: 20,
     marginRight: 20,
@@ -124,7 +138,8 @@ const styles = StyleSheet.create({
     underline: "none",
   },
   search: {
-    width: 690,
+    // width: 690,
+    width: 600,
     height: 45,
     boxSizing: "border-box",
     background: "#FBFBFD",
@@ -181,7 +196,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    width: 200,
+    width: 220,
   },
 });
 
