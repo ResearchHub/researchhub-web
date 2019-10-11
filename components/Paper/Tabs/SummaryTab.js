@@ -160,10 +160,10 @@ class SummaryTab extends React.Component {
                 Please review our{" "}
                 <a
                   className={css(styles.authorGuidelines)}
-                  href="#"
+                  href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
                   target="_blank"
                 >
-                  Author Guidelines
+                  Summary Guidelines
                 </a>{" "}
                 to see how to write for ResearchHub
               </div>
@@ -187,10 +187,10 @@ class SummaryTab extends React.Component {
                   Please review our{" "}
                   <a
                     className={css(styles.authorGuidelines)}
-                    href="#"
+                    href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
                     target="_blank"
                   >
-                    Author Guidelines
+                    Summary Guidelines
                   </a>{" "}
                   to see how to write for ResearchHub
                 </div>
