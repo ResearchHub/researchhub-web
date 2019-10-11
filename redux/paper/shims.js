@@ -8,6 +8,7 @@ export const paper = (paper) => {
       count: paper.discussion.count,
       threads: transformThreads(paper.discussion.threads),
     },
+    userVote: transformVote(paper.user_vote),
   };
 };
 
