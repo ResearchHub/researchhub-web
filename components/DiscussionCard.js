@@ -6,13 +6,13 @@ import colors from "~/config/themes/colors";
 const DiscussionCard = (props) => {
   const infoStyles = [styles.infoContainer];
 
-  const { infoStyle } = props;
+  const { infoStyle, hoverEvents } = props;
   if (infoStyle) {
     infoStyles.push(infoStyle);
   }
 
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.container, hoverEvents && styles.hoverEvents)}>
       <div className={css(styles.topContainer)}>{props.top}</div>
       <div className={css(infoStyles)}>
         {props.info}
@@ -30,6 +30,19 @@ DiscussionCard.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#FFFFF",
+    padding: "15px 30px 15px 30px",
+    borderRadius: 10,
+    marginBottom: 5,
+    border: "1px solid #FFFFFF",
+  },
+  hoverEvents: {
+    ":hover": {
+      backgroundColor: "rgba(243, 243, 248, 0.7)",
+      transform: "scale(1.02)",
+    },
+  },
   topContainer: {
     color: colors.BLACK(),
     display: "flex",

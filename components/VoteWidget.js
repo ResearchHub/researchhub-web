@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     textAlign: "center",
-    marginRight: 12,
+    marginRight: 17,
   },
   pillContainer: {
     background: voteWidgetColors.BACKGROUND,
@@ -74,6 +74,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: voteWidgetColors.ARROW,
+    ":hover": {
+      color: colors.BLUE(1),
+    },
   },
   coins: {
     fontSize: 10,

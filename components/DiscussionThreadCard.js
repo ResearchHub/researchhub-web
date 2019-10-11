@@ -14,7 +14,7 @@ import { getNestedValue } from "~/config/utils";
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionThreadCard = (props) => {
-  const { path } = props;
+  const { path, hoverEvents } = props;
 
   const data = getNestedValue(props, ["data"]);
 
@@ -32,21 +32,22 @@ const DiscussionThreadCard = (props) => {
 
   return (
     <span className={css(styles.discussionContainer)}>
-      <DiscussionCard
-        top={
-          <Fragment>
-            <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
-            <DiscussionPostMetadata username={username} date={date} />
-            <Link href={DYNAMIC_HREF} as={path}>
-              <a className={css(styles.link)}>
+      <Link href={DYNAMIC_HREF} as={path}>
+        <a className={css(styles.link)}>
+          <DiscussionCard
+            top={
+              <Fragment>
+                <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
+                <DiscussionPostMetadata username={username} date={date} />
                 <ReadButton threadPath={path} />
-              </a>
-            </Link>
-          </Fragment>
-        }
-        info={<Title text={title} />}
-        action={<DiscussionThreadActionBar count={commentCount} />}
-      />
+              </Fragment>
+            }
+            info={<Title text={title} />}
+            action={<DiscussionThreadActionBar count={commentCount} />}
+            hoverEvents={hoverEvents && hoverEvents}
+          />
+        </a>
+      </Link>
     </span>
   );
 };
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    paddingBottom: 10,
+    paddingBottom: 16,
     color: colors.BLACK(1),
   },
   link: {
