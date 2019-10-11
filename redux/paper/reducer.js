@@ -19,6 +19,15 @@ const PaperReducer = (state = defaultPaperState, action) => {
         ...state,
         ...action.payload,
       };
+
+    case types.GET_PAPER_USER_VOTE_PENDING:
+    case types.GET_PAPER_USER_VOTE_FAILURE:
+    case types.GET_PAPER_USER_VOTE_SUCCESS:
+      return {
+        ...state,
+        userVote: { ...action.payload },
+      };
+
     case types.UPLOAD_PAPER_TO_STATE:
       return {
         ...state,

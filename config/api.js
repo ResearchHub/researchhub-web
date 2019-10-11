@@ -117,6 +117,12 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    USER_VOTE: (paperId, threadId, commentId, replyId) => {
+      let url = buildPaperUrl(paperId, threadId, commentId, replyId);
+
+      return url + "user_vote/";
+    },
+
     UPVOTE: (paperId, threadId, commentId, replyId) => {
       let url = buildPaperUrl(paperId, threadId, commentId, replyId);
 
