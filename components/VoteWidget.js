@@ -8,17 +8,19 @@ import { voteWidgetIcons } from "~/config/themes/icons";
 import { UPVOTE, DOWNVOTE } from "../config/constants";
 
 const VoteWidget = (props) => {
-  const score = getScore(props);
   const { onUpvote, onDownvote, fontSize, selected, width } = props;
 
+  const [score, setScore] = useState(getScore(props));
   const [upvoteSelected, setUpvoteSelected] = useState(false);
   const [downvoteSelected, setDownvoteSelected] = useState(false);
 
   useEffect(() => {
     if (selected === UPVOTE) {
       setUpvoteSelected(true);
+      setScore(score + 1);
     } else if (selected === DOWNVOTE) {
       setDownvoteSelected(true);
+      setScore(score - 1);
     }
   }, [selected]);
 
