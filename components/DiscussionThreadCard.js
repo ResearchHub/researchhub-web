@@ -103,6 +103,7 @@ const DiscussionThreadCard = (props) => {
           <DiscussionThreadActionBar
             hostname={hostname}
             threadPath={path}
+            title={title}
             count={commentCount}
           />
         }

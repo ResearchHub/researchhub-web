@@ -76,7 +76,11 @@ const Thread = (props) => {
               onDownvote={downvote}
             />
             <div className={css(styles.threadTitle)}>{title}</div>
-            <ShareAction title={"Share this thread"} url={currentUrl} />
+            <ShareAction
+              title={"Share this thread"}
+              subtitle={title}
+              url={currentUrl}
+            />
           </Fragment>
         }
         info={<div className={css(styles.body)}>{body}</div>}

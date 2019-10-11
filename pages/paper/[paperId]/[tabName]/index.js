@@ -30,6 +30,7 @@ const Paper = (props) => {
   const { paperId, tabName } = router.query;
   let { hostname, paper } = props;
 
+  const paperTitle = getNestedValue(paper, ["title"], "");
   const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
   const discussionThreads = getNestedValue(paper, ["discussion", "threads"]);
   const score = getNestedValue(paper, ["score"], 0);
@@ -133,6 +134,7 @@ const Paper = (props) => {
               <ShareAction
                 iconNode={icons.shareAlt}
                 title={"Share this paper"}
+                subtitle={paperTitle}
                 url={shareUrl}
               />
               <ActionButton icon={"fas fa-bookmark"} action={null} />
