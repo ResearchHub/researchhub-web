@@ -45,6 +45,7 @@ function transformComment(comment) {
     score: comment.score,
     userVote: transformVote(comment.user_vote),
     replies: transformReplies(comment.replies),
+    replyCount: comment.reply_count,
   };
 }
 
