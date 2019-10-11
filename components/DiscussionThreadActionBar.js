@@ -11,7 +11,7 @@ import { doesNotExist } from "~/config/utils";
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionThreadActionBar = (props) => {
-  const { hostname, threadPath } = props;
+  const { hostname, threadPath, title } = props;
   const shareUrl = hostname + threadPath;
 
   const customButton = (
@@ -24,6 +24,7 @@ const DiscussionThreadActionBar = (props) => {
       <ShareAction
         customButton={customButton}
         title={"Share this discussion"}
+        subtitle={title}
         url={shareUrl}
       />
     </Fragment>
