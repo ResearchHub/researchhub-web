@@ -174,6 +174,7 @@ const styles = StyleSheet.create({
   },
   discussionContainer: {
     textDecoration: "none",
+    paddingBottom: 40,
   },
   readContainer: {
     border: "solid 1px",
