@@ -31,21 +31,23 @@ const DiscussionThreadCard = (props) => {
   }
 
   return (
-    <Link href={DYNAMIC_HREF} as={path}>
-      <a className={css(styles.discussionContainer)}>
-        <DiscussionCard
-          top={
-            <Fragment>
-              <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
-              <DiscussionPostMetadata username={username} date={date} />
-              <ReadButton threadPath={path} />
-            </Fragment>
-          }
-          info={<Title text={title} />}
-          action={<DiscussionThreadActionBar count={commentCount} />}
-        />
-      </a>
-    </Link>
+    <span className={css(styles.discussionContainer)}>
+      <DiscussionCard
+        top={
+          <Fragment>
+            <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
+            <DiscussionPostMetadata username={username} date={date} />
+            <Link href={DYNAMIC_HREF} as={path}>
+              <a className={css(styles.link)}>
+                <ReadButton threadPath={path} />
+              </a>
+            </Link>
+          </Fragment>
+        }
+        info={<Title text={title} />}
+        action={<DiscussionThreadActionBar count={commentCount} />}
+      />
+    </span>
   );
 };
 
@@ -80,7 +82,8 @@ const ReadButton = (props) => {
   return (
     <Link href={DYNAMIC_HREF} as={threadPath}>
       <a className={css(styles.readContainer)}>
-        Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
+        <span className={css(styles.readLabel)}>Read</span>{" "}
+        <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
       </a>
     </Link>
   );
@@ -111,6 +114,7 @@ const styles = StyleSheet.create({
   },
   discussionContainer: {
     textDecoration: "none",
+    cursor: "default",
   },
   readContainer: {
     border: "solid 1px",
@@ -119,22 +123,38 @@ const styles = StyleSheet.create({
     borderRadius: "2px",
     height: "30px",
     width: "90px",
+    minWidth: 90,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontSize: 12,
-    fontWeight: "lighter",
     boxSizing: "border-box",
     textDecoration: "none",
+    ":hover": {
+      backgroundColor: colors.BLUE(1),
+      color: "#FFF",
+    },
+  },
+  readLabel: {
+    fontSize: 14,
+    fontFamily: "Roboto",
   },
   readArrow: {
     fontSize: 10,
-    marginLeft: 9,
+    marginLeft: 8,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 1,
+    height: 19,
+    maxHeight: 19,
   },
   title: {
     fontSize: 22,
     paddingBottom: 10,
     color: colors.BLACK(1),
+  },
+  link: {
+    textDecoration: "none",
   },
 });
 
