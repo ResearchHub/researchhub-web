@@ -691,7 +691,7 @@ class PaperUploadInfo extends React.Component {
               />
             </div>
             <Button
-              label={"Save"}
+              label={"Continue"}
               customButtonStyle={styles.button}
               onClick={this.saveSummary}
             />
@@ -716,7 +716,7 @@ class PaperUploadInfo extends React.Component {
               />
             </div>
             <Button
-              label={"Save"}
+              label={"Continue"}
               customButtonStyle={styles.button}
               onClick={this.saveDiscussion}
             />
