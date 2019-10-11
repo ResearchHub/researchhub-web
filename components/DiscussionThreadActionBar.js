@@ -2,10 +2,13 @@ import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
 
 import ShareAction from "~/components/ShareAction";
-import { ServerLinkWrapper } from "~/components/LinkWrapper";
+import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
+import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { doesNotExist } from "~/config/utils";
+
+const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionThreadActionBar = (props) => {
   const { hostname, threadPath } = props;
@@ -33,9 +36,13 @@ const CommentCount = (props) => {
     <Fragment>
       {count > 0 && (
         <div className={css(styles.commentCountContainer)}>
-          <ServerLinkWrapper path={threadPath}>
+          <ClientLinkWrapper
+            styling={[styles.link]}
+            dynamicHref={DYNAMIC_HREF}
+            path={threadPath}
+          >
             {icons.chat} {formatCommentCount(props.count)}
-          </ServerLinkWrapper>
+          </ClientLinkWrapper>
         </div>
       )}
     </Fragment>
@@ -57,6 +64,9 @@ function formatCommentCount(count) {
 const styles = StyleSheet.create({
   commentCountContainer: {
     marginRight: "28px",
+  },
+  link: {
+    color: colors.GREY(),
   },
   shareContainer: {
     cursor: "pointer",
