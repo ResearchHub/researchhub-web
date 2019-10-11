@@ -1,5 +1,4 @@
-import { transformDate, transformVote } from "../utils";
-import { getNestedValue } from "~/config/utils";
+import { transformDate, transformUser, transformVote } from "../utils";
 
 export const paper = (paper) => {
   return {
@@ -40,6 +39,10 @@ export const paperSummaryPost = ({ paperId, text }) => {
   };
 };
 
+export const vote = (vote) => {
+  return transformVote(vote);
+};
+
 function transformThreads(threads) {
   return threads.map((thread) => ({
     id: thread.id,
@@ -51,13 +54,5 @@ function transformThreads(threads) {
     createdDate: transformDate(thread.created_date),
     isPublic: thread.is_public,
     score: thread.score,
-    userVote: transformVote(thread.user_vote),
   }));
-}
-
-function transformUser(user) {
-  return {
-    firstName: getNestedValue(user, ["first_name"], ""),
-    lastName: getNestedValue(user, ["last_name"], ""),
-  };
 }

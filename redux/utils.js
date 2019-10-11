@@ -1,7 +1,8 @@
 import moment from "moment";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist, getNestedValue } from "~/config/utils";
+
 export { logFetchError } from "~/config/utils";
 
 const FETCH_ERROR_MESSAGE = "Fetch error caught in promise";
@@ -35,4 +36,11 @@ export function transformVoteType(voteType) {
 
 export function transformDate(date) {
   return moment(date);
+}
+
+export function transformUser(user) {
+  return {
+    firstName: getNestedValue(user, ["first_name"], ""),
+    lastName: getNestedValue(user, ["last_name"], ""),
+  };
 }

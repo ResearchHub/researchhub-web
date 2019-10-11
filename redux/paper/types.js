@@ -1,4 +1,10 @@
 export const GET_PAPER = "@@paper/GET_PAPER";
+export const GET_PAPER_USER_VOTE_PENDING =
+  "@@paper/GET_PAPER_USER_VOTE_PENDING";
+export const GET_PAPER_USER_VOTE_FAILURE =
+  "@@paper/GET_PAPER_USER_VOTE_FAILURE";
+export const GET_PAPER_USER_VOTE_SUCCESS =
+  "@@paper/GET_PAPER_USER_VOTE_SUCCESS";
 export const UPLOAD_PAPER_TO_STATE = "@@paper/SAVE_PAPER_TO_STATE";
 export const REMOVE_PAPER_FROM_STATE = "@@paper/REMOVE_PAPER_FROM_STATE";
 export const POST_PAPER_PENDING = "@@paper/POST_PAPER_PENDING";
