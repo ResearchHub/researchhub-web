@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
 
 import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
 import { doesNotExist } from "~/config/utils";
 
 const DiscussionThreadActionBar = (props) => {
@@ -19,7 +20,10 @@ const CommentCount = (props) => {
     <Fragment>
       {count > 0 && (
         <div className={css(styles.commentCountContainer)}>
-          {icons.chat} {formatCommentCount(props.count)}
+          <span className={css(styles.iconChat)}>{icons.chat}</span>
+          <span className={css(styles.text)}>
+            {formatCommentCount(props.count)}
+          </span>
         </div>
       )}
     </Fragment>
@@ -39,15 +43,37 @@ function formatCommentCount(count) {
 }
 
 const Share = () => {
-  return <div className={css(styles.shareContainer)}>{icons.share} Share</div>;
+  return (
+    <div className={css(styles.shareContainer)}>
+      <span className={css(styles.iconChat)}>{icons.share}</span>
+      <span className={css(styles.text)}>Share</span>
+    </div>
+  );
 };
 
 const styles = StyleSheet.create({
   commentCountContainer: {
-    marginRight: "28px",
+    marginRight: "20px",
+    marginLeft: -1,
+    padding: 4,
+    borderRadius: 5,
+    ":hover": {
+      color: colors.BLUE(1),
+    },
   },
   shareContainer: {
     cursor: "pointer",
+    padding: 4,
+    borderRadius: 5,
+    ":hover": {
+      color: colors.BLUE(1),
+    },
+  },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    color: "#918f9b",
+    marginLeft: 8,
   },
 });
 
