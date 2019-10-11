@@ -129,7 +129,8 @@ const BackButton = () => {
     <div className={css(styles.backButtonContainer)}>
       <Link href={"/paper/[paperId]/[tabName]"} as={url}>
         <a className={css(styles.backButton)}>
-          {icons.longArrowLeft} {message}
+          {icons.longArrowLeft}
+          <span className={css(styles.backButtonLabel)}>{message}</span>
         </a>
       </Link>
     </div>
@@ -258,10 +259,17 @@ function createUsername({ createdBy }) {
 const styles = StyleSheet.create({
   backButtonContainer: {
     paddingLeft: 68,
+    marginBottom: 10,
   },
   backButton: {
     color: colors.BLACK(0.5),
     textDecoration: "none",
+    ":hover": {
+      color: colors.BLACK(1),
+    },
+  },
+  backButtonLabel: {
+    marginLeft: 10,
   },
   threadContainer: {
     width: "80%",
