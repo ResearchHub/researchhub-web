@@ -96,21 +96,19 @@ DiscussionThreadPage.getInitialProps = async ({ req, store, query }) => {
   const hostname = host;
   let { discussion } = store.getState();
 
-  if (isEmpty(discussion)) {
-    const { paperId, discussionThreadId } = query;
-    const page = 1;
+  const { paperId, discussionThreadId } = query;
+  const page = 1;
 
-    store.dispatch(DiscussionActions.fetchThreadPending());
-    store.dispatch(DiscussionActions.fetchCommentsPending());
-    await store.dispatch(
-      DiscussionActions.fetchThread(paperId, discussionThreadId)
-    );
-    await store.dispatch(
-      DiscussionActions.fetchComments(paperId, discussionThreadId, page)
-    );
+  store.dispatch(DiscussionActions.fetchThreadPending());
+  store.dispatch(DiscussionActions.fetchCommentsPending());
+  await store.dispatch(
+    DiscussionActions.fetchThread(paperId, discussionThreadId)
+  );
+  await store.dispatch(
+    DiscussionActions.fetchComments(paperId, discussionThreadId, page)
+  );
 
-    discussion = store.getState().discussion;
-  }
+  discussion = store.getState().discussion;
 
   return { discussion, hostname };
 };
