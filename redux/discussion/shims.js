@@ -1,5 +1,4 @@
-import { transformDate, transformVote } from "../utils";
-import { getNestedValue } from "~/config/utils";
+import { transformDate, transformUser, transformVote } from "../utils";
 
 export const thread = (thread) => {
   return {
@@ -84,11 +83,3 @@ function transformReply(reply) {
 export const vote = (vote) => {
   return transformVote(vote);
 };
-
-function transformUser(user) {
-  return {
-    id: getNestedValue(user, ["id"], null),
-    firstName: getNestedValue(user, ["first_name"], ""),
-    lastName: getNestedValue(user, ["last_name"], ""),
-  };
-}

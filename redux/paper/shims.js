@@ -55,5 +55,6 @@ function transformThreads(threads) {
     createdDate: transformDate(thread.created_date),
     isPublic: thread.is_public,
     score: thread.score,
+    userVote: transformVote(thread.user_vote),
   }));
 }

@@ -41,8 +41,15 @@ class DiscussionComment extends React.Component {
     const { paperId, discussionThreadId } = Router.query;
 
     this.props.dispatch(DiscussionActions.postUpvotePending());
+
+    const ids = [];
+    if (this.props.commentId) {
+      ids.push(this.props.commentId);
+    }
+    ids.push(this.state.id);
+
     await this.props.dispatch(
-      DiscussionActions.postUpvote(paperId, discussionThreadId, this.state.id)
+      DiscussionActions.postUpvote(paperId, discussionThreadId, ...ids)
     );
 
     this.updateWidgetUI(this.props.voteResult);
@@ -52,8 +59,15 @@ class DiscussionComment extends React.Component {
     const { paperId, discussionThreadId } = Router.query;
 
     this.props.dispatch(DiscussionActions.postDownvotePending());
+
+    const ids = [];
+    if (this.props.commentId) {
+      ids.push(this.props.commentId);
+    }
+    ids.push(this.state.id);
+
     await this.props.dispatch(
-      DiscussionActions.postDownvote(paperId, discussionThreadId, this.state.id)
+      DiscussionActions.postDownvote(paperId, discussionThreadId, ...ids)
     );
 
     this.updateWidgetUI(this.props.voteResult);
@@ -162,7 +176,7 @@ class CommentClass extends DiscussionComment {
 
   renderReplies = () => {
     const replies = this.state.replies.map((r, i) => {
-      return <Reply key={r.id} data={r} />;
+      return <Reply key={r.id} data={r} commentId={this.state.id} />;
     });
 
     return (
