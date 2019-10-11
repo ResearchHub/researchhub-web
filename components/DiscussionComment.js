@@ -120,6 +120,7 @@ class CommentClass extends DiscussionComment {
     super(props);
     this.state.showReplyBox = false;
     this.state.replies = this.props.data.replies;
+    this.state.replyCount = this.props.data.replyCount;
   }
 
   renderAction = () => {
@@ -160,9 +161,16 @@ class CommentClass extends DiscussionComment {
   };
 
   renderReplies = () => {
-    return this.state.replies.map((r, i) => {
+    const replies = this.state.replies.map((r, i) => {
       return <Reply key={r.id} data={r} />;
     });
+
+    return (
+      <Fragment>
+        <div>{this.state.replyCount} Replies</div>
+        {replies}
+      </Fragment>
+    );
   };
 }
 
