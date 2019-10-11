@@ -9,13 +9,15 @@ import DiscussionActions from "~/redux/discussion";
 import DiscussionCard from "./DiscussionCard";
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
 import DiscussionThreadActionBar from "./DiscussionThreadActionBar";
-import { ServerLinkWrapper } from "./LinkWrapper";
+import { ClientLinkWrapper } from "./LinkWrapper";
 import VoteWidget from "./VoteWidget";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
+
+const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();
@@ -93,9 +95,9 @@ const DiscussionThreadCard = (props) => {
           </Fragment>
         }
         info={
-          <ServerLinkWrapper path={path}>
+          <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={path}>
             <Title text={title} />
-          </ServerLinkWrapper>
+          </ClientLinkWrapper>
         }
         action={
           <DiscussionThreadActionBar
@@ -138,9 +140,13 @@ function formatTitle(title) {
 const ReadButton = (props) => {
   const { threadPath } = props;
   return (
-    <ServerLinkWrapper path={threadPath} style={styles.readContainer}>
+    <ClientLinkWrapper
+      dynamicHref={DYNAMIC_HREF}
+      path={threadPath}
+      styling={[styles.readContainer]}
+    >
       Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
-    </ServerLinkWrapper>
+    </ClientLinkWrapper>
   );
 };
 
