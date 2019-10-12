@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     padding: ".2em .7em",
   },
   icon: {
+    cursor: "pointer",
     color: voteWidgetColors.ARROW,
     ":hover": {
       color: colors.BLUE(1),
