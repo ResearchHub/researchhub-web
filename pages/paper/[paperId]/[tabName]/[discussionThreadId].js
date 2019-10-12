@@ -264,6 +264,7 @@ const CommentBox = (props) => {
   const store = useStore();
   const router = useRouter();
   const { paperId, discussionThreadId } = router.query;
+  const [active, setActive] = useState(false);
 
   async function postComment(text) {
     dispatch(DiscussionActions.postCommentPending());
@@ -275,12 +276,40 @@ const CommentBox = (props) => {
     onSubmit(comment);
   }
 
+  function detectOutsideClick(ref) {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setTimeout(() => {
+          setActive(false);
+        }, 100);
+      }
+    }
+
+    useEffect(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    });
+  }
+
+  const commentBoxRef = useRef(null);
+  detectOutsideClick(commentBoxRef);
+
   return (
-    <div className={css(styles.commentBoxContainer)}>
+    <div
+      className={css(
+        styles.commentBoxContainer,
+        active && styles.activeCommentBoxContainer
+      )}
+      onClick={() => setActive(true)}
+      ref={commentBoxRef}
+    >
       <TextEditor
         canEdit={true}
         canSubmit={true}
         onSubmit={postComment}
+        readOnly={!active}
         commentEditor={true}
       />
     </div>
@@ -379,6 +408,10 @@ const styles = StyleSheet.create({
   },
   commentBoxContainer: {
     width: "100%",
+    transition: "all ease-in-out 0.3s",
+  },
+  activeCommentBoxContainer: {
+    height: 231,
   },
   divider: {
     borderBottom: "1px solid",

@@ -21,7 +21,7 @@ const CommentCount = (props) => {
       {count > 0 && (
         <div className={css(styles.commentCountContainer)}>
           <span className={css(styles.iconChat)}>{icons.chat}</span>
-          <span className={css(styles.text)}>
+          <span className={"text"} style={style.text}>
             {formatCommentCount(props.count)}
           </span>
         </div>
@@ -46,9 +46,20 @@ const Share = () => {
   return (
     <div className={css(styles.shareContainer)}>
       <span className={css(styles.iconChat)}>{icons.share}</span>
-      <span className={css(styles.text)}>Share</span>
+      <span className={"text"} style={style.text}>
+        Share
+      </span>
     </div>
   );
+};
+
+const style = {
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    marginLeft: 8,
+    color: "#918f9b",
+  },
 };
 
 const styles = StyleSheet.create({
@@ -60,12 +71,18 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(1),
     },
+    ":hover .text": {
+      color: colors.BLUE(1),
+    },
   },
   shareContainer: {
     cursor: "pointer",
     padding: 4,
     borderRadius: 5,
     ":hover": {
+      color: colors.BLUE(1),
+    },
+    ":hover .text": {
       color: colors.BLUE(1),
     },
   },

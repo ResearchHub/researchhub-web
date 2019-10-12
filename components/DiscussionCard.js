@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   hoverEvents: {
     ":hover": {
       backgroundColor: "rgba(243, 243, 248, 0.7)",
-      transform: "scale(1.02)",
+      // transform: "scale(1.01)",
     },
   },
   topContainer: {
