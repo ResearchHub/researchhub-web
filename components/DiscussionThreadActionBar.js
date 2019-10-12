@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "Roboto",
     fontSize: 14,
-    color: "#918f9b",
     marginLeft: 8,
+    color: "#918f9b",
   },
 });
 
