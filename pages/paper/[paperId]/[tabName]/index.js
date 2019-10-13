@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { useState } from "react";
-import { connect, useStore } from "react-redux";
+import { useEffect, useState } from "react";
+import { connect, useDispatch, useStore } from "react-redux";
 import moment from "moment";
 import Avatar from "react-avatar";
 
@@ -22,24 +22,37 @@ import VoteActions from "~/redux/vote";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { absoluteUrl, getNestedValue } from "~/config/utils";
+import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 
 const Paper = (props) => {
+  const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
+
+  const [paper, setPaper] = useState(props.paper);
+  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
+  const [selectedVoteType, setSelectedVoteType] = useState(
+    getVoteType(paper.userVote)
+  );
+
+  const { hostname } = props;
   const { paperId, tabName } = router.query;
-  let { hostname, paper } = props;
+  const shareUrl = hostname + "/paper/" + paperId;
 
   const paperTitle = getNestedValue(paper, ["title"], "");
-  const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
   const discussionThreads = getNestedValue(paper, ["discussion", "threads"]);
-  const score = getNestedValue(paper, ["score"], 0);
-  const shareUrl = hostname + "/paper/" + paperId;
-  const userVote = getNestedValue(paper, ["userVote"], null);
+  const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
 
-  const [selectedVoteType, setSelectedVoteType] = useState(
-    userVote && userVote.voteType
-  );
+  useEffect(() => {
+    async function refetchPaper() {
+      await dispatch(PaperActions.getPaper(paperId));
+      const reloadedPaper = store.getState().paper;
+
+      setPaper(reloadedPaper);
+      setSelectedVoteType(getVoteType(reloadedPaper.userVote));
+    }
+    refetchPaper();
+  }, [props.isServer]);
 
   async function upvote() {
     props.dispatch(VoteActions.postUpvotePending());
@@ -61,8 +74,10 @@ const Paper = (props) => {
       const voteType = vote.voteType;
       if (voteType === UPVOTE) {
         setSelectedVoteType(UPVOTE);
+        setScore(score + 1);
       } else if (voteType === DOWNVOTE) {
         setSelectedVoteType(DOWNVOTE);
+        setScore(score - 1);
       }
     }
   }
@@ -171,13 +186,10 @@ const Paper = (props) => {
 };
 
 Paper.getInitialProps = async ({ isServer, req, store, query }) => {
-  let { paper } = store.getState();
   const { host } = absoluteUrl(req);
   const hostname = host;
 
-  if (!paper.id) {
-    await store.dispatch(PaperActions.getPaper(query.paperId));
-  }
+  await store.dispatch(PaperActions.getPaper(query.paperId));
 
   return { isServer, hostname };
 };
