@@ -19,10 +19,8 @@ const VoteWidget = (props) => {
   useEffect(() => {
     if (selected === UPVOTE) {
       setUpvoteSelected(true);
-      setScore(score + 1);
     } else if (selected === DOWNVOTE) {
       setDownvoteSelected(true);
-      setScore(score - 1);
     }
   }, [selected]);
 
