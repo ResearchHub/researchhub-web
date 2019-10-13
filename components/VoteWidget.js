@@ -10,9 +10,11 @@ import { UPVOTE, DOWNVOTE } from "../config/constants";
 const VoteWidget = (props) => {
   const { onUpvote, onDownvote, fontSize, selected, width } = props;
 
-  const [score, setScore] = useState(getScore(props));
-  const [upvoteSelected, setUpvoteSelected] = useState(false);
-  const [downvoteSelected, setDownvoteSelected] = useState(false);
+  const score = getScore(props);
+  const [upvoteSelected, setUpvoteSelected] = useState(selected === UPVOTE);
+  const [downvoteSelected, setDownvoteSelected] = useState(
+    selected === DOWNVOTE
+  );
 
   useEffect(() => {
     if (selected === UPVOTE) {
