@@ -31,6 +31,9 @@ const Paper = (props) => {
 
   const [paper, setPaper] = useState(props.paper);
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
+  const [discussionThreads, setDiscussionThreads] = useState(
+    getDiscussionThreads(paper)
+  );
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper.userVote)
   );
@@ -40,19 +43,23 @@ const Paper = (props) => {
   const shareUrl = hostname + "/paper/" + paperId;
 
   const paperTitle = getNestedValue(paper, ["title"], "");
-  const discussionThreads = getNestedValue(paper, ["discussion", "threads"]);
   const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
 
   useEffect(() => {
     async function refetchPaper() {
       await dispatch(PaperActions.getPaper(paperId));
-      const reloadedPaper = store.getState().paper;
+      const refetchedPaper = store.getState().paper;
 
-      setPaper(reloadedPaper);
-      setSelectedVoteType(getVoteType(reloadedPaper.userVote));
+      setPaper(refetchedPaper);
+      setSelectedVoteType(getVoteType(refetchedPaper.userVote));
+      setDiscussionThreads(getDiscussionThreads(refetchedPaper));
     }
     refetchPaper();
   }, [props.isServer]);
+
+  function getDiscussionThreads(paper) {
+    return getNestedValue(paper, ["discussion", "threads"]);
+  }
 
   async function upvote() {
     props.dispatch(VoteActions.postUpvotePending());
