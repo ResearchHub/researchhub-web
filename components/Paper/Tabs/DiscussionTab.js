@@ -11,16 +11,19 @@ const DiscussionTab = (props) => {
   const formattedThreads = formatThreads(threads, basePath);
 
   function renderThreads(threads) {
-    return threads.map((t, i) => {
-      return (
-        <DiscussionThreadCard
-          key={t.key}
-          data={t.data}
-          hostname={hostname}
-          path={t.path}
-        />
-      );
-    });
+    return (
+      threads &&
+      threads.map((t, i) => {
+        return (
+          <DiscussionThreadCard
+            key={t.key}
+            data={t.data}
+            hostname={hostname}
+            path={t.path}
+          />
+        );
+      })
+    );
   }
 
   return (
@@ -38,13 +41,16 @@ function formatBasePath(path) {
 }
 
 function formatThreads(threads, basePath) {
-  return threads.map((thread) => {
-    return {
-      key: thread.id,
-      data: thread,
-      path: basePath + thread.id,
-    };
-  });
+  return (
+    threads &&
+    threads.map((thread) => {
+      return {
+        key: thread.id,
+        data: thread,
+        path: basePath + thread.id,
+      };
+    })
+  );
 }
 
 export default DiscussionTab;
