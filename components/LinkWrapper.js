@@ -23,7 +23,7 @@ ServerLinkWrapper.propTypes = {
 };
 
 export const ClientLinkWrapper = (props) => {
-  const { dynamicHref, path, styling } = props;
+  const { id, dynamicHref, path, styling } = props;
 
   const classNames = [styles.linkWrapperContainer];
   if (styling) {
@@ -32,7 +32,9 @@ export const ClientLinkWrapper = (props) => {
 
   return (
     <Link href={dynamicHref} as={path}>
-      <a className={css(...classNames)}>{props.children}</a>
+      <a id={id} className={css(...classNames)}>
+        {props.children}
+      </a>
     </Link>
   );
 };

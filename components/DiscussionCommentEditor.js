@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import { useDispatch, useStore } from "react-redux";
@@ -54,7 +56,7 @@ const DiscussionCommentEditor = (props) => {
         active && styles.activeCommentBoxContainer
       )}
       onClick={() => setActive(true)}
-      ref={ref}
+      ref={containerRef}
     >
       <TextEditor
         canEdit={true}
