@@ -26,6 +26,7 @@ const AuthorInput = ({
       </span>
     );
   }
+
   return (
     <div
       className={css(styles.container, containerStyle && styles.containerStyle)}
@@ -45,14 +46,13 @@ const AuthorInput = ({
         style={styles.input}
         value={tags && tags}
         onChange={onChange}
-        onChangeInput={(value) => tags.length !== 3 && onChangeInput(value)}
+        onChangeInput={(value) => onChangeInput(value)}
         inputValue={inputValue}
         className={error ? css(styles.error) : "react-tagsinput"}
         maxTags={3}
         renderTag={(props) => renderTag(props)}
         inputProps={{
-          placeholder:
-            tags.length !== 3 ? "Search for author" : "Max authors reached",
+          placeholder: "Search for author",
         }}
       />
     </div>
