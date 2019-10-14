@@ -6,6 +6,9 @@ import Router, { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { Document, Page, PageInternal } from "react-pdf";
 
+// Component
+import Loader from "~/components/Loader/Loader";
+
 // Config
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -18,13 +21,19 @@ function PaperTab(props) {
     setNumPages(numPages);
     setLoadSuccess(true);
   }
+
   return (
     <div className={css(styles.container)}>
-      <Document file={paperUrl} onLoadSuccess={onLoadSuccess}>
+      <Document
+        className={css(!loadSuccess && styles.hidden)}
+        file={paperUrl}
+        onLoadSuccess={onLoadSuccess}
+      >
         {Array.from(new Array(numPages), (el, index) => (
           <Page pageNumber={index + 1} width={800} key={`page_${index + 1}`} />
         ))}
       </Document>
+      <Loader loading={!loadSuccess} />
     </div>
   );
 }
@@ -50,6 +59,9 @@ var styles = StyleSheet.create({
   },
   disable: {
     opacity: 0.3,
+  },
+  hidden: {
+    opacity: 0,
   },
 });
 
