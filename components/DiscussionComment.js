@@ -3,19 +3,22 @@ import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
-import { Value } from "slate";
-import Plain from "slate-plain-serializer";
 
 import DiscussionCard from "~/components/DiscussionCard";
-import { ReplyBox } from "~/components/DiscussionCommentBox";
+import { ReplyEditor } from "~/components/DiscussionCommentEditor";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import TextEditor from "~/components/TextEditor";
 import VoteWidget from "~/components/VoteWidget";
 
 import DiscussionActions from "~/redux/discussion";
 
-import colors, { discussionPageColors } from "~/config/themes/colors";
-import { createUsername, getNestedValue, doesNotExist } from "~/config/utils";
+import { discussionPageColors } from "~/config/themes/colors";
+import {
+  createUsername,
+  deserializeEditor,
+  doesNotExist,
+  getNestedValue,
+} from "~/config/utils";
 import { UPVOTE, DOWNVOTE } from "../config/constants";
 
 class DiscussionComment extends React.Component {
@@ -26,15 +29,6 @@ class DiscussionComment extends React.Component {
     selectedVoteType: this.props.data.userVote.voteType,
     score: this.props.data.score,
     username: createUsername(this.props.data),
-  };
-
-  deserializeComment = (text) => {
-    try {
-      text = Value.fromJSON(JSON.parse(text));
-    } catch (SyntaxError) {
-      text = Plain.deserialize(text);
-    }
-    return text;
   };
 
   upvote = async () => {
@@ -103,7 +97,7 @@ class DiscussionComment extends React.Component {
   };
 
   renderInfo = () => {
-    const text = this.deserializeComment(this.state.text);
+    const text = deserializeEditor(this.state.text);
     return (
       <TextEditor
         classNames={[styles.commentEditor]}
