@@ -39,7 +39,7 @@ const Loader = ({
           <BeatLoader
             css={loaderStyle && loaderStyle}
             sizeUnit={sizeUnit ? sizeUnit : "px"}
-            size={size ? size : 35}
+            size={size ? size : 20}
             color={color ? color : colors.BLUE(1)}
             loading={loading}
           />

@@ -68,17 +68,51 @@ export const PaperActions = {
       return dispatch(action);
     };
   },
+  patchPaper: (paperId, body) => {
+    return async (dispatch) => {
+      const response = await fetch(
+        API.PAPER({ paperId }),
+        API.PATCH_FILE_CONFIG(shims.paperPost(body))
+      ).catch(utils.handleCatch);
 
+      let action = actions.setPostPaperFailure("PATCH");
+      if (response.ok) {
+        const body = await response.json();
+        const paper = shims.paper(body);
+        action = actions.setPostPaperSuccess(paper, "PATCH");
+      } else {
+        utils.logFetchError(response);
+      }
+      return dispatch(action);
+    };
+  },
+  putPaper: (paperId, body) => {
+    return async (dispatch) => {
+      const response = await fetch(
+        API.PAPER({ paperId }),
+        API.PUT_FILE_CONFIG(shims.paperPost(body))
+      ).catch(utils.handleCatch);
+
+      let action = actions.setPostPaperFailure("PUT");
+      if (response.ok) {
+        const body = await response.json();
+        const paper = shims.paper(body);
+        action = actions.setPostPaperSuccess(paper, "PUT");
+      } else {
+        utils.logFetchError(response);
+      }
+      return dispatch(action);
+    };
+  },
   /**
    * saves the paper to redux state (not backend)
    */
-  uploadPaperToState: (paperFile, paperTitle) => {
+  uploadPaperToState: (paperFile) => {
     return (dispatch) => {
       return dispatch({
         type: types.UPLOAD_PAPER_TO_STATE,
         payload: {
           uploadedPaper: paperFile,
-          uploadedPaperTitle: paperTitle,
         },
       });
     };
