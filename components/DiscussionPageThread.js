@@ -1,10 +1,10 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 
 // NPM Modules
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
-import Router, { useRouter } from "next/router";
-import { connect, useDispatch, useStore } from "react-redux";
+import { useRouter } from "next/router";
+import { useDispatch, useStore } from "react-redux";
 
 // Components
 import ActionButton from "~/components/ActionButton";
@@ -21,14 +21,18 @@ import DiscussionActions from "~/redux/discussion";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { getNestedValue } from "~/config/utils";
+import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
 
 const Thread = (props) => {
-  const { hostname, title, body, username, date, score, vote } = props;
+  const { hostname, title, body, createdBy, date, score, vote } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
+
+  const currentUser = getCurrentUser(store.getState());
+  const canEdit = createdBy.id === currentUser.id;
+  const username = createUsername({ createdBy });
 
   const currentUrl = hostname + router.asPath;
   const { paperId, discussionThreadId } = router.query;
@@ -62,10 +66,6 @@ const Thread = (props) => {
         setSelectedVoteType(DOWNVOTE);
       }
     }
-  }
-
-  function toggleReadOnly(value) {
-    setReadOnly(value);
   }
 
   return (
@@ -102,7 +102,7 @@ const Thread = (props) => {
         action={
           <Fragment>
             <DiscussionPostMetadata username={username} date={date} />
-            <EditAction onClick={toggleReadOnly} />
+            {canEdit && <EditAction onClick={setReadOnly} />}
           </Fragment>
         }
       />
