@@ -7,6 +7,9 @@ export default function(state = initialState, action) {
     case types.FETCH_THREAD_PENDING:
     case types.FETCH_THREAD_FAILURE:
     case types.FETCH_THREAD_SUCCESS:
+    case types.UPDATE_THREAD_PENDING:
+    case types.UPDATE_THREAD_FAILURE:
+    case types.UPDATE_THREAD_SUCCESS:
     case types.POST_COMMENT_PENDING:
     case types.POST_COMMENT_FAILURE:
     case types.POST_COMMENT_SUCCESS:

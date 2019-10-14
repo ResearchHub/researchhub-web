@@ -24,6 +24,30 @@ export function fetchThread(paperId, threadId) {
   };
 }
 
+export function updateThread(paperId, threadId, title, text) {
+  return async (dispatch) => {
+    const response = await fetch(
+      API.THREAD(paperId, threadId),
+      API.PATCH_CONFIG({
+        title,
+        text,
+      })
+    ).catch(utils.handleCatch);
+
+    let action = actions.setUpdateThreadFailure();
+
+    if (response.ok) {
+      const body = await response.json();
+      const thread = shims.thread(body);
+      action = actions.setUpdateThread(thread);
+    } else {
+      utils.logFetchError(response);
+    }
+
+    return dispatch(action);
+  };
+}
+
 export function fetchComments(paperId, threadId, page) {
   return async (dispatch) => {
     const response = await fetch(
@@ -165,6 +189,8 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
 const DiscussionActions = {
   fetchThread,
   fetchThreadPending: actions.setThreadPending,
+  updateThread,
+  updateThreadPending: actions.setUpdateThreadPending,
   fetchComments,
   fetchCommentsPending: actions.setCommentsPending,
   postComment,
