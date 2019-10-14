@@ -25,6 +25,7 @@ const TextEditor = (props) => {
     passedValue,
     onChange,
     hideButton,
+    placeholder,
   } = props;
 
   const [value, setValue] = useState(initialValue);

@@ -5,7 +5,7 @@ describe("Discussion Thread Card", function() {
 
     cy.get("#discussion_count").invoke("text").then((count) => {
       if (count) {
-        cy.get("#readLabel").find("a").as("button");
+        cy.get("#readLabel").as("button");
 
         cy.get("@button")
           .should("have.attr", "href")

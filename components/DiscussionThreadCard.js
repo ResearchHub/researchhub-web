@@ -146,10 +146,9 @@ const ReadButton = (props) => {
       dynamicHref={DYNAMIC_HREF}
       path={threadPath}
       styling={[styles.readContainer]}
+      id={"readLabel"}
     >
-      <span id="readLabel" className={css(styles.readLabel)}>
-        Read
-      </span>{" "}
+      <span className={css(styles.readLabel)}>Read</span>{" "}
       <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
     </ClientLinkWrapper>
   );
