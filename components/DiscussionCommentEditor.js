@@ -5,8 +5,10 @@ import TextEditor from "~/components/TextEditor";
 
 import DiscussionActions from "~/redux/discussion";
 
-const DiscussionComment = (props) => {
-  const { postMethod, onSubmit } = props;
+import { deserializeEditor } from "~/config/utils";
+
+const DiscussionCommentEditor = (props) => {
+  const { postMethod, onSubmit, text } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
@@ -27,6 +29,7 @@ const DiscussionComment = (props) => {
       canSubmit={true}
       onSubmit={post}
       commentEditor={true}
+      initialValue={text}
     />
   );
 };
@@ -62,15 +65,17 @@ async function postReply(props, text) {
   onSubmit(reply);
 }
 
-export const CommentBox = (props) => {
+export const CommentEditor = (props) => {
   const { onSubmit } = props;
-  return <DiscussionComment onSubmit={onSubmit} postMethod={postComment} />;
+  return (
+    <DiscussionCommentEditor onSubmit={onSubmit} postMethod={postComment} />
+  );
 };
 
-export const ReplyBox = (props) => {
+export const ReplyEditor = (props) => {
   const { commentId, onSubmit } = props;
   return (
-    <DiscussionComment
+    <DiscussionCommentEditor
       onSubmit={onSubmit}
       postMethod={postReply}
       commentId={commentId}
