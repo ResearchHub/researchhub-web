@@ -25,6 +25,7 @@ class AddAuthorModal extends React.Component {
         linked_in: "",
         web: "",
       },
+      showLinks: false,
     };
 
     this.state = {
@@ -47,6 +48,10 @@ class AddAuthorModal extends React.Component {
     this.setState({ [id]: value });
   };
 
+  toggleShowLinks = () => {
+    this.setState({ showLinks: !this.state.showLinks });
+  };
+
   addNewUser = () => {
     let params = {
       ...this.state,
@@ -55,7 +60,14 @@ class AddAuthorModal extends React.Component {
     this.closeModal();
   };
   render() {
-    let { first_name, last_name, university, email, social_media } = this.state;
+    let {
+      first_name,
+      last_name,
+      university,
+      email,
+      social_media,
+      showLinks,
+    } = this.state;
     let { modals } = this.props;
     return (
       <Modal
@@ -77,24 +89,26 @@ class AddAuthorModal extends React.Component {
             </div>
           </div>
           <form>
-            <FormInput
-              label={"First Name"}
-              value={first_name}
-              placeholder={"Enter first name"}
-              required={true}
-              id={"first_name"}
-              onChange={this.handleInputChange}
-              containerStyle={styles.customMargins}
-            />
-            <FormInput
-              label={"Last Name"}
-              value={last_name}
-              placeholder={"Enter last name"}
-              required={true}
-              id={"last_name"}
-              onChange={this.handleInputChange}
-              containerStyle={styles.customMargins}
-            />
+            <div className={css(styles.row, styles.customMargins)}>
+              <FormInput
+                label={"First Name"}
+                value={first_name}
+                placeholder={"Enter first name"}
+                required={true}
+                id={"first_name"}
+                onChange={this.handleInputChange}
+                containerStyle={styles.halfWidth}
+              />
+              <FormInput
+                label={"Last Name"}
+                value={last_name}
+                placeholder={"Enter last name"}
+                required={true}
+                id={"last_name"}
+                onChange={this.handleInputChange}
+                containerStyle={styles.halfWidth}
+              />
+            </div>
             <FormInput
               label={"University Affiliation"}
               value={university}
@@ -113,37 +127,56 @@ class AddAuthorModal extends React.Component {
             />
 
             <div className={css(styles.socialMediaContainer)}>
-              <div className={css(styles.inputLabel)}>Social Media Links</div>
-              <FormInput
-                value={social_media.facebook}
-                placeholder={"Paste Link Here"}
-                id={"facebook"}
-                onChange={this.handleInputChange}
-                inputStyle={styles.inputStyle}
-                containerStyle={styles.inputStyle}
-                iconStyles={styles.fb}
-                icon={"/static/icons/fb.png"}
-              />
-              <FormInput
-                value={social_media.linked_in}
-                placeholder={"Paste Link Here"}
-                id={"linked_in"}
-                onChange={this.handleInputChange}
-                inputStyle={styles.inputStyle}
-                containerStyle={styles.inputStyle}
-                iconStyles={styles.icon}
-                icon={"/static/icons/linked-in.png"}
-              />
-              <FormInput
-                value={social_media.web}
-                placeholder={"Paste Link Here"}
-                id={"web"}
-                onChange={this.handleInputChange}
-                inputStyle={styles.inputStyle}
-                containerStyle={styles.inputStyle}
-                iconStyles={styles.icon}
-                icon={"/static/icons/web.png"}
-              />
+              <div className={css(styles.inputLabel)}>
+                Social Media Links
+                <div
+                  className={css(styles.dropdownIcon)}
+                  onClick={this.toggleShowLinks}
+                >
+                  {showLinks ? (
+                    <i class="fal fa-angle-down" style={{ fontSize: "25px" }} />
+                  ) : (
+                    <i class="fal fa-angle-up" style={{ fontSize: "25px" }} />
+                  )}
+                </div>
+              </div>
+              <span
+                className={css(
+                  styles.linksContainer,
+                  showLinks && styles.reveal
+                )}
+              >
+                <FormInput
+                  value={social_media.facebook}
+                  placeholder={"Paste Link Here"}
+                  id={"facebook"}
+                  onChange={this.handleInputChange}
+                  inputStyle={styles.inputStyle}
+                  containerStyle={styles.inputStyle}
+                  iconStyles={styles.fb}
+                  icon={"/static/icons/fb.png"}
+                />
+                <FormInput
+                  value={social_media.linked_in}
+                  placeholder={"Paste Link Here"}
+                  id={"linked_in"}
+                  onChange={this.handleInputChange}
+                  inputStyle={styles.inputStyle}
+                  containerStyle={styles.inputStyle}
+                  iconStyles={styles.icon}
+                  icon={"/static/icons/linked-in.png"}
+                />
+                <FormInput
+                  value={social_media.web}
+                  placeholder={"Paste Link Here"}
+                  id={"web"}
+                  onChange={this.handleInputChange}
+                  inputStyle={styles.inputStyle}
+                  containerStyle={styles.inputStyle}
+                  iconStyles={styles.icon}
+                  icon={"/static/icons/web.png"}
+                />
+              </span>
             </div>
           </form>
           <Button
@@ -189,8 +222,8 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     padding: 50,
-    height: 600,
-    overflowY: "scroll",
+    // height: 600,
+    // overflowY: "scroll",
   },
   closeButton: {
     height: 12,
@@ -225,14 +258,25 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "Roboto",
   },
+  row: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  halfWidth: {
+    width: "48%",
+    marginTop: 0,
+    marginBottom: 0,
+  },
   inputLabel: {
     height: 19,
     fontWeight: "500",
     width: "100%",
     color: "#232038",
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     textAlign: "left",
+    cursor: "pointer",
   },
   customMargins: {
     marginTop: 30,
@@ -242,7 +286,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignContent: "center",
+    alignContent: "flex-end",
     textAlign: "left",
     width: 527,
     marginTop: 30,
@@ -265,6 +309,20 @@ const styles = StyleSheet.create({
     minHeight: 55,
     maxHeight: 55,
     width: 240,
+  },
+  dropdownIcon: {
+    marginRight: 5,
+    width: 25,
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  linksContainer: {
+    height: 0,
+    transition: "all ease-in-out 0.3s",
+    overflow: "hidden",
+  },
+  reveal: {
+    height: 170,
   },
 });
 

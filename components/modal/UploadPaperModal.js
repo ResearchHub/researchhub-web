@@ -148,12 +148,7 @@ class UploadPaperModal extends React.Component {
     let name = this.state.search;
     await this.setState({ uploading: true });
     //save paper to redux
-    await paperActions.uploadPaperToState(paper, name);
-    // let grabName = () => {
-    //   let arr = name.split(".");
-    //   arr.pop();
-    //   return arr.join(".");
-    // };
+    await paperActions.uploadPaperToState(paper);
     setTimeout(() => {
       this.setState({
         // search: grabName(),
@@ -289,7 +284,11 @@ class UploadPaperModal extends React.Component {
             onClick={this.toggleUploadView}
             isLink={
               uploadView
-                ? { href: "/paper/upload/info", linkAs: "/paper/upload/info" }
+                ? {
+                    href: "/paper/upload/info",
+                    linkAs: "/paper/upload/info",
+                    query: { uploadPaperTitle: this.state.search },
+                  }
                 : null
             }
           />

@@ -6,6 +6,7 @@ import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
 import { doesNotExist } from "~/config/utils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
@@ -14,15 +15,11 @@ const DiscussionThreadActionBar = (props) => {
   const { hostname, threadPath, title } = props;
   const shareUrl = hostname + threadPath;
 
-  const customButton = (
-    <div className={css(styles.shareContainer)}>{icons.share} Share</div>
-  );
-
   return (
     <Fragment>
       <CommentCount {...props} />
       <ShareAction
-        customButton={customButton}
+        customButton={<Share />}
         title={"Share this discussion"}
         subtitle={title}
         url={shareUrl}
@@ -42,7 +39,10 @@ const CommentCount = (props) => {
             dynamicHref={DYNAMIC_HREF}
             path={threadPath}
           >
-            {icons.chat} {formatCommentCount(props.count)}
+            <span className={css(styles.iconChat)}>{icons.chat}</span>
+            <span className={"text"} style={style.text}>
+              {formatCommentCount(props.count)}
+            </span>
           </ClientLinkWrapper>
         </div>
       )}
@@ -62,15 +62,58 @@ function formatCommentCount(count) {
   return count + " " + suffix + s;
 }
 
+const Share = () => {
+  return (
+    <div className={css(styles.shareContainer)}>
+      <span className={css(styles.iconChat)}>{icons.share}</span>
+      <span className={"text"} style={style.text}>
+        Share
+      </span>
+    </div>
+  );
+};
+
+const style = {
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    marginLeft: 8,
+    color: "#918f9b",
+  },
+};
+
 const styles = StyleSheet.create({
   commentCountContainer: {
-    marginRight: "28px",
+    marginRight: "20px",
+    marginLeft: -1,
+    padding: 4,
+    borderRadius: 5,
+    ":hover": {
+      color: colors.BLUE(1),
+    },
+    ":hover .text": {
+      color: colors.BLUE(1),
+    },
   },
   link: {
     color: colors.GREY(),
   },
   shareContainer: {
     cursor: "pointer",
+    padding: 4,
+    borderRadius: 5,
+    ":hover": {
+      color: colors.BLUE(1),
+    },
+    ":hover .text": {
+      color: colors.BLUE(1),
+    },
+  },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 14,
+    marginLeft: 8,
+    color: "#918f9b",
   },
 });
 
