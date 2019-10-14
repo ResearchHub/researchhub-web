@@ -19,6 +19,25 @@ export function setThreadFailure() {
   };
 }
 
+export function setUpdateThreadPending() {
+  return {
+    type: types.UPDATE_THREAD_PENDING,
+    payload: { doneUpdating: false },
+  };
+}
+export function setUpdateThreadFailure() {
+  return {
+    type: types.UPDATE_THREAD_FAILURE,
+    payload: { doneUpdating: true, success: false },
+  };
+}
+export function setUpdateThread(thread) {
+  return {
+    type: types.UPDATE_THREAD_SUCCESS,
+    payload: { doneUpdating: true, success: true, updatedThread: thread },
+  };
+}
+
 export function setCommentsPending() {
   return {
     type: types.FETCH_COMMENTS_PENDING,
