@@ -126,7 +126,8 @@ const BackButton = () => {
     <div className={css(styles.backButtonContainer)}>
       <Link href={"/paper/[paperId]/[tabName]"} as={url}>
         <a className={css(styles.backButton)}>
-          {icons.longArrowLeft} {message}
+          {icons.longArrowLeft}
+          <span className={css(styles.backButtonLabel)}>{message}</span>
         </a>
       </Link>
     </div>
@@ -159,15 +160,17 @@ const EditAction = (props) => {
 const styles = StyleSheet.create({
   backButtonContainer: {
     paddingLeft: 68,
+    marginBottom: 10,
   },
   backButton: {
     color: colors.BLACK(0.5),
     textDecoration: "none",
+    ":hover": {
+      color: colors.BLACK(1),
+    },
   },
-  threadContainer: {
-    width: "80%",
-    padding: "30px 0px",
-    margin: "auto",
+  backButtonLabel: {
+    marginLeft: 10,
   },
   voteWidget: {
     marginRight: 18,
@@ -178,10 +181,6 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 1024px)": {
       width: "calc(100% - 68px - 170px)",
     },
-  },
-  actionBar: {
-    marginTop: 8,
-    width: "100%",
   },
   threadTitle: {
     width: "100%",

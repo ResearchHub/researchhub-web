@@ -19,6 +19,7 @@ const DiscussionTab = (props) => {
             key={t.key}
             data={t.data}
             hostname={hostname}
+            hoverEvents={true}
             path={t.path}
           />
         );

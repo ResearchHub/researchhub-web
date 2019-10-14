@@ -25,7 +25,7 @@ const DiscussionThreadCard = (props) => {
   const router = useRouter();
   const { paperId } = router.query;
 
-  const { hostname, path } = props;
+  const { hostname, hoverEvents, path } = props;
 
   const data = getNestedValue(props, ["data"]);
 
@@ -107,6 +107,7 @@ const DiscussionThreadCard = (props) => {
             count={commentCount}
           />
         }
+        hoverEvents={hoverEvents && hoverEvents}
       />
     </div>
   );
@@ -146,7 +147,8 @@ const ReadButton = (props) => {
       path={threadPath}
       styling={[styles.readContainer]}
     >
-      Read <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
+      <span className={css(styles.readLabel)}>Read</span>{" "}
+      <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
     </ClientLinkWrapper>
   );
 };
@@ -176,6 +178,7 @@ const styles = StyleSheet.create({
   discussionContainer: {
     textDecoration: "none",
     paddingBottom: 40,
+    cursor: "default",
   },
   readContainer: {
     border: "solid 1px",
@@ -184,22 +187,38 @@ const styles = StyleSheet.create({
     borderRadius: "2px",
     height: "30px",
     width: "90px",
+    minWidth: 90,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontSize: 12,
-    fontWeight: "lighter",
     boxSizing: "border-box",
     textDecoration: "none",
+    ":hover": {
+      backgroundColor: colors.BLUE(1),
+      color: "#FFF",
+    },
+  },
+  readLabel: {
+    fontSize: 14,
+    fontFamily: "Roboto",
   },
   readArrow: {
     fontSize: 10,
-    marginLeft: 9,
+    marginLeft: 8,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 1,
+    height: 19,
+    maxHeight: 19,
   },
   title: {
     fontSize: 22,
-    paddingBottom: 10,
+    paddingBottom: 16,
     color: colors.BLACK(1),
+  },
+  link: {
+    textDecoration: "none",
   },
 });
 
