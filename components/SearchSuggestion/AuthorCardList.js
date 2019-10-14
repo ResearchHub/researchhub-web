@@ -78,6 +78,9 @@ class AuthorCardList extends React.Component {
 
   render() {
     let { authors, show, loading } = this.props;
+    let authorsList = authors.filter(
+      (author) => !this.state.removed[author.id]
+    );
 
     return (
       <div
@@ -85,9 +88,9 @@ class AuthorCardList extends React.Component {
           styles.authorsList,
           show && styles.reveal,
           show &&
-            (authors.length < 2 && authors.length !== 0) &&
+            (authorsList.length < 2 && authorsList.length !== 0) &&
             styles.minHeight,
-          show && authors.length >= 2 && styles.maxHeight,
+          show && authorsList.length >= 2 && styles.maxHeight,
           loading && styles.loading
         )}
       >
@@ -96,7 +99,7 @@ class AuthorCardList extends React.Component {
             <Loader loading={loading} />
           </div>
         ) : (
-          <span>{this.renderAuthorCard(authors)}</span>
+          <span>{this.renderAuthorCard(authorsList)}</span>
         )}
         <div
           className={css(styles.authorCard, styles.addAuthorCard)}
@@ -133,12 +136,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   reveal: {
-    minHeight: 80,
+    minHeight: 90,
     maxHeight: 260,
     transition: `all ease-in-out ${DEFAULT_TRANSITION_TIME}s`,
   },
   minHeight: {
-    height: 80,
+    height: 180,
   },
   maxHeight: {
     height: 260,
@@ -226,6 +229,7 @@ const styles = StyleSheet.create({
     height: 20,
     width: 14,
     marginRight: 21,
+    userSelect: "none",
   },
   marginLeft: {
     marginLeft: 21,

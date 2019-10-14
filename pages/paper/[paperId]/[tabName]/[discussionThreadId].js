@@ -49,7 +49,6 @@ const DiscussionThreadPage = (props) => {
       setComments(currentComments);
     }
   }, [discussion.success]);
-
   useEffect(() => {
     async function refetchDiscussion() {
       dispatch(DiscussionActions.fetchThreadPending());
@@ -142,44 +141,17 @@ DiscussionThreadPage.getInitialProps = async ({ req, store, query }) => {
 };
 
 const styles = StyleSheet.create({
-  backButtonContainer: {
-    paddingLeft: 68,
-  },
-  backButton: {
-    color: colors.BLACK(0.5),
-    textDecoration: "none",
-  },
   threadContainer: {
     width: "80%",
     padding: "30px 0px",
     margin: "auto",
   },
-  voteWidget: {
-    marginRight: 18,
-  },
-  threadInfo: {
-    paddingLeft: 68,
-    color: colors.BLACK(0.8),
-    "@media only screen and (min-width: 1024px)": {
-      width: "calc(100% - 68px - 170px)",
-    },
-  },
   actionBar: {
     marginTop: 8,
+    height: 19,
     width: "100%",
-  },
-  threadTitle: {
-    width: "100%",
-    fontSize: 33,
-  },
-  body: {
-    marginBottom: 28,
-    marginTop: 14,
-    fontSize: 16,
-    lineHeight: "24px",
-  },
-  reply: {
-    cursor: "pointer",
+    transition: "all ease-in-out 0.3s",
+    overflow: "hidden",
   },
   contentContainer: {
     width: "70%",
@@ -190,27 +162,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  shareContainer: {
-    background: colors.LIGHT_GREY(),
-    color: colors.GREY(),
-    height: "46px",
-    width: "46px",
-    borderRadius: "50%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
   allCommentsContainer: {
-    width: "100%",
-  },
-  commentContainer: {
-    padding: "30px 30px 36px 30px",
-  },
-  commentInfo: {
-    color: colors.BLACK(0.8),
-  },
-  commentBoxContainer: {
     width: "100%",
   },
   divider: {

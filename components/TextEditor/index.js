@@ -69,6 +69,7 @@ const TextEditor = (props) => {
       value={passedValue ? passedValue : value}
       hideButton={hideButton}
       classNames={classNames}
+      placeholder={placeholder && placeholder}
     />
   );
 };

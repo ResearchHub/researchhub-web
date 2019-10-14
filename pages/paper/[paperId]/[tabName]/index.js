@@ -1,4 +1,5 @@
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
+import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import { connect, useDispatch, useStore } from "react-redux";
@@ -137,6 +138,12 @@ const Paper = (props) => {
     return hubs;
   }
 
+  function navigateToEditPaperInfo() {
+    let href = "/paper/upload/info/[paperId]";
+    let as = `/paper/upload/info/${paperId}`;
+    Router.push(href, as);
+  }
+
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper>
@@ -152,7 +159,10 @@ const Paper = (props) => {
           <div className={css(styles.topHeader)}>
             <div className={css(styles.title)}>{paper && paper.title}</div>
             <div className={css(styles.actionButtons)}>
-              <ActionButton icon={"fas fa-pencil"} action={null} />
+              <ActionButton
+                icon={"fas fa-pencil"}
+                action={navigateToEditPaperInfo}
+              />
               <ShareAction
                 iconNode={icons.shareAlt}
                 title={"Share this paper"}
