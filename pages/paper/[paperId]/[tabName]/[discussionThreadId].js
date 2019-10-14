@@ -3,9 +3,9 @@ import { Fragment, useEffect, useState } from "react";
 // NPM Modules
 import { css, StyleSheet } from "aphrodite";
 
-// components
+// Components
 import { Comment } from "~/components/DiscussionComment";
-import { CommentBox } from "~/components/DiscussionCommentBox";
+import { CommentEditor } from "~/components/DiscussionCommentEditor";
 import Thread from "~/components/DiscussionPageThread";
 
 // Redux
@@ -79,7 +79,7 @@ const DiscussionThreadPage = (props) => {
       </div>
       <div className={css(styles.divider)} />
       <div className={css(styles.contentContainer)}>
-        <CommentBox onSubmit={addSubmittedComment} />
+        <CommentEditor onSubmit={addSubmittedComment} />
         <div
           id="all_comments_container"
           className={css(styles.allCommentsContainer)}
