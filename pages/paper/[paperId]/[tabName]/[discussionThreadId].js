@@ -204,8 +204,10 @@ const ReplyTextEditor = (props) => {
   return (
     <div className={css(styles.actionBar, transition && styles.reveal)}>
       {!reply ? (
-        <div className={css(styles.reply)} onClick={showReply} id="reply">
-          Reply
+        <div className={css(styles.replyContainer)}>
+          <div className={css(styles.reply)} onClick={showReply} id="reply">
+            Reply
+          </div>
         </div>
       ) : (
         <div ref={textEditorRef}>
@@ -370,6 +372,10 @@ const styles = StyleSheet.create({
     marginTop: 14,
     fontSize: 16,
     lineHeight: "24px",
+  },
+  replyContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
   },
   reply: {
     cursor: "pointer",
