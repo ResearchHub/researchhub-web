@@ -156,7 +156,10 @@ class CommentClass extends DiscussionComment {
 
   renderReplyBox = () => {
     return (
-      <ReplyBox onSubmit={this.addSubmittedReply} commentId={this.state.id} />
+      <ReplyEditor
+        onSubmit={this.addSubmittedReply}
+        commentId={this.state.id}
+      />
     );
   };
 
