@@ -209,7 +209,7 @@ class RichTextEditor extends React.Component {
               placeholder={this.props.placeholder && this.props.placeholder}
               ref={this.ref}
               value={this.state.value}
-              className={css(styles.editSection)}
+              className={css(styles.comment)}
               onChange={this.onChange}
               onKeyDown={this.onKeyDown}
               renderBlock={this.renderBlock}
@@ -444,10 +444,14 @@ const styles = StyleSheet.create({
     background: "#FBFBFD",
     border: "1px solid #E7E7E7",
     borderRadius: 4,
+    color: "#000",
   },
   editSection: {
     padding: 16,
     minHeight: 122,
+  },
+  comment: {
+    padding: "0px 16px 16px 0px",
   },
   button: {
     width: 180,
