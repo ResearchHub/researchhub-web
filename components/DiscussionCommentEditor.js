@@ -1,3 +1,4 @@
+import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import { useDispatch, useStore } from "react-redux";
 
@@ -5,6 +6,7 @@ import TextEditor from "~/components/TextEditor";
 
 import DiscussionActions from "~/redux/discussion";
 
+import colors, { discussionPageColors } from "~/config/themes/colors";
 import { deserializeEditor } from "~/config/utils";
 
 const DiscussionCommentEditor = (props) => {

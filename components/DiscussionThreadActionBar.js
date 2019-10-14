@@ -6,7 +6,6 @@ import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
 import { doesNotExist } from "~/config/utils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
