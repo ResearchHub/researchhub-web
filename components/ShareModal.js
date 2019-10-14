@@ -4,7 +4,6 @@ import Modal from "react-modal";
 import PropTypes from "prop-types";
 
 import FormInput from "~/components/Form/FormInput";
-
 import colors from "~/config/themes/colors";
 
 const ShareModal = (props) => {
@@ -37,7 +36,7 @@ const ShareModal = (props) => {
         />
         <div className={css(styles.titleContainer)}>
           <div className={css(styles.title, styles.text)}>{title}</div>
-          <div className={css(styles.subtitle, styles.text)}>{subtitle}</div>
+          {/* <div className={css(styles.subtitle, styles.text)}>{subtitle}</div> */}
         </div>
         <FormInput
           getRef={setFormInputRef}
@@ -45,6 +44,13 @@ const ShareModal = (props) => {
           value={url}
           message={copySuccessMessage}
         />
+        <div className={css(styles.logoContainer)}>
+          <img
+            src={"/static/ResearchHubLogo.png"}
+            className={css(styles.logo)}
+            draggable={false}
+          />
+        </div>
       </div>
     </Modal>
   );
@@ -160,5 +166,18 @@ const styles = StyleSheet.create({
   },
   copyLink: {
     color: colors.PURPLE(),
+    cursor: "pointer",
+  },
+  logoContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    position: "absolute",
+    bottom: 5,
+  },
+  logo: {
+    height: 30,
+    marginBottom: 20,
+    userSelect: "none",
   },
 });
