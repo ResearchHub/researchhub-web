@@ -147,7 +147,9 @@ const ReadButton = (props) => {
       path={threadPath}
       styling={[styles.readContainer]}
     >
-      <span className={css(styles.readLabel)}>Read</span>{" "}
+      <span id="readLabel" className={css(styles.readLabel)}>
+        Read
+      </span>{" "}
       <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
     </ClientLinkWrapper>
   );
