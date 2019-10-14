@@ -7,14 +7,15 @@ import DiscussionActions from "~/redux/discussion";
 import { deserializeEditor } from "../config/utils/serializers";
 
 const ThreadEditor = (props) => {
-  const { isEditable, postMethod, onSubmit } = props;
-
-  const text = deserializeEditor(props.text);
+  const { readOnly, postMethod, onSubmit } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
+
   const { paperId, discussionThreadId } = router.query;
+
+  const text = deserializeEditor(props.text);
 
   const post = async (text) => {
     await postMethod(
@@ -33,13 +34,7 @@ const ThreadEditor = (props) => {
     onSubmit(thread);
   }
 
-  return (
-    <TextEditor
-      readOnly={isEditable || true}
-      onSubmit={post}
-      initialValue={text}
-    />
-  );
+  return <TextEditor readOnly={readOnly} onSubmit={post} initialValue={text} />;
 };
 
 export default ThreadEditor;

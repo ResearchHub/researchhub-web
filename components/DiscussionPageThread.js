@@ -10,6 +10,7 @@ import { connect, useDispatch, useStore } from "react-redux";
 import ActionButton from "~/components/ActionButton";
 import DiscussionCard from "~/components/DiscussionCard";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
+import ThreadEditor from "~/components/DiscussionThreadEditor";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 
@@ -28,8 +29,11 @@ const Thread = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
+
   const currentUrl = hostname + router.asPath;
   const { paperId, discussionThreadId } = router.query;
+
+  const [readOnly, setReadOnly] = useState(true);
   const [selectedVoteType, setSelectedVoteType] = useState(
     vote && vote.voteType
   );
@@ -60,6 +64,10 @@ const Thread = (props) => {
     }
   }
 
+  function toggleReadOnly(value) {
+    setReadOnly(value);
+  }
+
   return (
     <div>
       <BackButton />
@@ -83,9 +91,20 @@ const Thread = (props) => {
             />
           </Fragment>
         }
-        info={<div className={css(styles.body)}>{body}</div>}
+        info={
+          <ThreadEditor
+            readOnly={readOnly}
+            styling={[styles.body]}
+            text={body}
+          />
+        }
         infoStyle={styles.threadInfo}
-        action={<DiscussionPostMetadata username={username} date={date} />}
+        action={
+          <Fragment>
+            <DiscussionPostMetadata username={username} date={date} />
+            <EditAction onClick={toggleReadOnly} />
+          </Fragment>
+        }
       />
     </div>
   );
@@ -112,6 +131,29 @@ const BackButton = () => {
       </Link>
     </div>
   );
+};
+
+const EditAction = (props) => {
+  const { onClick } = props;
+
+  const [editMode, setEditMode] = useState(false);
+  const [text, setText] = useState("Edit");
+
+  function toggleEditMode() {
+    if (editMode) {
+      setEditMode(false);
+      setText("Edit");
+      const readOnly = true;
+      onClick(readOnly);
+    } else {
+      setEditMode(true);
+      setText("Cancel");
+      const readOnly = false;
+      onClick(readOnly);
+    }
+  }
+
+  return <a onClick={toggleEditMode}>{text}</a>;
 };
 
 const styles = StyleSheet.create({
