@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 
 // NPM Modules
 import { css, StyleSheet } from "aphrodite";
+import { useDispatch, useStore } from "react-redux";
 
 // Components
 import { Comment } from "~/components/DiscussionComment";
@@ -13,35 +14,62 @@ import DiscussionActions from "~/redux/discussion";
 
 // Utils
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import { absoluteUrl, createUsername, isEmpty } from "~/config/utils";
+import { absoluteUrl } from "~/config/utils";
 
 const DiscussionThreadPage = (props) => {
-  const { discussion, hostname } = props;
+  const dispatch = useDispatch();
+  const store = useStore();
 
+  const { discussion, discussionThreadId, hostname, paperId } = props;
+
+  const [thread, setThread] = useState(props.discussion);
+  const [pageNumber, setPageNumber] = useState(1);
   const [comments, setComments] = useState([]);
+  const [userVote, setUserVote] = useState(
+    props.discussion.success && props.discussion.userVote
+  );
 
   let title = "";
   let body = "";
-  let username = "";
+  let createdBy = "";
   let createdDate = "";
   let score = 0;
-  let vote = null;
 
-  if (discussion.success) {
-    title = discussion.title;
-    body = discussion.text;
-    createdDate = discussion.createdDate;
-    username = createUsername(discussion);
-    score = discussion.score;
-    vote = discussion.userVote;
+  if (thread.success) {
+    title = thread.title;
+    body = thread.text;
+    createdBy = thread.createdBy;
+    createdDate = thread.createdDate;
+    score = thread.score;
   }
 
   useEffect(() => {
-    if (discussion.success) {
-      const currentComments = discussion.commentPage.comments;
+    if (thread.success) {
+      const currentComments = thread.commentPage.comments;
       setComments(currentComments);
     }
   }, [discussion.success]);
+
+  useEffect(() => {
+    async function refetchDiscussion() {
+      dispatch(DiscussionActions.fetchThreadPending());
+      dispatch(DiscussionActions.fetchCommentsPending());
+      await dispatch(
+        DiscussionActions.fetchThread(paperId, discussionThreadId)
+      );
+      await dispatch(
+        DiscussionActions.fetchComments(paperId, discussionThreadId, pageNumber)
+      );
+
+      const refetchedDiscussion = store.getState().discussion;
+
+      setThread(refetchedDiscussion);
+      setComments(refetchedDiscussion.commentPage.comments);
+      setUserVote(refetchedDiscussion.userVote);
+    }
+
+    refetchDiscussion();
+  }, [props.isServer]);
 
   function renderComments(comments) {
     return comments.map((c, i) => {
@@ -71,9 +99,9 @@ const DiscussionThreadPage = (props) => {
           hostname={hostname}
           title={title}
           body={body}
-          username={username}
+          createdBy={createdBy}
           date={createdDate}
-          vote={vote}
+          vote={userVote}
           score={score}
         />
       </div>
@@ -110,7 +138,7 @@ DiscussionThreadPage.getInitialProps = async ({ req, store, query }) => {
 
   discussion = store.getState().discussion;
 
-  return { discussion, hostname };
+  return { discussion, discussionThreadId, hostname, paperId };
 };
 
 const styles = StyleSheet.create({
