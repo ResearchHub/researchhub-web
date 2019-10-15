@@ -1,3 +1,6 @@
+import React from "react";
+import { StyleSheet, css } from "aphrodite";
+
 const icons = {
   chat: <i className="fas fa-comment"></i>,
   chevronRight: <i className="far fa-chevron-right"></i>,
@@ -22,5 +25,21 @@ export const textEditorIcons = {
   bulletedList: <i className="fas fa-list-ul"></i>,
   numberedList: <i className="fas fa-list-ol"></i>,
 };
+
+export const RHLogo = ({ iconStyle }) => {
+  return (
+    <img
+      src={"/static/ResearchHubLogo.png"}
+      className={css(styles.logo, iconStyle && iconStyle)}
+      draggable={false}
+    />
+  );
+};
+
+const styles = StyleSheet.create({
+  logo: {
+    height: 40,
+  },
+});
 
 export default icons;
