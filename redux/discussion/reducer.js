@@ -13,9 +13,15 @@ export default function(state = initialState, action) {
     case types.POST_COMMENT_PENDING:
     case types.POST_COMMENT_FAILURE:
     case types.POST_COMMENT_SUCCESS:
+    case types.UPDATE_COMMENT_PENDING:
+    case types.UPDATE_COMMENT_FAILURE:
+    case types.UPDATE_COMMENT_SUCCESS:
     case types.POST_REPLY_PENDING:
     case types.POST_REPLY_FAILURE:
     case types.POST_REPLY_SUCCESS:
+    case types.UPDATE_REPLY_PENDING:
+    case types.UPDATE_REPLY_FAILURE:
+    case types.UPDATE_REPLY_SUCCESS:
       return {
         ...state,
         ...action.payload,

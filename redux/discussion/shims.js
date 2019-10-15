@@ -24,7 +24,7 @@ export const comments = (page) => {
   };
 };
 
-export const postCommentResponse = (comment) => {
+export const comment = (comment) => {
   return transformComment(comment);
 };
 
@@ -58,7 +58,7 @@ export const replies = (page) => {
   };
 };
 
-export const postReplyResponse = (reply) => {
+export const reply = (reply) => {
   return transformReply(reply);
 };
 

@@ -81,8 +81,29 @@ export function postComment(paperId, threadId, text) {
 
     if (response.ok) {
       const body = await response.json();
-      const comment = shims.postCommentResponse(body);
+      const comment = shims.comment(body);
       action = actions.setPostCommentSuccess(comment);
+    } else {
+      utils.logFetchError(response);
+    }
+
+    return dispatch(action);
+  };
+}
+
+export function updateComment(paperId, threadId, commentId, text) {
+  return async (dispatch) => {
+    const response = await fetch(
+      API.PAPER_CHAIN(paperId, threadId, commentId),
+      API.PATCH_CONFIG({ text })
+    ).catch(utils.handleCatch);
+
+    let action = actions.setUpdateCommentFailure();
+
+    if (response.ok) {
+      const body = await response.json();
+      const comment = shims.comment(body);
+      action = actions.setUpdateComment(comment);
     } else {
       utils.logFetchError(response);
     }
@@ -127,8 +148,29 @@ export function postReply(paperId, threadId, commentId, text) {
 
     if (response.ok) {
       const body = await response.json();
-      const reply = shims.postReplyResponse(body);
+      const reply = shims.reply(body);
       action = actions.setPostReplySuccess(reply);
+    } else {
+      utils.logFetchError(response);
+    }
+
+    return dispatch(action);
+  };
+}
+
+export function updateReply(paperId, threadId, commentId, replyId, text) {
+  return async (dispatch) => {
+    const response = await fetch(
+      API.PAPER_CHAIN(paperId, threadId, commentId, replyId),
+      API.PATCH_CONFIG({ text })
+    ).catch(utils.handleCatch);
+
+    let action = actions.setUpdateReplyFailure();
+
+    if (response.ok) {
+      const body = await response.json();
+      const reply = shims.reply(body);
+      action = actions.setUpdateReply(reply);
     } else {
       utils.logFetchError(response);
     }
@@ -192,10 +234,14 @@ const DiscussionActions = {
   fetchCommentsPending: actions.setCommentsPending,
   postComment,
   postCommentPending: actions.setPostCommentPending,
+  updateComment,
+  updateCommentPending: actions.setUpdateCommentPending,
   fetchReplies,
   fetchRepliesPending: actions.setRepliesPending,
   postReply,
   postReplyPending: actions.setPostReplyPending,
+  updateReply,
+  updateReplyPending: actions.setUpdateReplyPending,
   postUpvote,
   postUpvotePending: () => actions.setPostVotePending(true),
   postDownvote,
