@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useStore } from "react-redux";
 
@@ -6,10 +6,10 @@ import TextEditor from "~/components/TextEditor";
 
 import DiscussionActions from "~/redux/discussion";
 
-import { getNestedValue } from "../config/utils";
+import { doesNotExist } from "../config/utils";
 
 const ThreadEditor = (props) => {
-  const { readOnly, onSubmit } = props;
+  const { readOnly, setReadOnly } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
@@ -17,7 +17,7 @@ const ThreadEditor = (props) => {
 
   const { paperId, discussionThreadId } = router.query;
 
-  const initialValue = props.text;
+  const [value, setValue] = useState(props.text);
 
   async function updateThread(text) {
     const body = {
@@ -30,10 +30,11 @@ const ThreadEditor = (props) => {
     );
 
     const thread = store.getState().discussion.updatedThread;
-    const success = getNestedValue(thread, ["success"], false);
+    const success = !doesNotExist(thread);
 
     if (success) {
-      setText(thread.text);
+      setValue(thread.text);
+      setReadOnly(true);
     }
 
     return success;
@@ -43,7 +44,8 @@ const ThreadEditor = (props) => {
     <TextEditor
       readOnly={readOnly}
       onSubmit={updateThread}
-      initialValue={initialValue}
+      initialValue={value}
+      clearOnSubmit={false}
     />
   );
 };
