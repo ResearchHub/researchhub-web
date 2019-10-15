@@ -41,7 +41,7 @@ const TextEditor = (props) => {
     onCancel && onCancel();
   }
 
-  function submit() {
+  async function submit() {
     let success = false;
     if (!isLoggedIn) {
       // TODO: pop login modal
@@ -50,7 +50,7 @@ const TextEditor = (props) => {
         "Please login with Google to submit a summary revision."
       );
     } else {
-      onSubmit && (success = onSubmit(value.toJSON()));
+      onSubmit && (success = await onSubmit(value.toJSON()));
       if (success) {
         editorRef.clear();
       }
