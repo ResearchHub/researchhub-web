@@ -16,6 +16,7 @@ const TextEditor = (props) => {
     canCancel,
     canSubmit,
     classNames,
+    clearOnSubmit,
     onCancel,
     onSubmit,
     initialValue,
@@ -51,7 +52,7 @@ const TextEditor = (props) => {
       );
     } else {
       onSubmit && (success = await onSubmit(value.toJSON()));
-      if (success) {
+      if (success && clearOnSubmit !== false) {
         editorRef.clear();
       }
     }
