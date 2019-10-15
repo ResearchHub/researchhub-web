@@ -76,6 +76,25 @@ export function setPostCommentSuccess(comment) {
   };
 }
 
+export function setUpdateCommentPending() {
+  return {
+    type: types.UPDATE_COMMENT_PENDING,
+    payload: { doneUpdating: false },
+  };
+}
+export function setUpdateCommentFailure() {
+  return {
+    type: types.UPDATE_COMMENT_FAILURE,
+    payload: { doneUpdating: true, success: false },
+  };
+}
+export function setUpdateComment(comment) {
+  return {
+    type: types.UPDATE_COMMENT_SUCCESS,
+    payload: { doneUpdating: true, success: true, updatedComment: comment },
+  };
+}
+
 export function setRepliesPending() {
   return {
     type: types.FETCH_REPLIES_PENDING,
@@ -111,6 +130,25 @@ export function setPostReplySuccess(reply) {
   return {
     type: types.POST_REPLY_SUCCESS,
     payload: { donePosting: true, success: true, postedReply: reply },
+  };
+}
+
+export function setUpdateReplyPending() {
+  return {
+    type: types.UPDATE_REPLY_PENDING,
+    payload: { doneUpdating: false },
+  };
+}
+export function setUpdateReplyFailure() {
+  return {
+    type: types.UPDATE_REPLY_FAILURE,
+    payload: { doneUpdating: true, success: false },
+  };
+}
+export function setUpdateReply(reply) {
+  return {
+    type: types.UPDATE_REPLY_SUCCESS,
+    payload: { doneUpdating: true, success: true, updatedReply: reply },
   };
 }
 
