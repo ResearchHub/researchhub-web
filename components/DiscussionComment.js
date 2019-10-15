@@ -26,6 +26,19 @@ class DiscussionComment extends React.Component {
     username: createUsername(this.props.data),
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    const selectedVoteType = getNestedValue(this.props, [
+      "data",
+      "userVote",
+      "voteType",
+    ]);
+    if (selectedVoteType !== prevState.selectedVoteType) {
+      this.setState({ selectedVoteType });
+      // Force reset the replies so that they re-render
+      this.setState({ replies: this.props.data.replies });
+    }
+  }
+
   upvote = async () => {
     const { paperId, discussionThreadId } = Router.query;
 

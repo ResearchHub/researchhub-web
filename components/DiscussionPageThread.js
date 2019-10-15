@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 
 // NPM Modules
 import { css, StyleSheet } from "aphrodite";
@@ -41,6 +41,10 @@ const Thread = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     vote && vote.voteType
   );
+
+  useEffect(() => {
+    setSelectedVoteType(vote && vote.voteType);
+  }, [vote]);
 
   async function upvote() {
     dispatch(DiscussionActions.postUpvotePending());
