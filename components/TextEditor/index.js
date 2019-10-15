@@ -85,6 +85,7 @@ const TextEditor = (props) => {
       hideButton={hideButton}
       showDiff={showDiff}
       previousVersion={previousVersion}
+      placeholder={placeholder && placeholder}
     />
   );
 };

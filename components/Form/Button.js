@@ -9,7 +9,7 @@ const Button = ({
   type,
   label,
   isWhite,
-  size,
+  size, // size is a enum; type string: ['small', 'med', 'big']
   disabled,
   isLink,
   customButtonStyle,
@@ -19,15 +19,12 @@ const Button = ({
   icon,
   customIconStyle,
 }) => {
-  // size is a enum; type string: ['small', 'med', 'big']
-
   if (isLink) {
-    let { href, linkAs } = isLink;
+    let { href, linkAs, query } = isLink;
     return (
       <Link
-        href={href && href}
+        href={href ? (query ? { pathname: href, query } : href) : null}
         as={linkAs && linkAs}
-        // as={href && href}
       >
         <div
           className={css(
