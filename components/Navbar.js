@@ -61,7 +61,11 @@ const Navbar = (props) => {
       <UploadPaperModal />
       <LoginModal />
       <div className={css(styles.logoContainer)}>
-        <img src={"/static/ResearchHubLogo.png"} className={css(styles.logo)} />
+        <img
+          src={"/static/ResearchHubLogo.png"}
+          className={css(styles.logo)}
+          draggable={false}
+        />
       </div>
       <div className={css(styles.tabs)}>{renderTabs()}</div>
       <div className={css(styles.search)}>
