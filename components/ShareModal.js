@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 
 import FormInput from "~/components/Form/FormInput";
 import colors from "~/config/themes/colors";
+import { RHLogo } from "~/config/themes/icons";
 
 const ShareModal = (props) => {
   const { close, isOpen, title, subtitle, url } = props;
@@ -45,11 +46,7 @@ const ShareModal = (props) => {
           message={copySuccessMessage}
         />
         <div className={css(styles.logoContainer)}>
-          <img
-            src={"/static/ResearchHubLogo.png"}
-            className={css(styles.logo)}
-            draggable={false}
-          />
+          <RHLogo iconStyle={styles.logo} />
         </div>
       </div>
     </Modal>

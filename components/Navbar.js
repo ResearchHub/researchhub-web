@@ -13,6 +13,7 @@ import { AuthActions } from "../redux/auth";
 // Components
 import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
+import { RHLogo } from "~/config/themes/icons";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -61,11 +62,7 @@ const Navbar = (props) => {
       <UploadPaperModal />
       <LoginModal />
       <div className={css(styles.logoContainer)}>
-        <img
-          src={"/static/ResearchHubLogo.png"}
-          className={css(styles.logo)}
-          draggable={false}
-        />
+        <RHLogo iconStyle={styles.logo} />
       </div>
       <div className={css(styles.tabs)}>{renderTabs()}</div>
       <div className={css(styles.search)}>
