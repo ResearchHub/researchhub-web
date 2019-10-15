@@ -7,10 +7,10 @@ import { useRouter } from "next/router";
 import { useDispatch, useStore } from "react-redux";
 
 // Components
-import ActionButton from "~/components/ActionButton";
 import DiscussionCard from "~/components/DiscussionCard";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import ThreadEditor from "~/components/DiscussionThreadEditor";
+import EditAction from "~/components/EditAction";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 
@@ -136,29 +136,6 @@ const BackButton = () => {
       </Link>
     </div>
   );
-};
-
-const EditAction = (props) => {
-  const { onClick } = props;
-
-  const [editMode, setEditMode] = useState(false);
-  const [text, setText] = useState("Edit");
-
-  function toggleEditMode() {
-    if (editMode) {
-      setEditMode(false);
-      setText("Edit");
-      const readOnly = true;
-      onClick(readOnly);
-    } else {
-      setEditMode(true);
-      setText("Cancel");
-      const readOnly = false;
-      onClick(readOnly);
-    }
-  }
-
-  return <a onClick={toggleEditMode}>{text}</a>;
 };
 
 const styles = StyleSheet.create({
