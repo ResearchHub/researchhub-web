@@ -9,6 +9,7 @@ import TextEditor from "~/components/TextEditor";
 import DiscussionActions from "~/redux/discussion";
 
 import colors, { discussionPageColors } from "~/config/themes/colors";
+import { doesNotExist } from "~/config/utils";
 
 const DiscussionCommentEditor = (props) => {
   const { commentId, postMethod, onSubmit, getRef } = props;
@@ -26,7 +27,7 @@ const DiscussionCommentEditor = (props) => {
   const { paperId, discussionThreadId } = router.query;
 
   const post = async (text) => {
-    await postMethod(
+    return await postMethod(
       { dispatch, store, paperId, discussionThreadId, commentId, onSubmit },
       text
     );
@@ -156,6 +157,7 @@ async function postComment(props, text) {
   const comment = store.getState().discussion.postedComment;
   // TODO: Check for success first
   onSubmit(comment);
+  return !doesNotExist(comment);
 }
 
 async function postReply(props, text) {
@@ -176,6 +178,7 @@ async function postReply(props, text) {
   const reply = store.getState().discussion.postedReply;
   // TODO: Check for success first
   onSubmit(reply);
+  return !doesNotExist(reply);
 }
 
 const styles = StyleSheet.create({

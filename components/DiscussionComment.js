@@ -105,6 +105,15 @@ class DiscussionComment extends React.Component {
     }
   };
 
+  updateEditor = (updatedContent) => {
+    if (updatedContent) {
+      this.setState({ text: updatedContent.text }, () => {
+        this.setReadOnly(true);
+      });
+    }
+    return false;
+  };
+
   renderTop = () => {
     return (
       <Fragment>
@@ -167,13 +176,7 @@ class CommentClass extends DiscussionComment {
         text
       )
     );
-
-    const comment = this.props.updatedComment;
-    const success = getNestedValue(comment, ["success"], false);
-
-    if (success) {
-      this.setState({ text: comment.text });
-    }
+    return this.updateEditor(this.props.updatedComment);
   };
 
   renderAction = () => {
@@ -230,12 +233,7 @@ class ReplyClass extends DiscussionComment {
       )
     );
 
-    const reply = this.props.updatedReply;
-    const success = getNestedValue(reply, ["success"], false);
-
-    if (success) {
-      this.setState({ text: reply.text });
-    }
+    return this.updateEditor(this.props.updatedReply);
   };
 
   renderAction = () => {
@@ -254,6 +252,7 @@ const mapStateToProps = (state) => {
     voteResult: state.discussion.voteResult,
     currentUser: getCurrentUser(state),
     updatedComment: state.discussion.updatedComment,
+    updatedReply: state.discussion.updatedReply,
   };
 };
 
