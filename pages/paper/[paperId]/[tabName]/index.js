@@ -76,9 +76,10 @@ const Paper = (props) => {
 
   function updateWidgetUI() {
     const voteResult = store.getState().vote;
+    const success = voteResult.success;
     const vote = getNestedValue(voteResult, ["vote"], false);
 
-    if (vote) {
+    if (success) {
       const voteType = vote.voteType;
       if (voteType === UPVOTE) {
         setSelectedVoteType(UPVOTE);

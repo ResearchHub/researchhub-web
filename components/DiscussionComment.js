@@ -94,13 +94,20 @@ class DiscussionComment extends React.Component {
   };
 
   updateWidgetUI = (voteResult) => {
+    const success = voteResult.success;
     const vote = getNestedValue(voteResult, ["vote"], false);
-    if (vote) {
+    if (success) {
       const voteType = vote.voteType;
       if (voteType === UPVOTE) {
-        this.setState({ selectedVoteType: UPVOTE });
+        this.setState({
+          selectedVoteType: UPVOTE,
+          score: this.state.score + 1,
+        });
       } else if (voteType === DOWNVOTE) {
-        this.setState({ selectedVoteType: DOWNVOTE });
+        this.setState({
+          selectedVoteType: DOWNVOTE,
+          score: this.state.score - 1,
+        });
       }
     }
   };
@@ -249,7 +256,7 @@ class ReplyClass extends DiscussionComment {
 
 const mapStateToProps = (state) => {
   return {
-    voteResult: state.discussion.voteResult,
+    voteResult: state.vote,
     currentUser: getCurrentUser(state),
     updatedComment: state.discussion.updatedComment,
     updatedReply: state.discussion.updatedReply,
