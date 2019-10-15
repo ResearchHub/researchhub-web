@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid",
     borderTop: 0,
     borderColor: "rgb(235, 235, 235)",
+    background: "#fff",
   },
   toolbar: {
     borderTop: "1px solid",
@@ -68,6 +69,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
+    background: "#fff",
   },
   submit: {
     background: colors.PURPLE(1),
