@@ -88,22 +88,19 @@ class PaperEditHistory extends React.Component {
     }
   }
 
-  parseDiff = (diff, node, after) => {
+  /**
+   * Function of how to handle a diff. Create a new text node with the
+   * diff values. Add marks based on action performed.
+   * @param  {Object} diff -- diff object
+   * @param  {BlockNode} node -- slate block node being diffed
+   * @return {TextNode}      -- slate text node created
+   */
+  parseDiff = (diff, node) => {
     let diffValue = diff.value;
     let action = diff.added ? "added" : diff.removed ? "removed" : null;
     let marks = node.getMarks();
     let key = Math.floor(Math.random() * 1000000000).toString(36);
     let markedNode = Text.create({ key: key, text: diffValue, marks });
-    // if (start === 0) {
-    //   splitText = node.splitText(end)
-    //   markedNode = splitText[0]
-    // } else {
-    //   let tempSplitText;
-    //   if (splitText[1].text.length > diffValue.length) {
-    //     tempSplitText = splitText[1].splitText(end)
-    //     markedNode = tempSplitText[0]
-    //   }
-    // }
 
     if (diff.added || diff.removed) {
       markedNode = markedNode.addMark(action);
@@ -111,9 +108,15 @@ class PaperEditHistory extends React.Component {
     return markedNode;
   };
 
+  /**
+   * Function to handle all the comparisons for diffing and assembling the
+   * slate value with all added marks.
+   * @param  {ValueObject} editorState   -- current version slate value object
+   * @param  {ValueObject} previousState -- previous version slate value object
+   * @return {ValueObject}               -- new value object created from diffing the two versions
+   */
   diffVersions = (editorState, previousState) => {
     let blockArray = editorState.document.getBlocksAsArray();
-    let textArray = editorState.document.getTextsAsArray();
     let pathMap = editorState.document.getNodesToPathsMap();
     let previousPathMap = previousState.document.getNodesToPathsMap();
     let tempEditor = editorState;
@@ -132,19 +135,16 @@ class PaperEditHistory extends React.Component {
       if (prevNode) {
         let diffJSON = Diff.diffWords(prevNode.text, node.text);
         if (diffJSON.length > 1 || diffJSON[0].added || diffJSON[0].removed) {
-          let currentNode = node;
           let newTextNodes = [];
-          let after = 0;
-          let prevAfter = 0;
           for (let j = 0; j < diffJSON.length; j++) {
             if (diffJSON[j].added) {
-              let newNode = this.parseDiff(diffJSON[j], node, after);
+              let newNode = this.parseDiff(diffJSON[j], node);
               newTextNodes.push(newNode);
             } else if (diffJSON[j].removed) {
-              let newNode = this.parseDiff(diffJSON[j], prevNode, prevAfter);
+              let newNode = this.parseDiff(diffJSON[j], prevNode);
               newTextNodes.push(newNode);
             } else {
-              let newNode = this.parseDiff(diffJSON[j], node, after);
+              let newNode = this.parseDiff(diffJSON[j], node);
               newTextNodes.push(newNode);
             }
           }
