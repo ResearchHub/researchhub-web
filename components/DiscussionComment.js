@@ -179,35 +179,15 @@ class CommentClass extends DiscussionComment {
   renderAction = () => {
     return (
       <div className={css(styles.actionBar)}>
-        {!this.state.showReplyBox
-          ? this.renderReplyButton()
-          : this.renderReplyBox()}
+        <ReplyEditor
+          onSubmit={this.addSubmittedReply}
+          commentId={this.state.id}
+        />
         {this.createdByCurrentUser() && (
           <EditAction onClick={this.setReadOnly} />
         )}
         {this.renderReplies()}
       </div>
-    );
-  };
-
-  renderReplyButton = () => {
-    return (
-      <a className={css(styles.reply)} onClick={this.showReplyBox}>
-        Reply
-      </a>
-    );
-  };
-
-  showReplyBox = () => {
-    this.setState({ showReplyBox: true });
-  };
-
-  renderReplyBox = () => {
-    return (
-      <ReplyEditor
-        onSubmit={this.addSubmittedReply}
-        commentId={this.state.id}
-      />
     );
   };
 
@@ -289,7 +269,7 @@ export const Reply = connect(
 
 const styles = StyleSheet.create({
   commentContainer: {
-    padding: "32px 0px 36px 0px",
+    paddingTop: "32px",
   },
   commentEditor: {
     minHeight: "100%",
