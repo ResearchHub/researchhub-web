@@ -12,14 +12,9 @@ import VoteWidget from "~/components/VoteWidget";
 
 import DiscussionActions from "~/redux/discussion";
 
-import { discussionPageColors } from "~/config/themes/colors";
-import {
-  createUsername,
-  deserializeEditor,
-  doesNotExist,
-  getNestedValue,
-} from "~/config/utils";
 import { UPVOTE, DOWNVOTE } from "../config/constants";
+import { discussionPageColors } from "~/config/themes/colors";
+import { createUsername, doesNotExist, getNestedValue } from "~/config/utils";
 
 class DiscussionComment extends React.Component {
   state = {
@@ -97,12 +92,11 @@ class DiscussionComment extends React.Component {
   };
 
   renderInfo = () => {
-    const text = deserializeEditor(this.state.text);
     return (
       <TextEditor
         classNames={[styles.commentEditor]}
         readOnly={true}
-        initialValue={text}
+        initialValue={this.state.text}
       />
     );
   };
