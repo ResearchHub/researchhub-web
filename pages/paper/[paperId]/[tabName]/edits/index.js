@@ -5,7 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import dynamic from "next/dynamic";
 import moment from "moment";
 import Plain from "slate-plain-serializer";
-import { Value } from "slate";
+import { Value, KeyUtils, Text, Block } from "slate";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -46,12 +46,19 @@ class PaperEditHistory extends React.Component {
 
   changeEditView = (selectedIndex, edit) => {
     let { paper } = this.props;
+
+    let previousSummaryJSON = {};
+    let previousState = {};
+
     let summaryJSON = JSON.parse(edit.summary);
     let editorState = Value.fromJSON(summaryJSON);
-    let previousSummaryJSON = JSON.parse(edit.previous__summary);
-    let previousState = Value.fromJSON(previousSummaryJSON);
 
-    debugger;
+    if (edit.previous) {
+      previousSummaryJSON = JSON.parse(edit.previous__summary);
+      previousState = Value.fromJSON(previousSummaryJSON);
+      editorState = this.diffVersions(editorState, previousState);
+    }
+
     this.setState({
       selectedEdit: selectedIndex,
       editorState,
@@ -61,25 +68,133 @@ class PaperEditHistory extends React.Component {
 
   componentDidMount() {
     if (this.props.paper.editHistory.length > 0) {
+      let previousSummaryJSON = {};
+      let previousState = {};
+
       let edit = this.props.paper.editHistory[0];
       let summaryJSON = JSON.parse(edit.summary);
       let editorState = Value.fromJSON(summaryJSON);
-      let previousSummaryJSON = JSON.parse(edit.previous__summary);
-      let previousState = Value.fromJSON(previousSummaryJSON);
 
-      let diffJSON = Diff.diffWords(
-        previousSummaryJSON.document.nodes[0].nodes[0].text,
-        summaryJSON.document.nodes[0].nodes[0].text
-      );
-      debugger;
+      if (edit.previous) {
+        previousSummaryJSON = JSON.parse(edit.previous__summary);
+        previousState = Value.fromJSON(previousSummaryJSON);
+        editorState = this.diffVersions(editorState, previousState);
+      }
+
       this.setState({
         editorState,
         previousState,
-        finishedLoading: true,
       });
     }
   }
 
+  parseDiff = (diff, node, after) => {
+    let diffValue = diff.value;
+    let action = diff.added ? "added" : diff.removed ? "removed" : null;
+    let marks = node.getMarks();
+    let key = Math.floor(Math.random() * 1000000000).toString(36);
+    let markedNode = Text.create({ key: key, text: diffValue, marks });
+    // if (start === 0) {
+    //   splitText = node.splitText(end)
+    //   markedNode = splitText[0]
+    // } else {
+    //   let tempSplitText;
+    //   if (splitText[1].text.length > diffValue.length) {
+    //     tempSplitText = splitText[1].splitText(end)
+    //     markedNode = tempSplitText[0]
+    //   }
+    // }
+
+    if (diff.added || diff.removed) {
+      markedNode = markedNode.addMark(action);
+    }
+    return markedNode;
+  };
+
+  diffVersions = (editorState, previousState) => {
+    let blockArray = editorState.document.getBlocksAsArray();
+    let textArray = editorState.document.getTextsAsArray();
+    let pathMap = editorState.document.getNodesToPathsMap();
+    let previousPathMap = previousState.document.getNodesToPathsMap();
+    let tempEditor = editorState;
+    let previousBlockComplete = {};
+    let previousBlockArray = previousState.document.getBlocksAsArray();
+
+    for (let i = 0; i < previousBlockArray.length; i++) {
+      previousBlockComplete[previousBlockArray[i].key] = false;
+    }
+
+    for (let i = 0; i < blockArray.length; i++) {
+      let node = blockArray[i];
+      let key = node.key;
+      let prevNode = previousState.document.getNode(key);
+      previousBlockComplete[key] = true;
+      if (prevNode) {
+        let diffJSON = Diff.diffWords(prevNode.text, node.text);
+        if (diffJSON.length > 1 || diffJSON[0].added || diffJSON[0].removed) {
+          let currentNode = node;
+          let newTextNodes = [];
+          let after = 0;
+          let prevAfter = 0;
+          for (let j = 0; j < diffJSON.length; j++) {
+            if (diffJSON[j].added) {
+              let newNode = this.parseDiff(diffJSON[j], node, after);
+              newTextNodes.push(newNode);
+            } else if (diffJSON[j].removed) {
+              let newNode = this.parseDiff(diffJSON[j], prevNode, prevAfter);
+              newTextNodes.push(newNode);
+            } else {
+              let newNode = this.parseDiff(diffJSON[j], node, after);
+              newTextNodes.push(newNode);
+            }
+          }
+          let pathToBlock = pathMap.get(node);
+          let newNodes = node.getTextsAsArray();
+          if (newTextNodes.length > 0) {
+            newNodes = newTextNodes;
+          }
+          let newBlock = Block.create({
+            key: key,
+            nodes: newNodes,
+            type: node.type,
+          });
+          tempEditor = editorState.removeNode(pathToBlock);
+          tempEditor = tempEditor.insertNode(pathToBlock, newBlock);
+        }
+      } else {
+        let pathToBlock = pathMap.get(node);
+        let newBlock = node.addMark("added");
+        tempEditor = editorState.removeNode(pathToBlock);
+        tempEditor = tempEditor.insertNode(pathToBlock, newBlock);
+      }
+    }
+    let keys = Object.keys(previousBlockComplete);
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i];
+      if (!previousBlockComplete[key]) {
+        let prevNode = previousState.document.getNode(key);
+        let previousTextArray = prevNode.getTextsAsArray();
+        let newBlock = prevNode;
+        for (let j = 0; j < previousTextArray.length; j++) {
+          let pathToText = prevNode.getPath(previousTextArray[j]);
+          newBlock = prevNode.addMark(pathToText, "removed");
+        }
+        let pathToBlock = previousPathMap.get(prevNode);
+        tempEditor = tempEditor.insertNode(pathToBlock, newBlock);
+      }
+    }
+    return tempEditor;
+  };
+
+  // componentDidUpdate(prevState) {
+  //   if (prevState.editorState !== this.state.editorState) {
+  //     this.diffVersions()
+  //   }
+  // }
+
+  setRef = (editor) => {
+    this.editor = editor;
+  };
   render() {
     let { paper } = this.props;
     let editHistory = paper.editHistory.map((edit, index) => {
@@ -104,22 +219,21 @@ class PaperEditHistory extends React.Component {
     });
     return (
       <ComponentWrapper>
-        {this.state.finishedLoading && (
-          <div className={css(styles.container)}>
-            <TextEditor
-              canEdit={false}
-              readOnly={true}
-              canSubmit={false}
-              commentEditor={false}
-              passedValue={this.state.editorState}
-              initialValue={this.state.editorState}
-            />
-            <div className={css(styles.editHistoryContainer)}>
-              <div className={css(styles.revisionTitle)}>Revision History</div>
-              {editHistory}
-            </div>
+        <div className={css(styles.container)}>
+          <TextEditor
+            canEdit={false}
+            readOnly={true}
+            canSubmit={false}
+            commentEditor={false}
+            passedValue={this.state.editorState}
+            initialValue={this.state.editorState}
+            setRef={this.setRef}
+          />
+          <div className={css(styles.editHistoryContainer)}>
+            <div className={css(styles.revisionTitle)}>Revision History</div>
+            {editHistory}
           </div>
-        )}
+        </div>
       </ComponentWrapper>
     );
   }

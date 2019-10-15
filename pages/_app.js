@@ -8,6 +8,7 @@ import { StyleSheet, css } from "aphrodite";
 import "../components/Paper/progressbar.css";
 import "react-tagsinput/react-tagsinput.css";
 import "../components/SearchSuggestion/authorinput.css";
+import { KeyUtils } from "slate";
 
 // Components
 import Navbar from "~/components/Navbar";
@@ -16,6 +17,15 @@ import Base from "./Base";
 class MyApp extends App {
   render() {
     const { Component, pageProps, store } = this.props;
+    const keygen = () => {
+      let precision = 10000000000000000;
+      let random1 = Math.floor(Math.random() * precision);
+      let random2 = Math.floor(Math.random() * precision);
+      let rawKey = random1.toString(36) + random2.toString(36);
+      let key = rawKey.substring(0, 19);
+      return key;
+    };
+    KeyUtils.setGenerator(keygen);
     return (
       <Provider store={store}>
         <Base {...this.props} />
