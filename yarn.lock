@@ -906,10 +906,10 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.4.tgz#622a72bebd1e3f48d921563b4b60a762295a81fc"
   integrity sha512-6PYY5DVdAY1ifaQW6XYTnOMihmBVT27elqSjEoodchsGjzYlEsTQMcEhSud99kVawatyTZRTiVkJ/c6lwbQ7nA==
 
-"@quantfive/js-web-config@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.npmjs.org/@quantfive/js-web-config/-/js-web-config-1.0.4.tgz#516728d505afe07de8ec2b047be4160519c36bd8"
-  integrity sha512-bYiy24RWUjhfbxgE7avvrHC5CtgltiNN8fnMQL4gSNi+TCBUjcxfrHBlGFjcL9OmpIax8mBwVsmFEm5LuYqZIA==
+"@quantfive/js-web-config@latest":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@quantfive/js-web-config/-/js-web-config-1.0.6.tgz#1c1aec6c2fed013605a28291f7a2d7b0d5a94534"
+  integrity sha512-ni5RO7/8bC8hlrFxgEz5225oX4J6g8rU492d6te7oyNVe6wBoXr6tDe9Ml0cshDy122QkssSwkJ2HC8QGeivfQ==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
