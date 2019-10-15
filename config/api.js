@@ -35,6 +35,12 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    PAPER_CHAIN: (paperId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+
+      return url;
+    },
+
     PROPOSE_EDIT: ({}) => {
       let url = BASE_URL + `summary/propose_edit/`;
 
@@ -123,25 +129,25 @@ const routes = (BASE_URL) => {
     },
 
     USER_VOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperUrl(paperId, threadId, commentId, replyId);
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
 
       return url + "user_vote/";
     },
 
     UPVOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperUrl(paperId, threadId, commentId, replyId);
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
 
       return url + "upvote/";
     },
 
     DOWNVOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperUrl(paperId, threadId, commentId, replyId);
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
 
       return url + "downvote/";
     },
   };
 
-  function buildPaperUrl(paperId, threadId, commentId, replyId) {
+  function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
     let url = `${BASE_URL}paper/${paperId}/`;
 
     if (!doesNotExist(threadId)) {
