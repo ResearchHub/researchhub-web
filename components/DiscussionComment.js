@@ -32,6 +32,8 @@ class DiscussionComment extends React.Component {
     createdBy: this.props.data.createdBy,
     username: createUsername(this.props.data),
     readOnly: true,
+    paperId: Router.query.paperId,
+    discussionThreadId: Router.query.discussionThreadId,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -55,30 +57,8 @@ class DiscussionComment extends React.Component {
     this.setState({ readOnly });
   };
 
-  updateComment = async (text) => {
-    const body = {
-      text,
-    };
-
-    DiscussionActions.updateCommentPending();
-    await DiscussionActions.updateComment(
-      paperId,
-      discussionThreadId,
-      commentId,
-      replyId,
-      body
-    );
-
-    const comment = this.props.updatedComment;
-    const success = comment.success || false;
-
-    if (success) {
-      this.setState({ text: comment.text });
-    }
-  };
-
   upvote = async () => {
-    const { paperId, discussionThreadId } = Router.query;
+    const { paperId, discussionThreadId } = this.state;
 
     this.props.dispatch(DiscussionActions.postUpvotePending());
 
@@ -96,7 +76,7 @@ class DiscussionComment extends React.Component {
   };
 
   downvote = async () => {
-    const { paperId, discussionThreadId } = Router.query;
+    const { paperId, discussionThreadId } = this.state;
 
     this.props.dispatch(DiscussionActions.postDownvotePending());
 
@@ -177,6 +157,25 @@ class CommentClass extends DiscussionComment {
     this.state.replyCount = this.props.data.replyCount;
   }
 
+  updateComment = async (text) => {
+    this.props.dispatch(DiscussionActions.updateCommentPending());
+    await this.props.dispatch(
+      DiscussionActions.updateComment(
+        this.state.paperId,
+        this.state.discussionThreadId,
+        this.state.id,
+        text
+      )
+    );
+
+    const comment = this.props.updatedComment;
+    const success = comment.success || false;
+
+    if (success) {
+      this.setState({ text: comment.text });
+    }
+  };
+
   renderAction = () => {
     return (
       <div className={css(styles.actionBar)}>
@@ -254,6 +253,7 @@ const mapStateToProps = (state) => {
   return {
     voteResult: state.discussion.voteResult,
     currentUser: getCurrentUser(state),
+    updatedComment: state.discussion.updatedComment,
   };
 };
 
