@@ -11,9 +11,9 @@ import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
 
 // Components
-import ResearchHubLogo from "./ResearchHubLogo";
 import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
+import { RHLogo } from "~/config/themes/icons";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -61,8 +61,8 @@ const Navbar = (props) => {
     <div className={css(styles.navbarContainer)}>
       <UploadPaperModal />
       <LoginModal />
-      <div className={css(styles.logo)}>
-        <ResearchHubLogo />
+      <div className={css(styles.logoContainer)}>
+        <RHLogo iconStyle={styles.logo} />
       </div>
       <div className={css(styles.tabs)}>{renderTabs()}</div>
       <div className={css(styles.search)}>
@@ -195,8 +195,16 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
+  logoContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 155,
+    paddingBottom: 2.7,
+  },
   logo: {
-    width: 220,
+    height: 40,
+    minWidth: 155,
   },
 });
 
