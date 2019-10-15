@@ -33,7 +33,6 @@ const DiscussionThreadCard = (props) => {
   let title = "";
   let username = "";
   let commentCount = "";
-  let score = 0;
   let vote = null;
   let threadId = null;
 
@@ -43,13 +42,13 @@ const DiscussionThreadCard = (props) => {
     date = data.createdDate;
     title = data.title;
     username = createUsername(data);
-    score = data.score;
     vote = data.userVote;
   }
 
   const [selectedVoteType, setSelectedVoteType] = useState(
     vote && vote.voteType
   );
+  const [score, setScore] = useState((data && data.score) || 0);
 
   useEffect(() => {
     setSelectedVoteType(data.userVote && data.userVote.voteType);
@@ -68,15 +67,18 @@ const DiscussionThreadCard = (props) => {
   }
 
   function updateWidgetUI() {
-    const voteResult = store.getState().discussion.voteResult;
+    const voteResult = store.getState().vote;
+    const success = voteResult.success;
     const vote = getNestedValue(voteResult, ["vote"], false);
 
-    if (vote) {
+    if (success) {
       const voteType = vote.voteType;
       if (voteType === UPVOTE) {
         setSelectedVoteType(UPVOTE);
+        setScore(score + 1);
       } else if (voteType === DOWNVOTE) {
         setSelectedVoteType(DOWNVOTE);
+        setScore(score - 1);
       }
     }
   }
