@@ -32,7 +32,14 @@ function formatThreads(threads, basePath) {
 
 function renderThreads(threads) {
   return threads.map((t, i) => {
-    return <DiscussionThreadCard key={t.key} data={t.data} path={t.path} />;
+    return (
+      <DiscussionThreadCard
+        key={t.key}
+        data={t.data}
+        path={t.path}
+        hoverEvents={true}
+      />
+    );
   });
 }
 
