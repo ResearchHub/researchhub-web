@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useDispatch, useStore } from "react-redux";
 
 import DiscussionActions from "~/redux/discussion";
@@ -50,6 +50,10 @@ const DiscussionThreadCard = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     vote && vote.voteType
   );
+
+  useEffect(() => {
+    setSelectedVoteType(data.userVote && data.userVote.voteType);
+  }, [data]);
 
   async function upvote() {
     dispatch(DiscussionActions.postUpvotePending());

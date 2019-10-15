@@ -49,6 +49,7 @@ const DiscussionThreadPage = (props) => {
       setComments(currentComments);
     }
   }, [discussion.success]);
+
   useEffect(() => {
     async function refetchDiscussion() {
       dispatch(DiscussionActions.fetchThreadPending());
