@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import DiscussionCard from "~/components/DiscussionCard";
 import { ReplyEditor } from "~/components/DiscussionCommentEditor";
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
+import EditAction from "~/components/EditAction";
 import TextEditor from "~/components/TextEditor";
 import VoteWidget from "~/components/VoteWidget";
 
@@ -24,6 +25,7 @@ class DiscussionComment extends React.Component {
     selectedVoteType: this.props.data.userVote.voteType,
     score: this.props.data.score,
     username: createUsername(this.props.data),
+    readOnly: true,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -38,6 +40,32 @@ class DiscussionComment extends React.Component {
       this.setState({ replies: this.props.data.replies });
     }
   }
+
+  setReadOnly = (readOnly) => {
+    this.setState({ readOnly });
+  };
+
+  updateComment = async (text) => {
+    const body = {
+      text,
+    };
+
+    DiscussionActions.updateCommentPending();
+    await DiscussionActions.updateComment(
+      paperId,
+      discussionThreadId,
+      commentId,
+      replyId,
+      body
+    );
+
+    const comment = this.props.updatedComment;
+    const success = comment.success || false;
+
+    if (success) {
+      this.setState({ text: comment.text });
+    }
+  };
 
   upvote = async () => {
     const { paperId, discussionThreadId } = Router.query;
@@ -108,7 +136,8 @@ class DiscussionComment extends React.Component {
     return (
       <TextEditor
         classNames={[styles.commentEditor]}
-        readOnly={true}
+        readOnly={this.state.readOnly}
+        onSubmit={this.updateComment}
         initialValue={this.state.text}
       />
     );
@@ -144,6 +173,7 @@ class CommentClass extends DiscussionComment {
         {!this.state.showReplyBox
           ? this.renderReplyButton()
           : this.renderReplyBox()}
+        <EditAction onClick={this.setReadOnly} />
         {this.renderReplies()}
       </div>
     );
@@ -151,9 +181,9 @@ class CommentClass extends DiscussionComment {
 
   renderReplyButton = () => {
     return (
-      <div className={css(styles.reply)} onClick={this.showReplyBox}>
+      <a className={css(styles.reply)} onClick={this.showReplyBox}>
         Reply
-      </div>
+      </a>
     );
   };
 
