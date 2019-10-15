@@ -30,6 +30,8 @@ const TextEditor = (props) => {
     passedValue,
     onChange,
     hideButton,
+    showDiff,
+    previousVersion,
   } = props;
 
   const [value, setValue] = useState(initialValue);
@@ -53,16 +55,24 @@ const TextEditor = (props) => {
         "Please login with Google to submit a summary revision."
       );
     } else {
-      onSubmit && (success = onSubmit(JSON.stringify(value.toJSON())));
+      onSubmit &&
+        (success = onSubmit(
+          JSON.stringify(value.toJSON({ preserveKeys: true }))
+        ));
       if (success) {
         editorRef.clear();
       }
     }
   }
 
+  function setRef(editor) {
+    setEditorRef(editor);
+    props.setRef && props.setRef(editor);
+  }
+
   return (
     <RichTextEditor
-      ref={setEditorRef}
+      setRef={setRef}
       readOnly={readOnly || false}
       onChange={handleChange}
       initialValue={passedValue ? passedValue : value}
@@ -73,6 +83,8 @@ const TextEditor = (props) => {
       commentEditor={commentEditor}
       value={passedValue ? passedValue : value}
       hideButton={hideButton}
+      showDiff={showDiff}
+      previousVersion={previousVersion}
     />
   );
 };

@@ -30,7 +30,7 @@ class SummaryTab extends React.Component {
   static async getInitialProps({ store, isServer, query }) {
     const { paper } = store.getState();
 
-    return { isServer, paper };
+    return { isServer, paper, query };
   }
 
   constructor(props) {
@@ -141,14 +141,19 @@ class SummaryTab extends React.Component {
   // };
 
   render() {
-    let { paper } = this.props;
+    let { paper, query } = this.props;
     return (
       <ComponentWrapper>
         {paper.summary.summary ? (
           <div className={css(styles.container)}>
             {this.state.readOnly ? (
               <div className={css(styles.summaryActions)}>
-                <div className={css(styles.action)}>View Edit History</div>
+                <Link
+                  href={"/paper/[paperId]/[tabName]/edits"}
+                  as={`/paper/${paper.id}/summary/edits`}
+                >
+                  <div className={css(styles.action)}>View Edit History</div>
+                </Link>
                 <div className={css(styles.action)} onClick={this.edit}>
                   <div className={css(styles.pencilIcon)}>
                     <i className="fas fa-pencil"></i>
@@ -333,9 +338,7 @@ var styles = StyleSheet.create({
 const mapDispatchToProps = {
   getEditHistory: PaperActions.getEditHistory,
 };
-export default withRouter(
-  connect(
-    null,
-    mapDispatchToProps
-  )(SummaryTab)
-);
+export default connect(
+  null,
+  mapDispatchToProps
+)(SummaryTab);
