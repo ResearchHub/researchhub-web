@@ -38,7 +38,9 @@ const CommentCount = (props) => {
             dynamicHref={DYNAMIC_HREF}
             path={threadPath}
           >
-            <span className={css(styles.iconChat)}>{icons.chat}</span>
+            <span id={"chatIcon"} className={css(styles.iconChat)}>
+              {icons.chat}
+            </span>
             <span className={"text"} style={style.text}>
               {formatCommentCount(props.count)}
             </span>
@@ -87,10 +89,10 @@ const styles = StyleSheet.create({
     marginLeft: -1,
     padding: 4,
     borderRadius: 5,
-    ":hover": {
+    ":hover .text": {
       color: colors.BLUE(1),
     },
-    ":hover .text": {
+    ":hover #chatIcon": {
       color: colors.BLUE(1),
     },
   },
