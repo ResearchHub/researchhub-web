@@ -9,7 +9,6 @@ import TextEditor from "~/components/TextEditor";
 import DiscussionActions from "~/redux/discussion";
 
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import { deserializeEditor } from "~/config/utils";
 
 const DiscussionCommentEditor = (props) => {
   const { postMethod, onSubmit, text } = props;
