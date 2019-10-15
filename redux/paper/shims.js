@@ -21,16 +21,21 @@ export const paperPost = ({
   publishDate,
   title,
   url,
+  type,
 }) => {
   let formData = new FormData();
-  formData.append("authors", authors);
+  authors.forEach((author) => {
+    return formData.append("authors", author);
+  });
+  hubs.forEach((hub) => {
+    return formData.append("hubs", hub);
+  });
   formData.append("doi", doi);
-  formData.append("hubs", hubs);
   formData.append("title", title);
-  formData.append("file", file);
+  file && formData.append("file", file);
   formData.append("paper_publish_date", publishDate);
   formData.append("url", url);
-  // TODO: Add publication type
+  formData.append("publication_type", type);
   return formData;
 };
 

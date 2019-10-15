@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 
 // NPM Modules
 import { css, StyleSheet } from "aphrodite";
@@ -129,7 +129,8 @@ const BackButton = () => {
     <div className={css(styles.backButtonContainer)}>
       <Link href={"/paper/[paperId]/[tabName]"} as={url}>
         <a className={css(styles.backButton)}>
-          {icons.longArrowLeft} {message}
+          {icons.longArrowLeft}
+          <span className={css(styles.backButtonLabel)}>{message}</span>
         </a>
       </Link>
     </div>
@@ -167,12 +168,60 @@ const ShareButton = () => {
   return <div className={css(styles.shareContainer)}>{icons.share}</div>;
 };
 
+const ReplyTextEditor = (props) => {
+  const [reply, setReply] = useState(false);
+  const [transition, setTransition] = useState(false);
+
+  function detectOutsideClick(ref) {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setTimeout(() => {
+          setTransition(false);
+          setTimeout(() => {
+            setReply(false);
+          }, 280);
+        }, 100);
+      }
+    }
+
+    useEffect(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    });
+  }
+
+  function showReply(e) {
+    e.stopPropagation();
+    setTransition(true);
+    setReply(true);
+  }
+
+  const textEditorRef = useRef(null);
+  detectOutsideClick(textEditorRef);
+
+  return (
+    <div className={css(styles.actionBar, transition && styles.reveal)}>
+      {!reply ? (
+        <div className={css(styles.replyContainer)}>
+          <div className={css(styles.reply)} onClick={showReply} id="reply">
+            Reply
+          </div>
+        </div>
+      ) : (
+        <div ref={textEditorRef}>
+          <TextEditor canEdit={true} commentEditor={true} />
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Comment = (props) => {
   let date = "";
   let text = "";
   let username = "";
-
-  const [reply, setReply] = useState(false);
 
   const { data } = props;
 
@@ -204,17 +253,7 @@ const Comment = (props) => {
           <TextEditor readOnly={true} canEdit={false} initialValue={text} />
         }
         infoStyle={styles.commentInfo}
-        action={
-          <div className={css(styles.actionBar)}>
-            {!reply ? (
-              <div className={css(styles.reply)} onClick={() => setReply(true)}>
-                Reply
-              </div>
-            ) : (
-              <TextEditor canEdit={true} commentEditor={true} />
-            )}
-          </div>
-        }
+        action={<ReplyTextEditor />}
       />
     </div>
   );
@@ -227,6 +266,7 @@ const CommentBox = (props) => {
   const store = useStore();
   const router = useRouter();
   const { paperId, discussionThreadId } = router.query;
+  const [active, setActive] = useState(false);
 
   async function postComment(text) {
     dispatch(DiscussionActions.postCommentPending());
@@ -238,12 +278,40 @@ const CommentBox = (props) => {
     onSubmit(comment);
   }
 
+  function detectOutsideClick(ref) {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setTimeout(() => {
+          setActive(false);
+        }, 100);
+      }
+    }
+
+    useEffect(() => {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    });
+  }
+
+  const commentBoxRef = useRef(null);
+  detectOutsideClick(commentBoxRef);
+
   return (
-    <div className={css(styles.commentBoxContainer)}>
+    <div
+      className={css(
+        styles.commentBoxContainer,
+        active && styles.activeCommentBoxContainer
+      )}
+      onClick={() => setActive(true)}
+      ref={commentBoxRef}
+    >
       <TextEditor
         canEdit={true}
         canSubmit={true}
         onSubmit={postComment}
+        readOnly={!active}
         commentEditor={true}
       />
     </div>
@@ -258,10 +326,17 @@ function createUsername({ createdBy }) {
 const styles = StyleSheet.create({
   backButtonContainer: {
     paddingLeft: 68,
+    marginBottom: 10,
   },
   backButton: {
     color: colors.BLACK(0.5),
     textDecoration: "none",
+    ":hover": {
+      color: colors.BLACK(1),
+    },
+  },
+  backButtonLabel: {
+    marginLeft: 10,
   },
   threadContainer: {
     width: "80%",
@@ -280,7 +355,13 @@ const styles = StyleSheet.create({
   },
   actionBar: {
     marginTop: 8,
+    height: 19,
     width: "100%",
+    transition: "all ease-in-out 0.3s",
+    overflow: "hidden",
+  },
+  reveal: {
+    height: 240,
   },
   threadTitle: {
     width: "100%",
@@ -292,8 +373,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: "24px",
   },
+  replyContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+  },
   reply: {
     cursor: "pointer",
+    ":hover": {
+      color: "#000",
+    },
   },
   contentContainer: {
     width: "70%",
@@ -319,13 +407,17 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   commentContainer: {
-    padding: "30px 30px 36px 30px",
+    // padding: "30px 30px 36px 30px",
   },
   commentInfo: {
     color: colors.BLACK(0.8),
   },
   commentBoxContainer: {
     width: "100%",
+    transition: "all ease-in-out 0.3s",
+  },
+  activeCommentBoxContainer: {
+    height: 231,
   },
   divider: {
     borderBottom: "1px solid",

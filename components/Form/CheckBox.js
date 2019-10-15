@@ -18,13 +18,14 @@ const CheckBox = ({ id, active, label, isSquare, onChange }) => {
           onChange && onChange(id, state);
         }}
       >
-        <div
-          className={css(
-            styles.dot,
-            active && styles.white,
-            isSquare && styles.centered
-          )}
-        />
+        {isSquare ? (
+          <i
+            className="far fa-check"
+            style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
+          />
+        ) : (
+          <div className={css(styles.dot, active && styles.white)} />
+        )}
       </div>
       <p className={css(styles.label)}>{label && label}</p>
     </div>
@@ -36,16 +37,18 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
-    height: 24,
-    minWidth: 87,
+    height: 26,
+    // minWidth: 87,
   },
   checkBox: {
-    height: 23,
-    width: 23,
-    borderRadius: 12,
+    height: 24,
+    width: 24,
+    borderRadius: "50%",
     border: "1px solid #e8e8f1",
     cursor: "pointer",
-    position: "relative",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#FBFBFD",
     ":hover": {
       borderColor: "#D2D2E6",
@@ -54,15 +57,11 @@ const styles = StyleSheet.create({
   dot: {
     height: 12,
     width: 12,
-    borderRadius: 6,
+    borderRadius: "50%",
     backgroundColor: "#FBFBFD",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-53%, -44.5%)",
   },
   centered: {
-    transform: "translate(-53%, -44.5%)",
+    // transform: "translate(-53%, -44.5%)",
   },
   active: {
     backgroundColor: colors.BLUE(1),
@@ -79,10 +78,11 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Roboto",
-    fontSize: 16,
+    // fontSize: 16,
+    fontSize: 15,
     margin: 0,
     padding: 0,
-    marginLeft: 10,
+    marginLeft: 8,
   },
 });
 

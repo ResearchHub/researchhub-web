@@ -60,16 +60,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   timestampContainer: {
+    display: "flex",
+    alignItems: "center",
     width: "100%",
     fontWeight: "normal",
-    color: colors.GREY(1),
+    color: "#918f9b",
+    fontSize: 14,
+    fontFamily: "Roboto",
   },
   name: {
     marginLeft: 8,
     color: colors.BLACK(1),
   },
   timestampDivider: {
+    fontSize: 18,
     padding: "0px 10px",
+    color: colors.GREY(1),
   },
 });
 
