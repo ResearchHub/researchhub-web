@@ -8,13 +8,16 @@ export function createUsername({ createdBy }) {
   return `${firstName} ${lastName}`;
 }
 
-export function deserializeEditor(text) {
-  try {
-    text = Value.fromJSON(JSON.parse(text));
-  } catch (SyntaxError) {
-    text = Plain.deserialize(text);
+export function convertToEditorValue(text) {
+  if (typeof text === "string") {
+    return Plain.deserialize(text);
   }
-  return text;
+
+  try {
+    return Value.fromJSON(text);
+  } catch {
+    return "";
+  }
 }
 
 export function getCurrentUser(storeObject) {

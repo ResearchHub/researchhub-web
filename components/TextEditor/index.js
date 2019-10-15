@@ -1,14 +1,15 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 
 // NPM Components
-import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import Plain from "slate-plain-serializer";
 import { connect } from "react-redux";
 
 // Components
 import RichTextEditor from "./RichTextEditor";
+
 import { ModalActions } from "../../redux/modals";
+
+import { convertToEditorValue } from "~/config/utils";
 
 const TextEditor = (props) => {
   const {
@@ -28,7 +29,7 @@ const TextEditor = (props) => {
     placeholder,
   } = props;
 
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState(convertToEditorValue(initialValue));
   const [editorRef, setEditorRef] = useState(null);
 
   function handleChange(value) {
@@ -49,7 +50,7 @@ const TextEditor = (props) => {
         "Please login with Google to submit a summary revision."
       );
     } else {
-      onSubmit && (success = onSubmit(JSON.stringify(value.toJSON())));
+      onSubmit && (success = onSubmit(value.toJSON()));
       if (success) {
         editorRef.clear();
       }
@@ -90,12 +91,6 @@ TextEditor.propTypes = {
   readOnly: PropTypes.bool,
   hideButton: PropTypes.bool,
 };
-
-const styles = StyleSheet.create({
-  buttonContainer: {
-    display: "flex",
-  },
-});
 
 const mapStateToProps = (state) => ({
   isLoggedIn: state.auth.isLoggedIn,
