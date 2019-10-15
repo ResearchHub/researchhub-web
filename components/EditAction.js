@@ -1,26 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const EditAction = (props) => {
-  const { onClick } = props;
+  const { onClick, readOnly } = props;
 
-  const [editMode, setEditMode] = useState(false);
   const [text, setText] = useState("Edit");
 
-  function toggleEditMode() {
-    if (editMode) {
-      setEditMode(false);
-      setText("Edit");
-      const readOnly = true;
-      onClick(readOnly);
+  useEffect(() => {
+    toggleEditMode(false);
+  }, [readOnly]);
+
+  function toggleEditMode(click) {
+    if (click) {
+      onClick(!readOnly);
     } else {
-      setEditMode(true);
-      setText("Cancel");
-      const readOnly = false;
-      onClick(readOnly);
+      if (readOnly) {
+        setText("Edit");
+      } else {
+        setText("Cancel");
+      }
     }
   }
 
-  return <a onClick={toggleEditMode}>{text}</a>;
+  return <a onClick={() => toggleEditMode(true)}>{text}</a>;
 };
 
 export default EditAction;
