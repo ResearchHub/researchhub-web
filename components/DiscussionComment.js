@@ -127,7 +127,7 @@ class DiscussionComment extends React.Component {
       <TextEditor
         classNames={[styles.commentEditor]}
         readOnly={this.state.readOnly}
-        onSubmit={this.updateComment}
+        onSubmit={this.updateText}
         initialValue={this.state.text}
       />
     );
@@ -157,7 +157,7 @@ class CommentClass extends DiscussionComment {
     this.state.replyCount = this.props.data.replyCount;
   }
 
-  updateComment = async (text) => {
+  updateText = async (text) => {
     this.props.dispatch(DiscussionActions.updateCommentPending());
     await this.props.dispatch(
       DiscussionActions.updateComment(
@@ -169,7 +169,7 @@ class CommentClass extends DiscussionComment {
     );
 
     const comment = this.props.updatedComment;
-    const success = comment.success || false;
+    const success = getNestedValue(comment, ["success"], false);
 
     if (success) {
       this.setState({ text: comment.text });
@@ -237,6 +237,26 @@ class ReplyClass extends DiscussionComment {
   constructor(props) {
     super(props);
   }
+
+  updateText = async (text) => {
+    this.props.dispatch(DiscussionActions.updateReplyPending());
+    await this.props.dispatch(
+      DiscussionActions.updateReply(
+        this.state.paperId,
+        this.state.discussionThreadId,
+        this.props.commentId,
+        this.state.id,
+        text
+      )
+    );
+
+    const reply = this.props.updatedReply;
+    const success = getNestedValue(reply, ["success"], false);
+
+    if (success) {
+      this.setState({ text: reply.text });
+    }
+  };
 
   renderAction = () => {
     if (this.createdByCurrentUser()) {
