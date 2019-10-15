@@ -11,15 +11,19 @@ import DiscussionActions from "~/redux/discussion";
 import colors, { discussionPageColors } from "~/config/themes/colors";
 
 const DiscussionCommentEditor = (props) => {
-  const { postMethod, onSubmit, text } = props;
+  const { commentId, postMethod, onSubmit, getRef } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
-  const { paperId, discussionThreadId } = router.query;
-  const { commentId } = props;
 
-  const [active, setActive] = useState(false);
+  const [isActive, setIsActive] = useState(props.active);
+
+  useEffect(() => {
+    setIsActive(props.active);
+  }, [props.active]);
+
+  const { paperId, discussionThreadId } = router.query;
 
   const post = async (text) => {
     await postMethod(
@@ -27,6 +31,34 @@ const DiscussionCommentEditor = (props) => {
       text
     );
   };
+
+  return (
+    <div
+      className={css(
+        styles.commentBoxContainer,
+        isActive && styles.activeCommentBoxContainer
+      )}
+      onClick={setIsActive}
+      ref={getRef}
+    >
+      <TextEditor
+        canEdit={true}
+        canSubmit={true}
+        onSubmit={post}
+        readOnly={!isActive}
+        commentEditor={true}
+      />
+    </div>
+  );
+};
+
+export const CommentEditor = (props) => {
+  const { onSubmit } = props;
+
+  const [active, setActive] = useState(props.active);
+  const containerRef = useRef(null);
+
+  detectOutsideClick(containerRef);
 
   function detectOutsideClick(ref) {
     function handleClickOutside(event) {
@@ -45,82 +77,25 @@ const DiscussionCommentEditor = (props) => {
     });
   }
 
-  const containerRef = useRef(null);
-  detectOutsideClick(containerRef);
-
   return (
-    <div
-      className={css(
-        styles.commentBoxContainer,
-        active && styles.activeCommentBoxContainer
-      )}
-      onClick={() => setActive(true)}
-      ref={containerRef}
-    >
-      <TextEditor
-        canEdit={true}
-        canSubmit={true}
-        onSubmit={post}
-        readOnly={!active}
-        commentEditor={true}
-        initialValue={text}
-      />
-    </div>
-  );
-};
-
-async function postComment(props, text) {
-  const { dispatch, store, paperId, discussionThreadId, onSubmit } = props;
-
-  dispatch(DiscussionActions.postCommentPending());
-  await dispatch(
-    DiscussionActions.postComment(paperId, discussionThreadId, text)
-  );
-
-  const comment = store.getState().discussion.postedComment;
-  onSubmit(comment);
-}
-
-async function postReply(props, text) {
-  const {
-    dispatch,
-    store,
-    paperId,
-    discussionThreadId,
-    commentId,
-    onSubmit,
-  } = props;
-
-  dispatch(DiscussionActions.postReplyPending());
-  await dispatch(
-    DiscussionActions.postReply(paperId, discussionThreadId, commentId, text)
-  );
-
-  const reply = store.getState().discussion.postedReply;
-  onSubmit(reply);
-}
-
-export const CommentEditor = (props) => {
-  const { onSubmit } = props;
-  return (
-    <DiscussionCommentEditor onSubmit={onSubmit} postMethod={postComment} />
+    <DiscussionCommentEditor
+      active={active}
+      getRef={containerRef}
+      onSubmit={onSubmit}
+      postMethod={postComment}
+      commentEditor={true}
+    />
   );
 };
 
 export const ReplyEditor = (props) => {
   const { commentId, onSubmit } = props;
-  return (
-    <DiscussionCommentEditor
-      onSubmit={onSubmit}
-      postMethod={postReply}
-      commentId={commentId}
-    />
-  );
-};
 
-const ReplyTextEditor = (props) => {
   const [reply, setReply] = useState(false);
   const [transition, setTransition] = useState(false);
+  const containerRef = useRef(null);
+
+  detectOutsideClick(containerRef);
 
   function detectOutsideClick(ref) {
     function handleClickOutside(event) {
@@ -148,9 +123,6 @@ const ReplyTextEditor = (props) => {
     setReply(true);
   }
 
-  const textEditorRef = useRef(null);
-  detectOutsideClick(textEditorRef);
-
   return (
     <div className={css(styles.actionBar, transition && styles.reveal)}>
       {!reply ? (
@@ -160,13 +132,51 @@ const ReplyTextEditor = (props) => {
           </div>
         </div>
       ) : (
-        <div ref={textEditorRef}>
-          <TextEditor canEdit={true} commentEditor={true} />
-        </div>
+        <DiscussionCommentEditor
+          active={true}
+          getRef={containerRef}
+          onSubmit={onSubmit}
+          postMethod={postReply}
+          commentId={commentId}
+          commentEditor={true}
+        />
       )}
     </div>
   );
 };
+
+async function postComment(props, text) {
+  const { dispatch, store, paperId, discussionThreadId, onSubmit } = props;
+
+  dispatch(DiscussionActions.postCommentPending());
+  await dispatch(
+    DiscussionActions.postComment(paperId, discussionThreadId, text)
+  );
+
+  const comment = store.getState().discussion.postedComment;
+  // TODO: Check for success first
+  onSubmit(comment);
+}
+
+async function postReply(props, text) {
+  const {
+    dispatch,
+    store,
+    paperId,
+    discussionThreadId,
+    commentId,
+    onSubmit,
+  } = props;
+
+  dispatch(DiscussionActions.postReplyPending());
+  await dispatch(
+    DiscussionActions.postReply(paperId, discussionThreadId, commentId, text)
+  );
+
+  const reply = store.getState().discussion.postedReply;
+  // TODO: Check for success first
+  onSubmit(reply);
+}
 
 const styles = StyleSheet.create({
   threadContainer: {
