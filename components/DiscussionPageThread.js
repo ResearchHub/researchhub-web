@@ -24,7 +24,7 @@ import icons from "~/config/themes/icons";
 import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
 
 const Thread = (props) => {
-  const { hostname, title, body, createdBy, date, score, vote } = props;
+  const { hostname, title, body, createdBy, date, vote } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
@@ -41,6 +41,7 @@ const Thread = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     vote && vote.voteType
   );
+  const [score, setScore] = useState(props.score);
 
   useEffect(() => {
     setSelectedVoteType(vote && vote.voteType);
@@ -59,15 +60,18 @@ const Thread = (props) => {
   }
 
   function updateWidgetUI() {
-    const voteResult = store.getState().discussion.voteResult;
+    const voteResult = store.getState().vote;
+    const success = voteResult.success;
     const vote = getNestedValue(voteResult, ["vote"], false);
 
-    if (vote) {
+    if (success) {
       const voteType = vote.voteType;
       if (voteType === UPVOTE) {
         setSelectedVoteType(UPVOTE);
+        setScore(score + 1);
       } else if (voteType === DOWNVOTE) {
         setSelectedVoteType(DOWNVOTE);
+        setScore(score - 1);
       }
     }
   }
