@@ -15,7 +15,12 @@ import DiscussionActions from "~/redux/discussion";
 
 import { UPVOTE, DOWNVOTE } from "../config/constants";
 import { discussionPageColors } from "~/config/themes/colors";
-import { createUsername, doesNotExist, getNestedValue } from "~/config/utils";
+import {
+  createUsername,
+  doesNotExist,
+  getCurrentUser,
+  getNestedValue,
+} from "~/config/utils";
 
 class DiscussionComment extends React.Component {
   state = {
@@ -24,6 +29,7 @@ class DiscussionComment extends React.Component {
     text: this.props.data.text,
     selectedVoteType: this.props.data.userVote.voteType,
     score: this.props.data.score,
+    createdBy: this.props.data.createdBy,
     username: createUsername(this.props.data),
     readOnly: true,
   };
@@ -40,6 +46,10 @@ class DiscussionComment extends React.Component {
       this.setState({ replies: this.props.data.replies });
     }
   }
+
+  createdByCurrentUser = () => {
+    return this.state.createdBy.id === this.props.currentUser.id;
+  };
 
   setReadOnly = (readOnly) => {
     this.setState({ readOnly });
@@ -173,7 +183,9 @@ class CommentClass extends DiscussionComment {
         {!this.state.showReplyBox
           ? this.renderReplyButton()
           : this.renderReplyBox()}
-        <EditAction onClick={this.setReadOnly} />
+        {this.createdByCurrentUser() && (
+          <EditAction onClick={this.setReadOnly} />
+        )}
         {this.renderReplies()}
       </div>
     );
@@ -226,11 +238,22 @@ class ReplyClass extends DiscussionComment {
   constructor(props) {
     super(props);
   }
+
+  renderAction = () => {
+    if (this.createdByCurrentUser()) {
+      return (
+        <div className={css(styles.actionBar)}>
+          <EditAction onClick={this.setReadOnly} />
+        </div>
+      );
+    }
+  };
 }
 
 const mapStateToProps = (state) => {
   return {
     voteResult: state.discussion.voteResult,
+    currentUser: getCurrentUser(state),
   };
 };
 
