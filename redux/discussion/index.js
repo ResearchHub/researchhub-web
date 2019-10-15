@@ -24,14 +24,11 @@ export function fetchThread(paperId, threadId) {
   };
 }
 
-export function updateThread(paperId, threadId, title, text) {
+export function updateThread(paperId, threadId, body) {
   return async (dispatch) => {
     const response = await fetch(
       API.THREAD(paperId, threadId),
-      API.PATCH_CONFIG({
-        title,
-        text,
-      })
+      API.PATCH_CONFIG(body)
     ).catch(utils.handleCatch);
 
     let action = actions.setUpdateThreadFailure();
