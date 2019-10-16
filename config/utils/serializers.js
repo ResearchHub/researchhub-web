@@ -3,7 +3,7 @@ import Plain from "slate-plain-serializer";
 
 import { getNestedValue } from "./index";
 
-const EditorValueError = new TypeError("Failed to convert to editor value");
+const EditorValueError = TypeError("Failed to convert to editor value");
 
 export function createUsername({ createdBy }) {
   const { firstName, lastName } = createdBy;
