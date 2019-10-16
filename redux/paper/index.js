@@ -29,7 +29,26 @@ export const PaperActions = {
         });
     };
   },
+  getUserVote: (paperId) => {
+    return async (dispatch) => {
+      const response = await fetch(
+        API.USER_VOTE(paperId),
+        API.GET_CONFIG()
+      ).catch(utils.handleCatch);
 
+      let action = actions.setUserVoteFailure();
+
+      if (!response.ok) {
+        const body = await response.json();
+        const vote = shims.vote(body);
+        action = actions.setUserVoteSuccess(vote);
+      } else {
+        utils.logFetchError(response);
+      }
+
+      return dispatch(action);
+    };
+  },
   postPaper: (body) => {
     return async (dispatch) => {
       const response = await fetch(

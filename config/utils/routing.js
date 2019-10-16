@@ -29,3 +29,24 @@ export function endsWithSlash(text) {
   const lastChar = text.charAt(text.length - 1);
   return lastChar === "/";
 }
+
+export function absoluteUrl(req, setLocalhost) {
+  /**
+   * https://github.com/jekrb/next-absolute-url/blob/master/index.js
+   * MIT Licensed
+   */
+  var protocol = "https:";
+  var host = req
+    ? req.headers["x-forwarded-host"] || req.headers["host"]
+    : window.location.host;
+  if (host.indexOf("localhost") > -1) {
+    if (setLocalhost) host = setLocalhost;
+    protocol = "http:";
+  }
+
+  return {
+    protocol: protocol,
+    host: host,
+    origin: protocol + "//" + host,
+  };
+}

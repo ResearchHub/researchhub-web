@@ -4,11 +4,19 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
 const ActionButton = (props) => {
-  let { icon, action } = props;
+  let { icon, iconNode, action } = props;
+
+  function renderIcon() {
+    if (icon) {
+      return <i className={icon} />;
+    } else if (iconNode) {
+      return iconNode;
+    }
+  }
 
   return (
     <div className={css(styles.actionButton)} onClick={action}>
-      <i className={icon} />
+      {renderIcon()}
     </div>
   );
 };
@@ -27,6 +35,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     display: "flex",
+    flexShrink: 0,
   },
 });
 
