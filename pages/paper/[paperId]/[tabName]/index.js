@@ -1,41 +1,110 @@
 import Router, { useRouter } from "next/router";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
+import { useEffect, useState } from "react";
+import { connect, useDispatch, useStore } from "react-redux";
 import moment from "moment";
 import Avatar from "react-avatar";
 
 // Components
-import PaperTabBar from "~/components/PaperTabBar";
-import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
-import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import PaperTab from "~/components/Paper/Tabs/PaperTab";
+import ActionButton from "~/components/ActionButton";
 import ComponentWrapper from "~/components/ComponentWrapper";
+import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
+import PaperTab from "~/components/Paper/Tabs/PaperTab";
+import PaperTabBar from "~/components/PaperTabBar";
+import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
+import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 import ActionButton from "~/components/ActionButton";
 import HubLabel from "~/components/Hub/HubLabel";
 
 import { PaperActions } from "~/redux/paper";
-
-import { getNestedValue } from "~/config/utils";
+import VoteActions from "~/redux/vote";
 
 // Config
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
+import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 
 const Paper = (props) => {
+  const dispatch = useDispatch();
+  const store = useStore();
   const router = useRouter();
-  const { paperId, tabName } = router.query;
-  let { paper } = props;
 
+  const [paper, setPaper] = useState(props.paper);
+  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
+  const [discussionThreads, setDiscussionThreads] = useState(
+    getDiscussionThreads(paper)
+  );
+  const [selectedVoteType, setSelectedVoteType] = useState(
+    getVoteType(paper.userVote)
+  );
+
+  const { hostname } = props;
+  const { paperId, tabName } = router.query;
+  const shareUrl = hostname + "/paper/" + paperId;
+
+  const paperTitle = getNestedValue(paper, ["title"], "");
   const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
-  const discussionThreads = getNestedValue(paper, ["discussion", "threads"]);
+
+  useEffect(() => {
+    async function refetchPaper() {
+      await dispatch(PaperActions.getPaper(paperId));
+      const refetchedPaper = store.getState().paper;
+
+      setPaper(refetchedPaper);
+      setSelectedVoteType(getVoteType(refetchedPaper.userVote));
+      setDiscussionThreads(getDiscussionThreads(refetchedPaper));
+    }
+    refetchPaper();
+  }, [props.isServer]);
+
+  function getDiscussionThreads(paper) {
+    return getNestedValue(paper, ["discussion", "threads"]);
+  }
+
+  async function upvote() {
+    props.dispatch(VoteActions.postUpvotePending());
+    await props.dispatch(VoteActions.postUpvote(paperId));
+    updateWidgetUI();
+  }
+
+  async function downvote() {
+    props.dispatch(VoteActions.postDownvotePending());
+    await props.dispatch(VoteActions.postDownvote(paperId));
+    updateWidgetUI();
+  }
+
+  function updateWidgetUI() {
+    const voteResult = store.getState().vote;
+    const success = voteResult.success;
+    const vote = getNestedValue(voteResult, ["vote"], false);
+
+    if (success) {
+      const voteType = vote.voteType;
+      if (voteType === UPVOTE) {
+        setSelectedVoteType(UPVOTE);
+        setScore(score + 1);
+      } else if (voteType === DOWNVOTE) {
+        setSelectedVoteType(DOWNVOTE);
+        setScore(score - 1);
+      }
+    }
+  }
 
   let renderTabContent = () => {
     switch (tabName) {
       case "summary":
         return <SummaryTab paperId={paperId} paper={paper} />;
       case "discussion":
-        return <DiscussionTab paperId={paperId} threads={discussionThreads} />;
+        return (
+          <DiscussionTab
+            hostname={hostname}
+            paperId={paperId}
+            threads={discussionThreads}
+          />
+        );
       case "full":
         return <PaperTab />;
       case "citations":
@@ -81,7 +150,12 @@ const Paper = (props) => {
       <ComponentWrapper>
         <div className={css(styles.header)}>
           <div className={css(styles.voting)}>
-            <VoteWidget />
+            <VoteWidget
+              score={score}
+              onUpvote={upvote}
+              onDownvote={downvote}
+              selected={selectedVoteType}
+            />
           </div>
           <div className={css(styles.topHeader)}>
             <div className={css(styles.title)}>{paper && paper.title}</div>
@@ -90,7 +164,12 @@ const Paper = (props) => {
                 icon={"fas fa-pencil"}
                 action={navigateToEditPaperInfo}
               />
-              <ActionButton icon={"fas fa-share-alt"} action={null} />
+              <ShareAction
+                iconNode={icons.shareAlt}
+                title={"Share this paper"}
+                subtitle={paperTitle}
+                url={shareUrl}
+              />
               <ActionButton icon={"fas fa-bookmark"} action={null} />
             </div>
           </div>
@@ -124,14 +203,13 @@ const Paper = (props) => {
   );
 };
 
-Paper.getInitialProps = async ({ store, isServer, query }) => {
-  let { paper } = store.getState();
+Paper.getInitialProps = async ({ isServer, req, store, query }) => {
+  const { host } = absoluteUrl(req);
+  const hostname = host;
 
-  if (!paper.id) {
-    await store.dispatch(PaperActions.getPaper(query.paperId));
-  }
+  await store.dispatch(PaperActions.getPaper(query.paperId));
 
-  return { isServer };
+  return { isServer, hostname };
 };
 
 const styles = StyleSheet.create({
@@ -207,6 +285,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   paper: state.paper,
+  vote: state.vote,
 });
 
 export default connect(mapStateToProps)(Paper);

@@ -1,6 +1,7 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
+import { doesNotExist } from "~/config/utils";
 
 const apiRoot = {
   production: "localhost:8000",
@@ -30,6 +31,12 @@ const routes = (BASE_URL) => {
     },
     POST_PAPER: () => {
       let url = BASE_URL + `paper/`;
+
+      return url;
+    },
+
+    PAPER_CHAIN: (paperId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
 
       return url;
     },
@@ -79,6 +86,16 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    THREAD_COMMENT_REPLY: (paperId, threadId, commentId, page) => {
+      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/${commentId}/reply/`;
+
+      if (typeof page === "number") {
+        url += `?page=${page}`;
+      }
+
+      return url;
+    },
+
     AUTHOR: ({ authorId, search, excludeIds }) => {
       let url = BASE_URL + `author/`;
 
@@ -115,7 +132,41 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+
+    USER_VOTE: (paperId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+
+      return url + "user_vote/";
+    },
+
+    UPVOTE: (paperId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+
+      return url + "upvote/";
+    },
+
+    DOWNVOTE: (paperId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+
+      return url + "downvote/";
+    },
   };
+
+  function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
+    let url = `${BASE_URL}paper/${paperId}/`;
+
+    if (!doesNotExist(threadId)) {
+      url += `discussion/${threadId}/`;
+      if (!doesNotExist(commentId)) {
+        url += `comment/${commentId}/`;
+        if (!doesNotExist(replyId)) {
+          url += `reply/${replyId}/`;
+        }
+      }
+    }
+
+    return url;
+  }
 };
 
 export default API({
