@@ -5,12 +5,33 @@ import { endsWithSlash } from "~/config/utils/routing";
 import ComponentWrapper from "../../ComponentWrapper";
 
 const DiscussionTab = (props) => {
-  const { threads } = props;
+  const { hostname, threads } = props;
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
   const formattedThreads = formatThreads(threads, basePath);
 
-  return <ComponentWrapper>{renderThreads(formattedThreads)}</ComponentWrapper>;
+  function renderThreads(threads) {
+    return (
+      threads &&
+      threads.map((t, i) => {
+        return (
+          <DiscussionThreadCard
+            key={t.key}
+            data={t.data}
+            hostname={hostname}
+            hoverEvents={true}
+            path={t.path}
+          />
+        );
+      })
+    );
+  }
+
+  return (
+    <ComponentWrapper>
+      {renderThreads(formattedThreads, hostname)}
+    </ComponentWrapper>
+  );
 };
 
 function formatBasePath(path) {
@@ -21,26 +42,16 @@ function formatBasePath(path) {
 }
 
 function formatThreads(threads, basePath) {
-  return threads.map((thread) => {
-    return {
-      key: thread.id,
-      data: thread,
-      path: basePath + thread.id,
-    };
-  });
-}
-
-function renderThreads(threads) {
-  return threads.map((t, i) => {
-    return (
-      <DiscussionThreadCard
-        key={t.key}
-        data={t.data}
-        path={t.path}
-        hoverEvents={true}
-      />
-    );
-  });
+  return (
+    threads &&
+    threads.map((thread) => {
+      return {
+        key: thread.id,
+        data: thread,
+        path: basePath + thread.id,
+      };
+    })
+  );
 }
 
 export default DiscussionTab;

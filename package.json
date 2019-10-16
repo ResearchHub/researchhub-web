@@ -8,7 +8,7 @@
     "test": "cypress run --project $PWD/tests"
   },
   "dependencies": {
-    "@quantfive/js-web-config": "^1.0.4",
+    "@quantfive/js-web-config": "latest",
     "@zeit/next-css": "^1.0.1",
     "aphrodite": "^2.4.0",
     "diff": "^4.0.1",
