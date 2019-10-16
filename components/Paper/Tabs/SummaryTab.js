@@ -27,12 +27,6 @@ const DraftEditor = dynamic(() => import("../../DraftEditor/DraftEditor"), {
 const PDFViewer = dynamic(import("../../Paper/Tabs/PaperTab"), { ssr: false });
 
 class SummaryTab extends React.Component {
-  static async getInitialProps({ store, isServer, query }) {
-    const { paper } = store.getState();
-
-    return { isServer, paper, query };
-  }
-
   constructor(props) {
     super(props);
 
@@ -141,7 +135,7 @@ class SummaryTab extends React.Component {
   // };
 
   render() {
-    let { paper, query } = this.props;
+    let { paper } = this.props;
     return (
       <ComponentWrapper>
         {paper.summary.summary ? (
@@ -335,10 +329,15 @@ var styles = StyleSheet.create({
   },
 });
 
+const mapStateToProps = (state) => ({
+  paper: state.paper,
+});
+
 const mapDispatchToProps = {
   getEditHistory: PaperActions.getEditHistory,
 };
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(SummaryTab);
