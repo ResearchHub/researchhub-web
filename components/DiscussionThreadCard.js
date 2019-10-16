@@ -1,12 +1,18 @@
 import { css, StyleSheet } from "aphrodite";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
+import { useDispatch, useStore } from "react-redux";
+
+import DiscussionActions from "~/redux/discussion";
 
 import DiscussionCard from "./DiscussionCard";
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
-import DiscussionThreadActionBar from "~/components/DiscussionThreadActionBar";
+import DiscussionThreadActionBar from "./DiscussionThreadActionBar";
+import { ClientLinkWrapper } from "./LinkWrapper";
 import VoteWidget from "./VoteWidget";
+
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
@@ -14,7 +20,12 @@ import { getNestedValue } from "~/config/utils";
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionThreadCard = (props) => {
-  const { path, hoverEvents } = props;
+  const dispatch = useDispatch();
+  const store = useStore();
+  const router = useRouter();
+  const { paperId } = router.query;
+
+  const { hostname, hoverEvents, path } = props;
 
   const data = getNestedValue(props, ["data"]);
 
@@ -22,33 +33,89 @@ const DiscussionThreadCard = (props) => {
   let title = "";
   let username = "";
   let commentCount = "";
+  let vote = null;
+  let threadId = null;
 
   if (data) {
+    threadId = data.id;
     commentCount = data.commentCount;
     date = data.createdDate;
     title = data.title;
     username = createUsername(data);
+    vote = data.userVote;
+  }
+
+  const [selectedVoteType, setSelectedVoteType] = useState(
+    vote && vote.voteType
+  );
+  const [score, setScore] = useState((data && data.score) || 0);
+
+  useEffect(() => {
+    setSelectedVoteType(data.userVote && data.userVote.voteType);
+  }, [data]);
+
+  async function upvote() {
+    dispatch(DiscussionActions.postUpvotePending());
+    await dispatch(DiscussionActions.postUpvote(paperId, threadId));
+    updateWidgetUI();
+  }
+
+  async function downvote() {
+    dispatch(DiscussionActions.postDownvotePending());
+    await dispatch(DiscussionActions.postDownvote(paperId, threadId));
+    updateWidgetUI();
+  }
+
+  function updateWidgetUI() {
+    const voteResult = store.getState().vote;
+    const success = voteResult.success;
+    const vote = getNestedValue(voteResult, ["vote"], false);
+
+    if (success) {
+      const voteType = vote.voteType;
+      if (voteType === UPVOTE) {
+        setSelectedVoteType(UPVOTE);
+        setScore(score + 1);
+      } else if (voteType === DOWNVOTE) {
+        setSelectedVoteType(DOWNVOTE);
+        setScore(score - 1);
+      }
+    }
   }
 
   return (
-    <span className={css(styles.discussionContainer)}>
-      <Link href={DYNAMIC_HREF} as={path}>
-        <a className={css(styles.link)}>
-          <DiscussionCard
-            top={
-              <Fragment>
-                <VoteWidget score={5} fontSize={"16px"} width={"44px"} />
-                <DiscussionPostMetadata username={username} date={date} />
-                <ReadButton threadPath={path} />
-              </Fragment>
-            }
-            info={<Title text={title} />}
-            action={<DiscussionThreadActionBar count={commentCount} />}
-            hoverEvents={hoverEvents && hoverEvents}
+    <div className={css(styles.discussionContainer)}>
+      <DiscussionCard
+        top={
+          <Fragment>
+            <VoteWidget
+              score={score}
+              fontSize={"16px"}
+              width={"44px"}
+              selected={selectedVoteType}
+              onUpvote={upvote}
+              onDownvote={downvote}
+            />
+            <DiscussionPostMetadata username={username} date={date} />
+            <ReadButton threadPath={path} />
+          </Fragment>
+        }
+        info={
+          <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={path}>
+            <Title text={title} />
+          </ClientLinkWrapper>
+        }
+        action={
+          <DiscussionThreadActionBar
+            hostname={hostname}
+            threadPath={path}
+            title={title}
+            count={commentCount}
           />
-        </a>
-      </Link>
-    </span>
+        }
+        hoverEvents={hoverEvents && hoverEvents}
+      />
+    </div>
   );
 };
 
@@ -81,17 +148,19 @@ function formatTitle(title) {
 const ReadButton = (props) => {
   const { threadPath } = props;
   return (
-    <Link href={DYNAMIC_HREF} as={threadPath}>
-      <a className={css(styles.readContainer)}>
-        <span className={css(styles.readLabel)}>Read</span>{" "}
-        <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
-      </a>
-    </Link>
+    <ClientLinkWrapper
+      dynamicHref={DYNAMIC_HREF}
+      path={threadPath}
+      styling={[styles.readContainer]}
+      id={"readLabel"}
+    >
+      <span className={css(styles.readLabel)}>Read</span>{" "}
+      <span className={css(styles.readArrow)}>{icons.chevronRight}</span>
+    </ClientLinkWrapper>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
   topContainer: {
     display: "flex",
     flexDirection: "row",

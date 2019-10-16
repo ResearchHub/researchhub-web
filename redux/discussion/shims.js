@@ -1,6 +1,4 @@
-import moment from "moment";
-
-import { getNestedValue } from "~/config/utils";
+import { transformDate, transformUser, transformVote } from "../utils";
 
 export const thread = (thread) => {
   return {
@@ -11,6 +9,8 @@ export const thread = (thread) => {
     createdBy: transformUser(thread.created_by),
     createdDate: transformDate(thread.created_date),
     isPublic: thread.is_public,
+    score: thread.score,
+    userVote: transformVote(thread.user_vote),
   };
 };
 
@@ -24,7 +24,7 @@ export const comments = (page) => {
   };
 };
 
-export const postCommentResponse = (comment) => {
+export const comment = (comment) => {
   return transformComment(comment);
 };
 
@@ -41,17 +41,45 @@ function transformComment(comment) {
     thread: comment.parent,
     createdBy: transformUser(comment.created_by),
     createdDate: comment.created_date,
+    score: comment.score,
+    userVote: transformVote(comment.user_vote),
+    replies: transformReplies(comment.replies),
+    replyCount: comment.reply_count,
   };
 }
 
-function transformDate(date) {
-  return moment(date);
-}
-
-function transformUser(user) {
+export const replies = (page) => {
   return {
-    id: getNestedValue(user, ["id"], null),
-    firstName: getNestedValue(user, ["first_name"], ""),
-    lastName: getNestedValue(user, ["last_name"], ""),
+    page: page.page,
+    count: page.count,
+    nextPage: page.next,
+    previousPage: page.previousPage,
+    replies: transformReplies(page.results),
+  };
+};
+
+export const reply = (reply) => {
+  return transformReply(reply);
+};
+
+function transformReplies(replies) {
+  return replies.map((reply) => {
+    return transformReply(reply);
+  });
+}
+
+function transformReply(reply) {
+  return {
+    id: reply.id,
+    text: reply.text,
+    comment: reply.parent,
+    createdBy: transformUser(reply.created_by),
+    createdDate: reply.created_date,
+    score: reply.score,
+    userVote: transformVote(reply.user_vote),
   };
 }
+
+export const vote = (vote) => {
+  return transformVote(vote);
+};

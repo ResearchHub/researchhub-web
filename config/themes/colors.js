@@ -11,6 +11,10 @@ const colors = {
   RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`,
 };
 
+export const formColors = {
+  MESSAGE: colors.BLACK(0.65),
+};
+
 export const paperTabColors = {
   FONT: colors.BLACK(0.5),
   HOVER_FONT: colors.BLACK(1),
@@ -25,6 +29,10 @@ export const voteWidgetColors = {
 
 export const discussionPageColors = {
   DIVIDER: `rgba(235, 235, 235, 1)`,
+};
+
+export const modalColors = {
+  SUBTITLE: colors.BLACK(0.65),
 };
 
 export default colors;
