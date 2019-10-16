@@ -16,11 +16,6 @@ import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 class PaperEditHistory extends React.Component {
-  static async getInitialProps({ store, isServer, query }) {
-    const { paper } = store.getState();
-
-    return { isServer, paper };
-  }
   constructor(props) {
     super(props);
 
@@ -141,13 +136,17 @@ var styles = StyleSheet.create({
   },
 });
 
+const mapStateToProps = (state) => ({
+  paper: state.paper,
+});
+
 const mapDispatchToProps = {
   getEditHistory: PaperActions.getEditHistory,
 };
 
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
   )(PaperEditHistory)
 );
