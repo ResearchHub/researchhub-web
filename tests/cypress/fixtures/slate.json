@@ -1,0 +1,71 @@
+{
+  "basic": {
+    "object": "value",
+    "document": {
+      "data": {},
+      "nodes": [
+        {
+          "data": {},
+          "type": "line",
+          "nodes": [
+            {
+              "text": "Hello computer",
+              "marks": [],
+              "object": "text"
+            }
+          ],
+          "object": "block"
+        }
+      ],
+      "object": "document"
+    }
+  },
+  "rich": {
+    "object": "value",
+    "document": {
+      "data": {},
+      "nodes": [
+        {
+          "data": {},
+          "type": "line",
+          "nodes": [
+            {
+              "text": "I am ",
+              "marks": [],
+              "object": "text"
+            },
+            {
+              "text": "bold",
+              "marks": [
+                {
+                  "data": {},
+                  "type": "bold",
+                  "object": "mark"
+                }
+              ],
+              "object": "text"
+            },
+            {
+              "text": " and ",
+              "marks": [],
+              "object": "text"
+            },
+            {
+              "text": "underlined",
+              "marks": [
+                {
+                  "data": {},
+                  "type": "underlined",
+                  "object": "mark"
+                }
+              ],
+              "object": "text"
+            }
+          ],
+          "object": "block"
+        }
+      ],
+      "object": "document"
+    }
+  }
+}

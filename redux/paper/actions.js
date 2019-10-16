@@ -75,3 +75,22 @@ export function setPostPaperSummarySuccess() {
     payload: { donePosting: true, success: true },
   };
 }
+
+export function setUserVotePending() {
+  return {
+    type: types.GET_PAPER_USER_VOTE_PENDING,
+    payload: { doneFetching: false },
+  };
+}
+export function setUserVoteFailure() {
+  return {
+    type: types.GET_PAPER_USER_VOTE_FAILURE,
+    payload: { doneFetching: true, success: false },
+  };
+}
+export function setUserVoteSuccess(vote) {
+  return {
+    type: types.GET_PAPER_USER_VOTE_SUCCESS,
+    payload: { doneFetching: true, success: true, vote },
+  };
+}

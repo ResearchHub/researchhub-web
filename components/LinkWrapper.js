@@ -1,0 +1,52 @@
+import { css, StyleSheet } from "aphrodite";
+import Link from "next/link";
+import PropTypes from "prop-types";
+
+export const ServerLinkWrapper = (props) => {
+  const { path, styling } = props;
+
+  const classNames = [styles.linkWrapperContainer];
+  if (styling) {
+    classNames.push(...styling);
+  }
+
+  return (
+    <a href={path} className={css(...classNames)}>
+      {props.children}
+    </a>
+  );
+};
+
+ServerLinkWrapper.propTypes = {
+  path: PropTypes.string,
+  styling: PropTypes.array,
+};
+
+export const ClientLinkWrapper = (props) => {
+  const { id, dynamicHref, path, styling } = props;
+
+  const classNames = [styles.linkWrapperContainer];
+  if (styling) {
+    classNames.push(...styling);
+  }
+
+  return (
+    <Link href={dynamicHref} as={path}>
+      <a id={id} className={css(...classNames)}>
+        {props.children}
+      </a>
+    </Link>
+  );
+};
+
+ClientLinkWrapper.propTypes = {
+  dynamicHref: PropTypes.string,
+  path: PropTypes.string,
+  styling: PropTypes.array,
+};
+
+const styles = StyleSheet.create({
+  linkWrapperContainer: {
+    textDecoration: "none",
+  },
+});

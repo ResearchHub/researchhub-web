@@ -1,28 +1,25 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 
 // NPM Components
-import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import Plain from "slate-plain-serializer";
 import { connect } from "react-redux";
 
 // Components
 import RichTextEditor from "./RichTextEditor";
+
 import { ModalActions } from "../../redux/modals";
+
+import { convertToEditorValue } from "~/config/utils";
 
 const TextEditor = (props) => {
   const {
-    canEdit,
     canCancel,
     canSubmit,
-    cancelButtonStyles,
-    submitButtonStyles,
-    cancelButtonText,
-    submitButtonText,
+    classNames,
+    clearOnSubmit,
     onCancel,
     onSubmit,
     initialValue,
-    placeholder,
     readOnly,
     isLoggedIn,
     commentEditor,
@@ -30,9 +27,10 @@ const TextEditor = (props) => {
     passedValue,
     onChange,
     hideButton,
+    placeholder,
   } = props;
 
-  const [value, setValue] = useState(initialValue);
+  const [value, setValue] = useState(convertToEditorValue(initialValue));
   const [editorRef, setEditorRef] = useState(null);
 
   function handleChange(value) {
@@ -44,7 +42,7 @@ const TextEditor = (props) => {
     onCancel && onCancel();
   }
 
-  function submit() {
+  async function submit() {
     let success = false;
     if (!isLoggedIn) {
       // TODO: pop login modal
@@ -53,8 +51,8 @@ const TextEditor = (props) => {
         "Please login with Google to submit a summary revision."
       );
     } else {
-      onSubmit && (success = onSubmit(JSON.stringify(value.toJSON())));
-      if (success) {
+      onSubmit && (success = await onSubmit(value.toJSON()));
+      if (success && clearOnSubmit !== false) {
         editorRef.clear();
       }
     }
@@ -73,6 +71,7 @@ const TextEditor = (props) => {
       commentEditor={commentEditor}
       value={passedValue ? passedValue : value}
       hideButton={hideButton}
+      classNames={classNames}
       placeholder={placeholder && placeholder}
     />
   );
@@ -93,12 +92,6 @@ TextEditor.propTypes = {
   readOnly: PropTypes.bool,
   hideButton: PropTypes.bool,
 };
-
-const styles = StyleSheet.create({
-  buttonContainer: {
-    display: "flex",
-  },
-});
 
 const mapStateToProps = (state) => ({
   isLoggedIn: state.auth.isLoggedIn,
