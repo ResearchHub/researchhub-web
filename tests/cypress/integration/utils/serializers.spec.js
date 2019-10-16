@@ -76,9 +76,9 @@ describe("Serializer Utils", function() {
       expect(result).to.equal(0);
     });
 
-    it("throws a TypeError given undefined or null", () => {
-      expect(() => convertToEditorValue(undefined)).to.throw(TypeError);
-      expect(() => convertToEditorValue(null)).to.throw(TypeError);
+    it("returns undefined given undefined or null", () => {
+      expect(convertToEditorValue(undefined)).to.equal(undefined);
+      expect(convertToEditorValue(null)).to.equal(undefined);
     });
 
   });
