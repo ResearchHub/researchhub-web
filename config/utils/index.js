@@ -1,6 +1,7 @@
 export * from "./dates";
 export * from "./network";
 export * from "./routing";
+export * from "./serializers";
 export * from "./validation";
 
 export function getNestedValue(root, nodes, defaultValue = null) {
