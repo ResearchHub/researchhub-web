@@ -15,7 +15,6 @@ import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
-import ActionButton from "~/components/ActionButton";
 import HubLabel from "~/components/Hub/HubLabel";
 
 import { PaperActions } from "~/redux/paper";
