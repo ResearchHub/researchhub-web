@@ -36,7 +36,7 @@ export default class HubsList extends React.Component {
     return this.state.hubs.map((hub, i) => {
       let { name, id } = hub;
       return (
-        <Link>
+        <Link href={"/hub/[hubname]/"} as={`/hub/${name}/`}>
           <div key={`${hub.id}-${i}`} className={css(styles.hubEntry)}>
             {name}
           </div>

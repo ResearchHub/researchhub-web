@@ -7,13 +7,11 @@ import colors from "~/config/themes/colors";
 const HubTag = ({ tag, overrideStyle }) => {
   let { name, link } = tag;
   return (
-    // <Link
-    //   href={link && link}
-    // >
-    <div className={css(styles.tag, overrideStyle && overrideStyle)}>
-      <span className={css(styles.label)}>{name && name}</span>
-    </div>
-    // </Link>
+    <Link href={"/hub/[hubname]/"} as={`/hub/${name}/`}>
+      <div className={css(styles.tag, overrideStyle && overrideStyle)}>
+        <span className={css(styles.label)}>{name && name}</span>
+      </div>
+    </Link>
   );
 };
 
