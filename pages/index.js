@@ -198,6 +198,7 @@ var styles = StyleSheet.create({
   text: {
     color: "#FFF",
     fontFamily: "Roboto",
+    cursor: "default",
   },
   titleContainer: {
     alignItems: "flex-start",
