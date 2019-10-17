@@ -15,6 +15,7 @@ import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
+import HubLabel from "~/components/Hub/HubLabel";
 
 import { PaperActions } from "~/redux/paper";
 import VoteActions from "~/redux/vote";
@@ -132,9 +133,7 @@ const Paper = (props) => {
     let hubs =
       paper &&
       paper.hubs.map((hub, index) => {
-        return (
-          <div className={css(styles.hubTag)}>{hub.name.toUpperCase()}</div>
-        );
+        return <HubLabel hub={hub} />;
       });
     return hubs;
   }
