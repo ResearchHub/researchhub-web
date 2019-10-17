@@ -15,15 +15,24 @@ import Navbar from "~/components/Navbar";
 import Base from "./Base";
 
 class MyApp extends App {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      keyInt: 0,
+    };
+  }
+
   render() {
     const { Component, pageProps, store } = this.props;
     const keygen = () => {
-      let precision = 10000000000000000;
-      let random1 = Math.floor(Math.random() * precision);
-      let random2 = Math.floor(Math.random() * precision);
-      let rawKey = random1.toString(36) + random2.toString(36);
-      let key = rawKey.substring(0, 19);
-      return key;
+      let { keyInt } = this.state;
+      let keyString = `${Date.now().toString()}_${keyInt}`;
+      this.setState({
+        keyInt: keyInt + 1,
+      });
+
+      return keyString;
     };
     KeyUtils.setGenerator(keygen);
     return (
