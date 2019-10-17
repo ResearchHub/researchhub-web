@@ -60,14 +60,14 @@ const TextEditor = (props) => {
     }
   }
 
-  function setRef(editor) {
-    setEditorRef(editor);
+  function setInternalRef(editor) {
     props.setRef && props.setRef(editor);
   }
 
   return (
     <RichTextEditor
-      setRef={setRef}
+      setRef={setInternalRef}
+      ref={setEditorRef}
       readOnly={readOnly || false}
       onChange={handleChange}
       initialValue={passedValue ? passedValue : value}
