@@ -21,6 +21,36 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 
+const filterOptions = [
+  {
+    value: "top_rated",
+    label: "Top Rated",
+  },
+  {
+    value: "newest",
+    label: "Newest",
+  },
+  {
+    value: "most_discussed",
+    label: "Most Discussed",
+  },
+];
+
+const filterScope = [
+  {
+    value: "year",
+    label: "This Year",
+  },
+  {
+    value: "month",
+    label: "This Month",
+  },
+  {
+    value: "day",
+    label: "Today",
+  },
+];
+
 class Index extends React.Component {
   constructor(props) {
     super(props);
@@ -28,6 +58,8 @@ class Index extends React.Component {
       page: 0,
       count: 0,
       papers: [],
+      filterBy: {},
+      scope: {},
     };
   }
 
@@ -108,10 +140,14 @@ class Index extends React.Component {
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
+                  options={filterOptions}
+                  value={filterOptions[0]}
                   containerStyle={styles.dropDown}
                   inputStyle={{ height: "100%" }}
                 />
                 <FormSelect
+                  options={filterScope}
+                  value={filterScope[0]}
                   containerStyle={styles.dropDown}
                   inputStyle={{ height: "100%" }}
                 />
@@ -125,8 +161,6 @@ class Index extends React.Component {
                 }}
                 hasMore={this.state.count > this.state.papers.length}
                 loader={<Loader loading={true} />}
-                // useWindow={false}
-                // getScrollParent={() => this.scrollParentRef}
               >
                 {this.state.papers.map((paper, i) => (
                   <PaperEntryCard
@@ -136,7 +170,6 @@ class Index extends React.Component {
                   />
                 ))}
               </InfiniteScroll>
-              {/* <div className={css(styles.blur)} /> */}
             </div>
           </div>
         </div>
