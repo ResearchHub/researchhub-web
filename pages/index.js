@@ -1,11 +1,65 @@
 import Link from "next/link";
 import Router from "next/router";
-
-import Button from "../components/Form/Button";
-
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import { GoogleLogin, GoogleLogout } from "react-google-login";
+
+// Component
+import Button from "../components/Form/Button";
+import HubsList from "~/components/Hubs/HubsList";
+import FormSelect from "~/components/Form/FormSelect";
+import InfiniteScroll from "react-infinite-scroller";
+import PaperEntryCard from "../components/Hubs/PaperEntryCard";
+import Loader from "~/components/Loader/Loader";
+
+// Redux
+import { ModalActions } from "~/redux/modals";
+import { AuthActions } from "~/redux/auth";
+
+// Config
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import colors from "~/config/themes/colors";
 
 class Index extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      page: 0,
+      count: 0,
+      papers: [],
+    };
+  }
+
+  componentDidMount() {
+    this.fetchPapers(1);
+  }
+
+  fetchPapers = (page) => {
+    return fetch(API.PAPER({ page }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        this.setState({
+          count: res.count,
+          page: page,
+          papers: [...this.state.papers, ...res.results],
+          next: res.next,
+        });
+      });
+  };
+
+  responseGoogle = (response) => {
+    //TODO: do something after google oauth api responds
+    let { googleLogin, getUser } = this.props;
+    response["access_token"] = response["accessToken"];
+    googleLogin(response).then((_) => {
+      getUser().then((_) => {
+        // this.closeModal();
+      });
+    });
+  };
+
   render() {
     return (
       <div className={css(styles.content, styles.column)}>
@@ -23,13 +77,67 @@ class Index extends React.Component {
               reproducability, and funding of scientic research.{" "}
               <span className={css(styles.readMore)}>Read more</span>
             </div>
-            <Button
-              // onClick={renderProps.onClick}
-              customButtonStyle={styles.button}
-              icon={"/static/icons/google.png"}
-              customIconStyle={styles.iconStyle}
-              label={"Log in with Google"}
+            <GoogleLogin
+              clientId={
+                "192509748493-amjlt30mbpo9lq5gppn7bfd5c52i0ioe.apps.googleusercontent.com"
+              }
+              onSuccess={this.responseGoogle}
+              onFailure={this.responseGoogle}
+              cookiePolicy={"single_host_origin"}
+              render={(renderProps) => (
+                <Button
+                  disabled={renderProps.disabled}
+                  onClick={renderProps.onClick}
+                  customButtonStyle={styles.button}
+                  icon={"/static/icons/google.png"}
+                  customIconStyle={styles.iconStyle}
+                  label={"Log in with Google"}
+                />
+              )}
             />
+          </div>
+        </div>
+        <div className={css(styles.row, styles.body)}>
+          <div className={css(styles.sidebar, styles.column)}>
+            <HubsList />
+          </div>
+          <div className={css(styles.mainFeed, styles.column)}>
+            <div className={css(styles.topbar, styles.row)}>
+              <div className={css(styles.text, styles.feedTitle)}>
+                Top Papers on Research Hub
+              </div>
+              <div className={css(styles.row, styles.inputs)}>
+                <FormSelect
+                  containerStyle={styles.dropDown}
+                  inputStyle={{ height: "100%" }}
+                />
+                <FormSelect
+                  containerStyle={styles.dropDown}
+                  inputStyle={{ height: "100%" }}
+                />
+              </div>
+            </div>
+            <div className={css(styles.infiniteScroll)}>
+              <InfiniteScroll
+                pageStart={this.state.page}
+                loadMore={(count) => {
+                  this.fetchPapers(count + 1);
+                }}
+                hasMore={this.state.count > this.state.papers.length}
+                loader={<Loader loading={true} />}
+                // useWindow={false}
+                // getScrollParent={() => this.scrollParentRef}
+              >
+                {this.state.papers.map((paper, i) => (
+                  <PaperEntryCard
+                    key={`${paper.id}-${i}`}
+                    paper={paper}
+                    index={i}
+                  />
+                ))}
+              </InfiniteScroll>
+              {/* <div className={css(styles.blur)} /> */}
+            </div>
           </div>
         </div>
       </div>
@@ -38,7 +146,10 @@ class Index extends React.Component {
 }
 
 var styles = StyleSheet.create({
-  content: {},
+  content: {
+    backgroundColor: "#FFF",
+    // paddingBottom: 50
+  },
   column: {
     display: "flex",
     flexDirection: "column",
@@ -49,6 +160,7 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: "#FFF",
   },
   text: {
     color: "#FFF",
@@ -90,6 +202,19 @@ var styles = StyleSheet.create({
     fontSize: 50,
     fontWeight: 400,
   },
+  body: {
+    minHeight: 1348,
+    backgroundColor: "#FFF",
+    width: "100%",
+    alignItems: "flex-start",
+  },
+  sidebar: {
+    width: "20%",
+    position: "relative",
+    position: "sticky",
+    top: 0,
+    backgroundColor: "#FFF",
+  },
   subtext: {
     whiteSpace: "initial",
     width: 670,
@@ -106,6 +231,71 @@ var styles = StyleSheet.create({
     height: 33,
     width: 33,
   },
+  /**
+   * MAIN FEED STYLES
+   */
+  mainFeed: {
+    height: "100%",
+    width: "80%",
+    backgroundColor: "#FFF",
+    borderLeft: "1px solid #ededed",
+  },
+  feedTitle: {
+    color: "#000",
+    fontWeight: "400",
+    fontSize: 33,
+  },
+  topbar: {
+    paddingTop: 30,
+    width: "calc(100% - 140px)",
+    position: "sticky",
+    backgroundColor: "#FFF",
+    paddingLeft: 70,
+    paddingRight: 70,
+    top: 0,
+    zIndex: 2,
+  },
+  dropDown: {
+    width: 248,
+    height: 45,
+  },
+  inputs: {
+    width: 516,
+  },
+  /**
+   * INFINITE SCROLL
+   */
+  infiniteScroll: {
+    width: "calc(100% - 140px)",
+    backgroundColor: "#FFF",
+    paddingLeft: 70,
+    paddingRight: 70,
+    marginBottom: 20,
+  },
+  blur: {
+    height: 30,
+    marginTop: 10,
+    backgroundColor: colors.BLUE(0.2),
+    width: "100%",
+    "-webkit-filter": "blur(6px)",
+    "-moz-filter": "blur(6px)",
+    "-ms-filter": "blur(6px)",
+    "-o-filter": "blur(6px)",
+    filter: "blur(6px)",
+  },
 });
 
-export default Index;
+const mapStateToProps = (state) => ({
+  modals: state.modals,
+  auth: state.auth,
+});
+
+const mapDispatchToProps = {
+  googleLogin: AuthActions.googleLogin,
+  getUser: AuthActions.getUser,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Index);
