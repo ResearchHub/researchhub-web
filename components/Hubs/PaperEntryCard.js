@@ -26,7 +26,8 @@ const PaperEntryCard = ({ paper, index }) => {
     title,
     summary,
   } = paper;
-  summary.summmary && console.log("summary", summary);
+
+  console.log("summary", summary);
   function convertDate() {
     let dateArr = paper_publish_date.split("-");
     dateArr[1] = convertNumToMonth[dateArr[1]];
@@ -52,7 +53,11 @@ const PaperEntryCard = ({ paper, index }) => {
           </div>
           <div className={css(styles.summary, styles.text)}>
             {/* <TextEditor readOnly={true} /> */}
-            {/* Carbonic anhydrase IX (CAIX) is a membrane spanning protein involved in the enzymatic regulation of tumoracid-base balance. CAIX has been shown to be elevated in a number of hypoxic tumor types. The purpose of this study was to determine the efficiency of intact and IgG fragments of cG250. */}
+            Carbonic anhydrase IX (CAIX) is a membrane spanning protein involved
+            in the enzymatic regulation of tumoracid-base balance. CAIX has been
+            shown to be elevated in a number of hypoxic tumor types. The purpose
+            of this study was to determine the efficiency of intact and IgG
+            fragments of cG250.
           </div>
           <div className={css(styles.bottomBar)}>
             <div className={css(styles.row)}>
@@ -73,15 +78,20 @@ const PaperEntryCard = ({ paper, index }) => {
                     />
                   ))}
               </span>
-              <div className={css(styles.discussion)}>
-                <span className={css(styles.icon)} id={"discIcon"}>
-                  {icons.chat}
-                </span>
-                <span className={css(styles.dicussionCount)} id={"discCount"}>
-                  {`${discussion.count}`}{" "}
-                  {discussion.count === 1 ? "discussion" : "discussions"}
-                </span>
-              </div>
+              <Link
+                href={"/paper/[paperId]/[tabName]/"}
+                as={`/paper/${id}/discussion/`}
+              >
+                <div className={css(styles.discussion)}>
+                  <span className={css(styles.icon)} id={"discIcon"}>
+                    {icons.chat}
+                  </span>
+                  <span className={css(styles.dicussionCount)} id={"discCount"}>
+                    {`${discussion.count}`}{" "}
+                    {discussion.count === 1 ? "discussion" : "discussions"}
+                  </span>
+                </div>
+              </Link>
             </div>
             <div className={css(styles.tags, styles.right)}>
               {hubs.length > 0 && hubs.map((tag) => <HubTag tag={tag} />)}
