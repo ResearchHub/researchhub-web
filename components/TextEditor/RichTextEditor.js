@@ -2,10 +2,11 @@ import React from "react";
 
 // NPM Components
 import { Editor } from "slate-react";
-import { Value } from "slate";
+import { Value, Point, Decoration } from "slate";
 import Plain from "slate-plain-serializer";
 import { css, StyleSheet } from "aphrodite";
 import { isKeyHotkey } from "is-hotkey";
+import Sticky from "react-stickynode";
 
 // Components
 import { Button, Icon, ToolBar } from "./ToolBar";
@@ -17,6 +18,8 @@ import "./stylesheets/RichTextEditor.css";
 // Scaffold
 import summaryScaffold from "./summaryScaffold.json";
 import colors from "../../config/themes/colors";
+
+const Diff = require("diff");
 
 const summaryScaffoldInitialValue = Value.fromJSON(summaryScaffold);
 const commentInitialValue = Value.fromJSON({
@@ -69,14 +72,17 @@ class RichTextEditor extends React.Component {
    *
    * @type {Object}
    */
+  constructor(props) {
+    super(props);
 
-  state = {
-    value: this.props.initialValue
-      ? this.props.initialValue
-      : this.props.commentEditor
-      ? commentInitialValue
-      : summaryScaffoldInitialValue,
-  };
+    this.state = {
+      value: this.props.initialValue
+        ? this.props.initialValue
+        : this.props.commentEditor
+        ? commentInitialValue
+        : summaryScaffoldInitialValue,
+    };
+  }
 
   componentDidUpdate(prevProps) {
     if (
@@ -84,6 +90,12 @@ class RichTextEditor extends React.Component {
       this.props.submittedSuccess !== prevProps.submittedSuccess
     ) {
       this.clear();
+    }
+
+    if (prevProps.value !== this.props.value) {
+      this.setState({
+        value: this.props.value,
+      });
     }
   }
 
@@ -123,6 +135,7 @@ class RichTextEditor extends React.Component {
    */
 
   ref = (editor) => {
+    this.props.setRef(editor);
     this.editor = editor;
   };
 
@@ -150,56 +163,68 @@ class RichTextEditor extends React.Component {
               onKeyDown={this.onKeyDown}
               renderBlock={this.renderBlock}
               renderMark={this.renderMark}
+              // decorateNode={this.decorateNode}
+              // renderDecoration={this.renderDecoration}
             />
             {!this.props.readOnly && (
-              <ToolBar
-                cancel={this.props.cancel}
-                submit={this.props.submit}
-                hideButton={this.props.hideButton}
-              >
-                {this.renderMarkButton("bold", textEditorIcons.bold, true)}
-                {this.renderMarkButton("italic", textEditorIcons.italic)}
-                {this.renderMarkButton("underlined", textEditorIcons.underline)}
-                {this.renderMarkButton("code", textEditorIcons.code)}
-                {this.renderBlockButton("heading-one", textEditorIcons.h1)}
-                {this.renderBlockButton("heading-two", textEditorIcons.h2)}
-                {this.renderBlockButton("block-quote", textEditorIcons.quote)}
-                {this.renderBlockButton(
-                  "numbered-list",
-                  textEditorIcons.numberedList
-                )}
-                {this.renderBlockButton(
-                  "bulleted-list",
-                  textEditorIcons.bulletedList
-                )}
-              </ToolBar>
+              <Sticky innerZ={100}>
+                <ToolBar
+                  cancel={this.props.cancel}
+                  submit={this.props.submit}
+                  hideButton={this.props.hideButton}
+                >
+                  {this.renderMarkButton("bold", textEditorIcons.bold, true)}
+                  {this.renderMarkButton("italic", textEditorIcons.italic)}
+                  {this.renderMarkButton(
+                    "underlined",
+                    textEditorIcons.underline
+                  )}
+                  {this.renderMarkButton("code", textEditorIcons.code)}
+                  {this.renderBlockButton("heading-one", textEditorIcons.h1)}
+                  {this.renderBlockButton("heading-two", textEditorIcons.h2)}
+                  {this.renderBlockButton("block-quote", textEditorIcons.quote)}
+                  {this.renderBlockButton(
+                    "numbered-list",
+                    textEditorIcons.numberedList
+                  )}
+                  {this.renderBlockButton(
+                    "bulleted-list",
+                    textEditorIcons.bulletedList
+                  )}
+                </ToolBar>
+              </Sticky>
             )}
           </div>
         ) : (
           <div className={css(styles.summaryEditor)}>
             {!this.props.readOnly && (
-              <ToolBar
-                cancel={this.props.cancel}
-                submit={this.props.submit}
-                summaryEditor={true}
-                hideButton={this.props.hideButton}
-              >
-                {this.renderMarkButton("bold", textEditorIcons.bold, true)}
-                {this.renderMarkButton("italic", textEditorIcons.italic)}
-                {this.renderMarkButton("underlined", textEditorIcons.underline)}
-                {this.renderMarkButton("code", textEditorIcons.code)}
-                {this.renderBlockButton("heading-one", textEditorIcons.h1)}
-                {this.renderBlockButton("heading-two", textEditorIcons.h2)}
-                {this.renderBlockButton("block-quote", textEditorIcons.quote)}
-                {this.renderBlockButton(
-                  "numbered-list",
-                  textEditorIcons.numberedList
-                )}
-                {this.renderBlockButton(
-                  "bulleted-list",
-                  textEditorIcons.bulletedList
-                )}
-              </ToolBar>
+              <Sticky innerZ={100}>
+                <ToolBar
+                  cancel={this.props.cancel}
+                  submit={this.props.submit}
+                  summaryEditor={true}
+                  hideButton={this.props.hideButton}
+                >
+                  {this.renderMarkButton("bold", textEditorIcons.bold, true)}
+                  {this.renderMarkButton("italic", textEditorIcons.italic)}
+                  {this.renderMarkButton(
+                    "underlined",
+                    textEditorIcons.underline
+                  )}
+                  {this.renderMarkButton("code", textEditorIcons.code)}
+                  {this.renderBlockButton("heading-one", textEditorIcons.h1)}
+                  {this.renderBlockButton("heading-two", textEditorIcons.h2)}
+                  {this.renderBlockButton("block-quote", textEditorIcons.quote)}
+                  {this.renderBlockButton(
+                    "numbered-list",
+                    textEditorIcons.numberedList
+                  )}
+                  {this.renderBlockButton(
+                    "bulleted-list",
+                    textEditorIcons.bulletedList
+                  )}
+                </ToolBar>
+              </Sticky>
             )}
             <Editor
               readOnly={this.props.readOnly}
@@ -214,6 +239,8 @@ class RichTextEditor extends React.Component {
               onKeyDown={this.onKeyDown}
               renderBlock={this.renderBlock}
               renderMark={this.renderMark}
+              // decorateNode={this.decorateNode}
+              // renderDecoration={this.renderDecoration}
             />
           </div>
         )}
@@ -242,6 +269,83 @@ class RichTextEditor extends React.Component {
         <Icon>{icon}</Icon>
       </Button>
     );
+  };
+
+  /**
+   * render decorations for draft editor to show diffing
+   * @return {[type]} [description]
+   */
+  renderDecoration = (props, editor, next) => {
+    const { children, mark, attributes } = props;
+    switch (mark.type) {
+      case "added":
+        return (
+          <span {...attributes} style={{ color: "green" }}>
+            {children}
+          </span>
+        );
+      case "removed":
+        return (
+          <span {...attributes} style={{ color: "red" }}>
+            {children}
+          </span>
+        );
+      default:
+        return next();
+    }
+  };
+
+  /**
+   * decorate a note
+   * @return {[type]} [description]
+   */
+  decorateNode = (props, editor, next) => {
+    if (
+      !this.props.showDiff ||
+      (props.object === "document" && props.text === "") ||
+      !this.props.previousVersion
+    ) {
+      return [];
+    }
+
+    let decorations = [];
+
+    if (props.object === "document") {
+      let key = props.key;
+      let prevNode = this.props.previousVersion.document.getNode(key);
+      let diffJSON = Diff.diffWords(prevNode.text, props.text);
+      if (diffJSON.length > 1) {
+        let after = 0;
+        for (let i = 0; i < diffJSON.length; i++) {
+          let diffValue = diffJSON[i].value;
+          let start = props.text.indexOf(diffValue, after);
+          let end = diffValue.length;
+          let anchor = Point.create({
+            key: key,
+            path: [],
+            offset: start,
+          });
+          let focus = Point.create({
+            key: key,
+            path: [],
+            offset: end,
+          });
+
+          if (diffJSON[i].added) {
+            let test = Decoration;
+            let decoration = Decoration.create({
+              type: "added",
+              anchor,
+              focus,
+              mark: "added",
+            });
+            decorations.push(decoration);
+          }
+          let after = end;
+        }
+      }
+    }
+    return decorations;
   };
 
   /**
@@ -285,7 +389,6 @@ class RichTextEditor extends React.Component {
 
   renderBlock = (props, editor, next) => {
     const { attributes, children, node } = props;
-
     switch (node.type) {
       case "block-quote":
         return <blockquote {...attributes}>{children}</blockquote>;
@@ -313,7 +416,6 @@ class RichTextEditor extends React.Component {
 
   renderMark = (props, editor, next) => {
     const { children, mark, attributes } = props;
-
     switch (mark.type) {
       case "bold":
         return <strong {...attributes}>{children}</strong>;
@@ -323,6 +425,18 @@ class RichTextEditor extends React.Component {
         return <em {...attributes}>{children}</em>;
       case "underlined":
         return <u {...attributes}>{children}</u>;
+      case "added":
+        return (
+          <span {...attributes} className={css(styles.added)}>
+            {children}
+          </span>
+        );
+      case "removed":
+        return (
+          <s {...attributes} className={css(styles.removed)}>
+            {children}
+          </s>
+        );
       default:
         return next();
     }
@@ -451,7 +565,7 @@ const styles = StyleSheet.create({
     minHeight: 122,
   },
   comment: {
-    padding: "0px 16px 16px 0px",
+    padding: "16px 16px 16px 0px",
   },
   button: {
     width: 180,
@@ -474,6 +588,14 @@ const styles = StyleSheet.create({
   submit: {
     background: colors.PURPLE(),
     color: "#fff",
+  },
+  added: {
+    background: "rgba(19, 145, 26, .2)",
+    color: "rgba(19, 145, 26)",
+  },
+  removed: {
+    background: "rgba(173, 34, 21, .2)",
+    color: "rgb(173, 34, 21)",
   },
 });
 

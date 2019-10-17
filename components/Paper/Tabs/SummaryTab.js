@@ -1,14 +1,19 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import Router, { withRouter } from "next/router";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { EditorState, convertFromRaw } from "draft-js";
 import dynamic from "next/dynamic";
 import { Value } from "slate";
+import moment from "moment";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import TextEditor from "~/components/TextEditor";
+
+// Redux
+import { PaperActions } from "~/redux/paper";
 
 // Config
 import API from "../../../config/api";
@@ -137,7 +142,12 @@ class SummaryTab extends React.Component {
           <div className={css(styles.container)}>
             {this.state.readOnly ? (
               <div className={css(styles.summaryActions)}>
-                <div className={css(styles.action)}>View Edit History</div>
+                <Link
+                  href={"/paper/[paperId]/[tabName]/edits"}
+                  as={`/paper/${paper.id}/summary/edits`}
+                >
+                  <div className={css(styles.action)}>View Edit History</div>
+                </Link>
                 <div className={css(styles.action)} onClick={this.edit}>
                   <div className={css(styles.pencilIcon)}>
                     <i className="fas fa-pencil"></i>
@@ -287,6 +297,47 @@ var styles = StyleSheet.create({
   pencilIcon: {
     marginRight: 5,
   },
+  draftContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+  },
+  editHistoryContainer: {
+    position: "absolute",
+    right: -280,
+    background: "#F9F9FC",
+  },
+  selectedEdit: {
+    background: "#F0F1F7",
+  },
+  editHistoryCard: {
+    width: 250,
+    padding: "5px 10px",
+    cursor: "pointer",
+  },
+  date: {
+    fontSize: 14,
+    fontWeight: 500,
+  },
+  user: {
+    fontSize: 12,
+    opacity: 0.5,
+  },
+  revisionTitle: {
+    padding: 10,
+  },
 });
 
-export default withRouter(SummaryTab);
+const mapStateToProps = (state) => ({
+  paper: state.paper,
+});
+
+const mapDispatchToProps = {
+  getEditHistory: PaperActions.getEditHistory,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SummaryTab);
