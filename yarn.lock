@@ -1825,7 +1825,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.5:
+classnames@^2.0.0, classnames@^2.2.5:
   version "2.2.6"
   resolved "https://registry.npmjs.org/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -2390,6 +2390,11 @@ devalue@2.0.0:
   resolved "https://registry.npmjs.org/devalue/-/devalue-2.0.0.tgz#2afa0b7c1bb35bebbef792498150663fdcd33c68"
   integrity sha512-6H2FBD5DPnQS75UWJtQjoVeKZlmXoa765UgYS5RQnx6Ay9LUhUld0w1/D6cYdrY+wnu6XQNlpEBfnJUZK0YyPQ==
 
+diff@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.npmjs.org/diff/-/diff-4.0.1.tgz#0c667cb467ebbb5cea7f14f135cc2dba7780a8ff"
+  integrity sha512-s2+XdvhPCOF01LRQBC8hf4vhbVmI2CGS5aZnxLJlT5FtdhPCDFq80q++zK2KlrVorVDdL5BOGZ/VfLrVtYNF+Q==
+
 diffie-hellman@^5.0.0:
   version "5.0.3"
   resolved "https://registry.npmjs.org/diffie-hellman/-/diffie-hellman-5.0.3.tgz#40e8ee98f55a2149607146921c63e1ae5f3d2875"
@@ -2584,6 +2589,11 @@ etag@1.8.1, etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
+
+eventemitter3@^3.0.0:
+  version "3.1.2"
+  resolved "https://registry.npmjs.org/eventemitter3/-/eventemitter3-3.1.2.tgz#2d3d48f9c346698fce83a85d7d664e98535df6e7"
+  integrity sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==
 
 events@^3.0.0:
   version "3.0.0"
@@ -5188,7 +5198,7 @@ querystring@0.2.0, querystring@^0.2.0:
   resolved "https://registry.npmjs.org/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
   integrity sha1-sgmEkgO7Jd+CDadW50cAWHhSFiA=
 
-raf@^3.4.0:
+raf@^3.0.0, raf@^3.4.0:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
   integrity sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==
@@ -5403,6 +5413,16 @@ react-spinners@^0.6.1:
   integrity sha512-bMCOvwAlzuIDC6Zh69E1EbyKUbvWSl4sMzLXOgnsF4Q/kkAnCNaonWyskMFytbaJSYxBCCOiaeCH2moDJ5y5Pg==
   dependencies:
     "@emotion/core" "^10.0.15"
+
+react-stickynode@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/react-stickynode/-/react-stickynode-2.1.1.tgz#1d5160641c72b1a954c872b26130919cb1ce4a78"
+  integrity sha512-yzY1mE8QYCdrg4zpmHYfe5ZaE4VF63VpbgboLntdKnQG98bNlGDXDY9vpt/3O4uIEoddeL0zBtXU2I0LyLMzFw==
+  dependencies:
+    classnames "^2.0.0"
+    prop-types "^15.6.0"
+    shallowequal "^1.0.0"
+    subscribe-ui-event "^2.0.0"
 
 react-tagsinput@^3.19.0:
   version "3.19.0"
@@ -5863,6 +5883,11 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
+shallowequal@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
+  integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
+
 shebang-command@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/shebang-command/-/shebang-command-1.2.0.tgz#44aac65b695b03398968c39f363fee5deafdf1ea"
@@ -6247,6 +6272,15 @@ stylis@3.5.4:
   version "3.5.4"
   resolved "https://registry.npmjs.org/stylis/-/stylis-3.5.4.tgz#f665f25f5e299cf3d64654ab949a57c768b73fbe"
   integrity sha512-8/3pSmthWM7lsPBKv7NXkzn2Uc9W7NotcwGNpJaa3k7WMM1XDCA4MgT5k/8BIexd5ydZdboXtU90XH9Ec4Bv/Q==
+
+subscribe-ui-event@^2.0.0:
+  version "2.0.5"
+  resolved "https://registry.npmjs.org/subscribe-ui-event/-/subscribe-ui-event-2.0.5.tgz#f276d8eae3f82b640e69d7b9d55f7334f9ec67ec"
+  integrity sha512-1DasqBzDgTbkj2Yu0F8atPB6ouvvM5EdUm6zPONO8IZXVr97ommJFTp1yX/HMW5qYw/nc0huJ7r6VkeqixAdgA==
+  dependencies:
+    eventemitter3 "^3.0.0"
+    lodash "^4.17.10"
+    raf "^3.0.0"
 
 supports-color@5.5.0, supports-color@^5.3.0, supports-color@^5.4.0:
   version "5.5.0"

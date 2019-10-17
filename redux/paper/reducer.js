@@ -4,11 +4,13 @@ const defaultPaperState = {
   authors: [],
   uploadedPaper: {},
   hubs: [],
+  editHistory: [],
 };
 
 const PaperReducer = (state = defaultPaperState, action) => {
   switch (action.type) {
     case types.GET_PAPER:
+    case types.GET_EDITS:
     case types.POST_PAPER_PENDING:
     case types.POST_PAPER_FAILURE:
     case types.POST_PAPER_SUCCESS:
