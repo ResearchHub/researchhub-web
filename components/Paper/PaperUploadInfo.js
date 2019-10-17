@@ -889,7 +889,6 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        console.log("res", res);
         let summaryJSON = JSON.parse(res.summary);
         let editorState = Value.fromJSON(summaryJSON);
         this.setState({
