@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     textAlign: "left",
+    cursor: "default",
   },
   text: {
     fontFamily: "Roboto",
