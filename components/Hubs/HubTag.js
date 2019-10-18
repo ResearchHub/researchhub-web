@@ -4,15 +4,29 @@ import Link from "next/link";
 
 import colors from "~/config/themes/colors";
 
-const HubTag = ({ tag, overrideStyle }) => {
-  let { name, link } = tag;
-  return (
-    <Link href={"/hub/[hubname]/"} as={`/hub/${name}/`}>
+const HubTag = ({ tag, overrideStyle, hubName }) => {
+  let { id, name, link } = tag;
+
+  function nameToUrl(name) {
+    let arr = name.split(" ");
+    return arr.length > 1 ? arr.join("-").toLowerCase() : name.toLowerCase();
+  }
+
+  if (name === hubName) {
+    return (
       <div className={css(styles.tag, overrideStyle && overrideStyle)}>
         <span className={css(styles.label)}>{name && name}</span>
       </div>
-    </Link>
-  );
+    );
+  } else {
+    return (
+      <Link href={"/hub/[hubName]/"} as={`/hub/${nameToUrl(name)}/`}>
+        <div className={css(styles.tag, overrideStyle && overrideStyle)}>
+          <span className={css(styles.label)}>{name && name}</span>
+        </div>
+      </Link>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
