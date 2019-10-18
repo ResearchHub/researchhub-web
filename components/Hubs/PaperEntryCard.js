@@ -13,7 +13,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { convertNumToMonth } from "~/config/utils/options";
 
-const PaperEntryCard = ({ paper, index }) => {
+const PaperEntryCard = ({ paper, index, hubName }) => {
   const {
     id,
     authors,
@@ -27,7 +27,7 @@ const PaperEntryCard = ({ paper, index }) => {
     summary,
   } = paper;
 
-  console.log("summary", summary);
+  // console.log("summary", summary);
   function convertDate() {
     let dateArr = paper_publish_date.split("-");
     dateArr[1] = convertNumToMonth[dateArr[1]];
@@ -94,7 +94,8 @@ const PaperEntryCard = ({ paper, index }) => {
               </Link>
             </div>
             <div className={css(styles.tags, styles.right)}>
-              {hubs.length > 0 && hubs.map((tag) => <HubTag tag={tag} />)}
+              {hubs.length > 0 &&
+                hubs.map((tag) => <HubTag tag={tag} hubName={hubName} />)}
             </div>
           </div>
         </div>

@@ -35,13 +35,26 @@ export default class HubsList extends React.Component {
   renderHubEntry = () => {
     return this.state.hubs.map((hub, i) => {
       let { name, id } = hub;
-      return (
-        <Link href={"/hub/[hubname]/"} as={`/hub/${name}/`}>
-          <div key={`${hub.id}-${i}`} className={css(styles.hubEntry)}>
-            {name}
-          </div>
-        </Link>
-      );
+      function nameToUrl(name) {
+        let arr = name.split(" ");
+        return arr.length > 1
+          ? arr.join("-").toLowerCase()
+          : name.toLowerCase();
+      }
+
+      if (name !== this.props.exclude) {
+        return (
+          <Link
+            href={"/hub/[hubName]/"}
+            as={`/hub/${nameToUrl(name)}/`}
+            params={{ id }}
+          >
+            <div key={`${hub.id}-${i}`} className={css(styles.hubEntry)}>
+              {name}
+            </div>
+          </Link>
+        );
+      }
     });
   };
 
