@@ -12,7 +12,15 @@ const apiRoot = {
 
 const routes = (BASE_URL) => {
   return {
-    USER: BASE_URL + "user/",
+    USER: ({ userId }) => {
+      let url = BASE_URL + "user/";
+
+      if (userId) {
+        url += `${userId}/`;
+      }
+
+      return url;
+    },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     PAPER: ({ paperId, search, page }) => {
       let url = BASE_URL + `paper/`;

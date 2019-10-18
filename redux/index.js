@@ -6,6 +6,7 @@ import modalReducer from "./modals";
 import authReducer from "./auth";
 import voteReducer from "./vote/reducer";
 import messageReducer from "./message";
+import authorReducer from "./author/reducer";
 
 export default combineReducers({
   modals: modalReducer,
@@ -14,4 +15,5 @@ export default combineReducers({
   paper: paperReducer,
   auth: authReducer,
   vote: voteReducer,
+  author: authorReducer,
 });
