@@ -210,9 +210,11 @@ class CommentClass extends DiscussionComment {
   };
 
   renderReplies = () => {
-    const replies = this.state.replies.map((r, i) => {
-      return <Reply key={r.id} data={r} commentId={this.state.id} />;
-    });
+    const replies =
+      this.state.replies &&
+      this.state.replies.map((r, i) => {
+        return <Reply key={r.id} data={r} commentId={this.state.id} />;
+      });
 
     return (
       <Fragment>

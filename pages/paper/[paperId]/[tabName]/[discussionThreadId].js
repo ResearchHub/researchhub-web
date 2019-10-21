@@ -35,7 +35,6 @@ const DiscussionThreadPage = (props) => {
 
   const [thread, setThread] = useState(props.discussion);
   const [pageNumber, setPageNumber] = useState(1);
-  const { discussion } = props;
   const { count, page } = discussion.commentPage;
   const [comments, setComments] = useState([]);
   const [userVote, setUserVote] = useState(
