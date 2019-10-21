@@ -39,7 +39,7 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
   }
 
   return (
-    <Link href={"/paper/[paperId]/[tabName]/"} as={`/paper/${id}/summary/`}>
+    <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
       <div className={css(styles.papercard)} key={`${id}-${index}-${title}`}>
         <div className={css(styles.column)}>
           <span className={css(styles.voting)}>
@@ -79,8 +79,8 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
                   ))}
               </span>
               <Link
-                href={"/paper/[paperId]/[tabName]/"}
-                as={`/paper/${id}/discussion/`}
+                href={"/paper/[paperId]/[tabName]"}
+                as={`/paper/${id}/discussion`}
               >
                 <div className={css(styles.discussion)}>
                   <span className={css(styles.icon)} id={"discIcon"}>
