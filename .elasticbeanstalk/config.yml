@@ -1,0 +1,6 @@
+branch-defaults:
+  development:
+    environment: null
+    group_suffix: null
+global:
+  profile: researchhub
