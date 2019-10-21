@@ -1,11 +1,13 @@
 {
-  "name": "create-next-example-app",
+  "name": "researchhub",
   "scripts": {
     "dev": "next",
     "build": "next build",
     "start": "next start",
     "cypress:open": "cypress open --project $PWD/tests",
-    "test": "cypress run --project $PWD/tests"
+    "test": "cypress run --project $PWD/tests",
+    "build:prod": "docker build -t researchhub-web .",
+    "deploy": "./scripts/production.sh deploy"
   },
   "dependencies": {
     "@quantfive/js-web-config": "latest",
