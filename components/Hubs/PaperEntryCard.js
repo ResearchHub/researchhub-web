@@ -142,13 +142,13 @@ const styles = StyleSheet.create({
   summary: {
     minWidth: "100%",
     maxWidth: "100%",
-    height: 45,
-    maxHeight: 45,
+    height: 90,
+    maxHeight: 90,
     whiteSpace: "pre-wrap",
     color: "#4e4c5f",
     fontSize: 16,
     marginTop: 15,
-    // overflowY: 'scroll'
+    overflow: "hidden",
   },
   text: {
     fontFamily: "Roboto",

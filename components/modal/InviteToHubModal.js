@@ -1,10 +1,8 @@
 // NPM Modules
 import React from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
-import { GoogleLogin, GoogleLogout } from "react-google-login";
 
 // Component
 import Button from "~/components/Form/Button";
@@ -31,33 +29,23 @@ class InviteToHubModal extends React.Component {
    * closes the modal on button click
    */
   closeModal = () => {
-    let { openLoginModal } = this.props;
+    let { openInviteToHubModal } = this.props;
     this.setState({
       ...this.initialState,
     });
-    openLoginModal(false);
-  };
-
-  responseGoogle = (response) => {
-    //TODO: do something after google oauth api responds
-    let { googleLogin, getUser } = this.props;
-    response["access_token"] = response["accessToken"];
-    googleLogin(response).then((_) => {
-      getUser().then((_) => {
-        this.closeModal();
-      });
-    });
+    openInviteToHubModal(false);
   };
 
   render() {
     let { modals, auth } = this.props;
+
     return (
       <Modal
-        isOpen={modals.openLoginModal}
+        isOpen={modals.openInviteToHubModal}
         closeModal={this.closeModal}
         className={css(styles.modal)}
-        shouldCloseOnOverlayClick={true}
-        onRequestClose={this.closeModal}
+        // shouldCloseOnOverlayClick={true}
+        // onRequestClose={this.closeModal}
         style={overlayStyles}
       >
         <div className={css(styles.modalContent)}>
@@ -78,6 +66,7 @@ class InviteToHubModal extends React.Component {
             label={"Inviting via email addresses"}
             placeholder={"Enter email addresses"}
           />
+          <Button label={"Send Invites"} />
         </div>
       </Modal>
     );
@@ -181,8 +170,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openLoginModal: ModalActions.openLoginModal,
-  googleLogin: AuthActions.googleLogin,
+  openInviteToHubModal: ModalActions.openInviteToHubModal,
   getUser: AuthActions.getUser,
 };
 

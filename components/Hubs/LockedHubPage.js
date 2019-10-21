@@ -92,6 +92,7 @@ class LockedHubPage extends React.Component {
                 isWhite={true}
                 label={"Invite People"}
                 customButtonStyle={styles.button}
+                onClick={() => this.props.openInviteToHubModal(true)}
               />
               <Button
                 label={"Join Hub"}
@@ -224,7 +225,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openLoginModal: ModalActions.openLoginModal,
+  openInviteToHubModal: ModalActions.openInviteToHubModal,
   showMessage: MessageActions.showMessage,
 };
 
