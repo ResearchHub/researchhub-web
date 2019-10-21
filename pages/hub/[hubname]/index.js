@@ -2,6 +2,7 @@ import React from "react";
 import Router, { useRouter } from "next/router";
 
 import HubPage from "~/components/Hubs/HubPage";
+import LockedHubPage from "~/components/Hubs/LockedHubPage";
 
 const Index = (props) => {
   const router = useRouter();
@@ -22,6 +23,9 @@ const Index = (props) => {
     }
   }
 
+  if (hubName === "artificial-intelligence") {
+    return <LockedHubPage hubName={hubName && convertUrlToName(hubName)} />;
+  }
   return <HubPage hubName={hubName && convertUrlToName(hubName)} />;
 };
 
