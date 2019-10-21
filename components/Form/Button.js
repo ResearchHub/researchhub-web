@@ -108,6 +108,8 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.BLUE(1)}`,
     color: colors.BLUE(1),
     ":hover": {
+      borderColor: "#FFF",
+      boxShadow: "2px 2x 2px 2px #EDEDED",
       backgroundColor: colors.BLUE(1),
       color: "#FFF",
     },

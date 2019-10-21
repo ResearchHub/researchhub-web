@@ -12,23 +12,30 @@ export default class HubsList extends React.Component {
     super(props);
     this.state = {
       hubs: [],
+      reveal: false,
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     if (this.props.hubsList) {
-      this.setState({ hubs: hubsList });
+      await this.setState({ hubs: hubsList });
+      setTimeout(() => this.setState({ reveal: true }), 400);
     } else {
       this.fetchHubs();
     }
+  };
+
+  componentWillUnmount() {
+    this.setState({ reveal: false });
   }
 
   fetchHubs = () => {
     return fetch(API.HUB({}), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((resp) => {
-        this.setState({ hubs: resp.count > 0 ? [...resp.results] : [] });
+      .then(async (resp) => {
+        await this.setState({ hubs: resp.count > 0 ? [...resp.results] : [] });
+        setTimeout(() => this.setState({ reveal: true }), 400);
       });
   };
 
@@ -44,11 +51,7 @@ export default class HubsList extends React.Component {
 
       if (name !== this.props.exclude) {
         return (
-          <Link
-            href={"/hub/[hubName]/"}
-            as={`/hub/${nameToUrl(name)}/`}
-            params={{ id }}
-          >
+          <Link href={"/hub/[hubName]"} as={`/hub/${nameToUrl(name)}`}>
             <div key={`${hub.id}-${i}`} className={css(styles.hubEntry)}>
               {name}
             </div>
@@ -59,11 +62,19 @@ export default class HubsList extends React.Component {
   };
 
   render() {
+    let { overrideStyle, label } = this.props;
+
     return (
-      <div className={css(styles.container)}>
+      <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <div className={css(styles.listLabel)}>Top Hubs</div>
-          <div className={css(styles.hubsList)}>{this.renderHubEntry()}</div>
+          <div className={css(styles.listLabel)}>
+            {label ? label : "Top Hubs"}
+          </div>
+          <div
+            className={css(styles.hubsList, this.state.reveal && styles.reveal)}
+          >
+            {this.renderHubEntry()}
+          </div>
         </div>
       </div>
     );
@@ -110,5 +121,12 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(1),
     },
+  },
+  hubsList: {
+    opacity: 0,
+    transition: "all ease-in-out 0.2s",
+  },
+  reveal: {
+    opacity: 1,
   },
 });
