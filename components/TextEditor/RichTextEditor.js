@@ -18,8 +18,7 @@ import "./stylesheets/RichTextEditor.css";
 // Scaffold
 import summaryScaffold from "./summaryScaffold.json";
 import colors from "../../config/themes/colors";
-
-const Diff = require("diff");
+import Diff from "diff";
 
 const summaryScaffoldInitialValue = Value.fromJSON(summaryScaffold);
 const commentInitialValue = Value.fromJSON({
