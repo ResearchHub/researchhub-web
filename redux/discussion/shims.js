@@ -63,9 +63,12 @@ export const reply = (reply) => {
 };
 
 function transformReplies(replies) {
-  return replies.map((reply) => {
-    return transformReply(reply);
-  });
+  return (
+    replies &&
+    replies.map((reply) => {
+      return transformReply(reply);
+    })
+  );
 }
 
 function transformReply(reply) {
