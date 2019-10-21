@@ -63,9 +63,11 @@ const Navbar = (props) => {
       <UploadPaperModal />
       <LoginModal />
       <InviteToHubModal />
-      <RHLogo iconStyle={styles.logo} />
+      <div className={css(styles.logoContainer)}>
+        <RHLogo iconStyle={styles.logo} />
       </div>
       <div className={css(styles.tabs)}>{renderTabs()}</div>
+      <div className={css(styles.search)}>
         <input className={css(styles.searchbar)} placeholder={"Search..."} />
         <i className={css(styles.searchIcon) + " far fa-search"}></i>
       </div>
