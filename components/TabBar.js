@@ -8,7 +8,7 @@ import ComponentWrapper from "./ComponentWrapper";
 
 const TabBar = (props) => {
   const selectedTab = props.selectedTab;
-  const { count, dynamic_href } = props;
+  const { dynamic_href } = props;
 
   const tabs = props.tabs.map(formatTabs);
 
@@ -16,7 +16,7 @@ const TabBar = (props) => {
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
-          {tabs.map((tab) => renderTab(tab, selectedTab, count, dynamic_href))}
+          {tabs.map((tab) => renderTab(tab, selectedTab, dynamic_href))}
         </div>
       </ComponentWrapper>
     </div>
@@ -29,9 +29,8 @@ function formatTabs(tab) {
 }
 
 function renderTab(
-  { key, href, label, showCount },
+  { key, href, label, showCount, count },
   selected,
-  count,
   dynamic_href
 ) {
   let isSelected = false;
