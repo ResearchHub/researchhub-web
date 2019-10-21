@@ -1,10 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import Progress from "react-progressbar";
 
 // Component
 import Button from "~/components/Form/Button";
-import HubList from "~/components/Hubs/HubsList";
+import HubsList from "~/components/Hubs/HubsList";
 import Message from "~/components/Loader/Message";
 
 // Redux
@@ -16,7 +17,6 @@ import { MessageActions } from "~/redux/message";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import Progress from "react-progressbar";
 
 class LockedHubPage extends React.Component {
   constructor(props) {
@@ -105,7 +105,7 @@ class LockedHubPage extends React.Component {
         </div>
         <div className={css(styles.sidebarContainer)}>
           <div className={css(styles.sidebar)}>
-            <HubList
+            <HubsList
               overrideStyle={styles.hublist}
               label={"Related Hubs"}
               exclude={this.props.hubName}
