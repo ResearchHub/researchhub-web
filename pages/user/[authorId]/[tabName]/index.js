@@ -7,6 +7,8 @@ import moment from "moment";
 import Avatar from "react-avatar";
 
 import { AuthorActions } from "~/redux/author";
+import { PaperActions } from "~/redux/paper";
+
 import TabBar from "~/components/TabBar";
 
 // Components
@@ -25,16 +27,23 @@ const AuthorPage = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  async function fetchAuthoredPapers() {
+    await dispatch(
+      AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
+    );
+  }
+
   useEffect(() => {
     async function refetchAuthor() {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
       );
     }
+    fetchAuthoredPapers();
     refetchAuthor();
   }, [props.isServer]);
 
-  const tabs = [
+  let tabs = [
     {
       href: "contributions",
       label: "contributions",
@@ -44,6 +53,7 @@ const AuthorPage = (props) => {
       href: "authored-papers",
       label: "authored papers",
       showCount: true,
+      count: author.authoredPapers.count,
     },
     {
       href: "discussions",

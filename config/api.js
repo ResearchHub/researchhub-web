@@ -32,7 +32,7 @@ const routes = (BASE_URL) => {
       }
 
       if (search) {
-        url += `search=${search}`;
+        url += `search=${search}&`;
       }
 
       if (typeof page === "number") {
@@ -41,6 +41,13 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+
+    AUTHORED_PAPER: ({ authorId, page }) => {
+      let url =
+        BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;
+      return url;
+    },
+
     POST_PAPER: () => {
       let url = BASE_URL + `paper/`;
 
