@@ -20,12 +20,6 @@ import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
 
-const DraftEditor = dynamic(() => import("../../DraftEditor/DraftEditor"), {
-  ssr: false,
-});
-
-const PDFViewer = dynamic(import("../../Paper/Tabs/PaperTab"), { ssr: false });
-
 class SummaryTab extends React.Component {
   constructor(props) {
     super(props);
