@@ -12,28 +12,37 @@ import FormInput from "~/components/Form/FormInput";
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
 
+// Config
+import colors from "~/config/themes/colors";
+
 class InviteToHubModal extends React.Component {
   constructor(props) {
     super(props);
-    let initialState = {};
-    this.state = {
-      ...initialState,
+    this.initialState = {
+      setCopySuccessMessage: "",
     };
-  }
-
-  componentDidMount() {
-    //TODO: do something with user authentication
+    this.state = {
+      ...this.initialState,
+    };
+    this.formInputRef = React.createRef();
   }
 
   /**
    * closes the modal on button click
    */
-  closeModal = () => {
+  closeModal = async () => {
     let { openInviteToHubModal } = this.props;
-    this.setState({
+    await this.setState({
       ...this.initialState,
     });
     openInviteToHubModal(false);
+  };
+
+  copyToClipboard = () => {
+    this.formInputRef.current.select();
+    document.execCommand("copy");
+    // e.target.focus(); // TODO: Uncomment if we don't want highlighting
+    this.setState({ setCopySuccessMessage: "Copied!" });
   };
 
   render() {
@@ -44,8 +53,8 @@ class InviteToHubModal extends React.Component {
         isOpen={modals.openInviteToHubModal}
         closeModal={this.closeModal}
         className={css(styles.modal)}
-        // shouldCloseOnOverlayClick={true}
-        // onRequestClose={this.closeModal}
+        shouldCloseOnOverlayClick={true}
+        onRequestClose={this.closeModal}
         style={overlayStyles}
       >
         <div className={css(styles.modalContent)}>
@@ -66,12 +75,31 @@ class InviteToHubModal extends React.Component {
             label={"Inviting via email addresses"}
             placeholder={"Enter email addresses"}
           />
-          <Button label={"Send Invites"} />
+          <Button
+            label={"Send Invites"}
+            customButtonStyle={styles.customButtonStyle}
+          />
+          <FormInput
+            getRef={this.formInputRef}
+            inlineNodeRight={<CopyLink onClick={this.copyToClipboard} />}
+            value={window.location.href}
+            message={this.state.copySuccessMessage}
+            containerStyle={styles.containerStyle}
+          />
         </div>
       </Modal>
     );
   }
 }
+
+const CopyLink = (props) => {
+  const { onClick } = props;
+  return (
+    <a className={css(styles.copyLink)} onClick={onClick}>
+      Copy link
+    </a>
+  );
+};
 
 const overlayStyles = {
   overlay: {
@@ -161,6 +189,13 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 395,
+  },
+  customButtonStyle: {
+    width: 200,
+    height: 55,
+  },
+  containerStyle: {
+    marginTop: 40,
   },
 });
 
