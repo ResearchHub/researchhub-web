@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 5,
     border: "1px solid #FFFFFF",
+    cursor: "pointer",
   },
   hoverEvents: {
     ":hover": {
