@@ -13,7 +13,6 @@ import FormSelect from "../Form/FormSelect";
 import DragNDrop from "../Form/DragNDrop";
 import Button from "../Form/Button";
 import AuthorCardList from "../SearchSuggestion/AuthorCardList";
-import dynamic from "next/dynamic";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import TextEditor from "~/components/TextEditor";
 import Message from "../Loader/Message";
