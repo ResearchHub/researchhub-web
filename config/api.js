@@ -12,7 +12,15 @@ const apiRoot = {
 
 const routes = (BASE_URL) => {
   return {
-    USER: BASE_URL + "user/",
+    USER: ({ userId }) => {
+      let url = BASE_URL + "user/";
+
+      if (userId) {
+        url += `${userId}/`;
+      }
+
+      return url;
+    },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     PAPER: ({ paperId, search, page }) => {
       let url = BASE_URL + `paper/`;
@@ -24,7 +32,7 @@ const routes = (BASE_URL) => {
       }
 
       if (search) {
-        url += `search=${search}`;
+        url += `search=${search}&`;
       }
 
       if (typeof page === "number") {
@@ -33,6 +41,31 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+
+    AUTHORED_PAPER: ({ authorId, page }) => {
+      let url =
+        BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;
+      return url;
+    },
+
+    USER_DISCUSSION: ({ authorId, page }) => {
+      let url =
+        BASE_URL + `author/${authorId}/get_user_discussions/?page=${page}`;
+      return url;
+    },
+
+    USER_CONTRIBUTION: ({
+      authorId,
+      commentOffset,
+      replyOffset,
+      paperUploadOffset,
+    }) => {
+      let url =
+        BASE_URL +
+        `author/${authorId}/get_user_contributions/?commentOffset=${commentOffset}&replyOffset=${replyOffset}&paperUploadOffset=${paperUploadOffset}`;
+      return url;
+    },
+
     POST_PAPER: () => {
       let url = BASE_URL + `paper/`;
 
