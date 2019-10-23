@@ -16,6 +16,8 @@ import Message from "~/components/Loader/Message";
 import { MessageActions } from "~/redux/message";
 
 // Config
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
@@ -66,15 +68,37 @@ const DiscussionTab = (props) => {
     }, 200);
   };
 
-  function save() {
+  const save = async () => {
+    let { paperId } = router.query;
     props.showMessage({ load: true, show: true });
-    setTimeout(() => {
-      props.showMessage({ show: false });
-      props.setMessage("Successfully Saved!");
-      props.showMessage({ show: true });
-      setTimeout(() => cancel(), 300);
-    }, 800);
-  }
+
+    let param = {
+      title: discussion.title,
+      text: JSON.stringify(discussion.question.toJSON()),
+      paper: paperId,
+    };
+
+    let config = await API.POST_CONFIG(param);
+
+    return fetch(API.DISCUSSION(paperId), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        setTimeout(() => {
+          props.showMessage({ show: false });
+          props.setMessage("Successfully Saved!");
+          props.showMessage({ show: true });
+          setTimeout(() => cancel(), 300);
+        }, 800);
+      })
+      .catch((err) => {
+        setTimeout(() => {
+          props.showMessage({ show: false });
+          props.setMessage("Something went wrong");
+          props.showMessage({ show: true, error: true });
+        }, 800);
+      });
+  };
 
   function handleInput(id, value) {
     let newDiscussion = { ...discussion };
@@ -134,13 +158,17 @@ const DiscussionTab = (props) => {
     } else {
       return (
         <div className={css(styles.box)}>
-          <img className={css(styles.img)} src={"/static/icons/sad.png"} />
-          <h2 className={css(styles.noSummaryTitle)}>
-            There are no discussion for this paper yet!
-          </h2>
-          <div className={css(styles.text)}>
-            Please add a discussion to this paper
-          </div>
+          {props.threads.length < 1 && (
+            <span className={css(styles.box)}>
+              <img className={css(styles.img)} src={"/static/icons/sad.png"} />
+              <h2 className={css(styles.noSummaryTitle)}>
+                There are no discussion for this paper yet!
+              </h2>
+              <div className={css(styles.text)}>
+                Please add a discussion to this paper
+              </div>
+            </span>
+          )}
           <button
             className={css(styles.addDiscussionButton)}
             onClick={addDiscussion}
@@ -157,14 +185,7 @@ const DiscussionTab = (props) => {
       {threads.length > 0 ? (
         <Fragment>
           {renderThreads(formattedThreads, hostname)}
-          <div className={css(styles.box)}>
-            <button
-              className={css(styles.addDiscussionButton)}
-              onClick={addDiscussion}
-            >
-              Add Discussions
-            </button>
-          </div>
+          <div className={css(styles.box)}>{renderAddDiscussion()}</div>
         </Fragment>
       ) : (
         <div
