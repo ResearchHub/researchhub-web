@@ -79,6 +79,10 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    PERMISSIONS: () => {
+      return BASE_URL + "permissions/";
+    },
+
     DISCUSSION: (paperId) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/`;
 
