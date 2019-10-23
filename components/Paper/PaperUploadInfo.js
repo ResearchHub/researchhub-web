@@ -604,7 +604,7 @@ class PaperUploadInfo extends React.Component {
               />
             </div>
             <div className={css(styles.taglineHeader)}>
-              {this.renderHeader("Abstract")}
+              {this.renderHeader("Overview")}
             </div>
             <div className={css(styles.section)}>
               <span className={css(styles.tagline)}>
