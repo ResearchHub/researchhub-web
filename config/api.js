@@ -14,7 +14,7 @@ const routes = (BASE_URL) => {
   return {
     USER: BASE_URL + "user/",
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
-    PAPER: ({ paperId, search }) => {
+    PAPER: ({ paperId, search, page }) => {
       let url = BASE_URL + `paper/`;
 
       if (paperId) {
@@ -25,6 +25,10 @@ const routes = (BASE_URL) => {
 
       if (search) {
         url += `search=${search}`;
+      }
+
+      if (typeof page === "number") {
+        url += `page=${page}`;
       }
 
       return url;
