@@ -1,10 +1,13 @@
 import React from "react";
 import Select from "react-select";
 import { StyleSheet, css } from "aphrodite";
+import makeAnimated from "react-select/animated";
 
 // Config
 import * as Options from "../../config/utils/options";
 import colors from "../../config/themes/colors";
+
+const animatedComponents = makeAnimated();
 
 class FormSelect extends React.Component {
   constructor(props) {
@@ -31,6 +34,7 @@ class FormSelect extends React.Component {
       isMulti,
       isDisabled,
       error,
+      isSearchable,
     } = this.props;
 
     const defaultValue = {
@@ -84,7 +88,8 @@ class FormSelect extends React.Component {
           {required && <div className={css(styles.asterick)}>*</div>}
         </div>
         <Select
-          defaultValue={placeholder && defaultValue}
+          // defaultValue={placeholder && defaultValue}
+          components={animatedComponents}
           options={options && options}
           onChange={(option) => this.handleOnChange(id, option)}
           styles={colorStyles}

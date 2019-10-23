@@ -3,13 +3,13 @@ import Router from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { GoogleLogin, GoogleLogout } from "react-google-login";
+import InfiniteScroll from "react-infinite-scroller";
 
 // Component
-import Button from "../components/Form/Button";
+import Button from "~/components/Form/Button";
 import HubsList from "~/components/Hubs/HubsList";
 import FormSelect from "~/components/Form/FormSelect";
-import InfiniteScroll from "react-infinite-scroller";
-import PaperEntryCard from "../components/Hubs/PaperEntryCard";
+import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
 
 // Redux
@@ -51,7 +51,7 @@ const filterScope = [
   },
 ];
 
-class Index extends React.Component {
+class HubPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -102,7 +102,7 @@ class Index extends React.Component {
           />
           <div className={css(styles.column, styles.titleContainer)}>
             <div className={css(styles.header, styles.text)}>
-              Welcome to Research Hub!
+              Welcome to {this.props.hubName}!
             </div>
             <div className={css(styles.subtext, styles.text)}>
               We're a community seeking to prioritization, collaboraten,
@@ -131,12 +131,12 @@ class Index extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
-            <HubsList />
+            <HubsList exclude={this.props.hubName} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
             <div className={css(styles.topbar, styles.row)}>
               <div className={css(styles.text, styles.feedTitle)}>
-                Top Papers on Research Hub
+                Top Papers on {this.props.hubName}
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
@@ -167,6 +167,7 @@ class Index extends React.Component {
                     key={`${paper.id}-${i}`}
                     paper={paper}
                     index={i}
+                    hubName={this.props.hubName}
                   />
                 ))}
               </InfiniteScroll>
@@ -288,7 +289,7 @@ var styles = StyleSheet.create({
     paddingRight: 70,
     top: 0,
     zIndex: 2,
-    borderBottom: "1px solid #ededed",
+    // borderBottom: '1px solid #ededed',
   },
   dropDown: {
     width: 248,
@@ -333,4 +334,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Index);
+)(HubPage);
