@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
     minHeight: 122,
   },
   comment: {
-    padding: "16px 16px 16px 0px",
+    padding: "16px 16px 16px 16px",
   },
   button: {
     width: 180,
