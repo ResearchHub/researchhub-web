@@ -120,10 +120,14 @@ const AuthorPage = (props) => {
                 "This is a test description. We will use this until we get the description from the backend working. We also need to create some edit functionality on the frontend to be able to properly add a description for the author"}
             </div>
             <div className={css(styles.extraInfoContainer)}>
-              <div className={css(styles.extraInfo)}>
-                <i className={css(styles.icon) + " fas fa-graduation-cap"}></i>
-                {author.university.name}
-              </div>
+              {author.university && (
+                <div className={css(styles.extraInfo)}>
+                  <i
+                    className={css(styles.icon) + " fas fa-graduation-cap"}
+                  ></i>
+                  {author.university.name}
+                </div>
+              )}
             </div>
           </div>
           <div className={css(styles.socialLinks)}>
