@@ -9,10 +9,12 @@ import Avatar from "react-avatar";
 import { AuthorActions } from "~/redux/author";
 import { PaperActions } from "~/redux/paper";
 
-import TabBar from "~/components/TabBar";
-
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
+import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
+import TabBar from "~/components/TabBar";
+import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
+import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -20,16 +22,37 @@ import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 
 const AuthorPage = (props) => {
-  let { author } = props;
-  let query = useRouter();
-  let { tabName } = query;
+  let { author, hostname } = props;
+  let router = useRouter();
+  let { tabName } = router.query;
 
   const dispatch = useDispatch();
-  const router = useRouter();
 
   async function fetchAuthoredPapers() {
     await dispatch(
       AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
+    );
+  }
+
+  async function fetchUserDiscussions() {
+    await dispatch(
+      AuthorActions.getUserDiscussions({ authorId: router.query.authorId })
+    );
+  }
+
+  async function fetchUserContributions() {
+    let {
+      commentOffset,
+      replyOffset,
+      paperUploadOffset,
+    } = props.author.userContributions;
+    await dispatch(
+      AuthorActions.getUserContributions({
+        authorId: router.query.authorId,
+        commentOffset,
+        replyOffset,
+        paperUploadOffset,
+      })
     );
   }
 
@@ -40,6 +63,8 @@ const AuthorPage = (props) => {
       );
     }
     fetchAuthoredPapers();
+    fetchUserDiscussions();
+    fetchUserContributions();
     refetchAuthor();
   }, [props.isServer]);
 
@@ -48,6 +73,7 @@ const AuthorPage = (props) => {
       href: "contributions",
       label: "contributions",
       showCount: true,
+      count: author.userContributions.count,
     },
     {
       href: "authored-papers",
@@ -59,17 +85,18 @@ const AuthorPage = (props) => {
       href: "discussions",
       label: "discussions",
       showCount: true,
+      count: author.userDiscussions.count,
     },
   ];
 
   let renderTabContent = () => {
     switch (tabName) {
       case "contributions":
-        return null;
+        return <UserContributionsTab />;
       case "authored-papers":
-        return null;
+        return <AuthoredPapersTab />;
       case "discussions":
-        return null;
+        return <UserDiscussionsTab hostname={hostname} />;
       case "citations":
         return null;
     }
@@ -100,15 +127,27 @@ const AuthorPage = (props) => {
             </div>
           </div>
           <div className={css(styles.socialLinks)}>
-            <div className={css(styles.socialMedia, styles.linkedin)}>
-              <i className="fab fa-linkedin-in"></i>
-            </div>
-            <div className={css(styles.socialMedia, styles.twitter)}>
-              <i className="fab fa-twitter"></i>
-            </div>
-            <div className={css(styles.socialMedia, styles.facebook)}>
-              <i className="fab fa-facebook-f"></i>
-            </div>
+            <Link href={author.linkedin}>
+              <a className={css(styles.link)} target="_blank">
+                <div className={css(styles.socialMedia, styles.linkedin)}>
+                  <i className="fab fa-linkedin-in"></i>
+                </div>
+              </a>
+            </Link>
+            <Link href={author.twitter}>
+              <a className={css(styles.link)} target="_blank">
+                <div className={css(styles.socialMedia, styles.twitter)}>
+                  <i className="fab fa-twitter"></i>
+                </div>
+              </a>
+            </Link>
+            <Link href={author.facebook}>
+              <a className={css(styles.link)} target="_blank">
+                <div className={css(styles.socialMedia, styles.facebook)}>
+                  <i className="fab fa-facebook-f"></i>
+                </div>
+              </a>
+            </Link>
             <div className={css(styles.socialMedia, styles.shareLink)}>
               <i className="far fa-link"></i>
             </div>
@@ -178,6 +217,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginLeft: 5,
     marginRight: 5,
+    textDecorations: "none",
   },
   linkedin: {
     background: "#0077B5",
@@ -190,6 +230,9 @@ const styles = StyleSheet.create({
   },
   shareLink: {
     background: colors.BLUE(),
+  },
+  link: {
+    textDecoration: "None",
   },
 });
 

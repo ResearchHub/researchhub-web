@@ -120,8 +120,11 @@ const DiscussionThreadCard = (props) => {
 };
 
 function createUsername({ createdBy }) {
-  const { firstName, lastName } = createdBy;
-  return `${firstName} ${lastName}`;
+  if (createdBy) {
+    const { firstName, lastName } = createdBy;
+    return `${firstName} ${lastName}`;
+  }
+  return null;
 }
 
 DiscussionThreadCard.propTypes = {

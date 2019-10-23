@@ -34,7 +34,7 @@ function transformComments(comments) {
   });
 }
 
-function transformComment(comment) {
+export function transformComment(comment) {
   return {
     id: comment.id,
     text: comment.text,
@@ -71,7 +71,7 @@ function transformReplies(replies) {
   );
 }
 
-function transformReply(reply) {
+export function transformReply(reply) {
   return {
     id: reply.id,
     text: reply.text,
