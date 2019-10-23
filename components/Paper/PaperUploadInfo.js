@@ -33,6 +33,7 @@ import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "../../config/utils/options";
 import discussionScaffold from "./discussionScaffold.json";
+import FormTextArea from "../Form/FormTextArea";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -43,6 +44,7 @@ class PaperUploadInfo extends React.Component {
       form: {
         title: "",
         doi: "",
+        tagline: "",
         published: {
           year: null,
           month: null,
@@ -423,12 +425,20 @@ class PaperUploadInfo extends React.Component {
       });
   };
 
-  renderHeader = (label, header = false) => {
+  renderHeader = (label, header = false, button = true) => {
     return (
       <div className={css(styles.header, styles.text)}>
         {label}
         {header && (
-          <div className={css(styles.headerButton, styles.text)}>{header}</div>
+          <div
+            className={css(
+              styles.sidenote,
+              button && styles.headerButton,
+              styles.text
+            )}
+          >
+            {header}
+          </div>
         )}
       </div>
     );
@@ -451,7 +461,8 @@ class PaperUploadInfo extends React.Component {
       case 1:
         return (
           <span>
-            {!editMode && this.renderHeader("Academic Paper")}
+            {!editMode &&
+              this.renderHeader("Academic Paper", "Up to 15MB (.pdf)", false)}
             <div className={css(styles.section)}>
               {!editMode && (
                 <div className={css(styles.paper)}>
@@ -476,7 +487,6 @@ class PaperUploadInfo extends React.Component {
             </div>
             {this.renderHeader("Main Information")}
             <div className={css(styles.section, styles.padding)}>
-              {/* <span className={css(styles.row)}> */}
               <FormInput
                 label={"Paper Title"}
                 placeholder="Enter title of paper"
@@ -486,7 +496,6 @@ class PaperUploadInfo extends React.Component {
                 id={"title"}
                 onChange={this.handleInputChange}
               />
-              {/* </span> */}
               <AuthorInput
                 tags={this.state.selectedAuthors}
                 onChange={this.handleAuthorChange}
@@ -593,6 +602,22 @@ class PaperUploadInfo extends React.Component {
                 onChange={this.handleHubSelection}
                 error={error.hubs}
               />
+            </div>
+            <div className={css(styles.taglineHeader)}>
+              {this.renderHeader("Abstract")}
+            </div>
+            <div className={css(styles.section)}>
+              <span className={css(styles.tagline)}>
+                <FormTextArea
+                  label={"Tag Line"}
+                  placeholder="Enter a brief overview of the paper"
+                  required={true}
+                  containerStyle={styles.container}
+                  value={form.tagline}
+                  id={"tagline"}
+                  onChange={this.handleInputChange}
+                />
+              </span>
             </div>
           </span>
         );
@@ -1208,6 +1233,20 @@ const styles = StyleSheet.create({
   reveal: {
     height: 90,
     opacity: 1,
+  },
+  taglineHeader: {
+    marginTop: 20,
+  },
+  tagline: {
+    paddingTop: 20,
+    marginBottom: 40,
+  },
+  sidenote: {
+    fontSize: 14,
+    fontWeight: 400,
+    color: "#7a7887",
+    userSelect: "none",
+    cursor: "default",
   },
 });
 
