@@ -1,4 +1,5 @@
 import * as actions from "./actions";
+import * as shims from "./shims";
 import API from "~/config/api";
 import * as utils from "../utils";
 
@@ -12,7 +13,8 @@ export function fetchPermissions() {
 
     if (response.ok) {
       const body = await response.json();
-      action = actions.setPermissions(body);
+      const permissions = shims.permissions(body);
+      action = actions.setPermissions(permissions);
     } else {
       utils.logFetchError(response);
     }
