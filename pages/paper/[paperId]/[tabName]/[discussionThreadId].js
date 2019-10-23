@@ -106,7 +106,9 @@ const DiscussionThreadPage = (props) => {
 
   const getNextPage = async (paperId, discussionThreadId, page) => {
     await props.fetchComments(paperId, discussionThreadId, page);
-    setComments([...comments, ...props.state.commentPage.comments]);
+    if (props.state.commentPage.comments.length > 0) {
+      setComments([...comments, ...props.state.commentPage.comments]);
+    }
   };
 
   return (

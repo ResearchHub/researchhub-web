@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { StyleSheet, css } from "aphrodite";
 
 const EditAction = (props) => {
   const { onClick, readOnly } = props;
@@ -20,8 +21,20 @@ const EditAction = (props) => {
       }
     }
   }
-
-  return <a onClick={() => toggleEditMode(true)}>{text}</a>;
+  return (
+    <a className={css(styles.button)} onClick={() => toggleEditMode(true)}>
+      {text}
+    </a>
+  );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    cursor: "pointer",
+    ":hover": {
+      color: "#000",
+    },
+  },
+});
 
 export default EditAction;
