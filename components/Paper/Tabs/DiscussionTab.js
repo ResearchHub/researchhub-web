@@ -1,17 +1,37 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import DiscussionThreadCard from "~/components/DiscussionThreadCard";
-import { endsWithSlash } from "~/config/utils/routing";
-import ComponentWrapper from "../../ComponentWrapper";
+import { Value } from "slate";
 
+// Components
+import TextEditor from "~/components/TextEditor";
+import FormInput from "~/components/Form/FormInput";
+import Button from "~/components/Form/Button";
+import DiscussionThreadCard from "~/components/DiscussionThreadCard";
+import ComponentWrapper from "../../ComponentWrapper";
+import Message from "~/components/Loader/Message";
+
+// Redux
+import { MessageActions } from "~/redux/message";
+
+// Config
 import colors from "~/config/themes/colors";
+import discussionScaffold from "~/components/Paper/discussionScaffold.json";
+import { endsWithSlash } from "~/config/utils/routing";
+const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
   const { hostname, threads } = props;
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
   const formattedThreads = formatThreads(threads, basePath);
+  const [transition, setTransition] = useState(false);
+  const [addView, toggleAddView] = useState(false);
+  const [discussion, setDiscussion] = useState({
+    title: "",
+    question: discussionScaffoldInitialValue,
+  });
 
   function renderThreads(threads) {
     return (
@@ -30,22 +50,89 @@ const DiscussionTab = (props) => {
     );
   }
 
-  function addDiscussion() {
-    console.log("addDiscussion");
+  const addDiscussion = async () => {
+    await setTransition(true);
+    setTimeout(() => {
+      toggleAddView(true);
+      setTransition(false);
+    }, 200);
+  };
+
+  const cancel = async () => {
+    await setTransition(true);
+    setTimeout(() => {
+      toggleAddView(false);
+      setTransition(false);
+    }, 200);
+  };
+
+  function save() {
+    props.showMessage({ load: true, show: true });
+    setTimeout(() => {
+      props.showMessage({ show: false });
+      props.setMessage("Successfully Saved!");
+      props.showMessage({ show: true });
+      setTimeout(() => cancel(), 300);
+    }, 800);
   }
 
-  return (
-    <ComponentWrapper>
-      {threads.length > 0 ? (
-        <Fragment>
-          {renderThreads(formattedThreads, hostname)}
-          <div className={css(styles.box)}>
-            <button className={css(styles.button)} onClick={addDiscussion}>
-              Add Discussion
-            </button>
+  function handleInput(id, value) {
+    let newDiscussion = { ...discussion };
+    newDiscussion[id] = value;
+    setDiscussion(newDiscussion);
+  }
+
+  const handleDiscussionTextEditor = (editorState) => {
+    let newDiscussion = { ...discussion };
+    newDiscussion.question = editorState;
+    setDiscussion(newDiscussion);
+  };
+
+  function renderAddDiscussion() {
+    if (addView) {
+      return (
+        <div className={css(styles.box)}>
+          <Message />
+          <FormInput
+            label={"Title"}
+            placeholder="Title of discussion"
+            containerStyle={styles.container}
+            value={discussion.title}
+            id={"title"}
+            onChange={handleInput}
+          />
+          <div className={css(styles.discussionInputWrapper)}>
+            <div className={css(styles.label)}>Question</div>
+            <div className={css(styles.discussionTextEditor)}>
+              <TextEditor
+                canEdit={true}
+                readOnly={false}
+                onChange={handleDiscussionTextEditor}
+                hideButton={true}
+                placeholder={"Leave a question or a comment"}
+                initialValue={discussion.question}
+              />
+            </div>
           </div>
-        </Fragment>
-      ) : (
+          <div className={css(styles.buttonRow, styles.buttons)}>
+            <div
+              className={css(styles.button, styles.buttonLeft)}
+              onClick={cancel}
+            >
+              <span className={css(styles.buttonLabel, styles.text)}>
+                Cancel
+              </span>
+            </div>
+            <Button
+              label={"Save"}
+              customButtonStyle={styles.button}
+              onClick={save}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      return (
         <div className={css(styles.box)}>
           <img className={css(styles.img)} src={"/static/icons/sad.png"} />
           <h2 className={css(styles.noSummaryTitle)}>
@@ -54,9 +141,39 @@ const DiscussionTab = (props) => {
           <div className={css(styles.text)}>
             Please add a discussion to this paper
           </div>
-          <button className={css(styles.button)} onClick={addDiscussion}>
+          <button
+            className={css(styles.addDiscussionButton)}
+            onClick={addDiscussion}
+          >
             Add Discussion
           </button>
+        </div>
+      );
+    }
+  }
+
+  return (
+    <ComponentWrapper>
+      {threads.length > 0 ? (
+        <Fragment>
+          {renderThreads(formattedThreads, hostname)}
+          <div className={css(styles.box)}>
+            <button
+              className={css(styles.addDiscussionButton)}
+              onClick={addDiscussion}
+            >
+              Add Discussions
+            </button>
+          </div>
+        </Fragment>
+      ) : (
+        <div
+          className={css(
+            styles.addDiscussionContainer,
+            transition && styles.transition
+          )}
+        >
+          {renderAddDiscussion()}
         </div>
       )}
     </ComponentWrapper>
@@ -135,7 +252,7 @@ var styles = StyleSheet.create({
     display: "flex",
     cursor: "pointer",
   },
-  button: {
+  addDiscussionButton: {
     border: "1px solid",
     borderColor: colors.PURPLE(1),
     padding: "8px 32px",
@@ -186,6 +303,76 @@ var styles = StyleSheet.create({
   revisionTitle: {
     padding: 10,
   },
+  discussionInputWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    marginTop: 20,
+  },
+  discussionTextEditor: {
+    width: 600,
+    border: "1px solid #E8E8F2",
+    backgroundColor: "#FBFBFD",
+  },
+  label: {
+    fontFamily: "Roboto",
+    fontWeight: 500,
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  container: {
+    width: 600,
+    marginBottom: 20,
+  },
+  buttonRow: {
+    width: "70%",
+    minWidth: 820,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    padding: 60,
+  },
+  buttons: {
+    marginTop: 10,
+    justifyContent: "center",
+    marginBottom: 80,
+  },
+  button: {
+    width: 180,
+    height: 55,
+  },
+  buttonLeft: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 20,
+  },
+  buttonLabel: {
+    color: colors.BLUE(1),
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
+  addDiscussionContainer: {
+    transition: "all ease-in-out 0.3s",
+    opacity: 1,
+  },
+  transition: {
+    opacity: 0,
+  },
 });
 
-export default DiscussionTab;
+const mapStateToProps = (state) => ({
+  message: state.auth,
+});
+
+const mapDispatchToProps = {
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DiscussionTab);
