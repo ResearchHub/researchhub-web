@@ -13,6 +13,7 @@ class Base extends React.Component {
     let { getUser } = this.props;
     getUser();
   };
+
   render() {
     const { Component, pageProps, store } = this.props;
     return (

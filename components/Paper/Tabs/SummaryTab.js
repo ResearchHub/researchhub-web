@@ -71,22 +71,6 @@ class SummaryTab extends React.Component {
     });
   };
 
-  // getSummary = () => {
-  //   fetch(
-  //     API.SUMMARY({ summaryId: this.props.paper.summary.id }),
-  //     API.GET_CONFIG()
-  //   )
-  //     .then(Helpers.checkStatus)
-  //     .then(Helpers.parseJSON)
-  //     .then((resp) => {
-  //       let contentState = convertFromRaw(resp.summary);
-  //       let editorState = EditorState.createWithContent(contentState);
-  //       this.setState({
-  //         editorState,
-  //       });
-  //     });
-  // };
-
   edit = () => {
     this.setState({
       readOnly: false,
@@ -108,7 +92,7 @@ class SummaryTab extends React.Component {
     const { paper } = this.props;
     if (paper.summary) {
       if (paper.summary.summary) {
-        let summaryJSON = JSON.parse(paper.summary.summary);
+        let summaryJSON = paper.summary.summary;
         let editorState = Value.fromJSON(summaryJSON);
         this.setState({
           editorState,
@@ -117,16 +101,6 @@ class SummaryTab extends React.Component {
       }
     }
   }
-
-  // componentDidUpdate = (prevProps) => {
-  //   if (prevProps.paper.summary !== this.props.paper.summary) {
-  //     let contentState = convertFromRaw(this.props.paper.summary.summary);
-  //     let editorState = EditorState.createWithContent(contentState);
-  //     this.setState({
-  //       editorState,
-  //     });
-  //   }
-  // };
 
   render() {
     let { paper } = this.props;
