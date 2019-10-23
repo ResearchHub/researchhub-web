@@ -4,7 +4,7 @@ import { AUTH_TOKEN } from "../config/constants";
 import { doesNotExist } from "~/config/utils";
 
 const apiRoot = {
-  production: "https://backend.researchhub.com",
+  production: "backend.researchhub.com",
   staging: "localhost:8000",
   dev: "localhost:8000",
   //dev: 'https://staging.solestage.com/api/',
