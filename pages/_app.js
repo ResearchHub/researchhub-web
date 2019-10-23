@@ -17,24 +17,19 @@ import Base from "./Base";
 class MyApp extends App {
   constructor(props) {
     super(props);
-
-    this.state = {
-      keyInt: 0,
-    };
   }
 
   render() {
-    const { Component, pageProps, store } = this.props;
-    const keygen = () => {
-      let { keyInt } = this.state;
-      let keyString = `${Date.now().toString()}_${keyInt}`;
-      this.setState({
-        keyInt: keyInt + 1,
-      });
+    const { store } = this.props;
 
+    const keygen = () => {
+      let keyInt = 0;
+      let keyString = `${Date.now().toString()}_${keyInt++}`;
       return keyString;
     };
+
     KeyUtils.setGenerator(keygen);
+
     return (
       <Provider store={store}>
         <Base {...this.props} />
