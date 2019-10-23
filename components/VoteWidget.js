@@ -53,6 +53,8 @@ const VoteWidget = (props) => {
     if (upvoteDisabled) {
       setNotificationOpen(true);
       setNotificationActionMessage("upvote");
+    } else if (upvoteSelected) {
+      console.log("Vote already cast");
     } else {
       onUpvote(e);
     }
@@ -62,6 +64,8 @@ const VoteWidget = (props) => {
     if (downvoteDisabled) {
       setNotificationOpen(true);
       setNotificationActionMessage("downvote");
+    } else if (downvoteSelected) {
+      console.log("Vote already cast");
     } else {
       onDownvote(e);
     }
