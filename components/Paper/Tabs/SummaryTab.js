@@ -286,7 +286,11 @@ var styles = StyleSheet.create({
     height: 45,
     outline: "none",
     cursor: "pointer",
-    // width: 135,
+    ":hover": {
+      borderColor: "#FFF",
+      color: "#FFF",
+      backgroundColor: colors.PURPLE(1),
+    },
   },
   pencilIcon: {
     marginRight: 5,

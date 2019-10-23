@@ -8,6 +8,17 @@ import { useDispatch, useStore } from "react-redux";
 import { Comment } from "~/components/DiscussionComment";
 import { CommentEditor } from "~/components/DiscussionCommentEditor";
 import Thread from "~/components/DiscussionPageThread";
+import { Value } from "slate";
+import Plain from "slate-plain-serializer";
+import InfiniteScroll from "react-infinite-scroller";
+import { connect } from "react-redux";
+
+// components
+import DiscussionCard from "~/components/DiscussionCard";
+import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
+import TextEditor from "~/components/TextEditor";
+import VoteWidget from "~/components/VoteWidget";
+import Loader from "~/components/Loader/Loader";
 
 // Redux
 import DiscussionActions from "~/redux/discussion";
@@ -24,6 +35,7 @@ const DiscussionThreadPage = (props) => {
 
   const [thread, setThread] = useState(props.discussion);
   const [pageNumber, setPageNumber] = useState(1);
+  const { count, page } = discussion.commentPage;
   const [comments, setComments] = useState([]);
   const [userVote, setUserVote] = useState(
     props.discussion.success && props.discussion.userVote
@@ -78,9 +90,9 @@ const DiscussionThreadPage = (props) => {
         divider = null;
       }
       return (
-        <Fragment key={c.id}>
+        <Fragment key={`${c.id}-${i}`}>
           {divider}
-          <Comment key={c.id} data={c} />
+          <Comment key={`${c.id}-${i}`} data={c} />
         </Fragment>
       );
     });
@@ -91,6 +103,13 @@ const DiscussionThreadPage = (props) => {
     newComments = newComments.concat(comments);
     setComments(newComments);
   }
+
+  const getNextPage = async (paperId, discussionThreadId, page) => {
+    await props.fetchComments(paperId, discussionThreadId, page);
+    if (props.state.commentPage.comments.length > 0) {
+      setComments([...comments, ...props.state.commentPage.comments]);
+    }
+  };
 
   return (
     <div>
@@ -112,7 +131,18 @@ const DiscussionThreadPage = (props) => {
           id="all_comments_container"
           className={css(styles.allCommentsContainer)}
         >
-          {renderComments(comments)}
+          <InfiniteScroll
+            pageStart={page}
+            loader={<Loader loading={true} />}
+            hasMore={count > comments.length}
+            loadMore={() => {
+              let paperId = discussion.paper;
+              let discussionThreadId = discussion.id;
+              getNextPage(paperId, discussionThreadId, page + 1);
+            }}
+          >
+            {renderComments(comments)}
+          </InfiniteScroll>
         </div>
       </div>
     </div>
@@ -173,4 +203,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiscussionThreadPage;
+const mapStateToProps = (state) => ({
+  state: state.discussion,
+});
+
+const mapDispatchToProps = {
+  fetchComments: DiscussionActions.fetchComments,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DiscussionThreadPage);

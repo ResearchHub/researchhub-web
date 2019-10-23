@@ -14,6 +14,7 @@ import { AuthActions } from "../redux/auth";
 import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
 import { RHLogo } from "~/config/themes/icons";
+import InviteToHubModal from "../components/modal/InviteToHubModal";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -61,6 +62,7 @@ const Navbar = (props) => {
     <div className={css(styles.navbarContainer)}>
       <UploadPaperModal />
       <LoginModal />
+      <InviteToHubModal />
       <div className={css(styles.logoContainer)}>
         <RHLogo iconStyle={styles.logo} />
       </div>

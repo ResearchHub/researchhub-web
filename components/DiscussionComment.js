@@ -10,11 +10,13 @@ import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import EditAction from "~/components/EditAction";
 import TextEditor from "~/components/TextEditor";
 import VoteWidget from "~/components/VoteWidget";
+import Loader from "~/components/Loader/Loader";
 
 import DiscussionActions from "~/redux/discussion";
 
 import { UPVOTE, DOWNVOTE } from "../config/constants";
-import { discussionPageColors } from "~/config/themes/colors";
+import { voteWidgetIcons } from "~/config/themes/icons";
+import colors, { discussionPageColors } from "~/config/themes/colors";
 import {
   createUsername,
   doesNotExist,
@@ -171,6 +173,9 @@ class CommentClass extends DiscussionComment {
     this.state.showReplyBox = false;
     this.state.replies = this.props.data.replies;
     this.state.replyCount = this.props.data.replyCount;
+    this.state.toggleReplies = false;
+    this.state.transition = false;
+    this.state.loaded = false;
   }
 
   updateText = async (text) => {
@@ -190,12 +195,13 @@ class CommentClass extends DiscussionComment {
     return (
       <div className={css(styles.actionBar)}>
         <ReplyEditor
+          onCancel={() => this.setState({ showReplyBox: false })}
           onSubmit={this.addSubmittedReply}
           commentId={this.state.id}
         />
-        {this.createdByCurrentUser() && (
+        {/* {this.createdByCurrentUser() && (
           <EditAction onClick={this.setReadOnly} />
-        )}
+        )} */}
         {this.renderReplies()}
       </div>
     );
@@ -209,17 +215,56 @@ class CommentClass extends DiscussionComment {
     }
   };
 
-  renderReplies = () => {
-    const replies = this.state.replies.map((r, i) => {
-      return <Reply key={r.id} data={r} commentId={this.state.id} />;
+  toggleReplies = async () => {
+    await this.setState({
+      toggleReplies: !this.state.toggleReplies,
+      transition: !this.state.loaded,
     });
+    setTimeout(() => this.setState({ transition: false, loaded: true }), 400);
+  };
 
-    return (
-      <Fragment>
-        <div>{this.state.replyCount} Replies</div>
-        {replies}
-      </Fragment>
-    );
+  renderMessage = () => {
+    if (this.state.toggleReplies) {
+      return `Hide ${this.state.replyCount.length === 1 ? "reply" : "replies"}`;
+    } else {
+      return `View ${
+        this.state.replyCount === 1
+          ? `${this.state.replyCount} reply`
+          : `${this.state.replyCount} replies`
+      }`;
+    }
+  };
+
+  renderReplies = () => {
+    const replies =
+      this.state.replies &&
+      this.state.replies.map((r, i) => {
+        return <Reply key={r.id} data={r} commentId={this.state.id} />;
+      });
+
+    if (replies.length > 0) {
+      return (
+        <Fragment>
+          <div className={css(styles.showReplyContainer)}>
+            <div className={css(styles.showReply)} onClick={this.toggleReplies}>
+              <span className={css(styles.icon)}>
+                {this.state.toggleReplies
+                  ? voteWidgetIcons.upvote
+                  : voteWidgetIcons.downvote}
+              </span>
+              {this.renderMessage()}
+            </div>
+          </div>
+          {this.state.toggleReplies ? (
+            this.state.transition ? (
+              <Loader />
+            ) : (
+              replies
+            )
+          ) : null}
+        </Fragment>
+      );
+    }
   };
 }
 
@@ -247,7 +292,7 @@ class ReplyClass extends DiscussionComment {
     if (this.createdByCurrentUser()) {
       return (
         <div className={css(styles.actionBar)}>
-          <EditAction onClick={this.setReadOnly} />
+          {/* <EditAction onClick={this.setReadOnly} /> */}
         </div>
       );
     }
@@ -290,10 +335,24 @@ const styles = StyleSheet.create({
   },
   reply: {
     cursor: "pointer",
+    userSelect: "none",
   },
   divider: {
     borderBottom: "1px solid",
     display: "block",
     borderColor: discussionPageColors.DIVIDER,
+  },
+  showReplyContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  showReply: {
+    cursor: "pointer",
+    userSelect: "none",
+    color: colors.BLUE(1),
+    fontSize: 15,
+  },
+  icon: {
+    marginRight: 10,
   },
 });

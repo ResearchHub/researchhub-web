@@ -6,6 +6,7 @@ export const ModalConstants = {
   UPLOAD_PAPER_MODAL_TOGGLE: "@@modal/UPLOAD_PAPER_MODAL_TOGGLE",
   ADD_AUTHOR_MODAL_TOGGLE: "@@modal/ADD_AUTHOR_MODAL_TOGGLE",
   LOGIN_MODAL_TOGGLE: "@@modal/LOGIN_MODAL_TOGGLE",
+  INVITE_TO_HUB_MODAL_TOGGLE: "@@MODAL/INVITE_TO_HUB_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -46,6 +47,16 @@ export const ModalActions = {
       });
     };
   },
+  openInviteToHubModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.INVITE_TO_HUB_MODAL_TOGGLE,
+        payload: {
+          openInviteToHubModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -56,22 +67,16 @@ const defaultModalState = {
   openUploadPaperModal: false,
   openAddAuthorModal: false,
   openLoginModal: false,
+  openInviteToHubModal: false,
   loginModal: {},
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
   switch (action.type) {
     case ModalConstants.UPLOAD_PAPER_MODAL_TOGGLE:
-      return {
-        ...state,
-        ...action.payload,
-      };
     case ModalConstants.ADD_AUTHOR_MODAL_TOGGLE:
-      return {
-        ...state,
-        ...action.payload,
-      };
     case ModalConstants.LOGIN_MODAL_TOGGLE:
+    case ModalConstants.INVITE_TO_HUB_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
