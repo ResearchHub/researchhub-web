@@ -12,9 +12,8 @@ const NotificationModal = (props) => {
     <Modal
       title={title}
       isOpen={isOpen}
-      closeModal={close}
+      close={close}
       shouldCloseOnOverlayClick={true}
-      onRequestClose={close}
     >
       {props.children}
     </Modal>
