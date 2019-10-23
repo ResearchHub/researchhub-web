@@ -21,9 +21,8 @@ class MyApp extends App {
 
   render() {
     const { store } = this.props;
-
+    let keyInt = 0;
     const keygen = () => {
-      let keyInt = 0;
       let keyString = `${Date.now().toString()}_${keyInt++}`;
       return keyString;
     };
