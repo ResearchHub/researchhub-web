@@ -26,7 +26,7 @@ export default (props) => {
         <div className={css(styles.titleContainer)}>
           <div className={css(styles.title, styles.text)}>{title}</div>
         </div>
-        {props.children}
+        <div className={css(styles.centerContent)}>{props.children}</div>
         <div className={css(styles.logoContainer)}>
           <RHLogo iconStyle={styles.logo} />
         </div>

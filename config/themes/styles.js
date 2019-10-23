@@ -27,7 +27,7 @@ export const modalStyles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     backgroundColor: "#fff",
-    padding: "50px 0px 50px 0px",
+    padding: "50px 0px 30px 0px",
     width: 625,
     height: "100%",
   },
@@ -64,16 +64,19 @@ export const modalStyles = StyleSheet.create({
   text: {
     fontFamily: "Roboto",
   },
+  centerContent: {
+    margin: "0px 40px",
+    padding: "0px 40px",
+  },
   logoContainer: {
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-end",
-    position: "absolute",
-    bottom: 5,
+    bottom: 0,
+    marginTop: 20,
   },
   logo: {
     height: 30,
-    marginBottom: 20,
     userSelect: "none",
   },
 });
