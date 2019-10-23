@@ -9,30 +9,37 @@ import { connect, useDispatch, useStore } from "react-redux";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
+import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 
 // Config
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
 
-class AuthoredPapersTab extends React.Component {
+class UserDiscussionsTab extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    let { author } = this.props;
-    let papers = author.authoredPapers.papers.map((paper, index) => {
-      return (
-        <div className={css(styles.paperContainer)}>
-          <PaperEntryCard paper={paper} index={index} />
-        </div>
-      );
-    });
+    let { author, hostname } = this.props;
+    let discussions = author.userDiscussions.discussions.map(
+      (discussion, index) => {
+        let path = `/paper/${discussion.paper}/discussions/${discussion.id}`;
+        return (
+          <div className={css(styles.discussionContainer)}>
+            <DiscussionThreadCard
+              data={discussion}
+              hostname={hostname}
+              path={path}
+            />
+          </div>
+        );
+      }
+    );
     return (
       <ComponentWrapper>
-        <div className={css(styles.container)}>{papers}</div>
+        <div className={css(styles.container)}>{discussions}</div>
       </ComponentWrapper>
     );
   }
@@ -46,10 +53,13 @@ var styles = StyleSheet.create({
     alignItems: "flex-end",
     boxSizing: "border-box",
   },
+  discussionContainer: {
+    width: "100%",
+  },
 });
 
 const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-export default connect(mapStateToProps)(AuthoredPapersTab);
+export default connect(mapStateToProps)(UserDiscussionsTab);
