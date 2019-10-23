@@ -1,16 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
+import { useStore } from "react-redux";
+
+import PermissionNotification from "./PermissionNotification";
 
 import { doesNotExist } from "~/config/utils";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
 import { voteWidgetIcons } from "~/config/themes/icons";
 import { UPVOTE, DOWNVOTE } from "../config/constants";
+import { getCurrentUserReputation } from "../config/utils";
 
 const VoteWidget = (props) => {
-  const { onUpvote, onDownvote, fontSize, selected, width } = props;
+  const store = useStore();
 
+  const { onUpvote, onDownvote, fontSize, selected, width } = props;
   const score = getScore(props);
+
+  const userReputation = getCurrentUserReputation(store.getState());
+  const { permissions } = store.getState();
+
+  const [upvoteDisabled] = useState(
+    permissions &&
+      userReputation < permissions.data.UpvotePaper.minimumReputation
+  );
+  const [downvoteDisabled] = useState(
+    permissions &&
+      userReputation < permissions.data.DownvotePaper.minimumReputation
+  );
+  const [notificaitonOpen, setNotificaitonOpen] = useState(false);
+
   const [upvoteSelected, setUpvoteSelected] = useState(selected === UPVOTE);
   const [downvoteSelected, setDownvoteSelected] = useState(
     selected === DOWNVOTE
@@ -26,15 +45,42 @@ const VoteWidget = (props) => {
     }
   }, [selected]);
 
+  function onUpvoteClick(e) {
+    if (upvoteDisabled) {
+      setNotificaitonOpen(true);
+    } else {
+      onUpvote(e);
+    }
+  }
+
+  function onDownvoteClick(e) {
+    if (downvoteDisabled) {
+      setNotificaitonOpen(true);
+    } else {
+      onDownvote(e);
+    }
+  }
+
   return (
-    <div
-      className={css(styles.container, props.styles)}
-      style={{ fontSize: fontSize, width: width }}
-    >
-      <UpvoteButton selected={upvoteSelected} onClick={onUpvote} />
-      <ScorePill score={score} />
-      <DownvoteButton selected={downvoteSelected} onClick={onDownvote} />
-    </div>
+    <Fragment>
+      <div
+        className={css(styles.container, props.styles)}
+        style={{ fontSize: fontSize, width: width }}
+      >
+        <UpvoteButton
+          selected={upvoteSelected}
+          disabled={upvoteDisabled}
+          onClick={onUpvoteClick}
+        />
+        <ScorePill score={score} />
+        <DownvoteButton
+          selected={downvoteSelected}
+          disabled={downvoteDisabled}
+          onClick={onDownvoteClick}
+        />
+      </div>
+      <PermissionNotification isOpen={notificaitonOpen} action="vote" />
+    </Fragment>
   );
 };
 
@@ -56,34 +102,30 @@ const ScorePill = (props) => {
   );
 };
 
-const UpvoteButton = (props) => {
-  const { onClick, selected } = props;
+const VoteButton = (props) => {
+  const { onClick, selected, disabled } = props;
 
-  const style = [styles.icon];
+  let style = [styles.icon];
   if (selected) {
     style.push(styles.selected);
+  }
+  if (disabled) {
+    style = [styles.iconDisabled];
   }
 
   return (
     <a className={css(...style)} onClick={onClick}>
-      {voteWidgetIcons.upvote}
+      {props.children}
     </a>
   );
 };
 
+const UpvoteButton = (props) => {
+  return <VoteButton {...props}>{voteWidgetIcons.upvote}</VoteButton>;
+};
+
 const DownvoteButton = (props) => {
-  const { onClick, selected } = props;
-
-  const style = [styles.icon];
-  if (selected) {
-    style.push(styles.selected);
-  }
-
-  return (
-    <a className={css(...style)} onClick={onClick}>
-      {voteWidgetIcons.downvote}
-    </a>
-  );
+  return <VoteButton {...props}>{voteWidgetIcons.downvote}</VoteButton>;
 };
 
 function getScore(props) {
@@ -116,11 +158,16 @@ const styles = StyleSheet.create({
       color: colors.BLUE(1),
     },
   },
+  iconDisabled: {
+    cursor: "not-allowed",
+    color: voteWidgetColors.ARROW,
+  },
   coins: {
     fontSize: 10,
   },
   selected: {
     color: colors.GREEN(),
+    cursor: "not-allowed",
   },
 });
 
