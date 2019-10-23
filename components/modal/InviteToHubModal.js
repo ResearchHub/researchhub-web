@@ -7,6 +7,7 @@ import Modal from "react-modal";
 // Component
 import Button from "~/components/Form/Button";
 import FormInput from "~/components/Form/FormInput";
+import AuthorInput from "~/components/SearchSuggestion/AuthorInput";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -20,6 +21,8 @@ class InviteToHubModal extends React.Component {
     super(props);
     this.initialState = {
       setCopySuccessMessage: "",
+      emails: [],
+      email: "",
     };
     this.state = {
       ...this.initialState,
@@ -43,6 +46,14 @@ class InviteToHubModal extends React.Component {
     document.execCommand("copy");
     // e.target.focus(); // TODO: Uncomment if we don't want highlighting
     this.setState({ setCopySuccessMessage: "Copied!" });
+  };
+
+  addEmail = (emails) => {
+    this.setState({ emails });
+  };
+
+  handleEmailInput = (value) => {
+    this.setState({ email: value });
   };
 
   render() {
@@ -71,9 +82,14 @@ class InviteToHubModal extends React.Component {
               You can invite people by email, or with a link
             </div>
           </div>
-          <FormInput
+          <AuthorInput
+            tags={this.state.emails}
+            onChange={this.addEmail}
+            onChangeInput={this.handleEmailInput}
+            inputValue={this.state.email}
             label={"Inviting via email addresses"}
             placeholder={"Enter email addresses"}
+            renderEmail={true}
           />
           <Button
             label={"Send Invites"}
@@ -86,6 +102,11 @@ class InviteToHubModal extends React.Component {
             message={this.state.copySuccessMessage}
             containerStyle={styles.containerStyle}
           />
+          <span className={css(styles.socialMedia)}>
+            <div className={css(styles.sublabel)}>
+              Share your link to invite people to the hub
+            </div>
+          </span>
         </div>
       </Modal>
     );
@@ -132,7 +153,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     backgroundColor: "#fff",
-    padding: "50px 0px 50px 0px",
+    padding: "50px 50px 50px 50px",
     width: 625,
     overflowY: "scroll",
   },
@@ -193,9 +214,21 @@ const styles = StyleSheet.create({
   customButtonStyle: {
     width: 200,
     height: 55,
+    // marginTop: 10
   },
   containerStyle: {
     marginTop: 40,
+    width: 602,
+  },
+  copyLink: {
+    color: colors.BLUE(1),
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
+  sublabel: {
+    fontSize: 14,
+    color: "#706e7f",
   },
 });
 

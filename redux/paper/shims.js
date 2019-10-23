@@ -21,6 +21,7 @@ export const paperPost = ({
   title,
   url,
   type,
+  tagline,
 }) => {
   let formData = new FormData();
   authors.forEach((author) => {
@@ -35,6 +36,7 @@ export const paperPost = ({
   formData.append("paper_publish_date", publishDate);
   formData.append("url", url);
   formData.append("publication_type", type);
+  formData.append("tagline", tagline);
   return formData;
 };
 
