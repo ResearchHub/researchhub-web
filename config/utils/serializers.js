@@ -1,7 +1,7 @@
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 
-import { getNestedValue } from "./index";
+import { doesNotExist, getNestedValue } from "./index";
 
 export function createUsername({ createdBy }) {
   const { firstName, lastName } = createdBy;
@@ -24,8 +24,16 @@ export function convertToEditorValue(text) {
   }
 }
 
-export function getCurrentUser(storeObject) {
-  return getNestedValue(storeObject, ["auth", "user"], null);
+export function getCurrentUser(storeState) {
+  return getNestedValue(storeState, ["auth", "user"], null);
+}
+
+export function getCurrentUserReputation(storeState) {
+  const currentUser = getCurrentUser(storeState);
+  if (!doesNotExist(currentUser)) {
+    return currentUser.reputation;
+  }
+  return null;
 }
 
 export function getVoteType(vote) {
