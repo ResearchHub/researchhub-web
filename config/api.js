@@ -48,6 +48,24 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    USER_DISCUSSION: ({ authorId, page }) => {
+      let url =
+        BASE_URL + `author/${authorId}/get_user_discussions/?page=${page}`;
+      return url;
+    },
+
+    USER_CONTRIBUTION: ({
+      authorId,
+      commentOffset,
+      replyOffset,
+      paperUploadOffset,
+    }) => {
+      let url =
+        BASE_URL +
+        `author/${authorId}/get_user_contributions/?commentOffset=${commentOffset}&replyOffset=${replyOffset}&paperUploadOffset=${paperUploadOffset}`;
+      return url;
+    },
+
     POST_PAPER: () => {
       let url = BASE_URL + `paper/`;
 
