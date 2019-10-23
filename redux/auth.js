@@ -35,7 +35,7 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     dispatch({ type: AuthConstants.FETCHING_USER, isFetchingUser: true });
   }
   var config = API.GET_CONFIG();
-  return fetch(API.USER, config)
+  return fetch(API.USER({}), config)
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((json) => {
@@ -231,28 +231,28 @@ export const AuthActions = {
     };
   },
 
-  /***
-   * Save changes to user profile
-   */
-  saveProfileChanges: () => {
-    return (dispatch, getState) => {
-      let user = getState().auth.user;
-      let putConfig = API.PUT_CONFIG(user);
-      dispatch({
-        type: AuthConstants.SAVING_PROFILE_CHANGES,
-        savingProfileChanges: true,
-      });
-      return fetch(API.USER + `${user.id}/`, putConfig)
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((json) => {
-          return dispatch({
-            type: AuthConstants.SAVED_PROFILE_CHANGES,
-            savingProfileChanges: false,
-          });
-        });
-    };
-  },
+  // /***
+  //  * Save changes to user profile
+  //  */
+  // saveProfileChanges: () => {
+  //   return (dispatch, getState) => {
+  //     let user = getState().auth.user;
+  //     let putConfig = API.PUT_CONFIG(user);
+  //     dispatch({
+  //       type: AuthConstants.SAVING_PROFILE_CHANGES,
+  //       savingProfileChanges: true,
+  //     });
+  //     return fetch(API.USER + `${user.id}/`, putConfig)
+  //       .then(Helpers.checkStatus)
+  //       .then(Helpers.parseJSON)
+  //       .then((json) => {
+  //         return dispatch({
+  //           type: AuthConstants.SAVED_PROFILE_CHANGES,
+  //           savingProfileChanges: false,
+  //         });
+  //       });
+  //   };
+  // },
 };
 
 /**********************************
