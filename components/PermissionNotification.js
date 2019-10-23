@@ -1,9 +1,14 @@
 import Modal from "./Modal";
+import ReputationCard from "./ReputationCard";
 
 const PermissionNotification = (props) => {
-  const { action } = props;
+  const { action, userReputation } = props;
   const title = `Not enough reputation points to ${action}`;
-  return <NotificationModal {...props} title={title}></NotificationModal>;
+  return (
+    <NotificationModal {...props} title={title}>
+      <ReputationCard reputation={userReputation} />
+    </NotificationModal>
+  );
 };
 
 const NotificationModal = (props) => {

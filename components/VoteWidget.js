@@ -29,7 +29,10 @@ const VoteWidget = (props) => {
       userReputation < permissions.data.DownvotePaper.minimumReputation
   );
 
-  const [notificaitonOpen, setNotificaitonOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [notificationActionMessage, setNotificationActionMessage] = useState(
+    ""
+  );
 
   const [upvoteSelected, setUpvoteSelected] = useState(selected === UPVOTE);
   const [downvoteSelected, setDownvoteSelected] = useState(
@@ -48,7 +51,8 @@ const VoteWidget = (props) => {
 
   function onUpvoteClick(e) {
     if (upvoteDisabled) {
-      setNotificaitonOpen(true);
+      setNotificationOpen(true);
+      setNotificationActionMessage("upvote");
     } else {
       onUpvote(e);
     }
@@ -56,7 +60,8 @@ const VoteWidget = (props) => {
 
   function onDownvoteClick(e) {
     if (downvoteDisabled) {
-      setNotificaitonOpen(true);
+      setNotificationOpen(true);
+      setNotificationActionMessage("downvote");
     } else {
       onDownvote(e);
     }
@@ -81,10 +86,11 @@ const VoteWidget = (props) => {
         />
       </div>
       <PermissionNotification
-        isOpen={notificaitonOpen}
-        action="vote"
+        userReputation={userReputation}
+        isOpen={notificationOpen}
+        action={notificationActionMessage}
         close={() => {
-          setNotificaitonOpen(false);
+          setNotificationOpen(false);
         }}
       />
     </Fragment>
