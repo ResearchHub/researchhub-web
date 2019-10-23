@@ -5,16 +5,26 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
 // Components
-import Navbar from "~/components/Navbar";
-import { AuthActions } from "../redux/auth";
 import Message from "~/components/Loader/Message";
+import Navbar from "~/components/Navbar";
+
+import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
+import PermissionsActions from "../redux/permissions";
 
 class Base extends React.Component {
   componentDidMount = async () => {
-    let { getUser, getHubs } = this.props;
+    const {
+      fetchPermissions,
+      fetchPermissionsPending,
+      getHubs,
+      getUser
+    } = this.props;
+
     getUser();
     getHubs();
+    fetchPermissionsPending();
+    await fetchPermissions();
   };
 
   render() {
@@ -48,6 +58,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getHubs: HubActions.getHubs,
+  fetchPermissions: PermissionsActions.fetchPermissions,
+  fetchPermissionsPending: PermissionsActions.fetchPermissionsPending,
 };
 
 export default connect(
