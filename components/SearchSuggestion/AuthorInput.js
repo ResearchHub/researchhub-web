@@ -14,6 +14,8 @@ const AuthorInput = ({
   labelStyle,
   onChange,
   onChangeInput,
+  placeholder,
+  renderEmail,
 }) => {
   function renderTag(props) {
     let { tag, key, disabled, onRemove, classNameRemove, ...other } = props;
@@ -27,10 +29,20 @@ const AuthorInput = ({
     );
   }
 
+  function renderEmailTags(props) {
+    let { tag, key, disabled, onRemove, classNameRemove, ...other } = props;
+    return (
+      <span key={key} {...other}>
+        {tag}
+        {!disabled && (
+          <a className={classNameRemove} onClick={(e) => onRemove(key)} />
+        )}
+      </span>
+    );
+  }
+
   return (
-    <div
-      className={css(styles.container, containerStyle && styles.containerStyle)}
-    >
+    <div className={css(styles.container)}>
       <div
         className={css(
           styles.inputLabel,
@@ -49,10 +61,12 @@ const AuthorInput = ({
         onChangeInput={(value) => onChangeInput(value)}
         inputValue={inputValue}
         className={error ? css(styles.error) : "react-tagsinput"}
-        maxTags={3}
-        renderTag={(props) => renderTag(props)}
+        // maxTags={3}
+        renderTag={(props) =>
+          renderEmail ? renderEmailTags(props) : renderTag(props)
+        }
         inputProps={{
-          placeholder: "Search for author",
+          placeholder: placeholder ? placeholder : "Search for author",
         }}
       />
     </div>
