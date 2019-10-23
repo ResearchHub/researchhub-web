@@ -171,9 +171,6 @@ const styles = StyleSheet.create({
     top: 15,
     paddingRight: 16,
     cursor: "pointer",
-    ":hover": {
-      color: colors.BLUE(1),
-    },
   },
   error: {
     margin: 0,
