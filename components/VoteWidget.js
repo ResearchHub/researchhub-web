@@ -80,7 +80,13 @@ const VoteWidget = (props) => {
           onClick={onDownvoteClick}
         />
       </div>
-      <PermissionNotification isOpen={notificaitonOpen} action="vote" />
+      <PermissionNotification
+        isOpen={notificaitonOpen}
+        action="vote"
+        close={() => {
+          setNotificaitonOpen(false);
+        }}
+      />
     </Fragment>
   );
 };
