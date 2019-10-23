@@ -12,7 +12,7 @@ import colors, { discussionPageColors } from "~/config/themes/colors";
 import { doesNotExist } from "~/config/utils";
 
 const DiscussionCommentEditor = (props) => {
-  const { commentId, postMethod, onSubmit, getRef } = props;
+  const { commentId, postMethod, onSubmit, onCancel, getRef } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
@@ -48,6 +48,7 @@ const DiscussionCommentEditor = (props) => {
         onSubmit={post}
         readOnly={!isActive}
         commentEditor={true}
+        onCancel={onCancel && onCancel}
       />
     </div>
   );
@@ -90,7 +91,7 @@ export const CommentEditor = (props) => {
 };
 
 export const ReplyEditor = (props) => {
-  const { commentId, onSubmit } = props;
+  const { commentId, onSubmit, onCancel } = props;
 
   const [reply, setReply] = useState(false);
   const [transition, setTransition] = useState(false);
@@ -101,12 +102,7 @@ export const ReplyEditor = (props) => {
   function detectOutsideClick(ref) {
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {
-        setTimeout(() => {
-          setTransition(false);
-          setTimeout(() => {
-            setReply(false);
-          }, 280);
-        }, 100);
+        hideReply();
       }
     }
 
@@ -122,6 +118,16 @@ export const ReplyEditor = (props) => {
     e.stopPropagation();
     setTransition(true);
     setReply(true);
+  }
+
+  function hideReply(e) {
+    e && e.stopPropagation();
+    setTimeout(() => {
+      setTransition(false);
+      setTimeout(() => {
+        setReply(false);
+      }, 280);
+    }, 100);
   }
 
   return (
@@ -140,6 +146,7 @@ export const ReplyEditor = (props) => {
           postMethod={postReply}
           commentId={commentId}
           commentEditor={true}
+          onCancel={hideReply}
         />
       )}
     </div>
@@ -209,10 +216,13 @@ const styles = StyleSheet.create({
   },
   replyContainer: {
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "flex-end",
   },
   reply: {
+    textTransform: "uppercase",
     cursor: "pointer",
+    fontSize: 13,
+    marginBottom: 10,
     ":hover": {
       color: "#000",
     },

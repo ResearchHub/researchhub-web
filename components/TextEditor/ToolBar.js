@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import colors from "../../config/themes/colors";
+import FormButton from "../Form/Button";
 
 export const Button = (props) => {
   const { active, onMouseDown, first } = props;
@@ -38,11 +39,19 @@ export const ToolBar = (props) => {
       )}
     >
       <div>{props.children}</div>
-      {!props.hideButton && (
-        <button className={css(styles.submit)} onClick={props.submit}>
-          Submit
-        </button>
-      )}
+      <div className={css(styles.buttonRow)}>
+        {!props.hideButton && props.cancel && (
+          <FormButton
+            isWhite={true}
+            onClick={props.cancel}
+            label="Cancel"
+            customButtonStyle={styles.cancelButton}
+          />
+        )}
+        {!props.hideButton && (
+          <FormButton onClick={props.submit} label="Submit" />
+        )}
+      </div>
     </div>
   );
 };
@@ -75,7 +84,7 @@ const styles = StyleSheet.create({
     background: colors.PURPLE(1),
     color: "#fff",
     border: "none",
-    fontVariant: "small-caps",
+    // fontVariant: "small-caps",
     padding: "12px 36px",
     fontSize: 16,
     cursor: "pointer",
@@ -84,5 +93,13 @@ const styles = StyleSheet.create({
   },
   first: {
     marginLeft: 0,
+  },
+  buttonRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  cancelButton: {
+    marginRight: 10,
   },
 });

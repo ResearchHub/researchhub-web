@@ -25,9 +25,9 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
     publication_type,
     title,
     summary,
+    tagline,
   } = paper;
 
-  // console.log("summary", summary);
   function convertDate() {
     let dateArr = paper_publish_date.split("-");
     dateArr[1] = convertNumToMonth[dateArr[1]];
@@ -53,11 +53,9 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
           </div>
           <div className={css(styles.summary, styles.text)}>
             {/* <TextEditor readOnly={true} /> */}
-            Carbonic anhydrase IX (CAIX) is a membrane spanning protein involved
-            in the enzymatic regulation of tumoracid-base balance. CAIX has been
-            shown to be elevated in a number of hypoxic tumor types. The purpose
-            of this study was to determine the efficiency of intact and IgG
-            fragments of cG250.
+            {tagline
+              ? tagline
+              : "Carbonic anhydrase IX (CAIX) is a membrane spanning protein involved in the enzymatic regulation of tumoracid-base balance. CAIX has been shown to be elevated in a number of hypoxic tumor types. The purpose of this study was to determine the efficiency of intact and IgG fragments of cG250."}
           </div>
           <div className={css(styles.bottomBar)}>
             <div className={css(styles.row)}>
