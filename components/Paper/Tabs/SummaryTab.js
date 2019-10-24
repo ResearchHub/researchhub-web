@@ -182,7 +182,7 @@ class SummaryTab extends React.Component {
             ) : (
               <div className={css(styles.box)}>
                 <div className={css(styles.icon)}>
-                  <i class="fad fa-file-alt" />
+                  <i className="fad fa-file-alt" />
                 </div>
                 <h2 className={css(styles.noSummaryTitle)}>
                   A summary hasn't been filled in yet.

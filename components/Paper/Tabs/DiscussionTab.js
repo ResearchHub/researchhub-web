@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
+import { timeAgo } from "~/config/utils";
 
 // Components
 import TextEditor from "~/components/TextEditor";
@@ -21,21 +22,21 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
+import { transformDate, transformUser, transformVote } from "~/redux/utils";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
+  const initialDiscussionState = {
+    title: "",
+    question: discussionScaffoldInitialValue,
+  };
   const { hostname, threads } = props;
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
   const formattedThreads = formatThreads(threads, basePath);
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
-  const [discussion, setDiscussion] = useState({
-    title: "",
-    question: discussionScaffoldInitialValue,
-  });
-
-  props.showMessage({ show: false });
+  const [discussion, setDiscussion] = useState(initialDiscussionState);
 
   function renderThreads(threads) {
     return (
@@ -55,6 +56,7 @@ const DiscussionTab = (props) => {
   }
 
   const addDiscussion = async () => {
+    props.showMessage({ show: false });
     await setTransition(true);
     setTimeout(() => {
       toggleAddView(true);
@@ -64,6 +66,7 @@ const DiscussionTab = (props) => {
 
   const cancel = async () => {
     await setTransition(true);
+    setDiscussion(initialDiscussionState);
     setTimeout(() => {
       toggleAddView(false);
       setTransition(false);
@@ -71,6 +74,14 @@ const DiscussionTab = (props) => {
   };
 
   const save = async () => {
+    if (
+      discussion.title === "" ||
+      JSON.parse(JSON.stringify(discussion.question)).document.nodes[0].nodes[0]
+        .text === ""
+    ) {
+      props.setMessage("Fields must not be empty.");
+      return props.showMessage({ show: true, error: true });
+    }
     let { paperId } = router.query;
     props.showMessage({ load: true, show: true });
 
@@ -86,6 +97,12 @@ const DiscussionTab = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        let newDiscussion = { ...resp };
+        newDiscussion.createdDate = transformDate(resp.created_date);
+        threads.push(newDiscussion);
+        let formattedDiscussion = createFormattedDiscussion(newDiscussion);
+        formattedThreads.push(formattedDiscussion);
+
         setTimeout(() => {
           props.showMessage({ show: false });
           props.setMessage("Successfully Saved!");
@@ -102,11 +119,20 @@ const DiscussionTab = (props) => {
       });
   };
 
-  function handleInput(id, value) {
+  const createFormattedDiscussion = (newDiscussion) => {
+    let discussionObject = {
+      data: newDiscussion,
+      key: newDiscussion.id,
+      path: `/paper/1/discussion/${newDiscussion.id}`,
+    };
+    return discussionObject;
+  };
+
+  const handleInput = (id, value) => {
     let newDiscussion = { ...discussion };
     newDiscussion[id] = value;
     setDiscussion(newDiscussion);
-  }
+  };
 
   const handleDiscussionTextEditor = (editorState) => {
     let newDiscussion = { ...discussion };
@@ -114,7 +140,7 @@ const DiscussionTab = (props) => {
     setDiscussion(newDiscussion);
   };
 
-  function renderAddDiscussion() {
+  const renderAddDiscussion = () => {
     if (addView) {
       return (
         <div className={css(styles.box)}>
@@ -126,6 +152,7 @@ const DiscussionTab = (props) => {
             value={discussion.title}
             id={"title"}
             onChange={handleInput}
+            required={true}
           />
           <div className={css(styles.discussionInputWrapper)}>
             <div className={css(styles.label)}>Question</div>
@@ -160,11 +187,10 @@ const DiscussionTab = (props) => {
     } else {
       return (
         <div className={css(styles.box)}>
-          {props.threads.length < 1 && (
+          {formattedThreads.length < 1 && (
             <span className={css(styles.box)}>
-              {/* <img className={css(styles.img)} src={"/static/icons/sad.png"} /> */}
               <span className={css(styles.icon)}>
-                <i class="fad fa-comments" />
+                <i className="fad fa-comments" />
               </span>
               <h2 className={css(styles.noSummaryTitle)}>
                 There are no discussions for this paper yet.
@@ -183,7 +209,7 @@ const DiscussionTab = (props) => {
         </div>
       );
     }
-  }
+  };
 
   return (
     <ComponentWrapper>
