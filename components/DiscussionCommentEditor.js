@@ -9,7 +9,12 @@ import TextEditor from "~/components/TextEditor";
 import DiscussionActions from "~/redux/discussion";
 
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import { doesNotExist } from "~/config/utils";
+import {
+  currentUserHasMinimumReputation,
+  doesNotExist,
+  getMinimumReputation,
+} from "~/config/utils";
+import { ModalActions } from "../redux/modals";
 
 const DiscussionCommentEditor = (props) => {
   const { commentId, postMethod, onSubmit, onCancel, getRef } = props;
@@ -17,6 +22,11 @@ const DiscussionCommentEditor = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
+
+  const minimumReputation = getMinimumReputation(
+    store.getState(),
+    "CreateDiscussionThread"
+  );
 
   const [isActive, setIsActive] = useState(props.active);
 
@@ -33,13 +43,21 @@ const DiscussionCommentEditor = (props) => {
     );
   };
 
+  function onClick(e) {
+    if (currentUserHasMinimumReputation(store.getState(), minimumReputation)) {
+      setIsActive(e);
+    } else {
+      ModalActions.openPermissionNotificationModal(true, "create a thread");
+    }
+  }
+
   return (
     <div
       className={css(
         styles.commentBoxContainer,
         isActive && styles.activeCommentBoxContainer
       )}
-      onClick={setIsActive}
+      onClick={onClick}
       ref={getRef}
     >
       <TextEditor
