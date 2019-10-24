@@ -23,9 +23,9 @@ export function fetchPermissions() {
   };
 }
 
-const PermissionsActions = {
+const PermissionActions = {
   fetchPermissions,
   fetchPermissionsPending: actions.setPermissionsPending,
 };
 
-export default PermissionsActions;
+export default PermissionActions;
