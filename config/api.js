@@ -22,6 +22,7 @@ const routes = (BASE_URL) => {
       return url;
     },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
+    SIGNOUT: BASE_URL + "auth/logout/",
     PAPER: ({ paperId, search, page }) => {
       let url = BASE_URL + `paper/`;
 
