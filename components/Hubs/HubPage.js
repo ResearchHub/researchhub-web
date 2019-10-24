@@ -2,7 +2,6 @@ import Link from "next/link";
 import Router from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import { GoogleLogin, GoogleLogout } from "react-google-login";
 import InfiniteScroll from "react-infinite-scroller";
 
 // Component
@@ -11,6 +10,7 @@ import HubsList from "~/components/Hubs/HubsList";
 import FormSelect from "~/components/Form/FormSelect";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
+import GoogleLoginButton from "~/components/GoogleLoginButton";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -81,18 +81,9 @@ class HubPage extends React.Component {
       });
   };
 
-  responseGoogle = (response) => {
-    //TODO: do something after google oauth api responds
-    let { googleLogin, getUser } = this.props;
-    response["access_token"] = response["accessToken"];
-    googleLogin(response).then((_) => {
-      getUser().then((_) => {
-        // this.closeModal();
-      });
-    });
-  };
-
   render() {
+    let { auth } = this.props;
+
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.homeBanner)}>
@@ -100,7 +91,13 @@ class HubPage extends React.Component {
             src={"/static/background/homepage.png"}
             className={css(styles.bannerOverlay)}
           />
-          <div className={css(styles.column, styles.titleContainer)}>
+          <div
+            className={css(
+              styles.column,
+              styles.titleContainer,
+              auth.isLoggedIn && styles.centered
+            )}
+          >
             <div className={css(styles.header, styles.text)}>
               Welcome to {this.props.hubName}!
             </div>
@@ -109,24 +106,12 @@ class HubPage extends React.Component {
               reproducability, and funding of scientic research.{" "}
               <span className={css(styles.readMore)}>Read more</span>
             </div>
-            <GoogleLogin
-              clientId={
-                "192509748493-amjlt30mbpo9lq5gppn7bfd5c52i0ioe.apps.googleusercontent.com"
-              }
-              onSuccess={this.responseGoogle}
-              onFailure={this.responseGoogle}
-              cookiePolicy={"single_host_origin"}
-              render={(renderProps) => (
-                <Button
-                  disabled={renderProps.disabled}
-                  onClick={renderProps.onClick}
-                  customButtonStyle={styles.button}
-                  icon={"/static/icons/google.png"}
-                  customIconStyle={styles.iconStyle}
-                  label={"Log in with Google"}
-                />
-              )}
-            />
+            {!auth.isLoggedIn && (
+              <GoogleLoginButton
+                googleLogin={this.props.googleLogin}
+                getUser={this.props.getUser}
+              />
+            )}
           </div>
         </div>
         <div className={css(styles.row, styles.body)}>
@@ -207,6 +192,9 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     height: 200,
     zIndex: 3,
+  },
+  centered: {
+    height: 120,
   },
   homeBanner: {
     background: "linear-gradient(#684ef5, #5058f6)",
@@ -318,6 +306,10 @@ var styles = StyleSheet.create({
     "-ms-filter": "blur(6px)",
     "-o-filter": "blur(6px)",
     filter: "blur(6px)",
+  },
+  blank: {
+    opacity: 0,
+    height: 60,
   },
 });
 
