@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import Modal from "./Modal";
 import ReputationCard from "./ReputationCard";
 
@@ -9,6 +11,13 @@ const PermissionNotification = (props) => {
       <ReputationCard reputation={userReputation} />
     </NotificationModal>
   );
+};
+
+PermissionNotification.propTypes = {
+  action: PropTypes.string,
+  close: PropTypes.func,
+  isOpen: PropTypes.bool,
+  userReputation: PropTypes.number,
 };
 
 const NotificationModal = (props) => {
