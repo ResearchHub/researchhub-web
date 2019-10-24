@@ -67,7 +67,9 @@ class DragNDrop extends React.Component {
         width: 525,
         padding: isDynamic && this.state.dragOver ? 15 : 0,
         backgroundColor: this.state.dragOver ? "#FFF" : "#FBFBFD",
-        border: `0.5px dashed ${error ? colors.RED(1) : colors.BLUE(1)}`,
+        border: `0.5px dashed ${
+          error || !this.state.isPDF ? colors.RED(1) : colors.BLUE(1)
+        }`,
         transition: "all ease-in-out 0.3s",
       },
       inputWrapper: {
