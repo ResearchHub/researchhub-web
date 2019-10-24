@@ -43,5 +43,6 @@ export function transformUser(user) {
     id: getNestedValue(user, ["id"], null),
     firstName: getNestedValue(user, ["first_name"], ""),
     lastName: getNestedValue(user, ["last_name"], ""),
+    authorProfile: getNestedValue(user, ["author_profile"], {}),
   };
 }

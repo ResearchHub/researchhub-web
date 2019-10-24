@@ -1,15 +1,17 @@
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import Avatar from "react-avatar";
+
+// Components
+import AuthorAvatar from "~/components/AuthorAvatar";
 
 import colors from "~/config/themes/colors";
 import { timeAgo } from "~/config/utils";
 
 const DiscussionPostMetadata = (props) => {
-  const { username, date } = props;
+  const { username, date, authorProfile } = props;
   return (
     <div className={css(styles.container)}>
-      <User name={username} />
+      <User name={username} authorProfile={authorProfile} />
       <Timestamp date={date} />
     </div>
   );
@@ -18,14 +20,14 @@ const DiscussionPostMetadata = (props) => {
 DiscussionPostMetadata.propTypes = {
   username: PropTypes.string,
   date: PropTypes.any,
+  authorProfile: PropTypes.object,
 };
 
 const User = (props) => {
-  const { image, name } = props;
-
+  const { image, name, authorProfile } = props;
   return (
     <div className={css(styles.userContainer)}>
-      <Avatar name={name} size={30} round={true} textSizeRatio={2.5} />
+      <AuthorAvatar author={authorProfile} name={name} disableLink={false} />
       <div className={css(styles.name)}>{name}</div>
     </div>
   );

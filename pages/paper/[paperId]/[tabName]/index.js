@@ -4,7 +4,6 @@ import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import { connect, useDispatch, useStore } from "react-redux";
 import moment from "moment";
-import Avatar from "react-avatar";
 
 // Components
 import ActionButton from "~/components/ActionButton";
@@ -16,6 +15,7 @@ import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 import HubLabel from "~/components/Hub/HubLabel";
+import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { PaperActions } from "~/redux/paper";
 import VoteActions from "~/redux/vote";
@@ -117,12 +117,7 @@ const Paper = (props) => {
       paper.authors.map((author, index) => {
         return (
           <div className={css(styles.authorContainer)} key={`author_${index}`}>
-            <Avatar
-              name={`${author.first_name} ${author.last_name}`}
-              size={30}
-              round={true}
-              textSizeRatio="1"
-            />
+            <AuthorAvatar author={author} size={30} textSizeRatio="1" />
           </div>
         );
       });

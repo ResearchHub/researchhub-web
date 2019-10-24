@@ -1,10 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // NPM Components
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import Avatar from "react-avatar";
 
 // Redux
 import { ModalActions } from "../redux/modals";
@@ -15,6 +14,7 @@ import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
 import { RHLogo } from "~/config/themes/icons";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
+import AuthorAvatar from "~/components/AuthorAvatar";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -32,6 +32,7 @@ const Navbar = (props) => {
   useEffect(() => {
     getUser();
   }, []);
+  const [openMenu, setOpenMenu] = useState(false);
 
   const tabData = [
     { label: "About", route: "/about" },
@@ -56,6 +57,10 @@ const Navbar = (props) => {
       );
     });
     return tabs;
+  }
+
+  function toggleMenu() {
+    setOpenMenu(!openMenu);
   }
 
   return (
@@ -84,12 +89,25 @@ const Navbar = (props) => {
             ) : null
           ) : (
             <div className={css(styles.userDropdown)}>
-              <Avatar
-                name={user.first_name + " " + user.last_name}
-                size={34}
-                round={true}
-                textSizeRatio={2.5}
-              />
+              <div className={css(styles.avatarContainer)} onClick={toggleMenu}>
+                <AuthorAvatar
+                  author={user.author_profile}
+                  size={34}
+                  textSizeRatio={2.5}
+                  disableLink={true}
+                />
+              </div>
+              {openMenu && (
+                <div className={css(styles.dropdown)} onClick={toggleMenu}>
+                  <Link
+                    href={"/user/[authorId]/[tabName]"}
+                    as={`/user/${user.author_profile.id}/contributions`}
+                  >
+                    <div className={css(styles.option)}>Profile</div>
+                  </Link>
+                  <div className={css(styles.option)}>Logout</div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -152,6 +170,8 @@ const styles = StyleSheet.create({
   },
   userDropdown: {
     marginRight: 35,
+    position: "relative",
+    zIndex: 2,
   },
   searchbar: {
     padding: 10,
@@ -207,6 +227,35 @@ const styles = StyleSheet.create({
   logo: {
     height: 40,
     minWidth: 155,
+  },
+  dropdown: {
+    position: "absolute",
+    bottom: -80,
+    right: 0,
+    height: 70,
+    width: 150,
+    boxSizing: "border-box",
+    background: "#fff",
+    border: "1px solid #eee",
+    borderRadius: 4,
+  },
+  option: {
+    width: "100%",
+    height: 35,
+    padding: 10,
+    boxSizing: "border-box",
+    borderBottom: "1px solid #eee",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+
+    ":hover": {
+      background: "#eee",
+    },
+  },
+  avatarContainer: {
+    cursor: "pointer",
   },
 });
 
