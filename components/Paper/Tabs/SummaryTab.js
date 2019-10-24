@@ -1,11 +1,7 @@
-import { Fragment } from "react";
 import Link from "next/link";
-import Router, { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import dynamic from "next/dynamic";
 import { Value } from "slate";
-import moment from "moment";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
