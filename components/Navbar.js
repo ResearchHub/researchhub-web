@@ -35,9 +35,8 @@ const Navbar = (props) => {
     openUploadPaperModal,
     signout,
   } = props;
-  const { permissions } = store.getState();
   const minimumReputation = getNestedValue(
-    permissions,
+    store.getState().permission,
     ["data", "CreatePaper", "minimumReputation"],
     null
   );

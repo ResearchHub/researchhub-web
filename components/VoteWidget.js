@@ -18,15 +18,15 @@ const VoteWidget = (props) => {
   const score = getScore(props);
 
   const userReputation = getCurrentUserReputation(store.getState());
-  const { permissions } = store.getState();
+  const { permission } = store.getState();
 
   const [upvoteDisabled] = useState(
-    permissions.success &&
-      userReputation < permissions.data.UpvotePaper.minimumReputation
+    permission.success &&
+      userReputation < permission.data.UpvotePaper.minimumReputation
   );
   const [downvoteDisabled] = useState(
-    permissions.success &&
-      userReputation < permissions.data.DownvotePaper.minimumReputation
+    permission.success &&
+      userReputation < permission.data.DownvotePaper.minimumReputation
   );
 
   const [notificationOpen, setNotificationOpen] = useState(false);

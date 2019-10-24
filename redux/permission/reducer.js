@@ -6,7 +6,7 @@ const defaultState = {
   data: [],
 };
 
-const PermissionsReducer = (state = defaultState, action) => {
+const PermissionReducer = (state = defaultState, action) => {
   switch (action.type) {
     case types.FETCH_PERMISSIONS_PENDING:
     case types.FETCH_PERMISSIONS_FAILURE:
@@ -20,4 +20,4 @@ const PermissionsReducer = (state = defaultState, action) => {
   }
 };
 
-export default PermissionsReducer;
+export default PermissionReducer;
