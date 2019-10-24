@@ -134,6 +134,7 @@ class DiscussionComment extends React.Component {
         />
         <DiscussionPostMetadata
           username={this.state.username}
+          authorProfile={this.props.data.createdBy.authorProfile}
           date={this.state.date}
         />
       </Fragment>

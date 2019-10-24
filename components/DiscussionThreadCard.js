@@ -96,7 +96,11 @@ const DiscussionThreadCard = (props) => {
               onUpvote={upvote}
               onDownvote={downvote}
             />
-            <DiscussionPostMetadata username={username} date={date} />
+            <DiscussionPostMetadata
+              authorProfile={data.createdBy.authorProfile}
+              username={username}
+              date={date}
+            />
             <ReadButton threadPath={path} />
           </Fragment>
         }
