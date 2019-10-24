@@ -429,7 +429,7 @@ class PaperUploadInfo extends React.Component {
       });
   };
 
-  renderHeader = (label, header = false, button = true) => {
+  renderHeader = (label, header = false, clickable = true) => {
     return (
       <div className={css(styles.header, styles.text)}>
         {label}
@@ -437,7 +437,7 @@ class PaperUploadInfo extends React.Component {
           <div
             className={css(
               styles.sidenote,
-              button && styles.headerButton,
+              clickable && styles.headerButton,
               styles.text
             )}
           >
@@ -1219,6 +1219,7 @@ const styles = StyleSheet.create({
   },
   discussionTextEditor: {
     width: 600,
+    height: 300,
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
   },
