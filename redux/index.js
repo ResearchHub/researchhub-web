@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 
 import discussionReducer from "./discussion/reducer";
 import paperReducer from "./paper/reducer";
-import permissionsReducer from "./permissions/reducer";
+import permissionReducer from "./permission/reducer";
 import modalReducer from "./modals";
 import authReducer from "./auth";
 import voteReducer from "./vote/reducer";
@@ -15,7 +15,7 @@ export default combineReducers({
   discussion: discussionReducer,
   message: messageReducer,
   paper: paperReducer,
-  permissions: permissionsReducer,
+  permission: permissionReducer,
   auth: authReducer,
   vote: voteReducer,
   author: authorReducer,

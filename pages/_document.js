@@ -1,10 +1,15 @@
 import Document, { Head, Main, NextScript } from "next/document";
 import { StyleSheetServer } from "aphrodite";
 
+import PermissionActions from "../redux/permission";
+
 export default class MyDocument extends Document {
   static async getInitialProps({ renderPage, res, req }) {
     const { html, css } = StyleSheetServer.renderStatic(() => renderPage());
     const ids = css.renderedClassNames;
+
+    store.dispatch(PermissionActions.fetchPermissionsPending());
+    await store.dispatch(PermissionActions.fetchPermissions());
 
     redirectWithoutSlash(res, req);
 
