@@ -441,7 +441,17 @@ class PaperUploadInfo extends React.Component {
               styles.text
             )}
           >
-            {header}
+            {clickable ? (
+              <a
+                className={css(styles.authorGuidelines)}
+                href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+                target="_blank"
+              >
+                {header}
+              </a>
+            ) : (
+              header
+            )}
           </div>
         )}
       </div>
