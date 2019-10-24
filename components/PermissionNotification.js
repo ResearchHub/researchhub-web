@@ -1,13 +1,22 @@
 import PropTypes from "prop-types";
+import { useStore } from "react-redux";
 
 import Modal from "./Modal";
 import ReputationCard from "./ReputationCard";
 
 const PermissionNotification = (props) => {
-  const { action, userReputation } = props;
+  const { close, userReputation } = props;
+
+  const store = useStore();
+
+  const { permissionNotificationAction } = store.getState().modals;
+  const action = props.action || permissionNotificationAction;
   const title = `Not enough reputation points to ${action}`;
+
+  const isOpen = store.getState().modals.openPermissionNotificationModal;
+
   return (
-    <NotificationModal {...props} title={title}>
+    <NotificationModal close={close} isOpen={isOpen} title={title}>
       <ReputationCard reputation={userReputation} />
     </NotificationModal>
   );
