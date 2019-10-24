@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { useStore } from "react-redux";
 
@@ -7,43 +7,48 @@ import { getCurrentUserReputation } from "~/config/utils";
 
 const ReputationCard = (props) => {
   const store = useStore();
-  const { permissions } = store.getState();
-  const [availableActionCount, setAvailableActionCount] = useState(0);
+  const { permission } = store.getState();
+  const [actions, setActions] = useState([]);
+  const [actionCount, setActionCount] = useState(0);
 
   const reputation =
     props.reputation || getCurrentUserReputation(store.getState());
 
   const message = "Earn more reputation points by performing these actions";
 
-  function renderActions() {
-    return (
-      permissions.success &&
-      Object.keys(permissions.data).map((k) => {
+  useEffect(() => {
+    collectActions();
+  }, [permission.success]);
+
+  function collectActions() {
+    const actionList = [];
+    permission.success &&
+      Object.keys(permission.data).map((k) => {
         const styling = [];
-        const currentPermission = permissions.data[k];
+        const currentPermission = permission.data[k];
 
         if (
           reputation >= currentPermission.minimumReputation &&
           currentPermission.canEarn
         ) {
-          setAvailableActionCount(availableActionCount++);
+          setActionCount(actionCount + 1);
           styling.push(styles.available);
-          return (
+          actionList.push(
             <div key={k} className={css(...styling)}>
               {currentPermission.label}
             </div>
           );
         }
-      })
-    );
+      });
+    setActions(actionList);
   }
 
   return (
     <Fragment>
       <div className={css(modalStyles.subtitle, modalStyles.text)}>
-        {availableActionCount > 0 && message}
+        {actionCount > 0 && message}
       </div>
-      {renderActions()}
+      {actions}
     </Fragment>
   );
 };
