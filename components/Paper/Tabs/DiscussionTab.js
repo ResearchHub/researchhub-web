@@ -35,6 +35,8 @@ const DiscussionTab = (props) => {
     question: discussionScaffoldInitialValue,
   });
 
+  props.showMessage({ show: false });
+
   function renderThreads(threads) {
     return (
       threads &&
@@ -160,9 +162,12 @@ const DiscussionTab = (props) => {
         <div className={css(styles.box)}>
           {props.threads.length < 1 && (
             <span className={css(styles.box)}>
-              <img className={css(styles.img)} src={"/static/icons/sad.png"} />
+              {/* <img className={css(styles.img)} src={"/static/icons/sad.png"} /> */}
+              <span className={css(styles.icon)}>
+                <i class="fad fa-comments" />
+              </span>
               <h2 className={css(styles.noSummaryTitle)}>
-                There are no discussion for this paper yet!
+                There are no discussions for this paper yet.
               </h2>
               <div className={css(styles.text)}>
                 Please add a discussion to this paper
@@ -244,6 +249,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
+    scrollBehavior: "smooth",
   },
   noSummaryTitle: {
     color: colors.BLACK(1),
@@ -331,6 +337,7 @@ var styles = StyleSheet.create({
   },
   discussionTextEditor: {
     width: 600,
+    height: 200,
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
   },
@@ -351,12 +358,10 @@ var styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    padding: 60,
+    paddingTop: 40,
   },
   buttons: {
-    marginTop: 10,
     justifyContent: "center",
-    marginBottom: 80,
   },
   button: {
     width: 180,
@@ -381,6 +386,12 @@ var styles = StyleSheet.create({
   },
   transition: {
     opacity: 0,
+  },
+  icon: {
+    fontSize: 50,
+    color: colors.BLUE(1),
+    height: 50,
+    marginBottom: 10,
   },
 });
 
