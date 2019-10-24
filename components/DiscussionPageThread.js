@@ -110,7 +110,11 @@ const Thread = (props) => {
         infoStyle={styles.threadInfo}
         action={
           <Fragment>
-            <DiscussionPostMetadata username={username} date={date} />
+            <DiscussionPostMetadata
+              authorProfile={createdBy.authorProfile}
+              username={username}
+              date={date}
+            />
             {canEdit && (
               <EditAction onClick={setReadOnly} readOnly={readOnly} />
             )}

@@ -4,7 +4,6 @@ import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import { connect, useDispatch, useStore } from "react-redux";
 import moment from "moment";
-import Avatar from "react-avatar";
 
 import { AuthorActions } from "~/redux/author";
 import { PaperActions } from "~/redux/paper";
@@ -15,6 +14,7 @@ import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
 import TabBar from "~/components/TabBar";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
+import AuthorAvatar from "~/components/AuthorAvatar";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -106,10 +106,7 @@ const AuthorPage = (props) => {
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.profileContainer)}>
-          <Avatar
-            name={`${author.first_name} ${author.last_name}`}
-            round={true}
-          />
+          <AuthorAvatar author={author} disableLink={true} size={80} />
           <div className={css(styles.profileInfo)}>
             <div className={css(styles.authorName)}>
               {author.first_name} {author.last_name}

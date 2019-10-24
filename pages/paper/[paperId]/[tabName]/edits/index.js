@@ -50,11 +50,11 @@ class PaperEditHistory extends React.Component {
     let previousSummaryJSON = {};
     let previousState = {};
 
-    let summaryJSON = JSON.parse(edit.summary);
+    let summaryJSON = edit.summary;
     let editorState = Value.fromJSON(summaryJSON);
 
     if (edit.previous) {
-      previousSummaryJSON = JSON.parse(edit.previous__summary);
+      previousSummaryJSON = edit.previous__summary;
       previousState = Value.fromJSON(previousSummaryJSON);
       editorState = this.diffVersions(editorState, previousState);
     }
@@ -72,11 +72,11 @@ class PaperEditHistory extends React.Component {
       let previousState = {};
 
       let edit = this.props.paper.editHistory[0];
-      let summaryJSON = JSON.parse(edit.summary);
+      let summaryJSON = edit.summary;
       let editorState = Value.fromJSON(summaryJSON);
 
       if (edit.previous) {
-        previousSummaryJSON = JSON.parse(edit.previous__summary);
+        previousSummaryJSON = edit.previous__summary;
         previousState = Value.fromJSON(previousSummaryJSON);
         editorState = this.diffVersions(editorState, previousState);
       }

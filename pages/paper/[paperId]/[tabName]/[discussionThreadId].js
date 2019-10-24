@@ -15,7 +15,6 @@ import { connect } from "react-redux";
 
 // components
 import DiscussionCard from "~/components/DiscussionCard";
-import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
 import TextEditor from "~/components/TextEditor";
 import VoteWidget from "~/components/VoteWidget";
 import Loader from "~/components/Loader/Loader";

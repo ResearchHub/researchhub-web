@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 
 // Components
 import VotingWidget from "../VoteWidget";
-import Avatar from "react-avatar";
+import AuthorAvatar from "~/components/AuthorAvatar";
 import HubTag from "./HubTag";
 import TextEditor from "../TextEditor/index";
 
@@ -67,12 +67,11 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
               >
                 {authors.length > 0 &&
                   authors.map((author) => (
-                    <Avatar
-                      className={css(styles.avatar)}
+                    <AuthorAvatar
+                      avatarClassName={css(styles.avatar)}
                       size={30}
-                      round={true}
                       textSizeRatio={2.5}
-                      name={`${author.first_name} ${author.last_name}`}
+                      author={author}
                     />
                   ))}
               </span>
