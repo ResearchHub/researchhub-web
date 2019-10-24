@@ -3,23 +3,29 @@ import { useEffect, useState } from "react";
 // NPM Components
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
+import { connect, useStore } from "react-redux";
+import Avatar from "react-avatar";
 
 // Redux
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
 
 // Components
-import LoginModal from "../components/modal/LoginModal";
-import UploadPaperModal from "../components/modal/UploadPaperModal";
-import { RHLogo } from "~/config/themes/icons";
-import InviteToHubModal from "../components/modal/InviteToHubModal";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import InviteToHubModal from "../components/modal/InviteToHubModal";
+import LoginModal from "../components/modal/LoginModal";
+import PermissionNotification from "../components/PermissionNotification";
+import UploadPaperModal from "../components/modal/UploadPaperModal";
+
+import { RHLogo } from "~/config/themes/icons";
+import { getCurrentUserReputation, getNestedValue } from "~/config/utils";
 
 // Styles
 import colors from "~/config/themes/colors";
 
 const Navbar = (props) => {
+  const store = useStore();
+
   const {
     isLoggedIn,
     user,
@@ -29,6 +35,16 @@ const Navbar = (props) => {
     openUploadPaperModal,
     signout,
   } = props;
+  const { permissions } = store.getState();
+  const minimumReputation = getNestedValue(
+    permissions,
+    ["data", "CreatePaper", "minimumReputation"],
+    null
+  );
+
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [notificationActionMessage] = useState("upload a paper");
+  const userReputation = getCurrentUserReputation(store.getState());
 
   useEffect(() => {
     getUser();
@@ -62,6 +78,18 @@ const Navbar = (props) => {
 
   function toggleMenu() {
     setOpenMenu(!openMenu);
+  }
+
+  function onAddPaperClick() {
+    if (minimumReputation !== null) {
+      if (userReputation < minimumReputation) {
+        setNotificationOpen(true);
+      } else {
+        openUploadPaperModal(true);
+      }
+    } else {
+      console.warn("minimumReputation is null");
+    }
   }
 
   return (
@@ -118,7 +146,7 @@ const Navbar = (props) => {
         </div>
         <button
           className={css(styles.button, styles.addPaper)}
-          onClick={() => openUploadPaperModal(true)}
+          onClick={onAddPaperClick}
         >
           Add Paper
         </button>
