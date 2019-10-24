@@ -3,15 +3,17 @@ import { css, StyleSheet } from "aphrodite";
 import { useStore } from "react-redux";
 
 import { modalStyles } from "~/config/themes/styles";
+import { getCurrentUserReputation } from "~/config/utils";
 
 const ReputationCard = (props) => {
   const store = useStore();
   const { permissions } = store.getState();
 
+  const reputation =
+    props.reputation || getCurrentUserReputation(store.getState());
+
   const availableMessage =
     "Earn more reputation points by performing these actions";
-
-  const { reputation } = props;
 
   function renderActions() {
     return (
