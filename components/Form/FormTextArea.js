@@ -15,6 +15,7 @@ const FormTextArea = (props) => {
     labelStyle,
     inputStyle,
     onChange,
+    value,
   } = props;
 
   return (
@@ -39,6 +40,7 @@ const FormTextArea = (props) => {
         placeholder={placeholder && placeholder}
         style={inputStyle && inputStyle}
         onChange={(e) => onChange && onChange(id, e.target.value)}
+        value={value}
       />
     </div>
   );
