@@ -27,6 +27,7 @@ const Navbar = (props) => {
     getUser,
     authChecked,
     openUploadPaperModal,
+    signout,
   } = props;
 
   useEffect(() => {
@@ -105,7 +106,9 @@ const Navbar = (props) => {
                   >
                     <div className={css(styles.option)}>Profile</div>
                   </Link>
-                  <div className={css(styles.option)}>Logout</div>
+                  <div className={css(styles.option)} onClick={signout}>
+                    Logout
+                  </div>
                 </div>
               )}
             </div>
@@ -269,6 +272,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
   getUser: AuthActions.getUser,
+  signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
 };
 
