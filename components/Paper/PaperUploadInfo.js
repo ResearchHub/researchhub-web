@@ -127,11 +127,13 @@ class PaperUploadInfo extends React.Component {
           paper_publish_date,
           publication_type,
           title,
+          tagline,
         } = res;
 
         let form = JSON.parse(JSON.stringify(this.state.form));
         form.doi = doi;
         form.title = title;
+        form.tagline = tagline;
         form.hubs = hubs.map((hub) => {
           return {
             id: hub.id,
@@ -167,12 +169,15 @@ class PaperUploadInfo extends React.Component {
         }
         form.author.self_author =
           authors.filter((author) => author.id === userAuthorId).length > 0;
-
-        await this.setState({
-          selectedAuthors: [...authors],
-          form,
-          progress: 100,
-        });
+        console.log("form", form);
+        await this.setState(
+          {
+            selectedAuthors: [...authors],
+            form,
+            progress: 100,
+          },
+          () => console.log(this.state)
+        );
         setTimeout(
           () =>
             this.props.messageActions.showMessage({ load: false, show: false }),
