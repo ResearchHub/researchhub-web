@@ -36,6 +36,13 @@ export function getCurrentUserReputation(storeState) {
   return null;
 }
 
+export function getMinimumReputation(storeState, key) {
+  return (
+    storeState.permission.success &&
+    storeState.permission.data[key].minimumReputation
+  );
+}
+
 export function getVoteType(vote) {
   return vote && vote.voteType;
 }

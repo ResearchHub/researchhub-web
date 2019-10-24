@@ -7,9 +7,11 @@ import { StyleSheet, css } from "aphrodite";
 // Components
 import Message from "~/components/Loader/Message";
 import Navbar from "~/components/Navbar";
+import PermissionNotification from "../components/PermissionNotification";
 
 import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
+import { ModalActions } from "../redux/modals";
 import PermissionsActions from "../redux/permissions";
 
 class Base extends React.Component {
@@ -27,12 +29,17 @@ class Base extends React.Component {
     await fetchPermissions();
   };
 
+  closePermissionNotification = () => {
+    ModalActions.openPermissionNotificationModal(false);
+  };
+
   render() {
     const { Component, pageProps, store } = this.props;
     return (
       <Fragment>
         {this.props.authChecked ? (
           <div className={css(styles.pageWrapper)}>
+            <PermissionNotification close={this.closePermissionNotification} />
             <Navbar />
             <Component {...pageProps} />
             <Message />
