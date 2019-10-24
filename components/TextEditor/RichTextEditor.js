@@ -166,7 +166,7 @@ class RichTextEditor extends React.Component {
               // renderDecoration={this.renderDecoration}
             />
             {!this.props.readOnly && (
-              <Sticky innerZ={100}>
+              <Sticky innerZ={2}>
                 <ToolBar
                   cancel={this.props.cancel}
                   submit={this.props.submit}
@@ -197,7 +197,7 @@ class RichTextEditor extends React.Component {
         ) : (
           <div className={css(styles.summaryEditor)}>
             {!this.props.readOnly && (
-              <Sticky innerZ={100}>
+              <Sticky innerZ={2}>
                 <ToolBar
                   cancel={this.props.cancel}
                   submit={this.props.submit}
