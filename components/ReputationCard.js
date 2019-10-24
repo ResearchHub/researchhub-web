@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { useStore } from "react-redux";
 
@@ -8,12 +8,12 @@ import { getCurrentUserReputation } from "~/config/utils";
 const ReputationCard = (props) => {
   const store = useStore();
   const { permissions } = store.getState();
+  const [availableActionCount, setAvailableActionCount] = useState(0);
 
   const reputation =
     props.reputation || getCurrentUserReputation(store.getState());
 
-  const availableMessage =
-    "Earn more reputation points by performing these actions";
+  const message = "Earn more reputation points by performing these actions";
 
   function renderActions() {
     return (
@@ -26,6 +26,7 @@ const ReputationCard = (props) => {
           reputation >= currentPermission.minimumReputation &&
           currentPermission.canEarn
         ) {
+          setAvailableActionCount(availableActionCount++);
           styling.push(styles.available);
           return (
             <div key={k} className={css(...styling)}>
@@ -40,7 +41,7 @@ const ReputationCard = (props) => {
   return (
     <Fragment>
       <div className={css(modalStyles.subtitle, modalStyles.text)}>
-        {availableMessage}
+        {availableActionCount > 0 && message}
       </div>
       {renderActions()}
     </Fragment>
