@@ -16,7 +16,7 @@ const AuthorAvatar = (props) => {
   } = props;
 
   function renderAvatar() {
-    let authorName = `${author.first_name} ${author.last_name}`;
+    let authorName = author ? `${author.first_name} ${author.last_name}` : null;
     return (
       <Avatar
         className={avatarClassName}
