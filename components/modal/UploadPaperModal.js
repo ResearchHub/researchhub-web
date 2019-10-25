@@ -299,13 +299,13 @@ class UploadPaperModal extends React.Component {
             customButtonStyle={styles.button}
             customLabelStyle={styles.label}
             disabled={uploadView && !uploadFinish}
-            onClick={this.toggleUploadView}
+            onClick={!uploadView && this.toggleUploadView}
             isLink={
               uploadView
                 ? {
                     href: "/paper/upload/info",
                     linkAs: "/paper/upload/info",
-                    query: { uploadPaperTitle: this.state.search },
+                    // query: { uploadPaperTitle: this.state.search },
                   }
                 : null
             }
