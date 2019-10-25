@@ -79,12 +79,6 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    PROPOSE_EDIT: ({}) => {
-      let url = BASE_URL + `summary/propose_edit/`;
-
-      return url;
-    },
-
     DISCUSSION: (paperId) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/`;
 
