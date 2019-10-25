@@ -17,6 +17,7 @@ import { PaperActions } from "~/redux/paper";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { convertToEditorValue } from "~/config/utils";
 
 const Diff = require("diff");
 class PaperEditHistory extends React.Component {
@@ -47,15 +48,12 @@ class PaperEditHistory extends React.Component {
   changeEditView = (selectedIndex, edit) => {
     let { paper } = this.props;
 
-    let previousSummaryJSON = {};
     let previousState = {};
 
-    let summaryJSON = edit.summary;
-    let editorState = Value.fromJSON(summaryJSON);
+    let editorState = convertToEditorValue(edit.summary);
 
     if (edit.previous) {
-      previousSummaryJSON = edit.previous__summary;
-      previousState = Value.fromJSON(previousSummaryJSON);
+      previousState = convertToEditorValue(edit.previous__summary);
       editorState = this.diffVersions(editorState, previousState);
     }
 
@@ -68,16 +66,13 @@ class PaperEditHistory extends React.Component {
 
   componentDidMount() {
     if (this.props.paper.editHistory.length > 0) {
-      let previousSummaryJSON = {};
       let previousState = {};
 
       let edit = this.props.paper.editHistory[0];
-      let summaryJSON = edit.summary;
-      let editorState = Value.fromJSON(summaryJSON);
+      let editorState = convertToEditorValue(edit.summary);
 
       if (edit.previous) {
-        previousSummaryJSON = edit.previous__summary;
-        previousState = Value.fromJSON(previousSummaryJSON);
+        previousState = convertToEditorValue(edit.previous__summary);
         editorState = this.diffVersions(editorState, previousState);
       }
 
