@@ -15,6 +15,7 @@ import TabBar from "~/components/TabBar";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import ShareModal from "~/components/ShareModal";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -25,7 +26,7 @@ const AuthorPage = (props) => {
   let { author, hostname } = props;
   let router = useRouter();
   let { tabName } = router.query;
-
+  const [openShareModal, setOpenShareModal] = useState(false);
   const dispatch = useDispatch();
 
   async function fetchAuthoredPapers() {
@@ -128,35 +129,54 @@ const AuthorPage = (props) => {
             </div>
           </div>
           <div className={css(styles.socialLinks)}>
-            <Link href={author.linkedin}>
-              <a className={css(styles.link)} target="_blank">
-                <div className={css(styles.socialMedia, styles.linkedin)}>
-                  <i className="fab fa-linkedin-in"></i>
-                </div>
-              </a>
-            </Link>
-            <Link href={author.twitter}>
-              <a className={css(styles.link)} target="_blank">
-                <div className={css(styles.socialMedia, styles.twitter)}>
-                  <i className="fab fa-twitter"></i>
-                </div>
-              </a>
-            </Link>
-            <Link href={author.facebook}>
-              <a className={css(styles.link)} target="_blank">
-                <div className={css(styles.socialMedia, styles.facebook)}>
-                  <i className="fab fa-facebook-f"></i>
-                </div>
-              </a>
-            </Link>
-            <div className={css(styles.socialMedia, styles.shareLink)}>
+            {author.linkedin && (
+              <Link href={author.linkedin}>
+                <a className={css(styles.link)} target="_blank">
+                  <div className={css(styles.socialMedia, styles.linkedin)}>
+                    <i className="fab fa-linkedin-in"></i>
+                  </div>
+                </a>
+              </Link>
+            )}
+            {author.twitter && (
+              <Link href={author.twitter}>
+                <a className={css(styles.link)} target="_blank">
+                  <div className={css(styles.socialMedia, styles.twitter)}>
+                    <i className="fab fa-twitter"></i>
+                  </div>
+                </a>
+              </Link>
+            )}
+            {author.facebook && (
+              <Link href={author.facebook}>
+                <a className={css(styles.link)} target="_blank">
+                  <div className={css(styles.socialMedia, styles.facebook)}>
+                    <i className="fab fa-facebook-f"></i>
+                  </div>
+                </a>
+              </Link>
+            )}
+            <div
+              className={css(styles.socialMedia, styles.shareLink)}
+              onClick={() => setOpenShareModal(true)}
+            >
               <i className="far fa-link"></i>
             </div>
           </div>
         </div>
       </ComponentWrapper>
-      <TabBar tabs={tabs} dynamic_href={"/user/[authorId]/[tabName]"} />
+      <TabBar
+        tabs={tabs}
+        selectedTab={router.query.tabName}
+        dynamic_href={"/user/[authorId]/[tabName]"}
+      />
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
+      <ShareModal
+        close={() => setOpenShareModal(false)}
+        isOpen={openShareModal}
+        title={"Share Author Profile"}
+        url={`${hostname}${router.asPath}`}
+      />
     </div>
   );
 };
@@ -186,6 +206,7 @@ const styles = StyleSheet.create({
   },
   socialLinks: {
     display: "flex",
+    height: 35,
   },
   authorName: {
     fontWeight: 500,
