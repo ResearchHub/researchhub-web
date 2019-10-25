@@ -51,7 +51,7 @@ class SummaryTab extends React.Component {
     this.setState({ editorState });
   };
 
-  saveEdit = (raw) => {
+  submitEdit = (raw) => {
     let { setMessage, showMessage } = this.props;
     let param = {
       summary: raw,
@@ -60,7 +60,7 @@ class SummaryTab extends React.Component {
         ? this.props.paper.summary.id
         : null,
     };
-    fetch(API.PROPOSE_EDIT({}), API.POST_CONFIG(param))
+    fetch(API.SUMMARY({}), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -68,6 +68,11 @@ class SummaryTab extends React.Component {
         showMessage({ show: true });
         this.setState({
           readOnly: true,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          errorMessage: "Not enough reputation",
         });
       });
   };
@@ -108,6 +113,7 @@ class SummaryTab extends React.Component {
     let { transition } = this.state;
     return (
       <ComponentWrapper>
+        <div>{this.state.errorMessage}</div>
         {paper.summary.summary ? (
           <div className={css(styles.container)}>
             {this.state.readOnly ? (
@@ -145,8 +151,8 @@ class SummaryTab extends React.Component {
                 canSubmit={true}
                 commentEditor={false}
                 initialValue={this.state.editorState}
-                onSubmit={this.saveEdit}
                 onCancel={this.cancel}
+                onSubmit={this.submitEdit}
               />
             )}
           </div>
@@ -175,8 +181,8 @@ class SummaryTab extends React.Component {
                   canEdit={true}
                   canSubmit={true}
                   commentEditor={false}
-                  onSubmit={this.saveEdit}
                   onCancel={this.cancel}
+                  onSubmit={this.submitEdit}
                 />
               </div>
             ) : (
