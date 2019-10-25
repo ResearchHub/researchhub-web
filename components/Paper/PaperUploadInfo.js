@@ -127,11 +127,13 @@ class PaperUploadInfo extends React.Component {
           paper_publish_date,
           publication_type,
           title,
+          tagline,
         } = res;
 
         let form = JSON.parse(JSON.stringify(this.state.form));
         form.doi = doi;
         form.title = title;
+        form.tagline = tagline;
         form.hubs = hubs.map((hub) => {
           return {
             id: hub.id,
@@ -167,12 +169,15 @@ class PaperUploadInfo extends React.Component {
         }
         form.author.self_author =
           authors.filter((author) => author.id === userAuthorId).length > 0;
-
-        await this.setState({
-          selectedAuthors: [...authors],
-          form,
-          progress: 100,
-        });
+        console.log("form", form);
+        await this.setState(
+          {
+            selectedAuthors: [...authors],
+            form,
+            progress: 100,
+          },
+          () => console.log(this.state)
+        );
         setTimeout(
           () =>
             this.props.messageActions.showMessage({ load: false, show: false }),
@@ -424,7 +429,7 @@ class PaperUploadInfo extends React.Component {
       });
   };
 
-  renderHeader = (label, header = false, button = true) => {
+  renderHeader = (label, header = false, clickable = true) => {
     return (
       <div className={css(styles.header, styles.text)}>
         {label}
@@ -432,11 +437,21 @@ class PaperUploadInfo extends React.Component {
           <div
             className={css(
               styles.sidenote,
-              button && styles.headerButton,
+              clickable && styles.headerButton,
               styles.text
             )}
           >
-            {header}
+            {clickable ? (
+              <a
+                className={css(styles.authorGuidelines)}
+                href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+                target="_blank"
+              >
+                {header}
+              </a>
+            ) : (
+              header
+            )}
           </div>
         )}
       </div>
@@ -840,12 +855,13 @@ class PaperUploadInfo extends React.Component {
     } else {
       await this.props.paperActions.patchPaper(this.props.paperId, body);
       if (this.props.paper.success) {
-        this.props.messageActions.setMessage(
-          `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
-        );
+        this.props.messageActions.setMessage(`Paper successfully updated`);
         this.props.messageActions.showMessage({ show: true });
         setTimeout(() => {
           this.navigateToSummary();
+          setTimeout(() => {
+            this.props.messageActions.showMessage({ show: false });
+          }, 400);
         }, 800);
       } else {
         this.props.messageActions.setMessage("Hmm something went wrong");
@@ -938,7 +954,7 @@ class PaperUploadInfo extends React.Component {
 
     let param = {
       title: this.state.discussion.title,
-      text: JSON.stringify(this.state.discussion.question.toJSON()),
+      text: this.state.discussion.question.toJSON(),
       paper: paperId,
     };
 
@@ -1214,6 +1230,7 @@ const styles = StyleSheet.create({
   },
   discussionTextEditor: {
     width: 600,
+    height: 300,
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
   },
