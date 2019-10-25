@@ -3,7 +3,6 @@ import Link from "next/link";
 import Router, { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import { EditorState, convertFromRaw } from "draft-js";
 import dynamic from "next/dynamic";
 import { Value } from "slate";
 import moment from "moment";
@@ -78,17 +77,6 @@ class SummaryTab extends React.Component {
   };
 
   componentDidMount() {
-    /*
-
-    TODO: Let's refactor this.
-
-    Foremost this needs a shim to accomodate backend api changes.
-
-    It may be best to move all of this fetching logic to redux and
-    keep track of (at least) fetch failure/success and (probably) the summary
-    content in global state.
-
-    */
     const { paper } = this.props;
     if (paper.summary) {
       if (paper.summary.summary) {
