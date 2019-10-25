@@ -96,7 +96,6 @@ const DiscussionTab = (props) => {
       .then((resp) => {
         let newDiscussion = { ...resp };
         newDiscussion = thread(newDiscussion);
-        // newDiscussion.createdDate = transformDate(resp.created_date);
         threads.unshift(newDiscussion);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         formattedThreads.unshift(formattedDiscussion);

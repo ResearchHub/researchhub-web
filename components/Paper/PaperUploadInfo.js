@@ -953,7 +953,7 @@ class PaperUploadInfo extends React.Component {
 
     let param = {
       title: this.state.discussion.title,
-      text: JSON.stringify(this.state.discussion.question.toJSON()),
+      text: this.state.discussion.question.toJSON(),
       paper: paperId,
     };
 
