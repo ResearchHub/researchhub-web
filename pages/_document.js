@@ -63,9 +63,13 @@ function redirectWithoutSlash(res, req) {
   this will only remove the 404 for those urls.
   */
   let urlParts = req.url.split("?");
-  if (urlParts[0].endsWith("/")) {
+  if (urlParts[0].endsWith("/") && !isIndexUrl(req.url)) {
     urlParts[0] = urlParts[0].substring(0, urlParts[0].length - 1);
     res.writeHead(301, { Location: urlParts.join("?") });
     res.end();
   }
+}
+
+function isIndexUrl(url) {
+  return url == "/";
 }
