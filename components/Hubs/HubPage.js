@@ -82,7 +82,7 @@ class HubPage extends React.Component {
   };
 
   render() {
-    let { auth } = this.props;
+    let { auth, hub } = this.props;
 
     return (
       <div className={css(styles.content, styles.column)}>
@@ -99,7 +99,7 @@ class HubPage extends React.Component {
             )}
           >
             <div className={css(styles.header, styles.text)}>
-              Welcome to {this.props.hubName}!
+              Welcome to {this.props.hub.name}!
             </div>
             <div className={css(styles.subtext, styles.text)}>
               We're a community seeking to prioritization, collaboraten,
@@ -116,12 +116,12 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
-            <HubsList exclude={this.props.hubName} />
+            <HubsList exclude={this.props.hub.name} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
             <div className={css(styles.topbar, styles.row)}>
               <div className={css(styles.text, styles.feedTitle)}>
-                Top Papers on {this.props.hubName}
+                Top Papers on {this.props.hub.name}
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect

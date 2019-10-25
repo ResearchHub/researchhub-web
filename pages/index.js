@@ -275,7 +275,7 @@ var styles = StyleSheet.create({
     paddingRight: 70,
     top: 0,
     zIndex: 2,
-    borderBottom: "1px solid #ededed",
+    // borderBottom: "1px solid #ededed",
   },
   dropDown: {
     width: 248,

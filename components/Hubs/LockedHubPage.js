@@ -10,7 +10,7 @@ import Message from "~/components/Loader/Message";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
-import { AuthActions } from "~/redux/auth";
+import { HubActions } from "~/redux/hub";
 import { MessageActions } from "~/redux/message";
 
 // Config
@@ -23,17 +23,69 @@ class LockedHubPage extends React.Component {
     super(props);
     this.state = {
       progress: 0,
+      subscriberCount: 0,
       joined: false,
       transition: false,
+      hub: {
+        name: "",
+      },
     };
   }
 
   componentDidMount() {
+    this.props.showMessage({ load: true, show: true });
     this.animateProgress = setInterval(this.incrementProgress, 30);
+    const { hub } = this.props;
+    if (Object.keys(hub).length === 1) {
+      return this.getHubs();
+    }
+    this.setState({
+      subscriberCount: hub.subscriber_count,
+      progress: 0,
+      hub,
+      joined: hub.user_is_subscribed,
+    });
+    this.props.showMessage({ show: false });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.hubName !== this.props.hubName) {
+      this.props.showMessage({ load: true, show: true });
+      const { hub } = this.props;
+      if (Object.keys(hub).length === 1) {
+        return this.getHubs();
+      }
+      this.setState({
+        subscriberCount: hub.subscriber_count,
+        progress: 0,
+        hub,
+        joined: hub.user_is_subscribed,
+      });
+      this.animateProgress = setInterval(this.incrementProgress, 30);
+      this.props.showMessage({ show: false });
+    }
+  }
+
+  getHubs = () => {
+    return fetch(API.HUB({}), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(async (resp) => {
+        let hubs = resp.count > 0 ? [...resp.results] : [];
+        let currentHub = hubs
+          .filter((hub) => hub.name === this.props.hubName)
+          .pop();
+        await this.setState({
+          subscriberCount: currentHub.subscriber_count,
+          progress: 0,
+          joined: currentHub.user_is_subscribed,
+          hub: currentHub,
+        });
+        this.props.showMessage({ show: false });
+      });
+  };
   incrementProgress = () => {
-    if (this.state.progress < 42) {
+    if (this.state.progress < this.state.subscriberCount) {
       this.setState({ progress: this.state.progress + 1 });
     }
   };
@@ -42,26 +94,83 @@ class LockedHubPage extends React.Component {
     clearInterval(this.incrementProgress);
   }
 
-  joinHub = async () => {
+  hubAction = async () => {
     this.props.showMessage({ load: true, show: true });
-    await this.setState({
-      progress: this.state.progress + 1,
-      transition: true,
-    });
-    setTimeout(() => {
-      this.setState({ joined: true, transition: false });
-      this.props.showMessage({ show: false });
-    }, 500);
+    if (this.state.joined) {
+      this.leaveHub();
+    } else {
+      this.joinHub();
+    }
+  };
+
+  leaveHub = () => {
+    let hubId = this.props.hub.id
+      ? this.props.hub.id
+      : this.props.hubs.currentHub.id
+      ? this.props.hubs.currentHub.id
+      : null;
+    return fetch(API.HUB_UNSUBSCRIBE({ hubId }), API.POST_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(async (res) => {
+        await this.setState({
+          progress: this.state.progress - 1,
+          subscriberCount: this.state.subscriberCount - 1,
+          transition: true,
+        });
+        setTimeout(() => {
+          this.setState({ joined: false, transition: false });
+          this.props.showMessage({ show: false });
+        }, 500);
+      })
+      .catch((err) => {
+        this.props.setMessage("Something went wrong. Please try again later");
+        this.props.showMessage({ error: true, show: true });
+        setTimeout(() => {
+          this.props.showMessage({ show: false });
+        }, 1000);
+      });
+  };
+
+  joinHub = () => {
+    let hubId = this.props.hub.id
+      ? this.props.hub.id
+      : this.props.hubs.currentHub.id
+      ? this.props.hubs.currentHub.id
+      : null;
+    return fetch(API.HUB_SUBSCRIBE({ hubId }), API.POST_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(async (res) => {
+        await this.setState({
+          progress: this.state.progress + 1,
+          subscriberCount: this.state.subscriberCount + 1,
+          transition: true,
+        });
+        setTimeout(() => {
+          this.setState({ joined: true, transition: false });
+          this.props.showMessage({ show: false });
+        }, 500);
+      })
+      .catch((err) => {
+        this.props.setMessage("Something went wrong. Please try again later");
+        this.props.showMessage({ error: true, show: true });
+        setTimeout(() => {
+          this.props.showMessage({ show: false });
+        }, 1000);
+      });
   };
 
   render() {
     let { progress, joined, transition } = this.state;
+
     return (
       <div className={css(styles.backgroundOverlay)}>
         <div className={css(styles.contentContainer)}>
           <div className={css(styles.content)}>
             <div className={css(styles.title, styles.text)}>
-              {this.props.hubName} Hub
+              {this.props.hub.name ? this.props.hub.name : this.state.hub.name}{" "}
+              Hub
             </div>
             <div
               className={css(
@@ -95,10 +204,9 @@ class LockedHubPage extends React.Component {
                 onClick={() => this.props.openInviteToHubModal(true)}
               />
               <Button
-                label={"Join Hub"}
+                label={joined ? "Leave Hub" : "Join Hub"}
                 customButtonStyle={styles.button}
-                disabled={joined}
-                onClick={this.joinHub}
+                onClick={this.hubAction}
               />
             </div>
           </div>
@@ -220,13 +328,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   message: state.message,
-  modals: state.modals,
-  auth: state.auth,
+  hubs: state.hubs,
 });
 
 const mapDispatchToProps = {
   openInviteToHubModal: ModalActions.openInviteToHubModal,
   showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
 };
 
 export default connect(
