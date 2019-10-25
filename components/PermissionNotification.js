@@ -1,19 +1,33 @@
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useStore } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 
 import Modal from "./Modal";
 import ReputationCard from "./ReputationCard";
 
-const PermissionNotification = (props) => {
-  const { close, userReputation } = props;
+import { ModalActions } from "../redux/modals";
 
+const PermissionNotification = (props) => {
+  const { userReputation } = props;
+
+  const dispatch = useDispatch();
   const store = useStore();
 
-  const { permissionNotificationAction } = store.getState().modals;
-  const action = props.action || permissionNotificationAction;
-  const title = `Not enough reputation points to ${action}`;
+  const [isOpen, setIsOpen] = useState(false);
 
-  const isOpen = store.getState().modals.openPermissionNotificationModal;
+  const baseTitle = "Not enough reputation points";
+  const [title, setTitle] = useState(baseTitle);
+
+  useEffect(() => {
+    const modalState = store.getState().modals;
+
+    setIsOpen(modalState.openPermissionNotificationModal);
+    setTitle(baseTitle + " to " + modalState.permissionNotificationAction);
+  }, [store.getState().modals.openPermissionNotificationModal]);
+
+  function close() {
+    dispatch(ModalActions.openPermissionNotificationModal(false));
+  }
 
   return (
     <NotificationModal close={close} isOpen={isOpen} title={title}>
