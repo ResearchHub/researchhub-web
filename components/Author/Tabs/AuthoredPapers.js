@@ -46,6 +46,9 @@ var styles = StyleSheet.create({
     alignItems: "flex-end",
     boxSizing: "border-box",
   },
+  paperContainer: {
+    width: "100%",
+  },
 });
 
 const mapStateToProps = (state) => ({
