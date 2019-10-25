@@ -99,9 +99,9 @@ const DiscussionTab = (props) => {
       .then((resp) => {
         let newDiscussion = { ...resp };
         newDiscussion.createdDate = transformDate(resp.created_date);
-        threads.push(newDiscussion);
+        threads.unshift(newDiscussion);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
-        formattedThreads.push(formattedDiscussion);
+        formattedThreads.unshift(formattedDiscussion);
 
         setTimeout(() => {
           props.showMessage({ show: false });
@@ -155,7 +155,10 @@ const DiscussionTab = (props) => {
             required={true}
           />
           <div className={css(styles.discussionInputWrapper)}>
-            <div className={css(styles.label)}>Question</div>
+            <div className={css(styles.label)}>
+              Question
+              <span className={css(styles.asterick)}>*</span>
+            </div>
             <div className={css(styles.discussionTextEditor)}>
               <TextEditor
                 canEdit={true}
@@ -201,9 +204,15 @@ const DiscussionTab = (props) => {
             </span>
           )}
           <button
-            className={css(styles.addDiscussionButton)}
+            className={css(
+              styles.addDiscussionButton,
+              formattedThreads.length > 0 && styles.plainButton
+            )}
             onClick={addDiscussion}
           >
+            <span className={css(styles.discussionIcon)}>
+              <i class="fad fa-comment-plus" />
+            </span>
             Add Discussion
           </button>
         </div>
@@ -215,8 +224,17 @@ const DiscussionTab = (props) => {
     <ComponentWrapper>
       {threads.length > 0 ? (
         <Fragment>
+          <div className={css(styles.box, !addView && styles.right)}>
+            <div
+              className={css(
+                styles.addDiscussionContainer,
+                transition && styles.transition
+              )}
+            >
+              {renderAddDiscussion()}
+            </div>
+          </div>
           {renderThreads(formattedThreads, hostname)}
-          <div className={css(styles.box)}>{renderAddDiscussion()}</div>
         </Fragment>
       ) : (
         <div
@@ -276,6 +294,10 @@ var styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     scrollBehavior: "smooth",
+    marginBottom: 15,
+  },
+  right: {
+    alignItems: "flex-end",
   },
   noSummaryTitle: {
     color: colors.BLACK(1),
@@ -323,7 +345,25 @@ var styles = StyleSheet.create({
       backgroundColor: colors.PURPLE(1),
     },
   },
+  plainButton: {
+    marginTop: 0,
+    backgroundColor: colors.BLUE(1),
+    border: "none",
+    backgroundColor: "#FFF",
+    padding: 16,
+    color: "rgb(36, 31, 58)",
+    opacity: 0.6,
+    ":hover": {
+      backgroundColor: "none",
+      color: colors.PURPLE(1),
+      opacity: 1,
+      textDecoration: "underline",
+    },
+  },
   pencilIcon: {
+    marginRight: 5,
+  },
+  discussionIcon: {
     marginRight: 5,
   },
   draftContainer: {
@@ -392,6 +432,7 @@ var styles = StyleSheet.create({
   button: {
     width: 180,
     height: 55,
+    cursor: "pointer",
   },
   buttonLeft: {
     display: "flex",
@@ -418,6 +459,9 @@ var styles = StyleSheet.create({
     color: colors.BLUE(1),
     height: 50,
     marginBottom: 10,
+  },
+  asterick: {
+    color: colors.BLUE(1),
   },
 });
 
