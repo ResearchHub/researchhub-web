@@ -258,6 +258,11 @@ var styles = StyleSheet.create({
     opacity: 0.6,
     display: "flex",
     cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(1),
+      opacity: 1,
+      textDecoration: "underline",
+    },
   },
   button: {
     border: "1px solid",
