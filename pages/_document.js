@@ -2,9 +2,12 @@ import Document, { Head, Main, NextScript } from "next/document";
 import { StyleSheetServer } from "aphrodite";
 
 export default class MyDocument extends Document {
-  static async getInitialProps({ renderPage }) {
+  static async getInitialProps({ renderPage, res, req }) {
     const { html, css } = StyleSheetServer.renderStatic(() => renderPage());
     const ids = css.renderedClassNames;
+
+    redirectWithoutSlash(res, req);
+
     return { ...html, css, ids };
   }
 
@@ -46,5 +49,21 @@ export default class MyDocument extends Document {
         </body>
       </html>
     );
+  }
+}
+
+function redirectWithoutSlash(res, req) {
+  /*
+  Copied from
+  https://github.com/DevSpeak/next-trailingslash/blob/master/pages/_error.js
+
+  Handling ?= should be solved differently if you use dynamic routing,
+  this will only remove the 404 for those urls.
+  */
+  let urlParts = req.url.split("?");
+  if (urlParts[0].endsWith("/")) {
+    urlParts[0] = urlParts[0].substring(0, urlParts[0].length - 1);
+    res.writeHead(301, { Location: urlParts.join("?") });
+    res.end();
   }
 }
