@@ -66,7 +66,7 @@ const AuthorPage = (props) => {
     fetchUserDiscussions();
     fetchUserContributions();
     refetchAuthor();
-  }, [props.isServer]);
+  }, [props.isServer, router.query.authorId]);
 
   let tabs = [
     {
