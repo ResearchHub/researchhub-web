@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 // NPM Components
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
-import { connect, useStore } from "react-redux";
-import Avatar from "react-avatar";
+import { connect, useDispatch, useStore } from "react-redux";
 
 // Redux
 import { ModalActions } from "../redux/modals";
@@ -14,7 +13,6 @@ import { AuthActions } from "../redux/auth";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
-import PermissionNotification from "../components/PermissionNotification";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
 
 import { RHLogo } from "~/config/themes/icons";
@@ -24,6 +22,7 @@ import { getCurrentUserReputation, getNestedValue } from "~/config/utils";
 import colors from "~/config/themes/colors";
 
 const Navbar = (props) => {
+  const dispatch = useDispatch();
   const store = useStore();
 
   const {
@@ -41,8 +40,6 @@ const Navbar = (props) => {
     null
   );
 
-  const [notificationOpen, setNotificationOpen] = useState(false);
-  const [notificationActionMessage] = useState("upload a paper");
   const userReputation = getCurrentUserReputation(store.getState());
 
   useEffect(() => {
@@ -82,7 +79,9 @@ const Navbar = (props) => {
   function onAddPaperClick() {
     if (minimumReputation !== null) {
       if (userReputation < minimumReputation) {
-        setNotificationOpen(true);
+        dispatch(
+          ModalActions.openPermissionNotificationModal(true, "upload a paper")
+        );
       } else {
         openUploadPaperModal(true);
       }
