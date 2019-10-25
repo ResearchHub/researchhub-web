@@ -305,7 +305,7 @@ class UploadPaperModal extends React.Component {
                 ? {
                     href: "/paper/upload/info",
                     linkAs: "/paper/upload/info",
-                    // query: { uploadPaperTitle: this.state.search },
+                    query: { uploadPaperTitle: this.state.search },
                   }
                 : null
             }
