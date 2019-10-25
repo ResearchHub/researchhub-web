@@ -81,9 +81,7 @@ class HubsList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <div className={css(styles.listLabel)}>
-            {label ? label : "Top Hubs"}
-          </div>
+          <div className={css(styles.listLabel)}>{"Top Hubs"}</div>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
@@ -138,10 +136,10 @@ const styles = StyleSheet.create({
   },
   hubsList: {
     opacity: 0,
-    transition: "all ease-in-out 0.2s",
   },
   reveal: {
     opacity: 1,
+    transition: "all ease-in-out 0.2s",
   },
 });
 
