@@ -23,6 +23,7 @@ import colors from "~/config/themes/colors";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
 import { transformDate, transformUser, transformVote } from "~/redux/utils";
+import { thread } from "~/redux/discussion/shims";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
@@ -74,11 +75,7 @@ const DiscussionTab = (props) => {
   };
 
   const save = async () => {
-    if (
-      discussion.title === "" ||
-      JSON.parse(JSON.stringify(discussion.question)).document.nodes[0].nodes[0]
-        .text === ""
-    ) {
+    if (discussion.title === "" || discussion.question.document.text === "") {
       props.setMessage("Fields must not be empty.");
       return props.showMessage({ show: true, error: true });
     }
@@ -87,7 +84,7 @@ const DiscussionTab = (props) => {
 
     let param = {
       title: discussion.title,
-      text: JSON.stringify(discussion.question.toJSON()),
+      text: discussion.question.toJSON(),
       paper: paperId,
     };
 
@@ -98,7 +95,8 @@ const DiscussionTab = (props) => {
       .then(Helpers.parseJSON)
       .then((resp) => {
         let newDiscussion = { ...resp };
-        newDiscussion.createdDate = transformDate(resp.created_date);
+        newDiscussion = thread(newDiscussion);
+        // newDiscussion.createdDate = transformDate(resp.created_date);
         threads.unshift(newDiscussion);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         formattedThreads.unshift(formattedDiscussion);
