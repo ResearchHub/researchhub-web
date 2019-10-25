@@ -25,6 +25,7 @@ class LockedHubPage extends React.Component {
       progress: 0,
       subscriberCount: 0,
       joined: false,
+      reveal: false,
       transition: false,
       hub: {
         name: "",
@@ -32,39 +33,46 @@ class LockedHubPage extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     this.props.showMessage({ load: true, show: true });
     this.animateProgress = setInterval(this.incrementProgress, 30);
     const { hub } = this.props;
     if (Object.keys(hub).length === 1) {
       return this.getHubs();
     }
-    this.setState({
+    await this.setState({
       subscriberCount: hub.subscriber_count,
       progress: 0,
       hub,
       joined: hub.user_is_subscribed,
     });
-    this.props.showMessage({ show: false });
-  }
+    setTimeout(() => {
+      this.setState({ reveal: true });
+      this.props.showMessage({ show: false });
+    }, 400);
+  };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate = async (prevProps) => {
     if (prevProps.hubName !== this.props.hubName) {
+      await this.setState({ reveal: false });
+      this.animateProgress = setInterval(this.incrementProgress, 30);
       this.props.showMessage({ load: true, show: true });
       const { hub } = this.props;
       if (Object.keys(hub).length === 1) {
         return this.getHubs();
       }
-      this.setState({
+      await this.setState({
         subscriberCount: hub.subscriber_count,
         progress: 0,
         hub,
         joined: hub.user_is_subscribed,
       });
-      this.animateProgress = setInterval(this.incrementProgress, 30);
-      this.props.showMessage({ show: false });
+      setTimeout(() => {
+        this.setState({ reveal: true });
+        this.props.showMessage({ show: false });
+      }, 400);
     }
-  }
+  };
 
   getHubs = () => {
     return fetch(API.HUB({}), API.GET_CONFIG())
@@ -81,9 +89,13 @@ class LockedHubPage extends React.Component {
           joined: currentHub.user_is_subscribed,
           hub: currentHub,
         });
-        this.props.showMessage({ show: false });
+        setTimeout(() => {
+          this.setState({ reveal: true });
+          this.props.showMessage({ show: false });
+        }, 400);
       });
   };
+
   incrementProgress = () => {
     if (this.state.progress < this.state.subscriberCount) {
       this.setState({ progress: this.state.progress + 1 });
@@ -91,6 +103,7 @@ class LockedHubPage extends React.Component {
   };
 
   componentWillUnmount() {
+    this.setState({ reveal: false });
     clearInterval(this.incrementProgress);
   }
 
@@ -162,12 +175,12 @@ class LockedHubPage extends React.Component {
   };
 
   render() {
-    let { progress, joined, transition } = this.state;
+    let { progress, joined, transition, reveal } = this.state;
 
     return (
       <div className={css(styles.backgroundOverlay)}>
         <div className={css(styles.contentContainer)}>
-          <div className={css(styles.content)}>
+          <div className={css(styles.content, reveal && styles.reveal)}>
             <div className={css(styles.title, styles.text)}>
               {this.props.hub.name ? this.props.hub.name : this.state.hub.name}{" "}
               Hub
@@ -266,6 +279,11 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: 480,
     height: 316,
+    opacity: 0,
+  },
+  reveal: {
+    opacity: 1,
+    transition: "all ease-in 0.3s",
   },
   text: {
     fontFamily: "Roboto",
