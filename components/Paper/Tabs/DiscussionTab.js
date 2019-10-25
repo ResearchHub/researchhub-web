@@ -210,9 +210,11 @@ const DiscussionTab = (props) => {
             )}
             onClick={addDiscussion}
           >
-            <span className={css(styles.discussionIcon)}>
-              <i class="fad fa-comment-plus" />
-            </span>
+            {formattedThreads.length > 0 && (
+              <span className={css(styles.discussionIcon)}>
+                <i class="fad fa-comment-plus" />
+              </span>
+            )}
             Add Discussion
           </button>
         </div>
@@ -333,7 +335,7 @@ var styles = StyleSheet.create({
     padding: "8px 32px",
     background: "#fff",
     color: colors.PURPLE(1),
-    marginTop: 24,
+    marginTop: 10,
     fontSize: 16,
     borderRadius: 4,
     height: 45,
