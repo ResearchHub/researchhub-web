@@ -30,6 +30,12 @@ class HubsList extends React.Component {
     }
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.exclude !== this.props.exclude) {
+      setTimeout(() => this.setState({ reveal: true }), 400);
+    }
+  }
+
   componentWillUnmount() {
     this.setState({ reveal: false });
   }
@@ -60,6 +66,7 @@ class HubsList extends React.Component {
   };
 
   handleClick = (hub) => {
+    this.setState({ reveal: false });
     function nameToUrl(name) {
       let arr = name.split(" ");
       return arr.length > 1 ? arr.join("-").toLowerCase() : name.toLowerCase();
