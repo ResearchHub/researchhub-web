@@ -1,9 +1,9 @@
 import { useEffect, useState, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import { useStore } from "react-redux";
+import { useDispatch, useStore } from "react-redux";
 
-import PermissionNotification from "./PermissionNotification";
+import { ModalActions } from "../redux/modals";
 
 import { doesNotExist } from "~/config/utils";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
@@ -12,6 +12,7 @@ import { UPVOTE, DOWNVOTE } from "../config/constants";
 import { getCurrentUserReputation } from "../config/utils";
 
 const VoteWidget = (props) => {
+  const dispatch = useDispatch();
   const store = useStore();
 
   const { onUpvote, onDownvote, fontSize, selected, width } = props;
@@ -27,11 +28,6 @@ const VoteWidget = (props) => {
   const [downvoteDisabled] = useState(
     permission.success &&
       userReputation < permission.data.DownvotePaper.minimumReputation
-  );
-
-  const [notificationOpen, setNotificationOpen] = useState(false);
-  const [notificationActionMessage, setNotificationActionMessage] = useState(
-    ""
   );
 
   const [upvoteSelected, setUpvoteSelected] = useState(selected === UPVOTE);
@@ -51,8 +47,7 @@ const VoteWidget = (props) => {
 
   function onUpvoteClick(e) {
     if (upvoteDisabled) {
-      setNotificationOpen(true);
-      setNotificationActionMessage("upvote");
+      dispatch(ModalActions.openPermissionNotificationModal(true, "upvote"));
     } else if (upvoteSelected) {
       console.log("Vote already cast");
     } else {
@@ -62,8 +57,7 @@ const VoteWidget = (props) => {
 
   function onDownvoteClick(e) {
     if (downvoteDisabled) {
-      setNotificationOpen(true);
-      setNotificationActionMessage("downvote");
+      dispatch(ModalActions.openPermissionNotificationModal(true, "downvote"));
     } else if (downvoteSelected) {
       console.log("Vote already cast");
     } else {
@@ -89,14 +83,6 @@ const VoteWidget = (props) => {
           onClick={onDownvoteClick}
         />
       </div>
-      <PermissionNotification
-        userReputation={userReputation}
-        isOpen={notificationOpen}
-        action={notificationActionMessage}
-        close={() => {
-          setNotificationOpen(false);
-        }}
-      />
     </Fragment>
   );
 };
