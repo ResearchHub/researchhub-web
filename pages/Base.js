@@ -7,6 +7,7 @@ import { StyleSheet, css } from "aphrodite";
 // Components
 import Navbar from "~/components/Navbar";
 import { AuthActions } from "../redux/auth";
+import Message from "~/components/Loader/Message";
 
 class Base extends React.Component {
   componentDidMount = () => {
@@ -22,6 +23,7 @@ class Base extends React.Component {
           <div className={css(styles.pageWrapper)}>
             <Navbar />
             <Component {...pageProps} />
+            <Message />
           </div>
         ) : null}
       </Fragment>
