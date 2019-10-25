@@ -855,12 +855,13 @@ class PaperUploadInfo extends React.Component {
     } else {
       await this.props.paperActions.patchPaper(this.props.paperId, body);
       if (this.props.paper.success) {
-        this.props.messageActions.setMessage(
-          `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
-        );
+        this.props.messageActions.setMessage(`Paper successfully updated`);
         this.props.messageActions.showMessage({ show: true });
         setTimeout(() => {
           this.navigateToSummary();
+          setTimeout(() => {
+            this.props.messageActions.showMessage({ show: false });
+          }, 400);
         }, 800);
       } else {
         this.props.messageActions.setMessage("Hmm something went wrong");
