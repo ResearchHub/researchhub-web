@@ -40,7 +40,6 @@ function renderTab(
     isSelected = true;
     classNames.push(styles.selected);
   }
-
   return (
     <Link key={key} href={dynamic_href} as={href}>
       <div className={css(classNames)}>
