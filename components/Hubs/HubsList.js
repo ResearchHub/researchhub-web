@@ -1,13 +1,18 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import Router from "next/router";
+import { connect } from "react-redux";
 
 // Config
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-export default class HubsList extends React.Component {
+// Redux
+import { HubActions } from "~/redux/hub";
+
+class HubsList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,40 +30,49 @@ export default class HubsList extends React.Component {
     }
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.exclude !== this.props.exclude) {
+      setTimeout(() => this.setState({ reveal: true }), 400);
+    }
+  }
+
   componentWillUnmount() {
     this.setState({ reveal: false });
   }
 
-  fetchHubs = () => {
-    return fetch(API.HUB({}), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(async (resp) => {
-        await this.setState({ hubs: resp.count > 0 ? [...resp.results] : [] });
-        setTimeout(() => this.setState({ reveal: true }), 400);
-      });
+  fetchHubs = async () => {
+    if (!this.props.hubs.length > 0) {
+      await this.props.getHubs();
+    }
+    await this.setState({ hubs: this.props.hubs });
+    setTimeout(() => this.setState({ reveal: true }), 400);
   };
 
   renderHubEntry = () => {
     return this.state.hubs.map((hub, i) => {
       let { name, id } = hub;
-      function nameToUrl(name) {
-        let arr = name.split(" ");
-        return arr.length > 1
-          ? arr.join("-").toLowerCase()
-          : name.toLowerCase();
-      }
-
       if (name !== this.props.exclude) {
         return (
-          <Link href={"/hub/[hubName]"} as={`/hub/${nameToUrl(name)}`}>
-            <div key={`${hub.id}-${i}`} className={css(styles.hubEntry)}>
-              {name}
-            </div>
-          </Link>
+          <div
+            key={`${id}-${i}`}
+            className={css(styles.hubEntry)}
+            onClick={() => this.handleClick(hub)}
+          >
+            {name}
+          </div>
         );
       }
     });
+  };
+
+  handleClick = (hub) => {
+    this.setState({ reveal: false });
+    function nameToUrl(name) {
+      let arr = name.split(" ");
+      return arr.length > 1 ? arr.join("-").toLowerCase() : name.toLowerCase();
+    }
+    this.props.updateCurrentHubPage(hub);
+    Router.push("/hub/[hubName]", `/hub/${nameToUrl(hub.name)}`);
   };
 
   render() {
@@ -130,3 +144,17 @@ const styles = StyleSheet.create({
     opacity: 1,
   },
 });
+
+const mapStateToProps = (state) => ({
+  hubs: state.hubs.hubs,
+});
+
+const mapDispatchToProps = {
+  updateCurrentHubPage: HubActions.updateCurrentHubPage,
+  getHubs: HubActions.getHubs,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HubsList);

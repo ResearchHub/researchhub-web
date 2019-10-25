@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
+import { timeAgo } from "~/config/utils";
 
 // Components
 import TextEditor from "~/components/TextEditor";
@@ -16,22 +17,27 @@ import Message from "~/components/Loader/Message";
 import { MessageActions } from "~/redux/message";
 
 // Config
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
+import { transformDate, transformUser, transformVote } from "~/redux/utils";
+import { thread } from "~/redux/discussion/shims";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
+  const initialDiscussionState = {
+    title: "",
+    question: discussionScaffoldInitialValue,
+  };
   const { hostname, threads } = props;
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
   const formattedThreads = formatThreads(threads, basePath);
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
-  const [discussion, setDiscussion] = useState({
-    title: "",
-    question: discussionScaffoldInitialValue,
-  });
+  const [discussion, setDiscussion] = useState(initialDiscussionState);
 
   function renderThreads(threads) {
     return (
@@ -51,6 +57,7 @@ const DiscussionTab = (props) => {
   }
 
   const addDiscussion = async () => {
+    props.showMessage({ show: false });
     await setTransition(true);
     setTimeout(() => {
       toggleAddView(true);
@@ -60,27 +67,69 @@ const DiscussionTab = (props) => {
 
   const cancel = async () => {
     await setTransition(true);
+    setDiscussion(initialDiscussionState);
     setTimeout(() => {
       toggleAddView(false);
       setTransition(false);
     }, 200);
   };
 
-  function save() {
+  const save = async () => {
+    if (discussion.title === "" || discussion.question.document.text === "") {
+      props.setMessage("Fields must not be empty.");
+      return props.showMessage({ show: true, error: true });
+    }
+    let { paperId } = router.query;
     props.showMessage({ load: true, show: true });
-    setTimeout(() => {
-      props.showMessage({ show: false });
-      props.setMessage("Successfully Saved!");
-      props.showMessage({ show: true });
-      setTimeout(() => cancel(), 300);
-    }, 800);
-  }
 
-  function handleInput(id, value) {
+    let param = {
+      title: discussion.title,
+      text: discussion.question.toJSON(),
+      paper: paperId,
+    };
+
+    let config = await API.POST_CONFIG(param);
+
+    return fetch(API.DISCUSSION(paperId), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        let newDiscussion = { ...resp };
+        newDiscussion = thread(newDiscussion);
+        threads.unshift(newDiscussion);
+        let formattedDiscussion = createFormattedDiscussion(newDiscussion);
+        formattedThreads.unshift(formattedDiscussion);
+
+        setTimeout(() => {
+          props.showMessage({ show: false });
+          props.setMessage("Successfully Saved!");
+          props.showMessage({ show: true });
+          setTimeout(() => cancel(), 300);
+        }, 800);
+      })
+      .catch((err) => {
+        setTimeout(() => {
+          props.showMessage({ show: false });
+          props.setMessage("Something went wrong");
+          props.showMessage({ show: true, error: true });
+        }, 800);
+      });
+  };
+
+  const createFormattedDiscussion = (newDiscussion) => {
+    let discussionObject = {
+      data: newDiscussion,
+      key: newDiscussion.id,
+      path: `/paper/1/discussion/${newDiscussion.id}`,
+    };
+    return discussionObject;
+  };
+
+  const handleInput = (id, value) => {
     let newDiscussion = { ...discussion };
     newDiscussion[id] = value;
     setDiscussion(newDiscussion);
-  }
+  };
 
   const handleDiscussionTextEditor = (editorState) => {
     let newDiscussion = { ...discussion };
@@ -88,7 +137,7 @@ const DiscussionTab = (props) => {
     setDiscussion(newDiscussion);
   };
 
-  function renderAddDiscussion() {
+  const renderAddDiscussion = () => {
     if (addView) {
       return (
         <div className={css(styles.box)}>
@@ -100,9 +149,13 @@ const DiscussionTab = (props) => {
             value={discussion.title}
             id={"title"}
             onChange={handleInput}
+            required={true}
           />
           <div className={css(styles.discussionInputWrapper)}>
-            <div className={css(styles.label)}>Question</div>
+            <div className={css(styles.label)}>
+              Question
+              <span className={css(styles.asterick)}>*</span>
+            </div>
             <div className={css(styles.discussionTextEditor)}>
               <TextEditor
                 canEdit={true}
@@ -134,37 +187,53 @@ const DiscussionTab = (props) => {
     } else {
       return (
         <div className={css(styles.box)}>
-          <img className={css(styles.img)} src={"/static/icons/sad.png"} />
-          <h2 className={css(styles.noSummaryTitle)}>
-            There are no discussion for this paper yet!
-          </h2>
-          <div className={css(styles.text)}>
-            Please add a discussion to this paper
-          </div>
+          {formattedThreads.length < 1 && (
+            <span className={css(styles.box)}>
+              <span className={css(styles.icon)}>
+                <i className="fad fa-comments" />
+              </span>
+              <h2 className={css(styles.noSummaryTitle)}>
+                There are no discussions for this paper yet.
+              </h2>
+              <div className={css(styles.text)}>
+                Please add a discussion to this paper
+              </div>
+            </span>
+          )}
           <button
-            className={css(styles.addDiscussionButton)}
+            className={css(
+              styles.addDiscussionButton,
+              formattedThreads.length > 0 && styles.plainButton
+            )}
             onClick={addDiscussion}
           >
+            {formattedThreads.length > 0 && (
+              <span className={css(styles.discussionIcon)}>
+                <i class="fad fa-comment-plus" />
+              </span>
+            )}
             Add Discussion
           </button>
         </div>
       );
     }
-  }
+  };
 
   return (
     <ComponentWrapper>
       {threads.length > 0 ? (
         <Fragment>
-          {renderThreads(formattedThreads, hostname)}
-          <div className={css(styles.box)}>
-            <button
-              className={css(styles.addDiscussionButton)}
-              onClick={addDiscussion}
+          <div className={css(styles.box, !addView && styles.right)}>
+            <div
+              className={css(
+                styles.addDiscussionContainer,
+                transition && styles.transition
+              )}
             >
-              Add Discussions
-            </button>
+              {renderAddDiscussion()}
+            </div>
           </div>
+          {renderThreads(formattedThreads, hostname)}
         </Fragment>
       ) : (
         <div
@@ -223,6 +292,11 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
+    scrollBehavior: "smooth",
+    marginBottom: 15,
+  },
+  right: {
+    alignItems: "flex-end",
   },
   noSummaryTitle: {
     color: colors.BLACK(1),
@@ -258,7 +332,7 @@ var styles = StyleSheet.create({
     padding: "8px 32px",
     background: "#fff",
     color: colors.PURPLE(1),
-    marginTop: 24,
+    marginTop: 10,
     fontSize: 16,
     borderRadius: 4,
     height: 45,
@@ -270,7 +344,25 @@ var styles = StyleSheet.create({
       backgroundColor: colors.PURPLE(1),
     },
   },
+  plainButton: {
+    marginTop: 0,
+    backgroundColor: colors.BLUE(1),
+    border: "none",
+    backgroundColor: "#FFF",
+    padding: 16,
+    color: "rgb(36, 31, 58)",
+    opacity: 0.6,
+    ":hover": {
+      backgroundColor: "none",
+      color: colors.PURPLE(1),
+      opacity: 1,
+      textDecoration: "underline",
+    },
+  },
   pencilIcon: {
+    marginRight: 5,
+  },
+  discussionIcon: {
     marginRight: 5,
   },
   draftContainer: {
@@ -310,6 +402,7 @@ var styles = StyleSheet.create({
   },
   discussionTextEditor: {
     width: 600,
+    height: 200,
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
   },
@@ -330,16 +423,15 @@ var styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    padding: 60,
+    paddingTop: 40,
   },
   buttons: {
-    marginTop: 10,
     justifyContent: "center",
-    marginBottom: 80,
   },
   button: {
     width: 180,
     height: 55,
+    cursor: "pointer",
   },
   buttonLeft: {
     display: "flex",
@@ -360,6 +452,15 @@ var styles = StyleSheet.create({
   },
   transition: {
     opacity: 0,
+  },
+  icon: {
+    fontSize: 50,
+    color: colors.BLUE(1),
+    height: 50,
+    marginBottom: 10,
+  },
+  asterick: {
+    color: colors.BLUE(1),
   },
 });
 

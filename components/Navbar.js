@@ -69,9 +69,11 @@ const Navbar = (props) => {
       <UploadPaperModal />
       <LoginModal />
       <InviteToHubModal />
-      <div className={css(styles.logoContainer)}>
-        <RHLogo iconStyle={styles.logo} />
-      </div>
+      <Link href={"/"}>
+        <div className={css(styles.logoContainer)}>
+          <RHLogo iconStyle={styles.logo} />
+        </div>
+      </Link>
       <div className={css(styles.tabs)}>{renderTabs()}</div>
       <div className={css(styles.search)}>
         <input className={css(styles.searchbar)} placeholder={"Search..."} />
@@ -226,6 +228,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 155,
     paddingBottom: 2.7,
+    cursor: "pointer",
+    userSelect: "none",
   },
   logo: {
     height: 40,

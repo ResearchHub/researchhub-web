@@ -170,7 +170,8 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-
+    HUB_SUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/subscribe/`,
+    HUB_UNSUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/unsubscribe/`,
     USER_VOTE: (paperId, threadId, commentId, replyId) => {
       let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
 

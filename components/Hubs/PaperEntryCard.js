@@ -26,7 +26,14 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
     title,
     summary,
     tagline,
+    user_vote,
+    score,
   } = paper;
+  let vote_type = 0;
+
+  if (user_vote) {
+    vote_type = user_vote.vote_type;
+  }
 
   function convertDate() {
     let dateArr = paper_publish_date.split("-");
@@ -38,12 +45,41 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
     }
   }
 
+  async function upvote() {
+    props.dispatch(VoteActions.postUpvotePending());
+    await props.dispatch(VoteActions.postUpvote(paperId));
+    updateWidgetUI();
+  }
+
+  async function downvote() {
+    props.dispatch(VoteActions.postDownvotePending());
+    await props.dispatch(VoteActions.postDownvote(paperId));
+    updateWidgetUI();
+  }
+
+  function updateWidgetUI() {
+    const voteResult = store.getState().vote;
+    const success = voteResult.success;
+    const vote = getNestedValue(voteResult, ["vote"], false);
+
+    if (success) {
+      const voteType = vote.voteType;
+      if (voteType === UPVOTE) {
+        setSelectedVoteType(UPVOTE);
+        setScore(score + 1);
+      } else if (voteType === DOWNVOTE) {
+        setSelectedVoteType(DOWNVOTE);
+        setScore(score - 1);
+      }
+    }
+  }
+
   return (
     <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
       <div className={css(styles.papercard)} key={`${id}-${index}-${title}`}>
         <div className={css(styles.column)}>
           <span className={css(styles.voting)}>
-            <VotingWidget />
+            <VotingWidget score={score} upvote={upvote} downvote={downvote} />
           </span>
         </div>
         <div className={css(styles.column, styles.metaData)}>
@@ -52,7 +88,6 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
             {convertDate()}
           </div>
           <div className={css(styles.summary, styles.text)}>
-            {/* <TextEditor readOnly={true} /> */}
             {tagline
               ? tagline
               : "Carbonic anhydrase IX (CAIX) is a membrane spanning protein involved in the enzymatic regulation of tumoracid-base balance. CAIX has been shown to be elevated in a number of hypoxic tumor types. The purpose of this study was to determine the efficiency of intact and IgG fragments of cG250."}
