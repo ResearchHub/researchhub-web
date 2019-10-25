@@ -1,20 +1,9 @@
-import { Fragment } from "react";
-import Link from "next/link";
-import Router, { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { EditorState, convertFromRaw } from "draft-js";
-import dynamic from "next/dynamic";
-import { Value } from "slate";
-import { connect, useDispatch, useStore } from "react-redux";
+import { connect } from "react-redux";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
-
-// Config
-import API from "../../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import colors from "../../../config/themes/colors";
 
 class AuthoredPapersTab extends React.Component {
   constructor(props) {

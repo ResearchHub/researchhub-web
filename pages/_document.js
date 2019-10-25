@@ -8,9 +8,6 @@ export default class MyDocument extends Document {
     const { html, css } = StyleSheetServer.renderStatic(() => renderPage());
     const ids = css.renderedClassNames;
 
-    store.dispatch(PermissionActions.fetchPermissionsPending());
-    await store.dispatch(PermissionActions.fetchPermissions());
-
     redirectWithoutSlash(res, req);
 
     return { ...html, css, ids };
