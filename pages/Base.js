@@ -11,8 +11,7 @@ import PermissionNotification from "../components/PermissionNotification";
 
 import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
-import { ModalActions } from "../redux/modals";
-import PermissionsActions from "../redux/permissions";
+import PermissionActions from "../redux/permission";
 
 class Base extends React.Component {
   componentDidMount = async () => {
@@ -20,7 +19,7 @@ class Base extends React.Component {
       fetchPermissions,
       fetchPermissionsPending,
       getHubs,
-      getUser
+      getUser,
     } = this.props;
 
     getUser();
@@ -61,8 +60,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getHubs: HubActions.getHubs,
-  fetchPermissions: PermissionsActions.fetchPermissions,
-  fetchPermissionsPending: PermissionsActions.fetchPermissionsPending,
+  fetchPermissions: PermissionActions.fetchPermissions,
+  fetchPermissionsPending: PermissionActions.fetchPermissionsPending,
 };
 
 export default connect(
