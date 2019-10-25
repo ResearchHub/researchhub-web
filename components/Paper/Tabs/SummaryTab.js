@@ -71,6 +71,7 @@ class SummaryTab extends React.Component {
         });
       })
       .catch((err) => {
+        // TODO: Use a proper notification message instead
         this.setState({
           errorMessage: "Not enough reputation",
         });
