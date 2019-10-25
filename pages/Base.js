@@ -29,17 +29,13 @@ class Base extends React.Component {
     await fetchPermissions();
   };
 
-  closePermissionNotification = () => {
-    ModalActions.openPermissionNotificationModal(false);
-  };
-
   render() {
     const { Component, pageProps, store } = this.props;
     return (
       <Fragment>
         {this.props.authChecked ? (
           <div className={css(styles.pageWrapper)}>
-            <PermissionNotification close={this.closePermissionNotification} />
+            <PermissionNotification />
             <Navbar />
             <Component {...pageProps} />
             <Message />
