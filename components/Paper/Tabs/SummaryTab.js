@@ -29,17 +29,22 @@ class SummaryTab extends React.Component {
       editorState: null,
       menuOpen: false,
       addSummary: false,
+      transition: false,
     };
   }
 
   /**
    * Opens the add summary
    */
-  addSummary = () => {
-    this.setState({
-      addSummary: true,
-      readOnly: false,
-    });
+  addSummary = async () => {
+    await this.setState({ transition: true });
+    setTimeout(() => {
+      this.setState({
+        addSummary: true,
+        readOnly: false,
+        transition: false,
+      });
+    }, 200);
   };
 
   onEditorStateChange = (editorState) => {
@@ -67,11 +72,15 @@ class SummaryTab extends React.Component {
       });
   };
 
-  cancel = () => {
-    this.setState({
-      readOnly: true,
-      addSummary: false,
-    });
+  cancel = async () => {
+    await this.setState({ transition: true });
+    setTimeout(() => {
+      this.setState({
+        readOnly: true,
+        addSummary: false,
+        transition: false,
+      });
+    }, 200);
   };
 
   edit = () => {
@@ -96,6 +105,7 @@ class SummaryTab extends React.Component {
 
   render() {
     let { paper } = this.props;
+    let { transition } = this.state;
     return (
       <ComponentWrapper>
         {paper.summary.summary ? (
@@ -136,11 +146,18 @@ class SummaryTab extends React.Component {
                 commentEditor={false}
                 initialValue={this.state.editorState}
                 onSubmit={this.saveEdit}
+                onCancel={this.cancel}
               />
             )}
           </div>
         ) : (
-          <div className={css(styles.container, styles.noSummaryContainer)}>
+          <div
+            className={css(
+              styles.container,
+              styles.noSummaryContainer,
+              transition && styles.transition
+            )}
+          >
             {this.state.addSummary ? (
               <div className={css(styles.summaryEdit)}>
                 <div className={css(styles.guidelines)}>
@@ -159,16 +176,16 @@ class SummaryTab extends React.Component {
                   canSubmit={true}
                   commentEditor={false}
                   onSubmit={this.saveEdit}
+                  onCancel={this.cancel}
                 />
               </div>
             ) : (
               <div className={css(styles.box)}>
-                <img
-                  className={css(styles.img)}
-                  src={"/static/icons/sad.png"}
-                />
+                <div className={css(styles.icon)}>
+                  <i className="fad fa-file-alt" />
+                </div>
                 <h2 className={css(styles.noSummaryTitle)}>
-                  A summary hasn't been filled in yet!
+                  A summary hasn't been filled in yet.
                 </h2>
                 <div className={css(styles.text)}>
                   Please add a summary to this paper
@@ -198,6 +215,8 @@ var styles = StyleSheet.create({
   },
   noSummaryContainer: {
     alignItems: "center",
+    opacity: 1,
+    transition: "all ease-in-out 0.3s",
   },
   guidelines: {
     color: "rgba(36, 31, 58, 0.8)",
@@ -239,6 +258,11 @@ var styles = StyleSheet.create({
     opacity: 0.6,
     display: "flex",
     cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(1),
+      opacity: 1,
+      textDecoration: "underline",
+    },
   },
   button: {
     border: "1px solid",
@@ -290,6 +314,15 @@ var styles = StyleSheet.create({
   },
   revisionTitle: {
     padding: 10,
+  },
+  icon: {
+    fontSize: 50,
+    color: colors.BLUE(1),
+    height: 50,
+    marginBottom: 10,
+  },
+  transition: {
+    opacity: 0,
   },
 });
 

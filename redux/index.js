@@ -7,6 +7,7 @@ import authReducer from "./auth";
 import voteReducer from "./vote/reducer";
 import messageReducer from "./message";
 import authorReducer from "./author/reducer";
+import hubReducer from "./hub";
 
 export default combineReducers({
   modals: modalReducer,
@@ -16,4 +17,5 @@ export default combineReducers({
   auth: authReducer,
   vote: voteReducer,
   author: authorReducer,
+  hubs: hubReducer,
 });
