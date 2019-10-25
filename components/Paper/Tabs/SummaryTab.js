@@ -13,6 +13,7 @@ import TextEditor from "~/components/TextEditor";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
+import { MessageActions } from "~/redux/message";
 
 // Config
 import API from "../../../config/api";
@@ -46,6 +47,7 @@ class SummaryTab extends React.Component {
   };
 
   saveEdit = (raw) => {
+    let { setMessage, showMessage } = this.props;
     let param = {
       summary: raw,
       paper: this.props.paperId,
@@ -57,6 +59,8 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        setMessage("Edits Submitted!");
+        showMessage({ show: true });
         this.setState({
           readOnly: true,
         });
@@ -295,6 +299,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   getEditHistory: PaperActions.getEditHistory,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
