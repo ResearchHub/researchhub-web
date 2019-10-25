@@ -8,11 +8,13 @@ import { StyleSheet, css } from "aphrodite";
 import Navbar from "~/components/Navbar";
 import { AuthActions } from "../redux/auth";
 import Message from "~/components/Loader/Message";
+import { HubActions } from "../redux/hub";
 
 class Base extends React.Component {
-  componentDidMount = () => {
-    let { getUser } = this.props;
+  componentDidMount = async () => {
+    let { getUser, getHubs } = this.props;
     getUser();
+    getHubs();
   };
 
   render() {
@@ -45,6 +47,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
+  getHubs: HubActions.getHubs,
 };
 
 export default connect(
