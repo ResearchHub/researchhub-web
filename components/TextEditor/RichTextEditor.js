@@ -146,7 +146,7 @@ class RichTextEditor extends React.Component {
 
   render() {
     return (
-      <div className={css(styles.editor)}>
+      <div className={css(styles.editor, this.props.containerStyles)}>
         {this.props.commentEditor ? (
           <div className={css(styles.commentEditor)}>
             <Editor

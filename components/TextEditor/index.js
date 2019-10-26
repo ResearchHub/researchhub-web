@@ -31,6 +31,7 @@ const TextEditor = (props) => {
     previousVersion,
     placeholder,
     hideCancelButton,
+    containerStyles,
   } = props;
 
   const [value, setValue] = useState(convertToEditorValue(initialValue));
@@ -75,6 +76,7 @@ const TextEditor = (props) => {
       initialValue={passedValue ? passedValue : value}
       canCancel={canCancel}
       canSubmit={canSubmit}
+      containerStyles={containerStyles}
       cancel={cancel}
       submit={submit}
       commentEditor={commentEditor}
