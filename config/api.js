@@ -10,6 +10,53 @@ const apiRoot = {
   //dev: 'https://staging.solestage.com/api/',
 };
 
+const prepFilters = (filters) => {
+  let url = "";
+  if (filters && filters.length > 0) {
+    for (let i = 0; i < filters.length; i++) {
+      url += `${filters[i].name}__${filters[i].filter}=${filters[i].value}&`;
+    }
+  }
+  return url;
+};
+
+/**
+ * Function to prep the URL for querystring / url
+ * @param { String } url -- the URL we want to manipulate
+ * @param { Object } params -- params for querystring
+ */
+const prepURL = (url, params) => {
+  let { querystring, rest, filters } = params;
+  let qs = "";
+
+  if (rest.id !== null && rest.id !== undefined) {
+    url += `${rest.id}/`;
+  }
+
+  if (rest.route) {
+    url += `${rest.route}/`;
+  }
+
+  let querystringKeys = Object.keys(querystring);
+  for (let i = 0; i < querystringKeys.length; i++) {
+    if (i === 0) {
+      qs += `?`;
+    }
+
+    let currentKey = querystringKeys[i];
+    let value = querystring[currentKey];
+    if (value !== null && value !== undefined) {
+      qs += `${currentKey}=${value}&`;
+    }
+  }
+
+  url += qs;
+
+  url += prepFilters(filters);
+
+  return url;
+};
+
 const routes = (BASE_URL) => {
   return {
     USER: ({ userId }) => {
@@ -23,7 +70,7 @@ const routes = (BASE_URL) => {
     },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     SIGNOUT: BASE_URL + "auth/logout/",
-    PAPER: ({ paperId, search, page }) => {
+    PAPER: ({ paperId, search, page, filters }) => {
       let url = BASE_URL + `paper/`;
 
       if (paperId) {
@@ -39,6 +86,8 @@ const routes = (BASE_URL) => {
       if (typeof page === "number") {
         url += `page=${page}`;
       }
+
+      url += prepFilters(filters);
 
       return url;
     },

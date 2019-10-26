@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     color: colors.GREEN(),
     fontWeight: "bold",
     borderRadius: 24,
-    padding: ".2em .7em",
+    padding: ".2em .9em",
   },
   icon: {
     cursor: "pointer",

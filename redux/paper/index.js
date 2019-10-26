@@ -10,6 +10,55 @@ import * as utils from "../utils";
  **********************************/
 
 export const PaperActions = {
+  postUpvote: (paperId) => {
+    const isUpvote = true;
+
+    return async (dispatch) => {
+      const response = await fetch(
+        API.UPVOTE(paperId),
+        API.POST_CONFIG()
+      ).catch(utils.handleCatch);
+
+      let status = await Helpers.checkStatus(response).catch(utils.handleCatch);
+      let res = await Helpers.checkStatus(status);
+
+      let action = actions.setUserVoteFailure(isUpvote);
+
+      if (response.ok) {
+        const vote = shims.vote(res);
+        action = actions.setUserVoteSuccess(vote);
+      } else {
+        utils.logFetchError(response);
+      }
+
+      return dispatch(action);
+    };
+  },
+
+  postDownvote: (paperId) => {
+    const isUpvote = false;
+
+    return async (dispatch) => {
+      const response = await fetch(
+        API.DOWNVOTE(paperId),
+        API.POST_CONFIG()
+      ).catch(utils.handleCatch);
+
+      let status = await Helpers.checkStatus(response).catch(utils.handleCatch);
+      let res = await Helpers.checkStatus(status);
+
+      let action = actions.setUserVoteFailure(isUpvote);
+
+      if (response.ok) {
+        const vote = shims.vote(res);
+        action = actions.setUserVoteSuccess(vote);
+      } else {
+        utils.logFetchError(response);
+      }
+
+      return dispatch(action);
+    };
+  },
   getPaper: (paperId) => {
     return (dispatch) => {
       return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
@@ -48,7 +97,7 @@ export const PaperActions = {
       return dispatch(action);
     };
   },
-  
+
   getEditHistory: (paperId) => {
     return (dispatch) => {
       return fetch(API.GET_EDITS({ paperId }), API.GET_CONFIG())
@@ -68,7 +117,7 @@ export const PaperActions = {
         });
     };
   },
-  
+
   postPaper: (body) => {
     return async (dispatch) => {
       const response = await fetch(

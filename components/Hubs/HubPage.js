@@ -63,12 +63,68 @@ class HubPage extends React.Component {
     };
   }
 
+  /**
+   * When the paper is upvoted, update our UI to reflect that as well
+   * @param { Integer } index -- the index of the paper to upvote
+   */
+  onUpvote = ({ index }) => {
+    let { postUpvote } = this.props;
+    let papers = JSON.parse(JSON.stringify([...this.state.papers]));
+    let curPaper = papers[index];
+    postUpvote(curPaper.id);
+    if (curPaper.user_vote) {
+      curPaper.score += 2;
+    } else {
+      curPaper.score += 1;
+    }
+    curPaper.user_vote = {
+      vote_type: UPVOTE_ENUM,
+    };
+    this.setState({
+      papers,
+    });
+  };
+
+  /**
+   * When the paper is downvoted, update our UI to reflect that as well
+   * @param { Integer } index -- the index of the paper to downvote
+   */
+  onDownvote = ({ index }) => {
+    let papers = JSON.parse(JSON.stringify([...this.state.papers]));
+    let curPaper = papers[index];
+    let { postDownvote } = this.props;
+    postDownvote(curPaper.id);
+    if (curPaper.user_vote) {
+      curPaper.score -= 2;
+    } else {
+      curPaper.score -= 1;
+    }
+    curPaper.user_vote = {
+      vote_type: DOWNVOTE_ENUM,
+    };
+    this.setState({
+      papers,
+    });
+  };
+
   componentDidMount() {
-    this.fetchPapers(1);
+    this.fetchPapers({ page: 1, hub: this.props.hub });
   }
 
-  fetchPapers = (page) => {
-    return fetch(API.PAPER({ page }), API.GET_CONFIG())
+  fetchPapers = ({ page, hub }) => {
+    let filters = null;
+
+    if (hub) {
+      filters = [
+        {
+          name: "hubs_id",
+          filter: "in",
+          value: hub.id,
+        },
+      ];
+    }
+
+    return fetch(API.PAPER({ page, hub, filters }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -82,13 +138,13 @@ class HubPage extends React.Component {
   };
 
   render() {
-    let { auth, hub } = this.props;
+    let { auth } = this.props;
 
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.homeBanner)}>
           <img
-            src={"/static/background/homepage.png"}
+            src={"/static/background/background-home.png"}
             className={css(styles.bannerOverlay)}
           />
           <div
@@ -99,7 +155,8 @@ class HubPage extends React.Component {
             )}
           >
             <div className={css(styles.header, styles.text)}>
-              Welcome to {this.props.hub.name}!
+              Welcome to {this.props.home ? "ResearchHub" : this.props.hub.name}
+              !
             </div>
             <div className={css(styles.subtext, styles.text)}>
               We're a community seeking to prioritization, collaboraten,
@@ -116,12 +173,13 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
-            <HubsList exclude={this.props.hub.name} />
+            <HubsList exclude={this.props.home ? null : this.props.hub.name} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
             <div className={css(styles.topbar, styles.row)}>
               <div className={css(styles.text, styles.feedTitle)}>
-                Top Papers on {this.props.hub.name}
+                Top Papers on{" "}
+                {this.props.home ? "ResearchHub" : this.props.hub.name}
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
@@ -142,7 +200,7 @@ class HubPage extends React.Component {
               <InfiniteScroll
                 pageStart={this.state.page}
                 loadMore={(count) => {
-                  this.fetchPapers(count + 1);
+                  this.fetchPapers({ page: count + 1, hub: this.props.hub });
                 }}
                 hasMore={this.state.count > this.state.papers.length}
                 loader={<Loader loading={true} />}
@@ -199,7 +257,7 @@ var styles = StyleSheet.create({
   homeBanner: {
     background: "linear-gradient(#684ef5, #5058f6)",
     width: "100%",
-    height: 365,
+    height: 320,
     position: "relative",
     display: "flex",
     justifyContent: "flex-start",
@@ -209,6 +267,7 @@ var styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
+    objectFit: "cover",
     height: "100%",
     width: "100%",
     minWidth: "100%",
