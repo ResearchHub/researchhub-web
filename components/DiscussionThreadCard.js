@@ -83,8 +83,13 @@ const DiscussionThreadCard = (props) => {
     }
   }
 
+  goToDiscussion = () => {};
+
   return (
-    <div className={css(styles.discussionContainer)}>
+    <div
+      className={css(styles.discussionContainer)}
+      onClick={this.goToDiscussion}
+    >
       <DiscussionCard
         top={
           <Fragment>

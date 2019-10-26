@@ -20,7 +20,7 @@ const HubTag = ({ tag, overrideStyle, hubName }) => {
     );
   } else {
     return (
-      <Link href={"/hub/[hubName]"} as={`/hub/${nameToUrl(name)}`}>
+      <Link href={"/hub/[hubname]"} as={`/hub/${nameToUrl(name)}`}>
         <div className={css(styles.tag, overrideStyle && overrideStyle)}>
           <span className={css(styles.label)}>{name && name}</span>
         </div>
