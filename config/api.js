@@ -84,7 +84,7 @@ const routes = (BASE_URL) => {
       }
 
       if (typeof page === "number") {
-        url += `page=${page}`;
+        url += `page=${page}&`;
       }
 
       url += prepFilters(filters);
