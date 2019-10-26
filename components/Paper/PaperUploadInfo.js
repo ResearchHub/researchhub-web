@@ -915,7 +915,7 @@ class PaperUploadInfo extends React.Component {
     }
 
     let param = {
-      summary: JSON.stringify(this.state.summary.toJSON()),
+      summary: this.state.summary.toJSON(),
       paper: this.props.paperId
         ? this.props.paperId
         : this.props.paper.postedPaper.id,
@@ -929,7 +929,7 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let summaryJSON = JSON.parse(res.summary);
+        let summaryJSON = res.summary;
         let editorState = Value.fromJSON(summaryJSON);
         this.setState({
           summaryId: res.id,
@@ -988,15 +988,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   render() {
-    let {
-      progress,
-      form,
-      discussion,
-      showAuthorList,
-      loading,
-      activeStep,
-      error,
-    } = this.state;
+    let { progress, activeStep } = this.state;
     let { modals } = this.props;
     return (
       <div className={css(styles.background)} ref={this.titleRef}>
