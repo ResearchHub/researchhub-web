@@ -130,31 +130,37 @@ const AuthorPage = (props) => {
           </div>
           <div className={css(styles.socialLinks)}>
             {author.linkedin && (
-              <Link href={author.linkedin}>
-                <a className={css(styles.link)} target="_blank">
-                  <div className={css(styles.socialMedia, styles.linkedin)}>
-                    <i className="fab fa-linkedin-in"></i>
-                  </div>
-                </a>
-              </Link>
+              <a
+                className={css(styles.link)}
+                href={author.linkedin}
+                target="_blank"
+              >
+                <div className={css(styles.socialMedia, styles.linkedin)}>
+                  <i className="fab fa-linkedin-in"></i>
+                </div>
+              </a>
             )}
             {author.twitter && (
-              <Link href={author.twitter}>
-                <a className={css(styles.link)} target="_blank">
-                  <div className={css(styles.socialMedia, styles.twitter)}>
-                    <i className="fab fa-twitter"></i>
-                  </div>
-                </a>
-              </Link>
+              <a
+                className={css(styles.link)}
+                href={author.twitter}
+                target="_blank"
+              >
+                <div className={css(styles.socialMedia, styles.twitter)}>
+                  <i className="fab fa-twitter"></i>
+                </div>
+              </a>
             )}
             {author.facebook && (
-              <Link href={author.facebook}>
-                <a className={css(styles.link)} target="_blank">
-                  <div className={css(styles.socialMedia, styles.facebook)}>
-                    <i className="fab fa-facebook-f"></i>
-                  </div>
-                </a>
-              </Link>
+              <a
+                className={css(styles.link)}
+                href={author.facebook}
+                target="_blank"
+              >
+                <div className={css(styles.socialMedia, styles.facebook)}>
+                  <i className="fab fa-facebook-f"></i>
+                </div>
+              </a>
             )}
             <div
               className={css(styles.socialMedia, styles.shareLink)}
