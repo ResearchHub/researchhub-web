@@ -6,6 +6,6 @@ export function isValidEmail(email) {
 }
 
 export function currentUserHasMinimumReputation(stateObject, minimum) {
-  reputation = getCurrentUserReputation(stateObject);
+  let reputation = getCurrentUserReputation(stateObject);
   return reputation >= minimum;
 }

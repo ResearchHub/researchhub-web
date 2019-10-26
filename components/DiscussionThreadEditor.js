@@ -46,6 +46,7 @@ const ThreadEditor = (props) => {
       onSubmit={updateThread}
       initialValue={value}
       clearOnSubmit={false}
+      hideCancelButton={true}
     />
   );
 };

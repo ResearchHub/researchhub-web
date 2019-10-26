@@ -71,7 +71,7 @@ class UploadPaperModal extends React.Component {
 
     this.searchPaperTimeout = setTimeout(() => {
       this.searchTitle(value);
-    }, 1000);
+    }, 300);
   };
 
   /**

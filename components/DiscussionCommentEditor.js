@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Fragment } from "react";
 
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
@@ -17,7 +17,7 @@ import {
 import { ModalActions } from "../redux/modals";
 
 const DiscussionCommentEditor = (props) => {
-  const { commentId, postMethod, onSubmit, onCancel, getRef } = props;
+  const { commentId, postMethod, onSubmit, getRef, setRef } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
@@ -27,7 +27,6 @@ const DiscussionCommentEditor = (props) => {
     store.getState(),
     "CreateDiscussionThread"
   );
-
   const [isActive, setIsActive] = useState(props.active);
 
   useEffect(() => {
@@ -43,12 +42,18 @@ const DiscussionCommentEditor = (props) => {
     );
   };
 
-  function onClick(e) {
+  function onClick() {
     if (currentUserHasMinimumReputation(store.getState(), minimumReputation)) {
-      setIsActive(e);
+      setIsActive(true);
     } else {
       ModalActions.openPermissionNotificationModal(true, "create a thread");
     }
+  }
+
+  function onCancel(e) {
+    e && e.stopPropagation();
+    setIsActive(false);
+    props.onCancel();
   }
 
   return (
@@ -57,7 +62,7 @@ const DiscussionCommentEditor = (props) => {
         styles.commentBoxContainer,
         isActive && styles.activeCommentBoxContainer
       )}
-      onClick={onClick}
+      onClick={!isActive ? onClick : null}
       ref={getRef}
     >
       <TextEditor
@@ -66,7 +71,7 @@ const DiscussionCommentEditor = (props) => {
         onSubmit={post}
         readOnly={!isActive}
         commentEditor={true}
-        onCancel={onCancel && onCancel}
+        onCancel={onCancel}
       />
     </div>
   );
@@ -75,26 +80,30 @@ const DiscussionCommentEditor = (props) => {
 export const CommentEditor = (props) => {
   const { onSubmit } = props;
 
-  const [active, setActive] = useState(props.active);
+  const [active, setActive] = useState(false);
   const containerRef = useRef(null);
 
-  detectOutsideClick(containerRef);
+  // detectOutsideClick(containerRef);
 
-  function detectOutsideClick(ref) {
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        setTimeout(() => {
-          setActive(false);
-        }, 100);
-      }
-    }
+  // function detectOutsideClick(ref) {
+  //   function handleClickOutside(event) {
+  //     if (ref.current && !ref.current.contains(event.target)) {
+  //       setTimeout(() => {
+  //         setActive(false);
+  //       }, 100);
+  //     }
+  //   }
 
-    useEffect(() => {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    });
+  //   useEffect(() => {
+  //     document.addEventListener("mousedown", handleClickOutside);
+  //     return () => {
+  //       document.removeEventListener("mousedown", handleClickOutside);
+  //     };
+  //   });
+  // }
+
+  function hideReply() {
+    setActive(false);
   }
 
   return (
@@ -104,6 +113,7 @@ export const CommentEditor = (props) => {
       onSubmit={onSubmit}
       postMethod={postComment}
       commentEditor={true}
+      onCancel={hideReply}
     />
   );
 };
@@ -115,22 +125,22 @@ export const ReplyEditor = (props) => {
   const [transition, setTransition] = useState(false);
   const containerRef = useRef(null);
 
-  detectOutsideClick(containerRef);
+  // detectOutsideClick(containerRef);
 
-  function detectOutsideClick(ref) {
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        hideReply();
-      }
-    }
+  // function detectOutsideClick(ref) {
+  //   function handleClickOutside(event) {
+  //     if (ref.current && !ref.current.contains(event.target)) {
+  //       hideReply();
+  //     }
+  //   }
 
-    useEffect(() => {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    });
-  }
+  //   useEffect(() => {
+  //     document.addEventListener("mousedown", handleClickOutside);
+  //     return () => {
+  //       document.removeEventListener("mousedown", handleClickOutside);
+  //     };
+  //   });
+  // }
 
   function showReply(e) {
     e.stopPropagation();
@@ -148,6 +158,10 @@ export const ReplyEditor = (props) => {
     }, 100);
   }
 
+  // function setRef(reference) {
+  //   setEditorRef(reference);
+  // }
+
   return (
     <div className={css(styles.actionBar, transition && styles.reveal)}>
       {!reply ? (
@@ -159,6 +173,7 @@ export const ReplyEditor = (props) => {
       ) : (
         <DiscussionCommentEditor
           active={true}
+          // setRef={setRef}
           getRef={containerRef}
           onSubmit={onSubmit}
           postMethod={postReply}
