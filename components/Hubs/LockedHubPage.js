@@ -33,14 +33,11 @@ class LockedHubPage extends React.Component {
     };
   }
 
-  componentDidMount = async () => {
+  componentDidMount() {
     this.props.showMessage({ load: true, show: true });
     this.animateProgress = setInterval(this.incrementProgress, 30);
     const { hub } = this.props;
-    if (Object.keys(hub).length === 1) {
-      return this.getHubs();
-    }
-    await this.setState({
+    this.setState({
       subscriberCount: hub.subscriber_count,
       progress: 0,
       hub,
@@ -50,51 +47,30 @@ class LockedHubPage extends React.Component {
       this.setState({ reveal: true });
       this.props.showMessage({ show: false });
     }, 400);
-  };
+  }
 
-  componentDidUpdate = async (prevProps) => {
+  componentDidUpdate(prevProps) {
     if (prevProps.hubName !== this.props.hubName) {
-      await this.setState({ reveal: false });
+      this.setState({ reveal: false });
       this.animateProgress = setInterval(this.incrementProgress, 30);
       this.props.showMessage({ load: true, show: true });
       const { hub } = this.props;
-      if (Object.keys(hub).length === 1) {
-        return this.getHubs();
-      }
-      await this.setState({
-        subscriberCount: hub.subscriber_count,
-        progress: 0,
-        hub,
-        joined: hub.user_is_subscribed,
-      });
-      setTimeout(() => {
-        this.setState({ reveal: true });
-        this.props.showMessage({ show: false });
-      }, 400);
-    }
-  };
-
-  getHubs = () => {
-    return fetch(API.HUB({}), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(async (resp) => {
-        let hubs = resp.count > 0 ? [...resp.results] : [];
-        let currentHub = hubs
-          .filter((hub) => hub.name === this.props.hubName)
-          .pop();
-        await this.setState({
-          subscriberCount: currentHub.subscriber_count,
+      this.setState(
+        {
+          subscriberCount: hub.subscriber_count,
           progress: 0,
-          joined: currentHub.user_is_subscribed,
-          hub: currentHub,
-        });
-        setTimeout(() => {
-          this.setState({ reveal: true });
-          this.props.showMessage({ show: false });
-        }, 400);
-      });
-  };
+          hub,
+          joined: hub.user_is_subscribed,
+        },
+        () => {
+          setTimeout(() => {
+            this.setState({ reveal: true });
+            this.props.showMessage({ show: false });
+          }, 400);
+        }
+      );
+    }
+  }
 
   incrementProgress = () => {
     if (this.state.progress < this.state.subscriberCount) {
@@ -126,7 +102,7 @@ class LockedHubPage extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then(async (res) => {
-        await this.setState({
+        this.setState({
           progress: this.state.progress - 1,
           subscriberCount: this.state.subscriberCount - 1,
           transition: true,
