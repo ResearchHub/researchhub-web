@@ -205,18 +205,18 @@ const routes = (BASE_URL) => {
     HUB: ({ hubId, search, name }) => {
       let url = BASE_URL + `hub/`;
 
-      if (name) {
-        url += `?name__iexact=${name}`;
-      }
-
       if (hubId) {
         url += `${hubId}/?`;
       } else {
         url += "?";
       }
 
+      if (name) {
+        url += `name__iexact=${name}&`;
+      }
+
       if (search) {
-        url += `search=${search}`;
+        url += `search=${search}&`;
       }
 
       return url;
