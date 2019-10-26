@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import Button from "~/components/Form/Button";
 import { AuthActions } from "../redux/auth";
 
+import { GOOGLE_CLIENT_ID } from "~/config/constants";
+
 const GoogleLoginButton = (props) => {
   const responseGoogle = (response) => {
     let { googleLogin, getUser } = props;
@@ -16,9 +18,7 @@ const GoogleLoginButton = (props) => {
 
   return (
     <GoogleLogin
-      clientId={
-        "192509748493-amjlt30mbpo9lq5gppn7bfd5c52i0ioe.apps.googleusercontent.com"
-      }
+      clientId={GOOGLE_CLIENT_ID}
       onSuccess={responseGoogle}
       onFailure={responseGoogle}
       cookiePolicy={"single_host_origin"}

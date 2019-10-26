@@ -13,6 +13,7 @@ import FormInput from "../Form/FormInput";
 // Redux
 import { ModalActions } from "../../redux/modals";
 import { AuthActions } from "../../redux/auth";
+import { GOOGLE_CLIENT_ID } from "../../config/constants";
 
 class LoginModal extends React.Component {
   constructor(props) {
@@ -75,9 +76,7 @@ class LoginModal extends React.Component {
             </div>
           </div>
           <GoogleLogin
-            clientId={
-              "192509748493-amjlt30mbpo9lq5gppn7bfd5c52i0ioe.apps.googleusercontent.com"
-            }
+            clientId={GOOGLE_CLIENT_ID}
             onSuccess={this.responseGoogle}
             onFailure={this.responseGoogle}
             cookiePolicy={"single_host_origin"}
