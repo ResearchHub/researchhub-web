@@ -1,7 +1,9 @@
 import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { StyleSheet } from "aphrodite";
+import { connect } from "react-redux";
 
 import Button from "~/components/Form/Button";
+import { AuthActions } from "../redux/auth";
 
 const GoogleLoginButton = (props) => {
   const responseGoogle = (response) => {
@@ -24,9 +26,10 @@ const GoogleLoginButton = (props) => {
         <Button
           disabled={renderProps.disabled}
           onClick={renderProps.onClick}
-          customButtonStyle={styles.button}
+          customButtonStyle={[styles.button, props.styles]}
           icon={"/static/icons/google.png"}
-          customIconStyle={styles.iconStyle}
+          customLabelStyle={props.customLabelStyle}
+          customIconStyle={[styles.iconStyle, props.iconStyle]}
           label={"Log in with Google"}
         />
       )}
@@ -47,4 +50,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GoogleLoginButton;
+const mapDispatchToProps = {
+  googleLogin: AuthActions.googleLogin,
+  getUser: AuthActions.getUser,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(GoogleLoginButton);
