@@ -2,16 +2,13 @@ import { useState } from "react";
 
 // NPM Modules
 import { connect } from "react-redux";
-import Router, { withRouter } from "next/router";
+import { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { Document, Page, PageInternal } from "react-pdf";
+import { Document, Page, pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 // Component
 import Loader from "~/components/Loader/Loader";
-
-// Config
-import API from "../../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 function PaperTab(props) {
   const { paperUrl } = props;
@@ -21,6 +18,8 @@ function PaperTab(props) {
     setNumPages(numPages);
     setLoadSuccess(true);
   }
+
+  console.log(paperUrl);
 
   return (
     <div className={css(styles.container)}>
