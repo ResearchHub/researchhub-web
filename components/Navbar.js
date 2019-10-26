@@ -125,6 +125,7 @@ const Navbar = (props) => {
                   textSizeRatio={2.5}
                   disableLink={true}
                 />
+                <i className={css(styles.caret) + " fas fa-caret-down"}></i>
               </div>
               {openMenu && (
                 <div className={css(styles.dropdown)} onClick={toggleMenu}>
@@ -134,7 +135,10 @@ const Navbar = (props) => {
                   >
                     <div className={css(styles.option)}>Profile</div>
                   </Link>
-                  <div className={css(styles.option)} onClick={signout}>
+                  <div
+                    className={css(styles.option, styles.lastOption)}
+                    onClick={signout}
+                  >
                     Logout
                   </div>
                 </div>
@@ -199,10 +203,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
+  caret: {
+    marginLeft: 16,
+    color: "#aaa",
+  },
   userDropdown: {
     marginRight: 35,
     position: "relative",
-    zIndex: 2,
+    zIndex: 9999,
   },
   searchbar: {
     padding: 10,
@@ -263,19 +271,21 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -80,
+    bottom: -126,
     right: 0,
-    height: 70,
-    width: 150,
+    width: 200,
+    boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
     boxSizing: "border-box",
     background: "#fff",
     border: "1px solid #eee",
     borderRadius: 4,
   },
+  lastOption: {
+    borderBottom: 0,
+  },
   option: {
     width: "100%",
-    height: 35,
-    padding: 10,
+    padding: 16,
     boxSizing: "border-box",
     borderBottom: "1px solid #eee",
     display: "flex",
@@ -289,6 +299,9 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

@@ -94,6 +94,7 @@ class DragNDrop extends React.Component {
       >
         <Dropzone
           onDrop={(acceptedFiles) => this.handleDrop(acceptedFiles)}
+          accept="application/pdf"
           onDragEnter={this.setDragOverState}
           onDragOver={this.setDragOverState}
         >

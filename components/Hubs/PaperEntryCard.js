@@ -1,9 +1,10 @@
 import React from "react";
 import Link from "next/link";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
 // Components
-import VotingWidget from "../VoteWidget";
+import VoteWidget from "../VoteWidget";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import HubTag from "./HubTag";
 import TextEditor from "../TextEditor/index";
@@ -12,27 +13,38 @@ import TextEditor from "../TextEditor/index";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { convertNumToMonth } from "~/config/utils/options";
+import {
+  UPVOTE,
+  DOWNVOTE,
+  UPVOTE_ENUM,
+  DOWNVOTE_ENUM,
+} from "~/config/constants";
 
-const PaperEntryCard = ({ paper, index, hubName }) => {
+// Redux
+import * as VoteActions from "~/redux/vote/actions";
+
+const PaperEntryCard = ({ paper, index, hubName, onUpvote, onDownvote }) => {
   const {
     id,
     authors,
     discussion,
-    doi,
-    file,
     hubs,
     paper_publish_date,
-    publication_type,
     title,
-    summary,
     tagline,
     user_vote,
     score,
   } = paper;
+  let selected = null;
   let vote_type = 0;
 
   if (user_vote) {
     vote_type = user_vote.vote_type;
+    if (vote_type === UPVOTE_ENUM) {
+      selected = UPVOTE;
+    } else if (vote_type === DOWNVOTE_ENUM) {
+      selected = DOWNVOTE;
+    }
   }
 
   function convertDate() {
@@ -45,41 +57,30 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
     }
   }
 
-  async function upvote() {
-    props.dispatch(VoteActions.postUpvotePending());
-    await props.dispatch(VoteActions.postUpvote(paperId));
-    updateWidgetUI();
+  async function upvote(e) {
+    e.stopPropagation();
+    onUpvote({ index });
   }
 
-  async function downvote() {
-    props.dispatch(VoteActions.postDownvotePending());
-    await props.dispatch(VoteActions.postDownvote(paperId));
-    updateWidgetUI();
-  }
-
-  function updateWidgetUI() {
-    const voteResult = store.getState().vote;
-    const success = voteResult.success;
-    const vote = getNestedValue(voteResult, ["vote"], false);
-
-    if (success) {
-      const voteType = vote.voteType;
-      if (voteType === UPVOTE) {
-        setSelectedVoteType(UPVOTE);
-        setScore(score + 1);
-      } else if (voteType === DOWNVOTE) {
-        setSelectedVoteType(DOWNVOTE);
-        setScore(score - 1);
-      }
-    }
+  async function downvote(e) {
+    e.stopPropagation();
+    onDownvote({ index });
   }
 
   return (
     <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
       <div className={css(styles.papercard)} key={`${id}-${index}-${title}`}>
         <div className={css(styles.column)}>
-          <span className={css(styles.voting)}>
-            <VotingWidget score={score} upvote={upvote} downvote={downvote} />
+          <span
+            className={css(styles.voting)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <VoteWidget
+              score={score}
+              onUpvote={upvote}
+              onDownvote={downvote}
+              selected={selected}
+            />
           </span>
         </div>
         <div className={css(styles.column, styles.metaData)}>
@@ -88,9 +89,7 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
             {convertDate()}
           </div>
           <div className={css(styles.summary, styles.text)}>
-            {tagline
-              ? tagline
-              : "Carbonic anhydrase IX (CAIX) is a membrane spanning protein involved in the enzymatic regulation of tumoracid-base balance. CAIX has been shown to be elevated in a number of hypoxic tumor types. The purpose of this study was to determine the efficiency of intact and IgG fragments of cG250."}
+            {tagline ? tagline : null}
           </div>
           <div className={css(styles.bottomBar)}>
             <div className={css(styles.row)}>
@@ -103,6 +102,7 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
                 {authors.length > 0 &&
                   authors.map((author) => (
                     <AuthorAvatar
+                      key={`author_${author.id}_${id}`}
                       avatarClassName={css(styles.avatar)}
                       size={30}
                       textSizeRatio={2.5}
@@ -127,7 +127,9 @@ const PaperEntryCard = ({ paper, index, hubName }) => {
             </div>
             <div className={css(styles.tags, styles.right)}>
               {hubs.length > 0 &&
-                hubs.map((tag) => <HubTag tag={tag} hubName={hubName} />)}
+                hubs.map((tag, index) => (
+                  <HubTag key={`hub_${index}`} tag={tag} hubName={hubName} />
+                ))}
             </div>
           </div>
         </div>
@@ -140,11 +142,11 @@ const styles = StyleSheet.create({
   papercard: {
     width: "95%",
     // width: 1202,
-    height: 208,
+    // height: 208,
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
-    alignItems: "center",
+    alignItems: "flex-start",
     padding: "27px 15px 27px 15px",
     cursor: "pointer",
     ":hover": {
@@ -174,7 +176,6 @@ const styles = StyleSheet.create({
   summary: {
     minWidth: "100%",
     maxWidth: "100%",
-    height: 90,
     maxHeight: 90,
     whiteSpace: "pre-wrap",
     color: "#4e4c5f",
@@ -186,15 +187,14 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
   },
   voting: {
-    marginTop: -21,
-    width: 48,
+    marginTop: -20,
   },
   bottomBar: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    position: "absolute",
     left: 0,
+    marginTop: 16,
     bottom: 10,
     width: "100%",
   },
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   avatars: {
     display: "flex",
     justifyContent: "flex-start",
-    marginRight: 27,
+    marginRight: 16,
     // width: 105
   },
   avatar: {
@@ -239,7 +239,20 @@ const styles = StyleSheet.create({
   },
   metaData: {
     width: "calc(100% - 48px)",
+    // minHeight: 130,
   },
 });
 
-export default PaperEntryCard;
+const mapStateToProps = ({ vote }) => ({
+  vote,
+});
+
+const mapDispatchToProps = {
+  // postUpvote: VoteActions.postUpvote,
+  // postUpvotePending: VoteActions.postUpvotePending,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PaperEntryCard);

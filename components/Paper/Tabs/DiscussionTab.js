@@ -402,7 +402,6 @@ var styles = StyleSheet.create({
   },
   discussionTextEditor: {
     width: 600,
-    height: 200,
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
   },

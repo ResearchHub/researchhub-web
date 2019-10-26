@@ -123,12 +123,24 @@ class UploadPaperModal extends React.Component {
    * toggles the view that allows the user to upload the paper
    * assuming the paper is not found in the search
    */
-  toggleUploadView = async () => {
-    await this.setState({ transition: true });
-    setTimeout(async () => {
-      await this.setState({ uploadView: !this.state.uploadView });
-      this.setState({ transition: false });
-    }, TRANSITION_TIME);
+  toggleUploadView = () => {
+    this.setState(
+      {
+        transition: true,
+      },
+      () => {
+        setTimeout(async () => {
+          this.setState(
+            {
+              uploadView: !this.state.uploadView,
+            },
+            () => {
+              this.setState({ transition: false });
+            }
+          );
+        }, TRANSITION_TIME);
+      }
+    );
   };
 
   /**
@@ -142,21 +154,27 @@ class UploadPaperModal extends React.Component {
   /**
    * function is called as a callback when a file is dropped
    */
-  uploadPaper = async (acceptedFiles, binaryStr) => {
+  uploadPaper = (acceptedFiles, binaryStr) => {
     let { paperActions } = this.props;
     let paper = acceptedFiles[0];
     let name = this.state.search;
-    await this.setState({ uploading: true });
-    //save paper to redux
-    await paperActions.uploadPaperToState(paper);
-    setTimeout(() => {
-      this.setState({
-        // search: grabName(),
-        uploading: false,
-        uploadFinish: true,
-        uploadedPaper: paper,
-      });
-    }, 300);
+    this.setState(
+      {
+        uploading: true,
+      },
+      async () => {
+        //save paper to redux
+        await paperActions.uploadPaperToState(paper);
+        setTimeout(() => {
+          this.setState({
+            // search: grabName(),
+            uploading: false,
+            uploadFinish: true,
+            uploadedPaper: paper,
+          });
+        }, 300);
+      }
+    );
   };
 
   /**
