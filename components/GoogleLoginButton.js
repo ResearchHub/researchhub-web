@@ -16,6 +16,8 @@ import colors from "~/config/themes/colors";
 import { useEffect } from "react";
 import { isDevEnv } from "~/config/utils/env";
 
+import { GOOGLE_CLIENT_ID } from "~/config/constants";
+
 const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth, disabled } = props;
   const router = useRouter();
