@@ -30,6 +30,7 @@ const TextEditor = (props) => {
     showDiff,
     previousVersion,
     placeholder,
+    hideCancelButton,
   } = props;
 
   const [value, setValue] = useState(convertToEditorValue(initialValue));
@@ -53,7 +54,8 @@ const TextEditor = (props) => {
         "Please login with Google to submit a summary revision."
       );
     } else {
-      onSubmit && (success = await onSubmit(value.toJSON({ preserveKeys: true })));
+      onSubmit &&
+        (success = await onSubmit(value.toJSON({ preserveKeys: true })));
       if (success && clearOnSubmit !== false) {
         editorRef.clear();
       }
@@ -82,6 +84,8 @@ const TextEditor = (props) => {
       previousVersion={previousVersion}
       classNames={classNames}
       placeholder={placeholder && placeholder}
+      autoFocus={true}
+      hideCancelButton={hideCancelButton && hideCancelButton}
     />
   );
 };

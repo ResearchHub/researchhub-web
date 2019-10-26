@@ -58,7 +58,8 @@ const styles = StyleSheet.create({
   actionContainer: {
     display: "flex",
     flexDirection: "row",
-    color: colors.GREY(1),
+    // color: colors.GREY(1),
+    color: "#000",
     fontSize: 14,
   },
 });

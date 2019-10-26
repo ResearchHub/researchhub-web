@@ -212,7 +212,10 @@ class CommentClass extends DiscussionComment {
     if (!doesNotExist(reply)) {
       let newReplies = [reply];
       newReplies = newReplies.concat(this.state.replies);
-      this.setState({ replies: newReplies });
+      this.setState({
+        replies: newReplies,
+        toggleReplies: true,
+      });
     }
   };
 
@@ -321,7 +324,9 @@ export const Reply = connect(
 
 const styles = StyleSheet.create({
   commentContainer: {
-    paddingTop: "32px",
+    // paddingTop: "32px",
+    // borderTop: `1px solid ${colors.GREY(1)}`,
+    // borderBottom: `1px solid ${colors.GREY(1)}`
   },
   commentEditor: {
     minHeight: "100%",
