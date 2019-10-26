@@ -202,8 +202,12 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    HUB: ({ hubId, search }) => {
+    HUB: ({ hubId, search, name }) => {
       let url = BASE_URL + `hub/`;
+
+      if (name) {
+        url += `?name__iexact=${name}`;
+      }
 
       if (hubId) {
         url += `${hubId}/?`;
