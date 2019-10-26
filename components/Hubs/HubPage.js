@@ -111,6 +111,17 @@ class HubPage extends React.Component {
     this.fetchPapers({ page: 1, hub: this.props.hub });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    debugger;
+    if (
+      prevProps.hub &&
+      this.props.hub &&
+      prevProps.hub.id !== this.props.hub.id
+    ) {
+      this.fetchPapers({ page: 1, hub: this.props.hub });
+    }
+  }
+
   fetchPapers = ({ page, hub }) => {
     let filters = null;
 
@@ -131,7 +142,10 @@ class HubPage extends React.Component {
         this.setState({
           count: res.count,
           page: page,
-          papers: [...this.state.papers, ...res.results],
+          papers:
+            page === 1
+              ? [...res.results]
+              : [...this.state.papers, ...res.results],
           next: res.next,
         });
       });
