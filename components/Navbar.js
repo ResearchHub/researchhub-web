@@ -20,6 +20,7 @@ import { getCurrentUserReputation, getNestedValue } from "~/config/utils";
 
 // Styles
 import colors from "~/config/themes/colors";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const Navbar = (props) => {
   const dispatch = useDispatch();
@@ -40,11 +41,36 @@ const Navbar = (props) => {
     null
   );
 
+  let dropdown;
+  let avatar;
+
   const userReputation = getCurrentUserReputation(store.getState());
 
   useEffect(() => {
     getUser();
   }, []);
+
+  /**
+   * When we click anywhere outside of the dropdown, close it
+   * @param { Event } e -- javascript event
+   */
+  const handleOutsideClick = (e) => {
+    if (dropdown && !dropdown.contains(e.target)) {
+      setOpenMenu(false);
+    }
+
+    if (avatar && avatar.contains(e.target)) {
+      e.stopPropagation();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  });
+
   const [openMenu, setOpenMenu] = useState(false);
 
   const tabData = [
@@ -56,17 +82,18 @@ const Navbar = (props) => {
   function renderTabs() {
     let tabs = tabData.map((tab, index) => {
       return (
-        <Link href={tab.route} key={`navbar_tab_${index}`}>
-          <div
-            className={css(
-              styles.tab,
-              index === 0 && styles.firstTab,
-              index === 2 && styles.lastTab
-            )}
-          >
-            {tab.label}
-          </div>
-        </Link>
+        // <Link href={tab.route} key={`navbar_tab_${index}`}>
+        <div
+          onClick={() => alert("Not yet implemented!")}
+          className={css(
+            styles.tab,
+            index === 0 && styles.firstTab,
+            index === 2 && styles.lastTab
+          )}
+        >
+          {tab.label}
+        </div>
+        // </Link>
       );
     });
     return tabs;
@@ -109,16 +136,19 @@ const Navbar = (props) => {
         <div className={css(styles.buttonLeft)}>
           {!isLoggedIn ? (
             authChecked ? (
-              <button
-                className={css(styles.button, styles.login)}
-                onClick={() => openLoginModal(true)}
-              >
-                Log In
-              </button>
+              <GoogleLoginButton
+                styles={[styles.button, styles.googleLoginButton, styles.login]}
+                iconStyle={styles.googleIcon}
+                customLabelStyle={[styles.googleLabel]}
+              />
             ) : null
           ) : (
             <div className={css(styles.userDropdown)}>
-              <div className={css(styles.avatarContainer)} onClick={toggleMenu}>
+              <div
+                className={css(styles.avatarContainer)}
+                ref={(ref) => (avatar = ref)}
+                onClick={toggleMenu}
+              >
                 <AuthorAvatar
                   author={user.author_profile}
                   size={34}
@@ -128,7 +158,11 @@ const Navbar = (props) => {
                 <i className={css(styles.caret) + " fas fa-caret-down"}></i>
               </div>
               {openMenu && (
-                <div className={css(styles.dropdown)} onClick={toggleMenu}>
+                <div
+                  className={css(styles.dropdown)}
+                  ref={(ref) => (dropdown = ref)}
+                  onClick={toggleMenu}
+                >
                   <Link
                     href={"/user/[authorId]/[tabName]"}
                     as={`/user/${user.author_profile.id}/contributions`}
@@ -177,11 +211,22 @@ const styles = StyleSheet.create({
       marginLeft: 70,
     },
   },
+  googleLoginButton: {
+    margin: 0,
+    width: 200,
+  },
+  googleIcon: {
+    width: 25,
+    height: 25,
+  },
   firstTab: {
     marginLeft: 30,
   },
   lastTab: {
     marginRight: 30,
+  },
+  googleLabel: {
+    color: colors.PURPLE(),
   },
   tab: {
     marginLeft: 20,
@@ -208,7 +253,7 @@ const styles = StyleSheet.create({
     color: "#aaa",
   },
   userDropdown: {
-    marginRight: 35,
+    marginRight: 16,
     position: "relative",
     zIndex: 9999,
   },
@@ -246,11 +291,18 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
     border: `${colors.BLUE()} 1px solid`,
     background: "transparent",
+
+    ":hover": {
+      backgroundColor: "rgba(250, 250, 250, 1)",
+    },
   },
   addPaper: {
     background: colors.BLUE(),
     border: `${colors.BLUE()} 1px solid`,
     color: "#fff",
+    ":hover": {
+      backgroundColor: "#3E43E8",
+    },
   },
   actions: {
     display: "flex",
