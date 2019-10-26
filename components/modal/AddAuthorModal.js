@@ -18,7 +18,7 @@ class AddAuthorModal extends React.Component {
     this.initialState = {
       first_name: "",
       last_name: "",
-      university: "",
+      // university: "",
       email: "",
       social_media: {
         facebook: "",
@@ -52,13 +52,19 @@ class AddAuthorModal extends React.Component {
     this.setState({ showLinks: !this.state.showLinks });
   };
 
-  addNewUser = () => {
+  /**
+   * Adds a new user by posting form data. Uses HTML5's form onSubmit
+   * @param { Event } e --javascript event
+   */
+  addNewUser = (e) => {
+    e.preventDefault();
     let params = {
       ...this.state,
     };
     this.props.addNewUser(params);
     this.closeModal();
   };
+
   render() {
     let {
       first_name,
@@ -74,6 +80,7 @@ class AddAuthorModal extends React.Component {
         isOpen={this.props.isOpen}
         closeModal={this.closeModal}
         className={css(styles.modal)}
+        shouldCloseOnOverlayClick={true}
         style={overlayStyles}
       >
         <div className={css(styles.modalContent)}>
@@ -88,7 +95,7 @@ class AddAuthorModal extends React.Component {
               Please enter the information about the user below
             </div>
           </div>
-          <form>
+          <form onSubmit={this.addNewUser}>
             <div className={css(styles.row, styles.customMargins)}>
               <FormInput
                 label={"First Name"}
@@ -109,19 +116,20 @@ class AddAuthorModal extends React.Component {
                 containerStyle={styles.halfWidth}
               />
             </div>
-            <FormInput
+            {/* <FormInput
               label={"University Affiliation"}
               value={university}
               placeholder={"Enter university name"}
               id={"university"}
               onChange={this.handleInputChange}
               containerStyle={styles.customMargins}
-            />
+            /> */}
             <FormInput
               label={"Email Address"}
               value={email}
               placeholder={"Enter email address"}
               id={"email"}
+              type={"email"}
               onChange={this.handleInputChange}
               containerStyle={styles.customMargins}
             />
@@ -178,12 +186,12 @@ class AddAuthorModal extends React.Component {
                 />
               </span>
             </div>
+            <Button
+              label={"Add user"}
+              type={"submit"}
+              customButtonStyle={styles.button}
+            />
           </form>
-          <Button
-            label={"Add user"}
-            customButtonStyle={styles.button}
-            onClick={this.addNewUser}
-          />
         </div>
       </Modal>
     );
@@ -305,6 +313,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
   button: {
+    margin: "0 auto",
     marginTop: 30,
     minHeight: 55,
     maxHeight: 55,
