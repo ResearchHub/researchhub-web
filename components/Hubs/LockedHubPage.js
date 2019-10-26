@@ -50,13 +50,12 @@ class LockedHubPage extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.hubName !== this.props.hubName) {
-      this.setState({ reveal: false });
+    if (prevProps.hub.id !== this.props.hub.id) {
       this.animateProgress = setInterval(this.incrementProgress, 30);
-      this.props.showMessage({ load: true, show: true });
       const { hub } = this.props;
       this.setState(
         {
+          reveal: false,
           subscriberCount: hub.subscriber_count,
           progress: 0,
           hub,
@@ -65,7 +64,6 @@ class LockedHubPage extends React.Component {
         () => {
           setTimeout(() => {
             this.setState({ reveal: true });
-            this.props.showMessage({ show: false });
           }, 400);
         }
       );
@@ -158,8 +156,7 @@ class LockedHubPage extends React.Component {
         <div className={css(styles.contentContainer)}>
           <div className={css(styles.content, reveal && styles.reveal)}>
             <div className={css(styles.title, styles.text)}>
-              {this.props.hub.name ? this.props.hub.name : this.state.hub.name}{" "}
-              Hub
+              {this.props.hub.name} Hub
             </div>
             <div
               className={css(
