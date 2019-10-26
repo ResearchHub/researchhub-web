@@ -23,12 +23,12 @@ import colors from "~/config/themes/colors";
 
 const filterOptions = [
   {
-    value: "top_rated",
-    label: "Top Rated",
-  },
-  {
     value: "newest",
     label: "Newest",
+  },
+  {
+    value: "top_rated",
+    label: "Top Rated",
   },
   {
     value: "most_discussed",
