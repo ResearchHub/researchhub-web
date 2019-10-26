@@ -13,7 +13,8 @@ const Index = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
-  let { hubName } = router.query;
+  let { hubname } = router.query;
+  let hubName = hubname;
   var { currentHub, hubs } = store.getState().hubs;
 
   const getHubs = async () => {
