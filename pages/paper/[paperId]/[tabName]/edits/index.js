@@ -118,12 +118,16 @@ class PaperEditHistory extends React.Component {
     let previousBlockComplete = {};
     let previousBlockArray = previousState.document.getBlocksAsArray();
 
-    for (let i = 0; i < previousBlockArray.length; i++) {
-      previousBlockComplete[previousBlockArray[i].key] = false;
+    for (
+      let prevIndex = 0;
+      prevIndex < previousBlockArray.length;
+      previousBlockArray++
+    ) {
+      previousBlockComplete[previousBlockArray[prevIndex].key] = false;
     }
 
-    for (let i = 0; i < blockArray.length; i++) {
-      let node = blockArray[i];
+    for (let blockIndex = 0; blockIndex < blockArray.length; blockIndex++) {
+      let node = blockArray[blockIndex];
       let key = node.key;
       let prevNode = previousState.document.getNode(key);
       previousBlockComplete[key] = true;
@@ -131,15 +135,15 @@ class PaperEditHistory extends React.Component {
         let diffJSON = Diff.diffWords(prevNode.text, node.text);
         if (diffJSON.length > 1 || diffJSON[0].added || diffJSON[0].removed) {
           let newTextNodes = [];
-          for (let j = 0; j < diffJSON.length; j++) {
-            if (diffJSON[j].added) {
-              let newNode = this.parseDiff(diffJSON[j], node);
+          for (let diffIndex = 0; diffIndex < diffJSON.length; diffIndex++) {
+            if (diffJSON[diffIndex].added) {
+              let newNode = this.parseDiff(diffJSON[diffIndex], node);
               newTextNodes.push(newNode);
-            } else if (diffJSON[j].removed) {
-              let newNode = this.parseDiff(diffJSON[j], prevNode);
+            } else if (diffJSON[diffIndex].removed) {
+              let newNode = this.parseDiff(diffJSON[diffIndex], prevNode);
               newTextNodes.push(newNode);
             } else {
-              let newNode = this.parseDiff(diffJSON[j], node);
+              let newNode = this.parseDiff(diffJSON[diffIndex], node);
               newTextNodes.push(newNode);
             }
           }
@@ -158,20 +162,24 @@ class PaperEditHistory extends React.Component {
         }
       } else {
         let pathToBlock = pathMap.get(node);
-        let newBlock = node.addMark("added");
+        let newBlock = node.addMark([0], "added");
         tempEditor = editorState.removeNode(pathToBlock);
         tempEditor = tempEditor.insertNode(pathToBlock, newBlock);
       }
     }
     let keys = Object.keys(previousBlockComplete);
-    for (let i = 0; i < keys.length; i++) {
-      let key = keys[i];
+    for (let prevNodeIndex = 0; prevNodeIndex < keys.length; prevNodeIndex++) {
+      let key = keys[prevNodeIndex];
       if (!previousBlockComplete[key]) {
         let prevNode = previousState.document.getNode(key);
         let previousTextArray = prevNode.getTextsAsArray();
         let newBlock = prevNode;
-        for (let j = 0; j < previousTextArray.length; j++) {
-          let pathToText = prevNode.getPath(previousTextArray[j]);
+        for (
+          let prevTextIndex = 0;
+          prevTextIndex < previousTextArray.length;
+          prevTextIndex++
+        ) {
+          let pathToText = prevNode.getPath(previousTextArray[prevTextIndex]);
           newBlock = prevNode.addMark(pathToText, "removed");
         }
         let pathToBlock = previousPathMap.get(prevNode);
@@ -191,7 +199,7 @@ class PaperEditHistory extends React.Component {
     this.editor = editor;
   };
   render() {
-    let { paper } = this.props;
+    let { paper, router } = this.props;
     let editHistory = paper.editHistory.map((edit, index) => {
       return (
         <div
@@ -215,6 +223,15 @@ class PaperEditHistory extends React.Component {
     return (
       <ComponentWrapper>
         <div className={css(styles.container)}>
+          <Link
+            href={"/paper/[paperId]/[tabName]"}
+            as={`/paper/${router.query.paperId}/summary`}
+          >
+            <div className={css(styles.back)}>
+              <i className={css(styles.arrow) + " fas fa-arrow-left"}></i>
+              Summary
+            </div>
+          </Link>
           <TextEditor
             canEdit={false}
             readOnly={true}
@@ -287,6 +304,21 @@ var styles = StyleSheet.create({
   },
   revisionTitle: {
     padding: 10,
+  },
+  back: {
+    display: "flex",
+    opacity: 0.4,
+    alignItems: "center",
+    height: 30,
+    paddingTop: 10,
+    cursor: "pointer",
+
+    ":hover": {
+      opacity: 1,
+    },
+  },
+  arrow: {
+    marginRight: 5,
   },
 });
 const mapStateToProps = (state) => ({
