@@ -112,7 +112,6 @@ class HubPage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    debugger;
     if (
       prevProps.hub &&
       this.props.hub &&
