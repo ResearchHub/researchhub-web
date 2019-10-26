@@ -40,7 +40,7 @@ export const ToolBar = (props) => {
     >
       <div>{props.children}</div>
       <div className={css(styles.buttonRow)}>
-        {!props.hideButton && props.cancel && (
+        {!props.hideButton && !props.hideCancelButton && (
           <FormButton
             isWhite={true}
             onClick={props.cancel}

@@ -152,7 +152,7 @@ class RichTextEditor extends React.Component {
             <Editor
               readOnly={this.props.readOnly}
               spellCheck
-              autoFocus
+              autoFocus={true}
               commentEditor={this.props.commentEditor}
               placeholder="What are your thoughts?"
               ref={this.ref}
@@ -171,6 +171,9 @@ class RichTextEditor extends React.Component {
                   cancel={this.props.cancel}
                   submit={this.props.submit}
                   hideButton={this.props.hideButton}
+                  hideCancelButton={
+                    this.props.hideCancelButton && this.props.hideCancelButton
+                  }
                 >
                   {this.renderMarkButton("bold", textEditorIcons.bold, true)}
                   {this.renderMarkButton("italic", textEditorIcons.italic)}
@@ -203,6 +206,9 @@ class RichTextEditor extends React.Component {
                   submit={this.props.submit}
                   summaryEditor={true}
                   hideButton={this.props.hideButton}
+                  hideCancelButton={
+                    this.props.hideCancelButton && this.props.hideCancelButton
+                  }
                 >
                   {this.renderMarkButton("bold", textEditorIcons.bold, true)}
                   {this.renderMarkButton("italic", textEditorIcons.italic)}
@@ -238,6 +244,9 @@ class RichTextEditor extends React.Component {
               onKeyDown={this.onKeyDown}
               renderBlock={this.renderBlock}
               renderMark={this.renderMark}
+              hideCancelButton={
+                this.props.hideCancelButton && this.props.hideCancelButton
+              }
               // decorateNode={this.decorateNode}
               // renderDecoration={this.renderDecoration}
             />
