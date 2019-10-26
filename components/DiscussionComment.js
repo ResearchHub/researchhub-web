@@ -209,14 +209,14 @@ class CommentClass extends DiscussionComment {
   };
 
   addSubmittedReply = (reply) => {
-    if (!doesNotExist(reply)) {
-      let newReplies = [reply];
-      newReplies = newReplies.concat(this.state.replies);
-      this.setState({
-        replies: newReplies,
-        toggleReplies: true,
-      });
-    }
+    // if (!doesNotExist(reply)) {
+    let newReplies = [reply];
+    newReplies = newReplies.concat(this.state.replies);
+    this.setState({
+      replies: newReplies,
+      toggleReplies: true,
+    });
+    // }
   };
 
   toggleReplies = async () => {
