@@ -1,11 +1,10 @@
 import Link from "next/link";
-import Router, { withRouter } from "next/router";
+import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import dynamic from "next/dynamic";
 import moment from "moment";
 import Plain from "slate-plain-serializer";
-import { Value, KeyUtils, Text, Block } from "slate";
+import { Text, Block } from "slate";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -15,8 +14,6 @@ import TextEditor from "~/components/TextEditor";
 import { PaperActions } from "~/redux/paper";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import { convertToEditorValue } from "~/config/utils";
 
 const Diff = require("diff");
@@ -38,16 +35,7 @@ class PaperEditHistory extends React.Component {
     };
   }
 
-  viewEditHistory = async () => {
-    let { getEditHistory, paperId } = this.props;
-    let param = {
-      paper: paperId,
-    };
-  };
-
   changeEditView = (selectedIndex, edit) => {
-    let { paper } = this.props;
-
     let previousState = {};
 
     let editorState = convertToEditorValue(edit.summary);
@@ -189,15 +177,10 @@ class PaperEditHistory extends React.Component {
     return tempEditor;
   };
 
-  // componentDidUpdate(prevState) {
-  //   if (prevState.editorState !== this.state.editorState) {
-  //     this.diffVersions()
-  //   }
-  // }
-
   setRef = (editor) => {
     this.editor = editor;
   };
+
   render() {
     let { paper, router } = this.props;
     let editHistory = paper.editHistory.map((edit, index) => {
@@ -232,18 +215,24 @@ class PaperEditHistory extends React.Component {
               Summary
             </div>
           </Link>
-          <TextEditor
-            canEdit={false}
-            readOnly={true}
-            canSubmit={false}
-            commentEditor={false}
-            passedValue={this.state.editorState}
-            initialValue={this.state.editorState}
-            setRef={this.setRef}
-          />
-          <div className={css(styles.editHistoryContainer)}>
-            <div className={css(styles.revisionTitle)}>Revision History</div>
-            {editHistory}
+          <div className={css(styles.editor)}>
+            <h1> {paper.title} </h1>
+            <TextEditor
+              canEdit={false}
+              readOnly={true}
+              containerStyles={styles.editorContainer}
+              canSubmit={false}
+              commentEditor={false}
+              passedValue={this.state.editorState}
+              initialValue={this.state.editorState}
+              setRef={this.setRef}
+            />
+          </div>
+          <div className={css(styles.edits)}>
+            <div className={css(styles.editHistoryContainer)}>
+              <div className={css(styles.revisionTitle)}>Revision History</div>
+              {editHistory}
+            </div>
           </div>
         </div>
       </ComponentWrapper>
@@ -253,7 +242,6 @@ class PaperEditHistory extends React.Component {
 
 var styles = StyleSheet.create({
   container: {
-    width: "80%",
     display: "flex",
     boxSizing: "border-box",
     position: "relative",
@@ -272,6 +260,9 @@ var styles = StyleSheet.create({
     display: "flex",
     cursor: "pointer",
   },
+  editorContainer: {
+    marginLeft: -16,
+  },
   pencilIcon: {
     marginRight: 5,
   },
@@ -281,17 +272,23 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-end",
   },
+  editor: {
+    paddingTop: 75,
+  },
+  edits: {
+    paddingTop: 75,
+  },
   editHistoryContainer: {
-    position: "absolute",
-    right: -280,
     background: "#F9F9FC",
+    minHeight: 200,
+    borderRadius: 4,
   },
   selectedEdit: {
     background: "#F0F1F7",
   },
   editHistoryCard: {
     width: 250,
-    padding: "5px 10px",
+    padding: "14px 30px",
     cursor: "pointer",
   },
   date: {
@@ -303,7 +300,13 @@ var styles = StyleSheet.create({
     opacity: 0.5,
   },
   revisionTitle: {
-    padding: 10,
+    padding: "20px 30px",
+    color: "#241F3A",
+    fontSize: 12,
+    opacity: 0.4,
+    letterSpacing: 1.2,
+
+    textTransform: "uppercase",
   },
   back: {
     display: "flex",
@@ -311,6 +314,9 @@ var styles = StyleSheet.create({
     alignItems: "center",
     height: 30,
     paddingTop: 10,
+    position: "absolute",
+    left: 0,
+    top: 16,
     cursor: "pointer",
 
     ":hover": {

@@ -9,7 +9,7 @@ const AuthorAvatar = (props) => {
   const {
     author,
     size = 30,
-    textSizeRatio = 1,
+    textSizeRatio = 2.5,
     disableLink,
     avatarClassName,
     name,
@@ -35,6 +35,7 @@ const AuthorAvatar = (props) => {
         <Link
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${author.id}/contributions`}
+          style={css(styles.link)}
         >
           {renderAvatar()}
         </Link>
@@ -43,6 +44,10 @@ const AuthorAvatar = (props) => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  link: {
+    cursor: "pointer",
+  },
+});
 
 export default AuthorAvatar;
