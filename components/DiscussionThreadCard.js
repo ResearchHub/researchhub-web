@@ -83,7 +83,7 @@ const DiscussionThreadCard = (props) => {
     }
   }
 
-  goToDiscussion = () => {};
+  const goToDiscussion = () => {};
 
   return (
     <div
