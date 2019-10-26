@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     bottom: 5,
   },
   logo: {
-    height: 30,
+    height: 40,
     marginBottom: 20,
     userSelect: "none",
   },

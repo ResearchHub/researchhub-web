@@ -23,7 +23,7 @@
         "nodes": [
           {
             "object": "text",
-            "text": "What is the paper trying to solve?",
+            "text": "Distill this paper into a short paragraph. What is the main take away and why does it matter?",
             "marks": [
               {
                 "object": "mark",
@@ -42,6 +42,36 @@
           {
             "object": "text",
             "text": "",
+            "marks": [
+              {
+                "object": "mark",
+                "type": "italic",
+                "data": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "heading-one",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "Hypothesis",
+            "marks": []
+          }
+        ]
+      },
+      {
+        "object": "block",
+        "type": "paragraph",
+        "data": {},
+        "nodes": [
+          {
+            "object": "text",
+            "text": "What question does this paper attempt to answer?",
             "marks": [
               {
                 "object": "mark",
@@ -89,25 +119,7 @@
         "nodes": [
           {
             "object": "text",
-            "text": "What conclusion did the paper come to, how did it get there?",
-            "marks": [
-              {
-                "object": "mark",
-                "type": "italic",
-                "data": {}
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "object": "block",
-        "type": "paragraph",
-        "data": {},
-        "nodes": [
-          {
-            "object": "text",
-            "text": "",
+            "text": "What conclusion did the paper reach?",
             "marks": [
               {
                 "object": "mark",
@@ -155,7 +167,7 @@
         "nodes": [
           {
             "object": "text",
-            "text": "How does the paper help our previous understanding and where do we go from here? Is there any impact on the domain, or certain industries?",
+            "text": "What does this paper make possible in the world, and what should be tried from here?",
             "marks": [
               {
                 "object": "mark",

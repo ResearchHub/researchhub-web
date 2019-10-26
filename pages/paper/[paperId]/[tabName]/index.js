@@ -117,7 +117,7 @@ const Paper = (props) => {
       paper.authors.map((author, index) => {
         return (
           <div className={css(styles.authorContainer)} key={`author_${index}`}>
-            <AuthorAvatar author={author} size={30} textSizeRatio="1" />
+            <AuthorAvatar author={author} size={30} />
           </div>
         );
       });
@@ -232,32 +232,20 @@ const styles = StyleSheet.create({
   },
   authors: {
     display: "flex",
-    marginRight: 15,
+    marginRight: 41,
   },
   authorContainer: {
     marginRight: 5,
   },
   tags: {
     display: "flex",
-    marginBottom: 10,
-  },
-  hubTag: {
-    fontSize: 10,
-    fontWeight: "bold",
-    color: colors.BLUE(1),
-    background: colors.BLUE(0.1),
-    padding: 5,
-    margin: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    height: 13,
-    borderRadius: 4,
   },
   hubs: {
     display: "flex",
   },
   tagline: {
     fontSize: 16,
+    marginTop: 30,
     marginBottom: 10,
   },
   voting: {

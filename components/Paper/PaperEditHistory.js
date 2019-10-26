@@ -120,7 +120,7 @@ var styles = StyleSheet.create({
   },
   editHistoryCard: {
     width: 250,
-    padding: "5px 10px",
+    padding: "14px 30px",
     cursor: "pointer",
   },
   date: {
@@ -132,7 +132,9 @@ var styles = StyleSheet.create({
     opacity: 0.5,
   },
   revisionTitle: {
-    padding: 10,
+    padding: 20,
+    color: "#241F3A",
+    textTransform: "uppercase",
   },
 });
 
