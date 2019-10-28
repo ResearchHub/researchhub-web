@@ -3,6 +3,8 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+
 import { ModalActions } from "../redux/modals";
 
 import { doesNotExist } from "~/config/utils";
@@ -71,17 +73,22 @@ const VoteWidget = (props) => {
         className={css(styles.container, props.styles)}
         style={{ fontSize: fontSize, width: width }}
       >
-        <UpvoteButton
-          selected={upvoteSelected}
-          disabled={upvoteDisabled}
+        <PermissionNotificationWrapper
+          loginRequired={true}
           onClick={onUpvoteClick}
-        />
+        >
+          <UpvoteButton selected={upvoteSelected} disabled={upvoteDisabled} />
+        </PermissionNotificationWrapper>
         <ScorePill score={score} />
-        <DownvoteButton
-          selected={downvoteSelected}
-          disabled={downvoteDisabled}
+        <PermissionNotificationWrapper
+          loginRequired={true}
           onClick={onDownvoteClick}
-        />
+        >
+          <DownvoteButton
+            selected={downvoteSelected}
+            disabled={downvoteDisabled}
+          />
+        </PermissionNotificationWrapper>
       </div>
     </Fragment>
   );
