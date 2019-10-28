@@ -200,12 +200,13 @@ class SummaryTab extends React.Component {
                 <div className={css(styles.text)}>
                   Please add a summary to this paper
                 </div>
-                <button
-                  className={css(styles.button)}
+                <PermissionNotificationWrapper
                   onClick={this.addSummary}
+                  modalMessage="propose a summary"
+                  permissionKey="ProposeSummaryEdit"
                 >
-                  Add Summary
-                </button>
+                  <button className={css(styles.button)}>Add Summary</button>
+                </PermissionNotificationWrapper>
               </div>
             )}
           </div>
