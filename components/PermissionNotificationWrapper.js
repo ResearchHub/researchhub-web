@@ -1,3 +1,4 @@
+import { css, StyleSheet } from "aphrodite";
 import { useDispatch, useStore } from "react-redux";
 
 import { ModalActions } from "~/redux/modals";
@@ -35,8 +36,19 @@ const PermissionNotificationWrapper = (props) => {
   }
 
   return (
-    <div onClick={executeIfUserMeetsReputationMinimum}>{props.children}</div>
+    <span
+      className={css(styles.link)}
+      onClick={executeIfUserMeetsReputationMinimum}
+    >
+      {props.children}
+    </span>
   );
 };
+
+const styles = StyleSheet.create({
+  link: {
+    width: "100%",
+  },
+});
 
 export default PermissionNotificationWrapper;
