@@ -142,6 +142,7 @@ class UploadPaperModal extends React.Component {
       }
     );
   };
+  f;
 
   /**
    * highlights the paper entry that is chosen by the user
@@ -188,6 +189,22 @@ class UploadPaperModal extends React.Component {
       ...this.initialState,
       uploadView: true,
     });
+  };
+
+  navigateToPaperUploadInfo = () => {
+    let title = this.state.search;
+    Router.push({
+      pathname: "/paper/upload/info",
+      query: { uploadPaperTitle: title },
+    });
+    this.setState(
+      {
+        ...this.initialState,
+      },
+      () => {
+        this.props.modalActions.openUploadPaperModal(false);
+      }
+    );
   };
 
   render() {
@@ -299,16 +316,20 @@ class UploadPaperModal extends React.Component {
             customButtonStyle={styles.button}
             customLabelStyle={styles.label}
             disabled={uploadView && !uploadFinish}
-            onClick={!uploadView && this.toggleUploadView}
-            isLink={
+            onClick={
               uploadView
-                ? {
-                    href: "/paper/upload/info",
-                    linkAs: "/paper/upload/info",
-                    query: { uploadPaperTitle: this.state.search },
-                  }
-                : null
+                ? this.navigateToPaperUploadInfo
+                : this.toggleUploadView
             }
+            // isLink={
+            //   uploadView
+            //     ? {
+            //         href: "/paper/upload/info",
+            //         linkAs: "/paper/upload/info",
+            //         query: { uploadPaperTitle: this.state.search },
+            //       }
+            //     : null
+            // }
           />
         </div>
       </Modal>
