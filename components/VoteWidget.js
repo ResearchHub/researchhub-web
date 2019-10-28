@@ -3,6 +3,8 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+
 import { ModalActions } from "../redux/modals";
 
 import { doesNotExist } from "~/config/utils";
@@ -82,35 +84,41 @@ const VoteWidget = (props) => {
         )}
         style={{ fontSize: fontSize, width: width }}
       >
-        {horizontalView ? (
-          <DownvoteButton
-            selected={downvoteSelected}
-            disabled={downvoteDisabled}
-            onClick={onDownvoteClick}
-            horizontalView={horizontalView}
-          />
-        ) : (
-          <UpvoteButton
-            selected={upvoteSelected}
-            disabled={upvoteDisabled}
-            onClick={onUpvoteClick}
-          />
-        )}
+        <PermissionNotificationWrapper
+          loginRequired={true}
+          onClick={horizontalView ? onDownvoteClick : onUpvoteClick}
+        >
+          {horizontalView ? (
+            <DownvoteButton
+              selected={downvoteSelected}
+              disabled={downvoteDisabled}
+              horizontalView={horizontalView}
+            />
+          ) : (
+            <UpvoteButton
+              selected={upvoteSelected}
+              disabled={upvoteDisabled}
+            />
+          )}
+        </PermissionNotificationWrapper>
         <ScorePill score={score} />
-        {horizontalView ? (
-          <UpvoteButton
-            selected={upvoteSelected}
-            disabled={upvoteDisabled}
-            onClick={onUpvoteClick}
-            horizontalView={horizontalView}
-          />
-        ) : (
-          <DownvoteButton
-            selected={downvoteSelected}
-            disabled={downvoteDisabled}
-            onClick={onDownvoteClick}
-          />
-        )}
+        <PermissionNotificationWrapper
+          loginRequired={true}
+          onClick={horizontalView ? onUpvoteClick : onDownvoteClick}
+        >
+          {horizontalView ? (
+            <UpvoteButton
+              selected={upvoteSelected}
+              disabled={upvoteDisabled}
+              horizontalView={horizontalView}
+            />
+          ) : (
+            <DownvoteButton
+              selected={downvoteSelected}
+              disabled={downvoteDisabled}
+            />
+          )}
+        </PermissionNotificationWrapper>
       </div>
     </Fragment>
   );
