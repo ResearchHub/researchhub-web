@@ -5,6 +5,7 @@ import { Value } from "slate";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 
 // Redux
@@ -121,12 +122,18 @@ class SummaryTab extends React.Component {
                 >
                   <div className={css(styles.action)}>View Edit History</div>
                 </Link>
-                <div className={css(styles.action)} onClick={this.edit}>
-                  <div className={css(styles.pencilIcon)}>
-                    <i className="fas fa-pencil"></i>
+                <PermissionNotificationWrapper
+                  modalMessage="propose summary edit"
+                  onClick={this.edit}
+                  permissionKey="ProposeSummaryEdit"
+                >
+                  <div className={css(styles.action)}>
+                    <div className={css(styles.pencilIcon)}>
+                      <i className="fas fa-pencil"></i>
+                    </div>
+                    Edit Summary
                   </div>
-                  Edit Summary
-                </div>
+                </PermissionNotificationWrapper>
               </div>
             ) : (
               <div className={css(styles.guidelines)}>
