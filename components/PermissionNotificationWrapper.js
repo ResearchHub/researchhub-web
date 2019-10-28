@@ -1,4 +1,4 @@
-import { css, StyleSheet } from "aphrodite";
+import { css } from "aphrodite";
 import { useDispatch, useStore } from "react-redux";
 
 import { ModalActions } from "~/redux/modals";
@@ -8,13 +8,51 @@ import {
   getMinimumReputation,
 } from "~/config/utils";
 
+const PropsWarning = `Must supply at least one of the following props to
+PermissionNotificationWrapper: loginRequired, onClick, permissionKey.
+Functionality may break without it.`;
+
 const PermissionNotificationWrapper = (props) => {
-  const { modalMessage, onClick, permissionKey, styling } = props;
+  const {
+    loginRequired,
+    modalMessage,
+    onClick,
+    permissionKey,
+    styling,
+  } = props;
 
   const store = useStore();
   const dispatch = useDispatch();
 
-  function executeIfUserMeetsReputationMinimum(e) {
+  function executeIfUserMeetsRequirement(e) {
+    if (loginRequired) {
+      executeIfLoggedIn(e);
+    } else if (permissionKey) {
+      executeIfUserHasMinimumReputation(e);
+    } else if (onClick) {
+      onClick(e);
+    } else {
+      console.warn(PropsWarning);
+    }
+  }
+
+  function executeIfLoggedIn(e) {
+    const userIsLoggedIn = store.getState().auth.isLoggedIn;
+
+    if (userIsLoggedIn) {
+      if (permissionKey) {
+        executeIfUserHasMinimumReputation(e);
+      } else {
+        onClick && onClick(e);
+      }
+    } else {
+      dispatch(
+        ModalActions.openLoginModal(true, `Please login to ${modalMessage}`)
+      );
+    }
+  }
+
+  function executeIfUserHasMinimumReputation(e) {
     const minimumReputation = getMinimumReputation(
       store.getState(),
       permissionKey
@@ -36,10 +74,7 @@ const PermissionNotificationWrapper = (props) => {
   }
 
   return (
-    <span
-      className={css(styling)}
-      onClick={executeIfUserMeetsReputationMinimum}
-    >
+    <span className={css(styling)} onClick={executeIfUserMeetsRequirement}>
       {props.children}
     </span>
   );
