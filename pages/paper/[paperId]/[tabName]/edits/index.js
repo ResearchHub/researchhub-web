@@ -140,18 +140,31 @@ class PaperEditHistory extends React.Component {
           if (newTextNodes.length > 0) {
             newNodes = newTextNodes;
           }
-          let newBlock = Block.create({
+          let newDiffBlock = Block.create({
             key: key,
             nodes: newNodes,
             type: node.type,
           });
-          tempEditor = editorState.removeNode(pathToBlock);
-          tempEditor = tempEditor.insertNode(pathToBlock, newBlock);
+          tempEditor = tempEditor.removeNode(pathToBlock);
+          tempEditor = tempEditor.insertNode(pathToBlock, newDiffBlock);
         }
       } else {
         let pathToBlock = pathMap.get(node);
-        let newBlock = node.addMark([0], "added");
-        tempEditor = editorState.removeNode(pathToBlock);
+        let nodeTextArray = node.getTextsAsArray();
+        let newNodeTexts = [];
+        for (
+          let nodeTextIndex = 0;
+          nodeTextIndex < nodeTextArray.length;
+          nodeTextIndex++
+        ) {
+          newNodeTexts.push(nodeTextArray[nodeTextIndex].addMark("added"));
+        }
+        let newBlock = Block.create({
+          key: key,
+          nodes: newNodeTexts,
+          type: node.type,
+        });
+        tempEditor = tempEditor.removeNode(pathToBlock);
         tempEditor = tempEditor.insertNode(pathToBlock, newBlock);
       }
     }
@@ -161,17 +174,17 @@ class PaperEditHistory extends React.Component {
       if (!previousBlockComplete[key]) {
         let prevNode = previousState.document.getNode(key);
         let previousTextArray = prevNode.getTextsAsArray();
-        let newBlock = prevNode;
+        let newRemovedBlock = prevNode;
         for (
           let prevTextIndex = 0;
           prevTextIndex < previousTextArray.length;
           prevTextIndex++
         ) {
           let pathToText = prevNode.getPath(previousTextArray[prevTextIndex]);
-          newBlock = prevNode.addMark(pathToText, "removed");
+          newRemovedBlock = prevNode.addMark(pathToText, "removed");
         }
         let pathToBlock = previousPathMap.get(prevNode);
-        tempEditor = tempEditor.insertNode(pathToBlock, newBlock);
+        tempEditor = tempEditor.insertNode(pathToBlock, newRemovedBlock);
       }
     }
     return tempEditor;
