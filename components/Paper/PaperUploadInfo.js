@@ -107,9 +107,16 @@ class PaperUploadInfo extends React.Component {
       this.setState({ editMode: true });
       this.fetchAndPrefillPaperInfo(paperId);
     } else {
-      modalActions.openUploadPaperModal(false);
       let form = { ...this.state.form };
       form.title = paperTitle;
+      this.setState({ form });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.paperTitle !== this.props.paperTitle) {
+      let form = { ...this.state.form };
+      form.title = this.props.paperTitle;
       this.setState({ form });
     }
   }
