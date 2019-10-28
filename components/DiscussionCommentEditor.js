@@ -84,25 +84,6 @@ export const CommentEditor = (props) => {
   const [active, setActive] = useState(false);
   const containerRef = useRef(null);
 
-  // detectOutsideClick(containerRef);
-
-  // function detectOutsideClick(ref) {
-  //   function handleClickOutside(event) {
-  //     if (ref.current && !ref.current.contains(event.target)) {
-  //       setTimeout(() => {
-  //         setActive(false);
-  //       }, 100);
-  //     }
-  //   }
-
-  //   useEffect(() => {
-  //     document.addEventListener("mousedown", handleClickOutside);
-  //     return () => {
-  //       document.removeEventListener("mousedown", handleClickOutside);
-  //     };
-  //   });
-  // }
-
   function hideReply() {
     setActive(false);
   }
@@ -133,23 +114,6 @@ export const ReplyEditor = (props) => {
   const [transition, setTransition] = useState(false);
   const containerRef = useRef(null);
 
-  // detectOutsideClick(containerRef);
-
-  // function detectOutsideClick(ref) {
-  //   function handleClickOutside(event) {
-  //     if (ref.current && !ref.current.contains(event.target)) {
-  //       hideReply();
-  //     }
-  //   }
-
-  //   useEffect(() => {
-  //     document.addEventListener("mousedown", handleClickOutside);
-  //     return () => {
-  //       document.removeEventListener("mousedown", handleClickOutside);
-  //     };
-  //   });
-  // }
-
   function showReply(e) {
     e.stopPropagation();
     setTransition(true);
@@ -165,10 +129,6 @@ export const ReplyEditor = (props) => {
       }, 280);
     }, 100);
   }
-
-  // function setRef(reference) {
-  //   setEditorRef(reference);
-  // }
 
   return (
     <div className={css(styles.actionBar, transition && styles.reveal)}>
@@ -187,7 +147,6 @@ export const ReplyEditor = (props) => {
       ) : (
         <DiscussionCommentEditor
           active={true}
-          // setRef={setRef}
           getRef={containerRef}
           onSubmit={onSubmit}
           postMethod={postReply}
