@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
-import { timeAgo } from "~/config/utils";
 
 // Components
 import TextEditor from "~/components/TextEditor";
@@ -12,9 +11,11 @@ import Button from "~/components/Form/Button";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import ComponentWrapper from "../../ComponentWrapper";
 import Message from "~/components/Loader/Message";
+import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+import { thread } from "~/redux/discussion/shims";
 
 // Config
 import API from "~/config/api";
@@ -22,9 +23,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
-import { transformDate, transformUser, transformVote } from "~/redux/utils";
-import { thread } from "~/redux/discussion/shims";
-import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
