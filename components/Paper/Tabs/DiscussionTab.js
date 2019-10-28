@@ -26,6 +26,7 @@ import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
 import { transformDate, transformUser, transformVote } from "~/redux/utils";
 import { thread } from "~/redux/discussion/shims";
+import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
@@ -175,22 +176,28 @@ const DiscussionTab = (props) => {
             </div>
           </span>
         )}
-        <button
-          className={css(
-            styles.addDiscussionButton,
-            formattedThreads.length > 0 && styles.plainButton
-          )}
-          onClick={addDiscussion}
-        >
-          {formattedThreads.length > 0 && (
-            <span className={css(styles.discussionIcon)}>
-              <i class="fad fa-comment-plus" />
-            </span>
-          )}
-          Add Discussion
-        </button>
-      </div>
-    );
+          <PermissionNotificationWrapper
+            onClick={addDiscussion}
+            modalMessage="create a discussion thread"
+            permissionKey="CreateDiscussionThread"
+          >
+            <button
+              className={css(
+                styles.addDiscussionButton,
+                formattedThreads.length > 0 && styles.plainButton
+              )}
+            >
+              {formattedThreads.length > 0 && (
+                <span className={css(styles.discussionIcon)}>
+                  <i class="fad fa-comment-plus" />
+                </span>
+              )}
+              Add Discussion
+            </button>
+          </PermissionNotificationWrapper>
+        </div>
+      );
+    }
   };
 
   return (
