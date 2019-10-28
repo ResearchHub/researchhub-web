@@ -25,6 +25,7 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
+import PermissionNotificationWrapper from "../../../../components/PermissionNotificationWrapper";
 
 const Paper = (props) => {
   const dispatch = useDispatch();
@@ -154,10 +155,13 @@ const Paper = (props) => {
           <div className={css(styles.topHeader)}>
             <div className={css(styles.title)}>{paper && paper.title}</div>
             <div className={css(styles.actionButtons)}>
-              <ActionButton
-                icon={"fas fa-pencil"}
-                action={navigateToEditPaperInfo}
-              />
+              <PermissionNotificationWrapper
+                modalMessage="edit paper"
+                onClick={navigateToEditPaperInfo}
+                permissionKey="UpdatePaper"
+              >
+                <ActionButton icon={"fas fa-pencil"} />
+              </PermissionNotificationWrapper>
               <ShareAction
                 iconNode={icons.shareAlt}
                 title={"Share this paper"}
