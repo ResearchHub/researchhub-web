@@ -183,6 +183,7 @@ const DiscussionTab = (props) => {
             onClick={addDiscussion}
             modalMessage="create a discussion thread"
             permissionKey="CreateDiscussionThread"
+            loginRequired={true}
           >
             <button
               className={css(
