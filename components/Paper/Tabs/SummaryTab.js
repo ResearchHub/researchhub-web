@@ -123,9 +123,10 @@ class SummaryTab extends React.Component {
                   <div className={css(styles.action)}>View Edit History</div>
                 </Link>
                 <PermissionNotificationWrapper
-                  modalMessage="propose summary edit"
+                  modalMessage="propose summary edits"
                   onClick={this.edit}
                   permissionKey="ProposeSummaryEdit"
+                  loginRequired={true}
                 >
                   <div className={css(styles.action)}>
                     <div className={css(styles.pencilIcon)}>
@@ -204,6 +205,7 @@ class SummaryTab extends React.Component {
                   onClick={this.addSummary}
                   modalMessage="propose a summary"
                   permissionKey="ProposeSummaryEdit"
+                  loginRequired={true}
                 >
                   <button className={css(styles.button)}>Add Summary</button>
                 </PermissionNotificationWrapper>

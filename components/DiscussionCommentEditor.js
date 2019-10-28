@@ -94,6 +94,7 @@ export const CommentEditor = (props) => {
       permissionKey="CreateDiscussionComment"
       onClick={null}
       styling={styles.notificationWrapper}
+      loginRequired={true}
     >
       <DiscussionCommentEditor
         active={active}
@@ -138,6 +139,7 @@ export const ReplyEditor = (props) => {
             onClick={showReply}
             modalMessage="post a reply"
             permissionKey="CreateDiscussionReply"
+            loginRequired={true}
           >
             <div className={css(styles.reply)} id="reply">
               Reply

@@ -156,9 +156,10 @@ const Paper = (props) => {
             <div className={css(styles.title)}>{paper && paper.title}</div>
             <div className={css(styles.actionButtons)}>
               <PermissionNotificationWrapper
-                modalMessage="edit paper"
+                modalMessage="edit papers"
                 onClick={navigateToEditPaperInfo}
                 permissionKey="UpdatePaper"
+                loginRequired={true}
               >
                 <ActionButton icon={"fas fa-pencil"} />
               </PermissionNotificationWrapper>
