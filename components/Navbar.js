@@ -25,6 +25,7 @@ import { getCurrentUserReputation, getNestedValue } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import GoogleLoginButton from "./GoogleLoginButton";
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 
 const Navbar = (props) => {
   const dispatch = useDispatch();
@@ -123,17 +124,7 @@ const Navbar = (props) => {
   }
 
   function onAddPaperClick() {
-    if (minimumReputation !== null) {
-      if (userReputation < minimumReputation) {
-        dispatch(
-          ModalActions.openPermissionNotificationModal(true, "upload a paper")
-        );
-      } else {
-        openUploadPaperModal(true);
-      }
-    } else {
-      console.warn("minimumReputation is null");
-    }
+    openUploadPaperModal(true);
   }
 
   function toggleSideMenu() {
@@ -318,6 +309,16 @@ const Navbar = (props) => {
         <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
           {icons.burgerMenu}
         </div>
+        <PermissionNotificationWrapper
+          onClick={onAddPaperClick}
+          modalMessage="upload a paper"
+          loginRequired={true}
+          permissionKey="CreatePaper"
+        >
+          <button className={css(styles.button, styles.addPaper)}>
+            Add Paper
+          </button>
+        </PermissionNotificationWrapper>
       </div>
     </Fragment>
   );
