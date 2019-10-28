@@ -168,7 +168,10 @@ class HubPage extends React.Component {
             )}
           >
             <div className={css(styles.header, styles.text)}>
-              Welcome to {this.props.home ? "ResearchHub" : this.props.hub.name}
+              Welcome to{" "}
+              <span className={css(styles.hubName)}>
+                {this.props.home ? "ResearchHub" : this.props.hub.name}
+              </span>
               !
             </div>
             <div className={css(styles.subtext, styles.text)}>
@@ -192,7 +195,9 @@ class HubPage extends React.Component {
             <div className={css(styles.topbar, styles.row)}>
               <div className={css(styles.text, styles.feedTitle)}>
                 Top Papers on{" "}
-                {this.props.home ? "ResearchHub" : this.props.hub.name}
+                <span className={css(styles.hubName)}>
+                  {this.props.home ? "ResearchHub" : this.props.hub.name}
+                </span>
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
@@ -382,6 +387,9 @@ var styles = StyleSheet.create({
   blank: {
     opacity: 0,
     height: 60,
+  },
+  hubName: {
+    textTransform: "capitalize",
   },
 });
 
