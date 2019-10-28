@@ -23,7 +23,14 @@ import {
 // Redux
 import * as VoteActions from "~/redux/vote/actions";
 
-const PaperEntryCard = ({ paper, index, hubName, onUpvote, onDownvote }) => {
+const PaperEntryCard = ({
+  paper,
+  index,
+  hubName,
+  onUpvote,
+  onDownvote,
+  mobileView,
+}) => {
   const {
     id,
     authors,
@@ -67,10 +74,10 @@ const PaperEntryCard = ({ paper, index, hubName, onUpvote, onDownvote }) => {
     onDownvote({ index });
   }
 
-  return (
-    <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
-      <div className={css(styles.papercard)} key={`${id}-${index}-${title}`}>
-        <div className={css(styles.column)}>
+  if (mobileView) {
+    return (
+      <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
+        <div className={css(styles.papercard)} key={`${id}-${index}-${title}`}>
           <span
             className={css(styles.voting)}
             onClick={(e) => e.stopPropagation()}
@@ -80,77 +87,165 @@ const PaperEntryCard = ({ paper, index, hubName, onUpvote, onDownvote }) => {
               onUpvote={upvote}
               onDownvote={downvote}
               selected={selected}
+              horizontalView={true}
             />
           </span>
-        </div>
-        <div className={css(styles.column, styles.metaData)}>
-          <div className={css(styles.title, styles.text)}>{title && title}</div>
-          <div className={css(styles.publishDate, styles.text)}>
-            {convertDate()}
-          </div>
-          <div className={css(styles.summary, styles.text)}>
-            {tagline ? tagline : null}
-          </div>
-          <div className={css(styles.bottomBar)}>
-            <div className={css(styles.row)}>
-              <span
-                className={css(
-                  styles.avatars,
-                  authors.length < 1 && styles.hide
-                )}
-              >
-                {authors.length > 0 &&
-                  authors.map((author) => (
-                    <AuthorAvatar
-                      key={`author_${author.id}_${id}`}
-                      avatarClassName={css(styles.avatar)}
-                      size={30}
-                      textSizeRatio={2.5}
-                      author={author}
-                    />
+          <div className={css(styles.column, styles.metaData)}>
+            <div className={css(styles.title, styles.text)}>
+              {title && title}
+            </div>
+            <div className={css(styles.publishDate, styles.text)}>
+              {convertDate()}
+            </div>
+            <div className={css(styles.summary, styles.text)}>
+              {tagline ? tagline : null}
+            </div>
+            <div className={css(styles.bottomBar)}>
+              <div className={css(styles.row)}>
+                <span
+                  className={css(
+                    styles.avatars,
+                    authors.length < 1 && styles.hide
+                  )}
+                >
+                  {authors.length > 0 &&
+                    authors.map((author) => (
+                      <AuthorAvatar
+                        key={`author_${author.id}_${id}`}
+                        avatarClassName={css(styles.avatar)}
+                        size={30}
+                        textSizeRatio={2.5}
+                        author={author}
+                      />
+                    ))}
+                </span>
+                <Link
+                  href={"/paper/[paperId]/[tabName]"}
+                  as={`/paper/${id}/discussion`}
+                >
+                  <div className={css(styles.discussion)}>
+                    <span className={css(styles.icon)} id={"discIcon"}>
+                      {icons.chat}
+                    </span>
+                    <span
+                      className={css(styles.dicussionCount)}
+                      id={"discCount"}
+                    >
+                      {`${discussion.count}`}{" "}
+                      {discussion.count === 1 ? "discussion" : "discussions"}
+                    </span>
+                  </div>
+                </Link>
+              </div>
+              <div className={css(styles.tags, styles.right)}>
+                {hubs.length > 0 &&
+                  hubs.map((tag, index) => (
+                    <HubTag key={`hub_${index}`} tag={tag} hubName={hubName} />
                   ))}
-              </span>
-              <Link
-                href={"/paper/[paperId]/[tabName]"}
-                as={`/paper/${id}/discussion`}
-              >
-                <div className={css(styles.discussion)}>
-                  <span className={css(styles.icon)} id={"discIcon"}>
-                    {icons.chat}
-                  </span>
-                  <span className={css(styles.dicussionCount)} id={"discCount"}>
-                    {`${discussion.count}`}{" "}
-                    {discussion.count === 1 ? "discussion" : "discussions"}
-                  </span>
-                </div>
-              </Link>
-            </div>
-            <div className={css(styles.tags, styles.right)}>
-              {hubs.length > 0 &&
-                hubs.map((tag, index) => (
-                  <HubTag key={`hub_${index}`} tag={tag} hubName={hubName} />
-                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Link>
-  );
+      </Link>
+    );
+  } else {
+    return (
+      <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
+        <div className={css(styles.papercard)} key={`${id}-${index}-${title}`}>
+          <div className={css(styles.column)}>
+            <span
+              className={css(styles.voting)}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <VoteWidget
+                score={score}
+                onUpvote={upvote}
+                onDownvote={downvote}
+                selected={selected}
+                horizontalView={true}
+              />
+            </span>
+          </div>
+          <div className={css(styles.column, styles.metaData)}>
+            <div className={css(styles.title, styles.text)}>
+              {title && title}
+            </div>
+            <div className={css(styles.publishDate, styles.text)}>
+              {convertDate()}
+            </div>
+            <div className={css(styles.summary, styles.text)}>
+              {tagline ? tagline : null}
+            </div>
+            <div className={css(styles.bottomBar)}>
+              <div className={css(styles.row)}>
+                <span
+                  className={css(
+                    styles.avatars,
+                    authors.length < 1 && styles.hide
+                  )}
+                >
+                  {authors.length > 0 &&
+                    authors.map((author) => (
+                      <AuthorAvatar
+                        key={`author_${author.id}_${id}`}
+                        avatarClassName={css(styles.avatar)}
+                        size={30}
+                        textSizeRatio={2.5}
+                        author={author}
+                      />
+                    ))}
+                </span>
+                <Link
+                  href={"/paper/[paperId]/[tabName]"}
+                  as={`/paper/${id}/discussion`}
+                >
+                  <div className={css(styles.discussion)}>
+                    <span className={css(styles.icon)} id={"discIcon"}>
+                      {icons.chat}
+                    </span>
+                    <span
+                      className={css(styles.dicussionCount)}
+                      id={"discCount"}
+                    >
+                      {`${discussion.count}`}{" "}
+                      {discussion.count === 1 ? "discussion" : "discussions"}
+                    </span>
+                  </div>
+                </Link>
+              </div>
+              <div className={css(styles.tags, styles.right)}>
+                {hubs.length > 0 &&
+                  hubs.map((tag, index) => (
+                    <HubTag key={`hub_${index}`} tag={tag} hubName={hubName} />
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
   papercard: {
     width: "95%",
-    // width: 1202,
-    // height: 208,
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     padding: "27px 15px 27px 15px",
+    backgroundColor: "#FFF",
     cursor: "pointer",
+    border: "1px solid #EDEDED",
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 3,
     ":hover": {
       backgroundColor: "#FAFAFA",
+    },
+    "@media only screen and (max-width: 577px)": {
+      height: 513,
     },
   },
   column: {
