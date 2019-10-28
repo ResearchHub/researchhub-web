@@ -15,6 +15,7 @@ import {
   getMinimumReputation,
 } from "~/config/utils";
 import { ModalActions } from "../redux/modals";
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 
 const DiscussionCommentEditor = (props) => {
   const { commentId, postMethod, onSubmit, getRef, setRef } = props;
@@ -107,14 +108,21 @@ export const CommentEditor = (props) => {
   }
 
   return (
-    <DiscussionCommentEditor
-      active={active}
-      getRef={containerRef}
-      onSubmit={onSubmit}
-      postMethod={postComment}
-      commentEditor={true}
-      onCancel={hideReply}
-    />
+    <PermissionNotificationWrapper
+      modalMessage="post a comment"
+      permissionKey="CreateDiscussionComment"
+      onClick={null}
+      styling={styles.notificationWrapper}
+    >
+      <DiscussionCommentEditor
+        active={active}
+        getRef={containerRef}
+        onSubmit={onSubmit}
+        postMethod={postComment}
+        commentEditor={true}
+        onCancel={hideReply}
+      />
+    </PermissionNotificationWrapper>
   );
 };
 
@@ -166,9 +174,15 @@ export const ReplyEditor = (props) => {
     <div className={css(styles.actionBar, transition && styles.reveal)}>
       {!reply ? (
         <div className={css(styles.replyContainer)}>
-          <div className={css(styles.reply)} onClick={showReply} id="reply">
-            Reply
-          </div>
+          <PermissionNotificationWrapper
+            onClick={showReply}
+            modalMessage="post a reply"
+            permissionKey="CreateDiscussionReply"
+          >
+            <div className={css(styles.reply)} id="reply">
+              Reply
+            </div>
+          </PermissionNotificationWrapper>
         </div>
       ) : (
         <DiscussionCommentEditor
@@ -300,5 +314,8 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid",
     display: "block",
     borderColor: discussionPageColors.DIVIDER,
+  },
+  notificationWrapper: {
+    width: "100%",
   },
 });
