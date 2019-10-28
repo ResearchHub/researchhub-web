@@ -17,7 +17,14 @@ const VoteWidget = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
 
-  const { onUpvote, onDownvote, fontSize, selected, width } = props;
+  const {
+    onUpvote,
+    onDownvote,
+    fontSize,
+    selected,
+    width,
+    horizontalView,
+  } = props;
   const score = getScore(props);
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -70,7 +77,11 @@ const VoteWidget = (props) => {
   return (
     <Fragment>
       <div
-        className={css(styles.container, props.styles)}
+        className={css(
+          styles.container,
+          horizontalView && styles.horizontalView,
+          props.styles
+        )}
         style={{ fontSize: fontSize, width: width }}
       >
         <PermissionNotificationWrapper
@@ -113,7 +124,7 @@ const ScorePill = (props) => {
 };
 
 const VoteButton = (props) => {
-  const { onClick, selected, disabled } = props;
+  const { onClick, selected, disabled, horizontalView } = props;
 
   let style = [styles.icon];
   if (selected) {
@@ -124,7 +135,10 @@ const VoteButton = (props) => {
   }
 
   return (
-    <a className={css(...style)} onClick={onClick}>
+    <a
+      className={css(...style, horizontalView && styles.horizontalViewButton)}
+      onClick={onClick}
+    >
       {props.children}
     </a>
   );
@@ -153,6 +167,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     textAlign: "center",
     marginRight: 17,
+  },
+  horizontalView: {
+    flexDirection: "row",
+  },
+  horizontalViewButton: {
+    width: 15,
+    height: 11,
   },
   pillContainer: {
     background: voteWidgetColors.BACKGROUND,
