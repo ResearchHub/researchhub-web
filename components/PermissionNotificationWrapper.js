@@ -9,7 +9,7 @@ import {
 } from "~/config/utils";
 
 const PermissionNotificationWrapper = (props) => {
-  const { modalMessage, onClick, permissionKey } = props;
+  const { modalMessage, onClick, permissionKey, styling } = props;
 
   const store = useStore();
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ const PermissionNotificationWrapper = (props) => {
       if (
         currentUserHasMinimumReputation(store.getState(), minimumReputation)
       ) {
-        onClick(e);
+        onClick && onClick(e);
       } else {
         dispatch(
           ModalActions.openPermissionNotificationModal(true, modalMessage)
@@ -37,18 +37,12 @@ const PermissionNotificationWrapper = (props) => {
 
   return (
     <span
-      className={css(styles.link)}
+      className={css(styling)}
       onClick={executeIfUserMeetsReputationMinimum}
     >
       {props.children}
     </span>
   );
 };
-
-const styles = StyleSheet.create({
-  link: {
-    width: "100%",
-  },
-});
 
 export default PermissionNotificationWrapper;
