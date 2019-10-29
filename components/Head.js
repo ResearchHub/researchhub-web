@@ -8,7 +8,7 @@ export default (props) => {
   return (
     <Head>
       <title>{title}</title>
-      <meta name="description" content={description} />
+      <meta key="description" name="description" content={description} />
       {props.children}
     </Head>
   );
