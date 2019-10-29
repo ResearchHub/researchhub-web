@@ -12,16 +12,22 @@ import { Helpers } from "@quantfive/js-web-config";
 import { toTitleCase } from "~/config/utils";
 
 class Index extends React.Component {
+  static async getInitialProps({ query }) {
+    const hub = await fetchHub(query.hubname);
+    return { hub };
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       hubName: Router.router.query.hubname,
       currentHub: null,
+      hubDescription: props.hub.name, // TODO: Pull from hub description field
     };
   }
 
-  componentDidMount() {
-    this.fetchHubInfo(this.state.hubName);
+  async componentDidMount() {
+    await this.fetchHubInfo(this.state.hubName);
   }
 
   componentDidUpdate(prevProp) {
@@ -37,14 +43,11 @@ class Index extends React.Component {
     }
   }
 
-  fetchHubInfo = (name) => {
-    name = name.split("-").join(" ");
-    return fetch(API.HUB({ name }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.setState({ currentHub: res.results[0] });
-      });
+  fetchHubInfo = async (name) => {
+    const currentHub = await fetchHub(name);
+    if (currentHub) {
+      this.setState({ currentHub });
+    }
   };
 
   renderHub = () => {
@@ -66,11 +69,22 @@ class Index extends React.Component {
       <div>
         <Head>
           <title>{toTitleCase(this.state.hubName)}</title>
+          <meta name="description" content={this.state.hubDescription} />
         </Head>
         {this.renderHub()}
       </div>
     );
   }
+}
+
+async function fetchHub(name) {
+  name = name.split("-").join(" ");
+  return await fetch(API.HUB({ name }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => {
+      return res.results[0]; // TODO: Shim and catch errors
+    });
 }
 
 export default Index;
