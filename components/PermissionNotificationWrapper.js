@@ -75,9 +75,9 @@ const PermissionNotificationWrapper = (props) => {
   }
 
   return (
-    <span className={css(styling)} onClick={executeIfUserMeetsRequirement}>
+    <div className={css(styling)} onClick={executeIfUserMeetsRequirement}>
       {props.children}
-    </span>
+    </div>
   );
 };
 
