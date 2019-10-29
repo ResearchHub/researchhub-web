@@ -141,7 +141,13 @@ const PaperEntryCard = ({
                   <span className={css(styles.icon)} id={"discIcon"}>
                     {icons.chat}
                   </span>
-                  <span className={css(styles.dicussionCount)} id={"discCount"}>
+                  <span
+                    className={css(
+                      styles.dicussionCount,
+                      mobileStyles.discussionCount
+                    )}
+                    id={"discCount"}
+                  >
                     {`${discussion.count}`}{" "}
                     {discussion.count === 1 ? "discussion" : "discussions"}
                   </span>
@@ -209,7 +215,10 @@ const PaperEntryCard = ({
                   as={`/paper/${id}/discussion`}
                 >
                   <div className={css(styles.discussion)}>
-                    <span className={css(styles.icon)} id={"discIcon"}>
+                    <span
+                      className={css(styles.icon, mobileStyles.icon)}
+                      id={"discIcon"}
+                    >
                       {icons.chat}
                     </span>
                     <span
@@ -269,11 +278,13 @@ const mobileStyles = StyleSheet.create({
   publishDate: {
     height: 16,
     margin: 0,
+    "@media only screen and (max-width: 416px)": {
+      fontSize: 12,
+    },
   },
   summary: {
     maxHeight: 176,
     marginTop: 15,
-    // width: '100px',
     textOverflow: "ellipsis",
     width: "calc(100% - 15px)",
     overflow: "hidden",
@@ -283,6 +294,15 @@ const mobileStyles = StyleSheet.create({
   },
   bottomBar: {
     margin: "15px 0 15px 0",
+    overflowX: "scroll",
+  },
+  discussionCount: {
+    "@media only screen and (max-width: 416px)": {
+      fontSize: 12,
+    },
+  },
+  tags: {
+    overflowX: "scroll",
   },
 });
 
