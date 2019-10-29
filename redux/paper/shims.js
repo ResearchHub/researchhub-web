@@ -3,6 +3,7 @@ import { transformDate, transformUser, transformVote } from "../utils";
 export const paper = (paper) => {
   return {
     ...paper,
+    tagline: paper.tagline,
     discussion: {
       ...paper.discussion,
       count: paper.discussion.count,
