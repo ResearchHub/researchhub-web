@@ -1,8 +1,8 @@
 import React from "react";
-import Head from "next/head";
 import Router from "next/router";
 
 // Components
+import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import LockedHubPage from "~/components/Hubs/LockedHubPage";
 
@@ -67,10 +67,10 @@ class Index extends React.Component {
   render() {
     return (
       <div>
-        <Head>
-          <title>{toTitleCase(this.state.hubName)}</title>
-          <meta name="description" content={this.state.hubDescription} />
-        </Head>
+        <Head
+          title={toTitleCase(this.state.hubName)}
+          description={this.state.hubDescription}
+        />
         {this.renderHub()}
       </div>
     );
