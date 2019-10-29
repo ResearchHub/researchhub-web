@@ -14,6 +14,8 @@ describe("Paper Page", function() {
     cy.url().should("include", path + "/summary");
   });
 
+  // TODO: Test tab pages other than summary as well
+
   it.skip("has the paper title in the head title element", function() {
     cy.get("title").contains(paperTitle);
   });
