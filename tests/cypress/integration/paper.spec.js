@@ -1,9 +1,9 @@
 describe("Paper Page", function() {
+  const path = "/paper/1";
   const paperTitle = "";
   const paperTagline = "";
 
   before(function() {
-    let path = "/paper/1";
     cy.visit(path);
   });
 
