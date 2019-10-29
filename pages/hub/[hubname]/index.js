@@ -1,17 +1,15 @@
 import React from "react";
-import Router, { useRouter } from "next/router";
-import { useStore, useDispatch } from "react-redux";
+import Head from "next/head";
+import Router from "next/router";
 
 // Components
 import HubPage from "~/components/Hubs/HubPage";
 import LockedHubPage from "~/components/Hubs/LockedHubPage";
 
-// Redux
-import { HubActions } from "~/redux/hub";
-
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { toTitleCase } from "~/config/utils";
 
 class Index extends React.Component {
   constructor(props) {
@@ -49,8 +47,8 @@ class Index extends React.Component {
       });
   };
 
-  render() {
-    let { currentHub, hubName } = this.state;
+  renderHub = () => {
+    const { currentHub, hubName } = this.state;
 
     if (currentHub) {
       if (currentHub.is_locked) {
@@ -61,6 +59,17 @@ class Index extends React.Component {
     } else {
       return null;
     }
+  };
+
+  render() {
+    return (
+      <div>
+        <Head>
+          <title>{toTitleCase(this.state.hubName)}</title>
+        </Head>
+        {this.renderHub()}
+      </div>
+    );
   }
 }
 
