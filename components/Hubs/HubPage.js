@@ -63,15 +63,18 @@ class HubPage extends React.Component {
       filterBy: {},
       scope: {},
       mobileView: false,
+      mobileBanner: false,
     };
   }
 
   updateDimensions = () => {
-    // if (window.innerWidth < 578) {
     if (window.innerWidth < 968) {
-      this.setState({ mobileView: true });
+      this.setState({
+        mobileView: true,
+        mobileBanner: window.innerWidth < 580 ? true : false,
+      });
     } else {
-      this.setState({ mobileView: false });
+      this.setState({ mobileView: false, mobileBanner: false });
     }
   };
 
@@ -131,6 +134,7 @@ class HubPage extends React.Component {
       this.props.hub &&
       prevProps.hub.id !== this.props.hub.id
     ) {
+      this.updateDimensions();
       this.fetchPapers({ page: 1, hub: this.props.hub });
     }
   }
@@ -175,7 +179,11 @@ class HubPage extends React.Component {
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.homeBanner)}>
           <img
-            src={"/static/background/background-home.png"}
+            src={
+              this.state.mobileBanner
+                ? "/static/background/background-home-mobile.png"
+                : "/static/background/background-home.png"
+            }
             className={css(styles.bannerOverlay)}
           />
           <div
@@ -197,12 +205,14 @@ class HubPage extends React.Component {
               reproducability, and funding of scientic research.{" "}
               <span className={css(styles.readMore)}>Read more</span>
             </div>
-            {!auth.isLoggedIn && (
-              <GoogleLoginButton
-                googleLogin={this.props.googleLogin}
-                getUser={this.props.getUser}
-              />
-            )}
+            <span className={css(styles.googleLogin)}>
+              {!auth.isLoggedIn && (
+                <GoogleLoginButton
+                  googleLogin={this.props.googleLogin}
+                  getUser={this.props.getUser}
+                />
+              )}
+            </span>
           </div>
         </div>
         <div className={css(styles.row, styles.body)}>
@@ -293,12 +303,16 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     height: 200,
     zIndex: 3,
+    "@media only screen and (max-width: 577px)": {
+      height: 489,
+      justifyContent: "flex-start",
+    },
   },
   centered: {
     height: 120,
   },
   homeBanner: {
-    background: "linear-gradient(#684ef5, #5058f6)",
+    background: "linear-gradient(#684ef5, #4d58f6)",
     width: "100%",
     height: 320,
     position: "relative",
@@ -307,6 +321,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
     "@media only screen and (max-width: 577px)": {
       height: 489,
+      position: "relative",
     },
   },
   bannerOverlay: {
@@ -319,7 +334,11 @@ var styles = StyleSheet.create({
     minWidth: "100%",
     zIndex: 2,
     "@media only screen and (max-width: 577px)": {
-      height: 489,
+      objectFit: "cover",
+      position: "absolute",
+      height: 180,
+      bottom: 0,
+      right: 0,
     },
   },
   readMore: {
@@ -332,6 +351,17 @@ var styles = StyleSheet.create({
   header: {
     fontSize: 50,
     fontWeight: 400,
+    "@media only screen and (max-width: 685px)": {
+      fontSize: 40,
+    },
+    "@media only screen and (max-width: 577px)": {
+      fontSize: 33,
+      marginTop: 50,
+      width: 300,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
   body: {
     minHeight: 1348,
@@ -354,6 +384,23 @@ var styles = StyleSheet.create({
     width: 670,
     fontSize: 16,
     fontWeight: 300,
+    "@media only screen and (max-width: 685px)": {
+      fontSize: 15,
+      width: "100%",
+    },
+    "@media only screen and (max-width: 577px)": {
+      fontSize: 16,
+      width: 305,
+      marginTop: 20,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
+  },
+  googleLogin: {
+    "@media only screen and (max-width: 577px)": {
+      marginTop: 18,
+    },
   },
   button: {
     height: 55,
@@ -392,6 +439,13 @@ var styles = StyleSheet.create({
       fontSize: 25,
       marginBottom: 10,
     },
+    "@media only screen and (max-width: 416px)": {
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+      textAlign: "center",
+    },
   },
   topbar: {
     paddingTop: 30,
@@ -407,6 +461,11 @@ var styles = StyleSheet.create({
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "center",
+    },
+    "@media only screen and (max-width: 577px)": {
+      paddingLeft: 40,
+      paddingRight: 40,
+      width: "calc(100% - 80px)",
     },
   },
   dropDown: {
@@ -432,6 +491,9 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 375px)": {
       margin: 0,
       width: 345,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 300,
     },
   },
   inputs: {
@@ -461,8 +523,12 @@ var styles = StyleSheet.create({
     backgroundColor: "#FCFCFC",
     paddingLeft: 70,
     paddingRight: 70,
-    // marginBottom: 20,
     paddingBottom: 30,
+    "@media only screen and (max-width: 577px)": {
+      paddingLeft: 40,
+      paddingRight: 40,
+      width: "calc(100% - 80px)",
+    },
   },
   blur: {
     height: 30,
