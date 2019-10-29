@@ -1,13 +1,18 @@
-import Link from "next/link";
-import Router from "next/router";
-import { StyleSheet, css } from "aphrodite";
+import { Fragment } from "react";
+import { StyleSheet } from "aphrodite";
 
 // Component
-import UploadPaperModal from "../../../components/modal/UploadPaperModal";
+import Head from "~/components/Head";
+import UploadPaperModal from "~/components/modal/UploadPaperModal";
 
 class Index extends React.Component {
   render() {
-    return <UploadPaperModal />;
+    return (
+      <Fragment>
+        <Head title="Upload Paper" description="Upload paper to Research Hub" />
+        <UploadPaperModal />
+      </Fragment>
+    );
   }
 }
 
