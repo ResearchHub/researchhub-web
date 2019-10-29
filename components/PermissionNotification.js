@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useDispatch, useSelector, useStore } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Modal from "./Modal";
 import ReputationCard from "./ReputationCard";
@@ -11,7 +11,6 @@ const PermissionNotification = (props) => {
   const { userReputation } = props;
 
   const dispatch = useDispatch();
-  const store = useStore();
 
   const [isOpen, setIsOpen] = useState(false);
 
