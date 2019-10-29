@@ -1,9 +1,9 @@
-import Router, { useRouter } from "next/router";
-import Link from "next/link";
-import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
-import { connect, useDispatch, useStore } from "react-redux";
+import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
+import Head from "next/head";
+import Router, { useRouter } from "next/router";
+import { connect, useDispatch, useStore } from "react-redux";
 
 // Components
 import ActionButton from "~/components/ActionButton";
@@ -22,7 +22,6 @@ import VoteActions from "~/redux/vote";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 import PermissionNotificationWrapper from "../../../../components/PermissionNotificationWrapper";
@@ -142,6 +141,10 @@ const Paper = (props) => {
 
   return (
     <div className={css(styles.container)}>
+      <Head>
+        <title>{paper.title}</title>
+        <meta name="description" content={paper.tagline} />
+      </Head>
       <ComponentWrapper>
         <div className={css(styles.header)}>
           <div className={css(styles.voting)}>
