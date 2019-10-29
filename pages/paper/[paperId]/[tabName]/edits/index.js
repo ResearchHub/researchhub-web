@@ -109,7 +109,7 @@ class PaperEditHistory extends React.Component {
     for (
       let prevIndex = 0;
       prevIndex < previousBlockArray.length;
-      previousBlockArray++
+      prevIndex++
     ) {
       previousBlockComplete[previousBlockArray[prevIndex].key] = false;
     }
@@ -287,6 +287,7 @@ var styles = StyleSheet.create({
   },
   editor: {
     paddingTop: 75,
+    width: "100%",
   },
   edits: {
     paddingTop: 75,
