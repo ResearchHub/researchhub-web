@@ -1,4 +1,5 @@
 import { css } from "aphrodite";
+import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 
 import { ModalActions } from "~/redux/modals";
@@ -78,6 +79,14 @@ const PermissionNotificationWrapper = (props) => {
       {props.children}
     </span>
   );
+};
+
+PermissionNotificationWrapper.propTypes = {
+  loginRequired: PropTypes.bool,
+  modalMessage: PropTypes.string,
+  onClick: PropTypes.func,
+  permissionKey: PropTypes.string,
+  styling: PropTypes.object,
 };
 
 export default PermissionNotificationWrapper;
