@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
-import Head from "next/head";
 import Router, { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 
@@ -9,6 +8,7 @@ import { connect, useDispatch, useStore } from "react-redux";
 import ActionButton from "~/components/ActionButton";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
+import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
@@ -141,10 +141,7 @@ const Paper = (props) => {
 
   return (
     <div className={css(styles.container)}>
-      <Head>
-        <title>{paper.title}</title>
-        <meta name="description" content={paper.tagline} />
-      </Head>
+      <Head title={paper.title} description={paper.tagline} />
       <ComponentWrapper>
         <div className={css(styles.header)}>
           <div className={css(styles.voting)}>
