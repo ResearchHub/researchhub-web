@@ -62,8 +62,18 @@ class HubPage extends React.Component {
       papers: [],
       filterBy: {},
       scope: {},
+      mobileView: false,
     };
   }
+
+  updateDimensions = () => {
+    // if (window.innerWidth < 578) {
+    if (window.innerWidth < 968) {
+      this.setState({ mobileView: true });
+    } else {
+      this.setState({ mobileView: false });
+    }
+  };
 
   /**
    * When the paper is upvoted, update our UI to reflect that as well
@@ -111,6 +121,8 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     this.fetchPapers({ page: 1, hub: this.props.hub });
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -121,6 +133,10 @@ class HubPage extends React.Component {
     ) {
       this.fetchPapers({ page: 1, hub: this.props.hub });
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
   }
 
   fetchPapers = ({ page, hub }) => {
@@ -233,6 +249,7 @@ class HubPage extends React.Component {
                     hubName={this.props.hubName}
                     onUpvote={this.onUpvote}
                     onDownvote={this.onDownvote}
+                    mobileView={this.state.mobileView}
                   />
                 ))}
               </InfiniteScroll>
