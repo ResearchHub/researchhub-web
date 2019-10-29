@@ -49,8 +49,6 @@ const Navbar = (props) => {
   let dropdown;
   let avatar;
 
-  const userReputation = getCurrentUserReputation(store.getState());
-
   useEffect(() => {
     getUser();
   }, []);
@@ -65,6 +63,8 @@ const Navbar = (props) => {
     }
 
     if (avatar && avatar.contains(e.target)) {
+      // TODO: Is this doing what is intended? `avatar` is not a valid ref
+      // because AuthorAvatar is a function, not a class
       e.stopPropagation();
     }
   };
