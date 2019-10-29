@@ -8,6 +8,7 @@ import { Text, Block } from "slate";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
+import Head from "~/components/Head";
 import TextEditor from "~/components/TextEditor";
 
 // Redux
@@ -218,6 +219,10 @@ class PaperEditHistory extends React.Component {
     });
     return (
       <ComponentWrapper>
+        <Head
+          title={paper.title}
+          description={`${paper.title} summary edit history`}
+        />
         <div className={css(styles.container)}>
           <Link
             href={"/paper/[paperId]/[tabName]"}
