@@ -29,7 +29,7 @@ class Base extends React.Component {
   };
 
   render() {
-    const { Component, pageProps, store } = this.props;
+    const { Component, pageProps } = this.props;
     return (
       <Fragment>
         {this.props.authChecked ? (
