@@ -4,7 +4,7 @@ export function redirect(ctx, baseKey, path) {
   path = buildRedirectPath(ctx, baseKey, path);
   const { res } = ctx;
   if (res) {
-    res.writeHead(302, { Location: path });
+    res.writeHead(301, { Location: path });
     res.end();
   } else {
     Router.push(path);
