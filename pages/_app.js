@@ -11,6 +11,7 @@ import { KeyUtils } from "slate";
 
 // Components
 import Base from "./Base";
+import Head from "~/components/Head";
 
 class MyApp extends App {
   constructor(props) {
@@ -29,6 +30,7 @@ class MyApp extends App {
 
     return (
       <Provider store={store}>
+        <Head />
         <Base {...this.props} />
       </Provider>
     );
