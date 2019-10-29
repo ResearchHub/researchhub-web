@@ -176,15 +176,11 @@ class PaperUploadInfo extends React.Component {
         }
         form.author.self_author =
           authors.filter((author) => author.id === userAuthorId).length > 0;
-        console.log("form", form);
-        await this.setState(
-          {
-            selectedAuthors: [...authors],
-            form,
-            progress: 100,
-          },
-          () => console.log(this.state)
-        );
+        await this.setState({
+          selectedAuthors: [...authors],
+          form,
+          progress: 100,
+        });
         setTimeout(
           () =>
             this.props.messageActions.showMessage({ load: false, show: false }),
@@ -882,7 +878,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   formatPublishDate = (published) => {
-    return `${published.year.value}-${published.month.value}-01`;
+    return `${published.year.value}-${published.month.value}`;
   };
 
   nextStep = async () => {
