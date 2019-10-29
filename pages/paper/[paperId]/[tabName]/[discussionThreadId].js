@@ -8,22 +8,17 @@ import { useDispatch, useStore } from "react-redux";
 import { Comment } from "~/components/DiscussionComment";
 import { CommentEditor } from "~/components/DiscussionCommentEditor";
 import Thread from "~/components/DiscussionPageThread";
-import { Value } from "slate";
-import Plain from "slate-plain-serializer";
 import InfiniteScroll from "react-infinite-scroller";
 import { connect } from "react-redux";
 
 // components
-import DiscussionCard from "~/components/DiscussionCard";
-import TextEditor from "~/components/TextEditor";
-import VoteWidget from "~/components/VoteWidget";
 import Loader from "~/components/Loader/Loader";
 
 // Redux
 import DiscussionActions from "~/redux/discussion";
 
 // Utils
-import colors, { discussionPageColors } from "~/config/themes/colors";
+import { discussionPageColors } from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 
 const DiscussionThreadPage = (props) => {
