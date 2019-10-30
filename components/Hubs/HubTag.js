@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import ReactTooltip from "react-tooltip";
 import colors from "~/config/themes/colors";
+import Ripples from "react-ripples";
 
 const HubTag = ({ tag, overrideStyle, hubName }) => {
   let { id, name, link } = tag;
@@ -51,22 +52,24 @@ const HubTag = ({ tag, overrideStyle, hubName }) => {
     );
   } else {
     return (
-      <Link href={"/hub/[hubname]"} as={`/hub/${nameToUrl(name)}`}>
-        <div
-          className={css(styles.tag, overrideStyle && overrideStyle)}
-          data-tip={formatName(name)}
-        >
-          <ReactTooltip
-            effect={"float"}
-            type={"info"}
-            place={"bottom"}
-            className={css(styles.reactTooltip)}
-          />
-          <span className={css(styles.label)}>
-            {name && abbreviateName(name)}
-          </span>
-        </div>
-      </Link>
+      <Ripples>
+        <Link href={"/hub/[hubname]"} as={`/hub/${nameToUrl(name)}`}>
+          <div
+            className={css(styles.tag, overrideStyle && overrideStyle)}
+            data-tip={formatName(name)}
+          >
+            <ReactTooltip
+              effect={"float"}
+              type={"info"}
+              place={"bottom"}
+              className={css(styles.reactTooltip)}
+            />
+            <span className={css(styles.label)}>
+              {name && abbreviateName(name)}
+            </span>
+          </div>
+        </Link>
+      </Ripples>
     );
   }
 };
