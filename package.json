@@ -36,6 +36,7 @@
     "react-pdf": "^4.1.0",
     "react-progressbar": "^15.4.1",
     "react-redux": "^7.1.1",
+    "react-ripples": "^2.2.1",
     "react-select": "^3.0.7",
     "react-spinners": "^0.6.1",
     "react-stickynode": "^2.1.1",
