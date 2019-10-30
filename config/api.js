@@ -70,7 +70,7 @@ const routes = (BASE_URL) => {
     },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     SIGNOUT: BASE_URL + "auth/logout/",
-    PAPER: ({ paperId, search, page, filters }) => {
+    PAPER: ({ paperId, search, page, filters, highlights }) => {
       let url = BASE_URL + `paper/`;
 
       if (paperId) {
@@ -85,6 +85,12 @@ const routes = (BASE_URL) => {
 
       if (typeof page === "number") {
         url += `page=${page}&`;
+      }
+
+      if (highlights) {
+        for (let i = 0; i < highlights.length; i++) {
+          url += `highlight=${highlights[i]}&`;
+        }
       }
 
       url += prepFilters(filters);
