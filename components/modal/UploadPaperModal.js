@@ -133,6 +133,7 @@ class UploadPaperModal extends React.Component {
       uploadView,
       selectedPaper,
       uploadFinish,
+      mobileView,
     } = this.state;
 
     if (search === "") {
@@ -233,6 +234,7 @@ class UploadPaperModal extends React.Component {
         ...this.initialState,
       },
       () => {
+        this.enableParentScroll();
         this.props.modalActions.openUploadPaperModal(false);
       }
     );
@@ -327,12 +329,16 @@ class UploadPaperModal extends React.Component {
             placeholder={"Enter paper title or DOI"}
             id={"search"}
             containerStyle={styles.containerStyle}
+            labelStyle={styles.labelStyle}
+            inputStyle={styles.inputStyle}
           />
           {uploadView ? (
             <div className={css(styles.uploadContainer)}>
               <div className={css(styles.loadingMessage, styles.text)}>
                 {uploadFinish &&
-                  "We're almost done! Click 'continue' to add more information"}
+                  `We're almost done! ${
+                    mobileView ? "\n" : ""
+                  } Click 'continue' to add more information`}
               </div>
               <DragNDrop
                 pasteUrl={!uploadFinish}
@@ -462,10 +468,15 @@ const styles = StyleSheet.create({
       width: 360,
     },
     "@media only screen and (max-width: 415px)": {
-      fontSize: 26,
+      fontSize: 18,
       width: 338,
       height: "unset",
       textAlign: "center",
+      marginTop: 10,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 16,
+      width: 270,
     },
   },
   subtitle: {
@@ -480,10 +491,14 @@ const styles = StyleSheet.create({
       width: 380,
     },
     "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
+      fontSize: 13,
       width: 338,
       height: "unset",
       textAlign: "center",
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 11,
+      width: 270,
     },
   },
   containerStyle: {
@@ -492,6 +507,20 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+      marginBottom: 5,
+    },
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 13,
+    },
+  },
+  inputStyle: {
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 13,
     },
   },
   text: {
@@ -503,6 +532,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+    overflowY: "auto",
   },
   uploadContainer: {
     display: "flex",
@@ -511,6 +541,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 346,
+    "@media only screen and (max-width: 415px)": {
+      height: 300,
+    },
+    "@media only screen and (max-width: 376px)": {
+      height: 270,
+    },
+    "@media only screen and (max-width: 321px)": {
+      height: 200,
+    },
   },
   loader: {
     position: "absolute",
@@ -523,9 +562,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#4f4d5f",
     marginBottom: 20,
+    textAlign: "center",
+    whiteSpace: "pre-wrap",
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 11,
+      width: 270,
+    },
   },
   searchResults: {
-    overflowY: "scroll",
+    overflowY: "auto",
     width: 526,
     maxHeight: 300,
     paddingTop: 10,
@@ -535,6 +583,16 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       width: 338,
+    },
+    "@media only screen and (max-width: 376px)": {
+      paddingTop: 0,
+    },
+    "@media only screen and (max-width: 321px)": {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      width: 280,
+      maxHeight: 130,
     },
   },
   closeButton: {
@@ -559,11 +617,17 @@ const styles = StyleSheet.create({
     ":hover": {
       color: "#232038",
     },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   backButton: {
     height: 12,
     weight: 16,
     marginRight: 12,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   buttonContainer: {
     "@media only screen and (max-width: 415px)": {
@@ -572,16 +636,24 @@ const styles = StyleSheet.create({
       display: "flex",
       justifyContent: "center",
       position: "sticky",
-      bottom: 10,
+      bottom: 0,
+      paddingBottom: 20,
     },
   },
   button: {
     width: 258,
     height: 55,
-    marginTop: 20,
+    marginTop: 10,
+    "@media only screen and (max-width: 321px)": {
+      width: 220,
+      height: 45,
+    },
   },
   label: {
     fontSize: 16,
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   transition: {
     opacity: 0,
