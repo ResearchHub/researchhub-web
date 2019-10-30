@@ -15,6 +15,7 @@ const PaperEntry = ({
   fileUpload,
   onRemove,
   closeModal,
+  mobileStyle,
 }) => {
   if (fileUpload) {
     let name = "-";
@@ -27,7 +28,11 @@ const PaperEntry = ({
 
     return (
       <div
-        className={css(styles.entry, styles.fileUpload)}
+        className={css(
+          styles.entry,
+          styles.fileUpload,
+          mobileStyle && mobileStyle
+        )}
         onClick={() => onClick && onClick(index)}
       >
         <img src={"/static/icons/pdf.png"} className={css(styles.pdfIcon)} />
@@ -49,8 +54,8 @@ const PaperEntry = ({
   } else {
     return (
       <Link
-        href={"/paper/[paperId]/[tabName]/"}
-        as={`/paper/${paperId}/summary/`}
+        href={"/paper/[paperId]/[tabName]"}
+        as={`/paper/${paperId}/summary`}
       >
         <div
           className={css(styles.entry, selected && styles.selected)}
@@ -82,16 +87,38 @@ const styles = StyleSheet.create({
     ":hover": {
       border: "solid 1px #D2D2E6",
     },
+    "@media only screen and (max-width: 415px)": {
+      height: 48,
+    },
+    "@media only screen and (max-width: 378px)": {
+      height: 38,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 238,
+      height: 38,
+    },
   },
   title: {
     fontWeight: 500,
     fontSize: 18,
     color: "#241F3A",
+    "@media only screen and (max-width: 378px)": {
+      fontSize: 15,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 13,
+    },
   },
   date: {
     fontWeight: 400,
     fontSize: 14,
     color: "#8c8b9a",
+    "@media only screen and (max-width: 378px)": {
+      fontSize: 12,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 11,
+    },
   },
   fileDataContainer: {
     height: 60,
@@ -102,6 +129,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     textAlign: "left",
     paddingLeft: 15,
+    "@media only screen and (max-width: 665px)": {
+      width: "80%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      height: 50,
+    },
+    "@media only screen and (max-width: 321px)": {
+      height: 45,
+    },
   },
   fileSize: {
     height: 16,
@@ -109,6 +145,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     color: "#8c8b9a",
+    "@media only screen and (max-width: 665px)": {
+      width: "80%",
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 11,
+    },
   },
   fileUpload: {
     flexDirection: "row",
@@ -122,6 +164,13 @@ const styles = StyleSheet.create({
     width: 345,
     fontFamily: "Roboto",
     fontSize: 16,
+    "@media only screen and (max-width: 665px)": {
+      width: "80%",
+      height: "unset",
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 11,
+    },
   },
   pdfIcon: {
     height: 39.91,
@@ -131,6 +180,10 @@ const styles = StyleSheet.create({
     height: 20,
     width: 13.9,
     cursor: "pointer",
+    "@media only screen and (max-width: 321px)": {
+      width: 13,
+      height: 18.71,
+    },
   },
   text: {
     fontFamily: "Roboto",

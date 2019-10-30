@@ -151,6 +151,52 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
+  const burgerMenuStyle = {
+    bmBurgerBars: {
+      background: "#373a47",
+    },
+    bmBurgerBarsHover: {
+      background: "#a90000",
+    },
+    bmCrossButton: {
+      height: "26px",
+      width: "26px",
+      color: "#FFF",
+    },
+    bmCross: {
+      background: "#bdc3c7",
+    },
+    bmMenuWrap: {
+      position: "fixed",
+      height: "100%",
+      width: window.innerWidth < 436 ? 210 : 300,
+    },
+    bmMenu: {
+      background: "rgba(55, 58, 70, 1)",
+      padding: "2.5em 1.5em 0",
+      fontSize: "1.15em",
+    },
+    bmMorphShape: {
+      fill: "#373a47",
+    },
+    bmItemList: {
+      color: "#b8b7ad",
+      padding: "0.8em",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
+    },
+    bmItem: {
+      display: "inline-block",
+      margin: "15px 0 15px 0",
+      color: "#FFF",
+    },
+    bmOverlay: {
+      background: "rgba(0, 0, 0, 0.3)",
+    },
+  };
+
   return (
     <Fragment>
       <Menu
@@ -456,51 +502,6 @@ const styles = StyleSheet.create({
     },
   },
 });
-
-const burgerMenuStyle = {
-  bmBurgerBars: {
-    background: "#373a47",
-  },
-  bmBurgerBarsHover: {
-    background: "#a90000",
-  },
-  bmCrossButton: {
-    height: "26px",
-    width: "26px",
-    color: "#FFF",
-  },
-  bmCross: {
-    background: "#bdc3c7",
-  },
-  bmMenuWrap: {
-    position: "fixed",
-    height: "100%",
-  },
-  bmMenu: {
-    background: "rgba(55, 58, 70, 1)",
-    padding: "2.5em 1.5em 0",
-    fontSize: "1.15em",
-  },
-  bmMorphShape: {
-    fill: "#373a47",
-  },
-  bmItemList: {
-    color: "#b8b7ad",
-    padding: "0.8em",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-  },
-  bmItem: {
-    display: "inline-block",
-    margin: "15px 0 15px 0",
-    color: "#FFF",
-  },
-  bmOverlay: {
-    background: "rgba(0, 0, 0, 0.3)",
-  },
-};
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
