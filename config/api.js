@@ -242,6 +242,12 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    GET_HUB_PAPERS: ({ hubId, timePeriod, ordering }) => {
+      let url =
+        BASE_URL +
+        `hub/${hubId}/get_hub_papers/?uploaded_date__gte=${timePeriod.start}&uploaded_date__lte=${timePeriod.end}&ordering=${ordering}`;
+      return url;
+    },
     HUB_SUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/subscribe/`,
     HUB_UNSUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/unsubscribe/`,
     USER_VOTE: (paperId, threadId, commentId, replyId) => {

@@ -156,7 +156,14 @@ class HubPage extends React.Component {
       ];
     }
 
-    return fetch(API.PAPER({ page, hub, filters }), API.GET_CONFIG())
+    return fetch(
+      API.GET_HUB_PAPERS({
+        timePeriod: { start: 1563235200, end: 1570492800 },
+        hubId: 5,
+        ordering: "newest",
+      }),
+      API.GET_CONFIG()
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
