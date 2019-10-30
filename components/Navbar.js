@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 // NPM Components
 import Link from "next/link";
@@ -14,9 +14,14 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
+import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 import { RHLogo } from "~/config/themes/icons";
 import { getCurrentUserReputation, getNestedValue } from "~/config/utils";
+
+// Config
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -42,8 +47,16 @@ const Navbar = (props) => {
     null
   );
 
+  const [search, setSearch] = useState("");
+  const [paperResults, setPaperResults] = useState([]);
+  const [showSearch, setShowSearch] = useState(false);
+
   let dropdown;
   let avatar;
+  let searchbar;
+  let searchDropdown;
+
+  const searchTimeout = useRef(false);
 
   useEffect(() => {
     getUser();
@@ -56,6 +69,19 @@ const Navbar = (props) => {
   const handleOutsideClick = (e) => {
     if (dropdown && !dropdown.contains(e.target)) {
       setOpenMenu(false);
+    }
+
+    if (
+      searchbar &&
+      !searchbar.contains(e.target) &&
+      searchDropdown &&
+      !searchDropdown.contains(e.target)
+    ) {
+      setShowSearch(false);
+    }
+
+    if (searchbar && searchbar.contains(e.target) && paperResults.length > 0) {
+      setShowSearch(true);
     }
 
     if (avatar && avatar.contains(e.target)) {
@@ -108,6 +134,39 @@ const Navbar = (props) => {
     openUploadPaperModal(true);
   }
 
+  function onSearchChange(searchEvent) {
+    clearTimeout(searchTimeout.current);
+
+    let value = searchEvent.target.value;
+    searchTimeout.current = setTimeout(() => {
+      fetch(
+        API.PAPER({ search: value, highlights: ["title"] }),
+        API.GET_CONFIG()
+      )
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          setPaperResults(resp.results);
+          setShowSearch(true);
+        });
+    }, 1500);
+
+    setSearch(searchEvent.target.value);
+  }
+
+  let renderSearchResults = () => {
+    let results = paperResults.map((paper, index) => {
+      return (
+        <div
+          className={css(styles.searchResult)}
+          onClick={() => setTimeout(setShowSearch(false), 500)}
+        >
+          <PaperEntryCard paper={paper} index={index} />
+        </div>
+      );
+    });
+    return results;
+  };
   return (
     <div className={css(styles.navbarContainer)}>
       <UploadPaperModal />
@@ -120,8 +179,21 @@ const Navbar = (props) => {
       </Link>
       <div className={css(styles.tabs)}>{renderTabs()}</div>
       <div className={css(styles.search)}>
-        <input className={css(styles.searchbar)} placeholder={"Search..."} />
+        <input
+          className={css(styles.searchbar)}
+          placeholder={"Search..."}
+          onChange={onSearchChange}
+          ref={(ref) => (searchbar = ref)}
+        />
         <i className={css(styles.searchIcon) + " far fa-search"}></i>
+        {showSearch && (
+          <div
+            className={css(styles.searchDropdown)}
+            ref={(ref) => (searchDropdown = ref)}
+          >
+            {renderSearchResults()}
+          </div>
+        )}
       </div>
       <div className={css(styles.actions)}>
         <div className={css(styles.buttonLeft)}>
@@ -261,6 +333,7 @@ const styles = StyleSheet.create({
     border: "none",
     outline: "none",
     fontSize: 16,
+    position: "relative",
   },
   searchIcon: {
     position: "absolute",
@@ -346,6 +419,27 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  searchDropdown: {
+    width: "150%",
+    position: "absolute",
+    zIndex: 4,
+    bottom: -408,
+    height: 400,
+    left: "50%",
+    transform: "translateX(-50%)",
+    boxShadow: "0 5px 10px 0 #ddd",
+    background: "#fff",
+    overflow: "scroll",
+    borderRadius: 8,
+    paddingTop: 5,
+    paddingBottom: 5,
+    boxSizing: "border-box",
+  },
+  searchResult: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
