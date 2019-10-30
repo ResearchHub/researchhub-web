@@ -49,17 +49,13 @@ class Message extends Component {
         ) : message.error ? (
           <i
             className={"far fa-times"}
-            // icon={["far", "times"]}
             style={inlineStyle.check}
-            // size="3x"
             color="#fff"
           />
         ) : (
           <i
             className={"far fa-check"}
-            // icon={["far", "check"]}
             style={inlineStyle.check}
-            // size="3x"
             color="#fff"
           />
         )}

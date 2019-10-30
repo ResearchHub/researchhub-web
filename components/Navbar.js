@@ -15,6 +15,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
+import Button from "../components/Form/Button";
 
 import { RHLogo } from "~/config/themes/icons";
 import { getCurrentUserReputation, getNestedValue } from "~/config/utils";
@@ -77,15 +78,15 @@ const Navbar = (props) => {
   const [sideMenu, setSideMenu] = useState(false);
 
   const tabData = [
-    { label: "About", route: "/about", icon: "home" },
-    { label: "Hubs", route: "/hubs", icon: "hub" },
-    { label: "Help", route: "/help", icon: "help" },
+    { label: "About", route: "/about", icon: "home", color: "BLUE" },
+    { label: "Hubs", route: "/hubs", icon: "hub", color: "GREEN" },
+    { label: "Help", route: "/help", icon: "help", color: "RED" },
   ];
 
   const menuTabs = [
-    { label: "Logout", onClick: signout, icon: "signOut" },
-    { label: "Add Paper", icon: "addPaper" },
+    { label: "Add Paper", onClick: addPaperModal, icon: "addPaper" },
     { label: "Profile", route: `user/${user.id}/contributions`, icon: "user" },
+    { label: "Logout", onClick: signout, icon: "signOut", color: "ORANGE" },
   ];
 
   function renderTabs() {
@@ -134,12 +135,20 @@ const Navbar = (props) => {
     const tabs = [...tabData, ...menuTabs];
     return tabs.map((tab, i) => {
       return (
-        <div className={css(styles.menuItem)}>
+        <div
+          className={css(styles.menuItem)}
+          onClick={tab.onClick && tab.onClick}
+        >
           <span className={css(styles.icon)}>{icons[tab.icon]}</span>
           <span className="menu-item">{tab.label}</span>
         </div>
       );
     });
+  }
+
+  function addPaperModal() {
+    props.openUploadPaperModal(true);
+    setSideMenu(!sideMenu);
   }
 
   return (
@@ -218,12 +227,11 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <button
-            className={css(styles.button, styles.addPaper)}
+          <Button
             onClick={onAddPaperClick}
-          >
-            Add Paper
-          </button>
+            customButtonStyle={{ ...styles.button, ...styles.addPaper }}
+            label={"Add Paper"}
+          />
         </div>
         <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
           {icons.burgerMenu}
@@ -401,6 +409,7 @@ const styles = StyleSheet.create({
   },
   menuItem: {
     display: "flex",
+    alignItems: "center",
     cursor: "pointer",
     highlight: "none",
     outline: "none",
@@ -409,9 +418,10 @@ const styles = StyleSheet.create({
     },
   },
   icon: {
-    marginRight: 15,
-    fontSize: 20,
-    width: 25,
+    marginRight: 20,
+    fontSize: 30,
+    width: 40,
+    color: "#FFF",
   },
   lastOption: {
     borderBottom: 0,
@@ -457,6 +467,7 @@ const burgerMenuStyle = {
   bmCrossButton: {
     height: "26px",
     width: "26px",
+    color: "#FFF",
   },
   bmCross: {
     background: "#bdc3c7",
