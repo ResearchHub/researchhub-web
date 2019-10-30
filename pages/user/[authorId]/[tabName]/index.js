@@ -16,6 +16,7 @@ import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ShareModal from "~/components/ShareModal";
+import ActionButton from "~/components/ActionButton";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -26,9 +27,18 @@ const AuthorPage = (props) => {
   let { author, hostname } = props;
   let router = useRouter();
   let { tabName } = router.query;
-  const [openShareModal, setOpenShareModal] = useState(false);
   const dispatch = useDispatch();
 
+  const [openShareModal, setOpenShareModal] = useState(false);
+  const [hoverName, setHoverName] = useState(false);
+  const [hoverDescription, setHoverDescription] = useState(false);
+  const [editName, setEditName] = useState(false);
+  const [editDescription, setEditDescription] = useState(false);
+
+  const HOVER_SECTIONS = {
+    name: "name",
+    description: "description",
+  };
   async function fetchAuthoredPapers() {
     await dispatch(
       AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
@@ -69,6 +79,22 @@ const AuthorPage = (props) => {
     refetchAuthor();
   }, [props.isServer, router.query.authorId]);
 
+  function onHoverToggle(section) {
+    if (section === HOVER_SECTIONS.name) {
+      setHoverName(!hoverName);
+    } else if (section === HOVER_SECTIONS.description) {
+      setHoverDescription(!hoverDescription);
+    }
+  }
+
+  function onEditToggle(section) {
+    if (section === HOVER_SECTIONS.name) {
+      setEditName(!editName);
+    } else if (section === HOVER_SECTIONS.description) {
+      setEditDescription(!editDescription);
+    }
+  }
+
   let tabs = [
     {
       href: "contributions",
@@ -103,20 +129,46 @@ const AuthorPage = (props) => {
     }
   };
 
+  let renderEditButton = (action) => {
+    return (
+      <div className={css(styles.editButton)} onClick={action}>
+        <i className="fas fa-edit"></i>
+      </div>
+    );
+  };
+
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.profileContainer)}>
           <AuthorAvatar author={author} disableLink={true} size={80} />
           <div className={css(styles.profileInfo)}>
-            <div className={css(styles.authorName)}>
-              {author.first_name} {author.last_name}
-            </div>
+            {!editName && (
+              <div
+                className={css(styles.authorName, styles.editButtonContainer)}
+                onMouseEnter={() => onHoverToggle(HOVER_SECTIONS.name)}
+                onMouseLeave={() => onHoverToggle(HOVER_SECTIONS.name)}
+              >
+                {author.first_name} {author.last_name}
+                {hoverName &&
+                  renderEditButton(() => onEditToggle(HOVER_SECTIONS.name))}
+              </div>
+            )}
             <div className={css(styles.reputation)}></div>
-            <div className={css(styles.description)}>
-              {author.user &&
-                "This is a test description. We will use this until we get the description from the backend working. We also need to create some edit functionality on the frontend to be able to properly add a description for the author"}
-            </div>
+            {!editDescription && (
+              <div
+                className={css(styles.description, styles.editButtonContainer)}
+                onMouseEnter={() => onHoverToggle(HOVER_SECTIONS.description)}
+                onMouseLeave={() => onHoverToggle(HOVER_SECTIONS.description)}
+              >
+                {author.user &&
+                  "This is a test description. We will use this until we get the description from the backend working. We also need to create some edit functionality on the frontend to be able to properly add a description for the author"}
+                {hoverDescription &&
+                  renderEditButton(() =>
+                    onEditToggle(HOVER_SECTIONS.description)
+                  )}
+              </div>
+            )}
             <div className={css(styles.extraInfoContainer)}>
               {author.university && (
                 <div className={css(styles.extraInfo)}>
@@ -213,6 +265,7 @@ const styles = StyleSheet.create({
   socialLinks: {
     display: "flex",
     height: 35,
+    position: "relative",
   },
   authorName: {
     fontWeight: 500,
@@ -261,6 +314,27 @@ const styles = StyleSheet.create({
   },
   link: {
     textDecoration: "None",
+  },
+  editButtonContainer: {
+    display: "flex",
+    position: "relative",
+    width: "fit-content",
+    paddingRight: 30,
+  },
+  editButton: {
+    marginLeft: 10,
+    opacity: 0.2,
+    fontWeight: 400,
+    fontSize: 14,
+    cursor: "pointer",
+    height: "fit-content",
+    position: "absolute",
+    right: 0,
+    top: 0,
+
+    ":hover": {
+      opacity: 1,
+    },
   },
 });
 
