@@ -375,7 +375,10 @@ var styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 577px)": {
+    // "@media only screen and (max-width: 577px)": {
+    //   display: "none",
+    // },
+    "@media only screen and (max-width: 769px)": {
       display: "none",
     },
   },
@@ -421,7 +424,7 @@ var styles = StyleSheet.create({
     backgroundColor: "#FCFCFC",
     borderLeft: "1px solid #ededed",
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 577px)": {
+    "@media only screen and (max-width: 768px)": {
       width: "100%",
     },
   },
@@ -551,7 +554,7 @@ var styles = StyleSheet.create({
   mobileHubListContainer: {
     display: "none",
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 577px)": {
+    "@media only screen and (max-width: 768px)": {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
