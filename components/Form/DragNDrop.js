@@ -56,36 +56,39 @@ class DragNDrop extends React.Component {
     this.props.reset && this.props.reset();
   };
 
-  render() {
-    let { loading, uploadedPaper, uploadFinish, error, isDynamic } = this.props;
-    const style = {
-      dropZone: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: 163,
-        width: 525,
-        padding: isDynamic && this.state.dragOver ? 15 : 0,
-        backgroundColor: this.state.dragOver ? "#FFF" : "#FBFBFD",
-        border: `0.5px dashed ${
-          error || !this.state.isPDF ? colors.RED(1) : colors.BLUE(1)
-        }`,
-        transition: "all ease-in-out 0.3s",
-      },
-      inputWrapper: {
-        highlight: "none",
-        outline: "none",
-        userSelect: "none",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      },
-      uploadedPaper: {
-        border: "none",
-        backgroundColor: "#fff",
-      },
+  getStyleByDimensions = () => {
+    let { error, isDynamic } = this.props;
+
+    let dropZoneStyle = {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: 163,
+      padding: isDynamic && this.state.dragOver ? 15 : 0,
+      backgroundColor: this.state.dragOver ? "#FFF" : "#FBFBFD",
+      border: `0.5px dashed ${
+        error || !this.state.isPDF ? colors.RED(1) : colors.BLUE(1)
+      }`,
+      transition: "all ease-in-out 0.3s",
     };
+
+    if (window.innerWidth < 321) {
+      dropZoneStyle.width = 270;
+      dropZoneStyle.height = 120;
+    } else if (window.innerWidth < 415) {
+      dropZoneStyle.width = 338;
+      dropZoneStyle.height = 140;
+    } else if (window.innerWidth < 665) {
+      dropZoneStyle.width = 380;
+    } else {
+      dropZoneStyle.width = 525;
+    }
+
+    return dropZoneStyle;
+  };
+
+  render() {
+    let { loading, uploadedPaper, uploadFinish, pasteUrl } = this.props;
 
     return (
       <div
@@ -101,13 +104,16 @@ class DragNDrop extends React.Component {
           {({ getRootProps, getInputProps }) => (
             <section
               className="container"
-              style={uploadFinish ? style.uploadedPaper : style.dropZone}
+              style={
+                uploadFinish ? style.uploadedPaper : this.getStyleByDimensions()
+              }
             >
               {uploadFinish ? (
                 <PaperEntry
                   fileUpload={true}
                   file={uploadedPaper}
                   onRemove={this.onRemove}
+                  mobileStyle={styles.mobileStyle}
                 />
               ) : (
                 <div
@@ -115,7 +121,7 @@ class DragNDrop extends React.Component {
                   style={style.inputWrapper}
                 >
                   <input {...getInputProps()} />
-                  {this.props.loading ? (
+                  {loading ? (
                     <Loader />
                   ) : (
                     <img
@@ -139,12 +145,12 @@ class DragNDrop extends React.Component {
             </section>
           )}
         </Dropzone>
-        {this.props.pasteUrl && (
+        {pasteUrl && !(window.innerWidth < 321) && (
           <p className={css(styles.pasteInstruction)}>
             or paste a url for the paper
           </p>
         )}
-        {this.props.pasteUrl && (
+        {pasteUrl && !(window.innerWidth < 321) && (
           <FormInput
             placeholder={"Paste a url for the paper"}
             containerStyle={styles.noMargin}
@@ -156,6 +162,22 @@ class DragNDrop extends React.Component {
     );
   }
 }
+
+const style = {
+  inputWrapper: {
+    highlight: "none",
+    outline: "none",
+    userSelect: "none",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  uploadedPaper: {
+    border: "none",
+    backgroundColor: "#fff",
+  },
+};
 
 const styles = StyleSheet.create({
   dropZone: {
@@ -173,6 +195,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     outline: "none",
     highlight: "none",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
   },
   browse: {
     color: colors.BLUE(1),
@@ -183,6 +208,10 @@ const styles = StyleSheet.create({
     width: 38.53,
     cursor: "pointer",
     marginBottom: 8,
+    "@media only screen and (max-width: 415px)": {
+      height: 23,
+      width: 30,
+    },
   },
   pasteInstruction: {
     fontFamily: "Roboto",
@@ -195,6 +224,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 0,
     margin: 0,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
   },
   container: {
     display: "flex",
@@ -204,12 +236,32 @@ const styles = StyleSheet.create({
   },
   noMargin: {
     margin: 0,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   urlInput: {
     // height: 20,
   },
   error: {
     color: colors.RED(1),
+  },
+  mobileStyle: {
+    "@media only screen and (max-width: 665px)": {
+      width: 348,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 302,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 238,
+    },
   },
 });
 
