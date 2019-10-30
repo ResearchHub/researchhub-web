@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import Ripples from "react-ripples";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -55,34 +56,36 @@ const Button = ({
     );
   } else {
     return (
-      <button
-        className={css(
-          styles.button,
-          isWhite && styles.isWhite,
-          size && styles[size],
-          customButtonStyle && customButtonStyle,
-          disabled && styles.disabled
-        )}
-        type={type ? type : "button"}
-        onClick={onClick ? onClick : null}
-        onSubmit={onSubmit ? onSubmit : null}
-      >
-        {icon && (
-          <img
-            src={icon}
-            className={css(styles.icon, customIconStyle && customIconStyle)}
-          />
-        )}
-        <p
+      <Ripples>
+        <button
           className={css(
-            styles.label,
-            isWhite && styles.isWhiteLabel,
-            customLabelStyle && customLabelStyle
+            styles.button,
+            isWhite && styles.isWhite,
+            size && styles[size],
+            customButtonStyle && customButtonStyle,
+            disabled && styles.disabled
           )}
+          type={type ? type : "button"}
+          onClick={onClick ? onClick : null}
+          onSubmit={onSubmit ? onSubmit : null}
         >
-          {label && label}
-        </p>
-      </button>
+          {icon && (
+            <img
+              src={icon}
+              className={css(styles.icon, customIconStyle && customIconStyle)}
+            />
+          )}
+          <p
+            className={css(
+              styles.label,
+              isWhite && styles.isWhiteLabel,
+              customLabelStyle && customLabelStyle
+            )}
+          >
+            {label && label}
+          </p>
+        </button>
+      </Ripples>
     );
   }
 };
