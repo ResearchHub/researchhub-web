@@ -2,6 +2,7 @@ import { useEffect, useState, Fragment } from "react";
 
 // NPM Components
 import Link from "next/link";
+import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect, useDispatch, useStore } from "react-redux";
 import { slide as Menu } from "react-burger-menu";
@@ -78,32 +79,40 @@ const Navbar = (props) => {
   const [sideMenu, setSideMenu] = useState(false);
 
   const tabData = [
-    { label: "About", route: "/about", icon: "home", color: "BLUE" },
-    { label: "Hubs", route: "/hubs", icon: "hub", color: "GREEN" },
-    { label: "Help", route: "/help", icon: "help", color: "RED" },
+    { label: "About", route: "/about", icon: "home" },
+    { label: "Hubs", route: "/hubs", icon: "hub" },
+    { label: "Help", route: "/help", icon: "help" },
   ];
 
   const menuTabs = [
     { label: "Add Paper", onClick: addPaperModal, icon: "addPaper" },
-    { label: "Profile", route: `/user/${user.id}/contributions`, icon: "user" },
-    { label: "Logout", onClick: signout, icon: "signOut", color: "ORANGE" },
+    {
+      label: "Profile",
+      route: {
+        href: "/user/[authorId]/[tabName]",
+        as: `/user/${user.id}/contributions`,
+      },
+      icon: "user",
+    },
+    { label: "Logout", onClick: signout, icon: "signOut" },
+    // { label: "LogIn", onClick: signout, icon: "signOut" },
   ];
 
   function renderTabs() {
     let tabs = tabData.map((tab, index) => {
       return (
-        // <Link href={tab.route} key={`navbar_tab_${index}`}>
-        <div
-          onClick={() => alert("Not yet implemented!")}
-          className={css(
-            styles.tab,
-            index === 0 && styles.firstTab,
-            index === 2 && styles.lastTab
-          )}
-        >
-          {tab.label}
-        </div>
-        // </Link>
+        <Link href={tab.route} key={`navbar_tab_${index}`}>
+          <div
+            // onClick={() => alert("Not yet implemented!")}
+            className={css(
+              styles.tab,
+              index === 0 && styles.firstTab,
+              index === 2 && styles.lastTab
+            )}
+          >
+            {tab.label}
+          </div>
+        </Link>
       );
     });
     return tabs;
@@ -131,13 +140,30 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
+  function navigateToRoute(route) {
+    let { href, as } = route;
+    if (href) {
+      Router.push(href, as);
+    } else {
+      Router.push(route);
+    }
+    toggleSideMenu();
+  }
+
   function renderMenuItems() {
     const tabs = [...tabData, ...menuTabs];
-    return tabs.map((tab, i) => {
+    return tabs.map((tab, index) => {
       return (
         <div
           className={css(styles.menuItem)}
-          onClick={tab.onClick && tab.onClick}
+          onClick={
+            tab.onClick
+              ? tab.onClick
+              : tab.route
+              ? () => navigateToRoute(tab.route)
+              : null
+          }
+          key={`navbar_tab_${index}`}
         >
           <span className={css(styles.icon)}>{icons[tab.icon]}</span>
           <span className="menu-item">{tab.label}</span>
