@@ -116,7 +116,7 @@ const Navbar = (props) => {
 
   const menuTabs = [
     { label: "Add Paper", onClick: addPaperModal, icon: "addPaper" },
-    { label: "Profile", route: `user/${user.id}/contributions`, icon: "user" },
+    { label: "Profile", route: `/user/${user.id}/contributions`, icon: "user" },
     { label: "Logout", onClick: signout, icon: "signOut", color: "ORANGE" },
   ];
 
@@ -579,7 +579,7 @@ const styles = StyleSheet.create({
     highlight: "none",
     outline: "none",
     ":hover": {
-      color: colors.BLUE(1),
+      color: colors.GREEN(1),
     },
   },
   icon: {
