@@ -79,9 +79,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    height: 79,
+    miHeight: 79,
     marginTop: 20,
     marginBottom: 20,
+    width: "100%",
   },
   inputLabel: {
     height: 19,
@@ -94,9 +95,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    height: 50,
-    width: 600,
-    overflowX: "scroll",
+    minHeight: 50,
+    // width: 600,
   },
   text: {
     fontFamily: "Roboto",
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     paddingLeft: 15,
     paddingTop: 0,
-    width: 585,
+    width: "calc(100% - 15px)",
     height: 49,
     display: "flex",
     flexDirection: "row",

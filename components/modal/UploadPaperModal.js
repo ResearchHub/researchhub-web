@@ -630,6 +630,7 @@ const styles = StyleSheet.create({
     },
   },
   buttonContainer: {
+    marginTop: 10,
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       backgroundColor: "#FFF",
@@ -643,7 +644,7 @@ const styles = StyleSheet.create({
   button: {
     width: 258,
     height: 55,
-    marginTop: 10,
+    // marginTop: 10,
     "@media only screen and (max-width: 321px)": {
       width: 220,
       height: 45,
