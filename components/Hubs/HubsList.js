@@ -96,6 +96,7 @@ class HubsList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: "calc(100% * .625)",
+    // width: '100%',
     // height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   hubsListContainer: {
-    maxWidth: 203,
+    // maxWidth: 203,
     height: "100%",
     display: "flex",
     flexDirection: "column",
