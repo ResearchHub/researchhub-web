@@ -215,9 +215,15 @@ const styles = StyleSheet.create({
   backgroundOverlay: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
+    paddingTop: 80,
     backgroundColor: "#FCFCFC",
-    minHeight: 800,
+    height: "100vh",
+    "@media only screen and (max-width: 815px)": {
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      paddingTop: 0,
+    },
   },
   sidebarContainer: {
     width: 297,
@@ -226,6 +232,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     marginLeft: 30,
+    "@media only screen and (max-width: 1302px)": {
+      width: 200,
+    },
+    "@media only screen and (max-width: 815px)": {
+      width: "100%",
+      marginLeft: 0,
+      height: "unset",
+    },
   },
   sidebar: {
     width: 297,
@@ -234,16 +248,26 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     backgroundColor: "#FFF",
     border: "1px solid #EDEDED",
+    "@media only screen and (max-width: 1302px)": {
+      width: 200,
+    },
+    "@media only screen and (max-width: 815px)": {
+      width: "100%",
+    },
   },
   contentContainer: {
     height: 633,
     width: 953,
-    // marginTop: 60,
     backgroundColor: "#FFF",
     border: "1px solid #EDEDED",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    minWidth: 600,
+    "@media only screen and (max-width: 815px)": {
+      width: "100%",
+      minWidth: "unset",
+    },
   },
   content: {
     display: "flex",
@@ -253,6 +277,15 @@ const styles = StyleSheet.create({
     width: 480,
     height: 316,
     opacity: 0,
+    "@media only screen and (max-width: 550px)": {
+      width: 415,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 320,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 300,
+    },
   },
   reveal: {
     opacity: 1,
@@ -265,6 +298,11 @@ const styles = StyleSheet.create({
     fontSize: 33,
     fontWeight: 400,
     textTransform: "capitalize",
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 25,
+      marginTop: 20,
+      marginBottom: 5,
+    },
   },
   subtitle: {
     fontSize: 16,
@@ -272,6 +310,17 @@ const styles = StyleSheet.create({
     marginTop: -20,
     color: "#4f4d5f",
     transition: "all ease-in-out 0.3s",
+    "@media only screen and (max-width: 550px)": {
+      fontSize: 14,
+      whiteSpace: "pre-wrap",
+      width: 415,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 320,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
   transition: {
     opacity: 0,
@@ -280,6 +329,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 400,
     marginBottom: 20,
+    "@media only screen and (max-width: 550px)": {
+      width: 415,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+      width: 320,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
   progressContainer: {
     width: 476,
@@ -291,6 +350,15 @@ const styles = StyleSheet.create({
     position: "relative",
     paddingBottom: 20,
     marginBottom: 20,
+    "@media only screen and (max-width: 550px)": {
+      width: 415,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 320,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
   progressBar: {
     backgroundColor: "#EDEDED",
@@ -303,18 +371,44 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 9,
+    },
   },
   buttonsRow: {
     display: "flex",
     justifyContent: "space-between",
     width: 379,
+    "@media only screen and (max-width: 415px)": {
+      width: 320,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 300,
+      marginBottom: 30,
+    },
   },
   button: {
     width: 180,
     height: 55,
+    "@media only screen and (max-width: 415px)": {
+      width: 150,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 140,
+      height: 40,
+    },
   },
   hublist: {
-    padding: "40px 15px 40px 15px",
+    padding: "40px 15px",
+    width: "calc(100% - 15x)",
+    "@media only screen and (max-width: 815px)": {
+      alignItems: "flex-start",
+      padding: "40px 80px",
+      width: "calc(100% - 160px)",
+    },
+    "@media only screen and (max-width: 415px)": {
+      paddingLeft: 40,
+    },
   },
 });
 
