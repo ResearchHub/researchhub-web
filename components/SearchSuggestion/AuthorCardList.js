@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   authorCard: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#F7F7FB",
     cursor: "pointer",
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
     height: 74,
     width: "inherit",
     marginBottom: 10,
+    position: "relative",
     ":hover": {
       borderColor: "#D2D2E6",
     },
@@ -192,10 +193,6 @@ const styles = StyleSheet.create({
       width: 41,
       height: 41,
     },
-    // "@media only screen and (max-width: 321px)": {
-    //   width: 23,
-    //   height: 23
-    // },
   },
   default: {
     backgroundColor: "#484B76",
@@ -250,8 +247,11 @@ const styles = StyleSheet.create({
   deleteIcon: {
     height: 20,
     width: 14,
-    marginRight: 21,
+    // marginRight: 21,
     userSelect: "none",
+    position: "absolute",
+    top: 20,
+    right: 21,
   },
   marginLeft: {
     marginLeft: 21,
