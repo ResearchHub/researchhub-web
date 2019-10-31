@@ -458,12 +458,14 @@ var styles = StyleSheet.create({
     paddingRight: 70,
     top: 0,
     backgroundColor: "#FCFCFC",
+    alignItems: "center",
     zIndex: 2,
     "@media only screen and (max-width: 665px)": {
       display: "flex",
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "center",
+      paddingBottom: 20,
     },
     "@media only screen and (max-width: 577px)": {
       paddingLeft: 40,
@@ -476,23 +478,23 @@ var styles = StyleSheet.create({
     height: 45,
     "@media only screen and (max-width: 1343px)": {
       width: 220,
-      height: 40,
+      height: "unset",
     },
     "@media only screen and (max-width: 1149px)": {
       width: 150,
-      height: 30,
+      // height: 30,
     },
     "@media only screen and (max-width: 895px)": {
       width: 125,
-      height: 20,
+      // height: 20,
     },
     "@media only screen and (max-width: 665px)": {
       width: "100%",
       height: 45,
-      margin: "0px 0px 5px 0px",
+      margin: "10px 0px 10px 0px",
     },
     "@media only screen and (max-width: 375px)": {
-      margin: 0,
+      // margin: 0,
       width: 345,
     },
     "@media only screen and (max-width: 321px)": {
@@ -509,7 +511,7 @@ var styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 895px)": {
       width: 270,
-      marginBottom: 10,
+      // marginBottom: 10,
     },
     "@media only screen and (max-width: 665px)": {
       width: "100%",

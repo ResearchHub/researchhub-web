@@ -49,10 +49,10 @@ class FormSelect extends React.Component {
         justifyContent: "center",
         alignItems: "center",
         border: error ? `1px solid ${colors.RED(1)}` : "1px solid #E8E8F2",
-        height: 50,
+        minHeight: 50,
         width: "100%",
         backgroundColor: "#FBFBFD",
-        paddingLeft: 15,
+        paddingLeft: 8,
         fontWeight: "400",
         borderRadius: 2,
         color: "#232038",
@@ -68,6 +68,13 @@ class FormSelect extends React.Component {
         color: "#8e8d9a",
         fontWeight: 400,
       }),
+      multiValue: (styles, { data }) => {
+        return {
+          ...styles,
+          backgroundColor: "#edeefe",
+          color: colors.BLUE(1),
+        };
+      },
     };
 
     return (
@@ -108,7 +115,7 @@ class FormSelect extends React.Component {
 const styles = StyleSheet.create({
   inputContainer: {
     height: 75,
-    width: 525,
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "space-between",
