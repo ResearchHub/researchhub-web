@@ -467,6 +467,10 @@ class PaperUploadInfo extends React.Component {
     );
   };
 
+  getWindowWidth = () => {
+    return window.innerWidth < 665;
+  };
+
   renderContent = () => {
     let {
       form,
@@ -480,6 +484,8 @@ class PaperUploadInfo extends React.Component {
       suggestedAuthors,
       editMode,
     } = this.state;
+    let mobile = this.getWindowWidth();
+
     switch (activeStep) {
       case 1:
         return (
@@ -609,8 +615,8 @@ class PaperUploadInfo extends React.Component {
                   </span>
                   <span
                     className={css(
-                      styles.doi,
-                      this.state.form.type.journal && styles.reveal
+                      styles.doi
+                      // !mobile && this.state.form.type.journal && styles.reveal,
                     )}
                   >
                     <FormInput
@@ -639,6 +645,22 @@ class PaperUploadInfo extends React.Component {
                 onChange={this.handleHubSelection}
                 error={error.hubs}
               />
+              <span
+                className={css(
+                  styles.mobileDoi
+                  // mobile && this.state.form.type.journal && styles.reveal
+                )}
+              >
+                <FormInput
+                  label={"DOI"}
+                  placeholder="Enter DOI of paper"
+                  id={"doi"}
+                  value={form.doi}
+                  containerStyle={styles.doiInput}
+                  labelStyle={styles.labelStyle}
+                  onChange={this.handleInputChange}
+                />
+              </span>
             </div>
             <div className={css(styles.taglineHeader)}>
               {this.renderHeader("Overview")}
@@ -756,11 +778,13 @@ class PaperUploadInfo extends React.Component {
                 onClick={this.nextStep}
               />
             </div>
-            <Button
-              label={"Continue"}
-              customButtonStyle={styles.button}
-              onClick={this.saveSummary}
-            />
+            <div className={css(styles.button)}>
+              <Button
+                label={"Continue"}
+                customButtonStyle={styles.button}
+                onClick={this.saveSummary}
+              />
+            </div>
           </div>
         );
       case 3:
@@ -935,6 +959,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   saveSummary = async () => {
+    this.props.messageActions.showMessage({ load: true, show: true });
     let query = {};
 
     if (this.state.summaryId) {
@@ -963,13 +988,17 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let summaryJSON = res.summary;
-        let editorState = Value.fromJSON(summaryJSON);
-        this.setState({
-          summaryId: res.id,
-          summary: editorState,
-        });
-        this.nextStep();
+        let response = { ...res };
+        setTimeout(() => {
+          this.props.messageActions.showMessage({ show: false });
+          let summaryJSON = response.summary;
+          let editorState = Value.fromJSON(summaryJSON);
+          this.setState({
+            summaryId: response.id,
+            summary: editorState,
+          });
+          this.nextStep();
+        }, 400);
       });
   };
 
@@ -1068,11 +1097,18 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 33,
     color: "#232038",
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 25,
+    },
   },
   subtitle: {
     fontSize: 16,
     color: "#6f6c7d",
     marginTop: 10,
+    "@media only screen and (max-width: 665px)": {
+      width: 300,
+      textAlign: "center",
+    },
   },
   titleContainer: {
     display: "flex",
@@ -1160,6 +1196,14 @@ const styles = StyleSheet.create({
   },
   minHeight: {
     height: 90,
+  },
+  mobileColumn: {
+    "@media only screen and (max-width: 665px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+    },
   },
   paper: {
     width: 601,
@@ -1260,7 +1304,11 @@ const styles = StyleSheet.create({
     padding: 60,
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
-      padding: 40,
+      padding: "40px 0 50px 0",
+    },
+    "@media only screen and (max-width: 665px)": {
+      padding: "30px 0 50px 0",
+      width: "90%",
     },
   },
   buttons: {
@@ -1272,6 +1320,12 @@ const styles = StyleSheet.create({
   button: {
     width: 180,
     height: 55,
+    "@media only screen and (max-width: 551px)": {
+      width: 160,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 130,
+    },
   },
   buttonLeft: {
     display: "flex",
@@ -1298,6 +1352,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       textDecoration: "underline",
+    },
+    "@media only screen and (max-width: 935px)": {
+      bottom: 0,
     },
   },
   backButtonIcon: {
@@ -1333,18 +1390,68 @@ const styles = StyleSheet.create({
     height: 300,
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   doiInput: {
     width: 290,
     marginTop: 10,
     marginBottom: 0,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   doi: {
+    width: 290,
+    height: 90,
+    transition: "all ease-in-out 0.2s",
+    opacity: 1,
+    overflow: "hidden",
+    display: "unset",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+      height: 0,
+      display: "none",
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
+  mobileDoi: {
     width: 290,
     height: 0,
     transition: "all ease-in-out 0.2s",
     opacity: 0,
     overflow: "hidden",
+    display: "none",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+      display: "unset",
+      opacity: 1,
+      height: 90,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   reveal: {
     height: 90,
@@ -1363,6 +1470,15 @@ const styles = StyleSheet.create({
     color: "#7a7887",
     userSelect: "none",
     cursor: "default",
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 10,
+    },
   },
 });
 
@@ -1390,6 +1506,17 @@ const customStyles = {
     },
     "@media only screen and (max-width: 321px)": {
       width: 270,
+    },
+  },
+  authorGuidelines: {
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 10,
     },
   },
 };
