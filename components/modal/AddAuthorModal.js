@@ -26,12 +26,42 @@ class AddAuthorModal extends React.Component {
         web: "",
       },
       showLinks: false,
+      mobileView: false,
     };
 
     this.state = {
       ...this.initialState,
     };
   }
+
+  componentDidMount() {
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0;
+      this.updateDimensions();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
+  updateDimensions = () => {
+    if (window.innerWidth < 436) {
+      this.setState({
+        mobileView: true,
+      });
+    } else {
+      this.setState({
+        mobileView: false,
+      });
+    }
+  };
 
   /**
    * closes the modal on button click
@@ -41,6 +71,7 @@ class AddAuthorModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
+    this.enableParentScroll();
     modalActions.openAddAuthorModal(false);
   };
 
@@ -65,6 +96,18 @@ class AddAuthorModal extends React.Component {
     this.closeModal();
   };
 
+  /**
+   * prevents scrolling of parent component when modal is open
+   * & renables scrolling of parent component when modal is closed
+   */
+  disableParentScroll = () => {
+    document.body.style.overflow = "hidden";
+  };
+
+  enableParentScroll = () => {
+    document.body.style.overflow = "scroll";
+  };
+
   render() {
     let {
       first_name,
@@ -73,6 +116,7 @@ class AddAuthorModal extends React.Component {
       email,
       social_media,
       showLinks,
+      mobileView,
     } = this.state;
     let { modals } = this.props;
     return (
@@ -81,7 +125,8 @@ class AddAuthorModal extends React.Component {
         closeModal={this.closeModal}
         className={css(styles.modal)}
         shouldCloseOnOverlayClick={true}
-        style={overlayStyles}
+        style={mobileView ? mobileOverlayStyles : overlayStyles}
+        onAfterOpen={this.disableParentScroll}
       >
         <div className={css(styles.modalContent)}>
           <img
@@ -92,10 +137,11 @@ class AddAuthorModal extends React.Component {
           <div className={css(styles.titleContainer)}>
             <div className={css(styles.title, styles.text)}>Add New Author</div>
             <div className={css(styles.subtitle, styles.text)}>
-              Please enter the information about the user below
+              {`Please enter the information ${mobileView &&
+                "\n"} about the user below`}
             </div>
           </div>
-          <form onSubmit={this.addNewUser}>
+          <form className={css(styles.form)} onSubmit={this.addNewUser}>
             <div className={css(styles.row, styles.customMargins)}>
               <FormInput
                 label={"First Name"}
@@ -113,9 +159,18 @@ class AddAuthorModal extends React.Component {
                 required={true}
                 id={"last_name"}
                 onChange={this.handleInputChange}
-                containerStyle={styles.halfWidth}
+                containerStyle={styles.lastName}
               />
             </div>
+            <FormInput
+              label={"Last Name"}
+              value={last_name}
+              placeholder={"Enter last name"}
+              required={true}
+              id={"last_name"}
+              onChange={this.handleInputChange}
+              containerStyle={styles.mobileLastName}
+            />
             {/* <FormInput
               label={"University Affiliation"}
               value={university}
@@ -131,7 +186,7 @@ class AddAuthorModal extends React.Component {
               id={"email"}
               type={"email"}
               onChange={this.handleInputChange}
-              containerStyle={styles.customMargins}
+              containerStyle={styles.emailInput}
             />
 
             <div className={css(styles.socialMediaContainer)}>
@@ -186,11 +241,13 @@ class AddAuthorModal extends React.Component {
                 />
               </span>
             </div>
-            <Button
-              label={"Add user"}
-              type={"submit"}
-              customButtonStyle={styles.button}
-            />
+            <div className={css(styles.buttonWrapper)}>
+              <Button
+                label={"Add user"}
+                type={"submit"}
+                customButtonStyle={styles.button}
+              />
+            </div>
           </form>
         </div>
       </Modal>
@@ -211,6 +268,19 @@ const overlayStyles = {
   },
 };
 
+const mobileOverlayStyles = {
+  overlay: {
+    position: "fixed",
+    top: 80,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.2)",
+    zIndex: "11",
+    borderRadius: 5,
+  },
+};
+
 const styles = StyleSheet.create({
   modal: {
     background: "#fff",
@@ -221,6 +291,16 @@ const styles = StyleSheet.create({
     transform: "translate(-50%, -50%)",
     display: "flex",
     flexDirection: "column",
+    "@media only screen and (max-width: 665px)": {
+      width: "90%",
+    },
+    "@media only screen and (max-width: 436px)": {
+      width: "100%",
+      height: "100%",
+      top: 0,
+      left: 0,
+      transform: "unset",
+    },
   },
   modalContent: {
     display: "flex",
@@ -230,8 +310,10 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     padding: 50,
-    // height: 600,
-    // overflowY: "scroll",
+    overflow: "scroll",
+    "@media only screen and (max-width: 415px)": {
+      padding: "50px 0px 0px 0px",
+    },
   },
   closeButton: {
     height: 12,
@@ -254,6 +336,15 @@ const styles = StyleSheet.create({
     width: 426,
     fontSize: 26,
     color: "#232038",
+    "@media only screen and (max-width: 665px)": {
+      width: 360,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   subtitle: {
     marginTop: 10,
@@ -262,6 +353,21 @@ const styles = StyleSheet.create({
     width: 484,
     fontWeight: "400",
     color: "#4f4d5f",
+    "@media only screen and (max-width: 665px)": {
+      width: 360,
+      whiteSpace: "pre-wrap",
+      marginBottom: 10,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
   },
   text: {
     fontFamily: "Roboto",
@@ -275,6 +381,50 @@ const styles = StyleSheet.create({
     width: "48%",
     marginTop: 0,
     marginBottom: 0,
+    "@media only screen and (max-width: 665px)": {
+      width: 360,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
+  lastName: {
+    width: "48%",
+    marginTop: 0,
+    marginBottom: 0,
+    "@media only screen and (max-width: 665px)": {
+      display: "none",
+    },
+  },
+  mobileLastName: {
+    display: "none",
+    "@media only screen and (max-width: 665px)": {
+      display: "unset",
+      width: 360,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
+  emailInput: {
+    marginTop: 30,
+    marginBottom: 0,
+    "@media only screen and (max-width: 665px)": {
+      width: 360,
+      margin: 0,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   inputLabel: {
     height: 19,
@@ -289,6 +439,15 @@ const styles = StyleSheet.create({
   customMargins: {
     marginTop: 30,
     marginBottom: 0,
+    "@media only screen and (max-width: 665px)": {
+      width: 360,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   socialMediaContainer: {
     display: "flex",
@@ -298,6 +457,15 @@ const styles = StyleSheet.create({
     textAlign: "left",
     width: 527,
     marginTop: 30,
+    "@media only screen and (max-width: 665px)": {
+      width: 360,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   inputStyle: {
     height: 50,
@@ -312,12 +480,21 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-  button: {
-    margin: "0 auto",
+  buttonWrapper: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 30,
     minHeight: 55,
     maxHeight: 55,
+    "@media only screen and (max-width: 436px)": {
+      marginBottom: 40,
+    },
+  },
+  button: {
     width: 240,
+    height: 55,
   },
   dropdownIcon: {
     marginRight: 5,
