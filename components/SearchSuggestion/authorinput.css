@@ -1,31 +1,3 @@
-/* .react-tagsinput {
-  height: 50px !important;
-  max-height: 50px !important;
-  width: 600px!important;
-  background-color: rgb(251, 251, 253) !important;
-  font-family: Roboto !important;
-  font-size: 16px !important;
-  border-width: 1px !important;
-  border-style: solid !important;
-  border-color: #e8e8f2 !important;
-  border-radius: 2px !important;
-  outline: none !important;
-}
-
-.react-tagsinput-input {
-  height: 50px !important;
-  /* width: 600px !important; */
-/* background-color: rgb(251, 251, 253) !important;
-  font-family: Roboto !important;
-  font-size: 16px !important;
-  border-width: 1px !important;
-  border-style: solid !important;
-  border-color: #e8e8f2 !important;
-  padding: 15px !important;
-  border-radius: 2px !important;
-  outline: none !important;
-} */
-
 .react-tagsinput {
   background-color: rgb(251, 251, 253);
   border: 1px solid rgb(232, 232, 242);
@@ -81,4 +53,13 @@
 
 .react-tagsinput-remove:hover {
   color: #cd4424;
+}
+
+@media only screen and (max-width: 557px) {
+  .react-tagsinput-input {
+    font-size: 14px;
+  }
+  .react-tagsinput-tag {
+    font-size: 10px;
+  }
 }
