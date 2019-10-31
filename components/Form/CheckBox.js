@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 // Config
 import colors from "../../config/themes/colors";
 
-const CheckBox = ({ id, active, label, isSquare, onChange }) => {
+const CheckBox = ({ id, active, label, isSquare, onChange, labelStyle }) => {
   return (
     <div className={css(styles.checkboxContainer)}>
       <div
@@ -27,7 +27,9 @@ const CheckBox = ({ id, active, label, isSquare, onChange }) => {
           <div className={css(styles.dot, active && styles.white)} />
         )}
       </div>
-      <p className={css(styles.label)}>{label && label}</p>
+      <p className={css(styles.label, labelStyle && labelStyle)}>
+        {label && label}
+      </p>
     </div>
   );
 };
