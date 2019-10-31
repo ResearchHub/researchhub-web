@@ -99,7 +99,9 @@ class AuthorCardList extends React.Component {
             <Loader loading={loading} />
           </div>
         ) : (
-          <span>{this.renderAuthorCard(authorsList)}</span>
+          <span style={{ width: "100%" }}>
+            {this.renderAuthorCard(authorsList)}
+          </span>
         )}
         <div
           className={css(styles.authorCard, styles.addAuthorCard)}
@@ -129,9 +131,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    width: 600,
+    width: "100%",
     height: 0,
     overflowY: "scroll",
+    overflowX: "hidden",
     transition: `all ease-in-out ${DEFAULT_TRANSITION_TIME}s`,
     marginBottom: 10,
   },
@@ -165,7 +168,7 @@ const styles = StyleSheet.create({
     border: "1px solid #F7F7FB",
     borderRadius: 5,
     height: 74,
-    width: 598,
+    width: "inherit",
     marginBottom: 10,
     ":hover": {
       borderColor: "#D2D2E6",
@@ -181,9 +184,18 @@ const styles = StyleSheet.create({
     height: 43,
     borderRadius: "50%",
     marginLeft: 21,
+    marginRight: 21,
     justifyContent: " center",
     alignItems: "center",
     display: "flex",
+    "@media only screen and (max-width: 415px)": {
+      width: 41,
+      height: 41,
+    },
+    // "@media only screen and (max-width: 321px)": {
+    //   width: 23,
+    //   height: 23
+    // },
   },
   default: {
     backgroundColor: "#484B76",
@@ -199,17 +211,23 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     height: 43,
-    width: 460,
+    width: "68%",
   },
   name: {
     fontFamily: "Roboto",
     fontSize: 18,
     color: "#241F3A",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 16,
+    },
   },
   contact: {
     fontFamily: "Roboto",
     fontSize: 14,
     color: "#8d8b9a",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   addButtonWrapper: {
     width: 42,
@@ -223,6 +241,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     ":hover": {
       backgroundColor: "#fff",
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 40,
+      height: 40,
     },
   },
   deleteIcon: {

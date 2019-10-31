@@ -194,13 +194,19 @@ class PaperUploadInfo extends React.Component {
   }
 
   handleAuthorSelect = (value) => {
+    let userAuthorId = this.props.auth.user.author_profile.id;
+    let form = { ...this.state.form };
     let error = { ...this.state.error };
     error.author = false;
+    if (userAuthorId === value.id) {
+      form.author.self_author = true;
+    }
     this.setState({
       selectedAuthors: [...this.state.selectedAuthors, value],
       suggestedAuthors: [],
       searchAuthor: "",
       error,
+      form,
       edited: true,
     });
   };
@@ -483,7 +489,7 @@ class PaperUploadInfo extends React.Component {
             <div className={css(styles.section)}>
               {!editMode && (
                 <div className={css(styles.paper)}>
-                  <div className={css(styles.label)}>
+                  <div className={css(styles.label, styles.labelStyle)}>
                     Paper PDF
                     <span className={css(styles.asterick)}>*</span>
                   </div>
@@ -497,7 +503,7 @@ class PaperUploadInfo extends React.Component {
                     uploadedPaper={this.props.paper.uploadedPaper}
                     reset={this.removePaper}
                     error={error.dnd}
-                    isDynamic={true}
+                    // isDynamic={true}
                   />
                 </div>
               )}
@@ -509,26 +515,32 @@ class PaperUploadInfo extends React.Component {
                 placeholder="Enter title of paper"
                 required={true}
                 containerStyle={styles.container}
+                labelStyle={styles.labelStyle}
                 value={form.title}
                 id={"title"}
                 onChange={this.handleInputChange}
               />
-              <AuthorInput
-                tags={this.state.selectedAuthors}
-                onChange={this.handleAuthorChange}
-                onChangeInput={this.searchAuthors}
-                inputValue={searchAuthor}
-                label={"Authors"}
-                required={true}
-                error={error.author}
-              />
-              <AuthorCardList
-                show={showAuthorList}
-                authors={suggestedAuthors}
-                loading={loading}
-                addAuthor={this.openAddAuthorModal}
-                onAuthorClick={this.handleAuthorSelect}
-              />
+              <span className={css(styles.container)}>
+                <AuthorInput
+                  tags={this.state.selectedAuthors}
+                  onChange={this.handleAuthorChange}
+                  onChangeInput={this.searchAuthors}
+                  inputValue={searchAuthor}
+                  label={"Authors"}
+                  required={true}
+                  error={error.author}
+                  labelStyle={styles.labelStyle}
+                />
+              </span>
+              <span className={css(styles.container)}>
+                <AuthorCardList
+                  show={showAuthorList}
+                  authors={suggestedAuthors}
+                  loading={loading}
+                  addAuthor={this.openAddAuthorModal}
+                  onAuthorClick={this.handleAuthorSelect}
+                />
+              </span>
               <div className={css(styles.row, styles.authorCheckboxContainer)}>
                 <CheckBox
                   isSquare={true}
@@ -536,6 +548,7 @@ class PaperUploadInfo extends React.Component {
                   label={"I am an author of this paper"}
                   id={"author.self_author"}
                   onChange={this.handleSelfAuthorToggle}
+                  labelStyle={styles.labelStyle}
                 />
               </div>
               <div className={css(styles.row)}>
@@ -550,6 +563,7 @@ class PaperUploadInfo extends React.Component {
                   options={Options.range(1960, 2019)}
                   onChange={this.handleInputChange}
                   error={error.year}
+                  labelStyle={styles.labelStyle}
                 />
                 <FormSelect
                   label={"Month of Publication"}
@@ -562,30 +576,34 @@ class PaperUploadInfo extends React.Component {
                   options={Options.months}
                   onChange={this.handleInputChange}
                   error={error.month}
+                  labelStyle={styles.labelStyle}
                 />
               </div>
               <div className={css(styles.section, styles.leftAlign)}>
                 <div className={css(styles.row, styles.minHeight)}>
                   <span className={css(styles.section, styles.leftAlign)}>
-                    <p className={css(styles.label)}>Type</p>
+                    <p className={css(styles.label, styles.labelStyle)}>Type</p>
                     <div className={css(styles.checkboxRow)}>
                       <CheckBox
                         active={form.type.journal}
                         label={"Journal"}
                         id={"journal"}
                         onChange={this.handleCheckBoxToggle}
+                        labelStyle={styles.labelStyle}
                       />
                       <CheckBox
                         active={form.type.conference}
                         label={"Conference"}
                         id={"conference"}
                         onChange={this.handleCheckBoxToggle}
+                        labelStyle={styles.labelStyle}
                       />
                       <CheckBox
                         active={form.type.other}
                         label={"Other"}
                         id={"other"}
                         onChange={this.handleCheckBoxToggle}
+                        labelStyle={styles.labelStyle}
                       />
                     </div>
                   </span>
@@ -601,6 +619,7 @@ class PaperUploadInfo extends React.Component {
                       id={"doi"}
                       value={form.doi}
                       containerStyle={styles.doiInput}
+                      labelStyle={styles.labelStyle}
                       onChange={this.handleInputChange}
                     />
                   </span>
@@ -612,6 +631,7 @@ class PaperUploadInfo extends React.Component {
                 required={true}
                 containerStyle={styles.container}
                 inputStyle={customStyles.input}
+                labelStyle={styles.labelStyle}
                 isMulti={true}
                 value={form.hubs}
                 id={"hubs"}
@@ -630,6 +650,7 @@ class PaperUploadInfo extends React.Component {
                   placeholder="Enter a brief overview of the paper"
                   required={true}
                   containerStyle={styles.container}
+                  labelStyle={styles.labelStyle}
                   value={form.tagline}
                   id={"tagline"}
                   onChange={this.handleInputChange}
@@ -666,12 +687,15 @@ class PaperUploadInfo extends React.Component {
                 label={"Title"}
                 placeholder="Title of discussion"
                 containerStyle={styles.container}
+                labelStyle={styles.labelStyle}
                 value={discussion.title}
                 id={"title"}
                 onChange={this.handleDiscussionInputChange}
               />
               <div className={css(styles.discussionInputWrapper)}>
-                <div className={css(styles.label)}>Question</div>
+                <div className={css(styles.label, styles.labelStyle)}>
+                  Question
+                </div>
                 <div className={css(styles.discussionTextEditor)}>
                   <TextEditor
                     canEdit={true}
@@ -1057,18 +1081,29 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
   },
   pageContent: {
     width: "70%",
     minWidth: 820,
     minHeight: 500,
-    // maxHeight: 1128,
     position: "relative",
     backgroundColor: "#FFF",
-    // todo: fix shadow properties
     boxShadow: "0 1px 8px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);",
     padding: 60,
     borderTop: "4px solid #dedee5",
+    "@media only screen and (max-width: 935px)": {
+      minWidth: "unset",
+      width: 600,
+      padding: 40,
+    },
+    "@media only screen and (max-width: 665px)": {
+      width: "calc(100% - 20px)",
+      padding: 10,
+    },
+    "@media only screen and (max-width: 321px)": {
+      // width: 270,
+    },
   },
   progressBar: {
     position: "absolute",
@@ -1084,6 +1119,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 8,
     borderBottom: `1px solid #EBEBEB`,
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 18,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 16,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 14,
+    },
   },
   section: {
     display: "flex",
@@ -1097,6 +1141,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 600,
     alignItems: "center",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   minHeight: {
     height: 90,
@@ -1105,6 +1158,15 @@ const styles = StyleSheet.create({
     width: 601,
     marginTop: 40,
     marginBottom: 40,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   label: {
     fontFamily: "Roboto",
@@ -1120,7 +1182,16 @@ const styles = StyleSheet.create({
   },
   container: {
     width: 600,
-    marginBottom: 20,
+    // marginBottom: 20,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   inputStyle: {
     width: 570,
@@ -1135,6 +1206,26 @@ const styles = StyleSheet.create({
   },
   smallContainer: {
     width: 290,
+    "@media only screen and (max-width: 665px)": {
+      width: 180,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 159,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 125,
+    },
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   smallInput: {
     width: 156,
@@ -1145,6 +1236,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   leftAlign: {
     alignItems: "flex-start",
@@ -1157,6 +1251,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     padding: 60,
+    "@media only screen and (max-width: 935px)": {
+      minWidth: "unset",
+      padding: 40,
+    },
   },
   buttons: {
     marginTop: 20,
@@ -1264,10 +1362,28 @@ const styles = StyleSheet.create({
 const customStyles = {
   container: {
     width: 600,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   input: {
     width: 600,
     display: "flex",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
 };
 

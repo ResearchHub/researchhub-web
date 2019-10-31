@@ -16,7 +16,22 @@ class DragNDrop extends React.Component {
     this.state = {
       dragOver: false,
       isPDF: true,
+      style: {},
     };
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.getStyleByDimensions);
+  }
+
+  componentDidUpdate(prevProp) {
+    if (prevProp !== this.props) {
+      this.getStyleByDimensions();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.getStyleByDimensions);
   }
 
   handleDrop = async (acceptedFiles) => {
@@ -64,6 +79,7 @@ class DragNDrop extends React.Component {
       justifyContent: "center",
       alignItems: "center",
       height: 163,
+      width: "100%",
       padding: isDynamic && this.state.dragOver ? 15 : 0,
       backgroundColor: this.state.dragOver ? "#FFF" : "#FBFBFD",
       border: `0.5px dashed ${
@@ -84,7 +100,7 @@ class DragNDrop extends React.Component {
       dropZoneStyle.width = 525;
     }
 
-    return dropZoneStyle;
+    this.setState({ style: dropZoneStyle });
   };
 
   render() {
@@ -104,9 +120,7 @@ class DragNDrop extends React.Component {
           {({ getRootProps, getInputProps }) => (
             <section
               className="container"
-              style={
-                uploadFinish ? style.uploadedPaper : this.getStyleByDimensions()
-              }
+              style={uploadFinish ? style.uploadedPaper : this.state.style}
             >
               {uploadFinish ? (
                 <PaperEntry

@@ -29,11 +29,11 @@
 .react-tagsinput {
   background-color: rgb(251, 251, 253);
   border: 1px solid rgb(232, 232, 242);
-  overflow: scroll;
+  /* overflow: scroll; */
   padding-left: 15px;
-  padding-top: 0px;
-  width: 585px;
-  height: 50px;
+  padding-top: 5px;
+  width: calc(100% - 15px);
+  min-height: 45px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -49,7 +49,7 @@
   font-size: 16px;
   font-weight: 400;
   outline: none;
-  height: 48px;
+  min-height: 48px;
   min-width: 200px;
   max-width: 600px;
   padding: 0;
@@ -67,7 +67,8 @@
   font-weight: 400;
   margin-bottom: 5px;
   margin-right: 5px;
-  padding: 5px;
+  padding: 3px;
+  padding-left: 6px;
   user-select: none;
 }
 
