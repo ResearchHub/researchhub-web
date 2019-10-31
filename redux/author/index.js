@@ -131,4 +131,24 @@ export const AuthorActions = {
       return dispatch(action);
     };
   },
+
+  saveAuthorChanges: ({ changes, authorId }) => {
+    return (dispatch) => {
+      return fetch(API.AUTHOR({ authorId }), API.PATCH_CONFIG(changes))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          return dispatch({
+            type: types.SAVE_AUTHOR_CHANGES,
+            payload: {
+              ...changes,
+              doneFetching: true,
+            },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+  },
 };

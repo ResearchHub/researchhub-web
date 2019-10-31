@@ -4,6 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import { connect, useDispatch, useStore } from "react-redux";
 import moment from "moment";
+import ReactTooltip from "react-tooltip";
 
 import { AuthorActions } from "~/redux/author";
 import { PaperActions } from "~/redux/paper";
@@ -24,7 +25,7 @@ import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 
 const AuthorPage = (props) => {
-  let { author, hostname } = props;
+  let { author, hostname, user } = props;
   let router = useRouter();
   let { tabName } = router.query;
   const dispatch = useDispatch();
@@ -34,11 +35,23 @@ const AuthorPage = (props) => {
   const [hoverDescription, setHoverDescription] = useState(false);
   const [editName, setEditName] = useState(false);
   const [editDescription, setEditDescription] = useState(false);
+  const [editFacebook, setEditFacebook] = useState(false);
+  const [editLinkedin, setEditLinkedin] = useState(false);
+  const [editTwitter, setEditTwitter] = useState(false);
 
-  const HOVER_SECTIONS = {
+  const [description, setDescription] = useState("");
+  const [name, setName] = useState("");
+  const [socialLinks, setSocialLinks] = useState({});
+  const [allowEdit, setAllowEdit] = useState(false);
+
+  const SECTIONS = {
     name: "name",
     description: "description",
+    facebook: "facebook",
+    linkedin: "linkedin",
+    twitter: "twitter",
   };
+
   async function fetchAuthoredPapers() {
     await dispatch(
       AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
@@ -79,18 +92,47 @@ const AuthorPage = (props) => {
     refetchAuthor();
   }, [props.isServer, router.query.authorId]);
 
-  function onHoverToggle(section) {
-    if (section === HOVER_SECTIONS.name) {
-      setHoverName(!hoverName);
-    } else if (section === HOVER_SECTIONS.description) {
-      setHoverDescription(!hoverDescription);
+  useEffect(() => {
+    setDescription(author.description);
+    setName(`${author.first_name} ${author.last_name}`);
+
+    let social = {
+      facebook: author.facebook,
+      linkedin: author.linkedin,
+      twitter: author.twitter,
+    };
+
+    setSocialLinks(social);
+  }, [author]);
+
+  useEffect(() => {
+    if (author.user && user) {
+      if (author.user === user.id) {
+        setAllowEdit(true);
+      }
     }
-  }
+  }, [author, user]);
+
+  let onMouseEnter = (section) => {
+    if (section === SECTIONS.name) {
+      setHoverName(true);
+    } else if (section === SECTIONS.description) {
+      setHoverDescription(true);
+    }
+  };
+
+  let onMouseLeave = (section) => {
+    if (section === SECTIONS.name) {
+      setHoverName(false);
+    } else if (section === SECTIONS.description) {
+      setHoverDescription(false);
+    }
+  };
 
   function onEditToggle(section) {
-    if (section === HOVER_SECTIONS.name) {
+    if (section === SECTIONS.name) {
       setEditName(!editName);
-    } else if (section === HOVER_SECTIONS.description) {
+    } else if (section === SECTIONS.description) {
       setEditDescription(!editDescription);
     }
   }
@@ -137,37 +179,179 @@ const AuthorPage = (props) => {
     );
   };
 
+  let onDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
+
+  let onNameChange = (e) => {
+    setName(e.target.value);
+  };
+
+  let renderCancelButton = (section) => {
+    let action = null;
+
+    if (section === SECTIONS.name) {
+      action = () => setEditName(false);
+    } else if (section === SECTIONS.description) {
+      action = () => setEditDescription(false);
+    }
+
+    return (
+      <button
+        className={css(styles.button, styles.cancelButton)}
+        onClick={action}
+      >
+        Cancel
+      </button>
+    );
+  };
+
+  let renderSaveButton = (section) => {
+    let action = null;
+
+    if (section === SECTIONS.name) {
+      action = () => {
+        saveName();
+        setEditName(false);
+      };
+    } else if (section === SECTIONS.description) {
+      action = () => {
+        saveDescription();
+        setEditDescription(false);
+      };
+    }
+
+    return (
+      <button
+        className={css(styles.button, styles.saveButton)}
+        onClick={action}
+      >
+        Save
+      </button>
+    );
+  };
+
+  let saveName = async () => {
+    let splitName = name.split(" ");
+    let first_name = null;
+    let last_name = null;
+    if (splitName.length >= 1) {
+      first_name = splitName[0];
+    }
+    if (splitName.length >= 2) {
+      last_name = splitName[1];
+    }
+
+    let changes = {
+      first_name,
+      last_name,
+    };
+
+    await dispatch(
+      AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
+    );
+  };
+
+  let saveDescription = async () => {
+    let changes = {
+      description,
+    };
+
+    await dispatch(
+      AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
+    );
+  };
+
+  let onSocialLinkChange = (e, social) => {
+    let newSocialLinks = { ...socialLinks };
+    newSocialLinks[social] = e.target.value;
+
+    setSocialLinks(newSocialLinks);
+  };
+
+  let renderSocialEdit = (social) => {
+    return (
+      <div className={css(styles.socialEditContainer)}>
+        <div className={css(styles.socialTitle)}>{`${social} Link`}</div>
+        <div className={css(styles.socialInputContainer)}>
+          <input
+            className={css(styles.socialInput)}
+            value={socialLinks[social]}
+            onChange={(e) => onSocialLinkChange(e, social)}
+          />
+          <div className={css(styles.submitSocialButton)}>
+            <i className="fas fa-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.profileContainer)}>
           <AuthorAvatar author={author} disableLink={true} size={80} />
           <div className={css(styles.profileInfo)}>
-            {!editName && (
+            {!editName ? (
               <div
                 className={css(styles.authorName, styles.editButtonContainer)}
-                onMouseEnter={() => onHoverToggle(HOVER_SECTIONS.name)}
-                onMouseLeave={() => onHoverToggle(HOVER_SECTIONS.name)}
+                onMouseEnter={() => onMouseEnter(SECTIONS.name)}
+                onMouseLeave={() => onMouseLeave(SECTIONS.name)}
               >
                 {author.first_name} {author.last_name}
                 {hoverName &&
-                  renderEditButton(() => onEditToggle(HOVER_SECTIONS.name))}
+                  allowEdit &&
+                  renderEditButton(() => {
+                    setHoverName(false);
+                    onEditToggle(SECTIONS.name);
+                  })}
               </div>
+            ) : (
+              allowEdit && (
+                <div className={css(styles.editDescriptionContainer)}>
+                  <input
+                    className={css(styles.nameInput)}
+                    value={name}
+                    onChange={onNameChange}
+                  />
+                  <div className={css(styles.actionContainer)}>
+                    {renderCancelButton(SECTIONS.name)}
+                    {renderSaveButton(SECTIONS.name)}
+                  </div>
+                </div>
+              )
             )}
             <div className={css(styles.reputation)}></div>
-            {!editDescription && (
+            {!editDescription ? (
               <div
                 className={css(styles.description, styles.editButtonContainer)}
-                onMouseEnter={() => onHoverToggle(HOVER_SECTIONS.description)}
-                onMouseLeave={() => onHoverToggle(HOVER_SECTIONS.description)}
+                onMouseEnter={() => onMouseEnter(SECTIONS.description)}
+                onMouseLeave={() => onMouseLeave(SECTIONS.description)}
               >
-                {author.user &&
-                  "This is a test description. We will use this until we get the description from the backend working. We also need to create some edit functionality on the frontend to be able to properly add a description for the author"}
+                {author.description}
                 {hoverDescription &&
-                  renderEditButton(() =>
-                    onEditToggle(HOVER_SECTIONS.description)
-                  )}
+                  allowEdit &&
+                  renderEditButton(() => {
+                    setHoverDescription(false);
+                    onEditToggle(SECTIONS.description);
+                  })}
               </div>
+            ) : (
+              allowEdit && (
+                <div className={css(styles.editDescriptionContainer)}>
+                  <textarea
+                    className={css(styles.descriptionTextarea)}
+                    value={description}
+                    onChange={onDescriptionChange}
+                    resize={false}
+                  />
+                  <div className={css(styles.actionContainer)}>
+                    {renderCancelButton(SECTIONS.description)}
+                    {renderSaveButton(SECTIONS.description)}
+                  </div>
+                </div>
+              )
             )}
             <div className={css(styles.extraInfoContainer)}>
               {author.university && (
@@ -181,38 +365,84 @@ const AuthorPage = (props) => {
             </div>
           </div>
           <div className={css(styles.socialLinks)}>
-            {author.linkedin && (
-              <a
-                className={css(styles.link)}
-                href={author.linkedin}
-                target="_blank"
+            {!allowEdit ? (
+              author.linkedin && (
+                <a
+                  className={css(styles.link)}
+                  href={author.linkedin}
+                  target="_blank"
+                >
+                  <div className={css(styles.socialMedia, styles.linkedin)}>
+                    <i className="fab fa-linkedin-in"></i>
+                  </div>
+                </a>
+              )
+            ) : (
+              <div
+                className={css(
+                  styles.editSocial,
+                  !author.linkedin && styles.noSocial,
+                  editLinkedin && styles.fullOpacity
+                )}
+                onClick={() => setEditLinkedin(true)}
               >
                 <div className={css(styles.socialMedia, styles.linkedin)}>
                   <i className="fab fa-linkedin-in"></i>
                 </div>
-              </a>
+              </div>
             )}
-            {author.twitter && (
-              <a
-                className={css(styles.link)}
-                href={author.twitter}
-                target="_blank"
+            {!allowEdit ? (
+              author.twitter && (
+                <a
+                  className={css(styles.link)}
+                  href={author.twitter}
+                  target="_blank"
+                >
+                  <div className={css(styles.socialMedia, styles.twitter)}>
+                    <i className="fab fa-twitter"></i>
+                  </div>
+                </a>
+              )
+            ) : (
+              <div
+                className={css(
+                  styles.editSocial,
+                  !author.twitter && styles.noSocial,
+                  editTwitter && styles.fullOpacity
+                )}
+                onClick={() => setEditTwitter(true)}
               >
                 <div className={css(styles.socialMedia, styles.twitter)}>
                   <i className="fab fa-twitter"></i>
                 </div>
-              </a>
+              </div>
             )}
-            {author.facebook && (
-              <a
-                className={css(styles.link)}
-                href={author.facebook}
-                target="_blank"
+            {!allowEdit ? (
+              author.facebook && (
+                <a
+                  className={css(styles.link)}
+                  href={author.facebook}
+                  target="_blank"
+                >
+                  <div className={css(styles.socialMedia, styles.facebook)}>
+                    <i className="fab fa-facebook-f"></i>
+                  </div>
+                </a>
+              )
+            ) : (
+              <div
+                className={css(
+                  styles.editSocial,
+                  !author.facebook && styles.noSocial,
+                  editFacebook && styles.fullOpacity
+                )}
+                onClick={() => setEditFacebook(true)}
               >
                 <div className={css(styles.socialMedia, styles.facebook)}>
                   <i className="fab fa-facebook-f"></i>
                 </div>
-              </a>
+                {editFacebook && renderSocialEdit(SECTIONS.facebook)}
+              </div>
             )}
             <div
               className={css(styles.socialMedia, styles.shareLink)}
@@ -336,10 +566,121 @@ const styles = StyleSheet.create({
       opacity: 1,
     },
   },
+  descriptionTextarea: {
+    width: "100%",
+    background: "#fff",
+    height: 80,
+    padding: 5,
+    borderRadius: 8,
+    resize: "none",
+    fontSize: 16,
+    fontFamily: "Roboto, sans-serif",
+    outline: "none",
+  },
+  actionContainer: {
+    display: "flex",
+    marginBottom: 10,
+  },
+  button: {
+    height: 35,
+    width: 85,
+    border: "1px solid",
+    borderColor: colors.BLUE(),
+    borderRadius: 8,
+    fontSize: 18,
+    outline: "none",
+    cursor: "pointer",
+  },
+  cancelButton: {
+    color: colors.BLUE(),
+    background: "#fff",
+
+    ":hover": {
+      color: "#fff",
+      background: colors.BLUE(),
+    },
+  },
+  saveButton: {
+    color: "#fff",
+    background: colors.BLUE(),
+    marginLeft: 5,
+
+    ":hover": {
+      backgroundColor: "#3E43E8",
+    },
+  },
+  nameInput: {
+    background: "#fff",
+    border: "1px solid #000",
+    borderRadius: 8,
+    fontSize: 32,
+    width: 300,
+    padding: 5,
+    fontWeight: 500,
+    marginBottom: 5,
+  },
+  noSocial: {
+    opacity: 0.2,
+
+    ":hover": {
+      opacity: 1,
+    },
+  },
+  socialTitle: {
+    textTransform: "capitalize",
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  socialInput: {
+    background: "#fff",
+    border: "none",
+    outline: "none",
+    padding: 5,
+    boxSizing: "border-box",
+  },
+  fullOpacity: {
+    opacity: 1,
+  },
+  socialEditContainer: {
+    position: "absolute",
+    bottom: -90,
+    left: "50%",
+    transform: "translateX(-50%)",
+    background: "#fff",
+    boxShadow: "0 5px 10px 0 #ddd",
+    padding: 10,
+    borderRadius: 8,
+  },
+  editSocial: {
+    position: "relative",
+  },
+  socialInputContainer: {
+    display: "flex",
+    border: "1px solid #000",
+    borderRadius: 8,
+    width: 300,
+    height: 30,
+    overflow: "hidden",
+  },
+  submitSocialButton: {
+    background: colors.BLUE(1),
+    //borderRadius: "0 8px 8px 0",
+    color: "#fff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 5,
+    cursor: "pointer",
+    width: 20,
+    ":hover": {
+      background: "#3E43E8",
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
   author: state.author,
+  user: state.auth.user,
 });
 
 export default connect(mapStateToProps)(AuthorPage);
