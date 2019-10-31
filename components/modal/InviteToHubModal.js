@@ -23,6 +23,7 @@ class InviteToHubModal extends React.Component {
       setCopySuccessMessage: "",
       emails: [],
       email: "",
+      mobileView: false,
     };
     this.state = {
       ...this.initialState,
@@ -30,14 +31,44 @@ class InviteToHubModal extends React.Component {
     this.formInputRef = React.createRef();
   }
 
+  componentDidMount() {
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0;
+      this.updateDimensions();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
+  updateDimensions = () => {
+    if (window.innerWidth < 436) {
+      this.setState({
+        mobileView: true,
+      });
+    } else {
+      this.setState({
+        mobileView: false,
+      });
+    }
+  };
+
   /**
    * closes the modal on button click
    */
-  closeModal = async () => {
+  closeModal = () => {
     let { openInviteToHubModal } = this.props;
-    await this.setState({
+    this.setState({
       ...this.initialState,
     });
+    this.enableParentScroll();
     openInviteToHubModal(false);
   };
 
@@ -56,9 +87,21 @@ class InviteToHubModal extends React.Component {
     this.setState({ email: value });
   };
 
+  /**
+   * prevents scrolling of parent component when modal is open
+   * & renables scrolling of parent component when modal is closed
+   */
+  disableParentScroll = () => {
+    document.body.style.overflow = "hidden";
+  };
+
+  enableParentScroll = () => {
+    document.body.style.overflow = "scroll";
+  };
+
   render() {
     let { modals, auth } = this.props;
-
+    let { mobileView } = this.state;
     return (
       <Modal
         isOpen={modals.openInviteToHubModal}
@@ -67,6 +110,8 @@ class InviteToHubModal extends React.Component {
         shouldCloseOnOverlayClick={true}
         onRequestClose={this.closeModal}
         style={overlayStyles}
+        style={mobileView ? mobileOverlayStyles : overlayStyles}
+        onAfterOpen={this.disableParentScroll}
       >
         <div className={css(styles.modalContent)}>
           <img
@@ -82,15 +127,18 @@ class InviteToHubModal extends React.Component {
               You can invite people by email, or with a link
             </div>
           </div>
-          <AuthorInput
-            tags={this.state.emails}
-            onChange={this.addEmail}
-            onChangeInput={this.handleEmailInput}
-            inputValue={this.state.email}
-            label={"Inviting via email addresses"}
-            placeholder={"Enter email addresses"}
-            renderEmail={true}
-          />
+          <div className={css(styles.container)}>
+            <AuthorInput
+              tags={this.state.emails}
+              onChange={this.addEmail}
+              onChangeInput={this.handleEmailInput}
+              inputValue={this.state.email}
+              label={"Inviting via email addresses"}
+              placeholder={"Press enter to add email"}
+              renderEmail={true}
+              labelStyle={styles.labelStyle}
+            />
+          </div>
           <Button
             label={"Send Invites"}
             customButtonStyle={styles.customButtonStyle}
@@ -101,6 +149,7 @@ class InviteToHubModal extends React.Component {
             value={window.location.href}
             message={this.state.copySuccessMessage}
             containerStyle={styles.containerStyle}
+            inputStyle={styles.inputStyle}
           />
           <span className={css(styles.socialMedia)}>
             <div className={css(styles.sublabel)}>
@@ -135,6 +184,19 @@ const overlayStyles = {
   },
 };
 
+const mobileOverlayStyles = {
+  overlay: {
+    position: "fixed",
+    top: 80,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.2)",
+    zIndex: "11",
+    borderRadius: 5,
+  },
+};
+
 const styles = StyleSheet.create({
   modal: {
     background: "#fff",
@@ -145,6 +207,16 @@ const styles = StyleSheet.create({
     transform: "translate(-50%, -50%)",
     display: "flex",
     flexDirection: "column",
+    "@media only screen and (max-width: 665px)": {
+      width: "90%",
+    },
+    "@media only screen and (max-width: 436px)": {
+      width: "100%",
+      height: "100%",
+      top: 0,
+      left: 0,
+      transform: "unset",
+    },
   },
   modalContent: {
     display: "flex",
@@ -156,6 +228,15 @@ const styles = StyleSheet.create({
     padding: "50px 50px 50px 50px",
     width: 625,
     overflowY: "scroll",
+    overflowX: "hidden",
+    "@media only screen and (max-width: 725px)": {
+      width: "calc(100% - 100px)",
+    },
+    "@media only screen and (max-width: 436px)": {
+      padding: 0,
+      paddingTop: 50,
+      width: "100%",
+    },
   },
   closeButton: {
     height: 12,
@@ -182,6 +263,12 @@ const styles = StyleSheet.create({
     width: 426,
     fontSize: 26,
     color: "#232038",
+    "@media only screen and (max-width: 557px)": {
+      fontSize: 24,
+    },
+    "@media only screen and (max-width: 410px)": {
+      fontSize: 22,
+    },
   },
   subtitle: {
     marginTop: 10,
@@ -190,6 +277,10 @@ const styles = StyleSheet.create({
     width: 484,
     fontWeight: "400",
     color: "#4f4d5f",
+    "@media only screen and (max-width: 557px)": {
+      fontSize: 14,
+      width: 300,
+    },
   },
   text: {
     fontFamily: "Roboto",
@@ -214,21 +305,65 @@ const styles = StyleSheet.create({
   customButtonStyle: {
     width: 200,
     height: 55,
-    // marginTop: 10
+    "@media only screen and (max-width: 557px)": {
+      width: 170,
+      height: 45,
+    },
+    "@media only screen and (max-width: 410px)": {
+      width: 160,
+    },
+  },
+  container: {
+    width: 602,
+    "@media only screen and (max-width: 725px)": {
+      width: 450,
+    },
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 410px)": {
+      width: 300,
+    },
   },
   containerStyle: {
     marginTop: 40,
     width: 602,
+    "@media only screen and (max-width: 725px)": {
+      width: 450,
+    },
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 410px)": {
+      width: 300,
+    },
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 557px)": {
+      fontSize: 14,
+    },
+  },
+  inputStyle: {
+    "@media only screen and (max-width: 557px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 410px)": {
+      fontSize: 12,
+    },
   },
   copyLink: {
     color: colors.BLUE(1),
     ":hover": {
       textDecoration: "underline",
     },
+    "@media only screen and (max-width: 557px)": {
+      fontSize: 13,
+    },
   },
   sublabel: {
     fontSize: 14,
     color: "#706e7f",
+    textAlign: "center",
   },
 });
 
