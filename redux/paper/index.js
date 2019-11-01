@@ -31,7 +31,7 @@ export const PaperActions = {
         utils.logFetchError(response);
       }
 
-      return dispatch(action);
+      // return dispatch(action);
     };
   },
 
@@ -56,7 +56,7 @@ export const PaperActions = {
         utils.logFetchError(response);
       }
 
-      return dispatch(action);
+      // return dispatch(action);
     };
   },
   getPaper: (paperId) => {
