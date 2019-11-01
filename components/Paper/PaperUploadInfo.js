@@ -926,7 +926,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   formatPublishDate = (published) => {
-    return `${published.year.value}-${published.month.value}`;
+    return `${published.year.value}-${published.month.value}-01`;
   };
 
   nextStep = async () => {
@@ -1054,6 +1054,9 @@ class PaperUploadInfo extends React.Component {
           addNewUser={this.addNewUser}
         />
         {this.renderTitle()}
+        <div className={css(styles.mobileProgressBar)}>
+          <Progress completed={progress} />
+        </div>
         <form
           className={css(styles.form)}
           onSubmit={(e) => {
@@ -1082,6 +1085,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     scrollBehavior: "smooth",
+    position: "relative",
   },
   text: {
     fontFamily: "Roboto",
@@ -1134,18 +1138,33 @@ const styles = StyleSheet.create({
       padding: 40,
     },
     "@media only screen and (max-width: 665px)": {
-      width: "calc(100% - 20px)",
-      padding: 10,
+      width: "calc(100% - 16px)",
+      padding: 16,
     },
-    "@media only screen and (max-width: 321px)": {
-      // width: 270,
+    "@media only screen and (max-width: 415px)": {
+      borderTop: "unset",
     },
   },
   progressBar: {
     position: "absolute",
     width: "100%",
+    backgroundColor: "#dedee4",
     top: -4,
     left: 0,
+    "@media only screen and (max-width: 415px)": {
+      display: "none",
+    },
+  },
+  mobileProgressBar: {
+    display: "none",
+    "@media only screen and (max-width: 415px)": {
+      backgroundColor: "#dedee4",
+      display: "unset",
+      position: "sticky",
+      top: 0,
+      zIndex: 2,
+      width: "100%",
+    },
   },
   header: {
     fontSize: 22,
@@ -1160,6 +1179,9 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 16,
+      paddingLeft: 9,
+      paddingRight: 9,
+      width: "calc(100% - 18px)",
     },
     "@media only screen and (max-width: 321px)": {
       fontSize: 14,
@@ -1226,7 +1248,6 @@ const styles = StyleSheet.create({
   },
   container: {
     width: 600,
-    // marginBottom: 20,
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },
