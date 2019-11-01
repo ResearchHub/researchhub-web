@@ -7,7 +7,6 @@ const apiRoot = {
   production: "backend.researchhub.com",
   staging: "localhost:8000",
   dev: "localhost:8000",
-  //dev: 'https://staging.solestage.com/api/',
 };
 
 const prepFilters = (filters) => {
@@ -70,7 +69,23 @@ const routes = (BASE_URL) => {
     },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     SIGNOUT: BASE_URL + "auth/logout/",
-    PAPER: ({ paperId, search, page, filters }) => {
+    SEARCH: ({ search, config, page, size }) => {
+      let url = BASE_URL + "search/";
+      let params = {
+        querystring: {
+          search,
+          page,
+          size,
+        },
+        rest: {
+          route: config.route,
+        },
+      };
+      url = prepURL(url, params);
+
+      return url;
+    },
+    PAPER: ({ paperId, search, page, filters, highlights }) => {
       let url = BASE_URL + `paper/`;
 
       if (paperId) {
@@ -85,6 +100,12 @@ const routes = (BASE_URL) => {
 
       if (typeof page === "number") {
         url += `page=${page}&`;
+      }
+
+      if (highlights) {
+        for (let i = 0; i < highlights.length; i++) {
+          url += `highlight=${highlights[i]}&`;
+        }
       }
 
       url += prepFilters(filters);

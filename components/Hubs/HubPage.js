@@ -20,6 +20,8 @@ import { AuthActions } from "~/redux/auth";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import { PaperActions } from "../../redux/paper";
+import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
 
 const filterOptions = [
   {
@@ -255,6 +257,8 @@ class HubPage extends React.Component {
                     paper={paper}
                     index={i}
                     hubName={this.props.hubName}
+                    onUpvote={this.onUpvote}
+                    onDownvote={this.onDownvote}
                     mobileView={this.state.mobileView}
                   />
                 ))}
@@ -300,7 +304,7 @@ var styles = StyleSheet.create({
     height: 200,
     zIndex: 3,
     "@media only screen and (max-width: 577px)": {
-      height: 489,
+      height: 300,
       justifyContent: "flex-start",
     },
   },
@@ -316,8 +320,8 @@ var styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     "@media only screen and (max-width: 577px)": {
-      height: 489,
       position: "relative",
+      alignItems: "unset",
     },
   },
   bannerOverlay: {
@@ -351,8 +355,8 @@ var styles = StyleSheet.create({
       fontSize: 40,
     },
     "@media only screen and (max-width: 577px)": {
-      fontSize: 33,
-      marginTop: 50,
+      fontSize: 25,
+      marginTop: 16,
       width: 300,
     },
     "@media only screen and (max-width: 321px)": {
@@ -575,6 +579,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
+  postUpvote: PaperActions.postUpvote,
+  postDownvote: PaperActions.postDownvote,
 };
 
 export default connect(

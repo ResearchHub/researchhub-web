@@ -4,7 +4,7 @@ import ResearchHubIcon from "~/static/ResearchHubIcon.js";
 
 const ResearchHubLogo = (props) => {
   return (
-    <div className={css(styles.researchHubLogo)}>
+    <div className={css(styles.researchHubLogo, props.className)}>
       <ResearchHubIcon />
     </div>
   );

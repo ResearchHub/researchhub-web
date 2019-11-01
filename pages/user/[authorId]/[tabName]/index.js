@@ -1,17 +1,14 @@
-import Router, { useRouter } from "next/router";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import { connect, useDispatch, useStore } from "react-redux";
-import moment from "moment";
-import ReactTooltip from "react-tooltip";
 
 import { AuthorActions } from "~/redux/author";
-import { PaperActions } from "~/redux/paper";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
+import Head from "~/components/Head";
 import TabBar from "~/components/TabBar";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
@@ -22,8 +19,7 @@ import AvatarUpload from "~/components/AvatarUpload";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
+import { absoluteUrl } from "~/config/utils";
 
 const AuthorPage = (props) => {
   let { author, hostname, user } = props;
@@ -82,6 +78,7 @@ const AuthorPage = (props) => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   });
+  const authorName = `${author.first_name} ${author.last_name}`;
 
   async function fetchAuthoredPapers() {
     await dispatch(
@@ -368,6 +365,10 @@ const AuthorPage = (props) => {
   };
   return (
     <div className={css(styles.container)}>
+      <Head
+        title={`${authorName} on Research Hub`}
+        description={`${authorName} on Research Hub`}
+      />
       <ComponentWrapper>
         <div className={css(styles.profileContainer)}>
           <div

@@ -5424,6 +5424,13 @@ react-pdf@^4.1.0:
     pdfjs-dist "2.1.266"
     prop-types "^15.6.2"
 
+react-placeholder@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/react-placeholder/-/react-placeholder-3.0.2.tgz#08bf95b8e2ff20827d8ae8235c4cb2a3a428b292"
+  integrity sha512-PItNXiq7GO3bK8iLobGLcBeRPtxyGdtAdZ7S0zeVdAlpIlUrJy+c6igzKr6uyK74Fh/WhOL5uCNju8FVUjCJEQ==
+  dependencies:
+    prop-types "^15.6.0"
+
 react-progressbar@^15.4.1:
   version "15.4.1"
   resolved "https://registry.yarnpkg.com/react-progressbar/-/react-progressbar-15.4.1.tgz#86a68138320193a51f8661273120357af8e58e75"
