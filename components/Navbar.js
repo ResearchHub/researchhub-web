@@ -437,7 +437,6 @@ const Navbar = (props) => {
             permissionKey="CreatePaper"
           >
             <Button
-              onClick={onAddPaperClick}
               customButtonStyle={{ ...styles.button, ...styles.addPaper }}
               label={"Add Paper"}
             />
