@@ -109,7 +109,6 @@ class InviteToHubModal extends React.Component {
         className={css(styles.modal)}
         shouldCloseOnOverlayClick={true}
         onRequestClose={this.closeModal}
-        style={overlayStyles}
         style={mobileView ? mobileOverlayStyles : overlayStyles}
         onAfterOpen={this.disableParentScroll}
       >
