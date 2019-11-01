@@ -19,11 +19,6 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { thread } from "~/redux/discussion/shims";
 
-
-// Redux
-import { MessageActions } from "~/redux/message";
-
-
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -179,29 +174,28 @@ const DiscussionTab = (props) => {
             </div>
           </span>
         )}
-          <PermissionNotificationWrapper
-            onClick={addDiscussion}
-            modalMessage="create a discussion thread"
-            permissionKey="CreateDiscussionThread"
-            loginRequired={true}
+        <PermissionNotificationWrapper
+          onClick={addDiscussion}
+          modalMessage="create a discussion thread"
+          permissionKey="CreateDiscussionThread"
+          loginRequired={true}
+        >
+          <button
+            className={css(
+              styles.addDiscussionButton,
+              formattedThreads.length > 0 && styles.plainButton
+            )}
           >
-            <button
-              className={css(
-                styles.addDiscussionButton,
-                formattedThreads.length > 0 && styles.plainButton
-              )}
-            >
-              {formattedThreads.length > 0 && (
-                <span className={css(styles.discussionIcon)}>
-                  <i class="fad fa-comment-plus" />
-                </span>
-              )}
-              Add Discussion
-            </button>
-          </PermissionNotificationWrapper>
-        </div>
-      );
-    }
+            {formattedThreads.length > 0 && (
+              <span className={css(styles.discussionIcon)}>
+                <i class="fad fa-comment-plus" />
+              </span>
+            )}
+            Add Discussion
+          </button>
+        </PermissionNotificationWrapper>
+      </div>
+    );
   };
 
   return (

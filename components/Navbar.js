@@ -300,25 +300,22 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <Button
+          <PermissionNotificationWrapper
             onClick={onAddPaperClick}
-            customButtonStyle={{ ...styles.button, ...styles.addPaper }}
-            label={"Add Paper"}
-          />
+            modalMessage="upload a paper"
+            loginRequired={true}
+            permissionKey="CreatePaper"
+          >
+            <Button
+              onClick={onAddPaperClick}
+              customButtonStyle={{ ...styles.button, ...styles.addPaper }}
+              label={"Add Paper"}
+            />
+          </PermissionNotificationWrapper>
         </div>
         <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
           {icons.burgerMenu}
         </div>
-        <PermissionNotificationWrapper
-          onClick={onAddPaperClick}
-          modalMessage="upload a paper"
-          loginRequired={true}
-          permissionKey="CreatePaper"
-        >
-          <button className={css(styles.button, styles.addPaper)}>
-            Add Paper
-          </button>
-        </PermissionNotificationWrapper>
       </div>
     </Fragment>
   );
