@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, Fragment  } from "react";
+import { useEffect, useState, useRef, Fragment } from "react";
 
 // NPM Components
 import Link from "next/link";
@@ -126,7 +126,6 @@ const Navbar = (props) => {
       icon: "user",
     },
     { label: "Logout", onClick: signout, icon: "signOut" },
-    // { label: "LogIn", onClick: signout, icon: "signOut" },
   ];
 
   function renderTabs() {
@@ -236,22 +235,45 @@ const Navbar = (props) => {
   function renderMenuItems() {
     const tabs = [...tabData, ...menuTabs];
     return tabs.map((tab, index) => {
-      return (
-        <div
-          className={css(styles.menuItem)}
-          onClick={
-            tab.onClick
-              ? tab.onClick
-              : tab.route
-              ? () => navigateToRoute(tab.route)
-              : null
-          }
-          key={`navbar_tab_${index}`}
-        >
-          <span className={css(styles.icon)}>{icons[tab.icon]}</span>
-          <span className="menu-item">{tab.label}</span>
-        </div>
-      );
+      if (tab.label === "Logout") {
+        if (!isLoggedIn) {
+          return null;
+        } else {
+          return (
+            <div
+              className={css(styles.menuItem)}
+              onClick={
+                tab.onClick
+                  ? tab.onClick
+                  : tab.route
+                  ? () => navigateToRoute(tab.route)
+                  : null
+              }
+              key={`navbar_tab_${index}`}
+            >
+              <span className={css(styles.icon)}>{icons[tab.icon]}</span>
+              <span className="menu-item">{tab.label}</span>
+            </div>
+          );
+        }
+      } else {
+        return (
+          <div
+            className={css(styles.menuItem)}
+            onClick={
+              tab.onClick
+                ? tab.onClick
+                : tab.route
+                ? () => navigateToRoute(tab.route)
+                : null
+            }
+            key={`navbar_tab_${index}`}
+          >
+            <span className={css(styles.icon)}>{icons[tab.icon]}</span>
+            <span className="menu-item">{tab.label}</span>
+          </div>
+        );
+      }
     });
   }
 
@@ -356,7 +378,7 @@ const Navbar = (props) => {
               </ReactPlaceholder>
             </div>
           )}
-      </div>
+        </div>
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -459,6 +481,9 @@ const styles = StyleSheet.create({
   googleLoginButton: {
     margin: 0,
     width: 200,
+    "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
   },
   googleIcon: {
     width: 25,
