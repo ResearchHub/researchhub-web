@@ -107,7 +107,7 @@ export const PaperActions = {
           return dispatch({
             type: types.GET_EDITS,
             payload: {
-              editHistory: resp,
+              editHistory: shims.editHistory(resp),
               doneFetching: true,
             },
           });

@@ -41,6 +41,12 @@ export const paperPost = ({
   return formData;
 };
 
+export const editHistory = (editHistory) => {
+  return editHistory.map((edit) => {
+    return transformEdit(edit);
+  });
+};
+
 export const paperSummaryPost = ({ paperId, text }) => {
   return {
     paper: paperId,
@@ -65,4 +71,19 @@ function transformThreads(threads) {
     score: thread.score,
     userVote: transformVote(thread.user_vote),
   }));
+}
+
+function transformEdit(edit) {
+  return {
+    id: edit.id,
+    proposedBy: transformUser(edit.proposed_by),
+    summary: edit.summary,
+    previousSummary: edit.previous__summary,
+    approved: edit.approved,
+    approvedBy: transformUser(edit.approved_by),
+    approvedDate: edit.approved_date,
+    createdDate: edit.created_date,
+    updatedDate: edit.updated_date,
+    paper: edit.paper,
+  };
 }
