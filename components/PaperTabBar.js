@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
     },
   },
   lastTab: {
-    paddingRight: 0,
     marginRight: 0,
     "@media only screen and (min-width: 1288px)": {
       marginRight: 0,
