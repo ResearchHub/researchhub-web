@@ -55,9 +55,9 @@ const AvatarUpload = (props) => {
       >
         {saveButton(section, { picture: preview })}
       </div>
-      <div className={css(styles.icon)}>
+      {/* <div className={css(styles.icon)}>
         <ResearchHubIcon />
-      </div>
+      </div> */}
     </BaseModal>
   );
 };
@@ -88,7 +88,8 @@ const styles = StyleSheet.create({
   actions: {
     width: "100%",
     display: "flex",
-    justifyContent: "flex-end",
+    justifyContent: "center",
+    marginTop: 16,
   },
   disable: {
     opacity: 0.5,
