@@ -134,9 +134,13 @@ export const AuthorActions = {
     };
   },
 
-  saveAuthorChanges: ({ changes, authorId }) => {
+  saveAuthorChanges: ({ changes, authorId, file }) => {
     return (dispatch) => {
-      return fetch(API.AUTHOR({ authorId }), API.PATCH_CONFIG(changes))
+      let config = API.PATCH_CONFIG(changes);
+      if (file) {
+        config = API.PATCH_FILE_CONFIG(changes);
+      }
+      return fetch(API.AUTHOR({ authorId }), config)
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
@@ -146,7 +150,7 @@ export const AuthorActions = {
           return dispatch({
             type: types.SAVE_AUTHOR_CHANGES,
             payload: {
-              ...changes,
+              ...resp,
               doneFetching: true,
             },
           });
