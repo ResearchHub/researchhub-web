@@ -13,7 +13,7 @@ import ResearchHubIcon from "../static/ResearchHubIcon";
 const AvatarEdit = dynamic(() => import("react-avatar-edit"), { ssr: false });
 
 const AvatarUpload = (props) => {
-  let { isOpen, closeModal } = props;
+  let { isOpen, closeModal, saveButton, section } = props;
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
 
@@ -49,6 +49,12 @@ const AvatarUpload = (props) => {
         {/* <div className={css(styles.preview)}>Preview</div>
         {preview && <img width={80} hieght={80} src={preview} alt="Preview" />} */}
       </div>
+      <div
+        className={css(styles.actions, !preview && styles.disable)}
+        disable={!preview}
+      >
+        {saveButton(section, { picture: preview })}
+      </div>
       <div className={css(styles.icon)}>
         <ResearchHubIcon />
       </div>
@@ -78,6 +84,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
+  },
+  actions: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  disable: {
+    opacity: 0.5,
   },
 });
 
