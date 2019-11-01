@@ -6,7 +6,7 @@ import colors from "~/config/themes/colors";
 const DiscussionCard = (props) => {
   const infoStyles = [styles.infoContainer];
 
-  const { infoStyle, hoverEvents } = props;
+  const { infoStyle, hoverEvents, mobileView } = props;
   if (infoStyle) {
     infoStyles.push(infoStyle);
   }
@@ -14,7 +14,7 @@ const DiscussionCard = (props) => {
   return (
     <div className={css(styles.container, hoverEvents && styles.hoverEvents)}>
       <div className={css(styles.topContainer)}>{props.top}</div>
-      <div className={css(infoStyles)}>
+      <div className={css(infoStyles, mobileView && styles.mobileInfoStyles)}>
         {props.info}
         <div className={css(styles.actionContainer)}>{props.action}</div>
       </div>
@@ -36,6 +36,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 5,
     border: "1px solid #FFFFFF",
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(100% - 30px)",
+      padding: 15,
+      border: "solid 1px #F7F7FB",
+      ":hover": {
+        border: "solid 1px #D2D2E6",
+      },
+    },
   },
   hoverEvents: {
     cursor: "pointer",
@@ -54,6 +62,9 @@ const styles = StyleSheet.create({
   infoContainer: {
     // width: "100%",
     paddingLeft: 51,
+  },
+  mobileInfoStyles: {
+    paddingLeft: 0,
   },
   actionContainer: {
     display: "flex",
