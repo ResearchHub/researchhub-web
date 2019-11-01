@@ -326,10 +326,27 @@ const AuthorPage = (props) => {
 
   let saveProfilePicture = async (picture) => {
     let changes = new FormData();
-    changes.append("profile_image", picture);
+    let byteCharacters;
+
+    if (picture.split(",")[0].indexOf("base64") >= 0)
+      byteCharacters = atob(picture.split(",")[1]);
+    else byteCharacters = unescape(picture.split(",")[1]);
+
+    let byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    let byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "image/jpg" });
+
+    changes.append("profile_image", blob);
 
     await dispatch(
-      AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
+      AuthorActions.saveAuthorChanges({
+        changes,
+        authorId: author.id,
+        file: true,
+      })
     );
 
     closeAvatarModal();
