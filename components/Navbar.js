@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import { connect, useDispatch, useStore } from "react-redux";
+import ReactPlaceholder from "react-placeholder";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 // Redux
 import { ModalActions } from "../redux/modals";
@@ -27,6 +29,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import GoogleLoginButton from "./GoogleLoginButton";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import ResearchHubLogo from "./ResearchHubLogo";
 
 const Navbar = (props) => {
   const dispatch = useDispatch();
@@ -48,8 +51,9 @@ const Navbar = (props) => {
   );
 
   const [search, setSearch] = useState("");
-  const [paperResults, setPaperResults] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
+  const [searchFinished, setSearchFinished] = useState(false);
 
   let dropdown;
   let avatar;
@@ -80,7 +84,7 @@ const Navbar = (props) => {
       setShowSearch(false);
     }
 
-    if (searchbar && searchbar.contains(e.target) && paperResults.length > 0) {
+    if (searchbar && searchbar.contains(e.target) && searchResults.length > 0) {
       setShowSearch(true);
     }
 
@@ -138,16 +142,20 @@ const Navbar = (props) => {
     clearTimeout(searchTimeout.current);
 
     let value = searchEvent.target.value;
+    setShowSearch(true);
+    setSearchFinished(false);
     searchTimeout.current = setTimeout(() => {
-      fetch(
-        API.PAPER({ search: value, highlights: ["title"] }),
-        API.GET_CONFIG()
-      )
+      let config = {
+        route: "all",
+      };
+      // TODO: add pagination
+      // Params to the search for pagination would be page
+      fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
-          setPaperResults(resp.results);
-          setShowSearch(true);
+          setSearchResults(resp.results);
+          setSearchFinished(true);
         });
     }, 1500);
 
@@ -155,16 +163,37 @@ const Navbar = (props) => {
   }
 
   let renderSearchResults = () => {
-    let results = paperResults.map((paper, index) => {
+    let results = searchResults.map((result, index) => {
+      // TODO: render differrent cards for different search results
+      console.log(result);
       return (
         <div
           className={css(styles.searchResult)}
           onClick={() => setTimeout(setShowSearch(false), 500)}
         >
-          <PaperEntryCard paper={paper} index={index} />
+          {result.meta.index === "papers" ? (
+            <PaperEntryCard
+              paper={result}
+              index={index}
+              discussionCount={result["discussion_count"]}
+            />
+          ) : null}
         </div>
       );
     });
+
+    if (results.length === 0) {
+      results = (
+        <div className={css(styles.emptyResults)}>
+          <h2 className={css(styles.emptyTitle)}>
+            We can't find what you're looking for! Please try another search.
+          </h2>
+
+          <RHLogo iconStyle={styles.logo} />
+        </div>
+      );
+    }
+
     return results;
   };
   return (
@@ -191,7 +220,15 @@ const Navbar = (props) => {
             className={css(styles.searchDropdown)}
             ref={(ref) => (searchDropdown = ref)}
           >
-            {renderSearchResults()}
+            <ReactPlaceholder
+              ready={searchFinished}
+              showLoadingAnimation
+              type="media"
+              rows={4}
+              color="#efefef"
+            >
+              {renderSearchResults()}
+            </ReactPlaceholder>
           </div>
         )}
       </div>
@@ -303,6 +340,17 @@ const styles = StyleSheet.create({
   tabLink: {
     color: "#000",
     underline: "none",
+  },
+  emptyResults: {
+    textAlign: "center",
+    letterSpacing: 0.7,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  emptyTitle: {
+    fontWeight: 400,
+    fontSize: 22,
   },
   search: {
     // width: 690,
@@ -427,22 +475,22 @@ const styles = StyleSheet.create({
     width: "150%",
     position: "absolute",
     zIndex: 4,
-    bottom: -408,
-    height: 400,
+    top: 60,
+    maxHeight: 400,
     left: "50%",
     transform: "translateX(-50%)",
     boxShadow: "0 5px 10px 0 #ddd",
     background: "#fff",
     overflow: "scroll",
     borderRadius: 8,
-    paddingTop: 5,
-    paddingBottom: 5,
+    padding: 16,
     boxSizing: "border-box",
   },
   searchResult: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    borderBottom: "1px solid rgb(235, 235, 235)",
   },
 });
 
