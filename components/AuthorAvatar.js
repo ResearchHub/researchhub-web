@@ -24,6 +24,7 @@ const AuthorAvatar = (props) => {
         size={size}
         round={true}
         textSizeRatio={textSizeRatio}
+        src={author ? author.profile_image : null}
       />
     );
   }

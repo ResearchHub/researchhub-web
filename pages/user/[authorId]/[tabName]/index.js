@@ -241,7 +241,7 @@ const AuthorPage = (props) => {
     );
   };
 
-  let renderSaveButton = (section) => {
+  let renderSaveButton = (section, { picture }) => {
     let action = null;
 
     if (section === SECTIONS.name) {
@@ -253,6 +253,10 @@ const AuthorPage = (props) => {
       action = () => {
         saveDescription();
         setEditDescription(false);
+      };
+    } else if (section === SECTIONS.picture) {
+      action = () => {
+        saveProfilePicture(picture);
       };
     }
 
@@ -321,6 +325,17 @@ const AuthorPage = (props) => {
     newSocialLinks[social] = e.target.value;
 
     setSocialLinks(newSocialLinks);
+  };
+
+  let saveProfilePicture = async (picture) => {
+    let changes = new FormData();
+    changes.append("profile_image", picture);
+
+    await dispatch(
+      AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
+    );
+
+    closeAvatarModal();
   };
 
   let renderSocialEdit = (social) => {
@@ -559,7 +574,12 @@ const AuthorPage = (props) => {
         title={"Share Author Profile"}
         url={`${hostname}${router.asPath}`}
       />
-      <AvatarUpload isOpen={avatarUploadIsOpen} closeModal={closeAvatarModal} />
+      <AvatarUpload
+        isOpen={avatarUploadIsOpen}
+        closeModal={closeAvatarModal}
+        saveButton={renderSaveButton}
+        section={SECTIONS.picture}
+      />
     </div>
   );
 };
