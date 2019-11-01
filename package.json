@@ -33,6 +33,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-modal": "^3.10.1",
     "react-pdf": "^4.1.0",
+    "react-placeholder": "^3.0.2",
     "react-progressbar": "^15.4.1",
     "react-redux": "^7.1.1",
     "react-select": "^3.0.7",
