@@ -475,6 +475,7 @@ const styles = StyleSheet.create({
     marginLeft: 35,
     "@media only screen and (min-width: 1024px)": {
       marginLeft: 70,
+      marginRight: 16,
     },
   },
   googleLoginButton: {
