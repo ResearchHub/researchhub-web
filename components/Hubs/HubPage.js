@@ -304,7 +304,7 @@ var styles = StyleSheet.create({
     height: 200,
     zIndex: 3,
     "@media only screen and (max-width: 577px)": {
-      height: 489,
+      height: 300,
       justifyContent: "flex-start",
     },
   },
@@ -320,8 +320,8 @@ var styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     "@media only screen and (max-width: 577px)": {
-      height: 489,
       position: "relative",
+      alignItems: "unset",
     },
   },
   bannerOverlay: {
@@ -355,8 +355,8 @@ var styles = StyleSheet.create({
       fontSize: 40,
     },
     "@media only screen and (max-width: 577px)": {
-      fontSize: 33,
-      marginTop: 50,
+      fontSize: 25,
+      marginTop: 16,
       width: 300,
     },
     "@media only screen and (max-width: 321px)": {
