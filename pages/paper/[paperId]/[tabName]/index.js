@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     fontSize: 33,
     marginBottom: 10,
     position: "relative",
-    "@media only screen and (max-width: 856px)": {
+    "@media only screen and (max-width: 760px)": {
       marginTop: 50,
       fontSize: 28,
     },
@@ -281,13 +281,13 @@ const styles = StyleSheet.create({
     width: 70,
     left: -80,
     top: 15,
-    "@media only screen and (max-width: 856px)": {
+    "@media only screen and (max-width: 760px)": {
       display: "none",
     },
   },
   mobileVoting: {
     display: "none",
-    "@media only screen and (max-width: 856px)": {
+    "@media only screen and (max-width: 760px)": {
       display: "unset",
       position: "absolute",
       top: 30,
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   actionButtons: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 856px)": {
+    "@media only screen and (max-width: 760px)": {
       position: "absolute",
       top: 30,
       right: 0,
