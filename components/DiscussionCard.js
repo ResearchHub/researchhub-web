@@ -12,7 +12,13 @@ const DiscussionCard = (props) => {
   }
 
   return (
-    <div className={css(styles.container, hoverEvents && styles.hoverEvents)}>
+    <div
+      className={css(
+        styles.container,
+        hoverEvents && styles.hoverEvents,
+        mobileView && styles.mobileContainer
+      )}
+    >
       <div className={css(styles.topContainer)}>{props.top}</div>
       <div className={css(infoStyles, mobileView && styles.mobileInfoStyles)}>
         {props.info}
@@ -45,6 +51,18 @@ const styles = StyleSheet.create({
       },
     },
   },
+  mobileContainer: {
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(100% - 40px)",
+      padding: 20,
+      border: "solid 1px #F7F7FB",
+      backgroundColor: "#FFF",
+      marginBottom: 10,
+      ":hover": {
+        border: "solid 1px #D2D2E6",
+      },
+    },
+  },
   hoverEvents: {
     cursor: "pointer",
     ":hover": {
@@ -72,6 +90,9 @@ const styles = StyleSheet.create({
     // color: colors.GREY(1),
     color: "#000",
     fontSize: 14,
+    "@media only screen and (max-width: 415px)": {
+      justifyContent: "space-between",
+    },
   },
 });
 

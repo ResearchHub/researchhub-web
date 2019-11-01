@@ -8,6 +8,7 @@ import { Text, Block } from "slate";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
+import Head from "~/components/Head";
 import TextEditor from "~/components/TextEditor";
 
 // Redux
@@ -41,7 +42,7 @@ class PaperEditHistory extends React.Component {
     let editorState = convertToEditorValue(edit.summary);
 
     if (edit.previous) {
-      previousState = convertToEditorValue(edit.previous__summary);
+      previousState = convertToEditorValue(edit.previousSummary);
       editorState = this.diffVersions(editorState, previousState);
     }
 
@@ -60,7 +61,7 @@ class PaperEditHistory extends React.Component {
       let editorState = convertToEditorValue(edit.summary);
 
       if (edit.previous) {
-        previousState = convertToEditorValue(edit.previous__summary);
+        previousState = convertToEditorValue(edit.previousSummary);
         editorState = this.diffVersions(editorState, previousState);
       }
 
@@ -207,17 +208,21 @@ class PaperEditHistory extends React.Component {
           onClick={() => this.changeEditView(index, edit)}
         >
           <div className={css(styles.date)}>
-            {moment(edit.approved_at).format("MMM Do YYYY, h:mm A")}
+            {moment(edit.approvedDate).format("MMM Do YYYY, h:mm A")}
             {index === 0 && <span>{` (Current Ver.)`}</span>}
           </div>
           <div className={css(styles.user)}>
-            {`${edit.proposed_by.first_name} ${edit.proposed_by.last_name}`}
+            {`${edit.proposedBy.firstName} ${edit.proposedBy.lastName}`}
           </div>
         </div>
       );
     });
     return (
       <ComponentWrapper>
+        <Head
+          title={paper.title}
+          description={`${paper.title} summary edit history`}
+        />
         <div className={css(styles.container)}>
           <Link
             href={"/paper/[paperId]/[tabName]"}

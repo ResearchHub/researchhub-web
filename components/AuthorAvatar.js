@@ -16,11 +16,14 @@ const AuthorAvatar = (props) => {
   } = props;
 
   function renderAvatar() {
-    let authorName = author ? `${author.first_name} ${author.last_name}` : null;
+    let authorName =
+      author && typeof author === "object"
+        ? `${author.first_name} ${author.last_name}`
+        : null;
     return (
       <Avatar
         className={avatarClassName}
-        name={author ? authorName : name}
+        name={name || authorName}
         size={size}
         round={true}
         textSizeRatio={textSizeRatio}
@@ -30,7 +33,7 @@ const AuthorAvatar = (props) => {
   }
   return (
     <div className={css(styles.avatar)}>
-      {disableLink ? (
+      {disableLink || !author.id ? (
         renderAvatar()
       ) : (
         <Link

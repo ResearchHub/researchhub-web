@@ -29,6 +29,7 @@ const PaperEntryCard = ({
   hubName,
   onUpvote,
   onDownvote,
+  discussionCount,
   mobileView,
 }) => {
   const {
@@ -44,6 +45,13 @@ const PaperEntryCard = ({
   } = paper;
   let selected = null;
   let vote_type = 0;
+  let discussion_count = null;
+
+  if (discussionCount !== undefined) {
+    discussion_count = discussionCount;
+  } else if (discussion) {
+    discussion_count = discussion.count;
+  }
 
   if (user_vote) {
     vote_type = user_vote.vote_type;

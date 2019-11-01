@@ -92,12 +92,14 @@ const VoteWidget = (props) => {
             <DownvoteButton
               selected={downvoteSelected}
               disabled={downvoteDisabled}
+              onClick={onDownvoteClick}
               horizontalView={horizontalView}
             />
           ) : (
             <UpvoteButton
               selected={upvoteSelected}
               disabled={upvoteDisabled}
+              onClick={onUpvoteClick}
             />
           )}
         </PermissionNotificationWrapper>
@@ -110,12 +112,14 @@ const VoteWidget = (props) => {
             <UpvoteButton
               selected={upvoteSelected}
               disabled={upvoteDisabled}
+              onClick={onUpvoteClick}
               horizontalView={horizontalView}
             />
           ) : (
             <DownvoteButton
               selected={downvoteSelected}
               disabled={downvoteDisabled}
+              onClick={onDownvoteClick}
             />
           )}
         </PermissionNotificationWrapper>
@@ -202,6 +206,9 @@ const styles = StyleSheet.create({
   },
   horizontalViewButton: {
     fontSize: 25,
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 23,
+    },
   },
   pillContainer: {
     background: voteWidgetColors.BACKGROUND,
@@ -229,10 +236,10 @@ const styles = StyleSheet.create({
     cursor: "not-allowed",
   },
   marginLeft: {
-    marginLeft: 5,
+    marginLeft: 8,
   },
   marginRight: {
-    marginRight: 5,
+    marginRight: 8,
   },
 });
 
