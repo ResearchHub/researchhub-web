@@ -18,6 +18,7 @@ import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ShareModal from "~/components/ShareModal";
 import ActionButton from "~/components/ActionButton";
+import AvatarUpload from "~/components/AvatarUpload";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -38,6 +39,8 @@ const AuthorPage = (props) => {
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editTwitter, setEditTwitter] = useState(false);
+  const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
+  const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
 
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
@@ -54,6 +57,7 @@ const AuthorPage = (props) => {
     facebook: "facebook",
     linkedin: "linkedin",
     twitter: "twitter",
+    picture: "picture",
   };
 
   /**
@@ -145,6 +149,8 @@ const AuthorPage = (props) => {
       setHoverName(true);
     } else if (section === SECTIONS.description) {
       setHoverDescription(true);
+    } else if (section === SECTIONS.picture) {
+      setHoverProfilePicture(true);
     }
   };
 
@@ -153,6 +159,8 @@ const AuthorPage = (props) => {
       setHoverName(false);
     } else if (section === SECTIONS.description) {
       setHoverDescription(false);
+    } else if (section === SECTIONS.picture) {
+      setHoverProfilePicture(false);
     }
   };
 
@@ -336,11 +344,28 @@ const AuthorPage = (props) => {
     );
   };
 
+  let openAvatarModal = () => {
+    setAvatarUploadIsOpen(true);
+  };
+
+  let closeAvatarModal = () => {
+    setAvatarUploadIsOpen(false);
+  };
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.profileContainer)}>
-          <AuthorAvatar author={author} disableLink={true} size={80} />
+          <div
+            className={css(allowEdit && styles.avatarContainer)}
+            onClick={allowEdit && openAvatarModal}
+            onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
+            onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
+          >
+            <AuthorAvatar author={author} disableLink={true} size={80} />
+            {allowEdit && hoverProfilePicture && (
+              <div className={css(styles.profilePictureHover)}>Update</div>
+            )}
+          </div>
           <div className={css(styles.profileInfo)}>
             {!editName ? (
               <div
@@ -534,6 +559,7 @@ const AuthorPage = (props) => {
         title={"Share Author Profile"}
         url={`${hostname}${router.asPath}`}
       />
+      <AvatarUpload isOpen={avatarUploadIsOpen} closeModal={closeAvatarModal} />
     </div>
   );
 };
@@ -775,6 +801,27 @@ const styles = StyleSheet.create({
       textDecoration: "underline",
       opacity: 1,
     },
+  },
+  avatarContainer: {
+    width: 80,
+    height: 80,
+    cursor: "pointer",
+    position: "relative",
+  },
+  profilePictureHover: {
+    width: 80,
+    height: 40,
+    borderRadius: "0 0 100px 100px",
+    display: "flex",
+    justifyContent: "center",
+    paddingTop: 5,
+    boxSizing: "border-box",
+    position: "absolute",
+    background: "rgba(0, 0, 0, .3)",
+    color: "#fff",
+    bottom: 0,
+    // left: '-50%',
+    // transform: "translateX(-50%)",
   },
 });
 

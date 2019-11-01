@@ -3870,6 +3870,11 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.npmjs.org/kind-of/-/kind-of-6.0.2.tgz#01146b36a6218e64e58f3a8d66de5d7fc6f6d051"
   integrity sha512-s5kLOcnH0XqDO+FvuaLX8DDjZ18CGFk7VygH40QoKPUQhW4e2rvM0rwUq0t8IQDOwYSeLK01U90OjzBTme2QqA==
 
+konva@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.npmjs.org/konva/-/konva-2.5.1.tgz#cca611a9522e831e54cf57c508a1aed3f0ceac25"
+  integrity sha512-YdHEWqmbWPieqIZuLx7JFGm9Ui08hSUaSJ2k2Ml8o5giFgJ0WmxAS0DPXIM+Ty2ADRagOHZfXSJ/skwYqqlwgQ==
+
 launch-editor@2.2.1:
   version "2.2.1"
   resolved "https://registry.npmjs.org/launch-editor/-/launch-editor-2.2.1.tgz#871b5a3ee39d6680fcc26d37930b6eeda89db0ca"
@@ -5294,12 +5299,12 @@ react-autosize-textarea@^7.0.0:
     line-height "^0.3.1"
     prop-types "^15.5.6"
 
-react-avatar-editor@^12.0.0-beta.0:
-  version "12.0.0-beta.0"
-  resolved "https://registry.npmjs.org/react-avatar-editor/-/react-avatar-editor-12.0.0-beta.0.tgz#e19d8ab1c5bcd480de090ff97cd95dcdaa52d964"
-  integrity sha512-7vrkqjmXDCZuBRpRsrldeN0/BAW1/rx/k+5WE1AhvQMMGXYGwy1GY3YF97okzgBYwZV3OocGyx8oauOcTz2xAw==
+react-avatar-edit@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.npmjs.org/react-avatar-edit/-/react-avatar-edit-0.8.3.tgz#0ebf21391328fc255429bdfbc782f795827109bf"
+  integrity sha512-QEedh6DjDCSI7AUsUHHtfhxApCWC5hJAoywxUA5PtUdw03iIjEurgVqPOIt1UBHhU/Zk/9amElRF3oepN9JZSg==
   dependencies:
-    react-draggable "^4.1.0"
+    konva "2.5.1"
 
 react-avatar@^3.7.0:
   version "3.7.0"
@@ -5340,14 +5345,6 @@ react-dom@^16.10.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.16.1"
-
-react-draggable@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.npmjs.org/react-draggable/-/react-draggable-4.1.0.tgz#e1c5b774001e32f0bff397254e1e9d5448ac92a4"
-  integrity sha512-Or/qe70cfymshqoC8Lsp0ukTzijJObehb7Vfl7tb5JRxoV+b6PDkOGoqYaWBzZ59k9dH/bwraLGsnlW78/3vrA==
-  dependencies:
-    classnames "^2.2.5"
-    prop-types "^15.6.0"
 
 react-dropzone@^10.1.9:
   version "10.1.9"
