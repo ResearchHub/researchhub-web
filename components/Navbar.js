@@ -226,6 +226,10 @@ const Navbar = (props) => {
     } else {
       Router.push(route);
     }
+    if (props.modals.openUploadPaperModal) {
+      props.openUploadPaperModal(false);
+      document.body.style.overflow = "scroll";
+    }
     toggleSideMenu();
   }
 
@@ -254,6 +258,14 @@ const Navbar = (props) => {
   function addPaperModal() {
     props.openUploadPaperModal(true);
     setSideMenu(!sideMenu);
+  }
+
+  function navigateHome() {
+    Router.push("/");
+    if (props.modals.openUploadPaperModal) {
+      props.openUploadPaperModal(false);
+      document.body.style.overflow = "scroll";
+    }
   }
 
   const burgerMenuStyle = {
@@ -316,11 +328,9 @@ const Navbar = (props) => {
         <UploadPaperModal />
         <LoginModal />
         <InviteToHubModal />
-        <Link href={"/"}>
-          <div className={css(styles.logoContainer)}>
-            <RHLogo iconStyle={styles.logo} />
-          </div>
-        </Link>
+        <div className={css(styles.logoContainer)} onClick={navigateHome}>
+          <RHLogo iconStyle={styles.logo} />
+        </div>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
         <div className={css(styles.search)}>
           <input
