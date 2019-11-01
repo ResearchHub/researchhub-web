@@ -183,7 +183,6 @@ const Navbar = (props) => {
   let renderSearchResults = () => {
     let results = searchResults.map((result, index) => {
       // TODO: render differrent cards for different search results
-      console.log(result);
       return (
         <div
           className={css(styles.searchResult)}
