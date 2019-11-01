@@ -15,7 +15,7 @@ export function handleCatch(err) {
 export function transformVote(vote) {
   if (!doesNotExist(vote) && vote !== "null") {
     return {
-      itemId: vote.item,
+      itemId: vote.item || vote.paper,
       voteType: transformVoteType(vote.vote_type),
       userId: vote.created_by,
       createdDate: transformDate(vote.created_date),
