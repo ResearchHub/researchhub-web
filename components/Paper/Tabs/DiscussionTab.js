@@ -83,7 +83,7 @@ const DiscussionTab = (props) => {
 
   const addDiscussion = () => {
     props.showMessage({ show: false });
-    openAddDiscussionModal();
+    props.openAddDiscussionModal(true);
   };
 
   const cancel = () => {
@@ -181,13 +181,13 @@ const DiscussionTab = (props) => {
             </div>
           </span>
         )}
-        <PermissionNotificationWrapper
-          onClick={addDiscussion}
-          modalMessage="create a discussion thread"
-          permissionKey="CreateDiscussionThread"
-          loginRequired={true}
-        >
-          <Ripples>
+        <Ripples>
+          <PermissionNotificationWrapper
+            onClick={addDiscussion}
+            modalMessage="create a discussion thread"
+            permissionKey="CreateDiscussionThread"
+            loginRequired={true}
+          >
             <button
               className={css(
                 styles.addDiscussionButton,
@@ -201,8 +201,8 @@ const DiscussionTab = (props) => {
               )}
               Add Discussion
             </button>
-          </Ripples>
-        </PermissionNotificationWrapper>
+          </PermissionNotificationWrapper>
+        </Ripples>
       </div>
     );
   };

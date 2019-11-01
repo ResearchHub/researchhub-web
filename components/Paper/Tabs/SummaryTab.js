@@ -208,9 +208,9 @@ class SummaryTab extends React.Component {
                   permissionKey="ProposeSummaryEdit"
                   loginRequired={true}
                 >
-                  <Ripples>
-                    <button className={css(styles.button)}>Add Summary</button>
-                  </Ripples>
+                  {/* <Ripples> */}
+                  <button className={css(styles.button)}>Add Summary</button>
+                  {/* </Ripples> */}
                 </PermissionNotificationWrapper>
               </div>
             )}
