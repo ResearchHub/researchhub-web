@@ -23,7 +23,14 @@ import {
 // Redux
 import * as VoteActions from "~/redux/vote/actions";
 
-const PaperEntryCard = ({ paper, index, hubName, onUpvote, onDownvote }) => {
+const PaperEntryCard = ({
+  paper,
+  index,
+  hubName,
+  onUpvote,
+  onDownvote,
+  discussionCount,
+}) => {
   const {
     id,
     authors,
@@ -37,6 +44,13 @@ const PaperEntryCard = ({ paper, index, hubName, onUpvote, onDownvote }) => {
   } = paper;
   let selected = null;
   let vote_type = 0;
+  let discussion_count = null;
+
+  if (discussionCount !== undefined) {
+    discussion_count = discussionCount;
+  } else if (discussion) {
+    discussion_count = discussion.count;
+  }
 
   if (user_vote) {
     vote_type = user_vote.vote_type;
@@ -100,15 +114,22 @@ const PaperEntryCard = ({ paper, index, hubName, onUpvote, onDownvote }) => {
                 )}
               >
                 {authors.length > 0 &&
-                  authors.map((author) => (
-                    <AuthorAvatar
-                      key={`author_${author.id}_${id}`}
-                      avatarClassName={css(styles.avatar)}
-                      size={30}
-                      textSizeRatio={2.5}
-                      author={author}
-                    />
-                  ))}
+                  authors.map((author) => {
+                    let authorName =
+                      author && typeof author === "object"
+                        ? `${author.first_name} ${author.last_name}`
+                        : author;
+                    return (
+                      <AuthorAvatar
+                        key={`author_${author.id}_${id}`}
+                        avatarClassName={css(styles.avatar)}
+                        size={30}
+                        textSizeRatio={2.5}
+                        author={author}
+                        name={authorName}
+                      />
+                    );
+                  })}
               </span>
               <Link
                 href={"/paper/[paperId]/[tabName]"}
@@ -118,15 +139,21 @@ const PaperEntryCard = ({ paper, index, hubName, onUpvote, onDownvote }) => {
                   <span className={css(styles.icon)} id={"discIcon"}>
                     {icons.chat}
                   </span>
-                  <span className={css(styles.dicussionCount)} id={"discCount"}>
-                    {`${discussion.count}`}{" "}
-                    {discussion.count === 1 ? "discussion" : "discussions"}
-                  </span>
+                  {discussion_count !== null ? (
+                    <span
+                      className={css(styles.dicussionCount)}
+                      id={"discCount"}
+                    >
+                      {`${discussion_count}`}{" "}
+                      {discussion_count === 1 ? "discussion" : "discussions"}
+                    </span>
+                  ) : null}
                 </div>
               </Link>
             </div>
             <div className={css(styles.tags, styles.right)}>
-              {hubs.length > 0 &&
+              {hubs &&
+                hubs.length > 0 &&
                 hubs.map((tag, index) => (
                   <HubTag key={`hub_${index}`} tag={tag} hubName={hubName} />
                 ))}
