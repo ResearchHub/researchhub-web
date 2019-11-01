@@ -277,6 +277,9 @@ const styles = StyleSheet.create({
   readLabel: {
     fontSize: 14,
     fontFamily: "Roboto",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   readArrow: {
     fontSize: 10,
@@ -290,8 +293,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    paddingBottom: 16,
+    paddingBottom: 20,
     color: colors.BLACK(1),
+    textOverflow: "eclipsis",
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 21,
+    },
   },
   link: {
     textDecoration: "none",

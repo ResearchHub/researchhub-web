@@ -2,6 +2,7 @@ import Link from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
+import Ripples from "react-ripples";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -207,7 +208,9 @@ class SummaryTab extends React.Component {
                   permissionKey="ProposeSummaryEdit"
                   loginRequired={true}
                 >
-                  <button className={css(styles.button)}>Add Summary</button>
+                  <Ripples>
+                    <button className={css(styles.button)}>Add Summary</button>
+                  </Ripples>
                 </PermissionNotificationWrapper>
               </div>
             )}
@@ -248,10 +251,19 @@ var styles = StyleSheet.create({
     color: colors.BLACK(1),
     fontSize: 20,
     fontWeight: 500,
+    textAlign: "center",
+    "@media only screen and (max-width: 415px)": {
+      width: 280,
+      fontSize: 16,
+    },
   },
   text: {
     fontSize: 16,
     color: colors.BLACK(0.8),
+    marginBottom: 24,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   summaryActions: {
     width: 280,
@@ -283,7 +295,6 @@ var styles = StyleSheet.create({
     padding: "8px 32px",
     background: "#fff",
     color: colors.PURPLE(1),
-    marginTop: 24,
     fontSize: 16,
     borderRadius: 4,
     height: 45,
@@ -293,6 +304,10 @@ var styles = StyleSheet.create({
       borderColor: "#FFF",
       color: "#FFF",
       backgroundColor: colors.PURPLE(1),
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: "6px 24px",
+      fontSize: 12,
     },
   },
   pencilIcon: {
