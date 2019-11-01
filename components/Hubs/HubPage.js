@@ -482,11 +482,9 @@ var styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 1149px)": {
       width: 150,
-      // height: 30,
     },
     "@media only screen and (max-width: 895px)": {
       width: 125,
-      // height: 20,
     },
     "@media only screen and (max-width: 665px)": {
       width: "100%",
@@ -494,7 +492,6 @@ var styles = StyleSheet.create({
       margin: "10px 0px 10px 0px",
     },
     "@media only screen and (max-width: 375px)": {
-      // margin: 0,
       width: 345,
     },
     "@media only screen and (max-width: 321px)": {
@@ -533,6 +530,10 @@ var styles = StyleSheet.create({
       paddingLeft: 40,
       paddingRight: 40,
       width: "calc(100% - 80px)",
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: 0,
+      width: "100%",
     },
   },
   blur: {

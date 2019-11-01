@@ -151,6 +151,7 @@ class AddAuthorModal extends React.Component {
                 id={"first_name"}
                 onChange={this.handleInputChange}
                 containerStyle={styles.halfWidth}
+                labelStyle={styles.labelStyle}
               />
               <FormInput
                 label={"Last Name"}
@@ -160,6 +161,7 @@ class AddAuthorModal extends React.Component {
                 id={"last_name"}
                 onChange={this.handleInputChange}
                 containerStyle={styles.lastName}
+                labelStyle={styles.labelStyle}
               />
             </div>
             <FormInput
@@ -170,6 +172,7 @@ class AddAuthorModal extends React.Component {
               id={"last_name"}
               onChange={this.handleInputChange}
               containerStyle={styles.mobileLastName}
+              labelStyle={styles.labelStyle}
             />
             {/* <FormInput
               label={"University Affiliation"}
@@ -187,6 +190,7 @@ class AddAuthorModal extends React.Component {
               type={"email"}
               onChange={this.handleInputChange}
               containerStyle={styles.emailInput}
+              labelStyle={styles.labelStyle}
             />
 
             <div className={css(styles.socialMediaContainer)}>
@@ -218,6 +222,7 @@ class AddAuthorModal extends React.Component {
                   containerStyle={styles.inputStyle}
                   iconStyles={styles.fb}
                   icon={"/static/icons/fb.png"}
+                  labelStyle={styles.labelStyle}
                 />
                 <FormInput
                   value={social_media.linked_in}
@@ -228,6 +233,7 @@ class AddAuthorModal extends React.Component {
                   containerStyle={styles.inputStyle}
                   iconStyles={styles.icon}
                   icon={"/static/icons/linked-in.png"}
+                  labelStyle={styles.labelStyle}
                 />
                 <FormInput
                   value={social_media.web}
@@ -238,6 +244,7 @@ class AddAuthorModal extends React.Component {
                   containerStyle={styles.inputStyle}
                   iconStyles={styles.icon}
                   icon={"/static/icons/web.png"}
+                  labelStyle={styles.labelStyle}
                 />
               </span>
             </div>
@@ -471,6 +478,32 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 5,
     marginTop: 5,
+    "@media only screen and (max-width: 665px)": {
+      width: 360,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+    //   "@media only screen and (max-width: 557px)": {
+    //     fontSize: 14,
+    //   },
+    //   "@media only screen and (max-width: 410px)": {
+    //     fontSize: 12,
+    //   },
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   fb: {
     width: 10,
