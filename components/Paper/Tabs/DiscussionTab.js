@@ -481,11 +481,9 @@ var styles = StyleSheet.create({
   componentWrapperStyles: {
     "@media only screen and (max-width: 415px)": {
       backgroundColor: "#FCFCFC",
-    },
-    "@media only screen and (min-width: 300px)": {
       width: "100%",
-      paddingRight: 0,
       paddingLeft: 0,
+      paddingRight: 0,
     },
   },
 });
