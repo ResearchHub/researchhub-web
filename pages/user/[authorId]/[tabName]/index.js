@@ -44,6 +44,10 @@ const AuthorPage = (props) => {
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
 
+  let facebookRef;
+  let linkedinRef;
+  let twitterRef;
+
   const SECTIONS = {
     name: "name",
     description: "description",
@@ -51,6 +55,29 @@ const AuthorPage = (props) => {
     linkedin: "linkedin",
     twitter: "twitter",
   };
+
+  /**
+   * When we click anywhere outside of the dropdown, close it
+   * @param { Event } e -- javascript event
+   */
+  const handleOutsideClick = (e) => {
+    if (facebookRef && !facebookRef.contains(e.target)) {
+      setEditFacebook(false);
+    }
+    if (twitterRef && !twitterRef.contains(e.target)) {
+      setEditTwitter(false);
+    }
+    if (linkedinRef && !linkedinRef.contains(e.target)) {
+      setEditLinkedin(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  });
 
   async function fetchAuthoredPapers() {
     await dispatch(
@@ -351,8 +378,17 @@ const AuthorPage = (props) => {
                 onMouseEnter={() => onMouseEnter(SECTIONS.description)}
                 onMouseLeave={() => onMouseLeave(SECTIONS.description)}
               >
+                {!author.description && allowEdit && (
+                  <span
+                    className={css(styles.addDescriptionText)}
+                    onClick={() => onEditToggle(SECTIONS.description)}
+                  >
+                    Add description
+                  </span>
+                )}
                 {author.description}
                 {hoverDescription &&
+                  author.description &&
                   allowEdit &&
                   renderEditButton(() => {
                     setHoverDescription(false);
@@ -406,6 +442,7 @@ const AuthorPage = (props) => {
                   !author.linkedin && styles.noSocial,
                   editLinkedin && styles.fullOpacity
                 )}
+                ref={(ref) => (linkedinRef = ref)}
               >
                 <div
                   className={css(styles.socialMedia, styles.linkedin)}
@@ -435,6 +472,7 @@ const AuthorPage = (props) => {
                   !author.twitter && styles.noSocial,
                   editTwitter && styles.fullOpacity
                 )}
+                ref={(ref) => (twitterRef = ref)}
               >
                 <div
                   className={css(styles.socialMedia, styles.twitter)}
@@ -464,6 +502,7 @@ const AuthorPage = (props) => {
                   !author.facebook && styles.noSocial,
                   editFacebook && styles.fullOpacity
                 )}
+                ref={(ref) => (facebookRef = ref)}
               >
                 <div
                   className={css(styles.socialMedia, styles.facebook)}
@@ -659,8 +698,8 @@ const styles = StyleSheet.create({
       borderColor: "#D2D2E6",
     },
 
-    padding: 15,
-    fontWeight: "400",
+    padding: 5,
+    fontWeight: "500",
     color: "#232038",
     borderRadius: 2,
   },
@@ -726,6 +765,15 @@ const styles = StyleSheet.create({
     width: 20,
     ":hover": {
       background: "#3E43E8",
+    },
+  },
+  addDescriptionText: {
+    cursor: "pointer",
+    opacity: 0.5,
+
+    ":hover": {
+      textDecoration: "underline",
+      opacity: 1,
     },
   },
 });
