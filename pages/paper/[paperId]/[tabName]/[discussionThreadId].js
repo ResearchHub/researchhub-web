@@ -10,8 +10,6 @@ import Head from "~/components/Head";
 import { Comment } from "~/components/DiscussionComment";
 import { CommentEditor } from "~/components/DiscussionCommentEditor";
 import Thread from "~/components/DiscussionPageThread";
-import InfiniteScroll from "react-infinite-scroller";
-import { connect } from "react-redux";
 
 // components
 import Loader from "~/components/Loader/Loader";
