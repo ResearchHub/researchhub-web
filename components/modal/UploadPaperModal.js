@@ -38,12 +38,42 @@ class UploadPaperModal extends React.Component {
       uploadedPaper: {},
       transition: false,
       papers: [],
+      mobileView: false,
     };
 
     this.state = {
       ...this.initialState,
     };
   }
+
+  componentDidMount() {
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0;
+      this.updateDimensions();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
+  updateDimensions = () => {
+    if (window.innerWidth < 436) {
+      this.setState({
+        mobileView: true,
+      });
+    } else {
+      this.setState({
+        mobileView: false,
+      });
+    }
+  };
 
   /**
    * closes the modal on button click
@@ -54,6 +84,7 @@ class UploadPaperModal extends React.Component {
       ...this.initialState,
     });
     paperActions.removePaperFromState();
+    this.enableParentScroll();
     modalActions.openUploadPaperModal(false);
   };
 
@@ -102,6 +133,7 @@ class UploadPaperModal extends React.Component {
       uploadView,
       selectedPaper,
       uploadFinish,
+      mobileView,
     } = this.state;
 
     if (search === "") {
@@ -142,6 +174,7 @@ class UploadPaperModal extends React.Component {
       }
     );
   };
+  f;
 
   /**
    * highlights the paper entry that is chosen by the user
@@ -190,6 +223,35 @@ class UploadPaperModal extends React.Component {
     });
   };
 
+  navigateToPaperUploadInfo = () => {
+    let title = this.state.search;
+    Router.push({
+      pathname: "/paper/upload/info",
+      query: { uploadPaperTitle: title },
+    });
+    this.setState(
+      {
+        ...this.initialState,
+      },
+      () => {
+        this.enableParentScroll();
+        this.props.modalActions.openUploadPaperModal(false);
+      }
+    );
+  };
+
+  /**
+   * prevents scrolling of parent component when modal is open
+   * & renables scrolling of parent component when modal is closed
+   */
+  disableParentScroll = () => {
+    document.body.style.overflow = "hidden";
+  };
+
+  enableParentScroll = () => {
+    document.body.style.overflow = "scroll";
+  };
+
   render() {
     let {
       search,
@@ -201,6 +263,7 @@ class UploadPaperModal extends React.Component {
       uploadView,
       uploading,
       uploadFinish,
+      mobileView,
     } = this.state;
     let { modals } = this.props;
 
@@ -224,7 +287,8 @@ class UploadPaperModal extends React.Component {
         onRequestClose={this.closeModal}
         shouldCloseOnOverlayClick={true}
         className={css(styles.modal)}
-        style={overlayStyles}
+        style={mobileView ? mobileOverlayStyles : overlayStyles}
+        onAfterOpen={this.disableParentScroll}
       >
         <div
           className={css(styles.modalContent, transition && styles.transition)}
@@ -264,12 +328,17 @@ class UploadPaperModal extends React.Component {
             label={"Paper Title"}
             placeholder={"Enter paper title or DOI"}
             id={"search"}
+            containerStyle={styles.containerStyle}
+            labelStyle={styles.labelStyle}
+            inputStyle={styles.inputStyle}
           />
           {uploadView ? (
             <div className={css(styles.uploadContainer)}>
               <div className={css(styles.loadingMessage, styles.text)}>
                 {uploadFinish &&
-                  "We're almost done! Click 'continue' to add more information"}
+                  `We're almost done! ${
+                    mobileView ? "\n" : ""
+                  } Click 'continue' to add more information`}
               </div>
               <DragNDrop
                 pasteUrl={!uploadFinish}
@@ -294,22 +363,19 @@ class UploadPaperModal extends React.Component {
               </div>
             </div>
           )}
-          <Button
-            label={uploadView ? "Continue" : "Upload different paper"}
-            customButtonStyle={styles.button}
-            customLabelStyle={styles.label}
-            disabled={uploadView && !uploadFinish}
-            onClick={!uploadView && this.toggleUploadView}
-            isLink={
-              uploadView
-                ? {
-                    href: "/paper/upload/info",
-                    linkAs: "/paper/upload/info",
-                    query: { uploadPaperTitle: this.state.search },
-                  }
-                : null
-            }
-          />
+          <span className={css(styles.buttonContainer)}>
+            <Button
+              label={uploadView ? "Continue" : "Upload different paper"}
+              customButtonStyle={styles.button}
+              customLabelStyle={styles.label}
+              disabled={uploadView && !uploadFinish}
+              onClick={
+                uploadView
+                  ? this.navigateToPaperUploadInfo
+                  : this.toggleUploadView
+              }
+            />
+          </span>
         </div>
       </Modal>
     );
@@ -329,6 +395,19 @@ const overlayStyles = {
   },
 };
 
+const mobileOverlayStyles = {
+  overlay: {
+    position: "fixed",
+    top: 80,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.2)",
+    zIndex: "11",
+    borderRadius: 5,
+  },
+};
+
 const styles = StyleSheet.create({
   modal: {
     background: "#fff",
@@ -339,6 +418,16 @@ const styles = StyleSheet.create({
     transform: "translate(-50%, -50%)",
     display: "flex",
     flexDirection: "column",
+    "@media only screen and (max-width: 665px)": {
+      width: "90%",
+    },
+    "@media only screen and (max-width: 436px)": {
+      width: "100%",
+      height: "100%",
+      top: 0,
+      left: 0,
+      transform: "unset",
+    },
   },
   modalCloseButton: {
     height: 12,
@@ -357,6 +446,9 @@ const styles = StyleSheet.create({
     padding: 50,
     transition: "all ease-in-out 0.3s",
     opacity: 1,
+    "@media only screen and (max-width: 415px)": {
+      padding: "50px 0px 0px 0px",
+    },
   },
   titleContainer: {
     display: "flex",
@@ -371,6 +463,21 @@ const styles = StyleSheet.create({
     width: 426,
     fontSize: 26,
     color: "#232038",
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 21,
+      width: 360,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 18,
+      width: 338,
+      height: "unset",
+      textAlign: "center",
+      marginTop: 10,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 16,
+      width: 270,
+    },
   },
   subtitle: {
     marginTop: 10,
@@ -379,6 +486,42 @@ const styles = StyleSheet.create({
     width: 484,
     fontWeight: "400",
     color: "#4f4d5f",
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 12,
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+      width: 338,
+      height: "unset",
+      textAlign: "center",
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 11,
+      width: 270,
+    },
+  },
+  containerStyle: {
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+      marginBottom: 5,
+    },
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 13,
+    },
+  },
+  inputStyle: {
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 13,
+    },
   },
   text: {
     fontFamily: "Roboto",
@@ -389,6 +532,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+    overflowY: "auto",
   },
   uploadContainer: {
     display: "flex",
@@ -397,6 +541,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 346,
+    "@media only screen and (max-width: 415px)": {
+      height: 300,
+    },
+    "@media only screen and (max-width: 376px)": {
+      height: 270,
+    },
+    "@media only screen and (max-width: 321px)": {
+      height: 200,
+    },
   },
   loader: {
     position: "absolute",
@@ -409,13 +562,38 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#4f4d5f",
     marginBottom: 20,
+    textAlign: "center",
+    whiteSpace: "pre-wrap",
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 11,
+      width: 270,
+    },
   },
   searchResults: {
-    overflowY: "scroll",
+    overflowY: "auto",
     width: 526,
     maxHeight: 300,
     paddingTop: 10,
     position: "relative",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 376px)": {
+      paddingTop: 0,
+    },
+    "@media only screen and (max-width: 321px)": {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      width: 280,
+      maxHeight: 130,
+    },
   },
   closeButton: {
     height: 12,
@@ -439,19 +617,44 @@ const styles = StyleSheet.create({
     ":hover": {
       color: "#232038",
     },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   backButton: {
     height: 12,
     weight: 16,
     marginRight: 12,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  buttonContainer: {
+    marginTop: 10,
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      backgroundColor: "#FFF",
+      display: "flex",
+      justifyContent: "center",
+      position: "sticky",
+      bottom: 0,
+      paddingBottom: 20,
+    },
   },
   button: {
     width: 258,
     height: 55,
-    marginTop: 20,
+    // marginTop: 10,
+    "@media only screen and (max-width: 321px)": {
+      width: 220,
+      height: 45,
+    },
   },
   label: {
     fontSize: 16,
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   transition: {
     opacity: 0,

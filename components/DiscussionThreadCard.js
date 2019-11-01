@@ -25,7 +25,7 @@ const DiscussionThreadCard = (props) => {
   const router = useRouter();
   const { paperId } = router.query;
 
-  const { hostname, hoverEvents, path } = props;
+  const { hostname, hoverEvents, path, mobileView } = props;
 
   const data = getNestedValue(props, ["data"]);
 
@@ -85,44 +85,104 @@ const DiscussionThreadCard = (props) => {
 
   const goToDiscussion = () => {};
 
-  return (
-    <div className={css(styles.discussionContainer)} onClick={goToDiscussion}>
-      <DiscussionCard
-        top={
-          <Fragment>
-            <VoteWidget
-              score={score}
-              fontSize={"16px"}
-              width={"44px"}
-              selected={selectedVoteType}
-              onUpvote={upvote}
-              onDownvote={downvote}
+  if (mobileView) {
+    return (
+      <div
+        className={css(
+          styles.discussionContainer,
+          props.newCard && styles.newCard
+        )}
+        onClick={goToDiscussion}
+      >
+        <DiscussionCard
+          mobileView={true}
+          top={
+            <div className={css(styles.column)}>
+              <VoteWidget
+                score={score}
+                fontSize={"16px"}
+                width={"44px"}
+                selected={selectedVoteType}
+                onUpvote={upvote}
+                onDownvote={downvote}
+                horizontalView={true}
+                styles={styles.mobileVoteWidget}
+              />
+              <DiscussionPostMetadata
+                authorProfile={data.createdBy.authorProfile}
+                username={username}
+                date={date}
+              />
+            </div>
+          }
+          info={
+            <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={path}>
+              <Title text={title} />
+            </ClientLinkWrapper>
+          }
+          action={
+            <Fragment>
+              <span className={css(styles.mobileReadButton)}>
+                <ReadButton threadPath={path} />
+              </span>
+              <DiscussionThreadActionBar
+                hostname={hostname}
+                threadPath={path}
+                title={title}
+                count={commentCount}
+              />
+            </Fragment>
+          }
+          hoverEvents={hoverEvents && hoverEvents}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div
+        className={css(
+          styles.discussionContainer,
+          props.newCard && styles.newCard
+        )}
+        onClick={goToDiscussion}
+      >
+        <DiscussionCard
+          top={
+            <Fragment>
+              <VoteWidget
+                score={score}
+                fontSize={"16px"}
+                width={"44px"}
+                selected={selectedVoteType}
+                onUpvote={upvote}
+                onDownvote={downvote}
+              />
+              <DiscussionPostMetadata
+                authorProfile={data.createdBy.authorProfile}
+                username={username}
+                date={date}
+              />
+              <ReadButton threadPath={path} />
+            </Fragment>
+          }
+          info={
+            <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={path}>
+              <Title text={title} />
+            </ClientLinkWrapper>
+          }
+          action={
+            <DiscussionThreadActionBar
+              hostname={hostname}
+              threadPath={path}
+              title={title}
+              count={commentCount}
             />
-            <DiscussionPostMetadata
-              authorProfile={data.createdBy.authorProfile}
-              username={username}
-              date={date}
-            />
-            <ReadButton threadPath={path} />
-          </Fragment>
-        }
-        info={
-          <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={path}>
-            <Title text={title} />
-          </ClientLinkWrapper>
-        }
-        action={
-          <DiscussionThreadActionBar
-            hostname={hostname}
-            threadPath={path}
-            title={title}
-            count={commentCount}
-          />
-        }
-        hoverEvents={hoverEvents && hoverEvents}
-      />
-    </div>
-  );
+          }
+          hoverEvents={hoverEvents && hoverEvents}
+        />
+      </div>
+    );
+  }
 };
 
 function createUsername({ createdBy }) {
@@ -194,6 +254,7 @@ const styles = StyleSheet.create({
   discussionContainer: {
     textDecoration: "none",
     cursor: "default",
+    transition: "all ease-in-out 0.2s",
   },
   readContainer: {
     border: "solid 1px",
@@ -216,6 +277,9 @@ const styles = StyleSheet.create({
   readLabel: {
     fontSize: 14,
     fontFamily: "Roboto",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   readArrow: {
     fontSize: 10,
@@ -229,11 +293,38 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    paddingBottom: 16,
+    paddingBottom: 20,
     color: colors.BLACK(1),
+    textOverflow: "eclipsis",
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 21,
+    },
   },
   link: {
     textDecoration: "none",
+  },
+  newCard: {
+    backgroundColor: colors.LIGHT_GREEN(1),
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    marginBottom: 19,
+  },
+  row: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    width: "100%",
+  },
+  mobileVoteWidget: {
+    paddingLeft: 18,
+    marginBottom: 19,
+  },
+  mobileReadButton: {
+    marginRight: 20,
   },
 });
 

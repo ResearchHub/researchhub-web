@@ -107,9 +107,16 @@ class PaperUploadInfo extends React.Component {
       this.setState({ editMode: true });
       this.fetchAndPrefillPaperInfo(paperId);
     } else {
-      modalActions.openUploadPaperModal(false);
       let form = { ...this.state.form };
       form.title = paperTitle;
+      this.setState({ form });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.paperTitle !== this.props.paperTitle) {
+      let form = { ...this.state.form };
+      form.title = this.props.paperTitle;
       this.setState({ form });
     }
   }
@@ -169,15 +176,11 @@ class PaperUploadInfo extends React.Component {
         }
         form.author.self_author =
           authors.filter((author) => author.id === userAuthorId).length > 0;
-        console.log("form", form);
-        await this.setState(
-          {
-            selectedAuthors: [...authors],
-            form,
-            progress: 100,
-          },
-          () => console.log(this.state)
-        );
+        await this.setState({
+          selectedAuthors: [...authors],
+          form,
+          progress: 100,
+        });
         setTimeout(
           () =>
             this.props.messageActions.showMessage({ load: false, show: false }),
@@ -191,13 +194,19 @@ class PaperUploadInfo extends React.Component {
   }
 
   handleAuthorSelect = (value) => {
+    let userAuthorId = this.props.auth.user.author_profile.id;
+    let form = { ...this.state.form };
     let error = { ...this.state.error };
     error.author = false;
+    if (userAuthorId === value.id) {
+      form.author.self_author = true;
+    }
     this.setState({
       selectedAuthors: [...this.state.selectedAuthors, value],
       suggestedAuthors: [],
       searchAuthor: "",
       error,
+      form,
       edited: true,
     });
   };
@@ -458,6 +467,10 @@ class PaperUploadInfo extends React.Component {
     );
   };
 
+  getWindowWidth = () => {
+    return window.innerWidth < 665;
+  };
+
   renderContent = () => {
     let {
       form,
@@ -471,6 +484,8 @@ class PaperUploadInfo extends React.Component {
       suggestedAuthors,
       editMode,
     } = this.state;
+    let mobile = this.getWindowWidth();
+
     switch (activeStep) {
       case 1:
         return (
@@ -480,7 +495,7 @@ class PaperUploadInfo extends React.Component {
             <div className={css(styles.section)}>
               {!editMode && (
                 <div className={css(styles.paper)}>
-                  <div className={css(styles.label)}>
+                  <div className={css(styles.label, styles.labelStyle)}>
                     Paper PDF
                     <span className={css(styles.asterick)}>*</span>
                   </div>
@@ -494,7 +509,7 @@ class PaperUploadInfo extends React.Component {
                     uploadedPaper={this.props.paper.uploadedPaper}
                     reset={this.removePaper}
                     error={error.dnd}
-                    isDynamic={true}
+                    // isDynamic={true}
                   />
                 </div>
               )}
@@ -506,26 +521,32 @@ class PaperUploadInfo extends React.Component {
                 placeholder="Enter title of paper"
                 required={true}
                 containerStyle={styles.container}
+                labelStyle={styles.labelStyle}
                 value={form.title}
                 id={"title"}
                 onChange={this.handleInputChange}
               />
-              <AuthorInput
-                tags={this.state.selectedAuthors}
-                onChange={this.handleAuthorChange}
-                onChangeInput={this.searchAuthors}
-                inputValue={searchAuthor}
-                label={"Authors"}
-                required={true}
-                error={error.author}
-              />
-              <AuthorCardList
-                show={showAuthorList}
-                authors={suggestedAuthors}
-                loading={loading}
-                addAuthor={this.openAddAuthorModal}
-                onAuthorClick={this.handleAuthorSelect}
-              />
+              <span className={css(styles.container)}>
+                <AuthorInput
+                  tags={this.state.selectedAuthors}
+                  onChange={this.handleAuthorChange}
+                  onChangeInput={this.searchAuthors}
+                  inputValue={searchAuthor}
+                  label={"Authors"}
+                  required={true}
+                  error={error.author}
+                  labelStyle={styles.labelStyle}
+                />
+              </span>
+              <span className={css(styles.container)}>
+                <AuthorCardList
+                  show={showAuthorList}
+                  authors={suggestedAuthors}
+                  loading={loading}
+                  addAuthor={this.openAddAuthorModal}
+                  onAuthorClick={this.handleAuthorSelect}
+                />
+              </span>
               <div className={css(styles.row, styles.authorCheckboxContainer)}>
                 <CheckBox
                   isSquare={true}
@@ -533,6 +554,7 @@ class PaperUploadInfo extends React.Component {
                   label={"I am an author of this paper"}
                   id={"author.self_author"}
                   onChange={this.handleSelfAuthorToggle}
+                  labelStyle={styles.labelStyle}
                 />
               </div>
               <div className={css(styles.row)}>
@@ -547,6 +569,7 @@ class PaperUploadInfo extends React.Component {
                   options={Options.range(1960, 2019)}
                   onChange={this.handleInputChange}
                   error={error.year}
+                  labelStyle={styles.labelStyle}
                 />
                 <FormSelect
                   label={"Month of Publication"}
@@ -559,37 +582,41 @@ class PaperUploadInfo extends React.Component {
                   options={Options.months}
                   onChange={this.handleInputChange}
                   error={error.month}
+                  labelStyle={styles.labelStyle}
                 />
               </div>
               <div className={css(styles.section, styles.leftAlign)}>
                 <div className={css(styles.row, styles.minHeight)}>
                   <span className={css(styles.section, styles.leftAlign)}>
-                    <p className={css(styles.label)}>Type</p>
+                    <p className={css(styles.label, styles.labelStyle)}>Type</p>
                     <div className={css(styles.checkboxRow)}>
                       <CheckBox
                         active={form.type.journal}
                         label={"Journal"}
                         id={"journal"}
                         onChange={this.handleCheckBoxToggle}
+                        labelStyle={styles.labelStyle}
                       />
                       <CheckBox
                         active={form.type.conference}
                         label={"Conference"}
                         id={"conference"}
                         onChange={this.handleCheckBoxToggle}
+                        labelStyle={styles.labelStyle}
                       />
                       <CheckBox
                         active={form.type.other}
                         label={"Other"}
                         id={"other"}
                         onChange={this.handleCheckBoxToggle}
+                        labelStyle={styles.labelStyle}
                       />
                     </div>
                   </span>
                   <span
                     className={css(
-                      styles.doi,
-                      this.state.form.type.journal && styles.reveal
+                      styles.doi
+                      // !mobile && this.state.form.type.journal && styles.reveal,
                     )}
                   >
                     <FormInput
@@ -598,6 +625,7 @@ class PaperUploadInfo extends React.Component {
                       id={"doi"}
                       value={form.doi}
                       containerStyle={styles.doiInput}
+                      labelStyle={styles.labelStyle}
                       onChange={this.handleInputChange}
                     />
                   </span>
@@ -609,6 +637,7 @@ class PaperUploadInfo extends React.Component {
                 required={true}
                 containerStyle={styles.container}
                 inputStyle={customStyles.input}
+                labelStyle={styles.labelStyle}
                 isMulti={true}
                 value={form.hubs}
                 id={"hubs"}
@@ -616,6 +645,22 @@ class PaperUploadInfo extends React.Component {
                 onChange={this.handleHubSelection}
                 error={error.hubs}
               />
+              <span
+                className={css(
+                  styles.mobileDoi
+                  // mobile && this.state.form.type.journal && styles.reveal
+                )}
+              >
+                <FormInput
+                  label={"DOI"}
+                  placeholder="Enter DOI of paper"
+                  id={"doi"}
+                  value={form.doi}
+                  containerStyle={styles.doiInput}
+                  labelStyle={styles.labelStyle}
+                  onChange={this.handleInputChange}
+                />
+              </span>
             </div>
             <div className={css(styles.taglineHeader)}>
               {this.renderHeader("Overview")}
@@ -627,6 +672,7 @@ class PaperUploadInfo extends React.Component {
                   placeholder="Enter a brief overview of the paper"
                   required={true}
                   containerStyle={styles.container}
+                  labelStyle={styles.labelStyle}
                   value={form.tagline}
                   id={"tagline"}
                   onChange={this.handleInputChange}
@@ -663,12 +709,15 @@ class PaperUploadInfo extends React.Component {
                 label={"Title"}
                 placeholder="Title of discussion"
                 containerStyle={styles.container}
+                labelStyle={styles.labelStyle}
                 value={discussion.title}
                 id={"title"}
                 onChange={this.handleDiscussionInputChange}
               />
               <div className={css(styles.discussionInputWrapper)}>
-                <div className={css(styles.label)}>Question</div>
+                <div className={css(styles.label, styles.labelStyle)}>
+                  Question
+                </div>
                 <div className={css(styles.discussionTextEditor)}>
                   <TextEditor
                     canEdit={true}
@@ -729,11 +778,13 @@ class PaperUploadInfo extends React.Component {
                 onClick={this.nextStep}
               />
             </div>
-            <Button
-              label={"Continue"}
-              customButtonStyle={styles.button}
-              onClick={this.saveSummary}
-            />
+            <div className={css(styles.button)}>
+              <Button
+                label={"Continue"}
+                customButtonStyle={styles.button}
+                onClick={this.saveSummary}
+              />
+            </div>
           </div>
         );
       case 3:
@@ -908,6 +959,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   saveSummary = async () => {
+    this.props.messageActions.showMessage({ load: true, show: true });
     let query = {};
 
     if (this.state.summaryId) {
@@ -936,13 +988,17 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let summaryJSON = res.summary;
-        let editorState = Value.fromJSON(summaryJSON);
-        this.setState({
-          summaryId: res.id,
-          summary: editorState,
-        });
-        this.nextStep();
+        let response = { ...res };
+        setTimeout(() => {
+          this.props.messageActions.showMessage({ show: false });
+          let summaryJSON = response.summary;
+          let editorState = Value.fromJSON(summaryJSON);
+          this.setState({
+            summaryId: response.id,
+            summary: editorState,
+          });
+          this.nextStep();
+        }, 400);
       });
   };
 
@@ -1005,6 +1061,9 @@ class PaperUploadInfo extends React.Component {
           addNewUser={this.addNewUser}
         />
         {this.renderTitle()}
+        <div className={css(styles.mobileProgressBar)}>
+          <Progress completed={progress} />
+        </div>
         <form
           className={css(styles.form)}
           onSubmit={(e) => {
@@ -1033,6 +1092,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     scrollBehavior: "smooth",
+    position: "relative",
   },
   text: {
     fontFamily: "Roboto",
@@ -1041,11 +1101,18 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 33,
     color: "#232038",
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 25,
+    },
   },
   subtitle: {
     fontSize: 16,
     color: "#6f6c7d",
     marginTop: 10,
+    "@media only screen and (max-width: 665px)": {
+      width: 300,
+      textAlign: "center",
+    },
   },
   titleContainer: {
     display: "flex",
@@ -1061,24 +1128,50 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
   },
   pageContent: {
     width: "70%",
     minWidth: 820,
     minHeight: 500,
-    // maxHeight: 1128,
     position: "relative",
     backgroundColor: "#FFF",
-    // todo: fix shadow properties
     boxShadow: "0 1px 8px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);",
     padding: 60,
     borderTop: "4px solid #dedee5",
+    "@media only screen and (max-width: 935px)": {
+      minWidth: "unset",
+      width: 600,
+      padding: 40,
+    },
+    "@media only screen and (max-width: 665px)": {
+      width: "calc(100% - 16px)",
+      padding: 16,
+    },
+    "@media only screen and (max-width: 415px)": {
+      borderTop: "unset",
+    },
   },
   progressBar: {
     position: "absolute",
     width: "100%",
+    backgroundColor: "#dedee4",
     top: -4,
     left: 0,
+    "@media only screen and (max-width: 415px)": {
+      display: "none",
+    },
+  },
+  mobileProgressBar: {
+    display: "none",
+    "@media only screen and (max-width: 415px)": {
+      backgroundColor: "#dedee4",
+      display: "unset",
+      position: "sticky",
+      top: 0,
+      zIndex: 2,
+      width: "100%",
+    },
   },
   header: {
     fontSize: 22,
@@ -1088,6 +1181,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 8,
     borderBottom: `1px solid #EBEBEB`,
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 18,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 16,
+      paddingLeft: 9,
+      paddingRight: 9,
+      width: "calc(100% - 18px)",
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 14,
+    },
   },
   section: {
     display: "flex",
@@ -1101,14 +1206,40 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 600,
     alignItems: "center",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   minHeight: {
     height: 90,
+  },
+  mobileColumn: {
+    "@media only screen and (max-width: 665px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+    },
   },
   paper: {
     width: 601,
     marginTop: 40,
     marginBottom: 40,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   label: {
     fontFamily: "Roboto",
@@ -1124,7 +1255,15 @@ const styles = StyleSheet.create({
   },
   container: {
     width: 600,
-    marginBottom: 20,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   inputStyle: {
     width: 570,
@@ -1139,6 +1278,26 @@ const styles = StyleSheet.create({
   },
   smallContainer: {
     width: 290,
+    "@media only screen and (max-width: 665px)": {
+      width: 180,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 159,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 125,
+    },
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   smallInput: {
     width: 156,
@@ -1149,6 +1308,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   leftAlign: {
     alignItems: "flex-start",
@@ -1161,6 +1323,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     padding: 60,
+    "@media only screen and (max-width: 935px)": {
+      minWidth: "unset",
+      padding: "40px 0 50px 0",
+    },
+    "@media only screen and (max-width: 665px)": {
+      padding: "30px 0 50px 0",
+      width: "90%",
+    },
   },
   buttons: {
     marginTop: 20,
@@ -1171,6 +1341,12 @@ const styles = StyleSheet.create({
   button: {
     width: 180,
     height: 55,
+    "@media only screen and (max-width: 551px)": {
+      width: 160,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 130,
+    },
   },
   buttonLeft: {
     display: "flex",
@@ -1197,6 +1373,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       textDecoration: "underline",
+    },
+    "@media only screen and (max-width: 935px)": {
+      bottom: 0,
     },
   },
   backButtonIcon: {
@@ -1232,18 +1411,68 @@ const styles = StyleSheet.create({
     height: 300,
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   doiInput: {
     width: 290,
     marginTop: 10,
     marginBottom: 0,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   doi: {
+    width: 290,
+    height: 90,
+    transition: "all ease-in-out 0.2s",
+    opacity: 1,
+    overflow: "hidden",
+    display: "unset",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+      height: 0,
+      display: "none",
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
+  mobileDoi: {
     width: 290,
     height: 0,
     transition: "all ease-in-out 0.2s",
     opacity: 0,
     overflow: "hidden",
+    display: "none",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+      display: "unset",
+      opacity: 1,
+      height: 90,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   reveal: {
     height: 90,
@@ -1262,16 +1491,54 @@ const styles = StyleSheet.create({
     color: "#7a7887",
     userSelect: "none",
     cursor: "default",
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 10,
+    },
   },
 });
 
 const customStyles = {
   container: {
     width: 600,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
   input: {
     width: 600,
     display: "flex",
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
+  authorGuidelines: {
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 10,
+    },
   },
 };
 

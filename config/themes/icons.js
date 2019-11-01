@@ -7,6 +7,13 @@ const icons = {
   longArrowLeft: <i className="fal fa-long-arrow-left"></i>,
   share: <i className="fas fa-share"></i>,
   shareAlt: <i className="fas fa-share-alt"></i>,
+  burgerMenu: <i className="fal fa-bars"></i>,
+  home: <i className="fad fa-home"></i>,
+  help: <i className="fal fa-question-circle"></i>,
+  hub: <i className="far fa-chart-network"></i>,
+  addPaper: <i className="fad fa-file-upload"></i>,
+  signOut: <i className="fad fa-sign-out"></i>,
+  user: <i className="fad fa-user-circle"></i>,
 };
 
 export const voteWidgetIcons = {

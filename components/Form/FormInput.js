@@ -8,19 +8,6 @@ class FormInput extends React.Component {
     this.state = {};
   }
 
-  // Props={
-  //   label={string}
-  //   placeholder={string}
-  //   type={string}
-  //   required={boolean}
-  //   size={[‘small’, ‘medium’, ‘big’]}
-  //   containerStyle=
-  //   labelStyle
-  //   inputStyle
-  //   onChange
-  //   value
-  // }
-
   handleChange = (e) => {
     let id = e.target.id;
     let value = e.target.value;

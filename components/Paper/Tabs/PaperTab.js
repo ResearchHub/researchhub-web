@@ -19,8 +19,6 @@ function PaperTab(props) {
     setLoadSuccess(true);
   }
 
-  console.log(paperUrl);
-
   return (
     <div className={css(styles.container)}>
       <Document
