@@ -12,7 +12,13 @@ const DiscussionCard = (props) => {
   }
 
   return (
-    <div className={css(styles.container, hoverEvents && styles.hoverEvents)}>
+    <div
+      className={css(
+        styles.container,
+        hoverEvents && styles.hoverEvents,
+        mobileView && styles.mobileContainer
+      )}
+    >
       <div className={css(styles.topContainer)}>{props.top}</div>
       <div className={css(infoStyles, mobileView && styles.mobileInfoStyles)}>
         {props.info}
@@ -36,10 +42,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 5,
     border: "1px solid #FFFFFF",
+  },
+  mobileContainer: {
     "@media only screen and (max-width: 415px)": {
-      width: "calc(100% - 30px)",
-      padding: 15,
+      width: "calc(100% - 40px)",
+      padding: 20,
       border: "solid 1px #F7F7FB",
+      backgroundColor: "#FFF",
+      marginBottom: 10,
       ":hover": {
         border: "solid 1px #D2D2E6",
       },
