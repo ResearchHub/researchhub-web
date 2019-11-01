@@ -6,15 +6,21 @@ import colors from "~/config/themes/colors";
 const DiscussionCard = (props) => {
   const infoStyles = [styles.infoContainer];
 
-  const { infoStyle, hoverEvents } = props;
+  const { infoStyle, hoverEvents, mobileView } = props;
   if (infoStyle) {
     infoStyles.push(infoStyle);
   }
 
   return (
-    <div className={css(styles.container, hoverEvents && styles.hoverEvents)}>
+    <div
+      className={css(
+        styles.container,
+        hoverEvents && styles.hoverEvents,
+        mobileView && styles.mobileContainer
+      )}
+    >
       <div className={css(styles.topContainer)}>{props.top}</div>
-      <div className={css(infoStyles)}>
+      <div className={css(infoStyles, mobileView && styles.mobileInfoStyles)}>
         {props.info}
         <div className={css(styles.actionContainer)}>{props.action}</div>
       </div>
@@ -37,6 +43,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     border: "1px solid #FFFFFF",
   },
+  mobileContainer: {
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(100% - 40px)",
+      padding: 20,
+      border: "solid 1px #F7F7FB",
+      backgroundColor: "#FFF",
+      marginBottom: 10,
+      ":hover": {
+        border: "solid 1px #D2D2E6",
+      },
+    },
+  },
   hoverEvents: {
     cursor: "pointer",
     ":hover": {
@@ -55,12 +73,18 @@ const styles = StyleSheet.create({
     // width: "100%",
     paddingLeft: 51,
   },
+  mobileInfoStyles: {
+    paddingLeft: 0,
+  },
   actionContainer: {
     display: "flex",
     flexDirection: "row",
     // color: colors.GREY(1),
     color: "#000",
     fontSize: 14,
+    "@media only screen and (max-width: 415px)": {
+      justifyContent: "space-between",
+    },
   },
 });
 

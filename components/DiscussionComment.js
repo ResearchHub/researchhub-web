@@ -177,7 +177,27 @@ class CommentClass extends DiscussionComment {
     this.state.toggleReplies = false;
     this.state.transition = false;
     this.state.loaded = false;
+    this.state.windowPostion = null;
+    this.ref = React.createRef();
   }
+
+  componentDidMount() {
+    window.addEventListener("scroll", this.handleWindowScroll);
+  }
+
+  componentDidUpdate(prevProp) {
+    if (prevProp !== this.props) {
+      this.handleWindowScroll();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleWindowScroll);
+  }
+
+  handleWindowScroll = () => {
+    this.setState({ windowPostion: window.pageYOffset });
+  };
 
   updateText = async (text) => {
     this.props.dispatch(DiscussionActions.updateCommentPending());
@@ -219,12 +239,25 @@ class CommentClass extends DiscussionComment {
     // }
   };
 
-  toggleReplies = async () => {
-    await this.setState({
-      toggleReplies: !this.state.toggleReplies,
-      transition: !this.state.loaded,
-    });
-    setTimeout(() => this.setState({ transition: false, loaded: true }), 400);
+  toggleReplies = () => {
+    window.scrollTo(0, this.state.windowPostion);
+    this.setState(
+      {
+        toggleReplies: !this.state.toggleReplies,
+        transition: !this.state.loaded,
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ transition: false, loaded: true }, () => {
+            // this.ref.current.scrollIntoView({
+            //   behavior: 'smooth',
+            //   block: 'start',
+            // });
+            window.scrollTo(0, this.state.windowPostion);
+          });
+        }, 400);
+      }
+    );
   };
 
   renderMessage = () => {
@@ -259,13 +292,14 @@ class CommentClass extends DiscussionComment {
               {this.renderMessage()}
             </div>
           </div>
-          {this.state.toggleReplies ? (
-            this.state.transition ? (
-              <Loader />
-            ) : (
-              replies
-            )
-          ) : null}
+          <div
+            className={css(
+              styles.replyContainer,
+              this.state.toggleReplies && styles.show
+            )}
+          >
+            {this.state.transition ? <Loader /> : replies}
+          </div>
         </Fragment>
       );
     }
@@ -351,6 +385,16 @@ const styles = StyleSheet.create({
   showReplyContainer: {
     display: "flex",
     justifyContent: "flex-start",
+  },
+  replyContainer: {
+    transition: "all ease-in-out 0.2s",
+    height: 0,
+    opacity: 0,
+  },
+  show: {
+    height: "calc(100%)",
+    overflow: "auto",
+    opacity: 1,
   },
   showReply: {
     cursor: "pointer",

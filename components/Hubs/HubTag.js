@@ -1,30 +1,75 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-
+import ReactTooltip from "react-tooltip";
 import colors from "~/config/themes/colors";
+import Ripples from "react-ripples";
 
 const HubTag = ({ tag, overrideStyle, hubName }) => {
   let { id, name, link } = tag;
+  const nameArr = name.split(" ");
 
   function nameToUrl(name) {
-    let arr = name.split(" ");
-    return arr.length > 1 ? arr.join("-").toLowerCase() : name.toLowerCase();
+    return nameArr.length > 1
+      ? nameArr.join("-").toLowerCase()
+      : name.toLowerCase();
+  }
+
+  function abbreviateName(name) {
+    if (nameArr.length > 1) {
+      return `${nameArr[0][0]}.${nameArr[1][0]}`;
+    }
+    if (nameArr[0].length > 10) {
+      return `${nameArr[0].slice(0, 7)}...`;
+    }
+    return name;
+  }
+
+  function formatName(name) {
+    return nameArr
+      .map((el) => {
+        return el[0].toUpperCase() + el.slice(1);
+      })
+      .join(" ");
   }
 
   if (name === hubName) {
     return (
-      <div className={css(styles.tag, overrideStyle && overrideStyle)}>
-        <span className={css(styles.label)}>{name && name}</span>
+      <div
+        className={css(styles.tag, overrideStyle && overrideStyle)}
+        data-tip={formatName(name)}
+      >
+        <ReactTooltip
+          effect={"float"}
+          type={"info"}
+          place={"bottom"}
+          className={css(styles.reactTooltip)}
+        />
+        <span className={css(styles.label)}>
+          {name && abbreviateName(name)}
+        </span>
       </div>
     );
   } else {
     return (
-      <Link href={"/hub/[hubname]"} as={`/hub/${nameToUrl(name)}`}>
-        <div className={css(styles.tag, overrideStyle && overrideStyle)}>
-          <span className={css(styles.label)}>{name && name}</span>
-        </div>
-      </Link>
+      <Ripples>
+        <Link href={"/hub/[hubname]"} as={`/hub/${nameToUrl(name)}`}>
+          <div
+            className={css(styles.tag, overrideStyle && overrideStyle)}
+            data-tip={formatName(name)}
+          >
+            <ReactTooltip
+              effect={"float"}
+              type={"info"}
+              place={"bottom"}
+              className={css(styles.reactTooltip)}
+            />
+            <span className={css(styles.label)}>
+              {name && abbreviateName(name)}
+            </span>
+          </div>
+        </Link>
+      </Ripples>
     );
   }
 };
@@ -40,6 +85,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     marginRight: 10,
     border: "1px solid #FFF",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
     ":hover": {
       color: "#FFF",
       borderColor: colors.BLUE(1),
@@ -54,6 +101,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     letterSpacing: 1,
     padding: "3px 10px 3px 10px",
+    textOverflow: "ellipsis",
+  },
+  reactTooltip: {
+    // padding: 0
   },
 });
 
