@@ -8,6 +8,7 @@ import BaseModal from "~/components/modal/BaseModal";
 
 // Config
 import colors from "~/config/themes/colors";
+import ResearchHubIcon from "../static/ResearchHubIcon";
 
 const AvatarEdit = dynamic(() => import("react-avatar-edit"), { ssr: false });
 
@@ -32,9 +33,12 @@ const AvatarUpload = (props) => {
   };
 
   return (
-    <BaseModal isOpen={isOpen} closeModal={closeModal}>
+    <BaseModal
+      title={"Upload Profile Picture"}
+      isOpen={isOpen}
+      closeModal={closeModal}
+    >
       <div className={css(styles.modalContainer)}>
-        <div className={css(styles.uploadInstructions)}>Picture Upload</div>
         <AvatarEdit
           height={200}
           onCrop={onCrop}
@@ -42,8 +46,11 @@ const AvatarUpload = (props) => {
           onBeforeFileLoad={onBeforeFileLoad}
           src={image}
         />
-        <div className={css(styles.preview)}>Preview</div>
-        {preview && <img width={80} hieght={80} src={preview} alt="Preview" />}
+        {/* <div className={css(styles.preview)}>Preview</div>
+        {preview && <img width={80} hieght={80} src={preview} alt="Preview" />} */}
+      </div>
+      <div className={css(styles.icon)}>
+        <ResearchHubIcon />
       </div>
     </BaseModal>
   );
@@ -60,6 +67,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontWeight: 500,
     fontSize: 33,
+  },
+  icon: {
+    marginTop: 16,
   },
   modalContainer: {
     width: "100%",
