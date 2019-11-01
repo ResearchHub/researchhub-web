@@ -82,6 +82,9 @@ const styles = StyleSheet.create({
     // color: colors.GREY(1),
     color: "#000",
     fontSize: 14,
+    "@media only screen and (max-width: 415px)": {
+      justifyContent: "space-between",
+    },
   },
 });
 
