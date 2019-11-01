@@ -7,6 +7,8 @@ import * as utils from "../utils";
 import * as discussionShim from "../discussion/shims";
 import * as paperShim from "../paper/shims";
 
+import { MessageActions } from "~/redux/message";
+
 export const AuthorActions = {
   getAuthor: ({ authorId }) => {
     return (dispatch) => {
@@ -138,6 +140,9 @@ export const AuthorActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
+          dispatch(MessageActions.setMessage("Profile updated"));
+          dispatch(MessageActions.showMessage({ show: true }));
+
           return dispatch({
             type: types.SAVE_AUTHOR_CHANGES,
             payload: {
