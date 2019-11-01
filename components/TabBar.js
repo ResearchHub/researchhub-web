@@ -44,7 +44,8 @@ function renderTab(
     <Link key={key} href={dynamic_href} as={href}>
       <div className={css(classNames)}>
         <div className={css(styles.link)}>
-          {label} {showCount && <Count isSelected={selected} amount={count} />}
+          {label}{" "}
+          {showCount && <Count isSelected={isSelected} amount={count} />}
         </div>
       </div>
     </Link>
