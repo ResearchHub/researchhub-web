@@ -20,7 +20,7 @@ export const PaperActions = {
       ).catch(utils.handleCatch);
 
       let status = await Helpers.checkStatus(response).catch(utils.handleCatch);
-      let res = await Helpers.checkStatus(status);
+      let res = await Helpers.parseJSON(status);
 
       let action = actions.setUserVoteFailure(isUpvote);
 
@@ -31,7 +31,7 @@ export const PaperActions = {
         utils.logFetchError(response);
       }
 
-      return dispatch(action);
+      // return dispatch(action);
     };
   },
 
@@ -45,7 +45,7 @@ export const PaperActions = {
       ).catch(utils.handleCatch);
 
       let status = await Helpers.checkStatus(response).catch(utils.handleCatch);
-      let res = await Helpers.checkStatus(status);
+      let res = await Helpers.parseJSON(status);
 
       let action = actions.setUserVoteFailure(isUpvote);
 
@@ -56,7 +56,7 @@ export const PaperActions = {
         utils.logFetchError(response);
       }
 
-      return dispatch(action);
+      // return dispatch(action);
     };
   },
   getPaper: (paperId) => {

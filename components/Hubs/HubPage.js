@@ -62,8 +62,21 @@ class HubPage extends React.Component {
       papers: [],
       filterBy: {},
       scope: {},
+      mobileView: false,
+      mobileBanner: false,
     };
   }
+
+  updateDimensions = () => {
+    if (window.innerWidth < 968) {
+      this.setState({
+        mobileView: true,
+        mobileBanner: window.innerWidth < 580 ? true : false,
+      });
+    } else {
+      this.setState({ mobileView: false, mobileBanner: false });
+    }
+  };
 
   /**
    * When the paper is upvoted, update our UI to reflect that as well
@@ -111,6 +124,8 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     this.fetchPapers({ page: 1, hub: this.props.hub });
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -119,8 +134,13 @@ class HubPage extends React.Component {
       this.props.hub &&
       prevProps.hub.id !== this.props.hub.id
     ) {
+      this.updateDimensions();
       this.fetchPapers({ page: 1, hub: this.props.hub });
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
   }
 
   fetchPapers = ({ page, hub }) => {
@@ -159,7 +179,11 @@ class HubPage extends React.Component {
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.homeBanner)}>
           <img
-            src={"/static/background/background-home.png"}
+            src={
+              this.state.mobileBanner
+                ? "/static/background/background-home-mobile.png"
+                : "/static/background/background-home.png"
+            }
             className={css(styles.bannerOverlay)}
           />
           <div
@@ -170,7 +194,10 @@ class HubPage extends React.Component {
             )}
           >
             <div className={css(styles.header, styles.text)}>
-              Welcome to {this.props.home ? "ResearchHub" : this.props.hub.name}
+              Welcome to{" "}
+              <span className={css(styles.hubName)}>
+                {this.props.home ? "ResearchHub" : this.props.hub.name}
+              </span>
               !
             </div>
             <div className={css(styles.subtext, styles.text)}>
@@ -178,12 +205,14 @@ class HubPage extends React.Component {
               reproducability, and funding of scientic research.{" "}
               <span className={css(styles.readMore)}>Read more</span>
             </div>
-            {!auth.isLoggedIn && (
-              <GoogleLoginButton
-                googleLogin={this.props.googleLogin}
-                getUser={this.props.getUser}
-              />
-            )}
+            <span className={css(styles.googleLogin)}>
+              {!auth.isLoggedIn && (
+                <GoogleLoginButton
+                  googleLogin={this.props.googleLogin}
+                  getUser={this.props.getUser}
+                />
+              )}
+            </span>
           </div>
         </div>
         <div className={css(styles.row, styles.body)}>
@@ -191,23 +220,25 @@ class HubPage extends React.Component {
             <HubsList exclude={this.props.home ? null : this.props.hub.name} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
-            <div className={css(styles.topbar, styles.row)}>
+            <div className={css(styles.row, styles.topbar)}>
               <div className={css(styles.text, styles.feedTitle)}>
                 Top Papers on{" "}
-                {this.props.home ? "ResearchHub" : this.props.hub.name}
+                <span className={css(styles.hubName)}>
+                  {this.props.home ? "ResearchHub" : this.props.hub.name}
+                </span>
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
                   options={filterOptions}
                   value={filterOptions[0]}
                   containerStyle={styles.dropDown}
-                  inputStyle={{ height: "100%" }}
+                  inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
                 />
                 <FormSelect
                   options={filterScope}
                   value={filterScope[0]}
                   containerStyle={styles.dropDown}
-                  inputStyle={{ height: "100%" }}
+                  inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
                 />
               </div>
             </div>
@@ -228,9 +259,16 @@ class HubPage extends React.Component {
                     hubName={this.props.hubName}
                     onUpvote={this.onUpvote}
                     onDownvote={this.onDownvote}
+                    mobileView={this.state.mobileView}
                   />
                 ))}
               </InfiniteScroll>
+            </div>
+            <div className={css(styles.mobileHubListContainer)}>
+              <HubsList
+                exclude={this.props.home ? null : this.props.hub.name}
+                overrideStyle={styles.mobileList}
+              />
             </div>
           </div>
         </div>
@@ -242,7 +280,6 @@ class HubPage extends React.Component {
 var styles = StyleSheet.create({
   content: {
     backgroundColor: "#FFF",
-    // paddingBottom: 50
   },
   column: {
     display: "flex",
@@ -254,7 +291,6 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#FFF",
   },
   text: {
     color: "#FFF",
@@ -267,18 +303,26 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     height: 200,
     zIndex: 3,
+    "@media only screen and (max-width: 577px)": {
+      height: 300,
+      justifyContent: "flex-start",
+    },
   },
   centered: {
     height: 120,
   },
   homeBanner: {
-    background: "linear-gradient(#684ef5, #5058f6)",
+    background: "linear-gradient(#684ef5, #4d58f6)",
     width: "100%",
     height: 320,
     position: "relative",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
+    "@media only screen and (max-width: 577px)": {
+      position: "relative",
+      alignItems: "unset",
+    },
   },
   bannerOverlay: {
     position: "absolute",
@@ -289,6 +333,13 @@ var styles = StyleSheet.create({
     width: "100%",
     minWidth: "100%",
     zIndex: 2,
+    "@media only screen and (max-width: 577px)": {
+      objectFit: "cover",
+      position: "absolute",
+      height: 180,
+      bottom: 0,
+      right: 0,
+    },
   },
   readMore: {
     cursor: "pointer",
@@ -300,6 +351,17 @@ var styles = StyleSheet.create({
   header: {
     fontSize: 50,
     fontWeight: 400,
+    "@media only screen and (max-width: 685px)": {
+      fontSize: 40,
+    },
+    "@media only screen and (max-width: 577px)": {
+      fontSize: 25,
+      marginTop: 16,
+      width: 300,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
   body: {
     minHeight: 1348,
@@ -313,12 +375,35 @@ var styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     backgroundColor: "#FFF",
+    // "@media only screen and (max-width: 577px)": {
+    //   display: "none",
+    // },
+    "@media only screen and (max-width: 769px)": {
+      display: "none",
+    },
   },
   subtext: {
     whiteSpace: "initial",
     width: 670,
     fontSize: 16,
     fontWeight: 300,
+    "@media only screen and (max-width: 685px)": {
+      fontSize: 15,
+      width: "100%",
+    },
+    "@media only screen and (max-width: 577px)": {
+      fontSize: 16,
+      width: 305,
+      marginTop: 20,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
+  },
+  googleLogin: {
+    "@media only screen and (max-width: 577px)": {
+      marginTop: 18,
+    },
   },
   button: {
     height: 55,
@@ -336,41 +421,120 @@ var styles = StyleSheet.create({
   mainFeed: {
     height: "100%",
     width: "80%",
-    backgroundColor: "#FFF",
+    backgroundColor: "#FCFCFC",
     borderLeft: "1px solid #ededed",
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 768px)": {
+      width: "100%",
+    },
   },
   feedTitle: {
     color: "#000",
     fontWeight: "400",
     fontSize: 33,
+    "@media only screen and (max-width: 1343px)": {
+      fontSize: 25,
+    },
+    "@media only screen and (max-width: 1149px)": {
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 25,
+      marginBottom: 10,
+    },
+    "@media only screen and (max-width: 416px)": {
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+      textAlign: "center",
+    },
   },
   topbar: {
     paddingTop: 30,
     width: "calc(100% - 140px)",
     position: "sticky",
-    backgroundColor: "#FFF",
     paddingLeft: 70,
     paddingRight: 70,
     top: 0,
+    backgroundColor: "#FCFCFC",
+    alignItems: "center",
     zIndex: 2,
-    // borderBottom: '1px solid #ededed',
+    "@media only screen and (max-width: 665px)": {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      paddingBottom: 20,
+    },
+    "@media only screen and (max-width: 577px)": {
+      paddingLeft: 40,
+      paddingRight: 40,
+      width: "calc(100% - 80px)",
+    },
   },
   dropDown: {
     width: 248,
     height: 45,
+    "@media only screen and (max-width: 1343px)": {
+      width: 220,
+      height: "unset",
+    },
+    "@media only screen and (max-width: 1149px)": {
+      width: 150,
+    },
+    "@media only screen and (max-width: 895px)": {
+      width: 125,
+    },
+    "@media only screen and (max-width: 665px)": {
+      width: "100%",
+      height: 45,
+      margin: "10px 0px 10px 0px",
+    },
+    "@media only screen and (max-width: 375px)": {
+      width: 345,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 300,
+    },
   },
   inputs: {
     width: 516,
+    "@media only screen and (max-width: 1343px)": {
+      width: 460,
+    },
+    "@media only screen and (max-width: 1149px)": {
+      width: 320,
+    },
+    "@media only screen and (max-width: 895px)": {
+      width: 270,
+      // marginBottom: 10,
+    },
+    "@media only screen and (max-width: 665px)": {
+      width: "100%",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "center",
+    },
   },
   /**
    * INFINITE SCROLL
    */
   infiniteScroll: {
     width: "calc(100% - 140px)",
-    backgroundColor: "#FFF",
+    backgroundColor: "#FCFCFC",
     paddingLeft: 70,
     paddingRight: 70,
-    marginBottom: 20,
+    paddingBottom: 30,
+    "@media only screen and (max-width: 577px)": {
+      paddingLeft: 40,
+      paddingRight: 40,
+      width: "calc(100% - 80px)",
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: 0,
+      width: "100%",
+    },
   },
   blur: {
     height: 30,
@@ -386,6 +550,24 @@ var styles = StyleSheet.create({
   blank: {
     opacity: 0,
     height: 60,
+  },
+  hubName: {
+    textTransform: "capitalize",
+  },
+  mobileHubListContainer: {
+    display: "none",
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 768px)": {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      borderTop: "1px solid #EDEDED",
+    },
+  },
+  mobileList: {
+    paddingTop: 20,
+    width: "unset",
   },
 });
 

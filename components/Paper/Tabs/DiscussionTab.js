@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
+import { timeAgo } from "~/config/utils";
+import Ripples from "react-ripples";
 
 // Components
 import TextEditor from "~/components/TextEditor";
@@ -12,10 +14,12 @@ import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import ComponentWrapper from "../../ComponentWrapper";
 import Message from "~/components/Loader/Message";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
+import AddDiscussionModal from "~/components/modal/AddDiscussionModal";
 
 // Redux
 import { MessageActions } from "~/redux/message";
 import { thread } from "~/redux/discussion/shims";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
@@ -37,6 +41,26 @@ const DiscussionTab = (props) => {
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
   const [discussion, setDiscussion] = useState(initialDiscussionState);
+  const [mobileView, setMobileView] = useState(false);
+
+  useEffect(() => {
+    function handleWindowResize() {
+      if (window.innerWidth < 436) {
+        if (!mobileView) {
+          setMobileView(true);
+        }
+      } else {
+        if (mobileView) {
+          setMobileView(false);
+        }
+      }
+    }
+    handleWindowResize();
+    window.addEventListener("resize", handleWindowResize);
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  });
 
   function renderThreads(threads) {
     return (
@@ -49,28 +73,23 @@ const DiscussionTab = (props) => {
             hostname={hostname}
             hoverEvents={true}
             path={t.path}
+            newCard={transition && i === 0} //conditions when a new card is made
+            mobileView={mobileView}
           />
         );
       })
     );
   }
 
-  const addDiscussion = async () => {
+  const addDiscussion = () => {
     props.showMessage({ show: false });
-    await setTransition(true);
-    setTimeout(() => {
-      toggleAddView(true);
-      setTransition(false);
-    }, 200);
+    openAddDiscussionModal();
   };
 
-  const cancel = async () => {
-    await setTransition(true);
+  const cancel = () => {
     setDiscussion(initialDiscussionState);
-    setTimeout(() => {
-      toggleAddView(false);
-      setTransition(false);
-    }, 200);
+    document.body.style.overflow = "scroll";
+    props.openAddDiscussionModal(false);
   };
 
   const save = async () => {
@@ -93,17 +112,18 @@ const DiscussionTab = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        setTransition(true);
         let newDiscussion = { ...resp };
         newDiscussion = thread(newDiscussion);
         threads.unshift(newDiscussion);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         formattedThreads.unshift(formattedDiscussion);
-
         setTimeout(() => {
           props.showMessage({ show: false });
           props.setMessage("Successfully Saved!");
           props.showMessage({ show: true });
           setTimeout(() => cancel(), 300);
+          setTimeout(() => setTransition(false), 3000);
         }, 800);
       })
       .catch((err) => {
@@ -136,75 +156,38 @@ const DiscussionTab = (props) => {
     setDiscussion(newDiscussion);
   };
 
+  const openAddDiscussionModal = () => {
+    props.openAddDiscussionModal(true);
+  };
+
   const renderAddDiscussion = () => {
-    if (addView) {
-      return (
-        <div className={css(styles.box)}>
-          <Message />
-          <FormInput
-            label={"Title"}
-            placeholder="Title of discussion"
-            containerStyle={styles.container}
-            value={discussion.title}
-            id={"title"}
-            onChange={handleInput}
-            required={true}
-          />
-          <div className={css(styles.discussionInputWrapper)}>
-            <div className={css(styles.label)}>
-              Question
-              <span className={css(styles.asterick)}>*</span>
-            </div>
-            <div className={css(styles.discussionTextEditor)}>
-              <TextEditor
-                canEdit={true}
-                readOnly={false}
-                onChange={handleDiscussionTextEditor}
-                hideButton={true}
-                placeholder={"Leave a question or a comment"}
-                initialValue={discussion.question}
-              />
-            </div>
-          </div>
-          <div className={css(styles.buttonRow, styles.buttons)}>
-            <div
-              className={css(styles.button, styles.buttonLeft)}
-              onClick={cancel}
-            >
-              <span className={css(styles.buttonLabel, styles.text)}>
-                Cancel
-              </span>
-            </div>
-            <Button
-              label={"Save"}
-              customButtonStyle={styles.button}
-              onClick={save}
-            />
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className={css(styles.box)}>
-          {formattedThreads.length < 1 && (
-            <span className={css(styles.box)}>
-              <span className={css(styles.icon)}>
-                <i className="fad fa-comments" />
-              </span>
-              <h2 className={css(styles.noSummaryTitle)}>
-                There are no discussions for this paper yet.
-              </h2>
-              <div className={css(styles.text)}>
-                Please add a discussion to this paper
-              </div>
+    return (
+      <div
+        className={css(
+          styles.box,
+          formattedThreads.length < 1 && styles.plainBox
+        )}
+      >
+        {formattedThreads.length < 1 && (
+          <span className={css(styles.box, styles.plainBox)}>
+            <span className={css(styles.icon)}>
+              <i className="fad fa-comments" />
             </span>
-          )}
-          <PermissionNotificationWrapper
-            onClick={addDiscussion}
-            modalMessage="create a discussion thread"
-            permissionKey="CreateDiscussionThread"
-            loginRequired={true}
-          >
+            <h2 className={css(styles.noSummaryTitle)}>
+              There are no discussions for this paper yet.
+            </h2>
+            <div className={css(styles.text)}>
+              Please add a discussion to this paper
+            </div>
+          </span>
+        )}
+        <PermissionNotificationWrapper
+          onClick={addDiscussion}
+          modalMessage="create a discussion thread"
+          permissionKey="CreateDiscussionThread"
+          loginRequired={true}
+        >
+          <Ripples>
             <button
               className={css(
                 styles.addDiscussionButton,
@@ -218,35 +201,32 @@ const DiscussionTab = (props) => {
               )}
               Add Discussion
             </button>
-          </PermissionNotificationWrapper>
-        </div>
-      );
-    }
+          </Ripples>
+        </PermissionNotificationWrapper>
+      </div>
+    );
   };
 
   return (
-    <ComponentWrapper>
+    <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+      <AddDiscussionModal
+        handleDiscussionTextEditor={handleDiscussionTextEditor}
+        discussion={discussion}
+        handleInput={handleInput}
+        cancel={cancel}
+        save={save}
+      />
       {threads.length > 0 ? (
         <Fragment>
           <div className={css(styles.box, !addView && styles.right)}>
-            <div
-              className={css(
-                styles.addDiscussionContainer,
-                transition && styles.transition
-              )}
-            >
+            <div className={css(styles.addDiscussionContainer)}>
               {renderAddDiscussion()}
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
         </Fragment>
       ) : (
-        <div
-          className={css(
-            styles.addDiscussionContainer,
-            transition && styles.transition
-          )}
-        >
+        <div className={css(styles.addDiscussionContainer)}>
           {renderAddDiscussion()}
         </div>
       )}
@@ -299,6 +279,20 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     scrollBehavior: "smooth",
     marginBottom: 15,
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      fontSize: 16,
+      backgroundColor: "#FCFCFC",
+    },
+  },
+  plainBox: {
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      fontSize: 16,
+      backgroundColor: "#FFF",
+    },
   },
   right: {
     alignItems: "flex-end",
@@ -307,10 +301,18 @@ var styles = StyleSheet.create({
     color: colors.BLACK(1),
     fontSize: 20,
     fontWeight: 500,
+    textAlign: "center",
+    "@media only screen and (max-width: 415px)": {
+      width: 250,
+      fontSize: 16,
+    },
   },
   text: {
     fontSize: 16,
     color: colors.BLACK(0.8),
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   summaryActions: {
     width: 280,
@@ -337,7 +339,6 @@ var styles = StyleSheet.create({
     padding: "8px 32px",
     background: "#fff",
     color: colors.PURPLE(1),
-    marginTop: 10,
     fontSize: 16,
     borderRadius: 4,
     height: 45,
@@ -347,6 +348,11 @@ var styles = StyleSheet.create({
       borderColor: "#FFF",
       color: "#FFF",
       backgroundColor: colors.PURPLE(1),
+    },
+    "@media only screen and (max-width: 415px)": {
+      backgroundColor: "#FCFCFC",
+      padding: "6px 24px",
+      fontSize: 14,
     },
   },
   plainButton: {
@@ -453,9 +459,15 @@ var styles = StyleSheet.create({
   addDiscussionContainer: {
     transition: "all ease-in-out 0.3s",
     opacity: 1,
+    marginTop: 10,
+    "@media only screen and (max-width: 415px)": {
+      backgroundColor: "#FCFCFC",
+      height: "unset",
+    },
   },
   transition: {
-    opacity: 0,
+    padding: 1,
+    border: `1px solid ${colors.BLUE(1)}`,
   },
   icon: {
     fontSize: 50,
@@ -466,6 +478,14 @@ var styles = StyleSheet.create({
   asterick: {
     color: colors.BLUE(1),
   },
+  componentWrapperStyles: {
+    "@media only screen and (max-width: 415px)": {
+      backgroundColor: "#FCFCFC",
+      width: "100%",
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -475,6 +495,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  openAddDiscussionModal: ModalActions.openAddDiscussionModal,
 };
 
 export default connect(

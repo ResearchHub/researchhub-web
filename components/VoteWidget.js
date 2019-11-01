@@ -17,7 +17,14 @@ const VoteWidget = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
 
-  const { onUpvote, onDownvote, fontSize, selected, width } = props;
+  const {
+    onUpvote,
+    onDownvote,
+    fontSize,
+    selected,
+    width,
+    horizontalView,
+  } = props;
   const score = getScore(props);
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -70,24 +77,51 @@ const VoteWidget = (props) => {
   return (
     <Fragment>
       <div
-        className={css(styles.container, props.styles)}
+        className={css(
+          styles.container,
+          horizontalView && styles.horizontalView,
+          props.styles
+        )}
         style={{ fontSize: fontSize, width: width }}
       >
         <PermissionNotificationWrapper
           loginRequired={true}
-          onClick={onUpvoteClick}
+          onClick={horizontalView ? onDownvoteClick : onUpvoteClick}
         >
-          <UpvoteButton selected={upvoteSelected} disabled={upvoteDisabled} />
+          {horizontalView ? (
+            <DownvoteButton
+              selected={downvoteSelected}
+              disabled={downvoteDisabled}
+              // onClick={onDownvoteClick}
+              horizontalView={horizontalView}
+            />
+          ) : (
+            <UpvoteButton
+              selected={upvoteSelected}
+              disabled={upvoteDisabled}
+              // onClick={onUpvoteClick}
+            />
+          )}
         </PermissionNotificationWrapper>
         <ScorePill score={score} />
         <PermissionNotificationWrapper
           loginRequired={true}
-          onClick={onDownvoteClick}
+          onClick={horizontalView ? onUpvoteClick :onDownvoteClick}
         >
-          <DownvoteButton
-            selected={downvoteSelected}
-            disabled={downvoteDisabled}
-          />
+          {horizontalView ? (
+            <UpvoteButton
+              selected={upvoteSelected}
+              disabled={upvoteDisabled}
+              // onClick={onUpvoteClick}
+              horizontalView={horizontalView}
+            />
+          ) : (
+            <DownvoteButton
+              selected={downvoteSelected}
+              disabled={downvoteDisabled}
+              // onClick={onDownvoteClick}
+            />
+          )}
         </PermissionNotificationWrapper>
       </div>
     </Fragment>
@@ -113,7 +147,7 @@ const ScorePill = (props) => {
 };
 
 const VoteButton = (props) => {
-  const { onClick, selected, disabled } = props;
+  const { onClick, selected, disabled, horizontalView, right } = props;
 
   let style = [styles.icon];
   if (selected) {
@@ -121,6 +155,14 @@ const VoteButton = (props) => {
   }
   if (disabled) {
     style = [styles.iconDisabled];
+  }
+  if (horizontalView) {
+    style.push(styles.horizontalViewButton);
+    if (right) {
+      style.push(styles.marginLeft);
+    } else {
+      style.push(styles.marginRight);
+    }
   }
 
   return (
@@ -131,7 +173,11 @@ const VoteButton = (props) => {
 };
 
 const UpvoteButton = (props) => {
-  return <VoteButton {...props}>{voteWidgetIcons.upvote}</VoteButton>;
+  return (
+    <VoteButton {...props} right={props.horizontalView}>
+      {voteWidgetIcons.upvote}
+    </VoteButton>
+  );
 };
 
 const DownvoteButton = (props) => {
@@ -153,6 +199,16 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     textAlign: "center",
     marginRight: 17,
+  },
+  horizontalView: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  horizontalViewButton: {
+    fontSize: 25,
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 23,
+    },
   },
   pillContainer: {
     background: voteWidgetColors.BACKGROUND,
@@ -178,6 +234,12 @@ const styles = StyleSheet.create({
   selected: {
     color: colors.GREEN(),
     cursor: "not-allowed",
+  },
+  marginLeft: {
+    marginLeft: 8,
+  },
+  marginRight: {
+    marginRight: 8,
   },
 });
 
