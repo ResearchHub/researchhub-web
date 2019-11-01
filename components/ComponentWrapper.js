@@ -5,7 +5,16 @@ import { StyleSheet, css } from "aphrodite";
 import Navbar from "./Navbar";
 
 const ComponentWrapper = (props) => {
-  return <div className={css(styles.componentWrapper)}>{props.children}</div>;
+  return (
+    <div
+      className={css(
+        styles.componentWrapper,
+        props.overrideStyle && props.overrideStyle
+      )}
+    >
+      {props.children}
+    </div>
+  );
 };
 
 const styles = StyleSheet.create({

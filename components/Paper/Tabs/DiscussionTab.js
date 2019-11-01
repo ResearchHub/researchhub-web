@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
+import { timeAgo } from "~/config/utils";
+import Ripples from "react-ripples";
 
 // Components
 import TextEditor from "~/components/TextEditor";
@@ -160,9 +162,14 @@ const DiscussionTab = (props) => {
 
   const renderAddDiscussion = () => {
     return (
-      <div className={css(styles.box)}>
+      <div
+        className={css(
+          styles.box,
+          formattedThreads.length < 1 && styles.plainBox
+        )}
+      >
         {formattedThreads.length < 1 && (
-          <span className={css(styles.box)}>
+          <span className={css(styles.box, styles.plainBox)}>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
             </span>
@@ -180,26 +187,28 @@ const DiscussionTab = (props) => {
           permissionKey="CreateDiscussionThread"
           loginRequired={true}
         >
-          <button
-            className={css(
-              styles.addDiscussionButton,
-              formattedThreads.length > 0 && styles.plainButton
-            )}
-          >
-            {formattedThreads.length > 0 && (
-              <span className={css(styles.discussionIcon)}>
-                <i class="fad fa-comment-plus" />
-              </span>
-            )}
-            Add Discussion
-          </button>
+          <Ripples>
+            <button
+              className={css(
+                styles.addDiscussionButton,
+                formattedThreads.length > 0 && styles.plainButton
+              )}
+            >
+              {formattedThreads.length > 0 && (
+                <span className={css(styles.discussionIcon)}>
+                  <i class="fad fa-comment-plus" />
+                </span>
+              )}
+              Add Discussion
+            </button>
+          </Ripples>
         </PermissionNotificationWrapper>
       </div>
     );
   };
 
   return (
-    <ComponentWrapper>
+    <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
       <AddDiscussionModal
         handleDiscussionTextEditor={handleDiscussionTextEditor}
         discussion={discussion}
@@ -270,6 +279,20 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     scrollBehavior: "smooth",
     marginBottom: 15,
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      fontSize: 16,
+      backgroundColor: "#FCFCFC",
+    },
+  },
+  plainBox: {
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      fontSize: 16,
+      backgroundColor: "#FFF",
+    },
   },
   right: {
     alignItems: "flex-end",
@@ -279,10 +302,17 @@ var styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     textAlign: "center",
+    "@media only screen and (max-width: 415px)": {
+      width: 250,
+      fontSize: 16,
+    },
   },
   text: {
     fontSize: 16,
     color: colors.BLACK(0.8),
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   summaryActions: {
     width: 280,
@@ -309,7 +339,6 @@ var styles = StyleSheet.create({
     padding: "8px 32px",
     background: "#fff",
     color: colors.PURPLE(1),
-    marginTop: 10,
     fontSize: 16,
     borderRadius: 4,
     height: 45,
@@ -319,6 +348,11 @@ var styles = StyleSheet.create({
       borderColor: "#FFF",
       color: "#FFF",
       backgroundColor: colors.PURPLE(1),
+    },
+    "@media only screen and (max-width: 415px)": {
+      backgroundColor: "#FCFCFC",
+      padding: "6px 24px",
+      fontSize: 14,
     },
   },
   plainButton: {
@@ -425,6 +459,11 @@ var styles = StyleSheet.create({
   addDiscussionContainer: {
     transition: "all ease-in-out 0.3s",
     opacity: 1,
+    marginTop: 10,
+    "@media only screen and (max-width: 415px)": {
+      backgroundColor: "#FCFCFC",
+      height: "unset",
+    },
   },
   transition: {
     padding: 1,
@@ -438,6 +477,16 @@ var styles = StyleSheet.create({
   },
   asterick: {
     color: colors.BLUE(1),
+  },
+  componentWrapperStyles: {
+    "@media only screen and (max-width: 415px)": {
+      backgroundColor: "#FCFCFC",
+    },
+    "@media only screen and (min-width: 300px)": {
+      width: "100%",
+      paddingRight: 0,
+      paddingLeft: 0,
+    },
   },
 });
 

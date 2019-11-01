@@ -36,6 +36,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
     display: "flex",
     flexShrink: 0,
+    "@media only screen and (max-width: 856px)": {
+      width: 35,
+      height: 35,
+    },
   },
 });
 
