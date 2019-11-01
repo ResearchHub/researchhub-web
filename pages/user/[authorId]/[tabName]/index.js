@@ -667,6 +667,7 @@ const styles = StyleSheet.create({
     height: 80,
     resize: "none",
     fontSize: 16,
+    marginBottom: 16,
     fontFamily: "Roboto, sans-serif",
     outline: "none",
 
@@ -683,15 +684,15 @@ const styles = StyleSheet.create({
   },
   actionContainer: {
     display: "flex",
-    marginBottom: 10,
+    marginBottom: 16,
   },
   button: {
     height: 35,
     width: 85,
     border: "1px solid",
     borderColor: colors.BLUE(),
-    borderRadius: 8,
-    fontSize: 18,
+    borderRadius: 4,
+    fontSize: 15,
     outline: "none",
     cursor: "pointer",
   },
@@ -716,15 +717,14 @@ const styles = StyleSheet.create({
   nameInput: {
     fontSize: 32,
     width: 300,
-    marginBottom: 5,
+    marginBottom: 16,
 
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
     ":focus": {
       borderColor: "#D2D2E6",
     },
-
-    padding: 5,
+    padding: 16,
     fontWeight: "500",
     color: "#232038",
     borderRadius: 2,
