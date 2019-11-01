@@ -27,6 +27,7 @@
     "react": "^16.10.1",
     "react-autosize-textarea": "^7.0.0",
     "react-avatar": "^3.7.0",
+    "react-avatar-editor": "^12.0.0-beta.0",
     "react-burger-menu": "^2.6.11",
     "react-dom": "^16.10.1",
     "react-dropzone": "^10.1.9",

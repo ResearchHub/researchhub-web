@@ -5294,6 +5294,13 @@ react-autosize-textarea@^7.0.0:
     line-height "^0.3.1"
     prop-types "^15.5.6"
 
+react-avatar-editor@^12.0.0-beta.0:
+  version "12.0.0-beta.0"
+  resolved "https://registry.npmjs.org/react-avatar-editor/-/react-avatar-editor-12.0.0-beta.0.tgz#e19d8ab1c5bcd480de090ff97cd95dcdaa52d964"
+  integrity sha512-7vrkqjmXDCZuBRpRsrldeN0/BAW1/rx/k+5WE1AhvQMMGXYGwy1GY3YF97okzgBYwZV3OocGyx8oauOcTz2xAw==
+  dependencies:
+    react-draggable "^4.1.0"
+
 react-avatar@^3.7.0:
   version "3.7.0"
   resolved "https://registry.npmjs.org/react-avatar/-/react-avatar-3.7.0.tgz#cd73cf1b862be196d95650dd8fc2afda956957d8"
@@ -5333,6 +5340,14 @@ react-dom@^16.10.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.16.1"
+
+react-draggable@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmjs.org/react-draggable/-/react-draggable-4.1.0.tgz#e1c5b774001e32f0bff397254e1e9d5448ac92a4"
+  integrity sha512-Or/qe70cfymshqoC8Lsp0ukTzijJObehb7Vfl7tb5JRxoV+b6PDkOGoqYaWBzZ59k9dH/bwraLGsnlW78/3vrA==
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
 
 react-dropzone@^10.1.9:
   version "10.1.9"

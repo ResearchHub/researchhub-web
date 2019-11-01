@@ -412,7 +412,7 @@ const AuthorPage = (props) => {
               )
             )}
             <div className={css(styles.extraInfoContainer)}>
-              {author.university && (
+              {author.university && author.university.name && (
                 <div className={css(styles.extraInfo)}>
                   <i
                     className={css(styles.icon) + " fas fa-graduation-cap"}
