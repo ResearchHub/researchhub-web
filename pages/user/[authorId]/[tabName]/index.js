@@ -231,6 +231,25 @@ const AuthorPage = (props) => {
     );
   };
 
+  let saveSocial = async (section) => {
+    let changes = {};
+    if (section === SECTIONS.facebook) {
+      changes.facebook = socialLinks[section];
+    } else if (section === SECTIONS.linkedin) {
+      changes.linkedin = socialLinks[section];
+    } else if (section === SECTIONS.twitter) {
+      changes.twitter = socialLinks[section];
+    }
+
+    setEditFacebook(false);
+    setEditLinkedin(false);
+    setEditTwitter(false);
+
+    await dispatch(
+      AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
+    );
+  };
+
   let saveName = async () => {
     let splitName = name.split(" ");
     let first_name = null;
@@ -279,7 +298,10 @@ const AuthorPage = (props) => {
             value={socialLinks[social]}
             onChange={(e) => onSocialLinkChange(e, social)}
           />
-          <div className={css(styles.submitSocialButton)}>
+          <div
+            className={css(styles.submitSocialButton)}
+            onClick={() => saveSocial(social)}
+          >
             <i className="fas fa-arrow-right"></i>
           </div>
         </div>
@@ -384,11 +406,14 @@ const AuthorPage = (props) => {
                   !author.linkedin && styles.noSocial,
                   editLinkedin && styles.fullOpacity
                 )}
-                onClick={() => setEditLinkedin(true)}
               >
-                <div className={css(styles.socialMedia, styles.linkedin)}>
+                <div
+                  className={css(styles.socialMedia, styles.linkedin)}
+                  onClick={() => setEditLinkedin(true)}
+                >
                   <i className="fab fa-linkedin-in"></i>
                 </div>
+                {editLinkedin && renderSocialEdit(SECTIONS.linkedin)}
               </div>
             )}
             {!allowEdit ? (
@@ -410,11 +435,14 @@ const AuthorPage = (props) => {
                   !author.twitter && styles.noSocial,
                   editTwitter && styles.fullOpacity
                 )}
-                onClick={() => setEditTwitter(true)}
               >
-                <div className={css(styles.socialMedia, styles.twitter)}>
+                <div
+                  className={css(styles.socialMedia, styles.twitter)}
+                  onClick={() => setEditTwitter(true)}
+                >
                   <i className="fab fa-twitter"></i>
                 </div>
+                {editTwitter && renderSocialEdit(SECTIONS.twitter)}
               </div>
             )}
             {!allowEdit ? (
@@ -436,9 +464,11 @@ const AuthorPage = (props) => {
                   !author.facebook && styles.noSocial,
                   editFacebook && styles.fullOpacity
                 )}
-                onClick={() => setEditFacebook(true)}
               >
-                <div className={css(styles.socialMedia, styles.facebook)}>
+                <div
+                  className={css(styles.socialMedia, styles.facebook)}
+                  onClick={() => setEditFacebook(true)}
+                >
                   <i className="fab fa-facebook-f"></i>
                 </div>
                 {editFacebook && renderSocialEdit(SECTIONS.facebook)}
@@ -570,12 +600,21 @@ const styles = StyleSheet.create({
     width: "100%",
     background: "#fff",
     height: 80,
-    padding: 5,
-    borderRadius: 8,
     resize: "none",
     fontSize: 16,
     fontFamily: "Roboto, sans-serif",
     outline: "none",
+
+    border: "1px solid #E8E8F2",
+    backgroundColor: "#FBFBFD",
+    ":focus": {
+      borderColor: "#D2D2E6",
+    },
+
+    padding: 15,
+    fontWeight: "400",
+    color: "#232038",
+    borderRadius: 2,
   },
   actionContainer: {
     display: "flex",
@@ -610,14 +649,20 @@ const styles = StyleSheet.create({
     },
   },
   nameInput: {
-    background: "#fff",
-    border: "1px solid #000",
-    borderRadius: 8,
     fontSize: 32,
     width: 300,
-    padding: 5,
-    fontWeight: 500,
     marginBottom: 5,
+
+    border: "1px solid #E8E8F2",
+    backgroundColor: "#FBFBFD",
+    ":focus": {
+      borderColor: "#D2D2E6",
+    },
+
+    padding: 15,
+    fontWeight: "400",
+    color: "#232038",
+    borderRadius: 2,
   },
   noSocial: {
     opacity: 0.2,
@@ -635,7 +680,6 @@ const styles = StyleSheet.create({
     background: "#fff",
     border: "none",
     outline: "none",
-    padding: 5,
     boxSizing: "border-box",
   },
   fullOpacity: {
@@ -656,11 +700,19 @@ const styles = StyleSheet.create({
   },
   socialInputContainer: {
     display: "flex",
-    border: "1px solid #000",
-    borderRadius: 8,
     width: 300,
     height: 30,
     overflow: "hidden",
+
+    border: "1px solid #E8E8F2",
+    backgroundColor: "#FBFBFD",
+    ":focus": {
+      borderColor: "#D2D2E6",
+    },
+
+    fontWeight: "400",
+    borderRadius: 2,
+    color: "#232038",
   },
   submitSocialButton: {
     background: colors.BLUE(1),
