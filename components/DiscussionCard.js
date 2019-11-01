@@ -63,6 +63,18 @@ const styles = StyleSheet.create({
       },
     },
   },
+  mobileContainer: {
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(100% - 40px)",
+      padding: 20,
+      border: "solid 1px #F7F7FB",
+      backgroundColor: "#FFF",
+      marginBottom: 10,
+      ":hover": {
+        border: "solid 1px #D2D2E6",
+      },
+    },
+  },
   hoverEvents: {
     cursor: "pointer",
     ":hover": {
