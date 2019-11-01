@@ -79,6 +79,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     background: "#fff",
+
+    "@media only screen and (max-width: 577px)": {
+      flexDirection: "column",
+    },
   },
   submit: {
     background: colors.PURPLE(1),
@@ -98,6 +102,10 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+
+    "@media only screen and (max-width: 577px)": {
+      marginTop: 16,
+    },
   },
   cancelButton: {
     marginRight: 10,

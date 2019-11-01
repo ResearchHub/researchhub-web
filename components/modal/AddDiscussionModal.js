@@ -28,6 +28,7 @@ const AddDiscussionModal = (props) => {
     discussion,
     handleInput,
     save,
+    mobileView,
   } = props;
 
   function closeModal() {
@@ -45,7 +46,7 @@ const AddDiscussionModal = (props) => {
       isOpen={modals.openAddDiscussionModal}
       closeModal={closeModal}
       title={"Add a Discussion"}
-      subtitle={"Post a question or a topic to get a discussion started."}
+      subtitle={"Post a question or topic to get started"}
     >
       <div className={css(styles.box)}>
         <Message />

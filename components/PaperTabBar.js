@@ -28,7 +28,7 @@ const PaperTabBar = (props) => {
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
-          {tabs.map((tab) => renderTab(tab, selectedTab))}
+          {tabs.map((tab, index) => renderTab(tab, selectedTab, index))}
         </div>
       </ComponentWrapper>
     </div>
@@ -40,7 +40,7 @@ function formatTabs(tab) {
   return tab;
 }
 
-function renderTab({ key, href, label, ui }, selected) {
+function renderTab({ key, href, label, ui }, selected, index) {
   const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
 
   let isSelected = false;
@@ -49,6 +49,9 @@ function renderTab({ key, href, label, ui }, selected) {
   if (href === selected) {
     isSelected = true;
     classNames.push(styles.selected);
+  }
+  if (index === 2) {
+    classNames.push(styles.lastTab);
   }
 
   return (
@@ -95,10 +98,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     display: "flex",
     width: "100%",
-    justifyContent: "flex-start",
-    "@media only screen and (max-width: 767px)": {
-      justifyContent: "space-between",
-    },
+    justifyContent: "space-between",
     minWidth: 200,
   },
   firstTab: {
@@ -124,11 +124,31 @@ const styles = StyleSheet.create({
       color: paperTabColors.HOVER_FONT,
       cursor: "pointer",
     },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 11,
+    },
+  },
+  lastTab: {
+    paddingRight: 0,
+    marginRight: 0,
+    "@media only screen and (min-width: 1288px)": {
+      marginRight: 0,
+    },
   },
   count: {
     padding: "3px 8px",
     borderRadius: 3,
     fontSize: 14,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+      padding: "3px 5px",
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 11,
+    },
   },
   ui: {
     border: "1px solid #AAA7B9",

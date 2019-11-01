@@ -1,20 +1,20 @@
-import Router, { useRouter } from "next/router";
-import Link from "next/link";
-import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
-import { connect, useDispatch, useStore } from "react-redux";
+import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
+import Router, { useRouter } from "next/router";
+import { connect, useDispatch, useStore } from "react-redux";
 
 // Components
 import ActionButton from "~/components/ActionButton";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
+import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
-import HubLabel from "~/components/Hub/HubLabel";
+import HubTag from "~/components/Hubs/HubTag";
 import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { PaperActions } from "~/redux/paper";
@@ -22,7 +22,6 @@ import VoteActions from "~/redux/vote";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 import PermissionNotificationWrapper from "../../../../components/PermissionNotificationWrapper";
@@ -129,7 +128,7 @@ const Paper = (props) => {
     let hubs =
       paper &&
       paper.hubs.map((hub, index) => {
-        return <HubLabel hub={hub} />;
+        return <HubTag tag={hub} />;
       });
     return hubs;
   }
@@ -142,6 +141,7 @@ const Paper = (props) => {
 
   return (
     <div className={css(styles.container)}>
+      <Head title={paper.title} description={paper.tagline} />
       <ComponentWrapper>
         <div className={css(styles.header)}>
           <div className={css(styles.voting)}>
@@ -153,6 +153,15 @@ const Paper = (props) => {
             />
           </div>
           <div className={css(styles.topHeader)}>
+            <div className={css(styles.mobileVoting)}>
+              <VoteWidget
+                score={score}
+                onUpvote={upvote}
+                onDownvote={downvote}
+                selected={selectedVoteType}
+                horizontalView={true}
+              />
+            </div>
             <div className={css(styles.title)}>{paper && paper.title}</div>
             <div className={css(styles.actionButtons)}>
               <PermissionNotificationWrapper
@@ -226,6 +235,16 @@ const styles = StyleSheet.create({
     fontSize: 33,
     marginBottom: 10,
     position: "relative",
+    "@media only screen and (max-width: 760px)": {
+      marginTop: 50,
+      fontSize: 28,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 25,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 21,
+    },
   },
   infoSection: {
     display: "flex",
@@ -234,6 +253,9 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     fontSize: 14,
     marginRight: 20,
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   authors: {
     display: "flex",
@@ -244,6 +266,7 @@ const styles = StyleSheet.create({
   },
   tags: {
     display: "flex",
+    alignItems: "center",
   },
   hubs: {
     display: "flex",
@@ -258,10 +281,27 @@ const styles = StyleSheet.create({
     width: 70,
     left: -80,
     top: 15,
+    "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
+  },
+  mobileVoting: {
+    display: "none",
+    "@media only screen and (max-width: 760px)": {
+      display: "unset",
+      position: "absolute",
+      top: 30,
+      left: 0,
+    },
   },
   actionButtons: {
     display: "flex",
     alignItems: "center",
+    "@media only screen and (max-width: 760px)": {
+      position: "absolute",
+      top: 30,
+      right: 0,
+    },
   },
   topHeader: {
     display: "flex",

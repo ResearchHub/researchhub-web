@@ -2,9 +2,11 @@ import { Fragment, useEffect, useState } from "react";
 
 // NPM Modules
 import { css, StyleSheet } from "aphrodite";
-import { useDispatch, useStore } from "react-redux";
+import InfiniteScroll from "react-infinite-scroller";
+import { connect, useDispatch, useStore } from "react-redux";
 
 // Components
+import Head from "~/components/Head";
 import { Comment } from "~/components/DiscussionComment";
 import { CommentEditor } from "~/components/DiscussionCommentEditor";
 import Thread from "~/components/DiscussionPageThread";
@@ -107,6 +109,7 @@ const DiscussionThreadPage = (props) => {
 
   return (
     <div>
+      <Head title={title} description={title} />
       <div className={css(styles.threadContainer)}>
         <Thread
           hostname={hostname}
