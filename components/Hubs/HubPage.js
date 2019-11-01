@@ -20,6 +20,8 @@ import { AuthActions } from "~/redux/auth";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import { PaperActions } from "../../redux/paper";
+import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
 
 const filterOptions = [
   {
@@ -224,6 +226,8 @@ class HubPage extends React.Component {
                     paper={paper}
                     index={i}
                     hubName={this.props.hubName}
+                    onUpvote={this.onUpvote}
+                    onDownvote={this.onDownvote}
                   />
                 ))}
               </InfiniteScroll>
@@ -393,6 +397,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
+  postUpvote: PaperActions.postUpvote,
+  postDownvote: PaperActions.postDownvote,
 };
 
 export default connect(
