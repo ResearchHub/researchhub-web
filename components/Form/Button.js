@@ -56,36 +56,36 @@ const Button = ({
     );
   } else {
     return (
-      <Ripples>
-        <button
+      // <Ripples>
+      <button
+        className={css(
+          styles.button,
+          isWhite && styles.isWhite,
+          size && styles[size],
+          customButtonStyle && customButtonStyle,
+          disabled && styles.disabled
+        )}
+        type={type ? type : "button"}
+        onClick={onClick ? onClick : null}
+        onSubmit={onSubmit ? onSubmit : null}
+      >
+        {icon && (
+          <img
+            src={icon}
+            className={css(styles.icon, customIconStyle && customIconStyle)}
+          />
+        )}
+        <p
           className={css(
-            styles.button,
-            isWhite && styles.isWhite,
-            size && styles[size],
-            customButtonStyle && customButtonStyle,
-            disabled && styles.disabled
+            styles.label,
+            isWhite && styles.isWhiteLabel,
+            customLabelStyle && customLabelStyle
           )}
-          type={type ? type : "button"}
-          onClick={onClick ? onClick : null}
-          onSubmit={onSubmit ? onSubmit : null}
         >
-          {icon && (
-            <img
-              src={icon}
-              className={css(styles.icon, customIconStyle && customIconStyle)}
-            />
-          )}
-          <p
-            className={css(
-              styles.label,
-              isWhite && styles.isWhiteLabel,
-              customLabelStyle && customLabelStyle
-            )}
-          >
-            {label && label}
-          </p>
-        </button>
-      </Ripples>
+          {label && label}
+        </p>
+      </button>
+      // </Ripples>
     );
   }
 };
