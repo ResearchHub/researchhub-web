@@ -8,7 +8,11 @@ const ActionButton = (props) => {
 
   function renderIcon() {
     if (icon) {
-      return <i className={icon} />;
+      return (
+        <span className={css(styles.icon)}>
+          <i className={icon} />
+        </span>
+      );
     } else if (iconNode) {
       return iconNode;
     }
@@ -39,6 +43,22 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 760px)": {
       width: 35,
       height: 35,
+    },
+    "@media only screen and (max-width: 415px)": {
+      height: 33,
+      width: 33,
+    },
+    "@media only screen and (max-width: 321px)": {
+      height: 31,
+      width: 31,
+    },
+  },
+  icon: {
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 13,
     },
   },
 });
