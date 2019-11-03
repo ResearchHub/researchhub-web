@@ -156,8 +156,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 15,
-    paddingRight: 16,
+    paddingRight: 15,
     cursor: "pointer",
+    "@media only screen and (max-width: 321px)": {
+      top: "unset",
+      paddingRight: 15,
+      bottom: 0,
+    },
   },
   error: {
     margin: 0,

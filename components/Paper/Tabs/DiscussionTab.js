@@ -181,13 +181,14 @@ const DiscussionTab = (props) => {
             </div>
           </span>
         )}
-        <Ripples>
-          <PermissionNotificationWrapper
-            onClick={addDiscussion}
-            modalMessage="create a discussion thread"
-            permissionKey="CreateDiscussionThread"
-            loginRequired={true}
-          >
+
+        <PermissionNotificationWrapper
+          onClick={addDiscussion}
+          modalMessage="create a discussion thread"
+          permissionKey="CreateDiscussionThread"
+          loginRequired={true}
+        >
+          <Ripples>
             <button
               className={css(
                 styles.addDiscussionButton,
@@ -201,8 +202,8 @@ const DiscussionTab = (props) => {
               )}
               Add Discussion
             </button>
-          </PermissionNotificationWrapper>
-        </Ripples>
+          </Ripples>
+        </PermissionNotificationWrapper>
       </div>
     );
   };
@@ -459,7 +460,7 @@ var styles = StyleSheet.create({
   addDiscussionContainer: {
     transition: "all ease-in-out 0.3s",
     opacity: 1,
-    marginTop: 10,
+    // marginTop: 10,
     "@media only screen and (max-width: 415px)": {
       backgroundColor: "#FCFCFC",
       height: "unset",
