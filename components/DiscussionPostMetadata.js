@@ -25,6 +25,7 @@ DiscussionPostMetadata.propTypes = {
 
 const User = (props) => {
   const { image, name, authorProfile } = props;
+  console.log("name", name);
   return (
     <div className={css(styles.userContainer)}>
       <AuthorAvatar author={authorProfile} name={name} disableLink={false} />

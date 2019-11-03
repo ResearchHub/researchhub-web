@@ -186,6 +186,7 @@ const DiscussionThreadCard = (props) => {
 };
 
 function createUsername({ createdBy }) {
+  console.log("createdBy", createdBy);
   if (createdBy) {
     const { firstName, lastName } = createdBy;
     return `${firstName} ${lastName}`;

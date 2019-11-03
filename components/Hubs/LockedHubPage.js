@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 25,
       marginTop: 20,
-      marginBottom: 5,
+      marginBottom: 10,
     },
   },
   subtitle: {
