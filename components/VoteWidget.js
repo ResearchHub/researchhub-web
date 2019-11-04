@@ -92,34 +92,27 @@ const VoteWidget = (props) => {
             <DownvoteButton
               selected={downvoteSelected}
               disabled={downvoteDisabled}
-              // onClick={onDownvoteClick}
               horizontalView={horizontalView}
             />
           ) : (
-            <UpvoteButton
-              selected={upvoteSelected}
-              disabled={upvoteDisabled}
-              // onClick={onUpvoteClick}
-            />
+            <UpvoteButton selected={upvoteSelected} disabled={upvoteDisabled} />
           )}
         </PermissionNotificationWrapper>
         <ScorePill score={score} />
         <PermissionNotificationWrapper
           loginRequired={true}
-          onClick={horizontalView ? onUpvoteClick :onDownvoteClick}
+          onClick={horizontalView ? onUpvoteClick : onDownvoteClick}
         >
           {horizontalView ? (
             <UpvoteButton
               selected={upvoteSelected}
               disabled={upvoteDisabled}
-              // onClick={onUpvoteClick}
               horizontalView={horizontalView}
             />
           ) : (
             <DownvoteButton
               selected={downvoteSelected}
               disabled={downvoteDisabled}
-              // onClick={onDownvoteClick}
             />
           )}
         </PermissionNotificationWrapper>
