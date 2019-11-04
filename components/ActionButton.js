@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
 const ActionButton = (props) => {
-  let { icon, iconNode, action } = props;
+  let { icon, iconNode, action, size } = props;
 
   function renderIcon() {
     if (icon) {

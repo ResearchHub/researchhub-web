@@ -10,6 +10,8 @@ import Head from "~/components/Head";
 import { Comment } from "~/components/DiscussionComment";
 import { CommentEditor } from "~/components/DiscussionCommentEditor";
 import Thread from "~/components/DiscussionPageThread";
+
+// components
 import Loader from "~/components/Loader/Loader";
 
 // Redux

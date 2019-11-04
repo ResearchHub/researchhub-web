@@ -42,6 +42,26 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 5,
     border: "1px solid #FFFFFF",
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(100% - 30px)",
+      padding: 15,
+      border: "solid 1px #F7F7FB",
+      ":hover": {
+        border: "solid 1px #D2D2E6",
+      },
+    },
+  },
+  mobileContainer: {
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(100% - 40px)",
+      padding: 20,
+      border: "solid 1px #F7F7FB",
+      backgroundColor: "#FFF",
+      marginBottom: 10,
+      ":hover": {
+        border: "solid 1px #D2D2E6",
+      },
+    },
   },
   mobileContainer: {
     "@media only screen and (max-width: 415px)": {

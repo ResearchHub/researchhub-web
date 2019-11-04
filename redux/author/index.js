@@ -7,6 +7,8 @@ import * as utils from "../utils";
 import * as discussionShim from "../discussion/shims";
 import * as paperShim from "../paper/shims";
 
+import { MessageActions } from "~/redux/message";
+
 export const AuthorActions = {
   getAuthor: ({ authorId }) => {
     return (dispatch) => {
@@ -129,6 +131,33 @@ export const AuthorActions = {
         utils.logFetchError(response);
       }
       return dispatch(action);
+    };
+  },
+
+  saveAuthorChanges: ({ changes, authorId, file }) => {
+    return (dispatch) => {
+      let config = API.PATCH_CONFIG(changes);
+      if (file) {
+        config = API.PATCH_FILE_CONFIG(changes);
+      }
+      return fetch(API.AUTHOR({ authorId }), config)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          dispatch(MessageActions.setMessage("Profile updated"));
+          dispatch(MessageActions.showMessage({ show: true }));
+
+          return dispatch({
+            type: types.SAVE_AUTHOR_CHANGES,
+            payload: {
+              ...resp,
+              doneFetching: true,
+            },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     };
   },
 };
