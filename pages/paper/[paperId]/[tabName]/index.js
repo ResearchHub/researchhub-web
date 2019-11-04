@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     padding: "30px 0px",
     margin: "auto",
     "@media only screen and (max-width: 415px)": {
-      padding: 0,
+      paddingTop: 20,
     },
   },
   header: {

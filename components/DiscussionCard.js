@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "calc(100% - 40px)",
       padding: 20,
-      border: "solid 1px #F7F7FB",
+      // border: "solid 1px #F7F7FB",
       backgroundColor: "#FFF",
       marginBottom: 10,
       ":hover": {
-        border: "solid 1px #D2D2E6",
+        // border: "solid 1px #D2D2E6",
       },
     },
   },
