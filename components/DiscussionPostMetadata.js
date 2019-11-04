@@ -25,7 +25,6 @@ DiscussionPostMetadata.propTypes = {
 
 const User = (props) => {
   const { image, name, authorProfile } = props;
-  console.log("name", name);
   return (
     <div className={css(styles.userContainer)}>
       <AuthorAvatar author={authorProfile} name={name} disableLink={false} />
@@ -61,6 +60,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     whiteSpace: "nowrap",
     alignItems: "center",
+    "@media only screen and (max-width: 436px)": {
+      fontSize: 14,
+    },
   },
   timestampContainer: {
     display: "flex",
@@ -70,9 +72,6 @@ const styles = StyleSheet.create({
     color: "#918f9b",
     fontSize: 14,
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
   },
   name: {
     marginLeft: 8,
