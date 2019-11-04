@@ -174,7 +174,9 @@ const DiscussionTab = (props) => {
               <i className="fad fa-comments" />
             </span>
             <h2 className={css(styles.noSummaryTitle)}>
-              There are no discussions for this paper yet.
+              {`There are no discussions ${
+                mobileView ? "\n" : null
+              } for this paper yet.`}
             </h2>
             <div className={css(styles.text)}>
               Please add a discussion to this paper
@@ -302,6 +304,7 @@ var styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     textAlign: "center",
+    whiteSpace: "pre-wrap",
     "@media only screen and (max-width: 415px)": {
       width: 250,
       fontSize: 16,
@@ -310,6 +313,7 @@ var styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: colors.BLACK(0.8),
+    marginBottom: 24,
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
