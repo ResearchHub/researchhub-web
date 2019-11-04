@@ -164,12 +164,12 @@ const DiscussionTab = (props) => {
     return (
       <div
         className={css(
-          styles.box,
-          formattedThreads.length < 1 && styles.plainBox
+          styles.box
+          // formattedThreads.length < 1 && styles.plainBox
         )}
       >
         {formattedThreads.length < 1 && (
-          <span className={css(styles.box, styles.plainBox)}>
+          <span className={css(styles.box)}>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
             </span>
@@ -188,21 +188,19 @@ const DiscussionTab = (props) => {
           permissionKey="CreateDiscussionThread"
           loginRequired={true}
         >
-          <Ripples>
-            <button
-              className={css(
-                styles.addDiscussionButton,
-                formattedThreads.length > 0 && styles.plainButton
-              )}
-            >
-              {formattedThreads.length > 0 && (
-                <span className={css(styles.discussionIcon)}>
-                  <i class="fad fa-comment-plus" />
-                </span>
-              )}
-              Add Discussion
-            </button>
-          </Ripples>
+          <button
+            className={css(
+              styles.addDiscussionButton,
+              formattedThreads.length > 0 && styles.plainButton
+            )}
+          >
+            {formattedThreads.length > 0 && (
+              <span className={css(styles.discussionIcon)}>
+                <i class="fad fa-comment-plus" />
+              </span>
+            )}
+            Add Discussion
+          </button>
         </PermissionNotificationWrapper>
       </div>
     );
@@ -284,7 +282,8 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       fontSize: 16,
-      backgroundColor: "#FCFCFC",
+      marginBottom: 0,
+      // marginTop: -10
     },
   },
   plainBox: {
@@ -351,7 +350,6 @@ var styles = StyleSheet.create({
       backgroundColor: colors.PURPLE(1),
     },
     "@media only screen and (max-width: 415px)": {
-      backgroundColor: "#FCFCFC",
       padding: "6px 24px",
       fontSize: 14,
     },
@@ -462,7 +460,6 @@ var styles = StyleSheet.create({
     opacity: 1,
     // marginTop: 10,
     "@media only screen and (max-width: 415px)": {
-      backgroundColor: "#FCFCFC",
       height: "unset",
     },
   },
@@ -481,7 +478,6 @@ var styles = StyleSheet.create({
   },
   componentWrapperStyles: {
     "@media only screen and (max-width: 415px)": {
-      backgroundColor: "#FCFCFC",
       width: "100%",
       paddingLeft: 0,
       paddingRight: 0,
