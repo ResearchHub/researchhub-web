@@ -960,31 +960,26 @@ class PaperUploadInfo extends React.Component {
 
   saveSummary = async () => {
     this.props.messageActions.showMessage({ load: true, show: true });
-    let query = {};
 
-    if (this.state.summaryId) {
-      query.summaryId = this.state.summaryId;
-    }
-
-    let param = {
+    const param = {
       summary: this.state.summary.toJSON(),
       paper: this.props.paperId
         ? this.props.paperId
         : this.props.paper.postedPaper.id,
     };
 
-    // TODO: Do we really want to patch a summary here?
-    //
-    // Under the current paradigm: every change to a summary should be a post
-    // request creating a new object in the db.
-    //
-    // A patch or put should ONLY be used if editing a summary that is not
-    // approved.
-    let config = this.state.summaryId // if there is a summaryid, then a paper exists
-      ? await API.PATCH_CONFIG(param)
-      : await API.POST_CONFIG(param);
+    let config = API.POST_CONFIG(param);
+    let url = API.FIRST_SUMMARY();
 
-    return fetch(API.SUMMARY(query), config)
+    if (this.state.summaryId) {
+      // if there is a summaryid, then a paper exists
+      const query = {};
+      query.summaryId = this.state.summaryId;
+      config = API.PATCH_CONFIG(param);
+      url = API.SUMMARY(query);
+    }
+
+    return await fetch(url, config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
