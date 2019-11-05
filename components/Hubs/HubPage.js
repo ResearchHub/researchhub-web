@@ -69,6 +69,7 @@ class HubPage extends React.Component {
       mobileView: false,
       mobileBanner: false,
       next: null,
+      transition: false,
     };
   }
 
@@ -125,6 +126,10 @@ class HubPage extends React.Component {
     this.setState({
       papers,
     });
+  };
+
+  updateUserBannerPreference = () => {
+    this.props.setUserBannerPreference(false);
   };
 
   componentDidMount() {
@@ -244,7 +249,18 @@ class HubPage extends React.Component {
 
     return (
       <div className={css(styles.content, styles.column)}>
-        <div className={css(styles.homeBanner)}>
+        <div
+          className={css(
+            styles.homeBanner,
+            !auth.showBanner && styles.hideBanner
+          )}
+        >
+          <span
+            className={css(styles.closeButton)}
+            onClick={this.updateUserBannerPreference}
+          >
+            <i className="fal fa-times" />
+          </span>
           <img
             src={
               this.state.mobileBanner
@@ -318,7 +334,7 @@ class HubPage extends React.Component {
                 pageStart={this.state.page}
                 loadMore={this.loadMore}
                 hasMore={this.state.next}
-                loader={<Loader loading={true} />}
+                loader={<Loader key={"hubPageLoader"} loading={true} />}
               >
                 {this.state.papers.map((paper, i) => (
                   <PaperEntryCard
@@ -391,6 +407,23 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 577px)": {
       position: "relative",
       alignItems: "unset",
+    },
+  },
+  hideBanner: {
+    display: "none",
+  },
+  closeButton: {
+    position: "absolute",
+    cursor: "pointer",
+    fontSize: 26,
+    top: 20,
+    right: 50,
+    color: "white",
+    zIndex: 3,
+    "@media only screen and (max-width: 580px)": {
+      right: 20,
+      top: 15,
+      fontSize: 20,
     },
   },
   bannerOverlay: {
@@ -650,6 +683,7 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   postUpvote: PaperActions.postUpvote,
   postDownvote: PaperActions.postDownvote,
+  setUserBannerPreference: AuthActions.setUserBannerPreference,
 };
 
 export default connect(
