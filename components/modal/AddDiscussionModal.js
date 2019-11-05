@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     scrollBehavior: "smooth",
-    marginBottom: 15,
+    // marginBottom: 15,
   },
   container: {
     width: 600,
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     width: "70%",
-    minWidth: 820,
+    // minWidth: 820,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
