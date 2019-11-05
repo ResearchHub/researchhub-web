@@ -38,20 +38,23 @@ const filterOptions = [
   },
 ];
 
-const filterScope = [
+const scopeOptions = [
   {
-    value: "year",
-    label: "This Year",
+    value: "day",
+    label: "Today",
   },
   {
     value: "month",
     label: "This Month",
   },
   {
-    value: "day",
-    label: "Today",
+    value: "year",
+    label: "This Year",
   },
 ];
+
+const defaultFilter = filterOptions[1];
+const defaultScope = scopeOptions[1];
 
 class HubPage extends React.Component {
   constructor(props) {
@@ -60,8 +63,8 @@ class HubPage extends React.Component {
       page: 0,
       count: 0,
       papers: [],
-      filterBy: {},
-      scope: {},
+      filterBy: defaultFilter,
+      scope: defaultScope,
       mobileView: false,
       mobileBanner: false,
     };
@@ -179,6 +182,15 @@ class HubPage extends React.Component {
       });
   };
 
+  onFilterSelect = (option, type) => {
+    let param = {};
+    param[type] = option;
+
+    this.setState({
+      ...param,
+    });
+  };
+
   render() {
     let { auth } = this.props;
 
@@ -236,16 +248,20 @@ class HubPage extends React.Component {
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
+                  id={"filterBy"}
                   options={filterOptions}
-                  value={filterOptions[0]}
+                  value={this.state.filterBy}
                   containerStyle={styles.dropDown}
                   inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
+                  onChange={(id, option) => this.onFilterSelect(option, id)}
                 />
                 <FormSelect
-                  options={filterScope}
-                  value={filterScope[0]}
+                  id={"scope"}
+                  options={scopeOptions}
+                  value={this.state.scope}
                   containerStyle={styles.dropDown}
                   inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
+                  onChange={(id, option) => this.onFilterSelect(option, id)}
                 />
               </div>
             </div>
