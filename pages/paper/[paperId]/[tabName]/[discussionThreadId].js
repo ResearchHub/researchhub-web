@@ -200,6 +200,9 @@ const styles = StyleSheet.create({
   threadContainer: {
     width: "80%",
     margin: "auto",
+    "@media only screen and (max-width: 415px)": {
+      width: "90%",
+    },
   },
   actionBar: {
     marginTop: 8,
