@@ -38,6 +38,7 @@ const DiscussionThreadPage = (props) => {
   const [userVote, setUserVote] = useState(
     props.discussion.success && props.discussion.userVote
   );
+  const [active, setActive] = useState(false);
 
   let title = "";
   let body = "";
@@ -115,6 +116,7 @@ const DiscussionThreadPage = (props) => {
     newComments = newComments.concat(comments);
     setTransition(true);
     setComments(newComments);
+    setActive(false);
     setTimeout(() => {
       props.showMessage({ show: false });
       setTimeout(() => {
@@ -149,7 +151,7 @@ const DiscussionThreadPage = (props) => {
       </div>
       <div className={css(styles.divider)} />
       <div className={css(styles.contentContainer)}>
-        <CommentEditor onSubmit={addSubmittedComment} />
+        <CommentEditor onSubmit={addSubmittedComment} active={active} />
         <div
           id="all_comments_container"
           className={css(styles.allCommentsContainer)}
@@ -229,6 +231,7 @@ const styles = StyleSheet.create({
   newDiscussionCardStyle: {
     backgroundColor: colors.LIGHT_YELLOW(1),
     margin: 0,
+    marginTop: 15,
   },
   discusssionCardStyle: {
     margin: 0,
