@@ -13,13 +13,16 @@ import Thread from "~/components/DiscussionPageThread";
 
 // components
 import Loader from "~/components/Loader/Loader";
+import Message from "~/components/Loader/Message";
 
 // Redux
 import DiscussionActions from "~/redux/discussion";
+import { MessageActions } from "../../../../redux/message";
 
 // Utils
 import { discussionPageColors } from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
+import colors from "../../../../config/themes/colors";
 
 const DiscussionThreadPage = (props) => {
   const dispatch = useDispatch();
@@ -31,6 +34,7 @@ const DiscussionThreadPage = (props) => {
   const [pageNumber, setPageNumber] = useState(1);
   const { count, page } = discussion.commentPage;
   const [comments, setComments] = useState([]);
+  const [transition, setTransition] = useState(false);
   const [userVote, setUserVote] = useState(
     props.discussion.success && props.discussion.userVote
   );
@@ -79,14 +83,27 @@ const DiscussionThreadPage = (props) => {
 
   function renderComments(comments) {
     return comments.map((c, i) => {
+      let highlight = false;
       let divider = <div className={css(styles.divider)} />;
       if (i === 0) {
         divider = null;
+        if (transition) {
+          highlight = true;
+        }
       }
       return (
         <Fragment key={`${c.id}-${i}`}>
           {divider}
-          <Comment key={`${c.id}-${i}`} data={c} />
+          <Comment
+            key={`${c.id}-${i}`}
+            data={c}
+            commentStyles={styles.commentStyles}
+            discussionCardStyle={
+              highlight
+                ? styles.newDiscussionCardStyle
+                : styles.discussionCardStyle
+            }
+          />
         </Fragment>
       );
     });
@@ -94,19 +111,30 @@ const DiscussionThreadPage = (props) => {
 
   function addSubmittedComment(comment) {
     let newComments = [comment];
+    props.showMessage({ load: true, show: true });
     newComments = newComments.concat(comments);
+    setTransition(true);
     setComments(newComments);
+    setTimeout(() => {
+      props.showMessage({ show: false });
+      setTimeout(() => {
+        setTransition(false);
+      }, 3000);
+    }, 400);
   }
 
   const getNextPage = async (paperId, discussionThreadId, page) => {
     await props.fetchComments(paperId, discussionThreadId, page);
-    if (props.state.commentPage.comments.length > 0) {
-      setComments([...comments, ...props.state.commentPage.comments]);
+    if (props.state.commentPage.comments) {
+      if (props.state.commentPage.comments.length > 0) {
+        setComments([...comments, ...props.state.commentPage.comments]);
+      }
     }
   };
 
   return (
     <div>
+      <Message />
       <Head title={title} description={title} />
       <div className={css(styles.threadContainer)}>
         <Thread
@@ -169,7 +197,6 @@ DiscussionThreadPage.getInitialProps = async ({ req, store, query }) => {
 const styles = StyleSheet.create({
   threadContainer: {
     width: "80%",
-    padding: "30px 0px",
     margin: "auto",
   },
   actionBar: {
@@ -196,14 +223,27 @@ const styles = StyleSheet.create({
     display: "block",
     borderColor: discussionPageColors.DIVIDER,
   },
+  commentStyles: {
+    padding: 0,
+  },
+  newDiscussionCardStyle: {
+    backgroundColor: colors.LIGHT_YELLOW(1),
+    margin: 0,
+  },
+  discusssionCardStyle: {
+    margin: 0,
+  },
 });
 
 const mapStateToProps = (state) => ({
   state: state.discussion,
+  message: state.message,
 });
 
 const mapDispatchToProps = {
   fetchComments: DiscussionActions.fetchComments,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
