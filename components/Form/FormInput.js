@@ -78,11 +78,15 @@ class FormInput extends React.Component {
             className={css(styles.searchIcon)}
           />
         )}
-        {icon && (
+        {icon && typeof icon === "string" ? (
           <img
             src={icon}
             className={css(styles.searchIcon, iconStyles && iconStyles)}
           />
+        ) : (
+          <div className={css(styles.searchIcon, iconStyles && iconStyles)}>
+            {icon}
+          </div>
         )}
         {inlineNodeRight && (
           <span className={css(styles.inlineNodeRight)}>{inlineNodeRight}</span>
@@ -151,6 +155,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 15,
     bottom: 10,
+    color: "#c5c4cc",
   },
   inlineNodeRight: {
     position: "absolute",

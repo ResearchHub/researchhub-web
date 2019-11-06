@@ -8,7 +8,7 @@ import { nameToUrl } from "~/config/constants";
 const HubLabel = (props) => {
   let { hub, onClick } = props;
   return (
-    <Link href={"/hub/[hubname]"} as={`/hub/${nameToUrl(hub.name)}`}>
+    <Link href={"/hubs/[hubname]"} as={`/hubs/${nameToUrl(hub.name)}`}>
       <div className={css(styles.hubTag)} onClick={onClick && onClick}>
         {hub.name.toUpperCase()}
       </div>

@@ -11,6 +11,7 @@ import Router from "next/router";
 // Redux
 import { ModalActions } from "../../redux/modals";
 import { PaperActions } from "../../redux/paper";
+import { MessageActions } from "../../redux/message";
 
 // Component
 import FormInput from "../Form/FormInput";
@@ -224,6 +225,7 @@ class UploadPaperModal extends React.Component {
   };
 
   navigateToPaperUploadInfo = () => {
+    this.props.messageActions.showMessage({ load: true, show: true });
     let title = this.state.search;
     Router.push({
       pathname: "/paper/upload/info",
@@ -669,6 +671,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   paperActions: bindActionCreators(PaperActions, dispatch),
+  messageActions: bindActionCreators(MessageActions, dispatch),
 });
 
 export default connect(
