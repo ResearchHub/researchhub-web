@@ -3,6 +3,7 @@ import Router from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
+import moment from "moment";
 
 // Component
 import Button from "~/components/Form/Button";
@@ -67,6 +68,7 @@ class HubPage extends React.Component {
       scope: defaultScope,
       mobileView: false,
       mobileBanner: false,
+      hasNext: false,
     };
   }
 
@@ -126,7 +128,7 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    this.fetchPapers({ page: 1, hub: this.props.hub });
+    this.fetchPapers({ hub: this.props.hub });
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
   }
@@ -138,7 +140,14 @@ class HubPage extends React.Component {
       prevProps.hub.id !== this.props.hub.id
     ) {
       this.updateDimensions();
-      this.fetchPapers({ page: 1, hub: this.props.hub });
+      this.fetchPapers({ hub: this.props.hub });
+    }
+
+    if (
+      prevState.scope !== this.state.scope ||
+      prevState.filterBy !== this.state.filterBy
+    ) {
+      this.fetchPapers({ hub: this.props.hub });
     }
   }
 
@@ -146,24 +155,19 @@ class HubPage extends React.Component {
     window.removeEventListener("resize", this.updateDimensions);
   }
 
-  fetchPapers = ({ page, hub }) => {
-    let filters = null;
+  fetchPapers = ({ hub }) => {
+    let hubId = 0;
 
     if (hub) {
-      filters = [
-        {
-          name: "hubs_id",
-          filter: "in",
-          value: hub.id,
-        },
-      ];
+      hubId = hub.id;
     }
+    let scope = this.calculateScope();
 
     return fetch(
       API.GET_HUB_PAPERS({
-        timePeriod: { start: 1563235200, end: 1570492800 },
-        hubId: 5,
-        ordering: "newest",
+        timePeriod: scope,
+        hubId: hubId,
+        ordering: this.state.filterBy.value,
       }),
       API.GET_CONFIG()
     )
@@ -172,14 +176,60 @@ class HubPage extends React.Component {
       .then((res) => {
         this.setState({
           count: res.count,
-          page: page,
-          papers:
-            page === 1
-              ? [...res.results]
-              : [...this.state.papers, ...res.results],
+          papers: res.results,
           next: res.next,
+          hasNext: res.has_next,
         });
       });
+  };
+
+  loadMore = () => {
+    let scope = this.calculateScope();
+    return fetch(
+      API.GET_HUB_PAPERS({
+        timePeriod: scope,
+        hubId: hub,
+        ordering: this.state.filterBy.value,
+      }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        this.setState({
+          papers: [...this.state.papers, ...res.results],
+          next: res.next,
+          hasNext: res.has_next,
+        });
+      });
+  };
+
+  calculateScope = () => {
+    let scope = {
+      start: 0,
+      end: 0,
+    };
+    let scopeId = this.state.scope.value;
+
+    let now = moment();
+    let today = moment().startOf("day");
+    let month = moment()
+      .startOf("day")
+      .subtract(30, "days");
+    let year = moment()
+      .startOf("day")
+      .subtract(365, "days");
+
+    scope.end = now.unix();
+
+    if (scopeId === "today") {
+      scope.start = today.unix();
+    } else if (scopeId === "month") {
+      scope.start = month.unix();
+    } else if (scopeId === "year") {
+      scope.start = year.unix();
+    }
+    return scope;
   };
 
   onFilterSelect = (option, type) => {
@@ -268,10 +318,8 @@ class HubPage extends React.Component {
             <div className={css(styles.infiniteScroll)}>
               <InfiniteScroll
                 pageStart={this.state.page}
-                loadMore={(count) => {
-                  this.fetchPapers({ page: count + 1, hub: this.props.hub });
-                }}
-                hasMore={this.state.count > this.state.papers.length}
+                loadMore={this.loadMore}
+                hasMore={this.hasNext}
                 loader={<Loader loading={true} />}
               >
                 {this.state.papers.map((paper, i) => (
