@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import Progress from "react-progressbar";
@@ -110,6 +110,7 @@ class PaperUploadInfo extends React.Component {
       let form = { ...this.state.form };
       form.title = paperTitle;
       this.setState({ form });
+      messageActions.showMessage({ show: false });
     }
   }
 
@@ -526,111 +527,119 @@ class PaperUploadInfo extends React.Component {
                 id={"title"}
                 onChange={this.handleInputChange}
               />
-              <span className={css(styles.container)}>
-                <AuthorInput
-                  tags={this.state.selectedAuthors}
-                  onChange={this.handleAuthorChange}
-                  onChangeInput={this.searchAuthors}
-                  inputValue={searchAuthor}
-                  label={"Authors"}
-                  required={true}
-                  error={error.author}
-                  labelStyle={styles.labelStyle}
-                />
-              </span>
-              <span className={css(styles.container)}>
-                <AuthorCardList
-                  show={showAuthorList}
-                  authors={suggestedAuthors}
-                  loading={loading}
-                  addAuthor={this.openAddAuthorModal}
-                  onAuthorClick={this.handleAuthorSelect}
-                />
-              </span>
-              <div className={css(styles.row, styles.authorCheckboxContainer)}>
-                <CheckBox
-                  isSquare={true}
-                  active={form.author.self_author}
-                  label={"I am an author of this paper"}
-                  id={"author.self_author"}
-                  onChange={this.handleSelfAuthorToggle}
-                  labelStyle={styles.labelStyle}
-                />
-              </div>
-              <div className={css(styles.row)}>
-                <FormSelect
-                  label={"Year of Publication"}
-                  placeholder="yyyy"
-                  required={true}
-                  containerStyle={styles.smallContainer}
-                  inputStyle={styles.smallInput}
-                  value={form.published.year}
-                  id={"published.year"}
-                  options={Options.range(1960, 2019)}
-                  onChange={this.handleInputChange}
-                  error={error.year}
-                  labelStyle={styles.labelStyle}
-                />
-                <FormSelect
-                  label={"Month of Publication"}
-                  placeholder="month"
-                  required={true}
-                  containerStyle={styles.smallContainer}
-                  inputStyle={styles.smallInput}
-                  value={form.published.month}
-                  id={"published.month"}
-                  options={Options.months}
-                  onChange={this.handleInputChange}
-                  error={error.month}
-                  labelStyle={styles.labelStyle}
-                />
-              </div>
-              <div className={css(styles.section, styles.leftAlign)}>
-                <div className={css(styles.row, styles.minHeight)}>
-                  <span className={css(styles.section, styles.leftAlign)}>
-                    <p className={css(styles.label, styles.labelStyle)}>Type</p>
-                    <div className={css(styles.checkboxRow)}>
-                      <CheckBox
-                        active={form.type.journal}
-                        label={"Journal"}
-                        id={"journal"}
-                        onChange={this.handleCheckBoxToggle}
-                        labelStyle={styles.labelStyle}
-                      />
-                      <CheckBox
-                        active={form.type.conference}
-                        label={"Conference"}
-                        id={"conference"}
-                        onChange={this.handleCheckBoxToggle}
-                        labelStyle={styles.labelStyle}
-                      />
-                      <CheckBox
-                        active={form.type.other}
-                        label={"Other"}
-                        id={"other"}
-                        onChange={this.handleCheckBoxToggle}
-                        labelStyle={styles.labelStyle}
-                      />
-                    </div>
-                  </span>
-                  <span
-                    className={css(
-                      styles.doi
-                      // !mobile && this.state.form.type.journal && styles.reveal,
-                    )}
-                  >
-                    <FormInput
-                      label={"DOI"}
-                      placeholder="Enter DOI of paper"
-                      id={"doi"}
-                      value={form.doi}
-                      containerStyle={styles.doiInput}
+              {editMode && (
+                <Fragment>
+                  <span className={css(styles.container)}>
+                    <AuthorInput
+                      tags={this.state.selectedAuthors}
+                      onChange={this.handleAuthorChange}
+                      onChangeInput={this.searchAuthors}
+                      inputValue={searchAuthor}
+                      label={"Authors"}
+                      required={true}
+                      error={error.author}
                       labelStyle={styles.labelStyle}
-                      onChange={this.handleInputChange}
                     />
                   </span>
-                </div>
-              </div>
+                  <span className={css(styles.container)}>
+                    <AuthorCardList
+                      show={showAuthorList}
+                      authors={suggestedAuthors}
+                      loading={loading}
+                      addAuthor={this.openAddAuthorModal}
+                      onAuthorClick={this.handleAuthorSelect}
+                    />
+                  </span>
+                  <div
+                    className={css(styles.row, styles.authorCheckboxContainer)}
+                  >
+                    <CheckBox
+                      isSquare={true}
+                      active={form.author.self_author}
+                      label={"I am an author of this paper"}
+                      id={"author.self_author"}
+                      onChange={this.handleSelfAuthorToggle}
+                      labelStyle={styles.labelStyle}
+                    />
+                  </div>
+                  <div className={css(styles.row)}>
+                    <FormSelect
+                      label={"Year of Publication"}
+                      placeholder="yyyy"
+                      required={true}
+                      containerStyle={styles.smallContainer}
+                      inputStyle={styles.smallInput}
+                      value={form.published.year}
+                      id={"published.year"}
+                      options={Options.range(1960, 2019)}
+                      onChange={this.handleInputChange}
+                      error={error.year}
+                      labelStyle={styles.labelStyle}
+                    />
+                    <FormSelect
+                      label={"Month of Publication"}
+                      placeholder="month"
+                      required={true}
+                      containerStyle={styles.smallContainer}
+                      inputStyle={styles.smallInput}
+                      value={form.published.month}
+                      id={"published.month"}
+                      options={Options.months}
+                      onChange={this.handleInputChange}
+                      error={error.month}
+                      labelStyle={styles.labelStyle}
+                    />
+                  </div>
+                  <div className={css(styles.section, styles.leftAlign)}>
+                    <div className={css(styles.row, styles.minHeight)}>
+                      <span className={css(styles.section, styles.leftAlign)}>
+                        <p className={css(styles.label, styles.labelStyle)}>
+                          Type
+                        </p>
+                        <div className={css(styles.checkboxRow)}>
+                          <CheckBox
+                            active={form.type.journal}
+                            label={"Journal"}
+                            id={"journal"}
+                            onChange={this.handleCheckBoxToggle}
+                            labelStyle={styles.labelStyle}
+                          />
+                          <CheckBox
+                            active={form.type.conference}
+                            label={"Conference"}
+                            id={"conference"}
+                            onChange={this.handleCheckBoxToggle}
+                            labelStyle={styles.labelStyle}
+                          />
+                          <CheckBox
+                            active={form.type.other}
+                            label={"Other"}
+                            id={"other"}
+                            onChange={this.handleCheckBoxToggle}
+                            labelStyle={styles.labelStyle}
+                          />
+                        </div>
+                      </span>
+                      <span
+                        className={css(
+                          styles.doi
+                          // !mobile && this.state.form.type.journal && styles.reveal,
+                        )}
+                      >
+                        <FormInput
+                          label={"DOI"}
+                          placeholder="Enter DOI of paper"
+                          id={"doi"}
+                          value={form.doi}
+                          containerStyle={styles.doiInput}
+                          labelStyle={styles.labelStyle}
+                          onChange={this.handleInputChange}
+                        />
+                      </span>
+                    </div>
+                  </div>
+                </Fragment>
+              )}
               <FormSelect
                 label={"Hubs"}
                 placeholder="Select up to 3 hubs"
@@ -844,28 +853,37 @@ class PaperUploadInfo extends React.Component {
     let { paper } = this.props;
     let error = { ...this.state.error };
     let pass = true;
-    if (!published.year) {
-      pass = false;
-      error.year = true;
-    }
-    if (!published.month) {
-      pass = false;
-      error.month = true;
-    }
     if (hubs.length < 1) {
       pass = false;
       error.hubs = true;
     }
-    if (
-      !this.state.editMode &&
-      !(Object.keys(paper.uploadedPaper).length > 0)
-    ) {
-      pass = false;
-      error.dnd = true;
-    }
-    if (author.self_author === false && this.state.selectedAuthors.length < 1) {
-      pass = false;
-      error.author = true;
+    if (this.state.editMode) {
+      if (!published.year) {
+        pass = false;
+        error.year = true;
+      }
+      if (!published.month) {
+        pass = false;
+        error.month = true;
+      }
+      if (hubs.length < 1) {
+        pass = false;
+        error.hubs = true;
+      }
+      if (
+        !this.state.editMode &&
+        !(Object.keys(paper.uploadedPaper).length > 0)
+      ) {
+        pass = false;
+        error.dnd = true;
+      }
+      if (
+        author.self_author === false &&
+        this.state.selectedAuthors.length < 1
+      ) {
+        pass = false;
+        error.author = true;
+      }
     }
     this.setState({ error });
     return pass;
@@ -873,13 +891,16 @@ class PaperUploadInfo extends React.Component {
 
   postPaper = async (request = "POST") => {
     const body = { ...this.state.form };
-    body.authors = this.state.selectedAuthors.map((author) => author.id);
     body.hubs = body.hubs.map((hub) => hub.id);
-    body.publishDate = this.formatPublishDate(body.published);
-    body.url = ""; // TODO: Add this optional field
-    body.type = Object.keys(body.type)
-      .filter((type) => body.type[type] && String(type))
-      .pop();
+
+    if (this.state.editMode) {
+      body.authors = this.state.selectedAuthors.map((author) => author.id);
+      body.publishDate = this.formatPublishDate(body.published);
+      body.url = ""; // TODO: Add this optional field
+      body.type = Object.keys(body.type)
+        .filter((type) => body.type[type] && String(type))
+        .pop();
+    }
 
     // send form object to the backend
     if (!this.state.editMode) {

@@ -20,11 +20,9 @@ class AddAuthorModal extends React.Component {
       last_name: "",
       // university: "",
       email: "",
-      social_media: {
-        facebook: "",
-        linked_in: "",
-        web: "",
-      },
+      facebook: "",
+      linked_in: "",
+      twitter: "",
       showLinks: false,
       mobileView: false,
     };
@@ -114,7 +112,9 @@ class AddAuthorModal extends React.Component {
       last_name,
       university,
       email,
-      social_media,
+      facebook,
+      linked_in,
+      twitter,
       showLinks,
       mobileView,
     } = this.state;
@@ -194,12 +194,12 @@ class AddAuthorModal extends React.Component {
             />
 
             <div className={css(styles.socialMediaContainer)}>
-              <div className={css(styles.inputLabel)}>
+              <div
+                className={css(styles.inputLabel)}
+                onClick={this.toggleShowLinks}
+              >
                 Social Media Links
-                <div
-                  className={css(styles.dropdownIcon)}
-                  onClick={this.toggleShowLinks}
-                >
+                <div className={css(styles.dropdownIcon)}>
                   {showLinks ? (
                     <i class="fal fa-angle-down" style={{ fontSize: "25px" }} />
                   ) : (
@@ -214,7 +214,7 @@ class AddAuthorModal extends React.Component {
                 )}
               >
                 <FormInput
-                  value={social_media.facebook}
+                  value={facebook}
                   placeholder={"Paste Link Here"}
                   id={"facebook"}
                   onChange={this.handleInputChange}
@@ -225,7 +225,7 @@ class AddAuthorModal extends React.Component {
                   labelStyle={styles.labelStyle}
                 />
                 <FormInput
-                  value={social_media.linked_in}
+                  value={linked_in}
                   placeholder={"Paste Link Here"}
                   id={"linked_in"}
                   onChange={this.handleInputChange}
@@ -236,14 +236,14 @@ class AddAuthorModal extends React.Component {
                   labelStyle={styles.labelStyle}
                 />
                 <FormInput
-                  value={social_media.web}
+                  value={twitter}
                   placeholder={"Paste Link Here"}
-                  id={"web"}
+                  id={"twitter"}
                   onChange={this.handleInputChange}
                   inputStyle={styles.inputStyle}
                   containerStyle={styles.inputStyle}
                   iconStyles={styles.icon}
-                  icon={"/static/icons/web.png"}
+                  icon={<i className="fab fa-twitter" />}
                   labelStyle={styles.labelStyle}
                 />
               </span>

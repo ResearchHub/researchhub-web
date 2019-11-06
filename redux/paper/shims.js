@@ -25,19 +25,21 @@ export const paperPost = ({
   tagline,
 }) => {
   let formData = new FormData();
-  authors.forEach((author) => {
-    return formData.append("authors", author);
-  });
-  hubs.forEach((hub) => {
-    return formData.append("hubs", hub);
-  });
-  formData.append("doi", doi);
-  formData.append("title", title);
+  authors &&
+    authors.forEach((author) => {
+      return formData.append("authors", author);
+    });
+  hubs &&
+    hubs.forEach((hub) => {
+      return formData.append("hubs", hub);
+    });
+  doi && formData.append("doi", doi);
+  title && formData.append("title", title);
   file && formData.append("file", file);
-  formData.append("paper_publish_date", publishDate);
-  formData.append("url", url);
-  formData.append("publication_type", type);
-  formData.append("tagline", tagline);
+  publishDate && formData.append("paper_publish_date", publishDate);
+  url && formData.append("url", url);
+  type && formData.append("publication_type", type);
+  tagline && formData.append("tagline", tagline);
   return formData;
 };
 
