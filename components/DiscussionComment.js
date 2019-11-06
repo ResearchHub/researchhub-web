@@ -13,6 +13,7 @@ import VoteWidget from "~/components/VoteWidget";
 import Loader from "~/components/Loader/Loader";
 
 import DiscussionActions from "~/redux/discussion";
+import { MessageActions } from "~/redux/message";
 
 import { UPVOTE, DOWNVOTE } from "../config/constants";
 import { voteWidgetIcons } from "~/config/themes/icons";
@@ -184,6 +185,7 @@ class CommentClass extends DiscussionComment {
     this.state.transition = false;
     this.state.loaded = false;
     this.state.windowPostion = null;
+    this.state.highlight = false;
     this.ref = React.createRef();
   }
 
@@ -237,12 +239,21 @@ class CommentClass extends DiscussionComment {
 
   addSubmittedReply = (reply) => {
     // if (!doesNotExist(reply)) {
-    let newReplies = [reply];
-    newReplies = newReplies.concat(this.state.replies);
-    this.setState({
-      replies: newReplies,
-      replyCount: newReplies.length,
-      toggleReplies: true,
+    this.props.dispatch(MessageActions.showMessage({ show: true, load: true }));
+    this.setState({ highlight: true }, () => {
+      this.props.dispatch(MessageActions.showMessage({ show: false }));
+      let newReplies = [reply];
+      newReplies = newReplies.concat(this.state.replies);
+      this.setState({
+        replies: newReplies,
+        replyCount: newReplies.length,
+        toggleReplies: true,
+      });
+      setTimeout(() => {
+        setTimeout(() => {
+          this.setState({ highlight: false });
+        }, 2000);
+      }, 400);
     });
     // }
   };
@@ -284,7 +295,11 @@ class CommentClass extends DiscussionComment {
             key={r.id}
             data={r}
             commentId={this.state.id}
-            replyCardStyle={styles.replyCardContainer}
+            replyCardStyle={
+              this.state.highlight && i === 0
+                ? styles.highlight
+                : styles.replyCardContainer
+            }
             commentStyles={styles.replyInputContainer}
           />
         );
@@ -372,6 +387,15 @@ const styles = StyleSheet.create({
     // paddingTop: "32px",
     // borderTop: `1px solid ${colors.GREY(1)}`,
     // borderBottom: `1px solid ${colors.GREY(1)}`
+  },
+  highlight: {
+    paddingTop: 7,
+    paddingBottom: 7,
+    "@media only screen and (max-width: 415px)": {
+      borderRadius: 0,
+      borderLeft: `1px solid ${discussionPageColors.DIVIDER}`,
+    },
+    backgroundColor: colors.LIGHT_YELLOW(1),
   },
   replyCardContainer: {
     paddingTop: 7,
