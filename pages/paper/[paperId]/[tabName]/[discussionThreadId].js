@@ -216,6 +216,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    "@media only screen and (max-width: 415px)": {
+      width: "90%",
+    },
   },
   allCommentsContainer: {
     width: "100%",
