@@ -400,15 +400,21 @@ const styles = StyleSheet.create({
   highlight: {
     paddingTop: 7,
     paddingBottom: 7,
+    paddingLeft: 30,
+    paddingRight: 30,
     "@media only screen and (max-width: 415px)": {
       borderRadius: 0,
       borderLeft: `1px solid ${discussionPageColors.DIVIDER}`,
+      paddingLeft: 15,
+      paddingRight: 15,
     },
     backgroundColor: colors.LIGHT_YELLOW(1),
   },
   replyCardContainer: {
     paddingTop: 7,
     paddingBottom: 7,
+    paddingLeft: 30,
+    paddingRight: 30,
     "@media only screen and (max-width: 415px)": {
       borderRadius: 0,
       borderLeft: `1px solid ${discussionPageColors.DIVIDER}`,

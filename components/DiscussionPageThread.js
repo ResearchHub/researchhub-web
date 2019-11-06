@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
   },
   actionbar: {
     display: "flex",
+    justifyContent: "flex-end",
     width: "100%",
     "@media only screen and (max-width: 761px)": {
       flexDirection: "row",
