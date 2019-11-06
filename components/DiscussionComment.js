@@ -148,6 +148,7 @@ class DiscussionComment extends React.Component {
         readOnly={this.state.readOnly}
         onSubmit={this.updateText}
         initialValue={this.state.text}
+        commentStyles={this.props.commentStyles && this.props.commentStyles}
       />
     );
   };
@@ -162,6 +163,11 @@ class DiscussionComment extends React.Component {
           info={this.renderInfo()}
           infoStyle={this.props.infoStyle}
           action={action}
+          containerStyle={
+            this.props.discussionCardStyle
+              ? this.props.discussionCardStyle
+              : this.props.replyCardStyle && this.props.replyCardStyle
+          }
         />
       </div>
     );
@@ -219,6 +225,7 @@ class CommentClass extends DiscussionComment {
           onCancel={() => this.setState({ showReplyBox: false })}
           onSubmit={this.addSubmittedReply}
           commentId={this.state.id}
+          commentStyles={styles.overrideReplyStyle}
         />
         {/* {this.createdByCurrentUser() && (
           <EditAction onClick={this.setReadOnly} />
@@ -234,13 +241,13 @@ class CommentClass extends DiscussionComment {
     newReplies = newReplies.concat(this.state.replies);
     this.setState({
       replies: newReplies,
+      replyCount: newReplies.length,
       toggleReplies: true,
     });
     // }
   };
 
   toggleReplies = () => {
-    window.scrollTo(0, this.state.windowPostion);
     this.setState(
       {
         toggleReplies: !this.state.toggleReplies,
@@ -249,10 +256,6 @@ class CommentClass extends DiscussionComment {
       () => {
         setTimeout(() => {
           this.setState({ transition: false, loaded: true }, () => {
-            // this.ref.current.scrollIntoView({
-            //   behavior: 'smooth',
-            //   block: 'start',
-            // });
             window.scrollTo(0, this.state.windowPostion);
           });
         }, 400);
@@ -276,7 +279,15 @@ class CommentClass extends DiscussionComment {
     const replies =
       this.state.replies &&
       this.state.replies.map((r, i) => {
-        return <Reply key={r.id} data={r} commentId={this.state.id} />;
+        return (
+          <Reply
+            key={r.id}
+            data={r}
+            commentId={this.state.id}
+            replyCardStyle={styles.replyCardContainer}
+            commentStyles={styles.replyInputContainer}
+          />
+        );
       });
 
     if (replies.length > 0) {
@@ -362,6 +373,21 @@ const styles = StyleSheet.create({
     // borderTop: `1px solid ${colors.GREY(1)}`,
     // borderBottom: `1px solid ${colors.GREY(1)}`
   },
+  replyCardContainer: {
+    paddingTop: 7,
+    paddingBottom: 7,
+    "@media only screen and (max-width: 415px)": {
+      borderRadius: 0,
+      borderLeft: `1px solid ${discussionPageColors.DIVIDER}`,
+    },
+  },
+  replyInputContainer: {
+    padding: 0,
+  },
+  overrideDiscussionCardContainerStyle: {
+    margin: 0,
+    backgroundColor: "lightyellow",
+  },
   commentEditor: {
     minHeight: "100%",
     padding: "0px",
@@ -390,6 +416,10 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.2s",
     height: 0,
     opacity: 0,
+  },
+  overrideReplyStyle: {
+    borderLeft: "1px solid",
+    borderColor: discussionPageColors.DIVIDER,
   },
   show: {
     height: "calc(100%)",
