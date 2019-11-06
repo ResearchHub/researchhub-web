@@ -424,7 +424,7 @@ const AuthorPage = (props) => {
                   />
                   <div className={css(styles.actionContainer)}>
                     {renderCancelButton(SECTIONS.name)}
-                    {renderSaveButton(SECTIONS.name)}
+                    {renderSaveButton(SECTIONS.name, {})}
                   </div>
                 </div>
               )
@@ -464,7 +464,7 @@ const AuthorPage = (props) => {
                   />
                   <div className={css(styles.actionContainer)}>
                     {renderCancelButton(SECTIONS.description)}
-                    {renderSaveButton(SECTIONS.description)}
+                    {renderSaveButton(SECTIONS.description, {})}
                   </div>
                 </div>
               )
