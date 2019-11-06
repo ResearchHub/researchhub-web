@@ -68,7 +68,7 @@ class HubPage extends React.Component {
       scope: defaultScope,
       mobileView: false,
       mobileBanner: false,
-      hasNext: false,
+      next: null,
     };
   }
 
@@ -178,7 +178,6 @@ class HubPage extends React.Component {
           count: res.count,
           papers: res.results,
           next: res.next,
-          hasNext: res.has_next,
         });
       });
   };
@@ -199,7 +198,6 @@ class HubPage extends React.Component {
         this.setState({
           papers: [...this.state.papers, ...res.results],
           next: res.next,
-          hasNext: res.has_next,
         });
       });
   };
@@ -319,7 +317,7 @@ class HubPage extends React.Component {
               <InfiniteScroll
                 pageStart={this.state.page}
                 loadMore={this.loadMore}
-                hasMore={this.hasNext}
+                hasMore={this.state.next}
                 loader={<Loader loading={true} />}
               >
                 {this.state.papers.map((paper, i) => (
