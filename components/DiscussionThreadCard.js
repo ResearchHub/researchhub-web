@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   newCard: {
-    backgroundColor: colors.LIGHT_GREEN(1),
+    backgroundColor: colors.LIGHT_YELLOW(1),
   },
   column: {
     display: "flex",

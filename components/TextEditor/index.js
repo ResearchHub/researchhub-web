@@ -32,6 +32,7 @@ const TextEditor = (props) => {
     placeholder,
     hideCancelButton,
     containerStyles,
+    commentStyles,
   } = props;
 
   const [value, setValue] = useState(convertToEditorValue(initialValue));
@@ -44,6 +45,10 @@ const TextEditor = (props) => {
 
   function cancel() {
     onCancel && onCancel();
+  }
+
+  function resetValue() {
+    setValue(convertToEditorValue(""));
   }
 
   async function submit() {
@@ -60,6 +65,7 @@ const TextEditor = (props) => {
       if (success && clearOnSubmit !== false) {
         editorRef.clear();
       }
+      resetValue();
     }
   }
 
@@ -88,6 +94,7 @@ const TextEditor = (props) => {
       placeholder={placeholder && placeholder}
       autoFocus={true}
       hideCancelButton={hideCancelButton && hideCancelButton}
+      commentStyles={commentStyles && commentStyles}
     />
   );
 };

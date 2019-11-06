@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     padding: 50,
     overflow: "scroll",
     opacity: 0,
-    transition: "all ease-in-out 0.2s",
+    transition: "all ease-in-out 0.4s",
     "@media only screen and (max-width: 415px)": {
       padding: "50px 0px 0px 0px",
     },
