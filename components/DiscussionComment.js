@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       flexDirection: "column",
       alignItems: "flex-start",
-      marginBottom: 10,
+      marginBottom: 14,
     },
   },
   mobileInfoContainer: {
