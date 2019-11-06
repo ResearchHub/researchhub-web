@@ -49,6 +49,9 @@ const DiscussionCommentEditor = (props) => {
       { dispatch, store, paperId, discussionThreadId, commentId, onSubmit },
       text
     );
+    setTimeout(() => {
+      setIsActive(false);
+    }, 400);
   };
 
   function onClick() {
@@ -148,6 +151,16 @@ export const ReplyEditor = (props) => {
     }, 100);
   }
 
+  function closeOnSubmit(props, text) {
+    setTimeout(() => {
+      setTransition(false);
+      setTimeout(() => {
+        setReply(false);
+      }, 280);
+    }, 100);
+    onSubmit && onSubmit(props, text);
+  }
+
   return (
     <div className={css(styles.actionBar, transition && styles.reveal)}>
       {!reply ? (
@@ -167,7 +180,7 @@ export const ReplyEditor = (props) => {
         <DiscussionCommentEditor
           active={true}
           getRef={containerRef}
-          onSubmit={onSubmit}
+          onSubmit={closeOnSubmit}
           postMethod={postReply}
           commentId={commentId}
           commentEditor={true}

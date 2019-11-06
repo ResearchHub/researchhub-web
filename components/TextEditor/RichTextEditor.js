@@ -463,8 +463,6 @@ class RichTextEditor extends React.Component {
    */
 
   onChange = ({ value }) => {
-    console.log("called");
-    console.log("value", value);
     this.setState({ value });
     this.props.onChange(value);
   };
