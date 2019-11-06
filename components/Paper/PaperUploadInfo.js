@@ -994,6 +994,12 @@ class PaperUploadInfo extends React.Component {
           });
           this.nextStep();
         }, 400);
+      })
+      .catch((err) => {
+        this.props.messageActions.showMessage({ show: false });
+        this.props.messageActions.setMessage("Unable to submit summary");
+        this.props.messageActions.showMessage({ show: true, error: true });
+        console.error(err);
       });
   };
 
