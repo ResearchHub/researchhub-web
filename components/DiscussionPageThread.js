@@ -227,11 +227,11 @@ const styles = StyleSheet.create({
   },
   actionbar: {
     display: "flex",
+    width: "100%",
     "@media only screen and (max-width: 761px)": {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      width: "calc(100% - 15px)",
       marginTop: 15,
     },
   },
@@ -273,6 +273,9 @@ const styles = StyleSheet.create({
   },
   backButtonLabel: {
     marginLeft: 10,
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   voteWidget: {
     marginRight: 18,

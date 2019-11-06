@@ -72,6 +72,9 @@ const styles = StyleSheet.create({
     color: "#918f9b",
     fontSize: 14,
     fontFamily: "Roboto",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   name: {
     marginLeft: 8,

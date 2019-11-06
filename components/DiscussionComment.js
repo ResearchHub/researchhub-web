@@ -127,17 +127,30 @@ class DiscussionComment extends React.Component {
   renderTop = () => {
     return (
       <Fragment>
-        <VoteWidget
-          score={this.state.score}
-          onUpvote={this.upvote}
-          onDownvote={this.downvote}
-          selected={this.state.selectedVoteType}
-        />
-        <DiscussionPostMetadata
-          username={this.state.username}
-          authorProfile={this.props.data.createdBy.authorProfile}
-          date={this.state.date}
-        />
+        <div className={css(styles.topbarContainer)}>
+          <div className={css(styles.votingWidget)}>
+            <VoteWidget
+              score={this.state.score}
+              onUpvote={this.upvote}
+              onDownvote={this.downvote}
+              selected={this.state.selectedVoteType}
+            />
+          </div>
+          <span className={css(styles.mobileVotingWidget)}>
+            <VoteWidget
+              score={this.state.score}
+              onUpvote={this.upvote}
+              onDownvote={this.downvote}
+              horizontalView={true}
+              selected={this.state.selectedVoteType}
+            />
+          </span>
+          <DiscussionPostMetadata
+            username={this.state.username}
+            authorProfile={this.props.data.createdBy.authorProfile}
+            date={this.state.date}
+          />
+        </div>
       </Fragment>
     );
   };
@@ -162,7 +175,7 @@ class DiscussionComment extends React.Component {
         <DiscussionCard
           top={this.renderTop()}
           info={this.renderInfo()}
-          infoStyle={this.props.infoStyle}
+          infoStyle={[this.props.infoStyle, styles.mobileInfoContainer]}
           action={action}
           containerStyle={
             this.props.discussionCardStyle
@@ -383,11 +396,7 @@ export const Reply = connect(
 )(ReplyClass);
 
 const styles = StyleSheet.create({
-  commentContainer: {
-    // paddingTop: "32px",
-    // borderTop: `1px solid ${colors.GREY(1)}`,
-    // borderBottom: `1px solid ${colors.GREY(1)}`
-  },
+  commentContainer: {},
   highlight: {
     paddingTop: 7,
     paddingBottom: 7,
@@ -403,6 +412,8 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       borderRadius: 0,
       borderLeft: `1px solid ${discussionPageColors.DIVIDER}`,
+      paddingLeft: 15,
+      paddingRight: 15,
     },
   },
   replyInputContainer: {
@@ -435,6 +446,7 @@ const styles = StyleSheet.create({
   showReplyContainer: {
     display: "flex",
     justifyContent: "flex-start",
+    marginBottom: 8,
   },
   replyContainer: {
     transition: "all ease-in-out 0.2s",
@@ -458,5 +470,42 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+  },
+  votingWidget: {
+    "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
+  },
+  mobileVotingWidget: {
+    display: "none",
+    "@media only screen and (max-width: 760px)": {
+      display: "flex",
+      marginBottom: 15,
+    },
+    "@media only screen and (max-width: 415px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 10,
+    },
+  },
+  topbarContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    "@media only screen and (max-width: 760px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 15,
+    },
+    "@media only screen and (max-width: 415px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 10,
+    },
+  },
+  mobileInfoContainer: {
+    "@media only screen and (max-width: 760px)": {
+      paddingLeft: 0,
+    },
   },
 });
