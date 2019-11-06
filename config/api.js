@@ -245,7 +245,7 @@ const routes = (BASE_URL) => {
     GET_HUB_PAPERS: ({ hubId, timePeriod, ordering, page = 1 }) => {
       let url =
         BASE_URL +
-        `hub/${hubId}/get_hub_papers/?page=${page}&uploaded_date__gte=${timePeriod.start}&uploaded_date__lte=${timePeriod.end}&ordering=${ordering}`;
+        `paper/get_hub_papers/?page=${page}&uploaded_date__gte=${timePeriod.start}&uploaded_date__lte=${timePeriod.end}&ordering=${ordering}&hub_id=${hubId}`;
       return url;
     },
     HUB_SUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/subscribe/`,
