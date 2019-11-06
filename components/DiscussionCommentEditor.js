@@ -242,6 +242,9 @@ const styles = StyleSheet.create({
   },
   reveal: {
     height: 240,
+    "@media only screen and (max-width: 415px)": {
+      height: 306,
+    },
   },
   threadTitle: {
     width: "100%",
