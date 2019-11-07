@@ -252,7 +252,7 @@ class HubPage extends React.Component {
         <div
           className={css(
             styles.homeBanner,
-            !auth.showBanner && styles.hideBanner
+            !auth.showBanner || (this.state.mobileView && styles.hideBanner)
           )}
         >
           <span
