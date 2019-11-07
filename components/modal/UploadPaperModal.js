@@ -14,6 +14,7 @@ import { PaperActions } from "../../redux/paper";
 import { MessageActions } from "../../redux/message";
 
 // Component
+import BaseModal from "../modal/BaseModal";
 import FormInput from "../Form/FormInput";
 import PaperEntry from "../SearchSuggestion/PaperEntry";
 import Loader from "../Loader/Loader";
@@ -283,14 +284,11 @@ class UploadPaperModal extends React.Component {
       );
     });
     return (
-      <Modal
+      <BaseModal
         isOpen={modals.openUploadPaperModal}
         closeModal={this.closeModal}
         onRequestClose={this.closeModal}
-        shouldCloseOnOverlayClick={true}
-        className={css(styles.modal)}
-        style={mobileView ? mobileOverlayStyles : overlayStyles}
-        onAfterOpen={this.disableParentScroll}
+        removeDefault={true}
       >
         <div
           className={css(styles.modalContent, transition && styles.transition)}
@@ -379,36 +377,10 @@ class UploadPaperModal extends React.Component {
             />
           </span>
         </div>
-      </Modal>
+      </BaseModal>
     );
   }
 }
-
-const overlayStyles = {
-  overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.2)",
-    zIndex: "11",
-    borderRadius: 5,
-  },
-};
-
-const mobileOverlayStyles = {
-  overlay: {
-    position: "fixed",
-    top: 80,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.2)",
-    zIndex: "11",
-    borderRadius: 5,
-  },
-};
 
 const styles = StyleSheet.create({
   modal: {
