@@ -487,12 +487,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       width: 270,
     },
-    //   "@media only screen and (max-width: 557px)": {
-    //     fontSize: 14,
-    //   },
-    //   "@media only screen and (max-width: 410px)": {
-    //     fontSize: 12,
-    //   },
   },
   labelStyle: {
     "@media only screen and (max-width: 665px)": {
