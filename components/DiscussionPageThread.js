@@ -264,6 +264,7 @@ const styles = StyleSheet.create({
   },
   commentStylesEdit: {
     padding: 16,
+    lineHeight: 1.6,
   },
   backButton: {
     color: colors.BLACK(0.5),

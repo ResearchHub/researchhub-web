@@ -49,7 +49,11 @@ export const ToolBar = (props) => {
           />
         )}
         {!props.hideButton && (
-          <FormButton onClick={props.submit} label="Submit" />
+          <FormButton
+            onClick={props.submit}
+            label="Submit"
+            customButtonStyle={styles.buttonStyle}
+          />
         )}
       </div>
     </div>
@@ -109,5 +113,13 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     marginRight: 10,
+    "@media only screen and (max-width: 577px)": {
+      width: 100,
+    },
+  },
+  buttonStyle: {
+    "@media only screen and (max-width: 577px)": {
+      width: 100,
+    },
   },
 });

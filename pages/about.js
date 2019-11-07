@@ -85,6 +85,7 @@ class Index extends React.Component {
       <div className={css(styles.page)}>
         <div className={css(styles.banner)}>
           <img
+            draggable={false}
             src={"/static/background/background-about.png"}
             className={css(styles.bannerOverlay)}
           />
@@ -113,6 +114,7 @@ class Index extends React.Component {
         </div>
         <div className={css(styles.valuesContainer)}>
           <img
+            draggable={false}
             src={"/static/about/valueOverlay.png"}
             className={css(styles.bannerOverlay)}
           />
@@ -132,6 +134,7 @@ class Index extends React.Component {
             {this.renderContacts("phone", "+1215 333 333")}
           </div>
           <img
+            draggable={false}
             src={"/static/about/about-3.png"}
             className={css(styles.contactImage)}
           />
