@@ -2,9 +2,6 @@ import { StyleSheet, css } from "aphrodite";
 import Avatar from "react-avatar";
 import Link from "next/link";
 
-// Config
-import colors from "~/config/themes/colors";
-
 const AuthorAvatar = (props) => {
   const {
     author,
@@ -14,6 +11,8 @@ const AuthorAvatar = (props) => {
     avatarClassName,
     name,
   } = props;
+
+  const authorId = author && author.id;
 
   function renderAvatar() {
     let authorName =
@@ -33,12 +32,12 @@ const AuthorAvatar = (props) => {
   }
   return (
     <div className={css(styles.avatar)}>
-      {disableLink || !author.id ? (
+      {disableLink || !authorId ? (
         renderAvatar()
       ) : (
         <Link
           href={"/user/[authorId]/[tabName]"}
-          as={`/user/${author.id}/contributions`}
+          as={`/user/${authorId}/contributions`}
         >
           {renderAvatar()}
         </Link>
