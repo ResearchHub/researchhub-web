@@ -5,7 +5,6 @@ import Link from "next/link";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect, useDispatch, useStore } from "react-redux";
-import ReactPlaceholder from "react-placeholder";
 import "react-placeholder/lib/reactPlaceholder.css";
 import { slide as Menu } from "react-burger-menu";
 
@@ -18,22 +17,17 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Button from "../components/Form/Button";
+import Search from "./Search";
 
 import { RHLogo } from "~/config/themes/icons";
 import { getCurrentUserReputation, getNestedValue } from "~/config/utils";
-
-// Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 // Styles
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import GoogleLoginButton from "./GoogleLoginButton";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-import ResearchHubLogo from "./ResearchHubLogo";
 
 const Navbar = (props) => {
   const dispatch = useDispatch();
@@ -54,17 +48,13 @@ const Navbar = (props) => {
     null
   );
 
-  const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
-  const [searchFinished, setSearchFinished] = useState(false);
 
   let dropdown;
   let avatar;
-  let searchbar;
-  let searchDropdown;
-
-  const searchTimeout = useRef(false);
+  const searchBar = useRef(null);
+  const searchDropdown = useRef(null);
 
   useEffect(() => {
     getUser();
@@ -79,18 +69,19 @@ const Navbar = (props) => {
       setOpenMenu(false);
     }
 
-    if (
-      searchbar &&
-      !searchbar.contains(e.target) &&
-      searchDropdown &&
-      !searchDropdown.contains(e.target)
-    ) {
-      setShowSearch(false);
-    }
+    // TODO: Figure out why this is blocking click events on the search bar
+    // if (
+    //   searchBar &&
+    //   !searchBar.contains(e.target) &&
+    //   searchDropdown &&
+    //   !searchDropdown.contains(e.target)
+    // ) {
+    //   setShowSearch(false);
+    // }
 
-    if (searchbar && searchbar.contains(e.target) && searchResults.length > 0) {
-      setShowSearch(true);
-    }
+    // if (searchBar && searchBar.contains(e.target) && searchResults.length > 0) {
+    //   setShowSearch(true);
+    // }
 
     if (avatar && avatar.contains(e.target)) {
       // TODO: Is this doing what is intended? `avatar` is not a valid ref
@@ -156,63 +147,6 @@ const Navbar = (props) => {
     openUploadPaperModal(true);
   }
 
-  function onSearchChange(searchEvent) {
-    clearTimeout(searchTimeout.current);
-
-    let value = searchEvent.target.value;
-    setShowSearch(true);
-    setSearchFinished(false);
-    searchTimeout.current = setTimeout(() => {
-      let config = {
-        route: "all",
-      };
-      // TODO: add pagination
-      // Params to the search for pagination would be page
-      fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((resp) => {
-          setSearchResults(resp.results);
-          setSearchFinished(true);
-        });
-    }, 1500);
-
-    setSearch(searchEvent.target.value);
-  }
-
-  let renderSearchResults = () => {
-    let results = searchResults.map((result, index) => {
-      // TODO: render differrent cards for different search results
-      return (
-        <div
-          className={css(styles.searchResult)}
-          onClick={() => setTimeout(setShowSearch(false), 500)}
-        >
-          {result.meta.index === "papers" ? (
-            <PaperEntryCard
-              paper={result}
-              index={index}
-              discussionCount={result["discussion_count"]}
-            />
-          ) : null}
-        </div>
-      );
-    });
-
-    if (results.length === 0) {
-      results = (
-        <div className={css(styles.emptyResults)}>
-          <h2 className={css(styles.emptyTitle)}>
-            We can't find what you're looking for! Please try another search.
-          </h2>
-
-          <RHLogo iconStyle={styles.logo} />
-        </div>
-      );
-    }
-
-    return results;
-  };
   function toggleSideMenu() {
     setSideMenu(!sideMenu);
   }
@@ -353,31 +287,11 @@ const Navbar = (props) => {
           <RHLogo iconStyle={styles.logo} />
         </div>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        <div className={css(styles.search)}>
-          <input
-            className={css(styles.searchbar)}
-            placeholder={"Search..."}
-            onChange={onSearchChange}
-            ref={(ref) => (searchbar = ref)}
-          />
-          <i className={css(styles.searchIcon) + " far fa-search"}></i>
-          {showSearch && (
-            <div
-              className={css(styles.searchDropdown)}
-              ref={(ref) => (searchDropdown = ref)}
-            >
-              <ReactPlaceholder
-                ready={searchFinished}
-                showLoadingAnimation
-                type="media"
-                rows={4}
-                color="#efefef"
-              >
-                {renderSearchResults()}
-              </ReactPlaceholder>
-            </div>
-          )}
-        </div>
+        <Search
+          showDropdown={showSearch}
+          getDropdownRef={searchDropdown}
+          getSearchBarRef={searchBar}
+        />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -509,31 +423,6 @@ const styles = StyleSheet.create({
   tabLink: {
     color: "#000",
     underline: "none",
-  },
-  emptyResults: {
-    textAlign: "center",
-    letterSpacing: 0.7,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  emptyTitle: {
-    fontWeight: 400,
-    fontSize: 22,
-  },
-  search: {
-    // width: 690,
-    width: 600,
-    height: 45,
-    boxSizing: "border-box",
-    background: "#FBFBFD",
-    border: "#E8E8F2 1px solid",
-    display: "flex",
-    alignItems: "center",
-    position: "relative",
-    "@media only screen and (max-width: 760px)": {
-      display: "none",
-    },
   },
   caret: {
     marginLeft: 16,
