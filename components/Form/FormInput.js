@@ -70,7 +70,7 @@ class FormInput extends React.Component {
           )}
           onChange={this.handleChange}
         />
-        {error && <p className={css(styles, text, styles.error)}>{error}</p>}
+        {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && <p className={css(styles.message)}>{message}</p>}
         {search && (
           <img

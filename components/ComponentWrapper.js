@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     margin: "auto",
     width: 600,
     boxSizing: "border-box",
-
     "@media only screen and (min-width: 300px)": {
       width: "100%",
       paddingRight: 20,
