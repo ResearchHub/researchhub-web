@@ -63,11 +63,15 @@ class BaseModal extends React.Component {
    * closes the modal on button click
    */
   closeModal = () => {
-    this.setState({
-      ...this.initialState,
+    this.setState({ reveal: false }, () => {
+      setTimeout(() => {
+        this.setState({
+          ...this.initialState,
+        });
+        this.enableParentScroll();
+        this.props.closeModal && this.props.closeModal();
+      }, 200);
     });
-    this.enableParentScroll();
-    this.props.closeModal && this.props.closeModal();
   };
 
   /**
