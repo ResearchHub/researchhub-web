@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
   },
   hubs: {
     display: "flex",
+    flexWrap: "wrap",
   },
   tagline: {
     fontSize: 16,
