@@ -13,6 +13,7 @@ import VoteWidget from "~/components/VoteWidget";
 import Loader from "~/components/Loader/Loader";
 
 import DiscussionActions from "~/redux/discussion";
+import { MessageActions } from "~/redux/message";
 
 import { UPVOTE, DOWNVOTE } from "../config/constants";
 import { voteWidgetIcons } from "~/config/themes/icons";
@@ -126,17 +127,30 @@ class DiscussionComment extends React.Component {
   renderTop = () => {
     return (
       <Fragment>
-        <VoteWidget
-          score={this.state.score}
-          onUpvote={this.upvote}
-          onDownvote={this.downvote}
-          selected={this.state.selectedVoteType}
-        />
-        <DiscussionPostMetadata
-          username={this.state.username}
-          authorProfile={this.props.data.createdBy.authorProfile}
-          date={this.state.date}
-        />
+        <div className={css(styles.topbarContainer)}>
+          <div className={css(styles.votingWidget)}>
+            <VoteWidget
+              score={this.state.score}
+              onUpvote={this.upvote}
+              onDownvote={this.downvote}
+              selected={this.state.selectedVoteType}
+            />
+          </div>
+          <span className={css(styles.mobileVotingWidget)}>
+            <VoteWidget
+              score={this.state.score}
+              onUpvote={this.upvote}
+              onDownvote={this.downvote}
+              horizontalView={true}
+              selected={this.state.selectedVoteType}
+            />
+          </span>
+          <DiscussionPostMetadata
+            username={this.state.username}
+            authorProfile={this.props.data.createdBy.authorProfile}
+            date={this.state.date}
+          />
+        </div>
       </Fragment>
     );
   };
@@ -148,6 +162,7 @@ class DiscussionComment extends React.Component {
         readOnly={this.state.readOnly}
         onSubmit={this.updateText}
         initialValue={this.state.text}
+        commentStyles={this.props.commentStyles && this.props.commentStyles}
       />
     );
   };
@@ -160,8 +175,13 @@ class DiscussionComment extends React.Component {
         <DiscussionCard
           top={this.renderTop()}
           info={this.renderInfo()}
-          infoStyle={this.props.infoStyle}
+          infoStyle={[this.props.infoStyle, styles.mobileInfoContainer]}
           action={action}
+          containerStyle={
+            this.props.discussionCardStyle
+              ? this.props.discussionCardStyle
+              : this.props.replyCardStyle && this.props.replyCardStyle
+          }
         />
       </div>
     );
@@ -178,6 +198,7 @@ class CommentClass extends DiscussionComment {
     this.state.transition = false;
     this.state.loaded = false;
     this.state.windowPostion = null;
+    this.state.highlight = false;
     this.ref = React.createRef();
   }
 
@@ -219,6 +240,7 @@ class CommentClass extends DiscussionComment {
           onCancel={() => this.setState({ showReplyBox: false })}
           onSubmit={this.addSubmittedReply}
           commentId={this.state.id}
+          commentStyles={styles.overrideReplyStyle}
         />
         {/* {this.createdByCurrentUser() && (
           <EditAction onClick={this.setReadOnly} />
@@ -230,17 +252,26 @@ class CommentClass extends DiscussionComment {
 
   addSubmittedReply = (reply) => {
     // if (!doesNotExist(reply)) {
-    let newReplies = [reply];
-    newReplies = newReplies.concat(this.state.replies);
-    this.setState({
-      replies: newReplies,
-      toggleReplies: true,
+    this.props.dispatch(MessageActions.showMessage({ show: true, load: true }));
+    this.setState({ highlight: true }, () => {
+      this.props.dispatch(MessageActions.showMessage({ show: false }));
+      let newReplies = [reply];
+      newReplies = newReplies.concat(this.state.replies);
+      this.setState({
+        replies: newReplies,
+        replyCount: newReplies.length,
+        toggleReplies: true,
+      });
+      setTimeout(() => {
+        setTimeout(() => {
+          this.setState({ highlight: false });
+        }, 2000);
+      }, 400);
     });
     // }
   };
 
   toggleReplies = () => {
-    window.scrollTo(0, this.state.windowPostion);
     this.setState(
       {
         toggleReplies: !this.state.toggleReplies,
@@ -249,10 +280,6 @@ class CommentClass extends DiscussionComment {
       () => {
         setTimeout(() => {
           this.setState({ transition: false, loaded: true }, () => {
-            // this.ref.current.scrollIntoView({
-            //   behavior: 'smooth',
-            //   block: 'start',
-            // });
             window.scrollTo(0, this.state.windowPostion);
           });
         }, 400);
@@ -276,7 +303,19 @@ class CommentClass extends DiscussionComment {
     const replies =
       this.state.replies &&
       this.state.replies.map((r, i) => {
-        return <Reply key={r.id} data={r} commentId={this.state.id} />;
+        return (
+          <Reply
+            key={r.id}
+            data={r}
+            commentId={this.state.id}
+            replyCardStyle={
+              this.state.highlight && i === 0
+                ? styles.highlight
+                : styles.replyCardContainer
+            }
+            commentStyles={styles.replyInputContainer}
+          />
+        );
       });
 
     if (replies.length > 0) {
@@ -357,14 +396,46 @@ export const Reply = connect(
 )(ReplyClass);
 
 const styles = StyleSheet.create({
-  commentContainer: {
-    // paddingTop: "32px",
-    // borderTop: `1px solid ${colors.GREY(1)}`,
-    // borderBottom: `1px solid ${colors.GREY(1)}`
+  commentContainer: {},
+  highlight: {
+    paddingTop: 7,
+    paddingBottom: 7,
+    paddingLeft: 30,
+    paddingRight: 30,
+    lineHeight: 1.6,
+    "@media only screen and (max-width: 415px)": {
+      borderRadius: 0,
+      borderLeft: `1px solid ${discussionPageColors.DIVIDER}`,
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
+    backgroundColor: colors.LIGHT_YELLOW(1),
+  },
+  replyCardContainer: {
+    paddingTop: 7,
+    paddingBottom: 7,
+    paddingLeft: 30,
+    paddingRight: 30,
+    lineHeight: 1.6,
+    "@media only screen and (max-width: 415px)": {
+      borderRadius: 0,
+      borderLeft: `1px solid ${discussionPageColors.DIVIDER}`,
+      paddingLeft: 15,
+      paddingRight: 15,
+    },
+  },
+  replyInputContainer: {
+    padding: 0,
+    lineHeight: 1.6,
+  },
+  overrideDiscussionCardContainerStyle: {
+    margin: 0,
+    backgroundColor: "lightyellow",
   },
   commentEditor: {
     minHeight: "100%",
     padding: "0px",
+    lineHeight: 1.6,
   },
   voteWidget: {
     marginRight: 18,
@@ -385,11 +456,16 @@ const styles = StyleSheet.create({
   showReplyContainer: {
     display: "flex",
     justifyContent: "flex-start",
+    marginBottom: 8,
   },
   replyContainer: {
     transition: "all ease-in-out 0.2s",
     height: 0,
     opacity: 0,
+  },
+  overrideReplyStyle: {
+    borderLeft: "1px solid",
+    borderColor: discussionPageColors.DIVIDER,
   },
   show: {
     height: "calc(100%)",
@@ -404,5 +480,42 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+  },
+  votingWidget: {
+    "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
+  },
+  mobileVotingWidget: {
+    display: "none",
+    "@media only screen and (max-width: 760px)": {
+      display: "flex",
+      marginBottom: 15,
+    },
+    "@media only screen and (max-width: 415px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 10,
+    },
+  },
+  topbarContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    "@media only screen and (max-width: 760px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 15,
+    },
+    "@media only screen and (max-width: 415px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 14,
+    },
+  },
+  mobileInfoContainer: {
+    "@media only screen and (max-width: 760px)": {
+      paddingLeft: 0,
+    },
   },
 });

@@ -9,6 +9,7 @@ const colors = {
   LIGHT_BLUE: (opacity = 1) => `rgba(237, 238, 254, ${opacity})`,
   ORANGE: (opacity = 1) => `rgba(255, 109, 0, ${opacity})`,
   RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`,
+  LIGHT_YELLOW: (opacity = 1) => `rgba(253, 249, 237, ${opacity})`,
 };
 
 export const formColors = {

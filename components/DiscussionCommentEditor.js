@@ -18,7 +18,15 @@ import { ModalActions } from "../redux/modals";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 
 const DiscussionCommentEditor = (props) => {
-  const { commentId, postMethod, onSubmit, getRef, setRef } = props;
+  const {
+    commentId,
+    postMethod,
+    onSubmit,
+    getRef,
+    setRef,
+    commentStyles,
+    containerStyles,
+  } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
@@ -37,10 +45,13 @@ const DiscussionCommentEditor = (props) => {
   const { paperId, discussionThreadId } = router.query;
 
   const post = async (text) => {
-    return await postMethod(
+    await postMethod(
       { dispatch, store, paperId, discussionThreadId, commentId, onSubmit },
       text
     );
+    setTimeout(() => {
+      setIsActive(false);
+    }, 400);
   };
 
   function onClick() {
@@ -73,13 +84,15 @@ const DiscussionCommentEditor = (props) => {
         readOnly={!isActive}
         commentEditor={true}
         onCancel={onCancel}
+        commentStyles={commentStyles && commentStyles}
+        containerStyles={containerStyles && containerStyles}
       />
     </div>
   );
 };
 
 export const CommentEditor = (props) => {
-  const { onSubmit } = props;
+  const { onSubmit, discusssionCardStyle } = props;
 
   const [active, setActive] = useState(false);
   const containerRef = useRef(null);
@@ -103,14 +116,21 @@ export const CommentEditor = (props) => {
         postMethod={postComment}
         commentEditor={true}
         onCancel={hideReply}
+        clearOnSubmit={true}
+        containerStyles={discusssionCardStyle && discusssionCardStyle}
       />
     </PermissionNotificationWrapper>
   );
 };
 
 export const ReplyEditor = (props) => {
-  const { commentId, onSubmit, onCancel } = props;
-
+  const {
+    commentId,
+    onSubmit,
+    onCancel,
+    commentStyles,
+    containerStyles,
+  } = props;
   const [reply, setReply] = useState(false);
   const [transition, setTransition] = useState(false);
   const containerRef = useRef(null);
@@ -129,6 +149,16 @@ export const ReplyEditor = (props) => {
         setReply(false);
       }, 280);
     }, 100);
+  }
+
+  function closeOnSubmit(props, text) {
+    setTimeout(() => {
+      setTransition(false);
+      setTimeout(() => {
+        setReply(false);
+      }, 280);
+    }, 100);
+    onSubmit && onSubmit(props, text);
   }
 
   return (
@@ -150,11 +180,13 @@ export const ReplyEditor = (props) => {
         <DiscussionCommentEditor
           active={true}
           getRef={containerRef}
-          onSubmit={onSubmit}
+          onSubmit={closeOnSubmit}
           postMethod={postReply}
           commentId={commentId}
           commentEditor={true}
           onCancel={hideReply}
+          commentStyles={commentStyles && commentStyles}
+          containerStyles={containerStyles && containerStyles}
         />
       )}
     </div>
@@ -163,7 +195,6 @@ export const ReplyEditor = (props) => {
 
 async function postComment(props, text) {
   const { dispatch, store, paperId, discussionThreadId, onSubmit } = props;
-
   dispatch(DiscussionActions.postCommentPending());
   await dispatch(
     DiscussionActions.postComment(paperId, discussionThreadId, text)
@@ -207,10 +238,14 @@ const styles = StyleSheet.create({
     height: 19,
     width: "100%",
     transition: "all ease-in-out 0.3s",
-    overflow: "hidden",
+    overflow: "auto",
   },
   reveal: {
     height: 240,
+    "@media only screen and (max-width: 415px)": {
+      height: 306,
+      overflow: "auto",
+    },
   },
   threadTitle: {
     width: "100%",
@@ -269,7 +304,7 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.3s",
   },
   activeCommentBoxContainer: {
-    height: 231,
+    minHeight: 231,
   },
   divider: {
     borderBottom: "1px solid",

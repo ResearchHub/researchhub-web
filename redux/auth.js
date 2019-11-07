@@ -21,7 +21,9 @@ export const AuthConstants = {
   UPDATE_USER_PROFILE: "@@auth/UPDATE_USER_PROFILE",
   SAVING_PROFILE_CHANGES: "@@auth/SAVING_PROFILE_CHANGES",
   SAVED_PROFILE_CHANGES: "@@auth/SAVED_PROFILE_CHANGES",
-  UPDATE_SIGNUP_INFO: "@@auth/UPDATE_SIGNUP_INFO",
+  UPDATE_SIGNUP_INFO: "@@aut/UPDATE_SIGNUP_INFO",
+  GET_USER_BANNER_PREFERENCE: "@@auth/GET_USER_BANNER_PREFERENCE",
+  SET_USER_BANNER_PREFERENCE: "@@auth/SET_USER_BANNER_PREFERENCE",
 };
 
 function saveToLocalStorage(key, value) {
@@ -230,6 +232,41 @@ export const AuthActions = {
       });
     };
   },
+  getUserBannerPreference: () => {
+    return (dispatch) => {
+      let preference = localStorage.getItem("researchhub.banner.pref");
+      if (preference === "true") {
+        return dispatch({
+          type: AuthConstants.GET_USER_BANNER_PREFERENCE,
+          showBanner: true,
+        });
+      } else if (preference === "false") {
+        return dispatch({
+          type: AuthConstants.GET_USER_BANNER_PREFERENCE,
+          showBanner: false,
+        });
+      } else if (preference === null || preference === undefined) {
+        localStorage.setItem("researchhub.banner.pref", true);
+        return dispatch({
+          type: AuthConstants.GET_USER_BANNER_PREFERENCE,
+          showBanner: true,
+        });
+      }
+    };
+  },
+  /**
+   * sets preference for hub page banner
+   * @param { Boolean } showBanner - true to show banner / false to hide banner
+   */
+  setUserBannerPreference: (showBanner) => {
+    return (dispatch) => {
+      localStorage.setItem("researchhub.banner.pref", showBanner);
+      return dispatch({
+        type: AuthConstants.SET_USER_BANNER_PREFERENCE,
+        showBanner: showBanner,
+      });
+    };
+  },
 
   // /***
   //  * Save changes to user profile
@@ -266,6 +303,7 @@ const defaultAuthState = {
   authChecked: false,
   user: {},
   error: null,
+  showBanner: true,
 };
 
 const AuthReducer = (state = defaultAuthState, action) => {
@@ -277,6 +315,8 @@ const AuthReducer = (state = defaultAuthState, action) => {
     case AuthConstants.FETCHING_USER:
     case AuthConstants.GOT_USER:
     case AuthConstants.ERROR:
+    case AuthConstants.SET_USER_BANNER_PREFERENCE:
+    case AuthConstants.GET_USER_BANNER_PREFERENCE:
       return {
         ...state,
         ...action,

@@ -142,7 +142,7 @@ const Paper = (props) => {
   return (
     <div className={css(styles.container)}>
       <Head title={paper.title} description={paper.tagline} />
-      <ComponentWrapper>
+      <ComponentWrapper overrideStyle={styles.componentWrapper}>
         <div className={css(styles.header)}>
           <div className={css(styles.voting)}>
             <VoteWidget
@@ -153,39 +153,56 @@ const Paper = (props) => {
             />
           </div>
           <div className={css(styles.topHeader)}>
-            <div className={css(styles.mobileVoting)}>
-              <VoteWidget
-                score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                selected={selectedVoteType}
-                horizontalView={true}
-              />
-            </div>
             <div className={css(styles.title)}>{paper && paper.title}</div>
-            <div className={css(styles.actionButtons)}>
-              <PermissionNotificationWrapper
-                modalMessage="edit papers"
-                onClick={navigateToEditPaperInfo}
-                permissionKey="UpdatePaper"
-                loginRequired={true}
-              >
-                <ActionButton icon={"fas fa-pencil"} />
-              </PermissionNotificationWrapper>
-              <ShareAction
-                iconNode={icons.shareAlt}
-                title={"Share this paper"}
-                subtitle={paperTitle}
-                url={shareUrl}
-              />
-              <ActionButton icon={"fas fa-bookmark"} action={null} />
-            </div>
+            <span className={css(styles.mobileRow)}>
+              <div className={css(styles.mobileVoting)}>
+                <VoteWidget
+                  score={score}
+                  onUpvote={upvote}
+                  onDownvote={downvote}
+                  selected={selectedVoteType}
+                  horizontalView={true}
+                />
+              </div>
+              <div className={css(styles.actionButtons)}>
+                <PermissionNotificationWrapper
+                  modalMessage="edit papers"
+                  onClick={navigateToEditPaperInfo}
+                  permissionKey="UpdatePaper"
+                  loginRequired={true}
+                >
+                  <ActionButton icon={"fas fa-pencil"} />
+                </PermissionNotificationWrapper>
+                <ShareAction
+                  iconNode={icons.shareAlt}
+                  title={"Share this paper"}
+                  subtitle={paperTitle}
+                  url={shareUrl}
+                />
+                <ActionButton icon={"fas fa-bookmark"} action={null} />
+              </div>
+            </span>
+          </div>
+          <div className={css(styles.mobileInfoSection)}>
+            {paper.paper_publish_date && (
+              <div className={css(styles.info)}>
+                Published{" "}
+                {moment(paper && paper.paper_publish_date).format(
+                  "DD MMMM, YYYY"
+                )}
+              </div>
+            )}
           </div>
           <div className={css(styles.tags)}>
             <div className={css(styles.authors)}>{renderAuthors()}</div>
             <div className={css(styles.hubs)}>{renderHubs()}</div>
           </div>
           <div className={css(styles.tagline)}>{paper && paper.tagline}</div>
+          <div className={css(styles.mobileDoi)}>
+            {paper.doi && (
+              <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
+            )}
+          </div>
           <div className={css(styles.infoSection)}>
             {paper.paper_publish_date && (
               <div className={css(styles.info)}>
@@ -198,6 +215,10 @@ const Paper = (props) => {
             {paper.doi && (
               <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
             )}
+          </div>
+          <div className={css(styles.mobileTags)}>
+            <div className={css(styles.authors)}>{renderAuthors()}</div>
+            <div className={css(styles.hubs)}>{renderHubs()}</div>
           </div>
         </div>
       </ComponentWrapper>
@@ -224,30 +245,45 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
+    "@media only screen and (max-width: 415px)": {
+      paddingTop: 20,
+    },
   },
   header: {
     padding: "30px 0px",
     width: "100%",
     boxSizing: "border-box",
     position: "relative",
+    "@media only screen and (max-width: 768px)": {
+      marginLeft: 70,
+      maxWidth: 600,
+    },
+    "@media only screen and (max-width: 700px)": {
+      marginLeft: 0,
+      maxWidth: "unset",
+    },
   },
   title: {
     fontSize: 33,
     marginBottom: 10,
     position: "relative",
     "@media only screen and (max-width: 760px)": {
-      marginTop: 50,
+      // marginTop: 50,
+      // marginBottom: 15,
       fontSize: 28,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 25,
     },
     "@media only screen and (max-width: 321px)": {
-      fontSize: 21,
+      fontSize: 22,
     },
   },
   infoSection: {
     display: "flex",
+    "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
   },
   info: {
     opacity: 0.5,
@@ -260,6 +296,9 @@ const styles = StyleSheet.create({
   authors: {
     display: "flex",
     marginRight: 41,
+    "@media only screen and (max-width: 760px)": {
+      marginRight: 21,
+    },
   },
   authorContainer: {
     marginRight: 5,
@@ -267,20 +306,30 @@ const styles = StyleSheet.create({
   tags: {
     display: "flex",
     alignItems: "center",
+    "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
   },
   hubs: {
     display: "flex",
+    flexWrap: "wrap",
   },
   tagline: {
     fontSize: 16,
-    marginTop: 30,
-    marginBottom: 10,
+    marginTop: 25,
+    marginBottom: 20,
+    color: "#4e4c5f",
+    fontFamily: "Roboto",
+    "@media only screen and (max-width: 760px)": {
+      marginTop: 20,
+      marginBottom: 20,
+    },
   },
   voting: {
     position: "absolute",
     width: 70,
     left: -80,
-    top: 15,
+    top: 18,
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
@@ -288,25 +337,56 @@ const styles = StyleSheet.create({
   mobileVoting: {
     display: "none",
     "@media only screen and (max-width: 760px)": {
-      display: "unset",
-      position: "absolute",
-      top: 30,
-      left: 0,
+      display: "flex",
     },
   },
   actionButtons: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 760px)": {
-      position: "absolute",
-      top: 30,
-      right: 0,
-    },
+    "@media only screen and (max-width: 760px)": {},
   },
   topHeader: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    "@media only screen and (max-width: 760px)": {
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "flex-start",
+    },
+  },
+  mobileRow: {
+    "@media only screen and (max-width: 760px)": {
+      display: "flex",
+      justifyContent: "space-between",
+      alignContent: "center",
+      width: "100%",
+    },
+  },
+  mobileInfoSection: {
+    display: "none",
+    "@media only screen and (max-width: 760px)": {
+      display: "flex",
+      marginTop: 17,
+      marginBottom: 20,
+      fontSize: 14,
+    },
+  },
+  mobileDoi: {
+    display: "none",
+    "@media only screen and (max-width: 760px)": {
+      display: "flex",
+      opacity: 0.5,
+      fontSize: 14,
+    },
+  },
+  mobileTags: {
+    display: "none",
+    "@media only screen and (max-width: 760px)": {
+      display: "flex",
+      alignItems: "center",
+      marginTop: 20,
+    },
   },
 });
 

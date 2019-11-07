@@ -6,7 +6,7 @@ import colors from "~/config/themes/colors";
 const DiscussionCard = (props) => {
   const infoStyles = [styles.infoContainer];
 
-  const { infoStyle, hoverEvents, mobileView } = props;
+  const { infoStyle, hoverEvents, mobileView, containerStyle } = props;
   if (infoStyle) {
     infoStyles.push(infoStyle);
   }
@@ -16,7 +16,8 @@ const DiscussionCard = (props) => {
       className={css(
         styles.container,
         hoverEvents && styles.hoverEvents,
-        mobileView && styles.mobileContainer
+        mobileView && styles.mobileContainer,
+        containerStyle && containerStyle
       )}
     >
       <div className={css(styles.topContainer)}>{props.top}</div>
@@ -38,28 +39,22 @@ DiscussionCard.propTypes = {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFF",
-    padding: "15px 30px 15px 30px",
+    padding: "15px 0px 15px 0px",
     borderRadius: 10,
-    marginBottom: 5,
     border: "1px solid #FFFFFF",
     "@media only screen and (max-width: 415px)": {
-      width: "calc(100% - 30px)",
-      padding: 15,
-      border: "solid 1px #F7F7FB",
-      ":hover": {
-        border: "solid 1px #D2D2E6",
-      },
+      paddingLeft: 10,
+      paddingRight: 10,
     },
   },
   mobileContainer: {
     "@media only screen and (max-width: 415px)": {
       width: "calc(100% - 40px)",
       padding: 20,
-      border: "solid 1px #F7F7FB",
       backgroundColor: "#FFF",
       marginBottom: 10,
       ":hover": {
-        border: "solid 1px #D2D2E6",
+        // border: "solid 1px #D2D2E6",
       },
     },
   },
@@ -79,7 +74,6 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       backgroundColor: "rgba(243, 243, 248, 0.7)",
-      // transform: "scale(1.01)",
     },
   },
   topContainer: {
@@ -90,7 +84,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   infoContainer: {
-    // width: "100%",
     paddingLeft: 51,
   },
   mobileInfoStyles: {
@@ -99,7 +92,6 @@ const styles = StyleSheet.create({
   actionContainer: {
     display: "flex",
     flexDirection: "row",
-    // color: colors.GREY(1),
     color: "#000",
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {

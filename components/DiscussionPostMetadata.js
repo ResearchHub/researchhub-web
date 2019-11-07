@@ -60,6 +60,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     whiteSpace: "nowrap",
     alignItems: "center",
+    "@media only screen and (max-width: 436px)": {
+      fontSize: 14,
+    },
   },
   timestampContainer: {
     display: "flex",
