@@ -32,7 +32,7 @@ const PaperEntryCard = ({
   discussionCount,
   mobileView,
 }) => {
-  const {
+  let {
     id,
     authors,
     discussion,
@@ -42,7 +42,8 @@ const PaperEntryCard = ({
     tagline,
     user_vote,
     score,
-  } = paper;
+  } = paper || null;
+
   let selected = null;
   let vote_type = 0;
   let discussion_count = null;
@@ -80,6 +81,14 @@ const PaperEntryCard = ({
   async function downvote(e) {
     e.stopPropagation();
     onDownvote({ index });
+  }
+
+  function renderDiscussionCount() {
+    if (discussion) {
+      return `${discussion.count} ${
+        discussion.count === 1 ? "discussion" : "discussions"
+      }`;
+    }
   }
 
   if (mobileView) {
@@ -156,8 +165,7 @@ const PaperEntryCard = ({
                     )}
                     id={"discCount"}
                   >
-                    {`${discussion.count}`}{" "}
-                    {discussion.count === 1 ? "discussion" : "discussions"}
+                    {renderDiscussionCount()}
                   </span>
                 </div>
               </Link>
@@ -233,8 +241,7 @@ const PaperEntryCard = ({
                       className={css(styles.dicussionCount)}
                       id={"discCount"}
                     >
-                      {`${discussion.count}`}{" "}
-                      {discussion.count === 1 ? "discussion" : "discussions"}
+                      {renderDiscussionCount()}
                     </span>
                   </div>
                 </Link>
