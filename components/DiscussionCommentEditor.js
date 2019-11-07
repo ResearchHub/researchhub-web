@@ -238,12 +238,13 @@ const styles = StyleSheet.create({
     height: 19,
     width: "100%",
     transition: "all ease-in-out 0.3s",
-    overflow: "hidden",
+    overflow: "auto",
   },
   reveal: {
     height: 240,
     "@media only screen and (max-width: 415px)": {
       height: 306,
+      overflow: "auto",
     },
   },
   threadTitle: {
