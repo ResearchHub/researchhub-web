@@ -51,7 +51,9 @@ const DiscussionThreadCard = (props) => {
   const [score, setScore] = useState((data && data.score) || 0);
 
   useEffect(() => {
-    setSelectedVoteType(data.userVote && data.userVote.voteType);
+    if (data) {
+      setSelectedVoteType(data.userVote && data.userVote.voteType);
+    }
   }, [data]);
 
   async function upvote() {
@@ -109,7 +111,7 @@ const DiscussionThreadCard = (props) => {
                 styles={styles.mobileVoteWidget}
               />
               <DiscussionPostMetadata
-                authorProfile={data.createdBy.authorProfile}
+                authorProfile={data && data.createdBy.authorProfile}
                 username={username}
                 date={date}
               />
@@ -158,7 +160,7 @@ const DiscussionThreadCard = (props) => {
                 onDownvote={downvote}
               />
               <DiscussionPostMetadata
-                authorProfile={data.createdBy.authorProfile}
+                authorProfile={data && data.createdBy.authorProfile}
                 username={username}
                 date={date}
               />
