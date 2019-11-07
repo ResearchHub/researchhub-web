@@ -259,6 +259,7 @@ const styles = StyleSheet.create({
     padding: 15,
     fontSize: 14,
     background: colors.BLUE(1),
+    opacity: 1,
   },
   paragraph: {
     marginBottom: 10,
