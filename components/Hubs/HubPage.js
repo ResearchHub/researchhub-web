@@ -3,6 +3,7 @@ import Router from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
+import moment from "moment";
 
 // Component
 import Button from "~/components/Form/Button";
@@ -38,20 +39,23 @@ const filterOptions = [
   },
 ];
 
-const filterScope = [
+const scopeOptions = [
   {
-    value: "year",
-    label: "This Year",
+    value: "day",
+    label: "Today",
   },
   {
     value: "month",
     label: "This Month",
   },
   {
-    value: "day",
-    label: "Today",
+    value: "year",
+    label: "This Year",
   },
 ];
+
+const defaultFilter = filterOptions[1];
+const defaultScope = scopeOptions[1];
 
 class HubPage extends React.Component {
   constructor(props) {
@@ -60,10 +64,11 @@ class HubPage extends React.Component {
       page: 0,
       count: 0,
       papers: [],
-      filterBy: {},
-      scope: {},
+      filterBy: defaultFilter,
+      scope: defaultScope,
       mobileView: false,
       mobileBanner: false,
+      next: null,
     };
   }
 
@@ -123,7 +128,7 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    this.fetchPapers({ page: 1, hub: this.props.hub });
+    this.fetchPapers({ hub: this.props.hub });
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
   }
@@ -135,7 +140,14 @@ class HubPage extends React.Component {
       prevProps.hub.id !== this.props.hub.id
     ) {
       this.updateDimensions();
-      this.fetchPapers({ page: 1, hub: this.props.hub });
+      this.fetchPapers({ hub: this.props.hub });
+    }
+
+    if (
+      prevState.scope !== this.state.scope ||
+      prevState.filterBy !== this.state.filterBy
+    ) {
+      this.fetchPapers({ hub: this.props.hub });
     }
   }
 
@@ -143,33 +155,88 @@ class HubPage extends React.Component {
     window.removeEventListener("resize", this.updateDimensions);
   }
 
-  fetchPapers = ({ page, hub }) => {
-    let filters = null;
+  fetchPapers = ({ hub }) => {
+    let hubId = 0;
 
     if (hub) {
-      filters = [
-        {
-          name: "hubs_id",
-          filter: "in",
-          value: hub.id,
-        },
-      ];
+      hubId = hub.id;
     }
+    let scope = this.calculateScope();
 
-    return fetch(API.PAPER({ page, hub, filters }), API.GET_CONFIG())
+    return fetch(
+      API.GET_HUB_PAPERS({
+        timePeriod: scope,
+        hubId: hubId,
+        ordering: this.state.filterBy.value,
+      }),
+      API.GET_CONFIG()
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
         this.setState({
           count: res.count,
-          page: page,
-          papers:
-            page === 1
-              ? [...res.results]
-              : [...this.state.papers, ...res.results],
+          papers: res.results,
           next: res.next,
         });
       });
+  };
+
+  loadMore = () => {
+    let scope = this.calculateScope();
+    return fetch(
+      API.GET_HUB_PAPERS({
+        timePeriod: scope,
+        hubId: hub,
+        ordering: this.state.filterBy.value,
+      }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        this.setState({
+          papers: [...this.state.papers, ...res.results],
+          next: res.next,
+        });
+      });
+  };
+
+  calculateScope = () => {
+    let scope = {
+      start: 0,
+      end: 0,
+    };
+    let scopeId = this.state.scope.value;
+
+    let now = moment();
+    let today = moment().startOf("day");
+    let month = moment()
+      .startOf("day")
+      .subtract(30, "days");
+    let year = moment()
+      .startOf("day")
+      .subtract(365, "days");
+
+    scope.end = now.unix();
+
+    if (scopeId === "today") {
+      scope.start = today.unix();
+    } else if (scopeId === "month") {
+      scope.start = month.unix();
+    } else if (scopeId === "year") {
+      scope.start = year.unix();
+    }
+    return scope;
+  };
+
+  onFilterSelect = (option, type) => {
+    let param = {};
+    param[type] = option;
+
+    this.setState({
+      ...param,
+    });
   };
 
   render() {
@@ -229,26 +296,28 @@ class HubPage extends React.Component {
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
+                  id={"filterBy"}
                   options={filterOptions}
-                  value={filterOptions[0]}
+                  value={this.state.filterBy}
                   containerStyle={styles.dropDown}
                   inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
+                  onChange={(id, option) => this.onFilterSelect(option, id)}
                 />
                 <FormSelect
-                  options={filterScope}
-                  value={filterScope[0]}
+                  id={"scope"}
+                  options={scopeOptions}
+                  value={this.state.scope}
                   containerStyle={styles.dropDown}
                   inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
+                  onChange={(id, option) => this.onFilterSelect(option, id)}
                 />
               </div>
             </div>
             <div className={css(styles.infiniteScroll)}>
               <InfiniteScroll
                 pageStart={this.state.page}
-                loadMore={(count) => {
-                  this.fetchPapers({ page: count + 1, hub: this.props.hub });
-                }}
-                hasMore={this.state.count > this.state.papers.length}
+                loadMore={this.loadMore}
+                hasMore={this.state.next}
                 loader={<Loader loading={true} />}
               >
                 {this.state.papers.map((paper, i) => (
