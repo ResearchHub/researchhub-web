@@ -14,6 +14,7 @@ import { voteWidgetIcons } from "~/config/themes/icons";
 import { UPVOTE, DOWNVOTE } from "../config/constants";
 import { getCurrentUserReputation } from "../config/utils";
 
+import "./stylesheets/voteTooltip.css";
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
