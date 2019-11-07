@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     textTransform: "uppercase",
     textAlign: "center",
+    marginBottom: 10,
   },
 });
 
