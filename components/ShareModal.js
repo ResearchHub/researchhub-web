@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import PropTypes from "prop-types";
 
 import FormInput from "~/components/Form/FormInput";
+import BaseModal from "../components/modal/BaseModal";
 import colors from "~/config/themes/colors";
 import { RHLogo } from "~/config/themes/icons";
 
@@ -20,36 +21,18 @@ const ShareModal = (props) => {
   }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      closeModal={close}
-      className={css(styles.modal)}
-      shouldCloseOnOverlayClick={true}
-      onRequestClose={close}
-      style={overlayStyles}
-      ariaHideApp={false} // TODO: Set as true and add appElement
-    >
-      <div className={css(styles.modalContent)}>
-        <img
-          src={"/static/icons/close.png"}
-          className={css(styles.closeButton)}
-          onClick={close}
-        />
-        <div className={css(styles.titleContainer)}>
-          <div className={css(styles.title, styles.text)}>{title}</div>
-          {/* <div className={css(styles.subtitle, styles.text)}>{subtitle}</div> */}
-        </div>
-        <FormInput
-          getRef={setFormInputRef}
-          inlineNodeRight={<CopyLink onClick={copyToClipboard} />}
-          value={url}
-          message={copySuccessMessage}
-        />
-        <div className={css(styles.logoContainer)}>
-          <RHLogo iconStyle={styles.logo} />
-        </div>
+    <BaseModal isOpen={isOpen} closeModal={close} title={title}>
+      <FormInput
+        getRef={setFormInputRef}
+        inlineNodeRight={<CopyLink onClick={copyToClipboard} />}
+        value={url}
+        message={copySuccessMessage}
+        containerStyle={styles.inputStyle}
+      />
+      <div className={css(styles.logoContainer)}>
+        <RHLogo iconStyle={styles.logo} />
       </div>
-    </Modal>
+    </BaseModal>
   );
 };
 
@@ -71,19 +54,6 @@ const CopyLink = (props) => {
 };
 
 export default ShareModal;
-
-const overlayStyles = {
-  overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.2)",
-    zIndex: "11",
-    borderRadius: 5,
-  },
-};
 
 const styles = StyleSheet.create({
   modal: {
@@ -169,12 +139,21 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-end",
-    position: "absolute",
-    bottom: 5,
   },
   logo: {
     height: 40,
     marginBottom: 20,
     userSelect: "none",
+  },
+  inputStyle: {
+    "@media only screen and (max-width: 665px)": {
+      width: 360,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
   },
 });

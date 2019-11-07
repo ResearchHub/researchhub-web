@@ -111,6 +111,7 @@ class BaseModal extends React.Component {
         shouldCloseOnOverlayClick={true}
         style={this.getOverlayStyle()}
         onAfterOpen={this.disableParentScroll}
+        ariaHideApp={false}
       >
         <div
           className={css(
