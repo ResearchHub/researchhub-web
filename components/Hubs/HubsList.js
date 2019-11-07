@@ -50,7 +50,7 @@ class HubsList extends React.Component {
   };
 
   renderHubEntry = () => {
-    return this.state.hubs.map((hub, i) => {
+    return this.state.hubs.slice(0, 5).map((hub, i) => {
       let { name, id } = hub;
       if (name !== this.props.exclude) {
         return (
@@ -72,7 +72,7 @@ class HubsList extends React.Component {
       return arr.length > 1 ? arr.join("-").toLowerCase() : name.toLowerCase();
     }
     this.props.updateCurrentHubPage(hub);
-    Router.push("/hub/[hubname]", `/hub/${nameToUrl(hub.name)}`);
+    Router.push("/hubs/[hubname]", `/hubs/${nameToUrl(hub.name)}`);
   };
 
   render() {

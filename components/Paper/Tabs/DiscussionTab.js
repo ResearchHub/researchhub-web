@@ -164,45 +164,44 @@ const DiscussionTab = (props) => {
     return (
       <div
         className={css(
-          styles.box,
-          formattedThreads.length < 1 && styles.plainBox
+          styles.box
+          // formattedThreads.length < 1 && styles.plainBox
         )}
       >
         {formattedThreads.length < 1 && (
-          <span className={css(styles.box, styles.plainBox)}>
+          <span className={css(styles.box)}>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
             </span>
             <h2 className={css(styles.noSummaryTitle)}>
-              There are no discussions for this paper yet.
+              There are no discussions {mobileView && "\n"}for this paper yet.
             </h2>
             <div className={css(styles.text)}>
               Please add a discussion to this paper
             </div>
           </span>
         )}
-        <Ripples>
-          <PermissionNotificationWrapper
-            onClick={addDiscussion}
-            modalMessage="create a discussion thread"
-            permissionKey="CreateDiscussionThread"
-            loginRequired={true}
+
+        <PermissionNotificationWrapper
+          onClick={addDiscussion}
+          modalMessage="create a discussion thread"
+          permissionKey="CreateDiscussionThread"
+          loginRequired={true}
+        >
+          <button
+            className={css(
+              styles.addDiscussionButton,
+              formattedThreads.length > 0 && styles.plainButton
+            )}
           >
-            <button
-              className={css(
-                styles.addDiscussionButton,
-                formattedThreads.length > 0 && styles.plainButton
-              )}
-            >
-              {formattedThreads.length > 0 && (
-                <span className={css(styles.discussionIcon)}>
-                  <i class="fad fa-comment-plus" />
-                </span>
-              )}
-              Add Discussion
-            </button>
-          </PermissionNotificationWrapper>
-        </Ripples>
+            {formattedThreads.length > 0 && (
+              <span className={css(styles.discussionIcon)}>
+                <i class="fad fa-comment-plus" />
+              </span>
+            )}
+            Add Discussion
+          </button>
+        </PermissionNotificationWrapper>
       </div>
     );
   };
@@ -278,12 +277,13 @@ var styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     scrollBehavior: "smooth",
-    marginBottom: 15,
+    // marginBottom: 15,
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       fontSize: 16,
-      backgroundColor: "#FCFCFC",
+      marginBottom: 0,
+      // marginTop: -10
     },
   },
   plainBox: {
@@ -302,6 +302,7 @@ var styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     textAlign: "center",
+    whiteSpace: "pre-wrap",
     "@media only screen and (max-width: 415px)": {
       width: 250,
       fontSize: 16,
@@ -310,6 +311,7 @@ var styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: colors.BLACK(0.8),
+    marginBottom: 24,
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
@@ -344,13 +346,13 @@ var styles = StyleSheet.create({
     height: 45,
     outline: "none",
     cursor: "pointer",
+    marginBottom: 15,
     ":hover": {
       borderColor: "#FFF",
       color: "#FFF",
       backgroundColor: colors.PURPLE(1),
     },
     "@media only screen and (max-width: 415px)": {
-      backgroundColor: "#FCFCFC",
       padding: "6px 24px",
       fontSize: 14,
     },
@@ -459,9 +461,8 @@ var styles = StyleSheet.create({
   addDiscussionContainer: {
     transition: "all ease-in-out 0.3s",
     opacity: 1,
-    marginTop: 10,
+    // marginTop: 10,
     "@media only screen and (max-width: 415px)": {
-      backgroundColor: "#FCFCFC",
       height: "unset",
     },
   },
@@ -480,7 +481,6 @@ var styles = StyleSheet.create({
   },
   componentWrapperStyles: {
     "@media only screen and (max-width: 415px)": {
-      backgroundColor: "#FCFCFC",
       width: "100%",
       paddingLeft: 0,
       paddingRight: 0,

@@ -1,5 +1,5 @@
 // NPM Modules
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -63,11 +63,15 @@ class BaseModal extends React.Component {
    * closes the modal on button click
    */
   closeModal = () => {
-    this.setState({
-      ...this.initialState,
+    this.setState({ reveal: false }, () => {
+      setTimeout(() => {
+        this.setState({
+          ...this.initialState,
+        });
+        this.enableParentScroll();
+        this.props.closeModal && this.props.closeModal();
+      }, 200);
     });
-    this.enableParentScroll();
-    this.props.closeModal && this.props.closeModal();
   };
 
   /**
@@ -107,26 +111,32 @@ class BaseModal extends React.Component {
         shouldCloseOnOverlayClick={true}
         style={this.getOverlayStyle()}
         onAfterOpen={this.disableParentScroll}
+        ariaHideApp={false}
       >
         <div
           className={css(
             styles.modalContent,
+            this.props.removeDefault && styles.removeDefault,
             this.state.reveal && styles.reveal
           )}
         >
-          <img
-            src={"/static/icons/close.png"}
-            className={css(styles.closeButton)}
-            onClick={this.closeModal}
-          />
-          <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title, styles.text)}>
-              {this.props.title && this.props.title}
-            </div>
-            <div className={css(styles.subtitle, styles.text)}>
-              {this.props.subtitle && this.props.subtitle}
-            </div>
-          </div>
+          {!this.props.removeDefault && (
+            <Fragment>
+              <img
+                src={"/static/icons/close.png"}
+                className={css(styles.closeButton)}
+                onClick={this.closeModal}
+              />
+              <div className={css(styles.titleContainer)}>
+                <div className={css(styles.title, styles.text)}>
+                  {this.props.title && this.props.title}
+                </div>
+                <div className={css(styles.subtitle, styles.text)}>
+                  {this.props.subtitle && this.props.subtitle}
+                </div>
+              </div>
+            </Fragment>
+          )}
           {this.props.children}
         </div>
       </Modal>
@@ -165,10 +175,13 @@ const styles = StyleSheet.create({
     padding: 50,
     overflow: "scroll",
     opacity: 0,
-    transition: "all ease-in-out 0.2s",
+    transition: "all ease-in-out 0.4s",
     "@media only screen and (max-width: 415px)": {
       padding: "50px 0px 0px 0px",
     },
+  },
+  removeDefault: {
+    padding: 0,
   },
   reveal: {
     opacity: 1,

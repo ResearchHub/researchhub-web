@@ -20,10 +20,12 @@ class Base extends React.Component {
       fetchPermissionsPending,
       getHubs,
       getUser,
+      getUserBannerPreference,
     } = this.props;
 
     getUser();
     getHubs();
+    getUserBannerPreference();
     fetchPermissionsPending();
     await fetchPermissions();
   };
@@ -60,6 +62,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getHubs: HubActions.getHubs,
+  getUserBannerPreference: AuthActions.getUserBannerPreference,
   fetchPermissions: PermissionActions.fetchPermissions,
   fetchPermissionsPending: PermissionActions.fetchPermissionsPending,
 };

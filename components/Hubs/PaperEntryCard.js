@@ -242,7 +242,12 @@ const PaperEntryCard = ({
               <div className={css(styles.tags)}>
                 {hubs.length > 0 &&
                   hubs.map((tag, index) => (
-                    <HubTag key={`hub_${index}`} tag={tag} hubName={hubName} />
+                    <HubTag
+                      key={`hub_${index}`}
+                      tag={tag}
+                      hubName={hubName}
+                      last={index === tag.length - 1}
+                    />
                   ))}
               </div>
             </div>
@@ -260,7 +265,6 @@ const mobileStyles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     maxHeight: 513,
-    // width: '100%',
     padding: 30,
     backgroundColor: "#FFF",
     cursor: "pointer",
@@ -316,7 +320,6 @@ const mobileStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   papercard: {
-    // width: "95%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
@@ -355,18 +358,17 @@ const styles = StyleSheet.create({
   summary: {
     minWidth: "100%",
     maxWidth: "100%",
-    maxHeight: 90,
     whiteSpace: "pre-wrap",
     color: "#4e4c5f",
     fontSize: 16,
     marginTop: 15,
-    overflow: "hidden",
   },
   text: {
     fontFamily: "Roboto",
   },
   voting: {
     marginTop: -20,
+    width: 65,
   },
   bottomBar: {
     display: "flex",
@@ -382,11 +384,15 @@ const styles = StyleSheet.create({
   },
   discussion: {
     cursor: "pointer",
+    minWidth: 140,
     ":hover #discIcon": {
       color: colors.BLUE(1),
     },
     ":hover #discCount": {
       color: colors.BLUE(1),
+    },
+    "@media only screen and (max-width: 967px)": {
+      minWidth: "unset",
     },
   },
   dicussionCount: {
@@ -395,8 +401,12 @@ const styles = StyleSheet.create({
   },
   tags: {
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "flex-end",
     alignItems: "center",
+    flexWrap: "wrap",
+    "@media only screen and (max-width: 967px)": {
+      justifyContent: "flex-start",
+    },
   },
   row: {
     display: "flex",
@@ -418,7 +428,6 @@ const styles = StyleSheet.create({
   },
   metaData: {
     width: "calc(100% - 48px)",
-    // minHeight: 130,
   },
 });
 

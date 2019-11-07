@@ -32,11 +32,14 @@ export const HubActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
-          let hubs = resp.count > 0 ? [...resp.results] : [];
+          let hubs = [...resp.results];
+          let hubsByAlpha = shims.sortHubs([...hubs]);
           return dispatch({
             type: HubConstants.GET_HUBS_SUCCESS,
             payload: {
               hubs,
+              hubsByAlpha,
+              fetchedHubs: true,
             },
           });
         })
@@ -50,6 +53,17 @@ export const HubActions = {
         });
     };
   },
+  // addNewHub: (name) => {
+  //   return dispatch => {
+  //     let param = { name };
+  //     return fetch(API.HUB({}), API.POST_CONFIG(param))
+  //       .then(Helpers.checkStatus)
+  //       .then(Helpers.parseJSON)
+  //       .then(res => {
+
+  //       })
+  //   }
+  //  }
 };
 
 /**********************************
@@ -59,6 +73,8 @@ export const HubActions = {
 const defaultHubState = {
   currentHub: {},
   hubs: [],
+  hubsByAlpha: {},
+  fetchedHubs: false,
 };
 
 const HubReducer = (state = defaultHubState, action) => {
@@ -73,6 +89,20 @@ const HubReducer = (state = defaultHubState, action) => {
     default:
       return state;
   }
+};
+
+const shims = {
+  sortHubs: (allHubs) => {
+    let sortedHubs = {};
+    allHubs.forEach((hub) => {
+      if (sortedHubs[hub.name[0]]) {
+        sortedHubs[hub.name[0]].push(hub);
+      } else {
+        sortedHubs[hub.name[0]] = [hub];
+      }
+    });
+    return sortedHubs;
+  },
 };
 
 export default HubReducer;

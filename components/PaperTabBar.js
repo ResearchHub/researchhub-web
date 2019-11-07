@@ -128,7 +128,8 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
     "@media only screen and (max-width: 321px)": {
-      fontSize: 11,
+      fontSize: 12,
+      padding: "16px 8px 16px 8px",
     },
   },
   lastTab: {
