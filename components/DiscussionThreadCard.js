@@ -269,9 +269,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     boxSizing: "border-box",
     textDecoration: "none",
+    marginRight: 15,
     ":hover": {
       backgroundColor: colors.BLUE(1),
       color: "#FFF",
+    },
+    "@media only screen and (max-width: 321px)": {
+      minWidth: "unset",
+      width: 70,
     },
   },
   readLabel: {
@@ -293,18 +298,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    paddingBottom: 20,
-    color: colors.BLACK(1),
+    paddingBottom: 18,
+    // color: colors.BLACK(1),
+    color: "#232038",
     textOverflow: "eclipsis",
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 21,
+    "@media only screen and (max-width: 436px)": {
+      fontSize: 18,
     },
   },
   link: {
     textDecoration: "none",
   },
   newCard: {
-    backgroundColor: colors.LIGHT_GREEN(1),
+    backgroundColor: colors.LIGHT_YELLOW(1),
   },
   column: {
     display: "flex",
@@ -320,8 +326,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   mobileVoteWidget: {
-    paddingLeft: 18,
-    marginBottom: 19,
+    paddingLeft: 20,
+    marginBottom: 15,
   },
   mobileReadButton: {
     marginRight: 20,

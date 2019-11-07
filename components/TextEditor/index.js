@@ -32,6 +32,7 @@ const TextEditor = (props) => {
     placeholder,
     hideCancelButton,
     containerStyles,
+    commentStyles,
   } = props;
 
   const [value, setValue] = useState(convertToEditorValue(initialValue));
@@ -46,7 +47,14 @@ const TextEditor = (props) => {
     onCancel && onCancel();
   }
 
+  function resetValue() {
+    setValue(convertToEditorValue(""));
+  }
+
   async function submit() {
+    if (value.document.text === "" || value.document.text === " ") {
+      return;
+    }
     let success = false;
     if (!isLoggedIn) {
       // TODO: pop login modal
@@ -60,6 +68,7 @@ const TextEditor = (props) => {
       if (success && clearOnSubmit !== false) {
         editorRef.clear();
       }
+      resetValue();
     }
   }
 
@@ -88,6 +97,7 @@ const TextEditor = (props) => {
       placeholder={placeholder && placeholder}
       autoFocus={true}
       hideCancelButton={hideCancelButton && hideCancelButton}
+      commentStyles={commentStyles && commentStyles}
     />
   );
 };

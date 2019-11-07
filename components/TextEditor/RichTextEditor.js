@@ -157,7 +157,10 @@ class RichTextEditor extends React.Component {
               placeholder="What are your thoughts?"
               ref={this.ref}
               value={this.state.value}
-              className={css(styles.editSection)}
+              className={css(
+                styles.editSection,
+                this.props.commentStyles && this.props.commentStyles
+              )}
               onChange={this.onChange}
               onKeyDown={this.onKeyDown}
               renderBlock={this.renderBlock}
@@ -239,7 +242,10 @@ class RichTextEditor extends React.Component {
               placeholder={this.props.placeholder && this.props.placeholder}
               ref={this.ref}
               value={this.state.value}
-              className={css(styles.comment)}
+              className={css(
+                styles.comment,
+                this.props.commentStyles && this.props.commentStyles
+              )}
               onChange={this.onChange}
               onKeyDown={this.onKeyDown}
               renderBlock={this.renderBlock}

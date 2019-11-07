@@ -76,51 +76,96 @@ const Thread = (props) => {
     }
   }
 
+  function renderActionBar() {
+    return (
+      <div className={css(styles.actions)}>
+        {canEdit && (
+          <EditAction
+            onClick={setReadOnly}
+            readOnly={readOnly}
+            iconView={true}
+          />
+        )}
+        {readOnly && (
+          <ShareAction
+            title={"Share this thread"}
+            subtitle={title}
+            url={currentUrl}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <BackButton />
-      <DiscussionCard
-        top={
-          <Fragment>
-            <VoteWidget
-              selected={selectedVoteType}
-              styles={styles.voteWidget}
-              score={score}
-              fontSize={"16px"}
-              width={"58px"}
-              onUpvote={upvote}
-              onDownvote={downvote}
-            />
-            <div className={css(styles.threadTitle)}>{title}</div>
-            <ShareAction
-              title={"Share this thread"}
-              subtitle={title}
-              url={currentUrl}
-            />
-          </Fragment>
-        }
-        info={
+    <div
+      className={css(
+        styles.cardContainer,
+        !readOnly && styles.cardContainerEdit
+      )}
+    >
+      <div className={css(styles.column, styles.left)}>
+        <VoteWidget
+          selected={selectedVoteType}
+          styles={styles.voteWidget}
+          score={score}
+          fontSize={"16px"}
+          width={"58px"}
+          onUpvote={upvote}
+          onDownvote={downvote}
+        />
+      </div>
+      <div className={css(styles.column, styles.right)}>
+        <BackButton />
+        <div className={css(styles.titleBar)}>
+          <div
+            className={css(
+              styles.threadTitle,
+              !readOnly && styles.threadTitleEdit
+            )}
+          >
+            {title}
+          </div>
+          <div className={css(styles.actionbar)}>
+            <div className={css(styles.mobileVoteWidget)}>
+              <VoteWidget
+                selected={selectedVoteType}
+                styles={styles.voteWidget}
+                score={score}
+                fontSize={"16px"}
+                width={"58px"}
+                horizontalView={true}
+                onUpvote={upvote}
+                onDownvote={downvote}
+              />
+            </div>
+            {renderActionBar()}
+          </div>
+        </div>
+        <div
+          className={css(
+            styles.threadInfo,
+            !readOnly && styles.threadInfoEditView
+          )}
+        >
           <ThreadEditor
             readOnly={readOnly}
             styling={[styles.body]}
             text={body}
             setReadOnly={setReadOnly}
+            commentStyles={
+              readOnly ? styles.commentStyles : styles.commentStylesEdit
+            }
           />
-        }
-        infoStyle={styles.threadInfo}
-        action={
-          <Fragment>
-            <DiscussionPostMetadata
-              authorProfile={createdBy.authorProfile}
-              username={username}
-              date={date}
-            />
-            {canEdit && (
-              <EditAction onClick={setReadOnly} readOnly={readOnly} />
-            )}
-          </Fragment>
-        }
-      />
+        </div>
+        {readOnly && (
+          <DiscussionPostMetadata
+            authorProfile={createdBy.authorProfile}
+            username={username}
+            date={date}
+          />
+        )}
+      </div>
     </div>
   );
 };
@@ -150,9 +195,76 @@ const BackButton = () => {
 };
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    width: "100%",
+    padding: "30px 0 30px 0",
+    position: "sticky",
+    top: 0,
+  },
+  cardContainerEdit: {
+    // backgroundColor: colors.LIGHT_YELLOW(1),
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  left: {
+    paddingTop: 40,
+    "@media only screen and (max-width: 761px)": {
+      display: "none",
+    },
+  },
+  mobileVoteWidget: {
+    display: "none",
+    "@media only screen and (max-width: 761px)": {
+      display: "flex",
+      paddingLeft: 15,
+    },
+  },
+  actionbar: {
+    display: "flex",
+    justifyContent: "flex-end",
+    width: "100%",
+    "@media only screen and (max-width: 761px)": {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginTop: 15,
+    },
+  },
+  actions: {
+    display: "flex",
+  },
+  right: {
+    width: "100%",
+  },
+  titleBar: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    "@media only screen and (max-width: 761px)": {
+      flexDirection: "column",
+      justifyContent: "flex-start",
+    },
+  },
   backButtonContainer: {
-    paddingLeft: 68,
-    marginBottom: 10,
+    paddingBottom: 30,
+    "@media only screen and (max-width: 761px)": {
+      paddingBottom: 20,
+      fontSize: 14,
+    },
+  },
+  commentStyles: {
+    padding: 0,
+  },
+  commentStylesEdit: {
+    padding: 16,
+    lineHeight: 1.6,
   },
   backButton: {
     color: colors.BLACK(0.5),
@@ -163,20 +275,40 @@ const styles = StyleSheet.create({
   },
   backButtonLabel: {
     marginLeft: 10,
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   voteWidget: {
     marginRight: 18,
   },
   threadInfo: {
-    paddingLeft: 68,
+    margin: "20px 0 20px 0",
     color: colors.BLACK(0.8),
-    "@media only screen and (min-width: 1024px)": {
-      width: "calc(100% - 68px - 170px)",
+    "@media only screen and (max-width: 761px)": {
+      marginTop: 15,
+      fontSize: 16,
     },
+  },
+  threadInfoEditView: {
+    minHeight: 200,
+    boxShadow: `0px 0px 0px 8px ${colors.LIGHT_YELLOW(1)}`,
+    border: "1px solid #E7E7E7",
+    backgroundColor: "#FBFBFB",
+    margin: 0,
+    paddingBottom: 20,
+    width: "calc(100% - 76px)",
   },
   threadTitle: {
     width: "100%",
     fontSize: 33,
+    color: "#241F3A",
+    "@media only screen and (max-width: 761px)": {
+      fontSize: 22,
+    },
+  },
+  threadTitleEdit: {
+    fontSize: 20,
   },
   body: {
     marginBottom: 28,

@@ -166,7 +166,7 @@ class LockedHubPage extends React.Component {
               )}
             >
               {!joined
-                ? "This hub will be activated when at least 100 members have pledge to contribute content. Join this hub to show your support."
+                ? "This hub will be activated when at least 100 members have pledged to contribute content. Join this hub to show your support."
                 : "Thank you for joining this hub! This hub will be activated when at least 100 members have pledge to contribute content."}
             </div>
             <Message />
@@ -218,7 +218,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingTop: 80,
     backgroundColor: "#FCFCFC",
-    height: "100vh",
+    minHeight: "100vh",
+    overflow: "auto",
     "@media only screen and (max-width: 815px)": {
       flexDirection: "column",
       justifyContent: "flex-start",
@@ -227,7 +228,7 @@ const styles = StyleSheet.create({
   },
   sidebarContainer: {
     width: 297,
-    height: 633,
+    minHeight: 633,
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -263,10 +264,14 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    minWidth: 600,
+    minWidth: 650,
     "@media only screen and (max-width: 815px)": {
       width: "100%",
       minWidth: "unset",
+    },
+    "@media only screen and (max-width: 415px)": {
+      height: "unset",
+      padding: "30px 0 30px 0",
     },
   },
   content: {
@@ -284,7 +289,7 @@ const styles = StyleSheet.create({
       width: 320,
     },
     "@media only screen and (max-width: 321px)": {
-      width: 300,
+      width: 290,
     },
   },
   reveal: {
@@ -298,10 +303,13 @@ const styles = StyleSheet.create({
     fontSize: 33,
     fontWeight: 400,
     textTransform: "capitalize",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 28,
+    },
     "@media only screen and (max-width: 321px)": {
       fontSize: 25,
       marginTop: 20,
-      marginBottom: 5,
+      marginBottom: 10,
     },
   },
   subtitle: {
@@ -380,10 +388,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 379,
     "@media only screen and (max-width: 415px)": {
-      width: 320,
+      // width: 320,
+      width: "100%",
     },
     "@media only screen and (max-width: 321px)": {
-      width: 300,
+      width: 290,
       marginBottom: 30,
     },
   },

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
+import ActionButton from "~/components/ActionButton";
 
 const EditAction = (props) => {
-  const { onClick, readOnly } = props;
+  const { onClick, readOnly, iconView } = props;
 
   const [text, setText] = useState("Edit");
 
@@ -21,6 +22,25 @@ const EditAction = (props) => {
       }
     }
   }
+
+  if (iconView) {
+    if (readOnly) {
+      return (
+        <ActionButton
+          action={() => toggleEditMode(true)}
+          icon={"fas fa-pencil"}
+        />
+      );
+    } else {
+      return (
+        <ActionButton
+          action={() => toggleEditMode(true)}
+          icon={"fal fa-times"}
+        />
+      );
+    }
+  }
+
   return (
     <a className={css(styles.button)} onClick={() => toggleEditMode(true)}>
       {text}

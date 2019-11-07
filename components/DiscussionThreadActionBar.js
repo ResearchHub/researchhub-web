@@ -31,22 +31,20 @@ const CommentCount = (props) => {
   const { count, threadPath } = props;
   return (
     <Fragment>
-      {count > 0 && (
-        <div className={css(styles.commentCountContainer)}>
-          <ClientLinkWrapper
-            styling={[styles.link]}
-            dynamicHref={DYNAMIC_HREF}
-            path={threadPath}
-          >
-            <span id={"chatIcon"} className={css(styles.iconChat)}>
-              {icons.chat}
-            </span>
-            <span id={"text"} className={css(styles.text)}>
-              {formatCommentCount(props.count)}
-            </span>
-          </ClientLinkWrapper>
-        </div>
-      )}
+      <div className={css(styles.commentCountContainer)}>
+        <ClientLinkWrapper
+          styling={[styles.link]}
+          dynamicHref={DYNAMIC_HREF}
+          path={threadPath}
+        >
+          <span id={"chatIcon"} className={css(styles.iconChat)}>
+            {icons.chat}
+          </span>
+          <span id={"text"} className={css(styles.text)}>
+            {formatCommentCount(props.count)}
+          </span>
+        </ClientLinkWrapper>
+      </div>
     </Fragment>
   );
 };
@@ -56,7 +54,7 @@ function formatCommentCount(count) {
   const s = "s";
 
   if (count < 1 || doesNotExist(count)) {
-    return;
+    return "0" + " " + suffix + s;
   } else if (count < 2) {
     return count + " " + suffix;
   }
@@ -107,8 +105,11 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     color: "#918f9b",
     "@media only screen and (max-width: 415px)": {
-      fontSize: 10,
+      fontSize: 12,
     },
+  },
+  iconChat: {
+    color: "#918f9b",
   },
 });
 
