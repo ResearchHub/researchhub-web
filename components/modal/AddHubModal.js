@@ -34,13 +34,6 @@ class AddHubModal extends React.Component {
 
   createHub = async () => {
     this.props.showMessage({ show: true, load: true });
-    if (this.state.hubName === "" || this.state.hubName === " ") {
-      this.props.setMessage("Hub name cannot be empty.");
-      this.props.showMessage({ show: true, error: true });
-      return setTimeout(() => {
-        this.props.showMessage({ show: false });
-      }, 1200);
-    }
     let userSubmission = this.state.hubName.toLowerCase();
     let isUnique = await this.isHubNameUnique(userSubmission);
     if (isUnique) {
@@ -100,6 +93,7 @@ class AddHubModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
+    document.body.style.overflow = "scroll";
   };
 
   render() {
@@ -111,26 +105,49 @@ class AddHubModal extends React.Component {
         title={"Create a New Hub"}
         subtitle={"All newly created hubs will be locked."}
       >
-        <FormInput
-          label={"Hub Name"}
-          placeholder={"Enter the name of hub"}
-          id={"hubName"}
-          onChange={this.handleInputChange}
-          containerStyle={styles.containerStyle}
-          labelStyle={styles.labelStyle}
-          inputStyle={this.state.error && styles.error}
-        />
-        <div className={css(styles.button)}>
-          <Button label={"Create Hub"} onClick={this.createHub} />
-        </div>
+        <form
+          className={css(styles.form)}
+          onSubmit={(e) => {
+            e.preventDefault();
+            this.createHub();
+          }}
+        >
+          <FormInput
+            label={"Hub Name"}
+            placeholder={"Enter the name of hub"}
+            id={"hubName"}
+            onChange={this.handleInputChange}
+            containerStyle={styles.containerStyle}
+            labelStyle={styles.labelStyle}
+            inputStyle={this.state.error && styles.error}
+            required={true}
+          />
+          <div className={css(styles.button)}>
+            <Button
+              label={"Create New Hub"}
+              type={"submit"}
+              customButtonStyle={styles.buttonStyle}
+            />
+          </div>
+        </form>
       </BaseModal>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
   button: {
     marginTop: 20,
+  },
+  buttonStyle: {
+    height: 45,
+    width: 140,
   },
   containerStyle: {
     "@media only screen and (max-width: 665px)": {
