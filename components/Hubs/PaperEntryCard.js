@@ -320,7 +320,6 @@ const mobileStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   papercard: {
-    // width: "95%",
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
@@ -429,7 +428,6 @@ const styles = StyleSheet.create({
   },
   metaData: {
     width: "calc(100% - 48px)",
-    // minHeight: 130,
   },
 });
 
