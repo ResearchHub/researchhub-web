@@ -402,6 +402,7 @@ const styles = StyleSheet.create({
     paddingBottom: 7,
     paddingLeft: 30,
     paddingRight: 30,
+    lineHeight: 1.6,
     "@media only screen and (max-width: 415px)": {
       borderRadius: 0,
       borderLeft: `1px solid ${discussionPageColors.DIVIDER}`,
@@ -415,6 +416,7 @@ const styles = StyleSheet.create({
     paddingBottom: 7,
     paddingLeft: 30,
     paddingRight: 30,
+    lineHeight: 1.6,
     "@media only screen and (max-width: 415px)": {
       borderRadius: 0,
       borderLeft: `1px solid ${discussionPageColors.DIVIDER}`,
@@ -424,6 +426,7 @@ const styles = StyleSheet.create({
   },
   replyInputContainer: {
     padding: 0,
+    lineHeight: 1.6,
   },
   overrideDiscussionCardContainerStyle: {
     margin: 0,
@@ -432,6 +435,7 @@ const styles = StyleSheet.create({
   commentEditor: {
     minHeight: "100%",
     padding: "0px",
+    lineHeight: 1.6,
   },
   voteWidget: {
     marginRight: 18,
