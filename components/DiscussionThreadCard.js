@@ -269,6 +269,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     boxSizing: "border-box",
     textDecoration: "none",
+    marginRight: 15,
     ":hover": {
       backgroundColor: colors.BLUE(1),
       color: "#FFF",

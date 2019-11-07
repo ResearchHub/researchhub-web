@@ -300,6 +300,7 @@ const styles = StyleSheet.create({
   button: {
     height: 45,
     width: 140,
+    border: `${colors.BLUE()} 1px solid`,
   },
 });
 
