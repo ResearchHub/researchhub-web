@@ -50,7 +50,7 @@ class HubsList extends React.Component {
   };
 
   renderHubEntry = () => {
-    return this.state.hubs.map((hub, i) => {
+    return this.state.hubs.slice(0, 5).map((hub, i) => {
       let { name, id } = hub;
       if (name !== this.props.exclude) {
         return (
