@@ -10,6 +10,7 @@ export const ModalConstants = {
     "@@modal/PERMISSION_NOTIFICATION_MODAL_TOGGLE",
   INVITE_TO_HUB_MODAL_TOGGLE: "@@MODAL/INVITE_TO_HUB_MODAL_TOGGLE",
   ADD_DISCUSSION_MODAL_TOGGLE: "@@MODAL/ADD_DISCUSSION_MODAL_TOGGLE",
+  ADD_HUB_MODAL_TOGGLE: "@@MODAL/ADD_HUB_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -81,6 +82,16 @@ export const ModalActions = {
       });
     };
   },
+  openAddHubModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.ADD_HUB_MODAL_TOGGLE,
+        payload: {
+          openAddHubModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -94,6 +105,7 @@ const defaultModalState = {
   openPermissionNotificationModal: false,
   openInviteToHubModal: false,
   openAddDiscussionModal: false,
+  openAddHubModal: false,
   loginModal: {},
 };
 
@@ -105,6 +117,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.PERMISSION_NOTIFICATION_MODAL_TOGGLE:
     case ModalConstants.INVITE_TO_HUB_MODAL_TOGGLE:
     case ModalConstants.ADD_DISCUSSION_MODAL_TOGGLE:
+    case ModalConstants.ADD_HUB_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
