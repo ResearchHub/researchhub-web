@@ -2,9 +2,9 @@ import { useEffect, useState, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
-import ReactTooltip from "react-tooltip";
 
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import ReputationTooltip from "./ReputationTooltip";
 
 import { ModalActions } from "../redux/modals";
 
@@ -86,7 +86,7 @@ const VoteWidget = (props) => {
         )}
         style={{ fontSize: fontSize, width: width }}
         data-tip
-        data-for="votingTooltip"
+        data-for="reputationTooltip"
       >
         <PermissionNotificationWrapper
           loginRequired={true}
@@ -121,22 +121,7 @@ const VoteWidget = (props) => {
           )}
         </PermissionNotificationWrapper>
       </div>
-      <ReactTooltip
-        id="votingTooltip"
-        className={css(styles.tooltip)}
-        place="right"
-        effect="solid"
-      >
-        <div className={css(styles.comingSoon)}>Coming Soon</div>
-        <div className={css(styles.paragraph, styles.description)}>
-          Earn research coins by participating in discussion, uploading papers,
-          upvoting papers, and updating summaries / adding notes to papers.
-        </div>
-        <div className={css(styles.description)}>
-          With the research coins, you can put them towards funding areas of
-          research or pull them out to an exchange as needed.
-        </div>
-      </ReactTooltip>
+      <ReputationTooltip />
     </Fragment>
   );
 };
@@ -253,26 +238,6 @@ const styles = StyleSheet.create({
   },
   marginRight: {
     marginRight: 8,
-  },
-  tooltip: {
-    width: 348,
-    padding: 15,
-    fontSize: 14,
-    background: colors.BLUE(1),
-    opacity: 1,
-  },
-  paragraph: {
-    marginBottom: 10,
-  },
-  description: {
-    opacity: 0.8,
-  },
-  comingSoon: {
-    fontSize: 25,
-    fontWeight: 500,
-    textTransform: "uppercase",
-    textAlign: "center",
-    marginBottom: 10,
   },
 });
 
