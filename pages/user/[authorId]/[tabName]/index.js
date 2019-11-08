@@ -16,6 +16,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import ShareModal from "~/components/ShareModal";
 import ActionButton from "~/components/ActionButton";
 import AvatarUpload from "~/components/AvatarUpload";
+import Reputation from "~/components/Reputation";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -429,7 +430,12 @@ const AuthorPage = (props) => {
                 </div>
               )
             )}
-            <div className={css(styles.reputation)}></div>
+            <div className={css(styles.reputation)}>
+              <div className={css(styles.reputationTitle)}>
+                Lifetime Reputation:
+              </div>
+              <Reputation reputation={author.reputation} />
+            </div>
             {!editDescription ? (
               <div
                 className={css(styles.description, styles.editButtonContainer)}
@@ -860,6 +866,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     // left: '-50%',
     // transform: "translateX(-50%)",
+  },
+  reputation: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  reputationTitle: {
+    marginRight: 10,
   },
 });
 

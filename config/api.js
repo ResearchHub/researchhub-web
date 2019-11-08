@@ -171,6 +171,12 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    FIRST_SUMMARY: () => {
+      let url = BASE_URL + `summary/first/`;
+
+      return url;
+    },
+
     THREAD: (paperId, threadId) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/`;
 

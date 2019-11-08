@@ -1,12 +1,9 @@
-import Link from "next/link";
-import Router from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
 import moment from "moment";
 
 // Component
-import Button from "~/components/Form/Button";
 import HubsList from "~/components/Hubs/HubsList";
 import FormSelect from "~/components/Form/FormSelect";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
@@ -14,9 +11,9 @@ import Loader from "~/components/Loader/Loader";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 
 // Redux
-import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
 import { MessagActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
@@ -24,6 +21,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { PaperActions } from "../../redux/paper";
 import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
+import Button from "../Form/Button";
 
 const filterOptions = [
   {
@@ -184,16 +182,25 @@ class HubPage extends React.Component {
           count: res.count,
           papers: res.results,
           next: res.next,
+          page: this.state.page + 1,
         });
       });
   };
 
   loadMore = () => {
+    let { hub } = this.props;
+    let hubId = 0;
+    if (hub) {
+      hubId = hub.id;
+    }
+
     let scope = this.calculateScope();
+
     return fetch(
       API.GET_HUB_PAPERS({
         timePeriod: scope,
-        hubId: hub,
+        hubId: hubId,
+        page: this.state.page + 1,
         ordering: this.state.filterBy.value,
       }),
       API.GET_CONFIG()
@@ -204,6 +211,7 @@ class HubPage extends React.Component {
         this.setState({
           papers: [...this.state.papers, ...res.results],
           next: res.next,
+          page: this.state.page + 1,
         });
       });
   };
@@ -285,8 +293,8 @@ class HubPage extends React.Component {
               !
             </div>
             <div className={css(styles.subtext, styles.text)}>
-              We're a community seeking to prioritization, collaboration,
-              reproducability, and funding of scientic research.{" "}
+              We're a community seeking to improve prioritization,
+              collaboration, reproducability, and funding of scientic research.{" "}
               <span className={css(styles.readMore)}>Read more</span>
             </div>
             <span className={css(styles.googleLogin)}>
@@ -335,7 +343,7 @@ class HubPage extends React.Component {
                 <InfiniteScroll
                   pageStart={this.state.page}
                   loadMore={this.loadMore}
-                  hasMore={this.state.next}
+                  hasMore={this.state.next !== null}
                   loader={<Loader key={"hubPageLoader"} loading={true} />}
                 >
                   {this.state.papers.map((paper, i) => (
