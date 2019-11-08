@@ -39,6 +39,7 @@ const TextEditor = (props) => {
   const [editorRef, setEditorRef] = useState(null);
 
   function handleChange(value) {
+    debugger;
     setValue(value);
     onChange && onChange(value);
   }
@@ -55,6 +56,7 @@ const TextEditor = (props) => {
     if (value.document.text === "" || value.document.text === " ") {
       return;
     }
+
     let success = false;
     if (!isLoggedIn) {
       // TODO: pop login modal
