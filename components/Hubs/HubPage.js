@@ -182,6 +182,7 @@ class HubPage extends React.Component {
           count: res.count,
           papers: res.results,
           next: res.next,
+          page: this.state.page + 1,
         });
       });
   };
