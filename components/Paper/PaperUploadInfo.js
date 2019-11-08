@@ -677,7 +677,7 @@ class PaperUploadInfo extends React.Component {
               <span className={css(styles.tagline)}>
                 <FormTextArea
                   label={"Tag Line"}
-                  placeholder="Enter a brief overview of the paper"
+                  placeholder="Enter a sentence or two describing the paper"
                   required={true}
                   containerStyle={styles.container}
                   labelStyle={styles.labelStyle}
@@ -1021,6 +1021,7 @@ class PaperUploadInfo extends React.Component {
 
   saveDiscussion = async () => {
     // if there's nothing to save, then don't save
+    this.props.messageActions.showMessage({ show: true, load: true });
     if (
       this.state.discussion.title === "" ||
       Object.keys(this.state.discussion.question).length < 1
@@ -1052,6 +1053,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   navigateToSummary = () => {
+    this.props.messageActions.showMessage({ show: true, load: true });
     let paperId = this.state.editMode
       ? this.props.paperId
       : this.props.paper.postedPaper.id;

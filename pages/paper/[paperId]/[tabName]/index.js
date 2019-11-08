@@ -55,6 +55,7 @@ const Paper = (props) => {
       setPaper(refetchedPaper);
       setSelectedVoteType(getVoteType(refetchedPaper.userVote));
       setDiscussionThreads(getDiscussionThreads(refetchedPaper));
+      this.props.messageActions.showMessage({ show: false });
     }
     refetchPaper();
   }, [props.isServer, paperId]);
