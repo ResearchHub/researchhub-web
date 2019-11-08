@@ -11,6 +11,7 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 
 // Config
+import { thread } from "~/redux/discussion/shims";
 import { RHLogo } from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -109,7 +110,9 @@ export default class Search extends Component {
       case "author":
         return <AuthorSearchResult result={result} />;
       case "discussion_thread":
-        return <DiscussionThreadCard />;
+        // TODO: We still need to update the serializer on the backend with vote
+        // and author data so that it gets displayed when this renders
+        return <DiscussionThreadCard data={thread(result)} />;
       case "hub":
         return <HubSearchResult result={result} />;
       case "paper":
