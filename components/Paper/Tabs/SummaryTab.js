@@ -22,6 +22,8 @@ class SummaryTab extends React.Component {
   constructor(props) {
     super(props);
 
+    this.editor = React.createRef();
+
     this.state = {
       readOnly: true,
       editorState: null,
@@ -58,11 +60,16 @@ class SummaryTab extends React.Component {
         ? this.props.paper.summary.id
         : null,
     };
-    fetch(API.SUMMARY({}), API.POST_CONFIG(param))
+    return fetch(API.SUMMARY({}), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        setMessage("Edits Submitted!");
+        if (!resp.approved) {
+          this.initializeSummary();
+          setMessage("Edits Submitted for Approval!");
+        } else {
+          setMessage("Edits Made!");
+        }
         showMessage({ show: true });
         this.setState({
           readOnly: true,
@@ -93,7 +100,10 @@ class SummaryTab extends React.Component {
     });
   };
 
-  componentDidMount() {
+  /**
+   * Initializes the summary from the paper redux
+   */
+  initializeSummary = () => {
     const { paper } = this.props;
     if (paper.summary) {
       if (paper.summary.summary) {
@@ -103,8 +113,17 @@ class SummaryTab extends React.Component {
           editorState,
           finishedLoading: true,
         });
+
+        if (this.editor.current) {
+          debugger;
+          this.editor.setEditorState(editorState);
+        }
       }
     }
+  };
+
+  componentDidMount() {
+    this.initializeSummary();
   }
 
   render() {
@@ -155,8 +174,10 @@ class SummaryTab extends React.Component {
                 canEdit={true}
                 readOnly={this.state.readOnly}
                 canSubmit={true}
+                ref={this.editor}
                 commentEditor={false}
                 initialValue={this.state.editorState}
+                passedValue={this.state.editorState}
                 onCancel={this.cancel}
                 onSubmit={this.submitEdit}
               />

@@ -83,6 +83,12 @@ class RichTextEditor extends React.Component {
     };
   }
 
+  setEditorState = (value) => {
+    this.setState({
+      value,
+    });
+  };
+
   componentDidUpdate(prevProps) {
     if (
       this.props.submittedSuccess &&

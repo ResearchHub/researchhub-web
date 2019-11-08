@@ -1,12 +1,9 @@
-import Link from "next/link";
-import Router from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
 import moment from "moment";
 
 // Component
-import Button from "~/components/Form/Button";
 import HubsList from "~/components/Hubs/HubsList";
 import FormSelect from "~/components/Form/FormSelect";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
@@ -14,7 +11,6 @@ import Loader from "~/components/Loader/Loader";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 
 // Redux
-import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
 import { MessagActions } from "~/redux/message";
 
@@ -285,8 +281,8 @@ class HubPage extends React.Component {
               !
             </div>
             <div className={css(styles.subtext, styles.text)}>
-              We're a community seeking to prioritization, collaboration,
-              reproducability, and funding of scientic research.{" "}
+              We're a community seeking to improve prioritization,
+              collaboration, reproducability, and funding of scientic research.{" "}
               <span className={css(styles.readMore)}>Read more</span>
             </div>
             <span className={css(styles.googleLogin)}>
