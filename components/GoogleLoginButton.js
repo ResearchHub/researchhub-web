@@ -1,26 +1,38 @@
-import { GoogleLogin, GoogleLogout } from "react-google-login";
+import { GoogleLogin } from "react-google-login";
 import { StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 
 import Button from "~/components/Form/Button";
+
 import { AuthActions } from "../redux/auth";
+import { MessageActions } from "~/redux/message";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 
 const GoogleLoginButton = (props) => {
-  const responseGoogle = (response) => {
+  const responseGoogle = async (response) => {
     let { googleLogin, getUser } = props;
     response["access_token"] = response["accessToken"];
-    googleLogin(response).then((_) => {
+
+    await googleLogin(response).then((_) => {
       getUser().then((_) => {});
     });
+
+    if (props.auth.loginFailed) {
+      showLoginFailureMessage();
+    }
   };
+
+  function showLoginFailureMessage() {
+    props.setMessage("Login failed");
+    props.showMessage({ show: true, error: true });
+  }
 
   return (
     <GoogleLogin
       clientId={GOOGLE_CLIENT_ID}
       onSuccess={responseGoogle}
-      onFailure={responseGoogle}
+      onFailure={showLoginFailureMessage}
       cookiePolicy={"single_host_origin"}
       render={(renderProps) => (
         <Button
@@ -50,12 +62,18 @@ const styles = StyleSheet.create({
   },
 });
 
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
 const mapDispatchToProps = {
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(GoogleLoginButton);

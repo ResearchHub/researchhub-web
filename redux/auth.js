@@ -12,6 +12,7 @@ import { AUTH_TOKEN } from "../config/constants";
 
 export const AuthConstants = {
   LOGIN: "@@auth/LOGIN",
+  LOGIN_FAILURE: "@@auth/LOGIN_FAILURE",
   REGISTER: "@@auth/REGISTER",
   FETCHING_REGISTER: "@@auth/FETCHING_REGISTER",
   FETCHING_LOGIN: "@@auth/FETCHING_LOGIN",
@@ -167,16 +168,21 @@ export const AuthActions = {
             type: AuthConstants.LOGIN,
             isLoggedIn: true,
             isFetchingLogin: false,
+            loginFailed: false,
           });
         })
         .catch((error) => {
-          // TODO: what to do with errors?
           if (error.response && error.response.status === 401) {
             console.log(error.response);
-            return error.response;
           } else {
             console.log(error);
           }
+          return dispatch({
+            type: AuthConstants.LOGIN_FAILURE,
+            isLoggedIn: false,
+            isFetchingLogin: false,
+            loginFailed: true,
+          });
         });
     };
   },
@@ -299,6 +305,7 @@ export const AuthActions = {
 const defaultAuthState = {
   isLoggedIn: false,
   isFetchingLogin: false,
+  loginFailed: false,
   generatingAPIKey: false,
   authChecked: false,
   user: {},
@@ -309,6 +316,7 @@ const defaultAuthState = {
 const AuthReducer = (state = defaultAuthState, action) => {
   switch (action.type) {
     case AuthConstants.LOGIN:
+    case AuthConstants.LOGIN_FAILURE:
     case AuthConstants.REGISTER:
     case AuthConstants.FETCHING_REGISTER:
     case AuthConstants.FETCHING_LOGIN:
