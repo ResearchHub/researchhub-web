@@ -99,7 +99,7 @@ class AuthorCardList extends React.Component {
             <Loader loading={loading} />
           </div>
         ) : (
-          <span style={{ width: "100%" }}>
+          <span className={css(styles.authorListContainer)}>
             {this.renderAuthorCard(authorsList)}
           </span>
         )}
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     border: "1px solid #F7F7FB",
     borderRadius: 5,
     height: 74,
-    width: "inherit",
+    width: "96%",
     marginBottom: 10,
     position: "relative",
     ":hover": {
@@ -258,6 +258,13 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: "none",
+  },
+  authorListContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
