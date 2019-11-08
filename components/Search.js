@@ -79,12 +79,13 @@ export default class Search extends Component {
     const results = this.state.results.map((result, index) => {
       return (
         <div
+          key={index}
           className={css(styles.searchResult)}
           onClick={() =>
             setTimeout(this.setState({ showDropdown: false }), 500)
           }
         >
-          {this.getResultComponent(result, index)}
+          {this.getResultComponent(result)}
         </div>
       );
     });
@@ -103,14 +104,13 @@ export default class Search extends Component {
     return results;
   };
 
-  getResultComponent = (result, key) => {
+  getResultComponent = (result) => {
     const indexName = result.meta.index;
 
     switch (indexName) {
       case "author":
         return (
           <AuthorSearchResult
-            key={key}
             result={result}
             firstName={result.first_name}
             lastName={result.last_name}
@@ -122,18 +122,17 @@ export default class Search extends Component {
           data = this.populateThreadData(data, result);
           return (
             <DiscussionThreadCard
-              key={key}
               path={`/paper/${data.paper}/discussion/${data.id}`}
               data={data}
             />
           );
         }
       case "hub":
-        return <HubSearchResult key={key} result={result} />;
+        return <HubSearchResult result={result} />;
       case "paper":
-        return <PaperEntryCard key={key} paper={result} discussionCount={0} />;
+        return <PaperEntryCard paper={result} discussionCount={0} />;
       case "university":
-        return <UniversitySearchResult key={key} result={result} />;
+        return <UniversitySearchResult result={result} />;
       default:
         break;
     }
