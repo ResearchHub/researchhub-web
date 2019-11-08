@@ -11,8 +11,10 @@ import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
 
 // Redux
-import { ModalActions } from "../../redux/modals";
 import { AuthActions } from "../../redux/auth";
+import { ModalActions } from "../../redux/modals";
+import { MessageActions } from "~/redux/message";
+
 import { GOOGLE_CLIENT_ID } from "../../config/constants";
 
 class LoginModal extends React.Component {
@@ -39,15 +41,20 @@ class LoginModal extends React.Component {
     openLoginModal(false);
   };
 
-  responseGoogle = (response) => {
+  responseGoogle = async (response) => {
     //TODO: do something after google oauth api responds
     let { googleLogin, getUser } = this.props;
     response["access_token"] = response["accessToken"];
-    googleLogin(response).then((_) => {
+    await googleLogin(response).then((_) => {
       getUser().then((_) => {
         this.closeModal();
       });
     });
+
+    if (this.props.auth.loginFailed) {
+      this.props.setMessage("Login failed");
+      this.props.showMessage({ show: true, error: true });
+    }
   };
 
   render() {
@@ -197,6 +204,8 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
