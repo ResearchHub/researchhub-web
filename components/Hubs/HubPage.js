@@ -12,7 +12,7 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
-import { MessagActions } from "~/redux/message";
+import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
 // Config
@@ -160,6 +160,7 @@ class HubPage extends React.Component {
   }
 
   fetchPapers = ({ hub }) => {
+    let { showMessage } = this.props;
     let hubId = 0;
 
     if (hub) {
@@ -184,10 +185,16 @@ class HubPage extends React.Component {
           next: res.next,
           page: this.state.page + 1,
         });
-      });
+      })
+      .then(
+        setTimeout(() => {
+          showMessage({ show: false });
+        }, 200)
+      );
   };
 
   loadMore = () => {
+    let { showMessage } = this.props;
     let { hub } = this.props;
     let hubId = 0;
     if (hub) {
@@ -213,7 +220,12 @@ class HubPage extends React.Component {
           next: res.next,
           page: this.state.page + 1,
         });
-      });
+      })
+      .then(
+        setTimeout(() => {
+          showMessage({ show: false });
+        }, 200)
+      );
   };
 
   calculateScope = () => {
@@ -245,9 +257,10 @@ class HubPage extends React.Component {
   };
 
   onFilterSelect = (option, type) => {
+    let { showMessage } = this.props;
     let param = {};
     param[type] = option;
-
+    showMessage({ show: true, load: true });
     this.setState({
       ...param,
     });
@@ -736,6 +749,7 @@ const mapDispatchToProps = {
   postDownvote: PaperActions.postDownvote,
   setUserBannerPreference: AuthActions.setUserBannerPreference,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
