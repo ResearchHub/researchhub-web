@@ -20,7 +20,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
-import { endsWithSlash } from "~/config/utils/routing";
+import { doesNotExist, endsWithSlash } from "~/config/utils";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
@@ -28,7 +28,13 @@ const DiscussionTab = (props) => {
     title: "",
     question: discussionScaffoldInitialValue,
   };
-  const { hostname, threads } = props;
+
+  let { hostname, threads } = props;
+
+  if (doesNotExist(threads)) {
+    threads = [];
+  }
+
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
   const formattedThreads = formatThreads(threads, basePath);
@@ -235,16 +241,13 @@ function formatBasePath(path) {
 }
 
 function formatThreads(threads, basePath) {
-  return (
-    threads &&
-    threads.map((thread) => {
-      return {
-        key: thread.id,
-        data: thread,
-        path: basePath + thread.id,
-      };
-    })
-  );
+  return threads.map((thread) => {
+    return {
+      key: thread.id,
+      data: thread,
+      path: basePath + thread.id,
+    };
+  });
 }
 
 var styles = StyleSheet.create({
