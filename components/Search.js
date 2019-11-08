@@ -66,6 +66,7 @@ export default class Search extends Component {
             results: resp.results,
             finished: true,
           });
+          this.props.getNumberOfResults(resp.results.length);
         });
     }, 1500);
 
@@ -75,7 +76,6 @@ export default class Search extends Component {
   };
 
   renderSearchResults = () => {
-    console.log(this.state.results);
     const results = this.state.results.map((result, index) => {
       return (
         <div
