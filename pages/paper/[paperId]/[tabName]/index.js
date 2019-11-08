@@ -57,7 +57,7 @@ const Paper = (props) => {
       setDiscussionThreads(getDiscussionThreads(refetchedPaper));
     }
     refetchPaper();
-  }, [props.isServer]);
+  }, [props.isServer, paperId]);
 
   function getDiscussionThreads(paper) {
     return getNestedValue(paper, ["discussion", "threads"]);
