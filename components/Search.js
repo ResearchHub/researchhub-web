@@ -2,7 +2,11 @@ import { Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 
-import { AuthorSearchResult } from "./SearchResult";
+import {
+  AuthorSearchResult,
+  UniversitySearchResult,
+  HubSearchResult,
+} from "./SearchResult";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 
@@ -103,22 +107,15 @@ export default class Search extends Component {
 
     switch (indexName) {
       case "author":
-        return (
-          <AuthorSearchResult
-            result={result}
-            id={result.id}
-            firstName={result.first_name}
-            lastName={result.last_name}
-          />
-        );
+        return <AuthorSearchResult result={result} />;
       case "discussion_thread":
         return <DiscussionThreadCard />;
       case "hub":
-        return <div>{result.name}</div>;
+        return <HubSearchResult result={result} />;
       case "paper":
         return <PaperEntryCard paper={result} discussionCount={0} />;
       case "university":
-        return <div>{result.name}</div>;
+        return <UniversitySearchResult result={result} />;
       default:
         break;
     }
