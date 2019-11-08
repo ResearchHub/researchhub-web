@@ -84,7 +84,7 @@ export default class Search extends Component {
             setTimeout(this.setState({ showDropdown: false }), 500)
           }
         >
-          {this.getResultComponent(result)}
+          {this.getResultComponent(result, index)}
         </div>
       );
     });
@@ -103,25 +103,41 @@ export default class Search extends Component {
     return results;
   };
 
-  getResultComponent = (result) => {
+  getResultComponent = (result, key) => {
     const indexName = result.meta.index;
 
     switch (indexName) {
       case "author":
-        return <AuthorSearchResult result={result} />;
+        return <AuthorSearchResult key={key} result={result} />;
       case "discussion_thread":
-        // TODO: We still need to update the serializer on the backend with vote
-        // and author data so that it gets displayed when this renders
-        return <DiscussionThreadCard data={thread(result)} />;
+        let data = thread(result);
+        if (data.isPublic) {
+          data = this.populateThreadData(data, result);
+          return (
+            <DiscussionThreadCard
+              key={key}
+              path={`/paper/${data.paper}/discussion/${data.id}`}
+              data={data}
+            />
+          );
+        }
       case "hub":
-        return <HubSearchResult result={result} />;
+        return <HubSearchResult key={key} result={result} />;
       case "paper":
-        return <PaperEntryCard paper={result} discussionCount={0} />;
+        return <PaperEntryCard key={key} paper={result} discussionCount={0} />;
       case "university":
-        return <UniversitySearchResult result={result} />;
+        return <UniversitySearchResult key={key} result={result} />;
       default:
         break;
     }
+  };
+
+  populateThreadData = (data, result) => {
+    data["createdBy"]["firstName"] =
+      result.created_by_author_profile.first_name;
+    data["createdBy"]["lastName"] = result.created_by_author_profile.last_name;
+    data["createdBy"]["authorProfile"] = result.created_by_author_profile;
+    return data;
   };
 
   render() {
