@@ -120,7 +120,7 @@ const PaperEntryCard = ({
               mobileStyles.publishDate
             )}
           >
-            {convertDate()}
+            {paper_publish_date && convertDate()}
           </div>
           <div
             className={css(
@@ -202,7 +202,7 @@ const PaperEntryCard = ({
               {title && title}
             </div>
             <div className={css(styles.publishDate, styles.text)}>
-              {convertDate()}
+              {paper_publish_date && convertDate()}
             </div>
             <div className={css(styles.summary, styles.text)}>
               {tagline ? tagline : null}

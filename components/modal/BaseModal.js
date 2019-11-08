@@ -28,8 +28,10 @@ class BaseModal extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.isOpen !== this.props.isOpen) {
-      document.body.scrollTop = 0; // For Safari
-      document.documentElement.scrollTop = 0;
+      if (this.state.mobileView) {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0;
+      }
       this.updateDimensions();
       if (this.state.reveal) {
         this.setState({ reveal: false });
@@ -182,6 +184,9 @@ const styles = StyleSheet.create({
   },
   removeDefault: {
     padding: 0,
+    "@media only screen and (max-width: 415px)": {
+      padding: 0,
+    },
   },
   reveal: {
     opacity: 1,
@@ -210,17 +215,15 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 557px)": {
       fontSize: 24,
     },
-    "@media only screen and (max-width: 410px)": {
-      fontSize: 22,
-    },
     "@media only screen and (max-width: 725px)": {
       width: 450,
     },
     "@media only screen and (max-width: 557px)": {
       width: 380,
     },
-    "@media only screen and (max-width: 410px)": {
+    "@media only screen and (max-width: 415px)": {
       width: 300,
+      fontSize: 22,
     },
     "@media only screen and (max-width: 321px)": {
       width: 280,
