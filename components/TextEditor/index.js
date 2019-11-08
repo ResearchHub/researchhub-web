@@ -39,7 +39,6 @@ const TextEditor = (props) => {
   const [editorRef, setEditorRef] = useState(null);
 
   function handleChange(value) {
-    debugger;
     setValue(value);
     onChange && onChange(value);
   }
