@@ -856,6 +856,10 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.hubs = true;
     }
+    if (author.self_author === false && this.state.selectedAuthors.length < 1) {
+      pass = false;
+      error.author = true;
+    }
     if (this.state.editMode) {
       if (!published.year) {
         pass = false;
@@ -875,13 +879,6 @@ class PaperUploadInfo extends React.Component {
       ) {
         pass = false;
         error.dnd = true;
-      }
-      if (
-        author.self_author === false &&
-        this.state.selectedAuthors.length < 1
-      ) {
-        pass = false;
-        error.author = true;
       }
     }
     this.setState({ error });
