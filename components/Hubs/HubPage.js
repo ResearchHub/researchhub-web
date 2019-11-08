@@ -343,7 +343,7 @@ class HubPage extends React.Component {
                 <InfiniteScroll
                   pageStart={this.state.page}
                   loadMore={this.loadMore}
-                  hasMore={this.state.next}
+                  hasMore={this.state.next !== null}
                   loader={<Loader key={"hubPageLoader"} loading={true} />}
                 >
                   {this.state.papers.map((paper, i) => (

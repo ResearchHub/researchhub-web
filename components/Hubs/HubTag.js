@@ -17,7 +17,10 @@ const HubTag = ({ tag, overrideStyle, hubName }) => {
 
   if (name === hubName) {
     return (
-      <div className={css(styles.tag, overrideStyle && overrideStyle)}>
+      <div
+        className={css(styles.tag, overrideStyle && overrideStyle)}
+        key={`tag-${name}-${Math.random()}`}
+      >
         <span className={css(styles.label)}>{name && name}</span>
       </div>
     );
