@@ -37,10 +37,10 @@ const CommentCount = (props) => {
           dynamicHref={DYNAMIC_HREF}
           path={threadPath}
         >
-          <span id={"chatIcon"} className={css(styles.iconChat)}>
+          <span className={css(styles.iconChat)} id={"chatIcon"}>
             {icons.chat}
           </span>
-          <span id={"text"} className={css(styles.text)}>
+          <span className={css(styles.text)} id={"text"}>
             {formatCommentCount(props.count)}
           </span>
         </ClientLinkWrapper>
@@ -64,8 +64,10 @@ function formatCommentCount(count) {
 const Share = () => {
   return (
     <div className={css(styles.shareContainer)}>
-      <span className={css(styles.iconChat)}>{icons.share}</span>
-      <span id={"text"} className={css(styles.text)}>
+      <span className={css(styles.iconChat)} id={"shareIcon"}>
+        {icons.share}
+      </span>
+      <span className={css(styles.text)} id={"text"}>
         Share
       </span>
     </div>
@@ -78,10 +80,11 @@ const styles = StyleSheet.create({
     marginLeft: -1,
     padding: 4,
     borderRadius: 5,
-    ":hover .text": {
+    cursor: "pointer",
+    ":hover #text": {
       color: colors.BLUE(1),
     },
-    ":hover .chatIcon": {
+    ":hover #chatIcon": {
       color: colors.BLUE(1),
     },
   },
@@ -92,10 +95,10 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     padding: 4,
     borderRadius: 5,
-    ":hover": {
+    ":hover #text": {
       color: colors.BLUE(1),
     },
-    ":hover .text": {
+    ":hover #shareIcon": {
       color: colors.BLUE(1),
     },
   },

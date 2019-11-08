@@ -39,7 +39,7 @@ DiscussionCard.propTypes = {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFF",
-    padding: "15px 0px 15px 0px",
+    padding: "15px 5px 15px 5px",
     borderRadius: 10,
     border: "1px solid #FFFFFF",
     "@media only screen and (max-width: 415px)": {
