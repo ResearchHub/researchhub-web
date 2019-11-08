@@ -6,6 +6,7 @@ export const thread = (thread) => {
     title: thread.title,
     text: thread.text,
     paper: thread.paper,
+    commentCount: thread.comment_count,
     createdBy: transformUser(thread.created_by),
     createdDate: transformDate(thread.created_date),
     isPublic: thread.is_public,
