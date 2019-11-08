@@ -3,16 +3,10 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
-import { timeAgo } from "~/config/utils";
-import Ripples from "react-ripples";
 
 // Components
-import TextEditor from "~/components/TextEditor";
-import FormInput from "~/components/Form/FormInput";
-import Button from "~/components/Form/Button";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import ComponentWrapper from "../../ComponentWrapper";
-import Message from "~/components/Loader/Message";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import AddDiscussionModal from "~/components/modal/AddDiscussionModal";
 
