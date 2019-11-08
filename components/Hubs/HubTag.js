@@ -7,7 +7,7 @@ import Ripples from "react-ripples";
 
 const HubTag = ({ tag, overrideStyle, hubName }) => {
   let { id, name, link, last } = tag;
-  const nameArr = name.split(" ");
+  const nameArr = (name && name.split(" ")) || [];
 
   function nameToUrl(name) {
     return nameArr.length > 1

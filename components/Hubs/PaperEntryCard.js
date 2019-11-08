@@ -173,9 +173,12 @@ const PaperEntryCard = ({
           </div>
           <div className={css(styles.tags, mobileStyles.tags)}>
             {hubs.length > 0 &&
-              hubs.map((tag, index) => (
-                <HubTag key={`hub_${index}`} tag={tag} hubName={hubName} />
-              ))}
+              hubs.map(
+                (tag, index) =>
+                  tag && (
+                    <HubTag key={`hub_${index}`} tag={tag} hubName={hubName} />
+                  )
+              )}
           </div>
         </div>
       </Link>
@@ -248,14 +251,17 @@ const PaperEntryCard = ({
               </div>
               <div className={css(styles.tags)}>
                 {hubs.length > 0 &&
-                  hubs.map((tag, index) => (
-                    <HubTag
-                      key={`hub_${index}`}
-                      tag={tag}
-                      hubName={hubName}
-                      last={index === tag.length - 1}
-                    />
-                  ))}
+                  hubs.map(
+                    (tag, index) =>
+                      tag && (
+                        <HubTag
+                          key={`hub_${index}`}
+                          tag={tag}
+                          hubName={hubName}
+                          last={index === tag.length - 1}
+                        />
+                      )
+                  )}
               </div>
             </div>
           </div>
