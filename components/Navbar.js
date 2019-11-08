@@ -48,7 +48,7 @@ const Navbar = (props) => {
     null
   );
 
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState(0);
   const [showSearch, setShowSearch] = useState(false);
 
   let dropdown;
@@ -69,19 +69,22 @@ const Navbar = (props) => {
       setOpenMenu(false);
     }
 
-    // TODO: Figure out why this is blocking click events on the search bar
-    // if (
-    //   searchBar &&
-    //   !searchBar.contains(e.target) &&
-    //   searchDropdown &&
-    //   !searchDropdown.contains(e.target)
-    // ) {
-    //   setShowSearch(false);
-    // }
+    if (
+      searchBar &&
+      !searchBar.current.contains(e.target) &&
+      searchDropdown &&
+      !searchDropdown.current.contains(e.target)
+    ) {
+      setShowSearch(false);
+    }
 
-    // if (searchBar && searchBar.contains(e.target) && searchResults.length > 0) {
-    //   setShowSearch(true);
-    // }
+    if (
+      searchBar &&
+      searchBar.current.contains(e.target) &&
+      searchResults > 0
+    ) {
+      setShowSearch(true);
+    }
 
     if (avatar && avatar.contains(e.target)) {
       // TODO: Is this doing what is intended? `avatar` is not a valid ref
@@ -124,7 +127,6 @@ const Navbar = (props) => {
       return (
         <Link href={tab.route} key={`navbar_tab_${index}`}>
           <div
-            // onClick={() => alert("Not yet implemented!")}
             className={css(
               styles.tab,
               index === 0 && styles.firstTab,
@@ -291,6 +293,7 @@ const Navbar = (props) => {
           showDropdown={showSearch}
           getDropdownRef={searchDropdown}
           getSearchBarRef={searchBar}
+          getNumberOfResults={setSearchResults}
         />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
