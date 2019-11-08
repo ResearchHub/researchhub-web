@@ -139,7 +139,7 @@ const DiscussionTab = (props) => {
     let discussionObject = {
       data: newDiscussion,
       key: newDiscussion.id,
-      path: `/paper/1/discussion/${newDiscussion.id}`,
+      path: `/paper/${newDiscussion.paper}/discussion/${newDiscussion.id}`,
     };
     return discussionObject;
   };
