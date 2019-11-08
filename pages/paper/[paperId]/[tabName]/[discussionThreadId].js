@@ -80,7 +80,7 @@ const DiscussionThreadPage = (props) => {
     }
 
     refetchDiscussion();
-  }, [props.isServer]);
+  }, [props.isServer, paperId, discussionThreadId]);
 
   function renderComments(comments) {
     return (
