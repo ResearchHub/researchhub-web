@@ -16,6 +16,7 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 // Redux
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
+import { MessagActions } from "~/redux/message";
 
 // Config
 import API from "~/config/api";
@@ -330,24 +331,50 @@ class HubPage extends React.Component {
               </div>
             </div>
             <div className={css(styles.infiniteScroll)}>
-              <InfiniteScroll
-                pageStart={this.state.page}
-                loadMore={this.loadMore}
-                hasMore={this.state.next}
-                loader={<Loader key={"hubPageLoader"} loading={true} />}
-              >
-                {this.state.papers.map((paper, i) => (
-                  <PaperEntryCard
-                    key={`${paper.id}-${i}`}
-                    paper={paper}
-                    index={i}
-                    hubName={this.props.hubName}
-                    onUpvote={this.onUpvote}
-                    onDownvote={this.onDownvote}
-                    mobileView={this.state.mobileView}
+              {this.state.papers.length > 0 ? (
+                <InfiniteScroll
+                  pageStart={this.state.page}
+                  loadMore={this.loadMore}
+                  hasMore={this.state.next}
+                  loader={<Loader key={"hubPageLoader"} loading={true} />}
+                >
+                  {this.state.papers.map((paper, i) => (
+                    <PaperEntryCard
+                      key={`${paper.id}-${i}`}
+                      paper={paper}
+                      index={i}
+                      hubName={this.props.hubName}
+                      onUpvote={this.onUpvote}
+                      onDownvote={this.onDownvote}
+                      mobileView={this.state.mobileView}
+                    />
+                  ))}
+                </InfiniteScroll>
+              ) : (
+                <div className={css(styles.column)}>
+                  <img
+                    className={css(styles.emptyPlaceholderImage)}
+                    src={"/static/background/homepage-empty-state.png"}
                   />
-                ))}
-              </InfiniteScroll>
+                  <div
+                    className={css(styles.text, styles.emptyPlaceholderText)}
+                  >
+                    There are no academic Paper uploaded for this page.
+                  </div>
+                  <div
+                    className={css(
+                      styles.text,
+                      styles.emptyPlaceholderSubtitle
+                    )}
+                  >
+                    Click ‘Upload paper’ button to upload a PDF
+                  </div>
+                  <Button
+                    label={"Upload Paper"}
+                    onClick={() => this.props.openUploadPaperModal(true)}
+                  />
+                </div>
+              )}
             </div>
             <div className={css(styles.mobileHubListContainer)}>
               <HubsList
@@ -466,7 +493,6 @@ var styles = StyleSheet.create({
     },
   },
   body: {
-    minHeight: 1348,
     backgroundColor: "#FFF",
     width: "100%",
     alignItems: "flex-start",
@@ -477,9 +503,6 @@ var styles = StyleSheet.create({
     position: "sticky",
     top: 0,
     backgroundColor: "#FFF",
-    // "@media only screen and (max-width: 577px)": {
-    //   display: "none",
-    // },
     "@media only screen and (max-width: 769px)": {
       display: "none",
     },
@@ -671,6 +694,26 @@ var styles = StyleSheet.create({
     paddingTop: 20,
     width: "unset",
   },
+  emptyPlaceholderImage: {
+    width: 400,
+    objectFit: "contain",
+    marginTop: 40,
+  },
+  emptyPlaceholderText: {
+    width: 500,
+    textAlign: "center",
+    fontSize: 18,
+    color: "#241F3A",
+    marginTop: 20,
+  },
+  emptyPlaceholderSubtitle: {
+    width: 500,
+    textAlign: "center",
+    fontSize: 14,
+    color: "#4e4c5f",
+    marginTop: 10,
+    marginBottom: 10,
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -684,6 +727,7 @@ const mapDispatchToProps = {
   postUpvote: PaperActions.postUpvote,
   postDownvote: PaperActions.postDownvote,
   setUserBannerPreference: AuthActions.setUserBannerPreference,
+  openUploadPaperModal: ModalActions.openUploadPaperModal,
 };
 
 export default connect(

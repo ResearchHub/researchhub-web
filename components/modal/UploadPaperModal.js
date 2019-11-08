@@ -55,8 +55,6 @@ class UploadPaperModal extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      document.body.scrollTop = 0; // For Safari
-      document.documentElement.scrollTop = 0;
       this.updateDimensions();
     }
   }
