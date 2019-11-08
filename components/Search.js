@@ -2,6 +2,7 @@ import { Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 
+import { AuthorSearchResult } from "./SearchResult";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 
@@ -99,10 +100,27 @@ export default class Search extends Component {
 
   getResultComponent = (result) => {
     const indexName = result.meta.index;
-    if (indexName === "paper") {
-      return <PaperEntryCard paper={result} discussionCount={0} />;
-    } else if (indexName === "discussion_thread") {
-      return <DiscussionThreadCard />;
+
+    switch (indexName) {
+      case "author":
+        return (
+          <AuthorSearchResult
+            result={result}
+            id={result.id}
+            firstName={result.first_name}
+            lastName={result.last_name}
+          />
+        );
+      case "discussion_thread":
+        return <DiscussionThreadCard />;
+      case "hub":
+        return <div>{result.name}</div>;
+      case "paper":
+        return <PaperEntryCard paper={result} discussionCount={0} />;
+      case "university":
+        return <div>{result.name}</div>;
+      default:
+        break;
     }
   };
 
