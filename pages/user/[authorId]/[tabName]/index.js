@@ -270,12 +270,21 @@ const AuthorPage = (props) => {
 
   let saveSocial = async (section) => {
     let changes = {};
+    let change = socialLinks[section];
+    let http = "http://";
+    let https = "https://";
+    if (!change.startsWith(https)) {
+      if (change.startsWith(http)) {
+        change = change.replace(http, https);
+      }
+      change = https + change;
+    }
     if (section === SECTIONS.facebook) {
-      changes.facebook = socialLinks[section];
+      changes.facebook = change;
     } else if (section === SECTIONS.linkedin) {
-      changes.linkedin = socialLinks[section];
+      changes.linkedin = change;
     } else if (section === SECTIONS.twitter) {
-      changes.twitter = socialLinks[section];
+      changes.twitter = change;
     }
 
     setEditFacebook(false);
