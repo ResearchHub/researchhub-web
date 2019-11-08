@@ -891,9 +891,8 @@ class PaperUploadInfo extends React.Component {
   postPaper = async (request = "POST") => {
     const body = { ...this.state.form };
     body.hubs = body.hubs.map((hub) => hub.id);
-
+    body.authors = this.state.selectedAuthors.map((author) => author.id);
     if (this.state.editMode) {
-      body.authors = this.state.selectedAuthors.map((author) => author.id);
       body.publishDate = this.formatPublishDate(body.published);
       body.url = ""; // TODO: Add this optional field
       body.type = Object.keys(body.type)
