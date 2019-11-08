@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 
@@ -18,6 +18,8 @@ import { Helpers } from "@quantfive/js-web-config";
 
 export default class Search extends Component {
   searchTimeout = -1;
+  dropdownTimeout = -1;
+  ref = React.createRef();
 
   state = {
     showDropdown: this.props.showDropdown,
@@ -27,6 +29,7 @@ export default class Search extends Component {
 
   componentDidMount() {
     this.searchTimeout = -1;
+    document.addEventListener("click", this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -39,6 +42,8 @@ export default class Search extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.searchTimeout);
+    clearTimeout(this.dropdownTimeout);
+    document.removeEventListener("click", this);
   }
 
   onSearchChange = (e) => {
@@ -66,7 +71,6 @@ export default class Search extends Component {
             results: resp.results,
             finished: true,
           });
-          this.props.getNumberOfResults(resp.results.length);
         });
     }, 1500);
 
@@ -81,9 +85,12 @@ export default class Search extends Component {
         <div
           key={index}
           className={css(styles.searchResult)}
-          onClick={() =>
-            setTimeout(this.setState({ showDropdown: false }), 500)
-          }
+          onClick={() => {
+            this.dropdownTimeout = setTimeout(
+              this.setState({ showDropdown: false }),
+              500
+            );
+          }}
         >
           {this.getResultComponent(result)}
         </div>
@@ -146,21 +153,28 @@ export default class Search extends Component {
     return data;
   };
 
+  handleEvent = (e) => {
+    if (this.state.showDropdown && this.ref.current) {
+      if (this.ref.current.contains(e.target) === false) {
+        this.dropdownTimeout = setTimeout(
+          this.setState({ showDropdown: false }),
+          500
+        );
+      }
+    }
+  };
+
   render() {
     return (
-      <div className={css(styles.search)}>
+      <div ref={this.ref} className={css(styles.search)}>
         <input
           className={css(styles.searchbar)}
           placeholder={"Search..."}
           onChange={this.onSearchChange}
-          ref={this.props.getSearchBarRef}
         />
         <i className={css(styles.searchIcon) + " far fa-search"}></i>
         {this.state.showDropdown && (
-          <div
-            className={css(styles.searchDropdown)}
-            ref={this.props.getDropdownRef}
-          >
+          <div className={css(styles.searchDropdown)}>
             <ReactPlaceholder
               ready={this.state.finished}
               showLoadingAnimation
