@@ -83,31 +83,34 @@ const DiscussionThreadPage = (props) => {
   }, [props.isServer]);
 
   function renderComments(comments) {
-    return comments.map((c, i) => {
-      let highlight = false;
-      let divider = <div className={css(styles.divider)} />;
-      if (i === 0) {
-        divider = null;
-        if (transition) {
-          highlight = true;
+    return (
+      comments &&
+      comments.map((c, i) => {
+        let highlight = false;
+        let divider = <div className={css(styles.divider)} />;
+        if (i === 0) {
+          divider = null;
+          if (transition) {
+            highlight = true;
+          }
         }
-      }
-      return (
-        <Fragment key={`${c.id}-${i}`}>
-          {divider}
-          <Comment
-            key={`${c.id}-${i}`}
-            data={c}
-            commentStyles={styles.commentStyles}
-            discussionCardStyle={
-              highlight
-                ? styles.newDiscussionCardStyle
-                : styles.discussionCardStyle
-            }
-          />
-        </Fragment>
-      );
-    });
+        return (
+          <Fragment key={`${c.id}-${i}`}>
+            {divider}
+            <Comment
+              key={`${c.id}-${i}`}
+              data={c}
+              commentStyles={styles.commentStyles}
+              discussionCardStyle={
+                highlight
+                  ? styles.newDiscussionCardStyle
+                  : styles.discussionCardStyle
+              }
+            />
+          </Fragment>
+        );
+      })
+    );
   }
 
   function addSubmittedComment(comment) {
@@ -159,7 +162,7 @@ const DiscussionThreadPage = (props) => {
           <InfiniteScroll
             pageStart={page}
             loader={<Loader loading={true} />}
-            hasMore={count > comments.length}
+            hasMore={comments && count > comments.length}
             loadMore={() => {
               let paperId = discussion.paper;
               let discussionThreadId = discussion.id;
