@@ -184,6 +184,9 @@ const styles = StyleSheet.create({
   },
   removeDefault: {
     padding: 0,
+    "@media only screen and (max-width: 415px)": {
+      padding: 0,
+    },
   },
   reveal: {
     opacity: 1,
