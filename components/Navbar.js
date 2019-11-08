@@ -71,19 +71,19 @@ const Navbar = (props) => {
 
     if (
       searchBar &&
-      !searchBar.current.contains(e.target) &&
+      searchBar.current &&
       searchDropdown &&
-      !searchDropdown.current.contains(e.target)
+      searchDropdown.current
     ) {
-      setShowSearch(false);
-    }
-
-    if (
-      searchBar &&
-      searchBar.current.contains(e.target) &&
-      searchResults > 0
-    ) {
-      setShowSearch(true);
+      if (
+        !searchBar.current.contains(e.target) &&
+        !searchDropdown.current.contains(e.target)
+      ) {
+        setShowSearch(false);
+      }
+      if (searchBar.current.contains(e.target) && searchResults > 0) {
+        setShowSearch(true);
+      }
     }
 
     if (avatar && avatar.contains(e.target)) {
