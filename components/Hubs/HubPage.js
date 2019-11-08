@@ -13,6 +13,7 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 // Redux
 import { AuthActions } from "~/redux/auth";
 import { MessagActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
@@ -20,6 +21,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { PaperActions } from "../../redux/paper";
 import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
+import Button from "../Form/Button";
 
 const filterOptions = [
   {
@@ -185,11 +187,19 @@ class HubPage extends React.Component {
   };
 
   loadMore = () => {
+    let { hub } = this.props;
+    let hubId = 0;
+    if (hub) {
+      hubId = hub.id;
+    }
+
     let scope = this.calculateScope();
+
     return fetch(
       API.GET_HUB_PAPERS({
         timePeriod: scope,
-        hubId: hub,
+        hubId: hubId,
+        page: this.state.page + 1,
         ordering: this.state.filterBy.value,
       }),
       API.GET_CONFIG()
@@ -200,6 +210,7 @@ class HubPage extends React.Component {
         this.setState({
           papers: [...this.state.papers, ...res.results],
           next: res.next,
+          page: this.state.page + 1,
         });
       });
   };
