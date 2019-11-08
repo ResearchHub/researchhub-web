@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, Fragment } from "react";
+import { useEffect, useState, Fragment } from "react";
 
 // NPM Components
 import Link from "next/link";
@@ -21,7 +21,7 @@ import Button from "../components/Form/Button";
 import Search from "./Search";
 
 import { RHLogo } from "~/config/themes/icons";
-import { getCurrentUserReputation, getNestedValue } from "~/config/utils";
+import { getNestedValue } from "~/config/utils";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -36,25 +36,14 @@ const Navbar = (props) => {
   const {
     isLoggedIn,
     user,
-    openLoginModal,
     getUser,
     authChecked,
     openUploadPaperModal,
     signout,
   } = props;
-  const minimumReputation = getNestedValue(
-    store.getState().permission,
-    ["data", "CreatePaper", "minimumReputation"],
-    null
-  );
-
-  const [searchResults, setSearchResults] = useState(0);
-  const [showSearch, setShowSearch] = useState(false);
 
   let dropdown;
   let avatar;
-  const searchBar = useRef(null);
-  const searchDropdown = useRef(null);
 
   useEffect(() => {
     getUser();
@@ -67,23 +56,6 @@ const Navbar = (props) => {
   const handleOutsideClick = (e) => {
     if (dropdown && !dropdown.contains(e.target)) {
       setOpenMenu(false);
-    }
-
-    if (
-      searchBar &&
-      searchBar.current &&
-      searchDropdown &&
-      searchDropdown.current
-    ) {
-      if (
-        !searchBar.current.contains(e.target) &&
-        !searchDropdown.current.contains(e.target)
-      ) {
-        setShowSearch(false);
-      }
-      if (searchBar.current.contains(e.target) && searchResults > 0) {
-        setShowSearch(true);
-      }
     }
 
     if (avatar && avatar.contains(e.target)) {
@@ -289,12 +261,7 @@ const Navbar = (props) => {
           <RHLogo iconStyle={styles.logo} />
         </div>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        <Search
-          showDropdown={showSearch}
-          getDropdownRef={searchDropdown}
-          getSearchBarRef={searchBar}
-          getNumberOfResults={setSearchResults}
-        />
+        <Search />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
