@@ -28,6 +28,7 @@ class SummaryTab extends React.Component {
       menuOpen: false,
       addSummary: false,
       transition: false,
+      firstLoad: true,
     };
   }
 
@@ -50,12 +51,22 @@ class SummaryTab extends React.Component {
     this.setState({
       editorState,
     });
+    let storedEditor = localStorage.getItem(`editorState-${paper.id}`);
+
     let editorJSON = JSON.stringify(editorState.toJSON());
     if (paper.summary && paper.summary.summary) {
       if (editorJSON === JSON.stringify(paper.summary.summary)) {
         return;
       }
     }
+
+    if (this.state.firstLoad) {
+      this.setState({
+        firstLoad: false,
+      });
+      return;
+    }
+
     localStorage.setItem(`editorState-${paper.id}`, editorJSON);
   };
 
@@ -72,6 +83,7 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        localStorage.remove(`editorState-${paper.id}`);
         if (!resp.approved) {
           this.initializeSummary();
           setMessage("Edits Submitted for Approval!");
@@ -94,6 +106,7 @@ class SummaryTab extends React.Component {
   cancel = async () => {
     await this.setState({ transition: true });
     setTimeout(() => {
+      this.initializeSummary();
       this.setState({
         readOnly: true,
         addSummary: false,
@@ -116,7 +129,6 @@ class SummaryTab extends React.Component {
 
     if (editorStateItem) {
       let editorState = Value.fromJSON(JSON.parse(editorStateItem));
-
       this.setState({
         editorState,
       });
