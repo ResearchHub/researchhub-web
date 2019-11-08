@@ -25,13 +25,13 @@ export const HubSearchResult = (props) => {
   const { result } = props || {};
   const { name } = result || "";
   return (
-    <Link href={"/hubs/[hubname]"} as={`/hubs/${nameToUrl(name)}`}>
+    <Link href={"/hubs/[hubname]"} as={`/hubs/${hubNameToUrl(name)}`}>
       {name + " Hub"}
     </Link>
   );
 };
 
-function nameToUrl(name) {
+function hubNameToUrl(name) {
   const nameArr = (name && name.split(" ")) || [];
   return nameArr.length > 1
     ? nameArr.join("-").toLowerCase()
