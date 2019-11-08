@@ -137,8 +137,9 @@ class AddAuthorModal extends React.Component {
           <div className={css(styles.titleContainer)}>
             <div className={css(styles.title, styles.text)}>Add New Author</div>
             <div className={css(styles.subtitle, styles.text)}>
-              {`Please enter the information ${mobileView &&
-                "\n"} about the user below`}
+              {`Please enter the information ${
+                mobileView ? "\n" : ""
+              } about the user below`}
             </div>
           </div>
           <form className={css(styles.form)} onSubmit={this.addNewUser}>
