@@ -16,6 +16,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import ShareModal from "~/components/ShareModal";
 import ActionButton from "~/components/ActionButton";
 import AvatarUpload from "~/components/AvatarUpload";
+import Reputation from "~/components/Reputation";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -433,10 +434,7 @@ const AuthorPage = (props) => {
               <div className={css(styles.reputationTitle)}>
                 Lifetime Reputation:
               </div>
-              <div className={css(styles.reputationValue)}>
-                {author.reputation}
-              </div>
-              <img src={"/static/icons/coin.png"} />
+              <Reputation reputation={author.reputation} />
             </div>
             {!editDescription ? (
               <div
@@ -876,11 +874,6 @@ const styles = StyleSheet.create({
   },
   reputationTitle: {
     marginRight: 10,
-  },
-  reputationValue: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginRight: 8,
   },
 });
 
