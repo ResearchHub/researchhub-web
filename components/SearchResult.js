@@ -1,4 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
+import Link from "next/link";
 
 import { User } from "./User";
 import University from "./University";
@@ -15,14 +16,32 @@ export const AuthorSearchResult = (props) => {
   return (
     <BaseSearchResult>
       <User authorProfile={result} name={fullName} />
-      <University university={result.university} />
+      {result && <University university={result.university} />}
     </BaseSearchResult>
   );
 };
 
-export const HubSearchResult = () => {};
+export const HubSearchResult = (props) => {
+  const { result } = props || {};
+  const { name } = result || "";
+  return (
+    <Link href={"/hubs/[hubname]"} as={`/hubs/${nameToUrl(name)}`}>
+      {name + " Hub"}
+    </Link>
+  );
+};
 
-export const UniversitySearchResult = () => {};
+function nameToUrl(name) {
+  const nameArr = (name && name.split(" ")) || [];
+  return nameArr.length > 1
+    ? nameArr.join("-").toLowerCase()
+    : name.toLowerCase();
+}
+
+export const UniversitySearchResult = (props) => {
+  const { result } = props || null;
+  return <University university={result} />;
+};
 
 const styles = StyleSheet.create({
   result: {
