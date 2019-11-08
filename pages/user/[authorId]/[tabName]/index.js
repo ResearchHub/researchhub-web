@@ -429,7 +429,15 @@ const AuthorPage = (props) => {
                 </div>
               )
             )}
-            <div className={css(styles.reputation)}></div>
+            <div className={css(styles.reputation)}>
+              <div className={css(styles.reputationTitle)}>
+                Lifetime Reputation:
+              </div>
+              <div className={css(styles.reputationValue)}>
+                {author.reputation}
+              </div>
+              <img src={"/static/icons/coin.png"} />
+            </div>
             {!editDescription ? (
               <div
                 className={css(styles.description, styles.editButtonContainer)}
@@ -860,6 +868,19 @@ const styles = StyleSheet.create({
     bottom: 0,
     // left: '-50%',
     // transform: "translateX(-50%)",
+  },
+  reputation: {
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  reputationTitle: {
+    marginRight: 10,
+  },
+  reputationValue: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 8,
   },
 });
 
