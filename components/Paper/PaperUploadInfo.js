@@ -527,41 +527,40 @@ class PaperUploadInfo extends React.Component {
                 id={"title"}
                 onChange={this.handleInputChange}
               />
+
+              <span className={css(styles.container)}>
+                <AuthorInput
+                  tags={this.state.selectedAuthors}
+                  onChange={this.handleAuthorChange}
+                  onChangeInput={this.searchAuthors}
+                  inputValue={searchAuthor}
+                  label={"Authors"}
+                  required={true}
+                  error={error.author}
+                  labelStyle={styles.labelStyle}
+                />
+              </span>
+              <span className={css(styles.container)}>
+                <AuthorCardList
+                  show={showAuthorList}
+                  authors={suggestedAuthors}
+                  loading={loading}
+                  addAuthor={this.openAddAuthorModal}
+                  onAuthorClick={this.handleAuthorSelect}
+                />
+              </span>
+              <div className={css(styles.row, styles.authorCheckboxContainer)}>
+                <CheckBox
+                  isSquare={true}
+                  active={form.author.self_author}
+                  label={"I am an author of this paper"}
+                  id={"author.self_author"}
+                  onChange={this.handleSelfAuthorToggle}
+                  labelStyle={styles.labelStyle}
+                />
+              </div>
               {editMode && (
                 <Fragment>
-                  <span className={css(styles.container)}>
-                    <AuthorInput
-                      tags={this.state.selectedAuthors}
-                      onChange={this.handleAuthorChange}
-                      onChangeInput={this.searchAuthors}
-                      inputValue={searchAuthor}
-                      label={"Authors"}
-                      required={true}
-                      error={error.author}
-                      labelStyle={styles.labelStyle}
-                    />
-                  </span>
-                  <span className={css(styles.container)}>
-                    <AuthorCardList
-                      show={showAuthorList}
-                      authors={suggestedAuthors}
-                      loading={loading}
-                      addAuthor={this.openAddAuthorModal}
-                      onAuthorClick={this.handleAuthorSelect}
-                    />
-                  </span>
-                  <div
-                    className={css(styles.row, styles.authorCheckboxContainer)}
-                  >
-                    <CheckBox
-                      isSquare={true}
-                      active={form.author.self_author}
-                      label={"I am an author of this paper"}
-                      id={"author.self_author"}
-                      onChange={this.handleSelfAuthorToggle}
-                      labelStyle={styles.labelStyle}
-                    />
-                  </div>
                   <div className={css(styles.row)}>
                     <FormSelect
                       label={"Year of Publication"}
