@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import ReactTooltip from "react-tooltip";
 import colors from "~/config/themes/colors";
 import Ripples from "react-ripples";
 
