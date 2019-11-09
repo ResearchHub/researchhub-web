@@ -51,14 +51,7 @@ class SummaryTab extends React.Component {
     this.setState({
       editorState,
     });
-    let storedEditor = localStorage.getItem(`editorState-${paper.id}`);
-
     let editorJSON = JSON.stringify(editorState.toJSON());
-    if (paper.summary && paper.summary.summary) {
-      if (editorJSON === JSON.stringify(paper.summary.summary)) {
-        return;
-      }
-    }
 
     if (this.state.firstLoad) {
       this.setState({
@@ -67,7 +60,10 @@ class SummaryTab extends React.Component {
       return;
     }
 
-    localStorage.setItem(`editorState-${paper.id}`, editorJSON);
+    localStorage.setItem(
+      `editorState-${paper.id}-${paper.summary.id}`,
+      editorJSON
+    );
   };
 
   submitEdit = (raw) => {
@@ -83,7 +79,7 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        localStorage.remove(`editorState-${paper.id}`);
+        localStorage.remove(`editorState-${paper.id}-${paper.summary.id}`);
         if (!resp.approved) {
           this.initializeSummary();
           setMessage("Edits Submitted for Approval!");
@@ -125,7 +121,9 @@ class SummaryTab extends React.Component {
      * then try to pull it back and reuse that localstorage state
      *******************************************************************************/
     let { paper } = this.props;
-    let editorStateItem = localStorage.getItem(`editorState-${paper.id}`);
+    let editorStateItem = localStorage.getItem(
+      `editorState-${paper.id}-${paper.summary.id}`
+    );
 
     if (editorStateItem) {
       let editorState = Value.fromJSON(JSON.parse(editorStateItem));
