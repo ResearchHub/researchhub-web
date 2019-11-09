@@ -24,11 +24,12 @@ export const AuthorSearchResult = (props) => {
 export const HubSearchResult = (props) => {
   const { result } = props || {};
   const { name } = result || "";
-  return (
-    <Link href={"/hubs/[hubname]"} as={`/hubs/${hubNameToUrl(name)}`}>
-      {name + " Hub"}
-    </Link>
-  );
+  return null;
+  // return (
+  //   <Link href={"/hubs/[hubname]"} as={`/hubs/${hubNameToUrl(name)}`}>
+  //     {name + " Hub"}
+  //   </Link>
+  // );
 };
 
 function hubNameToUrl(name) {
