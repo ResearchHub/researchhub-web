@@ -12,7 +12,7 @@ const Reputation = (props) => {
       data-for="reputationTooltip"
     >
       <div className={css(styles.reputationValue)}>
-        {reputation < 1000 ? reputation : numeral(reputation).format("0.0A")}
+        {numeral(reputation).format("0,0")}
       </div>
       <img src={"/static/icons/coin.png"} />
       <ReputationTooltip />
