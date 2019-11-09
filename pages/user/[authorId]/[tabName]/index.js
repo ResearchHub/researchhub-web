@@ -94,6 +94,9 @@ const AuthorPage = (props) => {
   }
 
   async function fetchUserContributions() {
+    if (!author.user) {
+      return;
+    }
     let {
       commentOffset,
       replyOffset,
