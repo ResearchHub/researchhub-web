@@ -167,7 +167,7 @@ class LockedHubPage extends React.Component {
             >
               {!joined
                 ? "This hub will be activated when at least 100 members have pledged to contribute content. Join this hub to show your support."
-                : "Thank you for joining this hub! This hub will be activated when at least 100 members have pledge to contribute content."}
+                : "Thank you for joining this hub! This hub will be activated when at least 100 members have pledged to contribute content."}
             </div>
             <Message />
             <div className={css(styles.progressContainer)}>

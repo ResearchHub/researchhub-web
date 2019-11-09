@@ -21,13 +21,13 @@ import Button from "../components/Form/Button";
 import Search from "./Search";
 
 import { RHLogo } from "~/config/themes/icons";
-import { getNestedValue } from "~/config/utils";
 
 // Styles
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import GoogleLoginButton from "./GoogleLoginButton";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import Reputation from "./Reputation";
 
 const Navbar = (props) => {
   const dispatch = useDispatch();
@@ -290,6 +290,9 @@ const Navbar = (props) => {
                     disableLink={true}
                   />
                   <i className={css(styles.caret) + " fas fa-caret-down"}></i>
+                  <div className={css(styles.reputation)}>
+                    <Reputation reputation={user.reputation} />
+                  </div>
                 </div>
                 {openMenu && (
                   <div
@@ -301,13 +304,23 @@ const Navbar = (props) => {
                       href={"/user/[authorId]/[tabName]"}
                       as={`/user/${user.author_profile.id}/contributions`}
                     >
-                      <div className={css(styles.option)}>Profile</div>
+                      <div className={css(styles.option)}>
+                        <i
+                          className={
+                            css(styles.profileIcon) + " fas fa-id-card"
+                          }
+                        ></i>
+                        Profile
+                      </div>
                     </Link>
                     <div
                       className={css(styles.option, styles.lastOption)}
                       onClick={signout}
                     >
-                      Logout
+                      <i
+                        className={css(styles.profileIcon) + " fad fa-sign-out"}
+                      ></i>{" "}
+                      <span>Logout</span>
                     </div>
                   </div>
                 )}
@@ -479,6 +492,9 @@ const styles = StyleSheet.create({
     height: 40,
     minWidth: 155,
   },
+  reputation: {
+    marginLeft: 11,
+  },
   dropdown: {
     position: "absolute",
     bottom: -126,
@@ -510,6 +526,13 @@ const styles = StyleSheet.create({
   lastOption: {
     borderBottom: 0,
   },
+  profileIcon: {
+    position: "absolute",
+    left: 16,
+    top: "50%",
+    transform: "translateY(-50%)",
+    color: "#25252",
+  },
   option: {
     width: "100%",
     padding: 16,
@@ -519,6 +542,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
+    position: "relative",
+    letterSpacing: 0.7,
 
     ":hover": {
       background: "#eee",
