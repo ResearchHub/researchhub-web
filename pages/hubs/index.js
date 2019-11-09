@@ -172,7 +172,7 @@ class Index extends React.Component {
             <span className={css(styles.title)}>Hubs</span>
             <Button
               isWhite={true}
-              label={"Create a Hub"}
+              label={"Suggest a Hub"}
               onClick={this.openAddHubModal}
               buttonStyle={styles.button}
             />
