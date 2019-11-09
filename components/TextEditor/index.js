@@ -55,6 +55,7 @@ const TextEditor = (props) => {
     if (value.document.text === "" || value.document.text === " ") {
       return;
     }
+
     let success = false;
     if (!isLoggedIn) {
       // TODO: pop login modal

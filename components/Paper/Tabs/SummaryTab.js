@@ -22,14 +22,13 @@ class SummaryTab extends React.Component {
   constructor(props) {
     super(props);
 
-    this.editor = React.createRef();
-
     this.state = {
       readOnly: true,
       editorState: null,
       menuOpen: false,
       addSummary: false,
       transition: false,
+      firstLoad: true,
     };
   }
 
@@ -48,7 +47,23 @@ class SummaryTab extends React.Component {
   };
 
   onEditorStateChange = (editorState) => {
-    this.setState({ editorState });
+    let { paper } = this.props;
+    this.setState({
+      editorState,
+    });
+    let editorJSON = JSON.stringify(editorState.toJSON());
+
+    if (this.state.firstLoad) {
+      this.setState({
+        firstLoad: false,
+      });
+      return;
+    }
+
+    localStorage.setItem(
+      `editorState-${paper.id}-${paper.summary.id}`,
+      editorJSON
+    );
   };
 
   submitEdit = (raw) => {
@@ -64,6 +79,7 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        localStorage.remove(`editorState-${paper.id}-${paper.summary.id}`);
         if (!resp.approved) {
           this.initializeSummary();
           setMessage("Edits Submitted for Approval!");
@@ -86,6 +102,7 @@ class SummaryTab extends React.Component {
   cancel = async () => {
     await this.setState({ transition: true });
     setTimeout(() => {
+      this.initializeSummary();
       this.setState({
         readOnly: true,
         addSummary: false,
@@ -98,6 +115,26 @@ class SummaryTab extends React.Component {
     this.setState({
       readOnly: false,
     });
+
+    /********************************************************************************
+     * If we go into edit mode, if we have the editor state saved into local storage
+     * then try to pull it back and reuse that localstorage state
+     *******************************************************************************/
+    let { paper } = this.props;
+    let editorStateItem = localStorage.getItem(
+      `editorState-${paper.id}-${paper.summary.id}`
+    );
+
+    if (editorStateItem) {
+      let editorState = Value.fromJSON(JSON.parse(editorStateItem));
+      this.setState({
+        editorState,
+      });
+
+      // if (this.editor.current) {
+      //   this.editor.current.setEditorState(editorState);
+      // }
+    }
   };
 
   /**
@@ -114,10 +151,9 @@ class SummaryTab extends React.Component {
           finishedLoading: true,
         });
 
-        if (this.editor.current) {
-          debugger;
-          this.editor.setEditorState(editorState);
-        }
+        // if (this.editor.current) {
+        //   this.editor.current.setEditorState(editorState);
+        // }
       }
     }
   };
@@ -174,12 +210,12 @@ class SummaryTab extends React.Component {
                 canEdit={true}
                 readOnly={this.state.readOnly}
                 canSubmit={true}
-                ref={this.editor}
                 commentEditor={false}
                 initialValue={this.state.editorState}
                 passedValue={this.state.editorState}
                 onCancel={this.cancel}
                 onSubmit={this.submitEdit}
+                onChange={this.onEditorStateChange}
               />
             )}
           </div>
@@ -210,6 +246,7 @@ class SummaryTab extends React.Component {
                   commentEditor={false}
                   onCancel={this.cancel}
                   onSubmit={this.submitEdit}
+                  onChange={this.onEditorStateChange}
                 />
               </div>
             ) : (
