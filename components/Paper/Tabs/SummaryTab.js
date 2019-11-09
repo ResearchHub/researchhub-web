@@ -29,6 +29,7 @@ class SummaryTab extends React.Component {
       addSummary: false,
       transition: false,
       firstLoad: true,
+      summaryExists: false,
     };
   }
 
@@ -79,22 +80,24 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        localStorage.remove(`editorState-${paper.id}-${paper.summary.id}`);
+        let { paper } = this.props;
+        let localStorageKey = `editorState-${paper.id}-${paper.summary.id}`;
+        if (localStorage.getItem(localStorageKey)) {
+          localStorage.remove(localStorageKey);
+        }
         if (!resp.approved) {
           this.initializeSummary();
           setMessage("Edits Submitted for Approval!");
         } else {
           setMessage("Edits Made!");
+          this.setState({
+            summaryExists: true,
+          });
         }
         showMessage({ show: true });
         this.setState({
           readOnly: true,
-        });
-      })
-      .catch((err) => {
-        // TODO: Use a proper notification message instead
-        this.setState({
-          errorMessage: "Not enough reputation",
+          finishedLoading: true,
         });
       });
   };
@@ -130,10 +133,6 @@ class SummaryTab extends React.Component {
       this.setState({
         editorState,
       });
-
-      // if (this.editor.current) {
-      //   this.editor.current.setEditorState(editorState);
-      // }
     }
   };
 
@@ -150,10 +149,6 @@ class SummaryTab extends React.Component {
           editorState,
           finishedLoading: true,
         });
-
-        // if (this.editor.current) {
-        //   this.editor.current.setEditorState(editorState);
-        // }
       }
     }
   };
@@ -168,7 +163,7 @@ class SummaryTab extends React.Component {
     return (
       <ComponentWrapper>
         <div>{this.state.errorMessage}</div>
-        {paper.summary.summary ? (
+        {paper.summary.summary || this.state.summaryExists ? (
           <div className={css(styles.container)}>
             {this.state.readOnly ? (
               <div className={css(styles.summaryActions)}>
