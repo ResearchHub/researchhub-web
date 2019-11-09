@@ -26,11 +26,6 @@ pre {
   padding: 3px;
 }
 
-img {
-  max-width: 100%;
-  max-height: 20em;
-}
-
 blockquote {
   border-left: 2px solid #ddd;
   margin-left: 0;
