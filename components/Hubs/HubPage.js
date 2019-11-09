@@ -2,6 +2,8 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
 import moment from "moment";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 // Component
 import HubsList from "~/components/Hubs/HubsList";
@@ -9,6 +11,8 @@ import FormSelect from "~/components/Form/FormSelect";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
+import Button from "../Form/Button";
+import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -21,7 +25,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { PaperActions } from "../../redux/paper";
 import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
-import Button from "../Form/Button";
 
 const filterOptions = [
   {
@@ -405,7 +408,20 @@ class HubPage extends React.Component {
                   </div>
                 )
               ) : (
-                <Loader key={"paperPlaceholder"} loading={true} />
+                <div className={css(styles.placeholder)}>
+                  <ReactPlaceholder
+                    ready={false}
+                    showLoadingAnimation
+                    customPlaceholder={<PaperPlaceholder color="#efefef" />}
+                  />
+                  <div className={css(styles.placeholderBottom)}>
+                    <ReactPlaceholder
+                      ready={false}
+                      showLoadingAnimation
+                      customPlaceholder={<PaperPlaceholder color="#efefef" />}
+                    />
+                  </div>
+                </div>
               )}
             </div>
             <div className={css(styles.mobileHubListContainer)}>
@@ -454,6 +470,12 @@ var styles = StyleSheet.create({
   },
   centered: {
     height: 120,
+  },
+  placeholder: {
+    marginTop: 16,
+  },
+  placeholderBottom: {
+    marginTop: 16,
   },
   homeBanner: {
     background: "linear-gradient(#684ef5, #4d58f6)",
@@ -679,6 +701,7 @@ var styles = StyleSheet.create({
    */
   infiniteScroll: {
     width: "calc(100% - 140px)",
+    minHeight: "calc(100vh - 200px)",
     backgroundColor: "#FCFCFC",
     paddingLeft: 70,
     paddingRight: 70,
