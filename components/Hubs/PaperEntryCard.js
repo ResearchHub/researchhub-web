@@ -31,6 +31,8 @@ const PaperEntryCard = ({
   onDownvote,
   discussionCount,
   mobileView,
+  style,
+  searchResult,
 }) => {
   let {
     id,
@@ -75,12 +77,16 @@ const PaperEntryCard = ({
 
   async function upvote(e) {
     e.stopPropagation();
-    onUpvote({ index });
+    if (onUpvote) {
+      onUpvote({ index });
+    }
   }
 
   async function downvote(e) {
     e.stopPropagation();
-    onDownvote({ index });
+    if (onDownvote) {
+      onDownvote({ index });
+    }
   }
 
   function renderDiscussionCount() {
@@ -95,7 +101,7 @@ const PaperEntryCard = ({
     return (
       <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
         <div
-          className={css(mobileStyles.papercard)}
+          className={css(mobileStyles.papercard, style && style)}
           key={`${id}-${index}-${title}`}
         >
           <div className={css(mobileStyles.title, styles.text)}>
@@ -186,7 +192,10 @@ const PaperEntryCard = ({
   } else {
     return (
       <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
-        <div className={css(styles.papercard)} key={`${id}-${index}-${title}`}>
+        <div
+          className={css(styles.papercard, style && style)}
+          key={`${id}-${index}-${title}`}
+        >
           <div className={css(styles.column)}>
             <span
               className={css(styles.voting)}
@@ -197,6 +206,7 @@ const PaperEntryCard = ({
                 onUpvote={upvote}
                 onDownvote={downvote}
                 selected={selected}
+                searchResult={searchResult}
               />
             </span>
           </div>
