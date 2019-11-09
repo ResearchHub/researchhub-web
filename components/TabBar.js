@@ -54,9 +54,9 @@ function renderTab(
 
 const Count = (props) => {
   const { amount, isSelected } = props;
-  if (amount < 1) {
-    return <span id="discussion_count"></span>;
-  }
+  // if (amount < 1) {
+  //   return <span id="discussion_count"></span>;
+  // }
   return (
     <UIStyling isSelected={isSelected}>
       <span id="discussion_count" className={css(styles.count)}>
