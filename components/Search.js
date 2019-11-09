@@ -116,13 +116,14 @@ export default class Search extends Component {
 
     switch (indexName) {
       case "author":
-        return (
-          <AuthorSearchResult
-            result={result}
-            firstName={result.first_name}
-            lastName={result.last_name}
-          />
-        );
+        return null;
+      // return (
+      //   <AuthorSearchResult
+      //     result={result}
+      //     firstName={result.first_name}
+      //     lastName={result.last_name}
+      //   />
+      // );
       case "discussion_thread":
         let data = thread(result);
         if (data.isPublic) {
