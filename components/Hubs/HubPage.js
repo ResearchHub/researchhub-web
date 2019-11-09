@@ -67,6 +67,7 @@ class HubPage extends React.Component {
       scope: defaultScope,
       mobileView: false,
       mobileBanner: false,
+      papersLoading: false,
       next: null,
       transition: false,
     };
@@ -167,6 +168,9 @@ class HubPage extends React.Component {
       hubId = hub.id;
     }
     let scope = this.calculateScope();
+    this.setState({
+      papersLoading: true,
+    });
 
     return fetch(
       API.GET_HUB_PAPERS({
@@ -184,6 +188,7 @@ class HubPage extends React.Component {
           papers: res.results,
           next: res.next,
           page: this.state.page + 1,
+          papersLoading: false,
         });
       })
       .then(
@@ -274,7 +279,7 @@ class HubPage extends React.Component {
         <div
           className={css(
             styles.homeBanner,
-            !auth.showBanner || (this.state.mobileView && styles.hideBanner)
+            (!auth.showBanner || this.state.mobileView) && styles.hideBanner
           )}
         >
           <span
@@ -352,26 +357,7 @@ class HubPage extends React.Component {
               </div>
             </div>
             <div className={css(styles.infiniteScroll)}>
-              {this.state.papers.length > 0 ? (
-                <InfiniteScroll
-                  pageStart={this.state.page}
-                  loadMore={this.loadMore}
-                  hasMore={this.state.next !== null}
-                  loader={<Loader key={"hubPageLoader"} loading={true} />}
-                >
-                  {this.state.papers.map((paper, i) => (
-                    <PaperEntryCard
-                      key={`${paper.id}-${i}`}
-                      paper={paper}
-                      index={i}
-                      hubName={this.props.hubName}
-                      onUpvote={this.onUpvote}
-                      onDownvote={this.onDownvote}
-                      mobileView={this.state.mobileView}
-                    />
-                  ))}
-                </InfiniteScroll>
-              ) : (
+              {this.state.papers.length === 0 && !this.state.papersLoading ? (
                 <div className={css(styles.column)}>
                   <img
                     className={css(styles.emptyPlaceholderImage)}
@@ -395,6 +381,25 @@ class HubPage extends React.Component {
                     onClick={() => this.props.openUploadPaperModal(true)}
                   />
                 </div>
+              ) : (
+                <InfiniteScroll
+                  pageStart={this.state.page}
+                  loadMore={this.loadMore}
+                  hasMore={this.state.next}
+                  loader={<Loader key={"hubPageLoader"} loading={true} />}
+                >
+                  {this.state.papers.map((paper, i) => (
+                    <PaperEntryCard
+                      key={`${paper.id}-${i}`}
+                      paper={paper}
+                      index={i}
+                      hubName={this.props.hubName}
+                      onUpvote={this.onUpvote}
+                      onDownvote={this.onDownvote}
+                      mobileView={this.state.mobileView}
+                    />
+                  ))}
+                </InfiniteScroll>
               )}
             </div>
             <div className={css(styles.mobileHubListContainer)}>
