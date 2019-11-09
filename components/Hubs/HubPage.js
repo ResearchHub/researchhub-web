@@ -28,12 +28,12 @@ import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
 
 const filterOptions = [
   {
-    value: "newest",
-    label: "Newest",
-  },
-  {
     value: "top_rated",
     label: "Top Rated",
+  },
+  {
+    value: "newest",
+    label: "Newest",
   },
   {
     value: "most_discussed",
@@ -43,12 +43,12 @@ const filterOptions = [
 
 const scopeOptions = [
   {
-    value: "day",
-    label: "Today",
-  },
-  {
     value: "month",
     label: "This Month",
+  },
+  {
+    value: "day",
+    label: "Today",
   },
   {
     value: "year",
@@ -56,8 +56,8 @@ const scopeOptions = [
   },
 ];
 
-const defaultFilter = filterOptions[1];
-const defaultScope = scopeOptions[1];
+const defaultFilter = filterOptions[0];
+const defaultScope = scopeOptions[0];
 
 class HubPage extends React.Component {
   constructor(props) {
