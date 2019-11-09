@@ -26,6 +26,7 @@ const VoteWidget = (props) => {
     selected,
     width,
     horizontalView,
+    searchResult,
   } = props;
   const score = getScore(props);
 
@@ -95,11 +96,14 @@ const VoteWidget = (props) => {
           {horizontalView ? (
             <DownvoteButton
               selected={downvoteSelected}
-              disabled={downvoteDisabled}
+              disabled={downvoteDisabled || searchResult}
               horizontalView={horizontalView}
             />
           ) : (
-            <UpvoteButton selected={upvoteSelected} disabled={upvoteDisabled} />
+            <UpvoteButton
+              selected={upvoteSelected}
+              disabled={upvoteDisabled || searchResult}
+            />
           )}
         </PermissionNotificationWrapper>
         <ScorePill score={score} />
@@ -110,18 +114,18 @@ const VoteWidget = (props) => {
           {horizontalView ? (
             <UpvoteButton
               selected={upvoteSelected}
-              disabled={upvoteDisabled}
+              disabled={upvoteDisabled || searchResult}
               horizontalView={horizontalView}
             />
           ) : (
             <DownvoteButton
               selected={downvoteSelected}
-              disabled={downvoteDisabled}
+              disabled={downvoteDisabled || searchResult}
             />
           )}
         </PermissionNotificationWrapper>
       </div>
-      <ReputationTooltip />
+      {!searchResult && <ReputationTooltip />}
     </Fragment>
   );
 };
