@@ -677,7 +677,7 @@ class PaperUploadInfo extends React.Component {
               <span className={css(styles.tagline)}>
                 <FormTextArea
                   label={"Tag Line"}
-                  placeholder="Enter a brief overview of the paper"
+                  placeholder="Enter a sentence or two describing the paper"
                   required={true}
                   containerStyle={styles.container}
                   labelStyle={styles.labelStyle}
@@ -856,6 +856,10 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.hubs = true;
     }
+    if (author.self_author === false && this.state.selectedAuthors.length < 1) {
+      pass = false;
+      error.author = true;
+    }
     if (this.state.editMode) {
       if (!published.year) {
         pass = false;
@@ -876,13 +880,6 @@ class PaperUploadInfo extends React.Component {
         pass = false;
         error.dnd = true;
       }
-      if (
-        author.self_author === false &&
-        this.state.selectedAuthors.length < 1
-      ) {
-        pass = false;
-        error.author = true;
-      }
     }
     this.setState({ error });
     return pass;
@@ -891,9 +888,8 @@ class PaperUploadInfo extends React.Component {
   postPaper = async (request = "POST") => {
     const body = { ...this.state.form };
     body.hubs = body.hubs.map((hub) => hub.id);
-
+    body.authors = this.state.selectedAuthors.map((author) => author.id);
     if (this.state.editMode) {
-      body.authors = this.state.selectedAuthors.map((author) => author.id);
       body.publishDate = this.formatPublishDate(body.published);
       body.url = ""; // TODO: Add this optional field
       body.type = Object.keys(body.type)
@@ -1025,6 +1021,7 @@ class PaperUploadInfo extends React.Component {
 
   saveDiscussion = async () => {
     // if there's nothing to save, then don't save
+    this.props.messageActions.showMessage({ show: true, load: true });
     if (
       this.state.discussion.title === "" ||
       Object.keys(this.state.discussion.question).length < 1
@@ -1056,6 +1053,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   navigateToSummary = () => {
+    this.props.messageActions.showMessage({ show: true, load: true });
     let paperId = this.state.editMode
       ? this.props.paperId
       : this.props.paper.postedPaper.id;
