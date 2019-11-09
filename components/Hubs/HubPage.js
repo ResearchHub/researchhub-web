@@ -2,6 +2,8 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
 import moment from "moment";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 // Component
 import HubsList from "~/components/Hubs/HubsList";
@@ -9,6 +11,8 @@ import FormSelect from "~/components/Form/FormSelect";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
+import Button from "../Form/Button";
+import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -21,7 +25,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { PaperActions } from "../../redux/paper";
 import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
-import Button from "../Form/Button";
 
 const filterOptions = [
   {
@@ -69,7 +72,7 @@ class HubPage extends React.Component {
       mobileBanner: false,
       papersLoading: false,
       next: null,
-      transition: false,
+      doneFetching: false,
     };
   }
 
@@ -162,6 +165,7 @@ class HubPage extends React.Component {
 
   fetchPapers = ({ hub }) => {
     let { showMessage } = this.props;
+    this.state.doneFetching && this.setState({ doneFetching: false });
     let hubId = 0;
 
     if (hub) {
@@ -189,6 +193,7 @@ class HubPage extends React.Component {
           next: res.next,
           page: this.state.page + 1,
           papersLoading: false,
+          doneFetching: true,
         });
       })
       .then(
@@ -357,49 +362,66 @@ class HubPage extends React.Component {
               </div>
             </div>
             <div className={css(styles.infiniteScroll)}>
-              {this.state.papers.length === 0 && !this.state.papersLoading ? (
-                <div className={css(styles.column)}>
-                  <img
-                    className={css(styles.emptyPlaceholderImage)}
-                    src={"/static/background/homepage-empty-state.png"}
-                  />
-                  <div
-                    className={css(styles.text, styles.emptyPlaceholderText)}
+              {this.state.doneFetching ? (
+                this.state.papers.length > 0 ? (
+                  <InfiniteScroll
+                    pageStart={this.state.page}
+                    loadMore={this.loadMore}
+                    hasMore={this.state.next}
+                    loader={<Loader key={"hubPageLoader"} loading={true} />}
                   >
-                    There are no academic Paper uploaded for this page.
-                  </div>
-                  <div
-                    className={css(
-                      styles.text,
-                      styles.emptyPlaceholderSubtitle
-                    )}
-                  >
-                    Click ‘Upload paper’ button to upload a PDF
-                  </div>
-                  <Button
-                    label={"Upload Paper"}
-                    onClick={() => this.props.openUploadPaperModal(true)}
-                  />
-                </div>
-              ) : (
-                <InfiniteScroll
-                  pageStart={this.state.page}
-                  loadMore={this.loadMore}
-                  hasMore={this.state.next}
-                  loader={<Loader key={"hubPageLoader"} loading={true} />}
-                >
-                  {this.state.papers.map((paper, i) => (
-                    <PaperEntryCard
-                      key={`${paper.id}-${i}`}
-                      paper={paper}
-                      index={i}
-                      hubName={this.props.hubName}
-                      onUpvote={this.onUpvote}
-                      onDownvote={this.onDownvote}
-                      mobileView={this.state.mobileView}
+                    {this.state.papers.map((paper, i) => (
+                      <PaperEntryCard
+                        key={`${paper.id}-${i}`}
+                        paper={paper}
+                        index={i}
+                        hubName={this.props.hubName}
+                        onUpvote={this.onUpvote}
+                        onDownvote={this.onDownvote}
+                        mobileView={this.state.mobileView}
+                      />
+                    ))}
+                  </InfiniteScroll>
+                ) : (
+                  <div className={css(styles.column)}>
+                    <img
+                      className={css(styles.emptyPlaceholderImage)}
+                      src={"/static/background/homepage-empty-state.png"}
                     />
-                  ))}
-                </InfiniteScroll>
+                    <div
+                      className={css(styles.text, styles.emptyPlaceholderText)}
+                    >
+                      There are no academic Paper uploaded for this page.
+                    </div>
+                    <div
+                      className={css(
+                        styles.text,
+                        styles.emptyPlaceholderSubtitle
+                      )}
+                    >
+                      Click ‘Upload paper’ button to upload a PDF
+                    </div>
+                    <Button
+                      label={"Upload Paper"}
+                      onClick={() => this.props.openUploadPaperModal(true)}
+                    />
+                  </div>
+                )
+              ) : (
+                <div className={css(styles.placeholder)}>
+                  <ReactPlaceholder
+                    ready={false}
+                    showLoadingAnimation
+                    customPlaceholder={<PaperPlaceholder color="#efefef" />}
+                  />
+                  <div className={css(styles.placeholderBottom)}>
+                    <ReactPlaceholder
+                      ready={false}
+                      showLoadingAnimation
+                      customPlaceholder={<PaperPlaceholder color="#efefef" />}
+                    />
+                  </div>
+                </div>
               )}
             </div>
             <div className={css(styles.mobileHubListContainer)}>
@@ -448,6 +470,12 @@ var styles = StyleSheet.create({
   },
   centered: {
     height: 120,
+  },
+  placeholder: {
+    marginTop: 16,
+  },
+  placeholderBottom: {
+    marginTop: 16,
   },
   homeBanner: {
     background: "linear-gradient(#684ef5, #4d58f6)",
@@ -673,6 +701,7 @@ var styles = StyleSheet.create({
    */
   infiniteScroll: {
     width: "calc(100% - 140px)",
+    minHeight: "calc(100vh - 200px)",
     backgroundColor: "#FCFCFC",
     paddingLeft: 70,
     paddingRight: 70,

@@ -95,10 +95,11 @@ const shims = {
   sortHubs: (allHubs) => {
     let sortedHubs = {};
     allHubs.forEach((hub) => {
-      if (sortedHubs[hub.name[0]]) {
-        sortedHubs[hub.name[0]].push(hub);
+      let firstLetter = hub.name[0].toLowerCase();
+      if (sortedHubs[firstLetter]) {
+        sortedHubs[firstLetter].push(hub);
       } else {
-        sortedHubs[hub.name[0]] = [hub];
+        sortedHubs[firstLetter] = [hub];
       }
     });
     return sortedHubs;
