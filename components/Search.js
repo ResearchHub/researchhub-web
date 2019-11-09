@@ -131,13 +131,22 @@ export default class Search extends Component {
             <DiscussionThreadCard
               path={`/paper/${data.paper}/discussion/${data.id}`}
               data={data}
+              searchResult={true}
             />
           );
         }
       case "hub":
-        return <HubSearchResult result={result} />;
+        return null;
+      // return <HubSearchResult result={result} />;
       case "paper":
-        return <PaperEntryCard paper={result} discussionCount={0} />;
+        return (
+          <PaperEntryCard
+            style={styles.searchResultPaper}
+            paper={result}
+            discussionCount={0}
+            searchResult={true}
+          />
+        );
       case "university":
         return <UniversitySearchResult result={result} />;
       default:
@@ -250,5 +259,8 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontWeight: 400,
     fontSize: 22,
+  },
+  searchResultPaper: {
+    border: "none",
   },
 });
