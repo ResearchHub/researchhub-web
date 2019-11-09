@@ -10,6 +10,7 @@ import { MessageActions } from "~/redux/message";
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 
 const GoogleLoginButton = (props) => {
+  let { customLabel } = props;
   const responseGoogle = async (response) => {
     let { googleLogin, getUser } = props;
     response["access_token"] = response["accessToken"];
@@ -42,7 +43,7 @@ const GoogleLoginButton = (props) => {
           icon={"/static/icons/google.png"}
           customLabelStyle={props.customLabelStyle}
           customIconStyle={[styles.iconStyle, props.iconStyle]}
-          label={"Log in with Google"}
+          label={customLabel ? customLabel : "Log in with Google"}
         />
       )}
     />

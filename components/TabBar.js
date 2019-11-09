@@ -80,12 +80,13 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     justifyContent: "center",
+    overflow: "auto",
     background: paperTabColors.BACKGROUND,
   },
   tabContainer: {
     display: "flex",
     width: "100%",
-    minWidth: 200,
+    minWidth: 450,
     justifyContent: "space-between",
   },
   firstTab: {
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
       marginRight: 80,
     },
     ":hover": {
-      color: paperTabColors.HOVER_FONT,
+      color: colors.PURPLE(1),
       cursor: "pointer",
     },
   },
@@ -130,9 +131,9 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   selected: {
-    color: paperTabColors.SELECTED,
+    color: colors.PURPLE(1),
     borderBottom: "solid 3px",
-    borderColor: paperTabColors.SELECTED,
+    borderColor: colors.PURPLE(1),
   },
 });
 

@@ -596,7 +596,7 @@ const AuthorPage = (props) => {
               className={css(styles.socialMedia, styles.shareLink)}
               onClick={() => setOpenShareModal(true)}
             >
-              <i className="far fa-link"></i>
+              <i className="far fa-share"></i>
             </div>
           </div>
         </div>
@@ -640,6 +640,13 @@ const styles = StyleSheet.create({
   profileContainer: {
     display: "flex",
     padding: "30px 0",
+
+    "@media only screen and (max-width: 767px)": {
+      padding: "32px 0px",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+    },
   },
   profileInfo: {
     width: "70%",
@@ -656,6 +663,12 @@ const styles = StyleSheet.create({
     fontSize: 33,
     textTransform: "capitalize",
     marginBottom: 10,
+
+    "@media only screen and (max-width: 767px)": {
+      paddingRight: 0,
+      justifyContent: "center",
+      marginTop: 16,
+    },
   },
   extraInfoContainer: {
     display: "flex",
@@ -704,6 +717,11 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "fit-content",
     paddingRight: 30,
+
+    "@media only screen and (max-width: 767px)": {
+      width: "unset",
+      paddingRight: 0,
+    },
   },
   editButton: {
     marginLeft: 10,
@@ -890,6 +908,10 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     marginBottom: 10,
+
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "center",
+    },
   },
   reputationTitle: {
     marginRight: 10,

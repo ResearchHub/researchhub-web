@@ -28,6 +28,7 @@ import icons from "~/config/themes/icons";
 import GoogleLoginButton from "./GoogleLoginButton";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
+import "./stylesheets/Navbar.css";
 
 const Navbar = (props) => {
   const dispatch = useDispatch();
@@ -91,6 +92,9 @@ const Navbar = (props) => {
       },
       icon: "user",
     },
+    {
+      label: "Login With Google",
+    },
     { label: "Logout", onClick: signout, icon: "signOut" },
   ];
 
@@ -142,45 +146,39 @@ const Navbar = (props) => {
   function renderMenuItems() {
     const tabs = [...tabData, ...menuTabs];
     return tabs.map((tab, index) => {
-      if (tab.label === "Logout") {
+      if (tab.label === "Login With Google") {
         if (!isLoggedIn) {
-          return null;
-        } else {
           return (
-            <div
-              className={css(styles.menuItem)}
-              onClick={
-                tab.onClick
-                  ? tab.onClick
-                  : tab.route
-                  ? () => navigateToRoute(tab.route)
-                  : null
-              }
-              key={`navbar_tab_${index}`}
-            >
-              <span className={css(styles.icon)}>{icons[tab.icon]}</span>
-              <span className="menu-item">{tab.label}</span>
-            </div>
+            <GoogleLoginButton
+              styles={[styles.loginMobile]}
+              iconStyle={styles.googleIcon}
+              customLabel="Login"
+              customLabelStyle={[styles.googleLabel]}
+            />
           );
+        } else {
+          return null;
         }
-      } else {
-        return (
-          <div
-            className={css(styles.menuItem)}
-            onClick={
-              tab.onClick
-                ? tab.onClick
-                : tab.route
-                ? () => navigateToRoute(tab.route)
-                : null
-            }
-            key={`navbar_tab_${index}`}
-          >
-            <span className={css(styles.icon)}>{icons[tab.icon]}</span>
-            <span className="menu-item">{tab.label}</span>
-          </div>
-        );
       }
+      if ((tab.label === "Logout" || tab.label === "Profile") && !isLoggedIn) {
+        return null;
+      }
+      return (
+        <div
+          className={css(styles.menuItem)}
+          onClick={
+            tab.onClick
+              ? tab.onClick
+              : tab.route
+              ? () => navigateToRoute(tab.route)
+              : null
+          }
+          key={`navbar_tab_${index}`}
+        >
+          <span className={css(styles.icon)}>{icons[tab.icon]}</span>
+          <span className="menu-item">{tab.label}</span>
+        </div>
+      );
     });
   }
 
@@ -393,6 +391,13 @@ const styles = StyleSheet.create({
   },
   googleLabel: {
     color: colors.PURPLE(),
+    fontVariant: "small-caps",
+    fontSize: 20,
+    letterSpacing: 0.7,
+
+    "@media only screen and (max-width: 767px)": {
+      color: "#fff",
+    },
   },
   tab: {
     marginLeft: 20,
@@ -461,6 +466,11 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
+  loginMobile: {
+    width: "100%",
+    padding: 16,
+    height: "unset",
+  },
   addPaper: {
     background: colors.BLUE(),
     border: `${colors.BLUE()} 1px solid`,
@@ -513,6 +523,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     highlight: "none",
     outline: "none",
+    fontVariant: "small-caps",
+    letterSpacing: 0.7,
+    fontSize: 20,
     ":hover": {
       color: colors.GREEN(1),
     },
@@ -522,6 +535,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     width: 40,
     color: "#FFF",
+    textAlign: "center",
   },
   lastOption: {
     borderBottom: 0,
