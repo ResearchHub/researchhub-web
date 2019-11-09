@@ -2,6 +2,8 @@ branch-defaults:
   development:
     environment: production2
     group_suffix: null
+  master:
+    environment: production2
 global:
   application_name: researchhub-web
   branch: null
