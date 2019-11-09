@@ -5,6 +5,9 @@ import { connect } from "react-redux";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
+// Config
+import colors from "~/config/themes/colors";
+
 class AuthoredPapersTab extends React.Component {
   constructor(props) {
     super(props);
@@ -21,7 +24,18 @@ class AuthoredPapersTab extends React.Component {
     });
     return (
       <ComponentWrapper>
-        <div className={css(styles.container)}>{papers}</div>
+        {papers.length > 0 ? (
+          <div className={css(styles.container)}>{papers}</div>
+        ) : (
+          <div className={css(styles.box)}>
+            <div className={css(styles.icon)}>
+              <i className="fad fa-file-alt" />
+            </div>
+            <h2 className={css(styles.noContent)}>
+              User has not authored any papers.
+            </h2>
+          </div>
+        )}
       </ComponentWrapper>
     );
   }
@@ -37,6 +51,28 @@ var styles = StyleSheet.create({
   },
   paperContainer: {
     width: "100%",
+  },
+  box: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  noContent: {
+    color: colors.BLACK(1),
+    fontSize: 20,
+    fontWeight: 500,
+    textAlign: "center",
+    "@media only screen and (max-width: 415px)": {
+      width: 280,
+      fontSize: 16,
+    },
+  },
+  icon: {
+    fontSize: 50,
+    color: colors.BLUE(1),
+    height: 50,
+    marginBottom: 10,
   },
 });
 
