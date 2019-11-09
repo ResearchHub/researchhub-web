@@ -1,4 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
+import numeral from "numeral";
 
 import ReputationTooltip from "./ReputationTooltip";
 
@@ -10,7 +11,9 @@ const Reputation = (props) => {
       data-tip
       data-for="reputationTooltip"
     >
-      <div className={css(styles.reputationValue)}>{reputation}</div>
+      <div className={css(styles.reputationValue)}>
+        {reputation < 1000 ? reputation : numeral(reputation).format("0.0A")}
+      </div>
       <img src={"/static/icons/coin.png"} />
       <ReputationTooltip />
     </div>
