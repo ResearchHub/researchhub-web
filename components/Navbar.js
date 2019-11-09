@@ -77,8 +77,9 @@ const Navbar = (props) => {
   const [sideMenu, setSideMenu] = useState(false);
 
   const tabData = [
-    { label: "About", route: "/about", icon: "home" },
+    { label: "Home", route: "/", icon: "home" },
     { label: "Hubs", route: "/hubs", icon: "hub" },
+    { label: "About", route: "/about", icon: "info-circle" },
     { label: "Help", route: "/help", icon: "help" },
   ];
 
