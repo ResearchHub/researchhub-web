@@ -3,20 +3,14 @@ import Avatar from "react-avatar";
 import Link from "next/link";
 
 const AuthorAvatar = (props) => {
-  const {
-    author,
-    size = 30,
-    textSizeRatio = 2.5,
-    disableLink,
-    avatarClassName,
-  } = props;
+  const { author, size = 30, disableLink } = props;
 
   const authorId = author && author.id;
 
   function renderAvatar() {
     return (
       <div>
-        {author.profile_image ? (
+        {author && author.profile_image ? (
           <img
             src={author.profile_image}
             style={{

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
-import { connect, useDispatch, useStore } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 
 import { AuthorActions } from "~/redux/author";
 
@@ -14,13 +14,13 @@ import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ShareModal from "~/components/ShareModal";
-import ActionButton from "~/components/ActionButton";
 import AvatarUpload from "~/components/AvatarUpload";
 import Reputation from "~/components/Reputation";
 
 // Config
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
+import { AuthActions } from "../../../../redux/auth";
 
 const AuthorPage = (props) => {
   let { author, hostname, user } = props;
@@ -354,13 +354,16 @@ const AuthorPage = (props) => {
 
     changes.append("profile_image", blob);
 
-    await dispatch(
+    let authorReturn = await dispatch(
       AuthorActions.saveAuthorChanges({
         changes,
         authorId: author.id,
         file: true,
       })
     );
+
+    let { updateUser, user } = props;
+    updateUser({ ...user, author_profile: authorReturn.payload });
 
     closeAvatarModal();
   };
@@ -763,6 +766,10 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     color: "#fff",
+    width: 126,
+    height: 45,
+    fontSize: 15,
+
     background: colors.BLUE(),
     marginLeft: 5,
 
@@ -894,4 +901,11 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(mapStateToProps)(AuthorPage);
+const mapDispatchToProps = {
+  updateUser: AuthActions.updateUser,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AuthorPage);
