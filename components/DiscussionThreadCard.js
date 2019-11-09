@@ -109,6 +109,7 @@ const DiscussionThreadCard = (props) => {
                 onDownvote={downvote}
                 horizontalView={true}
                 styles={styles.mobileVoteWidget}
+                searchResult={props.searchResult}
               />
               <DiscussionPostMetadata
                 authorProfile={data && data.createdBy.authorProfile}
@@ -257,6 +258,10 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     cursor: "default",
     transition: "all ease-in-out 0.2s",
+
+    ":hover": {
+      backgroundColor: "#FAFAFA",
+    },
   },
   readContainer: {
     border: "solid 1px",
