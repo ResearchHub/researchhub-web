@@ -50,7 +50,9 @@ class HubsList extends React.Component {
   };
 
   renderHubEntry = () => {
-    return this.state.hubs.slice(0, 5).map((hub, i) => {
+    let selectedHubs =
+      this.state.hubs > 9 ? this.state.hubs.slice(0, 9) : this.state.hubs;
+    return selectedHubs.map((hub, i) => {
       let { name, id } = hub;
       if (name !== this.props.exclude) {
         return (
@@ -96,8 +98,6 @@ class HubsList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: "calc(100% * .625)",
-    // width: '100%',
-    // height: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
     paddingTop: 60,
   },
   hubsListContainer: {
-    // maxWidth: 203,
     height: "100%",
     display: "flex",
     flexDirection: "column",
