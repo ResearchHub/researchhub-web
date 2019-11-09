@@ -639,6 +639,9 @@ var styles = StyleSheet.create({
     backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
+    "@media only screen and (max-width: 767px)": {
+      position: "relative",
+    },
     "@media only screen and (max-width: 665px)": {
       display: "flex",
       flexDirection: "column",
