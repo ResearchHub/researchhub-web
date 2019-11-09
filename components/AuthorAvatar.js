@@ -9,25 +9,30 @@ const AuthorAvatar = (props) => {
     textSizeRatio = 2.5,
     disableLink,
     avatarClassName,
-    name,
   } = props;
 
   const authorId = author && author.id;
 
   function renderAvatar() {
-    let authorName =
-      author && typeof author === "object"
-        ? `${author.first_name} ${author.last_name}`
-        : null;
     return (
-      <Avatar
-        className={avatarClassName}
-        name={name || authorName}
-        size={size}
-        round={true}
-        textSizeRatio={textSizeRatio}
-        src={author ? author.profile_image : null}
-      />
+      <div>
+        {author.profile_image ? (
+          <img
+            src={author.profile_image}
+            style={{
+              width: size,
+              height: size,
+              objectFit: "cover",
+              borderRadius: "50%",
+            }}
+          />
+        ) : (
+          <i
+            className="fas fa-user-circle"
+            style={{ fontSize: size + 1, color: "#aaa" }}
+          ></i>
+        )}
+      </div>
     );
   }
   return (

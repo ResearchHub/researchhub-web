@@ -220,13 +220,14 @@ const PaperEntryCard = ({
                 >
                   {authors.length > 0 &&
                     authors.map((author) => (
-                      <AuthorAvatar
-                        key={`author_${author.id}_${id}`}
-                        avatarClassName={css(styles.avatar)}
-                        size={30}
-                        textSizeRatio={2.5}
-                        author={author}
-                      />
+                      <div className={css(styles.avatar)}>
+                        <AuthorAvatar
+                          key={`author_${author.id}_${id}`}
+                          size={30}
+                          textSizeRatio={2.5}
+                          author={author}
+                        />
+                      </div>
                     ))}
                 </span>
                 <Link
