@@ -18,6 +18,7 @@ import HubTag from "~/components/Hubs/HubTag";
 import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { PaperActions } from "~/redux/paper";
+import { MessageActions } from "~/redux/message";
 import VoteActions from "~/redux/vote";
 
 // Config
@@ -40,7 +41,7 @@ const Paper = (props) => {
     getVoteType(paper.userVote)
   );
 
-  const { hostname } = props;
+  const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
   const shareUrl = hostname + "/paper/" + paperId;
 
@@ -55,7 +56,7 @@ const Paper = (props) => {
       setPaper(refetchedPaper);
       setSelectedVoteType(getVoteType(refetchedPaper.userVote));
       setDiscussionThreads(getDiscussionThreads(refetchedPaper));
-      this.props.messageActions.showMessage({ show: false });
+      showMessage({ show: false });
     }
     refetchPaper();
   }, [props.isServer, paperId]);
@@ -396,4 +397,11 @@ const mapStateToProps = (state) => ({
   vote: state.vote,
 });
 
-export default connect(mapStateToProps)(Paper);
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Paper);
