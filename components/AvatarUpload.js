@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 
 // Components
@@ -49,15 +48,14 @@ const AvatarUpload = (props) => {
         {/* <div className={css(styles.preview)}>Preview</div>
         {preview && <img width={80} hieght={80} src={preview} alt="Preview" />} */}
       </div>
-      <div
-        className={css(styles.actions, !preview && styles.disable)}
-        disable={!preview}
-      >
-        {saveButton(section, { picture: preview })}
-      </div>
-      {/* <div className={css(styles.icon)}>
+      {preview && (
+        <div className={css(styles.actions)} disable={!preview}>
+          {saveButton(section, { picture: preview })}
+        </div>
+      )}
+      <div className={css(styles.icon)}>
         <ResearchHubIcon />
-      </div> */}
+      </div>
     </BaseModal>
   );
 };
