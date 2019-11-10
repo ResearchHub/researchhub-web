@@ -284,7 +284,7 @@ class HubPage extends React.Component {
         <div
           className={css(
             styles.homeBanner,
-            (!auth.showBanner || this.state.mobileView) && styles.hideBanner
+            !auth.showBanner && styles.hideBanner
           )}
         >
           <span
@@ -299,7 +299,10 @@ class HubPage extends React.Component {
                 ? "/static/background/background-home-mobile.png"
                 : "/static/background/background-home.png"
             }
-            className={css(styles.bannerOverlay)}
+            className={css(
+              styles.bannerOverlay,
+              this.state.mobileView && styles.hideBanner
+            )}
           />
           <div
             className={css(
@@ -323,6 +326,7 @@ class HubPage extends React.Component {
             <span className={css(styles.googleLogin)}>
               {!auth.isLoggedIn && (
                 <GoogleLoginButton
+                  styles={styles.googleLoginButton}
                   googleLogin={this.props.googleLogin}
                   getUser={this.props.getUser}
                 />
@@ -463,8 +467,8 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     height: 200,
     zIndex: 3,
-    "@media only screen and (max-width: 577px)": {
-      height: 300,
+    "@media only screen and (max-width: 767px)": {
+      height: "unset",
       justifyContent: "flex-start",
     },
   },
@@ -485,9 +489,10 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    "@media only screen and (max-width: 577px)": {
+    "@media only screen and (max-width: 767px)": {
       position: "relative",
       alignItems: "unset",
+      height: "unset",
     },
   },
   hideBanner: {
@@ -580,9 +585,15 @@ var styles = StyleSheet.create({
     },
   },
   googleLogin: {
-    "@media only screen and (max-width: 577px)": {
+    "@media only screen and (max-width: 767px)": {
+      margin: "0 auto",
+      marginTop: 0,
       marginTop: 18,
+      marginBottom: 18,
     },
+  },
+  googleLoginButton: {
+    border: "1px solid #fff",
   },
   button: {
     height: 55,
