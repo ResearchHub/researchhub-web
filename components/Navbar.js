@@ -154,7 +154,7 @@ const Navbar = (props) => {
               styles={[styles.loginMobile]}
               iconStyle={styles.googleIcon}
               customLabel="Login"
-              customLabelStyle={[styles.googleLabel]}
+              customLabelStyle={[styles.googleLabelMobile]}
             />
           );
         } else {
@@ -391,6 +391,9 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   googleLabel: {
+    color: colors.PURPLE(),
+  },
+  googleLabelMobile: {
     color: colors.PURPLE(),
     fontVariant: "small-caps",
     fontSize: 20,
