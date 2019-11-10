@@ -147,9 +147,11 @@ const PaperEntryCard = ({
               >
                 {authors.length > 0 &&
                   authors.map((author) => (
-                    <div className={css(styles.avatar)}>
+                    <div
+                      className={css(styles.avatar)}
+                      key={`author_${author.id}_${id}_${Math.random()}`}
+                    >
                       <AuthorAvatar
-                        key={`author_${author.id}_${id}`}
                         size={30}
                         textSizeRatio={2.5}
                         author={author}

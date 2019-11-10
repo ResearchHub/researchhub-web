@@ -391,7 +391,7 @@ class HubPage extends React.Component {
                     <div
                       className={css(styles.text, styles.emptyPlaceholderText)}
                     >
-                      There are no academic Paper uploaded for this page.
+                      There are no academic papers uploaded for this hub.
                     </div>
                     <div
                       className={css(
