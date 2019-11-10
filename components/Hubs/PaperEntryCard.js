@@ -139,7 +139,7 @@ const PaperEntryCard = ({
           </div>
           <div className={css(styles.bottomBar, mobileStyles.bottomBar)}>
             <div className={css(styles.row)}>
-              <span
+              <div
                 className={css(
                   styles.avatars,
                   authors.length < 1 && styles.hide
@@ -147,15 +147,16 @@ const PaperEntryCard = ({
               >
                 {authors.length > 0 &&
                   authors.map((author) => (
-                    <AuthorAvatar
-                      key={`author_${author.id}_${id}`}
-                      avatarClassName={css(styles.avatar)}
-                      size={30}
-                      textSizeRatio={2.5}
-                      author={author}
-                    />
+                    <div className={css(styles.avatar)}>
+                      <AuthorAvatar
+                        key={`author_${author.id}_${id}`}
+                        size={30}
+                        textSizeRatio={2.5}
+                        author={author}
+                      />
+                    </div>
                   ))}
-              </span>
+              </div>
               <Link
                 href={"/paper/[paperId]/[tabName]"}
                 as={`/paper/${id}/discussion`}
@@ -296,6 +297,10 @@ const mobileStyles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     borderRadius: 3,
+
+    "@media only screen and (max-width: 767px)": {
+      maxHeight: "unset",
+    },
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
@@ -436,12 +441,21 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     height: 30,
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      height: "unset",
+      alignItems: "flex-start",
+    },
   },
   avatars: {
     display: "flex",
     justifyContent: "flex-start",
     marginRight: 16,
-    // width: 105
+
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 5,
+    },
   },
   avatar: {
     marginRight: 5,

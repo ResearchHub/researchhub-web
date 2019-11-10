@@ -4,26 +4,36 @@ import Link from "next/link";
 
 const AuthorAvatar = (props) => {
   const { author, size = 30, disableLink } = props;
+  let deviceWidth = null;
+  if (window.outerHeight) {
+    deviceWidth = window.outerWidth;
+  } else {
+    deviceWidth = document.body.clientWidth;
+  }
 
   const authorId = author && author.id;
 
   function renderAvatar() {
+    let finalSize = size;
+    if (deviceWidth < 768) {
+      finalSize = size - 5;
+    }
     return (
       <div>
         {author && author.profile_image ? (
           <img
             src={author.profile_image}
             style={{
-              width: size,
-              height: size,
+              width: finalSize,
+              height: finalSize,
               objectFit: "cover",
               borderRadius: "50%",
             }}
           />
         ) : (
           <i
-            className="fas fa-user-circle"
-            style={{ fontSize: size + 1, color: "#aaa" }}
+            className={css(styles.userCircle) + " fas fa-user-circle"}
+            style={{ fontSize: finalSize + 1, color: "#aaa" }}
           ></i>
         )}
       </div>
