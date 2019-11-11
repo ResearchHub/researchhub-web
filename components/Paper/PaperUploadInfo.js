@@ -431,7 +431,11 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.parseJSON)
       .then((resp) => {
         let hubs = resp.results.map((hub, index) => {
-          return { ...hub, value: hub.id, label: hub.name };
+          return {
+            ...hub,
+            value: hub.id,
+            label: hub.name.charAt(0).toUpperCase() + hub.name.slice(1),
+          };
         });
         this.setState({
           suggestedHubs: hubs,
@@ -645,7 +649,10 @@ class PaperUploadInfo extends React.Component {
                 placeholder="Select up to 3 hubs"
                 required={true}
                 containerStyle={styles.container}
-                inputStyle={customStyles.input}
+                inputStyle={
+                  (customStyles.input,
+                  form.hubs.length > 0 && customStyles.capitalize)
+                }
                 labelStyle={styles.labelStyle}
                 isMulti={true}
                 value={form.hubs}
@@ -982,7 +989,7 @@ class PaperUploadInfo extends React.Component {
     this.props.messageActions.showMessage({ load: true, show: true });
 
     const param = {
-      summary: this.state.summary.toJSON(),
+      summary: this.state.summary.toJSON({ preserveKeys: true }),
       paper: this.props.paperId
         ? this.props.paperId
         : this.props.paper.postedPaper.id,
@@ -1562,6 +1569,9 @@ const customStyles = {
     "@media only screen and (max-width: 321px)": {
       fontSize: 10,
     },
+  },
+  capitalize: {
+    textTransform: "capitalize",
   },
 };
 

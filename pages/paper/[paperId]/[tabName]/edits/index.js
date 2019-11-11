@@ -41,7 +41,7 @@ class PaperEditHistory extends React.Component {
 
     let editorState = convertToEditorValue(edit.summary);
 
-    if (edit.previous) {
+    if (edit.previousSummary) {
       previousState = convertToEditorValue(edit.previousSummary);
       editorState = this.diffVersions(editorState, previousState);
     }
@@ -60,7 +60,7 @@ class PaperEditHistory extends React.Component {
       let edit = this.props.paper.editHistory[0];
       let editorState = convertToEditorValue(edit.summary);
 
-      if (edit.previous) {
+      if (edit.previousSummary) {
         previousState = convertToEditorValue(edit.previousSummary);
         editorState = this.diffVersions(editorState, previousState);
       }

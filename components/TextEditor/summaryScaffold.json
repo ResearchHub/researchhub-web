@@ -1,183 +1,206 @@
 {
   "object": "value",
   "document": {
-    "object": "document",
+    "key": "1573505332805_0",
     "data": {},
     "nodes": [
       {
-        "object": "block",
-        "type": "heading-one",
+        "key": "1573505332805_1",
         "data": {},
+        "type": "heading-one",
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332805_2",
             "text": "Summary",
-            "marks": []
+            "marks": [],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
-        "type": "paragraph",
+        "key": "1573505332805_3",
         "data": {},
+        "type": "paragraph",
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332805_4",
             "text": "Distill this paper into a short paragraph. What is the main take away and why does it matter?",
             "marks": [
               {
-                "object": "mark",
+                "data": {},
                 "type": "italic",
-                "data": {}
+                "object": "mark"
               }
-            ]
+            ],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
-        "type": "paragraph",
+        "key": "1573505332805_5",
         "data": {},
+        "type": "paragraph",
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332805_6",
             "text": "",
             "marks": [
               {
-                "object": "mark",
+                "data": {},
                 "type": "italic",
-                "data": {}
+                "object": "mark"
               }
-            ]
+            ],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
+        "key": "1573505332805_7",
+        "data": {},
         "type": "heading-one",
-        "data": {},
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332805_8",
             "text": "Hypothesis",
-            "marks": []
+            "marks": [],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
-        "type": "paragraph",
+        "key": "1573505332805_9",
         "data": {},
+        "type": "paragraph",
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332805_10",
             "text": "What question does this paper attempt to answer?",
             "marks": [
               {
-                "object": "mark",
+                "data": {},
                 "type": "italic",
-                "data": {}
+                "object": "mark"
               }
-            ]
+            ],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
-        "type": "paragraph",
+        "key": "1573505332805_11",
         "data": {},
+        "type": "paragraph",
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332805_12",
             "text": "",
             "marks": [
               {
-                "object": "mark",
+                "data": {},
                 "type": "italic",
-                "data": {}
+                "object": "mark"
               }
-            ]
+            ],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
+        "key": "1573505332806_13",
+        "data": {},
         "type": "heading-one",
-        "data": {},
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332806_14",
             "text": "Results",
-            "marks": []
+            "marks": [],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
-        "type": "paragraph",
+        "key": "1573505332806_15",
         "data": {},
+        "type": "paragraph",
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332806_16",
             "text": "What conclusion did the paper reach?",
             "marks": [
               {
-                "object": "mark",
+                "data": {},
                 "type": "italic",
-                "data": {}
+                "object": "mark"
               }
-            ]
+            ],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
-        "type": "paragraph",
+        "key": "1573505332806_17",
         "data": {},
+        "type": "paragraph",
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332806_18",
             "text": "",
             "marks": [
               {
-                "object": "mark",
+                "data": {},
                 "type": "italic",
-                "data": {}
+                "object": "mark"
               }
-            ]
+            ],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
+        "key": "1573505332806_19",
+        "data": {},
         "type": "heading-one",
-        "data": {},
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332806_20",
             "text": "Significance",
-            "marks": []
+            "marks": [],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       },
       {
-        "object": "block",
-        "type": "paragraph",
+        "key": "1573505332806_21",
         "data": {},
+        "type": "paragraph",
         "nodes": [
           {
-            "object": "text",
+            "key": "1573505332806_22",
             "text": "What does this paper make possible in the world, and what should be tried from here?",
             "marks": [
               {
-                "object": "mark",
+                "data": {},
                 "type": "italic",
-                "data": {}
+                "object": "mark"
               }
-            ]
+            ],
+            "object": "text"
           }
-        ]
+        ],
+        "object": "block"
       }
-    ]
+    ],
+    "object": "document"
   }
 }
