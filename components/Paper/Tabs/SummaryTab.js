@@ -83,7 +83,7 @@ class SummaryTab extends React.Component {
         let { paper } = this.props;
         let localStorageKey = `editorState-${paper.id}-${paper.summary.id}`;
         if (localStorage.getItem(localStorageKey)) {
-          localStorage.remove(localStorageKey);
+          localStorage.removeItem(localStorageKey);
         }
         if (!resp.approved) {
           this.initializeSummary();
