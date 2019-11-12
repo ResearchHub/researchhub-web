@@ -770,7 +770,7 @@ class PaperUploadInfo extends React.Component {
               </span>
             </div>
             <Button
-              label={editMode ? "Save" : "Next Step"}
+              label={editMode ? "Save" : "Upload"}
               customButtonStyle={styles.button}
               type={"submit"}
             />
@@ -920,8 +920,9 @@ class PaperUploadInfo extends React.Component {
         this.props.messageActions.setMessage(
           `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
         );
+        this.props.authActions.setUploadingPaper(true);
         this.props.messageActions.showMessage({ show: true });
-        this.nextStep();
+        this.navigateToSummary();
       } else {
         this.props.messageActions.setMessage("Hmm something went wrong");
         this.props.messageActions.showMessage({ show: true, error: true });

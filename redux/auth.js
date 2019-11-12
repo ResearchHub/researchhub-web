@@ -25,6 +25,7 @@ export const AuthConstants = {
   UPDATE_SIGNUP_INFO: "@@aut/UPDATE_SIGNUP_INFO",
   GET_USER_BANNER_PREFERENCE: "@@auth/GET_USER_BANNER_PREFERENCE",
   SET_USER_BANNER_PREFERENCE: "@@auth/SET_USER_BANNER_PREFERENCE",
+  SET_UPLOADING_PAPER: "@@auth/SET_UPLOADING_PAPER",
 };
 
 function saveToLocalStorage(key, value) {
@@ -238,6 +239,17 @@ export const AuthActions = {
       });
     };
   },
+  /**
+   * if user is uploading a paper
+   */
+  setUploadingPaper: (bool) => {
+    return (dispatch) => {
+      return dispatch({
+        type: AuthConstants.SET_UPLOADING_PAPER,
+        uploadingPaper: bool,
+      });
+    };
+  },
   getUserBannerPreference: () => {
     return (dispatch) => {
       let preference = localStorage.getItem("researchhub.banner.pref");
@@ -311,6 +323,7 @@ const defaultAuthState = {
   user: {},
   error: null,
   showBanner: true,
+  uploadingPaper: false,
 };
 
 const AuthReducer = (state = defaultAuthState, action) => {
@@ -325,6 +338,7 @@ const AuthReducer = (state = defaultAuthState, action) => {
     case AuthConstants.ERROR:
     case AuthConstants.SET_USER_BANNER_PREFERENCE:
     case AuthConstants.GET_USER_BANNER_PREFERENCE:
+    case AuthConstants.SET_UPLOADING_PAPER:
       return {
         ...state,
         ...action,
