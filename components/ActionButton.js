@@ -19,7 +19,10 @@ const ActionButton = (props) => {
   }
 
   return (
-    <div className={css(styles.actionButton)} onClick={action}>
+    <div
+      className={css(styles.actionButton) + " " + props.className}
+      onClick={action}
+    >
       {renderIcon()}
     </div>
   );
