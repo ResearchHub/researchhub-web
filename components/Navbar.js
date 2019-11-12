@@ -101,6 +101,28 @@ const Navbar = (props) => {
 
   function renderTabs() {
     let tabs = tabData.map((tab, index) => {
+      if (tab.label === "Help") {
+        return (
+          <div
+            className={css(
+              styles.tab,
+              index === 0 && styles.firstTab,
+              index === 2 && styles.lastTab
+            )}
+          >
+            <a
+              className={css(styles.tabLink)}
+              href={
+                "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
+              }
+              target="_blank"
+            >
+              {tab.label}
+            </a>
+          </div>
+        );
+      }
+
       return (
         <Link href={tab.route} key={`navbar_tab_${index}`}>
           <div
@@ -414,7 +436,7 @@ const styles = StyleSheet.create({
   },
   tabLink: {
     color: "#000",
-    underline: "none",
+    textDecoration: "none",
   },
   caret: {
     marginLeft: 16,
