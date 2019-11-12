@@ -31,6 +31,7 @@ import PermissionNotificationWrapper from "../../../../components/PermissionNoti
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { formatPublishedDate } from "~/config/utils";
 
 const Paper = (props) => {
   const dispatch = useDispatch();
@@ -159,6 +160,16 @@ const Paper = (props) => {
     return hubs;
   }
 
+  function renderPublishDate() {
+    if (paper.paper_publish_date) {
+      return (
+        <div className={css(styles.info)}>
+          {formatPublishedDate(moment(paper.paper_publish_date))}
+        </div>
+      );
+    }
+  }
+
   function navigateToEditPaperInfo() {
     let href = "/paper/upload/info/[paperId]";
     let as = `/paper/upload/info/${paperId}`;
@@ -232,14 +243,7 @@ const Paper = (props) => {
             </span>
           </div>
           <div className={css(styles.mobileInfoSection)}>
-            {paper.paper_publish_date && (
-              <div className={css(styles.info)}>
-                Published{" "}
-                {moment(paper && paper.paper_publish_date).format(
-                  "DD MMMM, YYYY"
-                )}
-              </div>
-            )}
+            {renderPublishDate()}
           </div>
           <div className={css(styles.tags)}>
             <div className={css(styles.authors)}>{renderAuthors()}</div>
@@ -252,14 +256,7 @@ const Paper = (props) => {
             )}
           </div>
           <div className={css(styles.infoSection)}>
-            {paper.paper_publish_date && (
-              <div className={css(styles.info)}>
-                Published{" "}
-                {moment(paper && paper.paper_publish_date).format(
-                  "DD MMMM, YYYY"
-                )}
-              </div>
-            )}
+            {renderPublishDate()}
             {paper.doi && (
               <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
             )}
