@@ -462,6 +462,7 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.2s",
     height: 0,
     opacity: 0,
+    overflow: "hidden",
   },
   overrideReplyStyle: {
     borderLeft: "1px solid",
@@ -469,7 +470,6 @@ const styles = StyleSheet.create({
   },
   show: {
     height: "calc(100%)",
-    overflow: "auto",
     opacity: 1,
   },
   showReply: {
