@@ -7,21 +7,18 @@ import { StyleSheet, css } from "aphrodite";
 import VoteWidget from "../VoteWidget";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import HubTag from "./HubTag";
-import TextEditor from "../TextEditor/index";
 
 // Utility
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { convertNumToMonth } from "~/config/utils/options";
 import {
   UPVOTE,
   DOWNVOTE,
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "~/config/constants";
-
-// Redux
-import * as VoteActions from "~/redux/vote/actions";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
+import { formatPublishedDate } from "~/config/utils";
+import { transformDate } from "~/redux/utils";
 
 const PaperEntryCard = ({
   paper,
@@ -66,13 +63,7 @@ const PaperEntryCard = ({
   }
 
   function convertDate() {
-    let dateArr = paper_publish_date.split("-");
-    dateArr[1] = convertNumToMonth[dateArr[1]];
-    if (dateArr.length > 2) {
-      return `Published: ${dateArr[0]} ${dateArr[1]}, ${dateArr[2]}`;
-    } else {
-      return `Published: ${dateArr[1]}, ${dateArr[2]}`;
-    }
+    return formatPublishedDate(transformDate(paper.paper_publish_date));
   }
 
   async function upvote(e) {

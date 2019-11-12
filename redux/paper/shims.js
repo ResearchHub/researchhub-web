@@ -3,6 +3,7 @@ import { transformDate, transformUser, transformVote } from "../utils";
 export const paper = (paper) => {
   return {
     ...paper,
+    publishedDate: transformDate(paper.paper_publish_date),
     tagline: paper.tagline,
     discussion: {
       ...paper.discussion,

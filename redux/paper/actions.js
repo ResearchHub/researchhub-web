@@ -1,5 +1,4 @@
 import * as types from "./types";
-import helpers from "@quantfive/js-web-config/helpers";
 
 export function setPostPaperPending(request = "POST") {
   let type = function(request) {
