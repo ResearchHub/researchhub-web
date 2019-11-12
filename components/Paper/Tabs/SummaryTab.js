@@ -245,7 +245,7 @@ class SummaryTab extends React.Component {
                 />
               </div>
             ) : (
-              <div className={css(styles.box)}>
+              <div className={css(styles.box) + " second-step"}>
                 <div className={css(styles.icon)}>
                   <i className="fad fa-file-alt" />
                 </div>

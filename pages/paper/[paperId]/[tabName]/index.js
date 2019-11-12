@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Router, { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
+import Joyride from "react-joyride";
 
 // Components
 import ActionButton from "~/components/ActionButton";
@@ -19,6 +20,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
+import { AuthActions } from "~/redux/auth";
 import VoteActions from "~/redux/vote";
 
 // Config
@@ -26,6 +28,9 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 import PermissionNotificationWrapper from "../../../../components/PermissionNotificationWrapper";
+import colors from "~/config/themes/colors";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 const Paper = (props) => {
   const dispatch = useDispatch();
@@ -40,6 +45,22 @@ const Paper = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper.userVote)
   );
+  const [steps, setSteps] = useState([
+    {
+      target: ".first-step",
+      title: "Edit Paper Info",
+      content:
+        "Add or edit the paper information. This includes authors, publication date, hubs, and more!",
+      disableBeacon: true,
+    },
+    {
+      target: ".second-step",
+      title: "Add Paper Summary",
+      content:
+        "Add a summary to help others understand what the paper is about.",
+      disableBeacon: true,
+    },
+  ]);
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
@@ -57,6 +78,9 @@ const Paper = (props) => {
       setSelectedVoteType(getVoteType(refetchedPaper.userVote));
       setDiscussionThreads(getDiscussionThreads(refetchedPaper));
       showMessage({ show: false });
+      if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
+        props.setUploadingPaper(false);
+      }
     }
     refetchPaper();
   }, [props.isServer, paperId]);
@@ -141,6 +165,25 @@ const Paper = (props) => {
     Router.push(href, as);
   }
 
+  function onJoyrideComplete(joyrideState) {
+    let { auth, updateUser, setUploadingPaper } = props;
+    if (
+      joyrideState.status === "finished" &&
+      joyrideState.lifecycle === "complete"
+    ) {
+      fetch(
+        API.USER({ userId: auth.user.id }),
+        API.PATCH_CONFIG({ upload_tutorial_complete: true })
+      )
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then(() => {
+          updateUser({ upload_tutorial_complete: true });
+          setUploadingPaper(false);
+        });
+    }
+  }
+
   return (
     <div className={css(styles.container)}>
       <Head title={paper.title} description={paper.tagline} />
@@ -173,7 +216,10 @@ const Paper = (props) => {
                   permissionKey="UpdatePaper"
                   loginRequired={true}
                 >
-                  <ActionButton icon={"fas fa-pencil"} />
+                  <ActionButton
+                    className={"first-step"}
+                    icon={"fas fa-pencil"}
+                  />
                 </PermissionNotificationWrapper>
                 <ShareAction
                   iconNode={icons.shareAlt}
@@ -230,6 +276,22 @@ const Paper = (props) => {
         threadCount={threadCount}
       />
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
+      <Joyride
+        steps={steps}
+        continuous={true}
+        locale={{ last: "Done" }}
+        styles={{
+          options: {
+            primaryColor: colors.BLUE(1),
+          },
+        }}
+        callback={onJoyrideComplete}
+        run={
+          props.auth.uploadingPaper &&
+          props.auth.isLoggedIn &&
+          !props.auth.user.upload_tutorial_complete
+        }
+      />
     </div>
   );
 };
@@ -395,10 +457,13 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   paper: state.paper,
   vote: state.vote,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
+  updateUser: AuthActions.updateUser,
+  setUploadingPaper: AuthActions.setUploadingPaper,
 };
 
 export default connect(
