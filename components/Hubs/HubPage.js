@@ -772,6 +772,9 @@ var styles = StyleSheet.create({
     width: 400,
     objectFit: "contain",
     marginTop: 40,
+    "@media only screen and (max-width: 415px)": {
+      width: "85%",
+    },
   },
   emptyPlaceholderText: {
     width: 500,
@@ -779,6 +782,9 @@ var styles = StyleSheet.create({
     fontSize: 18,
     color: "#241F3A",
     marginTop: 20,
+    "@media only screen and (max-width: 415px)": {
+      width: "85%",
+    },
   },
   emptyPlaceholderSubtitle: {
     width: 500,
@@ -786,7 +792,10 @@ var styles = StyleSheet.create({
     fontSize: 14,
     color: "#4e4c5f",
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 15,
+    "@media only screen and (max-width: 415px)": {
+      width: "85%",
+    },
   },
 });
 
