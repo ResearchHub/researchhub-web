@@ -242,6 +242,7 @@ class Index extends React.Component {
               {points.map((point, i) => {
                 return this.renderItems(point, i);
               })}
+              <div className={css(styles.endSpace)} />
             </div>
           </div>
         </div>
@@ -847,20 +848,20 @@ const styles = StyleSheet.create({
     },
   },
   endSpace: {
-    width: 290,
-    minWidth: 290,
-    maxWidth: 290,
+    width: 30,
+    minWidth: 30,
+    maxWidth: 30,
     height: "100%",
-    "@media only screen and (max-width: 1024px)": {
-      width: 200,
-      minWidth: 200,
-      maxWidth: 200,
-    },
-    "@media only screen and (max-width: 800px)": {
-      width: 200,
-      minWidth: 200,
-      maxWidth: 200,
-    },
+    // "@media only screen and (max-width: 1024px)": {
+    //   width: 200,
+    //   minWidth: 200,
+    //   maxWidth: 200,
+    // },
+    // "@media only screen and (max-width: 800px)": {
+    //   width: 200,
+    //   minWidth: 200,
+    //   maxWidth: 200,
+    // },
   },
   wideText: {
     width: "100%",
