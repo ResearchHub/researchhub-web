@@ -161,7 +161,8 @@ class PaperUploadInfo extends React.Component {
         });
         form.type = type;
 
-        let published_date = paper_publish_date.split("-"); // ex. 2019-09-20 -> [2010, 09, 20]
+        let published_date =
+          paper_publish_date && paper_publish_date.split("-"); // ex. 2019-09-20 -> [2010, 09, 20]
         form.published.year = {
           value: published_date[0],
           label: published_date[0],
