@@ -7,6 +7,7 @@ import Link from "next/link";
 import Button from "../../components/Form/Button";
 import AddHubModal from "../../components/modal/AddHubModal";
 import Message from "../../components/Loader/Message";
+import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 
 // Config
 import API from "~/config/api";
@@ -170,12 +171,18 @@ class Index extends React.Component {
         <div className={css(styles.container)}>
           <div className={css(styles.titleContainer)}>
             <span className={css(styles.title)}>Hubs</span>
-            <Button
-              isWhite={true}
-              label={"Suggest a Hub"}
+            <PermissionNotificationWrapper
+              modalMessage="suggest a hub"
+              loginRequired={true}
               onClick={this.openAddHubModal}
-              buttonStyle={styles.button}
-            />
+            >
+              <Button
+                isWhite={true}
+                label={"Suggest a Hub"}
+                buttonStyle={styles.button}
+                hideRipples={true}
+              />
+            </PermissionNotificationWrapper>
           </div>
           <div className={css(styles.body, finishedLoading && styles.reveal)}>
             {this.renderColumn(this.state.width)}
