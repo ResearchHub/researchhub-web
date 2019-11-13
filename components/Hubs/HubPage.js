@@ -297,7 +297,7 @@ class HubPage extends React.Component {
             src={
               this.state.mobileBanner
                 ? "/static/background/background-home-mobile.png"
-                : "/static/background/background-home.png"
+                : "/static/background/background-home.jpg"
             }
             className={css(
               styles.bannerOverlay,
