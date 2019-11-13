@@ -137,7 +137,9 @@ class UploadPaperModal extends React.Component {
     } = this.state;
 
     if (search === "") {
-      return "Type to start search";
+      return `First check to make sure your paper ${
+        mobileView ? "\n" : ""
+      } isn't already on Research Hub`;
     } else if (searching) {
       return "Searching by name and DOI...";
     } else if (papers.length === 0) {
