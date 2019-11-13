@@ -889,7 +889,8 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   faqTitle: {
-    marginBottom: 10,
+    marginTop: 0,
+    marginBottom: 20,
   },
   collapsibleContainer: {
     display: "flex",

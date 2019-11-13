@@ -17,7 +17,6 @@ const FormTextArea = (props) => {
     onChange,
     value,
   } = props;
-
   return (
     <div
       id={id}
@@ -82,8 +81,14 @@ const styles = StyleSheet.create({
     color: "#232038",
     highlight: "none",
     outline: "none",
+    ":hover": {
+      borderColor: "#B3B3B3",
+    },
     ":focus": {
-      borderColor: "#D2D2E6",
+      borderColor: "#3f85f7",
+      ":hover": {
+        boxShadow: "0px 0px 1px 1px #3f85f7",
+      },
     },
   },
   asterick: {

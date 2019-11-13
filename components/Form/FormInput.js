@@ -6,7 +6,15 @@ class FormInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.formInputRef = React.createRef();
   }
+
+  focusOnClick = (e) => {
+    e.stopPropagation();
+    return this.props.getRef
+      ? this.props.getRef.current.focus()
+      : this.formInputRef.current.focus();
+  };
 
   handleChange = (e) => {
     let id = e.target.id;
@@ -60,7 +68,7 @@ class FormInput extends React.Component {
           value={this.props.value}
           required={required ? required : false}
           placeholder={placeholder ? placeholder : ""}
-          ref={getRef && getRef}
+          ref={getRef ? getRef : this.formInputRef}
           className={css(
             styles.input,
             inputStyle && inputStyle,
@@ -69,6 +77,7 @@ class FormInput extends React.Component {
             icon && styles.search
           )}
           onChange={this.handleChange}
+          onClick={this.focusOnClick}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && <p className={css(styles.message)}>{message}</p>}
@@ -127,8 +136,14 @@ const styles = StyleSheet.create({
     color: "#232038",
     highlight: "none",
     outline: "none",
+    ":hover": {
+      borderColor: "#B3B3B3",
+    },
     ":focus": {
-      borderColor: "#D2D2E6",
+      borderColor: "#3f85f7",
+      ":hover": {
+        boxShadow: "0px 0px 1px 1px #3f85f7",
+      },
     },
   },
   asterick: {

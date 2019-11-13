@@ -579,6 +579,9 @@ const styles = StyleSheet.create({
     border: "1px solid #E7E7E7",
     borderRadius: 4,
     color: "#000",
+    ":hover": {
+      borderColor: "#B3B3B3",
+    },
   },
   editSection: {
     padding: 16,
