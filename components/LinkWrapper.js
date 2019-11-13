@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import Link from "next/link";
 import PropTypes from "prop-types";
+import Ripples from "react-ripples";
 
 export const ServerLinkWrapper = (props) => {
   const { path, styling } = props;
@@ -12,7 +13,7 @@ export const ServerLinkWrapper = (props) => {
 
   return (
     <a href={path} className={css(...classNames)}>
-      {props.children}
+      <Ripples>{props.children}</Ripples>
     </a>
   );
 };

@@ -226,6 +226,7 @@ const Paper = (props) => {
                   onClick={navigateToEditPaperInfo}
                   permissionKey="UpdatePaper"
                   loginRequired={true}
+                  styling={styles.actionButton}
                 >
                   <ActionButton
                     className={"first-step"}
@@ -234,11 +235,16 @@ const Paper = (props) => {
                 </PermissionNotificationWrapper>
                 <ShareAction
                   iconNode={icons.shareAlt}
+                  addRipples={true}
                   title={"Share this paper"}
                   subtitle={paperTitle}
                   url={shareUrl}
                 />
-                <ActionButton icon={"fas fa-bookmark"} action={null} />
+                <ActionButton
+                  icon={"fas fa-bookmark"}
+                  action={null}
+                  addRipples={true}
+                />
               </div>
             </span>
           </div>
@@ -246,7 +252,14 @@ const Paper = (props) => {
             {renderPublishDate()}
           </div>
           <div className={css(styles.tags)}>
-            <div className={css(styles.authors)}>{renderAuthors()}</div>
+            <div
+              className={css(
+                styles.authors,
+                paper.authors.length < 1 && styles.hide
+              )}
+            >
+              {renderAuthors()}
+            </div>
             <div className={css(styles.hubs)}>{renderHubs()}</div>
           </div>
           <div className={css(styles.tagline)}>{paper && paper.tagline}</div>
@@ -448,6 +461,36 @@ const styles = StyleSheet.create({
       alignItems: "center",
       marginTop: 20,
     },
+  },
+  actionButton: {
+    width: 46,
+    height: 46,
+    borderRadius: "100%",
+    background: colors.LIGHT_GREY(1),
+    color: colors.GREY(1),
+    cursor: "pointer",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: 18,
+    marginLeft: 5,
+    marginRight: 5,
+    display: "flex",
+    flexShrink: 0,
+    "@media only screen and (max-width: 760px)": {
+      width: 35,
+      height: 35,
+    },
+    "@media only screen and (max-width: 415px)": {
+      height: 33,
+      width: 33,
+    },
+    "@media only screen and (max-width: 321px)": {
+      height: 31,
+      width: 31,
+    },
+  },
+  hide: {
+    display: "none",
   },
 });
 

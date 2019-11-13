@@ -10,6 +10,10 @@ const colors = {
   ORANGE: (opacity = 1) => `rgba(255, 109, 0, ${opacity})`,
   RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`,
   LIGHT_YELLOW: (opacity = 1) => `rgba(253, 249, 237, ${opacity})`,
+  YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`,
+  DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`,
+  NAVY: (opacity = 1) => `rgba(31, 40, 125, ${opacity})`,
+  GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`,
 };
 
 export const formColors = {

@@ -108,6 +108,7 @@ export const CommentEditor = (props) => {
       onClick={null}
       styling={styles.notificationWrapper}
       loginRequired={true}
+      hideRipples={true}
     >
       <DiscussionCommentEditor
         active={active}
@@ -170,6 +171,8 @@ export const ReplyEditor = (props) => {
             modalMessage="post a reply"
             permissionKey="CreateDiscussionReply"
             loginRequired={true}
+            hideRipples={true}
+            styling={styles.replyButton}
           >
             <div className={css(styles.reply)} id="reply">
               Reply
@@ -261,11 +264,15 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-end",
   },
+  replyButton: {
+    marginBottom: 10,
+    height: 20,
+    overflow: "hidden",
+  },
   reply: {
     textTransform: "uppercase",
     cursor: "pointer",
     fontSize: 13,
-    marginBottom: 10,
     ":hover": {
       color: "#000",
     },

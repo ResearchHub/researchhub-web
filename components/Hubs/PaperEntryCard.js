@@ -211,7 +211,13 @@ const PaperEntryCard = ({
             <div className={css(styles.publishDate, styles.text)}>
               {paper_publish_date && convertDate()}
             </div>
-            <div className={css(styles.summary, styles.text)}>
+            <div
+              className={css(
+                styles.summary,
+                styles.text,
+                !tagline && styles.hide
+              )}
+            >
               {tagline ? tagline : null}
             </div>
             <div className={css(styles.bottomBar)}>
@@ -433,8 +439,7 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     alignItems: "center",
-    height: 30,
-
+    // height: 30,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       height: "unset",
@@ -448,6 +453,7 @@ const styles = StyleSheet.create({
 
     "@media only screen and (max-width: 767px)": {
       marginBottom: 5,
+      marginTop: 5,
     },
   },
   avatar: {
@@ -459,6 +465,9 @@ const styles = StyleSheet.create({
   },
   metaData: {
     width: "calc(100% - 48px)",
+  },
+  hide: {
+    display: "none",
   },
 });
 

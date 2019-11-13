@@ -51,7 +51,9 @@ class HubsList extends React.Component {
 
   renderHubEntry = () => {
     let selectedHubs =
-      this.state.hubs > 9 ? this.state.hubs.slice(0, 9) : this.state.hubs;
+      this.state.hubs.length > 9
+        ? this.state.hubs.slice(0, 9)
+        : this.state.hubs;
     return selectedHubs.map((hub, i) => {
       let { name, id } = hub;
       if (name !== this.props.exclude) {

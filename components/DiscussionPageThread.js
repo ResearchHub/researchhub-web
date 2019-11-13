@@ -90,6 +90,7 @@ const Thread = (props) => {
             title={"Share this thread"}
             subtitle={title}
             url={currentUrl}
+            addRipples={true}
           />
         )}
       </div>

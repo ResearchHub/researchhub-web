@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
+import Ripples from "react-ripples";
 
 // Components
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
@@ -343,7 +344,6 @@ var styles = StyleSheet.create({
     height: 45,
     outline: "none",
     cursor: "pointer",
-    marginBottom: 15,
     ":hover": {
       borderColor: "#FFF",
       color: "#FFF",
@@ -362,6 +362,7 @@ var styles = StyleSheet.create({
     padding: 16,
     color: "rgb(36, 31, 58)",
     opacity: 0.6,
+    // marginBottom: 15,
     ":hover": {
       backgroundColor: "none",
       color: colors.PURPLE(1),

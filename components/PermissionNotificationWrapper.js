@@ -1,9 +1,8 @@
 import { css } from "aphrodite";
 import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
-
+import Ripples from "react-ripples";
 import { ModalActions } from "~/redux/modals";
-
 import {
   currentUserHasMinimumReputation,
   getMinimumReputation,
@@ -20,6 +19,7 @@ const PermissionNotificationWrapper = (props) => {
     onClick,
     permissionKey,
     styling,
+    hideRipples,
   } = props;
 
   const store = useStore();
@@ -74,11 +74,24 @@ const PermissionNotificationWrapper = (props) => {
     }
   }
 
-  return (
-    <div className={css(styling)} onClick={executeIfUserMeetsRequirement}>
-      {props.children}
-    </div>
-  );
+  if (hideRipples) {
+    return (
+      <div className={css(styling)} onClick={executeIfUserMeetsRequirement}>
+        {props.children}
+      </div>
+    );
+  } else {
+    return (
+      <div className={css(styling)}>
+        <Ripples
+          className={css(styling)}
+          onClick={executeIfUserMeetsRequirement}
+        >
+          {props.children}
+        </Ripples>
+      </div>
+    );
+  }
 };
 
 PermissionNotificationWrapper.propTypes = {
