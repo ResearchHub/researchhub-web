@@ -298,6 +298,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "Roboto",
+    lineHeight: 1.6,
   },
   title: {
     fontSize: 33,
@@ -377,7 +378,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 1.2,
     position: "absolute",
-    bottom: 0,
+    bottom: -10,
     right: 0,
     "@media only screen and (max-width: 415px)": {
       fontSize: 9,

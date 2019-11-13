@@ -112,6 +112,7 @@ export default class Search extends Component {
   };
 
   getResultComponent = (result) => {
+    console.log("result", result);
     const indexName = result.meta.index;
 
     switch (indexName) {

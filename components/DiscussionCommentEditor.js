@@ -265,9 +265,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   replyButton: {
-    marginBottom: 10,
-    height: 20,
-    overflow: "hidden",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   reply: {
     textTransform: "uppercase",

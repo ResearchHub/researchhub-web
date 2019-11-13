@@ -28,6 +28,19 @@
   margin: 0;
 }
 
+.react-tagsinput:hover {
+  border-color: #b3b3b3;
+}
+
+.react-tagsinput--focused {
+  border-color: #3f85f7;
+}
+
+.react-tagsinput--focused:hover {
+  border-color: #3f85f7;
+  box-shadow: 0px 0px 1px 1px #3f85f7;
+}
+
 .react-tagsinput-tag {
   background-color: hsl(0, 0%, 90%);
   border-radius: 2px;
