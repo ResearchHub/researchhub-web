@@ -163,18 +163,20 @@ class PaperUploadInfo extends React.Component {
 
         let published_date =
           paper_publish_date && paper_publish_date.split("-"); // ex. 2019-09-20 -> [2010, 09, 20]
-        form.published.year = {
-          value: published_date[0],
-          label: published_date[0],
-        };
-        form.published.month = Options.months
-          .filter((month) => month.value === published_date[1])
-          .pop();
-        if (published_date.length > 2) {
-          form.published.day = {
-            value: published_date[2],
-            label: published_date[2],
+        if (published_date) {
+          form.published.year = {
+            value: published_date[0],
+            label: published_date[0],
           };
+          form.published.month = Options.months
+            .filter((month) => month.value === published_date[1])
+            .pop();
+          if (published_date.length > 2) {
+            form.published.day = {
+              value: published_date[2],
+              label: published_date[2],
+            };
+          }
         }
         form.author.self_author =
           authors.filter((author) => author.id === userAuthorId).length > 0;
