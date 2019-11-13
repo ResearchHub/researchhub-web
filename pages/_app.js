@@ -9,6 +9,7 @@ import "../components/Paper/progressbar.css";
 import "react-tagsinput/react-tagsinput.css";
 import "../components/SearchSuggestion/authorinput.css";
 import { KeyUtils } from "slate";
+import * as Sentry from "@sentry/browser";
 
 // Components
 import Base from "./Base";
@@ -16,6 +17,10 @@ import Head from "~/components/Head";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+
+Sentry.init({
+  dsn: "https://423f7b6ddcea48b9b50f7ba4baa0e750@sentry.io/1817918",
+});
 
 class MyApp extends App {
   constructor(props) {
