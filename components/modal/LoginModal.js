@@ -9,6 +9,7 @@ import { GoogleLogin, GoogleLogout } from "react-google-login";
 // Component
 import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
+import BaseModal from "./BaseModal";
 
 // Redux
 import { AuthActions } from "../../redux/auth";
@@ -24,10 +25,6 @@ class LoginModal extends React.Component {
     this.state = {
       ...initialState,
     };
-  }
-
-  componentDidMount() {
-    //TODO: do something with user authentication
   }
 
   /**
@@ -48,6 +45,7 @@ class LoginModal extends React.Component {
     await googleLogin(response).then((_) => {
       getUser().then((_) => {
         this.closeModal();
+        document.body.style.overflow = "scroll";
       });
     });
 
@@ -60,62 +58,38 @@ class LoginModal extends React.Component {
   render() {
     let { modals, auth } = this.props;
     return (
-      <Modal
+      <BaseModal
         isOpen={modals.openLoginModal}
         closeModal={this.closeModal}
-        className={css(styles.modal)}
-        shouldCloseOnOverlayClick={true}
-        onRequestClose={this.closeModal}
-        style={overlayStyles}
+        title={"Please, Log In"}
+        subtitle={
+          modals.loginModal.flavorText
+            ? modals.loginModal.flavorText
+            : "Log in with your Google account"
+        }
+        backgroundImage={true}
       >
-        <div className={css(styles.modalContent)}>
-          <img
-            src={"/static/icons/close.png"}
-            className={css(styles.closeButton)}
-            onClick={this.closeModal}
-          />
-          <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title, styles.text)}>Please, log in</div>
-            <div className={css(styles.subtitle, styles.text)}>
-              {modals.loginModal.flavorText
-                ? modals.loginModal.flavorText
-                : "Log in with your Google account"}
-            </div>
-          </div>
-          <GoogleLogin
-            clientId={GOOGLE_CLIENT_ID}
-            onSuccess={this.responseGoogle}
-            onFailure={this.responseGoogle}
-            cookiePolicy={"single_host_origin"}
-            render={(renderProps) => (
-              <Button
-                disabled={renderProps.disabled}
-                onClick={renderProps.onClick}
-                customButtonStyle={styles.button}
-                icon={"/static/icons/google.png"}
-                customIconStyle={styles.iconStyle}
-                label={"Log in with Google"}
-              />
-            )}
-          />
-        </div>
-      </Modal>
+        <div className={css(styles.titleContainer)}></div>
+        <GoogleLogin
+          clientId={GOOGLE_CLIENT_ID}
+          onSuccess={this.responseGoogle}
+          onFailure={this.responseGoogle}
+          cookiePolicy={"single_host_origin"}
+          render={(renderProps) => (
+            <Button
+              disabled={renderProps.disabled}
+              onClick={renderProps.onClick}
+              customButtonStyle={styles.button}
+              icon={"/static/icons/google.png"}
+              customIconStyle={styles.iconStyle}
+              label={"Log in with Google"}
+            />
+          )}
+        />
+      </BaseModal>
     );
   }
 }
-
-const overlayStyles = {
-  overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.2)",
-    zIndex: "11",
-    borderRadius: 5,
-  },
-};
 
 const styles = StyleSheet.create({
   modal: {

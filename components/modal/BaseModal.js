@@ -122,14 +122,30 @@ class BaseModal extends React.Component {
             this.state.reveal && styles.reveal
           )}
         >
+          {this.props.backgroundImage && (
+            <img
+              className={css(styles.backgroundImage)}
+              src={"/static/background/background-modal.png"}
+              draggable={false}
+            />
+          )}
           {!this.props.removeDefault && (
             <Fragment>
               <img
                 src={"/static/icons/close.png"}
-                className={css(styles.closeButton)}
+                className={css(
+                  styles.closeButton,
+                  this.props.backgroundImage && styles.zIndex
+                )}
                 onClick={this.closeModal}
+                draggable={false}
               />
-              <div className={css(styles.titleContainer)}>
+              <div
+                className={css(
+                  styles.titleContainer,
+                  this.props.backgroundImage && styles.zIndex
+                )}
+              >
                 <div className={css(styles.title, styles.text)}>
                   {this.props.title && this.props.title}
                 </div>
@@ -188,6 +204,14 @@ const styles = StyleSheet.create({
       padding: 0,
     },
   },
+  backgroundImage: {
+    position: "absolute",
+    top: 0,
+    height: "100%",
+    width: "100%",
+    objectFit: "contain",
+    userSelect: "none",
+  },
   reveal: {
     opacity: 1,
   },
@@ -230,7 +254,7 @@ const styles = StyleSheet.create({
     },
   },
   subtitle: {
-    marginTop: 10,
+    marginTop: 15,
     fontSize: 16,
     height: 22,
     width: 484,
@@ -243,6 +267,9 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "Roboto",
+  },
+  zIndex: {
+    zIndex: 12,
   },
 });
 

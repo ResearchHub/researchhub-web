@@ -73,6 +73,7 @@ const Button = ({
           <img
             src={icon}
             className={css(styles.icon, customIconStyle && customIconStyle)}
+            draggable={false}
           />
         )}
         <p
@@ -151,6 +152,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+    userSelect: "none",
   },
 });
 
