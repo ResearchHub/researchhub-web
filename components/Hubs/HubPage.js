@@ -368,7 +368,7 @@ class HubPage extends React.Component {
             </div>
             <div className={css(styles.infiniteScroll)}>
               {this.state.doneFetching ? (
-                !this.state.papers.length > 0 ? (
+                this.state.papers.length > 0 ? (
                   <InfiniteScroll
                     pageStart={this.state.page}
                     loadMore={this.loadMore}
