@@ -745,7 +745,8 @@ const styles = StyleSheet.create({
     overflowX: "scroll",
     scrollSnapType: "x mandatory",
     paddingBottom: 20,
-    width: "70%",
+    width: "80%",
+    padding: 16,
     "::-webkit-scrollbar": {
       display: "none",
     },
@@ -812,7 +813,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     fontSize: 28,
     fontWeight: "bold",
-    position: "absolute",
+    // position: "absolute",
     textAlign: "center",
     top: 0,
     "@media only screen and (max-width: 415px)": {
