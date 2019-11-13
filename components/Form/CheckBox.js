@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
+import Ripple from "react-ripples";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -7,26 +8,28 @@ import colors from "../../config/themes/colors";
 const CheckBox = ({ id, active, label, isSquare, onChange, labelStyle }) => {
   return (
     <div className={css(styles.checkboxContainer)}>
-      <div
-        className={css(
-          styles.checkBox,
-          active && styles.active,
-          isSquare && styles.square
-        )}
-        onClick={() => {
-          let state = !active;
-          onChange && onChange(id, state);
-        }}
-      >
-        {isSquare ? (
-          <i
-            className="far fa-check"
-            style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
-          />
-        ) : (
-          <div className={css(styles.dot, active && styles.white)} />
-        )}
-      </div>
+      <Ripple>
+        <div
+          className={css(
+            styles.checkBox,
+            active && styles.active,
+            isSquare && styles.square
+          )}
+          onClick={() => {
+            let state = !active;
+            onChange && onChange(id, state);
+          }}
+        >
+          {isSquare ? (
+            <i
+              className="far fa-check"
+              style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
+            />
+          ) : (
+            <div className={css(styles.dot, active && styles.white)} />
+          )}
+        </div>
+      </Ripple>
       <p className={css(styles.label, labelStyle && labelStyle)}>
         {label && label}
       </p>
