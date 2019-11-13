@@ -6,6 +6,7 @@ const path = require("path");
 module.exports = withPlugins(
   [
     [withCSS],
+    [withSourceMaps],
     [
       withTM,
       {
