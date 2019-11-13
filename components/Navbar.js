@@ -101,6 +101,9 @@ const Navbar = (props) => {
 
   function renderTabs() {
     let tabs = tabData.map((tab, index) => {
+      if (tab.icon === "home") {
+        return null;
+      }
       if (tab.label === "Help") {
         return (
           <div
@@ -125,13 +128,7 @@ const Navbar = (props) => {
 
       return (
         <Link href={tab.route} key={`navbar_tab_${index}`}>
-          <div
-            className={css(
-              styles.tab,
-              index === 0 && styles.firstTab,
-              index === 2 && styles.lastTab
-            )}
-          >
+          <div className={css(styles.tab, index === 0 && styles.firstTab)}>
             {tab.label}
           </div>
         </Link>
