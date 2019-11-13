@@ -13,6 +13,7 @@ import Loader from "~/components/Loader/Loader";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -367,7 +368,7 @@ class HubPage extends React.Component {
             </div>
             <div className={css(styles.infiniteScroll)}>
               {this.state.doneFetching ? (
-                this.state.papers.length > 0 ? (
+                !this.state.papers.length > 0 ? (
                   <InfiniteScroll
                     pageStart={this.state.page}
                     loadMore={this.loadMore}
@@ -405,10 +406,14 @@ class HubPage extends React.Component {
                     >
                       Click ‘Upload paper’ button to upload a PDF
                     </div>
-                    <Button
-                      label={"Upload Paper"}
+                    <PermissionNotificationWrapper
                       onClick={() => this.props.openUploadPaperModal(true)}
-                    />
+                      modalMessage="upload a paper"
+                      loginRequired={true}
+                      permissionKey="CreatePaper"
+                    >
+                      <Button label={"Upload Paper"} hideRipples={true} />
+                    </PermissionNotificationWrapper>
                   </div>
                 )
               ) : (
