@@ -239,11 +239,9 @@ class Index extends React.Component {
               className={css(styles.bannerOverlay)}
             />
             <div className={css(styles.row, styles.pointCardList)}>
-              <div className={css(styles.frontSpace)} />
               {points.map((point, i) => {
                 return this.renderItems(point, i);
               })}
-              <div className={css(styles.endSpace)} />
             </div>
           </div>
         </div>
@@ -330,7 +328,7 @@ class Index extends React.Component {
                 triggerOpenedClassName={css(styles.maxWidth)}
                 contentInnerClassName={css(styles.collapsibleContent)}
                 open={true}
-                trigger="Does ResearchHub host copyrighted material?"
+                trigger="- Does ResearchHub host copyrighted material?"
               >
                 <p className={css(styles.subtext, styles.wideText)}>
                   <b>
@@ -365,7 +363,7 @@ class Index extends React.Component {
                 triggerOpenedClassName={css(styles.maxWidth)}
                 contentInnerClassName={css(styles.collapsibleContent)}
                 open={false}
-                trigger="Who created this site?"
+                trigger="- Who created this site?"
               >
                 <p className={css(styles.subtext, styles.wideText)}>
                   ResearchHub is being developed by a small team of passionate
@@ -392,7 +390,7 @@ class Index extends React.Component {
                 triggerOpenedClassName={css(styles.maxWidth)}
                 contentInnerClassName={css(styles.collapsibleContent)}
                 open={false}
-                trigger="How can I help?"
+                trigger="- How can I help?"
               >
                 <p className={css(styles.subtext, styles.wideText)}>
                   {`The easiest way to help the community grow is to sign up and start contributing content.\n\n`}
@@ -420,8 +418,8 @@ class Index extends React.Component {
         <div className={css(styles.contactContainer)}>
           <div className={css(styles.contact)}>
             <h3 className={css(styles.textTitle)}>Contact Us</h3>
-            {this.renderContacts("email", "researchhub@example.com")}
-            {this.renderContacts("phone", "+1215 333 333")}
+            {this.renderContacts("email", "hello@researchhub.com")}
+            {/* {this.renderContacts("phone", "+1215 333 333")} */}
           </div>
           <img
             draggable={false}
@@ -747,7 +745,7 @@ const styles = StyleSheet.create({
     overflowX: "scroll",
     scrollSnapType: "x mandatory",
     paddingBottom: 20,
-    width: 1000,
+    width: "70%",
     "::-webkit-scrollbar": {
       display: "none",
     },
@@ -766,6 +764,7 @@ const styles = StyleSheet.create({
     margin: "20px 20px 0 20px",
     padding: "25px 35px 25px 35px",
     display: "flex",
+    textAlign: "center",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
@@ -911,7 +910,7 @@ const styles = StyleSheet.create({
   maxWidth: {
     width: 1180,
     minWidth: 1180,
-    fontWieght: "bold",
+    fontWeight: "bold",
     cursor: "pointer",
     "@media only screen and (max-width: 800px)": {
       fontSize: 16,
