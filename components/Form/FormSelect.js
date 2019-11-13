@@ -133,8 +133,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   input: {
-    // height: 50,
-    // width: 495,
     display: "flex",
     alignItems: "center",
     border: "1px solid #E8E8F2",

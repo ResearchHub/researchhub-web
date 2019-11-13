@@ -7,7 +7,6 @@ TimeAgo.addLocale(en);
 export const timeAgo = new TimeAgo("en-US");
 
 export function formatDateStandard(momentDate) {
-  console.log("the moment", momentDate);
   return momentDate.format("MMM Do, YYYY");
 }
 

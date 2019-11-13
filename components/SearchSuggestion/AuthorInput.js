@@ -17,6 +17,8 @@ const AuthorInput = ({
   placeholder,
   renderEmail,
 }) => {
+  const inputRef = React.createRef();
+
   function renderTag(props) {
     let { tag, key, disabled, onRemove, classNameRemove, ...other } = props;
     return (
@@ -41,6 +43,11 @@ const AuthorInput = ({
     );
   }
 
+  function focusInput(e) {
+    e && e.stopPropagation();
+    inputRef.current.focus();
+  }
+
   return (
     <div className={css(styles.container)}>
       <div
@@ -61,7 +68,8 @@ const AuthorInput = ({
         onChangeInput={(value) => onChangeInput(value)}
         inputValue={inputValue}
         className={error ? css(styles.error) : "react-tagsinput"}
-        // maxTags={3}
+        onClick={focusInput}
+        ref={inputRef}
         renderTag={(props) =>
           renderEmail ? renderEmailTags(props) : renderTag(props)
         }
