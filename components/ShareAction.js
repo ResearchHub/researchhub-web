@@ -7,7 +7,7 @@ import ShareModal from "~/components/ShareModal";
 import icons from "~/config/themes/icons";
 
 const ShareAction = (props) => {
-  const { customButton, iconNode, title, subtitle, url } = props;
+  const { customButton, iconNode, title, subtitle, url, addRipples } = props;
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -27,6 +27,7 @@ const ShareAction = (props) => {
         <ActionButton
           action={openShareModal}
           iconNode={iconNode || icons.share}
+          addRipples={addRipples && addRipples}
         />
       );
     }

@@ -145,6 +145,7 @@ const Navbar = (props) => {
   }
 
   function onAddPaperClick() {
+    console.log("clicked called");
     openUploadPaperModal(true);
   }
 
@@ -198,7 +199,9 @@ const Navbar = (props) => {
           }
           key={`navbar_tab_${index}`}
         >
-          <span className={css(styles.icon)}>{icons[tab.icon]}</span>
+          <span className={css(styles.icon)} id={"icon"}>
+            {icons[tab.icon]}
+          </span>
           <span className="menu-item">{tab.label}</span>
         </div>
       );
@@ -357,6 +360,7 @@ const Navbar = (props) => {
             <Button
               customButtonStyle={{ ...styles.button, ...styles.addPaper }}
               label={"Add Paper"}
+              hideRipples={true}
             />
           </PermissionNotificationWrapper>
         </div>
@@ -553,7 +557,12 @@ const styles = StyleSheet.create({
     letterSpacing: 0.7,
     fontSize: 20,
     ":hover": {
-      color: colors.GREEN(1),
+      color: colors.BLUE(1),
+      // color: '#674ef5'
+    },
+    ":hover #icon": {
+      // color: '#674ef5'
+      color: colors.BLUE(1),
     },
   },
   icon: {

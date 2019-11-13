@@ -1,10 +1,10 @@
 import { StyleSheet, css } from "aphrodite";
-
+import Ripples from "react-ripples";
 // Config
 import colors from "~/config/themes/colors";
 
 const ActionButton = (props) => {
-  let { icon, iconNode, action, size } = props;
+  let { icon, iconNode, action, size, addRipples } = props;
 
   function renderIcon() {
     if (icon) {
@@ -18,14 +18,19 @@ const ActionButton = (props) => {
     }
   }
 
-  return (
-    <div
-      className={css(styles.actionButton) + " " + props.className}
-      onClick={action}
-    >
-      {renderIcon()}
-    </div>
-  );
+  if (addRipples) {
+    return (
+      <Ripples className={css(styles.actionButton) + " " + props.className} onClick={action}>
+        <div className={css(styles.actionButton) + " " + props.className}>{renderIcon()}</div>
+      </Ripples>
+    );
+  } else {
+    return (
+      <div className={css(styles.actionButton) + " " + props.className} onClick={action}>
+        {renderIcon()}
+      </div>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

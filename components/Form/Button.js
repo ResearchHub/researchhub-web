@@ -19,6 +19,7 @@ const Button = ({
   onSubmit,
   icon,
   customIconStyle,
+  hideRipples,
 }) => {
   if (isLink) {
     let { href, linkAs, query } = isLink;
@@ -55,8 +56,7 @@ const Button = ({
       </Link>
     );
   } else {
-    return (
-      // <Ripples>
+    let button = (
       <button
         className={css(
           styles.button,
@@ -66,8 +66,8 @@ const Button = ({
           disabled && styles.disabled
         )}
         type={type ? type : "button"}
-        onClick={onClick ? onClick : null}
         onSubmit={onSubmit ? onSubmit : null}
+        onClick={hideRipples && onClick ? onClick : null}
       >
         {icon && (
           <img
@@ -85,8 +85,11 @@ const Button = ({
           {label && label}
         </p>
       </button>
-      // </Ripples>
     );
+    if (!hideRipples) {
+      return <Ripples onClick={onClick ? onClick : null}>{button}</Ripples>;
+    }
+    return button;
   }
 };
 
@@ -103,6 +106,7 @@ const styles = StyleSheet.create({
     highlight: "none",
     outline: "none",
     border: "none",
+    userSelect: "none",
     ":hover": {
       backgroundColor: "#3E43E8",
     },

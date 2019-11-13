@@ -58,6 +58,10 @@ const AuthorAvatar = (props) => {
 const styles = StyleSheet.create({
   avatar: {
     cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
   },
 });
 

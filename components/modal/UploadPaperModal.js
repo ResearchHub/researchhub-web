@@ -224,6 +224,9 @@ class UploadPaperModal extends React.Component {
   };
 
   navigateToPaperUploadInfo = () => {
+    if (Object.keys(this.state.uploadedPaper).length < 1) {
+      return;
+    }
     this.props.messageActions.showMessage({ load: true, show: true });
     let title = this.state.search;
     Router.push({
