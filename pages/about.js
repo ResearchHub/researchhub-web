@@ -217,7 +217,7 @@ class Index extends React.Component {
         <div className={css(styles.banner)}>
           <img
             draggable={false}
-            src={"/static/background/background-about.png"}
+            src={"/static/background/background-about.jpg"}
             className={css(styles.bannerOverlay)}
           />
           <div className={css(styles.column, styles.titleContainer)}>
