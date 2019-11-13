@@ -573,7 +573,7 @@ class PaperUploadInfo extends React.Component {
                     <FormSelect
                       label={"Year of Publication"}
                       placeholder="yyyy"
-                      required={true}
+                      required={false}
                       containerStyle={styles.smallContainer}
                       inputStyle={styles.smallInput}
                       value={form.published.year}
@@ -586,7 +586,7 @@ class PaperUploadInfo extends React.Component {
                     <FormSelect
                       label={"Month of Publication"}
                       placeholder="month"
-                      required={true}
+                      required={false}
                       containerStyle={styles.smallContainer}
                       inputStyle={styles.smallInput}
                       value={form.published.month}
@@ -867,34 +867,44 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.hubs = true;
     }
-    if (this.state.editMode) {
-      if (
-        author.self_author === false &&
-        this.state.selectedAuthors.length < 1
-      ) {
-        pass = false;
-        error.author = true;
-      }
-      if (!published.year) {
-        pass = false;
-        error.year = true;
-      }
-      if (!published.month) {
-        pass = false;
-        error.month = true;
-      }
-      if (hubs.length < 1) {
-        pass = false;
-        error.hubs = true;
-      }
-      if (
-        !this.state.editMode &&
-        !(Object.keys(paper.uploadedPaper).length > 0)
-      ) {
-        pass = false;
-        error.dnd = true;
-      }
+
+    if (published.year && !published.month) {
+      pass = false;
+      error.month = true;
     }
+
+    if (!published.year && published.month) {
+      pass = false;
+      error.year = true;
+    }
+    // if (this.state.editMode) {
+    //   if (
+    //     author.self_author === false &&
+    //     this.state.selectedAuthors.length < 1
+    //   ) {
+    //     pass = false;
+    //     error.author = true;
+    //   }
+    //   if (!published.year) {
+    //     pass = false;
+    //     error.year = true;
+    //   }
+    //   if (!published.month) {
+    //     pass = false;
+    //     error.month = true;
+    //   }
+    //   if (hubs.length < 1) {
+    //     pass = false;
+    //     error.hubs = true;
+    //   }
+    //   if (
+    //     !this.state.editMode &&
+    //     !(Object.keys(paper.uploadedPaper).length > 0)
+    //   ) {
+    //     pass = false;
+    //     error.dnd = true;
+    //   }
+    // }
     this.setState({ error });
     return pass;
   };
@@ -904,7 +914,9 @@ class PaperUploadInfo extends React.Component {
     body.hubs = body.hubs.map((hub) => hub.id);
     body.authors = this.state.selectedAuthors.map((author) => author.id);
     if (this.state.editMode) {
-      body.publishDate = this.formatPublishDate(body.published);
+      if (body.published && body.published.year) {
+        body.publishDate = this.formatPublishDate(body.published);
+      }
       body.url = ""; // TODO: Add this optional field
       body.type = Object.keys(body.type)
         .filter((type) => body.type[type] && String(type))
@@ -1072,6 +1084,8 @@ class PaperUploadInfo extends React.Component {
     let paperId = this.state.editMode
       ? this.props.paperId
       : this.props.paper.postedPaper.id;
+
+    this.props.paperActions.clearPostedPaper();
     Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
   };
 

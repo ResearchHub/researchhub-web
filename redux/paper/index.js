@@ -138,6 +138,17 @@ export const PaperActions = {
     };
   },
 
+  clearPostedPaper: () => {
+    return async (dispatch) => {
+      return dispatch({
+        type: types.CLEAR_POSTED_PAPER,
+        payload: {
+          postedPaper: {},
+        },
+      });
+    };
+  },
+
   postPaperSummary: (body) => {
     return async (dispatch) => {
       const response = await fetch(
