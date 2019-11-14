@@ -89,7 +89,6 @@ const Navbar = (props) => {
       label: "Profile",
       route: {
         href: "/user/[authorId]/[tabName]",
-        as: `/user/${user.author_profile.id}/contributions`,
       },
       icon: "user",
     },
@@ -152,7 +151,11 @@ const Navbar = (props) => {
   function navigateToRoute(route) {
     let { href, as } = route;
     if (href) {
-      Router.push(href, as);
+      if (href === "/user/[authorId]/[tabName]") {
+        Router.push(href, `/user/${user.author_profile.id}/contributions`);
+      } else {
+        Router.push(href, as);
+      }
     } else {
       Router.push(route);
     }
