@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   userDropdown: {
     marginRight: 16,
     position: "relative",
-    zIndex: 999,
+    zIndex: 5,
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
