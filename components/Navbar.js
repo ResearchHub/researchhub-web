@@ -142,7 +142,6 @@ const Navbar = (props) => {
   }
 
   function onAddPaperClick() {
-    console.log("clicked called");
     openUploadPaperModal(true);
   }
 
