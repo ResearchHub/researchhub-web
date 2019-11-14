@@ -1,8 +1,9 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Router from "next/router";
 import { connect } from "react-redux";
+import Ripples from "react-ripples";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -58,13 +59,14 @@ class HubsList extends React.Component {
       let { name, id } = hub;
       if (name !== this.props.exclude) {
         return (
-          <div
-            key={`${id}-${i}`}
-            className={css(styles.hubEntry)}
-            onClick={() => this.handleClick(hub)}
-          >
-            {name}
-          </div>
+          <Fragment>
+            <Ripples onClick={() => this.handleClick(hub)}>
+              <div key={`${id}-${i}`} className={css(styles.hubEntry)}>
+                {name}
+              </div>
+            </Ripples>
+            <div className={css(styles.space)} />
+          </Fragment>
         );
       }
     });
@@ -131,7 +133,6 @@ const styles = StyleSheet.create({
     fontWeight: 300,
     cursor: "pointer",
     textTransform: "capitalize",
-    marginBottom: 15,
     ":hover": {
       color: colors.BLUE(1),
     },
@@ -142,6 +143,9 @@ const styles = StyleSheet.create({
   reveal: {
     opacity: 1,
     transition: "all ease-in-out 0.2s",
+  },
+  space: {
+    height: 15,
   },
 });
 
