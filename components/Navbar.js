@@ -89,7 +89,7 @@ const Navbar = (props) => {
       label: "Profile",
       route: {
         href: "/user/[authorId]/[tabName]",
-        as: `/user/${user.id}/contributions`,
+        as: `/user/${user.author_profile.id}/contributions`,
       },
       icon: "user",
     },
