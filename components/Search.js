@@ -226,6 +226,17 @@ const styles = StyleSheet.create({
     outline: "none",
     fontSize: 16,
     position: "relative",
+    cursor: "pointer",
+    ":hover": {
+      borderColor: "#B3B3B3",
+    },
+    ":focus": {
+      borderColor: "#3f85f7",
+      ":hover": {
+        boxShadow: "0px 0px 1px 1px #3f85f7",
+        cursor: "text",
+      },
+    },
   },
   searchIcon: {
     position: "absolute",
