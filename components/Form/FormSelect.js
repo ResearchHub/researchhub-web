@@ -58,8 +58,12 @@ class FormSelect extends React.Component {
         color: "#232038",
         highlight: "none",
         outline: "none",
+        cursor: "pointer",
         ":focus": {
           borderColor: "#D2D2E6",
+          ":hover": {
+            cursor: "default",
+          },
         },
         ...inputStyle,
       }),
@@ -122,7 +126,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     position: "relative",
-    cursor: "pointer",
   },
   inputLabel: {
     height: 19,
