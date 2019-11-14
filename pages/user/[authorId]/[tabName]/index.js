@@ -668,6 +668,7 @@ const styles = StyleSheet.create({
       paddingRight: 0,
       justifyContent: "center",
       marginTop: 16,
+      textAlign: "center",
     },
   },
   extraInfoContainer: {
