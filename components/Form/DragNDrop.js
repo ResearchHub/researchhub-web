@@ -226,7 +226,7 @@ class DragNDrop extends React.Component {
                     {this.state.validUrl ? (
                       <i className="fal fa-check-circle" />
                     ) : (
-                      <i class="fal fa-times-circle" />
+                      <i className="fal fa-times-circle" />
                     )}
                   </span>
                 )
