@@ -276,6 +276,8 @@ const routes = (BASE_URL) => {
 
       return url + "downvote/";
     },
+
+    CHECKURL: BASE_URL + "paper/check_url/",
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

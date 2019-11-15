@@ -62,7 +62,7 @@ class FormSelect extends React.Component {
         ":focus": {
           borderColor: "#D2D2E6",
           ":hover": {
-            cursor: "default",
+            cursor: "pointer",
           },
         },
         ...inputStyle,

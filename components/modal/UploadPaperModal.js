@@ -192,7 +192,6 @@ class UploadPaperModal extends React.Component {
   uploadPaper = (acceptedFiles, binaryStr) => {
     let { paperActions } = this.props;
     let paper = acceptedFiles[0];
-    let name = this.state.search;
     this.setState(
       {
         uploading: true,
@@ -208,6 +207,27 @@ class UploadPaperModal extends React.Component {
             uploadedPaper: paper,
           });
         }, 300);
+      }
+    );
+  };
+
+  /**
+   * function is called as a callback when a pdf url returns successful
+   */
+  handleUrl = (url) => {
+    this.setState(
+      {
+        uploading: true,
+      },
+      async () => {
+        setTimeout(() => {
+          this.props.paperActions.uploadPaperToState(url);
+          this.setState({
+            uploading: false,
+            uploadFinish: true,
+            uploadedPaper: url,
+          });
+        });
       }
     );
   };
@@ -349,7 +369,9 @@ class UploadPaperModal extends React.Component {
                 loading={uploading}
                 uploadFinish={uploadFinish}
                 uploadedPaper={uploadedPaper}
+                url={typeof uploadedPaper === "string"}
                 reset={this.resetStateToUploadView}
+                handleUrl={this.handleUrl}
               />
             </div>
           ) : (
