@@ -350,23 +350,35 @@ class PaperUploadInfo extends React.Component {
     }, 400);
   };
 
-  uploadPaper = async (acceptedFiles, binaryStr) => {
+  uploadPaper = (acceptedFiles, binaryStr) => {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
-    let form = JSON.parse(JSON.stringify(this.state.form));
     let uploadedFile = acceptedFiles[0];
-    await this.setState({ uploadingPaper: true });
+    this.setState({ uploadingPaper: true });
 
     setTimeout(async () => {
       await paperActions.uploadPaperToState(uploadedFile);
       error.dnd = false;
       this.setState({
         uploadingPaper: false,
-        form,
         error,
         edited: true,
       });
     }, 400);
+  };
+
+  uploadUrl = (url) => {
+    let { paperActions } = this.props;
+    let error = { ...this.state.error };
+    this.setState({ uploadingPaper: true }, () => {
+      paperActions.uploadPaperToState(url);
+      error.dnd = false;
+      this.setState({
+        uploadingPaper: false,
+        error,
+        edited: true,
+      });
+    });
   };
 
   openAddAuthorModal = async () => {
@@ -508,8 +520,9 @@ class PaperUploadInfo extends React.Component {
                     <span className={css(styles.asterick)}>*</span>
                   </div>
                   <DragNDrop
-                    pasteUrl={false}
+                    pasteUrl={true}
                     handleDrop={this.uploadPaper}
+                    handleUrl={this.uploadUrl}
                     loading={uploadingPaper}
                     uploadFinish={
                       Object.keys(this.props.paper.uploadedPaper).length > 0
@@ -517,7 +530,10 @@ class PaperUploadInfo extends React.Component {
                     uploadedPaper={this.props.paper.uploadedPaper}
                     reset={this.removePaper}
                     error={error.dnd}
-                    // isDynamic={true}
+                    url={
+                      Object.keys(this.props.paper.uploadedPaper).length > 0 &&
+                      !this.props.paper.uploadedPaper.size
+                    }
                   />
                 </div>
               )}
@@ -877,34 +893,34 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.year = true;
     }
-    // if (this.state.editMode) {
-    //   if (
-    //     author.self_author === false &&
-    //     this.state.selectedAuthors.length < 1
-    //   ) {
-    //     pass = false;
-    //     error.author = true;
-    //   }
-    //   if (!published.year) {
-    //     pass = false;
-    //     error.year = true;
-    //   }
-    //   if (!published.month) {
-    //     pass = false;
-    //     error.month = true;
-    //   }
-    //   if (hubs.length < 1) {
-    //     pass = false;
-    //     error.hubs = true;
-    //   }
-    //   if (
-    //     !this.state.editMode &&
-    //     !(Object.keys(paper.uploadedPaper).length > 0)
-    //   ) {
-    //     pass = false;
-    //     error.dnd = true;
-    //   }
-    // }
+    if (this.state.editMode) {
+      //   if (
+      //     author.self_author === false &&
+      //     this.state.selectedAuthors.length < 1
+      //   ) {
+      //     pass = false;
+      //     error.author = true;
+      //   }
+      //   if (!published.year) {
+      //     pass = false;
+      //     error.year = true;
+      //   }
+      //   if (!published.month) {
+      //     pass = false;
+      //     error.month = true;
+      //   }
+      //   if (hubs.length < 1) {
+      //     pass = false;
+      //     error.hubs = true;
+      //   }
+      if (
+        !this.state.editMode &&
+        !(Object.keys(paper.uploadedPaper).length > 0)
+      ) {
+        pass = false;
+        error.dnd = true;
+      }
+    }
     this.setState({ error });
     return pass;
   };
@@ -1300,6 +1316,9 @@ const styles = StyleSheet.create({
   },
   padding: {
     paddingTop: 40,
+    "@media only screen and (max-width: 665px)": {
+      paddingTop: 20,
+    },
   },
   container: {
     width: 600,
