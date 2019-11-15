@@ -242,6 +242,9 @@ const styles = StyleSheet.create({
   right: {
     width: "100%",
   },
+  columnEdit: {
+    backgroundColor: colors.LIGHT_YELLOW(1),
+  },
   titleBar: {
     width: "100%",
     display: "flex",
@@ -292,23 +295,31 @@ const styles = StyleSheet.create({
   },
   threadInfoEditView: {
     minHeight: 200,
-    boxShadow: `0px 0px 0px 8px ${colors.LIGHT_YELLOW(1)}`,
+    boxShadow: `0px 0px 0px 5px ${colors.LIGHT_YELLOW(1)}`,
     border: "1px solid #E7E7E7",
     backgroundColor: "#FBFBFB",
-    margin: 0,
+    margin: "15px 0",
     paddingBottom: 20,
     width: "calc(100% - 76px)",
   },
   threadTitle: {
-    width: "100%",
+    width: "85%",
+    minWidth: "85%",
+    maxWidth: "85%",
     fontSize: 33,
     color: "#241F3A",
     "@media only screen and (max-width: 761px)": {
       fontSize: 22,
+      width: "100%",
+      minWidth: "100%",
+      maxWidth: "100%",
     },
   },
   threadTitleEdit: {
     fontSize: 20,
+    width: "calc(100% - 76px)",
+    minWidth: "calc(100% - 76px)",
+    maxWidth: "calc(100% - 76px)",
   },
   body: {
     marginBottom: 28,
