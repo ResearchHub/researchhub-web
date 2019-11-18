@@ -24,7 +24,6 @@ import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
 
 const Thread = (props) => {
   const { hostname, title, body, createdBy, date, vote } = props;
-
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();

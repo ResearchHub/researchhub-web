@@ -14,6 +14,7 @@ export function fetchThread(paperId, threadId) {
 
     if (response.ok) {
       const body = await response.json();
+      console.log("body", body);
       const thread = shims.thread(body);
       action = actions.setThread(thread);
     } else {

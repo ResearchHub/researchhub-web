@@ -9,6 +9,7 @@ import {
 } from "./SearchResult";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
+import SearchEntry from "./SearchEntry";
 
 // Config
 import { thread } from "~/redux/discussion/shims";
@@ -112,45 +113,24 @@ export default class Search extends Component {
   };
 
   getResultComponent = (result) => {
-    console.log("result", result);
     const indexName = result.meta.index;
 
     switch (indexName) {
       case "author":
-        return null;
-      // return (
-      //   <AuthorSearchResult
-      //     result={result}
-      //     firstName={result.first_name}
-      //     lastName={result.last_name}
-      //   />
-      // );
+      case "paper":
+        return <SearchEntry indexName={indexName} result={result} />;
       case "discussion_thread":
         let data = thread(result);
         if (data.isPublic) {
           data = this.populateThreadData(data, result);
-          return (
-            <DiscussionThreadCard
-              path={`/paper/${data.paper}/discussion/${data.id}`}
-              data={data}
-              searchResult={true}
-            />
-          );
+          data.meta = result.meta;
+          return <SearchEntry indexName={indexName} result={data} />;
         }
       case "hub":
-        return null;
-      // return <HubSearchResult result={result} />;
-      case "paper":
-        return (
-          <PaperEntryCard
-            style={styles.searchResultPaper}
-            paper={result}
-            discussionCount={0}
-            searchResult={true}
-          />
-        );
-      case "university":
-        return <UniversitySearchResult result={result} />;
+        console.log("called-hub", result);
+        return <HubSearchResult result={result} />;
+      // case "university":
+      //   return <UniversitySearchResult result={result} />;
       default:
         break;
     }
