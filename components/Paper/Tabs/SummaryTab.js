@@ -67,7 +67,7 @@ class SummaryTab extends React.Component {
     );
   };
 
-  submitEdit = (raw) => {
+  submitEdit = (raw, plain_text) => {
     let { setMessage, showMessage } = this.props;
     let param = {
       summary: raw,
@@ -75,6 +75,7 @@ class SummaryTab extends React.Component {
       previousSummaryId: this.props.paper.summary
         ? this.props.paper.summary.id
         : null,
+      summary_plain_text: plain_text,
     };
     return fetch(API.SUMMARY({}), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)

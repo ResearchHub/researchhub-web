@@ -65,7 +65,10 @@ const TextEditor = (props) => {
       );
     } else {
       onSubmit &&
-        (success = await onSubmit(value.toJSON({ preserveKeys: true })));
+        (success = await onSubmit(
+          value.toJSON({ preserveKeys: true }),
+          value.document.text
+        ));
       if (success && clearOnSubmit !== false) {
         editorRef.clear();
       }

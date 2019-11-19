@@ -67,13 +67,14 @@ export function fetchComments(paperId, threadId, page) {
   };
 }
 
-export function postComment(paperId, threadId, text) {
+export function postComment(paperId, threadId, text, plain_text) {
   return async (dispatch) => {
     const response = await fetch(
       API.THREAD_COMMENT(paperId, threadId),
       API.POST_CONFIG({
         text,
         parent: threadId,
+        plain_text,
       })
     ).catch(utils.handleCatch);
 
@@ -91,11 +92,11 @@ export function postComment(paperId, threadId, text) {
   };
 }
 
-export function updateComment(paperId, threadId, commentId, text) {
+export function updateComment(paperId, threadId, commentId, text, plain_text) {
   return async (dispatch) => {
     const response = await fetch(
       API.PAPER_CHAIN(paperId, threadId, commentId),
-      API.PATCH_CONFIG({ text })
+      API.PATCH_CONFIG({ text, plain_text })
     ).catch(utils.handleCatch);
 
     let action = actions.setUpdateCommentFailure();
@@ -134,13 +135,14 @@ export function fetchReplies(paperId, threadId, commentId, page) {
   };
 }
 
-export function postReply(paperId, threadId, commentId, text) {
+export function postReply(paperId, threadId, commentId, text, plain_text) {
   return async (dispatch) => {
     const response = await fetch(
       API.THREAD_COMMENT_REPLY(paperId, threadId, commentId),
       API.POST_CONFIG({
         text,
         parent: commentId,
+        plain_text,
       })
     ).catch(utils.handleCatch);
 
@@ -158,11 +160,18 @@ export function postReply(paperId, threadId, commentId, text) {
   };
 }
 
-export function updateReply(paperId, threadId, commentId, replyId, text) {
+export function updateReply(
+  paperId,
+  threadId,
+  commentId,
+  replyId,
+  text,
+  plain_text
+) {
   return async (dispatch) => {
     const response = await fetch(
       API.PAPER_CHAIN(paperId, threadId, commentId, replyId),
-      API.PATCH_CONFIG({ text })
+      API.PATCH_CONFIG({ text, plain_text })
     ).catch(utils.handleCatch);
 
     let action = actions.setUpdateReplyFailure();

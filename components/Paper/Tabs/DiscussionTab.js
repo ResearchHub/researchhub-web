@@ -105,6 +105,7 @@ const DiscussionTab = (props) => {
       title: discussion.title,
       text: discussion.question.toJSON(),
       paper: paperId,
+      plain_text: discussion.question.document.text,
     };
 
     let config = await API.POST_CONFIG(param);
