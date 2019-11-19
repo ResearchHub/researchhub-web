@@ -44,10 +44,11 @@ const DiscussionCommentEditor = (props) => {
 
   const { paperId, discussionThreadId } = router.query;
 
-  const post = async (text) => {
+  const post = async (text, plain_text) => {
     await postMethod(
       { dispatch, store, paperId, discussionThreadId, commentId, onSubmit },
-      text
+      text,
+      plain_text
     );
     setTimeout(() => {
       setIsActive(false);
@@ -196,11 +197,11 @@ export const ReplyEditor = (props) => {
   );
 };
 
-async function postComment(props, text) {
+async function postComment(props, text, plain_text) {
   const { dispatch, store, paperId, discussionThreadId, onSubmit } = props;
   dispatch(DiscussionActions.postCommentPending());
   await dispatch(
-    DiscussionActions.postComment(paperId, discussionThreadId, text)
+    DiscussionActions.postComment(paperId, discussionThreadId, text, plain_text)
   );
 
   const comment = store.getState().discussion.postedComment;
@@ -209,7 +210,7 @@ async function postComment(props, text) {
   return !doesNotExist(comment);
 }
 
-async function postReply(props, text) {
+async function postReply(props, text, plain_text) {
   const {
     dispatch,
     store,
@@ -221,7 +222,13 @@ async function postReply(props, text) {
 
   dispatch(DiscussionActions.postReplyPending());
   await dispatch(
-    DiscussionActions.postReply(paperId, discussionThreadId, commentId, text)
+    DiscussionActions.postReply(
+      paperId,
+      discussionThreadId,
+      commentId,
+      text,
+      plain_text
+    )
   );
 
   const reply = store.getState().discussion.postedReply;
