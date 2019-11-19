@@ -3,6 +3,7 @@ import { useState } from "react";
 // NPM Components
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import Plain from "slate-plain-serializer";
 
 // Components
 import RichTextEditor from "./RichTextEditor";
@@ -67,7 +68,7 @@ const TextEditor = (props) => {
       onSubmit &&
         (success = await onSubmit(
           value.toJSON({ preserveKeys: true }),
-          value.document.text
+          Plain.serialize(value)
         ));
       if (success && clearOnSubmit !== false) {
         editorRef.clear();
