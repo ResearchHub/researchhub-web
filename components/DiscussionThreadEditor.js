@@ -19,9 +19,10 @@ const ThreadEditor = (props) => {
 
   const [value, setValue] = useState(props.text);
 
-  async function updateThread(text) {
+  async function updateThread(text, plain_text) {
     const body = {
       text,
+      plain_text,
     };
 
     dispatch(DiscussionActions.updateThreadPending());
