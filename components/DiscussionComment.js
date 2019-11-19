@@ -220,14 +220,15 @@ class CommentClass extends DiscussionComment {
     this.setState({ windowPostion: window.pageYOffset });
   };
 
-  updateText = async (text) => {
+  updateText = async (text, plain_text) => {
     this.props.dispatch(DiscussionActions.updateCommentPending());
     await this.props.dispatch(
       DiscussionActions.updateComment(
         this.state.paperId,
         this.state.discussionThreadId,
         this.state.id,
-        text
+        text,
+        plain_text
       )
     );
     return this.updateEditor(this.props.updatedComment);
@@ -350,7 +351,7 @@ class ReplyClass extends DiscussionComment {
     super(props);
   }
 
-  updateText = async (text) => {
+  updateText = async (text, plain_text) => {
     this.props.dispatch(DiscussionActions.updateReplyPending());
     await this.props.dispatch(
       DiscussionActions.updateReply(
@@ -358,7 +359,8 @@ class ReplyClass extends DiscussionComment {
         this.state.discussionThreadId,
         this.props.commentId,
         this.state.id,
-        text
+        text,
+        plain_text
       )
     );
 

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Ripples from "react-ripples";
+import Plain from "slate-plain-serializer";
 
 // Components
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
@@ -105,6 +106,7 @@ const DiscussionTab = (props) => {
       title: discussion.title,
       text: discussion.question.toJSON(),
       paper: paperId,
+      plain_text: Plain.serialize(discussion.question),
     };
 
     let config = await API.POST_CONFIG(param);
