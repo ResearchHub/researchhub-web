@@ -48,11 +48,20 @@ class SearchEntry extends React.Component {
    */
   handleClick = () => {
     let { indexName, result } = this.props;
+    let { id } = result;
+
     if (indexName === "author") {
-      let { id } = result;
       return Router.push(
         "/user/[authorId]/[tabName]",
         `/user/${id}/contributions`
+      );
+    } else if (indexName === "paper") {
+      return Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
+    } else if (indexName === "discussion_thread") {
+      let { paper } = result;
+      return Router.push(
+        "/paper/[paperId]/[tabName]/[discussionThreadId]",
+        `/paper/${paper}/discussion/${id}`
       );
     }
   };
@@ -251,7 +260,7 @@ class SearchEntry extends React.Component {
           <span className={css(styles.icon)}>{icons.chat}</span>
           <span className={css(styles.discussionCount)}>
             {indexName === "paper" ? (
-              <Fragment className={css(styles.discussion)}>
+              <Fragment>
                 <span className={css(styles.count)}>
                   {result.discussion_count}{" "}
                 </span>
@@ -262,7 +271,7 @@ class SearchEntry extends React.Component {
                   : "discussion"}
               </Fragment>
             ) : (
-              <Fragment className={css(styles.discussion)}>
+              <Fragment>
                 <span className={css(styles.count)}>
                   {result.commentCount}{" "}
                 </span>
