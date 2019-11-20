@@ -12,6 +12,8 @@ export const thread = (thread) => {
     isPublic: thread.is_public,
     score: thread.score,
     userVote: transformVote(thread.user_vote),
+    plainText: thread.plain_text,
+    paperTitle: thread.paper_title,
   };
 };
 

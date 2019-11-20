@@ -81,11 +81,16 @@ export default class Search extends Component {
   };
 
   renderSearchResults = () => {
+    let universityCount = 0;
     const results = this.state.results.map((result, index) => {
+      result.meta.index === "university" && universityCount++;
       return (
         <div
           key={index}
-          className={css(styles.searchResult)}
+          className={css(
+            styles.searchResult,
+            result.meta.index === "university" && styles.hide
+          )}
           onClick={() => {
             this.dropdownTimeout = setTimeout(
               this.setState({ showDropdown: false }),
@@ -98,7 +103,7 @@ export default class Search extends Component {
       );
     });
 
-    if (results.length === 0) {
+    if (results.length === 0 || universityCount === results.length) {
       return (
         <div className={css(styles.emptyResults)}>
           <h2 className={css(styles.emptyTitle)}>
@@ -127,10 +132,10 @@ export default class Search extends Component {
           return <SearchEntry indexName={indexName} result={data} />;
         }
       case "hub":
-        console.log("called-hub", result);
         return <HubSearchResult result={result} />;
-      // case "university":
-      //   return <UniversitySearchResult result={result} />;
+      case "university":
+        // return <UniversitySearchResult result={result} />;
+        return null;
       default:
         break;
     }
@@ -238,6 +243,7 @@ const styles = StyleSheet.create({
     padding: 16,
     boxSizing: "border-box",
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    minWidth: 400,
   },
   searchResult: {
     borderBottom: "1px solid rgb(235, 235, 235)",
@@ -255,5 +261,8 @@ const styles = StyleSheet.create({
   },
   searchResultPaper: {
     border: "none",
+  },
+  hide: {
+    display: "none",
   },
 });
