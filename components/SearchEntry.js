@@ -430,6 +430,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1200px)": {
       width: "calc(100% - 50px)",
       margin: 0,
+      paddingBottom: 25,
     },
   },
   right: {
