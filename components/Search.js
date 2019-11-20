@@ -132,7 +132,7 @@ export default class Search extends Component {
           return <SearchEntry indexName={indexName} result={data} />;
         }
       case "hub":
-        return <HubSearchResult result={result} />;
+      // return <HubSearchResult result={result} />;
       case "university":
         // return <UniversitySearchResult result={result} />;
         return null;
