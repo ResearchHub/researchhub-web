@@ -114,7 +114,8 @@ const PaperEntryCard = ({
             className={css(
               styles.publishDate,
               styles.text,
-              mobileStyles.publishDate
+              mobileStyles.publishDate,
+              !paper_publish_date && styles.hide
             )}
           >
             {paper_publish_date && convertDate()}
@@ -208,7 +209,13 @@ const PaperEntryCard = ({
             <div className={css(styles.title, styles.text)}>
               {title && title}
             </div>
-            <div className={css(styles.publishDate, styles.text)}>
+            <div
+              className={css(
+                styles.publishDate,
+                styles.text,
+                !paper_publish_date && styles.hide
+              )}
+            >
               {paper_publish_date && convertDate()}
             </div>
             <div
@@ -335,6 +342,7 @@ const mobileStyles = StyleSheet.create({
   bottomBar: {
     margin: "15px 0 15px 0",
     overflowX: "scroll",
+    paddingTop: 2,
   },
   discussionCount: {
     "@media only screen and (max-width: 416px)": {
@@ -382,6 +390,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     color: "#918F9B",
     marginTop: 10,
+    marginBottom: 15,
   },
   summary: {
     minWidth: "100%",
@@ -389,7 +398,7 @@ const styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     color: "#4e4c5f",
     fontSize: 16,
-    marginTop: 15,
+    marginBottom: 16,
   },
   text: {
     fontFamily: "Roboto",
@@ -403,7 +412,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     left: 0,
-    marginTop: 16,
+    // marginTop: 16,
     bottom: 10,
     width: "100%",
   },
@@ -461,7 +470,7 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: "none",
-    marginRight: 0,
+    margin: 0,
   },
   metaData: {
     width: "calc(100% - 48px)",
