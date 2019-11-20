@@ -15,7 +15,7 @@ import TextEditor from "./TextEditor/index";
 // Config
 import colors from "../config/themes/colors";
 import icons from "~/config/themes/icons";
-import { formatPublishedDate } from "~/config/utils";
+import { formatDateStandard } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 import { convertToEditorValue } from "~/config/utils";
 
@@ -35,6 +35,7 @@ class SearchEntry extends React.Component {
     this.state = {
       indexName: false,
       hidden: false,
+      activeFields: 1,
     };
   }
 
@@ -59,18 +60,23 @@ class SearchEntry extends React.Component {
   parseHighlightField = (highlight, key) => {
     let { indexName, result } = this.props;
     let textArr = highlight[key][0].split(" ");
-    console.log("textArr", textArr);
     let highlightedIndex = {};
 
     textArr.forEach((text, i, arr) => {
       if (text[0] === "<") {
         if (text.split("</em>").length > 1) {
-          let splitArr = text.slice(4).split("</em>");
-          console.log("splitArr", splitArr);
+          let splitArr = text
+            .slice(4)
+            .split("</em>")
+            .filter((el) => el !== "");
           let highlighted = splitArr[0];
-          let normal = splitArr[1];
           arr[i] = highlighted;
-          arr.splice(i + 1, 0, normal);
+
+          if (splitArr.length > 1) {
+            let normal = splitArr[1].slice(4);
+            textArr.splice(i + 1, 0, normal);
+            highlightedIndex[i + 1] = true;
+          }
         } else {
           arr[i] = text.slice(4, text.length - 5);
         }
@@ -78,7 +84,7 @@ class SearchEntry extends React.Component {
       }
     });
 
-    return textArr.map((text, i) => {
+    let transformedText = textArr.map((text, i) => {
       if (highlightedIndex[i]) {
         return (
           <span className={css(styles.highlight)}>
@@ -92,10 +98,15 @@ class SearchEntry extends React.Component {
         }`;
       }
     });
+
+    if (key === "tagline") {
+      transformedText.push("...");
+    }
+    return transformedText;
   };
 
   convertDate = (date) => {
-    return formatPublishedDate(transformDate(date));
+    return formatDateStandard(transformDate(date));
   };
 
   transformAuthors = () => {
@@ -104,14 +115,14 @@ class SearchEntry extends React.Component {
     if (result.meta.highlight.authors) {
       return (
         <div className={css(styles.authors)}>
-          {authors.length < 2 ? "Author: " : "Authors: "}
+          {"by "}
           {this.parseHighlightField(result.meta.highlight, "authors")}
         </div>
       );
     } else {
       return (
         <div className={css(styles.authors)}>
-          {authors.length < 2 ? "Author: " : "Authors: "}
+          {"by "}
           {authors.map((author, i) => {
             if (i !== authors.length - 1) {
               return `${author}, `;
@@ -149,22 +160,39 @@ class SearchEntry extends React.Component {
           </span>
         </Fragment>
       );
-    } else if (indexName === "paper" || indexName === "discussion_thread") {
-      let { meta, title } = result;
+    } else if (indexName === "paper") {
+      let { meta, title, authors } = result;
       let highlight = meta.highlight;
-      if (highlight && highlight.title) {
-        return this.parseHighlightField(highlight, "title");
-      } else {
-        return title;
-      }
+      return (
+        <span className={css(styles.paperTitle)}>
+          {highlight && highlight.title
+            ? this.parseHighlightField(highlight, "title")
+            : title}
+          {authors && authors.length > 0 ? (
+            this.transformAuthors()
+          ) : (
+            <div className={css(styles.authors)}>No attributed author</div>
+          )}
+        </span>
+      );
     } else if (indexName === "discussion_thread") {
-      let { title, meta } = result;
+      let { meta, title, paperTitle } = result;
       let highlight = meta.highlight;
-      if (highlight.title) {
-        return this.parseHighlightField(highlight, "title");
-      } else {
-        return title;
-      }
+      return (
+        <span className={css(styles.discTitle)}>
+          {highlight && highlight.title
+            ? this.parseHighlightField(highlight, "title")
+            : title}
+          {paperTitle && (
+            <div className={css(styles.publishDate, styles.paddedContainer)}>
+              <span className={css(styles.icon, styles.paperIcon)}>
+                {icons.file}
+              </span>{" "}
+              {paperTitle}
+            </div>
+          )}
+        </span>
+      );
     }
   };
 
@@ -172,89 +200,149 @@ class SearchEntry extends React.Component {
     let { indexName, result } = this.props;
     if (indexName === "author") {
       let { university } = result;
-      return <University university={university} />;
-    } else if (indexName === "paper") {
-      let { paper_publish_date } = result;
-      if (paper_publish_date) {
+      if (Object.keys(university).length) {
         return (
-          <span className={css(styles.publishDate)}>
-            {this.convertDate(paper_publish_date)}
+          <span className={css(styles.paddedContainer)}>
+            <University university={university} />
           </span>
         );
       }
+    } else if (indexName === "paper") {
+      let { tagline } = result;
+      let highlight = result.meta.highlight;
+      if (tagline) {
+        return (
+          <div className={css(styles.tagline)}>
+            {highlight && highlight.tagline
+              ? this.parseHighlightField(highlight, "tagline")
+              : tagline}
+          </div>
+        );
+      }
     } else if (indexName === "discussion_thread") {
-      // debugger;
-      // console.log(result);
-      // JSON.parse(result.text);
-      // TODO: convert the string returned in the backend to JSON
-      // return (
-      //   <div className={css(styles.discText)}>
-      //     {highlight && highlight.text
-      //       ? this.parseHighlightField(highlight, 'text')
-      //       : text
-      //     }
-      //   </div>
-      // )
+      let highlight = result.meta.highlight;
+      let { plainText } = result;
+      return (
+        <div className={css(styles.discText)}>
+          {highlight && highlight.plain_text
+            ? this.parseHighlightField(highlight, "plain_text")
+            : plainText}
+        </div>
+      );
     }
   };
 
   renderMetaDataTwo = () => {
     let { indexName, result } = this.props;
     if (indexName === "author") {
-      return "";
+      return;
     } else if (indexName === "paper") {
-      let { authors } = result;
-      return authors.length > 0 && this.transformAuthors();
     } else if (indexName === "discussion_thread") {
-      return "";
     }
   };
 
   renderCount = () => {
     let { indexName, result } = this.props;
-    console.log("called");
-    if (indexName !== "paper" || indexName !== "discussion_thread") {
-      return null;
-    } else {
+    if (indexName === "paper" || indexName === "discussion_thread") {
       let count =
         indexName === "paper" ? result.discussion_count : result.commentCount;
       return (
         <div className={css(styles.discussion)}>
           <span className={css(styles.icon)}>{icons.chat}</span>
-          <span className={css(styles.dicussionCount)}>
-            {indexName === "paper"
-              ? `${result.discussion_count} ${
-                  count > 1
-                    ? "discussions"
-                    : count === 0
-                    ? "discussions"
-                    : "discussion"
-                }`
-              : `${result.commentCount} ${
-                  count > 1 ? "comments" : count === 0 ? "comments" : "comment"
-                }`}
+          <span className={css(styles.discussionCount)}>
+            {indexName === "paper" ? (
+              <Fragment className={css(styles.discussion)}>
+                <span className={css(styles.count)}>
+                  {result.discussion_count}{" "}
+                </span>
+                {count > 1
+                  ? "discussions"
+                  : count === 0
+                  ? "discussions"
+                  : "discussion"}
+              </Fragment>
+            ) : (
+              <Fragment className={css(styles.discussion)}>
+                <span className={css(styles.count)}>
+                  {result.commentCount}{" "}
+                </span>
+                {count > 1 ? "comments" : count === 0 ? "comments" : "comment"}
+              </Fragment>
+            )}
           </span>
         </div>
+      );
+    } else {
+      return;
+    }
+  };
+
+  renderBulletPoints = () => {
+    let { indexName, result } = this.props;
+    if (indexName === "paper") {
+      let { hubs, paper_publish_date } = result;
+      return (
+        <Fragment>
+          <div className={css(styles.bullet)}>{this.renderCount()}</div>
+          <div className={css(styles.bullet)}>
+            <div className={css(styles.discussion)}>
+              <span className={css(styles.icon)}>{icons.hub}</span>
+              <span className={css(styles.discussionCount)}>
+                <span className={css(styles.count)}>
+                  {hubs && hubs.length}{" "}
+                </span>
+                hub{(hubs.length > 1 || hubs.length === 0) && "s"}
+              </span>
+            </div>
+          </div>
+          <div className={css(styles.bullet)}>
+            <div className={css(styles.discussion)}>
+              <span className={css(styles.icon)}>
+                <i className={"fad fa-clock"} />
+              </span>
+              <span className={css(styles.discussionCount)}>
+                {paper_publish_date
+                  ? this.convertDate(paper_publish_date)
+                  : "No publish date"}
+              </span>
+            </div>
+          </div>
+        </Fragment>
+      );
+    } else if (indexName === "discussion_thread") {
+      let { createdBy, createdDate } = result;
+      let { firstName, lastName } = createdBy;
+      return (
+        <Fragment>
+          <div className={css(styles.bullet)}>{this.renderCount()}</div>
+          <div className={css(styles.bullet)}>
+            <div className={css(styles.discussion)}>
+              <span className={css(styles.icon)}>{icons.simpleUser}</span>
+              <span className={css(styles.discussionCount)}>
+                {`${firstName} ${lastName}`}
+              </span>
+            </div>
+          </div>
+          <div className={css(styles.bullet)}>
+            <div className={css(styles.discussion)}>
+              <span className={css(styles.icon)}>
+                <i className={"fad fa-clock"} />
+              </span>
+              <span className={css(styles.discussionCount)}>
+                {createdDate && this.convertDate(createdDate)}
+              </span>
+            </div>
+          </div>
+        </Fragment>
       );
     }
   };
 
   render() {
     let { indexName, result } = this.props;
-    let {
-      authors,
-      discussion,
-      doi,
-      hubs, // array
-      id,
-      meta, // doc_type, highlight (title: array ), id, index, score
-      paper_publish_date,
-      publication_type,
-      score,
-      title,
-      url,
-    } = this.props.result;
-
+    let { score, tagline, plainText } = result;
+    let isPaper = indexName === "paper";
+    let isDisc = indexName === "discussion_thread";
     return (
       <div className={css(styles.searchEntryCard)} onClick={this.handleClick}>
         <div
@@ -284,7 +372,14 @@ class SearchEntry extends React.Component {
             <div className={css(styles.voteDisplay)}>{score && score}</div>
           )}
         </div>
-        <div className={css(styles.column, styles.right)}>
+        <div
+          className={css(
+            styles.column,
+            styles.mid,
+            isPaper && tagline && styles.spaced,
+            isDisc && plainText && styles.spaced
+          )}
+        >
           <div className={css(styles.mainText)}>{this.renderMainText()}</div>
           <div className={css(styles.metaDataOne)}>
             {this.renderMetaDataOne()}
@@ -296,7 +391,9 @@ class SearchEntry extends React.Component {
         <div className={css(styles.indexTag)}>
           {indexName === "discussion_thread" ? "disc." : indexName}
         </div>
-        <div className={css(styles.countTag)}>{this.renderCount()}</div>
+        <div className={css(styles.column, styles.right)}>
+          {this.renderBulletPoints()}
+        </div>
       </div>
     );
   }
@@ -307,9 +404,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    minHeight: 100,
+    height: 130,
     width: "calc(100% - 40px)",
-    padding: 20,
+    padding: "15px 20px",
     position: "relative",
     cursor: "pointer",
     ":hover": {
@@ -321,17 +418,32 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
+    height: "calc(100% - 30px)",
   },
   left: {
     marginRight: 20,
   },
+  mid: {
+    justifyContent: "center",
+    width: "calc(calc(100% - 50px) * 0.7)",
+    marginRight: 20,
+    "@media only screen and (max-width: 1200px)": {
+      width: "calc(100% - 50px)",
+      margin: 0,
+    },
+  },
   right: {
     justifyContent: "space-between",
-    height: "100%",
+    alignItems: "flex-start",
+    width: "calc(calc(100% - 50px) * 0.3)",
+    "@media only screen and (max-width: 1200px)": {
+      display: "none",
+    },
   },
-  avatarDisplay: {
-    height: "100%",
+  spaced: {
+    justifyContent: "space-between",
   },
+  avatarDisplay: {},
   voteDisplay: {
     color: "rgb(100, 196, 143)",
     fontWeight: "bold",
@@ -344,27 +456,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   highlight: {
-    // backgroundColor: colors.LIGHT_YELLOW(1),
     backgroundColor: "#f6e653",
-    padding: "5px 1px 5px 1px",
+    padding: "2px 1px 2px 1px",
   },
   mainText: {
-    fontSize: 22,
+    fontSize: 20,
     color: "rgb(35, 32, 56)",
-    fontWeight: 400,
-    padding: "15px 0 15px 0",
+    fontWeight: "500",
+    flexWrap: "wrap",
+    lineHeight: 1.6,
+    "@media only screen and (max-width: 1080px)": {
+      fontSize: 16,
+    },
   },
   metaDataOne: {
     fontSize: 16,
-    paddingBottom: 15,
+    flexWrap: "wrap",
+    display: "flex",
   },
-  metDateTwo: {
-    paddingBottom: 15,
+  paddedContainer: {},
+  metaDataTwo: {
+    fontSize: 16,
+    flexWrap: "wrap",
+    display: "flex",
   },
   avatar: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
+    height: 60,
+    width: 60,
+    borderRadius: 30,
     objectFit: "contain",
   },
   defaultAvatar: {
@@ -375,7 +494,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     textTransform: "uppercase",
     right: 20,
-    bottom: 20,
+    bottom: 10,
     color: colors.BLUE(1),
     fontSize: 14,
   },
@@ -385,29 +504,42 @@ const styles = StyleSheet.create({
     color: "#918F9B",
   },
   authors: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 400,
     color: "#918F9B",
   },
   discText: {
-    marginBottom: 15,
+    fontSize: 12,
+  },
+  tagline: {
+    fontSize: 12,
   },
   icon: {
-    color: "#C1C1CF",
+    minWidth: 20,
+    maxWidth: 20,
+    color: "#C1C1C1",
+    fontSize: 14,
   },
-  countTag: {
-    position: "absolute",
-    top: 20,
-    right: 20,
+  paperIcon: {
+    color: colors.BLUE(1),
+    marginRight: 5,
   },
+  bullet: {},
   discussion: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
+    paddingTop: 5,
   },
-  dicussionCount: {
-    color: "#918f9b",
+  discussionCount: {
+    color: colors.BLACK(1),
     marginLeft: 7,
+    fontSize: 14,
+    paddingBottom: 2,
+  },
+  count: {
+    color: colors.BLACK(1),
+    fontWeight: "bold",
   },
 });
 
