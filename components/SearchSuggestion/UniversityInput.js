@@ -28,7 +28,7 @@ class UniversityInput extends React.Component {
       {
         [id]: value,
         showDropDown: value !== "",
-        searching: this.state.value === "",
+        searching: this.state.search === "",
       },
       async () => {
         if (value === "") return;
@@ -89,6 +89,7 @@ class UniversityInput extends React.Component {
   calcHeight = () => {
     let { universities } = this.state;
     switch (universities.length) {
+      case 0:
       case 1:
         return styles.smallHeight;
       case 2:
@@ -128,6 +129,7 @@ class UniversityInput extends React.Component {
             placeholder={"Search university"}
             containerStyle={styles.removeMargin}
             type="search"
+            autocomplete="off"
           />
           <div
             className={css(
@@ -237,9 +239,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     width: "calc(95% - 40px)",
-    padding: "15px 20px",
-    minHeight: 45,
-    maxHeight: 45,
+    padding: "10px 20px",
+    minHeight: 55,
+    maxHeight: 55,
     border: "1px solid #FAFAFA",
     backgroundColor: "#f7f7fb",
     cursor: "pointer",
@@ -250,11 +252,23 @@ const styles = StyleSheet.create({
   },
   uniName: {
     fontSize: 18,
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 16,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   uniMeta: {
     fontSize: 14,
     fontWeight: 400,
     color: "#918F9B",
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   emptyMessage: {
     height: "100%",
