@@ -439,7 +439,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1200px)": {
       width: "calc(100% - 50px)",
       margin: 0,
-      paddingBottom: 25,
     },
   },
   right: {
@@ -452,6 +451,11 @@ const styles = StyleSheet.create({
   },
   spaced: {
     justifyContent: "space-between",
+    "@media only screen and (max-width: 1200px)": {
+      width: "calc(100% - 50px)",
+      margin: 0,
+      paddingBottom: 25,
+    },
   },
   avatarDisplay: {},
   voteDisplay: {
@@ -507,6 +511,9 @@ const styles = StyleSheet.create({
     bottom: 10,
     color: colors.BLUE(1),
     fontSize: 14,
+    "@media only screen and (max-width: 1080px)": {
+      fontSize: 12,
+    },
   },
   publishDate: {
     fontSize: 14,

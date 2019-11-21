@@ -11,6 +11,7 @@ import { ModalActions } from "../../redux/modals";
 // Component
 import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
+import UniversityInput from "../SearchSuggestion/UniversityInput";
 
 class AddAuthorModal extends React.Component {
   constructor(props) {
@@ -18,10 +19,10 @@ class AddAuthorModal extends React.Component {
     this.initialState = {
       first_name: "",
       last_name: "",
-      // university: "",
+      university_id: "",
       email: "",
       facebook: "",
-      linked_in: "",
+      linkedin: "",
       twitter: "",
       showLinks: false,
       mobileView: false,
@@ -75,6 +76,10 @@ class AddAuthorModal extends React.Component {
 
   handleInputChange = (id, value) => {
     this.setState({ [id]: value });
+  };
+
+  handleUniversity = (university) => {
+    this.setState({ university_id: university.id });
   };
 
   toggleShowLinks = () => {
@@ -175,14 +180,14 @@ class AddAuthorModal extends React.Component {
               containerStyle={styles.mobileLastName}
               labelStyle={styles.labelStyle}
             />
-            {/* <FormInput
+            <UniversityInput
               label={"University Affiliation"}
-              value={university}
-              placeholder={"Enter university name"}
-              id={"university"}
-              onChange={this.handleInputChange}
-              containerStyle={styles.customMargins}
-            /> */}
+              onChange={this.handleAuthor}
+              inputStyle={styles.inputStyle}
+              labelStyle={styles.labelStyle}
+              containerStyle={styles.universityContainer}
+              handleUserClick={this.handleUniversity}
+            />
             <FormInput
               label={"Email Address"}
               value={email}
@@ -457,6 +462,20 @@ const styles = StyleSheet.create({
       width: 270,
     },
   },
+  universityContainer: {
+    marginTop: 30,
+    "@media only screen and (max-width: 665px)": {
+      width: 360,
+      marginTop: 0,
+      marginBottom: 15,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
   socialMediaContainer: {
     display: "flex",
     flexDirection: "column",
@@ -536,12 +555,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   reveal: {
-    height: 170,
+    height: 175,
   },
 });
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
+  university: state.universities,
 });
 
 const mapDispatchToProps = (dispatch) => ({

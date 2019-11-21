@@ -11,6 +11,7 @@ import PermissionNotification from "../components/PermissionNotification";
 
 import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
+import { UniversityActions } from "../redux/universities";
 import PermissionActions from "../redux/permission";
 
 class Base extends React.Component {
@@ -20,11 +21,13 @@ class Base extends React.Component {
       fetchPermissionsPending,
       getHubs,
       getUser,
+      getUniversities,
       getUserBannerPreference,
     } = this.props;
 
     getUser();
     getHubs();
+    getUniversities();
     getUserBannerPreference();
     fetchPermissionsPending();
     await fetchPermissions();
@@ -62,6 +65,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getHubs: HubActions.getHubs,
+  getUniversities: UniversityActions.getUniversities,
   getUserBannerPreference: AuthActions.getUserBannerPreference,
   fetchPermissions: PermissionActions.fetchPermissions,
   fetchPermissionsPending: PermissionActions.fetchPermissionsPending,
