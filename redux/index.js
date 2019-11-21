@@ -9,6 +9,7 @@ import voteReducer from "./vote/reducer";
 import messageReducer from "./message";
 import authorReducer from "./author/reducer";
 import hubReducer from "./hub";
+import universityReducer from "./universities";
 
 export default combineReducers({
   modals: modalReducer,
@@ -20,4 +21,5 @@ export default combineReducers({
   vote: voteReducer,
   author: authorReducer,
   hubs: hubReducer,
+  universities: universityReducer,
 });
