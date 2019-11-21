@@ -106,6 +106,7 @@ const Navbar = (props) => {
       if (tab.label === "Help") {
         return (
           <div
+            key={index}
             className={css(
               styles.tab,
               index === 0 && styles.firstTab,
