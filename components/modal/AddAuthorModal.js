@@ -19,7 +19,7 @@ class AddAuthorModal extends React.Component {
     this.initialState = {
       first_name: "",
       last_name: "",
-      university_id: "",
+      university: "",
       email: "",
       facebook: "",
       linkedin: "",
@@ -79,7 +79,7 @@ class AddAuthorModal extends React.Component {
   };
 
   handleUniversity = (university) => {
-    this.setState({ university_id: university.id });
+    this.setState({ university: university.id });
   };
 
   toggleShowLinks = () => {
