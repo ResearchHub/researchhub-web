@@ -4,6 +4,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import moment from "moment";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
+import Link from "next/link";
 
 // Component
 import HubsList from "~/components/Hubs/HubsList";
@@ -322,7 +323,9 @@ class HubPage extends React.Component {
             <div className={css(styles.subtext, styles.text)}>
               We're a community seeking to improve prioritization,
               collaboration, reproducability, and funding of scientic research.{" "}
-              <span className={css(styles.readMore)}>Read more</span>
+              <Link className={css(styles.readMore)} href={"/about"}>
+                Read more
+              </Link>
             </div>
             <span className={css(styles.googleLogin)}>
               {!auth.isLoggedIn && (
@@ -537,6 +540,7 @@ var styles = StyleSheet.create({
   readMore: {
     cursor: "pointer",
     textDecoration: "underline",
+    color: "#FFF",
     ":hover": {
       fontWeight: 400,
     },
