@@ -406,7 +406,7 @@ const AuthorPage = (props) => {
         <div className={css(styles.profileContainer)}>
           <div
             className={css(allowEdit && styles.avatarContainer)}
-            onClick={allowEdit && openAvatarModal}
+            onClick={(allowEdit && openAvatarModal) || undefined}
             onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
             onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
           >
