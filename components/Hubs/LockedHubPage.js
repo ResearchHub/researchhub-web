@@ -151,6 +151,11 @@ class LockedHubPage extends React.Component {
   render() {
     let { progress, joined, transition, reveal } = this.state;
 
+    let hubId = this.props.hub.id
+      ? this.props.hub.id
+      : this.props.hubs.currentHub.id
+      ? this.props.hubs.currentHub.id
+      : null;
     return (
       <div className={css(styles.backgroundOverlay)}>
         <div className={css(styles.contentContainer)}>
@@ -187,7 +192,7 @@ class LockedHubPage extends React.Component {
                 isWhite={true}
                 label={"Invite People"}
                 customButtonStyle={styles.button}
-                onClick={() => this.props.openInviteToHubModal(true)}
+                onClick={() => this.props.openInviteToHubModal(true, hubId)}
               />
               <Button
                 label={joined ? "Leave Hub" : "Join Hub"}
