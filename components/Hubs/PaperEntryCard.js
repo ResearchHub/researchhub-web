@@ -383,15 +383,13 @@ const styles = StyleSheet.create({
     maxWidth: "95%",
     fontSize: 22,
     fontWeight: 500,
-    textOverflow: "ellipsis",
-    maxHeight: 72,
+    marginBottom: 10,
   },
   publishDate: {
     maxWidth: "100%",
     fontSize: 14,
     fontWeight: 400,
     color: "#918F9B",
-    marginTop: 10,
     marginBottom: 15,
   },
   summary: {
