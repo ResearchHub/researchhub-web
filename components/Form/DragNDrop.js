@@ -4,6 +4,8 @@ import { StyleSheet, css } from "aphrodite";
 
 // Config
 import colors from "../../config/themes/colors";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 // Component
 import FormInput from "./FormInput";
@@ -13,9 +15,16 @@ import PaperEntry from "../SearchSuggestion/PaperEntry";
 class DragNDrop extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.initialState = {
+      pending: false,
+      pdfUrl: "",
+      validUrl: false,
+      showThumbnail: false,
       dragOver: false,
       isPDF: true,
+    };
+    this.state = {
+      ...this.initialState,
       style: {},
     };
   }
@@ -33,6 +42,33 @@ class DragNDrop extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("resize", this.getStyleByDimensions);
   }
+
+  handleUrlPaste = (id, value) => {
+    this.setState({ pdfUrl: value, pending: true }, async () => {
+      let param = {
+        url: value,
+      };
+      await fetch(API.CHECKURL, API.POST_CONFIG(param))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          let { found_file } = res;
+          this.setState({
+            pending: false,
+            validUrl: found_file,
+          });
+          setTimeout(() => {
+            found_file && this.props.handleUrl && this.props.handleUrl(value);
+          }, 300);
+        })
+        .catch((err) => {
+          this.setState({
+            pending: false,
+            validUrl: false,
+          });
+        });
+    });
+  };
 
   handleDrop = async (acceptedFiles) => {
     await this.setState({ dragOver: false });
@@ -68,6 +104,9 @@ class DragNDrop extends React.Component {
   };
 
   onRemove = () => {
+    this.setState({
+      ...this.initialState,
+    });
     this.props.reset && this.props.reset();
   };
 
@@ -85,7 +124,6 @@ class DragNDrop extends React.Component {
       border: `0.5px dashed ${
         error || !this.state.isPDF ? colors.RED(1) : colors.BLUE(1)
       }`,
-      transition: "all ease-in-out 0.3s",
     };
 
     if (window.innerWidth < 321) {
@@ -128,6 +166,7 @@ class DragNDrop extends React.Component {
                   file={uploadedPaper}
                   onRemove={this.onRemove}
                   mobileStyle={styles.mobileStyle}
+                  url={this.props.url ? this.props.url : this.state.validUrl}
                 />
               ) : (
                 <div
@@ -159,17 +198,40 @@ class DragNDrop extends React.Component {
             </section>
           )}
         </Dropzone>
-        {pasteUrl && !(window.innerWidth < 321) && (
+        {pasteUrl && !uploadFinish && (
           <p className={css(styles.pasteInstruction)}>
             or paste a url for the paper
           </p>
         )}
-        {pasteUrl && !(window.innerWidth < 321) && (
+        {pasteUrl && !uploadFinish && (
           <FormInput
             placeholder={"Paste a url for the paper"}
             containerStyle={styles.noMargin}
             inputStyle={styles.urlInput}
-            disabled={true}
+            value={this.state.pdfUrl}
+            onChange={this.handleUrlPaste}
+            inlineNodeRight={
+              this.state.pdfUrl !== "" ? (
+                this.state.pending ? (
+                  <span className={css(styles.successIcon)}>
+                    <Loader loading={true} size={23} />
+                  </span>
+                ) : (
+                  <span
+                    className={css(
+                      styles.successIcon,
+                      !this.state.validUrl && styles.errorIcon
+                    )}
+                  >
+                    {this.state.validUrl ? (
+                      <i className="fal fa-check-circle" />
+                    ) : (
+                      <i className="fal fa-times-circle" />
+                    )}
+                  </span>
+                )
+              ) : null
+            }
           />
         )}
       </div>
@@ -276,6 +338,18 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       width: 238,
     },
+  },
+  successIcon: {
+    color: colors.GREEN(1),
+    fontSize: 28,
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FBFBFB",
+  },
+  errorIcon: {
+    color: colors.RED(1),
   },
 });
 
