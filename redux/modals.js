@@ -62,12 +62,13 @@ export const ModalActions = {
       });
     };
   },
-  openInviteToHubModal: (openModal) => {
+  openInviteToHubModal: (openModal, hubId) => {
     return (dispatch) => {
       return dispatch({
         type: ModalConstants.INVITE_TO_HUB_MODAL_TOGGLE,
         payload: {
           openInviteToHubModal: openModal,
+          hubId,
         },
       });
     };
