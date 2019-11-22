@@ -15,6 +15,8 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "~/config/themes/colors";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 class InviteToHubModal extends React.Component {
   constructor(props) {
@@ -99,6 +101,18 @@ class InviteToHubModal extends React.Component {
     document.body.style.overflow = "scroll";
   };
 
+  sendInvites = () => {
+    let { modals } = this.props;
+    fetch(
+      API.INVITE_TO_HUB({ hubId: modals.hubId }),
+      API.POST_CONFIG({ emails: this.state.emails })
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        // returns response with key email_sent, true if successful, false if not successful without erroring
+      });
+  };
   render() {
     let { modals, auth } = this.props;
     let { mobileView } = this.state;
@@ -141,6 +155,7 @@ class InviteToHubModal extends React.Component {
           <Button
             label={"Send Invites"}
             customButtonStyle={styles.customButtonStyle}
+            onClick={this.sendInvites}
           />
           <FormInput
             getRef={this.formInputRef}
