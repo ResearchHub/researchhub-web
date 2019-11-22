@@ -26,6 +26,7 @@ export default class Search extends Component {
     showDropdown: this.props.showDropdown,
     finished: true,
     results: [],
+    query: "",
   };
 
   componentDidMount() {
@@ -123,13 +124,25 @@ export default class Search extends Component {
     switch (indexName) {
       case "author":
       case "paper":
-        return <SearchEntry indexName={indexName} result={result} />;
+        return (
+          <SearchEntry
+            indexName={indexName}
+            result={result}
+            clearSearch={this.clearQuery}
+          />
+        );
       case "discussion_thread":
         let data = thread(result);
         if (data.isPublic) {
           data = this.populateThreadData(data, result);
           data.meta = result.meta;
-          return <SearchEntry indexName={indexName} result={data} />;
+          return (
+            <SearchEntry
+              indexName={indexName}
+              result={data}
+              clearSearch={this.clearQuery}
+            />
+          );
         }
       case "hub":
       // return <HubSearchResult result={result} />;
@@ -160,6 +173,10 @@ export default class Search extends Component {
     }
   };
 
+  clearQuery = () => {
+    this.setState({ query: "" });
+  };
+
   render() {
     return (
       <div ref={this.ref} className={css(styles.search)}>
@@ -167,6 +184,7 @@ export default class Search extends Component {
           className={css(styles.searchbar)}
           placeholder={"Search..."}
           onChange={this.onSearchChange}
+          value={this.state.query}
         />
         <i className={css(styles.searchIcon) + " far fa-search"}></i>
         {this.state.showDropdown && (

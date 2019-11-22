@@ -47,9 +47,9 @@ class SearchEntry extends React.Component {
    * We want to take the user to the appropriate page when they click a search result
    */
   handleClick = () => {
-    let { indexName, result } = this.props;
+    let { indexName, result, clearSearch } = this.props;
     let { id } = result;
-
+    clearSearch && clearSearch();
     if (indexName === "author") {
       return Router.push(
         "/user/[authorId]/[tabName]",
