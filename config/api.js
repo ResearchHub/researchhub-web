@@ -276,8 +276,16 @@ const routes = (BASE_URL) => {
 
       return url + "downvote/";
     },
-
     CHECKURL: BASE_URL + "paper/check_url/",
+    UNIVERSITY: ({ search }) => {
+      let url = BASE_URL + `university/`;
+
+      if (search) {
+        url += `?search=${search}`;
+      }
+
+      return url;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

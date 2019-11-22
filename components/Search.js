@@ -9,6 +9,7 @@ import {
 } from "./SearchResult";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
+import SearchEntry from "./SearchEntry";
 
 // Config
 import { thread } from "~/redux/discussion/shims";
@@ -25,6 +26,7 @@ export default class Search extends Component {
     showDropdown: this.props.showDropdown,
     finished: true,
     results: [],
+    query: "",
   };
 
   componentDidMount() {
@@ -80,11 +82,16 @@ export default class Search extends Component {
   };
 
   renderSearchResults = () => {
+    let universityCount = 0;
     const results = this.state.results.map((result, index) => {
+      result.meta.index === "university" && universityCount++;
       return (
         <div
           key={index}
-          className={css(styles.searchResult)}
+          className={css(
+            styles.searchResult,
+            result.meta.index === "university" && styles.hide
+          )}
           onClick={() => {
             this.dropdownTimeout = setTimeout(
               this.setState({ showDropdown: false }),
@@ -97,7 +104,7 @@ export default class Search extends Component {
       );
     });
 
-    if (results.length === 0) {
+    if (results.length === 0 || universityCount === results.length) {
       return (
         <div className={css(styles.emptyResults)}>
           <h2 className={css(styles.emptyTitle)}>
@@ -112,45 +119,36 @@ export default class Search extends Component {
   };
 
   getResultComponent = (result) => {
-    console.log("result", result);
     const indexName = result.meta.index;
 
     switch (indexName) {
       case "author":
-        return null;
-      // return (
-      //   <AuthorSearchResult
-      //     result={result}
-      //     firstName={result.first_name}
-      //     lastName={result.last_name}
-      //   />
-      // );
+      case "paper":
+        return (
+          <SearchEntry
+            indexName={indexName}
+            result={result}
+            clearSearch={this.clearQuery}
+          />
+        );
       case "discussion_thread":
         let data = thread(result);
         if (data.isPublic) {
           data = this.populateThreadData(data, result);
+          data.meta = result.meta;
           return (
-            <DiscussionThreadCard
-              path={`/paper/${data.paper}/discussion/${data.id}`}
-              data={data}
-              searchResult={true}
+            <SearchEntry
+              indexName={indexName}
+              result={data}
+              clearSearch={this.clearQuery}
             />
           );
         }
       case "hub":
-        return null;
       // return <HubSearchResult result={result} />;
-      case "paper":
-        return (
-          <PaperEntryCard
-            style={styles.searchResultPaper}
-            paper={result}
-            discussionCount={0}
-            searchResult={true}
-          />
-        );
       case "university":
-        return <UniversitySearchResult result={result} />;
+        // return <UniversitySearchResult result={result} />;
+        return null;
       default:
         break;
     }
@@ -175,6 +173,10 @@ export default class Search extends Component {
     }
   };
 
+  clearQuery = () => {
+    this.setState({ query: "" });
+  };
+
   render() {
     return (
       <div ref={this.ref} className={css(styles.search)}>
@@ -182,6 +184,7 @@ export default class Search extends Component {
           className={css(styles.searchbar)}
           placeholder={"Search..."}
           onChange={this.onSearchChange}
+          value={this.state.query}
         />
         <i className={css(styles.searchIcon) + " far fa-search"}></i>
         {this.state.showDropdown && (
@@ -226,6 +229,17 @@ const styles = StyleSheet.create({
     outline: "none",
     fontSize: 16,
     position: "relative",
+    cursor: "pointer",
+    ":hover": {
+      borderColor: "#B3B3B3",
+    },
+    ":focus": {
+      borderColor: "#3f85f7",
+      ":hover": {
+        boxShadow: "0px 0px 1px 1px #3f85f7",
+        cursor: "text",
+      },
+    },
   },
   searchIcon: {
     position: "absolute",
@@ -247,6 +261,7 @@ const styles = StyleSheet.create({
     padding: 16,
     boxSizing: "border-box",
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    minWidth: 400,
   },
   searchResult: {
     borderBottom: "1px solid rgb(235, 235, 235)",
@@ -264,5 +279,8 @@ const styles = StyleSheet.create({
   },
   searchResultPaper: {
     border: "none",
+  },
+  hide: {
+    display: "none",
   },
 });
