@@ -15,6 +15,8 @@ const icons = {
   addPaper: <i className="fad fa-file-upload"></i>,
   signOut: <i className="fad fa-sign-out"></i>,
   user: <i className="fad fa-user-circle"></i>,
+  simpleUser: <i className="fad fa-user" />,
+  file: <i className="fad fa-file-alt" />,
 };
 
 export const voteWidgetIcons = {
