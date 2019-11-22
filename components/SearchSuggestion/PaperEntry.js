@@ -16,10 +16,37 @@ const PaperEntry = ({
   onRemove,
   closeModal,
   mobileStyle,
+  url,
 }) => {
   if (fileUpload) {
     let name = "-";
     let fileSize = "-";
+
+    if (typeof file === "string") {
+      return (
+        <div
+          className={css(
+            styles.entry,
+            styles.fileUpload,
+            mobileStyle && mobileStyle
+          )}
+          onClick={() => onClick && onClick(index)}
+        >
+          <img src={"/static/icons/pdf.png"} className={css(styles.pdfIcon)} />
+          <div className={css(styles.fileDataContainer)}>
+            <div className={css(styles.fileName, styles.text)}>
+              {file && file}
+            </div>
+            <div className={css(styles.fileSize, styles.text)}>Source: URL</div>
+          </div>
+          <img
+            src={"/static/icons/delete.png"}
+            className={css(styles.deleteIcon)}
+            onClick={onRemove && onRemove}
+          />
+        </div>
+      );
+    }
 
     if (file && Object.keys(file).length > 0) {
       name = file.name;
@@ -41,7 +68,7 @@ const PaperEntry = ({
             {name && name}
           </div>
           <div className={css(styles.fileSize, styles.text)}>
-            {fileSize && `${fileSize} MB`}
+            {url ? "Source: URL" : fileSize && `${fileSize} MB`}
           </div>
         </div>
         <img

@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     color: "#232038",
     highlight: "none",
     outline: "none",
-    cursor: "pointer",
+    cursor: "default",
     ":hover": {
       borderColor: "#B3B3B3",
     },
