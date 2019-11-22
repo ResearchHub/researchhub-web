@@ -59,7 +59,7 @@ class HubsList extends React.Component {
       let { name, id } = hub;
       if (name !== this.props.exclude) {
         return (
-          <Fragment>
+          <Fragment key={`${id}-${i}`}>
             <Ripples onClick={() => this.handleClick(hub)}>
               <div key={`${id}-${i}`} className={css(styles.hubEntry)}>
                 {name}
