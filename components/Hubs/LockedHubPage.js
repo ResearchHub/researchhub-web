@@ -82,12 +82,43 @@ class LockedHubPage extends React.Component {
   }
 
   hubAction = async () => {
+    let didPromptLogin = this.promptLogin();
+
+    if (didPromptLogin) {
+      return null;
+    }
+
     this.props.showMessage({ load: true, show: true });
     if (this.state.joined) {
       this.leaveHub();
     } else {
       this.joinHub();
     }
+  };
+
+  openInviteToHubModal = () => {
+    let hubId = this.props.hub.id
+      ? this.props.hub.id
+      : this.props.hubs.currentHub.id
+      ? this.props.hubs.currentHub.id
+      : null;
+
+    let didPromptLogin = this.promptLogin();
+
+    if (didPromptLogin) {
+      return null;
+    }
+
+    this.props.openInviteToHubModal(true, hubId);
+  };
+
+  promptLogin = () => {
+    let { auth, openLoginModal } = this.props;
+    if (!auth.isLoggedIn) {
+      openLoginModal(true);
+      return true;
+    }
+    return false;
   };
 
   leaveHub = () => {
@@ -150,12 +181,6 @@ class LockedHubPage extends React.Component {
 
   render() {
     let { progress, joined, transition, reveal } = this.state;
-
-    let hubId = this.props.hub.id
-      ? this.props.hub.id
-      : this.props.hubs.currentHub.id
-      ? this.props.hubs.currentHub.id
-      : null;
     return (
       <div className={css(styles.backgroundOverlay)}>
         <div className={css(styles.contentContainer)}>
@@ -192,7 +217,7 @@ class LockedHubPage extends React.Component {
                 isWhite={true}
                 label={"Invite People"}
                 customButtonStyle={styles.button}
-                onClick={() => this.props.openInviteToHubModal(true, hubId)}
+                onClick={this.openInviteToHubModal}
               />
               <Button
                 label={joined ? "Leave Hub" : "Join Hub"}
@@ -430,12 +455,14 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   message: state.message,
   hubs: state.hubs,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
   openInviteToHubModal: ModalActions.openInviteToHubModal,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
+  openLoginModal: ModalActions.openLoginModal,
 };
 
 export default connect(

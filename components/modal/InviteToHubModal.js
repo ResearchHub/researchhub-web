@@ -12,6 +12,7 @@ import AuthorInput from "~/components/SearchSuggestion/AuthorInput";
 // Redux
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
+import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -102,7 +103,7 @@ class InviteToHubModal extends React.Component {
   };
 
   sendInvites = () => {
-    let { modals } = this.props;
+    let { modals, showMessage, setMessage } = this.props;
     fetch(
       API.INVITE_TO_HUB({ hubId: modals.hubId }),
       API.POST_CONFIG({ emails: this.state.emails })
@@ -110,7 +111,14 @@ class InviteToHubModal extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        // returns response with key email_sent, true if successful, false if not successful without erroring
+        if (resp.email_sent) {
+          setMessage("Invites Sent!");
+          showMessage({ show: true });
+          this.closeModal();
+        } else {
+          setMessage("Invites Failed to Send!");
+          showMessage({ show: true, error: true });
+        }
       });
   };
   render() {
@@ -389,6 +397,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   openInviteToHubModal: ModalActions.openInviteToHubModal,
   getUser: AuthActions.getUser,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
