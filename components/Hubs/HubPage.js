@@ -358,6 +358,7 @@ class HubPage extends React.Component {
                   containerStyle={styles.dropDown}
                   inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
                   onChange={(id, option) => this.onFilterSelect(option, id)}
+                  isSearchable={false}
                 />
                 <FormSelect
                   id={"scope"}
@@ -366,6 +367,7 @@ class HubPage extends React.Component {
                   containerStyle={styles.dropDown}
                   inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
                   onChange={(id, option) => this.onFilterSelect(option, id)}
+                  isSearchable={false}
                 />
               </div>
             </div>
