@@ -108,7 +108,7 @@ class FormSelect extends React.Component {
           value={value}
           required={required ? required : "false"}
           isMulti={isMulti}
-          isSearchable={true}
+          isSearchable={isSearchable === null ? true : isSearchable}
           isDisabled={isDisabled}
         />
       </div>
