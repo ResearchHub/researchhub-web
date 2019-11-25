@@ -239,6 +239,7 @@ class Index extends React.Component {
               className={css(styles.bannerOverlay)}
             />
             <div className={css(styles.row, styles.pointCardList)}>
+              <div className={css(styles.frontSpace)} />
               {points.map((point, i) => {
                 return this.renderItems(point, i);
               })}
@@ -781,9 +782,9 @@ const styles = StyleSheet.create({
     zIndex: 3,
     "@media only screen and (max-width: 415px)": {
       padding: "20px 25px 20px 25px",
-      width: 245,
-      minWidth: 245,
-      maxWidth: 245,
+      width: 230,
+      minWidth: 230,
+      maxWidth: 230,
     },
   },
   itemIcon: {
@@ -827,9 +828,9 @@ const styles = StyleSheet.create({
     },
   },
   frontSpace: {
-    width: 290,
-    minWidth: 290,
-    maxWidth: 290,
+    width: 30,
+    minWidth: 30,
+    maxWidth: 30,
     height: "100%",
     "@media only screen and (max-width: 1024px)": {
       width: 150,
@@ -837,14 +838,14 @@ const styles = StyleSheet.create({
       maxWidth: 150,
     },
     "@media only screen and (max-width: 415px)": {
-      width: 125,
-      minWidth: 125,
-      maxWidth: 125,
+      width: 135,
+      minWidth: 135,
+      maxWidth: 135,
     },
     "@media only screen and (max-width: 320px)": {
-      width: 130,
-      minWidth: 130,
-      maxWidth: 130,
+      width: 140,
+      minWidth: 140,
+      maxWidth: 140,
     },
   },
   endSpace: {
@@ -852,16 +853,16 @@ const styles = StyleSheet.create({
     minWidth: 30,
     maxWidth: 30,
     height: "100%",
-    // "@media only screen and (max-width: 1024px)": {
-    //   width: 200,
-    //   minWidth: 200,
-    //   maxWidth: 200,
-    // },
-    // "@media only screen and (max-width: 800px)": {
-    //   width: 200,
-    //   minWidth: 200,
-    //   maxWidth: 200,
-    // },
+    "@media only screen and (max-width: 1024px)": {
+      width: 200,
+      minWidth: 200,
+      maxWidth: 200,
+    },
+    "@media only screen and (max-width: 800px)": {
+      width: 200,
+      minWidth: 200,
+      maxWidth: 200,
+    },
   },
   wideText: {
     width: "100%",
