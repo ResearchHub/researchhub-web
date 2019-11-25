@@ -73,7 +73,9 @@ const TextEditor = (props) => {
       if (success && clearOnSubmit !== false) {
         editorRef.clear();
       }
-      resetValue();
+      if (clearOnSubmit !== false) {
+        resetValue();
+      }
     }
   }
 
