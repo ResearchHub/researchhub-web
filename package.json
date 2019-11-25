@@ -4,6 +4,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "build:now": "SENTRY_RELEASE=production-$(git rev-parse --short HEAD) next build && node ./scripts/sentry.js",
     "cypress:open": "cypress open --project $PWD/tests",
     "test": "cypress run --project $PWD/tests",
     "build:prod": "docker build -t researchhub-web .",

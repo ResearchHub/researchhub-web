@@ -23,7 +23,7 @@ EXPOSE 3000
 
 # Bundle app source
 COPY . /usr/src/app
-RUN yarn run build
+RUN yarn run build:now
 
 # build and Start server
 CMD ["yarn", "start"]
