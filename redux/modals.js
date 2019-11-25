@@ -11,6 +11,7 @@ export const ModalConstants = {
   INVITE_TO_HUB_MODAL_TOGGLE: "@@MODAL/INVITE_TO_HUB_MODAL_TOGGLE",
   ADD_DISCUSSION_MODAL_TOGGLE: "@@MODAL/ADD_DISCUSSION_MODAL_TOGGLE",
   ADD_HUB_MODAL_TOGGLE: "@@MODAL/ADD_HUB_MODAL_TOGGLE",
+  TRANSACTION_MODAL_TOGGLE: "@@MODAL/TRANSACTION_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -93,6 +94,16 @@ export const ModalActions = {
       });
     };
   },
+  openTransactionModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.TRANSACTION_MODAL_TOGGLE,
+        payload: {
+          openTransactionModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -107,6 +118,7 @@ const defaultModalState = {
   openInviteToHubModal: false,
   openAddDiscussionModal: false,
   openAddHubModal: false,
+  openTransactionModal: false,
   loginModal: {},
 };
 
@@ -119,6 +131,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.INVITE_TO_HUB_MODAL_TOGGLE:
     case ModalConstants.ADD_DISCUSSION_MODAL_TOGGLE:
     case ModalConstants.ADD_HUB_MODAL_TOGGLE:
+    case ModalConstants.TRANSACTION_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
