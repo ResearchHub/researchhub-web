@@ -144,6 +144,7 @@ const PaperEntryCard = ({
                       key={`author_${author.id}_${id}_${Math.random()}`}
                     >
                       <AuthorAvatar
+                        key={`author_${author.id}_${id}`}
                         size={30}
                         textSizeRatio={2.5}
                         author={author}

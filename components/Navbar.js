@@ -17,6 +17,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
+import TransactionModal from "../components/modal/TransactionModal";
 import Button from "../components/Form/Button";
 import Search from "./Search";
 
@@ -299,6 +300,7 @@ const Navbar = (props) => {
         <UploadPaperModal />
         <LoginModal />
         <InviteToHubModal />
+        <TransactionModal />
         <div className={css(styles.logoContainer)} onClick={navigateHome}>
           <RHLogo iconStyle={styles.logo} />
         </div>
@@ -370,7 +372,8 @@ const Navbar = (props) => {
             )}
           </div>
           <PermissionNotificationWrapper
-            onClick={onAddPaperClick}
+            // onClick={onAddPaperClick}
+            onClick={() => props.openTransactionModal(true)}
             modalMessage="upload a paper"
             loginRequired={true}
             permissionKey="CreatePaper"
@@ -668,6 +671,7 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
+  openTransactionModal: ModalActions.openTransactionModal,
 };
 
 export default connect(
