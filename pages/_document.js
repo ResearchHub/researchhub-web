@@ -35,6 +35,12 @@ export default class MyDocument extends Document {
             sizes="152x152"
             href="/static/favicons/apple-touch-icon.png"
           />
+          {/* <!-- Appzi: Capture Insightful Feedback --> */}
+          <script
+            async
+            src="https://app.appzi.io/bootstrap/bundle.js?token=ECg1v"
+          ></script>
+          {/* <!-- End Appzi --> */}
           <link
             rel="icon"
             type="image/png"
