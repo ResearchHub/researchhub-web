@@ -170,6 +170,24 @@ const Navbar = (props) => {
   function renderMenuItems() {
     const tabs = [...tabData, ...menuTabs];
     return tabs.map((tab, index) => {
+      if (tab.label === "Help") {
+        return (
+          <div className={css(styles.menuItem)} key={`navbar_tab_${index}`}>
+            <a
+              className={css(styles.menuItem)}
+              href={
+                "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
+              }
+              target="_blank"
+            >
+              <span className={css(styles.icon)} id={"icon"}>
+                {icons[tab.icon]}
+              </span>
+              <span className="menu-item">{tab.label}</span>
+            </a>
+          </div>
+        );
+      }
       if (tab.label === "Login With Google") {
         if (!isLoggedIn) {
           return (
@@ -194,7 +212,7 @@ const Navbar = (props) => {
             tab.onClick
               ? tab.onClick
               : tab.route
-              ? () => navigateToRoute(tab.route)
+              ? () => navigateToRoute(tab.route, tab.label)
               : null
           }
           key={`navbar_tab_${index}`}
@@ -556,6 +574,8 @@ const styles = StyleSheet.create({
     fontVariant: "small-caps",
     letterSpacing: 0.7,
     fontSize: 20,
+    color: "#FFF",
+    textDecoration: "unset",
     ":hover": {
       color: colors.BLUE(1),
       // color: '#674ef5'
