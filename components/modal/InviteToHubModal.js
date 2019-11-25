@@ -12,9 +12,12 @@ import AuthorInput from "~/components/SearchSuggestion/AuthorInput";
 // Redux
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
+import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 class InviteToHubModal extends React.Component {
   constructor(props) {
@@ -99,6 +102,25 @@ class InviteToHubModal extends React.Component {
     document.body.style.overflow = "scroll";
   };
 
+  sendInvites = () => {
+    let { modals, showMessage, setMessage } = this.props;
+    fetch(
+      API.INVITE_TO_HUB({ hubId: modals.hubId }),
+      API.POST_CONFIG({ emails: this.state.emails })
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        if (resp.email_sent) {
+          setMessage("Invites Sent!");
+          showMessage({ show: true });
+          this.closeModal();
+        } else {
+          setMessage("Invites Failed to Send!");
+          showMessage({ show: true, error: true });
+        }
+      });
+  };
   render() {
     let { modals, auth } = this.props;
     let { mobileView } = this.state;
@@ -141,6 +163,7 @@ class InviteToHubModal extends React.Component {
           <Button
             label={"Send Invites"}
             customButtonStyle={styles.customButtonStyle}
+            onClick={this.sendInvites}
           />
           <FormInput
             getRef={this.formInputRef}
@@ -374,6 +397,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   openInviteToHubModal: ModalActions.openInviteToHubModal,
   getUser: AuthActions.getUser,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
