@@ -21,7 +21,7 @@ import { MessageActions } from "~/redux/message";
 if (process.env.NODE_ENV) {
   Sentry.init({
     dsn: "https://423f7b6ddcea48b9b50f7ba4baa0e750@sentry.io/1817918",
-    release: process.env.BUILD_ID,
+    release: process.env.SENTRY_RELEASE,
     environment: process.env.NODE_ENV,
   });
 }
