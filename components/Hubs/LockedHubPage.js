@@ -7,6 +7,7 @@ import Progress from "react-progressbar";
 import Button from "~/components/Form/Button";
 import HubsList from "~/components/Hubs/HubsList";
 import Message from "~/components/Loader/Message";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -219,11 +220,18 @@ class LockedHubPage extends React.Component {
                 customButtonStyle={styles.button}
                 onClick={this.openInviteToHubModal}
               />
-              <Button
-                label={joined ? "Leave Hub" : "Join Hub"}
-                customButtonStyle={styles.button}
+              <PermissionNotificationWrapper
+                modalMessage="join a hub"
                 onClick={this.hubAction}
-              />
+                styling={styles.button}
+                loginRequired={true}
+              >
+                <Button
+                  label={joined ? "Leave Hub" : "Join Hub"}
+                  customButtonStyle={styles.button}
+                  hideRipples={true}
+                />
+              </PermissionNotificationWrapper>
             </div>
           </div>
         </div>
