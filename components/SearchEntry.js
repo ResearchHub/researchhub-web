@@ -474,19 +474,24 @@ const styles = StyleSheet.create({
     padding: "2px 1px 2px 1px",
   },
   mainText: {
-    fontSize: 20,
+    fontSize: 18,
     color: "rgb(35, 32, 56)",
     fontWeight: "500",
     flexWrap: "wrap",
     lineHeight: 1.6,
+    maxHeight: 77,
+    textOverflow: "ellipsis",
     "@media only screen and (max-width: 1080px)": {
       fontSize: 16,
+      maxHeight: 70,
     },
   },
   metaDataOne: {
     fontSize: 16,
     flexWrap: "wrap",
     display: "flex",
+    textOverflow: "ellipsis",
+    maxHeight: 49,
   },
   paddedContainer: {},
   metaDataTwo: {
