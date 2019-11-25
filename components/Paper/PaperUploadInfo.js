@@ -937,6 +937,8 @@ class PaperUploadInfo extends React.Component {
       body.type = Object.keys(body.type)
         .filter((type) => body.type[type] && String(type))
         .pop();
+    } else {
+      body.type = null;
     }
 
     // send form object to the backend
