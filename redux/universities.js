@@ -10,9 +10,9 @@ export const UniversityConstants = {
 };
 
 export const UniversityActions = {
-  getUniversities: () => {
+  getUniversities: (search) => {
     return (dispatch) => {
-      fetch(API.UNIVERSITY, API.GET_CONFIG)
+      fetch(API.UNIVERSITY({ search }), API.GET_CONFIG)
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
