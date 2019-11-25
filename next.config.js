@@ -2,6 +2,7 @@ const withCSS = require("@zeit/next-css");
 const withTM = require("next-transpile-modules");
 const withPlugins = require("next-compose-plugins");
 const path = require("path");
+const withSourceMaps = require("@zeit/next-source-maps");
 
 module.exports = withPlugins(
   [
