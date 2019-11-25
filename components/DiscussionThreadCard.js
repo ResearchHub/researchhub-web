@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     paddingBottom: 18,
     // color: colors.BLACK(1),
     color: "#232038",
-    textOverflow: "eclipsis",
+    textOverflow: "ellipsis",
     "@media only screen and (max-width: 436px)": {
       fontSize: 18,
     },
