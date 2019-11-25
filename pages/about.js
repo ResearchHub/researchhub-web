@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   banner: {
-    height: 378,
+    height: 320,
     width: "100%",
     position: "relative",
     display: "flex",
