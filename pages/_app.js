@@ -20,6 +20,7 @@ import { MessageActions } from "~/redux/message";
 
 Sentry.init({
   dsn: "https://423f7b6ddcea48b9b50f7ba4baa0e750@sentry.io/1817918",
+  release: "v1",
 });
 
 class MyApp extends App {
