@@ -16,7 +16,7 @@ async function createReleaseAndUpload() {
 
     console.log("Uploading source maps");
     await cli.releases.uploadSourceMaps(release, {
-      include: ["build/static/js"],
+      include: [".next/server/static/"],
       urlPrefix: "~/static/js",
       rewrite: false,
     });
