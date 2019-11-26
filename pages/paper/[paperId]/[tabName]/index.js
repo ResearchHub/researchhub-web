@@ -91,14 +91,14 @@ const Paper = (props) => {
   }
 
   async function upvote() {
-    props.dispatch(VoteActions.postUpvotePending());
-    await props.dispatch(VoteActions.postUpvote(paperId));
+    dispatch(VoteActions.postUpvotePending());
+    await dispatch(VoteActions.postUpvote(paperId));
     updateWidgetUI();
   }
 
   async function downvote() {
-    props.dispatch(VoteActions.postDownvotePending());
-    await props.dispatch(VoteActions.postDownvote(paperId));
+    dispatch(VoteActions.postDownvotePending());
+    await dispatch(VoteActions.postDownvote(paperId));
     updateWidgetUI();
   }
 
