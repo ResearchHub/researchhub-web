@@ -240,11 +240,11 @@ const Paper = (props) => {
                   subtitle={paperTitle}
                   url={shareUrl}
                 />
-                <ActionButton
+                {/*<ActionButton
                   icon={"fas fa-bookmark"}
                   action={null}
                   addRipples={true}
-                />
+                />*/}
               </div>
             </span>
           </div>
