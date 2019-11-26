@@ -5,6 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Plain from "slate-plain-serializer";
 import { Text, Block } from "slate";
+import { isMobile } from "react-device-detect";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -223,7 +224,19 @@ class PaperEditHistory extends React.Component {
           title={paper.title}
           description={`${paper.title} summary edit history`}
         />
-        <div className={css(styles.container)}>
+        <div
+          className={css(styles.container, isMobile && styles.mobileContainer)}
+        >
+          {isMobile && (
+            <div className={css(styles.edits, styles.mobileEdits)}>
+              <div className={css(styles.editHistoryContainer)}>
+                <div className={css(styles.revisionTitle)}>
+                  Revision History
+                </div>
+                {editHistory}
+              </div>
+            </div>
+          )}
           <Link
             href={"/paper/[paperId]/[tabName]"}
             as={`/paper/${router.query.paperId}/summary`}
@@ -233,7 +246,7 @@ class PaperEditHistory extends React.Component {
               Summary
             </div>
           </Link>
-          <div className={css(styles.editor)}>
+          <div className={css(styles.editor, isMobile && styles.mobileEditor)}>
             <h1> {paper.title} </h1>
             <TextEditor
               canEdit={false}
@@ -246,12 +259,16 @@ class PaperEditHistory extends React.Component {
               setRef={this.setRef}
             />
           </div>
-          <div className={css(styles.edits)}>
-            <div className={css(styles.editHistoryContainer)}>
-              <div className={css(styles.revisionTitle)}>Revision History</div>
-              {editHistory}
+          {!isMobile && (
+            <div className={css(styles.edits)}>
+              <div className={css(styles.editHistoryContainer)}>
+                <div className={css(styles.revisionTitle)}>
+                  Revision History
+                </div>
+                {editHistory}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </ComponentWrapper>
     );
@@ -344,6 +361,16 @@ var styles = StyleSheet.create({
   },
   arrow: {
     marginRight: 5,
+  },
+  mobileContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  mobileEditor: {
+    paddingTop: 20,
+  },
+  mobileEdits: {
+    width: 310,
   },
 });
 const mapStateToProps = (state) => ({
