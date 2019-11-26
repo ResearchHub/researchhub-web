@@ -496,6 +496,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flexWrap: "wrap",
     display: "flex",
+    "@media only screen and (max-width: 1200px)": {
+      width: "100%",
+    },
   },
   avatar: {
     height: 60,
