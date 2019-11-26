@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { Document, Page, pdfjs } from "react-pdf";
+import { isMobile } from "react-device-detect";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 // Component
@@ -27,7 +29,13 @@ function PaperTab(props) {
         onLoadSuccess={onLoadSuccess}
       >
         {Array.from(new Array(numPages), (el, index) => (
-          <Page pageNumber={index + 1} width={1000} key={`page_${index + 1}`} />
+          <Page
+            pageNumber={index + 1}
+            width={
+              isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
+            }
+            key={`page_${index + 1}`}
+          />
         ))}
       </Document>
       <Loader loading={!loadSuccess} />
@@ -60,6 +68,13 @@ var styles = StyleSheet.create({
   hidden: {
     opacity: 0,
   },
+  // document: {
+  //   width: 1000,
+
+  //   "@media only screen and (max-width: 780px)": {
+  //     width: '100%',
+  //   },
+  // }
 });
 
 const mapStateToProps = (state) => ({
