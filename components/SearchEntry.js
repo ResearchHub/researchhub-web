@@ -490,8 +490,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flexWrap: "wrap",
     display: "flex",
-    textOverflow: "ellipsis",
-    maxHeight: 49,
   },
   paddedContainer: {},
   metaDataTwo: {
@@ -532,9 +530,13 @@ const styles = StyleSheet.create({
   },
   discText: {
     fontSize: 12,
+    textOverflow: "ellipsis",
+    maxHeight: 49,
   },
   tagline: {
     fontSize: 12,
+    textOverflow: "ellipsis",
+    maxHeight: 49,
   },
   icon: {
     minWidth: 20,
