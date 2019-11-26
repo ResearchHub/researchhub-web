@@ -530,13 +530,23 @@ const styles = StyleSheet.create({
   },
   discText: {
     fontSize: 12,
-    textOverflow: "ellipsis",
     maxHeight: 49,
+    "@media only screen and (max-width: 1200px)": {
+      width: "calc(100% - 50px)",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+    },
   },
   tagline: {
     fontSize: 12,
-    textOverflow: "ellipsis",
     maxHeight: 49,
+    "@media only screen and (max-width: 1200px)": {
+      width: "calc(100% - 50px)",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+    },
   },
   icon: {
     minWidth: 20,
