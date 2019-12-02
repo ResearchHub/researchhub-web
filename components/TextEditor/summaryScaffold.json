@@ -26,13 +26,7 @@
           {
             "key": "1573505332805_4",
             "text": "Distill this paper into a short paragraph. What is the main take away and why does it matter?",
-            "marks": [
-              {
-                "data": {},
-                "type": "italic",
-                "object": "mark"
-              }
-            ],
+            "marks": [],
             "object": "text"
           }
         ],
@@ -46,13 +40,7 @@
           {
             "key": "1573505332805_6",
             "text": "",
-            "marks": [
-              {
-                "data": {},
-                "type": "italic",
-                "object": "mark"
-              }
-            ],
+            "marks": [],
             "object": "text"
           }
         ],
@@ -80,13 +68,7 @@
           {
             "key": "1573505332805_10",
             "text": "What question does this paper attempt to answer?",
-            "marks": [
-              {
-                "data": {},
-                "type": "italic",
-                "object": "mark"
-              }
-            ],
+            "marks": [],
             "object": "text"
           }
         ],
@@ -100,13 +82,7 @@
           {
             "key": "1573505332805_12",
             "text": "",
-            "marks": [
-              {
-                "data": {},
-                "type": "italic",
-                "object": "mark"
-              }
-            ],
+            "marks": [],
             "object": "text"
           }
         ],
@@ -134,13 +110,7 @@
           {
             "key": "1573505332806_16",
             "text": "What conclusion did the paper reach?",
-            "marks": [
-              {
-                "data": {},
-                "type": "italic",
-                "object": "mark"
-              }
-            ],
+            "marks": [],
             "object": "text"
           }
         ],
@@ -154,13 +124,7 @@
           {
             "key": "1573505332806_18",
             "text": "",
-            "marks": [
-              {
-                "data": {},
-                "type": "italic",
-                "object": "mark"
-              }
-            ],
+            "marks": [],
             "object": "text"
           }
         ],
@@ -188,13 +152,7 @@
           {
             "key": "1573505332806_22",
             "text": "What does this paper make possible in the world, and what should be tried from here?",
-            "marks": [
-              {
-                "data": {},
-                "type": "italic",
-                "object": "mark"
-              }
-            ],
+            "marks": [],
             "object": "text"
           }
         ],
