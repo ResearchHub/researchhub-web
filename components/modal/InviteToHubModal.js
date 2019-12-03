@@ -87,6 +87,10 @@ class InviteToHubModal extends React.Component {
   };
 
   handleEmailInput = (value) => {
+    let last_char = value.charAt(value.length - 1);
+    if (last_char === " " || last_char === ",") {
+      return;
+    }
     this.setState({ email: value });
   };
 
@@ -104,9 +108,14 @@ class InviteToHubModal extends React.Component {
 
   sendInvites = () => {
     let { modals, showMessage, setMessage } = this.props;
+    let emails = [...this.state.emails];
+
+    if (this.state.email !== "") {
+      emails.push(this.state.email);
+    }
     fetch(
       API.INVITE_TO_HUB({ hubId: modals.hubId }),
-      API.POST_CONFIG({ emails: this.state.emails })
+      API.POST_CONFIG({ emails: emails })
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -120,6 +129,19 @@ class InviteToHubModal extends React.Component {
           showMessage({ show: true, error: true });
         }
       });
+  };
+
+  onKeyPress = (e) => {
+    let emails = [...this.state.emails];
+    if (e.key === " " || e.key === ",") {
+      if (!emails.includes(this.state.email)) {
+        emails.push(this.state.email);
+      }
+      this.setState({
+        emails: emails,
+        email: "",
+      });
+    }
   };
   render() {
     let { modals, auth } = this.props;
@@ -158,6 +180,7 @@ class InviteToHubModal extends React.Component {
               placeholder={"Press enter to add email"}
               renderEmail={true}
               labelStyle={styles.labelStyle}
+              onKeyPress={this.onKeyPress}
             />
           </div>
           <Button
