@@ -16,6 +16,7 @@ const AuthorInput = ({
   onChangeInput,
   placeholder,
   renderEmail,
+  onKeyPress,
 }) => {
   const inputRef = React.createRef();
 
@@ -75,6 +76,7 @@ const AuthorInput = ({
         }
         inputProps={{
           placeholder: placeholder ? placeholder : "Search for author",
+          onKeyPress,
         }}
       />
     </div>
