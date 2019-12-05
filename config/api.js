@@ -291,6 +291,15 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    EMAIL_PREFERENCE: ({ update_or_create }) => {
+      let url = BASE_URL + "email/preference/";
+
+      if (update_or_create) {
+        url += "update_or_create_email_preference/";
+      }
+
+      return url;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
