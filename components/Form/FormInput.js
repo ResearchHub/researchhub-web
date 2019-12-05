@@ -52,17 +52,19 @@ class FormInput extends React.Component {
           disabled && styles.disabled
         )}
       >
-        <div
-          className={css(
-            styles.inputLabel,
-            labelStyle && labelStyle,
-            styles.text,
-            !label && styles.hide
-          )}
-        >
-          {label && label}
-          {required && <div className={css(styles.asterick)}>*</div>}
-        </div>
+        {label && (
+          <div
+            className={css(
+              styles.inputLabel,
+              labelStyle && labelStyle,
+              styles.text,
+              !label && styles.hide
+            )}
+          >
+            {label && label}
+            {required && <div className={css(styles.asterick)}>*</div>}
+          </div>
+        )}
         <input
           id={id && id}
           type={type ? type : "text"}

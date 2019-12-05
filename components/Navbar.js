@@ -372,8 +372,7 @@ const Navbar = (props) => {
             )}
           </div>
           <PermissionNotificationWrapper
-            // onClick={onAddPaperClick}
-            onClick={() => props.openTransactionModal(true)}
+            onClick={onAddPaperClick}
             modalMessage="upload a paper"
             loginRequired={true}
             permissionKey="CreatePaper"
