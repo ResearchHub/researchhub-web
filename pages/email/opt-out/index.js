@@ -94,14 +94,14 @@ class OptOut extends React.Component {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    minHeight: "100vh",
+    minHeight: "100%",
   },
   body: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     paddingTop: 150,
-    height: "100vh",
+    height: "100%",
   },
   logo: {
     height: 60,
