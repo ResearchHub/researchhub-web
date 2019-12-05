@@ -302,7 +302,7 @@ const routes = (BASE_URL) => {
     // Used to check if url is a valid pdf
     CHECKURL: BASE_URL + "paper/check_url/",
     // Ethereum
-    ETH_GAS_STATION: BASE_URL + "ethereum/ethgasstation/gas",
+    WITHDRAW_COIN: BASE_URL + "withdrawal",
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
