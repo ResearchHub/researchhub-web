@@ -6,6 +6,7 @@ import ReactTooltip from "react-tooltip";
 // Component
 import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
+import FormInput from "../Form/FormInput";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -19,12 +20,14 @@ class TransactionModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      rate: null,
-      gasFee: null,
       networkVersion: null,
+      networkAddress: "",
+      connectedMetaMask: false,
       transition: false,
-      listener: ethereum.on("networkChanged", this.checkNetwork),
-      withdrawAmount: null,
+      listenerNetwork: null,
+      listenerAccount: null,
+      userBalance: null,
+      withdrawals: [],
     };
     this.state = {
       ...this.initialState,
@@ -32,51 +35,86 @@ class TransactionModal extends React.Component {
   }
 
   componentDidMount() {
-    this.checkNetwork();
-    let path = "https://ethgasstation.info/json/ethgasAPI.json";
-    // this.getMinGWEI();
+    if (typeof window.ethereum !== "undefined") {
+      const provider = window["ethereum"];
+      this.checkNetwork();
+      this.setState({
+        listenerNetwork: ethereum.on("networkChanged", () =>
+          this.updateChainId(ethereum.networkVersion)
+        ),
+        listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
+      });
+    }
+    this.getBalance();
   }
 
-  componentWillUpdate() {
-    this.checkNetwork();
-    // if (!this.state.gasFee) {
-    //   this.getMinGWEI();
-    // }
+  componentWillUpdate(prevProps) {
+    if (typeof window.ethereum !== "undefined") {
+      this.updateChainId(ethereum.networkVersion);
+      if (prevProps.auth.user.balance !== this.props.auth.user.balance) {
+        this.getBalance();
+      }
+      if (prevProps.modals.openTransactionModal) {
+        this.checkNetwork();
+      }
+    }
   }
 
   checkNetwork = () => {
-    if (typeof window.ethereum !== "undefined") {
-      const provider = window["ethereum"];
-      if (ethereum.networkVersion !== this.state.networkVersion) {
-        let transition = false;
-        if (
-          this.state.networkVersion !== "1" &&
-          ethereum.networkVersion === "1"
-        ) {
-          transition = true;
-        }
-        if (
-          this.state.networkVersion === "1" &&
-          ethereum.networkVersion !== "1"
-        ) {
-          transition = true;
-        }
-        this.setState(
-          {
-            networkVersion: ethereum.networkVersion,
-            transition: transition,
-          },
-          () => {
-            this.state.transition &&
-              setTimeout(() => {
-                this.setState({
-                  transition: false,
-                });
-              }, 400);
+    let that = this;
+    if (!this.state.connectedMetaMask) {
+      ethereum
+        .send("eth_requestAccounts")
+        .then(function(accounts) {
+          let account = accounts && accounts.result ? accounts.result[0] : [];
+          that.setState({
+            connectedMetaMask: true,
+            networkAddress: account,
+          });
+        })
+        .catch(function(error) {
+          if (error.code === 4001) {
+            // EIP 1193 userRejectedRequest error
+            console.log("Please connect to MetaMask.");
+          } else {
+            console.error(error);
           }
-        );
-      }
+        });
+    } else {
     }
+  };
+
+  updateChainId = (chainId) => {
+    if (chainId !== this.state.networkVersion) {
+      let transition = false;
+      if (this.state.networkVersion !== "1" && chainId === "1") {
+        transition = true;
+      }
+      if (this.state.networkVersion === "1" && chainId !== "1") {
+        transition = true;
+      }
+      this.setState(
+        {
+          networkVersion: chainId, // shows the eth network
+          transition: transition,
+        },
+        () => {
+          this.state.transition &&
+            setTimeout(() => {
+              this.setState({
+                transition: false,
+              });
+            }, 400);
+        }
+      );
+    }
+  };
+
+  updateAccount = (accounts) => {
+    let account = accounts && accounts[0] && accounts[0];
+    this.setState({
+      networkAddress: account,
+    });
   };
 
   closeModal = () => {
@@ -126,7 +164,7 @@ class TransactionModal extends React.Component {
      * Before you confirm:
      *
      */
-    let { transition, withdrawAmount } = this.state;
+    let { transition, userBalance, networkAddress } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
         {transition ? (
@@ -137,26 +175,23 @@ class TransactionModal extends React.Component {
               <div className={css(styles.left)}>
                 <div className={css(styles.mainHeader)}>Amount to withdraw</div>
                 <div className={css(styles.subtitle, styles.noMargin)}>
-                  Your offer must exceed 0.03 ether.
+                  Your current total balance in ResearchCoin
                 </div>
               </div>
               <div className={css(styles.right)}>
-                <input
-                  className={css(styles.input)}
-                  type={"number"}
-                  required={true}
-                  value={withdrawAmount}
-                  onChange={this.handleInput}
-                />
+                <div className={css(styles.userBalance)}>
+                  {`${userBalance} RC`}
+                </div>
               </div>
             </div>
             {this.renderRow(
               {
-                text: "Estimated transaction fee",
-                tooltip:
-                  "This fee is charged by the network to confirm transactions.",
+                text: "Recipient ETH Address",
+                tooltip: "The address of your ETH Account (ex. 0x0000...)",
               },
-              { value: this.state.gasFee }
+              {
+                value: networkAddress,
+              }
             )}
             {/* {this.renderRow('third', 'third')} */}
           </Fragment>
@@ -174,70 +209,38 @@ class TransactionModal extends React.Component {
     //   text,
     //   tooltip
     // } = right;
-
     return (
       <div className={css(styles.row)}>
-        <div className={css(styles.left, styles.orientRow)}>
-          {left.text}
-          <span className={css(styles.infoIcon)} data-tip={left.tooltip}>
-            {icons["info-circle"]}
-            <ReactTooltip type={"info"} />
-          </span>
-        </div>
-        <div className={css(styles.right)}>
-          <span className={css(styles.eth)}>
-            {right && right.value && `${right.value.eth} ETH`}
-          </span>
-          <span className={css(styles.dollar)}>
-            {right && right.value && `$${right.value.usd}`}
-          </span>
+        <div className={css(styles.left, styles.spacedContent)}>
+          <div>
+            {left.text}
+            <span className={css(styles.infoIcon)} data-tip={left.tooltip}>
+              {icons["info-circle"]}
+              <ReactTooltip type={"info"} />
+            </span>
+          </div>
+          <FormInput value={right.value} containerStyle={styles.formInput} />
         </div>
       </div>
     );
   };
 
-  toBigNumber = (number) => {
-    number = number || 0;
-    if (number.isBigNumber) return number;
-
-    if (
-      (typeof number === "string" || number instanceof String) &&
-      (number.indexOf("0x") === 0 || number.indexOf("-0x") === 0)
-    ) {
-      return new BigNumber(number.replace("0x", ""), 16);
-    }
-
-    return new BigNumber(number.toString(10), 10);
-  };
-
-  /*
-   * Get the safeLow gwei from ethgasstation
-   */
-  getMinGWEI = () => {
-    // return fetch(API.ETH_GAS_STATION)
-    return fetch("https://ethgasstation.info/json/ethgasAPI.json")
+  getBalance = () => {
+    fetch(API.WITHDRAW_COIN, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then(({ safeLow, eth_gasPrice }) => {
-        var modifier = this.props.modifier ? this.props.modifier : 1;
-        var calculatedSafeLow = (safeLow / 10) * modifier;
-        var uppedSafeLow = calculatedSafeLow * 1.1;
-        var eth_safe_low = eth_gasPrice
-          ? toBigNumber(eth_gasPrice) * 1e-9
-          : null;
-        console.log("eth_gasPrice", eth_gasPrice);
+      .then((res) => {
+        let { user } = this.props.auth;
         this.setState({
-          gasFee: {
-            usd: safeLow ? uppedSafeLow : eth_safe_low / 2.5,
-            eth: eth_gasPrice,
-          },
+          userBalance: user.balance,
+          withdrawals: [...res.results],
         });
       });
   };
 
   render() {
     let { modals } = this.props;
-    let { networkVersion, transition } = this.state;
+    let { networkVersion, transition, connectedMetaMask } = this.state;
     return (
       <BaseModal
         isOpen={modals.openTransactionModal}
@@ -250,14 +253,17 @@ class TransactionModal extends React.Component {
             networkVersion === "1" && styles.main
           )}
         >
-          {networkVersion !== "1" && (
-            <img
-              src={"/static/icons/close.png"}
-              className={css(styles.closeButton)}
-              onClick={this.closeModal}
-              draggable={false}
-            />
+          {networkVersion === "1" && (
+            <div className={css(styles.header, styles.text)}>
+              Withdraw Research Coins
+            </div>
           )}
+          <img
+            src={"/static/icons/close.png"}
+            className={css(styles.closeButton)}
+            onClick={this.closeModal}
+            draggable={false}
+          />
           {networkVersion !== "1"
             ? this.renderSwitchNetworkMsg()
             : this.renderTransactionScreen()}
@@ -291,6 +297,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     transition: "all ease-in-out 0.3s",
   },
+  header: {
+    fontWeight: "500",
+    height: 30,
+    width: "100%",
+    fontSize: 26,
+    color: "#232038",
+    textAlign: "center",
+    marginBottom: 20,
+    "@media only screen and (max-width: 557px)": {
+      fontSize: 24,
+    },
+    "@media only screen and (max-width: 725px)": {
+      width: 450,
+    },
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 300,
+      fontSize: 22,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
+  },
   title: {
     fontWeight: 500,
     fontSize: 18,
@@ -317,13 +348,15 @@ const styles = StyleSheet.create({
     width: 440,
     padding: "20px 0 20px",
   },
+  spacedContent: {
+    width: "100%",
+  },
   left: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "flex-start",
     color: "#82817D",
-    // height: '100%'
     height: 60,
     fontFamily: "Roboto",
   },
@@ -362,9 +395,19 @@ const styles = StyleSheet.create({
   eth: {
     color: "#82817D",
   },
+  userBalance: {
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  formInput: {
+    width: "100%",
+  },
 });
 
 const mapStateToProps = (state) => ({
+  auth: state.auth,
   modals: state.modals,
 });
 
