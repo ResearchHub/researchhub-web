@@ -17,6 +17,7 @@ import Head from "~/components/Head";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+import Footer from "./footer";
 
 if (process.env.NODE_ENV) {
   Sentry.init({
