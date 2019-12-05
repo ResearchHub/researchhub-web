@@ -128,6 +128,8 @@ const styles = StyleSheet.create({
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
     minHeight: 300,
+    height: 300,
+    overflow: "scroll",
     "@media only screen and (max-width: 725px)": {
       width: 450,
     },
