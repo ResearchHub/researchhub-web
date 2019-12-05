@@ -25,6 +25,7 @@ class OptOut extends React.Component {
     super(props);
     this.initialState = {
       email: "",
+      success: false,
     };
     this.state = {
       ...this.initialState,
@@ -41,6 +42,22 @@ class OptOut extends React.Component {
     this.setState({
       email,
     });
+  };
+
+  optOut = () => {
+    let params = API.POST_CONFIG({
+      email: this.state.email,
+      subscribe: false,
+      opt_out: true,
+    });
+    fetch(API.EMAIL_PREFERENCE({ update_or_create: true }), params)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        this.setState({
+          success: true,
+        });
+      });
   };
 
   render() {
@@ -67,7 +84,7 @@ class OptOut extends React.Component {
               onChange={this.onEmailChange}
               placeholder={"Email"}
             />
-            <Button label={"Opt-Out"} />
+            <Button label={"Opt-Out"} onClick={this.optOut} />
           </div>
         </ComponentWrapper>
       </div>
