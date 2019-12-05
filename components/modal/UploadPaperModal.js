@@ -390,7 +390,7 @@ class UploadPaperModal extends React.Component {
           )}
           <span className={css(styles.buttonContainer)}>
             <Button
-              label={uploadView ? "Continue" : "Upload different paper"}
+              label={uploadView ? "Continue" : "Upload Paper"}
               customButtonStyle={styles.button}
               customLabelStyle={styles.label}
               disabled={uploadView && !uploadFinish}
