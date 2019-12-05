@@ -19,7 +19,7 @@ import Head from "~/components/Head";
 import { MessageActions } from "~/redux/message";
 import Footer from "./footer";
 
-if (process.env.NODE_ENV) {
+if (process.env.NODE_ENV === "production") {
   Sentry.init({
     dsn: "https://423f7b6ddcea48b9b50f7ba4baa0e750@sentry.io/1817918",
     release: process.env.SENTRY_RELEASE,
