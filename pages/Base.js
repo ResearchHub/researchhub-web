@@ -13,6 +13,7 @@ import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
 import { UniversityActions } from "../redux/universities";
 import PermissionActions from "../redux/permission";
+import Footer from "./footer";
 
 class Base extends React.Component {
   componentDidMount = async () => {
@@ -43,6 +44,7 @@ class Base extends React.Component {
             <Navbar />
             <Component {...pageProps} />
             <Message />
+            <Footer />
           </div>
         ) : null}
       </Fragment>
