@@ -204,6 +204,8 @@ const AuthorPage = (props) => {
         return <UserDiscussionsTab hostname={hostname} />;
       case "citations":
         return null;
+      case "transactions":
+        return null;
     }
   };
 
