@@ -43,15 +43,28 @@ class TransactionModal extends React.Component {
   componentDidMount() {
     if (typeof window.ethereum !== "undefined") {
       const provider = window["ethereum"];
-      this.checkNetwork();
+      if (
+        this.props.modals.openTransactionModal &&
+        !this.state.connectedMetaMask
+      ) {
+        this.checkNetwork();
+      }
     }
     this.getBalance();
   }
 
   componentWillUpdate(prevProps) {
-    if (typeof window.ethereum !== "undefined") {
-      this.updateChainId(ethereum.networkVersion);
-      this.checkNetwork();
+    if (
+      prevProps.modals.openTransactionModal !==
+      this.props.modals.openTransactionModal
+    ) {
+      if (
+        typeof window.ethereum !== "undefined" &&
+        prevProps.modals.openTransactionModal
+      ) {
+        this.updateChainId(ethereum.networkVersion);
+        this.checkNetwork();
+      }
     }
     if (
       prevProps.auth.user.balance !== this.props.auth.user.balance ||
@@ -173,7 +186,11 @@ class TransactionModal extends React.Component {
               </div>
               <div className={css(styles.right)}>
                 <div className={css(styles.userBalance)}>
-                  {`${userBalance} RC`}
+                  {userBalance}
+                  <img
+                    className={css(styles.coin)}
+                    src={"/static/icons/coin.png"}
+                  />
                 </div>
               </div>
             </div>
@@ -361,7 +378,7 @@ class TransactionModal extends React.Component {
         >
           {(!connectedMetaMask || networkVersion === "1") && (
             <div className={css(styles.header, styles.text)}>
-              Withdraw funds
+              Withdraw ResearchCoin
             </div>
           )}
           <img
@@ -370,14 +387,17 @@ class TransactionModal extends React.Component {
             onClick={this.closeModal}
             draggable={false}
           />
-          <div className={css(styles.connectStatus)}>
-            <div
-              className={css(styles.dot, connectedMetaMask && styles.connected)}
-            />
-            {connectedMetaMask
-              ? "Connected wallet: MetaMask"
-              : "No connected wallet"}
-          </div>
+          {connectedMetaMask && (
+            <div className={css(styles.connectStatus)}>
+              <div
+                className={css(
+                  styles.dot,
+                  connectedMetaMask && styles.connected
+                )}
+              />
+              Connected wallet: MetaMask
+            </div>
+          )}
           {connectedMetaMask && networkVersion !== "1"
             ? this.renderSwitchNetworkMsg()
             : this.renderTransactionScreen()}
@@ -516,10 +536,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 18,
   },
+  coin: {
+    height: 20,
+    width: 20,
+    marginTop: 1,
+    marginLeft: 5,
+  },
   formInput: {
     width: "100%",
   },
-  button: {
+  buttons: {
     marginTop: 40,
   },
   successIcon: {
@@ -530,6 +556,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FBFBFB",
+    cursor: "default",
   },
   errorIcon: {
     color: colors.RED(1),
@@ -539,9 +566,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     fontSize: 14,
-    // position: 'absolute',
-    // top: 20,
-    // left: 20,
+    marginBottom: 10,
   },
   dot: {
     height: 10,
@@ -552,6 +577,8 @@ const styles = StyleSheet.create({
     minWidth: 10,
     borderRadius: "50%",
     marginRight: 5,
+    backgroundColor: "#f9f4d3",
+    border: "2px solid #f8de5a",
   },
   connected: {
     backgroundColor: "#d5f3d7",
