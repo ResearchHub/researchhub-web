@@ -7,20 +7,23 @@ import ReactTooltip from "react-tooltip";
 import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
 import FormInput from "../Form/FormInput";
+import Button from "../Form/Button";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
+import { MessageActions } from "~/redux/message";
 
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
 
 class TransactionModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      networkVersion: null,
+      networkVersion: null, //
       networkAddress: "",
       connectedMetaMask: false,
       transition: false,
@@ -28,6 +31,9 @@ class TransactionModal extends React.Component {
       listenerAccount: null,
       userBalance: null,
       withdrawals: [],
+      validating: false,
+      valid: false,
+      error: null,
     };
     this.state = {
       ...this.initialState,
@@ -38,12 +44,6 @@ class TransactionModal extends React.Component {
     if (typeof window.ethereum !== "undefined") {
       const provider = window["ethereum"];
       this.checkNetwork();
-      this.setState({
-        listenerNetwork: ethereum.on("networkChanged", () =>
-          this.updateChainId(ethereum.networkVersion)
-        ),
-        listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
-      });
     }
     this.getBalance();
   }
@@ -51,12 +51,13 @@ class TransactionModal extends React.Component {
   componentWillUpdate(prevProps) {
     if (typeof window.ethereum !== "undefined") {
       this.updateChainId(ethereum.networkVersion);
-      if (prevProps.auth.user.balance !== this.props.auth.user.balance) {
-        this.getBalance();
-      }
-      if (prevProps.modals.openTransactionModal) {
-        this.checkNetwork();
-      }
+      this.checkNetwork();
+    }
+    if (
+      prevProps.auth.user.balance !== this.props.auth.user.balance ||
+      this.state.userBalance === null
+    ) {
+      this.getBalance();
     }
   }
 
@@ -65,14 +66,19 @@ class TransactionModal extends React.Component {
     if (!this.state.connectedMetaMask) {
       ethereum
         .send("eth_requestAccounts")
-        .then(function(accounts) {
+        .then((accounts) => {
           let account = accounts && accounts.result ? accounts.result[0] : [];
           that.setState({
             connectedMetaMask: true,
             networkAddress: account,
+            listenerNetwork: ethereum.on("networkChanged", () =>
+              this.updateChainId(ethereum.networkVersion)
+            ),
+            listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
+            valid: this.state.networkAddress !== "",
           });
         })
-        .catch(function(error) {
+        .catch((error) => {
           if (error.code === 4001) {
             // EIP 1193 userRejectedRequest error
             console.log("Please connect to MetaMask.");
@@ -80,7 +86,6 @@ class TransactionModal extends React.Component {
             console.error(error);
           }
         });
-    } else {
     }
   };
 
@@ -152,18 +157,6 @@ class TransactionModal extends React.Component {
   };
 
   renderTransactionScreen = () => {
-    /**
-     * Amount
-     * Recipient
-     * Note
-     * Password
-     * --
-     * Estimated transaction fee
-     * Offer Fee
-     * Estimated total cost
-     * Before you confirm:
-     *
-     */
     let { transition, userBalance, networkAddress } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
@@ -191,9 +184,16 @@ class TransactionModal extends React.Component {
               },
               {
                 value: networkAddress,
+                onChange: this.handleNetworkAddressInput,
               }
             )}
-            {/* {this.renderRow('third', 'third')} */}
+            <div className={css(styles.buttons)}>
+              <Button
+                label={"Confirm"}
+                onClick={this.sendWithdrawalRequest}
+                customButtonStyle={styles.button}
+              />
+            </div>
           </Fragment>
         )}
       </div>
@@ -201,14 +201,7 @@ class TransactionModal extends React.Component {
   };
 
   renderRow = (left, right) => {
-    // let {
-    //   text,
-    //   tooltip,
-    // } = left;
-    // let {
-    //   text,
-    //   tooltip
-    // } = right;
+    let { networkAddress, validating, valid } = this.state;
     return (
       <div className={css(styles.row)}>
         <div className={css(styles.left, styles.spacedContent)}>
@@ -219,7 +212,33 @@ class TransactionModal extends React.Component {
               <ReactTooltip type={"info"} />
             </span>
           </div>
-          <FormInput value={right.value} containerStyle={styles.formInput} />
+          <FormInput
+            value={right.value && right.value}
+            containerStyle={styles.formInput}
+            onChange={right.onChange && right.onChange}
+            inlineNodeRight={
+              networkAddress !== "" ? (
+                validating ? (
+                  <span className={css(styles.successIcon)}>
+                    <Loader loading={true} size={23} />
+                  </span>
+                ) : (
+                  <span
+                    className={css(
+                      styles.successIcon,
+                      !valid && styles.errorIcon
+                    )}
+                  >
+                    {valid ? (
+                      <i className="fal fa-check-circle" />
+                    ) : (
+                      <i className="fal fa-times-circle" />
+                    )}
+                  </span>
+                )
+              ) : null
+            }
+          />
         </div>
       </div>
     );
@@ -238,9 +257,96 @@ class TransactionModal extends React.Component {
       });
   };
 
+  handleNetworkAddressInput = (id, value) => {
+    this.setState(
+      {
+        networkAddress: value,
+        validating: true,
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({
+            validating: false,
+            valid: this.isAddress(this.state.networkAddress),
+          });
+        }, 400);
+      }
+    );
+  };
+
+  sendWithdrawalRequest = (e) => {
+    e.stopPropagation();
+    let { networkAddress } = this.state;
+    let { showMessage, setMessage } = this.props;
+    showMessage({ load: true, show: true });
+    if (this.isAddress(networkAddress)) {
+      let param = {
+        to_address: networkAddress,
+      };
+      fetch(API.WITHDRAW_COIN, API.POST_CONFIG(param))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          console.log("res", res);
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+    } else {
+    }
+  };
+
+  /**
+   * Checks if the given string is an address
+   *
+   * @method isAddress
+   * @param {String} address the given HEX adress
+   * @return {Boolean}
+   */
+  isAddress = (address) => {
+    if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+      // check if it has the basic requirements of an address
+      return false;
+    } else if (
+      /^(0x)?[0-9a-f]{40}$/.test(address) ||
+      /^(0x)?[0-9A-F]{40}$/.test(address)
+    ) {
+      // If it's all small caps or all all caps, return true
+      return true;
+    } else {
+      // Otherwise check each case
+      return isChecksumAddress(address);
+    }
+  };
+
+  /**
+   * Checks if the given string is a checksummed address
+   *
+   * @method isChecksumAddress
+   * @param {String} address the given HEX adress
+   * @return {Boolean}
+   */
+  isChecksumAddress = (address) => {
+    // Check each case
+    address = address.replace("0x", "");
+    var addressHash = sha3(address.toLowerCase());
+    for (var i = 0; i < 40; i++) {
+      // the nth letter should be uppercase if the nth digit of casemap is 1
+      if (
+        (parseInt(addressHash[i], 16) > 7 &&
+          address[i].toUpperCase() !== address[i]) ||
+        (parseInt(addressHash[i], 16) <= 7 &&
+          address[i].toLowerCase() !== address[i])
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   render() {
     let { modals } = this.props;
-    let { networkVersion, transition, connectedMetaMask } = this.state;
+    let { networkVersion, connectedMetaMask } = this.state;
     return (
       <BaseModal
         isOpen={modals.openTransactionModal}
@@ -253,9 +359,9 @@ class TransactionModal extends React.Component {
             networkVersion === "1" && styles.main
           )}
         >
-          {networkVersion === "1" && (
+          {(!connectedMetaMask || networkVersion === "1") && (
             <div className={css(styles.header, styles.text)}>
-              Withdraw Research Coins
+              Withdraw funds
             </div>
           )}
           <img
@@ -264,7 +370,15 @@ class TransactionModal extends React.Component {
             onClick={this.closeModal}
             draggable={false}
           />
-          {networkVersion !== "1"
+          <div className={css(styles.connectStatus)}>
+            <div
+              className={css(styles.dot, connectedMetaMask && styles.connected)}
+            />
+            {connectedMetaMask
+              ? "Connected wallet: MetaMask"
+              : "No connected wallet"}
+          </div>
+          {connectedMetaMask && networkVersion !== "1"
             ? this.renderSwitchNetworkMsg()
             : this.renderTransactionScreen()}
         </div>
@@ -400,9 +514,48 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    fontSize: 18,
   },
   formInput: {
     width: "100%",
+  },
+  button: {
+    marginTop: 40,
+  },
+  successIcon: {
+    color: "#7ae9b1",
+    fontSize: 28,
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FBFBFB",
+  },
+  errorIcon: {
+    color: colors.RED(1),
+  },
+  connectStatus: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 14,
+    // position: 'absolute',
+    // top: 20,
+    // left: 20,
+  },
+  dot: {
+    height: 10,
+    maxHeight: 10,
+    minHeight: 10,
+    width: 10,
+    maxWidth: 10,
+    minWidth: 10,
+    borderRadius: "50%",
+    marginRight: 5,
+  },
+  connected: {
+    backgroundColor: "#d5f3d7",
+    border: "2px solid #7ae9b1",
   },
 });
 
@@ -413,6 +566,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   openTransactionModal: ModalActions.openTransactionModal,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
