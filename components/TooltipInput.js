@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
 export const TooltipInput = (props) => {
-  const { title, value, onChange, save } = props;
+  const { title, value, onChange, save, close } = props;
   return (
     <div className={css(styles.tooltipEditContainer)}>
       <div className={css(styles.tooltipTitle)}>{title}</div>
@@ -18,6 +18,7 @@ export const TooltipInput = (props) => {
           <i className="fas fa-arrow-right"></i>
         </div>
       </div>
+      <i className={css(styles.close) + " fal fa-times"} onClick={close}></i>
     </div>
   );
 };
@@ -80,5 +81,12 @@ const styles = StyleSheet.create({
     ":hover": {
       background: "#3E43E8",
     },
+  },
+  close: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    fontSize: 16,
+    cursor: "pointer",
   },
 });
