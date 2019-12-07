@@ -275,6 +275,24 @@ class RichTextEditor extends React.Component {
             />
           </div>
         )}
+        {this.state.addLinkTooltip && (
+          <TooltipInput
+            title={"Link URL"}
+            value={this.state.link}
+            onChange={this.onChangeLink}
+            close={this.closeTooltipInput}
+            save={() => this.setLink("link", this.state.link)}
+          />
+        )}
+        {this.state.addImageTooltip && (
+          <TooltipInput
+            title={"Image URL"}
+            value={this.state.image}
+            onChange={this.onChangeImage}
+            close={this.closeTooltipInput}
+            save={() => this.setImage("image", this.state.image)}
+          />
+        )}
       </div>
     );
   }
@@ -295,7 +313,10 @@ class RichTextEditor extends React.Component {
       <Button
         active={isActive}
         first={first}
-        onMouseDown={(event) => this.onClickMark(event, type)}
+        onMouseDown={(event) => {
+          this.onClickMark(event, type);
+          // this.closeLinkAndImage();
+        }}
       >
         <Icon>{icon}</Icon>
       </Button>
@@ -330,15 +351,6 @@ class RichTextEditor extends React.Component {
         >
           <Icon>{icon}</Icon>
         </Button>
-        {this.state.addLinkTooltip && (
-          <TooltipInput
-            title={"Link URL"}
-            value={this.state.link}
-            onChange={this.onChangeLink}
-            save={() => this.setLink(type, this.state.link)}
-            close={this.closeTooltipInput}
-          />
-        )}
       </span>
     );
   };
@@ -369,9 +381,31 @@ class RichTextEditor extends React.Component {
     );
   };
 
+  closeLinkToolTip = () => {
+    this.setState({
+      addLinkTooltip: false,
+    });
+  };
+
+  closeImageToolTip = () => {
+    this.setState({
+      addImageTooltip: false,
+    });
+  };
+
+  closeLinkAndImage = () => {
+    this.setState({
+      addImageTooltip: false,
+      addLinkTooltip: false,
+    });
+  };
+
   formatURL = (url) => {
     let http = "http://";
     let https = "https://";
+    if (!url) {
+      return;
+    }
     if (!url.startsWith(https)) {
       if (url.startsWith(http)) {
         url = url.replace(http, https);
@@ -395,15 +429,6 @@ class RichTextEditor extends React.Component {
         >
           <Icon>{icon}</Icon>
         </Button>
-        {this.state.addImageTooltip && (
-          <TooltipInput
-            title={"Image URL"}
-            value={this.state.image}
-            onChange={this.onChangeImage}
-            save={() => this.setImage(type, this.state.image)}
-            close={this.closeTooltipInput}
-          />
-        )}
       </span>
     );
   };
@@ -546,7 +571,9 @@ class RichTextEditor extends React.Component {
     return (
       <Button
         active={isActive}
-        onMouseDown={(event) => this.onClickBlock(event, type)}
+        onMouseDown={(event) => {
+          this.onClickBlock(event, type);
+        }}
       >
         <Icon>{icon}</Icon>
       </Button>
