@@ -276,6 +276,9 @@ const AuthorPage = (props) => {
     let change = socialLinks[section];
     let http = "http://";
     let https = "https://";
+    if (!change) {
+      return;
+    }
     if (!change.startsWith(https)) {
       if (change.startsWith(http)) {
         change = change.replace(http, https);
