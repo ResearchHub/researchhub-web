@@ -32,7 +32,13 @@ export const MessageActions = {
    * @param {Boolean} error -- whether or not the message is an error
    * @param {Boolean} clickoff -- whether or not to have the message "click off"
    */
-  showMessage: ({ show, error = false, clickoff = false, load = false }) => {
+  showMessage: ({
+    show,
+    error = false,
+    clickoff = false,
+    load = false,
+    timeout = 2000,
+  }) => {
     return (dispatch) => {
       return dispatch({
         type: MessageConstants.SHOW_MESSAGE,
@@ -40,6 +46,7 @@ export const MessageActions = {
         error,
         clickoff,
         load,
+        timeout,
       });
     };
   },
@@ -54,6 +61,7 @@ const defaultMessageState = {
   show: false,
   error: false,
   load: false,
+  timeout: 2000,
 };
 
 const MessageReducer = (state = defaultMessageState, action) => {
