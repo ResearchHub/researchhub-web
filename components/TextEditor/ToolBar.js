@@ -15,10 +15,6 @@ export const Button = (props) => {
     classNames.push(styles.first);
   }
 
-  // function onClick(e) {
-  //   onMouseDown(e);
-  // }
-
   return (
     <span className={css(classNames)} onMouseDown={onMouseDown}>
       {props.children}

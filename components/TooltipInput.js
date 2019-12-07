@@ -3,25 +3,56 @@ import { StyleSheet, css } from "aphrodite";
 // Config
 import colors from "~/config/themes/colors";
 
-export const TooltipInput = (props) => {
-  const { title, value, onChange, save, close } = props;
-  return (
-    <div className={css(styles.tooltipEditContainer)}>
-      <div className={css(styles.tooltipTitle)}>{title}</div>
-      <div className={css(styles.tooltipInputContainer)}>
-        <input
-          className={css(styles.tooltipInput)}
-          value={value}
-          onChange={(e) => onChange(e)}
-        />
-        <div className={css(styles.submitTooltipButton)} onClick={save}>
-          <i className="fas fa-arrow-right"></i>
+export class TooltipInput extends React.Component {
+  detectEnter = (e) => {
+    let keycode = e.keyCode ? e.keyCode : e.which;
+    if (keycode == "13") {
+      this.props.save && this.props.save();
+    }
+  };
+
+  /**
+   * Alert if clicked on outside of element
+   */
+  handleClickOutside = (event) => {
+    if (this.container && !this.container.contains(event.target)) {
+      this.props.close && this.props.close();
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener("mousedown", this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("mousedown", this.handleClickOutside);
+  }
+
+  render() {
+    let { title, value, onChange, save, classContainer } = this.props;
+    return (
+      <div
+        ref={(ref) => (this.container = ref)}
+        className={css(styles.tooltipEditContainer, classContainer)}
+      >
+        <div className={css(styles.tooltipTitle)}>{title}</div>
+        <div className={css(styles.tooltipInputContainer)}>
+          <input
+            className={css(styles.tooltipInput)}
+            value={value}
+            onChange={(e) => onChange(e)}
+            onKeyPress={this.detectEnter}
+            autoFocus={true}
+          />
+          <div className={css(styles.submitTooltipButton)} onClick={save}>
+            <i className="fas fa-arrow-right"></i>
+          </div>
         </div>
+        <i className={css(styles.close) + " fal fa-times"} onClick={close}></i>
       </div>
-      <i className={css(styles.close) + " fal fa-times"} onClick={close}></i>
-    </div>
-  );
-};
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   tooltipTitle: {
