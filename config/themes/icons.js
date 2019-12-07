@@ -34,6 +34,8 @@ export const textEditorIcons = {
   quote: <i className="fas fa-quote-right"></i>,
   bulletedList: <i className="fas fa-list-ul"></i>,
   numberedList: <i className="fas fa-list-ol"></i>,
+  link: <i className="far fa-link"></i>,
+  image: <i className="far fa-image-polaroid"></i>,
 };
 
 export const RHLogo = ({ iconStyle }) => {

@@ -202,6 +202,8 @@ class RichTextEditor extends React.Component {
                     "bulleted-list",
                     textEditorIcons.bulletedList
                   )}
+                  {this.renderLinkButton("link", textEditorIcons.link)}
+                  {this.renderImageButton("image", textEditorIcons.image)}
                 </ToolBar>
               </Sticky>
             )}
@@ -237,6 +239,8 @@ class RichTextEditor extends React.Component {
                     "bulleted-list",
                     textEditorIcons.bulletedList
                   )}
+                  {this.renderLinkButton("link", textEditorIcons.link)}
+                  {this.renderImageButton("image", textEditorIcons.image)}
                 </ToolBar>
               </Sticky>
             )}
@@ -291,6 +295,54 @@ class RichTextEditor extends React.Component {
     );
   };
 
+  renderLinkButton = (type, icon) => {
+    const isActive = this.hasMark(type);
+    return (
+      <Button
+        active={isActive}
+        onMouseDown={(event) => {
+          event.preventDefault();
+          if (isActive) {
+            let filteredMarks = this.editor.value.activeMarks.filter((node) => {
+              return node.type === type;
+            });
+            let convertedMarks = filteredMarks.toJS();
+            for (let i = 0; i < convertedMarks.length; i++) {
+              this.editor.toggleMark(convertedMarks[i]);
+            }
+          } else {
+            const url = window.prompt("Enter the URL of the link:");
+            if (!url) return;
+            const link = { type, data: { url } };
+            this.editor.toggleMark(link);
+          }
+        }}
+      >
+        <Icon>{icon}</Icon>
+      </Button>
+    );
+  };
+
+  renderImageButton = (type, icon) => {
+    return (
+      <Button
+        onMouseDown={(event) => {
+          event.preventDefault();
+          const url = window.prompt("Enter the URL of the image:");
+          if (!url) return;
+          const image = { type, data: { url } };
+          this.editor.setBlocks({ type, data: { url } });
+          // let filteredMarks = this.editor.value.activeMarks.filter((node) => {return node.type === type})
+          // let convertedMarks = filteredMarks.toJS()
+          // for (let i = 0; i < convertedMarks.length; i++) {
+          //   this.editor.toggleMark(convertedMarks[i])
+          // }
+        }}
+      >
+        <Icon>{icon}</Icon>
+      </Button>
+    );
+  };
   /**
    * render decorations for draft editor to show diffing
    * @return {[type]} [description]
@@ -422,9 +474,30 @@ class RichTextEditor extends React.Component {
         return <li {...attributes}>{children}</li>;
       case "numbered-list":
         return <ol {...attributes}>{children}</ol>;
+      case "image":
+        return (
+          <div className={css(styles.imageBlock)} {...attributes}>
+            <div className={css(styles.imageContainer)} contentEditable={false}>
+              <img src={node.data.get("url")} className={css(styles.image)} />
+              {!this.props.readOnly && (
+                <div className={css(styles.imageOverlay)}>
+                  <i
+                    className={css(styles.deleteImage) + " fal fa-times"}
+                    onClick={() => this.deleteImage(node)}
+                  ></i>
+                </div>
+              )}
+            </div>
+          </div>
+        );
       default:
         return next();
     }
+  };
+
+  deleteImage = (node) => {
+    let { editor } = this;
+    this.editor.removeNodeByKey(node.key);
   };
 
   /**
@@ -456,6 +529,12 @@ class RichTextEditor extends React.Component {
           <s {...attributes} className={css(styles.removed)}>
             {children}
           </s>
+        );
+      case "link":
+        return (
+          <a {...attributes} href={mark.data.get("url")}>
+            {children}
+          </a>
         );
       default:
         return next();
@@ -620,6 +699,42 @@ const styles = StyleSheet.create({
   removed: {
     background: "rgba(173, 34, 21, .2)",
     color: "rgb(173, 34, 21)",
+  },
+  image: {
+    display: "block",
+    maxWidth: "100%",
+    maxHeight: 300,
+  },
+  deleteImage: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    fontSize: 30,
+    color: "#fff",
+    cursor: "pointer",
+    zIndex: 3,
+  },
+  imageContainer: {
+    position: "relative",
+    width: "fit-content",
+  },
+  imageBlock: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imageOverlay: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    top: 0,
+    left: 0,
+    opacity: "0%",
+
+    ":hover": {
+      background: "linear-gradient(#000 1%, transparent 100%)",
+      opacity: "100%",
+    },
   },
 });
 
