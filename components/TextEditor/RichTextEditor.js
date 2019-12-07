@@ -10,6 +10,7 @@ import Sticky from "react-stickynode";
 
 // Components
 import { Button, Icon, ToolBar } from "./ToolBar";
+import { TooltipInput } from "~/components/TooltipInput";
 
 // Styles
 import { textEditorIcons } from "~/config/themes/icons";
@@ -80,6 +81,10 @@ class RichTextEditor extends React.Component {
         : this.props.commentEditor
         ? commentInitialValue
         : summaryScaffoldInitialValue,
+      addLinkTooltip: false,
+      addImageTooltip: false,
+      imageTooltip: false,
+      linkTooltip: false,
     };
   }
 
@@ -298,51 +303,124 @@ class RichTextEditor extends React.Component {
   renderLinkButton = (type, icon) => {
     const isActive = this.hasMark(type);
     return (
-      <Button
-        active={isActive}
-        onMouseDown={(event) => {
-          event.preventDefault();
-          if (isActive) {
-            let filteredMarks = this.editor.value.activeMarks.filter((node) => {
-              return node.type === type;
-            });
-            let convertedMarks = filteredMarks.toJS();
-            for (let i = 0; i < convertedMarks.length; i++) {
-              this.editor.toggleMark(convertedMarks[i]);
+      <span>
+        <Button
+          active={isActive}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            if (isActive) {
+              let filteredMarks = this.editor.value.activeMarks.filter(
+                (node) => {
+                  return node.type === type;
+                }
+              );
+              let convertedMarks = filteredMarks.toJS();
+              for (let i = 0; i < convertedMarks.length; i++) {
+                this.editor.toggleMark(convertedMarks[i]);
+              }
+            } else {
+              this.setState({
+                addLinkTooltip: true,
+                selection: this.editor.value.selection,
+              });
             }
-          } else {
-            const url = window.prompt("Enter the URL of the link:");
-            if (!url) return;
-            const link = { type, data: { url } };
-            this.editor.toggleMark(link);
-          }
-        }}
-      >
-        <Icon>{icon}</Icon>
-      </Button>
+          }}
+        >
+          <Icon>{icon}</Icon>
+        </Button>
+        {this.state.addLinkTooltip && (
+          <TooltipInput
+            title={"Link URL"}
+            value={this.state.link}
+            onChange={this.onChangeLink}
+            save={() => this.setLink(type, this.state.link)}
+          />
+        )}
+      </span>
     );
+  };
+
+  onChangeLink = (e) => {
+    this.setState({
+      link: e.target.value,
+    });
+  };
+
+  setLink = (type, url) => {
+    let formattedURL = this.formatURL(url);
+    const link = { type, data: { url: formattedURL } };
+    this.setState(
+      {
+        addLinkTooltip: false,
+        link: "",
+      },
+      () => {
+        this.editor.value.setSelection(this.state.selection);
+        this.editor.focus();
+        this.editor.toggleMark(link);
+      }
+    );
+  };
+
+  formatURL = (url) => {
+    let http = "http://";
+    let https = "https://";
+    if (!url.startsWith(https)) {
+      if (url.startsWith(http)) {
+        url = url.replace(http, https);
+      }
+      url = https + url;
+    }
+    return url;
   };
 
   renderImageButton = (type, icon) => {
     return (
-      <Button
-        onMouseDown={(event) => {
-          event.preventDefault();
-          const url = window.prompt("Enter the URL of the image:");
-          if (!url) return;
-          const image = { type, data: { url } };
-          this.editor.setBlocks({ type, data: { url } });
-          // let filteredMarks = this.editor.value.activeMarks.filter((node) => {return node.type === type})
-          // let convertedMarks = filteredMarks.toJS()
-          // for (let i = 0; i < convertedMarks.length; i++) {
-          //   this.editor.toggleMark(convertedMarks[i])
-          // }
-        }}
-      >
-        <Icon>{icon}</Icon>
-      </Button>
+      <span>
+        <Button
+          onMouseDown={(event) => {
+            event.preventDefault();
+            this.setState({
+              addImageTooltip: true,
+              selection: this.editor.value.selection,
+            });
+          }}
+        >
+          <Icon>{icon}</Icon>
+        </Button>
+        {this.state.addImageTooltip && (
+          <TooltipInput
+            title={"Image URL"}
+            value={this.state.image}
+            onChange={this.onChangeImage}
+            save={() => this.setImage(type, this.state.image)}
+          />
+        )}
+      </span>
     );
   };
+
+  onChangeImage = (e) => {
+    this.setState({
+      image: e.target.value,
+    });
+  };
+
+  setImage = (type, url) => {
+    const image = { type, data: { url } };
+    this.setState(
+      {
+        addImageTooltip: false,
+        image: "",
+      },
+      () => {
+        this.editor.value.setSelection(this.state.selection);
+        this.editor.focus();
+        this.editor.setBlocks(image);
+      }
+    );
+  };
+
   /**
    * render decorations for draft editor to show diffing
    * @return {[type]} [description]
@@ -531,14 +609,29 @@ class RichTextEditor extends React.Component {
           </s>
         );
       case "link":
+        let url = mark.data.get("url");
         return (
-          <a {...attributes} href={mark.data.get("url")}>
+          <a {...attributes} href={url} target={"_blank"}>
             {children}
           </a>
         );
       default:
         return next();
     }
+  };
+
+  onMouseEnterLink = (url) => {
+    this.setState({
+      link: url,
+      linkTooltip: true,
+    });
+  };
+
+  onMouseLeaveLink = () => {
+    this.setState({
+      link: "",
+      linkTooltip: false,
+    });
   };
 
   /**
