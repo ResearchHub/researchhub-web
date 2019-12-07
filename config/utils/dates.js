@@ -7,7 +7,7 @@ TimeAgo.addLocale(en);
 export const timeAgo = new TimeAgo("en-US");
 
 export function formatDateStandard(momentDate) {
-  return momentDate.format("MMM Do, YYYY");
+  return momentDate.format("MMM YYYY");
 }
 
 export function formatPublishedDate(momentDate) {
