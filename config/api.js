@@ -302,7 +302,15 @@ const routes = (BASE_URL) => {
     // Used to check if url is a valid pdf
     CHECKURL: BASE_URL + "paper/check_url/",
     // Ethereum
-    WITHDRAW_COIN: BASE_URL + "withdrawal/",
+    WITHDRAW_COIN: ({ transactionId }) => {
+      let url = BASE_URL + "withdrawal/";
+
+      if (transactionId) {
+        url += `${transactionId}/`;
+      }
+
+      return url;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
