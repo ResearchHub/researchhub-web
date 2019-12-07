@@ -527,20 +527,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
     "@media only screen and (max-width: 557px)": {
-      fontSize: 24,
-    },
-    "@media only screen and (max-width: 725px)": {
-      width: 450,
-    },
-    "@media only screen and (max-width: 557px)": {
       width: 380,
     },
     "@media only screen and (max-width: 415px)": {
-      width: 300,
       fontSize: 22,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 280,
     },
   },
   title: {
@@ -568,6 +558,15 @@ const styles = StyleSheet.create({
     borderBottom: "1px dashed #E7E5E4",
     width: 440,
     padding: "20px 0 20px",
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 410px)": {
+      width: 300,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
   top: {
     borderBottom: "none",
