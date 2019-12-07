@@ -85,6 +85,8 @@ class RichTextEditor extends React.Component {
       addImageTooltip: false,
       imageTooltip: false,
       linkTooltip: false,
+      link: "",
+      image: "",
     };
   }
 
@@ -334,6 +336,7 @@ class RichTextEditor extends React.Component {
             value={this.state.link}
             onChange={this.onChangeLink}
             save={() => this.setLink(type, this.state.link)}
+            close={this.closeTooltipInput}
           />
         )}
       </span>
@@ -347,6 +350,10 @@ class RichTextEditor extends React.Component {
   };
 
   setLink = (type, url) => {
+    if (url === "" || url === null) {
+      this.closeTooltipInput();
+      return;
+    }
     let formattedURL = this.formatURL(url);
     const link = { type, data: { url: formattedURL } };
     this.setState(
@@ -394,10 +401,22 @@ class RichTextEditor extends React.Component {
             value={this.state.image}
             onChange={this.onChangeImage}
             save={() => this.setImage(type, this.state.image)}
+            close={this.closeTooltipInput}
           />
         )}
       </span>
     );
+  };
+
+  closeTooltipInput = () => {
+    this.setState({
+      addLinkTooltip: false,
+      addImageTooltip: false,
+      imageTooltip: false,
+      linkTooltip: false,
+      link: "",
+      image: "",
+    });
   };
 
   onChangeImage = (e) => {
@@ -407,6 +426,10 @@ class RichTextEditor extends React.Component {
   };
 
   setImage = (type, url) => {
+    if (url === "" || url === null) {
+      this.closeTooltipInput();
+      return;
+    }
     const image = { type, data: { url } };
     this.setState(
       {
