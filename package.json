@@ -8,8 +8,11 @@
     "cypress:open": "cypress open --project $PWD/tests",
     "test": "cypress run --project $PWD/tests",
     "build:prod": "docker build -t researchhub-web .",
+    "build:staging": "docker build --build-arg REACT_APP_ENV=${staging} -t researchhub-web-staging .",
     "deploy": "./scripts/deploy/production.sh deploy",
-    "staging": "./scripts/deploy/staging.sh deploy"
+    "staging": "./scripts/deploy/staging.sh deploy",
+    "run:staging": "docker run",
+    "start:prod": "docker run -it -p 3010:3000 researchhub-web-staging"
   },
   "dependencies": {
     "@quantfive/js-web-config": "latest",
