@@ -11,6 +11,7 @@ echo Step 3/3: Creating elastic beanstalk environment;
     mv Dockerfile Dockerfile.staging.off;
     mv Dockerrun.aws.json.staging Dockerrun.aws.json;
     git add Dockerfile.staging.off Dockerfile;
+    git add Dockerrun.aws.json.staging Dockerrun.aws.json;
     eb deploy staging-web --profile researchhub --staged;
     git reset;
     mv Dockerfile.prod.off Dockerfile;
