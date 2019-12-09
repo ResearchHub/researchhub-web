@@ -320,6 +320,9 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     whiteSpace: "pre-wrap",
     color: "rgb(78, 76, 95)",
+    "@media only screen and (max-width: 436px)": {
+      fontSize: 14,
+    },
   },
   link: {
     textDecoration: "none",
