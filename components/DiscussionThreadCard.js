@@ -16,6 +16,7 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
+import { convertToEditorValue } from "~/config/utils/serializers";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
@@ -31,6 +32,7 @@ const DiscussionThreadCard = (props) => {
 
   let date = "";
   let title = "";
+  let body = "";
   let username = "";
   let commentCount = "";
   let vote = null;
@@ -41,6 +43,7 @@ const DiscussionThreadCard = (props) => {
     commentCount = data.commentCount;
     date = data.createdDate;
     title = data.title;
+    body = data.text;
     username = createUsername(data);
     vote = data.userVote;
   }
@@ -121,6 +124,7 @@ const DiscussionThreadCard = (props) => {
           info={
             <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={path}>
               <Title text={title} />
+              <Body text={body} />
             </ClientLinkWrapper>
           }
           action={
@@ -171,6 +175,7 @@ const DiscussionThreadCard = (props) => {
           info={
             <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={path}>
               <Title text={title} />
+              <Body text={body} />
             </ClientLinkWrapper>
           }
           action={
@@ -204,18 +209,17 @@ DiscussionThreadCard.propTypes = {
 };
 
 const Title = (props) => {
-  const title = formatTitle(props.text);
-
+  const title = props.text;
   return <div className={css(styles.title)}>{title}</div>;
 };
 
-function formatTitle(title) {
-  const limit = 80;
-  if (title.length > limit) {
-    return title.substring(0, limit) + "...";
+const Body = (props) => {
+  const text = convertToEditorValue(props.text).document.text;
+  if (text.length > 100) {
+    text = text.slice(0, 100) + "...";
   }
-  return title;
-}
+  return <div className={css(styles.body)}>{text}</div>;
+};
 
 const ReadButton = (props) => {
   const { threadPath } = props;
@@ -305,12 +309,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    paddingBottom: 18,
-    // color: colors.BLACK(1),
+    paddingBottom: 10,
     color: "#232038",
-    textOverflow: "ellipsis",
     "@media only screen and (max-width: 436px)": {
       fontSize: 18,
+    },
+  },
+  body: {
+    fontSize: 16,
+    marginBottom: 18,
+    whiteSpace: "pre-wrap",
+    color: "rgb(78, 76, 95)",
+    "@media only screen and (max-width: 436px)": {
+      fontSize: 14,
     },
   },
   link: {
