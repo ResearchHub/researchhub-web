@@ -271,7 +271,7 @@ class Index extends React.Component {
                 )}
               >
                 <h3 className={css(styles.textTitle, styles.centerText)}>
-                  Community Powered by ResearchCoin
+                  A Community Powered by ResearchCoin
                 </h3>
                 <p className={css(styles.subtext, styles.wideText)}>
                   To help bring this nascent community together, we’ve created
