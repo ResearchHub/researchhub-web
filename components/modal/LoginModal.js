@@ -1,14 +1,11 @@
 // NPM Modules
 import React from "react";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
-import Modal from "react-modal";
-import { GoogleLogin, GoogleLogout } from "react-google-login";
+import { GoogleLogin } from "react-google-login";
 
 // Component
 import Button from "../Form/Button";
-import FormInput from "../Form/FormInput";
 import BaseModal from "./BaseModal";
 
 // Redux
@@ -56,7 +53,7 @@ class LoginModal extends React.Component {
   };
 
   render() {
-    let { modals, auth } = this.props;
+    let { modals } = this.props;
     return (
       <BaseModal
         isOpen={modals.openLoginModal}
