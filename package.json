@@ -8,7 +8,8 @@
     "cypress:open": "cypress open --project $PWD/tests",
     "test": "cypress run --project $PWD/tests",
     "build:prod": "docker build -t researchhub-web .",
-    "deploy": "./scripts/deploy/production.sh deploy"
+    "deploy": "./scripts/deploy/production.sh deploy",
+    "staging": "./scripts/deploy/staging.sh deploy"
   },
   "dependencies": {
     "@quantfive/js-web-config": "latest",
