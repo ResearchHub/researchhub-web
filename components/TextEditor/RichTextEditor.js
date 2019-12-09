@@ -792,6 +792,7 @@ class RichTextEditor extends React.Component {
 const styles = StyleSheet.create({
   editor: {
     width: "100%",
+    position: "relative",
   },
   summaryEditor: {
     width: "100%",
