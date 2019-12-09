@@ -124,6 +124,7 @@ const DiscussionThreadCard = (props) => {
           info={
             <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={path}>
               <Title text={title} />
+              <Body text={body} />
             </ClientLinkWrapper>
           }
           action={
@@ -214,6 +215,9 @@ const Title = (props) => {
 
 const Body = (props) => {
   const text = convertToEditorValue(props.text).document.text;
+  if (text.length > 100) {
+    text = text.slice(0, 100) + "...";
+  }
   return <div className={css(styles.body)}>{text}</div>;
 };
 
