@@ -215,8 +215,13 @@ const Title = (props) => {
 
 const Body = (props) => {
   let text = convertToEditorValue(props.text).document.text;
-  if (text.length > 100) {
-    text = text.slice(0, 100) + "...";
+  let wordCount = text.split(" ").length;
+  if (wordCount > 15) {
+    text =
+      text
+        .split(" ")
+        .slice(0, 15)
+        .join(" ") + "...";
   }
   return <div className={css(styles.body)}>{text}</div>;
 };
