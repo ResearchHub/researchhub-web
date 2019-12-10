@@ -44,6 +44,7 @@ class DragNDrop extends React.Component {
   }
 
   handleUrlPaste = (id, value) => {
+    if (value === "") return;
     this.setState({ pdfUrl: value, pending: true }, async () => {
       let param = {
         url: value,
