@@ -66,7 +66,12 @@ class Footer extends React.Component {
           <div className={css(styles.tab)}>Terms of Service</div>
           <div className={css(styles.tab)}>Privacy Policy</div>
           <div className={css(styles.arr)}>
-            © ResearchHub {new Date().getFullYear()}. All rights reserved
+            © {new Date().getFullYear()} ResearchHub &amp; Contributors.
+            User contributions licensed under
+            <a href="https://creativecommons.org/licenses/by/4.0/"
+              title="Creative Commons Attribution 4.0 International Public License">
+              CC BY 4.0
+            </a>.
           </div>
         </div>
       </footer>
