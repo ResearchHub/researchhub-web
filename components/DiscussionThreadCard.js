@@ -214,7 +214,7 @@ const Title = (props) => {
 };
 
 const Body = (props) => {
-  const text = convertToEditorValue(props.text).document.text;
+  let text = convertToEditorValue(props.text).document.text;
   if (text.length > 100) {
     text = text.slice(0, 100) + "...";
   }
