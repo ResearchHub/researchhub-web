@@ -317,15 +317,13 @@ class TransactionModal extends React.Component {
     );
   };
 
-  getBalance = async () => {
-    await this.props.getUser();
+  getBalance = () => {
     fetch(API.WITHDRAW_COIN({}), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let { user } = this.props.auth;
         this.setState({
-          userBalance: user.balance,
+          userBalance: res.user.balance,
           withdrawals: [...res.results],
         });
       });
@@ -372,7 +370,9 @@ class TransactionModal extends React.Component {
             showMessage({ show: false });
             setMessage("Your transaction request has been made.");
             showMessage({ show: true, clickoff: true });
-            this.setState({ transactionHash: transaction_hash });
+            this.setState({ transactionHash: transaction_hash }, () => {
+              this.props.getUser();
+            });
           }
         })
         .catch((err) => {

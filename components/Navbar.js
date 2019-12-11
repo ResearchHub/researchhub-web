@@ -335,7 +335,7 @@ const Navbar = (props) => {
                   />
                   <i className={css(styles.caret) + " fas fa-caret-down"}></i>
                   <div className={css(styles.reputation)}>
-                    <Reputation reputation={user.reputation} />
+                    <Reputation reputation={user.balance} />
                   </div>
                 </div>
                 {openMenu && (
