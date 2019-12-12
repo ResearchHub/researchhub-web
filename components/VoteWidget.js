@@ -65,9 +65,9 @@ const VoteWidget = (props) => {
       console.log("Vote already cast");
     } else {
       if (isPaper) {
-        let firstTime = !auth.user.has_seen_first_vote_modal;
+        let firstTime = !store.getState().auth.user.has_seen_first_vote_modal;
         if (firstTime) {
-          openFirstVoteModal(true);
+          dispatch(ModalActions.openFirstVoteModal(true));
         }
       }
       onUpvote(e);
