@@ -92,12 +92,8 @@ const Paper = (props) => {
   }
 
   async function upvote() {
-    let firstTime = !store.getState().auth.user.has_seen_first_vote_modal;
     dispatch(VoteActions.postUpvotePending());
     await dispatch(VoteActions.postUpvote(paperId));
-    if (firstTime) {
-      dispatch(ModalActions.openFirstVoteModal(true));
-    }
     updateWidgetUI();
   }
 
@@ -211,6 +207,7 @@ const Paper = (props) => {
               onUpvote={upvote}
               onDownvote={downvote}
               selected={selectedVoteType}
+              isPaper={true}
             />
           </div>
           <div className={css(styles.topHeader)}>
@@ -223,6 +220,7 @@ const Paper = (props) => {
                   onDownvote={downvote}
                   selected={selectedVoteType}
                   horizontalView={true}
+                  isPaper={true}
                 />
               </div>
               <div className={css(styles.actionButtons)}>
@@ -347,8 +345,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     position: "relative",
     "@media only screen and (max-width: 760px)": {
-      // marginTop: 50,
-      // marginBottom: 15,
       fontSize: 28,
     },
     "@media only screen and (max-width: 415px)": {
