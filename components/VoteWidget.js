@@ -92,6 +92,7 @@ const VoteWidget = (props) => {
         <PermissionNotificationWrapper
           loginRequired={true}
           onClick={horizontalView ? onDownvoteClick : onUpvoteClick}
+          modalMessage={"vote"}
         >
           {horizontalView ? (
             <DownvoteButton
@@ -110,6 +111,7 @@ const VoteWidget = (props) => {
         <PermissionNotificationWrapper
           loginRequired={true}
           onClick={horizontalView ? onUpvoteClick : onDownvoteClick}
+          modalMessage={"vote"}
         >
           {horizontalView ? (
             <UpvoteButton
