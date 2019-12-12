@@ -106,17 +106,9 @@ class HubPage extends React.Component {
     curPaper.user_vote = {
       vote_type: UPVOTE_ENUM,
     };
-    this.setState(
-      {
-        papers,
-      },
-      () => {
-        let firstTime = !auth.user.has_seen_first_vote_modal;
-        if (firstTime) {
-          openFirstVoteModal(true);
-        }
-      }
-    );
+    this.setState({
+      papers,
+    });
   };
 
   /**
