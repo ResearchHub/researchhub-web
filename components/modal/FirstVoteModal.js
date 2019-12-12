@@ -57,6 +57,7 @@ const FirstVoteModal = (props) => {
   }
 
   function closeModal() {
+    dispatch(AuthActions.getUser());
     dispatch(ModalActions.openFirstVoteModal(false));
     setRecycle(true);
     toggleReveal(false);
