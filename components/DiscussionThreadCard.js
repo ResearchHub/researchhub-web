@@ -5,6 +5,7 @@ import { Fragment, useState, useEffect } from "react";
 import { useDispatch, useStore } from "react-redux";
 
 import DiscussionActions from "~/redux/discussion";
+import { ModalActions } from "~/redux/modals";
 
 import DiscussionCard from "./DiscussionCard";
 import DiscussionPostMetadata from "./DiscussionPostMetadata";

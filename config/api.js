@@ -311,6 +311,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    USER_FIRST_VOTE: BASE_URL + "user/has_seen_first_vote_modal/",
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
