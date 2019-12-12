@@ -317,22 +317,22 @@ const mobileStyles = StyleSheet.create({
     fontWeight: 500,
     maxHeight: 72,
     textOverflow: "ellipsis",
-    margin: 0,
+    marginBottom: 15,
     padding: 0,
   },
   voting: {
-    margin: "15px 0 15px 0",
+    marginBottom: 15,
   },
   publishDate: {
     height: 16,
-    margin: 0,
+    marginBottom: 15,
     "@media only screen and (max-width: 416px)": {
       fontSize: 12,
     },
   },
   summary: {
     maxHeight: 176,
-    marginTop: 15,
+    marginBottom: 15,
     textOverflow: "ellipsis",
     width: "calc(100% - 15px)",
     overflow: "hidden",
@@ -341,7 +341,7 @@ const mobileStyles = StyleSheet.create({
     display: "none",
   },
   bottomBar: {
-    margin: "15px 0 15px 0",
+    marginBottom: 15,
     overflowX: "scroll",
     paddingTop: 2,
   },
@@ -449,7 +449,6 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     alignItems: "center",
-    // height: 30,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       height: "unset",
