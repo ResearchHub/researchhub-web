@@ -150,7 +150,10 @@ class BaseModal extends React.Component {
                   {this.props.title && this.props.title}
                 </div>
                 <div className={css(styles.subtitle, styles.text)}>
-                  {this.props.subtitle && this.props.subtitle}
+                  {this.props.subtitle &&
+                  typeof this.props.subtitle === "function"
+                    ? this.props.subtitle()
+                    : this.props.subtitle}
                 </div>
               </div>
             </Fragment>

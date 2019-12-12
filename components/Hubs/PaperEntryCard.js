@@ -108,6 +108,7 @@ const PaperEntryCard = ({
               onDownvote={downvote}
               selected={selected}
               horizontalView={true}
+              isPaper={true}
             />
           </span>
           <div
@@ -144,6 +145,7 @@ const PaperEntryCard = ({
                       key={`author_${author.id}_${id}_${Math.random()}`}
                     >
                       <AuthorAvatar
+                        key={`author_${author.id}_${id}`}
                         size={30}
                         textSizeRatio={2.5}
                         author={author}
@@ -202,6 +204,7 @@ const PaperEntryCard = ({
                 onDownvote={downvote}
                 selected={selected}
                 searchResult={searchResult}
+                isPaper={true}
               />
             </span>
           </div>
@@ -316,22 +319,22 @@ const mobileStyles = StyleSheet.create({
     fontWeight: 500,
     maxHeight: 72,
     textOverflow: "ellipsis",
-    margin: 0,
+    marginBottom: 15,
     padding: 0,
   },
   voting: {
-    margin: "15px 0 15px 0",
+    marginBottom: 15,
   },
   publishDate: {
     height: 16,
-    margin: 0,
+    marginBottom: 15,
     "@media only screen and (max-width: 416px)": {
       fontSize: 12,
     },
   },
   summary: {
     maxHeight: 176,
-    marginTop: 15,
+    marginBottom: 15,
     textOverflow: "ellipsis",
     width: "calc(100% - 15px)",
     overflow: "hidden",
@@ -340,7 +343,7 @@ const mobileStyles = StyleSheet.create({
     display: "none",
   },
   bottomBar: {
-    margin: "15px 0 15px 0",
+    marginBottom: 15,
     overflowX: "scroll",
     paddingTop: 2,
   },
@@ -383,8 +386,6 @@ const styles = StyleSheet.create({
     maxWidth: "95%",
     fontSize: 22,
     fontWeight: 500,
-    textOverflow: "ellipsis",
-    maxHeight: 72,
     marginBottom: 10,
   },
   publishDate: {
@@ -450,7 +451,6 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     alignItems: "center",
-    // height: 30,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       height: "unset",

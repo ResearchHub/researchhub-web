@@ -52,17 +52,19 @@ class FormInput extends React.Component {
           disabled && styles.disabled
         )}
       >
-        <div
-          className={css(
-            styles.inputLabel,
-            labelStyle && labelStyle,
-            styles.text,
-            !label && styles.hide
-          )}
-        >
-          {label && label}
-          {required && <div className={css(styles.asterick)}>*</div>}
-        </div>
+        {label && (
+          <div
+            className={css(
+              styles.inputLabel,
+              labelStyle && labelStyle,
+              styles.text,
+              !label && styles.hide
+            )}
+          >
+            {label && label}
+            {required && <div className={css(styles.asterick)}>*</div>}
+          </div>
+        )}
         <input
           id={id && id}
           type={type ? type : "text"}
@@ -79,7 +81,7 @@ class FormInput extends React.Component {
           )}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
-          autocomplete={autocomplete && autocomplete}
+          autoComplete={autocomplete && autocomplete}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && <p className={css(styles.message)}>{message}</p>}
@@ -182,11 +184,11 @@ const styles = StyleSheet.create({
     top: 15,
     paddingRight: 15,
     cursor: "pointer",
-    "@media only screen and (max-width: 670px)": {
-      top: "unset",
-      paddingRight: 15,
-      bottom: 0,
-    },
+    // "@media only screen and (max-width: 670px)": {
+    //   top: "unset",
+    //   paddingRight: 15,
+    //   bottom: 0,
+    // },
   },
   error: {
     margin: 0,

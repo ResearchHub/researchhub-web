@@ -23,6 +23,8 @@ EXPOSE 3000
 
 # Bundle app source
 COPY . /usr/src/app
+ARG REACT_APP_ENV
+ENV REACT_APP_ENV=$REACT_APP_ENV
 RUN yarn run build:now
 
 # build and Start server

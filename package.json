@@ -8,7 +8,11 @@
     "cypress:open": "cypress open --project $PWD/tests",
     "test": "cypress run --project $PWD/tests",
     "build:prod": "docker build -t researchhub-web .",
-    "deploy": "./scripts/deploy/production.sh deploy"
+    "build:staging": "docker build --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
+    "deploy": "./scripts/deploy/production.sh deploy",
+    "staging": "./scripts/deploy/staging.sh deploy",
+    "run:staging": "docker run",
+    "start:prod": "docker run -it -p 3010:3000 researchhub-web-staging"
   },
   "dependencies": {
     "@quantfive/js-web-config": "latest",
@@ -21,6 +25,7 @@
     "immutable": "^4.0.0-rc.12",
     "isomorphic-unfetch": "^3.0.0",
     "javascript-time-ago": "^2.0.2",
+    "js-sha3": "^0.8.0",
     "katex": "^0.11.1",
     "moment": "^2.24.0",
     "next": "^9.0.6",
@@ -34,6 +39,7 @@
     "react-avatar": "^3.7.0",
     "react-avatar-edit": "^0.8.3",
     "react-burger-menu": "^2.6.11",
+    "react-confetti": "^5.0.1",
     "react-device-detect": "^1.9.10",
     "react-dom": "^16.10.1",
     "react-dropzone": "^10.1.9",
