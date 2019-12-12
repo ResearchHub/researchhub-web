@@ -94,7 +94,7 @@ class HubPage extends React.Component {
    * @param { Integer } index -- the index of the paper to upvote
    */
   onUpvote = ({ index }) => {
-    let { postUpvote } = this.props;
+    let { postUpvote, auth, openFirstVoteModal } = this.props;
     let papers = JSON.parse(JSON.stringify([...this.state.papers]));
     let curPaper = papers[index];
     postUpvote(curPaper.id);
@@ -106,9 +106,17 @@ class HubPage extends React.Component {
     curPaper.user_vote = {
       vote_type: UPVOTE_ENUM,
     };
-    this.setState({
-      papers,
-    });
+    this.setState(
+      {
+        papers,
+      },
+      () => {
+        let firstTime = !auth.user.has_seen_first_vote_modal;
+        if (firstTime) {
+          openFirstVoteModal(true);
+        }
+      }
+    );
   };
 
   /**
@@ -818,6 +826,7 @@ const mapDispatchToProps = {
   setUserBannerPreference: AuthActions.setUserBannerPreference,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   showMessage: MessageActions.showMessage,
+  openFirstVoteModal: ModalActions.openFirstVoteModal,
 };
 
 export default connect(

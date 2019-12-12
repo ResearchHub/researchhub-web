@@ -21,6 +21,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
+import { ModalActions } from "~/redux/modals";
 import VoteActions from "~/redux/vote";
 
 // Config
@@ -91,8 +92,12 @@ const Paper = (props) => {
   }
 
   async function upvote() {
+    let firstTime = !store.getState().auth.user.has_seen_first_vote_modal;
     dispatch(VoteActions.postUpvotePending());
     await dispatch(VoteActions.postUpvote(paperId));
+    if (firstTime) {
+      dispatch(ModalActions.openFirstVoteModal(true));
+    }
     updateWidgetUI();
   }
 
