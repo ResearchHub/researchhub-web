@@ -167,11 +167,10 @@ class InviteToHubModal extends React.Component {
               Inviting people to the Hub
             </div>
             <div className={css(styles.subtitle, styles.text)}>
-              Share your link to invite people to the hub
-              {/*You can invite people by email, or with a link*/}
+              You can invite people by email, or with a link
             </div>
           </div>
-          {/*<div className={css(styles.container)}>
+          <div className={css(styles.container)}>
             <AuthorInput
               tags={this.state.emails}
               onChange={this.addEmail}
@@ -188,7 +187,7 @@ class InviteToHubModal extends React.Component {
             label={"Send Invites"}
             customButtonStyle={styles.customButtonStyle}
             onClick={this.sendInvites}
-          />*/}
+          />
           <FormInput
             getRef={this.formInputRef}
             inlineNodeRight={<CopyLink onClick={this.copyToClipboard} />}
@@ -197,11 +196,11 @@ class InviteToHubModal extends React.Component {
             containerStyle={styles.containerStyle}
             inputStyle={styles.inputStyle}
           />
-          {/*<span className={css(styles.socialMedia)}>
+          <span className={css(styles.socialMedia)}>
             <div className={css(styles.sublabel)}>
               Share your link to invite people to the hub
             </div>
-          </span>*/}
+          </span>
         </div>
       </Modal>
     );
