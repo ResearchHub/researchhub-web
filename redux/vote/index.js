@@ -2,6 +2,7 @@ import * as actions from "./actions";
 import * as shims from "./shims";
 import API from "~/config/api";
 import * as utils from "../utils";
+import { ModalActions } from "~/redux/modals";
 
 export function postUpvote(paperId, threadId, commentId, replyId) {
   const isUpvote = true;
@@ -21,6 +22,13 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
     } else {
       utils.logFetchError(response);
     }
+
+    // const store = useStore();
+    // console.log("store", store.getState().auth.user.has_seen_first_vote_modal)
+    // if (!store.getState().auth.user.has_seen_first_vote_modal) {
+    //   console.log('called')
+    // dispatch(ModalActions.openFirstVoteModal(true))
+    // }
 
     return dispatch(action);
   };
