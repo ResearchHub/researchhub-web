@@ -27,6 +27,7 @@ const VoteWidget = (props) => {
     width,
     horizontalView,
     searchResult,
+    isPaper,
   } = props;
   const score = getScore(props);
 
@@ -63,6 +64,12 @@ const VoteWidget = (props) => {
     } else if (upvoteSelected) {
       console.log("Vote already cast");
     } else {
+      if (isPaper) {
+        let firstTime = !auth.user.has_seen_first_vote_modal;
+        if (firstTime) {
+          openFirstVoteModal(true);
+        }
+      }
       onUpvote(e);
     }
   }

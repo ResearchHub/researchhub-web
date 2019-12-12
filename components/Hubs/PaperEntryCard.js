@@ -108,6 +108,7 @@ const PaperEntryCard = ({
               onDownvote={downvote}
               selected={selected}
               horizontalView={true}
+              isPaper={true}
             />
           </span>
           <div
@@ -203,6 +204,7 @@ const PaperEntryCard = ({
                 onDownvote={downvote}
                 selected={selected}
                 searchResult={searchResult}
+                isPaper={true}
               />
             </span>
           </div>
