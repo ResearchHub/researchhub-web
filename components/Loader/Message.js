@@ -16,6 +16,13 @@ import Loader from "./Loader.js";
 import { MessageActions } from "~/redux/message";
 
 class Message extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      transition: false,
+    };
+  }
+
   eventListen = () => {
     let { messageActions } = this.props;
     messageActions.showMessage({ show: false });
@@ -24,7 +31,7 @@ class Message extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    let { messageActions } = this.props;
+    let { messageActions, message } = this.props;
     if (
       nextProps.message.show &&
       this.props.message.show !== nextProps.message.show
@@ -35,7 +42,7 @@ class Message extends Component {
       } else if (!nextProps.message.load) {
         this.popupMessageTimeout = setTimeout(() => {
           messageActions.showMessage({ show: false });
-        }, 2000);
+        }, message.timeout);
       }
     }
   }
@@ -98,6 +105,7 @@ var styles = StyleSheet.create({
     fontWeight: "300",
     textAlign: "center",
     fontFamily: "Roboto",
+    whiteSpace: "pre-wrap",
   },
 });
 

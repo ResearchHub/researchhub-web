@@ -12,8 +12,8 @@ const ReputationTooltip = (props) => {
       delayShow={500}
     >
       <div className={css(styles.comingSoon)}>
+        Currently on Testnet
         <img className={css(styles.icon)} src={"/static/icons/coin.png"} />
-        Coming Soon
       </div>
       <div className={css(styles.paragraph, styles.description)}>
         Earn research coins by participating in discussion, uploading papers,
@@ -29,7 +29,7 @@ const ReputationTooltip = (props) => {
 
 const styles = StyleSheet.create({
   tooltip: {
-    width: 348,
+    width: 345,
     padding: 15,
     fontSize: 14,
     background: colors.BLUE(1),
@@ -40,18 +40,20 @@ const styles = StyleSheet.create({
   },
   description: {
     opacity: 0.8,
+    lineHeight: 1.6,
   },
   comingSoon: {
-    fontSize: 25,
+    fontSize: 15,
     fontWeight: 500,
-    textTransform: "uppercase",
+    // textTransform: "uppercase",
     marginBottom: 10,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   icon: {
-    marginRight: 5,
+    marginLeft: 5,
+    height: 20,
   },
 });
 

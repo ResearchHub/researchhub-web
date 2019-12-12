@@ -4,9 +4,9 @@ import { AUTH_TOKEN } from "../config/constants";
 import { doesNotExist } from "~/config/utils";
 
 const apiRoot = {
-  production: "backend.researchhub.com",
-  staging: "localhost:8000",
-  dev: "localhost:8000",
+  production: "staging-backend.researchhub.com",
+  staging: "staging-backend.researchhub.com",
+  dev: "staging-backend.researchhub.com",
 };
 
 const prepFilters = (filters) => {
@@ -281,7 +281,6 @@ const routes = (BASE_URL) => {
 
       return url + "downvote/";
     },
-    CHECKURL: BASE_URL + "paper/check_url/",
     UNIVERSITY: ({ search }) => {
       let url = BASE_URL + `university/`;
 
@@ -300,6 +299,19 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    // Used to check if url is a valid pdf
+    CHECKURL: BASE_URL + "paper/check_url/",
+    // Ethereum
+    WITHDRAW_COIN: ({ transactionId }) => {
+      let url = BASE_URL + "withdrawal/";
+
+      if (transactionId) {
+        url += `${transactionId}/`;
+      }
+
+      return url;
+    },
+    USER_FIRST_VOTE: BASE_URL + "user/has_seen_first_vote_modal/",
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

@@ -353,7 +353,11 @@ class SearchEntry extends React.Component {
     let isPaper = indexName === "paper";
     let isDisc = indexName === "discussion_thread";
     return (
-      <div className={css(styles.searchEntryCard)} onClick={this.handleClick}>
+      <div
+        key={`${indexName}-${result.id}`}
+        className={css(styles.searchEntryCard)}
+        onClick={this.handleClick}
+      >
         <div
           className={css(
             styles.column,
@@ -385,8 +389,16 @@ class SearchEntry extends React.Component {
           className={css(
             styles.column,
             styles.mid,
-            isPaper && tagline && styles.spaced,
-            isDisc && plainText && styles.spaced
+            isPaper && tagline
+              ? tagline.length >= 100
+                ? styles.mobilePadding
+                : styles.spaced
+              : null,
+            isDisc && plainText
+              ? plainText.length >= 100
+                ? styles.mobilePadding
+                : styles.spaced
+              : null
           )}
         >
           <div className={css(styles.mainText)}>{this.renderMainText()}</div>
@@ -454,17 +466,28 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1200px)": {
       width: "calc(100% - 50px)",
       margin: 0,
-      // paddingBottom: 25,
     },
   },
-  avatarDisplay: {},
+  mobilePadding: {
+    justifyContent: "space-between",
+    "@media only screen and (max-width: 1200px)": {
+      width: "calc(100% - 50px)",
+      margin: 0,
+      paddingBottom: 25,
+    },
+  },
+  avatarDisplay: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   voteDisplay: {
     color: "rgb(100, 196, 143)",
     fontWeight: "bold",
     background: "rgb(233, 250, 234)",
-    borderRadius: 25,
-    height: 50,
-    width: 50,
+    borderRadius: 27.5,
+    height: 55,
+    width: 55,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -501,10 +524,13 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   avatar: {
-    height: 60,
-    width: 60,
-    borderRadius: 30,
+    height: 55,
+    width: 55,
+    borderRadius: 27.5,
     objectFit: "contain",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   defaultAvatar: {
     color: "#aaa",

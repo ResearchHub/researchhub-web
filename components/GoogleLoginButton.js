@@ -11,6 +11,7 @@ import { GOOGLE_CLIENT_ID } from "~/config/constants";
 
 const GoogleLoginButton = (props) => {
   let { customLabel } = props;
+
   const responseGoogle = async (response) => {
     let { googleLogin, getUser } = props;
     response["access_token"] = response["accessToken"];
@@ -24,7 +25,8 @@ const GoogleLoginButton = (props) => {
     }
   };
 
-  function showLoginFailureMessage() {
+  function showLoginFailureMessage(response) {
+    console.log(response);
     props.setMessage("Login failed");
     props.showMessage({ show: true, error: true });
   }
