@@ -347,8 +347,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     position: "relative",
     "@media only screen and (max-width: 760px)": {
-      // marginTop: 50,
-      // marginBottom: 15,
       fontSize: 28,
     },
     "@media only screen and (max-width: 415px)": {
