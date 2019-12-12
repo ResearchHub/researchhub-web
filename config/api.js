@@ -4,9 +4,9 @@ import { AUTH_TOKEN } from "../config/constants";
 import { doesNotExist } from "~/config/utils";
 
 const apiRoot = {
-  production: "staging-backend.researchhub.com",
+  production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
-  dev: "staging-backend.researchhub.com",
+  dev: "localhost:8000",
 };
 
 const prepFilters = (filters) => {
