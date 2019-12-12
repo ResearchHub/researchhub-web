@@ -51,13 +51,14 @@ const FirstVoteModal = (props) => {
       .then(Helpers.parseJSON)
       .then((res) => {
         if (res.has_seen_first_vote_modal) {
+          let newUserObj = { ...res };
+          dispatch(AuthActions.updateUser(newUserObj));
           closeModal();
         }
       });
   }
 
   function closeModal() {
-    dispatch(AuthActions.getUser());
     dispatch(ModalActions.openFirstVoteModal(false));
     setRecycle(true);
     toggleReveal(false);
