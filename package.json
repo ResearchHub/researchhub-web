@@ -40,7 +40,7 @@
     "react-avatar": "^3.7.0",
     "react-avatar-edit": "^0.8.3",
     "react-burger-menu": "^2.6.11",
-    "react-confetti": "^5.0.1",
+    "react-confetti": "4.0.1",
     "react-device-detect": "^1.9.10",
     "react-dom": "^16.10.1",
     "react-dropzone": "^10.1.9",
