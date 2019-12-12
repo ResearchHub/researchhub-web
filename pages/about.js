@@ -283,9 +283,7 @@ class Index extends React.Component {
                   you “up vote” some content on the site, you are awarding one
                   ResearchCoin to the creator of that content. In other words,
                   one vote always equals one coin. Coins are awarded from the
-                  general pool of available coins that were minted. {"\n \n"}Our
-                  hope is that ResearchCoin becomes valuable over time, and
-                  early members who earn ResearchCoin will benefit financially.
+                  general pool of available coins that were minted. {"\n \n"}
                   In addition to financial incentives, earning ResearchCoin is
                   also the way you generate reputation in the community (your
                   reputation is equal to your lifetime earnings of
