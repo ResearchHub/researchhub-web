@@ -23,13 +23,6 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
       utils.logFetchError(response);
     }
 
-    // const store = useStore();
-    // console.log("store", store.getState().auth.user.has_seen_first_vote_modal)
-    // if (!store.getState().auth.user.has_seen_first_vote_modal) {
-    //   console.log('called')
-    // dispatch(ModalActions.openFirstVoteModal(true))
-    // }
-
     return dispatch(action);
   };
 }
