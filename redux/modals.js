@@ -12,6 +12,7 @@ export const ModalConstants = {
   ADD_DISCUSSION_MODAL_TOGGLE: "@@MODAL/ADD_DISCUSSION_MODAL_TOGGLE",
   ADD_HUB_MODAL_TOGGLE: "@@MODAL/ADD_HUB_MODAL_TOGGLE",
   TRANSACTION_MODAL_TOGGLE: "@@MODAL/TRANSACTION_MODAL_TOGGLE",
+  FIRST_VOTE_MODAL_TOGGLE: "@@MODAL/FIRST_VOTE_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -104,6 +105,16 @@ export const ModalActions = {
       });
     };
   },
+  openFirstVoteModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.FIRST_VOTE_MODAL_TOGGLE,
+        payload: {
+          openFirstVoteModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -119,6 +130,7 @@ const defaultModalState = {
   openAddDiscussionModal: false,
   openAddHubModal: false,
   openTransactionModal: false,
+  openFirstVoteModal: false,
   loginModal: {},
 };
 
@@ -132,6 +144,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.ADD_DISCUSSION_MODAL_TOGGLE:
     case ModalConstants.ADD_HUB_MODAL_TOGGLE:
     case ModalConstants.TRANSACTION_MODAL_TOGGLE:
+    case ModalConstants.FIRST_VOTE_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,

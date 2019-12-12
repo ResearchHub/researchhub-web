@@ -21,6 +21,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
+import { ModalActions } from "~/redux/modals";
 import VoteActions from "~/redux/vote";
 
 // Config
@@ -206,6 +207,7 @@ const Paper = (props) => {
               onUpvote={upvote}
               onDownvote={downvote}
               selected={selectedVoteType}
+              isPaper={true}
             />
           </div>
           <div className={css(styles.topHeader)}>
@@ -218,6 +220,7 @@ const Paper = (props) => {
                   onDownvote={downvote}
                   selected={selectedVoteType}
                   horizontalView={true}
+                  isPaper={true}
                 />
               </div>
               <div className={css(styles.actionButtons)}>
@@ -342,8 +345,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     position: "relative",
     "@media only screen and (max-width: 760px)": {
-      // marginTop: 50,
-      // marginBottom: 15,
       fontSize: 28,
     },
     "@media only screen and (max-width: 415px)": {
