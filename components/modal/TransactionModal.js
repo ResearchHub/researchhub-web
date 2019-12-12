@@ -317,15 +317,13 @@ class TransactionModal extends React.Component {
     );
   };
 
-  getBalance = async () => {
-    await this.props.getUser();
+  getBalance = () => {
     fetch(API.WITHDRAW_COIN({}), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let { user } = this.props.auth;
         this.setState({
-          userBalance: user.balance,
+          userBalance: res.user.balance,
           withdrawals: [...res.results],
         });
       });
@@ -363,22 +361,30 @@ class TransactionModal extends React.Component {
         .then((res) => {
           let { id, paid_status, transaction_hash } = res;
           if (transaction_hash === "" || paid_status === "failed") {
-            showMessage({ show: false });
-            setMessage(
-              "Your transaction request has failed. \n Please try again later."
-            );
-            showMessage({ show: true, error: true, clickoff: true });
+            setTimeout(() => {
+              showMessage({ show: false });
+              setMessage(
+                "Your transaction request has failed. \n Please try again later."
+              );
+              showMessage({ show: true, error: true, clickoff: true });
+            }, 400);
           } else {
-            showMessage({ show: false });
-            setMessage("Your transaction request has been made.");
-            showMessage({ show: true, clickoff: true });
-            this.setState({ transactionHash: transaction_hash });
+            setTimeout(() => {
+              showMessage({ show: false });
+              setMessage("Your transaction request has been made.");
+              showMessage({ show: true, clickoff: true });
+              this.setState({ transactionHash: transaction_hash }, () => {
+                this.props.getUser();
+              });
+            }, 400);
           }
         })
         .catch((err) => {
-          showMessage({ show: false });
-          setMessage("There is no balance to transfer.");
-          showMessage({ show: true, error: true, clickoff: true });
+          setTimeout(() => {
+            showMessage({ show: false });
+            setMessage("There is no balance to transfer.");
+            showMessage({ show: true, error: true, clickoff: true });
+          }, 400);
         });
     } else {
     }
@@ -467,6 +473,9 @@ class TransactionModal extends React.Component {
           <div className={css(styles.header, styles.text)}>
             Withdraw ResearchCoin
           </div>
+          {/* <div className={css(styles.testnetBanner)}>
+            Currently on Testnet
+          </div> */}
           <img
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
@@ -485,7 +494,7 @@ class TransactionModal extends React.Component {
             </div>
           )}
           {connectedMetaMask && networkVersion !== "1"
-            ? // ? this.renderSwitchNetworkMsg()
+            ? // ? this.renderSwitchNetworkMsg() comment back when on mainnet
               this.renderTransactionScreen()
             : this.renderTransactionScreen()}
         </div>
@@ -544,7 +553,6 @@ const styles = StyleSheet.create({
     color: "#83817c",
     fontSize: 14,
     marginBottom: 25,
-    textAlign: "center",
     fontFamily: "Roboto",
   },
   image: {
@@ -588,7 +596,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-end",
-    // height: '100%'
     height: 60,
     fontFamily: "Roboto",
   },
@@ -690,6 +697,12 @@ const styles = StyleSheet.create({
   },
   confirmationButtons: {
     marginTop: 10,
+  },
+  testnetBanner: {
+    fontSize: 12,
+    position: "absolute",
+    right: 20,
+    bottom: 25,
   },
 });
 

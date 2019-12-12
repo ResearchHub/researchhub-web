@@ -18,6 +18,7 @@ import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
 import TransactionModal from "../components/modal/TransactionModal";
+import FirstVoteModal from "../components/modal/FirstVoteModal";
 import Button from "../components/Form/Button";
 import Search from "./Search";
 
@@ -301,6 +302,7 @@ const Navbar = (props) => {
         <LoginModal />
         <InviteToHubModal />
         <TransactionModal />
+        <FirstVoteModal />
         <div className={css(styles.logoContainer)} onClick={navigateHome}>
           <RHLogo iconStyle={styles.logo} />
         </div>
@@ -335,7 +337,7 @@ const Navbar = (props) => {
                   />
                   <i className={css(styles.caret) + " fas fa-caret-down"}></i>
                   <div className={css(styles.reputation)}>
-                    <Reputation reputation={user.reputation} />
+                    <Reputation reputation={user.balance} />
                   </div>
                 </div>
                 {openMenu && (
