@@ -98,8 +98,11 @@ const styles = StyleSheet.create({
   tabContainer: {
     display: "flex",
     width: "100%",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     minWidth: 200,
+    "@media only screen and (max-width: 768px)": {
+      justifyContent: "space-between",
+    },
   },
   firstTab: {
     paddingLeft: 0,
