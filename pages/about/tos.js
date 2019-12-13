@@ -400,7 +400,7 @@ class TOS extends React.Component {
             our website or the Service following the posting of any changes to
             these Terms of Service constitutes acceptance of those changes.
           </div>
-          <h1>SECTION 28 - CONTACT INFORMATION</h1>
+          <h1>SECTION 18 - CONTACT INFORMATION</h1>
           <div className={css(styles.paragraph)}>
             Questions about the Terms of Service should be sent to us at
             hello@researchhub.com.
