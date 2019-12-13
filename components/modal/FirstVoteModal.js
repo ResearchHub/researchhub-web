@@ -163,13 +163,6 @@ const styles = StyleSheet.create({
     height: 90,
     zIndex: 3,
   },
-  confetti: {
-    // height: '100%',
-    // width: '100%',
-    // '@media only screen and (min-width: 768px)': {
-    //   height: 260,
-    // }
-  },
   text: {
     margin: "16px 0px",
   },
