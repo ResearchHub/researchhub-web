@@ -167,7 +167,8 @@ class SummaryTab extends React.Component {
     return (
       <ComponentWrapper>
         <div>{this.state.errorMessage}</div>
-        {paper.summary.summary || this.state.summaryExists ? (
+        {(paper.summary && paper.summary.summary) ||
+        this.state.summaryExists ? (
           <div className={css(styles.container)}>
             {this.state.readOnly ? (
               <div className={css(styles.summaryActions)}>
