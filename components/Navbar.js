@@ -270,6 +270,7 @@ const Navbar = (props) => {
       position: "fixed",
       height: "100%",
       width: window.innerWidth < 436 ? 210 : 300,
+      zIndex: 3147480000,
     },
     bmMenu: {
       background: "rgba(55, 58, 70, 1)",
