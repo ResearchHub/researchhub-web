@@ -93,7 +93,7 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    zIndex: 9999999,
+    zIndex: 999999,
     whiteSpace: "pre-wrap",
   },
   hide: {

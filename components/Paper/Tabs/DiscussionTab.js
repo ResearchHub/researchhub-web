@@ -16,6 +16,7 @@ import AddDiscussionModal from "~/components/modal/AddDiscussionModal";
 import { MessageActions } from "~/redux/message";
 import { thread } from "~/redux/discussion/shims";
 import { ModalActions } from "~/redux/modals";
+import { AuthActions } from "~/redux/auth";
 
 // Config
 import API from "~/config/api";
@@ -125,7 +126,12 @@ const DiscussionTab = (props) => {
           props.showMessage({ show: false });
           props.setMessage("Successfully Saved!");
           props.showMessage({ show: true });
-          setTimeout(() => cancel(), 300);
+          setTimeout(() => {
+            cancel();
+            props.checkUserFirstTime(
+              !props.auth.user.has_seen_first_coin_modal
+            );
+          }, 300);
           setTimeout(() => setTransition(false), 3000);
         }, 800);
       })
@@ -199,7 +205,7 @@ const DiscussionTab = (props) => {
           >
             {formattedThreads.length > 0 && (
               <span className={css(styles.discussionIcon)}>
-                <i class="fad fa-comment-plus" />
+                <i className="fad fa-comment-plus" />
               </span>
             )}
             Add Discussion
@@ -489,13 +495,14 @@ var styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  message: state.auth,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   openAddDiscussionModal: ModalActions.openAddDiscussionModal,
+  checkUserFirstTime: AuthActions.checkUserFirstTime,
 };
 
 export default connect(
