@@ -18,6 +18,7 @@ import Message from "~/components/Loader/Message";
 // Redux
 import DiscussionActions from "~/redux/discussion";
 import { MessageActions } from "../../../../redux/message";
+import { AuthActions } from "~/redux/auth";
 
 // Utils
 import { discussionPageColors } from "~/config/themes/colors";
@@ -122,6 +123,7 @@ const DiscussionThreadPage = (props) => {
     setActive(false);
     setTimeout(() => {
       props.showMessage({ show: false });
+      props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
       setTimeout(() => {
         setTransition(false);
       }, 3000);
@@ -250,12 +252,14 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   state: state.discussion,
   message: state.message,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
   fetchComments: DiscussionActions.fetchComments,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  checkUserFirstTime: AuthActions.checkUserFirstTime,
 };
 
 export default connect(
