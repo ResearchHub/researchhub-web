@@ -113,6 +113,7 @@ class InviteToHubModal extends React.Component {
     if (this.state.email !== "") {
       emails.push(this.state.email);
     }
+    showMessage({ show: true, load: true });
     fetch(
       API.INVITE_TO_HUB({ hubId: modals.hubId }),
       API.POST_CONFIG({ emails: emails })
