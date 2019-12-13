@@ -43,39 +43,43 @@ class TransactionModal extends React.Component {
   }
 
   componentDidMount() {
-    if (typeof window.ethereum !== "undefined") {
-      const provider = window["ethereum"];
-      if (
-        this.props.modals.openTransactionModal &&
-        !this.state.connectedMetaMask
-      ) {
-        this.checkNetwork();
-        this.updateChainId(ethereum.networkVersion);
+    if (this.props.auth.isLoggedIn) {
+      if (typeof window.ethereum !== "undefined") {
+        const provider = window["ethereum"];
+        if (
+          this.props.modals.openTransactionModal &&
+          !this.state.connectedMetaMask
+        ) {
+          this.checkNetwork();
+          this.updateChainId(ethereum.networkVersion);
+        }
       }
-    }
 
-    this.getBalance();
+      this.getBalance();
+    }
   }
 
   componentWillUpdate(prevProps) {
-    if (
-      prevProps.modals.openTransactionModal !==
-      this.props.modals.openTransactionModal
-    ) {
+    if (this.props.auth.isLoggedIn) {
       if (
-        typeof window.ethereum !== "undefined" &&
-        prevProps.modals.openTransactionModal
+        prevProps.modals.openTransactionModal !==
+        this.props.modals.openTransactionModal
       ) {
-        this.checkNetwork();
-        this.updateChainId(ethereum.networkVersion);
+        if (
+          typeof window.ethereum !== "undefined" &&
+          prevProps.modals.openTransactionModal
+        ) {
+          this.checkNetwork();
+          this.updateChainId(ethereum.networkVersion);
+        }
+        this.getBalance();
       }
-      this.getBalance();
-    }
-    if (
-      prevProps.auth.user.balance !== this.props.auth.user.balance ||
-      this.state.userBalance === null
-    ) {
-      this.getBalance();
+      if (
+        prevProps.auth.user.balance !== this.props.auth.user.balance ||
+        this.state.userBalance === null
+      ) {
+        this.getBalance();
+      }
     }
   }
 
