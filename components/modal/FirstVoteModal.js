@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useDispatch, useStore } from "react-redux";
-//import Confetti from "react-confetti";
+import Confetti from "react-confetti";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -96,7 +96,7 @@ const FirstVoteModal = (props) => {
       }}
     >
       <div className={css(styles.modalBody)}>
-        {/*<Confetti recycle={recycle} numberOfPieces={300} height={260} />*/}
+        <Confetti recycle={recycle} numberOfPieces={300} height={260} />
         <div className={css(styles.body, reveal && styles.reveal)}>
           <div className={css(styles.hyperlink)} onClick={openLinkInTab}>
             Click here to learn how to earn more.
