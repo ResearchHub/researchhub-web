@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 
 import Collapsible from "~/components/Form/Collapsible";
 
-import colors from "../config/themes/colors";
+import colors from "~/config/themes/colors";
 
 const points = [
   {
