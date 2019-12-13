@@ -44,7 +44,7 @@ const FirstVoteModal = (props) => {
   function userHasFirstSeen(e) {
     e && e.stopPropagation();
     let config = {
-      has_seen_first_coin_modal: true,
+      has_seen_first_coin_modal: false,
     };
     fetch(API.USER_FIRST_COIN, API.PATCH_CONFIG(config))
       .then(Helpers.checkStatus)
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     overflow: "hidden",
+    zIndex: 9999999,
   },
   body: {
     display: "flex",

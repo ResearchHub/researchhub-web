@@ -59,16 +59,13 @@ class TransactionModal extends React.Component {
     }
   }
 
-  componentWillUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.auth.isLoggedIn) {
       if (
         prevProps.modals.openTransactionModal !==
         this.props.modals.openTransactionModal
       ) {
-        if (
-          typeof window.ethereum !== "undefined" &&
-          prevProps.modals.openTransactionModal
-        ) {
+        if (typeof window.ethereum !== "undefined") {
           this.checkNetwork();
           this.updateChainId(ethereum.networkVersion);
         }
