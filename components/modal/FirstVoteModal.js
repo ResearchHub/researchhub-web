@@ -84,11 +84,11 @@ const FirstVoteModal = (props) => {
     <BaseModal
       isOpen={store.getState().modals.openFirstVoteModal}
       closeModal={closeModal}
-      title={"Congrats on your first action!"}
+      title={"Welcome to ResearchHub!"}
       subtitle={() => {
         return (
           <div className={css(styles.row)}>
-            Here's a Research Coin
+            Here's a ResearchCoin
             <img
               className={css(styles.coinIcon)}
               src={"/static/icons/coin.png"}
@@ -98,10 +98,24 @@ const FirstVoteModal = (props) => {
       }}
     >
       <div className={css(styles.modalBody)}>
-        <Confetti recycle={recycle} numberOfPieces={300} height={260} />
+        <Confetti
+          className={css(styles.confetti)}
+          recycle={recycle}
+          numberOfPieces={300}
+          height={260}
+        />
+        <div className={css(styles.text)}>
+          For the first week, all major actions you take on the site will help
+          you earn ResearchCoin (up to 100 RCH). After the week is over, you
+          will still earn coins on major actions, but not every single one.
+        </div>
+        <div className={css(styles.text)}>
+          Our goal with ResearchCoin is to help incentivize and reward great
+          content and great research.
+        </div>
         <div className={css(styles.body, reveal && styles.reveal)}>
           <div className={css(styles.hyperlink)} onClick={openLinkInTab}>
-            Click here to learn how to earn more.
+            Click here to learn more about RCH.
           </div>
           <div className={css(styles.button, showButton && styles.showButton)}>
             <Button label={"Close"} onClick={userHasFirstSeen} />
@@ -127,6 +141,8 @@ const styles = StyleSheet.create({
     width: "100%",
     overflow: "hidden",
     zIndex: 9999999,
+    padding: 16,
+    boxSizing: "border-box",
   },
   body: {
     display: "flex",
@@ -151,6 +167,16 @@ const styles = StyleSheet.create({
     opacity: 1,
     height: 90,
     zIndex: 3,
+  },
+  confetti: {
+    // height: '100%',
+    // width: '100%',
+    // '@media only screen and (min-width: 768px)': {
+    //   height: 260,
+    // }
+  },
+  text: {
+    margin: "16px 0px",
   },
   button: {
     width: "100%",
