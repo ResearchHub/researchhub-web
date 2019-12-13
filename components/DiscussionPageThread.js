@@ -112,6 +112,7 @@ const Thread = (props) => {
           width={"58px"}
           onUpvote={upvote}
           onDownvote={downvote}
+          type={"discussion"}
         />
       </div>
       <div className={css(styles.column, styles.right)}>
@@ -136,6 +137,7 @@ const Thread = (props) => {
                 horizontalView={true}
                 onUpvote={upvote}
                 onDownvote={downvote}
+                type={"discussion"}
               />
             </div>
             {renderActionBar()}
