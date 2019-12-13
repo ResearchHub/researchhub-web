@@ -197,20 +197,20 @@ class LockedHubPage extends React.Component {
               )}
             >
               {!joined
-                ? "This hub will be activated when at least 100 members have pledged to contribute content. Join this hub to show your support."
-                : "Thank you for joining this hub! This hub will be activated when at least 100 members have pledged to contribute content."}
+                ? "This hub will be activated when at least 15 members have pledged to contribute content. Join this hub to show your support."
+                : "Thank you for joining this hub! This hub will be activated when at least 15 members have pledged to contribute content."}
             </div>
             <Message />
             <div className={css(styles.progressContainer)}>
               <div className={css(styles.status, styles.text)}>
-                {progress} out of 100 researchers have pledged to launch this
+                {progress} out of 15 researchers have pledged to launch this
                 community
               </div>
               <div className={css(styles.progressBar)}>
-                <Progress completed={progress} />
+                <Progress completed={(progress / 15) * 100} />
               </div>
               <p className={css(styles.footer, styles.text)}>
-                {100 - progress} members to go
+                {15 - progress} members to go
               </p>
             </div>
             <div className={css(styles.buttonsRow)}>
