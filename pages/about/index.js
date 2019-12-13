@@ -81,7 +81,7 @@ const points = [
   {
     title: "Efficient",
     text:
-      "It can take 3-5 years today to go through the process of applying for funding, completing the research, submitting a paper to journals, having it reviewed, and finally getting it published. We believe research could be completed at least one or of magnitude more efficiently.",
+      "It can take 3-5 years today to go through the process of applying for funding, completing the research, submitting a paper to journals, having it reviewed, and finally getting it published. We believe research could be completed at least one order of magnitude more efficiently.",
     icon: (
       <i
         class="fad fa-angle-double-right"
