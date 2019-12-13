@@ -22,7 +22,7 @@ const FirstVoteModal = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const [userFirstVote, setFirstVote] = useState(
-    store.getState().auth.user.has_seen_first_vote_modal
+    store.getState().auth.user.has_seen_first_coin_modal
   );
   const [recycle, setRecycle] = useState(true);
   const [reveal, toggleReveal] = useState(false);
@@ -42,15 +42,15 @@ const FirstVoteModal = (props) => {
   }, [store.getState().modals.openFirstVoteModal]);
 
   function userHasFirstSeen(e) {
-    e.stopPropagation();
+    e && e.stopPropagation();
     let config = {
-      has_seen_first_vote_modal: true,
+      has_seen_first_coin_modal: false,
     };
-    fetch(API.USER_FIRST_VOTE, API.PATCH_CONFIG(config))
+    fetch(API.USER_FIRST_COIN, API.PATCH_CONFIG(config))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        if (res.has_seen_first_vote_modal) {
+        if (res.has_seen_first_coin_modal) {
           let newUserObj = { ...res };
           dispatch(AuthActions.updateUser(newUserObj));
           closeModal();
@@ -60,6 +60,8 @@ const FirstVoteModal = (props) => {
 
   function closeModal() {
     dispatch(ModalActions.openFirstVoteModal(false));
+    let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
+    firstTime && userHasFirstSeen();
     setRecycle(true);
     toggleReveal(false);
     toggleButton(false);
@@ -82,11 +84,11 @@ const FirstVoteModal = (props) => {
     <BaseModal
       isOpen={store.getState().modals.openFirstVoteModal}
       closeModal={closeModal}
-      title={"Congrats on your first upvote!"}
+      title={"Welcome to ResearchHub!"}
       subtitle={() => {
         return (
           <div className={css(styles.row)}>
-            Here's a Research Coin
+            Here's a ResearchCoin
             <img
               className={css(styles.coinIcon)}
               src={"/static/icons/coin.png"}
@@ -96,10 +98,24 @@ const FirstVoteModal = (props) => {
       }}
     >
       <div className={css(styles.modalBody)}>
-        <Confetti recycle={recycle} numberOfPieces={300} height={260} />
+        <Confetti
+          className={css(styles.confetti)}
+          recycle={recycle}
+          numberOfPieces={300}
+          height={260}
+        />
+        <div className={css(styles.text)}>
+          For the first week, all major actions you take on the site will help
+          you earn ResearchCoin (up to 100 RCH). After the week is over, you
+          will still earn coins on major actions, but not every single one.
+        </div>
+        <div className={css(styles.text)}>
+          Our goal with ResearchCoin is to help incentivize and reward great
+          content and great research.
+        </div>
         <div className={css(styles.body, reveal && styles.reveal)}>
           <div className={css(styles.hyperlink)} onClick={openLinkInTab}>
-            Click here to learn how to earn more.
+            Click here to learn more about RCH.
           </div>
           <div className={css(styles.button, showButton && styles.showButton)}>
             <Button label={"Close"} onClick={userHasFirstSeen} />
@@ -124,6 +140,9 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     overflow: "hidden",
+    zIndex: 9999999,
+    padding: 16,
+    boxSizing: "border-box",
   },
   body: {
     display: "flex",
@@ -148,6 +167,16 @@ const styles = StyleSheet.create({
     opacity: 1,
     height: 90,
     zIndex: 3,
+  },
+  confetti: {
+    // height: '100%',
+    // width: '100%',
+    // '@media only screen and (min-width: 768px)': {
+    //   height: 260,
+    // }
+  },
+  text: {
+    margin: "16px 0px",
   },
   button: {
     width: "100%",

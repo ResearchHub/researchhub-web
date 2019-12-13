@@ -9,6 +9,8 @@
 import API from "../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "../config/constants";
+import { useDispatch } from "react-redux";
+import { ModalActions } from "./modals";
 
 export const AuthConstants = {
   LOGIN: "@@auth/LOGIN",
@@ -26,6 +28,8 @@ export const AuthConstants = {
   GET_USER_BANNER_PREFERENCE: "@@auth/GET_USER_BANNER_PREFERENCE",
   SET_USER_BANNER_PREFERENCE: "@@auth/SET_USER_BANNER_PREFERENCE",
   SET_UPLOADING_PAPER: "@@auth/SET_UPLOADING_PAPER",
+  CHECK_USER_FIRST_TIME: "@@auth/CHECK_USER_FIRST_TIME",
+  UPDATE_USER_COIN_ACTION: "@@auth/UPDATE_USER_COIN_ACTION",
 };
 
 function saveToLocalStorage(key, value) {
@@ -285,7 +289,21 @@ export const AuthActions = {
       });
     };
   },
-
+  updateUserCoinAction: (action) => {
+    return (dispatch) => {
+      return dispatch({
+        type: AuthConstants.UPDATE_USER_COIN_ACTION,
+        userCoinACtion: action,
+      });
+    };
+  },
+  checkUserFirstTime: (firstTime) => {
+    return (dispatch) => {
+      if (firstTime) {
+        dispatch(ModalActions.openFirstVoteModal(true));
+      }
+    };
+  },
   // /***
   //  * Save changes to user profile
   //  */
@@ -324,6 +342,7 @@ const defaultAuthState = {
   error: null,
   showBanner: true,
   uploadingPaper: false,
+  userCoinAction: "",
 };
 
 const AuthReducer = (state = defaultAuthState, action) => {
@@ -355,6 +374,7 @@ const AuthReducer = (state = defaultAuthState, action) => {
         ...action,
         user: { ...state.user, ...action.user },
       };
+    case AuthConstants.CHECK_USER_FIRST_TIME:
     default:
       return state;
   }
