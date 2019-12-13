@@ -12,6 +12,7 @@ import TextEditor from "~/components/TextEditor";
 // Redux
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
+import { AuthActions } from "~/redux/auth";
 
 // Config
 import API from "../../../config/api";
@@ -68,7 +69,7 @@ class SummaryTab extends React.Component {
   };
 
   submitEdit = (raw, plain_text) => {
-    let { setMessage, showMessage } = this.props;
+    let { setMessage, showMessage, checkUserFirstTime } = this.props;
     let param = {
       summary: raw,
       paper: this.props.paperId,
@@ -91,6 +92,8 @@ class SummaryTab extends React.Component {
           setMessage("Edits Submitted for Approval!");
         } else {
           setMessage("Edits Made!");
+          let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
+          checkUserFirstTime(firstTime);
           this.setState({
             summaryExists: true,
           });
@@ -410,12 +413,14 @@ var styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   paper: state.paper,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
   getEditHistory: PaperActions.getEditHistory,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  checkUserFirstTime: AuthActions.checkUserFirstTime,
 };
 
 export default connect(

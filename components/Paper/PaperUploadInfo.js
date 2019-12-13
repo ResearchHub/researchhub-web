@@ -955,6 +955,8 @@ class PaperUploadInfo extends React.Component {
         );
         this.props.authActions.setUploadingPaper(true);
         this.props.messageActions.showMessage({ show: true });
+        let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
+        this.props.authActions.checkUserFirstTime(firstTime);
         this.navigateToSummary();
       } else {
         this.props.messageActions.setMessage("Hmm something went wrong");
@@ -1090,6 +1092,8 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
+        this.props.authActions.checkUserFirstTime(firstTime);
         Router.push(
           "/paper/[paperId]/[tabName]",
           `/paper/${this.props.paper.postedPaper.id}/summary`

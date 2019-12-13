@@ -7,6 +7,7 @@ import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import ReputationTooltip from "./ReputationTooltip";
 
 import { ModalActions } from "../redux/modals";
+import { AuthActions } from "../redux/auth";
 
 import { doesNotExist } from "~/config/utils";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
@@ -28,6 +29,7 @@ const VoteWidget = (props) => {
     horizontalView,
     searchResult,
     isPaper,
+    type,
   } = props;
   const score = getScore(props);
 
@@ -64,11 +66,9 @@ const VoteWidget = (props) => {
     } else if (upvoteSelected) {
       console.log("Vote already cast");
     } else {
-      if (isPaper) {
-        let firstTime = !store.getState().auth.user.has_seen_first_vote_modal;
-        if (firstTime) {
-          dispatch(ModalActions.openFirstVoteModal(true));
-        }
+      if (isPaper || type === "discussion") {
+        let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
+        dispatch(AuthActions.checkUserFirstTime(firstTime));
       }
       onUpvote(e);
     }
@@ -80,6 +80,10 @@ const VoteWidget = (props) => {
     } else if (downvoteSelected) {
       console.log("Vote already cast");
     } else {
+      if (isPaper || type === "discussion") {
+        let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
+        dispatch(AuthActions.checkUserFirstTime(firstTime));
+      }
       onDownvote(e);
     }
   }

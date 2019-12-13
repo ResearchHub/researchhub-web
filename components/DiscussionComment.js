@@ -14,6 +14,7 @@ import Loader from "~/components/Loader/Loader";
 
 import DiscussionActions from "~/redux/discussion";
 import { MessageActions } from "~/redux/message";
+import { AuthActions } from "~/redux/auth";
 
 import { UPVOTE, DOWNVOTE } from "../config/constants";
 import { voteWidgetIcons } from "~/config/themes/icons";
@@ -125,6 +126,11 @@ class DiscussionComment extends React.Component {
   };
 
   renderTop = () => {
+    let type = this.props.commentStyles
+      ? "comment"
+      : this.props.replyCardStyle
+      ? "reply"
+      : "discussion";
     return (
       <Fragment>
         <div className={css(styles.topbarContainer)}>
@@ -134,6 +140,7 @@ class DiscussionComment extends React.Component {
               onUpvote={this.upvote}
               onDownvote={this.downvote}
               selected={this.state.selectedVoteType}
+              type={type}
             />
           </div>
           <span className={css(styles.mobileVotingWidget)}>
@@ -143,6 +150,7 @@ class DiscussionComment extends React.Component {
               onDownvote={this.downvote}
               horizontalView={true}
               selected={this.state.selectedVoteType}
+              type={type}
             />
           </span>
           <DiscussionPostMetadata
@@ -169,7 +177,6 @@ class DiscussionComment extends React.Component {
 
   render() {
     const action = this.renderAction ? this.renderAction() : null;
-
     return (
       <div className={css(styles.commentContainer)}>
         <DiscussionCard
@@ -258,11 +265,18 @@ class CommentClass extends DiscussionComment {
       this.props.dispatch(MessageActions.showMessage({ show: false }));
       let newReplies = [reply];
       newReplies = newReplies.concat(this.state.replies);
-      this.setState({
-        replies: newReplies,
-        replyCount: newReplies.length,
-        toggleReplies: true,
-      });
+      this.setState(
+        {
+          replies: newReplies,
+          replyCount: newReplies.length,
+          toggleReplies: true,
+        },
+        () => {
+          this.props.dispatch(
+            AuthActions.checkUserFirstTime(this.props.firstTime)
+          );
+        }
+      );
       setTimeout(() => {
         setTimeout(() => {
           this.setState({ highlight: false });
@@ -384,6 +398,7 @@ const mapStateToProps = (state) => {
     currentUser: getCurrentUser(state),
     updatedComment: state.discussion.updatedComment,
     updatedReply: state.discussion.updatedReply,
+    firstTime: !state.auth.user.has_seen_first_coin_modal,
   };
 };
 

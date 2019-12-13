@@ -114,6 +114,7 @@ const DiscussionThreadCard = (props) => {
                 horizontalView={true}
                 styles={styles.mobileVoteWidget}
                 searchResult={props.searchResult}
+                type={"discussion"}
               />
               <DiscussionPostMetadata
                 authorProfile={data && data.createdBy.authorProfile}
@@ -164,6 +165,7 @@ const DiscussionThreadCard = (props) => {
                 selected={selectedVoteType}
                 onUpvote={upvote}
                 onDownvote={downvote}
+                type={"discussion"}
               />
               <DiscussionPostMetadata
                 authorProfile={data && data.createdBy.authorProfile}

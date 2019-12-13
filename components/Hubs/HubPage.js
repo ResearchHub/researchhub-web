@@ -94,7 +94,7 @@ class HubPage extends React.Component {
    * @param { Integer } index -- the index of the paper to upvote
    */
   onUpvote = ({ index }) => {
-    let { postUpvote, auth, openFirstVoteModal } = this.props;
+    let { postUpvote, auth } = this.props;
     let papers = JSON.parse(JSON.stringify([...this.state.papers]));
     let curPaper = papers[index];
     postUpvote(curPaper.id);
@@ -818,7 +818,6 @@ const mapDispatchToProps = {
   setUserBannerPreference: AuthActions.setUserBannerPreference,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   showMessage: MessageActions.showMessage,
-  openFirstVoteModal: ModalActions.openFirstVoteModal,
 };
 
 export default connect(
