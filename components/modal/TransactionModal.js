@@ -63,6 +63,7 @@ class TransactionModal extends React.Component {
     if (this.props.auth.isLoggedIn) {
       if (
         prevProps.modals.openTransactionModal !==
+          this.props.modals.openTransactionModal &&
         this.props.modals.openTransactionModal
       ) {
         if (typeof window.ethereum !== "undefined") {
