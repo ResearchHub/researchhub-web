@@ -317,7 +317,6 @@ const mobileStyles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 500,
-    maxHeight: 72,
     textOverflow: "ellipsis",
     marginBottom: 15,
     padding: 0,
@@ -333,7 +332,6 @@ const mobileStyles = StyleSheet.create({
     },
   },
   summary: {
-    maxHeight: 176,
     marginBottom: 15,
     textOverflow: "ellipsis",
     width: "calc(100% - 15px)",
