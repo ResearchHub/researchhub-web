@@ -22,7 +22,7 @@ const FirstVoteModal = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const [userFirstVote, setFirstVote] = useState(
-    store.getState().auth.user.has_seen_first_vote_modal
+    store.getState().auth.user.has_seen_first_coin_modal
   );
   const [recycle, setRecycle] = useState(true);
   const [reveal, toggleReveal] = useState(false);
@@ -42,15 +42,15 @@ const FirstVoteModal = (props) => {
   }, [store.getState().modals.openFirstVoteModal]);
 
   function userHasFirstSeen(e) {
-    e.stopPropagation();
+    e && e.stopPropagation();
     let config = {
-      has_seen_first_vote_modal: true,
+      has_seen_first_coin_modal: true,
     };
-    fetch(API.USER_FIRST_VOTE, API.PATCH_CONFIG(config))
+    fetch(API.USER_FIRST_COIN, API.PATCH_CONFIG(config))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        if (res.has_seen_first_vote_modal) {
+        if (res.has_seen_first_coin_modal) {
           let newUserObj = { ...res };
           dispatch(AuthActions.updateUser(newUserObj));
           closeModal();
@@ -60,6 +60,8 @@ const FirstVoteModal = (props) => {
 
   function closeModal() {
     dispatch(ModalActions.openFirstVoteModal(false));
+    let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
+    firstTime && userHasFirstSeen();
     setRecycle(true);
     toggleReveal(false);
     toggleButton(false);
@@ -82,7 +84,7 @@ const FirstVoteModal = (props) => {
     <BaseModal
       isOpen={store.getState().modals.openFirstVoteModal}
       closeModal={closeModal}
-      title={"Congrats on your first upvote!"}
+      title={"Congrats on your first action!"}
       subtitle={() => {
         return (
           <div className={css(styles.row)}>
