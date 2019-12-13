@@ -770,8 +770,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
-    height: 35,
-    width: 85,
+    width: 126,
+    height: 45,
     border: "1px solid",
     borderColor: colors.BLUE(),
     borderRadius: 4,
