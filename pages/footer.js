@@ -63,8 +63,12 @@ class Footer extends React.Component {
           {tabs}
         </div>
         <div className={css(styles.legal, styles.tabContainer)}>
-          <div className={css(styles.tab)}>Terms of Service</div>
-          <div className={css(styles.tab)}>Privacy Policy</div>
+          <Link href={"/about/tos"} as={"/about/tos"}>
+            <div className={css(styles.tab)}>Terms of Service</div>
+          </Link>
+          <Link href={"/about/privacy"} as={"/about/privacy"}>
+            <div className={css(styles.tab)}>Privacy Policy</div>
+          </Link>
           <div className={css(styles.arr)}>
             © ResearchHub {new Date().getFullYear()}. All rights reserved
           </div>
