@@ -98,12 +98,7 @@ const FirstVoteModal = (props) => {
       }}
     >
       <div className={css(styles.modalBody)}>
-        <Confetti
-          className={css(styles.confetti)}
-          recycle={recycle}
-          numberOfPieces={300}
-          height={260}
-        />
+        <Confetti recycle={recycle} numberOfPieces={300} height={260} />
         <div className={css(styles.text)}>
           For the first week, all major actions you take on the site will help
           you earn ResearchCoin (up to 100 RCH). After the week is over, you
