@@ -17,6 +17,7 @@ const icons = {
   user: <i className="fad fa-user-circle"></i>,
   simpleUser: <i className="fad fa-user" />,
   file: <i className="fad fa-file-alt" />,
+  coins: <i className="fad fa-coins"></i>,
 };
 
 export const voteWidgetIcons = {
