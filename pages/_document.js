@@ -77,6 +77,12 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
             rel="stylesheet"
           />
+
+          {/* Meta Tags */}
+          <meta
+            property="og:image"
+            content="https://www.researchhub.com/static/background/background-home.jpg"
+          />
         </Head>
         <body style={{ margin: 0, fontFamily: "Roboto, sans-serif" }}>
           <Main />
