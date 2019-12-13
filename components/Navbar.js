@@ -88,6 +88,11 @@ const Navbar = (props) => {
   const menuTabs = [
     { label: "Add Paper", onClick: addPaperModal, icon: "addPaper" },
     {
+      label: "Withdraw",
+      onClick: openTransactionModal,
+      icon: "coins",
+    },
+    {
       label: "Profile",
       route: {
         href: "/user/[authorId]/[tabName]",
@@ -230,6 +235,11 @@ const Navbar = (props) => {
 
   function addPaperModal() {
     props.openUploadPaperModal(true);
+    setSideMenu(!sideMenu);
+  }
+
+  function openTransactionModal() {
+    props.openTransactionModal(true);
     setSideMenu(!sideMenu);
   }
 
