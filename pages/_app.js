@@ -10,6 +10,7 @@ import "react-tagsinput/react-tagsinput.css";
 import "../components/SearchSuggestion/authorinput.css";
 import { KeyUtils } from "slate";
 import * as Sentry from "@sentry/browser";
+import ReactGA from "react-ga";
 
 // Components
 import Base from "./Base";
@@ -30,7 +31,8 @@ if (process.env.NODE_ENV === "production") {
 class MyApp extends App {
   constructor(props) {
     super(props);
-
+    ReactGA.initialize("UA-106669204-1");
+    ReactGA.pageview(props.router.asPath);
     Router.events.on("routeChangeStart", () => {
       props.store.dispatch(MessageActions.setMessage(""));
       props.store.dispatch(
@@ -38,6 +40,7 @@ class MyApp extends App {
       );
     });
     Router.events.on("routeChangeComplete", () => {
+      ReactGA.pageview(props.router.asPath);
       props.store.dispatch(MessageActions.showMessage({ show: false }));
     });
     Router.events.on("routeChangeError", () => {
