@@ -657,7 +657,7 @@ var styles = StyleSheet.create({
     position: "sticky",
     paddingLeft: 70,
     paddingRight: 70,
-    top: 0,
+    top: 80,
     backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
