@@ -31,7 +31,10 @@ if (process.env.NODE_ENV === "production") {
 class MyApp extends App {
   constructor(props) {
     super(props);
-    ReactGA.initialize("UA-106669204-1");
+
+    ReactGA.initialize("UA-106669204-1", {
+      testMode: process.env.NODE_ENV !== production,
+    });
     ReactGA.pageview(props.router.asPath);
     Router.events.on("routeChangeStart", () => {
       props.store.dispatch(MessageActions.setMessage(""));
