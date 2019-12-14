@@ -14,7 +14,7 @@ class Privacy extends React.Component {
           This Privacy Policy describes how your personal information is
           collected, used, and shared when you visit{" "}
           <Link href={"/"} as={"/"}>
-            https://researchnow.researchhub.com/
+            https://www.researchhub.com
           </Link>{" "}
           (the “Site”).
           <h1>PERSONAL INFORMATION WE COLLECT</h1>
