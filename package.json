@@ -44,6 +44,7 @@
     "react-device-detect": "^1.9.10",
     "react-dom": "^16.10.1",
     "react-dropzone": "^10.1.9",
+    "react-ga": "^2.7.0",
     "react-google-login": "^5.0.5",
     "react-infinite-scroller": "^1.2.4",
     "react-joyride": "^2.1.1",
