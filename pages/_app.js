@@ -42,13 +42,16 @@ class MyApp extends App {
         MessageActions.showMessage({ show: true, load: true })
       );
     });
+
     Router.events.on("routeChangeComplete", () => {
       ReactGA.pageview(props.router.asPath);
       props.store.dispatch(MessageActions.showMessage({ show: false }));
     });
+
     Router.events.on("routeChangeError", () => {
       props.store.dispatch(MessageActions.showMessage({ show: false }));
     });
+
     let oldFetch = fetch;
   }
 
