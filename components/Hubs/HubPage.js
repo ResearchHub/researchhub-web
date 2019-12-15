@@ -657,12 +657,13 @@ var styles = StyleSheet.create({
     position: "sticky",
     paddingLeft: 70,
     paddingRight: 70,
-    top: 80,
     backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
+    top: 80,
     "@media only screen and (max-width: 767px)": {
       position: "relative",
+      top: 0,
     },
     "@media only screen and (max-width: 665px)": {
       display: "flex",

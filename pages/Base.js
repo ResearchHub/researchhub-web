@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minHeight: "100vh",
     background: "#fff",
+    marginTop: 80,
   },
 });
 
