@@ -110,5 +110,7 @@ function redirectWithoutSlash(res, req) {
 }
 
 function isIndexUrl(url) {
-  return url[0] == "/";
+  let qs = url.indexOf("?");
+  url = url.substring(0, qs != -1 ? qs : url.length);
+  return url == "/";
 }
