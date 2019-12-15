@@ -412,7 +412,11 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     height: 80,
+    background: "#fff",
+    zIndex: 11,
     alignItems: "center",
+    position: "fixed",
+    top: 0,
     borderBottom: "rgb(151,151,151, .2) 1px solid",
     justifyContent: "space-around",
     "@media only screen and (max-width: 760px)": {
