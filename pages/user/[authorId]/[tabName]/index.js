@@ -12,6 +12,7 @@ import Head from "~/components/Head";
 import TabBar from "~/components/TabBar";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
+import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ShareModal from "~/components/ShareModal";
 import AvatarUpload from "~/components/AvatarUpload";
@@ -191,6 +192,11 @@ const AuthorPage = (props) => {
       label: "discussions",
       showCount: true,
       count: author.userDiscussions.count,
+    },
+    {
+      href: "transactions",
+      label: "transactions",
+      showCount: true,
     },
   ];
 

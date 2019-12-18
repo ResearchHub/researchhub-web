@@ -69,6 +69,7 @@ const VoteWidget = (props) => {
       if (isPaper || type === "discussion") {
         let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
         dispatch(AuthActions.checkUserFirstTime(firstTime));
+        dispatch(AuthActions.getUser());
       }
       onUpvote(e);
     }
@@ -83,6 +84,7 @@ const VoteWidget = (props) => {
       if (isPaper || type === "discussion") {
         let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
         dispatch(AuthActions.checkUserFirstTime(firstTime));
+        dispatch(AuthActions.getUser());
       }
       onDownvote(e);
     }

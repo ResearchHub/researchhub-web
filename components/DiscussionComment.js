@@ -275,6 +275,7 @@ class CommentClass extends DiscussionComment {
           this.props.dispatch(
             AuthActions.checkUserFirstTime(this.props.firstTime)
           );
+          this.props.dispatch(AuthActions.getUser());
         }
       );
       setTimeout(() => {
