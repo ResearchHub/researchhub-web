@@ -131,6 +131,7 @@ const DiscussionTab = (props) => {
             props.checkUserFirstTime(
               !props.auth.user.has_seen_first_coin_modal
             );
+            props.getUser();
           }, 300);
           setTimeout(() => setTransition(false), 3000);
         }, 800);
@@ -503,6 +504,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   openAddDiscussionModal: ModalActions.openAddDiscussionModal,
   checkUserFirstTime: AuthActions.checkUserFirstTime,
+  getUser: AuthActions.getUser,
 };
 
 export default connect(

@@ -124,6 +124,7 @@ const DiscussionThreadPage = (props) => {
     setTimeout(() => {
       props.showMessage({ show: false });
       props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
+      props.getUser();
       setTimeout(() => {
         setTransition(false);
       }, 3000);
@@ -260,6 +261,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   checkUserFirstTime: AuthActions.checkUserFirstTime,
+  getUser: AuthActions.getUser,
 };
 
 export default connect(
