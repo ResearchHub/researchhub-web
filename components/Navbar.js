@@ -348,7 +348,7 @@ const Navbar = (props) => {
                   />
                   <i className={css(styles.caret) + " fas fa-caret-down"}></i>
                   <div className={css(styles.reputation)}>
-                    <Reputation reputation={user.balance} />
+                    <Reputation balance={user.balance} showBalance={true} />
                   </div>
                 </div>
                 {openMenu && (
@@ -419,6 +419,11 @@ const styles = StyleSheet.create({
     top: 0,
     borderBottom: "rgb(151,151,151, .2) 1px solid",
     justifyContent: "space-around",
+    position: "sticky",
+    zIndex: 3,
+    top: 0,
+    left: 0,
+    backgroundColor: "#FFF",
     "@media only screen and (max-width: 760px)": {
       justifyContent: "space-between",
     },
