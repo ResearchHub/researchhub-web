@@ -10,6 +10,10 @@ export function formatDateStandard(momentDate) {
   return momentDate.format("MMM YYYY");
 }
 
+export function formatTransactionDate(momentDate) {
+  return momentDate.format("MMM Do YY, h:mm a");
+}
+
 export function formatPublishedDate(momentDate) {
   return `Published: ${formatDateStandard(momentDate)}`;
 }
