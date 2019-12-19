@@ -110,11 +110,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
   },
-  bottomRow: {
-    // '@media only screen and (max-width: 620px)': {
-    //   paddingBottom: 20
-    // }
-  },
   column: {
     display: "flex",
     flexDirection: "column",
@@ -198,7 +193,6 @@ const styles = StyleSheet.create({
   amountContainer: {
     height: "100%",
     display: "flex",
-    // alignItems: 'center',
     alignItems: "flex-end",
     fontWeight: "bold",
     "@media only screen and (max-width: 620px)": {
