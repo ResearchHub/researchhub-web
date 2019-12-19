@@ -340,7 +340,6 @@ class RichTextEditor extends React.Component {
                   return node.type === type;
                 }
               );
-              debugger;
               let convertedMarks = filteredMarks.toJS();
               for (let i = 0; i < convertedMarks.length; i++) {
                 if (this.editor.value.anchorText.text === "") {
@@ -723,21 +722,26 @@ class RichTextEditor extends React.Component {
     let alreadyLink = false;
     let isUrl = false;
     let linkMark = {};
+    // Compare active marks and see if they are type link.
     for (let index = 0; index < activeMarks.length; index++) {
       if (activeMarks[index].type === "link") {
-        alreadyLink = true;
-        linkMark = activeMarks[index];
+        alreadyLink = true; // is a link
+        linkMark = activeMarks[index]; // grab mark
       }
       if (activeMarks[index].data.isUrl) {
-        isUrl = true;
+        isUrl = true; // is a url
       }
     }
 
+    // if not an insert we don't want to worry about the link/url changes
     if (editor.operations.toJS()[0].type !== "insert_text") {
       this.setState({ value: selectedValue });
       this.props.onChange(selectedValue);
       return;
     }
+
+    // if insert and a link check if the insert type was a delimiter and if so
+    // remove link mark for the new inserted text
     if (
       editor.operations.toJS()[0].type === "insert_text" &&
       (alreadyLink || isUrl)
@@ -756,6 +760,9 @@ class RichTextEditor extends React.Component {
         return;
       }
     }
+
+    // if not already a link parse text and see if its a url.
+    // if it is a url then toggle mark
     if (!alreadyLink) {
       for (let i = 0; i < valuesJS.length; i++) {
         let value = valuesJS[i];
