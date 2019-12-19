@@ -339,7 +339,17 @@ class RichTextEditor extends React.Component {
               );
               let convertedMarks = filteredMarks.toJS();
               for (let i = 0; i < convertedMarks.length; i++) {
-                this.editor.toggleMark(convertedMarks[i]);
+                if (this.editor.value.anchorText.text === "") {
+                  this.editor.moveAnchorToEndOfPreviousText();
+                  this.editor.moveFocusToStartOfNextText();
+                  this.editor.removeMark(convertedMarks[i]);
+                } else {
+                  this.editor.moveAnchorToStartOfText();
+                  this.editor.moveFocusToEndOfText();
+                  this.editor.removeMark(convertedMarks[i]);
+                  this.editor.moveAnchorToEndOfText();
+                  this.editor.moveFocusToEndOfText();
+                }
               }
             } else {
               this.setState({
