@@ -7,6 +7,7 @@ import Plain from "slate-plain-serializer";
 import { css, StyleSheet } from "aphrodite";
 import { isKeyHotkey } from "is-hotkey";
 import Sticky from "react-stickynode";
+import urlRegex from "url-regex";
 
 // Components
 import { Button, Icon, ToolBar } from "./ToolBar";
@@ -49,6 +50,8 @@ const commentInitialValue = Value.fromJSON({
  */
 
 const DEFAULT_NODE = "paragraph";
+
+const LINK_DELIMITERS = [" ", "<", ">", "[", "]", ";"];
 
 /**
  * Define hotkey matchers.
@@ -698,12 +701,74 @@ class RichTextEditor extends React.Component {
   /**
    * On change, save the new `value`.
    *
-   * @param {Editor} editor
+   * @param {editor} editor
    */
+  onChange = (editor) => {
+    let valuesJS = editor.value.texts.toJS();
+    let selectedValue = editor.value;
+    let activeMarks = editor.value.activeMarks.toJS();
+    let alreadyLink = false;
+    let isUrl = false;
+    let linkMark = {};
+    for (let index = 0; index < activeMarks.length; index++) {
+      if (activeMarks[index].type === "link") {
+        alreadyLink = true;
+        linkMark = activeMarks[index];
+      }
+      if (activeMarks[index].data.isUrl) {
+        isUrl = true;
+      }
+    }
+    if (editor.operations.toJS()[0].type !== "insert_text") {
+      this.setState({ value: selectedValue });
+      this.props.onChange(selectedValue);
+      return;
+    }
+    if (
+      editor.operations.toJS()[0].type === "insert_text" &&
+      (alreadyLink || isUrl)
+    ) {
+      if (LINK_DELIMITERS.includes(editor.operations.toJS()[0].text)) {
+        let selection = editor.value.selection.toJS();
+        selection.anchor.offset -= 1;
+        this.editor.setAnchor(selection.anchor);
+        this.editor.setFocus(selection.focus);
+        this.editor.toggleMark(linkMark);
+        this.editor.setAnchor(this.editor.value.selection.get("focus"));
+        this.editor.setFocus(this.editor.value.selection.get("focus"));
+        selectedValue = this.editor.value;
+        this.setState({ value: selectedValue });
+        this.props.onChange(selectedValue);
+        return;
+      }
+    }
+    if (!alreadyLink) {
+      for (let i = 0; i < valuesJS.length; i++) {
+        let value = valuesJS[i];
+        if (value.text) {
+          let urls = value.text.match(urlRegex());
+          if (!urls) {
+            urls = [];
+          }
+          for (let j = 0; j < urls.length; j++) {
+            let start = value.text.indexOf(urls[j]);
+            let selection = editor.value.selection.toJS();
+            selection.anchor.offset = start;
+            selection.focus.offset = start + urls[j].length;
 
-  onChange = ({ value }) => {
-    this.setState({ value });
-    this.props.onChange(value);
+            let currentCursor = editor.value.selection.toJS();
+            this.editor.setAnchor(selection.anchor);
+            this.editor.setFocus(selection.focus);
+            this.editor.toggleMark({ type: "link", data: { isUrl: true } });
+            this.editor.setAnchor(currentCursor.anchor);
+            this.editor.setFocus(currentCursor.focus);
+            selectedValue = this.editor.value;
+          }
+        }
+      }
+    }
+    this.setState({ value: selectedValue });
+    this.props.onChange(selectedValue);
   };
 
   /**
