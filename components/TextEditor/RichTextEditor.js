@@ -340,6 +340,7 @@ class RichTextEditor extends React.Component {
                   return node.type === type;
                 }
               );
+              debugger;
               let convertedMarks = filteredMarks.toJS();
               for (let i = 0; i < convertedMarks.length; i++) {
                 if (this.editor.value.anchorText.text === "") {
@@ -674,6 +675,18 @@ class RichTextEditor extends React.Component {
         );
       case "link":
         let url = mark.data.get("url");
+        let isUrl = mark.data.get("isUrl");
+        if (isUrl) {
+          return (
+            <a
+              {...attributes}
+              href={this.formatURL(children.props.text)}
+              target={"_blank"}
+            >
+              {children}
+            </a>
+          );
+        }
         return (
           <a {...attributes} href={url} target={"_blank"}>
             {children}
@@ -719,6 +732,7 @@ class RichTextEditor extends React.Component {
         isUrl = true;
       }
     }
+
     if (editor.operations.toJS()[0].type !== "insert_text") {
       this.setState({ value: selectedValue });
       this.props.onChange(selectedValue);
