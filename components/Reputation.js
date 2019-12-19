@@ -12,13 +12,14 @@ const Reputation = (props) => {
   const [count, setBalance] = useState(balance);
 
   useEffect(() => {
-    setBalance(count);
+    setBalance(balance);
   }, [balance]);
 
   function openTransactionModal(e) {
     e.stopPropagation();
     dispatch(ModalActions.openTransactionModal(true));
   }
+
   return (
     <div
       className={css(styles.reputationContainer)}
