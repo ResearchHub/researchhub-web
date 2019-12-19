@@ -29,7 +29,6 @@ class BaseModal extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.isOpen !== this.props.isOpen) {
       if (this.state.mobileView) {
-        console.log("called scroll");
         document.body.scrollTop = 0; // For Safari
         document.documentElement.scrollTop = 0;
       }
