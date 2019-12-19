@@ -185,43 +185,38 @@ class RichTextEditor extends React.Component {
               // renderDecoration={this.renderDecoration}
             />
             {!this.props.readOnly && (
-              <Sticky innerZ={2}>
-                <ToolBar
-                  cancel={this.props.cancel}
-                  submit={this.props.submit}
-                  hideButton={this.props.hideButton}
-                  hideCancelButton={
-                    this.props.hideCancelButton && this.props.hideCancelButton
-                  }
-                >
-                  {this.renderMarkButton("bold", textEditorIcons.bold, true)}
-                  {this.renderMarkButton("italic", textEditorIcons.italic)}
-                  {this.renderMarkButton(
-                    "underlined",
-                    textEditorIcons.underline
-                  )}
-                  {this.renderMarkButton("code", textEditorIcons.code)}
-                  {this.renderBlockButton("heading-one", textEditorIcons.h1)}
-                  {this.renderBlockButton("heading-two", textEditorIcons.h2)}
-                  {this.renderBlockButton("block-quote", textEditorIcons.quote)}
-                  {this.renderBlockButton(
-                    "numbered-list",
-                    textEditorIcons.numberedList
-                  )}
-                  {this.renderBlockButton(
-                    "bulleted-list",
-                    textEditorIcons.bulletedList
-                  )}
-                  {this.renderLinkButton("link", textEditorIcons.link)}
-                  {this.renderImageButton("image", textEditorIcons.image)}
-                </ToolBar>
-              </Sticky>
+              <ToolBar
+                cancel={this.props.cancel}
+                submit={this.props.submit}
+                hideButton={this.props.hideButton}
+                hideCancelButton={
+                  this.props.hideCancelButton && this.props.hideCancelButton
+                }
+              >
+                {this.renderMarkButton("bold", textEditorIcons.bold, true)}
+                {this.renderMarkButton("italic", textEditorIcons.italic)}
+                {this.renderMarkButton("underlined", textEditorIcons.underline)}
+                {this.renderMarkButton("code", textEditorIcons.code)}
+                {this.renderBlockButton("heading-one", textEditorIcons.h1)}
+                {this.renderBlockButton("heading-two", textEditorIcons.h2)}
+                {this.renderBlockButton("block-quote", textEditorIcons.quote)}
+                {this.renderBlockButton(
+                  "numbered-list",
+                  textEditorIcons.numberedList
+                )}
+                {this.renderBlockButton(
+                  "bulleted-list",
+                  textEditorIcons.bulletedList
+                )}
+                {this.renderLinkButton("link", textEditorIcons.link)}
+                {this.renderImageButton("image", textEditorIcons.image)}
+              </ToolBar>
             )}
           </div>
         ) : (
           <div className={css(styles.summaryEditor)}>
             {!this.props.readOnly && (
-              <Sticky innerZ={2}>
+              <Sticky enabled={true} innerZ={3} top={80}>
                 <ToolBar
                   cancel={this.props.cancel}
                   submit={this.props.submit}
