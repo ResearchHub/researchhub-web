@@ -416,10 +416,11 @@ class RichTextEditor extends React.Component {
     if (!url) {
       return;
     }
+    if (url.startsWith(http)) {
+      return url;
+    }
+
     if (!url.startsWith(https)) {
-      if (url.startsWith(http)) {
-        url = url.replace(http, https);
-      }
       url = https + url;
     }
     return url;
