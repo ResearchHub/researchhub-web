@@ -101,7 +101,7 @@ const FirstVoteModal = (props) => {
         <Confetti recycle={recycle} numberOfPieces={300} height={260} />
         <div className={css(styles.text)}>
           For the first week, all major actions you take on the site will help
-          you earn ResearchCoin (up to 100 RCH). After the week is over, you
+          you earn ResearchCoin (up to 100 RHC). After the week is over, you
           will still earn coins on major actions, but not every single one.
         </div>
         <div className={css(styles.text)}>
@@ -110,7 +110,7 @@ const FirstVoteModal = (props) => {
         </div>
         <div className={css(styles.body, reveal && styles.reveal)}>
           <div className={css(styles.hyperlink)} onClick={openLinkInTab}>
-            Click here to learn more about RCH.
+            Click here to learn more about RHC.
           </div>
           <div className={css(styles.button, showButton && styles.showButton)}>
             <Button label={"Close"} onClick={userHasFirstSeen} />
