@@ -374,7 +374,7 @@ class HubPage extends React.Component {
                 <span className={css(styles.hubName)}>
                   {this.props.home ? "ResearchHub" : this.props.hub.name}
                 </span>
-                {this.renderSubscribeButton()}
+                {this.props.hub && this.renderSubscribeButton()}
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
