@@ -64,7 +64,8 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "slate": "^0.47.8",
-    "slate-react": "^0.22.9"
+    "slate-react": "^0.22.9",
+    "url-regex": "^5.0.0"
   },
   "devDependencies": {
     "cypress": "^3.4.1",
