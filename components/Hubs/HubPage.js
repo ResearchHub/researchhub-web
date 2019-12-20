@@ -96,6 +96,9 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     this.fetchPapers({ hub: this.props.hub });
+    this.setState({
+      subscribe: this.props.hub.user_is_subscribed,
+    });
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
   }
@@ -292,14 +295,35 @@ class HubPage extends React.Component {
   };
 
   subscribeToHub = () => {
+    let { hub, showMessage, setMessage } = this.props;
+    showMessage({ show: false });
     this.setState({ transition: true }, () => {
-      // TODO: API CALL
-      setTimeout(() => {
-        this.setState({
-          transition: false,
-          subscribe: !this.state.subscribe,
-        });
-      }, 1000);
+      let config = API.POST_CONFIG();
+      if (this.state.subscribe) {
+        return fetch(API.HUB_UNSUBSCRIBE({ hubId: hub.id }), config)
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then(() => {
+            setMessage("Unsubscribed!");
+            showMessage({ show: true });
+            this.setState({
+              transition: false,
+              subscribe: !this.state.subscribe,
+            });
+          });
+      } else {
+        return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then(() => {
+            setMessage("Subscribed!");
+            showMessage({ show: true });
+            this.setState({
+              transition: false,
+              subscribe: !this.state.subscribe,
+            });
+          });
+      }
     });
   };
 
@@ -869,6 +893,7 @@ const mapDispatchToProps = {
   setUserBannerPreference: AuthActions.setUserBannerPreference,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
 };
 
 export default connect(
