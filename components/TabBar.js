@@ -9,14 +9,21 @@ import ComponentWrapper from "./ComponentWrapper";
 const TabBar = (props) => {
   const selectedTab = props.selectedTab;
   const { dynamic_href } = props;
-
   const tabs = props.tabs.map(formatTabs);
 
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
-          {tabs.map((tab) => renderTab(tab, selectedTab, dynamic_href))}
+          {tabs.map((tab) => {
+            if (tab.label === "transactions") {
+              let { user, author } = props;
+              if (author.user !== user.id) {
+                return null;
+              }
+            }
+            return renderTab(tab, selectedTab, dynamic_href);
+          })}
         </div>
       </ComponentWrapper>
     </div>
@@ -87,7 +94,7 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     minWidth: 450,
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
   },
   firstTab: {
     paddingLeft: 0,
@@ -102,11 +109,11 @@ const styles = StyleSheet.create({
     },
 
     "@media only screen and (min-width: 1024px)": {
-      marginRight: 45,
+      // marginRight: 45,
     },
 
     "@media only screen and (min-width: 1288px)": {
-      marginRight: 80,
+      // marginRight: 80,
     },
     ":hover": {
       color: colors.PURPLE(1),

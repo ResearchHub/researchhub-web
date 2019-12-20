@@ -12,6 +12,7 @@ import PermissionNotification from "../components/PermissionNotification";
 import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
 import { UniversityActions } from "../redux/universities";
+import { TransactionActions } from "../redux/transaction";
 import PermissionActions from "../redux/permission";
 import Footer from "./footer";
 
@@ -24,11 +25,13 @@ class Base extends React.Component {
       getUser,
       getUniversities,
       getUserBannerPreference,
+      getWithdrawals,
     } = this.props;
 
     getUser();
     getHubs();
     getUniversities();
+    getWithdrawals();
     getUserBannerPreference();
     fetchPermissionsPending();
     await fetchPermissions();
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minHeight: "100vh",
     background: "#fff",
-    marginTop: 80,
+    // marginTop: 80,
   },
 });
 
@@ -74,6 +77,7 @@ const mapDispatchToProps = {
   getUserBannerPreference: AuthActions.getUserBannerPreference,
   fetchPermissions: PermissionActions.fetchPermissions,
   fetchPermissionsPending: PermissionActions.fetchPermissionsPending,
+  getWithdrawals: TransactionActions.getWithdrawals,
 };
 
 export default connect(

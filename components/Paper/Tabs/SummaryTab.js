@@ -69,7 +69,7 @@ class SummaryTab extends React.Component {
   };
 
   submitEdit = (raw, plain_text) => {
-    let { setMessage, showMessage, checkUserFirstTime } = this.props;
+    let { setMessage, showMessage, checkUserFirstTime, getUser } = this.props;
     let param = {
       summary: raw,
       paper: this.props.paperId,
@@ -94,6 +94,7 @@ class SummaryTab extends React.Component {
           setMessage("Edits Made!");
           let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
           checkUserFirstTime(firstTime);
+          getUser();
           this.setState({
             summaryExists: true,
           });
@@ -422,6 +423,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   checkUserFirstTime: AuthActions.checkUserFirstTime,
+  getUser: AuthActions.getUser,
 };
 
 export default connect(

@@ -1,41 +1,50 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import InfiniteScroll from "react-infinite-scroller";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
+import TransactionCard from "../../ResearchCoin/TransactionCard";
+import Loader from "~/components/Loader/Loader";
+
+// Redux
+import { TransactionActions } from "~/redux/transaction";
 
 // Config
 import colors from "~/config/themes/colors";
 
-class AuthoredPapersTab extends React.Component {
+class UserTransaction extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      page: 0,
+    };
   }
 
+  getWithdrawals = (nextPage) => {
+    this.props.getWithdrawals(nextPage);
+  };
+
   render() {
-    let { author } = this.props;
-    let papers = author.authoredPapers.papers.map((paper, index) => {
-      return (
-        <div className={css(styles.paperContainer)}>
-          <PaperEntryCard paper={paper} index={index} />
-        </div>
-      );
-    });
+    let { transactions } = this.props;
     return (
       <ComponentWrapper>
-        {papers.length > 0 ? (
-          <div className={css(styles.container)}>{papers}</div>
-        ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-file-alt" />
-            </div>
-            <h2 className={css(styles.noContent)}>
-              User has not authored any papers.
-            </h2>
-          </div>
-        )}
+        <InfiniteScroll
+          pageStart={0}
+          loadMore={(page) => this.getWithdrawals(page)}
+          hasMore={transactions.next !== null}
+          loader={<Loader loading={true} key={"transaction-loader"} />}
+          className={css(styles.infinite)}
+        >
+          {transactions.withdrawals.map((transaction, i) => {
+            return (
+              <TransactionCard
+                key={`transactionCard-${i}`}
+                transaction={transaction}
+              />
+            );
+          })}
+        </InfiniteScroll>
       </ComponentWrapper>
     );
   }
@@ -74,10 +83,23 @@ var styles = StyleSheet.create({
     height: 50,
     marginBottom: 10,
   },
+  infinite: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
+  },
 });
 
 const mapStateToProps = (state) => ({
-  author: state.author,
+  transactions: state.transactions,
 });
 
-export default connect(mapStateToProps)(AuthoredPapersTab);
+const mapDispatchToProps = {
+  getWithdrawals: TransactionActions.getWithdrawals,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserTransaction);
