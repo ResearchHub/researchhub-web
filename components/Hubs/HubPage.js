@@ -5,6 +5,7 @@ import moment from "moment";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Link from "next/link";
+import ReactTooltip from "react-tooltip";
 
 // Component
 import HubsList from "~/components/Hubs/HubsList";
@@ -278,6 +279,62 @@ class HubPage extends React.Component {
     });
   };
 
+  renderSubscribeButton = () => {
+    if (this.state.subscribe) {
+      return (
+        <span
+          className={css(styles.subscribe, styles.subscribed)}
+          data-tip="Unsubscribe to Hub"
+          onClick={this.subscribeToHub}
+        >
+          <ReactTooltip />
+          {!this.state.transition ? (
+            <i className="fas fa-check-circle" />
+          ) : (
+            <Loader
+              key={"subscribeLoader"}
+              loading={true}
+              containerStyle={styles.loader}
+              size={20}
+            />
+          )}
+        </span>
+      );
+    } else {
+      return (
+        <span
+          className={css(styles.subscribe)}
+          data-tip="Subscribe to Hub"
+          onClick={this.subscribeToHub}
+        >
+          <ReactTooltip />
+          {!this.state.transition ? (
+            <i className="fal fa-plus-circle" />
+          ) : (
+            <Loader
+              key={"subscribeLoader"}
+              loading={true}
+              containerStyle={styles.loader}
+              size={20}
+            />
+          )}
+        </span>
+      );
+    }
+  };
+
+  subscribeToHub = () => {
+    this.setState({ transition: true }, () => {
+      // TODO: API CALL
+      setTimeout(() => {
+        this.setState({
+          transition: false,
+          subscribe: !this.state.subscribe,
+        });
+      }, 1000);
+    });
+  };
+
   render() {
     let { auth } = this.props;
 
@@ -349,6 +406,7 @@ class HubPage extends React.Component {
                 <span className={css(styles.hubName)}>
                   {this.props.home ? "ResearchHub" : this.props.hub.name}
                 </span>
+                {this.renderSubscribeButton()}
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
@@ -476,7 +534,7 @@ var styles = StyleSheet.create({
     marginLeft: "calc(100% * .08)",
     justifyContent: "space-between",
     height: 200,
-    zIndex: 3,
+    zIndex: 2,
     "@media only screen and (max-width: 767px)": {
       height: "unset",
       justifyContent: "flex-start",
@@ -499,6 +557,7 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
+    zIndex: 0,
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       alignItems: "unset",
@@ -630,9 +689,12 @@ var styles = StyleSheet.create({
     },
   },
   feedTitle: {
+    display: "flex",
+    alignItems: "center",
     color: "#000",
     fontWeight: "400",
     fontSize: 33,
+    whiteSpace: "pre-wrap",
     "@media only screen and (max-width: 1343px)": {
       fontSize: 25,
     },
@@ -803,6 +865,28 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "85%",
     },
+  },
+  subscribe: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 12,
+    cursor: "pointer",
+    color: colors.BLUE(),
+    opacity: 0.7,
+    height: "100%",
+    width: 23,
+    minWidth: 23,
+    maxWidth: 23,
+    ":hover": {
+      opacity: 1,
+    },
+  },
+  subscribed: {
+    opacity: 1,
+  },
+  loader: {
+    opacity: 1,
   },
 });
 
