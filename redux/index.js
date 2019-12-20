@@ -10,6 +10,7 @@ import messageReducer from "./message";
 import authorReducer from "./author/reducer";
 import hubReducer from "./hub";
 import universityReducer from "./universities";
+import transactionReducer from "./transaction";
 
 export default combineReducers({
   modals: modalReducer,
@@ -22,4 +23,5 @@ export default combineReducers({
   author: authorReducer,
   hubs: hubReducer,
   universities: universityReducer,
+  transactions: transactionReducer,
 });

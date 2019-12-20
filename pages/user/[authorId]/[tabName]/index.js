@@ -12,6 +12,7 @@ import Head from "~/components/Head";
 import TabBar from "~/components/TabBar";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
+import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ShareModal from "~/components/ShareModal";
 import AvatarUpload from "~/components/AvatarUpload";
@@ -23,7 +24,7 @@ import { absoluteUrl } from "~/config/utils";
 import { AuthActions } from "../../../../redux/auth";
 
 const AuthorPage = (props) => {
-  let { author, hostname, user } = props;
+  let { author, hostname, user, transactions } = props;
   let router = useRouter();
   let { tabName } = router.query;
   const dispatch = useDispatch();
@@ -192,6 +193,12 @@ const AuthorPage = (props) => {
       showCount: true,
       count: author.userDiscussions.count,
     },
+    {
+      href: "transactions",
+      label: "transactions",
+      showCount: true,
+      count: transactions.count,
+    },
   ];
 
   let renderTabContent = () => {
@@ -205,7 +212,7 @@ const AuthorPage = (props) => {
       case "citations":
         return null;
       case "transactions":
-        return null;
+        return <UserTransactionsTab />;
     }
   };
 
@@ -610,6 +617,8 @@ const AuthorPage = (props) => {
         tabs={tabs}
         selectedTab={router.query.tabName}
         dynamic_href={"/user/[authorId]/[tabName]"}
+        author={author}
+        user={user}
       />
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
       <ShareModal
@@ -927,6 +936,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   author: state.author,
   user: state.auth.user,
+  transactions: state.transactions,
 });
 
 const mapDispatchToProps = {

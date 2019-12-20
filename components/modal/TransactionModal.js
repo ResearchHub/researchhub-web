@@ -324,6 +324,8 @@ class TransactionModal extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        let newUser = { ...res.user };
+        this.props.updateUser(newUser);
         this.setState({
           userBalance: res.user.balance,
           withdrawals: [...res.results],
@@ -718,6 +720,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   getUser: AuthActions.getUser,
+  updateUser: AuthActions.updateUser,
 };
 
 export default connect(
