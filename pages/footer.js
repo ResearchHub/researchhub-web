@@ -70,12 +70,15 @@ class Footer extends React.Component {
             <div className={css(styles.tab)}>Privacy Policy</div>
           </Link>
           <div className={css(styles.arr)}>
-            © {new Date().getFullYear()} ResearchHub &amp; Contributors.
-            User contributions licensed under
-            <a href="https://creativecommons.org/licenses/by/4.0/"
-              title="Creative Commons Attribution 4.0 International Public License">
+            © {new Date().getFullYear()} ResearchHub &amp; Contributors / User
+            contributions licensed under
+            <a
+              className={css(styles.ccby)}
+              href="https://creativecommons.org/licenses/by/4.0/"
+              title="Creative Commons Attribution 4.0 International Public License"
+            >
               CC BY 4.0
-            </a>.
+            </a>
           </div>
         </div>
       </footer>
@@ -99,6 +102,10 @@ const styles = StyleSheet.create({
   },
   linkSection: {
     marginLeft: "5%",
+  },
+  ccby: {
+    color: "#fff",
+    marginLeft: 5,
   },
   tab: {
     color: "#fff",
