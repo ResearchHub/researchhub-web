@@ -7,6 +7,7 @@ import Plain from "slate-plain-serializer";
 import { css, StyleSheet } from "aphrodite";
 import { isKeyHotkey } from "is-hotkey";
 import Sticky from "react-stickynode";
+import urlRegex from "url-regex";
 
 // Components
 import { Button, Icon, ToolBar } from "./ToolBar";
@@ -49,6 +50,8 @@ const commentInitialValue = Value.fromJSON({
  */
 
 const DEFAULT_NODE = "paragraph";
+
+const LINK_DELIMITERS = [" ", "<", ">", "[", "]", ";"];
 
 /**
  * Define hotkey matchers.
@@ -182,43 +185,38 @@ class RichTextEditor extends React.Component {
               // renderDecoration={this.renderDecoration}
             />
             {!this.props.readOnly && (
-              <Sticky innerZ={2}>
-                <ToolBar
-                  cancel={this.props.cancel}
-                  submit={this.props.submit}
-                  hideButton={this.props.hideButton}
-                  hideCancelButton={
-                    this.props.hideCancelButton && this.props.hideCancelButton
-                  }
-                >
-                  {this.renderMarkButton("bold", textEditorIcons.bold, true)}
-                  {this.renderMarkButton("italic", textEditorIcons.italic)}
-                  {this.renderMarkButton(
-                    "underlined",
-                    textEditorIcons.underline
-                  )}
-                  {this.renderMarkButton("code", textEditorIcons.code)}
-                  {this.renderBlockButton("heading-one", textEditorIcons.h1)}
-                  {this.renderBlockButton("heading-two", textEditorIcons.h2)}
-                  {this.renderBlockButton("block-quote", textEditorIcons.quote)}
-                  {this.renderBlockButton(
-                    "numbered-list",
-                    textEditorIcons.numberedList
-                  )}
-                  {this.renderBlockButton(
-                    "bulleted-list",
-                    textEditorIcons.bulletedList
-                  )}
-                  {this.renderLinkButton("link", textEditorIcons.link)}
-                  {this.renderImageButton("image", textEditorIcons.image)}
-                </ToolBar>
-              </Sticky>
+              <ToolBar
+                cancel={this.props.cancel}
+                submit={this.props.submit}
+                hideButton={this.props.hideButton}
+                hideCancelButton={
+                  this.props.hideCancelButton && this.props.hideCancelButton
+                }
+              >
+                {this.renderMarkButton("bold", textEditorIcons.bold, true)}
+                {this.renderMarkButton("italic", textEditorIcons.italic)}
+                {this.renderMarkButton("underlined", textEditorIcons.underline)}
+                {this.renderMarkButton("code", textEditorIcons.code)}
+                {this.renderBlockButton("heading-one", textEditorIcons.h1)}
+                {this.renderBlockButton("heading-two", textEditorIcons.h2)}
+                {this.renderBlockButton("block-quote", textEditorIcons.quote)}
+                {this.renderBlockButton(
+                  "numbered-list",
+                  textEditorIcons.numberedList
+                )}
+                {this.renderBlockButton(
+                  "bulleted-list",
+                  textEditorIcons.bulletedList
+                )}
+                {this.renderLinkButton("link", textEditorIcons.link)}
+                {this.renderImageButton("image", textEditorIcons.image)}
+              </ToolBar>
             )}
           </div>
         ) : (
           <div className={css(styles.summaryEditor)}>
             {!this.props.readOnly && (
-              <Sticky innerZ={2}>
+              <Sticky enabled={true} innerZ={3} top={80}>
                 <ToolBar
                   cancel={this.props.cancel}
                   submit={this.props.submit}
@@ -339,7 +337,17 @@ class RichTextEditor extends React.Component {
               );
               let convertedMarks = filteredMarks.toJS();
               for (let i = 0; i < convertedMarks.length; i++) {
-                this.editor.toggleMark(convertedMarks[i]);
+                if (this.editor.value.anchorText.text === "") {
+                  this.editor.moveAnchorToEndOfPreviousText();
+                  this.editor.moveFocusToStartOfNextText();
+                  this.editor.removeMark(convertedMarks[i]);
+                } else {
+                  this.editor.moveAnchorToStartOfText();
+                  this.editor.moveFocusToEndOfText();
+                  this.editor.removeMark(convertedMarks[i]);
+                  this.editor.moveAnchorToEndOfText();
+                  this.editor.moveFocusToEndOfText();
+                }
               }
             } else {
               this.setState({
@@ -406,10 +414,11 @@ class RichTextEditor extends React.Component {
     if (!url) {
       return;
     }
+    if (url.startsWith(http)) {
+      return url;
+    }
+
     if (!url.startsWith(https)) {
-      if (url.startsWith(http)) {
-        url = url.replace(http, https);
-      }
       url = https + url;
     }
     return url;
@@ -660,6 +669,18 @@ class RichTextEditor extends React.Component {
         );
       case "link":
         let url = mark.data.get("url");
+        let isUrl = mark.data.get("isUrl");
+        if (isUrl) {
+          return (
+            <a
+              {...attributes}
+              href={this.formatURL(children.props.text)}
+              target={"_blank"}
+            >
+              {children}
+            </a>
+          );
+        }
         return (
           <a {...attributes} href={url} target={"_blank"}>
             {children}
@@ -687,12 +708,83 @@ class RichTextEditor extends React.Component {
   /**
    * On change, save the new `value`.
    *
-   * @param {Editor} editor
+   * @param {editor} editor
    */
+  onChange = (editor) => {
+    let valuesJS = editor.value.texts.toJS();
+    let selectedValue = editor.value;
+    let activeMarks = editor.value.activeMarks.toJS();
+    let alreadyLink = false;
+    let isUrl = false;
+    let linkMark = {};
+    // Compare active marks and see if they are type link.
+    for (let index = 0; index < activeMarks.length; index++) {
+      if (activeMarks[index].type === "link") {
+        alreadyLink = true; // is a link
+        linkMark = activeMarks[index]; // grab mark
+      }
+      if (activeMarks[index].data.isUrl) {
+        isUrl = true; // is a url
+      }
+    }
 
-  onChange = ({ value }) => {
-    this.setState({ value });
-    this.props.onChange(value);
+    // if not an insert we don't want to worry about the link/url changes
+    if (editor.operations.toJS()[0].type !== "insert_text") {
+      this.setState({ value: selectedValue });
+      this.props.onChange(selectedValue);
+      return;
+    }
+
+    // if insert and a link check if the insert type was a delimiter and if so
+    // remove link mark for the new inserted text
+    if (
+      editor.operations.toJS()[0].type === "insert_text" &&
+      (alreadyLink || isUrl)
+    ) {
+      if (LINK_DELIMITERS.includes(editor.operations.toJS()[0].text)) {
+        let selection = editor.value.selection.toJS();
+        selection.anchor.offset -= 1;
+        this.editor.setAnchor(selection.anchor);
+        this.editor.setFocus(selection.focus);
+        this.editor.toggleMark(linkMark);
+        this.editor.setAnchor(this.editor.value.selection.get("focus"));
+        this.editor.setFocus(this.editor.value.selection.get("focus"));
+        selectedValue = this.editor.value;
+        this.setState({ value: selectedValue });
+        this.props.onChange(selectedValue);
+        return;
+      }
+    }
+
+    // if not already a link parse text and see if its a url.
+    // if it is a url then toggle mark
+    if (!alreadyLink) {
+      for (let i = 0; i < valuesJS.length; i++) {
+        let value = valuesJS[i];
+        if (value.text) {
+          let urls = value.text.match(urlRegex());
+          if (!urls) {
+            urls = [];
+          }
+          for (let j = 0; j < urls.length; j++) {
+            let start = value.text.indexOf(urls[j]);
+            let selection = editor.value.selection.toJS();
+            selection.anchor.offset = start;
+            selection.focus.offset = start + urls[j].length;
+
+            let currentCursor = editor.value.selection.toJS();
+            this.editor.setAnchor(selection.anchor);
+            this.editor.setFocus(selection.focus);
+            this.editor.toggleMark({ type: "link", data: { isUrl: true } });
+            this.editor.setAnchor(currentCursor.anchor);
+            this.editor.setFocus(currentCursor.focus);
+            selectedValue = this.editor.value;
+          }
+        }
+      }
+    }
+    this.setState({ value: selectedValue });
+    this.props.onChange(selectedValue);
   };
 
   /**
@@ -705,7 +797,6 @@ class RichTextEditor extends React.Component {
 
   onKeyDown = (event, editor, next) => {
     let mark;
-
     if (isBoldHotkey(event)) {
       mark = "bold";
     } else if (isItalicHotkey(event)) {
@@ -714,6 +805,20 @@ class RichTextEditor extends React.Component {
       mark = "underlined";
     } else if (isCodeHotkey(event)) {
       mark = "code";
+    } else if (event.key === "Enter") {
+      let isLink = editor.value.activeMarks.some((activeMark) => {
+        let comparison = activeMark.type === "link";
+        if (comparison) {
+          mark = activeMark;
+        }
+        return comparison;
+      });
+      if (isLink) {
+        editor.toggleMark(mark);
+        return next();
+      } else {
+        return next();
+      }
     } else {
       return next();
     }

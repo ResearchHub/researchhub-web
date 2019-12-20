@@ -29,7 +29,7 @@ export class TooltipInput extends React.Component {
   }
 
   render() {
-    let { title, value, onChange, save, classContainer } = this.props;
+    let { title, value, onChange, save, classContainer, close } = this.props;
     return (
       <div
         ref={(ref) => (this.container = ref)}
