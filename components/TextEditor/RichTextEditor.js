@@ -797,7 +797,6 @@ class RichTextEditor extends React.Component {
 
   onKeyDown = (event, editor, next) => {
     let mark;
-
     if (isBoldHotkey(event)) {
       mark = "bold";
     } else if (isItalicHotkey(event)) {
@@ -806,6 +805,20 @@ class RichTextEditor extends React.Component {
       mark = "underlined";
     } else if (isCodeHotkey(event)) {
       mark = "code";
+    } else if (event.key === "Enter") {
+      let isLink = editor.value.activeMarks.some((activeMark) => {
+        let comparison = activeMark.type === "link";
+        if (comparison) {
+          mark = activeMark;
+        }
+        return comparison;
+      });
+      if (isLink) {
+        editor.toggleMark(mark);
+        return next();
+      } else {
+        return next();
+      }
     } else {
       return next();
     }
