@@ -31,6 +31,8 @@ const FirstVoteModal = (props) => {
   useEffect(() => {
     if (store.getState().modals.openFirstVoteModal) {
       dispatch(AuthActions.getUser());
+      let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
+      firstTime && userHasFirstSeen();
       setTimeout(() => {
         toggleReveal(true);
         setTimeout(() => {
@@ -41,10 +43,9 @@ const FirstVoteModal = (props) => {
     }
   }, [store.getState().modals.openFirstVoteModal]);
 
-  function userHasFirstSeen(e) {
-    e && e.stopPropagation();
+  function userHasFirstSeen() {
     let config = {
-      has_seen_first_coin_modal: false,
+      has_seen_first_coin_modal: true,
     };
     fetch(API.USER_FIRST_COIN, API.PATCH_CONFIG(config))
       .then(Helpers.checkStatus)
@@ -53,7 +54,6 @@ const FirstVoteModal = (props) => {
         if (res.has_seen_first_coin_modal) {
           let newUserObj = { ...res };
           dispatch(AuthActions.updateUser(newUserObj));
-          closeModal();
         }
       });
   }
@@ -85,6 +85,7 @@ const FirstVoteModal = (props) => {
       isOpen={store.getState().modals.openFirstVoteModal}
       closeModal={closeModal}
       title={"Welcome to ResearchHub!"}
+      modalContentStyle={styles.modalContentStyle}
       subtitle={() => {
         return (
           <div className={css(styles.row)}>
@@ -98,7 +99,12 @@ const FirstVoteModal = (props) => {
       }}
     >
       <div className={css(styles.modalBody)}>
-        <Confetti recycle={recycle} numberOfPieces={300} height={260} />
+        <Confetti
+          recycle={recycle}
+          numberOfPieces={300}
+          width={584}
+          height={469}
+        />
         <div className={css(styles.text)}>
           For the first week, all major actions you take on the site will help
           you earn ResearchCoin (up to 100 RHC). After the week is over, you
@@ -113,7 +119,7 @@ const FirstVoteModal = (props) => {
             Click here to learn more about RHC.
           </div>
           <div className={css(styles.button, showButton && styles.showButton)}>
-            <Button label={"Close"} onClick={userHasFirstSeen} />
+            <Button label={"Close"} onClick={closeModal} />
           </div>
         </div>
       </div>
@@ -176,6 +182,10 @@ const styles = StyleSheet.create({
   },
   showButton: {
     opacity: 1,
+  },
+  modalContentStyle: {
+    overflow: "hidden",
+    maxWidth: 469,
   },
 });
 
