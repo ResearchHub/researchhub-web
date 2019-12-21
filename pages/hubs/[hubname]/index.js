@@ -54,12 +54,11 @@ class Index extends React.Component {
     const { currentHub, hubName } = this.state;
 
     if (currentHub) {
-      return <HubPage hub={currentHub} hubName={hubName} />;
-      // if (currentHub.is_locked) {
-      //   return <LockedHubPage hub={currentHub} hubName={hubName} />;
-      // } else {
-      //   return <HubPage hub={currentHub} hubName={hubName} />;
-      // }
+      if (currentHub.is_locked) {
+        return <LockedHubPage hub={currentHub} hubName={hubName} />;
+      } else {
+        return <HubPage hub={currentHub} hubName={hubName} />;
+      }
     } else {
       return null;
     }
