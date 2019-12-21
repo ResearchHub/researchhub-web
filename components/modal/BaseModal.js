@@ -119,7 +119,8 @@ class BaseModal extends React.Component {
           className={css(
             styles.modalContent,
             this.props.removeDefault && styles.removeDefault,
-            this.state.reveal && styles.reveal
+            this.state.reveal && styles.reveal,
+            this.props.modalContentStyle && this.props.modalContentStyle
           )}
         >
           {this.props.backgroundImage && (
