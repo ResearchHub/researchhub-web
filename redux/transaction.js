@@ -27,6 +27,9 @@ export const TransactionActions = {
               next: res.next,
             },
           });
+        })
+        .catch((error) => {
+          console.log(error);
         });
     };
   },
