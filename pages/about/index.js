@@ -328,6 +328,48 @@ class Index extends React.Component {
                 triggerOpenedClassName={css(styles.maxWidth)}
                 contentInnerClassName={css(styles.collapsibleContent)}
                 open={true}
+                trigger="- Is content created on ResearchHub open?"
+              >
+                <p className={css(styles.subtext, styles.wideText)}>
+                  <p>
+                    Yes.
+                    The scientific record is too important to be hidden behind paywalls.
+                    Science should be open, not only for reading, but also for reusing.
+                  </p>
+                  <p>
+                    That's why user contributions to ResearchHub are shared under the
+                    <a href="https://creativecommons.org/licenses/by/4.0/"
+                      title="Creative Commons Attribution 4.0 International Public License">
+                      Creative Commons Attribution License
+                    </a> (CC BY 4.0).
+                    This license allows anyone to reuse the content for any purpose,
+                    as long as attribution is provided.
+                    We consider a hyperlink or URL back to the source page on ResearchHub sufficient attribution.
+                  </p>
+                  <p>
+                    The CC BY license is the gold standard of open licenses for scholarly content.
+                    It is used by publishers such as
+                    <a href="https://www.plos.org/license">PLOS</a>,
+                    <a href="https://elifesciences.org/about/openness">eLife</a>,
+                    <a href="https://distill.pub/faq/">Distill</a>, and
+                    <a href="https://www.biomedcentral.com/getpublished/copyright-and-license">BMC</a>.
+                    By choosing CC BY, ResearchHub ensures user content can be reused to further science,
+                    by way of text mining, sharing, translation, and many other forms of reuse.
+                    This sets ResearchHub apart from other places to discuss science, like ResearchGate or Reddit,
+                    which do not apply an open license to all user-contributed content.
+                  </p>
+                </p>
+              </Collapsible>
+              <Collapsible
+                className={css(styles.collapsibleSection)}
+                openedClassName={css(
+                  styles.collapsibleSection,
+                  styles.sectionOpened
+                )}
+                triggerClassName={css(styles.maxWidth)}
+                triggerOpenedClassName={css(styles.maxWidth)}
+                contentInnerClassName={css(styles.collapsibleContent)}
+                open={true}
                 trigger="- Does ResearchHub host copyrighted material?"
               >
                 <p className={css(styles.subtext, styles.wideText)}>
