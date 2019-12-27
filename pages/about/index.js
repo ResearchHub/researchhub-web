@@ -249,8 +249,8 @@ class Index extends React.Component {
         </div>
         <div className={css(styles.infoContainer)}>
           {this.renderTextContainer(
-            "A Github For Science",
-            `Pre-print servers have started moving the needle on the accessibility of research papers, but these websites feel ancient by today’s standards. Our goal is to make a modern mobile and web application where people can begin to collaborate on scientific research in a much more efficient way, similar to what Github has done for software engineering. ${"\n \n"}Although the first version of ResearchHub is mainly about uploading, summarizing, discussing, and prioritizing papers in each area, there are many more ways we can improve collaboration in future versions. For instance, we hope to host datasets and lab notebook software in future versions.`,
+            "A GitHub For Science",
+            `Pre-print servers have started moving the needle on the accessibility of research papers, but these websites feel ancient by today’s standards. Our goal is to make a modern mobile and web application where people can begin to collaborate on scientific research in a much more efficient way, similar to what GitHub has done for software engineering. ${"\n \n"}Although the first version of ResearchHub is mainly about uploading, summarizing, discussing, and prioritizing papers in each area, there are many more ways we can improve collaboration in future versions. For instance, we hope to host datasets and lab notebook software in future versions.`,
             "/static/about/about-1.png",
             true
           )}
