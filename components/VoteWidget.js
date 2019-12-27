@@ -12,7 +12,12 @@ import { AuthActions } from "../redux/auth";
 import { doesNotExist } from "~/config/utils";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
 import { voteWidgetIcons } from "~/config/themes/icons";
-import { UPVOTE, DOWNVOTE } from "../config/constants";
+import {
+  UPVOTE,
+  DOWNVOTE,
+  UPVOTE_ENUM,
+  DOWNVOTE_ENUM,
+} from "../config/constants";
 import { getCurrentUserReputation } from "../config/utils";
 
 import "./stylesheets/voteTooltip.css";
@@ -45,9 +50,11 @@ const VoteWidget = (props) => {
       userReputation < permission.data.DownvotePaper.minimumReputation
   );
 
-  const [upvoteSelected, setUpvoteSelected] = useState(selected === UPVOTE);
+  const [upvoteSelected, setUpvoteSelected] = useState(
+    selected === UPVOTE || selected === UPVOTE_ENUM
+  );
   const [downvoteSelected, setDownvoteSelected] = useState(
-    selected === DOWNVOTE
+    selected === DOWNVOTE || selected === DOWNVOTE_ENUM
   );
 
   useEffect(() => {
