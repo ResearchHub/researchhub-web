@@ -153,6 +153,10 @@ class HubPage extends React.Component {
       this.fetchPapers({ hub: this.props.hub });
     }
 
+    if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
+      this.fetchPapers({ hub: this.props.hub });
+    }
+
     if (
       prevState.scope !== this.state.scope ||
       prevState.filterBy !== this.state.filterBy
@@ -809,6 +813,7 @@ var styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   modals: state.modals,
   auth: state.auth,
+  isLoggedIn: state.auth.isLoggedIn,
 });
 
 const mapDispatchToProps = {
