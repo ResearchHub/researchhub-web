@@ -370,29 +370,34 @@ class Index extends React.Component {
                 triggerOpenedClassName={css(styles.maxWidth)}
                 contentInnerClassName={css(styles.collapsibleContent)}
                 open={true}
-                trigger="- Does ResearchHub host copyrighted material?"
+                trigger="- What papers can I legally upload to ResearchHub?"
               >
                 <p className={css(styles.subtext, styles.wideText)}>
-                  <b>
-                    No. We are passionate about open access in scientific
-                    research, but we believe that breaking the law won’t help
-                    this happen faster.
-                  </b>{" "}
-                  We are willing to take a more long term approach.
-                  {"\n \n"}We take all reports of copyright infringement
-                  seriously, and will remove papers from the site that are in
-                  violation. We ask the entire ResearchHub community to help the
-                  site stays free of copyrighted material, if for no other
-                  reason than to keep our legal costs low!
-                  {"\n \n"}We do encourage members of the community to upload
-                  pre-print copies of papers and papers that are in the public
-                  domain. Members can also link to paywalled copies of papers,
-                  while still using ResearchHub to host a plain English summary
-                  and discussion of the paper.
-                  {"\n \n"}Over time, our goal is to encourage more researchers
-                  to avoid publishing in paywalled journals by offering free,
-                  high quality, tools which replace the major functions of
-                  journals.
+                  <p>
+                    Users can create a ResearchHub page for any paper, allowing for summary and discussion.
+                    However, due to copyright, only certain papers are eligible for fulltext PDF upload.
+                    Specifically, please only upload fulltexts of papers released under one of the following open licenses:
+                    <a href="https://creativecommons.org/licenses/by/4.0/"
+                      title="Creative Commons Attribution 4.0 International Public License">
+                    CC BY</a> or
+                    <a href="https://creativecommons.org/publicdomain/zero/1.0/"
+                      title="Creative Commons Universal Public Domain Dedication (CC0 1.0)">
+                    CC0</a>.
+                  </p>
+                  <p>
+                    To determine whether an article is released under one of these licenses,
+                    check for any text in the PDF stating a license or refer to the webpage where you downloaded the PDF.
+                    If you are the author of a paper and would like to upload the fulltext to ResearchHub,
+                    apply a supported license to the paper at an existing publicly available location.
+                    In other words, PDFs uploaded to ResearchHub should be available elsewhere on the web with a supported license.
+                    We do not currently publish original articles that are not available elsewhere.
+                  </p>
+                  <p>
+                    Disappointed that you cannot upload a paper's PDF due to copyright?
+                    We are too.
+                    While open access publishing is growing in popularity, many papers are still published in toll access journals without open licenses.
+                    We can change this by encouraging scientists to publish in open access journals and use platforms like ResearchHub that remove legal barriers from science. 
+                  </p>
                 </p>
               </Collapsible>
               <Collapsible
