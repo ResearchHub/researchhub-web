@@ -9,6 +9,8 @@ export default (props) => {
     <Head>
       <title>{title}</title>
       <meta key="description" name="description" content={description} />
+      <meta property="og:description" content={description} />
+      <meta property="og:title" content={title} />
       {props.children}
     </Head>
   );
