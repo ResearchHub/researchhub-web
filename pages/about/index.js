@@ -379,7 +379,7 @@ class Index extends React.Component {
                 triggerClassName={css(styles.maxWidth)}
                 triggerOpenedClassName={css(styles.maxWidth)}
                 contentInnerClassName={css(styles.collapsibleContent)}
-                open={true}
+                open={false}
                 trigger="- What papers can I legally upload to ResearchHub?"
               >
                 <p className={css(styles.subtext, styles.wideText)}>
