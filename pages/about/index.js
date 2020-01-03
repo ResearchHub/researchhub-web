@@ -249,8 +249,8 @@ class Index extends React.Component {
         </div>
         <div className={css(styles.infoContainer)}>
           {this.renderTextContainer(
-            "A Github For Science",
-            `Pre-print servers have started moving the needle on the accessibility of research papers, but these websites feel ancient by today’s standards. Our goal is to make a modern mobile and web application where people can begin to collaborate on scientific research in a much more efficient way, similar to what Github has done for software engineering. ${"\n \n"}Although the first version of ResearchHub is mainly about uploading, summarizing, discussing, and prioritizing papers in each area, there are many more ways we can improve collaboration in future versions. For instance, we hope to host datasets and lab notebook software in future versions.`,
+            "A GitHub For Science",
+            `ResearchHub’s mission is to accelerate the pace of scientific research. Our goal is to make a modern mobile and web application where people can begin to collaborate on scientific research in a much more efficient way, similar to what GitHub has done for software engineering. ${"\n \n"}The first version of ResearchHub is mainly about uploading, summarizing, discussing, and prioritizing papers in each area. In future versions, we will continue to strive to accelerate science by hosting datasets and lab notebook software.`,
             "/static/about/about-1.png",
             true
           )}
@@ -328,29 +328,105 @@ class Index extends React.Component {
                 triggerOpenedClassName={css(styles.maxWidth)}
                 contentInnerClassName={css(styles.collapsibleContent)}
                 open={true}
-                trigger="- Does ResearchHub host copyrighted material?"
+                trigger="- Is content created on ResearchHub open?"
               >
                 <p className={css(styles.subtext, styles.wideText)}>
-                  <b>
-                    No. We are passionate about open access in scientific
-                    research, but we believe that breaking the law won’t help
-                    this happen faster.
-                  </b>{" "}
-                  We are willing to take a more long term approach.
-                  {"\n \n"}We take all reports of copyright infringement
-                  seriously, and will remove papers from the site that are in
-                  violation. We ask the entire ResearchHub community to help the
-                  site stays free of copyrighted material, if for no other
-                  reason than to keep our legal costs low!
-                  {"\n \n"}We do encourage members of the community to upload
-                  pre-print copies of papers and papers that are in the public
-                  domain. Members can also link to paywalled copies of papers,
-                  while still using ResearchHub to host a plain English summary
-                  and discussion of the paper.
-                  {"\n \n"}Over time, our goal is to encourage more researchers
-                  to avoid publishing in paywalled journals by offering free,
-                  high quality, tools which replace the major functions of
-                  journals.
+                  <p>
+                    Yes. The scientific record is too important to be hidden
+                    behind paywalls. Science should be open, not only for
+                    reading, but also for reusing.
+                  </p>
+                  {"\n"}
+                  <p>
+                    That's why user contributions to ResearchHub are shared
+                    under the{" "}
+                    <a
+                      href="https://creativecommons.org/licenses/by/4.0/"
+                      title="Creative Commons Attribution 4.0 International Public License"
+                    >
+                      Creative Commons Attribution License
+                    </a>{" "}
+                    (CC BY 4.0). This license allows anyone to reuse the content
+                    for any purpose, as long as attribution is provided. We
+                    consider a hyperlink or URL back to the source page on
+                    ResearchHub sufficient attribution.
+                  </p>
+                  {"\n"}
+                  <p>
+                    The CC BY license is the gold standard of open licenses for
+                    scholarly content. It is used by publishers such as{" "}
+                    <a href="https://www.plos.org/license">PLOS</a>,{" "}
+                    <a href="https://elifesciences.org/about/openness">eLife</a>
+                    , <a href="https://distill.pub/faq/">Distill</a>, and{" "}
+                    <a href="https://www.biomedcentral.com/getpublished/copyright-and-license">
+                      BMC
+                    </a>
+                    . By choosing CC BY, ResearchHub ensures user content can be
+                    reused to further science, by way of text mining, sharing,
+                    translation, and many other forms of reuse. This sets
+                    ResearchHub apart from other places to discuss science, like
+                    ResearchGate or Reddit, which do not apply an open license
+                    to all user-contributed content.
+                  </p>
+                </p>
+              </Collapsible>
+              <Collapsible
+                className={css(styles.collapsibleSection)}
+                openedClassName={css(
+                  styles.collapsibleSection,
+                  styles.sectionOpened
+                )}
+                triggerClassName={css(styles.maxWidth)}
+                triggerOpenedClassName={css(styles.maxWidth)}
+                contentInnerClassName={css(styles.collapsibleContent)}
+                open={false}
+                trigger="- What papers can I legally upload to ResearchHub?"
+              >
+                <p className={css(styles.subtext, styles.wideText)}>
+                  <p>
+                    Users can create a ResearchHub page for any paper, allowing
+                    for summary and discussion. However, due to copyright, only
+                    certain papers are eligible for fulltext PDF upload.
+                    Specifically, please only upload fulltexts of papers
+                    released under one of the following open licenses:{" "}
+                    <a
+                      href="https://creativecommons.org/licenses/by/4.0/"
+                      title="Creative Commons Attribution 4.0 International Public License"
+                    >
+                      CC BY
+                    </a>{" "}
+                    or{" "}
+                    <a
+                      href="https://creativecommons.org/publicdomain/zero/1.0/"
+                      title="Creative Commons Universal Public Domain Dedication (CC0 1.0)"
+                    >
+                      CC0
+                    </a>
+                    .
+                  </p>
+                  {"\n"}
+                  <p>
+                    To determine whether an article is released under one of
+                    these licenses, check for any text in the PDF stating a
+                    license or refer to the webpage where you downloaded the
+                    PDF. If you are the author of a paper and would like to
+                    upload the fulltext to ResearchHub, apply a supported
+                    license to the paper at an existing publicly available
+                    location. In other words, PDFs uploaded to ResearchHub
+                    should be available elsewhere on the web with a supported
+                    license. We do not currently publish original articles that
+                    are not available elsewhere.
+                  </p>
+                  {"\n"}
+                  <p>
+                    Disappointed that you cannot upload a paper's PDF due to
+                    copyright? We are too. While open access publishing is
+                    growing in popularity, many papers are still published in
+                    toll access journals without open licenses. We can change
+                    this by encouraging scientists to publish in open access
+                    journals and use platforms like ResearchHub that remove
+                    legal barriers from science.
+                  </p>
                 </p>
               </Collapsible>
               <Collapsible
