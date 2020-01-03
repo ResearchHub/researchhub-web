@@ -250,7 +250,7 @@ class Index extends React.Component {
         <div className={css(styles.infoContainer)}>
           {this.renderTextContainer(
             "A GitHub For Science",
-            `Pre-print servers have started moving the needle on the accessibility of research papers, but these websites feel ancient by today’s standards. Our goal is to make a modern mobile and web application where people can begin to collaborate on scientific research in a much more efficient way, similar to what GitHub has done for software engineering. ${"\n \n"}Although the first version of ResearchHub is mainly about uploading, summarizing, discussing, and prioritizing papers in each area, there are many more ways we can improve collaboration in future versions. For instance, we hope to host datasets and lab notebook software in future versions.`,
+            `ResearchHub’s mission is to accelerate the pace of scientific research. Our goal is to make a modern mobile and web application where people can begin to collaborate on scientific research in a much more efficient way, similar to what GitHub has done for software engineering. ${"\n \n"}The first version of ResearchHub is mainly about uploading, summarizing, discussing, and prioritizing papers in each area. In future versions, we will continue to strive to accelerate science by hosting datasets and lab notebook software.`,
             "/static/about/about-1.png",
             true
           )}
