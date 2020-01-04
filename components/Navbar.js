@@ -269,7 +269,7 @@ const Navbar = (props) => {
     bmMenuWrap: {
       position: "fixed",
       height: "100%",
-      width: window.innerWidth < 436 ? 210 : 300,
+      width: process.browser && window.innerWidth < 436 ? 210 : 300,
       zIndex: 3147480000,
     },
     bmMenu: {

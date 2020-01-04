@@ -41,17 +41,15 @@ class Base extends React.Component {
     const { Component, pageProps } = this.props;
     return (
       <Fragment>
-        {this.props.authChecked ? (
-          <Fragment>
-            <div className={css(styles.pageWrapper)}>
-              <PermissionNotification />
-              <Navbar />
-              <Component {...pageProps} />
-              <Message />
-            </div>
-            <Footer />
-          </Fragment>
-        ) : null}
+        <Fragment>
+          <div className={css(styles.pageWrapper)}>
+            <PermissionNotification />
+            <Navbar />
+            <Component {...pageProps} />
+            <Message />
+          </div>
+          <Footer />
+        </Fragment>
       </Fragment>
     );
   }

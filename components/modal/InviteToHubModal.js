@@ -192,7 +192,7 @@ class InviteToHubModal extends React.Component {
           <FormInput
             getRef={this.formInputRef}
             inlineNodeRight={<CopyLink onClick={this.copyToClipboard} />}
-            value={window.location.href}
+            value={process.browser && window.location.href}
             message={this.state.copySuccessMessage}
             containerStyle={styles.containerStyle}
             inputStyle={styles.inputStyle}
