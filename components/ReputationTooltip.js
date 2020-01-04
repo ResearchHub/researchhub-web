@@ -1,29 +1,35 @@
 import { StyleSheet, css } from "aphrodite";
 import ReactTooltip from "react-tooltip";
+import { Fragment } from "react";
 
 import colors from "~/config/themes/colors";
 const ReputationTooltip = (props) => {
   return (
-    <ReactTooltip
-      id="reputationTooltip"
-      className={css(styles.tooltip)}
-      place="right"
-      effect="solid"
-      delayShow={500}
-    >
-      <div className={css(styles.comingSoon)}>
-        Currently on Testnet
-        <img className={css(styles.icon)} src={"/static/icons/coin.png"} />
-      </div>
-      <div className={css(styles.paragraph, styles.description)}>
-        Earn research coins by participating in discussion, uploading papers,
-        upvoting papers, and updating summaries / adding notes to papers.
-      </div>
-      <div className={css(styles.description)}>
-        With the research coins, you can put them towards funding areas of
-        research or pull them out to an exchange as needed.
-      </div>
-    </ReactTooltip>
+    <Fragment>
+      {process.browser && (
+        <ReactTooltip
+          id="reputationTooltip"
+          className={css(styles.tooltip)}
+          place="right"
+          effect="solid"
+          delayShow={500}
+        >
+          <div className={css(styles.comingSoon)}>
+            Currently on Testnet
+            <img className={css(styles.icon)} src={"/static/icons/coin.png"} />
+          </div>
+          <div className={css(styles.paragraph, styles.description)}>
+            Earn research coins by participating in discussion, uploading
+            papers, upvoting papers, and updating summaries / adding notes to
+            papers.
+          </div>
+          <div className={css(styles.description)}>
+            With the research coins, you can put them towards funding areas of
+            research or pull them out to an exchange as needed.
+          </div>
+        </ReactTooltip>
+      )}
+    </Fragment>
   );
 };
 

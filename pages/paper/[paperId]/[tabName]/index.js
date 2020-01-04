@@ -196,6 +196,8 @@ const Paper = (props) => {
     }
   }
 
+  console.log(paper.title);
+
   return (
     <div className={css(styles.container)}>
       <Head title={paper.title} description={paper.tagline} />
