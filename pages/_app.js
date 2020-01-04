@@ -68,7 +68,6 @@ class MyApp extends App {
 
     return (
       <Provider store={store}>
-        <Head />
         <Base {...this.props} />
       </Provider>
     );
