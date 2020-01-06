@@ -5,10 +5,12 @@ import Link from "next/link";
 const AuthorAvatar = (props) => {
   const { author, size = 30, disableLink } = props;
   let deviceWidth = null;
-  if (window.outerHeight) {
-    deviceWidth = window.outerWidth;
-  } else {
-    deviceWidth = document.body.clientWidth;
+  if (process.browser) {
+    if (window.outerHeight) {
+      deviceWidth = window.outerWidth;
+    } else {
+      deviceWidth = document.body.clientWidth;
+    }
   }
 
   const authorId = author && author.id;
