@@ -44,12 +44,12 @@ class DragNDrop extends React.Component {
   }
 
   handleUrlPaste = (id, value) => {
-    if (value === "") return;
     this.setState({ pdfUrl: value, pending: true }, async () => {
       let param = {
         url: value,
       };
-      await fetch(API.CHECKURL, API.POST_CONFIG(param))
+      if (value === "") return;
+      await fetch(API.GET_CSL_ITEM, API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
