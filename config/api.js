@@ -310,6 +310,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    GET_CSL_ITEM: BASE_URL + "paper/get_csl_item/",
     // Ethereum
     WITHDRAW_COIN: ({ transactionId, page }) => {
       let url = BASE_URL + "withdrawal/";
