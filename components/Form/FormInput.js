@@ -13,7 +13,7 @@ class FormInput extends React.Component {
     e.stopPropagation();
     return this.props.getRef
       ? this.props.getRef.current.focus()
-      : this.formInputRef.current.focus();
+      : this.formInputRef.current && this.formInputRef.current.focus();
   };
 
   handleChange = (e) => {
