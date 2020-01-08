@@ -63,6 +63,7 @@ class DiscussionComment extends React.Component {
 
   upvote = async () => {
     const { paperId, discussionThreadId } = this.state;
+    let that = this;
 
     this.props.dispatch(DiscussionActions.postUpvotePending());
 

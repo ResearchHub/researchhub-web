@@ -89,50 +89,6 @@ class HubPage extends React.Component {
     }
   };
 
-  /**
-   * When the paper is upvoted, update our UI to reflect that as well
-   * @param { Integer } index -- the index of the paper to upvote
-   */
-  onUpvote = ({ index }) => {
-    let { postUpvote, auth } = this.props;
-    let papers = JSON.parse(JSON.stringify([...this.state.papers]));
-    let curPaper = papers[index];
-    postUpvote(curPaper.id);
-    if (curPaper.user_vote) {
-      curPaper.score += 2;
-    } else {
-      curPaper.score += 1;
-    }
-    curPaper.user_vote = {
-      vote_type: UPVOTE_ENUM,
-    };
-    this.setState({
-      papers,
-    });
-  };
-
-  /**
-   * When the paper is downvoted, update our UI to reflect that as well
-   * @param { Integer } index -- the index of the paper to downvote
-   */
-  onDownvote = ({ index }) => {
-    let papers = JSON.parse(JSON.stringify([...this.state.papers]));
-    let curPaper = papers[index];
-    let { postDownvote } = this.props;
-    postDownvote(curPaper.id);
-    if (curPaper.user_vote) {
-      curPaper.score -= 2;
-    } else {
-      curPaper.score -= 1;
-    }
-    curPaper.user_vote = {
-      vote_type: DOWNVOTE_ENUM,
-    };
-    this.setState({
-      papers,
-    });
-  };
-
   updateUserBannerPreference = () => {
     this.props.setUserBannerPreference(false);
   };
@@ -282,6 +238,14 @@ class HubPage extends React.Component {
     });
   };
 
+  voteCallback = (index, paper) => {
+    let papers = [...this.state.papers];
+    papers[index] = paper;
+    this.setState({
+      papers,
+    });
+  };
+
   render() {
     let { auth } = this.props;
 
@@ -390,9 +354,8 @@ class HubPage extends React.Component {
                         paper={paper}
                         index={i}
                         hubName={this.props.hubName}
-                        onUpvote={this.onUpvote}
-                        onDownvote={this.onDownvote}
                         mobileView={this.state.mobileView}
+                        voteCallback={this.voteCallback}
                       />
                     ))}
                   </InfiniteScroll>
@@ -819,8 +782,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
-  postUpvote: PaperActions.postUpvote,
-  postDownvote: PaperActions.postDownvote,
   setUserBannerPreference: AuthActions.setUserBannerPreference,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   showMessage: MessageActions.showMessage,
