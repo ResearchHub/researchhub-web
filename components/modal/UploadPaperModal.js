@@ -214,20 +214,27 @@ class UploadPaperModal extends React.Component {
   /**
    * function is called as a callback when a pdf url returns successful
    */
-  handleUrl = (url) => {
+  handleUrl = (data) => {
+    let { csl_item } = data;
+    let { id, title } = csl_item;
+    if (!id) return;
+    let metaData = {};
+    metaData = { ...csl_item };
+    metaData.name = title;
+
     this.setState(
       {
         uploading: true,
       },
-      async () => {
+      () => {
         setTimeout(() => {
-          this.props.paperActions.uploadPaperToState(url);
+          this.props.paperActions.uploadPaperToState(metaData);
           this.setState({
             uploading: false,
             uploadFinish: true,
-            uploadedPaper: url,
+            uploadedPaper: metaData,
           });
-        });
+        }, 300);
       }
     );
   };

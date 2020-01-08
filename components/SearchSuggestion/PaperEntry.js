@@ -101,7 +101,7 @@ const PaperEntry = ({
 const styles = StyleSheet.create({
   entry: {
     width: "calc(100% - 35px)",
-    height: 58,
+    minHeight: 58,
     padding: 16,
     display: "flex",
     flexDirection: "column",
@@ -115,14 +115,14 @@ const styles = StyleSheet.create({
       border: "solid 1px #D2D2E6",
     },
     "@media only screen and (max-width: 415px)": {
-      height: 48,
+      minHeight: 48,
     },
     "@media only screen and (max-width: 378px)": {
-      height: 38,
+      minHeight: 38,
     },
     "@media only screen and (max-width: 321px)": {
       width: 238,
-      height: 38,
+      minHeight: 38,
     },
   },
   title: {
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     },
   },
   fileDataContainer: {
-    height: 60,
+    minHeight: 60,
     width: 390,
     flexWrap: "wrap",
     display: "flex",
@@ -160,10 +160,10 @@ const styles = StyleSheet.create({
       width: "80%",
     },
     "@media only screen and (max-width: 415px)": {
-      height: 50,
+      minHeight: 50,
     },
     "@media only screen and (max-width: 321px)": {
-      height: 45,
+      minHeight: 45,
     },
   },
   fileSize: {
@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     color: "#8c8b9a",
+    paddingTop: 5,
     "@media only screen and (max-width: 665px)": {
       width: "80%",
     },
@@ -187,13 +188,13 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   fileName: {
-    height: 41,
+    minHeight: 41,
     width: 345,
     fontFamily: "Roboto",
     fontSize: 16,
     "@media only screen and (max-width: 665px)": {
       width: "80%",
-      height: "unset",
+      minHeight: "unset",
     },
     "@media only screen and (max-width: 321px)": {
       fontSize: 11,

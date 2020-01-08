@@ -33,6 +33,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "../../config/utils/options";
 import discussionScaffold from "./discussionScaffold.json";
 import FormTextArea from "../Form/FormTextArea";
+import { parseTwoDigitYear } from "moment";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -101,20 +102,41 @@ class PaperUploadInfo extends React.Component {
       this.setState({ editMode: true });
       this.fetchAndPrefillPaperInfo(paperId);
     } else {
-      let form = { ...this.state.form };
-      form.title = paperTitle;
-      this.setState({ form });
-      messageActions.showMessage({ show: false });
+      this.prefillPaperInfo();
     }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.paperTitle !== this.props.paperTitle) {
-      let form = { ...this.state.form };
-      form.title = this.props.paperTitle;
-      this.setState({ form });
+      this.prefillPaperInfo();
+    }
+    if (
+      Object.keys(prevProps.paper.uploadedPaper).length < 1 &&
+      Object.keys(this.props.paper.uploadedPaper).length > 0
+    ) {
+      this.prefillPaperInfo();
     }
   }
+
+  prefillPaperInfo = () => {
+    let { uploadedPaper } = this.props.paper;
+    let form = { ...this.state.form };
+    let { DOI, URL, title, abstract, issued } = uploadedPaper;
+
+    form.title = this.props.paperTitle ? this.props.paperTitle : title && title;
+    form.tagline = abstract && abstract.slice(0, 255);
+    form.doi = DOI && DOI;
+    form.url = URL && URL;
+    if (issued) {
+      let date = issued["date-parts"][0];
+      form.published.year = date[0];
+      form.published.month = date[1];
+      form.published.day = date[2];
+    }
+    this.setState({ form: form }, () => {
+      this.props.messageActions.showMessage({ show: false });
+    });
+  };
 
   fetchAndPrefillPaperInfo = (paperId) => {
     fetch(API.PAPER({ paperId }), API.GET_CONFIG())
@@ -242,7 +264,11 @@ class PaperUploadInfo extends React.Component {
     let error = { ...this.state.error };
     let keys = id.split(".");
     if (keys.length < 2) {
-      form[keys[0]] = value;
+      if (keys[0] === "tagline") {
+        form[keys[0]] = value.slice(0, 255);
+      } else {
+        form[keys[0]] = value;
+      }
     } else {
       form[keys[0]][keys[1]] = value;
       keys[0] === "published" ? (error[keys[1]] = false) : null; // removes red border on select fields
@@ -361,11 +387,13 @@ class PaperUploadInfo extends React.Component {
     }, 400);
   };
 
-  uploadUrl = (url) => {
+  uploadUrl = (urlData) => {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
     this.setState({ uploadingPaper: true }, () => {
-      paperActions.uploadPaperToState(url);
+      let metaData = { ...urlData.csl_item };
+      metaData.name = metaData.title;
+      paperActions.uploadPaperToState(metaData);
       error.dnd = false;
       this.setState({
         uploadingPaper: false,
@@ -483,6 +511,10 @@ class PaperUploadInfo extends React.Component {
 
   getWindowWidth = () => {
     return window.innerWidth < 665;
+  };
+
+  renderCharCount = () => {
+    return this.state.form.tagline ? this.state.form.tagline.length : 0;
   };
 
   renderContent = () => {
@@ -706,6 +738,9 @@ class PaperUploadInfo extends React.Component {
                   id={"tagline"}
                   onChange={this.handleInputChange}
                 />
+                <div className={css(styles.taglineCounter)}>
+                  {this.renderCharCount()} / 255
+                </div>
               </span>
             </div>
           </span>
@@ -877,7 +912,6 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.hubs = true;
     }
-
     if (published.year && !published.month) {
       pass = false;
       error.month = true;
@@ -1583,8 +1617,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   tagline: {
+    position: "relative",
     paddingTop: 20,
     marginBottom: 40,
+  },
+  taglineCounter: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    fontSize: 12,
   },
   sidenote: {
     fontSize: 14,

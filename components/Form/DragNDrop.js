@@ -53,13 +53,15 @@ class DragNDrop extends React.Component {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let { found_file } = res;
+          let { csl_item } = res;
           this.setState({
             pending: false,
-            validUrl: found_file,
+            validUrl: csl_item ? true : false,
           });
           setTimeout(() => {
-            found_file && this.props.handleUrl && this.props.handleUrl(value);
+            csl_item &&
+              this.props.handleUrl &&
+              this.props.handleUrl({ ...res });
           }, 300);
         })
         .catch((err) => {
@@ -144,7 +146,6 @@ class DragNDrop extends React.Component {
 
   render() {
     let { loading, uploadedPaper, uploadFinish, pasteUrl } = this.props;
-
     return (
       <div
         className={css(styles.container)}
