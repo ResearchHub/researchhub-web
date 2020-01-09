@@ -36,8 +36,12 @@ class DiscussionComment extends React.Component {
     createdBy: this.props.data.createdBy,
     username: createUsername(this.props.data),
     readOnly: true,
-    paperId: Router.query.paperId,
-    discussionThreadId: Router.query.discussionThreadId,
+    paperId: Router.query.paperId
+      ? Router.query.paperId
+      : this.props.data.thread.paper,
+    discussionThreadId: Router.query.discussionThreadId
+      ? Router.query.discussionThreadId
+      : this.props.data.thread.id,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -63,7 +67,6 @@ class DiscussionComment extends React.Component {
 
   upvote = async () => {
     const { paperId, discussionThreadId } = this.state;
-    let that = this;
 
     this.props.dispatch(DiscussionActions.postUpvotePending());
 
