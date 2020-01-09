@@ -433,9 +433,11 @@ class PaperUploadInfo extends React.Component {
   };
 
   removePaper = () => {
-    let { paperActions } = this.props;
+    let { paperActions, modalActions } = this.props;
     paperActions.removePaperFromState();
-    this.setState({ edited: true });
+    this.setState({ edited: true }, () => {
+      modalActions.openUploadPaperModal(true);
+    });
   };
 
   renderTitle = () => {
