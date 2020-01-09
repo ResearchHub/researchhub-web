@@ -301,6 +301,7 @@ const routes = (BASE_URL) => {
     },
     // Used to check if url is a valid pdf
     CHECKURL: BASE_URL + "paper/check_url/",
+<<<<<<< HEAD
     GET_LIVE_FEED: ({ hubId, page = 1 }) => {
       let url = BASE_URL + `hub/`;
 
@@ -311,6 +312,9 @@ const routes = (BASE_URL) => {
       return url;
     },
     GET_CSL_ITEM: BASE_URL + "paper/get_csl_item/",
+=======
+    SEARCH_BY_URL: BASE_URL + "paper/search_by_url/",
+>>>>>>> show papers with matched titles on url upload
     // Ethereum
     WITHDRAW_COIN: ({ transactionId, page }) => {
       let url = BASE_URL + "withdrawal/";

@@ -121,12 +121,12 @@ class PaperUploadInfo extends React.Component {
   prefillPaperInfo = () => {
     let { uploadedPaper } = this.props.paper;
     let form = { ...this.state.form };
-    let { DOI, URL, title, abstract, issued } = uploadedPaper;
+    let { DOI, url, URL, title, abstract, issued } = uploadedPaper;
 
     form.title = this.props.paperTitle ? this.props.paperTitle : title && title;
     form.tagline = abstract && abstract.slice(0, 255);
     form.doi = DOI && DOI;
-    form.url = URL && URL;
+    form.url = url && url;
     if (issued) {
       let date = issued["date-parts"][0];
       form.published.year = date[0];
@@ -409,9 +409,11 @@ class PaperUploadInfo extends React.Component {
   };
 
   removePaper = () => {
-    let { paperActions } = this.props;
+    let { paperActions, modalActions } = this.props;
     paperActions.removePaperFromState();
-    this.setState({ edited: true });
+    this.setState({ edited: true }, () => {
+      modalActions.openUploadPaperModal(true);
+    });
   };
 
   renderTitle = () => {
@@ -560,6 +562,7 @@ class PaperUploadInfo extends React.Component {
                       Object.keys(this.props.paper.uploadedPaper).length > 0 &&
                       !this.props.paper.uploadedPaper.size
                     }
+                    hideSuggestions={true}
                   />
                 </div>
               )}
@@ -972,31 +975,23 @@ class PaperUploadInfo extends React.Component {
     let { paper, paperActions, messageActions, authActions } = this.props;
     // send form object to the backend
     if (!this.state.editMode) {
-      body.file = paper.uploadedPaper;
-      let paperId = paper.postedPaper && paper.postedPaper.id;
-
-      if (request === "POST") {
-        paperActions.postPaper(body).then((resp) => {
-          if (paper.success) {
-            messageActions.setMessage(
-              `Paper successfully ${
-                request === "POST" ? "uploaded" : "updated"
-              }`
-            );
-            authActions.setUploadingPaper(true);
-            messageActions.showMessage({ show: true });
-            let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-            authActions.checkUserFirstTime(firstTime);
-
-            // What is this getuser doing here?
-            authActions.getUser();
-            this.navigateToSummary();
-          } else {
-            messageActions.setMessage("Hmm something went wrong");
-            messageActions.showMessage({ show: true, error: true });
-            setTimeout(() => messageActions.showMessage({ show: false }), 400);
-          }
-        });
+      body.file =
+        !this.props.paper.uploadedPaper.URL && this.props.paper.uploadedPaper;
+      let paperId =
+        this.props.paper.postedPaper && this.props.paper.postedPaper.id;
+      request === "POST"
+        ? await this.props.paperActions.postPaper(body)
+        : await this.props.paperActions.patchPaper(paperId, body);
+      if (this.props.paper.success) {
+        this.props.messageActions.setMessage(
+          `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
+        );
+        this.props.authActions.setUploadingPaper(true);
+        this.props.messageActions.showMessage({ show: true });
+        let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
+        this.props.authActions.checkUserFirstTime(firstTime);
+        this.props.authActions.getUser();
+        this.navigateToSummary();
       } else {
         paperActions.patchPaper(paperId, body).then((resp) => {
           if (paper.success) {

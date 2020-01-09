@@ -49,7 +49,7 @@ const PaperEntry = ({
     }
 
     if (file && Object.keys(file).length > 0) {
-      name = file.name;
+      name = file.name ? file.name : file.URL;
       fileSize = file.size / 1000000;
     }
 
@@ -85,7 +85,11 @@ const PaperEntry = ({
         as={`/paper/${paperId}/summary`}
       >
         <div
-          className={css(styles.entry, selected && styles.selected)}
+          className={css(
+            styles.entry,
+            styles.paper,
+            selected && styles.selected
+          )}
           onClick={closeModal && closeModal}
         >
           <div className={css(styles.title, styles.text)}>{title && title}</div>
@@ -124,6 +128,10 @@ const styles = StyleSheet.create({
       width: 238,
       minHeight: 38,
     },
+  },
+  paper: {
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   title: {
     fontWeight: 500,
@@ -186,10 +194,12 @@ const styles = StyleSheet.create({
     alignItems: "initial",
     cursor: "default",
     borderRadius: 3,
+    // borderColor: colors.BLUE(1)
   },
   fileName: {
     minHeight: 41,
-    width: 345,
+    width: 380,
+    overflowWrap: "break-word",
     fontFamily: "Roboto",
     fontSize: 16,
     "@media only screen and (max-width: 665px)": {

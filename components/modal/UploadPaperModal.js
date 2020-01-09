@@ -213,15 +213,17 @@ class UploadPaperModal extends React.Component {
 
   /**
    * function is called as a callback when a pdf url returns successful
+   * @param { Object } data - the JSON returned from the backend
+   * @param { String } url - the string that the user inputed
    */
-  handleUrl = (data) => {
+  handleUrl = (data, url) => {
     let { csl_item } = data;
     let { id, title } = csl_item;
     if (!id) return;
     let metaData = {};
     metaData = { ...csl_item };
     metaData.name = title;
-
+    metaData.url = url;
     this.setState(
       {
         uploading: true,
@@ -366,9 +368,7 @@ class UploadPaperModal extends React.Component {
             <div className={css(styles.uploadContainer)}>
               <div className={css(styles.loadingMessage, styles.text)}>
                 {uploadFinish &&
-                  `We're almost done! ${
-                    mobileView ? "\n" : ""
-                  } Click 'continue' to add more information`}
+                  `We're almost done! ${mobileView ? "\n" : ""} `}
               </div>
               <DragNDrop
                 pasteUrl={!uploadFinish}
@@ -376,7 +376,7 @@ class UploadPaperModal extends React.Component {
                 loading={uploading}
                 uploadFinish={uploadFinish}
                 uploadedPaper={uploadedPaper}
-                url={typeof uploadedPaper === "string"}
+                url={typeof uploadedPaper.URL === "string"}
                 reset={this.resetStateToUploadView}
                 handleUrl={this.handleUrl}
               />
@@ -546,16 +546,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    height: 346,
-    "@media only screen and (max-width: 415px)": {
-      height: 300,
-    },
-    "@media only screen and (max-width: 376px)": {
-      height: 270,
-    },
-    "@media only screen and (max-width: 321px)": {
-      height: 200,
-    },
   },
   loader: {
     position: "absolute",
@@ -567,7 +557,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 14,
     color: "#4f4d5f",
-    marginBottom: 20,
+    marginBottom: 15,
     textAlign: "center",
     whiteSpace: "pre-wrap",
     "@media only screen and (max-width: 415px)": {
