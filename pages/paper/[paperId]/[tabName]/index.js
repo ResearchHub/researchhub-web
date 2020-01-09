@@ -291,6 +291,35 @@ const Paper = (props) => {
               <div className={css(styles.mobileTags)}>
                 <div className={css(styles.authors)}>{renderAuthors()}</div>
                 <div className={css(styles.hubs)}>{renderHubs()}</div>
+                <PermissionNotificationWrapper>
+                  <ActionButton
+                    className={"first-step"}
+                    icon={"fas fa-pencil"}
+                  />
+                </PermissionNotificationWrapper>
+                <ShareAction
+                  iconNode={icons.shareAlt}
+                  addRipples={true}
+                  title={"Share this paper"}
+                  subtitle={paperTitle}
+                  url={shareUrl}
+                />
+                <PermissionNotificationWrapper
+                  modalMessage="flag papers"
+                  onClick={() => {
+                    //TODO: flag paper
+                  }}
+                  permissionKey="UpdatePaper"
+                  loginRequired={true}
+                  styling={styles.actionButton}
+                >
+                  <ActionButton icon={"fas fa-flag"} />
+                </PermissionNotificationWrapper>
+                {/* <ActionButton
+                  icon={"fas fa-bookmark"}
+                  action={null}
+                  addRipples={true}
+                /> */}
               </div>
             </div>
           </ComponentWrapper>
