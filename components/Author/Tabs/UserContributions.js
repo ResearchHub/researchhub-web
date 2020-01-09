@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
-import { Reply } from "~/components/DiscussionComment";
+import { Reply, Comment } from "~/components/DiscussionComment";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -59,7 +59,7 @@ class UserContributionsTab extends React.Component {
             </div>
           ) : (
             <div className={css(styles.contributionContainer)}>
-              <Reply data={contribution} />
+              <Reply data={contribution} commentId={contribution.comment} />
             </div>
           )}
         </div>
