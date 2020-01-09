@@ -163,7 +163,10 @@ class DragNDrop extends React.Component {
             {this.state.searchSuggestions.map((paper, i) => {
               return (
                 <PaperEntry
+<<<<<<< HEAD
                   data={paper}
+=======
+>>>>>>> show papers with matched titles on url upload
                   key={`searchSuggestion-${i}-${paper.id}`}
                   title={paper.title}
                   paperId={paper.id}
@@ -396,6 +399,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
+<<<<<<< HEAD
     width: 525,
     height: 172,
     overflow: "scroll",
@@ -406,6 +410,15 @@ const styles = StyleSheet.create({
   searchPrompt: {
     fontSize: 14,
     color: colors.BLUE(),
+=======
+    height: 150,
+    overflow: "scroll",
+    marginBottom: 15,
+  },
+  searchPrompt: {
+    fontSize: 14,
+    color: "#4f4d5f",
+>>>>>>> show papers with matched titles on url upload
     paddingTop: 5,
     paddingBottom: 15,
     textAlign: "center",
@@ -415,6 +428,7 @@ const styles = StyleSheet.create({
   regular: {
     fontWeight: 400,
     paddingTop: 10,
+<<<<<<< HEAD
     color: "#4f4d5f",
   },
   link: {
@@ -423,6 +437,8 @@ const styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
     },
+=======
+>>>>>>> show papers with matched titles on url upload
   },
 });
 
