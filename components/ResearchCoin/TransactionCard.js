@@ -62,7 +62,7 @@ const TransactionCard = (props) => {
                 data-tip="User's wallet address"
               >
                 {icons["info-circle"]}
-                <ReactTooltip type={"info"} />
+                <ReactTooltip />
               </span>
             </div>
           </div>
