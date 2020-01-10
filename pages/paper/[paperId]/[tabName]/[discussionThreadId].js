@@ -84,7 +84,7 @@ const DiscussionThreadPage = (props) => {
   }, [props.isServer, paperId, discussionThreadId]);
 
   function renderComments(comments) {
-    return (
+    let commentComponents =
       comments &&
       comments.map((c, i) => {
         let highlight = false;
@@ -110,8 +110,8 @@ const DiscussionThreadPage = (props) => {
             />
           </Fragment>
         );
-      })
-    );
+      });
+    return commentComponents;
   }
 
   function addSubmittedComment(comment) {

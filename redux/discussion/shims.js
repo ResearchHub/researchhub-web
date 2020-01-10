@@ -48,6 +48,7 @@ export function transformComment(comment) {
     userVote: transformVote(comment.user_vote),
     replies: transformReplies(comment.replies),
     replyCount: comment.reply_count,
+    thread: comment.thread,
   };
 }
 
@@ -83,6 +84,7 @@ export function transformReply(reply) {
     createdDate: reply.created_date,
     score: reply.score,
     userVote: transformVote(reply.user_vote),
+    thread: reply.thread,
   };
 }
 
