@@ -36,8 +36,12 @@ class DiscussionComment extends React.Component {
     createdBy: this.props.data.createdBy,
     username: createUsername(this.props.data),
     readOnly: true,
-    paperId: Router.query.paperId,
-    discussionThreadId: Router.query.discussionThreadId,
+    paperId: Router.query.paperId
+      ? Router.query.paperId
+      : this.props.data.thread.paper,
+    discussionThreadId: Router.query.discussionThreadId
+      ? Router.query.discussionThreadId
+      : this.props.data.thread.id,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -102,15 +106,26 @@ class DiscussionComment extends React.Component {
     const vote = getNestedValue(voteResult, ["vote"], false);
     if (success) {
       const voteType = vote.voteType;
+      let score = this.state.score;
       if (voteType === UPVOTE) {
+        if (voteType) {
+          score += 2;
+        } else {
+          score += 1;
+        }
         this.setState({
           selectedVoteType: UPVOTE,
-          score: this.state.score + 1,
+          score,
         });
       } else if (voteType === DOWNVOTE) {
+        if (voteType) {
+          score -= 2;
+        } else {
+          score -= 1;
+        }
         this.setState({
           selectedVoteType: DOWNVOTE,
-          score: this.state.score - 1,
+          score,
         });
       }
     }
@@ -213,8 +228,9 @@ class CommentClass extends DiscussionComment {
     window.addEventListener("scroll", this.handleWindowScroll);
   }
 
-  componentDidUpdate(prevProp) {
-    if (prevProp !== this.props) {
+  componentDidUpdate(prevProps, prevState) {
+    super.componentDidUpdate(prevProps, prevState);
+    if (prevProps !== this.props) {
       this.handleWindowScroll();
     }
   }
@@ -364,6 +380,10 @@ class CommentClass extends DiscussionComment {
 class ReplyClass extends DiscussionComment {
   constructor(props) {
     super(props);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    super.componentDidUpdate(prevProps, prevState);
   }
 
   updateText = async (text, plain_text) => {

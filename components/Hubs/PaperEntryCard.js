@@ -20,16 +20,19 @@ import icons from "~/config/themes/icons";
 import { formatPublishedDate } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 
+import { PaperActions } from "~/redux/paper";
+
 const PaperEntryCard = ({
   paper,
   index,
   hubName,
-  onUpvote,
-  onDownvote,
   discussionCount,
   mobileView,
   style,
   searchResult,
+  voteCallback,
+  postUpvote,
+  postDownvote,
 }) => {
   let {
     id,
@@ -66,18 +69,46 @@ const PaperEntryCard = ({
     return formatPublishedDate(transformDate(paper.paper_publish_date));
   }
 
-  async function upvote(e) {
+  /**
+   * When the paper is upvoted, update our UI to reflect that as well
+   * @param { Integer } index -- the index of the paper to upvote
+   */
+  async function onUpvote(e) {
     e.stopPropagation();
-    if (onUpvote) {
-      onUpvote({ index });
+    let curPaper = { ...paper };
+    postUpvote(curPaper.id);
+    if (curPaper.user_vote) {
+      curPaper.score += 2;
+    } else {
+      curPaper.score += 1;
     }
+    curPaper.user_vote = {
+      vote_type: UPVOTE_ENUM,
+    };
+    selected = UPVOTE;
+
+    voteCallback(index, curPaper);
   }
 
-  async function downvote(e) {
+  /**
+   * When the paper is downvoted, update our UI to reflect that as well
+   * @param { Integer } index -- the index of the paper to downvote
+   */
+  async function onDownvote(e) {
     e.stopPropagation();
-    if (onDownvote) {
-      onDownvote({ index });
+    let curPaper = { ...paper };
+    postDownvote(curPaper.id);
+    if (curPaper.user_vote) {
+      curPaper.score -= 2;
+    } else {
+      curPaper.score -= 1;
     }
+    curPaper.user_vote = {
+      vote_type: DOWNVOTE_ENUM,
+    };
+    selected = DOWNVOTE;
+
+    voteCallback(index, curPaper);
   }
 
   function renderDiscussionCount() {
@@ -104,8 +135,8 @@ const PaperEntryCard = ({
           >
             <VoteWidget
               score={score}
-              onUpvote={upvote}
-              onDownvote={downvote}
+              onUpvote={onUpvote}
+              onDownvote={onDownvote}
               selected={selected}
               horizontalView={true}
               isPaper={true}
@@ -200,8 +231,8 @@ const PaperEntryCard = ({
             >
               <VoteWidget
                 score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
+                onUpvote={onUpvote}
+                onDownvote={onDownvote}
                 selected={selected}
                 searchResult={searchResult}
                 isPaper={true}
@@ -485,8 +516,8 @@ const mapStateToProps = ({ vote }) => ({
 });
 
 const mapDispatchToProps = {
-  // postUpvote: VoteActions.postUpvote,
-  // postUpvotePending: VoteActions.postUpvotePending,
+  postUpvote: PaperActions.postUpvote,
+  postDownvote: PaperActions.postDownvote,
 };
 
 export default connect(
