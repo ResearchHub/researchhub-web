@@ -284,7 +284,7 @@ class TransactionModal extends React.Component {
             {left.text}
             <span className={css(styles.infoIcon)} data-tip={left.tooltip}>
               {icons["info-circle"]}
-              <ReactTooltip type={"info"} />
+              <ReactTooltip />
             </span>
           </div>
           <FormInput
