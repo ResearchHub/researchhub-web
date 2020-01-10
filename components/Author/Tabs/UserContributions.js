@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
-import { Reply } from "~/components/DiscussionComment";
+import { Reply, Comment } from "~/components/DiscussionComment";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -12,29 +12,59 @@ import colors from "~/config/themes/colors";
 class UserContributionsTab extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      contributions: [],
+    };
   }
 
+  componentDidMount() {
+    let { author } = this.props;
+    this.setState({
+      contributions: author.userContributions.contributions,
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.author.userContributions !== prevProps.author.userContributions
+    ) {
+      this.setState({
+        contributions: this.props.author.userContributions.contributions,
+      });
+    }
+  }
+
+  voteCallback = (index, paper) => {
+    let contributions = [...this.state.contributions];
+    contributions[index] = paper;
+
+    this.setState({
+      contributions,
+    });
+  };
   render() {
     let { author } = this.props;
-    let contributions = author.userContributions.contributions.map(
-      (contribution, index) => {
-        return (
-          <div className={css(styles.contributionContainer)}>
-            {contribution.type === "paper" ? (
-              <PaperEntryCard paper={contribution} index={index} />
-            ) : contribution.type === "comment" ? (
-              <div className={css(styles.contributionContainer)}>
-                <Reply data={contribution} />
-              </div>
-            ) : (
-              <div className={css(styles.contributionContainer)}>
-                <Reply data={contribution} />
-              </div>
-            )}
-          </div>
-        );
-      }
-    );
+    let contributions = this.state.contributions.map((contribution, index) => {
+      return (
+        <div className={css(styles.contributionContainer)}>
+          {contribution.type === "paper" ? (
+            <PaperEntryCard
+              paper={contribution}
+              index={index}
+              voteCallback={this.voteCallback}
+            />
+          ) : contribution.type === "comment" ? (
+            <div className={css(styles.contributionContainer)}>
+              <Reply data={contribution} />
+            </div>
+          ) : (
+            <div className={css(styles.contributionContainer)}>
+              <Reply data={contribution} commentId={contribution.comment} />
+            </div>
+          )}
+        </div>
+      );
+    });
     return (
       <ComponentWrapper>
         {contributions.length > 0 ? (
