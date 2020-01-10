@@ -97,7 +97,7 @@ class HubPage extends React.Component {
   componentDidMount() {
     this.fetchPapers({ hub: this.props.hub });
     this.setState({
-      subscribe: this.props.hub.user_is_subscribed,
+      subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
     });
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
