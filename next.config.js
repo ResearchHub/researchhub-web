@@ -4,6 +4,8 @@ const withPlugins = require("next-compose-plugins");
 const path = require("path");
 const withSourceMaps = require("@zeit/next-source-maps");
 
+console.log(process.env);
+
 module.exports = withPlugins(
   [
     [withCSS],
