@@ -16,8 +16,8 @@ COPY yarn.lock /usr/src/app
 COPY .sentryclirc /usr/src/app
 
 # install yarn and yarn install
-RUN npm install -g -s --no-progress yarn && \
-    yarn install --no-progress
+RUN yarn install --no-progress
+    
 
 # Expose the public http port
 EXPOSE 3000
