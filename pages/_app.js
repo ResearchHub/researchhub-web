@@ -24,7 +24,8 @@ if (process.env.NODE_ENV === "production") {
   Sentry.init({
     dsn: "https://423f7b6ddcea48b9b50f7ba4baa0e750@sentry.io/1817918",
     release: process.env.SENTRY_RELEASE,
-    environment: process.env.NODE_ENV,
+    environment:
+      process.env.REACT_APP_ENV === "staging" ? "staging" : "production",
   });
 }
 
