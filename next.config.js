@@ -26,5 +26,9 @@ module.exports = withPlugins(
 
       return config;
     },
+    env: {
+      SENTRY_RELEASE: process.env.SENTRY_RELEASE,
+      REACT_APP_ENV: process.env.REACT_APP_ENV,
+    },
   }
 );
