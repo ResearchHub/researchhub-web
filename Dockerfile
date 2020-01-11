@@ -27,7 +27,7 @@ COPY . /usr/src/app
 ARG REACT_APP_ENV
 ENV REACT_APP_ENV=$REACT_APP_ENV
 ARG SENTRY_RELEASE
-RUN ${SENTRY_RELEASE} yarn run build
+RUN SENTRY_RELEASE=${SENTRY_RELEASE} REACT_APP_ENV=${REACT_APP_ENV} yarn run build
 
 # build and Start server
 CMD ["yarn", "start"]
