@@ -13,6 +13,7 @@ WORKDIR /usr/src/app
 
 COPY package.json /usr/src/app
 COPY yarn.lock /usr/src/app
+COPY .sentrycli /usr/src/app
 
 # install yarn and yarn install
 RUN npm install -g -s --no-progress yarn && \
