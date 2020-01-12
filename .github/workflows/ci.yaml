@@ -1,0 +1,22 @@
+name: Frontend CI
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+      - name: setup node
+        uses: actions/setup-node@v1
+      - name: install
+        run: |
+          npm install --global yarn
+          yarn install
+      - name: build
+        run: yarn run build
+      - name: test
+        run: yarn run test
