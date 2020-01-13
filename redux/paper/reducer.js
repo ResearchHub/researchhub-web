@@ -9,6 +9,7 @@ const defaultPaperState = {
 
 const PaperReducer = (state = defaultPaperState, action) => {
   switch (action.type) {
+    case types.GET_THREADS:
     case types.GET_PAPER:
     case types.GET_EDITS:
     case types.POST_PAPER_PENDING:

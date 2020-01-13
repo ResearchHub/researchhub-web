@@ -85,6 +85,25 @@ export const PaperActions = {
         });
     };
   },
+  getThreads: (paperId, paper) => {
+    return (dispatch) => {
+      return fetch(API.DISCUSSION(paperId), API.GET_CONFIG)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          const updatedPaper = { ...paper };
+          updatedPaper.discussion.count = res.count;
+          updatedPaper.discussion.threads = res.results;
+
+          return dispatch({
+            type: types.GET_THREADS,
+            payload: {
+              ...shims.paper(updatedPaper),
+            },
+          });
+        });
+    };
+  },
   getUserVote: (paperId) => {
     return async (dispatch) => {
       const response = await fetch(

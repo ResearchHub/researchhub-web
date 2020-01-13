@@ -11,7 +11,7 @@ import { doesNotExist } from "~/config/utils";
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionThreadActionBar = (props) => {
-  const { hostname, threadPath, title } = props;
+  const { hostname, threadPath, title, comment } = props;
   const shareUrl = hostname + threadPath;
 
   return (
@@ -41,7 +41,7 @@ const CommentCount = (props) => {
             {icons.chat}
           </span>
           <span className={css(styles.text)} id={"text"}>
-            {formatCommentCount(props.count)}
+            {formatCommentCount(props.count, props.comment)}
           </span>
         </ClientLinkWrapper>
       </div>
@@ -49,8 +49,12 @@ const CommentCount = (props) => {
   );
 };
 
-function formatCommentCount(count) {
-  const suffix = "comment";
+function formatCommentCount(count, isComment) {
+  const suffix = isComment
+    ? count === 0 || count > 1
+      ? "replie"
+      : "reply"
+    : "comment";
   const s = "s";
 
   if (count < 1 || doesNotExist(count)) {
