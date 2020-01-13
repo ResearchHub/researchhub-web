@@ -21,7 +21,7 @@ const AuthorAvatar = (props) => {
       finalSize = size - 5;
     }
     return (
-      <div>
+      <div className={css(styles.avatar)}>
         {author && author.profile_image ? (
           <img
             src={author.profile_image}

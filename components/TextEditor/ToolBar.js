@@ -1,14 +1,19 @@
 import { css, StyleSheet } from "aphrodite";
 import colors from "../../config/themes/colors";
 import FormButton from "../Form/Button";
+import Loader from "../Loader/Loader";
 
 export const Button = (props) => {
-  const { active, onMouseDown, first } = props;
+  const { active, onMouseDown, first, smallToolBar } = props;
 
   const classNames = [styles.button];
 
   if (active) {
     classNames.push(styles.buttonActive);
+  }
+
+  if (smallToolBar) {
+    classNames.push(styles.smallToolBarButton);
   }
 
   if (first) {
@@ -31,7 +36,8 @@ export const ToolBar = (props) => {
     <div
       className={css(
         styles.toolbar,
-        props.summaryEditor && styles.toolbarSummary
+        props.summaryEditor && styles.toolbarSummary,
+        props.smallToolBar && styles.smallToolBar
       )}
     >
       <div>{props.children}</div>
@@ -41,17 +47,30 @@ export const ToolBar = (props) => {
             isWhite={true}
             onClick={props.cancel}
             label="Cancel"
-            customButtonStyle={styles.cancelButton}
+            customButtonStyle={
+              props.smallToolBar ? styles.smallButton : styles.cancelButton
+            }
           />
         )}
         <span className={css(styles.divider)} />
-        {!props.hideButton && (
-          <FormButton
-            onClick={props.submit}
-            label="Submit"
-            customButtonStyle={styles.buttonStyle}
-          />
-        )}
+        {!props.hideButton &&
+          (props.loading ? (
+            <FormButton
+              onClick={null}
+              label={<Loader loading={true} color={"#FFF"} size={20} />}
+              customButtonStyle={
+                props.smallToolBar ? styles.smallButton : styles.buttonStyle
+              }
+            />
+          ) : (
+            <FormButton
+              onClick={props.submit}
+              label="Submit"
+              customButtonStyle={
+                props.smallToolBar ? styles.smallButton : styles.buttonStyle
+              }
+            />
+          ))}
       </div>
     </div>
   );
@@ -65,6 +84,9 @@ const styles = StyleSheet.create({
     color: "rgb(204, 204, 204)",
     cursor: "pointer",
     marginLeft: 24,
+    ":hover": {
+      color: colors.BLACK(1),
+    },
   },
   toolbarSummary: {
     borderBottom: "1px solid",
@@ -80,9 +102,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     background: "#fff",
-
     "@media only screen and (max-width: 577px)": {
       flexDirection: "column",
+    },
+  },
+  smallToolBar: {
+    fontSize: 11,
+    display: "flex",
+    flexWrap: "flex-wrap",
+  },
+  smallToolBarButton: {
+    marginLeft: 10,
+    padding: 5,
+    ":hover": {
+      color: colors.BLACK(1),
+      backgroundColor: "#FAFAFA",
     },
   },
   submit: {
@@ -118,6 +152,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 577px)": {
       width: 100,
     },
+  },
+  smallButton: {
+    width: 80,
+    height: 30,
   },
   divider: {
     width: 10,
