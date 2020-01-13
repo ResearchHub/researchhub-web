@@ -54,6 +54,10 @@ const scopeOptions = [
     label: "Today",
   },
   {
+    value: "week",
+    label: "Week",
+  },
+  {
     value: "year",
     label: "This Year",
   },
@@ -155,11 +159,12 @@ class HubPage extends React.Component {
       .then((res) => {
         this.setState({
           count: res.count,
-          papers: res.results,
+          papers: res.results.data,
           next: res.next,
           page: this.state.page + 1,
           papersLoading: false,
           doneFetching: true,
+          noResults: res.results.no_results,
         });
       })
       .then(
@@ -192,7 +197,7 @@ class HubPage extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         this.setState({
-          papers: [...this.state.papers, ...res.results],
+          papers: [...this.state.papers, ...res.results.data],
           next: res.next,
           page: this.state.page + 1,
         });
@@ -213,6 +218,9 @@ class HubPage extends React.Component {
 
     let now = moment();
     let today = moment().startOf("day");
+    let week = moment()
+      .startOf("day")
+      .subtract(7, "days");
     let month = moment()
       .startOf("day")
       .subtract(30, "days");
@@ -222,13 +230,16 @@ class HubPage extends React.Component {
 
     scope.end = now.unix();
 
-    if (scopeId === "today") {
+    if (scopeId === "day") {
       scope.start = today.unix();
+    } else if (scopeId === "week") {
+      scope.start = week.unix();
     } else if (scopeId === "month") {
       scope.start = month.unix();
     } else if (scopeId === "year") {
       scope.start = year.unix();
     }
+
     return scope;
   };
 
@@ -430,6 +441,16 @@ class HubPage extends React.Component {
                     hasMore={this.state.next !== null}
                     loader={<Loader key={"hubPageLoader"} loading={true} />}
                   >
+                    {this.state.noResults && (
+                      <div clasName={css(styles.noResults)}>
+                        <div className={css(styles.noResultsLine)}>
+                          No results found for the search parameters.
+                        </div>
+                        <div className={css(styles.relatedResults)}>
+                          Related Results
+                        </div>
+                      </div>
+                    )}
                     {this.state.papers.map((paper, i) => (
                       <PaperEntryCard
                         key={`${paper.id}-${i}`}
@@ -878,6 +899,18 @@ var styles = StyleSheet.create({
   },
   loader: {
     opacity: 1,
+  },
+  noResultsLine: {
+    textAlign: "center",
+    fontSize: 20,
+    marginBottom: 10,
+    paddingBottom: 10,
+    borderBottom: "1px solid",
+  },
+  relatedResults: {
+    textAlign: "center",
+    fontSize: 25,
+    marginBottom: 10,
   },
 });
 
