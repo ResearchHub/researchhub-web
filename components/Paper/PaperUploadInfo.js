@@ -1002,7 +1002,7 @@ class PaperUploadInfo extends React.Component {
     // send form object to the backend
     if (!this.state.editMode) {
       body.file =
-        !this.props.paper.uploadedPaper.URL && this.props.paper.uploadedPaper;
+        !this.props.paper.uploadedPaper.url && this.props.paper.uploadedPaper;
       let paperId =
         this.props.paper.postedPaper && this.props.paper.postedPaper.id;
       request === "POST"

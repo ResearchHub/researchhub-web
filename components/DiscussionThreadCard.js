@@ -212,21 +212,23 @@ DiscussionThreadCard.propTypes = {
 };
 
 const Title = (props) => {
-  const title = props.text;
-  return <div className={css(styles.title)}>{title}</div>;
+  let { text, overrideStyle } = props;
+  const title = text;
+  return <div className={css(styles.title, overrideStyle)}>{title}</div>;
 };
 
 const Body = (props) => {
+  let { overrideStyle } = props;
   let text = convertToEditorValue(props.text).document.text;
-  let wordCount = text.split(" ").length;
-  if (wordCount > 15) {
-    text =
-      text
-        .split(" ")
-        .slice(0, 15)
-        .join(" ") + "...";
-  }
-  return <div className={css(styles.body)}>{text}</div>;
+  // let wordCount = text.split(" ").length;
+  // if (wordCount > 15) {
+  //   text =
+  //     text
+  //       .split(" ")
+  //       .slice(0, 15)
+  //       .join(" ") + "...";
+  // }
+  return <div className={css(styles.body, overrideStyle)}>{text}</div>;
 };
 
 const ReadButton = (props) => {
@@ -324,7 +326,7 @@ const styles = StyleSheet.create({
     },
   },
   body: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 18,
     whiteSpace: "pre-wrap",
     color: "rgb(78, 76, 95)",
@@ -359,5 +361,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
 });
+
+export { Title, Body };
 
 export default DiscussionThreadCard;

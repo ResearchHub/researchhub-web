@@ -36,6 +36,8 @@
     "numeral": "^2.0.6",
     "q5-js-config": "^1.4.1",
     "react": "^16.10.1",
+    "react-alert": "^6.0.0",
+    "react-alert-template-basic": "^1.0.0",
     "react-autosize-textarea": "^7.0.0",
     "react-avatar": "^3.7.0",
     "react-avatar-edit": "^0.8.3",
