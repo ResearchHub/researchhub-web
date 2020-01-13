@@ -26,3 +26,4 @@ export const POST_PAPER_SUMMARY_SUCCESS = "@@paper/POST_PAPER_SUMMARY_SUCCESS";
 export const GET_EDITS = "@@paper/GET_EDITS";
 
 export const CLEAR_POSTED_PAPER = "@@paper/CLEAR_POSTED_PAPER";
+export const GET_THREADS = "@@paper/GET_THREADS";

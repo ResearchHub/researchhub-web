@@ -327,6 +327,15 @@ const routes = (BASE_URL) => {
       return url;
     },
     USER_FIRST_COIN: BASE_URL + "user/has_seen_first_coin_modal/",
+    FLAG_PAPER: ({ paperId }) => {
+      let url = BASE_URL + "paper/";
+
+      if (paperId !== undefined && paperId !== null) {
+        url += `${paperId}/flag/`;
+      }
+
+      return url;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

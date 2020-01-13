@@ -61,7 +61,7 @@ export const vote = (vote) => {
   return transformVote(vote);
 };
 
-function transformThreads(threads) {
+export function transformThreads(threads) {
   return threads.map((thread) => ({
     id: thread.id,
     title: thread.title,
@@ -73,6 +73,7 @@ function transformThreads(threads) {
     isPublic: thread.is_public,
     score: thread.score,
     userVote: transformVote(thread.user_vote),
+    comments: transformComments(thread.comments),
   }));
 }
 
@@ -88,5 +89,48 @@ function transformEdit(edit) {
     createdDate: edit.created_date,
     updatedDate: edit.updated_date,
     paper: edit.paper,
+  };
+}
+
+export function transformComments(comments) {
+  return comments.map((comment) => {
+    return transformComment(comment);
+  });
+}
+
+export function transformComment(comment) {
+  return {
+    id: comment.id,
+    text: comment.text,
+    thread: comment.parent,
+    createdBy: transformUser(comment.created_by),
+    createdDate: comment.created_date,
+    score: comment.score,
+    userVote: transformVote(comment.user_vote),
+    replies: transformReplies(comment.replies),
+    replyCount: comment.reply_count,
+    thread: comment.thread,
+  };
+}
+
+function transformReplies(replies) {
+  return (
+    replies &&
+    replies.map((reply) => {
+      return transformReply(reply);
+    })
+  );
+}
+
+export function transformReply(reply) {
+  return {
+    id: reply.id,
+    text: reply.text,
+    comment: reply.parent,
+    createdBy: transformUser(reply.created_by),
+    createdDate: reply.created_date,
+    score: reply.score,
+    userVote: transformVote(reply.user_vote),
+    thread: reply.thread,
   };
 }
