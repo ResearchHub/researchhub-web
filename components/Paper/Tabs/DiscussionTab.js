@@ -11,6 +11,12 @@ import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import ComponentWrapper from "../../ComponentWrapper";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import AddDiscussionModal from "~/components/modal/AddDiscussionModal";
+import TextEditor from "~/components/TextEditor";
+import Message from "~/components/Loader/Message";
+import FormInput from "~/components/Form/FormInput";
+import Button from "~/components/Form/Button";
+
+import DiscussionEntry from "../../Threads/DiscussionEntry";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -32,7 +38,7 @@ const DiscussionTab = (props) => {
     question: discussionScaffoldInitialValue,
   };
 
-  let { hostname, threads } = props;
+  let { hostname, threads, paper } = props;
 
   if (doesNotExist(threads)) {
     threads = [];
@@ -40,9 +46,11 @@ const DiscussionTab = (props) => {
 
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
-  const formattedThreads = formatThreads(threads, basePath);
+  const formattedThreads = formatThreads(paper.discussion.threads, basePath);
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
+  const [showEditor, setShowEditor] = useState(false);
+  const [editorDormant, setEditorDormant] = useState(true);
   const [discussion, setDiscussion] = useState(initialDiscussionState);
   const [mobileView, setMobileView] = useState(false);
 
@@ -66,11 +74,14 @@ const DiscussionTab = (props) => {
   });
 
   function renderThreads(threads) {
+    if (!Array.isArray(threads)) {
+      threads = [];
+    }
     return (
       threads &&
       threads.map((t, i) => {
         return (
-          <DiscussionThreadCard
+          <DiscussionEntry
             key={t.key}
             data={t.data}
             hostname={hostname}
@@ -78,6 +89,7 @@ const DiscussionTab = (props) => {
             path={t.path}
             newCard={transition && i === 0} //conditions when a new card is made
             mobileView={mobileView}
+            index={i}
           />
         );
       })
@@ -91,6 +103,8 @@ const DiscussionTab = (props) => {
 
   const cancel = () => {
     setDiscussion(initialDiscussionState);
+    setEditorDormant(true);
+    setShowEditor(false);
     document.body.style.overflow = "scroll";
     props.openAddDiscussionModal(false);
   };
@@ -174,12 +188,12 @@ const DiscussionTab = (props) => {
     return (
       <div
         className={css(
-          styles.box
-          // formattedThreads.length < 1 && styles.plainBox
+          styles.box,
+          formattedThreads.length < 1 && styles.emptyStateBox
         )}
       >
         {formattedThreads.length < 1 && (
-          <span className={css(styles.box)}>
+          <span className={css(styles.box, styles.emptyStateBox)}>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
             </span>
@@ -193,7 +207,9 @@ const DiscussionTab = (props) => {
         )}
 
         <PermissionNotificationWrapper
-          onClick={addDiscussion}
+          onClick={() => {
+            setShowEditor(true);
+          }}
           modalMessage="create a discussion thread"
           permissionKey="CreateDiscussionThread"
           loginRequired={true}
@@ -204,14 +220,54 @@ const DiscussionTab = (props) => {
               formattedThreads.length > 0 && styles.plainButton
             )}
           >
-            {formattedThreads.length > 0 && (
+            {/* {formattedThreads.length > 0 && (
               <span className={css(styles.discussionIcon)}>
                 <i className="fad fa-comment-plus" />
               </span>
-            )}
+            )} */}
             Add Discussion
           </button>
         </PermissionNotificationWrapper>
+      </div>
+    );
+  };
+
+  const renderDiscussionTextEditor = () => {
+    return (
+      <div className={css(stylesEditor.box)}>
+        <Message />
+        <FormInput
+          label={"Discussion Title"}
+          placeholder="Title of discussion"
+          containerStyle={stylesEditor.container}
+          value={discussion.title}
+          id={"title"}
+          onChange={handleInput}
+          required={true}
+        />
+        <div className={css(stylesEditor.discussionInputWrapper)}>
+          <div className={css(stylesEditor.label)}>
+            Discussion Post
+            <span className={css(stylesEditor.asterick)}>*</span>
+          </div>
+          <div
+            className={css(stylesEditor.discussionTextEditor)}
+            onClick={() => editorDormant && setEditorDormant(false)}
+          >
+            <TextEditor
+              canEdit={true}
+              readOnly={false}
+              onChange={handleDiscussionTextEditor}
+              // hideButton={editorDormant}
+              placeholder={"Leave a question or a comment"}
+              initialValue={discussion.question}
+              commentEditor={true}
+              smallToolBar={true}
+              onCancel={cancel}
+              onSubmit={save}
+            />
+          </div>
+        </div>
       </div>
     );
   };
@@ -226,17 +282,19 @@ const DiscussionTab = (props) => {
         save={save}
       />
       {threads.length > 0 ? (
-        <Fragment>
+        <div className={css(styles.threadsContainer)}>
           <div className={css(styles.box, !addView && styles.right)}>
             <div className={css(styles.addDiscussionContainer)}>
-              {renderAddDiscussion()}
+              {showEditor
+                ? renderDiscussionTextEditor()
+                : renderAddDiscussion()}
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-        </Fragment>
+        </div>
       ) : (
         <div className={css(styles.addDiscussionContainer)}>
-          {renderAddDiscussion()}
+          {showEditor ? renderDiscussionTextEditor() : renderAddDiscussion()}
         </div>
       )}
     </ComponentWrapper>
@@ -280,11 +338,9 @@ var styles = StyleSheet.create({
   },
   box: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-end",
     justifyContent: "center",
     flexDirection: "column",
-    scrollBehavior: "smooth",
-    // marginBottom: 15,
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: "100%",
@@ -292,6 +348,10 @@ var styles = StyleSheet.create({
       marginBottom: 0,
       // marginTop: -10
     },
+  },
+  emptyStateBox: {
+    alignItems: "center",
+    width: "100%",
   },
   plainBox: {
     backgroundColor: "#FFF",
@@ -468,7 +528,7 @@ var styles = StyleSheet.create({
   addDiscussionContainer: {
     transition: "all ease-in-out 0.3s",
     opacity: 1,
-    // marginTop: 10,
+    width: "100%",
     "@media only screen and (max-width: 415px)": {
       height: "unset",
     },
@@ -493,10 +553,58 @@ var styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
+  threadsContainer: {
+    paddingBottom: 80,
+  },
+});
+
+const stylesEditor = StyleSheet.create({
+  box: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    flexDirection: "column",
+    width: "100%",
+    boxSizing: "border-box",
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 10,
+    backgroundColor: colors.LIGHT_YELLOW(),
+    borderRadius: 10,
+  },
+  container: {
+    width: "100%",
+  },
+  discussionInputWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+  },
+  discussionTextEditor: {
+    width: "100%",
+    border: "1px solid #E8E8F2",
+    backgroundColor: "#FBFBFD",
+    marginBottom: 20,
+  },
+  label: {
+    fontFamily: "Roboto",
+    fontWeight: 500,
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  asterick: {
+    color: colors.BLUE(1),
+  },
+  text: {
+    fontSize: 16,
+    fontFamily: "Roboto",
+    color: colors.BLACK(0.8),
+  },
 });
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  paper: state.paper,
 });
 
 const mapDispatchToProps = {

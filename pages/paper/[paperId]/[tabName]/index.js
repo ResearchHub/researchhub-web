@@ -18,7 +18,10 @@ import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 import HubTag from "~/components/Hubs/HubTag";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import FlagButton from "~/components/FlagButton";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
+// Redux
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
@@ -29,7 +32,6 @@ import VoteActions from "~/redux/vote";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
-import PermissionNotificationWrapper from "../../../../components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -75,6 +77,8 @@ const Paper = (props) => {
   useEffect(() => {
     async function refetchPaper() {
       await dispatch(PaperActions.getPaper(paperId));
+      const fetchedPaper = store.getState().paper;
+      await store.dispatch(PaperActions.getThreads(paperId, fetchedPaper));
       const refetchedPaper = store.getState().paper;
 
       setPaper(refetchedPaper);
@@ -89,7 +93,8 @@ const Paper = (props) => {
   }, [props.isServer, paperId]);
 
   function getDiscussionThreads(paper) {
-    return getNestedValue(paper, ["discussion", "threads"]);
+    return paper.discussion.threads;
+    // return getNestedValue(paper, ["discussion", "threads"]);
   }
 
   async function upvote() {
@@ -253,6 +258,7 @@ const Paper = (props) => {
                         action={null}
                         addRipples={true}
                       />*/}
+                    <FlagButton paperId={paper.id} />
                   </div>
                 </span>
               </div>
@@ -304,17 +310,7 @@ const Paper = (props) => {
                   subtitle={paperTitle}
                   url={shareUrl}
                 />
-                <PermissionNotificationWrapper
-                  modalMessage="flag papers"
-                  onClick={() => {
-                    //TODO: flag paper
-                  }}
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  styling={styles.actionButton}
-                >
-                  <ActionButton icon={"fas fa-flag"} />
-                </PermissionNotificationWrapper>
+                <FlagButton paperId={paper.id} />
                 {/* <ActionButton
                   icon={"fas fa-bookmark"}
                   action={null}
@@ -358,6 +354,8 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
   const hostname = host;
 
   await store.dispatch(PaperActions.getPaper(query.paperId));
+  const fetchedPaper = store.getState().paper;
+  await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
 
   return { isServer, hostname };
 };
@@ -462,12 +460,11 @@ const styles = StyleSheet.create({
   actionButtons: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 760px)": {},
   },
   topHeader: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     "@media only screen and (max-width: 760px)": {
       flexDirection: "column",
       justifyContent: "flex-start",

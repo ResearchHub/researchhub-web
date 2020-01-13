@@ -1,18 +1,24 @@
+import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
+import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
 import colors from "~/config/themes/colors";
 import { timeAgo } from "~/config/utils";
 
+const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
+
 const DiscussionPostMetadata = (props) => {
-  const { username, date, authorProfile } = props;
+  const { username, date, authorProfile, onHideClick, threadPath } = props;
   return (
     <div className={css(styles.container)}>
-      <User name={username} authorProfile={authorProfile} />
-      <Timestamp date={date} />
+      <User name={username} authorProfile={authorProfile} {...props} />
+      <Timestamp date={date} {...props} />
+      {onHideClick && <HideButton {...props} />}
+      {threadPath && <ExpandButton {...props} />}
     </div>
   );
 };
@@ -24,10 +30,20 @@ DiscussionPostMetadata.propTypes = {
 };
 
 const User = (props) => {
-  const { name, authorProfile } = props;
+  const { name, authorProfile, smaller } = props;
   return (
-    <div className={css(styles.userContainer)}>
-      <AuthorAvatar author={authorProfile} name={name} disableLink={false} />
+    <div
+      className={css(
+        styles.userContainer,
+        smaller && styles.smallerUserContainer
+      )}
+    >
+      <AuthorAvatar
+        author={authorProfile}
+        name={name}
+        disableLink={false}
+        size={smaller && 25}
+      />
       <div className={css(styles.name)}>{name}</div>
     </div>
   );
@@ -36,7 +52,12 @@ const User = (props) => {
 const Timestamp = (props) => {
   const timestamp = formatTimestamp(props.date);
   return (
-    <div className={css(styles.timestampContainer)}>
+    <div
+      className={css(
+        styles.timestampContainer,
+        props.smaller && styles.smallerTimestamp
+      )}
+    >
       <span className={css(styles.timestampDivider)}>•</span>
       {timestamp}
     </div>
@@ -47,6 +68,58 @@ function formatTimestamp(date) {
   date = new Date(date);
   return timeAgo.format(date);
 }
+
+const HideButton = (props) => {
+  let { onHideClick, hideState } = props;
+
+  let classNames = [styles.hideContainer];
+
+  return (
+    <Fragment>
+      <span className={css(styles.timestampDivider)}>•</span>
+      <div className={css(classNames)} onClick={onHideClick}>
+        <span
+          className={css(styles.icon, hideState && styles.active)}
+          id={"hideIcon"}
+        >
+          {hideState ? (
+            <i className="fad fa-eye-slash" />
+          ) : (
+            <i className="fad fa-eye" />
+          )}
+        </span>
+        <span className={css(styles.text)} id={"hideText"}>
+          {hideState ? "Show" : "Hide"}
+        </span>
+      </div>
+    </Fragment>
+  );
+};
+
+const ExpandButton = (props) => {
+  let { threadPath } = props;
+  return (
+    <Fragment>
+      <span className={css(styles.timestampDivider)}>•</span>
+      <div className={css(styles.expandContainer)}>
+        <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={threadPath}>
+          <span
+            className={css(styles.icon, styles.expandIcon)}
+            id={"expandIcon"}
+          >
+            <i className="fad fa-expand-arrows-alt" />
+          </span>
+          <span
+            className={css(styles.text, styles.expandText)}
+            id={"expandText"}
+          >
+            Expand
+          </span>
+        </ClientLinkWrapper>
+      </div>
+    </Fragment>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -64,10 +137,12 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
+  smallerUserContainer: {
+    fontSize: 12,
+  },
   timestampContainer: {
     display: "flex",
     alignItems: "center",
-    width: "100%",
     fontWeight: "normal",
     color: "#918f9b",
     fontSize: 14,
@@ -75,6 +150,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  smallerTimestamp: {
+    fontSize: 12,
   },
   name: {
     marginLeft: 8,
@@ -84,6 +162,59 @@ const styles = StyleSheet.create({
     fontSize: 18,
     padding: "0px 10px",
     color: colors.GREY(1),
+  },
+  hideContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 4,
+    borderRadius: 5,
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: "#EAEAEA",
+    },
+    ":hover #hideIcon": {
+      color: colors.BLACK(),
+    },
+    ":hover #hideText": {
+      color: colors.BLACK(),
+    },
+  },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 12,
+    marginLeft: 8,
+    color: "#918f9b",
+  },
+  icon: {
+    color: "#918f9b",
+    fontSize: 13,
+  },
+  active: {
+    color: "#000",
+  },
+  expandContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 4,
+    borderRadius: 5,
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: "#EAEAEA",
+    },
+    ":hover #expandIcon": {
+      color: colors.BLACK(),
+    },
+    ":hover #expandText": {
+      color: colors.BLACK(),
+    },
+  },
+  expandIcon: {
+    fontSize: 14,
+  },
+  expandText: {
+    fontSize: 14,
   },
 });
 
