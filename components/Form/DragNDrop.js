@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { connect } from "react-redux";
 import Dropzone from "react-dropzone";
 import { StyleSheet, css } from "aphrodite";
 
@@ -233,8 +234,11 @@ class DragNDrop extends React.Component {
             </section>
           )}
         </Dropzone>
-        {pasteUrl && !uploadFinish && (
-          <p className={css(styles.pasteInstruction)}>
+        {!uploadFinish && (
+          <p
+            className={css(styles.pasteInstruction, !pasteUrl && styles.link)}
+            onClick={!pasteUrl ? this.props.openUploadPaperModal : null}
+          >
             or paste a url for the paper
           </p>
         )}
@@ -391,13 +395,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    height: 150,
+    height: 172,
     overflow: "scroll",
     marginBottom: 15,
+    padding: "0px 10px 0px 10px",
+    boxSizing: "border-box",
   },
   searchPrompt: {
     fontSize: 14,
-    color: "#4f4d5f",
+    color: colors.BLUE(),
     paddingTop: 5,
     paddingBottom: 15,
     textAlign: "center",
@@ -407,6 +413,14 @@ const styles = StyleSheet.create({
   regular: {
     fontWeight: 400,
     paddingTop: 10,
+    color: "#4f4d5f",
+  },
+  link: {
+    color: colors.BLUE(),
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    },
   },
 });
 

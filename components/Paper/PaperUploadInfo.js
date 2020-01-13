@@ -409,11 +409,9 @@ class PaperUploadInfo extends React.Component {
   };
 
   removePaper = () => {
-    let { paperActions, modalActions } = this.props;
+    let { paperActions } = this.props;
     paperActions.removePaperFromState();
-    this.setState({ edited: true }, () => {
-      modalActions.openUploadPaperModal(true);
-    });
+    this.setState({ edited: true });
   };
 
   renderTitle = () => {
@@ -512,7 +510,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   getWindowWidth = () => {
-    return window.innerWidth < 665;
+    return window && window.innerWidth < 665;
   };
 
   renderCharCount = () => {
@@ -532,7 +530,7 @@ class PaperUploadInfo extends React.Component {
       suggestedAuthors,
       editMode,
     } = this.state;
-    let mobile = this.getWindowWidth();
+    // let mobile = this.getWindowWidth();
 
     switch (activeStep) {
       case 1:
@@ -548,7 +546,6 @@ class PaperUploadInfo extends React.Component {
                     <span className={css(styles.asterick)}>*</span>
                   </div>
                   <DragNDrop
-                    pasteUrl={true}
                     handleDrop={this.uploadPaper}
                     handleUrl={this.uploadUrl}
                     loading={uploadingPaper}
@@ -563,6 +560,9 @@ class PaperUploadInfo extends React.Component {
                       !this.props.paper.uploadedPaper.size
                     }
                     hideSuggestions={true}
+                    openUploadPaperModal={() =>
+                      this.props.modalActions.openUploadPaperModal(true)
+                    }
                   />
                 </div>
               )}
