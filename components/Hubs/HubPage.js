@@ -183,14 +183,14 @@ class HubPage extends React.Component {
     }
 
     let scope = this.calculateScope();
-
     return fetch(
-      API.GET_HUB_PAPERS({
-        timePeriod: scope,
-        hubId: hubId,
-        page: this.state.page + 1,
-        ordering: this.state.filterBy.value,
-      }),
+      this.state.next,
+      // API.GET_HUB_PAPERS({
+      //   timePeriod: scope,
+      //   hubId: hubId,
+      //   page: this.state.page + 1,
+      //   ordering: this.state.filterBy.value,
+      // }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
