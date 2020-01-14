@@ -70,11 +70,18 @@ export const PaperActions = {
             payload: {
               ...shims.paper(resp),
               doneFetching: true,
+              status: resp.status,
             },
           });
         })
         .catch((error) => {
           console.log(error);
+          return dispatch({
+            type: types.GET_PAPER,
+            payload: {
+              status: error.response.status,
+            },
+          });
         });
     };
   },

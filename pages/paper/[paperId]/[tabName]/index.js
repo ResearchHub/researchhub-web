@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Router, { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 import Joyride from "react-joyride";
+import Error from "next/error";
 
 // Components
 import ActionButton from "~/components/ActionButton";
@@ -200,113 +201,127 @@ const Paper = (props) => {
 
   return (
     <div className={css(styles.container)}>
-      <Head title={paper.title} description={paper.tagline} />
-      <ComponentWrapper overrideStyle={styles.componentWrapper}>
-        <div className={css(styles.header)}>
-          <div className={css(styles.voting)}>
-            <VoteWidget
-              score={score}
-              onUpvote={upvote}
-              onDownvote={downvote}
-              selected={selectedVoteType}
-              isPaper={true}
-            />
-          </div>
-          <div className={css(styles.topHeader)}>
-            <div className={css(styles.title)}>{paper && paper.title}</div>
-            <span className={css(styles.mobileRow)}>
-              <div className={css(styles.mobileVoting)}>
+      {paper.status === 404 ? (
+        <Error statusCode={paper.status} />
+      ) : (
+        <Fragment>
+          <Head title={paper.title} description={paper.tagline} />
+          <ComponentWrapper overrideStyle={styles.componentWrapper}>
+            <div className={css(styles.header)}>
+              <div className={css(styles.voting)}>
                 <VoteWidget
                   score={score}
                   onUpvote={upvote}
                   onDownvote={downvote}
                   selected={selectedVoteType}
-                  horizontalView={true}
                   isPaper={true}
                 />
               </div>
-              <div className={css(styles.actionButtons)}>
-                <PermissionNotificationWrapper
-                  modalMessage="edit papers"
-                  onClick={navigateToEditPaperInfo}
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  styling={styles.actionButton}
-                >
-                  <ActionButton
-                    className={"first-step"}
-                    icon={"fas fa-pencil"}
-                  />
-                </PermissionNotificationWrapper>
-                <ShareAction
-                  iconNode={icons.shareAlt}
-                  addRipples={true}
-                  title={"Share this paper"}
-                  subtitle={paperTitle}
-                  url={shareUrl}
-                />
-                {/*<ActionButton
-                  icon={"fas fa-bookmark"}
-                  action={null}
-                  addRipples={true}
-                />*/}
+              <div className={css(styles.topHeader)}>
+                <div className={css(styles.title)}>{paper && paper.title}</div>
+                <span className={css(styles.mobileRow)}>
+                  <div className={css(styles.mobileVoting)}>
+                    <VoteWidget
+                      score={score}
+                      onUpvote={upvote}
+                      onDownvote={downvote}
+                      selected={selectedVoteType}
+                      horizontalView={true}
+                      isPaper={true}
+                    />
+                  </div>
+                  <div className={css(styles.actionButtons)}>
+                    <PermissionNotificationWrapper
+                      modalMessage="edit papers"
+                      onClick={navigateToEditPaperInfo}
+                      permissionKey="UpdatePaper"
+                      loginRequired={true}
+                      styling={styles.actionButton}
+                    >
+                      <ActionButton
+                        className={"first-step"}
+                        icon={"fas fa-pencil"}
+                      />
+                    </PermissionNotificationWrapper>
+                    <ShareAction
+                      iconNode={icons.shareAlt}
+                      addRipples={true}
+                      title={"Share this paper"}
+                      subtitle={paperTitle}
+                      url={shareUrl}
+                    />
+                    {/*<ActionButton
+                        icon={"fas fa-bookmark"}
+                        action={null}
+                        addRipples={true}
+                      />*/}
+                  </div>
+                </span>
               </div>
-            </span>
-          </div>
-          <div className={css(styles.mobileInfoSection)}>
-            {renderPublishDate()}
-          </div>
-          <div className={css(styles.tags)}>
-            <div
-              className={css(
-                styles.authors,
-                paper.authors.length < 1 && styles.hide
-              )}
-            >
-              {renderAuthors()}
+              <div className={css(styles.mobileInfoSection)}>
+                {renderPublishDate()}
+              </div>
+              <div className={css(styles.tags)}>
+                <div
+                  className={css(
+                    styles.authors,
+                    paper.authors.length < 1 && styles.hide
+                  )}
+                >
+                  {renderAuthors()}
+                </div>
+                <div className={css(styles.hubs)}>{renderHubs()}</div>
+              </div>
+              <div className={css(styles.tagline)}>
+                {paper && paper.tagline}
+              </div>
+              <div className={css(styles.mobileDoi)}>
+                {paper.doi && (
+                  <div className={css(styles.info)}>
+                    DOI: {paper && paper.doi}
+                  </div>
+                )}
+              </div>
+              <div className={css(styles.infoSection)}>
+                {renderPublishDate()}
+                {paper.doi && (
+                  <div className={css(styles.info)}>
+                    DOI: {paper && paper.doi}
+                  </div>
+                )}
+              </div>
+              <div className={css(styles.mobileTags)}>
+                <div className={css(styles.authors)}>{renderAuthors()}</div>
+                <div className={css(styles.hubs)}>{renderHubs()}</div>
+              </div>
             </div>
-            <div className={css(styles.hubs)}>{renderHubs()}</div>
+          </ComponentWrapper>
+          <PaperTabBar
+            baseUrl={paperId}
+            selectedTab={tabName}
+            threadCount={threadCount}
+          />
+          <div className={css(styles.contentContainer)}>
+            {renderTabContent()}
           </div>
-          <div className={css(styles.tagline)}>{paper && paper.tagline}</div>
-          <div className={css(styles.mobileDoi)}>
-            {paper.doi && (
-              <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
-            )}
-          </div>
-          <div className={css(styles.infoSection)}>
-            {renderPublishDate()}
-            {paper.doi && (
-              <div className={css(styles.info)}>DOI: {paper && paper.doi}</div>
-            )}
-          </div>
-          <div className={css(styles.mobileTags)}>
-            <div className={css(styles.authors)}>{renderAuthors()}</div>
-            <div className={css(styles.hubs)}>{renderHubs()}</div>
-          </div>
-        </div>
-      </ComponentWrapper>
-      <PaperTabBar
-        baseUrl={paperId}
-        selectedTab={tabName}
-        threadCount={threadCount}
-      />
-      <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
-      <Joyride
-        steps={steps}
-        continuous={true}
-        locale={{ last: "Done" }}
-        styles={{
-          options: {
-            primaryColor: colors.BLUE(1),
-          },
-        }}
-        callback={onJoyrideComplete}
-        run={
-          props.auth.uploadingPaper &&
-          props.auth.isLoggedIn &&
-          !props.auth.user.upload_tutorial_complete
-        }
-      />
+          <Joyride
+            steps={steps}
+            continuous={true}
+            locale={{ last: "Done" }}
+            styles={{
+              options: {
+                primaryColor: colors.BLUE(1),
+              },
+            }}
+            callback={onJoyrideComplete}
+            run={
+              props.auth.uploadingPaper &&
+              props.auth.isLoggedIn &&
+              !props.auth.user.upload_tutorial_complete
+            }
+          />
+        </Fragment>
+      )}
     </div>
   );
 };
