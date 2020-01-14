@@ -904,7 +904,7 @@ var styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     marginBottom: 10,
-    paddingBottom: 10,
+    padding: 20,
     borderBottom: "1px solid",
   },
   relatedResults: {
