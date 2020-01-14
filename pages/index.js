@@ -1,9 +1,6 @@
 import { connect } from "react-redux";
 import { StyleSheet } from "aphrodite";
 
-// Component
-
-// Config
 import HubPage from "../components/Hubs/HubPage";
 
 class Index extends React.Component {
