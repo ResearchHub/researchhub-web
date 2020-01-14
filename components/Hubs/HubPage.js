@@ -54,6 +54,10 @@ const scopeOptions = [
     label: "Today",
   },
   {
+    value: "week",
+    label: "Week",
+  },
+  {
     value: "year",
     label: "This Year",
   },
@@ -155,11 +159,12 @@ class HubPage extends React.Component {
       .then((res) => {
         this.setState({
           count: res.count,
-          papers: res.results,
+          papers: res.results.data,
           next: res.next,
           page: this.state.page + 1,
           papersLoading: false,
           doneFetching: true,
+          noResults: res.results.no_results,
         });
       })
       .then(
@@ -178,21 +183,21 @@ class HubPage extends React.Component {
     }
 
     let scope = this.calculateScope();
-
     return fetch(
-      API.GET_HUB_PAPERS({
-        timePeriod: scope,
-        hubId: hubId,
-        page: this.state.page + 1,
-        ordering: this.state.filterBy.value,
-      }),
+      this.state.next,
+      // API.GET_HUB_PAPERS({
+      //   timePeriod: scope,
+      //   hubId: hubId,
+      //   page: this.state.page + 1,
+      //   ordering: this.state.filterBy.value,
+      // }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
         this.setState({
-          papers: [...this.state.papers, ...res.results],
+          papers: [...this.state.papers, ...res.results.data],
           next: res.next,
           page: this.state.page + 1,
         });
@@ -213,6 +218,9 @@ class HubPage extends React.Component {
 
     let now = moment();
     let today = moment().startOf("day");
+    let week = moment()
+      .startOf("day")
+      .subtract(7, "days");
     let month = moment()
       .startOf("day")
       .subtract(30, "days");
@@ -222,13 +230,16 @@ class HubPage extends React.Component {
 
     scope.end = now.unix();
 
-    if (scopeId === "today") {
+    if (scopeId === "day") {
       scope.start = today.unix();
+    } else if (scopeId === "week") {
+      scope.start = week.unix();
     } else if (scopeId === "month") {
       scope.start = month.unix();
     } else if (scopeId === "year") {
       scope.start = year.unix();
     }
+
     return scope;
   };
 
@@ -879,6 +890,18 @@ var styles = StyleSheet.create({
   },
   loader: {
     opacity: 1,
+  },
+  noResultsLine: {
+    textAlign: "center",
+    fontSize: 20,
+    marginBottom: 10,
+    padding: 20,
+    borderBottom: "1px solid",
+  },
+  relatedResults: {
+    textAlign: "center",
+    fontSize: 25,
+    marginBottom: 10,
   },
 });
 
