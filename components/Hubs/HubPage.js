@@ -441,16 +441,6 @@ class HubPage extends React.Component {
                     hasMore={this.state.next !== null}
                     loader={<Loader key={"hubPageLoader"} loading={true} />}
                   >
-                    {this.state.noResults && (
-                      <div clasName={css(styles.noResults)}>
-                        <div className={css(styles.noResultsLine)}>
-                          No results found for the search parameters.
-                        </div>
-                        <div className={css(styles.relatedResults)}>
-                          Related Results
-                        </div>
-                      </div>
-                    )}
                     {this.state.papers.map((paper, i) => (
                       <PaperEntryCard
                         key={`${paper.id}-${i}`}
