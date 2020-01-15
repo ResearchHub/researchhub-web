@@ -76,7 +76,7 @@ class TransactionModal extends React.Component {
         prevProps.auth.user.balance !== this.props.auth.user.balance ||
         this.state.userBalance === null
       ) {
-        this.getBalance();
+        // this.getBalance();
       }
     }
   }
