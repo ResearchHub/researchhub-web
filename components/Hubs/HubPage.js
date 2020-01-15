@@ -135,6 +135,9 @@ class HubPage extends React.Component {
 
   fetchPapers = ({ hub }) => {
     let { showMessage } = this.props;
+    if (this.state.papersLoading) {
+      return null;
+    }
     this.state.doneFetching && this.setState({ doneFetching: false });
     let hubId = 0;
 
