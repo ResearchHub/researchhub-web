@@ -30,7 +30,10 @@ export const paperPost = ({
     authors.forEach((author) => {
       return formData.append("authors", author);
     });
-  hubs && formData.append("hubs", hubs.join(","));
+  hubs &&
+    hubs.forEach((hub) => {
+      return formData.append("hubs", hub);
+    });
   doi && formData.append("doi", doi);
   title && formData.append("title", title);
   file && formData.append("file", file);
