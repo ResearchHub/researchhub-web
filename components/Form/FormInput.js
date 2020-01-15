@@ -111,7 +111,7 @@ class FormInput extends React.Component {
 
 const styles = StyleSheet.create({
   inputContainer: {
-    height: 75,
+    minHeight: 75,
     width: 525,
     display: "flex",
     flexDirection: "column",
