@@ -51,7 +51,6 @@ const FormTextArea = (props) => {
 
 const styles = StyleSheet.create({
   inputContainer: {
-    // height: 75,
     width: "100%",
     display: "flex",
     flexDirection: "column",

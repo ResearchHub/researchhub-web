@@ -92,13 +92,7 @@ class PaperUploadInfo extends React.Component {
   }
 
   componentDidMount() {
-    let {
-      paper,
-      modalActions,
-      messageActions,
-      paperId,
-      paperTitle,
-    } = this.props;
+    let { messageActions, paperId, paperTitle } = this.props;
     this.props.authActions.getUser();
     this.getHubs();
     if (paperId) {
@@ -350,14 +344,14 @@ class PaperUploadInfo extends React.Component {
     }, 400);
   };
 
-  uploadPaper = (acceptedFiles, binaryStr) => {
+  uploadPaper = (acceptedFiles) => {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
     let uploadedFile = acceptedFiles[0];
     this.setState({ uploadingPaper: true });
 
-    setTimeout(async () => {
-      await paperActions.uploadPaperToState(uploadedFile);
+    setTimeout(() => {
+      paperActions.uploadPaperToState(uploadedFile);
       error.dnd = false;
       this.setState({
         uploadingPaper: false,
@@ -941,51 +935,51 @@ class PaperUploadInfo extends React.Component {
       body.type = null;
     }
 
+    let { paper, paperActions, messageActions, authActions } = this.props;
     // send form object to the backend
     if (!this.state.editMode) {
-      body.file = this.props.paper.uploadedPaper;
-      let paperId =
-        this.props.paper.postedPaper && this.props.paper.postedPaper.id;
-      request === "POST"
-        ? await this.props.paperActions.postPaper(body)
-        : await this.props.paperActions.patchPaper(paperId, body);
-      if (this.props.paper.success) {
-        this.props.messageActions.setMessage(
+      body.file = paper.uploadedPaper;
+      let paperId = paper.postedPaper && paper.postedPaper.id;
+
+      if (request === "POST") {
+        await paperActions.postPaper(body);
+      } else {
+        await paperActions.patchPaper(paperId, body);
+      }
+
+      if (paper.success) {
+        messageActions.setMessage(
           `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
         );
-        this.props.authActions.setUploadingPaper(true);
-        this.props.messageActions.showMessage({ show: true });
+        authActions.setUploadingPaper(true);
+        messageActions.showMessage({ show: true });
         let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-        this.props.authActions.checkUserFirstTime(firstTime);
-        this.props.authActions.getUser();
+        authActions.checkUserFirstTime(firstTime);
+
+        // What is this getuser doing here?
+        authActions.getUser();
         this.navigateToSummary();
       } else {
-        this.props.messageActions.setMessage("Hmm something went wrong");
-        this.props.messageActions.showMessage({ show: true, error: true });
-        setTimeout(
-          () => this.props.messageActions.showMessage({ show: false }),
-          400
-        );
+        messageActions.setMessage("Hmm something went wrong");
+        messageActions.showMessage({ show: true, error: true });
+        setTimeout(() => messageActions.showMessage({ show: false }), 400);
       }
     } else {
-      await this.props.paperActions.patchPaper(this.props.paperId, body);
-      if (this.props.paper.success) {
-        this.props.messageActions.setMessage(`Paper successfully updated`);
-        this.props.messageActions.showMessage({ show: true });
-        this.props.authActions.getUser();
+      await paperActions.patchPaper(this.props.paperId, body);
+      if (paper.success) {
+        messageActions.setMessage(`Paper successfully updated`);
+        messageActions.showMessage({ show: true });
+        authActions.getUser();
         setTimeout(() => {
           this.navigateToSummary();
           setTimeout(() => {
-            this.props.messageActions.showMessage({ show: false });
+            messageActions.showMessage({ show: false });
           }, 400);
         }, 800);
       } else {
-        this.props.messageActions.setMessage("Hmm something went wrong");
-        this.props.messageActions.showMessage({ show: true, error: true });
-        setTimeout(
-          () => this.props.messageActions.showMessage({ show: false }),
-          400
-        );
+        messageActions.setMessage("Hmm something went wrong");
+        messageActions.showMessage({ show: true, error: true });
+        setTimeout(() => messageActions.showMessage({ show: false }), 400);
       }
     }
   };
@@ -1105,7 +1099,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   navigateToSummary = () => {
-    this.props.messageActions.showMessage({ show: true, load: true });
+    // this.props.messageActions.showMessage({ show: true, load: true });
     let paperId = this.state.editMode
       ? this.props.paperId
       : this.props.paper.postedPaper.id;
