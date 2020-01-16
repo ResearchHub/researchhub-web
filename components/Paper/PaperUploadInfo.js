@@ -942,45 +942,68 @@ class PaperUploadInfo extends React.Component {
       let paperId = paper.postedPaper && paper.postedPaper.id;
 
       if (request === "POST") {
-        await paperActions.postPaper(body);
-      } else {
-        await paperActions.patchPaper(paperId, body);
-      }
+        paperActions.postPaper(body).then((resp) => {
+          if (paper.success) {
+            messageActions.setMessage(
+              `Paper successfully ${
+                request === "POST" ? "uploaded" : "updated"
+              }`
+            );
+            authActions.setUploadingPaper(true);
+            messageActions.showMessage({ show: true });
+            let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
+            authActions.checkUserFirstTime(firstTime);
 
-      if (paper.success) {
-        messageActions.setMessage(
-          `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
-        );
-        authActions.setUploadingPaper(true);
-        messageActions.showMessage({ show: true });
-        let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-        authActions.checkUserFirstTime(firstTime);
-
-        // What is this getuser doing here?
-        authActions.getUser();
-        this.navigateToSummary();
+            // What is this getuser doing here?
+            authActions.getUser();
+            this.navigateToSummary();
+          } else {
+            messageActions.setMessage("Hmm something went wrong");
+            messageActions.showMessage({ show: true, error: true });
+            setTimeout(() => messageActions.showMessage({ show: false }), 400);
+          }
+        });
       } else {
-        messageActions.setMessage("Hmm something went wrong");
-        messageActions.showMessage({ show: true, error: true });
-        setTimeout(() => messageActions.showMessage({ show: false }), 400);
+        paperActions.patchPaper(paperId, body).then((resp) => {
+          if (paper.success) {
+            messageActions.setMessage(
+              `Paper successfully ${
+                request === "POST" ? "uploaded" : "updated"
+              }`
+            );
+            authActions.setUploadingPaper(true);
+            messageActions.showMessage({ show: true });
+            let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
+            authActions.checkUserFirstTime(firstTime);
+
+            // What is this getuser doing here?
+            authActions.getUser();
+            this.navigateToSummary();
+          } else {
+            messageActions.setMessage("Hmm something went wrong");
+            messageActions.showMessage({ show: true, error: true });
+            setTimeout(() => messageActions.showMessage({ show: false }), 400);
+          }
+        });
       }
     } else {
-      await paperActions.patchPaper(this.props.paperId, body);
-      if (paper.success) {
-        messageActions.setMessage(`Paper successfully updated`);
-        messageActions.showMessage({ show: true });
-        authActions.getUser();
-        setTimeout(() => {
-          this.navigateToSummary();
+      paperActions.patchPaper(this.props.paperId, body).then((resp) => {
+        if (resp.payload.success) {
+          messageActions.setMessage(`Paper successfully updated`);
+          messageActions.showMessage({ show: true });
+          authActions.getUser();
           setTimeout(() => {
-            messageActions.showMessage({ show: false });
-          }, 400);
-        }, 800);
-      } else {
-        messageActions.setMessage("Hmm something went wrong");
-        messageActions.showMessage({ show: true, error: true });
-        setTimeout(() => messageActions.showMessage({ show: false }), 400);
-      }
+            this.navigateToSummary();
+            setTimeout(() => {
+              messageActions.showMessage({ show: false });
+            }, 400);
+          }, 800);
+        } else {
+          messageActions.setMessage("Hmm something went wrong");
+          messageActions.showMessage({ show: true, error: true });
+          setTimeout(() => messageActions.showMessage({ show: false }), 400);
+        }
+      });
     }
   };
 
