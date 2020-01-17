@@ -301,6 +301,17 @@ const routes = (BASE_URL) => {
     },
     // Used to check if url is a valid pdf
     CHECKURL: BASE_URL + "paper/check_url/",
+    GET_LIVE_FEED: ({ hubId }) => {
+      let url = BASE_URL + `hub/`;
+
+      if (hubId) {
+        url += `${hubId}/get_live_feed/?hub_id=${hubId}`;
+      } else {
+        url += `get_live_feed/?hub_id=${hubId}`;
+      }
+
+      return url;
+    },
     // Ethereum
     WITHDRAW_COIN: ({ transactionId, page }) => {
       let url = BASE_URL + "withdrawal/";
