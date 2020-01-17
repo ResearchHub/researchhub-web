@@ -118,7 +118,6 @@ class FormSelect extends React.Component {
 
 const styles = StyleSheet.create({
   inputContainer: {
-    minHeight: 75,
     width: "100%",
     display: "flex",
     flexDirection: "column",
