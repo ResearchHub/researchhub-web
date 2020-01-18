@@ -20,9 +20,9 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hubName: process.browser && Router.router.query.hubname,
-      currentHub: process.browser && props.hubs ? props.hubs.name : null,
-      hubDescription: null, // TODO: Pull from hub description field
+      hubName: Router.router ? Router.router.query.hubname : "",
+      currentHub: null,
+      hubDescription: props.hub.name, // TODO: Pull from hub description field
     };
   }
 

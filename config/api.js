@@ -305,7 +305,7 @@ const routes = (BASE_URL) => {
       let url = BASE_URL + `hub/`;
 
       if (hubId) {
-        url += `${hubId}/get_live_feed/?hub_id=${hubId}`;
+        url += `get_live_feed/?hub_id=${hubId}`;
       } else {
         url += `get_live_feed/?hub_id=${hubId}`;
       }
