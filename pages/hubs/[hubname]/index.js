@@ -20,9 +20,9 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hubName: Router.router.query.hubname,
-      currentHub: null,
-      hubDescription: props.hub.name, // TODO: Pull from hub description field
+      hubName: process.browser && Router.router.query.hubname,
+      currentHub: process.browser && props.hub ? props.hubs.name : null,
+      hubDescription: null, // TODO: Pull from hub description field
     };
   }
 
@@ -67,10 +67,14 @@ class Index extends React.Component {
   render() {
     return (
       <div>
-        <Head
-          title={toTitleCase(this.state.hubName)}
-          description={this.state.hubDescription}
-        />
+        {process.browser ? (
+          <Head
+            title={toTitleCase(this.state.hubName)}
+            description={this.state.hubDescription}
+          />
+        ) : (
+          <Head title={"ResearchHub"} description={"ResearchHub"} />
+        )}
         {this.renderHub()}
       </div>
     );
@@ -78,13 +82,15 @@ class Index extends React.Component {
 }
 
 async function fetchHub(name) {
-  name = name.split("-").join(" ");
-  return await fetch(API.HUB({ name }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
-      return res.results[0]; // TODO: Shim and catch errors
-    });
+  if (process.browser) {
+    name = name.split("-").join(" ");
+    return await fetch(API.HUB({ name }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        return res.results[0]; // TODO: Shim and catch errors
+      });
+  }
 }
 
 export default Index;
