@@ -702,6 +702,7 @@ var styles = StyleSheet.create({
     color: "#000",
     fontWeight: "400",
     fontSize: 33,
+    flexWrap: "wrap",
     whiteSpace: "pre-wrap",
     "@media only screen and (max-width: 1343px)": {
       fontSize: 25,
@@ -749,10 +750,10 @@ var styles = StyleSheet.create({
     },
   },
   dropDown: {
-    width: 248,
+    width: 180,
     height: 45,
     "@media only screen and (max-width: 1343px)": {
-      width: 220,
+      // width: 220,
       height: "unset",
     },
     "@media only screen and (max-width: 1149px)": {
@@ -774,9 +775,9 @@ var styles = StyleSheet.create({
     },
   },
   inputs: {
-    width: 516,
+    width: 380,
     "@media only screen and (max-width: 1343px)": {
-      width: 460,
+      // width: 460,
     },
     "@media only screen and (max-width: 1149px)": {
       width: 320,
@@ -829,6 +830,13 @@ var styles = StyleSheet.create({
   },
   hubName: {
     textTransform: "capitalize",
+    marginRight: 13,
+    "@media only screen and (max-width: 1343px)": {
+      marginRight: 8,
+    },
+    "@media only screen and (max-width: 1149px)": {
+      marginRight: 5,
+    },
   },
   mobileHubListContainer: {
     display: "none",
@@ -878,7 +886,6 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginLeft: 12,
     cursor: "pointer",
     color: colors.BLUE(),
     opacity: 0.7,
