@@ -711,10 +711,12 @@ var styles = StyleSheet.create({
       fontSize: 20,
     },
     "@media only screen and (max-width: 665px)": {
-      fontSize: 25,
+      fontSize: 22,
+      fontWeight: 500,
       marginBottom: 10,
     },
     "@media only screen and (max-width: 416px)": {
+      fontWeight: 400,
       fontSize: 20,
     },
     "@media only screen and (max-width: 321px)": {
