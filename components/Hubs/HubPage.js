@@ -385,7 +385,7 @@ class HubPage extends React.Component {
             </div>
             <div className={css(styles.subtext, styles.text)}>
               We're a community seeking to improve prioritization,
-              collaboration, reproducability, and funding of scientific
+              collaboration, reproducibility, and funding of scientific
               research.{" "}
               <Link href={"/about"}>
                 <a className={css(styles.readMore)}>Read more</a>
