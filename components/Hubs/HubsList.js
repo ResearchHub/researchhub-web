@@ -101,7 +101,8 @@ class HubsList extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: "calc(100% * .625)",
+    // width: "calc(100% * .625)",
+    width: "90%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",

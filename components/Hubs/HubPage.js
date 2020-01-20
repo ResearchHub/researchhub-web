@@ -16,6 +16,7 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import LiveFeed from "./LiveFeed";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -427,6 +428,7 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
+            {this.props.hub && <LiveFeed currentHub={this.props.hub} />}
             <HubsList exclude={this.props.home ? null : this.props.hub.name} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
@@ -658,7 +660,7 @@ var styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   sidebar: {
-    width: "20%",
+    width: "30%",
     position: "relative",
     position: "sticky",
     top: 80,
@@ -711,7 +713,7 @@ var styles = StyleSheet.create({
    */
   mainFeed: {
     height: "100%",
-    width: "80%",
+    width: "85%",
     backgroundColor: "#FCFCFC",
     borderLeft: "1px solid #ededed",
     backgroundColor: "#FFF",
@@ -883,7 +885,7 @@ var styles = StyleSheet.create({
     objectFit: "contain",
     marginTop: 40,
     "@media only screen and (max-width: 415px)": {
-      width: "85%",
+      width: "70%",
     },
   },
   emptyPlaceholderText: {
