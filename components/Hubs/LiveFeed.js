@@ -56,7 +56,12 @@ class LiveFeed extends React.Component {
     return (
       currentHubNotifications &&
       currentHubNotifications.map((notification, i) => {
-        return <LiveFeedNotification notification={notification} />;
+        return (
+          <LiveFeedNotification
+            notification={notification}
+            key={`liveFeedNotif-${i}`}
+          />
+        );
       })
     );
   };
@@ -66,7 +71,9 @@ class LiveFeed extends React.Component {
       <Fragment>
         <div className={css(styles.listLabel)}>
           {"Activity on Hub"}
-          {/* <div className={css(styles.notifCount)}></div> */}
+          <div className={css(styles.refreshIcon)}>
+            <i className="fad fa-sync" />
+          </div>
         </div>
         <div className={css(styles.container)}>
           <div className={css(styles.livefeed)}>
@@ -86,6 +93,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "90%",
     border: "1px solid rgb(237, 237, 237)",
+    ":hover": {
+      borderColor: "#000",
+    },
   },
   listLabel: {
     display: "flex",
@@ -106,7 +116,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
-    height: 150,
+    maxHeight: 361,
     overflowY: "scroll",
     backgroundColor: "#FCFCFC",
     paddingTop: 10,
@@ -123,6 +133,13 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  refreshIcon: {
+    color: "#000",
+    cursor: "pointer",
+    ":hover": {
+      color: colors.GREEN(),
+    },
   },
 });
 
