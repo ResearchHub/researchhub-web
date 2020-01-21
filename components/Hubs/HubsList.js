@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 60,
+    paddingBottom: 30,
   },
   hubsListContainer: {
     height: "100%",
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     fontSize: 12,
     letterSpacing: 1.2,
-    color: "#a7a6b0",
+    // color: "#a7a6b0",
     marginBottom: 20,
     textAlign: "center",
     width: "100%",
