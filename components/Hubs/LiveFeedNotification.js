@@ -34,15 +34,15 @@ class LiveFeedNotification extends React.Component {
     let notificationType = content_type;
     const timestamp = this.formatTimestamp(created_date);
     const username = this.formatUsername(created_by);
-
+    const authorId = created_by.author_profile.id;
     switch (notificationType) {
       case "vote_paper":
         var paperTip = paper && paper.title;
         return (
           <div className={css(styles.message)}>
             <Link
-              href={"/user/[userId]/[tabName]"}
-              as={`/user/${created_by.id}/contribution}`}
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
             >
               <a className={css(styles.username)}>{username}</a>
             </Link>{" "}
@@ -67,8 +67,8 @@ class LiveFeedNotification extends React.Component {
         return (
           <div className={css(styles.message)}>
             <Link
-              href={"/user/[userId]/[tabName]"}
-              as={`/user/${created_by.id}/contribution}`}
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
             >
               <a className={css(styles.username)}>{username}</a>
             </Link>{" "}
@@ -101,8 +101,8 @@ class LiveFeedNotification extends React.Component {
         return (
           <div className={css(styles.message)}>
             <Link
-              href={"/user/[userId]/[tabName]"}
-              as={`/user/${created_by.id}/contribution}`}
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
             >
               <a className={css(styles.username)}>{username}</a>
             </Link>{" "}
@@ -135,8 +135,8 @@ class LiveFeedNotification extends React.Component {
         return (
           <div className={css(styles.message)}>
             <Link
-              href={"/user/[userId]/[tabName]"}
-              as={`/user/${created_by.id}/contribution}`}
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
             >
               <a className={css(styles.username)}>{username}</a>
             </Link>{" "}
