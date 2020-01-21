@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     },
   },
   message: {
-    fontSize: 11,
+    fontSize: 13,
     lineHeight: 1.5,
     width: "100%",
     overflow: "hidden",
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   timestamp: {
     fontWeight: "normal",
     color: "#918f9b",
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: "Roboto",
     // "@media only screen and (max-width: 415px)": {
     //   fontSize: 12,
