@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 // Component
 import LiveFeedNotification from "./LiveFeedNotification";
+import Loader from "~/components/Loader/Loader";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -19,6 +20,7 @@ class LiveFeed extends React.Component {
     this.state = {
       intervalPing: null,
       newNotification: true,
+      loading: false,
       notifications: [],
     };
   }
@@ -42,8 +44,11 @@ class LiveFeed extends React.Component {
   }
 
   fetchLiveFeed = () => {
-    let { getLivefeed, livefeed, currentHub } = this.props;
-    getLivefeed(livefeed.hubs, currentHub.id);
+    this.setState({ loading: true }, async () => {
+      let { getLivefeed, livefeed, currentHub } = this.props;
+      await getLivefeed(livefeed.hubs, currentHub.id);
+      this.setState({ loading: false });
+    });
   };
 
   getNotificationCount = () => {};
@@ -71,13 +76,17 @@ class LiveFeed extends React.Component {
       <Fragment>
         <div className={css(styles.listLabel)}>
           {"Activity on Hub"}
-          <div className={css(styles.refreshIcon)}>
+          <div className={css(styles.refreshIcon)} onClick={this.fetchLiveFeed}>
             <i className="fad fa-sync" />
           </div>
         </div>
         <div className={css(styles.container)}>
           <div className={css(styles.livefeed)}>
-            {this.renderNotifications()}
+            {this.state.loading ? (
+              <Loader loading={true} />
+            ) : (
+              this.renderNotifications()
+            )}
           </div>
         </div>
       </Fragment>
@@ -93,6 +102,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "90%",
     border: "1px solid rgb(237, 237, 237)",
+    transition: "all ease-in-out 0.2s",
     ":hover": {
       borderColor: "#000",
     },
@@ -120,6 +130,7 @@ const styles = StyleSheet.create({
     overflowY: "scroll",
     backgroundColor: "#FCFCFC",
     paddingTop: 10,
+    overscrollBehavior: "contain",
   },
   notifCount: {
     textTransform: "unset",
