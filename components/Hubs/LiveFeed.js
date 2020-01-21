@@ -14,6 +14,8 @@ import { Helpers } from "@quantfive/js-web-config";
 // Redux
 import { NotificationActions } from "~/redux/notification";
 
+const DEFAULT_PING_REFRESH = 60000; // 1 minute
+
 class LiveFeed extends React.Component {
   constructor(props) {
     super(props);
@@ -21,6 +23,7 @@ class LiveFeed extends React.Component {
       intervalPing: null,
       newNotification: true,
       loading: false,
+      hideFeed: false,
       notifications: [],
     };
   }
@@ -31,7 +34,7 @@ class LiveFeed extends React.Component {
     let intervalPing = setInterval(() => {
       let { getLivefeed, livefeed, currentHub } = that.props;
       getLivefeed(livefeed.hubs, currentHub.id);
-    }, 60000);
+    }, DEFAULT_PING_REFRESH);
     this.setState({
       intervalPing: intervalPing,
     });
@@ -71,26 +74,35 @@ class LiveFeed extends React.Component {
     );
   };
 
+  toggleFeedView = () => {
+    this.setState({ hideFeed: !this.state.hideFeed });
+  };
+
   render() {
     return (
       <Fragment>
-        <div className={css(styles.listLabel)}>
+        <div
+          className={css(styles.listLabel)}
+          // onClick={this.toggleFeedView}
+        >
           {"Activity on Hub"}
           <div className={css(styles.refreshIcon)} onClick={this.fetchLiveFeed}>
             <i className="fad fa-sync" />
           </div>
         </div>
-        <div className={css(styles.container)}>
-          <div className={css(styles.livefeed)}>
-            {this.state.loading ? (
-              <span className={css(styles.loaderWrapper)}>
-                <Loader loading={true} size={20} />
-              </span>
-            ) : (
-              this.renderNotifications()
-            )}
+        {!this.state.hideFeed && (
+          <div className={css(styles.container)}>
+            <div className={css(styles.livefeed)}>
+              {this.state.loading ? (
+                <span className={css(styles.loaderWrapper)}>
+                  <Loader loading={true} size={20} />
+                </span>
+              ) : (
+                this.renderNotifications()
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </Fragment>
     );
   }
@@ -105,7 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 1.2,
     // color: "#a7a6b0",
-    marginTop: 60,
+    marginTop: 80,
     paddingBottom: 10,
     width: 140,
     height: 18,
