@@ -60,7 +60,7 @@ class LiveFeed extends React.Component {
 
     return (
       currentHubNotifications &&
-      currentHubNotifications.map((notification, i) => {
+      currentHubNotifications.reverse().map((notification, i) => {
         return (
           <LiveFeedNotification
             notification={notification}
@@ -83,7 +83,9 @@ class LiveFeed extends React.Component {
         <div className={css(styles.container)}>
           <div className={css(styles.livefeed)}>
             {this.state.loading ? (
-              <Loader loading={true} />
+              <span className={css(styles.loaderWrapper)}>
+                <Loader loading={true} size={20} />
+              </span>
             ) : (
               this.renderNotifications()
             )}
@@ -95,6 +97,20 @@ class LiveFeed extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  listLabel: {
+    display: "flex",
+    justifyContent: "space-between",
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    fontSize: 12,
+    letterSpacing: 1.2,
+    // color: "#a7a6b0",
+    marginTop: 60,
+    paddingBottom: 10,
+    width: 140,
+    height: 18,
+    cursor: "default",
+  },
   container: {
     display: "flex",
     flexDirection: "column",
@@ -107,19 +123,6 @@ const styles = StyleSheet.create({
       borderColor: "#000",
     },
   },
-  listLabel: {
-    display: "flex",
-    justifyContent: "space-between",
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    fontSize: 12,
-    letterSpacing: 1.2,
-    color: "#a7a6b0",
-    marginTop: 60,
-    paddingBottom: 10,
-    width: 140,
-    height: 18,
-  },
   livefeed: {
     display: "flex",
     flexDirection: "column",
@@ -131,6 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FCFCFC",
     paddingTop: 10,
     overscrollBehavior: "contain",
+    transition: "all ease-in-out 0.2s",
   },
   notifCount: {
     textTransform: "unset",
@@ -146,11 +150,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   refreshIcon: {
-    color: "#000",
+    color: "#a7a6b0",
     cursor: "pointer",
     ":hover": {
+      cursor: "pointer",
       color: colors.GREEN(),
     },
+  },
+  loaderWrapper: {
+    padding: "10px 0 15px",
   },
 });
 

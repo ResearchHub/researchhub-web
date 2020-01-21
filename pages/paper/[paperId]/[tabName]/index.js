@@ -197,8 +197,6 @@ const Paper = (props) => {
     }
   }
 
-  console.log(paper.title);
-
   return (
     <div className={css(styles.container)}>
       {paper.status === 404 ? (

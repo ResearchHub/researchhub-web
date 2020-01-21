@@ -9,8 +9,9 @@ import ReactTooltip from "react-tooltip";
 import AuthorAvatar from "../AuthorAvatar";
 
 // Config
-import colors from "../../config/themes/colors";
-import API from "../../config/api";
+import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
+import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { timeAgo } from "~/config/utils";
 
@@ -19,67 +20,108 @@ class LiveFeedNotification extends React.Component {
     super(props);
     this.state = {
       hideCard: false,
-      user: {},
-      username: "",
-      profile: "",
     };
   }
 
-  componentDidMount() {
-    let userId = this.props.notification.created_by;
-    fetch(API.USER({ userId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let { first_name, last_name } = res;
-        this.setState({
-          user: { ...res },
-          username: `${first_name} ${last_name}`,
-          profile: res.author_profile.profile_image,
-        });
-      });
-  }
-
-  componentDidUpdate(prevProps) {
-    let prevObj =
-      prevProps.notification && JSON.stringify(prevProps.notification);
-    let currentObj =
-      this.props.notification && JSON.stringify(this.props.notification);
-    if (prevObj !== currentObj) {
-      let userId = this.props.notification.created_by;
-      fetch(API.USER({ userId }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          console.log("called");
-          let { first_name, last_name } = res;
-          this.setState({
-            user: { ...res },
-            username: `${first_name} ${last_name}`,
-            profile: res.author_profile.profile_image,
-          });
-        });
-    }
-  }
+  formatUsername = (userObject) => {
+    let { first_name, last_name } = userObject;
+    return `${first_name} ${last_name}`;
+  };
 
   renderNotification = () => {
-    console.log("notification", this.props.notification);
-
     const { notification } = this.props;
-    let { paper, created_date, content_type } = notification;
+    let { paper, created_date, created_by, content_type } = notification;
     let notificationType = content_type;
     const timestamp = this.formatTimestamp(created_date);
+    const username = this.formatUsername(created_by);
+
     switch (notificationType) {
       case "vote_paper":
+        var paperTip = paper && paper.title;
         return (
           <div className={css(styles.message)}>
-            <b className={css(styles.username)}>{this.state.username}</b> voted
-            on{" "}
+            <Link
+              href={"/user/[userId]/[tabName]"}
+              as={`/user/${created_by.id}/contribution}`}
+            >
+              <a className={css(styles.username)}>{username}</a>
+            </Link>{" "}
+            voted on{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paper && paper.id}/summary`}
             >
-              <a className={css(styles.paper)}>{paper && paper.title}</a>
+              <a className={css(styles.paper)} data-tip={paperTip}>
+                {paper && this.truncatePaperTitle(paper.title)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "vote_comment":
+        var { thread } = notification.comment;
+        var paperTip = paper && paper.title;
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[userId]/[tabName]"}
+              as={`/user/${created_by.id}/contribution}`}
+            >
+              <a className={css(styles.username)}>{username}</a>
+            </Link>{" "}
+            voted on a{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
+              as={`/paper/${paper && paper.id}/discussion/${thread &&
+                thread.id}`}
+            >
+              <a className={css(styles.link)}>comment</a>
+            </Link>
+            in{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paper && paper.id}/summary`}
+            >
+              <a className={css(styles.paper)} data-tip={paperTip}>
+                {paper && this.truncatePaperTitle(paper.title)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "vote_reply":
+        var { thread } = notification;
+        var paperTip = paper && paper.title;
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[userId]/[tabName]"}
+              as={`/user/${created_by.id}/contribution}`}
+            >
+              <a className={css(styles.username)}>{username}</a>
+            </Link>{" "}
+            voted on a{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
+              as={`/paper/${paper && paper.id}/discussion/${thread &&
+                thread.id}`}
+            >
+              <a className={css(styles.link)}>reply</a>
+            </Link>
+            in{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paper && paper.id}/summary`}
+            >
+              <a className={css(styles.paper)} data-tip={paperTip}>
+                {paper && this.truncatePaperTitle(paper.title)}
+              </a>
             </Link>
             <span className={css(styles.timestamp)}>
               <span className={css(styles.timestampDivider)}>•</span>
@@ -89,24 +131,30 @@ class LiveFeedNotification extends React.Component {
         );
       case "thread":
         let { first_name, last_name } = notification.created_by;
+        var paperTip = paper && paper.title;
         return (
           <div className={css(styles.message)}>
-            <b className={css(styles.username)}>
-              {`${first_name} ${last_name}`}
-            </b>{" "}
+            <Link
+              href={"/user/[userId]/[tabName]"}
+              as={`/user/${created_by.id}/contribution}`}
+            >
+              <a className={css(styles.username)}>{username}</a>
+            </Link>{" "}
             created a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId"}
+              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               as={`/paper/${paper.id}/discussion/${notification.id}`}
             >
-              <a className={css(styles.paper)}>thread</a>
+              <a className={css(styles.link)}>thread</a>
             </Link>
-            {"in"}
+            {"in "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paper.id}/summary`}
             >
-              <a className={css(styles.paper)}>{paper.title}</a>
+              <a className={css(styles.paper)} data-tip={paperTip}>
+                {paper.title && this.truncatePaperTitle(paper.title)}
+              </a>
             </Link>
             <span className={css(styles.timestamp)}>
               <span className={css(styles.timestampDivider)}>•</span>
@@ -116,6 +164,29 @@ class LiveFeedNotification extends React.Component {
         );
       default:
         return;
+    }
+  };
+
+  truncatePaperTitle = (title) => {
+    if (title.length >= 90) {
+      return title.slice(0, 90) + "...";
+    }
+    return title;
+  };
+
+  renderIcon = () => {
+    const { notification } = this.props;
+    const notificationType = notification.content_type;
+
+    switch (notificationType) {
+      case "vote_paper":
+        return icons.file;
+      case "vote_comment":
+        return <i className="fad fa-comment-alt-dots" />;
+      case "vote_reply":
+        return <i className="fad fa-comment-alt-dots" />;
+      case "thread":
+        return <i className="fad fa-comment-alt-lines" />;
     }
   };
 
@@ -134,22 +205,29 @@ class LiveFeedNotification extends React.Component {
   };
 
   render() {
+    let { notification } = this.props;
+
     if (this.state.hideCard) {
       return null;
     } else {
       return (
         <div className={css(styles.column, styles.notification)}>
-          {/* <div 
-            className={css(styles.closeButton)}
-            onClick={this.hideCard}
-          >
-            <i className="fal fa-times" />
-          </div> */}
+          <div className={css(styles.type)}>{this.renderIcon()}</div>
           <div className={css(styles.row, styles.container)}>
             <div className={css(styles.column, styles.left)}>
-              <AuthorAvatar author={this.state.user} size={50} />
+              <AuthorAvatar
+                author={notification.created_by && notification.created_by}
+                size={35}
+              />
             </div>
             <div className={css(styles.column, styles.right)}>
+              <ReactTooltip
+                delayShow={800}
+                type={"light"}
+                effect={"solid"}
+                place={"bottom"}
+                className={css(styles.tooltip)}
+              />
               {this.renderNotification()}
             </div>
           </div>
@@ -173,21 +251,20 @@ const styles = StyleSheet.create({
   },
   notification: {
     width: "80%",
-    padding: "10px 15px 10px 15px",
+    padding: "25px 10px 20px 10px",
     backgroundColor: "#FFF",
-    height: 80,
     border: "1px solid rgb(237, 237, 237)",
     borderRadius: 5,
     cursor: "pointer",
     position: "relative",
-    marginBottom: 15,
+    marginBottom: 10,
     ":hover": {
       borderColor: "#AAAAAA",
     },
   },
   left: {
     justifyContent: "center",
-    marginRight: 20,
+    marginRight: 10,
   },
   right: {
     width: "100%",
@@ -199,7 +276,7 @@ const styles = StyleSheet.create({
     height: "100%",
     // justifyContent: 'space-between'
   },
-  paper: {
+  link: {
     color: colors.BLUE(),
     cursor: "pointer",
     textDecoration: "none",
@@ -208,12 +285,27 @@ const styles = StyleSheet.create({
       textDecoration: "underline",
     },
   },
+  paper: {
+    cursor: "pointer",
+    color: colors.BLUE(),
+    cursor: "pointer",
+    paddingRight: 4,
+    textDecoration: "unset",
+    // fontSize: 10,
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
   message: {
-    fontSize: 14,
+    fontSize: 11,
     lineHeight: 1.5,
     width: "100%",
+    overflow: "hidden",
   },
   username: {
+    color: "#000",
+    textDecoration: "none",
+    fontWeight: "bold",
     cursor: "pointer",
     ":hover": {
       color: colors.BLUE(),
@@ -222,11 +314,11 @@ const styles = StyleSheet.create({
   timestamp: {
     fontWeight: "normal",
     color: "#918f9b",
-    fontSize: 14,
+    fontSize: 10,
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
+    // "@media only screen and (max-width: 415px)": {
+    //   fontSize: 12,
+    // },
   },
   timestampDivider: {
     fontSize: 18,
@@ -235,14 +327,18 @@ const styles = StyleSheet.create({
     lineHeight: "100%",
     verticalAlign: "middle",
   },
-  closeButton: {
+  type: {
+    fontSize: 13,
+    color: "#AAAAAA",
     position: "absolute",
     top: 5,
     right: 10,
-    color: "#AAAAAA",
-    ":hover": {
-      color: "#000",
-    },
+  },
+  tooltip: {
+    maxWidth: 200,
+    fontSize: 12,
+    backgroundColor: "#FCFCFC",
+    borderRadius: 10,
   },
 });
 
