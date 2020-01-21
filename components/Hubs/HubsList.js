@@ -60,11 +60,15 @@ class HubsList extends React.Component {
       if (name !== this.props.exclude) {
         return (
           <Fragment key={`${id}-${i}`}>
-            <Ripples onClick={() => this.handleClick(hub)}>
-              <div key={`${id}-${i}`} className={css(styles.hubEntry)}>
-                {name}
-              </div>
-            </Ripples>
+            {/* <Ripples onClick={() => this.handleClick(hub)}> */}
+            <div
+              key={`${id}-${i}`}
+              className={css(styles.hubEntry)}
+              onClick={() => this.handleClick(hub)}
+            >
+              {name}
+            </div>
+            {/* // </Ripples> */}
             <div className={css(styles.space)} />
           </Fragment>
         );
@@ -87,7 +91,9 @@ class HubsList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <div className={css(styles.listLabel)}>{"Top Hubs"}</div>
+          <div className={css(styles.listLabel)} id={"top-hub"}>
+            {"Top Hubs"}
+          </div>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
@@ -102,7 +108,7 @@ class HubsList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     // width: "calc(100% * .625)",
-    width: "90%",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -114,7 +120,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
+    alignItems: "center",
     textAlign: "left",
     cursor: "default",
   },
@@ -128,18 +134,45 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     color: "#a7a6b0",
     marginBottom: 20,
+    textAlign: "center",
+    width: "100%",
   },
   hubEntry: {
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
-    textTransform: "capitalize",
+    textTransform: "uppercase",
+    fontSize: 10,
+    color: colors.BLUE(1),
+    backgroundColor: "#edeefe",
+    borderRadius: 3,
+    cursor: "pointer",
+    border: "1px solid #FFF",
+    fontWeight: "bold",
+    letterSpacing: 1,
+    padding: "3px 10px 3px 10px",
+    margin: "0px 5px 10px 0px",
     ":hover": {
-      color: colors.BLUE(1),
+      borderColor: colors.BLUE(1),
     },
   },
   hubsList: {
     opacity: 0,
+    width: "90%",
+    boxSizing: "border-box",
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    backgroundColor: "#FCFCFC",
+    border: "1px solid rgb(237, 237, 237)",
+    padding: "20px 0px 20px 10px",
+    cursor: "pointer",
+    ":hover": {
+      borderColor: "#000",
+    },
+    ":hover: #top-hub": {
+      color: "#000",
+    },
   },
   reveal: {
     opacity: 1,

@@ -70,7 +70,7 @@ class LiveFeedNotification extends React.Component {
     let notificationType = content_type;
     const timestamp = this.formatTimestamp(created_date);
     switch (notificationType) {
-      case "vote":
+      case "vote_paper":
         return (
           <div className={css(styles.message)}>
             <b className={css(styles.username)}>{this.state.username}</b> voted
