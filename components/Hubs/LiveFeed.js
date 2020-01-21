@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
-    maxHeight: 361,
+    maxHeight: 290,
     overflowY: "scroll",
     backgroundColor: "#FCFCFC",
     paddingTop: 10,
