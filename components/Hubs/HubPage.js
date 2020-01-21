@@ -660,7 +660,7 @@ var styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   sidebar: {
-    width: "30%",
+    width: "20%",
     position: "relative",
     position: "sticky",
     top: 80,
