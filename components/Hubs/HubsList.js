@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     backgroundColor: "#FCFCFC",
     border: "1px solid rgb(237, 237, 237)",
     padding: "20px 0px 20px 10px",

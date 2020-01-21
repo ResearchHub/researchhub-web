@@ -224,9 +224,9 @@ class LiveFeedNotification extends React.Component {
               <ReactTooltip
                 delayShow={800}
                 type={"light"}
-                effect={"solid"}
-                place={"bottom"}
+                effect={"float"}
                 className={css(styles.tooltip)}
+                scrollHide={true}
               />
               {this.renderNotification()}
             </div>
@@ -337,8 +337,10 @@ const styles = StyleSheet.create({
   tooltip: {
     maxWidth: 200,
     fontSize: 12,
-    backgroundColor: "#FCFCFC",
-    borderRadius: 10,
+    border: "none",
+    padding: 5,
+    backgroundColor: "rgb(237, 237, 237)",
+    boxShadow: "0px 0px 3px 0 #ddd",
   },
 });
 
