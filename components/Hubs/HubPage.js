@@ -115,10 +115,16 @@ class HubPage extends React.Component {
     ) {
       this.updateDimensions();
       this.fetchPapers({ hub: this.props.hub });
+      this.setState({
+        subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+      });
     }
 
     if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
       this.fetchPapers({ hub: this.props.hub });
+      this.setState({
+        subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+      });
     }
 
     if (
