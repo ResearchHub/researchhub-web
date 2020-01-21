@@ -575,6 +575,7 @@ const styles = StyleSheet.create({
   },
   reputation: {
     marginLeft: 11,
+    minWidth: 56,
   },
   dropdown: {
     position: "absolute",
