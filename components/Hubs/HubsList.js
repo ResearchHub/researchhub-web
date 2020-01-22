@@ -22,21 +22,28 @@ class HubsList extends React.Component {
     };
   }
 
-  componentDidMount = async () => {
+  componentDidMount() {
     if (this.props.hubsList) {
-      await this.setState({ hubs: hubsList });
-      setTimeout(() => this.setState({ reveal: true }), 400);
+      this.setState({ hubs: hubsList }, () => {
+        setTimeout(() => this.setState({ reveal: true }), 400);
+      });
     } else {
       this.fetchHubs();
     }
-  };
+  }
 
-  componentDidUpdate = async (prevProps) => {
+  componentDidUpdate(prevProps) {
     if (prevProps.exclude !== this.props.exclude) {
-      await this.setState({ reveal: false });
-      setTimeout(() => this.setState({ reveal: true }), 400);
+      this.setState({ reveal: false }, () => {
+        setTimeout(() => this.setState({ reveal: true }), 400);
+      });
     }
-  };
+    if (prevProps.hubsList !== this.props.hubsList) {
+      this.setState({ hubs: hubsList }, () => {
+        setTimeout(() => this.setState({ reveal: true }), 400);
+      });
+    }
+  }
 
   componentWillUnmount() {
     this.setState({ reveal: false });
@@ -56,7 +63,7 @@ class HubsList extends React.Component {
         ? this.state.hubs.slice(0, 9)
         : this.state.hubs;
     return selectedHubs.map((hub, i) => {
-      let { name, id } = hub;
+      let { name, id, user_is_subscribed } = hub;
       if (name !== this.props.exclude) {
         return (
           <Fragment key={`${id}-${i}`}>
@@ -67,9 +74,14 @@ class HubsList extends React.Component {
               onClick={() => this.handleClick(hub)}
             >
               {name}
+              {user_is_subscribed && (
+                <span className={css(styles.subscribedIcon)}>
+                  <i className="fas fa-star" />
+                </span>
+              )}
             </div>
             {/* // </Ripples> */}
-            <div className={css(styles.space)} />
+            {/* <div className={css(styles.space)} /> */}
           </Fragment>
         );
       }
@@ -166,14 +178,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     backgroundColor: "#FCFCFC",
     border: "1px solid rgb(237, 237, 237)",
-    padding: "20px 0px 20px 10px",
+    padding: "20px 0px 5px 10px",
     cursor: "pointer",
-    ":hover": {
-      borderColor: "#000",
-    },
-    ":hover: #top-hub": {
-      color: "#000",
-    },
   },
   reveal: {
     opacity: 1,
@@ -181,6 +187,10 @@ const styles = StyleSheet.create({
   },
   space: {
     height: 15,
+  },
+  subscribedIcon: {
+    marginLeft: 3,
+    color: colors.DARK_YELLOW(),
   },
 });
 

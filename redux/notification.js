@@ -7,27 +7,30 @@ import { Helpers } from "@quantfive/js-web-config";
 
 export const NotificationConstants = {
   GET_LIVEFEED: "@@notification/GET_LIVEFEED",
-  GET_LIVEFEED_SUCCESS: "@@notification/GET_LIVEFEED_SUCCESS",
-  GET_LIVEFEED_FAILED: "@@notification/GET_LIVEFEED_FAILED",
+  LIVEFEED_UPDATED: "@@notification/LIVEFEED_UPDATED",
+  LIVEFEED_STATIC: "@@notification/LIVEFEED_STATIC",
 };
 
 export const NotificationActions = {
   getLivefeed: (prevState, hubId) => {
     return (dispatch) => {
+      dispatch({ type: NotificationConstants.GET_LIVEFEED });
       return fetch(API.GET_LIVE_FEED({ hubId }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          // Add new notifications to state by hubId
+          // Prevent unnecessary state change and re-rendering
+          if (prevState[hubId]) {
+            if (prevState[hubId].length === res.results.length) {
+              return dispatch({ type: NotificationConstants.LIVEFEED_STATIC });
+            }
+          }
+
           let updatedHubs = { ...prevState };
-          // if (updatedHubs[hubId]) {
-          //   updatedHubs[hubId] = [...updatedHubs[hubId], res.results ];
-          // } else {
           updatedHubs[hubId] = [...res.results];
-          // }
 
           return dispatch({
-            type: NotificationConstants.GET_LIVEFEED,
+            type: NotificationConstants.LIVEFEED_UPDATED,
             payload: {
               hubs: updatedHubs,
             },
@@ -51,11 +54,13 @@ const defaultNotificationState = {
 
 const NotificationReducer = (state = defaultNotificationState, action) => {
   switch (action.type) {
-    case NotificationConstants.GET_LIVEFEED:
+    case NotificationConstants.LIVEFEED_UPDATED:
       return {
         ...state,
         ...action.payload,
       };
+    case NotificationConstants.GET_LIVEFEED:
+    case NotificationConstants.LIVEFEED_STATIC:
     default:
       return state;
   }

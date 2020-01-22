@@ -132,6 +132,7 @@ class LiveFeedNotification extends React.Component {
       case "thread":
         let { first_name, last_name } = notification.created_by;
         var paperTip = paper && paper.title;
+        console.log("notification-thread", notification);
         return (
           <div className={css(styles.message)}>
             <Link
@@ -212,6 +213,10 @@ class LiveFeedNotification extends React.Component {
     } else {
       return (
         <div className={css(styles.column, styles.notification)}>
+          {/* <ReactTooltip 
+            place={'bottom'}
+            delayShow={400}
+          /> */}
           <div className={css(styles.type)}>{this.renderIcon()}</div>
           <div className={css(styles.row, styles.container)}>
             <div className={css(styles.column, styles.left)}>
@@ -221,13 +226,6 @@ class LiveFeedNotification extends React.Component {
               />
             </div>
             <div className={css(styles.column, styles.right)}>
-              <ReactTooltip
-                delayShow={800}
-                type={"light"}
-                effect={"float"}
-                className={css(styles.tooltip)}
-                scrollHide={true}
-              />
               {this.renderNotification()}
             </div>
           </div>
@@ -329,18 +327,15 @@ const styles = StyleSheet.create({
   },
   type: {
     fontSize: 13,
-    color: "#AAAAAA",
+    // color: "#AAAAAA",
+    color: colors.YELLOW(),
     position: "absolute",
     top: 5,
     right: 10,
   },
   tooltip: {
-    maxWidth: 200,
-    fontSize: 12,
-    border: "none",
-    padding: 5,
-    backgroundColor: "rgb(237, 237, 237)",
-    boxShadow: "0px 0px 3px 0 #ddd",
+    opacity: 0.2,
+    width: 500,
   },
 });
 
