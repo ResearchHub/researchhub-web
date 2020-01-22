@@ -22,6 +22,7 @@ import LiveFeed from "./LiveFeed";
 import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
+import { HubActions } from "~/redux/hub";
 
 // Config
 import API from "~/config/api";
@@ -333,7 +334,7 @@ class HubPage extends React.Component {
   };
 
   subscribeToHub = () => {
-    let { hub, showMessage, setMessage } = this.props;
+    let { hub, allHubs, showMessage, setMessage, updateHub } = this.props;
     showMessage({ show: false });
     this.setState({ transition: true }, () => {
       let config = API.POST_CONFIG();
@@ -341,7 +342,8 @@ class HubPage extends React.Component {
         return fetch(API.HUB_UNSUBSCRIBE({ hubId: hub.id }), config)
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
-          .then(() => {
+          .then((res) => {
+            updateHub(allHubs, { ...res });
             setMessage("Unsubscribed!");
             showMessage({ show: true });
             this.setState({
@@ -353,7 +355,8 @@ class HubPage extends React.Component {
         return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
-          .then(() => {
+          .then((res) => {
+            updateHub(allHubs, { ...res });
             setMessage("Subscribed!");
             showMessage({ show: true });
             this.setState({
@@ -948,6 +951,7 @@ const mapStateToProps = (state) => ({
   modals: state.modals,
   auth: state.auth,
   isLoggedIn: state.auth.isLoggedIn,
+  allHubs: state.hubs.hubs,
 });
 
 const mapDispatchToProps = {
@@ -957,6 +961,7 @@ const mapDispatchToProps = {
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
+  updateHub: HubActions.updateHub,
 };
 
 export default connect(

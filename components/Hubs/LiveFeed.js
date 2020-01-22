@@ -14,7 +14,8 @@ import { Helpers } from "@quantfive/js-web-config";
 // Redux
 import { NotificationActions } from "~/redux/notification";
 
-const DEFAULT_PING_REFRESH = 60000; // 1 minute
+const DEFAULT_PING_REFRESH = 10000; // 1 minute
+const DEFAULT_LOADING = 400; //
 
 class LiveFeed extends React.Component {
   constructor(props) {
@@ -24,23 +25,41 @@ class LiveFeed extends React.Component {
       newNotification: true,
       loading: false,
       hideFeed: false,
-      notifications: [],
     };
   }
 
   componentDidMount() {
-    this.fetchLiveFeed();
-    let that = this;
+    let { livefeed, currentHub } = this.props;
+    if (!livefeed.hubs[currentHub.id]) {
+      this.fetchLiveFeed();
+    }
+    this.setLivefeedInterval(this);
+  }
+
+  setLivefeedInterval = (master) => {
     let intervalPing = setInterval(() => {
-      let { getLivefeed, livefeed, currentHub } = that.props;
+      let { getLivefeed, livefeed, currentHub } = master.props;
       getLivefeed(livefeed.hubs, currentHub.id);
     }, DEFAULT_PING_REFRESH);
     this.setState({
       intervalPing: intervalPing,
     });
-  }
+  };
 
-  componentDidUpdate(prevProps) {}
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentHub) {
+      if (prevProps.currentHub.id !== this.props.currentHub.id) {
+        clearInterval(this.state.intervalPing);
+        this.transitionWrapper(() => {
+          let { livefeed, currentHub } = this.props;
+          if (!livefeed.hubs[currentHub.id]) {
+            this.fetchLiveFeed();
+          }
+          this.setLivefeedInterval(this);
+        });
+      }
+    }
+  }
 
   componentWillUnmount() {
     clearInterval(this.state.intervalPing);
@@ -54,24 +73,38 @@ class LiveFeed extends React.Component {
     });
   };
 
-  getNotificationCount = () => {};
+  transitionWrapper = (func) => {
+    this.setState({ loading: true }, () => {
+      func();
+      setTimeout(() => {
+        this.setState({ loading: false });
+      }, DEFAULT_LOADING);
+    });
+  };
 
   renderNotifications = () => {
     let { livefeed, currentHub } = this.props;
     let currentHubId = currentHub.id;
-    let currentHubNotifications = livefeed.hubs[currentHubId];
+    let currentHubNotifications = livefeed && livefeed.hubs[currentHubId];
 
-    return (
-      currentHubNotifications &&
-      currentHubNotifications.reverse().map((notification, i) => {
+    if (currentHubNotifications) {
+      if (!currentHubNotifications.length) {
         return (
-          <LiveFeedNotification
-            notification={notification}
-            key={`liveFeedNotif-${i}`}
-          />
+          <div className={css(styles.emptyState)}>
+            No notifications for this hub.
+          </div>
         );
-      })
-    );
+      } else {
+        return currentHubNotifications.map((notification, i) => {
+          return (
+            <LiveFeedNotification
+              notification={notification}
+              key={`liveFeedNotif-${currentHub.id}-${i}`}
+            />
+          );
+        });
+      }
+    }
   };
 
   toggleFeedView = () => {
@@ -131,9 +164,6 @@ const styles = StyleSheet.create({
     width: "90%",
     border: "1px solid rgb(237, 237, 237)",
     transition: "all ease-in-out 0.2s",
-    ":hover": {
-      borderColor: "#000",
-    },
   },
   livefeed: {
     display: "flex",
@@ -143,7 +173,9 @@ const styles = StyleSheet.create({
     width: "100%",
     maxHeight: 290,
     overflowY: "scroll",
-    backgroundColor: "#FCFCFC",
+    // backgroundColor: "#FCFCFC",
+    background: "url(/static/background/background-modal.png) #FCFCFC",
+    backgroundSize: "cover",
     paddingTop: 10,
     overscrollBehavior: "contain",
     transition: "all ease-in-out 0.2s",
@@ -162,7 +194,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   refreshIcon: {
-    color: "#a7a6b0",
+    color: colors.GREEN(0.6),
     cursor: "pointer",
     ":hover": {
       cursor: "pointer",
@@ -171,6 +203,14 @@ const styles = StyleSheet.create({
   },
   loaderWrapper: {
     padding: "10px 0 15px",
+  },
+  emptyState: {
+    padding: "10px 0 15px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 13,
+    fontWeight: 400,
   },
 });
 
