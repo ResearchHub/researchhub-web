@@ -9,6 +9,7 @@ export const HubConstants = {
   UPDATE_CURRENT_HUB_PAGE: "@@hub/UPDATE_CURRENT_HUB_PAGE",
   GET_HUBS_SUCCESS: "@@hub/GET_HUBS_SUCCESS",
   GET_HUBS_FAILURE: "@@hub/GET_HUBS_FAILURE",
+  UPDATE_HUB: "@@hub/UPDATE_HUB",
 };
 
 export const HubActions = {
@@ -53,17 +54,24 @@ export const HubActions = {
         });
     };
   },
-  // addNewHub: (name) => {
-  //   return dispatch => {
-  //     let param = { name };
-  //     return fetch(API.HUB({}), API.POST_CONFIG(param))
-  //       .then(Helpers.checkStatus)
-  //       .then(Helpers.parseJSON)
-  //       .then(res => {
-
-  //       })
-  //   }
-  //  }
+  /**
+   * Updates the state of 'user_is_subscribed' on the FE when changes are made to the FE
+   * @param { Object } - the hub object
+   * @param { Boolean } - the new subscribed state of the hub
+   */
+  updateHub: (hubsList, newHubState) => {
+    return (dispatch) => {
+      let hubIndex = shims.findIndexById(newHubState.id, hubsList);
+      let updatedHubsList = [...hubsList];
+      updatedHubsList[hubIndex] = newHubState;
+      return dispatch({
+        type: HubConstants.UPDATE_HUB,
+        payload: {
+          hubs: updatedHubsList,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -82,6 +90,7 @@ const HubReducer = (state = defaultHubState, action) => {
     case HubConstants.UPDATE_CURRENT_HUB_PAGE:
     case HubConstants.GET_HUBS_SUCCESS:
     case HubConstants.GET_HUBS_FAILURE:
+    case HubConstants.UPDATE_HUB:
       return {
         ...state,
         ...action.payload,
@@ -103,6 +112,13 @@ const shims = {
       }
     });
     return sortedHubs;
+  },
+  findIndexById: (hubId, allHubs) => {
+    for (let i = 0; i < allHubs.length; i++) {
+      if (hubId === allHubs[i].id) {
+        return i;
+      }
+    }
   },
 };
 
