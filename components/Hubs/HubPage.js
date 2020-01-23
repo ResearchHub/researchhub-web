@@ -533,6 +533,8 @@ class HubPage extends React.Component {
               )}
             </div>
             <div className={css(styles.mobileHubListContainer)}>
+              {this.props.hub && <LiveFeed currentHub={this.props.hub} />}
+
               <HubsList
                 exclude={this.props.home ? null : this.props.hub.name}
                 overrideStyle={styles.mobileList}
@@ -873,6 +875,7 @@ var styles = StyleSheet.create({
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 768px)": {
       display: "flex",
+      flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
       width: "100%",
