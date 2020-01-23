@@ -29,11 +29,13 @@ class LiveFeed extends React.Component {
   }
 
   componentDidMount() {
-    let { livefeed, currentHub } = this.props;
-    if (!livefeed.hubs[currentHub.id]) {
-      this.fetchLiveFeed();
+    if (process.browser) {
+      let { livefeed, currentHub } = this.props;
+      if (!livefeed.hubs[currentHub.id]) {
+        this.fetchLiveFeed();
+      }
+      this.setLivefeedInterval(this);
     }
-    this.setLivefeedInterval(this);
   }
 
   setLivefeedInterval = (master) => {
