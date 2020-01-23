@@ -120,7 +120,7 @@ class PaperUploadInfo extends React.Component {
     fetch(API.PAPER({ paperId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then(async (res) => {
+      .then((res) => {
         let userAuthorId = this.props.auth.user.author_profile.id;
         let {
           authors,
@@ -174,7 +174,7 @@ class PaperUploadInfo extends React.Component {
         }
         form.author.self_author =
           authors.filter((author) => author.id === userAuthorId).length > 0;
-        await this.setState({
+        this.setState({
           selectedAuthors: [...authors],
           form,
           progress: 100,
@@ -1011,29 +1011,37 @@ class PaperUploadInfo extends React.Component {
     return `${published.year.value}-${published.month.value}-01`;
   };
 
-  nextStep = async () => {
+  nextStep = () => {
     let { activeStep } = this.state;
     if (activeStep < 3) {
-      await this.setState({
-        progress: this.state.progress + 33.33,
-        activeStep: activeStep + 1,
-        edited: false,
-      });
-      setTimeout(
-        () => this.props.messageActions.showMessage({ show: false }),
-        400
+      this.setState(
+        {
+          progress: this.state.progress + 33.33,
+          activeStep: activeStep + 1,
+          edited: false,
+        },
+        () => {
+          setTimeout(
+            () => this.props.messageActions.showMessage({ show: false }),
+            400
+          );
+        }
       );
       window.scrollTo(0, this.titleRef.current.offsetTop);
     }
   };
 
-  prevStep = async () => {
+  prevStep = () => {
     let { activeStep } = this.state;
-    await this.setState({
-      progress: this.state.progress - 33.33,
-      activeStep: activeStep - 1,
-    });
-    window.scrollTo(0, this.titleRef.current.offsetTop);
+    this.setState(
+      {
+        progress: this.state.progress - 33.33,
+        activeStep: activeStep - 1,
+      },
+      () => {
+        window.scrollTo(0, this.titleRef.current.offsetTop);
+      }
+    );
   };
 
   handleSummaryChange = (summary) => {

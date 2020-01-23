@@ -37,15 +37,16 @@ class SummaryTab extends React.Component {
   /**
    * Opens the add summary
    */
-  addSummary = async () => {
-    await this.setState({ transition: true });
-    setTimeout(() => {
-      this.setState({
-        addSummary: true,
-        readOnly: false,
-        transition: false,
-      });
-    }, 200);
+  addSummary = () => {
+    this.setState({ transition: true }, () => {
+      setTimeout(() => {
+        this.setState({
+          addSummary: true,
+          readOnly: false,
+          transition: false,
+        });
+      }, 200);
+    });
   };
 
   onEditorStateChange = (editorState) => {
@@ -107,16 +108,17 @@ class SummaryTab extends React.Component {
       });
   };
 
-  cancel = async () => {
-    await this.setState({ transition: true });
-    setTimeout(() => {
-      this.initializeSummary();
-      this.setState({
-        readOnly: true,
-        addSummary: false,
-        transition: false,
-      });
-    }, 200);
+  cancel = () => {
+    this.setState({ transition: true }, () => {
+      setTimeout(() => {
+        this.initializeSummary();
+        this.setState({
+          readOnly: true,
+          addSummary: false,
+          transition: false,
+        });
+      }, 200);
+    });
   };
 
   edit = () => {
