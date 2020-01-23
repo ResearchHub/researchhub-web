@@ -155,6 +155,9 @@ const styles = StyleSheet.create({
     width: 140,
     height: 18,
     cursor: "default",
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 40,
+    },
   },
   container: {
     display: "flex",
@@ -209,6 +212,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    textAlign: "center",
     fontSize: 13,
     fontWeight: 400,
   },
