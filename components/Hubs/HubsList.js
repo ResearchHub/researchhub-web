@@ -13,6 +13,8 @@ import { Helpers } from "@quantfive/js-web-config";
 // Redux
 import { HubActions } from "~/redux/hub";
 
+const DEFAULT_TRANSITION_TIME = 400;
+
 class HubsList extends React.Component {
   constructor(props) {
     super(props);
@@ -23,9 +25,9 @@ class HubsList extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.hubs) {
-      this.setState({ hubs: this.props.hubs }, () => {
-        setTimeout(() => this.setState({ reveal: true }), 400);
+    if (this.props.hubsList) {
+      this.setState({ hubs: hubsList }, () => {
+        this.revealTransition();
       });
     } else {
       this.fetchHubs();
@@ -34,19 +36,8 @@ class HubsList extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.exclude !== this.props.exclude) {
-      this.setState(
-        {
-          reveal: false,
-          hubs: this.props.hubs,
-        },
-        () => {
-          setTimeout(() => this.setState({ reveal: true }), 400);
-        }
-      );
-    }
-    if (prevProps.hubs !== this.props.hubs) {
-      this.setState({ hubs: this.props.hubs }, () => {
-        setTimeout(() => this.setState({ reveal: true }), 400);
+      this.setState({ reveal: false }, () => {
+        this.revealTransition();
       });
     }
   }
@@ -59,8 +50,13 @@ class HubsList extends React.Component {
     if (!this.props.hubs.length > 0) {
       await this.props.getHubs();
     }
-    await this.setState({ hubs: this.props.hubs });
-    setTimeout(() => this.setState({ reveal: true }), 400);
+    this.setState({ hubs: this.props.hubs }, () => {
+      this.revealTransition();
+    });
+  };
+
+  revealTransition = () => {
+    setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
   };
 
   renderHubEntry = () => {
@@ -104,7 +100,7 @@ class HubsList extends React.Component {
   };
 
   render() {
-    let { overrideStyle, label } = this.props;
+    let { overrideStyle } = this.props;
 
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>

@@ -152,16 +152,20 @@ class LockedHubPage extends React.Component {
     return fetch(API.HUB_SUBSCRIBE({ hubId }), API.POST_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then(async (res) => {
-        await this.setState({
-          progress: this.state.progress + 1,
-          subscriberCount: this.state.subscriberCount + 1,
-          transition: true,
-        });
-        setTimeout(() => {
-          this.setState({ joined: true, transition: false });
-          this.props.showMessage({ show: false });
-        }, 500);
+      .then((res) => {
+        this.setState(
+          {
+            progress: this.state.progress + 1,
+            subscriberCount: this.state.subscriberCount + 1,
+            transition: true,
+          },
+          () => {
+            setTimeout(() => {
+              this.setState({ joined: true, transition: false });
+              this.props.showMessage({ show: false });
+            }, 500);
+          }
+        );
       })
       .catch((err) => {
         this.props.setMessage("Something went wrong. Please try again later");

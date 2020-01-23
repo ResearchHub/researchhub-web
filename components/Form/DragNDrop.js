@@ -71,8 +71,8 @@ class DragNDrop extends React.Component {
     });
   };
 
-  handleDrop = async (acceptedFiles) => {
-    await this.setState({ dragOver: false });
+  handleDrop = (acceptedFiles) => {
+    this.setState({ dragOver: false });
     let isPDF = true;
     let file = acceptedFiles[0];
     let type = file.type.split("/").pop();
