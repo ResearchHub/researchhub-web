@@ -22,7 +22,7 @@ class Index extends React.Component {
     this.state = {
       hubName: Router.router ? Router.router.query.hubname : "",
       currentHub: null,
-      hubDescription: props.hub.name, // TODO: Pull from hub description field
+      hubDescription: "", // TODO: Pull from hub description field
     };
   }
 
@@ -46,7 +46,10 @@ class Index extends React.Component {
   fetchHubInfo = async (name) => {
     const currentHub = await fetchHub(name);
     if (currentHub) {
-      this.setState({ currentHub });
+      this.setState({
+        currentHub,
+        hubDescription: this.props.hub && this.props.hub.name,
+      });
     }
   };
 
