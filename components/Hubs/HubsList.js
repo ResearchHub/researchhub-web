@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
   },
   hubsListContainer: {
     height: "100%",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
