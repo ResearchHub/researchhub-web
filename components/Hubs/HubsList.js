@@ -25,9 +25,9 @@ class HubsList extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.hubsList) {
-      this.setState({ hubs: hubsList }, () => {
-        this.revealTransition();
+    if (this.props.hubs) {
+      this.setState({ hubs: this.props.hubs }, () => {
+        setTimeout(() => this.setState({ reveal: true }), 400);
       });
     } else {
       this.fetchHubs();
@@ -39,12 +39,17 @@ class HubsList extends React.Component {
       this.setState(
         {
           reveal: false,
-          hubs: this.props.hubsList,
+          hubs: this.props.hubs,
         },
         () => {
-          this.revealTransition();
+          setTimeout(() => this.setState({ reveal: true }), 400);
         }
       );
+    }
+    if (prevProps.hubs !== this.props.hubs) {
+      this.setState({ hubs: this.props.hubs }, () => {
+        setTimeout(() => this.setState({ reveal: true }), 400);
+      });
     }
   }
 
