@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     highlight: "none",
     outline: "none",
     cursor: "default",
+    lineHeight: 1.6,
     ":hover": {
       borderColor: "#B3B3B3",
     },

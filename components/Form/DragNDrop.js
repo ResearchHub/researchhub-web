@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Fragment } from "react";
+import { connect } from "react-redux";
 import Dropzone from "react-dropzone";
 import { StyleSheet, css } from "aphrodite";
 
@@ -22,6 +23,7 @@ class DragNDrop extends React.Component {
       showThumbnail: false,
       dragOver: false,
       isPDF: true,
+      searchSuggestions: [],
     };
     this.state = {
       ...this.initialState,
@@ -44,22 +46,25 @@ class DragNDrop extends React.Component {
   }
 
   handleUrlPaste = (id, value) => {
-    if (value === "") return;
     this.setState({ pdfUrl: value, pending: true }, async () => {
       let param = {
         url: value,
       };
-      await fetch(API.CHECKURL, API.POST_CONFIG(param))
+      if (value === "") return;
+      await fetch(API.SEARCH_BY_URL, API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let { found_file } = res;
+          let { csl_item, url, url_is_pdf, search } = res;
           this.setState({
             pending: false,
-            validUrl: found_file,
+            validUrl: csl_item ? true : false,
+            searchSuggestions: search,
           });
           setTimeout(() => {
-            found_file && this.props.handleUrl && this.props.handleUrl(value);
+            csl_item &&
+              this.props.handleUrl &&
+              this.props.handleUrl({ ...res }, value);
           }, 300);
         })
         .catch((err) => {
@@ -142,9 +147,36 @@ class DragNDrop extends React.Component {
     this.setState({ style: dropZoneStyle });
   };
 
+  renderSearchSuggestion = () => {
+    return (
+      this.state.searchSuggestions.length > 0 &&
+      !this.props.hideSuggestions && (
+        <Fragment>
+          <div className={css(styles.searchPrompt)}>
+            {`There seems to be ${this.state.searchSuggestions.length} papers with similar titles: \n`}
+            <div className={css(styles.regular)}>
+              If your paper is not listed, click 'continue' to add more
+              information
+            </div>
+          </div>
+          <div className={css(styles.searchSuggestion)}>
+            {this.state.searchSuggestions.map((paper, i) => {
+              return (
+                <PaperEntry
+                  key={`searchSuggestion-${i}-${paper.id}`}
+                  title={paper.title}
+                  paperId={paper.id}
+                />
+              );
+            })}
+          </div>
+        </Fragment>
+      )
+    );
+  };
+
   render() {
     let { loading, uploadedPaper, uploadFinish, pasteUrl } = this.props;
-
     return (
       <div
         className={css(styles.container)}
@@ -162,13 +194,16 @@ class DragNDrop extends React.Component {
               style={uploadFinish ? style.uploadedPaper : this.state.style}
             >
               {uploadFinish ? (
-                <PaperEntry
-                  fileUpload={true}
-                  file={uploadedPaper}
-                  onRemove={this.onRemove}
-                  mobileStyle={styles.mobileStyle}
-                  url={this.props.url ? this.props.url : this.state.validUrl}
-                />
+                <Fragment>
+                  <PaperEntry
+                    fileUpload={true}
+                    file={uploadedPaper}
+                    onRemove={this.onRemove}
+                    mobileStyle={styles.mobileStyle}
+                    url={this.props.url ? this.props.url : this.state.validUrl}
+                  />
+                  {this.renderSearchSuggestion()}
+                </Fragment>
               ) : (
                 <div
                   {...getRootProps({ className: "dropzone" })}
@@ -199,8 +234,11 @@ class DragNDrop extends React.Component {
             </section>
           )}
         </Dropzone>
-        {pasteUrl && !uploadFinish && (
-          <p className={css(styles.pasteInstruction)}>
+        {!uploadFinish && (
+          <p
+            className={css(styles.pasteInstruction, !pasteUrl && styles.link)}
+            onClick={!pasteUrl ? this.props.openUploadPaperModal : null}
+          >
             or paste a url for the paper
           </p>
         )}
@@ -351,6 +389,38 @@ const styles = StyleSheet.create({
   },
   errorIcon: {
     color: colors.RED(1),
+  },
+  searchSuggestion: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    height: 172,
+    overflow: "scroll",
+    marginBottom: 15,
+    padding: "0px 10px 0px 10px",
+    boxSizing: "border-box",
+  },
+  searchPrompt: {
+    fontSize: 14,
+    color: colors.BLUE(),
+    paddingTop: 5,
+    paddingBottom: 15,
+    textAlign: "center",
+    whiteSpace: "pre-wrap",
+    fontWeight: 500,
+  },
+  regular: {
+    fontWeight: 400,
+    paddingTop: 10,
+    color: "#4f4d5f",
+  },
+  link: {
+    color: colors.BLUE(),
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    },
   },
 });
 

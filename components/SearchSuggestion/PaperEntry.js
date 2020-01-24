@@ -49,7 +49,7 @@ const PaperEntry = ({
     }
 
     if (file && Object.keys(file).length > 0) {
-      name = file.name;
+      name = file.name ? file.name : file.URL;
       fileSize = file.size / 1000000;
     }
 
@@ -85,7 +85,11 @@ const PaperEntry = ({
         as={`/paper/${paperId}/summary`}
       >
         <div
-          className={css(styles.entry, selected && styles.selected)}
+          className={css(
+            styles.entry,
+            styles.paper,
+            selected && styles.selected
+          )}
           onClick={closeModal && closeModal}
         >
           <div className={css(styles.title, styles.text)}>{title && title}</div>
@@ -101,7 +105,7 @@ const PaperEntry = ({
 const styles = StyleSheet.create({
   entry: {
     width: "calc(100% - 35px)",
-    height: 58,
+    minHeight: 58,
     padding: 16,
     display: "flex",
     flexDirection: "column",
@@ -115,15 +119,19 @@ const styles = StyleSheet.create({
       border: "solid 1px #D2D2E6",
     },
     "@media only screen and (max-width: 415px)": {
-      height: 48,
+      minHeight: 48,
     },
     "@media only screen and (max-width: 378px)": {
-      height: 38,
+      minHeight: 38,
     },
     "@media only screen and (max-width: 321px)": {
       width: 238,
-      height: 38,
+      minHeight: 38,
     },
+  },
+  paper: {
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   title: {
     fontWeight: 500,
@@ -148,7 +156,7 @@ const styles = StyleSheet.create({
     },
   },
   fileDataContainer: {
-    height: 60,
+    minHeight: 60,
     width: 390,
     flexWrap: "wrap",
     display: "flex",
@@ -160,10 +168,10 @@ const styles = StyleSheet.create({
       width: "80%",
     },
     "@media only screen and (max-width: 415px)": {
-      height: 50,
+      minHeight: 50,
     },
     "@media only screen and (max-width: 321px)": {
-      height: 45,
+      minHeight: 45,
     },
   },
   fileSize: {
@@ -172,6 +180,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     color: "#8c8b9a",
+    paddingTop: 5,
     "@media only screen and (max-width: 665px)": {
       width: "80%",
     },
@@ -185,15 +194,17 @@ const styles = StyleSheet.create({
     alignItems: "initial",
     cursor: "default",
     borderRadius: 3,
+    // borderColor: colors.BLUE(1)
   },
   fileName: {
-    height: 41,
-    width: 345,
+    minHeight: 41,
+    width: 380,
+    overflowWrap: "break-word",
     fontFamily: "Roboto",
     fontSize: 16,
     "@media only screen and (max-width: 665px)": {
       width: "80%",
-      height: "unset",
+      minHeight: "unset",
     },
     "@media only screen and (max-width: 321px)": {
       fontSize: 11,
