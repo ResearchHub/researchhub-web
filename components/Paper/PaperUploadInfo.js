@@ -129,9 +129,9 @@ class PaperUploadInfo extends React.Component {
     form.url = url && url;
     if (issued) {
       let date = issued["date-parts"][0];
-      form.published.year = date[0];
-      form.published.month = date[1];
-      form.published.day = date[2];
+      form.published.year = this.handleFormYear(date);
+      form.published.month = this.handleFormMonth(date);
+      form.published.day = this.handleFormDay(date);
     }
     this.setState({ form: form }, () => {
       this.props.messageActions.showMessage({ show: false });
@@ -213,6 +213,27 @@ class PaperUploadInfo extends React.Component {
           300
         );
       });
+  };
+
+  handleFormYear = (date) => {
+    return date[0];
+  };
+  handleFormMonth = (date) => {
+    if (date.length > 1) {
+      return date[1];
+    } else {
+      return Options.months[0];
+    }
+  };
+  handleFormDay = (date) => {
+    if (date.length > 2) {
+      return date[2];
+    } else {
+      return {
+        value: "01",
+        label: "01",
+      };
+    }
   };
 
   componentWillUnMount() {
