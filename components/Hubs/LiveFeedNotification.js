@@ -221,7 +221,10 @@ class LiveFeedNotification extends React.Component {
           <div className={css(styles.row, styles.container)}>
             <div className={css(styles.column, styles.left)}>
               <AuthorAvatar
-                author={notification.created_by && notification.created_by}
+                author={
+                  notification.created_by &&
+                  notification.created_by.author_profile
+                }
                 size={35}
               />
             </div>
