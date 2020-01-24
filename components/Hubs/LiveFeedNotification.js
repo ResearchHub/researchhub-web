@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     paddingRight: 4,
     textDecoration: "unset",
-    // fontSize: 10,
+    wordBreak: "break-all",
     ":hover": {
       textDecoration: "underline",
     },
