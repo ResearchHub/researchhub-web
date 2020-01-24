@@ -36,9 +36,15 @@ class HubsList extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.exclude !== this.props.exclude) {
-      this.setState({ reveal: false }, () => {
-        this.revealTransition();
-      });
+      this.setState(
+        {
+          reveal: false,
+          hubs: this.props.hubsList,
+        },
+        () => {
+          this.revealTransition();
+        }
+      );
     }
   }
 
