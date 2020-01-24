@@ -35,10 +35,23 @@ class LockedHubPage extends React.Component {
   }
 
   componentDidMount() {
+    this.intializePage();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.hub.id !== this.props.hub.id) {
+      this.intializePage();
+    }
+  }
+
+  intializePage = () => {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0;
     this.props.showMessage({ load: true, show: true });
     this.animateProgress = setInterval(this.incrementProgress, 30);
     const { hub } = this.props;
     this.setState({
+      reveal: false,
       subscriberCount: hub.subscriber_count,
       progress: 0,
       hub,
@@ -48,28 +61,7 @@ class LockedHubPage extends React.Component {
       this.setState({ reveal: true });
       this.props.showMessage({ show: false });
     }, 400);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.hub.id !== this.props.hub.id) {
-      this.animateProgress = setInterval(this.incrementProgress, 30);
-      const { hub } = this.props;
-      this.setState(
-        {
-          reveal: false,
-          subscriberCount: hub.subscriber_count,
-          progress: 0,
-          hub,
-          joined: hub.user_is_subscribed,
-        },
-        () => {
-          setTimeout(() => {
-            this.setState({ reveal: true });
-          }, 400);
-        }
-      );
-    }
-  }
+  };
 
   incrementProgress = () => {
     if (this.state.progress < this.state.subscriberCount) {
