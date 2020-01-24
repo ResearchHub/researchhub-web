@@ -184,9 +184,15 @@ class PaperUploadInfo extends React.Component {
             value: published_date[0],
             label: published_date[0],
           };
-          form.published.month = Options.months
-            .filter((month) => month.value === published_date[1])
-            .pop();
+
+          if (published_date.length > 1) {
+            form.published.month = Options.months
+              .filter((month) => month.value === published_date[1])
+              .pop();
+          } else {
+            form.published.month = Options.months[0];
+          }
+
           if (published_date.length > 2) {
             form.published.day = {
               value: published_date[2],
