@@ -132,7 +132,6 @@ class LiveFeedNotification extends React.Component {
       case "thread":
         let { first_name, last_name } = notification.created_by;
         var paperTip = paper && paper.title;
-        console.log("notification-thread", notification);
         return (
           <div className={css(styles.message)}>
             <Link
