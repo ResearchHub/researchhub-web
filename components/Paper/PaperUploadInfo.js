@@ -222,17 +222,14 @@ class PaperUploadInfo extends React.Component {
     if (date.length > 1) {
       return date[1];
     } else {
-      return Options.months[0];
+      return "01";
     }
   };
   handleFormDay = (date) => {
     if (date.length > 2) {
       return date[2];
     } else {
-      return {
-        value: "01",
-        label: "01",
-      };
+      return "01";
     }
   };
 
