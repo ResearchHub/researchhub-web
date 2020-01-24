@@ -11,6 +11,7 @@ import authorReducer from "./author/reducer";
 import hubReducer from "./hub";
 import universityReducer from "./universities";
 import transactionReducer from "./transaction";
+import notificationReducer from "./notification";
 
 export default combineReducers({
   modals: modalReducer,
@@ -24,4 +25,5 @@ export default combineReducers({
   hubs: hubReducer,
   universities: universityReducer,
   transactions: transactionReducer,
+  livefeed: notificationReducer,
 });

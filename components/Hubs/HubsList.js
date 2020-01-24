@@ -22,21 +22,34 @@ class HubsList extends React.Component {
     };
   }
 
-  componentDidMount = async () => {
-    if (this.props.hubsList) {
-      await this.setState({ hubs: hubsList });
-      setTimeout(() => this.setState({ reveal: true }), 400);
+  componentDidMount() {
+    if (this.props.hubs) {
+      this.setState({ hubs: this.props.hubs }, () => {
+        setTimeout(() => this.setState({ reveal: true }), 400);
+      });
     } else {
       this.fetchHubs();
     }
-  };
+  }
 
-  componentDidUpdate = async (prevProps) => {
+  componentDidUpdate(prevProps) {
     if (prevProps.exclude !== this.props.exclude) {
-      await this.setState({ reveal: false });
-      setTimeout(() => this.setState({ reveal: true }), 400);
+      this.setState(
+        {
+          reveal: false,
+          hubs: this.props.hubs,
+        },
+        () => {
+          setTimeout(() => this.setState({ reveal: true }), 400);
+        }
+      );
     }
-  };
+    if (prevProps.hubs !== this.props.hubs) {
+      this.setState({ hubs: this.props.hubs }, () => {
+        setTimeout(() => this.setState({ reveal: true }), 400);
+      });
+    }
+  }
 
   componentWillUnmount() {
     this.setState({ reveal: false });
@@ -56,16 +69,25 @@ class HubsList extends React.Component {
         ? this.state.hubs.slice(0, 9)
         : this.state.hubs;
     return selectedHubs.map((hub, i) => {
-      let { name, id } = hub;
+      let { name, id, user_is_subscribed } = hub;
       if (name !== this.props.exclude) {
         return (
           <Fragment key={`${id}-${i}`}>
-            <Ripples onClick={() => this.handleClick(hub)}>
-              <div key={`${id}-${i}`} className={css(styles.hubEntry)}>
-                {name}
-              </div>
-            </Ripples>
-            <div className={css(styles.space)} />
+            {/* <Ripples onClick={() => this.handleClick(hub)}> */}
+            <div
+              key={`${id}-${i}`}
+              className={css(styles.hubEntry)}
+              onClick={() => this.handleClick(hub)}
+            >
+              {name}
+              {user_is_subscribed && (
+                <span className={css(styles.subscribedIcon)}>
+                  <i className="fas fa-star" />
+                </span>
+              )}
+            </div>
+            {/* // </Ripples> */}
+            {/* <div className={css(styles.space)} /> */}
           </Fragment>
         );
       }
@@ -87,7 +109,9 @@ class HubsList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <div className={css(styles.listLabel)}>{"Top Hubs"}</div>
+          <div className={css(styles.listLabel)} id={"top-hub"}>
+            {"Top Hubs"}
+          </div>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
@@ -101,19 +125,22 @@ class HubsList extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: "calc(100% * .625)",
+    // width: "calc(100% * .625)",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     paddingTop: 60,
+    paddingBottom: 30,
   },
   hubsListContainer: {
     height: "100%",
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
+    alignItems: "center",
     textAlign: "left",
     cursor: "default",
   },
@@ -125,20 +152,41 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     fontSize: 12,
     letterSpacing: 1.2,
-    color: "#a7a6b0",
+    // color: "#a7a6b0",
     marginBottom: 20,
+    textAlign: "center",
+    width: "100%",
   },
   hubEntry: {
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
-    textTransform: "capitalize",
+    textTransform: "uppercase",
+    fontSize: 10,
+    color: colors.BLUE(1),
+    backgroundColor: "#edeefe",
+    borderRadius: 3,
+    cursor: "pointer",
+    border: "1px solid #FFF",
+    fontWeight: "bold",
+    letterSpacing: 1,
+    padding: "3px 10px 3px 10px",
+    margin: "0px 5px 10px 0px",
     ":hover": {
-      color: colors.BLUE(1),
+      borderColor: colors.BLUE(1),
     },
   },
   hubsList: {
     opacity: 0,
+    width: "90%",
+    boxSizing: "border-box",
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+    backgroundColor: "#FCFCFC",
+    border: "1px solid rgb(237, 237, 237)",
+    padding: "20px 0px 5px 10px",
+    cursor: "pointer",
   },
   reveal: {
     opacity: 1,
@@ -146,6 +194,10 @@ const styles = StyleSheet.create({
   },
   space: {
     height: 15,
+  },
+  subscribedIcon: {
+    marginLeft: 3,
+    color: colors.DARK_YELLOW(),
   },
 });
 
