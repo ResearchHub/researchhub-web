@@ -16,11 +16,13 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import LiveFeed from "./LiveFeed";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
+import { HubActions } from "~/redux/hub";
 
 // Config
 import API from "~/config/api";
@@ -100,6 +102,7 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     this.fetchPapers({ hub: this.props.hub });
+    this.getLiveFeed();
     this.setState({
       subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
     });
@@ -218,6 +221,22 @@ class HubPage extends React.Component {
       );
   };
 
+  getLiveFeed = () => {
+    let { hub } = this.props;
+    let hubId = 0;
+    if (hub) {
+      hubId = hub.id;
+    }
+    return fetch(API.GET_LIVE_FEED({ hubId }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        this.setState({
+          liveFeed: res.results,
+        });
+      });
+  };
+
   calculateScope = () => {
     let scope = {
       start: 0,
@@ -315,7 +334,7 @@ class HubPage extends React.Component {
   };
 
   subscribeToHub = () => {
-    let { hub, showMessage, setMessage } = this.props;
+    let { hub, allHubs, showMessage, setMessage, updateHub } = this.props;
     showMessage({ show: false });
     this.setState({ transition: true }, () => {
       let config = API.POST_CONFIG();
@@ -323,7 +342,8 @@ class HubPage extends React.Component {
         return fetch(API.HUB_UNSUBSCRIBE({ hubId: hub.id }), config)
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
-          .then(() => {
+          .then((res) => {
+            updateHub(allHubs, { ...res });
             setMessage("Unsubscribed!");
             showMessage({ show: true });
             this.setState({
@@ -335,7 +355,8 @@ class HubPage extends React.Component {
         return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
-          .then(() => {
+          .then((res) => {
+            updateHub(allHubs, { ...res });
             setMessage("Subscribed!");
             showMessage({ show: true });
             this.setState({
@@ -410,6 +431,7 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
+            {this.props.hub && <LiveFeed currentHub={this.props.hub} />}
             <HubsList exclude={this.props.home ? null : this.props.hub.name} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
@@ -511,6 +533,8 @@ class HubPage extends React.Component {
               )}
             </div>
             <div className={css(styles.mobileHubListContainer)}>
+              {this.props.hub && <LiveFeed currentHub={this.props.hub} />}
+
               <HubsList
                 exclude={this.props.home ? null : this.props.hub.name}
                 overrideStyle={styles.mobileList}
@@ -641,7 +665,7 @@ var styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   sidebar: {
-    width: "20%",
+    width: "22%",
     position: "relative",
     position: "sticky",
     top: 80,
@@ -694,7 +718,7 @@ var styles = StyleSheet.create({
    */
   mainFeed: {
     height: "100%",
-    width: "80%",
+    width: "85%",
     backgroundColor: "#FCFCFC",
     borderLeft: "1px solid #ededed",
     backgroundColor: "#FFF",
@@ -851,6 +875,7 @@ var styles = StyleSheet.create({
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 768px)": {
       display: "flex",
+      flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
       width: "100%",
@@ -866,7 +891,7 @@ var styles = StyleSheet.create({
     objectFit: "contain",
     marginTop: 40,
     "@media only screen and (max-width: 415px)": {
-      width: "85%",
+      width: "70%",
     },
   },
   emptyPlaceholderText: {
@@ -929,6 +954,7 @@ const mapStateToProps = (state) => ({
   modals: state.modals,
   auth: state.auth,
   isLoggedIn: state.auth.isLoggedIn,
+  allHubs: state.hubs.hubs,
 });
 
 const mapDispatchToProps = {
@@ -938,6 +964,7 @@ const mapDispatchToProps = {
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
+  updateHub: HubActions.updateHub,
 };
 
 export default connect(
