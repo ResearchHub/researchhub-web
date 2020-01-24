@@ -163,6 +163,7 @@ class DragNDrop extends React.Component {
             {this.state.searchSuggestions.map((paper, i) => {
               return (
                 <PaperEntry
+                  data={paper}
                   key={`searchSuggestion-${i}-${paper.id}`}
                   title={paper.title}
                   paperId={paper.id}
