@@ -33,6 +33,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "../../config/utils/options";
 import discussionScaffold from "./discussionScaffold.json";
 import FormTextArea from "../Form/FormTextArea";
+import { parseTwoDigitYear } from "moment";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -101,20 +102,41 @@ class PaperUploadInfo extends React.Component {
       this.setState({ editMode: true });
       this.fetchAndPrefillPaperInfo(paperId);
     } else {
-      let form = { ...this.state.form };
-      form.title = paperTitle;
-      this.setState({ form });
-      messageActions.showMessage({ show: false });
+      this.prefillPaperInfo();
     }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.paperTitle !== this.props.paperTitle) {
-      let form = { ...this.state.form };
-      form.title = this.props.paperTitle;
-      this.setState({ form });
+      this.prefillPaperInfo();
+    }
+    if (
+      Object.keys(prevProps.paper.uploadedPaper).length < 1 &&
+      Object.keys(this.props.paper.uploadedPaper).length > 0
+    ) {
+      this.prefillPaperInfo();
     }
   }
+
+  prefillPaperInfo = () => {
+    let { uploadedPaper } = this.props.paper;
+    let form = { ...this.state.form };
+    let { DOI, url, URL, title, abstract, issued } = uploadedPaper;
+
+    form.title = this.props.paperTitle ? this.props.paperTitle : title && title;
+    form.tagline = abstract && abstract.slice(0, 255);
+    form.doi = DOI && DOI;
+    form.url = url && url;
+    if (issued) {
+      let date = issued["date-parts"][0];
+      form.published.year = this.handleFormYear(date);
+      form.published.month = this.handleFormMonth(date);
+      form.published.day = this.handleFormDay(date);
+    }
+    this.setState({ form: form }, () => {
+      this.props.messageActions.showMessage({ show: false });
+    });
+  };
 
   fetchAndPrefillPaperInfo = (paperId) => {
     fetch(API.PAPER({ paperId }), API.GET_CONFIG())
@@ -162,9 +184,15 @@ class PaperUploadInfo extends React.Component {
             value: published_date[0],
             label: published_date[0],
           };
-          form.published.month = Options.months
-            .filter((month) => month.value === published_date[1])
-            .pop();
+
+          if (published_date.length > 1) {
+            form.published.month = Options.months
+              .filter((month) => month.value === published_date[1])
+              .pop();
+          } else {
+            form.published.month = Options.months[0];
+          }
+
           if (published_date.length > 2) {
             form.published.day = {
               value: published_date[2],
@@ -185,6 +213,24 @@ class PaperUploadInfo extends React.Component {
           300
         );
       });
+  };
+
+  handleFormYear = (date) => {
+    return date[0];
+  };
+  handleFormMonth = (date) => {
+    if (date.length > 1) {
+      return date[1];
+    } else {
+      return "01";
+    }
+  };
+  handleFormDay = (date) => {
+    if (date.length > 2) {
+      return date[2];
+    } else {
+      return "01";
+    }
   };
 
   componentWillUnMount() {
@@ -242,7 +288,11 @@ class PaperUploadInfo extends React.Component {
     let error = { ...this.state.error };
     let keys = id.split(".");
     if (keys.length < 2) {
-      form[keys[0]] = value;
+      if (keys[0] === "tagline") {
+        form[keys[0]] = value.slice(0, 255);
+      } else {
+        form[keys[0]] = value;
+      }
     } else {
       form[keys[0]][keys[1]] = value;
       keys[0] === "published" ? (error[keys[1]] = false) : null; // removes red border on select fields
@@ -361,11 +411,13 @@ class PaperUploadInfo extends React.Component {
     }, 400);
   };
 
-  uploadUrl = (url) => {
+  uploadUrl = (urlData) => {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
     this.setState({ uploadingPaper: true }, () => {
-      paperActions.uploadPaperToState(url);
+      let metaData = { ...urlData.csl_item };
+      metaData.name = metaData.title;
+      paperActions.uploadPaperToState(metaData);
       error.dnd = false;
       this.setState({
         uploadingPaper: false,
@@ -482,7 +534,11 @@ class PaperUploadInfo extends React.Component {
   };
 
   getWindowWidth = () => {
-    return window.innerWidth < 665;
+    return window && window.innerWidth < 665;
+  };
+
+  renderCharCount = () => {
+    return this.state.form.tagline ? this.state.form.tagline.length : 0;
   };
 
   renderContent = () => {
@@ -498,7 +554,7 @@ class PaperUploadInfo extends React.Component {
       suggestedAuthors,
       editMode,
     } = this.state;
-    let mobile = this.getWindowWidth();
+    // let mobile = this.getWindowWidth();
 
     switch (activeStep) {
       case 1:
@@ -514,7 +570,6 @@ class PaperUploadInfo extends React.Component {
                     <span className={css(styles.asterick)}>*</span>
                   </div>
                   <DragNDrop
-                    pasteUrl={true}
                     handleDrop={this.uploadPaper}
                     handleUrl={this.uploadUrl}
                     loading={uploadingPaper}
@@ -527,6 +582,10 @@ class PaperUploadInfo extends React.Component {
                     url={
                       Object.keys(this.props.paper.uploadedPaper).length > 0 &&
                       !this.props.paper.uploadedPaper.size
+                    }
+                    hideSuggestions={true}
+                    openUploadPaperModal={() =>
+                      this.props.modalActions.openUploadPaperModal(true)
                     }
                   />
                 </div>
@@ -706,6 +765,9 @@ class PaperUploadInfo extends React.Component {
                   id={"tagline"}
                   onChange={this.handleInputChange}
                 />
+                <div className={css(styles.taglineCounter)}>
+                  {this.renderCharCount()} / 255
+                </div>
               </span>
             </div>
           </span>
@@ -877,7 +939,6 @@ class PaperUploadInfo extends React.Component {
       pass = false;
       error.hubs = true;
     }
-
     if (published.year && !published.month) {
       pass = false;
       error.month = true;
@@ -938,31 +999,23 @@ class PaperUploadInfo extends React.Component {
     let { paper, paperActions, messageActions, authActions } = this.props;
     // send form object to the backend
     if (!this.state.editMode) {
-      body.file = paper.uploadedPaper;
-      let paperId = paper.postedPaper && paper.postedPaper.id;
-
-      if (request === "POST") {
-        paperActions.postPaper(body).then((resp) => {
-          if (paper.success) {
-            messageActions.setMessage(
-              `Paper successfully ${
-                request === "POST" ? "uploaded" : "updated"
-              }`
-            );
-            authActions.setUploadingPaper(true);
-            messageActions.showMessage({ show: true });
-            let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-            authActions.checkUserFirstTime(firstTime);
-
-            // What is this getuser doing here?
-            authActions.getUser();
-            this.navigateToSummary();
-          } else {
-            messageActions.setMessage("Hmm something went wrong");
-            messageActions.showMessage({ show: true, error: true });
-            setTimeout(() => messageActions.showMessage({ show: false }), 400);
-          }
-        });
+      body.file =
+        !this.props.paper.uploadedPaper.URL && this.props.paper.uploadedPaper;
+      let paperId =
+        this.props.paper.postedPaper && this.props.paper.postedPaper.id;
+      request === "POST"
+        ? await this.props.paperActions.postPaper(body)
+        : await this.props.paperActions.patchPaper(paperId, body);
+      if (this.props.paper.success) {
+        this.props.messageActions.setMessage(
+          `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
+        );
+        this.props.authActions.setUploadingPaper(true);
+        this.props.messageActions.showMessage({ show: true });
+        let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
+        this.props.authActions.checkUserFirstTime(firstTime);
+        this.props.authActions.getUser();
+        this.navigateToSummary();
       } else {
         paperActions.patchPaper(paperId, body).then((resp) => {
           if (paper.success) {
@@ -1583,8 +1636,15 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   tagline: {
+    position: "relative",
     paddingTop: 20,
     marginBottom: 40,
+  },
+  taglineCounter: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    fontSize: 12,
   },
   sidenote: {
     fontSize: 14,
