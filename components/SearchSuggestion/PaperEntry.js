@@ -1,10 +1,12 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
+import icons from "../../config/themes/icons";
 import moment from "moment";
 
 const PaperEntry = ({
+  data,
   index,
   paperId,
   title,
@@ -92,9 +94,17 @@ const PaperEntry = ({
           )}
           onClick={closeModal && closeModal}
         >
-          <div className={css(styles.title, styles.text)}>{title && title}</div>
+          <div className={css(styles.title, styles.text)}>
+            {title && (
+              <Fragment>
+                <span className={css(styles.icon)}>{icons.file}</span>
+                {title}
+              </Fragment>
+            )}
+          </div>
           <div className={css(styles.date, styles.text)}>
-            Published: {date && moment(date).format("DD MMMM, YYYY")}
+            {date &&
+              `Published: ${date && moment(date).format("DD MMMM, YYYY")}`}
           </div>
         </div>
       </Link>
@@ -105,7 +115,7 @@ const PaperEntry = ({
 const styles = StyleSheet.create({
   entry: {
     width: "calc(100% - 35px)",
-    minHeight: 58,
+    // minHeight: 58,
     padding: 16,
     display: "flex",
     flexDirection: "column",
@@ -132,10 +142,11 @@ const styles = StyleSheet.create({
   paper: {
     paddingTop: 10,
     paddingBottom: 10,
+    borderRadius: 5,
   },
   title: {
     fontWeight: 500,
-    fontSize: 18,
+    fontSize: 16,
     color: "#241F3A",
     "@media only screen and (max-width: 378px)": {
       fontSize: 15,
@@ -148,6 +159,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 14,
     color: "#8c8b9a",
+    paddingTop: 10,
     "@media only screen and (max-width: 378px)": {
       fontSize: 12,
     },
@@ -231,6 +243,10 @@ const styles = StyleSheet.create({
     ":hover": {
       border: `1px solid ${colors.BLUE(1)}`,
     },
+  },
+  icon: {
+    color: colors.GREEN(),
+    paddingRight: 5,
   },
 });
 
