@@ -25,6 +25,7 @@ class LiveFeed extends React.Component {
       newNotification: true,
       loading: false,
       hideFeed: false,
+      notifications: [],
     };
   }
 
@@ -33,7 +34,7 @@ class LiveFeed extends React.Component {
       let { livefeed, currentHub, home } = this.props;
       let hubId = home ? 0 : currentHub.id;
       if (!livefeed.hubs[hubId]) {
-        this.fetchLiveFeed(hubId);
+        hubId && this.fetchLiveFeed(hubId);
       }
       this.setLivefeedInterval(this, hubId);
     }
@@ -41,7 +42,7 @@ class LiveFeed extends React.Component {
 
   setLivefeedInterval = (master, hubId) => {
     let intervalPing = setInterval(() => {
-      let { getLivefeed, livefeed, currentHub } = master.props;
+      let { getLivefeed, livefeed } = master.props;
       getLivefeed(livefeed.hubs, hubId);
     }, DEFAULT_PING_REFRESH);
     this.setState({
@@ -56,9 +57,9 @@ class LiveFeed extends React.Component {
         this.transitionWrapper(() => {
           let { livefeed, currentHub } = this.props;
           if (!livefeed.hubs[currentHub.id]) {
-            this.fetchLiveFeed();
+            this.fetchLiveFeed(currentHub.id);
           }
-          this.setLivefeedInterval(this);
+          this.setLivefeedInterval(this, this.props.currentHub.id);
         });
       }
     }
@@ -70,7 +71,7 @@ class LiveFeed extends React.Component {
 
   fetchLiveFeed = (hubId) => {
     this.setState({ loading: true }, async () => {
-      let { getLivefeed, livefeed, currentHub } = this.props;
+      let { getLivefeed, livefeed } = this.props;
       await getLivefeed(livefeed.hubs, hubId);
       this.setState({ loading: false });
     });
@@ -184,7 +185,6 @@ const styles = StyleSheet.create({
     width: "100%",
     maxHeight: 290,
     overflowY: "scroll",
-    // backgroundColor: "#FCFCFC",
     background: "url(/static/background/background-modal.png) #FCFCFC",
     backgroundSize: "cover",
     paddingTop: 10,
