@@ -431,7 +431,10 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
-            {this.props.hub && <LiveFeed currentHub={this.props.hub} />}
+            <LiveFeed
+              currentHub={this.props.hub && this.props.hub}
+              home={!this.props.hub}
+            />
             <HubsList exclude={this.props.home ? null : this.props.hub.name} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>

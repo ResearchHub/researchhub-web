@@ -13,12 +13,15 @@ export const NotificationConstants = {
 
 export const NotificationActions = {
   getLivefeed: (prevState, hubId) => {
+    console.log("hubId", hubId);
+    console.log("path", API.GET_LIVE_FEED({ hubId }));
     return (dispatch) => {
       dispatch({ type: NotificationConstants.GET_LIVEFEED });
       return fetch(API.GET_LIVE_FEED({ hubId }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          console.log("res", res);
           // Prevent unnecessary state change and re-rendering
           if (prevState[hubId]) {
             if (prevState[hubId].length === res.results.length) {
