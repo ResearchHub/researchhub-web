@@ -115,6 +115,8 @@ class LiveFeed extends React.Component {
   };
 
   render() {
+    let { livefeed, currentHub, home } = this.props;
+    let hubId = home ? 0 : currentHub.id;
     return (
       <Fragment>
         <div
@@ -122,7 +124,10 @@ class LiveFeed extends React.Component {
           // onClick={this.toggleFeedView}
         >
           {"Activity on Hub"}
-          <div className={css(styles.refreshIcon)} onClick={this.fetchLiveFeed}>
+          <div
+            className={css(styles.refreshIcon)}
+            onClick={() => this.fetchLiveFeed(hubId)}
+          >
             <i className="fad fa-sync" />
           </div>
         </div>
