@@ -396,6 +396,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
+    width: 525,
     height: 172,
     overflow: "scroll",
     marginBottom: 15,
