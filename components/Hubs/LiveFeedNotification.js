@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     paddingRight: 4,
     textDecoration: "unset",
-    wordBreak: "break-all",
+    wordBreak: "break-word",
     ":hover": {
       textDecoration: "underline",
     },
