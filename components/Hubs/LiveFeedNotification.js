@@ -35,9 +35,35 @@ class LiveFeedNotification extends React.Component {
     const timestamp = this.formatTimestamp(created_date);
     const username = this.formatUsername(created_by);
     const authorId = created_by.author_profile.id;
+    let paperTip = paper && paper.title;
+
     switch (notificationType) {
+      case "summary":
+        paperTip = notification.paper_title;
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
+            >
+              <a className={css(styles.username)}>{username}</a>
+            </Link>{" "}
+            edited a summary for{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paper}/summary`}
+            >
+              <a className={css(styles.paper)} data-tip={paperTip}>
+                {paper && this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
       case "vote_paper":
-        var paperTip = paper && paper.title;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -63,7 +89,6 @@ class LiveFeedNotification extends React.Component {
         );
       case "vote_comment":
         var { thread } = notification.comment;
-        var paperTip = paper && paper.title;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -97,7 +122,6 @@ class LiveFeedNotification extends React.Component {
         );
       case "vote_reply":
         var { thread } = notification;
-        var paperTip = paper && paper.title;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -131,7 +155,6 @@ class LiveFeedNotification extends React.Component {
         );
       case "thread":
         var { first_name, last_name } = notification.created_by;
-        var paperTip = paper && paper.title;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -288,7 +311,11 @@ class LiveFeedNotification extends React.Component {
     } else {
       return (
         <div className={css(styles.column, styles.notification)}>
-          <ReactTooltip place={"bottom"} delayShow={400} />
+          <ReactTooltip
+            place={"bottom"}
+            delayShow={400}
+            className={css(styles.tooltip)}
+          />
           <div className={css(styles.type)}>{this.renderIcon()}</div>
           <div className={css(styles.row, styles.container)}>
             <div className={css(styles.column, styles.left)}>
@@ -321,6 +348,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
+  },
+  tooltip: {
+    zIndex: 1000,
   },
   notification: {
     width: "80%",
