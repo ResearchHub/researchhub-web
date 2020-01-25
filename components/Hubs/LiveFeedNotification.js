@@ -211,7 +211,7 @@ class LiveFeedNotification extends React.Component {
             {"in "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              as={`/paper/${paperId}/discussion`}
             >
               <a className={css(styles.paper)} data-tip={threadTip}>
                 {thread.title && this.truncatePaperTitle(thread.title)}
@@ -249,7 +249,7 @@ class LiveFeedNotification extends React.Component {
             {"in "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/discussion/${thread.id}`}
+              as={`/paper/${paperId}/discussion`}
             >
               <a className={css(styles.paper)} data-tip={threadTip}>
                 {thread.title && this.truncatePaperTitle(thread.title)}
@@ -314,7 +314,7 @@ class LiveFeedNotification extends React.Component {
           <ReactTooltip
             place={"bottom"}
             delayShow={400}
-            className={css(styles.tooltip)}
+            className={css(styles.tool)}
           />
           <div className={css(styles.type)}>{this.renderIcon()}</div>
           <div className={css(styles.row, styles.container)}>
@@ -438,9 +438,10 @@ const styles = StyleSheet.create({
     top: 5,
     right: 10,
   },
-  tooltip: {
-    opacity: 0.2,
-    width: 500,
+  tool: {
+    zIndex: 999,
+    opacity: 0.4,
+    maxWidth: 250,
   },
 });
 
