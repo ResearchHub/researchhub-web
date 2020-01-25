@@ -14,7 +14,7 @@ import { Helpers } from "@quantfive/js-web-config";
 // Redux
 import { NotificationActions } from "~/redux/notification";
 
-const DEFAULT_PING_REFRESH = 10000; // 1 minute
+const DEFAULT_PING_REFRESH = 60000; // 1 minute
 const DEFAULT_LOADING = 400; //
 
 class LiveFeed extends React.Component {
