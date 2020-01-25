@@ -304,7 +304,7 @@ const routes = (BASE_URL) => {
     GET_LIVE_FEED: ({ hubId, page = 1 }) => {
       let url = BASE_URL + `hub/`;
 
-      if (hubId) {
+      if (hubId !== undefined && hubId !== null) {
         url += `${hubId}/latest_actions/?page=${page}`;
       }
 

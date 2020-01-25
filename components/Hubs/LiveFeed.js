@@ -30,18 +30,19 @@ class LiveFeed extends React.Component {
 
   componentDidMount() {
     if (process.browser) {
-      let { livefeed, currentHub } = this.props;
-      if (!livefeed.hubs[currentHub.id]) {
-        this.fetchLiveFeed();
+      let { livefeed, currentHub, home } = this.props;
+      let hubId = home ? 0 : currentHub.id;
+      if (!livefeed.hubs[hubId]) {
+        this.fetchLiveFeed(hubId);
       }
-      this.setLivefeedInterval(this);
+      this.setLivefeedInterval(this, hubId);
     }
   }
 
-  setLivefeedInterval = (master) => {
+  setLivefeedInterval = (master, hubId) => {
     let intervalPing = setInterval(() => {
       let { getLivefeed, livefeed, currentHub } = master.props;
-      getLivefeed(livefeed.hubs, currentHub.id);
+      getLivefeed(livefeed.hubs, hubId);
     }, DEFAULT_PING_REFRESH);
     this.setState({
       intervalPing: intervalPing,
@@ -67,10 +68,10 @@ class LiveFeed extends React.Component {
     clearInterval(this.state.intervalPing);
   }
 
-  fetchLiveFeed = () => {
+  fetchLiveFeed = (hubId) => {
     this.setState({ loading: true }, async () => {
       let { getLivefeed, livefeed, currentHub } = this.props;
-      await getLivefeed(livefeed.hubs, currentHub.id);
+      await getLivefeed(livefeed.hubs, hubId);
       this.setState({ loading: false });
     });
   };
@@ -85,8 +86,8 @@ class LiveFeed extends React.Component {
   };
 
   renderNotifications = () => {
-    let { livefeed, currentHub } = this.props;
-    let currentHubId = currentHub.id;
+    let { livefeed, currentHub, home } = this.props;
+    let currentHubId = home ? 0 : currentHub.id;
     let currentHubNotifications = livefeed && livefeed.hubs[currentHubId];
 
     if (currentHubNotifications) {
@@ -101,7 +102,7 @@ class LiveFeed extends React.Component {
           return (
             <LiveFeedNotification
               notification={notification}
-              key={`liveFeedNotif-${currentHub.id}-${i}`}
+              key={`liveFeedNotif-${currentHubId}-${i}`}
             />
           );
         });
