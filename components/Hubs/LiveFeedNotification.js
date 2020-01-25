@@ -163,10 +163,10 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "comment":
-        var { thread, parent, plain_text } = notification;
+        var { thread, plain_text } = notification;
         var threadTip = thread.title && thread.title;
         var commentTip = plain_text && this.truncatePaperTitle(plain_text);
-        var paperId = parent;
+        var paperId = thread.paper;
 
         return (
           <div className={css(styles.message)}>
@@ -201,10 +201,10 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "reply":
-        var { thread, parent, plain_text } = notification;
+        var { thread, text } = notification;
         var threadTip = thread.title && thread.title;
-        var replyTip = plain_text && this.truncatePaperTitle(plain_text);
-        var paperId = parent;
+        var replyTip = text && this.truncatePaperTitle(text);
+        var paperId = thread.paper;
 
         return (
           <div className={css(styles.message)}>
