@@ -188,7 +188,7 @@ class LiveFeedNotification extends React.Component {
             {"in "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/discussion/${thread.id}`}
+              as={`/paper/${paperId}/summary`}
             >
               <a className={css(styles.paper)} data-tip={threadTip}>
                 {thread.title && this.truncatePaperTitle(thread.title)}
