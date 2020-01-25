@@ -130,7 +130,7 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "thread":
-        let { first_name, last_name } = notification.created_by;
+        var { first_name, last_name } = notification.created_by;
         var paperTip = paper && paper.title;
         return (
           <div className={css(styles.message)}>
@@ -154,6 +154,81 @@ class LiveFeedNotification extends React.Component {
             >
               <a className={css(styles.paper)} data-tip={paperTip}>
                 {paper.title && this.truncatePaperTitle(paper.title)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "comment":
+        var { thread, plain_text } = notification;
+        var threadTip = thread.title && thread.title;
+        var commentTip = plain_text;
+        var paperId = notification.paper;
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
+            >
+              <a className={css(styles.username)}>{username}</a>
+            </Link>{" "}
+            left a{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/discussion/${thread.id}`}
+            >
+              <a className={css(styles.link)} data-tip={commentTip}>
+                comment
+              </a>
+            </Link>
+            {"in "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paperId}/discussion/${thread.id}`}
+            >
+              <a className={css(styles.paper)} data-tip={threadTip}>
+                {thread.title && this.truncatePaperTitle(thread.title)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "reply":
+        var { thread, plain_text } = notification;
+        var threadTip = thread.title && thread.title;
+        var replyTip = plain_text;
+        var paperId = notification.paper;
+
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
+            >
+              <a className={css(styles.username)}>{username}</a>
+            </Link>{" "}
+            left a{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/discussion/${thread.id}`}
+            >
+              <a className={css(styles.link)} data-tip={replyTip}>
+                reply
+              </a>
+            </Link>
+            {"in "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paperId}/discussion/${thread.id}`}
+            >
+              <a className={css(styles.paper)} data-tip={threadTip}>
+                {thread.title && this.truncatePaperTitle(thread.title)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -212,10 +287,7 @@ class LiveFeedNotification extends React.Component {
     } else {
       return (
         <div className={css(styles.column, styles.notification)}>
-          {/* <ReactTooltip 
-            place={'bottom'}
-            delayShow={400}
-          /> */}
+          <ReactTooltip place={"bottom"} delayShow={400} />
           <div className={css(styles.type)}>{this.renderIcon()}</div>
           <div className={css(styles.row, styles.container)}>
             <div className={css(styles.column, styles.left)}>
