@@ -23,7 +23,7 @@ class LiveFeed extends React.Component {
     this.state = {
       intervalPing: null,
       newNotification: true,
-      loading: false,
+      loading: true,
       hideFeed: false,
       notifications: [],
     };
