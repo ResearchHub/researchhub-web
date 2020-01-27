@@ -34,7 +34,7 @@ class LiveFeed extends React.Component {
       let { livefeed, currentHub, home } = this.props;
       let hubId = home ? 0 : currentHub.id;
       if (!livefeed.hubs[hubId]) {
-        hubId && this.fetchLiveFeed(hubId);
+        this.fetchLiveFeed(hubId);
       }
       this.setLivefeedInterval(this, hubId);
     }
