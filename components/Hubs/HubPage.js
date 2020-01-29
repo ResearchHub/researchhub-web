@@ -6,6 +6,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Link from "next/link";
 import ReactTooltip from "react-tooltip";
+import Ripples from "react-ripples";
 
 // Component
 import HubsList from "~/components/Hubs/HubsList";
@@ -294,40 +295,48 @@ class HubPage extends React.Component {
       return (
         <span
           className={css(styles.subscribe, styles.subscribed)}
-          data-tip="Unsubscribe to Hub"
-          onClick={this.subscribeToHub}
+          // data-tip="Unsubscribe to Hub"
         >
-          <ReactTooltip />
-          {!this.state.transition ? (
-            <i className="fas fa-check-circle" />
-          ) : (
-            <Loader
-              key={"subscribeLoader"}
-              loading={true}
-              containerStyle={styles.loader}
-              size={20}
-            />
-          )}
+          {/* <ReactTooltip /> */}
+          <Ripples onClick={this.subscribeToHub}>
+            <span>
+              {!this.state.transition ? (
+                "Subscribed"
+              ) : (
+                <Loader
+                  key={"subscribeLoader"}
+                  loading={true}
+                  containerStyle={styles.loader}
+                  size={10}
+                  color={"#FFF"}
+                />
+              )}
+            </span>
+          </Ripples>
         </span>
       );
     } else {
       return (
         <span
           className={css(styles.subscribe)}
-          data-tip="Subscribe to Hub"
-          onClick={this.subscribeToHub}
+          // data-tip="Subscribe to Hub"
         >
-          <ReactTooltip />
-          {!this.state.transition ? (
-            <i className="fal fa-plus-circle" />
-          ) : (
-            <Loader
-              key={"subscribeLoader"}
-              loading={true}
-              containerStyle={styles.loader}
-              size={20}
-            />
-          )}
+          {/* <ReactTooltip /> */}
+          <Ripples onClick={this.subscribeToHub}>
+            <span>
+              {!this.state.transition ? (
+                "Subscribe"
+              ) : (
+                <Loader
+                  key={"subscribeLoader"}
+                  loading={true}
+                  containerStyle={styles.loader}
+                  size={10}
+                  color={"#FFF"}
+                />
+              )}
+            </span>
+          </Ripples>
         </span>
       );
     }
@@ -919,25 +928,37 @@ var styles = StyleSheet.create({
     },
   },
   subscribe: {
+    fontSize: 11,
+    letterSpacing: 0.4,
+    fontWeight: 400,
+    textTransform: "uppercase",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    color: colors.BLUE(),
-    opacity: 0.7,
-    height: "100%",
-    width: 23,
-    minWidth: 23,
-    maxWidth: 23,
+    backgroundColor: colors.BLUE(0.5),
+    color: "#FFF",
+    padding: 5,
+    border: "1px solid #FFF",
+    borderRadius: 3,
     ":hover": {
-      opacity: 1,
+      border: `1px solid ${colors.BLUE(1)}`,
+    },
+    "@media only screen and (max-width: 768px)": {
+      fontSize: 8,
     },
   },
   subscribed: {
-    opacity: 1,
+    border: `1px solid ${colors.BLUE(1)}`,
+    backgroundColor: colors.BLUE(1),
   },
   loader: {
     opacity: 1,
+    height: 15,
+    width: 55,
+    "@media only screen and (max-width: 768px)": {
+      width: 48,
+    },
   },
   noResultsLine: {
     textAlign: "center",
