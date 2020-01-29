@@ -293,11 +293,7 @@ class HubPage extends React.Component {
   renderSubscribeButton = () => {
     if (this.state.subscribe) {
       return (
-        <span
-          className={css(styles.subscribe, styles.subscribed)}
-          // data-tip="Unsubscribe to Hub"
-        >
-          {/* <ReactTooltip /> */}
+        <span className={css(styles.subscribe, styles.subscribed)}>
           <Ripples onClick={this.subscribeToHub}>
             <span>
               {!this.state.transition ? (
@@ -317,11 +313,7 @@ class HubPage extends React.Component {
       );
     } else {
       return (
-        <span
-          className={css(styles.subscribe)}
-          // data-tip="Subscribe to Hub"
-        >
-          {/* <ReactTooltip /> */}
+        <span className={css(styles.subscribe)}>
           <Ripples onClick={this.subscribeToHub}>
             <span>
               {!this.state.transition ? (
@@ -461,7 +453,12 @@ class HubPage extends React.Component {
                   options={filterOptions}
                   value={this.state.filterBy}
                   containerStyle={styles.dropDown}
-                  inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
+                  inputStyle={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    height: "100%",
+                    backgroundColor: "#FFF",
+                  }}
                   onChange={(id, option) => this.onFilterSelect(option, id)}
                   isSearchable={false}
                 />
@@ -470,7 +467,12 @@ class HubPage extends React.Component {
                   options={scopeOptions}
                   value={this.state.scope}
                   containerStyle={styles.dropDown}
-                  inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
+                  inputStyle={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    height: "100%",
+                    backgroundColor: "#FFF",
+                  }}
                   onChange={(id, option) => this.onFilterSelect(option, id)}
                   isSearchable={false}
                 />
@@ -794,7 +796,7 @@ var styles = StyleSheet.create({
     },
   },
   dropDown: {
-    width: 180,
+    width: 150,
     height: 45,
     "@media only screen and (max-width: 1343px)": {
       // width: 220,
@@ -819,7 +821,7 @@ var styles = StyleSheet.create({
     },
   },
   inputs: {
-    width: 380,
+    width: 320,
     "@media only screen and (max-width: 1343px)": {
       // width: 460,
     },
