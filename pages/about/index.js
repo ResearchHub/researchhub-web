@@ -1,5 +1,6 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
+import { useTransition, useSpring, animated } from "react-spring";
 
 import Collapsible from "~/components/Form/Collapsible";
 
@@ -7,9 +8,10 @@ import colors from "~/config/themes/colors";
 
 const points = [
   {
+    key: 0,
     title: "Accessible to everyone",
     text:
-      "Scientific journals are prohibitively expensive. We hope to change this over time by providing a free place for researchers to publish, review, and collaborate.",
+      "The scientific record is too important to be hidden behind paywalls and in ivory towers. \n ResearchHub is accessible to everybody, everywhere, with no content residing behind paywalls \n and no costs to participate. Summaries are written in plain English to improve accessibility.",
     icon: (
       <i
         className="fad fa-globe-americas"
@@ -19,9 +21,10 @@ const points = [
     ),
   },
   {
-    title: "Reproducible",
+    key: 1,
+    title: "Collaborative",
     text:
-      "We ask the community to rate papers on reproducibility, since this is one of the biggest issues in academic research today.",
+      "Academic research is too siloed today. ResearchHub encourages academics and \n non- academics alike to interact in a public and collaborative manner. An incentive for such behavior is provided in the form of ResearchCoin.",
     icon: (
       <i
         className="fad fa-star-half"
@@ -31,9 +34,10 @@ const points = [
     ),
   },
   {
+    key: 2,
     title: "Prioritized",
     text:
-      "There are several million academic papers published each year, but only a handful of them are probably relevant to you. We try to help breakthrough papers get greater visibility, with a new type of crowdsourced peer review.",
+      "There are over two million academic papers published each year, and the number continues to grow. By crowd-sourcing curation and prioritization of articles, ResearchHub enables the scientific community to provide visiblity to research it deems impactful.",
     icon: (
       <i
         className="fad fa-sort-amount-up-alt"
@@ -42,64 +46,130 @@ const points = [
       />
     ),
   },
-  {
-    title: "Easy to understand",
-    text:
-      "We provide bite sized plain English summaries, and bulleted take-aways, so you can more easily skim papers before deciding whether to read a whole paper.",
-    icon: (
-      <i
-        className="fad fa-head-side-brain"
-        draggable={false}
-        style={{ color: "#ed6f85" }}
-      />
-    ),
-  },
-  {
-    title: "Commercializable",
-    text:
-      "We would like to make it easier over time for research to be licensed, so that it can lead to commercial applications, with royalties going to researchers.",
-    icon: (
-      <i
-        className="fad fa-file-signature"
-        draggable={false}
-        style={{ color: colors.NAVY(1) }}
-      />
-    ),
-  },
-  {
-    title: "Collaborative",
-    text:
-      "Research is too siloed today. We would like to help labs and teams collaborate in the future.",
-    icon: (
-      <i
-        className="fad fa-users"
-        draggable={false}
-        style={{ color: colors.DARK_YELLOW(1) }}
-      />
-    ),
-  },
-  {
-    title: "Efficient",
-    text:
-      "It can take 3-5 years today to go through the process of applying for funding, completing the research, submitting a paper to journals, having it reviewed, and finally getting it published. We believe research could be completed at least one order of magnitude more efficiently.",
-    icon: (
-      <i
-        class="fad fa-angle-double-right"
-        draggable={false}
-        style={{ color: "#4c986e" }}
-      />
-    ),
-  },
+  // {
+  //   title: "Easy to understand",
+  //   text:
+  //     "We provide bite sized plain English summaries, and bulleted take-aways, so you can more easily skim papers before deciding whether to read a whole paper.",
+  //   icon: (
+  //     <i
+  //       className="fad fa-head-side-brain"
+  //       draggable={false}
+  //       style={{ color: "#ed6f85" }}
+  //     />
+  //   ),
+  // },
+  // {
+  //   title: "Commercializable",
+  //   text:
+  //     "We would like to make it easier over time for research to be licensed, so that it can lead to commercial applications, with royalties going to researchers.",
+  //   icon: (
+  //     <i
+  //       className="fad fa-file-signature"
+  //       draggable={false}
+  //       style={{ color: colors.NAVY(1) }}
+  //     />
+  //   ),
+  // },
+  // {
+  //   title: "Collaborative",
+  //   text:
+  //     "Research is too siloed today. We would like to help labs and teams collaborate in the future.",
+  //   icon: (
+  //     <i
+  //       className="fad fa-users"
+  //       draggable={false}
+  //       style={{ color: colors.DARK_YELLOW(1) }}
+  //     />
+  //   ),
+  // },
+  // {
+  //   title: "Efficient",
+  //   text:
+  //     "It can take 3-5 years today to go through the process of applying for funding, completing the research, submitting a paper to journals, having it reviewed, and finally getting it published. We believe research could be completed at least one order of magnitude more efficiently.",
+  //   icon: (
+  //     <i
+  //       class="fad fa-angle-double-right"
+  //       draggable={false}
+  //       style={{ color: "#4c986e" }}
+  //     />
+  //   ),
+  // },
 ];
+
+const PointCards = (props) => {
+  const [items, setItems] = useState(props.points);
+  const transitions = useTransition(items, (items) => items.key, {
+    trail: 600,
+    from: {
+      transform: "translate3d(0, -40px, 0)",
+      opacity: 0,
+    },
+    enter: {
+      transform: "translate3d(0, 0px, 0)",
+      opacity: 1,
+    },
+  });
+
+  return transitions.map(({ item, props, key }, index) => {
+    let { title, text, icon } = item;
+    return (
+      <animated.div key={key} style={props}>
+        <div className={css(styles.itemCard)} key={`item-${index}`}>
+          <div className={css(styles.itemIcon)}>
+            {typeof icon === "string" ? (
+              <img draggable={false} src={icon && icon} />
+            ) : (
+              icon
+            )}
+          </div>
+          <div className={css(styles.itemTitle)}>{title && title}</div>
+          <div className={css(styles.itemText)}>{text && text}</div>
+        </div>
+      </animated.div>
+    );
+  });
+};
+
+const ReactTransitionComponent = ({ children, state, trail }) => {
+  // a component that takes a props and arguments to make a resusable transition component
+  const [show, set] = useState(state);
+  const transitions = useTransition(show, null, {
+    from: {
+      transform: "translate3d(0, 40px, 0)",
+      opacity: 0,
+    },
+    enter: {
+      transform: "translate3d(0, 0px, 0)",
+      opacity: 1,
+    },
+    unique: true,
+  });
+
+  return transitions.map(({ item, key, props }) => (
+    <animated.div key={key} style={props}>
+      {children}
+    </animated.div>
+  ));
+};
 
 class Index extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      reveal: false,
+      revealText: false,
+    };
   }
 
   componentDidMount() {
     document.body.style.scrollSnapType = "y mandatory";
+    setTimeout(() => {
+      this.setState({ reveal: true }, () => {
+        setTimeout(() => {
+          this.setState({ revealText: true });
+        }, 200);
+      });
+    }, 200);
   }
 
   renderTextContainer = (
@@ -214,23 +284,30 @@ class Index extends React.Component {
   render() {
     return (
       <div className={css(styles.page)}>
-        <div className={css(styles.banner)}>
+        <div className={css(styles.banner, this.state.reveal && styles.reveal)}>
           <img
             draggable={false}
             src={"/static/background/background-about.jpg"}
             className={css(styles.bannerOverlay)}
           />
-          <div className={css(styles.column, styles.titleContainer)}>
-            <h1 className={css(styles.title)}>About Research Hub</h1>
-            <h3 className={css(styles.subtitle)}>
-              Our Mission is to Accelerate the Pace of Scientific Research.
-            </h3>
-          </div>
+          <ReactTransitionComponent>
+            <div className={css(styles.column, styles.titleContainer)}>
+              <h1 className={css(styles.title)}>About ResearchHub</h1>
+              <h3 className={css(styles.subtitle)}>
+                Our Mission is to Accelerate the Pace of Scientific Research.
+              </h3>
+            </div>
+          </ReactTransitionComponent>
         </div>
 
         <div className={css(styles.column, styles.fullWidth)}>
           <div className={css(styles.valuesContainer)}>
-            <div className={css(styles.pointsTitle)}>
+            <div
+              className={css(
+                styles.pointsTitle,
+                this.state.revealText && styles.reveal
+              )}
+            >
               We Believe Scientific Research Should Be:
             </div>
             <img
@@ -239,24 +316,20 @@ class Index extends React.Component {
               className={css(styles.bannerOverlay)}
             />
             <div className={css(styles.row, styles.pointCardList)}>
-              <div className={css(styles.frontSpace)} />
-              {points.map((point, i) => {
-                return this.renderItems(point, i);
-              })}
-              <div className={css(styles.endSpace)} />
+              <PointCards points={points} />
             </div>
           </div>
         </div>
         <div className={css(styles.infoContainer)}>
           {this.renderTextContainer(
             "A GitHub For Science",
-            `ResearchHub’s mission is to accelerate the pace of scientific research. Our goal is to make a modern mobile and web application where people can begin to collaborate on scientific research in a much more efficient way, similar to what GitHub has done for software engineering. ${"\n \n"}The first version of ResearchHub is mainly about uploading, summarizing, discussing, and prioritizing papers in each area. In future versions, we will continue to strive to accelerate science by hosting datasets and lab notebook software.`,
+            "ResearchHub's mission is to accelerate the pace of scientific research. Our goal is to make a modern mobile and web application where people can collaborate on scientific research in a more efficient way, similar to what GitHub has done for software engineering. \n \nResearchers are able to upload articles (preprint or postprint) in PDF form, summarize the findings of the work in an attached wiki, and discuss the findings in a completely open and accessible forum dedicated solely to the relevant article.",
             "/static/about/about-1.png",
             true
           )}
           {this.renderTextContainer(
             `"Hubs" as an Alternative to Journals`,
-            `We try to group papers by areas of research, which we call “hubs”. You can think of a hub like a journal that focuses on one area of research, or like tags on other websites. ${"\n"}${"\n"}Anyone can propose creating a new “hub” on ResearchHub, and if there is enough interest from the community, it will go live. We hope to see a wide variety of hubs created over time, in both mainstream and very niche areas of research.`,
+            `Within ResearchHub, papers are grouped in "Hubs" by area of research. Individual Hubs will essentially act as live journals within focused areas, within highly upvoted posts. (i.e the paper and its associated summary and discussion) moving to the top of each Hub.`,
             "/static/about/about-hubs.png",
             false,
             true
@@ -274,27 +347,20 @@ class Index extends React.Component {
                   A Community Powered by ResearchCoin
                 </h3>
                 <p className={css(styles.subtext, styles.wideText)}>
-                  To help bring this nascent community together, we’ve created
-                  something called ResearchCoin. ResearchCoin is a digital token
-                  that you can earn by contributing content to ResearchHub,
-                  whether this is a paper you find interesting, a plain English
-                  summary, or insightful discussion. We want to reward everyone
-                  who helps the ResearchHub community grow. {"\n \n"}Every time
-                  you “up vote” some content on the site, you are awarding one
-                  ResearchCoin to the creator of that content. In other words,
-                  one vote always equals one coin. Coins are awarded from the
-                  general pool of available coins that were minted. {"\n \n"}
-                  In addition to financial incentives, earning ResearchCoin is
-                  also the way you generate reputation in the community (your
-                  reputation is equal to your lifetime earnings of
-                  ResearchCoin). Having more reputation unlocks additional
-                  privileges in the community, such as the ability to moderate
-                  content. We also hope to use ResearchCoin to make grants in
-                  the future, and members with more reputation will be able to
-                  vote on which research projects get funded.{"\n \n"}
-                  ResearchHub is planning to be set up as a DAO on the Ethereum
-                  network, so all the governance and voting of the community can
-                  be done transparently. This work is still in progress.
+                  To help bring this nascent community together and incentivize
+                  contribution to the platform, a newly created ERC20 token,
+                  ResearchCoin (RHC), has been created. Users receive RHC for
+                  uploading new content to the platform, as well as for
+                  summarizing and discussion research. Rewards for contributions
+                  are proportionate to how valuable the community perceives the
+                  actions to be - as measured by upvotes.{"\n \n"}
+                  ResearchCoin is also linked to reputation on the
+                  platform--with reputation being mesaured as a user's lifetime
+                  earnings of ResearchCoin minus erosion due to downvotes.
+                  Reputation is linked to certain privileges in the forum, g as
+                  a mechanism for moderation within the community.{"\n \n"}
+                  Further details about ResearchCoin can also be found on the
+                  ResearchHub Notion page.
                 </p>
               </div>
             </Fragment>
@@ -525,12 +591,17 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
+    opacity: 0,
+    transition: "all ease-in-out 0.5s",
     "@media only screen and (max-width: 800px)": {
       height: 300,
     },
     "@media only screen and (max-width: 415px)": {
       height: 200,
     },
+  },
+  reveal: {
+    opacity: 1,
   },
   flipBanner: {
     transform: "scaleX(-1)",
@@ -598,12 +669,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     zIndex: 2,
+    transition: "all ease-in-out 0.4s",
   },
   title: {
     color: "#FFF",
     fontSize: 50,
     fontWeight: 400,
-    padding: 0,
+    padding: "30px 0 0 0",
     "@media only screen and (max-width: 800px)": {
       fontSize: 30,
     },
@@ -675,7 +747,7 @@ const styles = StyleSheet.create({
   },
   subtext: {
     fontSize: 18,
-    color: "#4e4c5f",
+    // color: "#4e4c5f",
     lineHeight: 1.6,
     maxWidth: 515,
     whiteSpace: "pre-wrap",
@@ -892,6 +964,8 @@ const styles = StyleSheet.create({
     // position: "absolute",
     textAlign: "center",
     top: 0,
+    transition: "all ease-in-out 0.6s",
+    opacity: 0,
     "@media only screen and (max-width: 415px)": {
       fontSize: 18,
       top: 40,
