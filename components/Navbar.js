@@ -14,22 +14,22 @@ import { AuthActions } from "../redux/auth";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
+import Button from "../components/Form/Button";
+import FirstVoteModal from "../components/modal/FirstVoteModal";
+import GoogleLoginButton from "../components/GoogleLoginButton";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
-import UploadPaperModal from "../components/modal/UploadPaperModal";
-import TransactionModal from "../components/modal/TransactionModal";
-import FirstVoteModal from "../components/modal/FirstVoteModal";
-import Button from "../components/Form/Button";
+import OrcidLoginButton from "../components/OrcidLoginButton";
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import Reputation from "./Reputation";
 import Search from "./Search";
-
-import { RHLogo } from "~/config/themes/icons";
+import TransactionModal from "../components/modal/TransactionModal";
+import UploadPaperModal from "../components/modal/UploadPaperModal";
 
 // Styles
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import GoogleLoginButton from "./GoogleLoginButton";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-import Reputation from "./Reputation";
+import { RHLogo } from "~/config/themes/icons";
 import "./stylesheets/Navbar.css";
 
 const Navbar = (props) => {
@@ -100,7 +100,7 @@ const Navbar = (props) => {
       icon: "user",
     },
     {
-      label: "Login With Google",
+      label: "Login",
     },
     { label: "Logout", onClick: signout, icon: "signOut" },
   ];
@@ -195,16 +195,9 @@ const Navbar = (props) => {
           </div>
         );
       }
-      if (tab.label === "Login With Google") {
+      if (tab.label === "Login") {
         if (!isLoggedIn) {
-          return (
-            <GoogleLoginButton
-              styles={[styles.loginMobile]}
-              iconStyle={styles.googleIcon}
-              customLabel="Login"
-              customLabelStyle={[styles.googleLabelMobile]}
-            />
-          );
+          return renderMenuLoginButtons();
         } else {
           return null;
         }
@@ -231,6 +224,42 @@ const Navbar = (props) => {
         </div>
       );
     });
+  }
+
+  function renderMenuLoginButtons() {
+    return (
+      <Fragment>
+        <GoogleLoginButton
+          styles={[styles.loginMobile]}
+          iconStyle={styles.googleIcon}
+          customLabel="Login"
+          customLabelStyle={[styles.googleLabelMobile]}
+        />
+        <OrcidLoginButton
+          styles={[styles.loginMobile]}
+          iconStyle={styles.googleIcon}
+          customLabel="Login"
+          customLabelStyle={[styles.googleLabelMobile]}
+        />
+      </Fragment>
+    );
+  }
+
+  function renderLoginButtons() {
+    return (
+      <Fragment>
+        <GoogleLoginButton
+          styles={[styles.button, styles.googleLoginButton, styles.login]}
+          iconStyle={styles.googleIcon}
+          customLabelStyle={[styles.googleLabel]}
+        />
+        <OrcidLoginButton
+          styles={[styles.button, styles.googleLoginButton, styles.login]}
+          iconStyle={styles.googleIcon}
+          customLabelStyle={[styles.googleLabel]}
+        />
+      </Fragment>
+    );
   }
 
   function addPaperModal() {
@@ -323,15 +352,7 @@ const Navbar = (props) => {
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
               authChecked ? (
-                <GoogleLoginButton
-                  styles={[
-                    styles.button,
-                    styles.googleLoginButton,
-                    styles.login,
-                  ]}
-                  iconStyle={styles.googleIcon}
-                  customLabelStyle={[styles.googleLabel]}
-                />
+                renderLoginButtons()
               ) : null
             ) : (
               <div className={css(styles.userDropdown)}>
