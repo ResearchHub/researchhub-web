@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
-const LOGIN_ATTEMPT_TIMEOUT = 10000; // 5 minutes
-const WATCH_WINDOW_INTERVAL = 500; // 5 ms
+const LOGIN_ATTEMPT_TIMEOUT = 300000; // 5 minutes
+const WATCH_WINDOW_INTERVAL =    500; // 5 ms
 
 const OrcidLogin = (props) => {
   const { clientId, onFailure, onSuccess, redirectUri, render } = props;

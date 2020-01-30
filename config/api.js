@@ -68,6 +68,7 @@ const routes = (BASE_URL) => {
       return url;
     },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
+    ORCID_LOGIN: BASE_URL + "auth/orcid/login/",
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({ search, config, page, size }) => {
       let url = BASE_URL + "search/";
