@@ -6,6 +6,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Link from "next/link";
 import ReactTooltip from "react-tooltip";
+import Ripples from "react-ripples";
 
 // Component
 import HubsList from "~/components/Hubs/HubsList";
@@ -292,42 +293,42 @@ class HubPage extends React.Component {
   renderSubscribeButton = () => {
     if (this.state.subscribe) {
       return (
-        <span
-          className={css(styles.subscribe, styles.subscribed)}
-          data-tip="Unsubscribe to Hub"
-          onClick={this.subscribeToHub}
-        >
-          <ReactTooltip />
-          {!this.state.transition ? (
-            <i className="fas fa-check-circle" />
-          ) : (
-            <Loader
-              key={"subscribeLoader"}
-              loading={true}
-              containerStyle={styles.loader}
-              size={20}
-            />
-          )}
+        <span className={css(styles.subscribe, styles.subscribed)}>
+          <Ripples onClick={this.subscribeToHub}>
+            <span>
+              {!this.state.transition ? (
+                "Subscribed"
+              ) : (
+                <Loader
+                  key={"subscribeLoader"}
+                  loading={true}
+                  containerStyle={styles.loader}
+                  size={10}
+                  color={"#FFF"}
+                />
+              )}
+            </span>
+          </Ripples>
         </span>
       );
     } else {
       return (
-        <span
-          className={css(styles.subscribe)}
-          data-tip="Subscribe to Hub"
-          onClick={this.subscribeToHub}
-        >
-          <ReactTooltip />
-          {!this.state.transition ? (
-            <i className="fal fa-plus-circle" />
-          ) : (
-            <Loader
-              key={"subscribeLoader"}
-              loading={true}
-              containerStyle={styles.loader}
-              size={20}
-            />
-          )}
+        <span className={css(styles.subscribe)}>
+          <Ripples onClick={this.subscribeToHub}>
+            <span>
+              {!this.state.transition ? (
+                "Subscribe"
+              ) : (
+                <Loader
+                  key={"subscribeLoader"}
+                  loading={true}
+                  containerStyle={styles.loader}
+                  size={10}
+                  color={"#FFF"}
+                />
+              )}
+            </span>
+          </Ripples>
         </span>
       );
     }
@@ -452,7 +453,12 @@ class HubPage extends React.Component {
                   options={filterOptions}
                   value={this.state.filterBy}
                   containerStyle={styles.dropDown}
-                  inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
+                  inputStyle={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    height: "100%",
+                    backgroundColor: "#FFF",
+                  }}
                   onChange={(id, option) => this.onFilterSelect(option, id)}
                   isSearchable={false}
                 />
@@ -461,7 +467,12 @@ class HubPage extends React.Component {
                   options={scopeOptions}
                   value={this.state.scope}
                   containerStyle={styles.dropDown}
-                  inputStyle={{ height: "100%", backgroundColor: "#FFF" }}
+                  inputStyle={{
+                    fontSize: 14,
+                    fontWeight: 500,
+                    height: "100%",
+                    backgroundColor: "#FFF",
+                  }}
                   onChange={(id, option) => this.onFilterSelect(option, id)}
                   isSearchable={false}
                 />
@@ -785,7 +796,7 @@ var styles = StyleSheet.create({
     },
   },
   dropDown: {
-    width: 180,
+    width: 150,
     height: 45,
     "@media only screen and (max-width: 1343px)": {
       // width: 220,
@@ -810,7 +821,7 @@ var styles = StyleSheet.create({
     },
   },
   inputs: {
-    width: 380,
+    width: 320,
     "@media only screen and (max-width: 1343px)": {
       // width: 460,
     },
@@ -919,25 +930,37 @@ var styles = StyleSheet.create({
     },
   },
   subscribe: {
+    fontSize: 11,
+    letterSpacing: 0.4,
+    fontWeight: 400,
+    textTransform: "uppercase",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    color: colors.BLUE(),
-    opacity: 0.7,
-    height: "100%",
-    width: 23,
-    minWidth: 23,
-    maxWidth: 23,
+    backgroundColor: colors.BLUE(0.5),
+    color: "#FFF",
+    padding: 5,
+    border: "1px solid #FFF",
+    borderRadius: 3,
     ":hover": {
-      opacity: 1,
+      border: `1px solid ${colors.BLUE(1)}`,
+    },
+    "@media only screen and (max-width: 768px)": {
+      fontSize: 8,
     },
   },
   subscribed: {
-    opacity: 1,
+    border: `1px solid ${colors.BLUE(1)}`,
+    backgroundColor: colors.BLUE(1),
   },
   loader: {
     opacity: 1,
+    height: 15,
+    width: 55,
+    "@media only screen and (max-width: 768px)": {
+      width: 48,
+    },
   },
   noResultsLine: {
     textAlign: "center",
