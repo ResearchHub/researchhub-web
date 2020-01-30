@@ -13,8 +13,9 @@ export const GOOGLE_CLIENT_ID =
 export const ORCID_CLIENT_ID = "APP-JRYHYFMMJTSPBLCP";
 export const ORCID_REDIRECT_URI =
   process.env.NODE_ENV === "production"
-    ? "https://researchhub.com/orcid/"
-    : "http://localhost:8000/orcid/login/";
+    ? "https://researchhub.com/orcid/login"
+    : // : "http://localhost:3000/orcid/login";
+      "http://localhost:8000/api/auth/orcid/login/callback/";
 
 export function nameToUrl(name) {
   let arr = name.split(" ");
