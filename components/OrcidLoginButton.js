@@ -55,7 +55,9 @@ const OrcidLoginButton = (props) => {
           disabled={renderProps.disabled}
           onClick={renderProps.onClick}
           customButtonStyle={[styles.button, props.styles]}
-          icon={"/static/icons/orcid.png"}
+          icon={
+            "https://ndownloader.figshare.com/files/8439047/preview/8439047/preview.jpg"
+          }
           customLabelStyle={customLabelStyle}
           customIconStyle={[styles.iconStyle, iconStyle]}
           label={customLabel ? customLabel : "Log in with ORCID"}
