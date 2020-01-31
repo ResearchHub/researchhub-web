@@ -111,7 +111,10 @@ class ThreadActionBar extends React.Component {
     const ShareButton = () => {
       return (
         <div className={css(styles.shareContainer, small && styles.smallReply)}>
-          <span className={css(styles.iconChat)} id={"shareIcon"}>
+          <span
+            className={css(styles.iconChat, styles.shareIcon)}
+            id={"shareIcon"}
+          >
             <i className="fad fa-share-square" />
           </span>
           <span
@@ -284,6 +287,9 @@ const styles = StyleSheet.create({
   },
   iconChat: {
     color: "#918f9b",
+  },
+  shareIcon: {
+    fontSize: 13,
   },
   active: {
     color: colors.BLUE(0.7),
