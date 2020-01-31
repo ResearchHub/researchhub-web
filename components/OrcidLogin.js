@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useStore, useDispatch } from "react-redux";
 
 import { AuthActions } from "../redux/auth";
 
@@ -11,6 +11,8 @@ const OrcidLogin = (props) => {
   const { clientId, onFailure, onSuccess, redirectUri, render } = props;
 
   const dispatch = useDispatch();
+
+  const store = useStore();
 
   const [loginWindow, setLoginWindow] = useState(null);
 
@@ -36,6 +38,7 @@ const OrcidLogin = (props) => {
     if (closed) {
       setLoginWindow(null);
       clearHandlers();
+      checkHasEmail();
     }
   }
 
@@ -57,6 +60,7 @@ const OrcidLogin = (props) => {
         setInterval(() => {
           try {
             checkLoginComplete(loginWindow.document.body);
+            clearTimeout(windowTimeout);
           } catch (e) {
             console.log(e, "Not on our domain yet");
           }
@@ -86,6 +90,15 @@ const OrcidLogin = (props) => {
     const uri = body["baseURI"];
     const regex = RegExp("success");
     return regex.test(uri);
+  }
+
+  function checkHasEmail() {
+    const state = store.getState();
+    if (state.auth.user.email && state.auth.user.email != "") {
+      // has email
+    } else {
+      dispatch(AuthActions.signout());
+    }
   }
 
   const renderProps = {
