@@ -35,6 +35,8 @@ class LiveFeed extends React.Component {
       let hubId = home ? 0 : currentHub.id;
       if (!livefeed.hubs[hubId]) {
         this.fetchLiveFeed(hubId);
+      } else {
+        this.setState({ loading: false });
       }
       this.setLivefeedInterval(this, hubId);
     }
@@ -58,6 +60,8 @@ class LiveFeed extends React.Component {
           let { livefeed, currentHub } = this.props;
           if (!livefeed.hubs[currentHub.id]) {
             this.fetchLiveFeed(currentHub.id);
+          } else {
+            this.setState({ loading: false });
           }
           this.setLivefeedInterval(this, this.props.currentHub.id);
         });
@@ -108,6 +112,12 @@ class LiveFeed extends React.Component {
           );
         });
       }
+    } else {
+      return (
+        <div className={css(styles.emptyState)}>
+          No notifications for this hub.
+        </div>
+      );
     }
   };
 

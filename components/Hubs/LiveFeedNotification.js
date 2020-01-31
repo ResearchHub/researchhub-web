@@ -110,7 +110,7 @@ class LiveFeedNotification extends React.Component {
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)}>Thread</a>
+              <a className={css(styles.link)}>thread</a>
             </Link>
             in{" "}
             <Link
@@ -305,13 +305,17 @@ class LiveFeedNotification extends React.Component {
     const notificationType = notification.content_type;
 
     switch (notificationType) {
+      case "summary":
       case "vote_paper":
         return icons.file;
       case "vote_comment":
+      case "comment":
         return <i className="fad fa-comment-alt-dots" />;
+      case "reply":
       case "vote_reply":
         return <i className="fad fa-comment-alt-dots" />;
       case "thread":
+      case "vote_thread":
         return <i className="fad fa-comment-alt-lines" />;
     }
   };
