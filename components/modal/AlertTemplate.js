@@ -36,6 +36,7 @@ const AlertTemplate = ({ style, options, message, close }) => {
             onClick={() => {
               document.body.style.overflow = "scroll";
               message.onClick && message.onClick();
+              close();
             }}
           >
             <div>{message.buttonText}</div>

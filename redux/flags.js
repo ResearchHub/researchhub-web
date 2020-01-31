@@ -16,7 +16,7 @@ export const FlagConstants = {
 };
 
 export const FlagActions = {
-  checkPaperForUserFlag: (prevState, paper) => {
+  checkPaperForFlag: (prevState, paper) => {
     return (dispatch) => {
       let flaggedPapers = { ...prevState };
 
@@ -28,7 +28,7 @@ export const FlagActions = {
         }
       }
       return dispatch({
-        type: FlagConstants.UPDATE_FLAG_STATE,
+        type: FlagConstants.CHECK_PAPER_FOR_FLAG,
         payload: {
           flaggedPapers,
         },
@@ -72,25 +72,28 @@ export const FlagActions = {
   },
   removePaperFlag: (prevState, paperId) => {
     return (dispatch) => {
-      dispatch({
-        type: FlagConstants.REMOVE_FLAG_PENDING,
-        payload: {
-          doneFetching: false,
-        },
-      });
+      // dispatch({
+      //   type: FlagConstants.REMOVE_FLAG_PENDING,
+      //   payload: {
+      //     doneFetching: false,
+      //   },
+      // });
       return fetch(API.FLAG_PAPER({ paperId }), API.DELETE_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
           const flaggedPapers = { ...prevState };
-          delete flaggedPapers[paperId];
+
+          if (flaggedPapers[paperId]) {
+            delete flaggedPapers[paperId];
+          }
 
           return dispatch({
             type: FlagConstants.REMOVE_FLAG_SUCCESS,
             action: {
               flaggedPapers,
               doneFetching: true,
-              success: false,
+              success: true,
             },
           });
         })
@@ -120,6 +123,10 @@ const FlagReducer = (state = defaultFlagState, action) => {
     case FlagConstants.POST_FLAG_SUCCESS:
     case FlagConstants.POST_FLAG_FAILURE:
     case FlagConstants.POST_FLAG_PENDING:
+    case FlagConstants.REMOVE_FLAG_PENDING:
+    case FlagConstants.REMOVE_FLAG_FAILURE:
+    case FlagConstants.REMOVE_FLAG_SUCCESS:
+    case FlagConstants.CHECK_PAPER_FOR_FLAG:
       return {
         ...state,
         ...action.payload,

@@ -27,6 +27,7 @@ import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 import { ModalActions } from "~/redux/modals";
 import VoteActions from "~/redux/vote";
+import { FlagActions } from "~/redux/flags";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
@@ -44,6 +45,7 @@ const Paper = (props) => {
 
   const [paper, setPaper] = useState(props.paper);
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
+  const [flagged, setFlag] = useState(paper.user_flag !== null);
   const [discussionThreads, setDiscussionThreads] = useState(
     getDiscussionThreads(paper)
   );
@@ -84,6 +86,7 @@ const Paper = (props) => {
       setPaper(refetchedPaper);
       setSelectedVoteType(getVoteType(refetchedPaper.userVote));
       setDiscussionThreads(getDiscussionThreads(refetchedPaper));
+      setFlag(refetchedPaper.user_flag !== null);
       showMessage({ show: false });
       if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
         props.setUploadingPaper(false);
@@ -258,7 +261,11 @@ const Paper = (props) => {
                         action={null}
                         addRipples={true}
                       />*/}
-                    <FlagButton paperId={paper.id} />
+                    <FlagButton
+                      paperId={paper.id}
+                      flagged={flagged}
+                      setFlag={setFlag}
+                    />
                   </div>
                 </span>
               </div>
@@ -310,7 +317,11 @@ const Paper = (props) => {
                   subtitle={paperTitle}
                   url={shareUrl}
                 />
-                <FlagButton paperId={paper.id} />
+                <FlagButton
+                  paperId={paper.id}
+                  flagged={flagged}
+                  setFlag={setFlag}
+                />
                 {/* <ActionButton
                   icon={"fas fa-bookmark"}
                   action={null}
