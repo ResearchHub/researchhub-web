@@ -196,9 +196,9 @@ export const AuthActions = {
   /**
    * Login with ORCID
    */
-  orcidLogin: (key) => {
+  orcidLogin: (params) => {
     return (dispatch) => {
-      saveToLocalStorage(AUTH_TOKEN, key);
+      saveToLocalStorage(AUTH_TOKEN, params["token"]);
       return dispatch({
         type: AuthConstants.LOGIN,
         isLoggedIn: true,
