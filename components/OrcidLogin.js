@@ -1,11 +1,16 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+
+import { AuthActions } from "../redux/auth";
 
 const LOGIN_ATTEMPT_TIMEOUT = 300000; // 5 minutes
 const WATCH_WINDOW_INTERVAL = 500; // 5 ms
 
 const OrcidLogin = (props) => {
   const { clientId, onFailure, onSuccess, redirectUri, render } = props;
+
+  const dispatch = useDispatch();
 
   const [loginWindow, setLoginWindow] = useState(null);
 
@@ -17,10 +22,11 @@ const OrcidLogin = (props) => {
 
   const [windowClosedInterval, setWindowClosedInterval] = useState(null);
 
+  const [windowDomainInterval, setWindowDomainInterval] = useState(null);
+
   useEffect(timedOutEffect, [timedOut]);
   function timedOutEffect() {
     if (timedOut && loginWindow) {
-      // console.log('timedOut');
       loginWindow.close();
     }
   }
@@ -28,20 +34,33 @@ const OrcidLogin = (props) => {
   useEffect(closedEffect, [closed]);
   function closedEffect() {
     if (closed) {
-      // console.log('closed');
       setLoginWindow(null);
       clearHandlers();
       checkLogin();
     }
   }
 
-  useEffect(watchWindowClose, [loginWindow]);
+  useEffect(watchWindowClose, [loginWindow, windowClosedInterval]);
   function watchWindowClose() {
-    if (loginWindow) {
+    if (loginWindow && !windowClosedInterval) {
       setWindowClosedInterval(
         setInterval(() => {
-          // console.log('watchWindowClosedInterval');
           setClosed(loginWindow.closed);
+        }, WATCH_WINDOW_INTERVAL)
+      );
+    }
+  }
+
+  useEffect(watchWindowDomain, [loginWindow, windowDomainInterval]);
+  function watchWindowDomain() {
+    if (loginWindow && !windowDomainInterval) {
+      setWindowDomainInterval(
+        setInterval(() => {
+          try {
+            checkLoginComplete(loginWindow.document.body);
+          } catch (e) {
+            console.log(e, "Not on our domain yet");
+          }
         }, WATCH_WINDOW_INTERVAL)
       );
     }
@@ -49,16 +68,25 @@ const OrcidLogin = (props) => {
 
   function clearHandlers() {
     clearTimeout(windowTimeout);
+    setWindowTimeout(null);
     clearInterval(windowClosedInterval);
+    setWindowClosedInterval(null);
+    clearInterval(windowDomainInterval);
+    setWindowDomainInterval(null);
   }
 
-  function checkLogin() {
-    console.log("checkLogin");
-    // if (true) {
-    //   onSuccess();
-    // } else {
-    //   onFailure();
-    // }
+  function checkLoginComplete(loginWindowBody) {
+    const loginComplete = checkBaseUriSuccessParam(loginWindowBody);
+    if (loginComplete) {
+      loginWindow.close();
+      onSuccess();
+    }
+  }
+
+  function checkBaseUriSuccessParam(body) {
+    const uri = body["baseURI"];
+    const regex = RegExp("success");
+    return regex.test(uri);
   }
 
   const renderProps = {
