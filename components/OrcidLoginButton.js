@@ -24,17 +24,8 @@ const OrcidLoginButton = (props) => {
     iconStyle,
   } = props;
 
-  async function forwardResponse(response) {
-    console.log("response", response);
-    response["access_token"] = response["accessToken"];
-
-    await login(response).then(function() {
-      getUser();
-    });
-
-    if (auth.loginFailed) {
-      showLoginFailureMessage();
-    }
+  async function showSuccessMessage() {
+    getUser();
   }
 
   function showLoginFailureMessage(response) {
@@ -47,7 +38,7 @@ const OrcidLoginButton = (props) => {
     <OrcidLogin
       clientId={ORCID_CLIENT_ID}
       redirectUri={ORCID_REDIRECT_URI}
-      onSuccess={forwardResponse}
+      onSuccess={showSuccessMessage}
       onFailure={showLoginFailureMessage}
       cookiePolicy={"single_host_origin"}
       render={(renderProps) => (
@@ -55,9 +46,7 @@ const OrcidLoginButton = (props) => {
           disabled={renderProps.disabled}
           onClick={renderProps.onClick}
           customButtonStyle={[styles.button, props.styles]}
-          icon={
-            "https://ndownloader.figshare.com/files/8439047/preview/8439047/preview.jpg"
-          }
+          icon={"/static/icons/orcid.png"}
           customLabelStyle={customLabelStyle}
           customIconStyle={[styles.iconStyle, iconStyle]}
           label={customLabel ? customLabel : "Log in with ORCID"}
