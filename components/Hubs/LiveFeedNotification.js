@@ -3,6 +3,7 @@ import React, { Fragment } from "react";
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import Router from "next/router";
 import ReactTooltip from "react-tooltip";
 
 // Component
@@ -26,6 +27,25 @@ class LiveFeedNotification extends React.Component {
   formatUsername = (userObject) => {
     let { first_name, last_name } = userObject;
     return `${first_name} ${last_name}`;
+  };
+
+  navigateToPaper = () => {
+    let { notification } = this.props;
+    let route;
+    switch (notification.content_type) {
+      case "summary":
+        route = `/paper/${notification.paper}/summary`;
+      case "comment":
+        route = `/paper/${notification.thread.paper}/summary`;
+      case "vote_paper":
+      case "vote_comment":
+      case "vote_reply":
+      case "thread":
+      default:
+        route = `/paper/${notification.paper.id}/summary`;
+    }
+
+    Router.push("/paper/[paperId]/[tabName]", route);
   };
 
   renderNotification = () => {
@@ -330,7 +350,10 @@ class LiveFeedNotification extends React.Component {
       return null;
     } else {
       return (
-        <div className={css(styles.column, styles.notification)}>
+        <div
+          className={css(styles.column, styles.notification)}
+          onClick={this.navigateToPaper}
+        >
           <ReactTooltip
             place={"bottom"}
             delayShow={400}
