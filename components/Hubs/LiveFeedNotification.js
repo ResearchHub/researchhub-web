@@ -31,20 +31,7 @@ class LiveFeedNotification extends React.Component {
 
   navigateToPaper = () => {
     let { notification } = this.props;
-    let route;
-    switch (notification.content_type) {
-      case "summary":
-        route = `/paper/${notification.paper}/summary`;
-      case "comment":
-        route = `/paper/${notification.thread.paper}/summary`;
-      case "vote_paper":
-      case "vote_comment":
-      case "vote_reply":
-      case "thread":
-      default:
-        route = `/paper/${notification.paper.id}/summary`;
-    }
-
+    let route = `/paper/${notification.paper_id}/summary`;
     Router.push("/paper/[paperId]/[tabName]", route);
   };
 
@@ -73,10 +60,10 @@ class LiveFeedNotification extends React.Component {
             edited a summary for{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paper}/summary`}
+              as={`/paper/${paperId}/summary`}
             >
               <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper && this.truncatePaperTitle(paperTip)}
+                {paperTip && this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -97,7 +84,7 @@ class LiveFeedNotification extends React.Component {
             voted on{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paper && paper.id}/summary`}
+              as={`/paper/${paperId}/summary`}
             >
               <a className={css(styles.paper)} data-tip={paperTip}>
                 {paperTip && this.truncatePaperTitle(paperTip)}
