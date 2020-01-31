@@ -337,6 +337,7 @@ const DiscussionTab = (props) => {
                 options={filterOptions}
                 placeholder={"Sort Threads"}
                 onChange={handleFilterChange}
+                containerStyle={styles.filterContainer}
                 inputStyle={{
                   minHeight: "unset",
                 }}
@@ -611,9 +612,7 @@ var styles = StyleSheet.create({
     paddingBottom: 80,
   },
   filterContainer: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "flex-start",
+    marginTop: 7,
   },
   filterSelect: {
     width: 160,
