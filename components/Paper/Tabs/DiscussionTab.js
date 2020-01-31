@@ -66,7 +66,9 @@ const DiscussionTab = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const basePath = formatBasePath(router.asPath);
-  const formattedThreads = formatThreads(paper.discussion.threads, basePath);
+  const [formattedThreads, setFormattedThreads] = useState(
+    formatThreads(paper.discussion.threads, basePath)
+  );
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
@@ -172,24 +174,18 @@ const DiscussionTab = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        setTransition(true);
         let newDiscussion = { ...resp };
         newDiscussion = thread(newDiscussion);
         setThreads([newDiscussion, ...threads]);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
-        formattedThreads.unshift(formattedDiscussion);
+        setFormattedThreads([formattedDiscussion, ...formattedThreads]);
         setTimeout(() => {
           props.showMessage({ show: false });
           props.setMessage("Successfully Saved!");
           props.showMessage({ show: true });
-          setTimeout(() => {
-            cancel();
-            props.checkUserFirstTime(
-              !props.auth.user.has_seen_first_coin_modal
-            );
-            props.getUser();
-          }, 300);
-          setTimeout(() => setTransition(false), 3000);
+          cancel();
+          props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
+          props.getUser();
         }, 800);
       })
       .catch((err) => {
@@ -229,12 +225,9 @@ const DiscussionTab = (props) => {
   const renderAddDiscussion = () => {
     return (
       <div
-        className={css(
-          styles.box,
-          formattedThreads.length < 1 && styles.emptyStateBox
-        )}
+        className={css(styles.box, threads.length < 1 && styles.emptyStateBox)}
       >
-        {formattedThreads.length < 1 && (
+        {threads.length < 1 && (
           <span className={css(styles.box, styles.emptyStateBox)}>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
@@ -259,14 +252,9 @@ const DiscussionTab = (props) => {
           <button
             className={css(
               styles.addDiscussionButton,
-              formattedThreads.length > 0 && styles.plainButton
+              threads.length > 0 && styles.plainButton
             )}
           >
-            {/* {formattedThreads.length > 0 && (
-              <span className={css(styles.discussionIcon)}>
-                <i className="fad fa-comment-plus" />
-              </span>
-            )} */}
             Add Discussion
           </button>
         </PermissionNotificationWrapper>
