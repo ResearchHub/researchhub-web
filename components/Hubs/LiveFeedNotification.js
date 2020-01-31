@@ -30,17 +30,18 @@ class LiveFeedNotification extends React.Component {
 
   renderNotification = () => {
     const { notification } = this.props;
-    let { paper, created_date, created_by, content_type } = notification;
+    let { created_date, created_by, content_type } = notification;
     let notificationType = content_type;
     const timestamp = this.formatTimestamp(created_date);
     const username = this.formatUsername(created_by);
     const authorId = created_by.author_profile.id;
-    let paperTip = paper && paper.title;
-    let paperId = paper && paper.id;
+    let paperTip = notification.paper_title;
+    let paperId = notification.paper_id;
+    let threadTip = notification.thread_title;
+    let threadId = notification.thread_id;
 
     switch (notificationType) {
       case "summary":
-        paperTip = notification.paper_title;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -79,7 +80,7 @@ class LiveFeedNotification extends React.Component {
               as={`/paper/${paper && paper.id}/summary`}
             >
               <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper && this.truncatePaperTitle(paper.title)}
+                {paperTip && this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -89,8 +90,6 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "vote_thread":
-        var { thread } = notification;
-        var threadId = thread && thread.id;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -112,7 +111,7 @@ class LiveFeedNotification extends React.Component {
               as={`/paper/${paperId}/summary`}
             >
               <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper && this.truncatePaperTitle(paper.title)}
+                {paperTip && this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -122,8 +121,6 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "vote_comment":
-        var { comment } = notification;
-        var threadId = comment && comment.thread_id;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -145,7 +142,7 @@ class LiveFeedNotification extends React.Component {
               as={`/paper/${paperId}/summary`}
             >
               <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper && this.truncatePaperTitle(paper.title)}
+                {this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -155,8 +152,6 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "vote_reply":
-        var { reply } = notification;
-        var threadId = reply && reply.thread_id;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -178,7 +173,7 @@ class LiveFeedNotification extends React.Component {
               as={`/paper/${paperId}/summary`}
             >
               <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper && this.truncatePaperTitle(paper.title)}
+                {paperTip && this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -188,9 +183,6 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "thread":
-        var { first_name, last_name } = notification.created_by;
-        var threadId = notification.id;
-        paper = notification.paper;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -212,7 +204,7 @@ class LiveFeedNotification extends React.Component {
               as={`/paper/${paperId}/summary`}
             >
               <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper.title && this.truncatePaperTitle(paper.title)}
+                {paperTip && this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -222,12 +214,7 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "comment":
-        var { thread, plain_text } = notification;
-        var threadTip = thread && thread.title;
-        var commentTip = plain_text && this.truncatePaperTitle(plain_text);
-        var { thread_id } = notification;
-        paperId = notification.paper_id;
-
+        var commentTip = notification.tip;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -239,7 +226,7 @@ class LiveFeedNotification extends React.Component {
             left a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${thread_id}`}
+              as={`/paper/${paperId}/discussion/${threadId}`}
             >
               <a className={css(styles.link)} data-tip={commentTip}>
                 comment
@@ -251,9 +238,7 @@ class LiveFeedNotification extends React.Component {
               as={`/paper/${paperId}/discussion`}
             >
               <a className={css(styles.paper)} data-tip={threadTip}>
-                {thread &&
-                  thread.title &&
-                  this.truncatePaperTitle(thread.title)}
+                {threadTip && this.truncatePaperTitle(threadTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -263,12 +248,7 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "reply":
-        var { thread, text } = notification;
-        var threadTip = thread && thread.title;
-        var replyTip = text && this.truncatePaperTitle(text);
-        var { thread_id } = notification;
-        paperId = notification.paper_id;
-
+        var replyTip = notification.tip;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -280,7 +260,7 @@ class LiveFeedNotification extends React.Component {
             left a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${thread_id}`}
+              as={`/paper/${paperId}/discussion/${threadId}`}
             >
               <a className={css(styles.link)} data-tip={replyTip}>
                 reply
@@ -292,9 +272,7 @@ class LiveFeedNotification extends React.Component {
               as={`/paper/${paperId}/discussion`}
             >
               <a className={css(styles.paper)} data-tip={threadTip}>
-                {thread &&
-                  thread.title &&
-                  this.truncatePaperTitle(thread.title)}
+                {threadTip && this.truncatePaperTitle(threadTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
