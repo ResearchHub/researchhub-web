@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { connect } from "react-redux";
+import { connect, useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Ripples from "react-ripples";
@@ -15,6 +15,7 @@ import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
+import FormSelect from "~/components/Form/FormSelect";
 
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 
@@ -23,6 +24,7 @@ import { MessageActions } from "~/redux/message";
 import { thread } from "~/redux/discussion/shims";
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
+import { PaperActions } from "~/redux/paper";
 
 // Config
 import API from "~/config/api";
@@ -38,13 +40,31 @@ const DiscussionTab = (props) => {
     question: discussionScaffoldInitialValue,
   };
 
-  let { hostname, threads, paper } = props;
+  let { hostname, paper } = props;
 
-  if (doesNotExist(threads)) {
-    threads = [];
+  if (doesNotExist(props.threads)) {
+    props.threads = [];
   }
 
+  // TODO: move to config
+  const filterOptions = [
+    {
+      value: "-created_date",
+      label: "Most Recent",
+    },
+    {
+      value: "created_date",
+      label: "Oldest",
+    },
+    {
+      value: "score",
+      label: "Top",
+    },
+  ];
+
   const router = useRouter();
+  const dispatch = useDispatch();
+  const store = useStore();
   const basePath = formatBasePath(router.asPath);
   const formattedThreads = formatThreads(paper.discussion.threads, basePath);
   const [transition, setTransition] = useState(false);
@@ -53,8 +73,25 @@ const DiscussionTab = (props) => {
   const [editorDormant, setEditorDormant] = useState(true);
   const [discussion, setDiscussion] = useState(initialDiscussionState);
   const [mobileView, setMobileView] = useState(false);
+  const [threads, setThreads] = useState(props.threads);
+  const [filter, setFilter] = useState(null);
 
   useEffect(() => {
+    async function getThreadsByFilter() {
+      dispatch(MessageActions.showMessage({ load: true, show: true }));
+      const currentPaper = store.getState().paper;
+      await dispatch(
+        PaperActions.getThreads(props.paper.id, currentPaper, filter)
+      );
+      const sortedThreads = store.getState().paper.discussion.threads;
+      setThreads(sortedThreads);
+      setTimeout(() => {
+        dispatch(MessageActions.showMessage({ show: false }));
+      }, 200);
+    }
+    if (filter !== null) {
+      getThreadsByFilter();
+    }
     function handleWindowResize() {
       if (window.innerWidth < 436) {
         if (!mobileView) {
@@ -71,7 +108,7 @@ const DiscussionTab = (props) => {
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
-  });
+  }, [filter]);
 
   function renderThreads(threads) {
     if (!Array.isArray(threads)) {
@@ -95,6 +132,11 @@ const DiscussionTab = (props) => {
       })
     );
   }
+
+  const handleFilterChange = (id, filter) => {
+    let { value } = filter;
+    setFilter(value);
+  };
 
   const addDiscussion = () => {
     props.showMessage({ show: false });
@@ -289,6 +331,17 @@ const DiscussionTab = (props) => {
                 ? renderDiscussionTextEditor()
                 : renderAddDiscussion()}
             </div>
+            <div className={css(styles.filterSelect)}>
+              <FormSelect
+                id={"thread-filter"}
+                options={filterOptions}
+                placeholder={"Sort Threads"}
+                onChange={handleFilterChange}
+                inputStyle={{
+                  minHeight: "unset",
+                }}
+              />
+            </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
         </div>
@@ -429,6 +482,7 @@ var styles = StyleSheet.create({
     border: "none",
     backgroundColor: "#FFF",
     padding: 16,
+    paddingRight: 8,
     color: "rgb(36, 31, 58)",
     opacity: 0.6,
     // marginBottom: 15,
@@ -555,6 +609,18 @@ var styles = StyleSheet.create({
   },
   threadsContainer: {
     paddingBottom: 80,
+  },
+  filterContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  filterSelect: {
+    width: 160,
+  },
+  filterInput: {
+    minHeight: "unset",
+    height: 30,
   },
 });
 

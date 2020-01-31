@@ -80,7 +80,7 @@ const Paper = (props) => {
     async function refetchPaper() {
       await dispatch(PaperActions.getPaper(paperId));
       const fetchedPaper = store.getState().paper;
-      await store.dispatch(PaperActions.getThreads(paperId, fetchedPaper));
+      await dispatch(PaperActions.getThreads(paperId, fetchedPaper));
       const refetchedPaper = store.getState().paper;
 
       setPaper(refetchedPaper);
