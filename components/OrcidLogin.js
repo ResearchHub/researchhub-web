@@ -36,7 +36,6 @@ const OrcidLogin = (props) => {
     if (closed) {
       setLoginWindow(null);
       clearHandlers();
-      checkLogin();
     }
   }
 
@@ -102,7 +101,7 @@ const OrcidLogin = (props) => {
   function openWindow() {
     const url = buildOrcidUrl();
     const windowStyle =
-      "toolbar=no, scrollbars=yes, width=500, height=600, top=500, left=500";
+      "toolbar=no, scrollbars=yes, width=650, height=600, top=500, left=500";
     setLoginWindow(window.open(url, "_blank", windowStyle));
   }
 
