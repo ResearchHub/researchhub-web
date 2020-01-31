@@ -67,23 +67,6 @@ class CommentEntry extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.comment.highlight && !this.state.highlight) {
-      this.setState(
-        {
-          highlight: this.props.comment.highlight && true,
-        },
-        () => {
-          this.calculateThreadHeight();
-          this.props.calculateThreadHeight();
-          this.props.comment.highlight &&
-            setTimeout(() => {
-              this.setState({ highlight: false }, () => {
-                this.props.comment.highlight = false;
-              });
-            }, 10000);
-        }
-      );
-    }
     this.calculateThreadHeight();
   }
 
