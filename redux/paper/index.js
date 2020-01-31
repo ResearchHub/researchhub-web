@@ -85,9 +85,9 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: (paperId, paper) => {
+  getThreads: (paperId, paper, filter) => {
     return (dispatch) => {
-      return fetch(API.DISCUSSION(paperId), API.GET_CONFIG)
+      return fetch(API.DISCUSSION(paperId, filter && filter), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
