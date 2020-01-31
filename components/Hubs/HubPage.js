@@ -420,7 +420,7 @@ class HubPage extends React.Component {
               </Link>
             </div>
             <span className={css(styles.googleLogin)}>
-              {!auth.isLoggedIn && (
+              {auth.isLoggedIn && (
                 <GoogleLoginButton
                   styles={styles.googleLoginButton}
                   googleLogin={this.props.googleLogin}

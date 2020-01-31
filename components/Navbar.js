@@ -228,7 +228,7 @@ const Navbar = (props) => {
 
   function renderMenuLoginButtons() {
     return (
-      <Fragment>
+      <div className={css(styles.loginContainer)}>
         <GoogleLoginButton
           styles={[styles.loginMobile]}
           iconStyle={styles.googleIcon}
@@ -237,28 +237,29 @@ const Navbar = (props) => {
         />
         <OrcidLoginButton
           styles={[styles.loginMobile]}
-          iconStyle={styles.googleIcon}
+          iconStyle={styles.orcidIcon}
           customLabel="Login"
           customLabelStyle={[styles.googleLabelMobile]}
         />
-      </Fragment>
+      </div>
     );
   }
 
   function renderLoginButtons() {
     return (
-      <Fragment>
+      <div className={css(styles.oauthContainer)}>
         <GoogleLoginButton
           styles={[styles.button, styles.googleLoginButton, styles.login]}
           iconStyle={styles.googleIcon}
           customLabelStyle={[styles.googleLabel]}
         />
+        <div className={css(styles.divider)}></div>
         <OrcidLoginButton
           styles={[styles.button, styles.googleLoginButton, styles.login]}
-          iconStyle={styles.googleIcon}
+          iconStyle={styles.orcidIcon}
           customLabelStyle={[styles.googleLabel]}
         />
-      </Fragment>
+      </div>
     );
   }
 
@@ -463,7 +464,7 @@ const styles = StyleSheet.create({
   },
   googleLoginButton: {
     margin: 0,
-    width: 200,
+    width: 180,
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
@@ -471,6 +472,17 @@ const styles = StyleSheet.create({
   googleIcon: {
     width: 25,
     height: 25,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    borderRadius: "50%",
+  },
+  orcidIcon: {
+    width: 25,
+    height: 25,
+    borderRadius: "50%",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+  },
+  divider: {
+    width: 5,
   },
   firstTab: {
     marginLeft: 30,
@@ -549,8 +561,8 @@ const styles = StyleSheet.create({
   },
   login: {
     color: colors.BLUE(),
-    border: `${colors.BLUE()} 1px solid`,
-    background: "transparent",
+    border: "1px solid #E7E7E7",
+    background: "#FFF",
     ":hover": {
       backgroundColor: "rgba(250, 250, 250, 1)",
     },
@@ -698,6 +710,10 @@ const styles = StyleSheet.create({
       display: "unset",
       position: "relative",
     },
+  },
+  oauthContainer: {
+    display: "flex",
+    alignItems: "center",
   },
 });
 
