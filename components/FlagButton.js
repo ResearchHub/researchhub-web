@@ -14,7 +14,7 @@ import { FlagActions } from "~/redux/flags";
 // Utility
 import colors from "~/config/themes/colors";
 
-const FlagButton = ({ paperId, reason }) => {
+const FlagButton = ({ paperId, reason, flagged, setFlag }) => {
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
@@ -25,6 +25,7 @@ const FlagButton = ({ paperId, reason }) => {
     await dispatch(FlagActions.postPaperFlag(prevState, paperId, reason));
     const flags = store.getState().flags;
     if (flags.doneFetching && flags.success) {
+      setFlag(true);
       dispatch(MessageActions.showMessage({ show: false }));
       dispatch(MessageActions.setMessage("Paper Flagged"));
       dispatch(MessageActions.showMessage({ show: true }));
@@ -38,11 +39,13 @@ const FlagButton = ({ paperId, reason }) => {
   async function removeFlag(paperId) {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
     const prevState = store.getState().flags;
-    await dispatch(FlagActions.postPaperFlag(prevState, paperId, reason));
+    await dispatch(FlagActions.removePaperFlag(prevState, paperId));
     const flags = store.getState().flags;
+    console.log("remove", flags);
     if (flags.doneFetching && flags.success) {
+      setFlag(false);
       dispatch(MessageActions.showMessage({ show: false }));
-      dispatch(MessageActions.setMessage("Paper Flagged"));
+      dispatch(MessageActions.setMessage("Flag Removed"));
       dispatch(MessageActions.showMessage({ show: true }));
     } else {
       dispatch(MessageActions.showMessage({ show: false }));
@@ -56,16 +59,20 @@ const FlagButton = ({ paperId, reason }) => {
       modalMessage="flag papers"
       onClick={() =>
         alert.show({
-          text: "Flag this paper for copyright?",
+          text: flagged
+            ? "Remove flag for this paper?"
+            : "Flag this paper for copyright?",
           buttonText: "Yes",
-          onClick: () => flagPaper(paperId, reason),
+          onClick: () => {
+            flagged ? removeFlag(paperId) : flagPaper(paperId, reason);
+          },
         })
       }
       permissionKey="UpdatePaper"
       loginRequired={true}
-      styling={styles.actionButton}
+      styling={[styles.actionButton, flagged && styles.flagged]}
     >
-      <ActionButton icon={"fas fa-flag"} />
+      <ActionButton icon={"fas fa-flag"} active={flagged} />
     </PermissionNotificationWrapper>
   );
 };
@@ -97,6 +104,9 @@ const styles = StyleSheet.create({
       height: 31,
       width: 31,
     },
+  },
+  flagged: {
+    color: "#000",
   },
 });
 
