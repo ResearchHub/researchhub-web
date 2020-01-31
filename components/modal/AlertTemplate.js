@@ -12,6 +12,21 @@ const AlertTemplate = ({ style, options, message, close }) => {
     close();
   }
 
+  function getOverlayStyle() {
+    return {
+      overlay: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        zIndex: "11",
+        borderRadius: 5,
+      },
+    };
+  }
+
   return (
     <Modal
       className={css(modalStyles.modal)}
@@ -19,7 +34,7 @@ const AlertTemplate = ({ style, options, message, close }) => {
       closeModal={closeAlert}
       shouldCloseOnOverlayClick={true}
       onRequestClose={closeAlert}
-      style={modalStyles.overlay}
+      style={getOverlayStyle()}
       ariaHideApp={false}
     >
       <div className={css(styles.alertContainer)}>
@@ -48,9 +63,6 @@ const AlertTemplate = ({ style, options, message, close }) => {
 };
 
 const styles = StyleSheet.create({
-  modal: {
-    background: "rgba(0, 0, 0, 0.2)",
-  },
   alertContainer: {
     display: "flex",
     flexDirection: "column",
