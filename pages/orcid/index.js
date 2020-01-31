@@ -22,7 +22,19 @@ class OrcidLoginPage extends React.Component {
     };
   }
 
-  componentDidMount(props) {}
+  componentDidMount(props) {
+    const token = this.props.router.query["token"];
+    const hasEmail = this.props.router.query["hasEmail"];
+
+    if (token) {
+      this.props.dispatch(AuthActions.orcidLogin({ token }));
+    }
+
+    const hasEmailAlready = hasEmail == "true" ? true : false;
+    if (hasEmailAlready) {
+      Router.push({ pathname: `/orcid/login`, query: { success: "true" } });
+    }
+  }
 
   handleEmailChange = (id, value) => {
     if (!this.state.loading) {
@@ -40,8 +52,8 @@ class OrcidLoginPage extends React.Component {
 
     this.toggleLoadingState();
     const body = { email: this.state.email };
-    const userId = this.props.auth.user && this.props.auth.userid;
-    await fetch(API.USER({ userId }, API.PATCH_CONFIG(body)))
+    const userId = this.props.auth.user && this.props.auth.user.id;
+    await fetch(API.USER({ userId }), API.PATCH_CONFIG(body))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -49,6 +61,7 @@ class OrcidLoginPage extends React.Component {
         Router.push({ pathname: `/orcid/login`, query: { success: "true" } });
       })
       .catch((err) => {
+        this.toggleLoadingState();
         this.setState({ error: true });
       });
   };
@@ -64,9 +77,7 @@ class OrcidLoginPage extends React.Component {
             />
             <img
               className={css(styles.orcidIcon)}
-              src={
-                "https://ndownloader.figshare.com/files/8439047/preview/8439047/preview.jpg"
-              } // not sure how stable this link is
+              src={"/static/icons/orcid.png"}
             />
           </div>
           <div className={css(styles.headerContainer)}>
