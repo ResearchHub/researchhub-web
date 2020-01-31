@@ -175,7 +175,7 @@ const DiscussionTab = (props) => {
         setTransition(true);
         let newDiscussion = { ...resp };
         newDiscussion = thread(newDiscussion);
-        threads.unshift(newDiscussion);
+        setThreads([newDiscussion, ...threads]);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         formattedThreads.unshift(formattedDiscussion);
         setTimeout(() => {
