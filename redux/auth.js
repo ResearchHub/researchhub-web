@@ -196,34 +196,21 @@ export const AuthActions = {
   /**
    * Login with ORCID
    */
-  orcidLogin: (params) => {
+  orcidLogin: (key) => {
     return (dispatch) => {
-      const postConfig = API.POST_CONFIG(params);
-      delete postConfig["headers"]["Authorization"];
-      return fetch(API.ORCID_LOGIN, postConfig)
-        .catch(utils.handleCatch)
-        .then((json) => {
-          saveToLocalStorage(AUTH_TOKEN, json.key);
-          return dispatch({
-            type: AuthConstants.LOGIN,
-            isLoggedIn: true,
-            isFetchingLogin: false,
-            loginFailed: false,
-          });
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            console.log(error.response);
-          } else {
-            console.log(error);
-          }
-          return dispatch({
-            type: AuthConstants.LOGIN_FAILURE,
-            isLoggedIn: false,
-            isFetchingLogin: false,
-            loginFailed: true,
-          });
-        });
+      saveToLocalStorage(AUTH_TOKEN, key);
+      return dispatch({
+        type: AuthConstants.LOGIN,
+        isLoggedIn: true,
+        isFetchingLogin: false,
+        loginFailed: false,
+      });
+      // return dispatch({
+      // type: AuthConstants.LOGIN_FAILURE,
+      // isLoggedIn: false,
+      // isFetchingLogin: false,
+      // loginFailed: true,
+      // });
     };
   },
 
