@@ -35,24 +35,43 @@ class DiscussionEntry extends React.Component {
       hovered: false,
       score: 0,
       selectedVoteType: "",
+      highlighted: false,
     };
     this.divRef = null;
   }
 
   componentDidMount = async () => {
-    const { paper, index, fetchComments, discussion, data } = this.props;
+    const {
+      paper,
+      index,
+      fetchComments,
+      discussion,
+      data,
+      newCard,
+    } = this.props;
     const comments = data.comments ? data.comments : [];
     const selectedVoteType = getNestedValue(this.props, [
       "data",
       "userVote",
       "voteType",
     ]);
-    this.setState({
-      comments,
-      score: data.score,
-      selectedVoteType,
-      revealComment: comments.length > 0 && comments.length < 6,
-    });
+    this.setState(
+      {
+        comments,
+        score: data.score,
+        selectedVoteType,
+        revealComment: comments.length > 0 && comments.length < 6,
+        highlight: newCard,
+      },
+      () => {
+        newCard &&
+          setTimeout(() => {
+            this.setState({ highlight: false }, () => {
+              this.props.newCard = false;
+            });
+          }, 10000);
+      }
+    );
   };
 
   componentDidUpdate = async (prevProps) => {};
@@ -93,6 +112,7 @@ class DiscussionEntry extends React.Component {
       this.setState(
         {
           comments,
+          revealComment: true,
         },
         () => {
           callback && callback();
@@ -230,7 +250,13 @@ class DiscussionEntry extends React.Component {
     let username = this.createUsername(data);
 
     return (
-      <div className={css(styles.row, styles.discussionCard)}>
+      <div
+        className={css(
+          styles.row,
+          styles.discussionCard,
+          this.state.highlight && styles.highlight
+        )}
+      >
         <div className={css(styles.column, styles.left)}>
           <VoteWidget
             score={this.state.score}
@@ -255,7 +281,12 @@ class DiscussionEntry extends React.Component {
           className={css(styles.column, styles.metaData)}
           ref={(element) => (this.divRef = element)}
         >
-          <span className={css(styles.highlight)}>
+          <span
+            className={css(
+              styles.highlight,
+              this.state.highlight && styles.active
+            )}
+          >
             <div className={css(styles.row, styles.topbar)}>
               <DiscussionPostMetadata
                 authorProfile={data && data.createdBy.authorProfile}
@@ -390,6 +421,12 @@ const styles = StyleSheet.create({
   voteWidget: {
     margin: 0,
     backgroundColor: "#FFF",
+  },
+  active: {
+    backgroundColor: colors.LIGHT_YELLOW(),
+    ":hover": {
+      backgroundColor: colors.LIGHT_YELLOW(),
+    },
   },
 });
 

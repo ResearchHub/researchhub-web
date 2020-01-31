@@ -4,7 +4,7 @@ import Ripples from "react-ripples";
 import colors from "~/config/themes/colors";
 
 const ActionButton = (props) => {
-  let { icon, iconNode, action, size, addRipples } = props;
+  let { icon, iconNode, action, size, addRipples, active } = props;
 
   function renderIcon() {
     if (icon) {
@@ -20,13 +20,21 @@ const ActionButton = (props) => {
 
   if (addRipples) {
     return (
-      <Ripples className={css(styles.actionButton) + " " + props.className} onClick={action}>
-        <div className={css(styles.actionButton) + " " + props.className}>{renderIcon()}</div>
+      <Ripples
+        className={css(styles.actionButton, active && styles.active)}
+        onClick={action}
+      >
+        <div className={css(styles.actionButton, active && styles.active)}>
+          {renderIcon()}
+        </div>
       </Ripples>
     );
   } else {
     return (
-      <div className={css(styles.actionButton) + " " + props.className} onClick={action}>
+      <div
+        className={css(styles.actionButton, active && styles.active)}
+        onClick={action}
+      >
         {renderIcon()}
       </div>
     );
@@ -68,6 +76,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 13,
     },
+  },
+  active: {
+    color: "#FFF",
+    background: colors.GREY(1),
   },
 });
 
