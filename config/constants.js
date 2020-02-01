@@ -11,11 +11,17 @@ export const GOOGLE_CLIENT_ID =
     : "192509748493-amjlt30mbpo9lq5gppn7bfd5c52i0ioe.apps.googleusercontent.com";
 
 export const ORCID_CLIENT_ID = "APP-JRYHYFMMJTSPBLCP";
-export const ORCID_REDIRECT_URI =
-  process.env.NODE_ENV === "production"
-    ? "https://backend.researchhub.com/api/auth/orcid/login/"
-    : "https://staging-backend.researchhub.com/api/auth/orcid/login/";
-// : "http://localhost:8000/api/auth/orcid/login/callback/";  // development
+export const ORCID_REDIRECT_URI = setOrcidRedirect();
+
+function setOrcidRedirect() {
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:8000/api/auth/orcid/login/callback/"; // development
+  } else if (process.env.NODE_ENV === "production") {
+    return "https://backend.researchhub.com/api/auth/orcid/login/callback/";
+  } else {
+    ("https://staging-backend.researchhub.com/api/auth/orcid/login/callback/");
+  }
+}
 
 export function nameToUrl(name) {
   let arr = name.split(" ");
