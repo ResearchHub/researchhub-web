@@ -16,6 +16,8 @@ import { MessageActions } from "~/redux/message";
 
 import { GOOGLE_CLIENT_ID } from "../../config/constants";
 
+import colors from "~/config/themes/colors";
+
 class LoginModal extends React.Component {
   constructor(props) {
     super(props);
@@ -89,6 +91,7 @@ class LoginModal extends React.Component {
             <OrcidLoginButton
               iconStyle={styles.iconStyle}
               styles={styles.orchidButton}
+              customLabelStyle={styles.orchidLabel}
             />
           </div>
         </div>
@@ -160,9 +163,19 @@ const styles = StyleSheet.create({
     height: 55,
     width: 230,
     marginBottom: 15,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
   },
-  orcidButton: {
+  orchidButton: {
     backgroundColor: "#fff",
+    color: colors.BLUE(1),
+    border: `1px solid ${colors.BLUE()}`,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    ":hover": {
+      backgroundColor: "#FAFAFA",
+    },
+  },
+  orchidLabel: {
+    color: colors.BLUE(1),
   },
   iconStyle: {
     height: 33,
