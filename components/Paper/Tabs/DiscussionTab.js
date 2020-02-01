@@ -87,6 +87,7 @@ const DiscussionTab = (props) => {
       );
       const sortedThreads = store.getState().paper.discussion.threads;
       setThreads(sortedThreads);
+      setFormattedThreads(formatThreads(sortedThreads, basePath));
       setTimeout(() => {
         dispatch(MessageActions.showMessage({ show: false }));
       }, 200);
