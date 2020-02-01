@@ -397,6 +397,7 @@ const styles = StyleSheet.create({
     fontSize: 33,
     marginBottom: 10,
     position: "relative",
+    wordBreak: "break-word",
     "@media only screen and (max-width: 760px)": {
       fontSize: 28,
     },
@@ -471,6 +472,9 @@ const styles = StyleSheet.create({
   actionButtons: {
     display: "flex",
     alignItems: "center",
+    "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
   },
   topHeader: {
     display: "flex",
