@@ -378,7 +378,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflowWrap: "break-word",
     lineHeight: 1.6,
-    overflow: "auto",
     cursor: "pointer",
   },
   metaData: {
