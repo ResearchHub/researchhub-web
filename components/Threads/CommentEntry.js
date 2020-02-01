@@ -372,7 +372,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflowWrap: "break-word",
     lineHeight: 1.6,
-    overflow: "auto",
   },
   metaData: {
     width: "calc(100% - 44px)",
