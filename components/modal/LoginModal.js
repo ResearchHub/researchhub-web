@@ -86,7 +86,10 @@ class LoginModal extends React.Component {
             )}
           />
           <div className={css(styles.orcidButton)}>
-            <OrcidLoginButton />
+            <OrcidLoginButton
+              iconStyle={styles.iconStyle}
+              styles={styles.orchidButton}
+            />
           </div>
         </div>
       </BaseModal>
@@ -158,9 +161,14 @@ const styles = StyleSheet.create({
     width: 230,
     marginBottom: 15,
   },
+  orcidButton: {
+    backgroundColor: "#fff",
+  },
   iconStyle: {
     height: 33,
     width: 33,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    borderRadius: "50%",
   },
   inputContainer: {
     width: 425,
@@ -180,7 +188,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 5,
   },
 });
 
