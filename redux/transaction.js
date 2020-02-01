@@ -52,7 +52,7 @@ const TransactionReducer = (state = defaultTransactionState, action) => {
       return {
         ...state,
         ...action.payload,
-        withdrawals: [...state.withdrawals, ...action.payload.withdrawals],
+        withdrawals: [...action.payload.withdrawals],
       };
     default:
       return state;
