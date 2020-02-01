@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     transform: "translate(-50%, -50%)",
     display: "flex",
     flexDirection: "column",
+    borderRadius: 10,
     "@media only screen and (max-width: 665px)": {
       width: "90%",
     },
@@ -197,6 +198,7 @@ const styles = StyleSheet.create({
     padding: 50,
     overflow: "scroll",
     opacity: 0,
+    borderRadius: 10,
     transition: "all ease-in-out 0.4s",
     "@media only screen and (max-width: 415px)": {
       padding: "50px 0px 0px 0px",
