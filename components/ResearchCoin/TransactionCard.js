@@ -12,15 +12,15 @@ const TransactionCard = (props) => {
   let { transaction } = props;
   function renderStatus(status) {
     switch (status) {
-      case "failed":
+      case "FAILED":
         return (
           <div className={css(styles.status, styles.failed)}>{status}</div>
         );
-      case "pending":
+      case "PENDING":
         return (
           <div className={css(styles.status, styles.pending)}>{status}</div>
         );
-      case "paid":
+      case "PAID":
         return (
           <div className={css(styles.status, styles.confirmed)}>{status}</div>
         );
