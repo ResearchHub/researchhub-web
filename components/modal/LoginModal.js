@@ -7,6 +7,7 @@ import { GoogleLogin } from "react-google-login";
 // Component
 import Button from "../Form/Button";
 import BaseModal from "./BaseModal";
+import OrcidLoginButton from "../OrcidLoginButton";
 
 // Redux
 import { AuthActions } from "../../redux/auth";
@@ -67,22 +68,27 @@ class LoginModal extends React.Component {
         backgroundImage={true}
       >
         <div className={css(styles.titleContainer)}></div>
-        <GoogleLogin
-          clientId={GOOGLE_CLIENT_ID}
-          onSuccess={this.responseGoogle}
-          onFailure={this.responseGoogle}
-          cookiePolicy={"single_host_origin"}
-          render={(renderProps) => (
-            <Button
-              disabled={renderProps.disabled}
-              onClick={renderProps.onClick}
-              customButtonStyle={styles.button}
-              icon={"/static/icons/google.png"}
-              customIconStyle={styles.iconStyle}
-              label={"Log in with Google"}
-            />
-          )}
-        />
+        <div className={css(styles.buttonColumn)}>
+          <GoogleLogin
+            clientId={GOOGLE_CLIENT_ID}
+            onSuccess={this.responseGoogle}
+            onFailure={this.responseGoogle}
+            cookiePolicy={"single_host_origin"}
+            render={(renderProps) => (
+              <Button
+                disabled={renderProps.disabled}
+                onClick={renderProps.onClick}
+                customButtonStyle={styles.button}
+                icon={"/static/icons/google.png"}
+                customIconStyle={styles.iconStyle}
+                label={"Log in with Google"}
+              />
+            )}
+          />
+          <div className={css(styles.orcidButton)}>
+            <OrcidLoginButton />
+          </div>
+        </div>
       </BaseModal>
     );
   }
@@ -163,6 +169,18 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 395,
+  },
+  buttonColumn: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  orcidButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
   },
 });
 

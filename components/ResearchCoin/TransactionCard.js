@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     ":hover": {
       backgroundColor: "#FAFAFA",
+      boxShadow: "0 1px 1px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24)",
     },
     "@media only screen and (max-width: 767px)": {
       width: "85%",
@@ -147,6 +148,8 @@ const styles = StyleSheet.create({
   confirmed: {
     color: "#2a6218",
     backgroundColor: "#D5F3D7",
+    borderColor: "#D5F3D7",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     ":hover": {
       borderColor: "#2a6218",
     },
@@ -154,15 +157,19 @@ const styles = StyleSheet.create({
   pending: {
     color: "#DCAA72",
     backgroundColor: "#FDF2DE",
+    borderColor: "#FDF2DE",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     ":hover": {
       borderColor: "#DCAA72",
     },
   },
   failed: {
-    color: "red",
+    color: colors.RED(),
     backgroundColor: "rgba(235, 51, 35, 0.2)",
+    borderColor: "rgba(235, 51, 35, 0.2)",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     ":hover": {
-      borderColor: "red",
+      borderColor: colors.RED(),
     },
   },
   sent: {
