@@ -283,16 +283,16 @@ const Paper = (props) => {
                 </div>
                 <div className={css(styles.hubs)}>{renderHubs()}</div>
               </div>
-              <div className={css(styles.tagline)}>
-                {paper && paper.tagline}
-              </div>
-              <div className={css(styles.mobileDoi)}>
-                {paper.doi && (
+              {paper && paper.tagline && (
+                <div className={css(styles.tagline)}>{paper.tagline}</div>
+              )}
+              {paper.doi && (
+                <div className={css(styles.mobileDoi)}>
                   <div className={css(styles.info)}>
                     DOI: {paper && paper.doi}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
               <div className={css(styles.infoSection)}>
                 {renderPublishDate()}
                 {paper.doi && (
@@ -302,7 +302,14 @@ const Paper = (props) => {
                 )}
               </div>
               <div className={css(styles.mobileTags)}>
-                <div className={css(styles.authors)}>{renderAuthors()}</div>
+                <div
+                  className={css(
+                    styles.authors,
+                    paper.authors.length < 1 && styles.hide
+                  )}
+                >
+                  {renderAuthors()}
+                </div>
                 <div className={css(styles.hubs)}>{renderHubs()}</div>
                 <PermissionNotificationWrapper>
                   <ActionButton
