@@ -316,7 +316,9 @@ class Index extends React.Component {
               className={css(styles.bannerOverlay)}
             />
             <div className={css(styles.row, styles.pointCardList)}>
+              <div className={css(styles.frontSpace)} />
               <PointCards points={points} />
+              <div className={css(styles.endSpace)} />
             </div>
           </div>
         </div>
