@@ -34,6 +34,8 @@ const TextEditor = (props) => {
     hideCancelButton,
     containerStyles,
     commentStyles,
+    smallToolBar,
+    loading,
   } = props;
 
   const [value, setValue] = useState(convertToEditorValue(initialValue));
@@ -105,6 +107,8 @@ const TextEditor = (props) => {
       autoFocus={true}
       hideCancelButton={hideCancelButton && hideCancelButton}
       commentStyles={commentStyles && commentStyles}
+      smallToolBar={smallToolBar && smallToolBar}
+      loading={loading && loading}
     />
   );
 };
@@ -123,6 +127,7 @@ TextEditor.propTypes = {
   placeholder: PropTypes.string,
   readOnly: PropTypes.bool,
   hideButton: PropTypes.bool,
+  loading: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({

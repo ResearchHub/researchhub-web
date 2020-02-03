@@ -433,9 +433,11 @@ class PaperUploadInfo extends React.Component {
   };
 
   removePaper = () => {
-    let { paperActions } = this.props;
+    let { paperActions, modalActions } = this.props;
     paperActions.removePaperFromState();
-    this.setState({ edited: true });
+    this.setState({ edited: true }, () => {
+      modalActions.openUploadPaperModal(true);
+    });
   };
 
   renderTitle = () => {
@@ -1000,7 +1002,7 @@ class PaperUploadInfo extends React.Component {
     // send form object to the backend
     if (!this.state.editMode) {
       body.file =
-        !this.props.paper.uploadedPaper.URL && this.props.paper.uploadedPaper;
+        !this.props.paper.uploadedPaper.url && this.props.paper.uploadedPaper;
       let paperId =
         this.props.paper.postedPaper && this.props.paper.postedPaper.id;
       request === "POST"

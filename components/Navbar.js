@@ -14,22 +14,22 @@ import { AuthActions } from "../redux/auth";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
+import Button from "../components/Form/Button";
+import FirstVoteModal from "../components/modal/FirstVoteModal";
+import GoogleLoginButton from "../components/GoogleLoginButton";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
-import UploadPaperModal from "../components/modal/UploadPaperModal";
-import TransactionModal from "../components/modal/TransactionModal";
-import FirstVoteModal from "../components/modal/FirstVoteModal";
-import Button from "../components/Form/Button";
+// import OrcidLoginButton from "../components/OrcidLoginButton";
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import Reputation from "./Reputation";
 import Search from "./Search";
-
-import { RHLogo } from "~/config/themes/icons";
+import TransactionModal from "../components/modal/TransactionModal";
+import UploadPaperModal from "../components/modal/UploadPaperModal";
 
 // Styles
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import GoogleLoginButton from "./GoogleLoginButton";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-import Reputation from "./Reputation";
+import { RHLogo } from "~/config/themes/icons";
 import "./stylesheets/Navbar.css";
 
 const Navbar = (props) => {
@@ -100,7 +100,7 @@ const Navbar = (props) => {
       icon: "user",
     },
     {
-      label: "Login With Google",
+      label: "Login",
     },
     { label: "Logout", onClick: signout, icon: "signOut" },
   ];
@@ -195,16 +195,9 @@ const Navbar = (props) => {
           </div>
         );
       }
-      if (tab.label === "Login With Google") {
+      if (tab.label === "Login") {
         if (!isLoggedIn) {
-          return (
-            <GoogleLoginButton
-              styles={[styles.loginMobile]}
-              iconStyle={styles.googleIcon}
-              customLabel="Login"
-              customLabelStyle={[styles.googleLabelMobile]}
-            />
-          );
+          return renderMenuLoginButtons();
         } else {
           return null;
         }
@@ -231,6 +224,43 @@ const Navbar = (props) => {
         </div>
       );
     });
+  }
+
+  function renderMenuLoginButtons() {
+    return (
+      <div className={css(styles.loginContainer)}>
+        <GoogleLoginButton
+          styles={[styles.loginMobile]}
+          iconStyle={styles.googleIcon}
+          customLabel="Login"
+          customLabelStyle={[styles.googleLabelMobile]}
+        />
+        {/* <OrcidLoginButton
+          styles={[styles.loginMobile]}
+          iconStyle={styles.orcidIcon}
+          customLabel="Login"
+          customLabelStyle={[styles.googleLabelMobile]}
+        /> */}
+      </div>
+    );
+  }
+
+  function renderLoginButtons() {
+    return (
+      <div className={css(styles.oauthContainer)}>
+        <GoogleLoginButton
+          styles={[styles.button, styles.googleLoginButton, styles.login]}
+          iconStyle={styles.googleIcon}
+          customLabelStyle={[styles.googleLabel]}
+        />
+        <div className={css(styles.divider)}></div>
+        {/* <OrcidLoginButton
+          styles={[styles.button, styles.googleLoginButton, styles.login]}
+          iconStyle={styles.orcidIcon}
+          customLabelStyle={[styles.googleLabel]}
+        /> */}
+      </div>
+    );
   }
 
   function addPaperModal() {
@@ -323,15 +353,7 @@ const Navbar = (props) => {
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
               authChecked ? (
-                <GoogleLoginButton
-                  styles={[
-                    styles.button,
-                    styles.googleLoginButton,
-                    styles.login,
-                  ]}
-                  iconStyle={styles.googleIcon}
-                  customLabelStyle={[styles.googleLabel]}
-                />
+                renderLoginButtons()
               ) : null
             ) : (
               <div className={css(styles.userDropdown)}>
@@ -442,7 +464,7 @@ const styles = StyleSheet.create({
   },
   googleLoginButton: {
     margin: 0,
-    width: 200,
+    width: 180,
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
@@ -450,6 +472,17 @@ const styles = StyleSheet.create({
   googleIcon: {
     width: 25,
     height: 25,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    borderRadius: "50%",
+  },
+  orcidIcon: {
+    width: 25,
+    height: 25,
+    borderRadius: "50%",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+  },
+  divider: {
+    width: 5,
   },
   firstTab: {
     marginLeft: 30,
@@ -528,8 +561,8 @@ const styles = StyleSheet.create({
   },
   login: {
     color: colors.BLUE(),
-    border: `${colors.BLUE()} 1px solid`,
-    background: "transparent",
+    border: "1px solid #E7E7E7",
+    background: "#FFF",
     ":hover": {
       backgroundColor: "rgba(250, 250, 250, 1)",
     },
@@ -677,6 +710,10 @@ const styles = StyleSheet.create({
       display: "unset",
       position: "relative",
     },
+  },
+  oauthContainer: {
+    display: "flex",
+    alignItems: "center",
   },
 });
 

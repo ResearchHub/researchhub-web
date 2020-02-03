@@ -18,18 +18,21 @@ import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 import HubTag from "~/components/Hubs/HubTag";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import FlagButton from "~/components/FlagButton";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
+// Redux
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 import { ModalActions } from "~/redux/modals";
 import VoteActions from "~/redux/vote";
+import { FlagActions } from "~/redux/flags";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
-import PermissionNotificationWrapper from "../../../../components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -42,6 +45,7 @@ const Paper = (props) => {
 
   const [paper, setPaper] = useState(props.paper);
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
+  const [flagged, setFlag] = useState(paper.user_flag !== null);
   const [discussionThreads, setDiscussionThreads] = useState(
     getDiscussionThreads(paper)
   );
@@ -75,11 +79,14 @@ const Paper = (props) => {
   useEffect(() => {
     async function refetchPaper() {
       await dispatch(PaperActions.getPaper(paperId));
+      const fetchedPaper = store.getState().paper;
+      await dispatch(PaperActions.getThreads(paperId, fetchedPaper));
       const refetchedPaper = store.getState().paper;
 
       setPaper(refetchedPaper);
       setSelectedVoteType(getVoteType(refetchedPaper.userVote));
       setDiscussionThreads(getDiscussionThreads(refetchedPaper));
+      setFlag(refetchedPaper.user_flag !== null);
       showMessage({ show: false });
       if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
         props.setUploadingPaper(false);
@@ -89,7 +96,8 @@ const Paper = (props) => {
   }, [props.isServer, paperId]);
 
   function getDiscussionThreads(paper) {
-    return getNestedValue(paper, ["discussion", "threads"]);
+    return paper.discussion.threads;
+    // return getNestedValue(paper, ["discussion", "threads"]);
   }
 
   async function upvote() {
@@ -253,6 +261,11 @@ const Paper = (props) => {
                         action={null}
                         addRipples={true}
                       />*/}
+                    <FlagButton
+                      paperId={paper.id}
+                      flagged={flagged}
+                      setFlag={setFlag}
+                    />
                   </div>
                 </span>
               </div>
@@ -270,16 +283,16 @@ const Paper = (props) => {
                 </div>
                 <div className={css(styles.hubs)}>{renderHubs()}</div>
               </div>
-              <div className={css(styles.tagline)}>
-                {paper && paper.tagline}
-              </div>
-              <div className={css(styles.mobileDoi)}>
-                {paper.doi && (
+              {paper && paper.tagline && (
+                <div className={css(styles.tagline)}>{paper.tagline}</div>
+              )}
+              {paper.doi && (
+                <div className={css(styles.mobileDoi)}>
                   <div className={css(styles.info)}>
                     DOI: {paper && paper.doi}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
               <div className={css(styles.infoSection)}>
                 {renderPublishDate()}
                 {paper.doi && (
@@ -289,8 +302,38 @@ const Paper = (props) => {
                 )}
               </div>
               <div className={css(styles.mobileTags)}>
-                <div className={css(styles.authors)}>{renderAuthors()}</div>
+                <div
+                  className={css(
+                    styles.authors,
+                    paper.authors.length < 1 && styles.hide
+                  )}
+                >
+                  {renderAuthors()}
+                </div>
                 <div className={css(styles.hubs)}>{renderHubs()}</div>
+                <PermissionNotificationWrapper>
+                  <ActionButton
+                    className={"first-step"}
+                    icon={"fas fa-pencil"}
+                  />
+                </PermissionNotificationWrapper>
+                <ShareAction
+                  iconNode={icons.shareAlt}
+                  addRipples={true}
+                  title={"Share this paper"}
+                  subtitle={paperTitle}
+                  url={shareUrl}
+                />
+                <FlagButton
+                  paperId={paper.id}
+                  flagged={flagged}
+                  setFlag={setFlag}
+                />
+                {/* <ActionButton
+                  icon={"fas fa-bookmark"}
+                  action={null}
+                  addRipples={true}
+                /> */}
               </div>
             </div>
           </ComponentWrapper>
@@ -329,6 +372,8 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
   const hostname = host;
 
   await store.dispatch(PaperActions.getPaper(query.paperId));
+  const fetchedPaper = store.getState().paper;
+  await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
 
   return { isServer, hostname };
 };
@@ -359,6 +404,7 @@ const styles = StyleSheet.create({
     fontSize: 33,
     marginBottom: 10,
     position: "relative",
+    wordBreak: "break-word",
     "@media only screen and (max-width: 760px)": {
       fontSize: 28,
     },
@@ -433,12 +479,14 @@ const styles = StyleSheet.create({
   actionButtons: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 760px)": {},
+    "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
   },
   topHeader: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     "@media only screen and (max-width: 760px)": {
       flexDirection: "column",
       justifyContent: "flex-start",
