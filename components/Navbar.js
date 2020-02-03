@@ -19,7 +19,7 @@ import FirstVoteModal from "../components/modal/FirstVoteModal";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
-import OrcidLoginButton from "../components/OrcidLoginButton";
+// import OrcidLoginButton from "../components/OrcidLoginButton";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
 import Search from "./Search";
