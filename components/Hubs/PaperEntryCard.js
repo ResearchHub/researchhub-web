@@ -373,7 +373,7 @@ const mobileStyles = StyleSheet.create({
   },
   bottomBar: {
     marginBottom: 15,
-    overflowX: "scroll",
+    // overflowX: "scroll",
     paddingTop: 2,
   },
   discussionCount: {
@@ -382,7 +382,7 @@ const mobileStyles = StyleSheet.create({
     },
   },
   tags: {
-    overflowX: "scroll",
+    // overflowX: "scroll",
   },
 });
 
