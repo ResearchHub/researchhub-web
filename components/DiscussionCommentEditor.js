@@ -87,6 +87,7 @@ const DiscussionCommentEditor = (props) => {
         onCancel={onCancel}
         commentStyles={commentStyles && commentStyles}
         containerStyles={containerStyles && containerStyles}
+        smallToolBar={true}
       />
     </div>
   );

@@ -49,6 +49,7 @@ const ThreadEditor = (props) => {
       clearOnSubmit={false}
       hideCancelButton={true}
       commentStyles={commentStyles && commentStyles}
+      smallToolBar={true}
     />
   );
 };

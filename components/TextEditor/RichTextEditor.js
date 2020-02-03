@@ -169,7 +169,6 @@ class RichTextEditor extends React.Component {
               readOnly={this.props.readOnly}
               spellCheck
               autoFocus={true}
-              commentEditor={this.props.commentEditor}
               placeholder="What are your thoughts?"
               ref={this.ref}
               value={this.state.value}
@@ -192,6 +191,10 @@ class RichTextEditor extends React.Component {
                 hideCancelButton={
                   this.props.hideCancelButton && this.props.hideCancelButton
                 }
+                smallToolBar={
+                  this.props.smallToolBar && this.props.smallToolBar
+                }
+                loading={this.props.loading && this.props.loading}
               >
                 {this.renderMarkButton("bold", textEditorIcons.bold, true)}
                 {this.renderMarkButton("italic", textEditorIcons.italic)}
@@ -225,6 +228,10 @@ class RichTextEditor extends React.Component {
                   hideCancelButton={
                     this.props.hideCancelButton && this.props.hideCancelButton
                   }
+                  loading={this.props.loading && this.props.loading}
+                  smallToolBar={
+                    this.props.smallToolBar && this.props.smallToolBar
+                  }
                 >
                   {this.renderMarkButton("bold", textEditorIcons.bold, true)}
                   {this.renderMarkButton("italic", textEditorIcons.italic)}
@@ -253,7 +260,6 @@ class RichTextEditor extends React.Component {
               readOnly={this.props.readOnly}
               spellCheck
               autoFocus
-              commentEditor={this.props.commentEditor}
               placeholder={this.props.placeholder && this.props.placeholder}
               ref={this.ref}
               value={this.state.value}
@@ -311,6 +317,7 @@ class RichTextEditor extends React.Component {
       <Button
         active={isActive}
         first={first}
+        smallToolBar={this.props.smallToolBar && this.props.smallToolBar}
         onMouseDown={(event) => {
           this.onClickMark(event, type);
           // this.closeLinkAndImage();
@@ -327,6 +334,7 @@ class RichTextEditor extends React.Component {
       <span>
         <Button
           active={isActive}
+          smallToolBar={this.props.smallToolBar && this.props.smallToolBar}
           onMouseDown={(event) => {
             event.preventDefault();
             if (isActive) {
@@ -428,6 +436,7 @@ class RichTextEditor extends React.Component {
     return (
       <span>
         <Button
+          smallToolBar={this.props.smallToolBar && this.props.smallToolBar}
           onMouseDown={(event) => {
             event.preventDefault();
             this.setState({
@@ -580,6 +589,7 @@ class RichTextEditor extends React.Component {
     return (
       <Button
         active={isActive}
+        smallToolBar={this.props.smallToolBar && this.props.smallToolBar}
         onMouseDown={(event) => {
           this.onClickBlock(event, type);
         }}

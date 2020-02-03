@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-import ReputationTooltip from "./ReputationTooltip";
+// import ReputationTooltip from "./ReputationTooltip";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
@@ -37,7 +37,6 @@ const VoteWidget = (props) => {
     type,
   } = props;
   const score = getScore(props);
-
   const userReputation = getCurrentUserReputation(store.getState());
   const { permission } = store.getState();
 
@@ -106,8 +105,8 @@ const VoteWidget = (props) => {
           props.styles
         )}
         style={{ fontSize: fontSize, width: width }}
-        data-tip
-        data-for="reputationTooltip"
+        // data-tip
+        // data-for="reputationTooltip"
       >
         <PermissionNotificationWrapper
           loginRequired={true}
@@ -147,7 +146,7 @@ const VoteWidget = (props) => {
           )}
         </PermissionNotificationWrapper>
       </div>
-      {!searchResult && <ReputationTooltip />}
+      {/* {!searchResult && <ReputationTooltip />} */}
     </Fragment>
   );
 };
@@ -240,6 +239,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     borderRadius: 24,
     padding: ".2em .9em",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   icon: {
     cursor: "pointer",
