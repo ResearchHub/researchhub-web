@@ -14,12 +14,12 @@ export const ORCID_CLIENT_ID = "APP-JRYHYFMMJTSPBLCP";
 export const ORCID_REDIRECT_URI = setOrcidRedirect();
 
 function setOrcidRedirect() {
-  if (process.env.NODE_ENV === "development") {
-    return "http://localhost:8000/api/auth/orcid/login/callback/"; // development
+  if (process.env.REACT_APP_ENV === "staging") {
+    return "https://staging-backend.researchhub.com/api/auth/orcid/login/callback/";
   } else if (process.env.NODE_ENV === "production") {
     return "https://backend.researchhub.com/api/auth/orcid/login/callback/";
   } else {
-    ("https://staging-backend.researchhub.com/api/auth/orcid/login/callback/");
+    return "http://localhost:8000/api/auth/orcid/login/callback/";
   }
 }
 
