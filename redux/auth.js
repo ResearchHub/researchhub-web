@@ -11,6 +11,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "../config/constants";
 import { useDispatch } from "react-redux";
 import { ModalActions } from "./modals";
+import * as utils from "./utils";
 
 export const AuthConstants = {
   LOGIN: "@@auth/LOGIN",
@@ -189,6 +190,27 @@ export const AuthActions = {
             loginFailed: true,
           });
         });
+    };
+  },
+
+  /**
+   * Login with ORCID
+   */
+  orcidLogin: (params) => {
+    return (dispatch) => {
+      saveToLocalStorage(AUTH_TOKEN, params["token"]);
+      return dispatch({
+        type: AuthConstants.LOGIN,
+        isLoggedIn: true,
+        isFetchingLogin: false,
+        loginFailed: false,
+      });
+      // return dispatch({
+      // type: AuthConstants.LOGIN_FAILURE,
+      // isLoggedIn: false,
+      // isFetchingLogin: false,
+      // loginFailed: true,
+      // });
     };
   },
 

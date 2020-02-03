@@ -38,10 +38,10 @@ class DiscussionComment extends React.Component {
     readOnly: true,
     paperId: Router.query.paperId
       ? Router.query.paperId
-      : this.props.data.thread.paper,
+      : this.props.data.thread && this.props.data.thread.paper,
     discussionThreadId: Router.query.discussionThreadId
       ? Router.query.discussionThreadId
-      : this.props.data.thread.id,
+      : this.props.data.thread && this.props.data.thread.id,
   };
 
   componentDidUpdate(prevProps, prevState) {

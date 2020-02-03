@@ -68,6 +68,7 @@ const routes = (BASE_URL) => {
       return url;
     },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
+    ORCID_LOGIN: BASE_URL + "auth/orcid/login/",
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({ search, config, page, size }) => {
       let url = BASE_URL + "search/";
@@ -153,8 +154,14 @@ const routes = (BASE_URL) => {
       return BASE_URL + "permissions/";
     },
 
-    DISCUSSION: (paperId) => {
+    DISCUSSION: (paperId, filter) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/`;
+
+      if (filter !== undefined || filter !== null) {
+        if (typeof filter === "string") {
+          url += `?ordering=${filter}`;
+        }
+      }
 
       return url;
     },
@@ -327,6 +334,15 @@ const routes = (BASE_URL) => {
       return url;
     },
     USER_FIRST_COIN: BASE_URL + "user/has_seen_first_coin_modal/",
+    FLAG_PAPER: ({ paperId }) => {
+      let url = BASE_URL + "paper/";
+
+      if (paperId !== undefined && paperId !== null) {
+        url += `${paperId}/flag/`;
+      }
+
+      return url;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

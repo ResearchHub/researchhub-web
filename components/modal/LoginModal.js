@@ -7,6 +7,7 @@ import { GoogleLogin } from "react-google-login";
 // Component
 import Button from "../Form/Button";
 import BaseModal from "./BaseModal";
+// import OrcidLoginButton from "../OrcidLoginButton";
 
 // Redux
 import { AuthActions } from "../../redux/auth";
@@ -14,6 +15,8 @@ import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "~/redux/message";
 
 import { GOOGLE_CLIENT_ID } from "../../config/constants";
+
+import colors from "~/config/themes/colors";
 
 class LoginModal extends React.Component {
   constructor(props) {
@@ -67,22 +70,31 @@ class LoginModal extends React.Component {
         backgroundImage={true}
       >
         <div className={css(styles.titleContainer)}></div>
-        <GoogleLogin
-          clientId={GOOGLE_CLIENT_ID}
-          onSuccess={this.responseGoogle}
-          onFailure={this.responseGoogle}
-          cookiePolicy={"single_host_origin"}
-          render={(renderProps) => (
-            <Button
-              disabled={renderProps.disabled}
-              onClick={renderProps.onClick}
-              customButtonStyle={styles.button}
-              icon={"/static/icons/google.png"}
-              customIconStyle={styles.iconStyle}
-              label={"Log in with Google"}
+        <div className={css(styles.buttonColumn)}>
+          <GoogleLogin
+            clientId={GOOGLE_CLIENT_ID}
+            onSuccess={this.responseGoogle}
+            onFailure={this.responseGoogle}
+            cookiePolicy={"single_host_origin"}
+            render={(renderProps) => (
+              <Button
+                disabled={renderProps.disabled}
+                onClick={renderProps.onClick}
+                customButtonStyle={styles.button}
+                icon={"/static/icons/google.png"}
+                customIconStyle={styles.iconStyle}
+                label={"Log in with Google"}
+              />
+            )}
+          />
+          {/* <div className={css(styles.orcidButton)}>
+            <OrcidLoginButton
+              iconStyle={styles.iconStyle}
+              styles={styles.orchidButton}
+              customLabelStyle={styles.orchidLabel}
             />
-          )}
-        />
+          </div> */}
+        </div>
       </BaseModal>
     );
   }
@@ -151,10 +163,25 @@ const styles = StyleSheet.create({
     height: 55,
     width: 230,
     marginBottom: 15,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+  },
+  orchidButton: {
+    backgroundColor: "#fff",
+    color: colors.BLUE(1),
+    border: `1px solid ${colors.BLUE()}`,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    ":hover": {
+      backgroundColor: "#FAFAFA",
+    },
+  },
+  orchidLabel: {
+    color: colors.BLUE(1),
   },
   iconStyle: {
     height: 33,
     width: 33,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    borderRadius: "50%",
   },
   inputContainer: {
     width: 425,
@@ -163,6 +190,18 @@ const styles = StyleSheet.create({
   },
   input: {
     width: 395,
+  },
+  buttonColumn: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  orcidButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 5,
   },
 });
 

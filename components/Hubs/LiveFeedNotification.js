@@ -3,6 +3,7 @@ import React, { Fragment } from "react";
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import Router from "next/router";
 import ReactTooltip from "react-tooltip";
 
 // Component
@@ -28,33 +29,50 @@ class LiveFeedNotification extends React.Component {
     return `${first_name} ${last_name}`;
   };
 
+  navigateToPaper = () => {
+    let { notification } = this.props;
+    let route = `/paper/${notification.paper_id}/summary`;
+    Router.push("/paper/[paperId]/[tabName]", route);
+  };
+
   renderNotification = () => {
     const { notification } = this.props;
-    let { paper, created_date, created_by, content_type } = notification;
+    let { created_date, created_by, content_type } = notification;
     let notificationType = content_type;
     const timestamp = this.formatTimestamp(created_date);
     const username = this.formatUsername(created_by);
     const authorId = created_by.author_profile.id;
-    let paperTip = paper && paper.title;
+    let paperTip = notification.paper_title;
+    let paperId = notification.paper_id;
+    let threadTip = notification.thread_title;
+    let threadId = notification.thread_id;
 
     switch (notificationType) {
       case "summary":
-        paperTip = notification.paper_title;
         return (
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
             </Link>{" "}
             edited a summary for{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paper}/summary`}
+              as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper && this.truncatePaperTitle(paperTip)}
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -70,15 +88,69 @@ class LiveFeedNotification extends React.Component {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
             </Link>{" "}
             voted on{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paper && paper.id}/summary`}
+              as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper && this.truncatePaperTitle(paper.title)}
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "vote_thread":
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            voted on a{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/discussion/${threadId}`}
+            >
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                thread
+              </a>
+            </Link>
+            in{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paperId}/summary`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -88,30 +160,42 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "vote_comment":
-        var { thread } = notification.comment;
         return (
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
             </Link>{" "}
             voted on a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paper && paper.id}/discussion/${thread &&
-                thread.id}`}
+              as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)}>comment</a>
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                comment
+              </a>
             </Link>
             in{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paper && paper.id}/summary`}
+              as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper && this.truncatePaperTitle(paper.title)}
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -121,30 +205,42 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "vote_reply":
-        var { thread } = notification;
         return (
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
             </Link>{" "}
             voted on a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paper && paper.id}/discussion/${thread &&
-                thread.id}`}
+              as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)}>reply</a>
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                reply
+              </a>
             </Link>
             in{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paper && paper.id}/summary`}
+              as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper && this.truncatePaperTitle(paper.title)}
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -154,29 +250,42 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "thread":
-        var { first_name, last_name } = notification.created_by;
         return (
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
             </Link>{" "}
             created a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paper.id}/discussion/${notification.id}`}
+              as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)}>thread</a>
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                thread
+              </a>
             </Link>
             {"in "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paper.id}/summary`}
+              as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
-                {paper.title && this.truncatePaperTitle(paper.title)}
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -186,25 +295,30 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "comment":
-        var { thread, plain_text } = notification;
-        var threadTip = thread.title && thread.title;
-        var commentTip = plain_text && this.truncatePaperTitle(plain_text);
-        var paperId = thread.paper;
-
+        var commentTip = notification.tip;
         return (
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
             </Link>{" "}
             left a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${thread.id}`}
+              as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)} data-tip={commentTip}>
+              <a
+                className={css(styles.link)}
+                data-tip={commentTip}
+                onClick={(e) => e.stopPropagation()}
+              >
                 comment
               </a>
             </Link>
@@ -213,8 +327,12 @@ class LiveFeedNotification extends React.Component {
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/discussion`}
             >
-              <a className={css(styles.paper)} data-tip={threadTip}>
-                {thread.title && this.truncatePaperTitle(thread.title)}
+              <a
+                className={css(styles.paper)}
+                data-tip={threadTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {threadTip && this.truncatePaperTitle(threadTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -224,25 +342,30 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "reply":
-        var { thread, text } = notification;
-        var threadTip = thread.title && thread.title;
-        var replyTip = text && this.truncatePaperTitle(text);
-        var paperId = thread.paper;
-
+        var replyTip = notification.tip;
         return (
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
             </Link>{" "}
             left a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${thread.id}`}
+              as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)} data-tip={replyTip}>
+              <a
+                className={css(styles.link)}
+                data-tip={replyTip}
+                onClick={(e) => e.stopPropagation()}
+              >
                 reply
               </a>
             </Link>
@@ -251,8 +374,12 @@ class LiveFeedNotification extends React.Component {
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/discussion`}
             >
-              <a className={css(styles.paper)} data-tip={threadTip}>
-                {thread.title && this.truncatePaperTitle(thread.title)}
+              <a
+                className={css(styles.paper)}
+                data-tip={threadTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {threadTip && this.truncatePaperTitle(threadTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -278,13 +405,17 @@ class LiveFeedNotification extends React.Component {
     const notificationType = notification.content_type;
 
     switch (notificationType) {
+      case "summary":
       case "vote_paper":
         return icons.file;
       case "vote_comment":
+      case "comment":
         return <i className="fad fa-comment-alt-dots" />;
+      case "reply":
       case "vote_reply":
         return <i className="fad fa-comment-alt-dots" />;
       case "thread":
+      case "vote_thread":
         return <i className="fad fa-comment-alt-lines" />;
     }
   };
@@ -310,7 +441,10 @@ class LiveFeedNotification extends React.Component {
       return null;
     } else {
       return (
-        <div className={css(styles.column, styles.notification)}>
+        <div
+          className={css(styles.column, styles.notification)}
+          onClick={this.navigateToPaper}
+        >
           <ReactTooltip
             place={"bottom"}
             delayShow={400}
@@ -318,7 +452,10 @@ class LiveFeedNotification extends React.Component {
           />
           <div className={css(styles.type)}>{this.renderIcon()}</div>
           <div className={css(styles.row, styles.container)}>
-            <div className={css(styles.column, styles.left)}>
+            <div
+              className={css(styles.column, styles.left)}
+              onClick={(e) => e.stopPropagation()}
+            >
               <AuthorAvatar
                 author={
                   notification.created_by &&
