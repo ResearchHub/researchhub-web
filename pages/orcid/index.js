@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Router, { withRouter } from "next/router";
+import Modal from "react-modal";
 
 import { AuthActions } from "../../redux/auth";
 
@@ -11,6 +12,7 @@ import Loader from "../../components/Loader/Loader";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { modalStyles } from "~/config/themes/styles";
 
 class OrcidLoginPage extends React.Component {
   constructor(props) {
@@ -68,59 +70,68 @@ class OrcidLoginPage extends React.Component {
 
   render() {
     return (
-      <div className={css(styles.page)}>
-        <div className={css(styles.content)}>
-          <div className={css(styles.icons)}>
-            <img
-              className={css(styles.rhIcon)}
-              src={"/static/ResearchHubLogo.png"}
-            />
-            <img
-              className={css(styles.orcidIcon)}
-              src={"/static/icons/orcid.png"}
-            />
-          </div>
-          <div className={css(styles.headerContainer)}>
-            <React.Fragment>
-              <h1 className={css(styles.header)}>We're almost done!</h1>
-              <p className={css(styles.description)}>
-                Confirm your email address to complete login with Orcid.
-              </p>
-            </React.Fragment>
-          </div>
-          <form onSubmit={this.submitEmail}>
-            <FormInput
-              id={"email"}
-              type={"email"}
-              label={"Email Address"}
-              placeholder={"Email"}
-              required={true}
-              onChange={this.handleEmailChange}
-            />
-            {this.state.error && (
-              <div className={css(styles.error)}>
-                <span className={css(styles.errorIcon)}>
-                  <i className="fad fa-exclamation-triangle" />
-                </span>
-                Something went wrong. Please try again.
-              </div>
-            )}
-            <div className={css(styles.buttonWrapper)}>
-              <Button
-                label={
-                  this.state.loading ? (
-                    <Loader loading={true} size={20} color={"#FFF"} />
-                  ) : (
-                    "Submit"
-                  )
-                }
-                type={"submit"}
-                disabled={this.state.loading}
+      <Modal
+        className={css(modalStyles.modal)}
+        isOpen={true}
+        closeModal={null}
+        shouldCloseOnOverlayClick={false}
+        style={overlay}
+        ariaHideApp={false}
+      >
+        <div className={css(styles.page)}>
+          <div className={css(styles.content)}>
+            <div className={css(styles.icons)}>
+              <img
+                className={css(styles.rhIcon)}
+                src={"/static/ResearchHubLogo.png"}
+              />
+              <img
+                className={css(styles.orcidIcon)}
+                src={"/static/icons/orcid.png"}
               />
             </div>
-          </form>
+            <div className={css(styles.headerContainer)}>
+              <React.Fragment>
+                <h1 className={css(styles.header)}>We're almost done!</h1>
+                <p className={css(styles.description)}>
+                  Confirm your email address to complete login with Orcid.
+                </p>
+              </React.Fragment>
+            </div>
+            <form onSubmit={this.submitEmail}>
+              <FormInput
+                id={"email"}
+                type={"email"}
+                label={"Email Address"}
+                placeholder={"Email"}
+                required={true}
+                onChange={this.handleEmailChange}
+              />
+              {this.state.error && (
+                <div className={css(styles.error)}>
+                  <span className={css(styles.errorIcon)}>
+                    <i className="fad fa-exclamation-triangle" />
+                  </span>
+                  Something went wrong. Please try again.
+                </div>
+              )}
+              <div className={css(styles.buttonWrapper)}>
+                <Button
+                  label={
+                    this.state.loading ? (
+                      <Loader loading={true} size={20} color={"#FFF"} />
+                    ) : (
+                      "Submit"
+                    )
+                  }
+                  type={"submit"}
+                  disabled={this.state.loading}
+                />
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      </Modal>
     );
   }
 }
@@ -128,6 +139,19 @@ class OrcidLoginPage extends React.Component {
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
+
+const overlay = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    zIndex: "11",
+    borderRadius: 5,
+  },
+};
 
 const styles = StyleSheet.create({
   page: {
@@ -139,6 +163,7 @@ const styles = StyleSheet.create({
     backgroundSize: "cover",
     paddingTop: 50,
     height: "100vh",
+    width: "100vw",
   },
   content: {
     padding: "30px 30px",
