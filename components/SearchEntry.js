@@ -425,10 +425,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    height: 130,
+    minHeight: 130,
     width: "calc(100% - 40px)",
     padding: "15px 20px",
     position: "relative",
+    boxSizing: "border-box",
     cursor: "pointer",
     ":hover": {
       backgroundColor: "#FAFAFA",
@@ -439,7 +440,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
-    height: "calc(100% - 30px)",
+    // height: "calc(100% - 30px)",
   },
   left: {
     marginRight: 20,
