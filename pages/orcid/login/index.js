@@ -21,7 +21,6 @@ class OrcidLoginSuccessPage extends React.Component {
   componentDidMount(props) {}
 
   render() {
-    return null;
     return (
       <div className={css(styles.page)}>
         <div className={css(styles.content)}>

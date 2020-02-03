@@ -7,7 +7,7 @@ import { GoogleLogin } from "react-google-login";
 // Component
 import Button from "../Form/Button";
 import BaseModal from "./BaseModal";
-import OrcidLoginButton from "../OrcidLoginButton";
+// import OrcidLoginButton from "../OrcidLoginButton";
 
 // Redux
 import { AuthActions } from "../../redux/auth";
