@@ -87,13 +87,13 @@ class LoginModal extends React.Component {
               />
             )}
           />
-          <div className={css(styles.orcidButton)}>
+          {/* <div className={css(styles.orcidButton)}>
             <OrcidLoginButton
               iconStyle={styles.iconStyle}
               styles={styles.orchidButton}
               customLabelStyle={styles.orchidLabel}
             />
-          </div>
+          </div> */}
         </div>
       </BaseModal>
     );

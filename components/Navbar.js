@@ -235,12 +235,12 @@ const Navbar = (props) => {
           customLabel="Login"
           customLabelStyle={[styles.googleLabelMobile]}
         />
-        <OrcidLoginButton
+        {/* <OrcidLoginButton
           styles={[styles.loginMobile]}
           iconStyle={styles.orcidIcon}
           customLabel="Login"
           customLabelStyle={[styles.googleLabelMobile]}
-        />
+        /> */}
       </div>
     );
   }
@@ -254,11 +254,11 @@ const Navbar = (props) => {
           customLabelStyle={[styles.googleLabel]}
         />
         <div className={css(styles.divider)}></div>
-        <OrcidLoginButton
+        {/* <OrcidLoginButton
           styles={[styles.button, styles.googleLoginButton, styles.login]}
           iconStyle={styles.orcidIcon}
           customLabelStyle={[styles.googleLabel]}
-        />
+        /> */}
       </div>
     );
   }
