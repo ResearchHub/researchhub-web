@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     minHeight: 130,
-    width: "calc(100% - 40px)",
+    width: "calc(100%)",
     padding: "15px 20px",
     position: "relative",
     boxSizing: "border-box",
@@ -502,12 +502,14 @@ const styles = StyleSheet.create({
     color: "rgb(35, 32, 56)",
     fontWeight: "500",
     flexWrap: "wrap",
+    wordBreak: "break-word",
     lineHeight: 1.6,
-    maxHeight: 77,
+    // maxHeight: 77,
+    marginBottom: 10,
     textOverflow: "ellipsis",
     "@media only screen and (max-width: 1080px)": {
       fontSize: 16,
-      maxHeight: 70,
+      // maxHeight: 70,
     },
   },
   metaDataOne: {
@@ -560,7 +562,8 @@ const styles = StyleSheet.create({
   },
   discText: {
     fontSize: 12,
-    maxHeight: 49,
+    // maxHeight: 49,
+    wordBreak: "break-word",
     "@media only screen and (max-width: 1200px)": {
       width: "calc(100% - 50px)",
       textOverflow: "ellipsis",
@@ -570,7 +573,7 @@ const styles = StyleSheet.create({
   },
   tagline: {
     fontSize: 12,
-    maxHeight: 49,
+    wordBreak: "break-word",
     "@media only screen and (max-width: 1200px)": {
       width: "calc(100% - 50px)",
       textOverflow: "ellipsis",
