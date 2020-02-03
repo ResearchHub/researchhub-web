@@ -624,6 +624,7 @@ const stylesEditor = StyleSheet.create({
     paddingRight: 20,
     marginBottom: 10,
     backgroundColor: colors.LIGHT_YELLOW(),
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     borderRadius: 10,
   },
   container: {
