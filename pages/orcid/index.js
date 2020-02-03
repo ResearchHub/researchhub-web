@@ -67,7 +67,6 @@ class OrcidLoginPage extends React.Component {
   };
 
   render() {
-    return null;
     return (
       <div className={css(styles.page)}>
         <div className={css(styles.content)}>
