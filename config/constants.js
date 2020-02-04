@@ -16,7 +16,7 @@ export const GOOGLE_CLIENT_ID =
     ? "192509748493-3enrmve4vlikpff88lujns7b4d72hgbg.apps.googleusercontent.com"
     : "192509748493-amjlt30mbpo9lq5gppn7bfd5c52i0ioe.apps.googleusercontent.com";
 
-export const ORCID_CLIENT_ID = "APP-JRYHYFMMJTSPBLCP";
+export const ORCID_CLIENT_ID = "APP-28GINQJPUWS3ZTW1";
 export const ORCID_REDIRECT_URI = setOrcidRedirect();
 
 function setOrcidRedirect() {
