@@ -417,6 +417,7 @@ const styles = StyleSheet.create({
   },
   infoSection: {
     display: "flex",
+    marginTop: 10,
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
