@@ -283,7 +283,7 @@ const DiscussionTab = (props) => {
           </div>
           <div
             className={css(stylesEditor.discussionTextEditor)}
-            onClick={() => editorDormant && setEditorDormant(false)}
+            onClick={() => editorDormant && setEdaitorDormant(false)}
           >
             <TextEditor
               canEdit={true}
@@ -315,22 +315,29 @@ const DiscussionTab = (props) => {
       {threads.length > 0 ? (
         <div className={css(styles.threadsContainer)}>
           <div className={css(styles.box, !addView && styles.right)}>
-            <div className={css(styles.addDiscussionContainer)}>
-              {showEditor
-                ? renderDiscussionTextEditor()
-                : renderAddDiscussion()}
+            <div className={css(styles.rowContainer)}>
+              <div className={css(styles.addDiscussionContainer)}>
+                {showEditor
+                  ? renderDiscussionTextEditor()
+                  : renderAddDiscussion()}
+              </div>
             </div>
-            <div className={css(styles.filterSelect)}>
-              <FormSelect
-                id={"thread-filter"}
-                options={filterOptions}
-                placeholder={"Sort Threads"}
-                onChange={handleFilterChange}
-                containerStyle={styles.filterContainer}
-                inputStyle={{
-                  minHeight: "unset",
-                }}
-              />
+            <div className={css(styles.rowContainer)}>
+              <div className={css(styles.discussionTitle)}>
+                {`Discussions & Posts`}
+              </div>
+              <div className={css(styles.filterSelect)}>
+                <FormSelect
+                  id={"thread-filter"}
+                  options={filterOptions}
+                  placeholder={"Sort Threads"}
+                  onChange={handleFilterChange}
+                  containerStyle={styles.overrideFormSelect}
+                  inputStyle={{
+                    minHeight: "unset",
+                  }}
+                />
+              </div>
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
@@ -470,17 +477,12 @@ var styles = StyleSheet.create({
     marginTop: 0,
     backgroundColor: colors.BLUE(1),
     border: "none",
-    backgroundColor: "#FFF",
-    padding: 16,
-    paddingRight: 8,
-    color: "rgb(36, 31, 58)",
-    opacity: 0.6,
-    // marginBottom: 15,
+    padding: "10px 15px",
+    height: "unset",
+    color: "#fff",
+    opacity: 1,
     ":hover": {
-      backgroundColor: "none",
-      color: colors.PURPLE(1),
-      opacity: 1,
-      textDecoration: "underline",
+      backgroundColor: "#3E43E8",
     },
   },
   pencilIcon: {
@@ -600,15 +602,28 @@ var styles = StyleSheet.create({
   threadsContainer: {
     paddingBottom: 80,
   },
-  filterContainer: {
-    marginTop: 7,
+  discussionTitle: {
+    fontSize: 25,
+    fontWeight: 500,
+  },
+  rowContainer: {
+    width: "100%",
+    display: "flex",
+    // justifyContent: 'space-between',
+    // alignItems: 'center'
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+  },
+  overrideFormSelect: {
+    marginTop: 15,
   },
   filterSelect: {
     width: 160,
   },
   filterInput: {
     minHeight: "unset",
-    height: 30,
+    // height: 30,
   },
 });
 
@@ -623,7 +638,7 @@ const stylesEditor = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 10,
-    backgroundColor: colors.LIGHT_YELLOW(),
+    // backgroundColor: colors.LIGHT_YELLOW(),
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     borderRadius: 10,
   },
