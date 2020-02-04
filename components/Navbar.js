@@ -20,7 +20,7 @@ import FirstVoteModal from "../components/modal/FirstVoteModal";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
-// import OrcidLoginButton from "../components/OrcidLoginButton";
+import OrcidLoginButton from "../components/OrcidLoginButton";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
 import Search from "./Search";
@@ -241,12 +241,12 @@ const Navbar = (props) => {
           customLabel="Login"
           customLabelStyle={[styles.googleLabelMobile]}
         />
-        {/* <OrcidLoginButton
+        <OrcidLoginButton
           styles={[styles.loginMobile]}
           iconStyle={styles.orcidIcon}
           customLabel="Login"
           customLabelStyle={[styles.googleLabelMobile]}
-        /> */}
+        />
       </div>
     );
   }
@@ -260,11 +260,11 @@ const Navbar = (props) => {
           customLabelStyle={[styles.googleLabel]}
         />
         <div className={css(styles.divider)}></div>
-        {/* <OrcidLoginButton
+        <OrcidLoginButton
           styles={[styles.button, styles.googleLoginButton, styles.login]}
           iconStyle={styles.orcidIcon}
           customLabelStyle={[styles.googleLabel]}
-        /> */}
+        />
       </div>
     );
   }
