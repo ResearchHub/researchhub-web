@@ -245,7 +245,7 @@ class TransactionModal extends React.Component {
                   {userBalance}
                   <img
                     className={css(styles.coin)}
-                    src={"/static/icons/coin.png"}
+                    src={"/static/icons/coin-filled.png"}
                     draggable={false}
                   />
                 </div>
@@ -638,8 +638,8 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   coin: {
-    height: 20,
-    width: 20,
+    height: 25,
+    width: 25,
     marginTop: 1,
     marginLeft: 5,
   },
