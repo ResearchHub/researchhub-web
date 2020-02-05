@@ -41,7 +41,6 @@ const FlagButton = ({ paperId, reason, flagged, setFlag }) => {
     const prevState = store.getState().flags;
     await dispatch(FlagActions.removePaperFlag(prevState, paperId));
     const flags = store.getState().flags;
-    console.log("remove", flags);
     if (flags.doneFetching && flags.success) {
       setFlag(false);
       dispatch(MessageActions.showMessage({ show: false }));

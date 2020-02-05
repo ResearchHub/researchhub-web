@@ -197,7 +197,7 @@ const AuthorPage = (props) => {
       href: "transactions",
       label: "transactions",
       showCount: true,
-      count: transactions.withdrawals.length,
+      count: transactions.count,
     },
   ];
 
