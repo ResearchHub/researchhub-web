@@ -490,6 +490,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   notification: {
+    display: "inline-block",
     width: "80%",
     padding: "25px 10px 20px 10px",
     backgroundColor: "#FFF",
@@ -540,7 +541,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 1.5,
     width: "100%",
-    overflow: "hidden",
   },
   username: {
     color: "#000",
