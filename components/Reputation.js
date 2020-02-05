@@ -10,9 +10,12 @@ const Reputation = (props) => {
   const { reputation, balance, showBalance } = props;
   const dispatch = useDispatch();
   const [count, setBalance] = useState(balance);
+  const [transition, setTransition] = useState(true);
 
   useEffect(() => {
+    setTransition(true);
     setBalance(balance);
+    setTimeout(() => setTransition(false), 200);
   }, [balance]);
 
   function openTransactionModal(e) {
@@ -27,10 +30,14 @@ const Reputation = (props) => {
       data-for="reputationTooltip"
       onClick={openTransactionModal}
     >
-      <div className={css(styles.reputationValue)}>
+      <div className={css(styles.reputationValue, transition && styles.blur)}>
         {numeral(showBalance ? count : reputation).format("0,0")}
       </div>
-      <img src={"/static/icons/coin.png"} draggable={false} />
+      <img
+        src={"/static/icons/coin-filled.png"}
+        draggable={false}
+        className={css(styles.coinIcon)}
+      />
       <ReputationTooltip />
     </div>
   );
@@ -47,6 +54,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginRight: 8,
+    minWidth: 18.5,
+    textAlign: "right",
+  },
+  blur: {
+    filter: "blur(2px)",
+  },
+  coinIcon: {
+    height: 25,
   },
 });
 
