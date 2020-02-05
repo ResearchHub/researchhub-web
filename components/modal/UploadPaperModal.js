@@ -344,7 +344,9 @@ class UploadPaperModal extends React.Component {
           )}
           <div className={css(styles.titleContainer)}>
             <div className={css(styles.title, styles.text)}>
-              {uploadView ? "Upload your paper" : "Add a Paper to ResearchHub"}
+              {uploadView
+                ? "Upload your paper"
+                : "Enter the title or the DOI of the paper"}
             </div>
             <div className={css(styles.subtitle, styles.text)}>
               {uploadView
@@ -355,8 +357,8 @@ class UploadPaperModal extends React.Component {
           <FormInput
             onChange={this.handleSearchInput}
             value={search}
-            label={"Enter a link to a Academic Paper or a DOI"}
-            placeholder={"Enter PDF link or DOI"}
+            label={"Paper Title"}
+            placeholder={"Enter paper title or DOI"}
             id={"search"}
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
@@ -395,7 +397,7 @@ class UploadPaperModal extends React.Component {
           )}
           <span className={css(styles.buttonContainer)}>
             <Button
-              label={uploadView ? "Continue" : "Continue"}
+              label={uploadView ? "Continue" : "Upload Paper"}
               customButtonStyle={styles.button}
               customLabelStyle={styles.label}
               disabled={uploadView && !uploadFinish}
