@@ -56,16 +56,18 @@ class DragNDrop extends React.Component {
         .then(Helpers.parseJSON)
         .then((res) => {
           let { csl_item, url, url_is_pdf, search } = res;
-          this.setState({
-            pending: false,
-            validUrl: csl_item ? true : false,
-            searchSuggestions: search,
-          });
-          setTimeout(() => {
-            csl_item &&
-              this.props.handleUrl &&
-              this.props.handleUrl({ ...res }, value);
-          }, 300);
+          this.setState(
+            {
+              pending: false,
+              validUrl: csl_item ? true : false,
+              // searchSuggestions: search,
+            },
+            () => {
+              csl_item &&
+                this.props.handleUrl &&
+                this.props.handleUrl({ ...res }, value);
+            }
+          );
         })
         .catch((err) => {
           this.setState({
