@@ -129,12 +129,12 @@ class LiveFeed extends React.Component {
     let { livefeed, currentHub, home } = this.props;
     let hubId = home ? 0 : currentHub.id;
     return (
-      <Fragment>
+      <div className={css(styles.livefeedComponent)}>
         <div
           className={css(styles.listLabel)}
           // onClick={this.toggleFeedView}
         >
-          {"Activity on Hub"}
+          {"ResearchHub Livefeed"}
           <div
             className={css(styles.refreshIcon)}
             onClick={() => this.fetchLiveFeed(hubId)}
@@ -155,7 +155,7 @@ class LiveFeed extends React.Component {
             </div>
           </div>
         )}
-      </Fragment>
+      </div>
     );
   }
 }
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     // color: "#a7a6b0",
     marginTop: 80,
     paddingBottom: 10,
-    width: 140,
+    width: 200,
     height: 18,
     cursor: "default",
     "@media only screen and (max-width: 768px)": {
@@ -183,7 +183,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    width: "90%",
+    width: "70%",
+    height: "70%",
     border: "1px solid rgb(237, 237, 237)",
     transition: "all ease-in-out 0.2s",
   },
@@ -193,7 +194,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
-    maxHeight: 290,
     overflowY: "scroll",
     background: "url(/static/background/background-modal.png) #FCFCFC",
     backgroundSize: "cover",
@@ -233,6 +233,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 13,
     fontWeight: 400,
+  },
+  livefeedComponent: {
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
   },
 });
 

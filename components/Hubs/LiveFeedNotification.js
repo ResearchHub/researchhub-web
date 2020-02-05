@@ -536,6 +536,9 @@ const styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
     },
+    maxWidth: 5,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   message: {
     fontSize: 13,

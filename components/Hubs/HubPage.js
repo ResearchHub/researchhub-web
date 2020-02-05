@@ -103,7 +103,6 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     this.fetchPapers({ hub: this.props.hub });
-    this.getLiveFeed();
     this.setState({
       subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
     });
@@ -220,22 +219,6 @@ class HubPage extends React.Component {
           showMessage({ show: false });
         }, 200)
       );
-  };
-
-  getLiveFeed = () => {
-    let { hub } = this.props;
-    let hubId = 0;
-    if (hub) {
-      hubId = hub.id;
-    }
-    return fetch(API.GET_LIVE_FEED({ hubId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.setState({
-          liveFeed: res.results,
-        });
-      });
   };
 
   calculateScope = () => {
@@ -432,10 +415,6 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
-            <LiveFeed
-              currentHub={this.props.hub && this.props.hub}
-              home={!this.props.hub}
-            />
             <HubsList exclude={this.props.home ? null : this.props.hub.name} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
