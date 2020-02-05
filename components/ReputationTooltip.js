@@ -10,13 +10,16 @@ const ReputationTooltip = (props) => {
         <ReactTooltip
           id="reputationTooltip"
           className={css(styles.tooltip)}
-          place="right"
+          place="bottom"
           effect="solid"
           delayShow={500}
         >
           <div className={css(styles.comingSoon)}>
             Currently on Testnet
-            <img className={css(styles.icon)} src={"/static/icons/coin.png"} />
+            <img
+              className={css(styles.icon)}
+              src={"/static/icons/coin-filled.png"}
+            />
           </div>
           <div className={css(styles.paragraph, styles.description)}>
             Earn research coins by participating in discussion, uploading
@@ -38,14 +41,15 @@ const styles = StyleSheet.create({
     width: 345,
     padding: 15,
     fontSize: 14,
-    background: colors.BLUE(1),
+    // background: colors.BLUE(1),
+    background: "rgba(0, 0, 0, 0.7)",
     opacity: 1,
   },
   paragraph: {
     marginBottom: 10,
   },
   description: {
-    opacity: 0.8,
+    opacity: 1,
     lineHeight: 1.6,
   },
   comingSoon: {
