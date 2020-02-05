@@ -12,12 +12,18 @@ export const TransactionConstants = {
 };
 
 export const TransactionActions = {
-  getWithdrawals: (page = 1) => {
+  getWithdrawals: (page = 1, prevState) => {
+    if (prevState && prevState.grabbedPages[page]) {
+      return;
+    }
     return async (dispatch) => {
       return fetch(API.WITHDRAW_COIN({ page }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          let grabbedPages = { ...prevState.grabbedPages };
+          grabbedPages.page;
+
           return dispatch({
             type: TransactionConstants.GET_WITHDRAWALS,
             payload: {
@@ -25,6 +31,7 @@ export const TransactionActions = {
               withdrawals: [...res.results],
               count: res.count,
               next: res.next,
+              grabbedPages: grabbedPages,
             },
           });
         })
@@ -43,6 +50,7 @@ const defaultTransactionState = {
   userBalance: null,
   withdrawals: [],
   count: null,
+  grabbedPages: {},
 };
 
 const TransactionReducer = (state = defaultTransactionState, action) => {

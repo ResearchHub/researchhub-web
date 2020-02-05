@@ -53,8 +53,8 @@ const TransactionCard = (props) => {
         </div>
         {renderStatus(transaction.paid_status)}
       </div>
-      <div className={css(styles.row)}>
-        <div className={css(styles.column, styles.bottomRow)}>
+      <div className={css(styles.row, styles.bottomRow)}>
+        <div className={css(styles.column)}>
           <div className={css(styles.sent)}>Withdrew RHC</div>
           <div className={css(styles.row, styles.addressContainer)}>
             <span className={css(styles.black)}>to</span>
@@ -74,7 +74,7 @@ const TransactionCard = (props) => {
           {transaction.amount}
           <img
             className={css(styles.coin)}
-            src={"/static/icons/coin.png"}
+            src={"/static/icons/coin-filled.png"}
             draggable={false}
           />
         </div>
@@ -86,19 +86,17 @@ const TransactionCard = (props) => {
 const styles = StyleSheet.create({
   transactionCard: {
     width: "100%",
-    height: 90,
-    padding: 15,
+    padding: "27px 20px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "flex-start",
     cursor: "pointer",
     border: "1px solid #EDEDED",
-    marginBottom: 20,
-    borderRadius: 5,
+    marginBottom: 10,
+    borderRadius: 3,
     ":hover": {
       backgroundColor: "#FAFAFA",
-      boxShadow: "0 1px 1px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24)",
     },
     "@media only screen and (max-width: 767px)": {
       width: "85%",
@@ -126,6 +124,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 620px)": {
       fontSize: 13,
     },
+  },
+  bottomRow: {
+    marginTop: 30,
   },
   status: {
     display: "flex",
@@ -214,8 +215,8 @@ const styles = StyleSheet.create({
     },
   },
   coin: {
-    height: 20,
-    width: 20,
+    height: 25,
+    width: 25,
     marginTop: 1,
     marginLeft: 5,
   },
