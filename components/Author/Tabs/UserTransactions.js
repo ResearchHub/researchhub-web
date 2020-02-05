@@ -22,7 +22,8 @@ class UserTransaction extends React.Component {
   }
 
   getWithdrawals = (nextPage) => {
-    this.props.getWithdrawals(nextPage);
+    let prevState = this.props.transactions;
+    this.props.getWithdrawals(nextPage, prevState);
   };
 
   render() {
