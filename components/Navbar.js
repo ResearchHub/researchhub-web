@@ -83,6 +83,7 @@ const Navbar = (props) => {
     { label: "Hubs", route: "/hubs", icon: "hub" },
     { label: "About", route: "/about", icon: "info-circle" },
     { label: "Help", route: "/help", icon: "help" },
+    { label: "Live", route: "/live", icon: "live" },
   ];
 
   const menuTabs = [
