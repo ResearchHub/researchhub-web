@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     cursor: "pointer",
     position: "relative",
-    marginBottom: 10,
+    marginBottom: 15,
     ":hover": {
       borderColor: "#AAAAAA",
     },
