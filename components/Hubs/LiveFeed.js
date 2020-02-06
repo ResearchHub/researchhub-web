@@ -134,7 +134,9 @@ class LiveFeed extends React.Component {
           className={css(styles.listLabel)}
           // onClick={this.toggleFeedView}
         >
-          {"ResearchHub Livefeed"}
+          <div className={css(styles.text, styles.feedTitle)}>
+            {"ResearchHub Livefeed"}
+          </div>
           <div
             className={css(styles.refreshIcon)}
             onClick={() => this.fetchLiveFeed(hubId)}
@@ -163,7 +165,7 @@ class LiveFeed extends React.Component {
 const styles = StyleSheet.create({
   listLabel: {
     display: "flex",
-    justifyContent: "space-between",
+    alignItems: "center",
     fontWeight: "bold",
     textTransform: "uppercase",
     fontSize: 12,
@@ -171,11 +173,44 @@ const styles = StyleSheet.create({
     // color: "#a7a6b0",
     marginTop: 80,
     paddingBottom: 10,
-    width: 200,
     height: 18,
     cursor: "default",
     "@media only screen and (max-width: 768px)": {
       marginTop: 40,
+    },
+  },
+  text: {
+    color: "#FFF",
+    fontFamily: "Roboto",
+    cursor: "default",
+  },
+  feedTitle: {
+    display: "flex",
+    alignItems: "center",
+    color: "#000",
+    fontWeight: "400",
+    fontSize: 33,
+    flexWrap: "wrap",
+    whiteSpace: "pre-wrap",
+    marginRight: 10,
+    "@media only screen and (max-width: 1343px)": {
+      fontSize: 25,
+    },
+    "@media only screen and (max-width: 1149px)": {
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 22,
+      fontWeight: 500,
+      marginBottom: 10,
+    },
+    "@media only screen and (max-width: 416px)": {
+      fontWeight: 400,
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+      textAlign: "center",
     },
   },
   container: {
@@ -183,9 +218,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    width: "70%",
-    height: "70%",
-    border: "1px solid rgb(237, 237, 237)",
+    width: "100%",
+    height: "100%",
     transition: "all ease-in-out 0.2s",
   },
   livefeed: {
@@ -195,8 +229,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     overflowY: "scroll",
-    background: "url(/static/background/background-modal.png) #FCFCFC",
-    backgroundSize: "cover",
     paddingTop: 10,
     overscrollBehavior: "contain",
     transition: "all ease-in-out 0.2s",
@@ -221,6 +253,19 @@ const styles = StyleSheet.create({
       cursor: "pointer",
       color: colors.GREEN(),
     },
+
+    "@media only screen and (max-width: 1343px)": {
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 1149px)": {
+      fontSize: 18,
+    },
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 416px)": {
+      fontSize: 18,
+    },
   },
   loaderWrapper: {
     padding: "10px 0 15px",
@@ -240,6 +285,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
+    background: "#FCFCFC",
   },
 });
 

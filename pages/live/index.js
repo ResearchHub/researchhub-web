@@ -10,6 +10,7 @@ import Ripples from "react-ripples";
 
 // Component
 import LiveFeed from "~/components/Hubs/LiveFeed";
+import HubsList from "~/components/Hubs/HubsList";
 
 // Config
 import API from "~/config/api";
@@ -85,7 +86,12 @@ class LiveFeedPage extends React.Component {
 
     return (
       <div className={css(styles.content)}>
-        <LiveFeed currentHub={this.props.hub && this.props.hub} home={true} />
+        <div className={css(styles.sidebar, styles.column)}>
+          <HubsList exclude={null} />
+        </div>
+        <div className={css(styles.mainFeed, styles.column)}>
+          <LiveFeed currentHub={this.props.hub && this.props.hub} home={true} />
+        </div>
       </div>
     );
   }
@@ -96,8 +102,32 @@ var styles = StyleSheet.create({
     width: "100%",
     height: "calc(100vh - 80px)",
     display: "flex",
-    alignItems: "center",
+  },
+  column: {
+    display: "flex",
     flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  sidebar: {
+    width: "22%",
+    position: "relative",
+    position: "sticky",
+    top: 80,
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 769px)": {
+      display: "none",
+    },
+  },
+  mainFeed: {
+    height: "100%",
+    width: "85%",
+    backgroundColor: "#FCFCFC",
+    borderLeft: "1px solid #ededed",
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 768px)": {
+      width: "100%",
+    },
   },
 });
 
