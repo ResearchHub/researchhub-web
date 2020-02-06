@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
       cursor: "pointer",
       color: colors.GREEN(),
     },
+    fontSize: 20,
 
     "@media only screen and (max-width: 1343px)": {
       fontSize: 20,
