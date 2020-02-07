@@ -187,7 +187,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     padding: "0px 0px 5px 30px",
-    cursor: "pointer",
   },
   reveal: {
     opacity: 1,
