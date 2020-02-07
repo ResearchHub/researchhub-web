@@ -61,6 +61,9 @@ const defaultScope = scopeOptions[0];
 class LiveFeedPage extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      hub: null,
+    };
   }
 
   componentDidMount() {
@@ -83,6 +86,12 @@ class LiveFeedPage extends React.Component {
       });
   };
 
+  setHub = (hub) => {
+    this.setState({
+      hub,
+    });
+  };
+
   render() {
     let { auth } = this.props;
 
@@ -91,12 +100,12 @@ class LiveFeedPage extends React.Component {
         <ResearchHubBanner all={true} />
         <div className={css(styles.content)}>
           <div className={css(styles.sidebar, styles.column)}>
-            <HubsList exclude={null} />
+            <HubsList exclude={null} livefeed={true} setHub={this.setHub} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
             <LiveFeed
-              currentHub={this.props.hub && this.props.hub}
-              home={true}
+              currentHub={this.state.hub && this.state.hub}
+              home={!this.state.hub ? true : false}
             />
           </div>
         </div>
