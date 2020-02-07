@@ -658,7 +658,7 @@ var styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   sidebar: {
-    width: "22%",
+    width: "20%",
     position: "relative",
     position: "sticky",
     top: 80,
@@ -711,7 +711,7 @@ var styles = StyleSheet.create({
    */
   mainFeed: {
     height: "100%",
-    width: "85%",
+    width: "80%",
     backgroundColor: "#FCFCFC",
     borderLeft: "1px solid #ededed",
     backgroundColor: "#FFF",

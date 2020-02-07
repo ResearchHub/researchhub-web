@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    padding: "0px 0px 5px 30px",
+    paddingLeft: 40,
   },
   reveal: {
     opacity: 1,
