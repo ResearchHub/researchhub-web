@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
@@ -11,6 +12,7 @@ import Ripples from "react-ripples";
 // Component
 import LiveFeed from "~/components/Hubs/LiveFeed";
 import HubsList from "~/components/Hubs/HubsList";
+import ResearchHubBanner from "~/components/ResearchHubBanner";
 
 // Config
 import API from "~/config/api";
@@ -85,14 +87,20 @@ class LiveFeedPage extends React.Component {
     let { auth } = this.props;
 
     return (
-      <div className={css(styles.content)}>
-        <div className={css(styles.sidebar, styles.column)}>
-          <HubsList exclude={null} />
+      <Fragment>
+        <ResearchHubBanner all={true} />
+        <div className={css(styles.content)}>
+          <div className={css(styles.sidebar, styles.column)}>
+            <HubsList exclude={null} />
+          </div>
+          <div className={css(styles.mainFeed, styles.column)}>
+            <LiveFeed
+              currentHub={this.props.hub && this.props.hub}
+              home={true}
+            />
+          </div>
         </div>
-        <div className={css(styles.mainFeed, styles.column)}>
-          <LiveFeed currentHub={this.props.hub && this.props.hub} home={true} />
-        </div>
-      </div>
+      </Fragment>
     );
   }
 }
@@ -100,8 +108,9 @@ class LiveFeedPage extends React.Component {
 var styles = StyleSheet.create({
   content: {
     width: "100%",
-    height: "calc(100vh - 80px)",
     display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
   },
   column: {
     display: "flex",
@@ -111,7 +120,7 @@ var styles = StyleSheet.create({
   },
   sidebar: {
     width: "22%",
-    position: "relative",
+    position: "-webkit-sticky",
     position: "sticky",
     top: 80,
     backgroundColor: "#FFF",
