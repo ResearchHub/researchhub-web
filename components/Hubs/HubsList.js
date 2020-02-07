@@ -106,8 +106,13 @@ class HubsList extends React.Component {
       let arr = name.split(" ");
       return arr.length > 1 ? arr.join("-").toLowerCase() : name.toLowerCase();
     }
-    this.props.updateCurrentHubPage(hub);
-    Router.push("/hubs/[hubname]", `/hubs/${nameToUrl(hub.name)}`);
+
+    if (this.props.livefeed) {
+      this.props.setHub(hub);
+    } else {
+      this.props.updateCurrentHubPage(hub);
+      Router.push("/hubs/[hubname]", `/hubs/${nameToUrl(hub.name)}`);
+    }
   };
 
   render() {

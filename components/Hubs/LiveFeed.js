@@ -135,7 +135,9 @@ class LiveFeed extends React.Component {
           // onClick={this.toggleFeedView}
         >
           <div className={css(styles.text, styles.feedTitle)}>
-            {"ResearchHub Livefeed"}
+            {this.props.home
+              ? "ResearchHub Livefeed"
+              : `${this.props.currentHub.name} LiveFeed`}
           </div>
           <div
             className={css(styles.refreshIcon)}
