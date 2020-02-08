@@ -173,12 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
-    textTransform: "uppercase",
-    fontSize: 10,
-    cursor: "pointer",
-    fontWeight: "bold",
-    letterSpacing: 1,
-    margin: "5px 5px 10px 0px",
+    textTransform: "capitalize",
     ":hover": {
       color: colors.BLUE(1),
     },
