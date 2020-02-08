@@ -94,7 +94,7 @@ class HubsList extends React.Component {
               )}
             </div>
             {/* // </Ripples> */}
-            {/* <div className={css(styles.space)} /> */}
+            <div className={css(styles.space)} />
           </Fragment>
         );
       }
@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     fontSize: 12,
     letterSpacing: 1.2,
-    // color: "#a7a6b0",
     marginBottom: 20,
     textAlign: "center",
     width: "100%",
