@@ -20,6 +20,8 @@ module.exports = withPlugins(
       // Fixes npm packages that depend on `fs` module
       config.node = {
         fs: "empty",
+        net: "empty",
+        tls: "empty",
       };
 
       config.resolve.alias["~"] = path.resolve(__dirname);
