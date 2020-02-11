@@ -29,6 +29,15 @@ function setOrcidRedirect() {
   }
 }
 
+export const orcidMethods = {
+  CONNECT: "connect",
+  LOGIN: "login",
+};
+
+export const ORCID_JWKS_URI = "https://orcid.org/oauth/jwks";
+export const ORCID_KID =
+  "production-orcid-org-7hdmdswarosg3gjujo8agwtazgkp1ojs";
+
 export function nameToUrl(name) {
   return encodeURIComponent(name);
 }

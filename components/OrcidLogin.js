@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";
 
 import { AuthActions } from "../redux/auth";
+import API from "~/config/api";
+import { orcidMethods } from "~/config/constants";
 
 const LOGIN_ATTEMPT_TIMEOUT = 300000; // 5 minutes
 const WATCH_WINDOW_INTERVAL = 500; // 5 ms
 
 const OrcidLogin = (props) => {
-  const { clientId, onFailure, onSuccess, redirectUri, render } = props;
+  const { clientId, method, onFailure, onSuccess, redirectUri, render } = props;
 
   const dispatch = useDispatch();
 
@@ -125,6 +127,19 @@ const OrcidLogin = (props) => {
   }
 
   function buildOrcidUrl() {
+    if (method === orcidMethods.CONNECT) {
+      return (
+        "https://orcid.org/oauth/authorize?" +
+        "response_type=token" +
+        "&redirect_uri=" +
+        redirectUri +
+        "&client_id=" +
+        clientId +
+        "&scope=openid" +
+        "&nonce=11235"
+      );
+    }
+
     return (
       "https://orcid.org/oauth/authorize?client_id=" +
       clientId +
@@ -140,6 +155,7 @@ const OrcidLogin = (props) => {
 
 OrcidLogin.propTypes = {
   clientId: PropTypes.string.isRequired,
+  method: PropTypes.string.isRequired,
   onFailure: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired,
   redirectUri: PropTypes.string.isRequired,

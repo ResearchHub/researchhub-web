@@ -22,6 +22,7 @@ import Reputation from "~/components/Reputation";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { AuthActions } from "../../../../redux/auth";
+import OrcidConnectButton from "../../../../components/OrcidConnectButton";
 
 const AuthorPage = (props) => {
   let { author, hostname, user, transactions } = props;
@@ -457,6 +458,7 @@ const AuthorPage = (props) => {
                 </div>
               )
             )}
+            {renderOrcid()}
             <div className={css(styles.reputation)}>
               <div className={css(styles.reputationTitle)}>
                 Lifetime Reputation:

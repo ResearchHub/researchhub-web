@@ -1,3 +1,7 @@
+/**
+ * Connects an ORCID account to an existing Google account.
+ */
+
 import { StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -41,8 +45,8 @@ const OrcidLoginButton = (props) => {
   return (
     <OrcidLogin
       clientId={ORCID_CLIENT_ID}
-      redirectUri={ORCID_REDIRECT_URI}
-      method={orcidMethods.LOGIN}
+      redirectUri={"http://localhost:3000/orcid/connect"}
+      method={orcidMethods.CONNECT}
       onSuccess={showSuccessMessage}
       onFailure={showLoginFailureMessage}
       cookiePolicy={"single_host_origin"}
