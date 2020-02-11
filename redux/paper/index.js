@@ -85,15 +85,33 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: (paperId, paper, filter) => {
+  getThreads: (paperId, paper, filter, page = 1) => {
+    console.log("filter", filter);
+    console.log("page", page);
+    console.log("path", API.DISCUSSION(paperId, filter && filter, page));
     return (dispatch) => {
-      return fetch(API.DISCUSSION(paperId, filter && filter), API.GET_CONFIG())
+      return fetch(
+        API.DISCUSSION(paperId, filter && filter, page),
+        API.GET_CONFIG()
+      )
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
           const updatedPaper = { ...paper };
-          updatedPaper.discussion.count = res.count;
-          updatedPaper.discussion.threads = res.results;
+          let { discussion } = updatedPaper;
+          console.log("res-threads", res);
+          // reset the list from page 1 when filter is changed; initial set state
+          if (!discussion.filter || discussion.filter !== filter) {
+            discussion.filter = filter; // set filter
+            discussion.count = res.count; // set count
+            discussion.threads = [...res.results]; // set threads
+            discussion.seenPages = {};
+            discussion.seenPages[page] = true; // set seenPages ex. { 1: true, 2: true, ...}
+          } else {
+            // additional pages are appended to list
+            discussion.threads = [...discussion.threads, ...res.results];
+            discussion.seenPages[page] = true;
+          }
 
           return dispatch({
             type: types.GET_THREADS,
