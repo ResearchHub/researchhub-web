@@ -22,6 +22,9 @@ export const AuthConstants = {
   FETCHING_USER: "@@auth/FETCHING_USER",
   GOT_USER: "@@auth/GOT_USER",
   ERROR: "@@auth/ERROR",
+  ORCID_CONNECT_PENDING: "@@auth/ORCID_CONNECT_PENDING",
+  ORCID_CONNECT_FAILURE: "@@auth/ORCID_CONNECT_FAILURE",
+  ORCID_CONNECT_SUCCESS: "@@auth/ORCID_CONNECT_SUCCESS",
   UPDATE_USER_PROFILE: "@@auth/UPDATE_USER_PROFILE",
   SAVING_PROFILE_CHANGES: "@@auth/SAVING_PROFILE_CHANGES",
   SAVED_PROFILE_CHANGES: "@@auth/SAVED_PROFILE_CHANGES",
@@ -200,12 +203,41 @@ export const AuthActions = {
         isFetchingLogin: false,
         loginFailed: false,
       });
-      // return dispatch({
-      // type: AuthConstants.LOGIN_FAILURE,
-      // isLoggedIn: false,
-      // isFetchingLogin: false,
-      // loginFailed: true,
-      // });
+    };
+  },
+  /**
+   * Connect ORCID account to existing user account
+   */
+  orcidConnect: (params) => {
+    return (dispatch) => {
+      let postConfig = API.POST_CONFIG({
+        access_token: params.accessToken,
+        orcid: params.orcid,
+      });
+      return fetch(API.ORCID_CONNECT, postConfig)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((json) => {
+          return dispatch({
+            type: AuthConstants.ORCID_CONNECT_SUCCESS,
+            orcidConnectFailure: false,
+            orcidConnectPending: false,
+            orcidConnectSuccess: true,
+          });
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            console.log(error.response);
+          } else {
+            console.log(error);
+          }
+          return dispatch({
+            type: AuthConstants.ORCID_CONNECT_FAILURE,
+            orcidConnectFailure: true,
+            orcidConnectPending: false,
+            orcidConnectSuccess: false,
+          });
+        });
     };
   },
 
