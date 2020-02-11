@@ -14,13 +14,6 @@ const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: {
-    domains: [
-      "researchhub-paper-dev1.s3.amazonaws.com",
-      "researchhub-paper-prod.s3.amazonaws.com",
-      "researchhub.com",
-    ],
-  },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Load Markdown Configuration
     config.module.rules.push({

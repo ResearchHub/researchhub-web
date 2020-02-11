@@ -7,8 +7,7 @@
     "start": "next start",
     "cypress:open": "cypress open --project $PWD/tests",
     "test": "cypress run --project $PWD/tests",
-    "build:prod": "docker build -t researchhub-web .",
-    "deploy": "./scripts/production.sh deploy"
+    "build:prod": "docker build -t researchhub-web ."
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^3.0.2",
