@@ -5,6 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Ripples from "react-ripples";
 import Plain from "slate-plain-serializer";
+import InfiniteScroll from "react-infinite-scroller";
 
 // Components
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
@@ -16,7 +17,7 @@ import Message from "~/components/Loader/Message";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
 import FormSelect from "~/components/Form/FormSelect";
-
+import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 
 // Redux
@@ -122,7 +123,7 @@ const DiscussionTab = (props) => {
       threads.map((t, i) => {
         return (
           <DiscussionEntry
-            key={t.key}
+            key={`${t.key}-disc${i}`}
             data={t.data}
             hostname={hostname}
             hoverEvents={true}
@@ -221,6 +222,18 @@ const DiscussionTab = (props) => {
 
   const openAddDiscussionModal = () => {
     props.openAddDiscussionModal(true);
+  };
+
+  const fetchDiscussionThreads = async (page) => {
+    const currentPaper = store.getState().paper;
+    if (
+      !currentPaper.discussion.seenPages[page] ||
+      currentPaper.discussion.filter !== filter
+    ) {
+      await dispatch(
+        PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
+      );
+    }
   };
 
   const renderAddDiscussion = () => {
@@ -344,7 +357,16 @@ const DiscussionTab = (props) => {
               </div>
             </div>
           </div>
-          {renderThreads(formattedThreads, hostname)}
+          <InfiniteScroll
+            pageStart={0}
+            loadMore={fetchDiscussionThreads}
+            hasMore={
+              formattedThreads.length < store.getState().paper.discussion.count
+            }
+            loader={<Loader loading={true} key={`thread-loader`} size={23} />}
+          >
+            {renderThreads(formattedThreads, hostname)}
+          </InfiniteScroll>
         </div>
       ) : (
         <div className={css(styles.addDiscussionContainer)}>
