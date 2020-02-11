@@ -3,26 +3,26 @@ import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState } from "react";
 import { connect, useDispatch } from "react-redux";
 
+import { AuthActions } from "~/redux/auth";
 import { AuthorActions } from "~/redux/author";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
+import AuthorAvatar from "~/components/AuthorAvatar";
 import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
+import AvatarUpload from "~/components/AvatarUpload";
+import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
+import OrcidConnectButton from "~/components/OrcidConnectButton";
+import Reputation from "~/components/Reputation";
+import ShareModal from "~/components/ShareModal";
 import TabBar from "~/components/TabBar";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
-import AuthorAvatar from "~/components/AuthorAvatar";
-import ShareModal from "~/components/ShareModal";
-import AvatarUpload from "~/components/AvatarUpload";
-import Reputation from "~/components/Reputation";
 
 // Config
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
-import { AuthActions } from "../../../../redux/auth";
-import OrcidConnectButton from "../../../../components/OrcidConnectButton";
 
 const AuthorPage = (props) => {
   let { author, hostname, user, transactions } = props;
@@ -409,6 +409,22 @@ const AuthorPage = (props) => {
   let closeAvatarModal = () => {
     setAvatarUploadIsOpen(false);
   };
+
+  let renderOrcid = () => {
+    const orcidLink = (
+      <a href={`https://orcid.org/${author.orcid_id}`}>{author.orcid_id}</a>
+    );
+    if (allowEdit) {
+      return author.orcid_id ? (
+        orcidLink
+      ) : (
+        <OrcidConnectButton customLabel={"Verify your profile"} />
+      );
+    } else {
+      return author.orcid_id && orcidLink;
+    }
+  };
+
   return (
     <div className={css(styles.container)}>
       <Head
