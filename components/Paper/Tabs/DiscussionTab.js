@@ -646,7 +646,7 @@ var styles = StyleSheet.create({
     },
   },
   threadsContainer: {
-    paddingBottom: 80,
+    // paddingBottom: 80,
   },
   discussionTitle: {
     fontSize: 25,

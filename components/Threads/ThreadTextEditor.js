@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   comment: {
     minHeight: "100%",
     padding: "0px",
-    lineHeight: 1.3,
+    lineHeight: 1.6,
     fontSize: 14,
     color: "#000",
   },
