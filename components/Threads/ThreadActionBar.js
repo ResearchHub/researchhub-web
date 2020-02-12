@@ -197,7 +197,7 @@ class ThreadActionBar extends React.Component {
                 >
                   <i className="fad fa-comment-alt-edit" />
                 </span>
-                Reply
+                Respond
               </div>
             )}
             {this.renderCommentCount()}
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#EDEEFE",
       color: colors.BLUE(),
     },
     ":hover #replyIcon": {
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#EDEEFE",
     },
     ":hover #text": {
       color: colors.BLUE(1),
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 5,
     ":hover": {
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#EDEEFE",
     },
     ":hover #text": {
       color: colors.BLUE(1),
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   active: {
-    color: colors.BLUE(0.7),
+    color: colors.BLUE(0.9),
   },
   textEditorContainer: {
     marginTop: 5,
@@ -319,25 +319,6 @@ const styles = StyleSheet.create({
   replyIcon: {
     color: "#918f9b",
     marginRight: 8,
-  },
-  expandViewContainer: {
-    marginLeft: 20,
-    cursor: "pointer",
-    padding: 4,
-    borderRadius: 5,
-    ":hover": {
-      backgroundColor: "#EAEAEA",
-    },
-    ":hover #expandText": {
-      color: colors.BLUE(1),
-    },
-    ":hover #expandIcon": {
-      color: colors.BLUE(1),
-    },
-  },
-  expandIcon: {
-    color: "#918f9b",
-    fontSize: 14,
   },
 });
 

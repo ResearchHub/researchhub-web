@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -6,7 +6,7 @@ import { StyleSheet, css } from "aphrodite";
 import VoteWidget from "../VoteWidget";
 import ThreadActionBar from "./ThreadActionBar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
-import { Title, Body } from "../DiscussionThreadCard";
+import { Title } from "../DiscussionThreadCard";
 import CommentEntry from "./CommentEntry";
 import { ClientLinkWrapper } from "../LinkWrapper";
 import ThreadLine from "./ThreadLine";
@@ -21,7 +21,9 @@ import { getNestedValue } from "~/config/utils";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
+import { MessageActions } from "~/redux/message";
 import { comment } from "../../redux/discussion/shims";
+import { transformComments } from "~/redux/discussion/shims";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
@@ -36,6 +38,9 @@ class DiscussionEntry extends React.Component {
       score: 0,
       selectedVoteType: "",
       highlighted: false,
+      // Pagination
+      page: 2, // we assume page 1 is already present
+      fetching: false, // when true, we show loading state
     };
     this.divRef = null;
   }
@@ -75,6 +80,44 @@ class DiscussionEntry extends React.Component {
   };
 
   componentDidUpdate = async (prevProps) => {};
+
+  fetchComments = (e) => {
+    e && e.stopPropagation();
+    this.setState(
+      {
+        fetching: true,
+      },
+      () => {
+        let { data } = this.props;
+        let discussionThreadId = data.id;
+        let paperId = data.paper;
+        let page = this.state.page;
+
+        fetch(
+          API.THREAD_COMMENT(paperId, discussionThreadId, page),
+          API.GET_CONFIG()
+        )
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((res) => {
+            this.setState({
+              comments: [
+                ...this.state.comments,
+                ...transformComments(res.results),
+              ],
+              page: this.state.page + 1,
+              fetching: false,
+            });
+          })
+          .catch((err) => {
+            let { setMessage, showMessage } = this.props;
+            setMessage("Hm something went wrong");
+            showMessage({ show: true, error: true, clickoff: true });
+            this.setState({ fetching: false });
+          });
+      }
+    );
+  };
 
   createUsername = ({ createdBy }) => {
     if (createdBy) {
@@ -169,6 +212,30 @@ class DiscussionEntry extends React.Component {
           />
         );
       });
+    }
+  };
+
+  renderViewMore = () => {
+    if (this.state.comments.length < this.props.data.commentCount) {
+      let fetching = this.state.fetching;
+      let totalCount = this.props.data.commentCount;
+      let currentCount = this.state.comments.length;
+      let fetchCount =
+        totalCount - currentCount >= 10 ? 10 : totalCount - currentCount;
+      return (
+        <div className={css(styles.viewMoreContainer)}>
+          <div
+            className={css(styles.viewMoreButton)}
+            onClick={!fetching ? this.fetchComments : null}
+          >
+            {fetching ? (
+              <span className={css(styles.loadingText)}>loading...</span>
+            ) : (
+              `View ${fetchCount} More`
+            )}
+          </div>
+        </div>
+      );
     }
   };
 
@@ -322,7 +389,12 @@ class DiscussionEntry extends React.Component {
             </div>
           </span>
           <div className={css(styles.commentContainer)} id={"comments"}>
-            {this.state.revealComment && this.renderComments()}
+            {this.state.revealComment && (
+              <Fragment>
+                {this.renderComments()}
+                {this.renderViewMore()}
+              </Fragment>
+            )}
           </div>
         </div>
       </div>
@@ -428,6 +500,23 @@ const styles = StyleSheet.create({
       backgroundColor: colors.LIGHT_YELLOW(),
     },
   },
+  viewMoreContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  viewMoreButton: {
+    fontSize: 13,
+    fontWeight: 400,
+    paddingLeft: 20,
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  loadingText: {
+    color: colors.BLUE(),
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -442,6 +531,8 @@ const mapDispatchToProps = {
   postUpvote: DiscussionActions.postUpvote,
   postDownvotePending: DiscussionActions.postDownvotePending,
   postDownvote: DiscussionActions.postDownvote,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
