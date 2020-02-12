@@ -161,9 +161,28 @@ const styles = StyleSheet.create({
   },
   listLabel: {
     fontWeight: 400,
-    fontSize: 25,
     marginBottom: 20,
     paddingLeft: 40,
+    fontSize: 33,
+    "@media only screen and (max-width: 1343px)": {
+      fontSize: 25,
+    },
+    "@media only screen and (max-width: 1149px)": {
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 22,
+      fontWeight: 500,
+      marginBottom: 10,
+    },
+    "@media only screen and (max-width: 416px)": {
+      fontWeight: 400,
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+      textAlign: "center",
+    },
   },
   hubEntry: {
     fontSize: 16,
