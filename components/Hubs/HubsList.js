@@ -77,27 +77,25 @@ class HubsList extends React.Component {
         : this.state.hubs;
     return selectedHubs.map((hub, i) => {
       let { name, id, user_is_subscribed } = hub;
-      if (name !== this.props.exclude) {
-        return (
-          <Fragment key={`${id}-${i}`}>
-            {/* <Ripples onClick={() => this.handleClick(hub)}> */}
-            <div
-              key={`${id}-${i}`}
-              className={css(styles.hubEntry)}
-              onClick={() => this.handleClick(hub)}
-            >
-              {name}
-              {user_is_subscribed && (
-                <span className={css(styles.subscribedIcon)}>
-                  <i className="fas fa-star" />
-                </span>
-              )}
-            </div>
-            {/* // </Ripples> */}
-            <div className={css(styles.space)} />
-          </Fragment>
-        );
-      }
+      return (
+        <Fragment key={`${id}-${i}`}>
+          {/* <Ripples onClick={() => this.handleClick(hub)}> */}
+          <div
+            key={`${id}-${i}`}
+            className={css(styles.hubEntry)}
+            onClick={() => this.handleClick(hub)}
+          >
+            {name}
+            {user_is_subscribed && (
+              <span className={css(styles.subscribedIcon)}>
+                <i className="fas fa-star" />
+              </span>
+            )}
+          </div>
+          {/* // </Ripples> */}
+          <div className={css(styles.space)} />
+        </Fragment>
+      );
     });
   };
 
@@ -128,6 +126,9 @@ class HubsList extends React.Component {
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
             {this.renderHubEntry()}
+            <Link href={"/hubs"} as={"/hubs"}>
+              <a className={css(styles.link)}>View all hubs</a>
+            </Link>
           </div>
         </div>
       </div>
@@ -152,7 +153,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "center",
     textAlign: "left",
     cursor: "default",
   },
@@ -160,13 +160,11 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
   },
   listLabel: {
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    fontSize: 12,
+    fontWeight: 400,
+    fontSize: 25,
     letterSpacing: 1.2,
     marginBottom: 20,
-    textAlign: "center",
-    width: "100%",
+    paddingLeft: 40,
   },
   hubEntry: {
     fontSize: 16,
@@ -197,6 +195,13 @@ const styles = StyleSheet.create({
   subscribedIcon: {
     marginLeft: 3,
     color: colors.DARK_YELLOW(),
+  },
+  link: {
+    textDecoration: "none",
+    color: "rgba(78, 83, 255)",
+    ":hover": {
+      color: "rgba(78, 83, 255, .5)",
+    },
   },
 });
 
