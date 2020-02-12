@@ -365,6 +365,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     position: "relative",
     boxSizing: "border-box",
+    // border: "1px solid #ddd",
   },
   topbar: {
     width: "100%",
