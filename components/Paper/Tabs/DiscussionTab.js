@@ -71,8 +71,8 @@ const DiscussionTab = (props) => {
   );
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
-  const [showEditor, setShowEditor] = useState(false);
-  const [editorDormant, setEditorDormant] = useState(true);
+  const [showEditor, setShowEditor] = useState(true);
+  const [editorDormant, setEditorDormant] = useState(false);
   const [discussion, setDiscussion] = useState(initialDiscussionState);
   const [mobileView, setMobileView] = useState(false);
   const [threads, setThreads] = useState(props.threads);
@@ -267,6 +267,9 @@ const DiscussionTab = (props) => {
     return (
       <div className={css(stylesEditor.box)}>
         <Message />
+        {/* <div className={css(styles.discTextEditorTitle)}>
+          Posting a discussion as 
+        </div> */}
         <FormInput
           label={"Discussion Title"}
           placeholder="Title of discussion"
@@ -320,17 +323,25 @@ const DiscussionTab = (props) => {
                 ? renderDiscussionTextEditor()
                 : renderAddDiscussion()}
             </div>
-            <div className={css(styles.filterSelect)}>
-              <FormSelect
-                id={"thread-filter"}
-                options={filterOptions}
-                placeholder={"Sort Threads"}
-                onChange={handleFilterChange}
-                containerStyle={styles.filterContainer}
-                inputStyle={{
-                  minHeight: "unset",
-                }}
-              />
+            <div className={css(styles.rowContainer)}>
+              <div className={css(styles.discussionTitle)}>
+                {/* {`Discussions & Posts`} */}
+              </div>
+              <div className={css(styles.filterContainer)}>
+                <div className={css(styles.filterSelect)}>
+                  <FormSelect
+                    id={"thread-filter"}
+                    options={filterOptions}
+                    placeholder={"Sort Threads"}
+                    onChange={handleFilterChange}
+                    containerStyle={styles.overrideFormSelect}
+                    inputStyle={{
+                      minHeight: "unset",
+                      padding: 0,
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
@@ -470,17 +481,12 @@ var styles = StyleSheet.create({
     marginTop: 0,
     backgroundColor: colors.BLUE(1),
     border: "none",
-    backgroundColor: "#FFF",
-    padding: 16,
-    paddingRight: 8,
-    color: "rgb(36, 31, 58)",
-    opacity: 0.6,
-    // marginBottom: 15,
+    padding: "10px 15px",
+    height: "unset",
+    color: "#fff",
+    opacity: 1,
     ":hover": {
-      backgroundColor: "none",
-      color: colors.PURPLE(1),
-      opacity: 1,
-      textDecoration: "underline",
+      backgroundColor: "#3E43E8",
     },
   },
   pencilIcon: {
@@ -600,15 +606,38 @@ var styles = StyleSheet.create({
   threadsContainer: {
     paddingBottom: 80,
   },
+  discussionTitle: {
+    fontSize: 25,
+    fontWeight: 500,
+  },
+  rowContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  overrideFormSelect: {
+    marginTop: 0,
+    marginBottom: 0,
+  },
   filterContainer: {
-    marginTop: 7,
+    display: "flex",
+    alignItems: "center",
+    marginTop: 5,
+    marginBottom: 10,
   },
   filterSelect: {
     width: 160,
   },
+  filterText: {
+    textTransform: "uppercase",
+    height: "100%",
+    letterSpacing: 0.5,
+    fontSize: 10,
+  },
   filterInput: {
     minHeight: "unset",
-    height: 30,
   },
 });
 
@@ -623,10 +652,11 @@ const stylesEditor = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 10,
-    backgroundColor: colors.LIGHT_YELLOW(),
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    backgroundColor: "#fff",
+    border: "1px solid #ddd",
     borderRadius: 10,
   },
+  discTextEditorTitle: {},
   container: {
     width: "100%",
   },
