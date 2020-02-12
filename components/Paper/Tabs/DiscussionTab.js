@@ -654,7 +654,7 @@ const stylesEditor = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#fff",
     border: "1px solid #ddd",
-    borderRadius: 10,
+    borderRadius: 3,
   },
   discTextEditorTitle: {},
   container: {
