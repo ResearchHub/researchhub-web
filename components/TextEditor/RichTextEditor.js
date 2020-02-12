@@ -914,11 +914,10 @@ const styles = StyleSheet.create({
   },
   commentEditor: {
     background: "#FBFBFD",
-    border: "1px solid #E7E7E7",
     // borderRadius: 4,
     color: "#000",
     ":hover": {
-      borderColor: "#B3B3B3",
+      border: "1px solid #E7E7E7",
     },
   },
   editSection: {
