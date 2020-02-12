@@ -46,7 +46,7 @@ export const ToolBar = (props) => {
           <FormButton
             isWhite={true}
             onClick={props.cancel}
-            label="Cancel"
+            label={props.smallToolBar ? "Hide" : "Cancel"}
             customButtonStyle={
               props.smallToolBar ? styles.smallButton : styles.cancelButton
             }
@@ -154,8 +154,7 @@ const styles = StyleSheet.create({
     },
   },
   smallButton: {
-    width: 80,
-    height: 30,
+    padding: "10px 18px",
   },
   divider: {
     width: 10,
