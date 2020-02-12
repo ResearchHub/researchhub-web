@@ -78,17 +78,20 @@ const DiscussionTab = (props) => {
   const [mobileView, setMobileView] = useState(false);
   const [threads, setThreads] = useState(props.threads);
   const [filter, setFilter] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     async function getThreadsByFilter() {
       dispatch(MessageActions.showMessage({ load: true, show: true }));
       const currentPaper = store.getState().paper;
       await dispatch(
-        PaperActions.getThreads(props.paper.id, currentPaper, filter)
+        PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
       );
       const sortedThreads = store.getState().paper.discussion.threads;
       setThreads(sortedThreads);
       setFormattedThreads(formatThreads(sortedThreads, basePath));
+      setPage(page + 1);
       setTimeout(() => {
         dispatch(MessageActions.showMessage({ show: false }));
       }, 200);
@@ -140,6 +143,7 @@ const DiscussionTab = (props) => {
   const handleFilterChange = (id, filter) => {
     let { value } = filter;
     setFilter(value);
+    setPage(1);
   };
 
   const addDiscussion = () => {
@@ -224,16 +228,23 @@ const DiscussionTab = (props) => {
     props.openAddDiscussionModal(true);
   };
 
-  const fetchDiscussionThreads = async (page) => {
-    const currentPaper = store.getState().paper;
+  const fetchDiscussionThreads = async () => {
     if (
-      !currentPaper.discussion.seenPages[page] ||
-      currentPaper.discussion.filter !== filter
+      loading ||
+      formattedThreads.length >= store.getState().paper.discussion.count
     ) {
-      await dispatch(
-        PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
-      );
+      return;
     }
+    setLoading(true);
+    const currentPaper = store.getState().paper;
+    await dispatch(
+      PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
+    );
+    const sortedThreads = store.getState().paper.discussion.threads;
+    setThreads(sortedThreads);
+    setFormattedThreads(formatThreads(sortedThreads, basePath));
+    setPage(page + 1);
+    setLoading(false);
   };
 
   const renderAddDiscussion = () => {
@@ -358,12 +369,21 @@ const DiscussionTab = (props) => {
             </div>
           </div>
           <InfiniteScroll
-            pageStart={0}
             loadMore={fetchDiscussionThreads}
+            initialLoad={false}
             hasMore={
-              formattedThreads.length < store.getState().paper.discussion.count
+              store.getState().paper.discussion.threads.length <
+              store.getState().paper.discussion.count
             }
-            loader={<Loader loading={true} key={`thread-loader`} size={23} />}
+            loader={
+              <Loader
+                loading={true}
+                key={`thread-loader`}
+                size={10}
+                type="beat"
+              />
+            }
+            threshold={0}
           >
             {renderThreads(formattedThreads, hostname)}
           </InfiniteScroll>
@@ -660,6 +680,9 @@ var styles = StyleSheet.create({
   },
   filterInput: {
     minHeight: "unset",
+  },
+  infiniteContainer: {
+    display: "flex",
   },
 });
 

@@ -62,19 +62,25 @@ export const vote = (vote) => {
 };
 
 export function transformThreads(threads) {
-  return threads.map((thread) => ({
-    id: thread.id,
-    title: thread.title,
-    text: thread.text,
-    paper: thread.paper,
-    commentCount: thread.comment_count,
-    createdBy: transformUser(thread.created_by),
-    createdDate: transformDate(thread.created_date),
-    isPublic: thread.is_public,
-    score: thread.score,
-    userVote: transformVote(thread.user_vote),
-    comments: transformComments(thread.comments),
-  }));
+  return threads.map((thread) => {
+    if (thread.created_by) {
+      return {
+        id: thread.id,
+        title: thread.title,
+        text: thread.text,
+        paper: thread.paper,
+        commentCount: thread.comment_count,
+        createdBy: transformUser(thread.created_by),
+        createdDate: transformDate(thread.created_date),
+        isPublic: thread.is_public,
+        score: thread.score,
+        userVote: transformVote(thread.user_vote),
+        comments: transformComments(thread.comments),
+      };
+    } else {
+      return thread;
+    }
+  });
 }
 
 function transformEdit(edit) {
