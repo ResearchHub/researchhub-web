@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
   listLabel: {
     fontWeight: 400,
     fontSize: 25,
-    letterSpacing: 1.2,
     marginBottom: 20,
     paddingLeft: 40,
   },
