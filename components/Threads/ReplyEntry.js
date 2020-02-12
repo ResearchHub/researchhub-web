@@ -44,7 +44,7 @@ class ReplyEntry extends React.Component {
         highlight: this.props.reply.highlight && true,
       },
       () => {
-        this.calculateThreadHeight();
+        setTimeout(() => this.calculateThreadHeight(), 400);
         this.props.reply.highlight &&
           setTimeout(() => {
             this.setState({ highlight: false }, () => {
