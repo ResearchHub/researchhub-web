@@ -163,12 +163,12 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     marginBottom: 20,
     paddingLeft: 40,
-    fontSize: 33,
+    fontSize: 26,
     "@media only screen and (max-width: 1343px)": {
-      fontSize: 25,
+      fontSize: 22,
     },
     "@media only screen and (max-width: 1149px)": {
-      fontSize: 20,
+      fontSize: 22,
     },
     "@media only screen and (max-width: 665px)": {
       fontSize: 22,
