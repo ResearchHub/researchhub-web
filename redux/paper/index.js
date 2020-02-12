@@ -85,10 +85,7 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: (paperId, paper, filter, page = 1) => {
-    console.log("filter", filter);
-    console.log("page", page);
-    console.log("path", API.DISCUSSION(paperId, filter && filter, page));
+  getThreads: (paperId, paper, filter = "", page = 1) => {
     return (dispatch) => {
       return fetch(
         API.DISCUSSION(paperId, filter && filter, page),
@@ -99,9 +96,11 @@ export const PaperActions = {
         .then((res) => {
           const updatedPaper = { ...paper };
           let { discussion } = updatedPaper;
-          console.log("res-threads", res);
           // reset the list from page 1 when filter is changed; initial set state
-          if (!discussion.filter || discussion.filter !== filter) {
+          if (
+            (!discussion.filter && page === 1) ||
+            discussion.filter !== filter
+          ) {
             discussion.filter = filter; // set filter
             discussion.count = res.count; // set count
             discussion.threads = [...res.results]; // set threads
@@ -113,6 +112,7 @@ export const PaperActions = {
             discussion.seenPages[page] = true;
           }
 
+          console.log("updated", updatedPaper);
           return dispatch({
             type: types.GET_THREADS,
             payload: {
