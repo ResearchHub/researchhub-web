@@ -10,6 +10,7 @@ export const HubConstants = {
   GET_HUBS_SUCCESS: "@@hub/GET_HUBS_SUCCESS",
   GET_HUBS_FAILURE: "@@hub/GET_HUBS_FAILURE",
   UPDATE_HUB: "@@hub/UPDATE_HUB",
+  GET_TOP_HUBS_SUCCESS: "@@hub/GET_TOP_HUBS_SUCCESS",
 };
 
 export const HubActions = {
@@ -54,6 +55,21 @@ export const HubActions = {
         });
     };
   },
+  getTopHubs: () => {
+    return (dispatch) => {
+      return fetch(API.SORTED_HUB({}), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          return dispatch({
+            type: HubConstants.GET_TOP_HUBS_SUCCESS,
+            payload: {
+              topHubs: [...resp.results],
+            },
+          });
+        });
+    };
+  },
   /**
    * Updates the state of 'user_is_subscribed' on the FE when changes are made to the FE
    * @param { Object } - the hub object
@@ -81,6 +97,7 @@ export const HubActions = {
 const defaultHubState = {
   currentHub: {},
   hubs: [],
+  topHubs: [],
   hubsByAlpha: {},
   fetchedHubs: false,
 };
@@ -91,6 +108,7 @@ const HubReducer = (state = defaultHubState, action) => {
     case HubConstants.GET_HUBS_SUCCESS:
     case HubConstants.GET_HUBS_FAILURE:
     case HubConstants.UPDATE_HUB:
+    case HubConstants.GET_TOP_HUBS_SUCCESS:
       return {
         ...state,
         ...action.payload,

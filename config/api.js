@@ -255,6 +255,17 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    SORTED_HUB: ({ filter }) => {
+      let url = BASE_URL + `hub/?ordering=-score`;
+
+      // if (filter !== undefined || filter !== null) {
+      //   if (typeof filter === "string") {
+      //     url += `&ordering=${filter}`;
+      //   }
+      // }
+
+      return url;
+    },
     GET_HUB_PAPERS: ({ hubId, timePeriod, ordering, page = 1 }) => {
       let url =
         BASE_URL +
