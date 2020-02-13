@@ -431,13 +431,17 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: "100%",
     alignItems: "flex-start",
-    marginBottom: 20,
+    marginBottom: 15,
     overflow: "auto",
-    border: "1px solid #FFF",
-    borderRadius: 5,
+    borderRadius: 3,
     position: "relative",
     boxSizing: "border-box",
-    // border: "1px solid #ddd",
+    backgroundColor: "#FFF",
+    padding: 10,
+    border: "1px solid #E8E8F2",
+    ":hover": {
+      borderColor: "rgb(179, 179, 179)",
+    },
   },
   topbar: {
     width: "100%",
@@ -465,7 +469,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: "0px 10px 10px 15px",
     ":hover": {
-      backgroundColor: "#F7F7FA",
+      backgroundColor: "#FAFAFA",
     },
   },
   bottom: {
@@ -504,11 +508,12 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "flex-start",
+    marginBottom: 8,
+    marginLeft: 20,
   },
   viewMoreButton: {
     fontSize: 13,
     fontWeight: 400,
-    paddingLeft: 20,
     cursor: "pointer",
     ":hover": {
       color: colors.BLUE(),

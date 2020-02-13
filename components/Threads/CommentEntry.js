@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: "0px 10px 10px 8px",
     ":hover": {
-      backgroundColor: "#F7F7FA",
+      backgroundColor: "#FAFAFA",
     },
   },
   active: {
@@ -498,11 +498,12 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "flex-start",
+    marginBottom: 8,
+    marginLeft: 20,
   },
   viewMoreButton: {
     fontSize: 13,
     fontWeight: 400,
-    paddingLeft: 20,
     cursor: "pointer",
     ":hover": {
       color: colors.BLUE(),
