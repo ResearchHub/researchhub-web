@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  hubs: state.hubs.hubs,
+  hubs: state.hubs.topHubs,
 });
 
 const mapDispatchToProps = {

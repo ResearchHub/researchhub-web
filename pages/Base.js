@@ -28,10 +28,12 @@ class Base extends React.Component {
       getUniversities,
       getUserBannerPreference,
       getWithdrawals,
+      getTopHubs,
     } = this.props;
 
     getUser();
     getHubs();
+    getTopHubs();
     getUniversities();
     getWithdrawals();
     getUserBannerPreference();
@@ -80,6 +82,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getHubs: HubActions.getHubs,
+  getTopHubs: HubActions.getTopHubs,
   getUniversities: UniversityActions.getUniversities,
   getUserBannerPreference: AuthActions.getUserBannerPreference,
   fetchPermissions: PermissionActions.fetchPermissions,
