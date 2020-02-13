@@ -84,6 +84,7 @@ class HubPage extends React.Component {
       next: null,
       doneFetching: false,
       unsubscribeHover: false,
+      subscribeClicked: false,
     };
   }
 
@@ -283,25 +284,32 @@ class HubPage extends React.Component {
   onMouseExitSubscribe = () => {
     this.setState({
       unsubscribeHover: false,
+      subscribeClicked: false,
     });
   };
 
   renderSubscribeButton = () => {
     if (this.state.subscribe) {
+      let text = this.state.unsubscribeHover
+        ? this.state.subscribeClicked
+          ? "Subscribed"
+          : "Unsubscribe"
+        : "Subscribed";
+      let hover = this.state.unsubscribeHover && !this.state.subscribeClicked;
       return (
         <span
-          className={css(styles.subscribe, styles.subscribed)}
+          className={css(
+            styles.subscribe,
+            styles.subscribed,
+            hover && styles.subscribeHover
+          )}
           onMouseEnter={this.onMouseEnterSubscribe}
           onMouseLeave={this.onMouseExitSubscribe}
         >
           <Ripples onClick={this.subscribeToHub}>
             <span>
               {!this.state.transition ? (
-                this.state.unsubscribeHover ? (
-                  "Unsubscribe"
-                ) : (
-                  "Subscribed"
-                )
+                text
               ) : (
                 <Loader
                   key={"subscribeLoader"}
@@ -354,6 +362,7 @@ class HubPage extends React.Component {
             this.setState({
               transition: false,
               subscribe: !this.state.subscribe,
+              subscribeClicked: false,
             });
           });
       } else {
@@ -367,6 +376,7 @@ class HubPage extends React.Component {
             this.setState({
               transition: false,
               subscribe: !this.state.subscribe,
+              subscribeClicked: true,
             });
           });
       }
@@ -957,8 +967,9 @@ var styles = StyleSheet.create({
     color: "#FFF",
 
     ":hover": {
-      backgroundColor: colors.RED(1),
-      border: `1px solid ${colors.RED(1)}`,
+      border: `1px solid ${colors.BLUE(1)}`,
+      backgroundColor: colors.BLUE(1),
+      color: "#FFF",
     },
   },
   loader: {
@@ -986,6 +997,12 @@ var styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
+  },
+  subscribeHover: {
+    ":hover": {
+      backgroundColor: colors.RED(1),
+      border: `1px solid ${colors.RED(1)}`,
+    },
   },
 });
 
