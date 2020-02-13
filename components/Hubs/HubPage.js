@@ -83,6 +83,7 @@ class HubPage extends React.Component {
       papersLoading: false,
       next: null,
       doneFetching: false,
+      unsubscribeHover: false,
     };
   }
 
@@ -273,14 +274,34 @@ class HubPage extends React.Component {
     });
   };
 
+  onMouseEnterSubscribe = () => {
+    this.setState({
+      unsubscribeHover: true,
+    });
+  };
+
+  onMouseExitSubscribe = () => {
+    this.setState({
+      unsubscribeHover: false,
+    });
+  };
+
   renderSubscribeButton = () => {
     if (this.state.subscribe) {
       return (
-        <span className={css(styles.subscribe, styles.subscribed)}>
+        <span
+          className={css(styles.subscribe, styles.subscribed)}
+          onMouseEnter={this.onMouseEnterSubscribe}
+          onMouseLeave={this.onMouseExitSubscribe}
+        >
           <Ripples onClick={this.subscribeToHub}>
             <span>
               {!this.state.transition ? (
-                "Subscribed"
+                this.state.unsubscribeHover ? (
+                  "Unsubscribe"
+                ) : (
+                  "Subscribed"
+                )
               ) : (
                 <Loader
                   key={"subscribeLoader"}
@@ -424,7 +445,9 @@ class HubPage extends React.Component {
                 <span className={css(styles.hubName)}>
                   {this.props.home ? "ResearchHub" : this.props.hub.name}
                 </span>
-                {this.props.hub && this.renderSubscribeButton()}
+                <div className={css(styles.subscribeContainer)}>
+                  {this.props.hub && this.renderSubscribeButton()}
+                </div>
               </div>
               <div className={css(styles.row, styles.inputs)}>
                 <FormSelect
@@ -749,6 +772,7 @@ var styles = StyleSheet.create({
   },
   topbar: {
     paddingTop: 30,
+    paddingBottom: 20,
     width: "calc(100% - 140px)",
     position: "sticky",
     paddingLeft: 70,
@@ -776,7 +800,7 @@ var styles = StyleSheet.create({
   },
   dropDown: {
     width: 150,
-    height: 45,
+    margin: 0,
     "@media only screen and (max-width: 1343px)": {
       // width: 220,
       height: "unset",
@@ -909,29 +933,33 @@ var styles = StyleSheet.create({
     },
   },
   subscribe: {
-    fontSize: 11,
-    letterSpacing: 0.4,
+    fontSize: 15,
+    width: 124,
+    height: 43,
     fontWeight: 400,
-    textTransform: "uppercase",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    backgroundColor: colors.BLUE(0.5),
-    color: "#FFF",
-    padding: 5,
-    border: "1px solid #FFF",
-    borderRadius: 3,
+    color: colors.BLUE(1),
+    border: `1px solid ${colors.BLUE(1)}`,
+    borderRadius: 5,
     ":hover": {
-      border: `1px solid ${colors.BLUE(1)}`,
+      background: colors.BLUE(0.1),
     },
     "@media only screen and (max-width: 768px)": {
-      fontSize: 8,
+      fontSize: 15,
     },
   },
   subscribed: {
     border: `1px solid ${colors.BLUE(1)}`,
     backgroundColor: colors.BLUE(1),
+    color: "#FFF",
+
+    ":hover": {
+      backgroundColor: colors.RED(1),
+      border: `1px solid ${colors.RED(1)}`,
+    },
   },
   loader: {
     opacity: 1,
@@ -952,6 +980,12 @@ var styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 25,
     marginBottom: 10,
+  },
+  subscribeContainer: {
+    display: "flex",
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
 });
 
