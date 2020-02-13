@@ -230,25 +230,20 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: 0,
     padding: 4,
-    borderRadius: 5,
+    borderRadius: 3,
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "#EDEEFE",
       color: colors.BLUE(),
     },
     ":hover #replyIcon": {
       color: colors.BLUE(),
     },
   },
-
   commentCountContainer: {
     marginRight: 20,
     padding: 4,
-    borderRadius: 5,
+    borderRadius: 3,
     cursor: "pointer",
-    ":hover": {
-      backgroundColor: "#EDEEFE",
-    },
     ":hover #text": {
       color: colors.BLUE(1),
     },
@@ -262,10 +257,7 @@ const styles = StyleSheet.create({
   shareContainer: {
     cursor: "pointer",
     padding: 4,
-    borderRadius: 5,
-    ":hover": {
-      backgroundColor: "#EDEEFE",
-    },
+    borderRadius: 3,
     ":hover #text": {
       color: colors.BLUE(1),
     },
@@ -307,7 +299,7 @@ const styles = StyleSheet.create({
     height: "unset",
     opacity: 1,
     border: "solid 1px #AAAAAA",
-    borderRadius: 5,
+    borderRadius: 3,
     backgroundColor: "#FAFAFA",
     cursor: "default",
   },

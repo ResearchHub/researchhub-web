@@ -171,14 +171,11 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 5,
     cursor: "pointer",
-    ":hover": {
-      backgroundColor: "#EAEAEA",
-    },
     ":hover #hideIcon": {
-      color: colors.BLACK(),
+      color: colors.BLUE(),
     },
     ":hover #hideText": {
-      color: colors.BLACK(),
+      color: colors.BLUE(),
     },
   },
   text: {
@@ -197,7 +194,6 @@ const styles = StyleSheet.create({
   expandButtonWrapper: {
     display: "flex",
     alignItems: "center",
-    // justifyContent: 'flex-end',
     position: "absolute",
     right: 0,
   },
@@ -209,9 +205,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     color: colors.BLACK(),
     cursor: "pointer",
-    ":hover": {
-      backgroundColor: "#EDEEFE",
-    },
     ":hover #expandIcon": {
       color: colors.BLUE(),
     },

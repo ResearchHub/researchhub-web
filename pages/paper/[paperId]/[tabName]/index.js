@@ -382,6 +382,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
+    backgroundColor: "#FCFCFC",
     "@media only screen and (max-width: 415px)": {
       paddingTop: 20,
     },
