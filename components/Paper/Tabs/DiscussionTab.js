@@ -647,9 +647,7 @@ var styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
-  threadsContainer: {
-    // paddingBottom: 80,
-  },
+  threadsContainer: {},
   discussionTitle: {
     fontSize: 25,
     fontWeight: 500,
@@ -669,7 +667,7 @@ var styles = StyleSheet.create({
   filterContainer: {
     display: "flex",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 18,
   },
   filterSelect: {
     width: 160,
@@ -697,8 +695,8 @@ const stylesEditor = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     paddingLeft: 20,
-    paddingRight: 2,
-    marginBottom: 10,
+    paddingRight: 20,
+    marginBottom: 8,
     backgroundColor: "#fff",
     border: "1px solid #E8E8F2",
     borderRadius: 3,

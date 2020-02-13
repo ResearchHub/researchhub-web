@@ -468,9 +468,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "0px 10px 10px 15px",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-    },
   },
   bottom: {
     width: "100%",

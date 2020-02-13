@@ -47,6 +47,7 @@ export const ToolBar = (props) => {
             isWhite={true}
             onClick={props.cancel}
             label={props.smallToolBar ? "Hide" : "Cancel"}
+            size={props.smallToolBar && "small"}
             customButtonStyle={
               props.smallToolBar ? styles.smallButton : styles.cancelButton
             }
@@ -58,6 +59,7 @@ export const ToolBar = (props) => {
             <FormButton
               onClick={null}
               label={<Loader loading={true} color={"#FFF"} size={20} />}
+              size={props.smallToolBar && "small"}
               customButtonStyle={
                 props.smallToolBar ? styles.smallButton : styles.buttonStyle
               }
@@ -66,6 +68,7 @@ export const ToolBar = (props) => {
             <FormButton
               onClick={props.submit}
               label="Submit"
+              size={props.smallToolBar && "small"}
               customButtonStyle={
                 props.smallToolBar ? styles.smallButton : styles.buttonStyle
               }
@@ -154,7 +157,7 @@ const styles = StyleSheet.create({
     },
   },
   smallButton: {
-    padding: "10px 18px",
+    // padding: "10px 10px",
   },
   divider: {
     width: 10,

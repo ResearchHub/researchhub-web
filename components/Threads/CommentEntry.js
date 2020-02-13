@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: "0px 10px 10px 8px",
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: "#f3f3f8",
     },
   },
   active: {
