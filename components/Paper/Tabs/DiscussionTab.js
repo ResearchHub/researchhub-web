@@ -362,6 +362,7 @@ const DiscussionTab = (props) => {
                     inputStyle={{
                       minHeight: "unset",
                       padding: 0,
+                      backgroundColor: "#FFF",
                     }}
                   />
                 </div>
@@ -437,7 +438,8 @@ var styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     flexDirection: "column",
-    backgroundColor: "#FFF",
+    // backgroundColor: "#FFF",
+    backgroundColor: "#FCFCFC",
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       fontSize: 16,
@@ -662,11 +664,11 @@ var styles = StyleSheet.create({
   overrideFormSelect: {
     marginTop: 0,
     marginBottom: 0,
+    backgroundColor: "#FFF",
   },
   filterContainer: {
     display: "flex",
     alignItems: "center",
-    marginTop: 5,
     marginBottom: 10,
   },
   filterSelect: {
@@ -698,7 +700,11 @@ const stylesEditor = StyleSheet.create({
     paddingRight: 2,
     marginBottom: 10,
     backgroundColor: "#fff",
+    border: "1px solid #E8E8F2",
     borderRadius: 3,
+    ":hover": {
+      borderColor: "rgb(179, 179, 179)",
+    },
   },
   discTextEditorTitle: {},
   container: {
