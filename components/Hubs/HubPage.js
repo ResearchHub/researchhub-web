@@ -297,16 +297,16 @@ class HubPage extends React.Component {
         : "Subscribed";
       let hover = this.state.unsubscribeHover && !this.state.subscribeClicked;
       return (
-        <span
-          className={css(
-            styles.subscribe,
-            styles.subscribed,
-            hover && styles.subscribeHover
-          )}
-          onMouseEnter={this.onMouseEnterSubscribe}
-          onMouseLeave={this.onMouseExitSubscribe}
-        >
-          <Ripples onClick={this.subscribeToHub}>
+        <Ripples onClick={this.subscribeToHub}>
+          <button
+            className={css(
+              styles.subscribe,
+              styles.subscribed,
+              hover && styles.subscribeHover
+            )}
+            onMouseEnter={this.onMouseEnterSubscribe}
+            onMouseLeave={this.onMouseExitSubscribe}
+          >
             <span>
               {!this.state.transition ? (
                 text
@@ -320,8 +320,8 @@ class HubPage extends React.Component {
                 />
               )}
             </span>
-          </Ripples>
-        </span>
+          </button>
+        </Ripples>
       );
     } else {
       return (
