@@ -325,8 +325,8 @@ class HubPage extends React.Component {
       );
     } else {
       return (
-        <span className={css(styles.subscribe)}>
-          <Ripples onClick={this.subscribeToHub}>
+        <Ripples onClick={this.subscribeToHub}>
+          <button className={css(styles.subscribe)}>
             <span>
               {!this.state.transition ? (
                 "Subscribe"
@@ -340,8 +340,8 @@ class HubPage extends React.Component {
                 />
               )}
             </span>
-          </Ripples>
-        </span>
+          </button>
+        </Ripples>
       );
     }
   };
