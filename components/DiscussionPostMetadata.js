@@ -83,8 +83,14 @@ const DiscussionPostMetadata = (props) => {
         setFlagged(!isFlagged);
       })
       .catch((err) => {
+        if (err.response && err.response.status === 400) {
+          dispatch(
+            MessageActions.setMessage("Flag for this post already submitted!")
+          );
+        } else {
+          dispatch(MessageActions.setMessage("Something went wrong"));
+        }
         dispatch(MessageActions.showMessage({ show: false }));
-        dispatch(MessageActions.setMessage("Something went wrong"));
         dispatch(MessageActions.showMessage({ show: true, error: true }));
       });
   };
