@@ -431,17 +431,18 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: "100%",
     alignItems: "flex-start",
-    marginBottom: 15,
+    // marginBottom: 15,
     overflow: "auto",
     borderRadius: 3,
     position: "relative",
     boxSizing: "border-box",
     backgroundColor: "#FFF",
     padding: 10,
-    border: "1px solid #E8E8F2",
-    ":hover": {
-      borderColor: "rgb(179, 179, 179)",
-    },
+    paddingRight: 0,
+    // borderBottom: "1px solid #E8E8F2",
+    // ":hover": {
+    //   borderColor: "rgb(179, 179, 179)",
+    // },
   },
   topbar: {
     width: "100%",
@@ -467,7 +468,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     boxSizing: "border-box",
     borderRadius: 5,
-    padding: "0px 10px 10px 15px",
+    padding: "0px 0px 10px 15px",
   },
   bottom: {
     width: "100%",
