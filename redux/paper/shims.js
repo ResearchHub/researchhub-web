@@ -63,6 +63,7 @@ export const vote = (vote) => {
 
 export function transformThreads(threads) {
   return threads.map((thread) => {
+    console.log("thread", thread);
     if (thread.created_by) {
       return {
         id: thread.id,
@@ -76,6 +77,7 @@ export function transformThreads(threads) {
         score: thread.score,
         userVote: transformVote(thread.user_vote),
         comments: transformComments(thread.comments),
+        isRemoved: thread.is_removed,
       };
     } else {
       return thread;
@@ -116,6 +118,7 @@ export function transformComment(comment) {
     replies: transformReplies(comment.replies),
     replyCount: comment.reply_count,
     thread: comment.thread,
+    isRemoved: comment.is_removed,
   };
 }
 
@@ -138,6 +141,7 @@ export function transformReply(reply) {
     score: reply.score,
     userVote: transformVote(reply.user_vote),
     thread: reply.thread,
+    isRemoved: reply.is_removed,
   };
 }
 

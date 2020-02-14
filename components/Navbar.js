@@ -48,9 +48,9 @@ const Navbar = (props) => {
   let dropdown;
   let avatar;
 
-  useEffect(() => {
-    getUser();
-  }, []);
+  // useEffect(() => {
+  //   getUser();
+  // }, []);
 
   /**
    * When we click anywhere outside of the dropdown, close it

@@ -1,7 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import Avatar from "react-avatar";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
 import colors from "../config/themes/colors";
 
 const AuthorAvatar = (props) => {
