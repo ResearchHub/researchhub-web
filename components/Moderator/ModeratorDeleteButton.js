@@ -1,59 +1,188 @@
 import React from "react";
-import { connect, useStore } from "react-redux";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
+import { useAlert } from "react-alert";
 
-class ModeratorDeleteButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+// Redux
+import { MessageActions } from "~/redux/message";
 
-  componentDidMount() {}
+// Config
+import colors from "~/config/themes/colors";
+import icons from "../../config/themes/icons";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import { doesNotExist } from "~/config/utils";
 
-  performAction = () => {
-    switch (this.props.actionType) {
+const ModeratorDeleteButton = (props) => {
+  const alert = useAlert();
+  let { isModerator, containerStyle, iconStyle, labelStyle, label } = props;
+
+  let containerClass = [
+    styles.buttonContainer,
+    containerStyle && containerStyle,
+  ];
+  let iconClass = [styles.icon, iconStyle && iconStyle];
+  let labelClass = [styles.label, labelStyle && labelStyle];
+
+  const showConfirmation = (actionType) => {
+    alert.show({
+      text: "Are you sure you want to remove this post?",
+      buttonText: "Remove",
+      onClick: () => {
+        // flagged ? removeFlag(paperId) : flagPaper(paperId, reason);
+      },
+    });
+  };
+
+  const performAction = () => {
+    let type = props.actionType;
+    let text;
+    switch (type) {
       case "page":
-        return this.deletePaperPage();
+        text = "Are you sure you want to remove this paper page?";
+      // return deletePaperPage();
       case "pdf":
-        return this.deletePaperPDF();
+        text = "Are you sure you want to remove this pdf?";
+      // return deletePaperPDF();
       case "post":
-        return this.deletePost();
+        text = "Are you sure you want to remove this post?";
+        return alert.show({
+          text,
+          buttonText: "Remove",
+          onClick: () => {
+            return deletePost();
+          },
+        });
       default:
         return null;
     }
   };
 
-  /**
+  /**s
    * Used to delete a paper page
    */
-  deletePaperPage = () => {};
+  const deletePaperPage = () => {
+    showLoader();
+    let { paperId } = props.metaData;
+    fetch(API.CENSOR_PAPER({ paperId }), API.DELETE_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        showSucessMessage("Paper Successfully Removed.");
+        props.onRemove && props.onRemove();
+      })
+      .catch((err) => {
+        showErrorMessage();
+      });
+  };
 
   /**
    * Used to delete a paper's pdf
    */
-  deletePaperPDF = () => {};
+  const deletePaperPDF = () => {
+    showLoader();
+    let { paperId } = props.metaData;
+    fetch(API.CENSOR_PAPER_PDF({ paperId }), API.DELETE_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        showSucessMessage("Paper PDF Successfully Removed.");
+        props.onRemove && props.onRemove();
+      })
+      .catch((err) => {
+        showErrorMessage();
+      });
+  };
 
   /**
    * Used to delete a user's post, comment, reply, thread, etc.
    */
-  deletePost = () => {};
+  const deletePost = () => {
+    showLoader();
+    let query = buildQuery();
+    fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        showSucessMessage("Post Successfully Removed.");
+        props.onRemove && props.onRemove();
+      })
+      .catch((err) => {
+        showErrorMessage();
+      });
+  };
 
-  render() {
-    let { isModerator, styles } = this.props;
+  const buildQuery = () => {
+    console.log("props", props);
+    let { paperId, threadId, commentId, replyId } = props.metaData;
+    let query = {};
 
-    if (isModerator) {
-      return (
-        <Ripples onClick={false}>
-          <div className={css(styles.deleteButton, styles && styles)}>{}</div>
-        </Ripples>
-      );
-    } else {
-      return null;
+    if (!doesNotExist(paperId)) {
+      query.paperId = paperId;
     }
+    if (!doesNotExist(threadId)) {
+      query.threadId = threadId;
+    }
+    if (!doesNotExist(commentId)) {
+      query.commentId = commentId;
+    }
+    if (!doesNotExist(replyId)) {
+      query.replyId = replyId;
+    }
+
+    return query;
+  };
+
+  const showLoader = () => {
+    props.showMessage({ load: true, show: true });
+  };
+
+  const showSucessMessage = (msg) => {
+    props.showMessage({ show: false }); // component requires to be toggled off first
+    props.setMessage(msg);
+    props.showMessage({ show: true, clickOff: true });
+  };
+
+  const showErrorMessage = () => {
+    props.showMessage({ show: false });
+    props.setMessage("Something went wrong.");
+    props.showMessage({ show: true, error: true, clickOff: true });
+  };
+
+  if (isModerator) {
+    return (
+      <Ripples className={css(containerClass)} onClick={performAction}>
+        <span className={css(iconClass)}>{icons.minusCircle}</span>
+        {label && <span className={css(labelClass)}>{label}</span>}
+      </Ripples>
+    );
+  } else {
+    // don't render button
+    return null;
   }
-}
+};
 
 const styles = StyleSheet.create({
-  deleteButton: {},
+  buttonContainer: {
+    cursor: "pointer",
+    width: "100%",
+  },
+  icon: {
+    color: colors.RED(),
+  },
 });
+
+const mapStateToProps = (state) => ({
+  isModerator: state.auth.user.moderator,
+});
+
+const mapDispatchToProps = {
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ModeratorDeleteButton);
