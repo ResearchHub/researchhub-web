@@ -12,6 +12,7 @@ import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton"
 
 //Redux
 import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import icons from "~/config/themes/icons";
@@ -40,6 +41,7 @@ const DiscussionPostMetadata = (props) => {
   let dropdown;
   let ellipsis;
   let isModerator = store.getState().auth.user.moderator;
+  let isLoggedIn = store.getState().auth.isLoggedIn;
 
   const handleOutsideClick = (e) => {
     if (ellipsis && ellipsis.contains(e.target)) {
@@ -57,13 +59,22 @@ const DiscussionPostMetadata = (props) => {
   };
 
   const promptFlagConfirmation = () => {
-    return alert.show({
-      text: "Are you sure you want to flag this post?",
-      buttonText: "Yes",
-      onClick: () => {
-        threadPath ? flagThread() : flagPost();
-      },
-    });
+    if (!isLoggedIn) {
+      dispatch(
+        ModalActions.openLoginModal(
+          true,
+          "Please login with Google to continue."
+        )
+      );
+    } else {
+      return alert.show({
+        text: "Are you sure you want to flag this post?",
+        buttonText: "Yes",
+        onClick: () => {
+          threadPath ? flagThread() : flagPost();
+        },
+      });
+    }
   };
 
   const flagThread = async () => {
@@ -148,6 +159,7 @@ const DiscussionPostMetadata = (props) => {
             ref={(ref) => (dropdown = ref)}
           >
             {threadPath && <ExpandButton {...props} />}
+
             <FlagButton
               {...props}
               onClick={promptFlagConfirmation}
