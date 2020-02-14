@@ -154,12 +154,16 @@ const routes = (BASE_URL) => {
       return BASE_URL + "permissions/";
     },
 
-    DISCUSSION: (paperId, filter) => {
+    DISCUSSION: (paperId, filter, page) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/`;
+
+      if (typeof page === "number") {
+        url += `?page=${page}`;
+      }
 
       if (filter !== undefined || filter !== null) {
         if (typeof filter === "string") {
-          url += `?ordering=${filter}`;
+          url += `&ordering=${filter}`;
         }
       }
 

@@ -6,19 +6,21 @@ import { StyleSheet, css } from "aphrodite";
 import VoteWidget from "../VoteWidget";
 import ThreadActionBar from "./ThreadActionBar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
-import { Title, Body } from "../DiscussionThreadCard";
 import ReplyEntry from "./ReplyEntry";
 import ThreadLine from "./ThreadLine";
 import ThreadTextEditor from "./ThreadTextEditor";
 
 // Config
 import colors from "~/config/themes/colors";
-import { convertToEditorValue } from "~/config/utils/serializers";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { getNestedValue } from "~/config/utils";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
+import { MessageActions } from "~/redux/message";
+import { transformReplies } from "~/redux/discussion/shims";
 
 class CommentEntry extends React.Component {
   constructor(props) {
@@ -26,11 +28,14 @@ class CommentEntry extends React.Component {
     this.state = {
       elementHeight: 0,
       replies: [],
-      revealReply: true,
+      revealReply: false,
       hovered: false,
       collapsed: false,
       score: 0,
       selectedVoteType: "",
+      // Pagination
+      page: 2, // we assume page 1 is already present
+      fetching: false, // when true, we show loading state
     };
     this.commentRef = null;
   }
@@ -41,14 +46,14 @@ class CommentEntry extends React.Component {
       "userVote",
       "voteType",
     ]);
-    const revealReply =
-      this.props.comment.replies.length > 0 &&
-      this.props.comment.replies.length < 5;
+    // const revealReply =
+    //   this.props.comment.replies.length > 0 &&
+    //   this.props.comment.replies.length < 5;
     const score = this.props.comment.score;
     this.setState(
       {
         replies: this.props.comment.replies,
-        revealReply,
+        // revealReply,
         selectedVoteType,
         score,
         highlight: this.props.comment.highlight && true,
@@ -94,6 +99,74 @@ class CommentEntry extends React.Component {
           }
         );
       }
+    }
+  };
+
+  fetchReplies = (e) => {
+    e && e.stopPropagation();
+    this.setState(
+      {
+        fetching: true,
+      },
+      () => {
+        let { data, comment } = this.props;
+        let discussionThreadId = data.id;
+        let commentId = comment.id;
+        let paperId = data.paper;
+        let page = this.state.page;
+
+        fetch(
+          API.THREAD_COMMENT_REPLY(
+            paperId,
+            discussionThreadId,
+            commentId,
+            page
+          ),
+          API.GET_CONFIG()
+        )
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((res) => {
+            this.setState({
+              replies: [
+                ...this.state.replies,
+                ...transformReplies(res.results),
+              ],
+              page: this.state.page + 1,
+              fetching: false,
+            });
+          })
+          .catch((err) => {
+            let { setMessage, showMessage } = this.props;
+            setMessage("Hm something went wrong");
+            showMessage({ show: true, error: true, clickoff: true });
+            this.setState({ fetching: false });
+          });
+      }
+    );
+  };
+
+  renderViewMore = () => {
+    if (this.state.replies.length < this.props.comment.replyCount) {
+      let fetching = this.state.fetching;
+      let totalCount = this.props.comment.replyCount;
+      let currentCount = this.state.replies.length;
+      let fetchCount =
+        totalCount - currentCount >= 10 ? 10 : totalCount - currentCount;
+      return (
+        <div className={css(styles.viewMoreContainer)}>
+          <div
+            className={css(styles.viewMoreButton)}
+            onClick={!fetching ? this.fetchReplies : null}
+          >
+            {fetching ? (
+              <span className={css(styles.loadingText)}>loading...</span>
+            ) : (
+              `View ${fetchCount} More`
+            )}
+          </div>
+        </div>
+      );
     }
   };
 
@@ -245,9 +318,12 @@ class CommentEntry extends React.Component {
       comment,
       mobileView,
     } = this.props;
-
     let threadId = comment.id;
-    let commentCount = this.state.replies.length;
+    let commentCount =
+      this.state.replies.length > comment.replyCount
+        ? this.state.replies.length
+        : comment.replyCount;
+
     let date = comment.createdDate;
     let body = comment.text;
     let username = this.createUsername(comment);
@@ -324,11 +400,13 @@ class CommentEntry extends React.Component {
               </Fragment>
             )}
           </span>
-          {!this.state.collapsed && (
-            <div className={css(styles.replyContainer)}>
-              {this.state.revealReply && this.renderReplies()}
-            </div>
-          )}
+          {!this.state.collapsed &&
+            (this.state.revealReply && (
+              <Fragment>
+                {this.renderReplies()}
+                {this.renderViewMore()}
+              </Fragment>
+            ))}
         </div>
       </div>
     );
@@ -383,7 +461,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: "0px 10px 10px 8px",
     ":hover": {
-      backgroundColor: "#F7F7FA",
+      backgroundColor: "#FAFAFA",
     },
   },
   active: {
@@ -416,6 +494,24 @@ const styles = StyleSheet.create({
     margin: 0,
     backgroundColor: "#FFF",
   },
+  viewMoreContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-start",
+    marginBottom: 8,
+    marginLeft: 20,
+  },
+  viewMoreButton: {
+    fontSize: 13,
+    fontWeight: 400,
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  loadingText: {
+    color: colors.BLUE(),
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -430,6 +526,8 @@ const mapDispatchToProps = {
   postUpvote: DiscussionActions.postUpvote,
   postDownvotePending: DiscussionActions.postDownvotePending,
   postDownvote: DiscussionActions.postDownvote,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(

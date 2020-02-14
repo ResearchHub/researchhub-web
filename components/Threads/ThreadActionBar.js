@@ -77,6 +77,10 @@ class ThreadActionBar extends React.Component {
       classNames.push(styles.active);
     }
 
+    if (count === 0) {
+      classNames.push(styles.inactive);
+    }
+
     return (
       <div
         className={css(classNames)}
@@ -197,7 +201,7 @@ class ThreadActionBar extends React.Component {
                 >
                   <i className="fad fa-comment-alt-edit" />
                 </span>
-                Reply
+                Respond
               </div>
             )}
             {this.renderCommentCount()}
@@ -230,25 +234,20 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: 0,
     padding: 4,
-    borderRadius: 5,
+    borderRadius: 3,
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "#EAEAEA",
       color: colors.BLUE(),
     },
     ":hover #replyIcon": {
       color: colors.BLUE(),
     },
   },
-
   commentCountContainer: {
     marginRight: 20,
     padding: 4,
-    borderRadius: 5,
+    borderRadius: 3,
     cursor: "pointer",
-    ":hover": {
-      backgroundColor: "#EAEAEA",
-    },
     ":hover #text": {
       color: colors.BLUE(1),
     },
@@ -262,10 +261,7 @@ const styles = StyleSheet.create({
   shareContainer: {
     cursor: "pointer",
     padding: 4,
-    borderRadius: 5,
-    ":hover": {
-      backgroundColor: "#EAEAEA",
-    },
+    borderRadius: 3,
     ":hover #text": {
       color: colors.BLUE(1),
     },
@@ -292,7 +288,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   active: {
-    color: colors.BLUE(0.7),
+    color: colors.BLUE(0.8),
+  },
+  inactive: {
+    pointerEvents: "none",
+    cursor: "not-allowed",
   },
   textEditorContainer: {
     marginTop: 5,
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     height: "unset",
     opacity: 1,
     border: "solid 1px #AAAAAA",
-    borderRadius: 5,
+    borderRadius: 3,
     backgroundColor: "#FAFAFA",
     cursor: "default",
   },
@@ -319,25 +319,6 @@ const styles = StyleSheet.create({
   replyIcon: {
     color: "#918f9b",
     marginRight: 8,
-  },
-  expandViewContainer: {
-    marginLeft: 20,
-    cursor: "pointer",
-    padding: 4,
-    borderRadius: 5,
-    ":hover": {
-      backgroundColor: "#EAEAEA",
-    },
-    ":hover #expandText": {
-      color: colors.BLUE(1),
-    },
-    ":hover #expandIcon": {
-      color: colors.BLUE(1),
-    },
-  },
-  expandIcon: {
-    color: "#918f9b",
-    fontSize: 14,
   },
 });
 
