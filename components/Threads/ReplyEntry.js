@@ -25,6 +25,8 @@ class ReplyEntry extends React.Component {
       highlight: false,
       score: 0,
       selectedVoteType: "",
+      // Removed
+      removed: false,
     };
     this.replyRef = null;
   }
@@ -42,6 +44,7 @@ class ReplyEntry extends React.Component {
         score,
         selectedVoteType,
         highlight: this.props.reply.highlight && true,
+        removed: this.props.reply.isRemoved,
       },
       () => {
         setTimeout(() => this.calculateThreadHeight(), 400);
@@ -79,9 +82,36 @@ class ReplyEntry extends React.Component {
     return null;
   };
 
+  formatMetaData = () => {
+    let { data, comment, reply } = this.props;
+    return {
+      threadId: data.id,
+      commentId: comment.id,
+      paperId: data.paper,
+      replyId: reply.id,
+      userFlag: reply.userFlag,
+    };
+  };
+
+  handleStateRendering = () => {
+    if (this.state.removed) {
+      return false;
+    }
+    if (!this.state.collapsed) {
+      return true;
+    }
+  };
+
   toggleCollapsed = (e) => {
     e && e.stopPropagation();
     this.setState({ collapsed: !this.state.collapsed });
+  };
+
+  removePostUI = () => {
+    this.setState({ removed: true }, () => {
+      //Todo: clean this part of code, temp use
+      this.props.reply.isRemoved = true;
+    });
   };
 
   upvote = async () => {
@@ -166,7 +196,7 @@ class ReplyEntry extends React.Component {
     // let title = reply.title;
     let body = reply.text;
     let username = this.createUsername(reply);
-
+    let metaIds = this.formatMetaData();
     const flexStyle = StyleSheet.create({
       threadline: {
         height: this.state.elementHeight - 58,
@@ -199,7 +229,7 @@ class ReplyEntry extends React.Component {
               width={"40px"}
             />
           </div>
-          {!this.state.collapsed && (
+          {this.handleStateRendering() && (
             <div className={css(flexStyle.threadline)}></div>
           )}
         </div>
@@ -207,20 +237,26 @@ class ReplyEntry extends React.Component {
           <span
             className={css(
               styles.highlight,
-              this.state.highlight && styles.active
+              this.state.highlight && styles.active,
+              this.state.removed && styles.noPadding
             )}
           >
-            <div className={css(styles.row, styles.topbar)}>
-              <DiscussionPostMetadata
-                authorProfile={reply && reply.createdBy.authorProfile}
-                username={username}
-                date={date}
-                smaller={true}
-                onHideClick={this.toggleCollapsed}
-                hideState={this.state.collapsed}
-              />
-            </div>
-            {!this.state.collapsed && (
+            {!this.state.removed && (
+              <div className={css(styles.row, styles.topbar)}>
+                <DiscussionPostMetadata
+                  authorProfile={reply && reply.createdBy.authorProfile}
+                  username={username}
+                  date={date}
+                  smaller={true}
+                  onHideClick={this.toggleCollapsed}
+                  hideState={this.state.collapsed}
+                  // Moderator
+                  metaData={metaIds}
+                  onRemove={this.removePostUI}
+                />
+              </div>
+            )}
+            {this.handleStateRendering() ? (
               <Fragment>
                 <div className={css(styles.content)}>
                   <ThreadTextEditor
@@ -237,9 +273,16 @@ class ReplyEntry extends React.Component {
                     small={true}
                     calculateThreadHeight={this.calculateThreadHeight}
                     hideReply={true}
+                    isRemoved={this.state.removed}
                   />
                 </div>
               </Fragment>
+            ) : (
+              <div className={css(styles.content)}>
+                <div className={css(styles.removedText)}>
+                  Comment Removed By Moderator
+                </div>
+              </div>
             )}
           </span>
         </div>
@@ -292,7 +335,6 @@ const styles = StyleSheet.create({
   },
   highlight: {
     width: "100%",
-    cursor: "pointer",
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "0px 10px 10px 8px",
@@ -322,6 +364,13 @@ const styles = StyleSheet.create({
   voteWidget: {
     margin: 0,
     backgroundColor: "#FFF",
+  },
+  removedText: {
+    fontStyle: "italic",
+    fontSize: 13,
+  },
+  noPadding: {
+    paddingBottom: 0,
   },
 });
 

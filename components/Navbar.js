@@ -48,9 +48,9 @@ const Navbar = (props) => {
   let dropdown;
   let avatar;
 
-  useEffect(() => {
-    getUser();
-  }, []);
+  // useEffect(() => {
+  //   getUser();
+  // }, []);
 
   /**
    * When we click anywhere outside of the dropdown, close it
@@ -368,6 +368,7 @@ const Navbar = (props) => {
                     size={34}
                     textSizeRatio={2.5}
                     disableLink={true}
+                    showModeratorBadge={user && user.moderator}
                   />
                   <i className={css(styles.caret) + " fas fa-caret-down"}></i>
                   <div className={css(styles.reputation)}>
