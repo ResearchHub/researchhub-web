@@ -42,7 +42,7 @@ const Paper = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
-
+  const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
   const [flagged, setFlag] = useState(paper.user_flag !== null);
@@ -142,7 +142,7 @@ const Paper = (props) => {
           />
         );
       case "full":
-        return <PaperTab />;
+        return <PaperTab paperId={paperId} />;
       case "citations":
         return null;
     }
@@ -256,16 +256,18 @@ const Paper = (props) => {
                       subtitle={paperTitle}
                       url={shareUrl}
                     />
-                    {/*<ActionButton
-                        icon={"fas fa-bookmark"}
-                        action={null}
-                        addRipples={true}
-                      />*/}
-                    <FlagButton
-                      paperId={paper.id}
-                      flagged={flagged}
-                      setFlag={setFlag}
-                    />
+                    {!isModerator ? (
+                      <FlagButton
+                        paperId={paper.id}
+                        flagged={flagged}
+                        setFlag={setFlag}
+                      />
+                    ) : (
+                      <ActionButton
+                        isModerator={isModerator}
+                        paperId={paper.id}
+                      />
+                    )}
                   </div>
                 </span>
               </div>
@@ -311,7 +313,13 @@ const Paper = (props) => {
                   {renderAuthors()}
                 </div>
                 <div className={css(styles.hubs)}>{renderHubs()}</div>
-                <PermissionNotificationWrapper>
+                <PermissionNotificationWrapper
+                  modalMessage="edit papers"
+                  onClick={navigateToEditPaperInfo}
+                  permissionKey="UpdatePaper"
+                  loginRequired={true}
+                  styling={styles.actionButton}
+                >
                   <ActionButton
                     className={"first-step"}
                     icon={"fas fa-pencil"}
@@ -324,16 +332,15 @@ const Paper = (props) => {
                   subtitle={paperTitle}
                   url={shareUrl}
                 />
-                <FlagButton
-                  paperId={paper.id}
-                  flagged={flagged}
-                  setFlag={setFlag}
-                />
-                {/* <ActionButton
-                  icon={"fas fa-bookmark"}
-                  action={null}
-                  addRipples={true}
-                /> */}
+                {!isModerator ? (
+                  <FlagButton
+                    paperId={paper.id}
+                    flagged={flagged}
+                    setFlag={setFlag}
+                  />
+                ) : (
+                  <ActionButton isModerator={isModerator} paperId={paper.id} />
+                )}
               </div>
             </div>
           </ComponentWrapper>
