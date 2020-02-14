@@ -16,7 +16,14 @@ import { doesNotExist } from "~/config/utils";
 
 const ModeratorDeleteButton = (props) => {
   const alert = useAlert();
-  let { isModerator, containerStyle, iconStyle, labelStyle, label } = props;
+  let {
+    isModerator,
+    containerStyle,
+    icon,
+    iconStyle,
+    labelStyle,
+    label,
+  } = props;
 
   let containerClass = [
     styles.buttonContainer,
@@ -25,26 +32,28 @@ const ModeratorDeleteButton = (props) => {
   let iconClass = [styles.icon, iconStyle && iconStyle];
   let labelClass = [styles.label, labelStyle && labelStyle];
 
-  const showConfirmation = (actionType) => {
-    alert.show({
-      text: "Are you sure you want to remove this post?",
-      buttonText: "Remove",
-      onClick: () => {
-        // flagged ? removeFlag(paperId) : flagPaper(paperId, reason);
-      },
-    });
-  };
-
   const performAction = () => {
     let type = props.actionType;
     let text;
     switch (type) {
       case "page":
-        text = "Are you sure you want to remove this paper page?";
-      // return deletePaperPage();
+        text = "Are you sure you want to remove this page?";
+        return alert.show({
+          text,
+          buttonText: "Remove",
+          onClick: () => {
+            return deletePaperPage();
+          },
+        });
       case "pdf":
-        text = "Are you sure you want to remove this pdf?";
-      // return deletePaperPDF();
+        text = "Are you sure you want to remove this PDF?";
+        return alert.show({
+          text,
+          buttonText: "Remove",
+          onClick: () => {
+            return deletePaperPDF();
+          },
+        });
       case "post":
         text = "Are you sure you want to remove this post?";
         return alert.show({
@@ -114,7 +123,6 @@ const ModeratorDeleteButton = (props) => {
   };
 
   const buildQuery = () => {
-    console.log("props", props);
     let { paperId, threadId, commentId, replyId } = props.metaData;
     let query = {};
 
@@ -153,7 +161,9 @@ const ModeratorDeleteButton = (props) => {
   if (isModerator) {
     return (
       <Ripples className={css(containerClass)} onClick={performAction}>
-        <span className={css(iconClass)}>{icons.minusCircle}</span>
+        <span className={css(iconClass)}>
+          {icon ? icon : icons.minusCircle}
+        </span>
         {label && <span className={css(labelClass)}>{label}</span>}
       </Ripples>
     );

@@ -82,13 +82,14 @@ class ReplyEntry extends React.Component {
     return null;
   };
 
-  createMetaIds = () => {
+  formatMetaData = () => {
     let { data, comment, reply } = this.props;
     return {
       threadId: data.id,
       commentId: comment.id,
       paperId: data.paper,
       replyId: reply.id,
+      userFlag: reply.userFlag,
     };
   };
 
@@ -195,7 +196,7 @@ class ReplyEntry extends React.Component {
     // let title = reply.title;
     let body = reply.text;
     let username = this.createUsername(reply);
-    let metaIds = this.createMetaIds();
+    let metaIds = this.formatMetaData();
     const flexStyle = StyleSheet.create({
       threadline: {
         height: this.state.elementHeight - 58,

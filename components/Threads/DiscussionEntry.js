@@ -323,9 +323,10 @@ class DiscussionEntry extends React.Component {
     let title = data.title;
     let body = data.text;
     let username = this.createUsername(data);
-    let metaIds = {
+    let metaData = {
       threadId: data.id,
       paperId: data.paper,
+      userFlag: data.userFlag,
     };
 
     return (
@@ -375,7 +376,7 @@ class DiscussionEntry extends React.Component {
                     date={date}
                     threadPath={path}
                     // Moderator
-                    metaData={metaIds}
+                    metaData={metaData}
                     onRemove={this.removePostUI}
                   />
                 </div>
@@ -547,8 +548,8 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
   },
   removedText: {
-    fontWeight: "bold",
     fontSize: 18,
+    color: "rgb(35, 32, 56)",
     fontStyle: "italic",
   },
 });

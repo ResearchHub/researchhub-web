@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from "react";
-import { useStore } from "react-redux";
+import { useStore, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import Ripples from "react-ripples";
@@ -10,20 +10,18 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 
+//Redux
+import { MessageActions } from "~/redux/message";
+
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { timeAgo } from "~/config/utils";
+import { API } from "@quantfive/js-web-config/api";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
 const DiscussionPostMetadata = (props) => {
-  const alert = useAlert();
-  const store = useStore();
-  const [showDropDown, setDropDown] = useState(false);
-  let dropdown;
-  let ellipsis;
-  let isModerator = store.getState().auth.user.moderator;
   const {
     username,
     date,
@@ -33,6 +31,14 @@ const DiscussionPostMetadata = (props) => {
     metaData,
     onRemove,
   } = props;
+  const alert = useAlert();
+  const store = useStore();
+  const dispatch = useDispatch();
+  const [showDropDown, setDropDown] = useState(false);
+  const [isFlagged, setFlagged] = useState(metaData.userFlag);
+  let dropdown;
+  let ellipsis;
+  let isModerator = store.getState().auth.user.moderator;
 
   const handleOutsideClick = (e) => {
     if (ellipsis && ellipsis.contains(e.target)) {
@@ -47,6 +53,63 @@ const DiscussionPostMetadata = (props) => {
   const toggleDropDown = (e) => {
     e && e.stopPropagation();
     setDropDown(!showDropDown);
+  };
+
+  const promptFlagConfirmation = () => {
+    console.log("called");
+    return alert.show({
+      text: "Are you sure you want to flag this post?",
+      buttonText: "Yes",
+      onClick: () => {
+        threadPath ? flagThread() : flagPost();
+      },
+    });
+  };
+
+  const flagThread = () => {
+    dispatch(MessageActions.showMessage({ load: true, show: true }));
+    let { paperId, threadId } = metaData;
+    let config = flagged
+      ? API.DELETE_CONFIG()
+      : API.POST_CONFIG({ reason: censor });
+    fetch(API.FLAG_THREAD({ paperId, threadId }), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        let message = flagged ? "Flag Removed " : "Post Successfully Flagged";
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage(message));
+        dispatch(MessageActions.showMessage({ show: true }));
+        setFlagged(!flagged);
+      })
+      .catch((err) => {
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage("Something went wrong"));
+        dispatch(MessageActions.showMessage({ show: true, error: true }));
+      });
+  };
+
+  const flagPost = () => {
+    dispatch(MessageActions.showMessage({ load: true, show: true }));
+    let { paperId, threadId, commentId, replyId } = metaData;
+    let config = flagged
+      ? API.DELETE_CONFIG()
+      : API.POST_CONFIG({ reason: censor });
+    fetch(API.FLAG_THREAD({ paperId, threadId, commentId, replyId }), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        let message = flagged ? "Flag Removed " : "Post Successfully Flagged";
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage(message));
+        dispatch(MessageActions.showMessage({ show: true }));
+        setFlagged(!flagged);
+      })
+      .catch((err) => {
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage("Something went wrong"));
+        dispatch(MessageActions.showMessage({ show: true, error: true }));
+      });
   };
 
   useEffect(() => {
@@ -79,7 +142,11 @@ const DiscussionPostMetadata = (props) => {
             ref={(ref) => (dropdown = ref)}
           >
             {threadPath && <ExpandButton {...props} />}
-            <FlagButton />
+            <FlagButton
+              {...props}
+              onClick={promptFlagConfirmation}
+              isFlagged={isFlagged}
+            />
             {isModerator && (
               <ModeratorDeleteButton
                 containerStyle={styles.dropdownItem}
@@ -189,9 +256,14 @@ const ExpandButton = (props) => {
 
 const FlagButton = (props) => {
   return (
-    <Ripples className={css(styles.dropdownItem)}>
+    <Ripples
+      className={css(styles.dropdownItem)}
+      onClick={props.promptFlagConfirmation}
+    >
       <span className={css(styles.icon, styles.expandIcon)}>{icons.flag}</span>
-      <span className={css(styles.text, styles.expandText)}>Flag Post</span>
+      <span className={css(styles.text, styles.expandText)}>
+        {props.isFlagged ? "Unflag" : "Flag"}
+      </span>
     </Ripples>
   );
 };
