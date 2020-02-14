@@ -6,7 +6,6 @@ import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import ThreadTextEditor from "./ThreadTextEditor";
 
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 import { doesNotExist } from "~/config/utils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
@@ -175,9 +174,18 @@ class ThreadActionBar extends React.Component {
   };
 
   render() {
-    const { hostname, threadPath, title, small } = this.props;
+    const { hostname, threadPath, title, small, isRemoved } = this.props;
     const shareUrl = hostname + threadPath;
 
+    if (isRemoved) {
+      return (
+        <Fragment>
+          <div className={css(styles.column)}>
+            <div className={css(styles.row)}>{this.renderCommentCount()}</div>
+          </div>
+        </Fragment>
+      );
+    }
     return (
       <Fragment>
         <div className={css(styles.column)}>
@@ -292,7 +300,6 @@ const styles = StyleSheet.create({
   },
   inactive: {
     pointerEvents: "none",
-    cursor: "not-allowed",
   },
   textEditorContainer: {
     marginTop: 5,

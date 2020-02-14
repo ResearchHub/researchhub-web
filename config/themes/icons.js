@@ -19,6 +19,10 @@ const icons = {
   file: <i className="fad fa-file-alt" />,
   coins: <i className="fad fa-coins"></i>,
   live: <i className="fas fa-bell"></i>,
+  flag: <i className="fas fa-flag" />,
+  badge: <i className="fas fa-certificate" />,
+  minusCircle: <i className="fad fa-minus-circle" />,
+  ellipsisH: <i className="far fa-ellipsis-h" />,
 };
 
 export const voteWidgetIcons = {

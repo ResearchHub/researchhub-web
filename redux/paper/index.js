@@ -112,7 +112,6 @@ export const PaperActions = {
             discussion.seenPages[page] = true;
           }
 
-          console.log("updated", updatedPaper);
           return dispatch({
             type: types.GET_THREADS,
             payload: {

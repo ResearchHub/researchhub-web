@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Modal from "react-modal";
 import { StyleSheet, css } from "aphrodite";
 import { modalStyles } from "~/config/themes/styles";
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
-    width: 257,
+    minWidth: 257,
     border: "1px solid #F3F3F8",
     backgroundColor: "#FFF",
     boxSizing: "border-box",
@@ -78,10 +78,13 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: 80,
+    textAlign: "center",
+    minHeight: 80,
     fontFamily: "Roboto",
     fontSize: 14,
     fontWeight: 400,
+    lineHeight: 1.6,
+    padding: "10px 25px",
   },
   buttonRow: {
     width: "100%",

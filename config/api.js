@@ -358,6 +358,25 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    FLAG_THREAD: ({ paperId, threadId }) => {
+      return BASE_URL + `paper/${paperId}/discussion/${threadId}/flag/`;
+    },
+    FLAG_POST: ({ paperId, threadId, commentId, replyId }) => {
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+
+      return url + "flag/";
+    },
+    CENSOR_PAPER: ({ paperId }) => {
+      return BASE_URL + `paper/${paperId}/censor/`;
+    },
+    CENSOR_PAPER_PDF: ({ paperId }) => {
+      return BASE_URL + `paper/${paperId}/censor_pdf/`;
+    },
+    CENSOR_POST: ({ paperId, threadId, commentId, replyId }) => {
+      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+
+      return url + "censor/";
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
