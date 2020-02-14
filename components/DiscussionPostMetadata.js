@@ -17,7 +17,8 @@ import { MessageActions } from "~/redux/message";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { timeAgo } from "~/config/utils";
-import { API } from "@quantfive/js-web-config/api";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
@@ -56,7 +57,6 @@ const DiscussionPostMetadata = (props) => {
   };
 
   const promptFlagConfirmation = () => {
-    console.log("called");
     return alert.show({
       text: "Are you sure you want to flag this post?",
       buttonText: "Yes",
@@ -66,21 +66,21 @@ const DiscussionPostMetadata = (props) => {
     });
   };
 
-  const flagThread = () => {
+  const flagThread = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
     let { paperId, threadId } = metaData;
-    let config = flagged
+    let config = isFlagged
       ? API.DELETE_CONFIG()
-      : API.POST_CONFIG({ reason: censor });
+      : await API.POST_CONFIG({ reason: "censor" });
     fetch(API.FLAG_THREAD({ paperId, threadId }), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let message = flagged ? "Flag Removed " : "Post Successfully Flagged";
+        let message = isFlagged ? "Flag Removed " : "Post Successfully Flagged";
         dispatch(MessageActions.showMessage({ show: false }));
         dispatch(MessageActions.setMessage(message));
         dispatch(MessageActions.showMessage({ show: true }));
-        setFlagged(!flagged);
+        setFlagged(!isFlagged);
       })
       .catch((err) => {
         dispatch(MessageActions.showMessage({ show: false }));
@@ -89,21 +89,21 @@ const DiscussionPostMetadata = (props) => {
       });
   };
 
-  const flagPost = () => {
+  const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
     let { paperId, threadId, commentId, replyId } = metaData;
-    let config = flagged
+    let config = isFlagged
       ? API.DELETE_CONFIG()
-      : API.POST_CONFIG({ reason: censor });
+      : await API.POST_CONFIG({ reason: "censor" });
     fetch(API.FLAG_THREAD({ paperId, threadId, commentId, replyId }), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let message = flagged ? "Flag Removed " : "Post Successfully Flagged";
+        let message = isFlagged ? "Flag Removed " : "Post Successfully Flagged";
         dispatch(MessageActions.showMessage({ show: false }));
         dispatch(MessageActions.setMessage(message));
         dispatch(MessageActions.showMessage({ show: true }));
-        setFlagged(!flagged);
+        setFlagged(!isFlagged);
       })
       .catch((err) => {
         dispatch(MessageActions.showMessage({ show: false }));
