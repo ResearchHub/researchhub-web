@@ -256,10 +256,7 @@ const ExpandButton = (props) => {
 
 const FlagButton = (props) => {
   return (
-    <Ripples
-      className={css(styles.dropdownItem)}
-      onClick={props.promptFlagConfirmation}
-    >
+    <Ripples className={css(styles.dropdownItem)} onClick={props.onClick}>
       <span className={css(styles.icon, styles.expandIcon)}>{icons.flag}</span>
       <span className={css(styles.text, styles.expandText)}>
         {props.isFlagged ? "Unflag" : "Flag"}
