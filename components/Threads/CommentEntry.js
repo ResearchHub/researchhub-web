@@ -27,7 +27,6 @@ class CommentEntry extends React.Component {
     super(props);
     this.state = {
       elementHeight: 0,
-      replies: [],
       revealReply: false,
       hovered: false,
       collapsed: false,
@@ -35,7 +34,10 @@ class CommentEntry extends React.Component {
       selectedVoteType: "",
       // Pagination
       page: 2, // we assume page 1 is already present
-      fetching: false, // when true, we show loading state
+      fetching: false, // when true, we show loading state,
+      replies: [],
+      // Removed
+      removed: this.props.comment.isRemoved,
     };
     this.commentRef = null;
   }
@@ -267,6 +269,24 @@ class CommentEntry extends React.Component {
     return null;
   };
 
+  createMetaIds = () => {
+    let { data, comment } = this.props;
+    return {
+      threadId: data.id,
+      commentId: comment.id,
+      paperId: data.paper,
+    };
+  };
+
+  handleStateRendering = () => {
+    if (this.state.removed) {
+      return false;
+    }
+    if (!this.state.collapsed) {
+      return true;
+    }
+  };
+
   toggleReplyView = () => {
     this.setState(
       {
@@ -286,6 +306,18 @@ class CommentEntry extends React.Component {
   toggleCollapsed = (e) => {
     e && e.stopPropagation();
     this.setState({ collapsed: !this.state.collapsed });
+  };
+
+  removePostUI = () => {
+    this.setState(
+      {
+        removed: true,
+      },
+      () => {
+        //Todo: clean this part of code, temp use
+        this.props.comment.isRemoved = true;
+      }
+    );
   };
 
   renderReplies = () => {
@@ -327,6 +359,7 @@ class CommentEntry extends React.Component {
     let date = comment.createdDate;
     let body = comment.text;
     let username = this.createUsername(comment);
+    let metaIds = this.createMetaIds();
 
     return (
       <div
@@ -364,17 +397,22 @@ class CommentEntry extends React.Component {
               this.state.highlight && styles.active
             )}
           >
-            <div className={css(styles.row, styles.topbar)}>
-              <DiscussionPostMetadata
-                authorProfile={comment && comment.createdBy.authorProfile}
-                username={username}
-                date={date}
-                smaller={true}
-                onHideClick={this.toggleCollapsed}
-                hideState={this.state.collapsed}
-              />
-            </div>
-            {!this.state.collapsed && (
+            {!this.state.removed && (
+              <div className={css(styles.row, styles.topbar)}>
+                <DiscussionPostMetadata
+                  authorProfile={comment && comment.createdBy.authorProfile}
+                  username={username}
+                  date={date}
+                  smaller={true}
+                  onHideClick={this.toggleCollapsed}
+                  hideState={this.state.collapsed}
+                  // Moderator
+                  metaData={metaIds}
+                  onRemove={this.removePostUI}
+                />
+              </div>
+            )}
+            {this.handleStateRendering() && (
               <Fragment>
                 <div className={css(styles.content)}>
                   <ThreadTextEditor
@@ -395,6 +433,31 @@ class CommentEntry extends React.Component {
                     small={true}
                     showChildrenState={this.state.revealReply}
                     onCountHover={this.toggleHover}
+                    isRemoved={this.state.removed}
+                  />
+                </div>
+              </Fragment>
+            )}
+            {this.state.removed && (
+              <Fragment>
+                <div className={css(styles.content)}>
+                  <div className={css(styles.removedText)}>
+                    Comment Removed By Moderator
+                  </div>
+                </div>
+                <div className={css(styles.row, styles.bottom)}>
+                  <ThreadActionBar
+                    hostname={hostname}
+                    count={commentCount}
+                    comment={true}
+                    threadHeight={this.state.elementHeight}
+                    calculateThreadHeight={this.calculateThreadHeight}
+                    onClick={this.toggleReplyView}
+                    onSubmit={this.submitReply}
+                    small={true}
+                    showChildrenState={this.state.revealReply}
+                    onCountHover={this.toggleHover}
+                    isRemoved={this.state.removed}
                   />
                 </div>
               </Fragment>
@@ -456,7 +519,6 @@ const styles = StyleSheet.create({
   },
   highlight: {
     width: "100%",
-    cursor: "pointer",
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "0px 10px 10px 8px",
@@ -511,6 +573,10 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: colors.BLUE(),
+  },
+  removedText: {
+    fontStyle: "italic",
+    fontSize: 13,
   },
 });
 

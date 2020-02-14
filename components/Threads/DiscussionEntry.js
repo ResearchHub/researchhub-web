@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { connect, useStore } from "react-redux";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
 // Component
@@ -40,7 +40,9 @@ class DiscussionEntry extends React.Component {
       highlighted: false,
       // Pagination
       page: 2, // we assume page 1 is already present
-      fetching: false, // when true, we show loading state
+      fetching: false, // when true, we show loading state,
+      // Removed
+      removed: false,
     };
     this.divRef = null;
   }
@@ -67,6 +69,7 @@ class DiscussionEntry extends React.Component {
         selectedVoteType,
         revealComment: comments.length > 0 && comments.length < 6,
         highlight: newCard,
+        removed: this.props.data.isRemoved,
       },
       () => {
         newCard &&
@@ -195,6 +198,12 @@ class DiscussionEntry extends React.Component {
     this.setState({ hovered: !this.state.hovered });
   };
 
+  removePostUI = () => {
+    this.setState({ removed: true }, () => {
+      this.calculateThreadHeight();
+    });
+  };
+
   renderComments = () => {
     let { data, hostname, path, discussion } = this.props;
     let comments = this.state.comments;
@@ -306,7 +315,6 @@ class DiscussionEntry extends React.Component {
 
   render() {
     const { data, hostname, hoverEvents, path, mobileView, index } = this.props;
-    let threadId = data.id;
     let commentCount =
       this.state.comments.length > data.commentCount
         ? this.state.comments.length
@@ -315,6 +323,10 @@ class DiscussionEntry extends React.Component {
     let title = data.title;
     let body = data.text;
     let username = this.createUsername(data);
+    let metaIds = {
+      threadId: data.id,
+      paperId: data.paper,
+    };
 
     return (
       <div
@@ -354,24 +366,35 @@ class DiscussionEntry extends React.Component {
               this.state.highlight && styles.active
             )}
           >
-            <div className={css(styles.row, styles.topbar)}>
-              <DiscussionPostMetadata
-                authorProfile={data && data.createdBy.authorProfile}
-                username={username}
-                date={date}
-                threadPath={path}
-              />
-            </div>
-            <div className={css(styles.content)}>
-              <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={path}>
-                <Title text={title} overrideStyle={styles.title} />
-                <ThreadTextEditor
-                  readOnly={true}
-                  initialValue={body}
-                  body={true}
-                />
-              </ClientLinkWrapper>
-            </div>
+            {!this.state.removed ? (
+              <Fragment>
+                <div className={css(styles.row, styles.topbar)}>
+                  <DiscussionPostMetadata
+                    authorProfile={data && data.createdBy.authorProfile}
+                    username={username}
+                    date={date}
+                    threadPath={path}
+                    // Moderator
+                    metaData={metaIds}
+                    onRemove={this.removePostUI}
+                  />
+                </div>
+                <div className={css(styles.content)}>
+                  <Title text={title} overrideStyle={styles.title} />
+                  <ThreadTextEditor
+                    readOnly={true}
+                    initialValue={body}
+                    body={true}
+                  />
+                </div>
+              </Fragment>
+            ) : (
+              <div className={css(styles.content)}>
+                <div className={css(styles.removedText)}>
+                  Discussion Removed By Moderator
+                </div>
+              </div>
+            )}
             <div className={css(styles.row, styles.bottom)}>
               <ThreadActionBar
                 hostname={hostname}
@@ -385,6 +408,7 @@ class DiscussionEntry extends React.Component {
                 onClick={this.toggleCommentView}
                 onCountHover={this.toggleHover}
                 small={mobileView}
+                isRemoved={this.state.removed}
               />
             </div>
           </span>
@@ -432,13 +456,14 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     alignItems: "flex-start",
     // marginBottom: 15,
-    overflow: "auto",
+    overflow: "visible",
     borderRadius: 3,
     position: "relative",
     boxSizing: "border-box",
     backgroundColor: "#FFF",
     padding: 10,
     paddingRight: 0,
+    cursor: "default",
     // borderBottom: "1px solid #E8E8F2",
     // ":hover": {
     //   borderColor: "rgb(179, 179, 179)",
@@ -456,7 +481,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflowWrap: "break-word",
     lineHeight: 1.6,
-    cursor: "pointer",
   },
   metaData: {
     width: "calc(100% - 48px)",
@@ -465,10 +489,12 @@ const styles = StyleSheet.create({
   },
   highlight: {
     width: "100%",
-    cursor: "pointer",
     boxSizing: "border-box",
     borderRadius: 5,
-    padding: "0px 0px 10px 15px",
+    padding: "0px 10px 10px 15px",
+    ":hover": {
+      backgroundColor: "#FAFAFA",
+    },
   },
   bottom: {
     width: "100%",
@@ -519,6 +545,11 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     color: colors.BLUE(),
+  },
+  removedText: {
+    fontWeight: "bold",
+    fontSize: 18,
+    fontStyle: "italic",
   },
 });
 
