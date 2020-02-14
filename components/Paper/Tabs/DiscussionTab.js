@@ -438,8 +438,7 @@ var styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     flexDirection: "column",
-    // backgroundColor: "#FFF",
-    backgroundColor: "#FCFCFC",
+    backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       fontSize: 16,
@@ -695,14 +694,9 @@ const stylesEditor = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     paddingLeft: 20,
-    paddingRight: 20,
+    paddingRight: 2,
     marginBottom: 8,
     backgroundColor: "#fff",
-    border: "1px solid #E8E8F2",
-    borderRadius: 3,
-    ":hover": {
-      borderColor: "rgb(179, 179, 179)",
-    },
   },
   discTextEditorTitle: {},
   container: {
