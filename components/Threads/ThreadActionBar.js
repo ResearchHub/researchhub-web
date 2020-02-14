@@ -77,6 +77,10 @@ class ThreadActionBar extends React.Component {
       classNames.push(styles.active);
     }
 
+    if (count === 0) {
+      classNames.push(styles.inactive);
+    }
+
     return (
       <div
         className={css(classNames)}
@@ -284,7 +288,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   active: {
-    color: colors.BLUE(0.9),
+    color: colors.BLUE(0.8),
+  },
+  inactive: {
+    pointerEvents: "none",
+    cursor: "not-allowed",
   },
   textEditorContainer: {
     marginTop: 5,
