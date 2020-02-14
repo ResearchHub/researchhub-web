@@ -1,9 +1,11 @@
 import { StyleSheet, css } from "aphrodite";
 import Avatar from "react-avatar";
 import Link from "next/link";
+import icons from "~/config/themes/icons";
+import colors from "../config/themes/colors";
 
 const AuthorAvatar = (props) => {
-  const { author, size = 30, disableLink } = props;
+  const { author, size = 30, disableLink, showModeratorBadge } = props;
   let deviceWidth = null;
   if (process.browser) {
     if (window.outerHeight) {
@@ -38,6 +40,12 @@ const AuthorAvatar = (props) => {
             style={{ fontSize: finalSize + 1, color: "#aaa" }}
           ></i>
         )}
+        {showModeratorBadge && (
+          <img
+            src={"/static/icons/moderatorBadge.png"}
+            className={css(styles.moderatorBadge)}
+          />
+        )}
       </div>
     );
   }
@@ -64,6 +72,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: "100%",
+    position: "relative",
+  },
+  moderatorBadge: {
+    position: "absolute",
+    color: colors.BLUE(),
+    bottom: 0,
+    right: -5,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 20,
   },
 });
 
