@@ -99,15 +99,15 @@ const HideButton = (props) => {
 const ExpandButton = (props) => {
   let { threadPath } = props;
   return (
-    <Fragment>
-      <span className={css(styles.timestampDivider)}>•</span>
+    <div className={css(styles.expandButtonWrapper)}>
+      {/* <span className={css(styles.timestampDivider)}>•</span> */}
       <div className={css(styles.expandContainer)}>
         <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={threadPath}>
           <span
             className={css(styles.icon, styles.expandIcon)}
             id={"expandIcon"}
           >
-            <i className="fad fa-expand-arrows-alt" />
+            <i className="fal fa-expand-arrows" />
           </span>
           <span
             className={css(styles.text, styles.expandText)}
@@ -117,7 +117,7 @@ const ExpandButton = (props) => {
           </span>
         </ClientLinkWrapper>
       </div>
-    </Fragment>
+    </div>
   );
 };
 
@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    position: "relative",
   },
   userContainer: {
     display: "flex",
@@ -170,14 +171,11 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 5,
     cursor: "pointer",
-    ":hover": {
-      backgroundColor: "#EAEAEA",
-    },
     ":hover #hideIcon": {
-      color: colors.BLACK(),
+      color: colors.BLUE(),
     },
     ":hover #hideText": {
-      color: colors.BLACK(),
+      color: colors.BLUE(),
     },
   },
   text: {
@@ -193,21 +191,25 @@ const styles = StyleSheet.create({
   active: {
     color: "#000",
   },
+  expandButtonWrapper: {
+    display: "flex",
+    alignItems: "center",
+    position: "absolute",
+    right: 0,
+  },
   expandContainer: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     padding: 4,
     borderRadius: 5,
+    color: colors.BLACK(),
     cursor: "pointer",
-    ":hover": {
-      backgroundColor: "#EAEAEA",
-    },
     ":hover #expandIcon": {
-      color: colors.BLACK(),
+      color: colors.BLUE(),
     },
     ":hover #expandText": {
-      color: colors.BLACK(),
+      color: colors.BLUE(),
     },
   },
   expandIcon: {
