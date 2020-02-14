@@ -37,7 +37,9 @@ const DiscussionPostMetadata = (props) => {
   const store = useStore();
   const dispatch = useDispatch();
   const [showDropDown, setDropDown] = useState(false);
-  const [isFlagged, setFlagged] = useState(metaData.userFlag);
+  const [isFlagged, setFlagged] = useState(
+    metaData && metaData.userFlag !== undefined
+  );
   let dropdown;
   let ellipsis;
   let isModerator = store.getState().auth.user.moderator;
@@ -257,7 +259,10 @@ const HideButton = (props) => {
 };
 
 const ExpandButton = (props) => {
-  let { threadPath } = props;
+  let { metaData } = props;
+  let { paperId, threadId } = metaData;
+  let threadPath = `/paper/${paperId}/discussion/${threadId}`;
+
   return (
     <Ripples className={css(styles.dropdownItem)}>
       <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={threadPath}>
