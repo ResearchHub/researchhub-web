@@ -25,7 +25,6 @@ ServerLinkWrapper.propTypes = {
 
 export const ClientLinkWrapper = (props) => {
   const { id, dynamicHref, path, styling } = props;
-
   const classNames = [styles.linkWrapperContainer];
   if (styling) {
     classNames.push(...styling);
