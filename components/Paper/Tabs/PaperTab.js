@@ -11,11 +11,14 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 // Component
 import Loader from "~/components/Loader/Loader";
+import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
+import colors from "../../../config/themes/colors";
 
 function PaperTab(props) {
   const { paperUrl } = props;
   const [loadSuccess, setLoadSuccess] = useState(false);
   const [numPages, setNumPages] = useState(0);
+  const [file, setFile] = useState(paperUrl);
   function onLoadSuccess({ numPages }) {
     setNumPages(numPages);
     setLoadSuccess(true);
@@ -23,9 +26,21 @@ function PaperTab(props) {
 
   return (
     <div className={css(styles.container)}>
+      {loadSuccess && file && (
+        <div className={css(styles.moderatorContainer)}>
+          <ModeratorDeleteButton
+            label={`Remove PDF`}
+            labelStyle={styles.moderatorLabel}
+            containerStyle={styles.moderatorButton}
+            actionType={"pdf"}
+            metaData={{ paperId: props.paperId }}
+            onRemove={() => setFile(null)}
+          />
+        </div>
+      )}
       <Document
-        className={css(!loadSuccess && styles.hidden)}
-        file={paperUrl}
+        className={css(loadSuccess && styles.hidden)}
+        file={file}
         onLoadSuccess={onLoadSuccess}
       >
         {Array.from(new Array(numPages), (el, index) => (
@@ -38,7 +53,6 @@ function PaperTab(props) {
           />
         ))}
       </Document>
-      <Loader loading={!loadSuccess} />
     </div>
   );
 }
@@ -67,6 +81,17 @@ var styles = StyleSheet.create({
   },
   hidden: {
     opacity: 0,
+  },
+  moderatorContainer: {
+    display: "flex",
+    paddingBottom: 20,
+  },
+  moderatorLabel: {
+    paddingLeft: 8,
+    color: colors.RED(),
+  },
+  moderatorButton: {
+    padding: "8px 10px",
   },
   // document: {
   //   width: 1000,

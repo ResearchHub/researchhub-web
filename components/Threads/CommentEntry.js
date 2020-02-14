@@ -269,12 +269,13 @@ class CommentEntry extends React.Component {
     return null;
   };
 
-  createMetaIds = () => {
+  formatMetaData = () => {
     let { data, comment } = this.props;
     return {
       threadId: data.id,
       commentId: comment.id,
       paperId: data.paper,
+      comment: comment.userFlag,
     };
   };
 
@@ -359,7 +360,7 @@ class CommentEntry extends React.Component {
     let date = comment.createdDate;
     let body = comment.text;
     let username = this.createUsername(comment);
-    let metaIds = this.createMetaIds();
+    let metaIds = this.formatMetaData();
 
     return (
       <div
