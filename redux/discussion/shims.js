@@ -31,7 +31,7 @@ export const comment = (comment) => {
   return transformComment(comment);
 };
 
-function transformComments(comments) {
+export function transformComments(comments) {
   return comments.map((comment) => {
     return transformComment(comment);
   });
@@ -66,7 +66,7 @@ export const reply = (reply) => {
   return transformReply(reply);
 };
 
-function transformReplies(replies) {
+export function transformReplies(replies) {
   return (
     replies &&
     replies.map((reply) => {

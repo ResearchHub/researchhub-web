@@ -5,6 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Ripples from "react-ripples";
 import Plain from "slate-plain-serializer";
+import InfiniteScroll from "react-infinite-scroller";
 
 // Components
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
@@ -16,7 +17,7 @@ import Message from "~/components/Loader/Message";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
 import FormSelect from "~/components/Form/FormSelect";
-
+import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 
 // Redux
@@ -77,17 +78,20 @@ const DiscussionTab = (props) => {
   const [mobileView, setMobileView] = useState(false);
   const [threads, setThreads] = useState(props.threads);
   const [filter, setFilter] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     async function getThreadsByFilter() {
       dispatch(MessageActions.showMessage({ load: true, show: true }));
       const currentPaper = store.getState().paper;
       await dispatch(
-        PaperActions.getThreads(props.paper.id, currentPaper, filter)
+        PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
       );
       const sortedThreads = store.getState().paper.discussion.threads;
       setThreads(sortedThreads);
       setFormattedThreads(formatThreads(sortedThreads, basePath));
+      setPage(page + 1);
       setTimeout(() => {
         dispatch(MessageActions.showMessage({ show: false }));
       }, 200);
@@ -122,7 +126,7 @@ const DiscussionTab = (props) => {
       threads.map((t, i) => {
         return (
           <DiscussionEntry
-            key={t.key}
+            key={`${t.key}-disc${i}`}
             data={t.data}
             hostname={hostname}
             hoverEvents={true}
@@ -139,6 +143,7 @@ const DiscussionTab = (props) => {
   const handleFilterChange = (id, filter) => {
     let { value } = filter;
     setFilter(value);
+    setPage(1);
   };
 
   const addDiscussion = () => {
@@ -221,6 +226,25 @@ const DiscussionTab = (props) => {
 
   const openAddDiscussionModal = () => {
     props.openAddDiscussionModal(true);
+  };
+
+  const fetchDiscussionThreads = async () => {
+    if (
+      loading ||
+      formattedThreads.length >= store.getState().paper.discussion.count
+    ) {
+      return;
+    }
+    setLoading(true);
+    const currentPaper = store.getState().paper;
+    await dispatch(
+      PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
+    );
+    const sortedThreads = store.getState().paper.discussion.threads;
+    setThreads(sortedThreads);
+    setFormattedThreads(formatThreads(sortedThreads, basePath));
+    setPage(page + 1);
+    setLoading(false);
   };
 
   const renderAddDiscussion = () => {
@@ -338,13 +362,32 @@ const DiscussionTab = (props) => {
                     inputStyle={{
                       minHeight: "unset",
                       padding: 0,
+                      backgroundColor: "#FFF",
                     }}
                   />
                 </div>
               </div>
             </div>
           </div>
-          {renderThreads(formattedThreads, hostname)}
+          <InfiniteScroll
+            loadMore={fetchDiscussionThreads}
+            initialLoad={false}
+            hasMore={
+              store.getState().paper.discussion.threads.length <
+              store.getState().paper.discussion.count
+            }
+            loader={
+              <Loader
+                loading={true}
+                key={`thread-loader`}
+                size={10}
+                type="beat"
+              />
+            }
+            threshold={0}
+          >
+            {renderThreads(formattedThreads, hostname)}
+          </InfiniteScroll>
         </div>
       ) : (
         <div className={css(styles.addDiscussionContainer)}>
@@ -603,9 +646,7 @@ var styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
-  threadsContainer: {
-    paddingBottom: 80,
-  },
+  threadsContainer: {},
   discussionTitle: {
     fontSize: 25,
     fontWeight: 500,
@@ -620,12 +661,12 @@ var styles = StyleSheet.create({
   overrideFormSelect: {
     marginTop: 0,
     marginBottom: 0,
+    backgroundColor: "#FFF",
   },
   filterContainer: {
     display: "flex",
     alignItems: "center",
-    marginTop: 5,
-    marginBottom: 10,
+    marginBottom: 18,
   },
   filterSelect: {
     width: 160,
@@ -639,6 +680,9 @@ var styles = StyleSheet.create({
   filterInput: {
     minHeight: "unset",
   },
+  infiniteContainer: {
+    display: "flex",
+  },
 });
 
 const stylesEditor = StyleSheet.create({
@@ -651,9 +695,8 @@ const stylesEditor = StyleSheet.create({
     boxSizing: "border-box",
     paddingLeft: 20,
     paddingRight: 2,
-    marginBottom: 10,
+    marginBottom: 8,
     backgroundColor: "#fff",
-    borderRadius: 3,
   },
   discTextEditorTitle: {},
   container: {

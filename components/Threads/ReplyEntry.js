@@ -44,7 +44,7 @@ class ReplyEntry extends React.Component {
         highlight: this.props.reply.highlight && true,
       },
       () => {
-        this.calculateThreadHeight();
+        setTimeout(() => this.calculateThreadHeight(), 400);
         this.props.reply.highlight &&
           setTimeout(() => {
             this.setState({ highlight: false }, () => {
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: "0px 10px 10px 8px",
     ":hover": {
-      backgroundColor: "#F7F7FA",
+      backgroundColor: "#FAFAFA",
     },
   },
   active: {
