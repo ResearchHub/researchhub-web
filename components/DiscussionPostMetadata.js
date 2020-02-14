@@ -101,7 +101,7 @@ const DiscussionPostMetadata = (props) => {
     let config = isFlagged
       ? API.DELETE_CONFIG()
       : await API.POST_CONFIG({ reason: "censor" });
-    fetch(API.FLAG_THREAD({ paperId, threadId, commentId, replyId }), config)
+    fetch(API.FLAG_POST({ paperId, threadId, commentId, replyId }), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
