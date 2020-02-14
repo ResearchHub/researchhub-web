@@ -1,10 +1,30 @@
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
+import Router from "next/router";
+import { useDispatch } from "react-redux";
+
+// Component
+import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
+
+// Redux
+import { MessageActions } from "~/redux/message";
+
 // Config
 import colors from "~/config/themes/colors";
+import { hidden } from "ansi-colors";
 
 const ActionButton = (props) => {
-  let { icon, iconNode, action, size, addRipples, active } = props;
+  let {
+    icon,
+    iconNode,
+    action,
+    size,
+    addRipples,
+    active,
+    isModerator,
+    paperId,
+  } = props;
+  const dispatch = useDispatch();
 
   function renderIcon() {
     if (icon) {
@@ -18,6 +38,24 @@ const ActionButton = (props) => {
     }
   }
 
+  const paperPageDeleteCallback = () => {
+    setTimeout(() => {
+      Router.back();
+    }, 2000);
+  };
+
+  if (isModerator) {
+    return (
+      <ModeratorDeleteButton
+        containerStyle={[styles.actionButton, styles.deleteButton]}
+        icon={<i className="fas fa-ban" />}
+        iconStyle={styles.icon}
+        actionType={"page"}
+        metaData={{ paperId }}
+        onRemove={paperPageDeleteCallback}
+      />
+    );
+  }
   if (addRipples) {
     return (
       <Ripples
@@ -56,6 +94,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     display: "flex",
     flexShrink: 0,
+    overflow: hidden,
     "@media only screen and (max-width: 760px)": {
       width: 35,
       height: 35,
@@ -69,6 +108,9 @@ const styles = StyleSheet.create({
       width: 31,
     },
   },
+  deleteButton: {
+    background: colors.RED(0.3),
+  },
   icon: {
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -76,6 +118,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 13,
     },
+  },
+  deleteIcon: {
+    fontSize: 46,
+    paddingTop: 3,
   },
   active: {
     color: "#FFF",

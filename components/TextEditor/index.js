@@ -62,10 +62,7 @@ const TextEditor = (props) => {
     let success = false;
     if (!isLoggedIn) {
       // TODO: pop login modal
-      openLoginModal(
-        true,
-        "Please login with Google to submit a summary revision."
-      );
+      openLoginModal(true, "Please login with Google to continue.");
     } else {
       onSubmit &&
         (success = await onSubmit(
