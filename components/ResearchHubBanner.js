@@ -95,9 +95,8 @@ class ResearchHubBanner extends React.Component {
             <div className={css(styles.header, styles.text)}>
               Welcome to{" "}
               <span className={css(styles.hubName)}>
-                {this.props.all ? "ResearchHub" : this.props.hub.name}
+                {this.props.all ? "ResearchHub" : this.props.hub.name}!
               </span>
-              !
             </div>
             <div className={css(styles.subtext, styles.text)}>
               We're a community seeking to improve prioritization,
