@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // NPM Modules
 import { connect } from "react-redux";
@@ -12,6 +12,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 // Component
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
+import ComponentWrapper from "~/components/ComponentWrapper";
+
+// Config
 import colors from "../../../config/themes/colors";
 
 function PaperTab(props) {
@@ -19,6 +22,11 @@ function PaperTab(props) {
   const [loadSuccess, setLoadSuccess] = useState(false);
   const [numPages, setNumPages] = useState(0);
   const [file, setFile] = useState(paperUrl);
+
+  useEffect(() => {
+    setFile(props.paperUrl);
+  }, [props.paperUrl]);
+
   function onLoadSuccess({ numPages }) {
     setNumPages(numPages);
     setLoadSuccess(true);
@@ -27,19 +35,23 @@ function PaperTab(props) {
   return (
     <div className={css(styles.container)}>
       {loadSuccess && file && (
-        <div className={css(styles.moderatorContainer)}>
-          <ModeratorDeleteButton
-            label={`Remove PDF`}
-            labelStyle={styles.moderatorLabel}
-            containerStyle={styles.moderatorButton}
-            actionType={"pdf"}
-            metaData={{ paperId: props.paperId }}
-            onRemove={() => setFile(null)}
-          />
-        </div>
+        <ComponentWrapper>
+          <div className={css(styles.moderatorContainer)}>
+            <ModeratorDeleteButton
+              label={`Remove PDF`}
+              labelStyle={styles.moderatorLabel}
+              containerStyle={styles.moderatorButton}
+              actionType={"pdf"}
+              metaData={{ paperId: props.paperId }}
+              onRemove={() => setFile(null)}
+              icon={" "}
+              iconStyle={styles.iconStyle}
+            />
+          </div>
+        </ComponentWrapper>
       )}
       <Document
-        className={css(loadSuccess && styles.hidden)}
+        className={css(!loadSuccess && styles.hidden)}
         file={file}
         onLoadSuccess={onLoadSuccess}
       >
@@ -84,14 +96,23 @@ var styles = StyleSheet.create({
   },
   moderatorContainer: {
     display: "flex",
-    paddingBottom: 20,
+    justifyContent: "flex-end",
   },
-  moderatorLabel: {
-    paddingLeft: 8,
-    color: colors.RED(),
-  },
+  moderatorLabel: {},
   moderatorButton: {
-    padding: "8px 10px",
+    padding: "10px 16px",
+    width: "unset",
+    border: `1px solid ${colors.RED()}`,
+    borderRadius: 3,
+    color: colors.RED(),
+    ":hover": {
+      background: colors.RED(),
+      color: "#fff",
+    },
+  },
+  iconStyle: {
+    margin: 0,
+    padding: 0,
   },
   // document: {
   //   width: 1000,

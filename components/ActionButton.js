@@ -109,7 +109,10 @@ const styles = StyleSheet.create({
     },
   },
   deleteButton: {
-    background: colors.RED(0.3),
+    transition: "all ease-in-out 0.2s",
+    ":hover": {
+      background: colors.RED(0.3),
+    },
   },
   icon: {
     "@media only screen and (max-width: 415px)": {
