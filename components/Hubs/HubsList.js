@@ -79,9 +79,7 @@ class HubsList extends React.Component {
       let { name, id, user_is_subscribed } = hub;
       return (
         <Fragment key={`${id}-${i}`}>
-          {/* <Ripples onClick={() => this.handleClick(hub)}> */}
-          <div
-            key={`${id}-${i}`}
+          <Ripples
             className={css(styles.hubEntry)}
             onClick={() => this.handleClick(hub)}
           >
@@ -91,8 +89,7 @@ class HubsList extends React.Component {
                 <i className="fas fa-star" />
               </span>
             )}
-          </div>
-          {/* // </Ripples> */}
+          </Ripples>
           <div className={css(styles.space)} />
         </Fragment>
       );
@@ -160,35 +157,22 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
   },
   listLabel: {
-    fontWeight: 400,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    fontSize: 12,
+    letterSpacing: 1.2,
     marginBottom: 20,
-    paddingLeft: 40,
-    fontSize: 26,
-    "@media only screen and (max-width: 1343px)": {
-      fontSize: 22,
-    },
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 22,
-    },
-    "@media only screen and (max-width: 665px)": {
-      fontSize: 22,
-      fontWeight: 500,
-      marginBottom: 10,
-    },
-    "@media only screen and (max-width: 416px)": {
-      fontWeight: 400,
-      fontSize: 20,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 280,
-      textAlign: "center",
-    },
+    textAlign: "center",
+    width: "100%",
   },
   hubEntry: {
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
     textTransform: "capitalize",
+    display: "flex",
+    alignItems: "center",
+    padding: "3px 5px",
     ":hover": {
       color: colors.BLUE(1),
     },
@@ -208,17 +192,23 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.2s",
   },
   space: {
-    height: 15,
+    height: 10,
   },
   subscribedIcon: {
     marginLeft: 3,
     color: colors.DARK_YELLOW(),
+    fontSize: 11,
   },
   link: {
     textDecoration: "none",
     color: "rgba(78, 83, 255)",
+    fontWeight: 300,
+    textTransform: "capitalize",
+    fontSize: 16,
+    padding: "3px 5px",
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
+      textDecoration: "underline",
     },
   },
 });
