@@ -9,7 +9,7 @@ class Index extends React.Component {
   render() {
     return (
       <Fragment>
-        <Head title="Upload Paper" description="Upload paper to Research Hub" />
+        <Head title="Upload Paper" description="Upload paper to ResearchHub" />
         <UploadPaperModal />
       </Fragment>
     );
