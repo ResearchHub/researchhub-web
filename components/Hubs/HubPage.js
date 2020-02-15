@@ -347,7 +347,14 @@ class HubPage extends React.Component {
   };
 
   subscribeToHub = () => {
-    let { hub, allHubs, showMessage, setMessage, updateHub } = this.props;
+    let {
+      hub,
+      topHubs,
+      allHubs,
+      showMessage,
+      setMessage,
+      updateHub,
+    } = this.props;
     showMessage({ show: false });
     this.setState({ transition: true }, () => {
       let config = API.POST_CONFIG();
@@ -356,7 +363,7 @@ class HubPage extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            updateHub(allHubs, { ...res });
+            updateHub(allHubs, topHubs, { ...res });
             setMessage("Unsubscribed!");
             showMessage({ show: true });
             this.setState({
@@ -370,7 +377,7 @@ class HubPage extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            updateHub(allHubs, { ...res });
+            updateHub(allHubs, topHubs, { ...res });
             setMessage("Subscribed!");
             showMessage({ show: true });
             this.setState({
@@ -1011,6 +1018,7 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
   isLoggedIn: state.auth.isLoggedIn,
   allHubs: state.hubs.hubs,
+  topHubs: state.hubs.topHubs,
 });
 
 const mapDispatchToProps = {
