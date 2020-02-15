@@ -59,7 +59,7 @@ class HubsList extends React.Component {
 
   fetchHubs = async () => {
     if (!this.props.hubs.length > 0) {
-      await this.props.getHubs();
+      await this.props.getTopHubs();
     }
     this.setState({ hubs: this.props.hubs }, () => {
       this.revealTransition();

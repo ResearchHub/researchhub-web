@@ -75,15 +75,19 @@ export const HubActions = {
    * @param { Object } - the hub object
    * @param { Boolean } - the new subscribed state of the hub
    */
-  updateHub: (hubsList, newHubState) => {
+  updateHub: (allHubs, topHubs, newHubState) => {
     return (dispatch) => {
-      let hubIndex = shims.findIndexById(newHubState.id, hubsList);
-      let updatedHubsList = [...hubsList];
-      updatedHubsList[hubIndex] = newHubState;
+      let allHubIndex = shims.findIndexById(newHubState.id, allHubs);
+      let topHubIndex = shims.findIndexById(newHubState.id, topHubs);
+      let updatedHubsList = [...allHubs];
+      let updatedTopHubsList = [...topHubs];
+      updatedHubsList[allHubIndex] = newHubState;
+      updatedTopHubsList[topHubIndex] = newHubState;
       return dispatch({
         type: HubConstants.UPDATE_HUB,
         payload: {
-          hubs: updatedHubsList,
+          topHubs: updatedTopHubsList,
+          allHubs: updatedHubsList,
         },
       });
     };
