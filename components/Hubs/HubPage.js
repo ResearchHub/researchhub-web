@@ -451,7 +451,7 @@ class HubPage extends React.Component {
           <div className={css(styles.mainFeed, styles.column)}>
             <div className={css(styles.row, styles.topbar)}>
               <div className={css(styles.text, styles.feedTitle)}>
-                Top Papers on{" "}
+                Top Papers in{" "}
                 <span className={css(styles.hubName)}>
                   {this.props.home ? "ResearchHub" : this.props.hub.name}
                 </span>
