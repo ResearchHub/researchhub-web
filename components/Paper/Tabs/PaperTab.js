@@ -105,6 +105,7 @@ var styles = StyleSheet.create({
     border: `1px solid ${colors.RED()}`,
     borderRadius: 3,
     color: colors.RED(),
+    transition: "all ease-in-out 0.2s",
     ":hover": {
       background: colors.RED(),
       color: "#fff",
