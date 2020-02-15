@@ -12,7 +12,7 @@ const Index = () => {
     <Fragment>
       <Head
         title={`Upload Paper - ${uploadPaperTitle}`}
-        description="Upload paper to Research Hub"
+        description="Upload paper to ResearchHub"
       />
       <PaperUploadInfo paperTitle={uploadPaperTitle} />
     </Fragment>

@@ -139,15 +139,15 @@ class UploadPaperModal extends React.Component {
     if (search === "") {
       return `First check to make sure your paper${
         mobileView ? "\n" : " "
-      }isn't already on Research Hub`;
+      }isn't already on ResearchHub`;
     } else if (searching) {
       return "Searching by name and DOI...";
     } else if (papers.length === 0) {
-      return "Looks like this paper is not on Research Hub yet.";
+      return "Looks like this paper is not on ResearchHub yet.";
     } else if (papers.length > 3) {
       return "Scroll through the results";
     } else if (selectedPaper) {
-      return "This paper is on Research Hub!";
+      return "This paper is on ResearchHub!";
     } else if (uploadFinish) {
       return "We’re almost done! Click ‘continue’ to add more information";
     }
