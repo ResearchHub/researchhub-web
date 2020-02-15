@@ -250,6 +250,7 @@ class ReplyEntry extends React.Component {
                   smaller={true}
                   onHideClick={this.toggleCollapsed}
                   hideState={this.state.collapsed}
+                  dropDownEnabled={true}
                   // Moderator
                   metaData={metaIds}
                   onRemove={this.removePostUI}

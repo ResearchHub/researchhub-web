@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   moderatorBadge: {
     position: "absolute",
     color: colors.BLUE(),
-    bottom: 0,
+    bottom: -2,
     right: -5,
     display: "flex",
     justifyContent: "center",
