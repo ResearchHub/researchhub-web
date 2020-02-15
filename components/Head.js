@@ -1,10 +1,10 @@
 import Head from "next/head";
 
 export default (props) => {
-  const title = props.title || "Research Hub";
+  const title = props.title || "ResearchHub";
   const description =
     props.description ||
-    "Discuss and discover academic research on Research Hub";
+    "Discuss and discover academic research on ResearchHub";
   return (
     <Head>
       <title>{title}</title>
