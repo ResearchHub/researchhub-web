@@ -375,6 +375,7 @@ class DiscussionEntry extends React.Component {
                     username={username}
                     date={date}
                     threadPath={path}
+                    dropDownEnabled={true}
                     // Moderator
                     metaData={metaData}
                     onRemove={this.removePostUI}

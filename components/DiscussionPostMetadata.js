@@ -32,6 +32,7 @@ const DiscussionPostMetadata = (props) => {
     threadPath,
     metaData,
     onRemove,
+    dropDownEnabled,
   } = props;
   const alert = useAlert();
   const store = useStore();
@@ -143,44 +144,46 @@ const DiscussionPostMetadata = (props) => {
       <User name={username} authorProfile={authorProfile} {...props} />
       <Timestamp date={date} {...props} />
       {onHideClick && <HideButton {...props} />}
-      <div className={css(styles.dropdownContainer)}>
-        <div
-          className={css(styles.dropdownIcon)}
-          ref={(ref) => (ellipsis = ref)}
-          onClick={toggleDropDown}
-        >
-          {icons.ellipsisH}
-        </div>
-        {showDropDown && (
+      {dropDownEnabled && (
+        <div className={css(styles.dropdownContainer)}>
           <div
-            className={css(
-              styles.dropdown,
-              (threadPath || isModerator) && styles.twoItems,
-              threadPath && isModerator && styles.threeItems
-            )}
-            ref={(ref) => (dropdown = ref)}
+            className={css(styles.dropdownIcon)}
+            ref={(ref) => (ellipsis = ref)}
+            onClick={toggleDropDown}
           >
-            {threadPath && <ExpandButton {...props} />}
-
-            <FlagButton
-              {...props}
-              onClick={promptFlagConfirmation}
-              isFlagged={isFlagged}
-            />
-            {isModerator && (
-              <ModeratorDeleteButton
-                containerStyle={styles.dropdownItem}
-                labelStyle={[styles.text, styles.removeText]}
-                iconStyle={styles.expandIcon}
-                label={"Remove"}
-                actionType={"post"}
-                metaData={metaData}
-                onRemove={onRemove}
-              />
-            )}
+            {icons.ellipsisH}
           </div>
-        )}
-      </div>
+          {showDropDown && (
+            <div
+              className={css(
+                styles.dropdown,
+                (threadPath || isModerator) && styles.twoItems,
+                threadPath && isModerator && styles.threeItems
+              )}
+              ref={(ref) => (dropdown = ref)}
+            >
+              {threadPath && <ExpandButton {...props} />}
+
+              <FlagButton
+                {...props}
+                onClick={promptFlagConfirmation}
+                isFlagged={isFlagged}
+              />
+              {isModerator && (
+                <ModeratorDeleteButton
+                  containerStyle={styles.dropdownItem}
+                  labelStyle={[styles.text, styles.removeText]}
+                  iconStyle={styles.expandIcon}
+                  label={"Remove"}
+                  actionType={"post"}
+                  metaData={metaData}
+                  onRemove={onRemove}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -259,9 +262,7 @@ const HideButton = (props) => {
 };
 
 const ExpandButton = (props) => {
-  let { metaData } = props;
-  let { paperId, threadId } = metaData;
-  let threadPath = `/paper/${paperId}/discussion/${threadId}`;
+  let { threadPath } = props;
 
   return (
     <Ripples className={css(styles.dropdownItem)}>
