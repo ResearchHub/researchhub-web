@@ -39,7 +39,7 @@ const DiscussionThreadPage = (props) => {
   const [userVote, setUserVote] = useState(
     props.discussion.success && props.discussion.userVote
   );
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(true);
 
   let title = "";
   let body = "";

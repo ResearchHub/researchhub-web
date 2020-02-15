@@ -219,7 +219,9 @@ const Title = (props) => {
 
 const Body = (props) => {
   let { overrideStyle } = props;
-  let text = convertToEditorValue(props.text).document.text;
+  let text =
+    convertToEditorValue(props.text) &&
+    convertToEditorValue(props.text).document.text;
   // let wordCount = text.split(" ").length;
   // if (wordCount > 15) {
   //   text =
