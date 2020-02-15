@@ -29,7 +29,7 @@ const ActionButton = (props) => {
   function renderIcon() {
     if (icon) {
       return (
-        <span className={css(styles.icon)}>
+        <span className={css(styles.icon)} id={"#icon"}>
           <i className={icon} />
         </span>
       );
@@ -95,6 +95,11 @@ const styles = StyleSheet.create({
     display: "flex",
     flexShrink: 0,
     overflow: hidden,
+    transition: "all ease-in-out 0.1s",
+    ":hover": {
+      background: colors.GREY(1),
+      color: colors.BLACK(),
+    },
     "@media only screen and (max-width: 760px)": {
       width: 35,
       height: 35,
@@ -109,12 +114,15 @@ const styles = StyleSheet.create({
     },
   },
   deleteButton: {
-    transition: "all ease-in-out 0.2s",
+    transition: "all ease-in-out 0.1s",
+    color: colors.GREY(1),
     ":hover": {
       background: colors.RED(0.3),
+      color: colors.RED(1),
     },
   },
   icon: {
+    color: "unset",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
