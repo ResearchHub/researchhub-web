@@ -116,8 +116,13 @@ class HubsList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <div className={css(styles.listLabel)} id={"top-hub"}>
+          <div className={css(styles.listLabel)} id={"hubListTitle"}>
             {"Top Hubs"}
+            <span className={css(styles.topIcon)}>
+              {/* <i class="fad fa-flame"></i> */}
+              {/* <i class="fal fa-chart-line"></i> */}
+              {/* <i class="fad fa-fire-alt"></i> */}
+            </span>
           </div>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
@@ -150,20 +155,39 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
+    alignItems: "center",
     textAlign: "left",
     cursor: "default",
+    ":hover #hubListTitle": {
+      color: colors.BLACK(),
+    },
   },
   text: {
     fontFamily: "Roboto",
   },
   listLabel: {
-    fontWeight: "bold",
+    // fontWeight: "bold",
     textTransform: "uppercase",
-    fontSize: 12,
+    fontWeight: 500,
+    fontSize: 13,
     letterSpacing: 1.2,
-    marginBottom: 20,
-    textAlign: "center",
-    width: "100%",
+    marginBottom: 15,
+    textAlign: "left",
+    color: "#a7a6b0",
+    transition: "all ease-in-out 0.2s",
+    // color: '#241F3A',
+    // textAlign: 'center',
+    width: "90%",
+    paddingLeft: 35,
+    boxSizing: "border-box",
+    ":hover": {
+      color: colors.BLACK(),
+    },
+  },
+  topIcon: {
+    color: colors.RED(),
+    marginLeft: 6,
+    fontSize: 13,
   },
   hubEntry: {
     fontSize: 16,
@@ -173,8 +197,13 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     padding: "3px 5px",
+    boxSizing: "border-box",
+    width: "100%",
+    transition: "all ease-in-out 0.2s",
+    borderRadius: 3,
     ":hover": {
       color: colors.BLUE(1),
+      backgroundColor: "#FAFAFA",
     },
   },
   hubsList: {
@@ -185,7 +214,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    paddingLeft: 40,
+    padding: "0px 30px",
   },
   reveal: {
     opacity: 1,
