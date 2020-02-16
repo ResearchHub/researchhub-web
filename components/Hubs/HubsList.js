@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     padding: "3px 5px",
     boxSizing: "border-box",
     width: "100%",
-    transition: "all ease-in-out 0.2s",
+    transition: "all ease-out 0.2s",
     borderRadius: 3,
     ":hover": {
       color: colors.BLUE(1),
