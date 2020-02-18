@@ -593,7 +593,7 @@ class PaperUploadInfo extends React.Component {
                 </div>
               )}
             </div>
-            {this.renderHeader("Main Information")}
+            {/* {this.renderHeader("Main Information")} */}
             <div className={css(styles.section, styles.padding)}>
               <FormInput
                 label={"Paper Title"}
@@ -751,17 +751,12 @@ class PaperUploadInfo extends React.Component {
                   onChange={this.handleInputChange}
                 />
               </span>
-            </div>
-            <div className={css(styles.taglineHeader)}>
-              {this.renderHeader("Overview")}
-            </div>
-            <div className={css(styles.section)}>
               <span className={css(styles.tagline)}>
                 <FormTextArea
                   label={"Tag Line"}
                   placeholder="Enter a sentence or two describing the paper"
                   required={true}
-                  containerStyle={styles.container}
+                  containerStyle={styles.taglineContainer}
                   labelStyle={styles.labelStyle}
                   value={form.tagline}
                   id={"tagline"}
@@ -772,6 +767,10 @@ class PaperUploadInfo extends React.Component {
                 </div>
               </span>
             </div>
+            {/* <div className={css(styles.taglineHeader)}>
+              {this.renderHeader("Overview")}
+            </div> */}
+            <div className={css(styles.section)}></div>
           </span>
         );
       case 2:
@@ -1213,7 +1212,7 @@ class PaperUploadInfo extends React.Component {
           isOpen={modals.openAddAuthorModal}
           addNewUser={this.addNewUser}
         />
-        {this.renderTitle()}
+        {/* {this.renderTitle()} */}
         <div className={css(styles.mobileProgressBar)}>
           <Progress completed={progress} />
         </div>
@@ -1223,6 +1222,7 @@ class PaperUploadInfo extends React.Component {
             e.preventDefault();
             activeStep === 1 && this.submitForm();
           }}
+          autoComplete={"off"}
         >
           <div className={css(styles.pageContent)}>
             <div className={css(styles.progressBar)}>
@@ -1252,7 +1252,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 500,
-    fontSize: 33,
+    fontSize: 28,
     color: "#232038",
     "@media only screen and (max-width: 665px)": {
       fontSize: 25,
@@ -1273,8 +1273,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     textAlign: "center",
-    marginTop: 80,
-    marginBottom: 60,
+    marginTop: 20,
+    marginBottom: 20,
   },
   form: {
     display: "flex",
@@ -1284,13 +1284,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   pageContent: {
-    width: "70%",
-    minWidth: 820,
+    // width: "70%",
+    // minWidth: 820,
     minHeight: 500,
     position: "relative",
     backgroundColor: "#FFF",
     boxShadow: "0 1px 8px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);",
-    padding: 60,
+    padding: "30px 60px",
+    marginTop: 30,
     borderTop: "4px solid #dedee5",
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
@@ -1382,8 +1383,8 @@ const styles = StyleSheet.create({
   },
   paper: {
     width: 601,
-    marginTop: 40,
-    marginBottom: 40,
+    marginTop: 15,
+    // marginBottom: 40,
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },
@@ -1404,12 +1405,29 @@ const styles = StyleSheet.create({
     color: colors.BLUE(1),
   },
   padding: {
-    paddingTop: 40,
+    // paddingTop: 40,
+    margin: 0,
     "@media only screen and (max-width: 665px)": {
       paddingTop: 20,
     },
   },
   container: {
+    marginBottom: 10,
+    width: 600,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
+  taglineContainer: {
+    padding: 0,
+    margin: 0,
+    marginBottom: 20,
     width: 600,
     "@media only screen and (max-width: 665px)": {
       width: 380,
@@ -1478,21 +1496,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    padding: 60,
+    marginTop: 40,
+    marginBottom: 40,
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
-      padding: "40px 0 50px 0",
+      // padding: "40px 0 50px 0",
     },
     "@media only screen and (max-width: 665px)": {
-      padding: "30px 0 50px 0",
+      // padding: "30px 0 50px 0",
       width: "90%",
     },
   },
   buttons: {
-    marginTop: 20,
     justifyContent: "center",
-    // width: "100%",
-    marginBottom: 80,
   },
   button: {
     width: 180,
@@ -1640,7 +1656,7 @@ const styles = StyleSheet.create({
   tagline: {
     position: "relative",
     paddingTop: 20,
-    marginBottom: 40,
+    // marginBottom: 40,
   },
   taglineCounter: {
     position: "absolute",
@@ -1654,6 +1670,8 @@ const styles = StyleSheet.create({
     color: "#7a7887",
     userSelect: "none",
     cursor: "default",
+    display: "flex",
+    alignItems: "flex-end",
     "@media only screen and (max-width: 665px)": {
       fontSize: 13,
     },
