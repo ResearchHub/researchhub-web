@@ -39,4 +39,19 @@ const convertNumToMonth = {
   "12": "December",
 };
 
-export { months, range, convertNumToMonth };
+const cslFields = [
+  { label: "Item Type", key: "type" },
+  { label: "Title", key: "title" },
+  { label: "Author", key: "author" },
+  { label: "Publication", key: "publisher" },
+  { label: "Volume", key: "volume" },
+  { label: "Issue", key: "issue" },
+  { label: "Pages", key: "page" },
+  { label: "Source", key: "source" },
+  { label: "Date", key: "date" },
+  { label: "Journal Abbr", key: "journalAbbreviation" },
+  { label: "DOI", key: "DOI" },
+  { label: "ISSN", key: "ISSN" },
+];
+
+export { months, range, convertNumToMonth, cslFields };
