@@ -29,8 +29,9 @@ export const HubActions = {
     };
   },
   getHubs: () => {
+    // Passing large page limit to return all hubs for hubs page
     return (dispatch) => {
-      return fetch(API.HUB({}), API.GET_CONFIG())
+      return fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
@@ -56,6 +57,7 @@ export const HubActions = {
     };
   },
   getTopHubs: () => {
+    // call is defaulted to return 10
     return (dispatch) => {
       return fetch(API.SORTED_HUB({}), API.GET_CONFIG())
         .then(Helpers.checkStatus)

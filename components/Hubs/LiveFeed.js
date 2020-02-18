@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     fontSize: 12,
     letterSpacing: 1.2,
-    zIndex: 100,
+    zIndex: 2,
     background: "#FCFCFC",
     width: "100%",
     padding: 50,

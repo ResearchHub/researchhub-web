@@ -393,6 +393,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     padding: "27px 15px 27px 15px",
+    boxSizing: "border-box",
     backgroundColor: "#FFF",
     cursor: "pointer",
     border: "1px solid #EDEDED",

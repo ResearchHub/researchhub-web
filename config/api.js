@@ -240,7 +240,7 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    HUB: ({ hubId, search, name }) => {
+    HUB: ({ hubId, search, name, pageLimit }) => {
       let url = BASE_URL + `hub/`;
 
       if (hubId) {
@@ -257,10 +257,15 @@ const routes = (BASE_URL) => {
         url += `search=${search}&`;
       }
 
+      if (!doesNotExist(pageLimit)) {
+        url += `page_limit=${pageLimit}&`;
+      }
+
       return url;
     },
     SORTED_HUB: ({ filter }) => {
-      let url = BASE_URL + `hub/?ordering=-score`;
+      // hard codedlimit to 10
+      let url = BASE_URL + `hub/?ordering=-score&page_limit=10`;
 
       // if (filter !== undefined || filter !== null) {
       //   if (typeof filter === "string") {
