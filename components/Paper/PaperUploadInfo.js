@@ -16,6 +16,7 @@ import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import TextEditor from "~/components/TextEditor";
 import Message from "../Loader/Message";
+import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 
 // Modal
 import AddAuthorModal from "../modal/AddAuthorModal";
@@ -571,7 +572,13 @@ class PaperUploadInfo extends React.Component {
                     Paper PDF
                     <span className={css(styles.asterick)}>*</span>
                   </div>
-                  <DragNDrop
+                  <PaperMetaData
+                    metaData={{
+                      csl_item: this.props.paper.uploadedPaper,
+                    }}
+                    onRemove={this.removePaper}
+                  />
+                  {/* <DragNDrop
                     handleDrop={this.uploadPaper}
                     handleUrl={this.uploadUrl}
                     loading={uploadingPaper}
@@ -589,7 +596,7 @@ class PaperUploadInfo extends React.Component {
                     openUploadPaperModal={() =>
                       this.props.modalActions.openUploadPaperModal(true)
                     }
-                  />
+                  /> */}
                 </div>
               )}
             </div>
