@@ -1291,7 +1291,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     boxShadow: "0 1px 8px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);",
     padding: "30px 60px",
-    marginTop: 30,
+    marginTop: 20,
     borderTop: "4px solid #dedee5",
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
@@ -1663,6 +1663,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     fontSize: 12,
+    color: "rgb(122, 120, 135)",
   },
   sidenote: {
     fontSize: 14,

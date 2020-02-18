@@ -9,6 +9,7 @@ import "react-placeholder/lib/reactPlaceholder.css";
 import { slide as Menu } from "react-burger-menu";
 
 // Redux
+import { MessageActions } from "../redux/message";
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
 
@@ -47,10 +48,6 @@ const Navbar = (props) => {
 
   let dropdown;
   let avatar;
-
-  // useEffect(() => {
-  //   getUser();
-  // }, []);
 
   /**
    * When we click anywhere outside of the dropdown, close it
@@ -150,8 +147,7 @@ const Navbar = (props) => {
   }
 
   function onAddPaperClick() {
-    // openUploadPaperModal(true);
-    // Take users to the upload paper page
+    dispatch(MessageActions.showMessage({ show: true, load: true }));
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
   }
 
@@ -267,7 +263,7 @@ const Navbar = (props) => {
   }
 
   function addPaperModal() {
-    // props.openUploadPaperModal(true);
+    dispatch(MessageActions.showMessage({ show: true, load: true }));
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
     setSideMenu(!sideMenu);
   }
