@@ -4,6 +4,11 @@ import Link from "next/link";
 import Router from "next/router";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
+
+// Component
+import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -71,10 +76,7 @@ class HubsList extends React.Component {
   };
 
   renderHubEntry = () => {
-    let selectedHubs =
-      this.state.hubs.length > 9
-        ? this.state.hubs.slice(0, 9)
-        : this.state.hubs;
+    let selectedHubs = this.state.hubs;
     return selectedHubs.map((hub, i) => {
       let { name, id, user_is_subscribed } = hub;
       return (
@@ -127,7 +129,19 @@ class HubsList extends React.Component {
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
-            {this.renderHubEntry()}
+            {this.state.hubs.length > 0 ? (
+              this.renderHubEntry()
+            ) : (
+              <Fragment>
+                <ReactPlaceholder
+                  showLoadingAnimation
+                  ready={false}
+                  customPlaceholder={
+                    <HubEntryPlaceholder color="#efefef" rows={9} />
+                  }
+                />
+              </Fragment>
+            )}
             <Link href={"/hubs"} as={"/hubs"}>
               <a className={css(styles.link)}>View all hubs</a>
             </Link>
@@ -174,7 +188,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "left",
     color: "#a7a6b0",
-    transition: "all ease-in-out 0.2s",
+    transition: "all ease-out 0.1s",
     // color: '#241F3A',
     // textAlign: 'center',
     width: "90%",
@@ -199,10 +213,11 @@ const styles = StyleSheet.create({
     padding: "3px 5px",
     boxSizing: "border-box",
     width: "100%",
-    transition: "all ease-out 0.2s",
+    transition: "all ease-out 0.1s",
     borderRadius: 3,
+    border: "1px solid #fff",
     ":hover": {
-      color: colors.BLUE(1),
+      borderColor: "rgb(237, 237, 237)",
       backgroundColor: "#FAFAFA",
     },
   },
@@ -248,7 +263,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   updateCurrentHubPage: HubActions.updateCurrentHubPage,
-  getHubs: HubActions.getHubs,
+  getTopHubs: HubActions.getTopHubs,
 };
 
 export default connect(

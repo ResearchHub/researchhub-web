@@ -567,7 +567,6 @@ class HubPage extends React.Component {
             </div>
             <div className={css(styles.mobileHubListContainer)}>
               {this.props.hub && <LiveFeed currentHub={this.props.hub} />}
-
               <HubsList
                 exclude={this.props.home ? null : this.props.hub.name}
                 overrideStyle={styles.mobileList}
@@ -918,7 +917,7 @@ var styles = StyleSheet.create({
   },
   mobileList: {
     paddingTop: 20,
-    width: "unset",
+    width: "90%",
   },
   emptyPlaceholderImage: {
     width: 400,

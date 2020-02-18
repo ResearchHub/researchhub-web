@@ -20,7 +20,7 @@ const AlertTemplate = ({ style, options, message, close }) => {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
         zIndex: "11",
         borderRadius: 5,
       },
