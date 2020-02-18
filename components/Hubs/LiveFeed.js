@@ -170,12 +170,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     fontWeight: "bold",
-    textTransform: "uppercase",
     position: "-webkit-sticky",
     position: "sticky",
     top: 80,
     boxSizing: "border-box",
-    fontSize: 12,
     letterSpacing: 1.2,
     zIndex: 2,
     background: "#FCFCFC",
@@ -190,7 +188,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "#FFF",
-    fontFamily: "Roboto",
     cursor: "default",
   },
   feedTitle: {
