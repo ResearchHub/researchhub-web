@@ -150,7 +150,9 @@ const Navbar = (props) => {
   }
 
   function onAddPaperClick() {
-    openUploadPaperModal(true);
+    // openUploadPaperModal(true);
+    // Take users to the upload paper page
+    Router.push(`/paper/upload/info`, `/paper/upload/info`);
   }
 
   function toggleSideMenu() {
@@ -265,7 +267,8 @@ const Navbar = (props) => {
   }
 
   function addPaperModal() {
-    props.openUploadPaperModal(true);
+    // props.openUploadPaperModal(true);
+    Router.push(`/paper/upload/info`, `/paper/upload/info`);
     setSideMenu(!sideMenu);
   }
 
@@ -372,7 +375,7 @@ const Navbar = (props) => {
                   />
                   <i className={css(styles.caret) + " fas fa-caret-down"}></i>
                   <div className={css(styles.reputation)}>
-                    <Reputation balance={user.balance} showBalance={true} />
+                    <Reputation showBalance={true} />
                   </div>
                 </div>
                 {openMenu && (
