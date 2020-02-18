@@ -9,13 +9,23 @@ import colors from "~/config/themes/colors";
 const Reputation = (props) => {
   const { reputation, balance, showBalance } = props;
   const dispatch = useDispatch();
+  const [prevCount, setPrevCount] = useState(balance);
   const [count, setBalance] = useState(balance);
   const [transition, setTransition] = useState(true);
 
   useEffect(() => {
-    setTransition(true);
-    setBalance(balance);
-    setTimeout(() => setTransition(false), 200);
+    if (balance !== undefined && balance !== null) {
+      let { auth } = props;
+      if (auth.isFetchingUser) {
+        setTransition(true);
+      }
+      if (!auth.isFetchingUser && auth.user.balance) {
+        setBalance(balance);
+        setTimeout(() => {
+          setTransition(false);
+        }, 200);
+      }
+    }
   }, [balance]);
 
   function openTransactionModal(e) {
@@ -30,8 +40,10 @@ const Reputation = (props) => {
       data-for="reputationTooltip"
       onClick={openTransactionModal}
     >
-      <div className={css(styles.reputationValue, transition && styles.blur)}>
-        {numeral(showBalance ? count : reputation).format("0,0")}
+      <div className={css(styles.reputationValue)}>
+        {transition
+          ? numeral(prevCount).format("0,0")
+          : numeral(showBalance ? count : reputation).format("0,0")}
       </div>
       <img
         src={"/static/icons/coin-filled.png"}
@@ -65,11 +77,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    balance: state.auth.user.balance,
-  };
-};
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  balance: state.auth.user.balance,
+});
+
 export default connect(
   mapStateToProps,
   null
