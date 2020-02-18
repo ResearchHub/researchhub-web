@@ -120,11 +120,6 @@ class HubsList extends React.Component {
         <div className={css(styles.hubsListContainer)}>
           <div className={css(styles.listLabel)} id={"hubListTitle"}>
             {"Top Hubs"}
-            <span className={css(styles.topIcon)}>
-              {/* <i class="fad fa-flame"></i> */}
-              {/* <i class="fal fa-chart-line"></i> */}
-              {/* <i class="fad fa-fire-alt"></i> */}
-            </span>
           </div>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
@@ -180,7 +175,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
   },
   listLabel: {
-    // fontWeight: "bold",
     textTransform: "uppercase",
     fontWeight: 500,
     fontSize: 13,
@@ -189,8 +183,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
-    // color: '#241F3A',
-    // textAlign: 'center',
     width: "90%",
     paddingLeft: 35,
     boxSizing: "border-box",
@@ -211,7 +203,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     padding: "3px 5px",
-    boxSizing: "border-box",
+    boxSizing: "content-box",
     width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
@@ -230,6 +222,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     padding: "0px 30px",
+    "@media only screen and (max-width: 1303px)": {
+      padding: "0px 20px",
+    },
   },
   reveal: {
     opacity: 1,
