@@ -1077,7 +1077,7 @@ class PaperUploadInfo extends React.Component {
     if (activeStep < 3) {
       this.setState(
         {
-          progress: this.state.progress + 33.33,
+          // progress: this.state.progress + 33.33,
           activeStep: activeStep + 1,
           edited: false,
         },
@@ -1367,6 +1367,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 600,
     alignItems: "center",
+    position: "relative",
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },
@@ -1689,6 +1690,18 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 10,
     },
+  },
+  type: {
+    color: colors.BLUE(),
+    cursor: "pointer",
+    backgroundColor: "#f7f7fb",
+    padding: "3px 10px",
+    border: "1px solid rgb(232, 232, 242)",
+    borderBottomColor: "#f7f7fb",
+    position: "absolute",
+    right: -1,
+    bottom: -2,
+    zIndex: 2,
   },
 });
 

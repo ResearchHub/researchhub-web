@@ -19,6 +19,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
   const [editableCsl, updateEditableCsl] = useState(
     metaData ? { ...metaData.csl_item } : {}
   );
+  const [isDraggedOver, toggleDragState] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -232,9 +233,11 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
   };
 
   return (
-    <div
-      className={css(styles.entryContainer)}
+    <Ripples
+      className={css(styles.entryContainer, isDraggedOver && styles.dragged)}
       onClick={blankState && openUploadPaperModal}
+      onDragOver={() => !isDraggedOver && toggleDragState(true)}
+      onDragLeave={() => isDraggedOver && toggleDragState(false)}
     >
       {editState ? (
         renderEditState()
@@ -253,7 +256,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
           <div className={css(styles.cornerButton)}>{renderCornerButton()}</div>
         </Fragment>
       )}
-    </div>
+    </Ripples>
   );
 };
 
@@ -270,9 +273,10 @@ const styles = StyleSheet.create({
     border: "1px solid #EDEDED",
     borderRadius: 3,
     position: "relative",
-    ":hover": {
-      borderColor: "rgb(210, 210, 230)",
-    },
+    transition: "all ease-in-out 0.1s",
+    // ":hover": {
+    //   borderColor: "rgb(210, 210, 230)",
+    // },
   },
   blankState: {
     width: "100%",
@@ -284,6 +288,13 @@ const styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
     },
+  },
+  dragged: {
+    paddingBottom: 50,
+    border: `1px dashed ${colors.BLUE(1)}`,
+    borderColor: colors.BLUE(1),
+    // border: `0.5 dashed ${colors.BLUE(1)}`,
+    backgroundColor: "#FFF",
   },
   blankStateImg: {
     height: 80,
