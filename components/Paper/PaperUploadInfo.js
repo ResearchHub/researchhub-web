@@ -18,6 +18,9 @@ import TextEditor from "~/components/TextEditor";
 import Message from "../Loader/Message";
 import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 
+//Testing
+import NewDND from "../Form/NewDND";
+
 // Modal
 import AddAuthorModal from "../modal/AddAuthorModal";
 
@@ -572,12 +575,13 @@ class PaperUploadInfo extends React.Component {
                     Paper PDF
                     <span className={css(styles.asterick)}>*</span>
                   </div>
-                  <PaperMetaData
+                  {/* <PaperMetaData
                     metaData={{
                       csl_item: this.props.paper.uploadedPaper,
                     }}
                     onRemove={this.removePaper}
-                  />
+                  /> */}
+                  <NewDND />
                   {/* <DragNDrop
                     handleDrop={this.uploadPaper}
                     handleUrl={this.uploadUrl}
@@ -1498,14 +1502,19 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   buttonRow: {
-    width: "70%",
+    width: "100%",
     minWidth: 820,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
-    marginTop: 40,
-    marginBottom: 40,
+    position: "sticky",
+    // backgroundColor: "#FCFCFC",
+    background: "transparent",
+    // boxShadow: '0px -4px 10px 0px rgba(50, 50, 50, 0.1)',
+    bottom: 20,
+    padding: "10px 0",
+    marginTop: 20,
+    marginBottom: 20,
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
       // padding: "40px 0 50px 0",
