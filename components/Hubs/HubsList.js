@@ -189,6 +189,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLACK(),
     },
+    "@media only screen and (max-width: 1303px)": {
+      paddingLeft: 25,
+    },
   },
   topIcon: {
     color: colors.RED(),
