@@ -33,7 +33,7 @@ class UploadPaperModal extends React.Component {
     this.initialState = {
       search: "",
       searching: false,
-      uploadView: false,
+      uploadView: true,
       uploadFinish: false,
       uploading: false,
       selectedPaper: null,
@@ -342,7 +342,7 @@ class UploadPaperModal extends React.Component {
               Go back to search
             </div>
           )}
-          <div className={css(styles.titleContainer)}>
+          {/* <div className={css(styles.titleContainer)}>
             <div className={css(styles.title, styles.text)}>
               {uploadView
                 ? "Upload your paper"
@@ -363,7 +363,7 @@ class UploadPaperModal extends React.Component {
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
             inputStyle={styles.inputStyle}
-          />
+          /> */}
           {uploadView ? (
             <div className={css(styles.uploadContainer)}>
               <div className={css(styles.loadingMessage, styles.text)}>
