@@ -32,7 +32,10 @@ class HubsList extends React.Component {
   componentDidMount() {
     if (this.props.hubs) {
       this.setState({ hubs: this.props.hubs }, () => {
-        setTimeout(() => this.setState({ reveal: true }), 400);
+        this.revealTimeout = setTimeout(
+          () => this.setState({ reveal: true }),
+          400
+        );
       });
     } else {
       this.fetchHubs();
@@ -47,18 +50,25 @@ class HubsList extends React.Component {
           hubs: this.props.hubs,
         },
         () => {
-          setTimeout(() => this.setState({ reveal: true }), 400);
+          this.revealTimeout = setTimeout(
+            () => this.setState({ reveal: true }),
+            400
+          );
         }
       );
     }
     if (prevProps.hubs !== this.props.hubs) {
       this.setState({ hubs: this.props.hubs }, () => {
-        setTimeout(() => this.setState({ reveal: true }), 400);
+        this.revealTimeout = setTimeout(
+          () => this.setState({ reveal: true }),
+          400
+        );
       });
     }
   }
 
   componentWillUnmount() {
+    clearTimeout(this.revealTimeout);
     this.setState({ reveal: false });
   }
 
