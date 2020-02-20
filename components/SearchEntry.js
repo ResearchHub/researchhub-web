@@ -297,10 +297,12 @@ class SearchEntry extends React.Component {
             <div className={css(styles.discussion)}>
               <span className={css(styles.icon)}>{icons.hub}</span>
               <span className={css(styles.discussionCount)}>
-                <span className={css(styles.count)}>
-                  {hubs && hubs.length}{" "}
-                </span>
-                hub{(hubs.length > 1 || hubs.length === 0) && "s"}
+                {hubs && (
+                  <Fragment>
+                    <span className={css(styles.count)}>{hubs.length} </span>
+                    hub{(hubs.length > 1 || hubs.length === 0) && "s"}
+                  </Fragment>
+                )}
               </span>
             </div>
           </div>
@@ -382,7 +384,9 @@ class SearchEntry extends React.Component {
               )}
             </div>
           ) : (
-            <div className={css(styles.voteDisplay)}>{score && score}</div>
+            <div className={css(styles.voteDisplay)}>
+              {(score && score) || 0}
+            </div>
           )}
         </div>
         <div
