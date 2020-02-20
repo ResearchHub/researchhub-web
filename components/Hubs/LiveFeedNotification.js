@@ -394,7 +394,7 @@ class LiveFeedNotification extends React.Component {
   };
 
   truncatePaperTitle = (title) => {
-    if (title.length >= 90) {
+    if (title && title.length >= 90) {
       return title.slice(0, 90) + "...";
     }
     return title;
