@@ -123,10 +123,18 @@ export default class Search extends Component {
 
     switch (indexName) {
       case "author":
-      case "paper":
         return (
           <SearchEntry
             indexName={indexName}
+            result={result}
+            clearSearch={this.clearQuery}
+          />
+        );
+      case "crossref_paper":
+      case "paper":
+        return (
+          <SearchEntry
+            indexName={"paper"}
             result={result}
             clearSearch={this.clearQuery}
           />
