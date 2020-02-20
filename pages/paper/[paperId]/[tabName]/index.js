@@ -74,7 +74,7 @@ const Paper = (props) => {
   const shareUrl = hostname + "/paper/" + paperId;
 
   const paperTitle = getNestedValue(paper, ["title"], "");
-  const threadCount = getNestedValue(paper, ["discussion", "count"], 0);
+  const discussionCount = getNestedValue(paper, ["discussion_count"], 0);
 
   useEffect(() => {
     async function refetchPaper() {
@@ -347,7 +347,7 @@ const Paper = (props) => {
           <PaperTabBar
             baseUrl={paperId}
             selectedTab={tabName}
-            threadCount={threadCount}
+            discussionCount={discussionCount}
           />
           <div className={css(styles.contentContainer)}>
             {renderTabContent()}
