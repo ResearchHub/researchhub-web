@@ -38,6 +38,7 @@ const PaperEntryCard = ({
     id,
     authors,
     discussion,
+    discussion_count,
     hubs,
     paper_publish_date,
     title,
@@ -48,12 +49,8 @@ const PaperEntryCard = ({
 
   let selected = null;
   let vote_type = 0;
-  let discussion_count = null;
-
-  if (discussionCount !== undefined) {
+  if (discussion_count == undefined) {
     discussion_count = discussionCount;
-  } else if (discussion) {
-    discussion_count = discussion.count;
   }
 
   if (user_vote) {
@@ -112,11 +109,9 @@ const PaperEntryCard = ({
   }
 
   function renderDiscussionCount() {
-    if (discussion) {
-      return `${discussion.count} ${
-        discussion.count === 1 ? "discussion" : "discussions"
-      }`;
-    }
+    return `${discussion_count} ${
+      discussion_count === 1 ? "discussion" : "discussions"
+    }`;
   }
 
   if (mobileView) {

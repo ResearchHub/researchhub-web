@@ -8,7 +8,7 @@ import ComponentWrapper from "./ComponentWrapper";
 
 const PaperTabBar = (props) => {
   const selectedTab = props.selectedTab;
-  const { threadCount } = props;
+  const { discussionCount } = props;
 
   const tabs = [
     { href: "summary", label: "summary" },
@@ -16,7 +16,7 @@ const PaperTabBar = (props) => {
       href: "discussion",
       label: "discussions",
       ui: (isSelected) => (
-        <Count isSelected={isSelected} amount={threadCount} />
+        <Count isSelected={isSelected} amount={discussionCount} />
       ),
     },
     { href: "full", label: "full paper" },
