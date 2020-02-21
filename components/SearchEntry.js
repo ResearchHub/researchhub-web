@@ -47,23 +47,21 @@ class SearchEntry extends React.Component {
    * We want to take the user to the appropriate page when they click a search result
    */
   handleClick = () => {
-    let { indexName, result, clearSearch } = this.props;
+    let { indexName, result, clearSearch, onClickCallBack } = this.props;
     let { id } = result;
     clearSearch && clearSearch();
     if (indexName === "author") {
-      return Router.push(
-        "/user/[authorId]/[tabName]",
-        `/user/${id}/contributions`
-      );
+      Router.push("/user/[authorId]/[tabName]", `/user/${id}/contributions`);
     } else if (indexName === "paper") {
-      return Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
+      Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
     } else if (indexName === "discussion_thread") {
       let { paper } = result;
-      return Router.push(
+      Router.push(
         "/paper/[paperId]/[tabName]/[discussionThreadId]",
         `/paper/${paper}/discussion/${id}`
       );
     }
+    setTimeout(() => onClickCallBack && onClickCallBack(), 400);
   };
 
   parseHighlightField = (highlight, key) => {
@@ -121,7 +119,7 @@ class SearchEntry extends React.Component {
   transformAuthors = () => {
     let { result } = this.props;
     let { authors, meta } = result;
-    if (result.meta.highlight.authors) {
+    if (result.meta.highlight && result.meta.highlight.authors) {
       return (
         <div className={css(styles.authors)}>
           {"by "}
@@ -308,9 +306,7 @@ class SearchEntry extends React.Component {
           </div>
           <div className={css(styles.bullet)}>
             <div className={css(styles.discussion)}>
-              <span className={css(styles.icon)}>
-                <i className={"fad fa-clock"} />
-              </span>
+              <span className={css(styles.icon)}>{icons.date}</span>
               <span className={css(styles.discussionCount)}>
                 {paper_publish_date
                   ? this.convertDate(paper_publish_date)
@@ -350,14 +346,17 @@ class SearchEntry extends React.Component {
   };
 
   render() {
-    let { indexName, result } = this.props;
+    let { indexName, result, hideBullets } = this.props;
     let { score, tagline, plainText } = result;
     let isPaper = indexName === "paper";
     let isDisc = indexName === "discussion_thread";
     return (
       <div
         key={`${indexName}-${result.id}`}
-        className={css(styles.searchEntryCard)}
+        className={css(
+          styles.searchEntryCard,
+          hideBullets && styles.customStyles
+        )}
         onClick={this.handleClick}
       >
         <div
@@ -384,7 +383,12 @@ class SearchEntry extends React.Component {
               )}
             </div>
           ) : (
-            <div className={css(styles.voteDisplay)}>
+            <div
+              className={css(
+                styles.voteDisplay,
+                hideBullets && styles.smallVoteDisplay
+              )}
+            >
               {(score && score) || 0}
             </div>
           )}
@@ -402,7 +406,8 @@ class SearchEntry extends React.Component {
               ? plainText.length >= 100
                 ? styles.mobilePadding
                 : styles.spaced
-              : null
+              : null,
+            hideBullets && styles.fullWidth
           )}
         >
           <div className={css(styles.mainText)}>{this.renderMainText()}</div>
@@ -416,9 +421,11 @@ class SearchEntry extends React.Component {
         <div className={css(styles.indexTag)}>
           {indexName === "discussion_thread" ? "disc." : indexName}
         </div>
-        <div className={css(styles.column, styles.right)}>
-          {this.renderBulletPoints()}
-        </div>
+        {!hideBullets && (
+          <div className={css(styles.column, styles.right)}>
+            {this.renderBulletPoints()}
+          </div>
+        )}
       </div>
     );
   }
@@ -439,6 +446,9 @@ const styles = StyleSheet.create({
       backgroundColor: "#FAFAFA",
     },
   },
+  customStyles: {
+    border: "1px solid #EDEDED",
+  },
   column: {
     display: "flex",
     flexDirection: "column",
@@ -448,6 +458,10 @@ const styles = StyleSheet.create({
   },
   left: {
     marginRight: 20,
+  },
+  fullWidth: {
+    width: "calc(100% - 50px)",
+    paddingBottom: 20,
   },
   mid: {
     justifyContent: "center",
@@ -497,6 +511,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  smallVoteDisplay: {
+    height: 40,
+    width: 40,
+    borderRadius: "50%",
+  },
   highlight: {
     backgroundColor: "#f6e653",
     padding: "2px 1px 2px 1px",
@@ -508,12 +527,10 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     wordBreak: "break-word",
     lineHeight: 1.6,
-    // maxHeight: 77,
     marginBottom: 10,
     textOverflow: "ellipsis",
     "@media only screen and (max-width: 1080px)": {
       fontSize: 16,
-      // maxHeight: 70,
     },
   },
   metaDataOne: {
@@ -588,7 +605,7 @@ const styles = StyleSheet.create({
   icon: {
     minWidth: 20,
     maxWidth: 20,
-    color: "#C1C1C1",
+    color: colors.YELLOW(),
     fontSize: 14,
   },
   paperIcon: {

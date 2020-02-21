@@ -115,7 +115,7 @@ class NewDND extends React.Component {
       .then(Helpers.parseJSON)
       .then((resp) => {
         this.setState({
-          searchResults: resp.results,
+          searchResults: [...resp.results],
           searching: false,
         });
       });
@@ -125,6 +125,12 @@ class NewDND extends React.Component {
     if (Object.keys(this.state.paper).length < 1) {
       this.setState({ urlView: !this.state.urlView });
     }
+  };
+
+  toggleSearchModal = () => {
+    this.props.modalActions.openUploadPaperModal(true, [
+      ...this.state.searchResults,
+    ]);
   };
 
   resetState = () => {
