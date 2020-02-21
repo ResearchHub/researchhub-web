@@ -404,15 +404,13 @@ class PaperUploadInfo extends React.Component {
     let uploadedFile = acceptedFiles[0];
     this.setState({ uploadingPaper: true });
 
-    setTimeout(() => {
-      paperActions.uploadPaperToState(uploadedFile);
-      error.dnd = false;
-      this.setState({
-        uploadingPaper: false,
-        error,
-        edited: true,
-      });
-    }, 400);
+    paperActions.uploadPaperToState(uploadedFile);
+    error.dnd = false;
+    this.setState({
+      uploadingPaper: false,
+      error,
+      edited: true,
+    });
   };
 
   uploadUrl = (urlData) => {
@@ -439,9 +437,7 @@ class PaperUploadInfo extends React.Component {
   removePaper = () => {
     let { paperActions, modalActions } = this.props;
     paperActions.removePaperFromState();
-    this.setState({ edited: true }, () => {
-      modalActions.openUploadPaperModal(true);
-    });
+    this.setState({ edited: true });
   };
 
   renderTitle = () => {
@@ -575,13 +571,7 @@ class PaperUploadInfo extends React.Component {
                     Paper PDF
                     <span className={css(styles.asterick)}>*</span>
                   </div>
-                  {/* <PaperMetaData
-                    metaData={{
-                      csl_item: this.props.paper.uploadedPaper,
-                    }}
-                    onRemove={this.removePaper}
-                  /> */}
-                  <NewDND />
+                  <NewDND handleDrop={this.uploadPaper} />
                   {/* <DragNDrop
                     handleDrop={this.uploadPaper}
                     handleUrl={this.uploadUrl}
@@ -1295,8 +1285,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   pageContent: {
-    // width: "70%",
-    // minWidth: 820,
     minHeight: 500,
     position: "relative",
     backgroundColor: "#FFF",
@@ -1417,7 +1405,6 @@ const styles = StyleSheet.create({
     color: colors.BLUE(1),
   },
   padding: {
-    // paddingTop: 40,
     margin: 0,
     "@media only screen and (max-width: 665px)": {
       paddingTop: 20,
@@ -1503,18 +1490,17 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     width: "100%",
-    minWidth: 820,
+    // minWidth: 820,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     position: "sticky",
-    // backgroundColor: "#FCFCFC",
-    background: "transparent",
-    // boxShadow: '0px -4px 10px 0px rgba(50, 50, 50, 0.1)',
-    bottom: 20,
-    padding: "10px 0",
-    marginTop: 20,
-    marginBottom: 20,
+    backgroundColor: "#FCFCFC",
+    bottom: 0,
+    marginTop: 30,
+    paddingTop: 20,
+    paddingBottom: 20,
+    marginBottom: 10,
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
       // padding: "40px 0 50px 0",
