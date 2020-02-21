@@ -213,7 +213,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
           <img
             src={"/static/icons/delete.png"}
             className={css(styles.deleteIcon)}
-            onClick={onRemove && onRemove}
+            onClick={onRemove ? onRemove : null}
           />
         </Ripples>
       );
@@ -222,7 +222,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
         <Ripples>
           <div
             className={css(styles.editIcon)}
-            onClick={onRemove && onRemove}
+            onClick={onRemove ? onRemove : null}
             // onClick={toggleEditState}
           >
             <i className={"fas fa-pencil"} />
@@ -235,7 +235,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
   return (
     <Ripples
       className={css(styles.entryContainer, isDraggedOver && styles.dragged)}
-      onClick={blankState && openUploadPaperModal}
+      onClick={blankState ? openUploadPaperModal : null}
       onDragOver={() => !isDraggedOver && toggleDragState(true)}
       onDragLeave={() => isDraggedOver && toggleDragState(false)}
     >
