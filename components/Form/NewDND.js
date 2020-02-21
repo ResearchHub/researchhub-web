@@ -79,7 +79,7 @@ class NewDND extends React.Component {
         let { csl_item, url, url_is_pdf } = res;
         let metaData = {};
         metaData = { ...csl_item };
-        metaData.name = title;
+        metaData.name = csl_item.title;
         metaData.url = url;
         this.props.paperActions.uploadPaperToState(metaData);
         this.setState(
@@ -110,7 +110,10 @@ class NewDND extends React.Component {
    */
   searchTitle = (value) => {
     this.setState({ searching: true });
-    fetch(API.PAPER({ search: value }), API.GET_CONFIG())
+    const config = {
+      route: "all",
+    };
+    fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -147,6 +150,7 @@ class NewDND extends React.Component {
   };
 
   resetStateFromUrl = () => {
+    this.props.paperActions.removePaperFromState();
     this.setState(
       {
         paper: {},
@@ -187,13 +191,14 @@ class NewDND extends React.Component {
         this.props.handleDrop && this.props.handleDrop(acceptedFiles);
         let file = acceptedFiles[0];
         let paper = this.formatFileToPaperObj(file);
+        let title = paper.csl_item.title.split(".pdf")[0];
         this.setState({
           fileLoading: false,
           fileDropped: true,
           fileIsPdf: true,
           paper: paper,
         });
-        this.searchTitle(paper.csl_item.title);
+        this.searchTitle(title);
       }, 400);
     });
   };
