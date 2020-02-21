@@ -39,7 +39,7 @@ const DiscussionPostMetadata = (props) => {
   const dispatch = useDispatch();
   const [showDropDown, setDropDown] = useState(false);
   const [isFlagged, setFlagged] = useState(
-    metaData && metaData.userFlag !== undefined
+    metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
   );
   let dropdown;
   let ellipsis;
@@ -71,42 +71,16 @@ const DiscussionPostMetadata = (props) => {
       );
     } else {
       return alert.show({
-        text: "Are you sure you want to flag this post?",
+        text:
+          "Are you sure you want to " +
+          (isFlagged ? "unflag" : "flag") +
+          " this post?",
         buttonText: "Yes",
         onClick: () => {
-          threadPath ? flagThread() : flagPost();
+          flagPost();
         },
       });
     }
-  };
-
-  const flagThread = async () => {
-    dispatch(MessageActions.showMessage({ load: true, show: true }));
-    let { paperId, threadId } = metaData;
-    let config = isFlagged
-      ? API.DELETE_CONFIG()
-      : await API.POST_CONFIG({ reason: "censor" });
-    fetch(API.FLAG_THREAD({ paperId, threadId }), config)
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let message = isFlagged ? "Flag Removed " : "Post Successfully Flagged";
-        dispatch(MessageActions.showMessage({ show: false }));
-        dispatch(MessageActions.setMessage(message));
-        dispatch(MessageActions.showMessage({ show: true }));
-        setFlagged(!isFlagged);
-      })
-      .catch((err) => {
-        if (err.response && err.response.status === 400) {
-          dispatch(
-            MessageActions.setMessage("Flag for this post already submitted!")
-          );
-        } else {
-          dispatch(MessageActions.setMessage("Something went wrong"));
-        }
-        dispatch(MessageActions.showMessage({ show: false }));
-        dispatch(MessageActions.showMessage({ show: true, error: true }));
-      });
   };
 
   const flagPost = async () => {
