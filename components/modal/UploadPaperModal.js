@@ -1,9 +1,9 @@
 // NPM Modules
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
-import Modal from "react-modal";
+import Ripple from "react-ripples";
 
 // Next
 import Router from "next/router";
@@ -15,11 +15,7 @@ import { MessageActions } from "../../redux/message";
 
 // Component
 import BaseModal from "../modal/BaseModal";
-import FormInput from "../Form/FormInput";
-import PaperEntry from "../SearchSuggestion/PaperEntry";
-import Loader from "../Loader/Loader";
-import Button from "../Form/Button";
-import DragNDrop from "../Form/DragNDrop";
+import SearchEntry from "../SearchEntry";
 
 // Config
 import API from "~/config/api";
@@ -31,14 +27,6 @@ class UploadPaperModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      search: "",
-      searching: false,
-      uploadView: true,
-      uploadFinish: false,
-      uploading: false,
-      selectedPaper: null,
-      uploadedPaper: {},
-      transition: false,
       papers: [],
       mobileView: false,
     };
@@ -89,39 +77,6 @@ class UploadPaperModal extends React.Component {
   };
 
   /**
-   * handles the query string for author
-   * @param { String } value - the value sent up from the FormInput
-   */
-  handleSearchInput = (id, value) => {
-    clearTimeout(this.searchPaperTimeout);
-
-    this.setState({
-      search: value,
-      searching: value === "" ? false : true,
-    });
-
-    this.searchPaperTimeout = setTimeout(() => {
-      this.searchTitle(value);
-    }, 300);
-  };
-
-  /**
-   * search user input among paper titles or DOI
-   * @param {String} value - the paper title the user is typing
-   */
-  searchTitle = (value) => {
-    fetch(API.PAPER({ search: value }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        this.setState({
-          papers: resp.results,
-          searching: false,
-        });
-      });
-  };
-
-  /**
    * grabs the appropriate status tex,
    * depending on where the user is in the upload flow
    */
@@ -154,128 +109,6 @@ class UploadPaperModal extends React.Component {
   };
 
   /**
-   * toggles the view that allows the user to upload the paper
-   * assuming the paper is not found in the search
-   */
-  toggleUploadView = () => {
-    this.setState(
-      {
-        transition: true,
-      },
-      () => {
-        setTimeout(async () => {
-          this.setState(
-            {
-              uploadView: !this.state.uploadView,
-            },
-            () => {
-              this.setState({ transition: false });
-            }
-          );
-        }, TRANSITION_TIME);
-      }
-    );
-  };
-  f;
-
-  /**
-   * highlights the paper entry that is chosen by the user
-   * @param {Number} index - the index of the paper entry in "papers" array
-   */
-  handlePaperEntryClick = (index) => {
-    this.setState({ selectedPaper: index });
-  };
-
-  /**
-   * function is called as a callback when a file is dropped
-   */
-  uploadPaper = (acceptedFiles, binaryStr) => {
-    let { paperActions } = this.props;
-    let paper = acceptedFiles[0];
-    this.setState(
-      {
-        uploading: true,
-      },
-      async () => {
-        //save paper to redux
-        await paperActions.uploadPaperToState(paper);
-        setTimeout(() => {
-          this.setState({
-            // search: grabName(),
-            uploading: false,
-            uploadFinish: true,
-            uploadedPaper: paper,
-          });
-        }, 300);
-      }
-    );
-  };
-
-  /**
-   * function is called as a callback when a pdf url returns successful
-   * @param { Object } data - the JSON returned from the backend
-   * @param { String } url - the string that the user inputed
-   */
-  handleUrl = (data, url) => {
-    let { csl_item } = data;
-    let { id, title } = csl_item;
-    if (!id) return;
-    let metaData = {};
-    metaData = { ...csl_item };
-    metaData.name = title;
-    metaData.url = url;
-    this.setState(
-      {
-        uploading: true,
-      },
-      () => {
-        setTimeout(() => {
-          this.props.paperActions.uploadPaperToState(metaData);
-          this.setState({
-            uploading: false,
-            uploadFinish: true,
-            uploadedPaper: metaData,
-          });
-        }, 300);
-      }
-    );
-  };
-
-  /**
-   * resets the state of variables needed for DragNDrop
-   * when a user chooses to upload another file
-   */
-  resetStateToUploadView = async () => {
-    let { paperActions } = this.props;
-    await paperActions.removePaperFromState();
-    this.setState({
-      ...this.initialState,
-      uploadView: true,
-    });
-  };
-
-  navigateToPaperUploadInfo = () => {
-    if (Object.keys(this.state.uploadedPaper).length < 1) {
-      return;
-    }
-    this.props.messageActions.showMessage({ load: true, show: true });
-    let title = this.state.search;
-    Router.push({
-      pathname: "/paper/upload/info",
-      query: { uploadPaperTitle: title },
-    });
-    this.setState(
-      {
-        ...this.initialState,
-      },
-      () => {
-        this.enableParentScroll();
-        this.props.modalActions.openUploadPaperModal(false);
-      }
-    );
-  };
-
-  /**
    * prevents scrolling of parent component when modal is open
    * & renables scrolling of parent component when modal is closed
    */
@@ -287,34 +120,36 @@ class UploadPaperModal extends React.Component {
     document.body.style.overflow = "scroll";
   };
 
-  render() {
-    let {
-      search,
-      searching,
-      papers,
-      uploadedPaper,
-      selectedPaper,
-      transition,
-      uploadView,
-      uploading,
-      uploadFinish,
-      mobileView,
-    } = this.state;
-    let { modals } = this.props;
-
-    let suggestedPapers = this.state.papers.map((paper, index) => {
+  renderSearchResults = () => {
+    console.log(
+      "this.props.modals.uploadPaperModal.suggestedPapers",
+      this.props.modals.uploadPaperModal.suggestedPapers
+    );
+    let results = this.props.modals.uploadPaperModal.suggestedPapers;
+    return results.map((paper, index) => {
+      paper.meta = {};
       return (
-        <PaperEntry
-          key={index}
-          title={paper.title}
-          date={paper.paper_publish_date}
-          paperId={paper.id}
-          index={index}
-          selected={index === selectedPaper}
-          closeModal={this.closeModal}
-        />
+        <Fragment>
+          <Ripple className={css(styles.searchEntryContainer)}>
+            <SearchEntry
+              indexName="paper"
+              result={paper}
+              hideBullets={true}
+              onClickCallBack={this.closeModal}
+            />
+          </Ripple>
+          {/** separate div needed to prevent ripple behavior which leaks to padding/margin */}
+          {this.state.papers.length > 1 && (
+            <div className={css(styles.divider)} />
+          )}
+        </Fragment>
       );
     });
+  };
+
+  render() {
+    let { modals } = this.props;
+
     return (
       <BaseModal
         isOpen={modals.openUploadPaperModal}
@@ -322,92 +157,15 @@ class UploadPaperModal extends React.Component {
         onRequestClose={this.closeModal}
         removeDefault={true}
       >
-        <div
-          className={css(styles.modalContent, transition && styles.transition)}
-        >
+        <div className={css(styles.modalContent)}>
           <img
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
             onClick={this.closeModal}
           />
-          {uploadView && (
-            <div
-              className={css(styles.backButtonContainer)}
-              onClick={this.toggleUploadView}
-            >
-              <img
-                src={"/static/icons/back-arrow.png"}
-                className={css(styles.backButton)}
-              />
-              Go back to search
-            </div>
-          )}
-          {/* <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title, styles.text)}>
-              {uploadView
-                ? "Upload your paper"
-                : "Enter the title or the DOI of the paper"}
-            </div>
-            <div className={css(styles.subtitle, styles.text)}>
-              {uploadView
-                ? "Upload a PDF or paste a URL below"
-                : "Papers that are already on our platform don't need to be re-uploaded"}
-            </div>
+          <div className={css(styles.searchResults)}>
+            {this.renderSearchResults()}
           </div>
-          <FormInput
-            onChange={this.handleSearchInput}
-            value={search}
-            label={"Paper Title"}
-            placeholder={"Enter paper title or DOI"}
-            id={"search"}
-            containerStyle={styles.containerStyle}
-            labelStyle={styles.labelStyle}
-            inputStyle={styles.inputStyle}
-          /> */}
-          {uploadView ? (
-            <div className={css(styles.uploadContainer)}>
-              <div className={css(styles.loadingMessage, styles.text)}>
-                {uploadFinish &&
-                  `We're almost done! ${mobileView ? "\n" : ""} `}
-              </div>
-              <DragNDrop
-                pasteUrl={!uploadFinish}
-                handleDrop={this.uploadPaper}
-                loading={uploading}
-                uploadFinish={uploadFinish}
-                uploadedPaper={uploadedPaper}
-                url={typeof uploadedPaper.URL === "string"}
-                reset={this.resetStateToUploadView}
-                handleUrl={this.handleUrl}
-              />
-            </div>
-          ) : (
-            <div className={css(styles.searchResultContainer)}>
-              <div className={css(styles.loadingMessage, styles.text)}>
-                {this.getStatusText()}
-              </div>
-              <div className={css(styles.searchResults)}>
-                {searching ? (
-                  <Loader loading={true} />
-                ) : (
-                  search !== "" && suggestedPapers
-                )}
-              </div>
-            </div>
-          )}
-          <span className={css(styles.buttonContainer)}>
-            <Button
-              label={uploadView ? "Continue" : "Upload Paper"}
-              customButtonStyle={styles.button}
-              customLabelStyle={styles.label}
-              disabled={uploadView && !uploadFinish}
-              onClick={
-                uploadView
-                  ? this.navigateToPaperUploadInfo
-                  : this.toggleUploadView
-              }
-            />
-          </span>
         </div>
       </BaseModal>
     );

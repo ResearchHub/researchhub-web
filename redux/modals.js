@@ -20,12 +20,15 @@ export const ModalActions = {
    * Opens/closes the modal for upload paper modal
    * @param: boolean -- true opens modal false closes modal
    */
-  openUploadPaperModal: (openModal) => {
+  openUploadPaperModal: (openModal, suggestedPapers) => {
     return (dispatch) => {
       return dispatch({
         type: ModalConstants.UPLOAD_PAPER_MODAL_TOGGLE,
         payload: {
           openUploadPaperModal: openModal,
+          uploadPaperModal: {
+            suggestedPapers,
+          },
         },
       });
     };
@@ -132,6 +135,9 @@ const defaultModalState = {
   openTransactionModal: false,
   openFirstVoteModal: false,
   loginModal: {},
+  uploadPaperModal: {
+    suggestedPapers: [],
+  },
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
