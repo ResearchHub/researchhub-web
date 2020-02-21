@@ -78,7 +78,7 @@ class PaperUploadInfo extends React.Component {
       summary: {},
       summaryId: null,
       showAuthorList: false,
-      progress: 33.33,
+      progress: 100,
       activeStep: 1,
       searchAuthor: "",
       suggestedAuthors: [], // TODO: Rename this to inididcate authors from search result
@@ -572,25 +572,6 @@ class PaperUploadInfo extends React.Component {
                     <span className={css(styles.asterick)}>*</span>
                   </div>
                   <NewDND handleDrop={this.uploadPaper} />
-                  {/* <DragNDrop
-                    handleDrop={this.uploadPaper}
-                    handleUrl={this.uploadUrl}
-                    loading={uploadingPaper}
-                    uploadFinish={
-                      Object.keys(this.props.paper.uploadedPaper).length > 0
-                    }
-                    uploadedPaper={this.props.paper.uploadedPaper}
-                    reset={this.removePaper}
-                    error={error.dnd}
-                    url={
-                      Object.keys(this.props.paper.uploadedPaper).length > 0 &&
-                      !this.props.paper.uploadedPaper.size
-                    }
-                    hideSuggestions={true}
-                    openUploadPaperModal={() =>
-                      this.props.modalActions.openUploadPaperModal(true)
-                    }
-                  /> */}
                 </div>
               )}
             </div>
@@ -699,12 +680,7 @@ class PaperUploadInfo extends React.Component {
                           />
                         </div>
                       </span>
-                      <span
-                        className={css(
-                          styles.doi
-                          // !mobile && this.state.form.type.journal && styles.reveal,
-                        )}
-                      >
+                      <span className={css(styles.doi)}>
                         <FormInput
                           label={"DOI"}
                           placeholder="Enter DOI of paper"
@@ -736,12 +712,7 @@ class PaperUploadInfo extends React.Component {
                 onChange={this.handleHubSelection}
                 error={error.hubs}
               />
-              <span
-                className={css(
-                  styles.mobileDoi
-                  // mobile && this.state.form.type.journal && styles.reveal
-                )}
-              >
+              <span className={css(styles.mobileDoi)}>
                 <FormInput
                   label={"DOI"}
                   placeholder="Enter DOI of paper"
@@ -1185,20 +1156,28 @@ class PaperUploadInfo extends React.Component {
   };
 
   navigateToSummary = () => {
-    // this.props.messageActions.showMessage({ show: true, load: true });
+    this.props.messageActions.showMessage({ show: true, load: true });
+    this.setState({ ...this.initialState });
     let paperId = this.state.editMode
       ? this.props.paperId
       : this.props.paper.postedPaper.id;
 
     this.props.paperActions.clearPostedPaper();
+    this.props.paperActions.removePaperFromState();
     Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
   };
 
   cancel = () => {
     if (this.state.editMode) {
+      this.setState({ ...this.initialState });
+      this.props.paperActions.removePaperFromState();
+
       let { paperId } = this.props;
       Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
     } else {
+      this.setState({ ...this.initialState });
+      this.props.paperActions.removePaperFromState();
+
       Router.back();
     }
   };

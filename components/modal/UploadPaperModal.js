@@ -43,6 +43,14 @@ class UploadPaperModal extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
+      if (
+        prevProps.modals.uploadPaperModal.suggestedPapers !==
+        this.props.modals.uploadPaperModal.suggestedPapers
+      ) {
+        this.setState({
+          papers: this.props.modals.uploadPaperModal.suggestedPapers,
+        });
+      }
       this.updateDimensions();
     }
   }
@@ -71,7 +79,6 @@ class UploadPaperModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    paperActions.removePaperFromState();
     this.enableParentScroll();
     modalActions.openUploadPaperModal(false);
   };
@@ -121,11 +128,8 @@ class UploadPaperModal extends React.Component {
   };
 
   renderSearchResults = () => {
-    console.log(
-      "this.props.modals.uploadPaperModal.suggestedPapers",
-      this.props.modals.uploadPaperModal.suggestedPapers
-    );
     let results = this.props.modals.uploadPaperModal.suggestedPapers;
+
     return results.map((paper, index) => {
       paper.meta = {};
       return (
@@ -149,7 +153,7 @@ class UploadPaperModal extends React.Component {
 
   render() {
     let { modals } = this.props;
-
+    let count = this.props.modals.uploadPaperModal.suggestedPapers.length;
     return (
       <BaseModal
         isOpen={modals.openUploadPaperModal}
@@ -158,6 +162,9 @@ class UploadPaperModal extends React.Component {
         removeDefault={true}
       >
         <div className={css(styles.modalContent)}>
+          <div className={css(styles.loadingMessage)}>
+            {`Showing ${count} similar papers:`}
+          </div>
           <img
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
@@ -328,9 +335,10 @@ const styles = StyleSheet.create({
   },
   searchResults: {
     overflowY: "auto",
-    width: 526,
-    maxHeight: 300,
-    paddingTop: 10,
+    width: 600,
+    maxHeight: 400,
+    padding: "10px 15px",
+    boxSizing: "border-box",
     position: "relative",
     "@media only screen and (max-width: 665px)": {
       width: 380,
@@ -412,6 +420,14 @@ const styles = StyleSheet.create({
   },
   transition: {
     opacity: 0,
+  },
+  searchEntryContainer: {
+    width: "100%",
+  },
+  divider: {
+    width: "100%",
+    height: 5,
+    background: "#F7F7FB",
   },
 });
 

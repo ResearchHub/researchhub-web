@@ -20,7 +20,7 @@ export const ModalActions = {
    * Opens/closes the modal for upload paper modal
    * @param: boolean -- true opens modal false closes modal
    */
-  openUploadPaperModal: (openModal, suggestedPapers) => {
+  openUploadPaperModal: (openModal, suggestedPapers = []) => {
     return (dispatch) => {
       return dispatch({
         type: ModalConstants.UPLOAD_PAPER_MODAL_TOGGLE,
