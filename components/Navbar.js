@@ -103,6 +103,13 @@ const Navbar = (props) => {
     {
       label: "Login",
     },
+    {
+      label: "Settings",
+      route: {
+        href: "/user/settings",
+      },
+      icon: "signOut",
+    },
     { label: "Logout", onClick: signout, icon: "signOut" },
   ];
 
@@ -392,6 +399,14 @@ const Navbar = (props) => {
                           }
                         ></i>
                         Profile
+                      </div>
+                    </Link>
+                    <Link href={"/user/settings"} as={`/user/settings`}>
+                      <div className={css(styles.option)}>
+                        <i
+                          className={css(styles.profileIcon) + " fas fa-cog"}
+                        ></i>
+                        Settings
                       </div>
                     </Link>
                     <div
