@@ -233,11 +233,7 @@ class LockedHubPage extends React.Component {
         </div>
         <div className={css(styles.sidebarContainer)}>
           <div className={css(styles.sidebar)}>
-            <HubsList
-              overrideStyle={styles.hublist}
-              label={"Related Hubs"}
-              exclude={this.props.hubName}
-            />
+            <HubsList overrideStyle={styles.hublist} current={this.props.hub} />
           </div>
         </div>
       </div>
