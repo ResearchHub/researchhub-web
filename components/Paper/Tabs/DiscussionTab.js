@@ -37,7 +37,6 @@ const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
   const initialDiscussionState = {
-    title: "",
     question: discussionScaffoldInitialValue,
   };
 
@@ -160,7 +159,7 @@ const DiscussionTab = (props) => {
   };
 
   const save = async () => {
-    if (discussion.title === "" || discussion.question.document.text === "") {
+    if (discussion.question.document.text === "") {
       props.setMessage("Fields must not be empty.");
       return props.showMessage({ show: true, error: true });
     }
@@ -168,7 +167,7 @@ const DiscussionTab = (props) => {
     props.showMessage({ load: true, show: true });
 
     let param = {
-      title: discussion.title,
+      // title: discussion.title,
       text: discussion.question.toJSON(),
       paper: paperId,
       plain_text: Plain.serialize(discussion.question),
@@ -294,7 +293,7 @@ const DiscussionTab = (props) => {
         {/* <div className={css(styles.discTextEditorTitle)}>
           Posting a discussion as 
         </div> */}
-        <FormInput
+        {/* <FormInput
           label={"Discussion Title"}
           placeholder="Title of discussion"
           containerStyle={stylesEditor.container}
@@ -302,7 +301,7 @@ const DiscussionTab = (props) => {
           id={"title"}
           onChange={handleInput}
           required={true}
-        />
+        /> */}
         <div className={css(stylesEditor.discussionInputWrapper)}>
           <div className={css(stylesEditor.label)}>
             Discussion Post
