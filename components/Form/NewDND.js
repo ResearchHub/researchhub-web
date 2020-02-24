@@ -275,6 +275,7 @@ class NewDND extends React.Component {
             disabled={this.calculateInputDisabled()}
             containerStyle={styles.inputUrl}
             inputStyle={styles.inputStyle}
+            required={true}
             inlineNodeRight={
               this.state.urlInput !== "" ? (
                 this.state.fetching ? (
@@ -330,7 +331,7 @@ class NewDND extends React.Component {
                   {...getRootProps()}
                   className={css(styles.dropzone, this.calculateStyle())}
                 >
-                  <input {...getInputProps()} />
+                  <input {...getInputProps()} required={true} />
                   {this.renderDropContent()}
                 </div>
               </section>
@@ -461,7 +462,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   inputStyle: {
-    paddingRight: 32,
+    paddingRight: 35,
     fontSize: 14,
     "@media only screen and (max-width: 665px)": {
       fontSize: 12,
@@ -469,6 +470,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 20,
+    paddingBottom: 5,
   },
   successIcon: {
     color: colors.GREEN(),
