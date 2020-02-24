@@ -83,6 +83,7 @@ export default class MyDocument extends Document {
             property="og:image"
             content="https://www.researchhub.com/static/background/facebook-og.jpg"
           />
+          <meta property="og:type" content="website" />
         </Head>
         <body style={{ margin: 0, fontFamily: "Roboto, sans-serif" }}>
           <Main />
