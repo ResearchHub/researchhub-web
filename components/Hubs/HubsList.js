@@ -81,6 +81,12 @@ class HubsList extends React.Component {
     });
   };
 
+  isCurrentHub(current, hubId) {
+    if (current && current.id) {
+      return hubId === current.id;
+    }
+  }
+
   revealTransition = () => {
     setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
   };
@@ -90,18 +96,12 @@ class HubsList extends React.Component {
     return selectedHubs.map((hub, i) => {
       let { name, id, user_is_subscribed } = hub;
 
-      function showHighlight(current, hubId) {
-        if (current && current.id) {
-          return hubId === current.id;
-        }
-      }
-
       return (
         <Fragment key={`${id}-${i}`}>
           <Ripples
             className={css(
               styles.hubEntry,
-              showHighlight(this.props.current, id) && styles.current
+              this.isCurrentHub(this.props.current, id) && styles.current
             )}
             onClick={() => this.handleClick(hub)}
           >
@@ -119,6 +119,10 @@ class HubsList extends React.Component {
   };
 
   handleClick = (hub) => {
+    if (this.isCurrentHub(this.props.current, hub.id)) {
+      return;
+    }
+
     function nameToUrl(name) {
       let arr = name.split(" ");
       return arr.length > 1 ? arr.join("-").toLowerCase() : name.toLowerCase();
@@ -239,6 +243,10 @@ const styles = StyleSheet.create({
   current: {
     borderColor: "rgb(237, 237, 237)",
     backgroundColor: "#FAFAFA",
+    ":hover": {
+      borderColor: "rgb(227, 227, 227)",
+      backgroundColor: "#EAEAEA",
+    },
   },
   hubsList: {
     opacity: 0,
