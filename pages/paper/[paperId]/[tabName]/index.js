@@ -223,6 +223,36 @@ const Paper = (props) => {
                   isPaper={true}
                 />
               </div>
+              <div className={css(styles.actionButtons)}>
+                <PermissionNotificationWrapper
+                  modalMessage="edit papers"
+                  onClick={navigateToEditPaperInfo}
+                  permissionKey="UpdatePaper"
+                  loginRequired={true}
+                  styling={styles.actionButton}
+                >
+                  <ActionButton
+                    className={"first-step"}
+                    icon={"fas fa-pencil"}
+                  />
+                </PermissionNotificationWrapper>
+                <ShareAction
+                  iconNode={icons.shareAlt}
+                  addRipples={true}
+                  title={"Share this paper"}
+                  subtitle={paperTitle}
+                  url={shareUrl}
+                />
+                {!isModerator ? (
+                  <FlagButton
+                    paperId={paper.id}
+                    flagged={flagged}
+                    setFlag={setFlag}
+                  />
+                ) : (
+                  <ActionButton isModerator={isModerator} paperId={paper.id} />
+                )}
+              </div>
               <div className={css(styles.topHeader)}>
                 <div className={css(styles.title)}>{paper && paper.title}</div>
                 <span className={css(styles.mobileRow)}>
@@ -235,39 +265,6 @@ const Paper = (props) => {
                       horizontalView={true}
                       isPaper={true}
                     />
-                  </div>
-                  <div className={css(styles.actionButtons)}>
-                    <PermissionNotificationWrapper
-                      modalMessage="edit papers"
-                      onClick={navigateToEditPaperInfo}
-                      permissionKey="UpdatePaper"
-                      loginRequired={true}
-                      styling={styles.actionButton}
-                    >
-                      <ActionButton
-                        className={"first-step"}
-                        icon={"fas fa-pencil"}
-                      />
-                    </PermissionNotificationWrapper>
-                    <ShareAction
-                      iconNode={icons.shareAlt}
-                      addRipples={true}
-                      title={"Share this paper"}
-                      subtitle={paperTitle}
-                      url={shareUrl}
-                    />
-                    {!isModerator ? (
-                      <FlagButton
-                        paperId={paper.id}
-                        flagged={flagged}
-                        setFlag={setFlag}
-                      />
-                    ) : (
-                      <ActionButton
-                        isModerator={isModerator}
-                        paperId={paper.id}
-                      />
-                    )}
                   </div>
                 </span>
               </div>
@@ -485,11 +482,24 @@ const styles = StyleSheet.create({
     },
   },
   actionButtons: {
+    position: "absolute",
+    top: 30,
+    right: -175,
     display: "flex",
     alignItems: "center",
+    "@media only screen and (max-width: 1033px)": {
+      flexDirection: "column",
+      justifyContent: "space-evenly",
+      top: 20,
+      right: -70,
+      height: 160,
+    },
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
+  },
+  buttonDivider: {
+    height: 5,
   },
   topHeader: {
     display: "flex",
