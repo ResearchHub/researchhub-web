@@ -452,7 +452,7 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
-            <HubsList exclude={this.props.home ? null : this.props.hub.name} />
+            <HubsList current={this.props.home ? null : this.props.hub} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
             <div className={css(styles.row, styles.topbar)}>
@@ -567,7 +567,7 @@ class HubPage extends React.Component {
             <div className={css(styles.mobileHubListContainer)}>
               {this.props.hub && <LiveFeed currentHub={this.props.hub} />}
               <HubsList
-                exclude={this.props.home ? null : this.props.hub.name}
+                current={this.props.home ? null : this.props.hub}
                 overrideStyle={styles.mobileList}
               />
             </div>

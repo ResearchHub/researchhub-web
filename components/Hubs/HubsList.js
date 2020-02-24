@@ -43,7 +43,7 @@ class HubsList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.exclude !== this.props.exclude) {
+    if (prevProps.current !== this.props.current) {
       this.setState(
         {
           reveal: false,
@@ -89,10 +89,20 @@ class HubsList extends React.Component {
     let selectedHubs = this.state.hubs;
     return selectedHubs.map((hub, i) => {
       let { name, id, user_is_subscribed } = hub;
+
+      function showHighlight(current, hubId) {
+        if (current && current.id) {
+          return hubId === current.id;
+        }
+      }
+
       return (
         <Fragment key={`${id}-${i}`}>
           <Ripples
-            className={css(styles.hubEntry)}
+            className={css(
+              styles.hubEntry,
+              showHighlight(this.props.current, id) && styles.current
+            )}
             onClick={() => this.handleClick(hub)}
           >
             {name}
@@ -225,6 +235,10 @@ const styles = StyleSheet.create({
       borderColor: "rgb(237, 237, 237)",
       backgroundColor: "#FAFAFA",
     },
+  },
+  current: {
+    borderColor: "rgb(237, 237, 237)",
+    backgroundColor: "#FAFAFA",
   },
   hubsList: {
     opacity: 0,
