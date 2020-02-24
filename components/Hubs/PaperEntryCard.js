@@ -46,7 +46,6 @@ const PaperEntryCard = ({
     user_vote,
     score,
   } = paper || null;
-
   let selected = null;
   let vote_type = 0;
   if (discussion_count == undefined) {
