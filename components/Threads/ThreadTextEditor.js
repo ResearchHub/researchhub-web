@@ -71,7 +71,10 @@ class ThreadTextEditor extends React.Component {
         <TextEditor
           readOnly={true}
           initialValue={this.props.initialValue && this.props.initialValue}
-          commentStyles={styles.comment}
+          commentStyles={[
+            styles.comment,
+            this.props.textStyles && this.props.textStyles,
+          ]}
         />
       );
     }
@@ -82,7 +85,7 @@ const styles = StyleSheet.create({
   loader: {},
   comment: {
     minHeight: "100%",
-    padding: "0px",
+    padding: 0,
     lineHeight: 1.6,
     fontSize: 14,
     color: "#000",

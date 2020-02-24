@@ -382,11 +382,12 @@ class DiscussionEntry extends React.Component {
                   />
                 </div>
                 <div className={css(styles.content)}>
-                  <Title text={title} overrideStyle={styles.title} />
+                  {/* <Title text={title} overrideStyle={styles.title} /> */}
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
                     body={true}
+                    textStyles={styles.contentText}
                   />
                 </div>
               </Fragment>
@@ -483,6 +484,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflowWrap: "break-word",
     lineHeight: 1.6,
+  },
+  contentText: {
+    fontSize: 16,
+    padding: 0,
   },
   metaData: {
     width: "calc(100% - 48px)",
