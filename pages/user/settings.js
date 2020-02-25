@@ -14,8 +14,10 @@ import {
   selectStyles,
 } from "~/config/themes/styles";
 import { updateEmailPreference, fetchEmailPreference } from "~/config/fetch";
-import { digestSubscriptionPatch } from "~/config/shims";
-
+import {
+  buildSubscriptionPatch,
+  digestSubscriptionPatch,
+} from "~/config/shims";
 import { MessageActions } from "~/redux/message";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
@@ -204,11 +206,27 @@ class UserSettings extends Component {
   };
 
   handleCheckBox = (id) => {
-    const isActive = this.state[id];
-    updateNotificationPreference({ id: !isActive });
+    const nextActiveState = !this.state[id];
     this.setState({
-      [id]: !isActive,
+      [id]: nextActiveState,
     });
+
+    const data = buildSubscriptionPatch(id, nextActiveState);
+    updateEmailPreference(this.state.emailRecipientId, data)
+      .then(() => {
+        this.props.dispatch(MessageActions.setMessage("Saved!"));
+        this.props.dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch((err) => {
+        console.error(err);
+        this.props.dispatch(MessageActions.setMessage("Oops! Update failed."));
+        this.props.dispatch(
+          MessageActions.showMessage({ show: true, error: true })
+        );
+        this.setState({
+          [id]: !nextActiveState,
+        });
+      });
   };
 
   update = () => {

@@ -38,62 +38,98 @@ export const emailPreferencePatch = ({
   return data;
 };
 
-export const digestSubscriptionPatch = ({ notificationFrequency, none }) => {
+export const buildSubscriptionPatch = (subscription, disable) => {
+  const patchShim = subscriptionPatchShims[subscription];
+  const args = {};
+
+  if (disable === true) {
+    args["none"] = disable;
+  } else {
+    args["none"] = !disable;
+    switch (subscription) {
+      case "paperSubscription":
+        args["threads"] = !disable;
+        break;
+      case "threadSubscription":
+        args["comments"] = !disable;
+        break;
+      case "commentSubscription":
+        args["replies"] = !disable;
+        break;
+      case "replySubscription":
+        args["replies"] = !disable;
+        break;
+      default:
+        break;
+    }
+  }
+  return patchShim(args);
+};
+
+export const subscriptionPatchShims = {
+  digestSubscription: digestSubscriptionPatch,
+  paperSubscription: paperSubscriptionPatch,
+  threadSubscription: threadSubscriptionPatch,
+  commentSubscription: commentSubscriptionPatch,
+  replySubscription: replySubscriptionPatch,
+};
+
+export function digestSubscriptionPatch({ notificationFrequency, none }) {
   const data = {};
   !doesNotExist(notificationFrequency) &&
     (data["notification_frequency"] = notificationFrequency);
   !doesNotExist(none) && (data["none"] = none);
   return { digest_subscription: data };
-};
+}
 
-export const paperSubscriptionPatch = ({
+export function paperSubscriptionPatch({
   notificationFrequency,
   none,
   threads,
-}) => {
+}) {
   const data = {};
   !doesNotExist(notificationFrequency) &&
     (data["notification_frequency"] = notificationFrequency);
   !doesNotExist(none) && (data["none"] = none);
   !doesNotExist(threads) && (data["threads"] = threads);
   return { paper_subscription: data };
-};
+}
 
-export const threadSubscriptionPatch = ({
+export function threadSubscriptionPatch({
   notificationFrequency,
   none,
   comments,
-}) => {
+}) {
   const data = {};
   !doesNotExist(notificationFrequency) &&
     (data["notification_frequency"] = notificationFrequency);
   !doesNotExist(none) && (data["none"] = none);
   !doesNotExist(comments) && (data["comments"] = comments);
   return { thread_subscription: data };
-};
+}
 
-export const commentSubscriptionPatch = ({
+export function commentSubscriptionPatch({
   notificationFrequency,
   none,
   replies,
-}) => {
+}) {
   const data = {};
   !doesNotExist(notificationFrequency) &&
     (data["notification_frequency"] = notificationFrequency);
   !doesNotExist(none) && (data["none"] = none);
   !doesNotExist(replies) && (data["replies"] = replies);
   return { comment_subscription: data };
-};
+}
 
-export const replySubscriptionPatch = ({
+export function replySubscriptionPatch({
   notificationFrequency,
   none,
   replies,
-}) => {
+}) {
   const data = {};
   !doesNotExist(notificationFrequency) &&
     (data["notification_frequency"] = notificationFrequency);
   !doesNotExist(none) && (data["none"] = none);
   !doesNotExist(replies) && (data["replies"] = replies);
   return { reply_subscription: data };
-};
+}
