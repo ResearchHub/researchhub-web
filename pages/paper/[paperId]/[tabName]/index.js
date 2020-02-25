@@ -491,7 +491,7 @@ const styles = StyleSheet.create({
       flexDirection: "column",
       justifyContent: "space-evenly",
       top: 20,
-      right: -70,
+      right: -60,
       height: 160,
     },
     "@media only screen and (max-width: 760px)": {

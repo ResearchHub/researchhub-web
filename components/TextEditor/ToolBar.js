@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     borderTop: 0,
     borderColor: "rgb(235, 235, 235)",
     background: "#fff",
+    paddingLeft: 0,
   },
   toolbar: {
     borderTop: "1px solid",
