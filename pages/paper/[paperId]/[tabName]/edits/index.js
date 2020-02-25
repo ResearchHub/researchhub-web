@@ -6,6 +6,7 @@ import moment from "moment";
 import Plain from "slate-plain-serializer";
 import { Text, Block } from "slate";
 import { isMobile } from "react-device-detect";
+import Ripples from "react-ripples";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -242,7 +243,7 @@ class PaperEditHistory extends React.Component {
             as={`/paper/${router.query.paperId}/summary`}
           >
             <div className={css(styles.back)}>
-              <i className={css(styles.arrow) + " fas fa-arrow-left"}></i>
+              <i className={css(styles.arrow) + " fal fa-long-arrow-left"}></i>
               Summary
             </div>
           </Link>
@@ -326,6 +327,9 @@ var styles = StyleSheet.create({
     width: 250,
     padding: "14px 30px",
     cursor: "pointer",
+    ":hover": {
+      background: "#F0F1F7",
+    },
   },
   date: {
     fontSize: 14,
@@ -360,7 +364,7 @@ var styles = StyleSheet.create({
     },
   },
   arrow: {
-    marginRight: 5,
+    marginRight: 8,
   },
   mobileContainer: {
     flexDirection: "column",
