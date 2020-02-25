@@ -6,44 +6,40 @@ import Ripples from "react-ripples";
 import FormSelect from "~/components/Form/FormSelect";
 import CheckBox from "~/components/Form/CheckBox";
 
+import { DIGEST_FREQUENCY } from "~/config/constants";
 import {
   checkBoxStyles,
   defaultStyles,
   hubStyles,
   selectStyles,
 } from "~/config/themes/styles";
-import { updateEmailPreference } from "../../config/fetch";
+import { updateEmailPreference, fetchEmailPreference } from "~/config/fetch";
+import { digestSubscriptionPatch } from "~/config/shims";
 
-const frequencyOptions = [
-  {
-    value: "daily",
-    label: "Daily",
-  },
-  {
-    value: "immediately",
-    label: "Immediately",
-  },
-  {
-    value: "weekly",
-    label: "Weekly",
-  },
-];
+import { MessageActions } from "~/redux/message";
+
+const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
+  return {
+    value: DIGEST_FREQUENCY[key],
+    label: key,
+  };
+});
 
 const contentOptions = [
   {
-    id: "paperThreads",
+    id: "paperSubscription",
     label: "Someone posts a thread on a paper I authored",
   },
   {
-    id: "threadComments",
+    id: "threadSubscription",
     label: "Someone comments on a thread I posted",
   },
   {
-    id: "commentReplies",
+    id: "commentSubscription",
     label: "Someone replies to a comment I posted",
   },
   {
-    id: "replyReplies",
+    id: "replySubscription",
     label: "Someone replies to a reply I posted",
   },
 ];
@@ -53,13 +49,47 @@ class UserSettings extends Component {
     super(props);
 
     this.state = {
-      frequency: frequencyOptions[0],
+      frequency: null,
+      emailRecipientId: null,
     };
 
     contentOptions.forEach((option) => {
       this.state[option.id] = true;
     });
   }
+
+  componentDidMount() {
+    fetchEmailPreference().then((preference) => {
+      const frequency = this.getInitialFrequencyOption(preference);
+      const contentState = this.getInitialContentState(preference);
+      this.setState({
+        emailRecipientId: preference.id,
+        frequency,
+        ...contentState,
+      });
+    });
+  }
+
+  getInitialFrequencyOption = (emailPreference) => {
+    const initial = frequencyOptions.filter((option) => {
+      return (
+        option.value ===
+        emailPreference.digestSubscription.notificationFrequency
+      );
+    });
+    return initial[0];
+  };
+
+  getInitialContentState = (emailPreference) => {
+    const contentState = {};
+    const subscriptionKeys = Object.keys(emailPreference).filter((key) => {
+      return key.includes("Subscription");
+    });
+    subscriptionKeys.forEach((key) => {
+      contentState[key] = !emailPreference[key].none;
+    });
+    return contentState;
+  };
 
   subscribe = (hub) => {
     const config = API.POST_CONFIG();
@@ -101,7 +131,11 @@ class UserSettings extends Component {
 
   renderHub = (hub) => {
     return (
-      <Ripples className={css(hubStyles.entry)} onClick={this.unsubscribe}>
+      <Ripples
+        key={hub.id}
+        className={css(hubStyles.entry)}
+        onClick={this.unsubscribe}
+      >
         {hub.name} X
       </Ripples>
     );
@@ -127,15 +161,37 @@ class UserSettings extends Component {
   }
 
   handleFrequencyChange = (id, option) => {
+    const currentFrequency = this.state.frequency;
+
     this.setState({
       frequency: option,
     });
+
+    const data = digestSubscriptionPatch({
+      notificationFrequency: option.value,
+    });
+    updateEmailPreference(this.state.emailRecipientId, data)
+      .then(() => {
+        this.props.dispatch(MessageActions.setMessage("Saved!"));
+        this.props.dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch((err) => {
+        console.error(err);
+        this.props.dispatch(MessageActions.setMessage("Oops! Update failed."));
+        this.props.dispatch(
+          MessageActions.showMessage({ show: true, error: true })
+        );
+        this.setState({
+          frequency: currentFrequency,
+        });
+      });
   };
 
   renderContentOptions = () => {
     return contentOptions.map((option) => {
       return (
         <CheckBox
+          key={option.id}
           isSquare={true}
           active={this.state[option.id]}
           label={option.label}
