@@ -2,12 +2,13 @@ import Link from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
-import Ripples from "react-ripples";
+import Plain from "slate-plain-serializer";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
+import Ripples from "react-ripples";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -18,6 +19,7 @@ import { AuthActions } from "~/redux/auth";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
+import { convertToEditorValue } from "~/config/utils";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -26,6 +28,7 @@ class SummaryTab extends React.Component {
     this.state = {
       readOnly: true,
       editorState: null,
+      editorValue: null,
       menuOpen: false,
       addSummary: false,
       transition: false,
@@ -71,13 +74,17 @@ class SummaryTab extends React.Component {
 
   submitEdit = (raw, plain_text) => {
     let { setMessage, showMessage, checkUserFirstTime, getUser } = this.props;
+    let value = this.state.editorState;
+    let summary = value.toJSON({ preserveKeys: true });
+    let summary_plain_text = Plain.serialize(value);
+
     let param = {
-      summary: raw,
+      summary,
       paper: this.props.paperId,
       previousSummaryId: this.props.paper.summary
         ? this.props.paper.summary.id
         : null,
-      summary_plain_text: plain_text,
+      summary_plain_text,
     };
     return fetch(API.SUMMARY({}), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
@@ -179,7 +186,9 @@ class SummaryTab extends React.Component {
                   href={"/paper/[paperId]/[tabName]/edits"}
                   as={`/paper/${paper.id}/summary/edits`}
                 >
-                  <div className={css(styles.action)}>View Edit History</div>
+                  <Ripples className={css(styles.action)}>
+                    View Edit History
+                  </Ripples>
                 </Link>
                 <PermissionNotificationWrapper
                   modalMessage="propose summary edits"
@@ -196,16 +205,19 @@ class SummaryTab extends React.Component {
                 </PermissionNotificationWrapper>
               </div>
             ) : (
-              <div className={css(styles.guidelines)}>
-                Please review our{" "}
-                <a
-                  className={css(styles.authorGuidelines)}
-                  href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
-                  target="_blank"
-                >
-                  Summary Guidelines
-                </a>{" "}
-                to see how to write for ResearchHub
+              <div className={css(styles.headerContainer)}>
+                <div className={css(styles.header)}>Editing Summary</div>
+                <div className={css(styles.guidelines)}>
+                  Please review our{" "}
+                  <a
+                    className={css(styles.authorGuidelines)}
+                    href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+                    target="_blank"
+                  >
+                    Summary Guidelines
+                  </a>{" "}
+                  to see how to write for ResearchHub
+                </div>
               </div>
             )}
             {this.state.finishedLoading && (
@@ -219,7 +231,25 @@ class SummaryTab extends React.Component {
                 onCancel={this.cancel}
                 onSubmit={this.submitEdit}
                 onChange={this.onEditorStateChange}
+                smallToolBar={true}
+                hideButton={true}
               />
+            )}
+            {!this.state.readOnly && (
+              <div className={css(styles.buttonRow)}>
+                <Ripples
+                  className={css(styles.cancelButton)}
+                  onClick={this.cancel}
+                >
+                  Cancel
+                </Ripples>
+                <Ripples
+                  className={css(styles.submitButton)}
+                  onClick={this.submitEdit}
+                >
+                  Submit
+                </Ripples>
+              </div>
             )}
           </div>
         ) : (
@@ -232,16 +262,19 @@ class SummaryTab extends React.Component {
           >
             {this.state.addSummary ? (
               <div className={css(styles.summaryEdit)}>
-                <div className={css(styles.guidelines)}>
-                  Please review our{" "}
-                  <a
-                    className={css(styles.authorGuidelines)}
-                    href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
-                    target="_blank"
-                  >
-                    Summary Guidelines
-                  </a>{" "}
-                  to see how to write for ResearchHub
+                <div className={css(styles.headerContainer)}>
+                  <div className={css(styles.header)}>Editing Summary</div>
+                  <div className={css(styles.guidelines)}>
+                    Please review our{" "}
+                    <a
+                      className={css(styles.authorGuidelines)}
+                      href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+                      target="_blank"
+                    >
+                      Summary Guidelines
+                    </a>{" "}
+                    to see how to write for ResearchHub
+                  </div>
                 </div>
                 <TextEditor
                   canEdit={true}
@@ -250,7 +283,13 @@ class SummaryTab extends React.Component {
                   onCancel={this.cancel}
                   onSubmit={this.submitEdit}
                   onChange={this.onEditorStateChange}
+                  smallToolBar={true}
+                  hideButton={true}
                 />
+                <div className={css(styles.buttonRow)}>
+                  <div className={css(styles.cancelButton)}>Cancel</div>
+                  <div className={css(styles.submitButton)}>Submit</div>
+                </div>
               </div>
             ) : (
               <div className={css(styles.box) + " second-step"}>
@@ -269,9 +308,7 @@ class SummaryTab extends React.Component {
                   permissionKey="ProposeSummaryEdit"
                   loginRequired={true}
                 >
-                  {/* <Ripples> */}
                   <button className={css(styles.button)}>Add Summary</button>
-                  {/* </Ripples> */}
                 </PermissionNotificationWrapper>
               </div>
             )}
@@ -289,18 +326,38 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-end",
     boxSizing: "border-box",
+    transition: "all ease-in-out 0.3s",
   },
   noSummaryContainer: {
     alignItems: "center",
     opacity: 1,
     transition: "all ease-in-out 0.3s",
   },
+  headerContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: "100%",
+    padding: "10px 0px 15px",
+    marginLeft: 30,
+    // position: 'sticky',
+    // top: 80,
+    backgroundColor: "#FFF",
+    borderBottom: "1px solid rgb(235, 235, 235)",
+    // zIndex: 3
+  },
+  header: {
+    fontWeight: 500,
+    fontSize: 26,
+    color: colors.BLACK(),
+    marginBottom: 5,
+  },
   guidelines: {
     color: "rgba(36, 31, 58, 0.8)",
-    textAlign: "center",
-    letterSpacing: 0.7,
-    marginBottom: 16,
+    textAlign: "left",
+    letterSpacing: 0.2,
     width: "100%",
+    fontSize: 13,
   },
   box: {
     display: "flex",
@@ -327,7 +384,7 @@ var styles = StyleSheet.create({
     },
   },
   summaryActions: {
-    width: 280,
+    width: 240,
     padding: 16,
     display: "flex",
     alignItems: "center",
@@ -337,10 +394,11 @@ var styles = StyleSheet.create({
   summaryEdit: {
     marginBottom: 50,
     width: "100%",
+    transition: "all ease-in-out 0.3s",
   },
   action: {
     color: "#241F3A",
-    fontSize: 16,
+    fontSize: 14,
     opacity: 0.6,
     display: "flex",
     cursor: "pointer",
@@ -412,6 +470,49 @@ var styles = StyleSheet.create({
   },
   transition: {
     opacity: 0,
+  },
+  buttonRow: {
+    width: "100%",
+    position: "sticky",
+    paddingTop: 12,
+    paddingBottom: 10,
+    bottom: 0,
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderTop: "1px solid rgb(235, 235, 235)",
+    zIndex: 3,
+  },
+  cancelButton: {
+    color: colors.BLUE(),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    height: 45,
+    padding: "0px 30px",
+    borderRadius: 4,
+    marginRight: 5,
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
+  submitButton: {
+    marginLeft: 5,
+    cursor: "pointer",
+    color: "#fff",
+    backgroundColor: colors.BLUE(),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    height: 45,
+    borderRadius: 4,
+    padding: "0px 30px",
+    ":hover": {
+      backgroundColor: "#3E43E8",
+    },
   },
 });
 

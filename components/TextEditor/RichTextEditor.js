@@ -219,7 +219,8 @@ class RichTextEditor extends React.Component {
         ) : (
           <div className={css(styles.summaryEditor)}>
             {!this.props.readOnly && (
-              <Sticky enabled={true} innerZ={3} top={80}>
+              // <Sticky enabled={true} innerZ={3} bottom={30}>
+              <div className={css(styles.stickyBottom)}>
                 <ToolBar
                   cancel={this.props.cancel}
                   submit={this.props.submit}
@@ -254,7 +255,8 @@ class RichTextEditor extends React.Component {
                   {this.renderLinkButton("link", textEditorIcons.link)}
                   {this.renderImageButton("image", textEditorIcons.image)}
                 </ToolBar>
-              </Sticky>
+              </div>
+              // </Sticky>
             )}
             <Editor
               readOnly={this.props.readOnly}
@@ -616,7 +618,11 @@ class RichTextEditor extends React.Component {
       case "heading-one":
         return <h1 {...attributes}>{children}</h1>;
       case "heading-two":
-        return <h2 {...attributes}>{children}</h2>;
+        return (
+          <h2 style={{ fontSize: 22 }} {...attributes}>
+            {children}
+          </h2>
+        );
       case "list-item":
         return <li {...attributes}>{children}</li>;
       case "numbered-list":
@@ -658,7 +664,11 @@ class RichTextEditor extends React.Component {
     const { children, mark, attributes } = props;
     switch (mark.type) {
       case "bold":
-        return <strong {...attributes}>{children}</strong>;
+        return (
+          <strong className={css(styles.bold)} {...attributes}>
+            {children}
+          </strong>
+        );
       case "code":
         return <code {...attributes}>{children}</code>;
       case "italic":
@@ -911,6 +921,9 @@ const styles = StyleSheet.create({
   },
   summaryEditor: {
     width: "100%",
+    fontFamily: "Roboto",
+    color: colors.BLACK(),
+    lineHeight: 1.2,
   },
   commentEditor: {
     background: "#FBFBFD",
@@ -993,6 +1006,16 @@ const styles = StyleSheet.create({
       background: "linear-gradient(#000 1%, transparent 100%)",
       opacity: "100%",
     },
+  },
+  bold: {
+    fontWeight: 500,
+    color: "#000",
+  },
+  stickyBottom: {
+    position: "sticky",
+    backgroundColor: "#fff",
+    top: 80,
+    zIndex: 3,
   },
 });
 
