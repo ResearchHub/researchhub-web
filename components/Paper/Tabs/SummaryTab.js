@@ -384,12 +384,13 @@ var styles = StyleSheet.create({
     },
   },
   summaryActions: {
-    width: 240,
+    width: 250,
     padding: 16,
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
+    paddingBottom: 0,
+    // marginBottom: 10,
   },
   summaryEdit: {
     marginBottom: 50,
@@ -402,6 +403,8 @@ var styles = StyleSheet.create({
     opacity: 0.6,
     display: "flex",
     cursor: "pointer",
+    transition: "all ease-out 0.1s",
+    padding: "3px 5px",
     ":hover": {
       color: colors.BLUE(1),
       opacity: 1,

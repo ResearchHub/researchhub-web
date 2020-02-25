@@ -616,12 +616,16 @@ class RichTextEditor extends React.Component {
       case "bulleted-list":
         return <ul {...attributes}>{children}</ul>;
       case "heading-one":
-        return <h1 {...attributes}>{children}</h1>;
-      case "heading-two":
         return (
-          <h2 style={{ fontSize: 22 }} {...attributes}>
+          <h2 style={{ fontSize: 22, fontWeight: 500 }} {...attributes}>
             {children}
           </h2>
+        );
+      case "heading-two":
+        return (
+          <h3 style={{ fontSize: 20, fontWeight: 500 }} {...attributes}>
+            {children}
+          </h3>
         );
       case "list-item":
         return <li {...attributes}>{children}</li>;
@@ -922,7 +926,8 @@ const styles = StyleSheet.create({
   summaryEditor: {
     width: "100%",
     fontFamily: "Roboto",
-    color: colors.BLACK(),
+    // color: colors.BLACK(),
+    color: "#241F3A",
     lineHeight: 1.2,
   },
   commentEditor: {
@@ -1009,7 +1014,7 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: 500,
-    color: "#000",
+    color: "#241F3A",
   },
   stickyBottom: {
     position: "sticky",
