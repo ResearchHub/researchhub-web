@@ -5,6 +5,13 @@ export const DOWNVOTE = "downvote";
 export const UPVOTE_ENUM = 1;
 export const DOWNVOTE_ENUM = 2;
 
+export const DIGEST_FREQUENCY = {
+  Daily: 1440,
+  Immediately: 0,
+  "Every 3 Hours": 180,
+  Weekly: 10080,
+};
+
 export const GOOGLE_CLIENT_ID =
   process.env.NODE_ENV === "production"
     ? "192509748493-3enrmve4vlikpff88lujns7b4d72hgbg.apps.googleusercontent.com"
