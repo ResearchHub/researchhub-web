@@ -81,7 +81,7 @@ class FormInput extends React.Component {
           )}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
-          autoComplete={autocomplete && autocomplete}
+          autocomplete={autocomplete && autocomplete}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && <p className={css(styles.message)}>{message}</p>}
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 15,
-    paddingRight: 15,
+    paddingRight: 7,
     cursor: "pointer",
     // "@media only screen and (max-width: 670px)": {
     //   top: "unset",

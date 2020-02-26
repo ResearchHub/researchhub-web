@@ -70,13 +70,14 @@ const routes = (BASE_URL) => {
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     ORCID_LOGIN: BASE_URL + "auth/orcid/login/",
     SIGNOUT: BASE_URL + "auth/logout/",
-    SEARCH: ({ search, config, page, size }) => {
+    SEARCH: ({ search, config, page, size, external_search = true }) => {
       let url = BASE_URL + "search/";
       let params = {
         querystring: {
           search,
           page,
           size,
+          external_search,
         },
         rest: {
           route: config.route,

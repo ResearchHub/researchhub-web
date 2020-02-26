@@ -252,13 +252,17 @@ export const PaperActions = {
   /**
    * saves the paper to redux state (not backend)
    */
-  uploadPaperToState: (paperFile) => {
+  uploadPaperToState: (paperFile, paperMeta) => {
+    let payload = {
+      uploadedPaper: paperFile,
+    };
+    if (paperMeta) {
+      payload.uploadedPaperMeta = paperMeta;
+    }
     return (dispatch) => {
       return dispatch({
         type: types.UPLOAD_PAPER_TO_STATE,
-        payload: {
-          uploadedPaper: paperFile,
-        },
+        payload,
       });
     };
   },
@@ -271,6 +275,7 @@ export const PaperActions = {
         type: types.REMOVE_PAPER_FROM_STATE,
         payload: {
           uploadedPaper: {},
+          uploadedPaperMeta: {},
         },
       });
     };
