@@ -242,6 +242,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    ":hover": {
+      background: "rgba(30, 207, 49, 0.2)",
+    },
   },
   icon: {
     cursor: "pointer",
