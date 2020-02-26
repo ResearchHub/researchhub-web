@@ -81,6 +81,39 @@ class LiveFeedNotification extends React.Component {
             </span>
           </div>
         );
+      case "paper":
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            uploaded a new paper{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paperId}/summary`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
       case "vote_paper":
         return (
           <div className={css(styles.message)}>
