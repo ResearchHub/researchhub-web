@@ -332,9 +332,7 @@ class SearchEntry extends React.Component {
           </div>
           <div className={css(styles.bullet)}>
             <div className={css(styles.discussion)}>
-              <span className={css(styles.icon)}>
-                <i className={"fad fa-clock"} />
-              </span>
+              <span className={css(styles.icon)}>{icons.date}</span>
               <span className={css(styles.discussionCount)}>
                 {createdDate && this.convertDate(createdDate)}
               </span>
