@@ -17,8 +17,12 @@ import { updateEmailPreference, fetchEmailPreference } from "~/config/fetch";
 import {
   buildSubscriptionPatch,
   digestSubscriptionPatch,
+  emailPreferencePatch,
 } from "~/config/shims";
 import { MessageActions } from "~/redux/message";
+import { HubActions } from "~/redux/hub";
+import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
+import { doesNotExist } from "~/config/utils";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
@@ -27,7 +31,7 @@ const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   };
 });
 
-const contentOptions = [
+const contentSubscriptionOptions = [
   {
     id: "paperSubscription",
     label: "Someone posts a thread on a paper I authored",
@@ -53,21 +57,29 @@ class UserSettings extends Component {
     this.state = {
       frequency: null,
       emailRecipientId: null,
+      isOptedOut: null,
     };
 
-    contentOptions.forEach((option) => {
+    contentSubscriptionOptions.forEach((option) => {
       this.state[option.id] = true;
     });
   }
 
   componentDidMount() {
+    if (doesNotExist(this.props.hubs)) {
+      this.props.dispatch(HubActions.getHubs());
+    }
     fetchEmailPreference().then((preference) => {
       const frequency = this.getInitialFrequencyOption(preference);
-      const contentState = this.getInitialContentState(preference);
+      const contentSubscriptions = this.getInitialContentSubscriptionOptions(
+        preference
+      );
+      const isOptedOut = this.getInitialIsOptedOut(preference);
       this.setState({
         emailRecipientId: preference.id,
         frequency,
-        ...contentState,
+        ...contentSubscriptions,
+        isOptedOut,
       });
     });
   }
@@ -82,65 +94,19 @@ class UserSettings extends Component {
     return initial[0];
   };
 
-  getInitialContentState = (emailPreference) => {
-    const contentState = {};
+  getInitialContentSubscriptionOptions = (emailPreference) => {
+    const initial = {};
     const subscriptionKeys = Object.keys(emailPreference).filter((key) => {
       return key.includes("Subscription");
     });
     subscriptionKeys.forEach((key) => {
-      contentState[key] = !emailPreference[key].none;
+      initial[key] = !emailPreference[key].none;
     });
-    return contentState;
+    return initial;
   };
 
-  subscribe = (hub) => {
-    const config = API.POST_CONFIG();
-    return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.props.dispatch(HubActions.updateHub(allHubs, topHubs, { ...res }));
-        this.props.setMessage("Subscribed!");
-        this.props.showMessage({ show: true });
-      });
-  };
-
-  unsubscribe = (hub) => {
-    return fetch(API.HUB_UNSUBSCRIBE({ hubId: hub.id }), config)
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.props.dispatch(HubActions.updateHub(allHubs, topHubs, { ...res }));
-        this.props.setMessage("Unsubscribed!");
-        this.props.showMessage({ show: true });
-      });
-  };
-
-  renderHubs = () => {
-    return (
-      <Fragment>
-        <div className={css(defaultStyles.listLabel)} id={"hubListTitle"}>
-          {"Subscribed Hubs"}
-        </div>
-        <div className={css(hubStyles.list)}>
-          {this.props.subscribedHubs.map((hub) => {
-            return this.renderHub(hub);
-          })}
-        </div>
-      </Fragment>
-    );
-  };
-
-  renderHub = (hub) => {
-    return (
-      <Ripples
-        key={hub.id}
-        className={css(hubStyles.entry)}
-        onClick={this.unsubscribe}
-      >
-        {hub.name} X
-      </Ripples>
-    );
+  getInitialIsOptedOut = (emailPreference) => {
+    return emailPreference.isOptedOut;
   };
 
   renderFrequencySelect() {
@@ -164,11 +130,9 @@ class UserSettings extends Component {
 
   handleFrequencyChange = (id, option) => {
     const currentFrequency = this.state.frequency;
-
     this.setState({
       frequency: option,
     });
-
     const data = digestSubscriptionPatch({
       notificationFrequency: option.value,
     });
@@ -178,19 +142,100 @@ class UserSettings extends Component {
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
       .catch((err) => {
-        console.error(err);
-        this.props.dispatch(MessageActions.setMessage("Oops! Update failed."));
-        this.props.dispatch(
-          MessageActions.showMessage({ show: true, error: true })
-        );
+        this.displayError(err);
         this.setState({
           frequency: currentFrequency,
         });
       });
   };
 
-  renderContentOptions = () => {
-    return contentOptions.map((option) => {
+  renderSubscribedHubs = () => {
+    return (
+      <Fragment>
+        <div className={css(defaultStyles.listLabel)} id={"hubListTitle"}>
+          {"Currently Subscribed Hubs"}
+        </div>
+        <div className={css(hubStyles.list)}>
+          {this.props.subscribedHubs.map((hub) => {
+            return this.renderHub(hub);
+          })}
+        </div>
+      </Fragment>
+    );
+  };
+
+  renderHub = (hub) => {
+    return (
+      <Ripples
+        key={hub.id}
+        className={css(hubStyles.entry)}
+        onClick={() => this.handleHubUnsubscribe(hub.id)}
+      >
+        {hub.name} X
+      </Ripples>
+    );
+  };
+
+  handleHubUnsubscribe = (hubId) => {
+    const { hubs, topHubs } = this.props;
+    unsubscribeFromHub(hubId)
+      .then((res) => {
+        this.props.dispatch(HubActions.updateHub(hubs, topHubs, { ...res }));
+        this.props.dispatch(MessageActions.setMessage("Unsubscribed!"));
+        this.props.dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch(this.displayError);
+  };
+
+  renderHubSelect() {
+    const subscribedHubIds = this.props.subscribedHubs.map((hub) => hub.id);
+    const availableHubs = this.props.hubs.filter((hub) => {
+      return !subscribedHubIds.includes(hub.id);
+    });
+    return (
+      <Fragment>
+        <div className={css(defaultStyles.listLabel)} id={"hubListTitle"}>
+          {"Available Hubs"}
+        </div>
+        <FormSelect
+          id={"hubSelect"}
+          options={this.buildHubOptions(availableHubs)}
+          containerStyle={selectStyles.container}
+          inputStyle={selectStyles.input}
+          onChange={this.handleHubSubscribe}
+          isSearchable={true}
+          placeholder={"Subscribe to a hub"}
+        />
+      </Fragment>
+    );
+  }
+
+  buildHubOptions = (hubs) => {
+    return (
+      hubs &&
+      hubs.map((hub) => {
+        return {
+          value: hub.id,
+          label: hub.name,
+        };
+      })
+    );
+  };
+
+  handleHubSubscribe = (id, option) => {
+    const { hubs, topHubs } = this.props;
+
+    subscribeToHub(option.value)
+      .then((res) => {
+        this.props.dispatch(HubActions.updateHub(hubs, topHubs, { ...res }));
+        this.props.dispatch(MessageActions.setMessage("Subscribed!"));
+        this.props.dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch(this.displayError);
+  };
+
+  renderContentSubscriptions = () => {
+    return contentSubscriptionOptions.map((option) => {
       return (
         <CheckBox
           key={option.id}
@@ -198,15 +243,15 @@ class UserSettings extends Component {
           active={this.state[option.id]}
           label={option.label}
           id={option.id}
-          onChange={this.handleCheckBox}
+          onChange={this.handleContentSubscribe}
           labelStyle={checkBoxStyles.labelStyle}
         />
       );
     });
   };
 
-  handleCheckBox = (id) => {
-    const nextActiveState = !this.state[id];
+  handleContentSubscribe = (id, nextActiveState) => {
+    const startingActiveState = this.state[id];
     this.setState({
       [id]: nextActiveState,
     });
@@ -218,22 +263,58 @@ class UserSettings extends Component {
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
       .catch((err) => {
-        console.error(err);
-        this.props.dispatch(MessageActions.setMessage("Oops! Update failed."));
-        this.props.dispatch(
-          MessageActions.showMessage({ show: true, error: true })
-        );
+        this.displayError(err);
         this.setState({
-          [id]: !nextActiveState,
+          [id]: startingActiveState,
         });
       });
   };
 
-  update = () => {
-    updateEmailPreference().then((resp) => {
-      setMessage("Opt-out Complete!");
-      showMessage({ show: true });
+  renderOptOut = () => {
+    return (
+      <Fragment>
+        <p>I don't want emails</p>
+        <CheckBox
+          key={"optOut"}
+          isSquare={true}
+          active={this.state.isOptedOut}
+          label={"Opt out of all email updates"}
+          id={"optOut"}
+          onChange={this.handleOptOut}
+          labelStyle={checkBoxStyles.labelStyle}
+        />
+      </Fragment>
+    );
+  };
+
+  handleOptOut = (id, nextActiveState) => {
+    const startingActiveState = this.state.isOptedOut;
+    this.setState({
+      isOptedOut: nextActiveState,
     });
+
+    const data = emailPreferencePatch({ isOptedOut: nextActiveState });
+    updateEmailPreference(this.state.emailRecipientId, data)
+      .then(() => {
+        this.props.dispatch(MessageActions.setMessage("Saved!"));
+        this.props.dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch((err) => {
+        this.displayError(err);
+        this.setState({
+          isOptedOut: startingActiveState,
+        });
+      });
+  };
+
+  displayError = (err) => {
+    console.error(err);
+    this.props.dispatch(
+      MessageActions.setMessage("Oops! Something went wrong.")
+    );
+    this.props.dispatch(
+      MessageActions.showMessage({ show: true, error: true })
+    );
   };
 
   render() {
@@ -242,9 +323,11 @@ class UserSettings extends Component {
         <div className={css(defaultStyles.title)}>User Settings</div>
         <div className={css(defaultStyles.subtitle)}>Email Preferences</div>
         {this.renderFrequencySelect()}
-        {this.renderHubs()}
+        {this.renderSubscribedHubs()}
+        {this.renderHubSelect()}
         <p>Email me when...</p>
-        {this.renderContentOptions()}
+        {this.renderContentSubscriptions()}
+        {this.renderOptOut()}
       </div>
     );
   }
