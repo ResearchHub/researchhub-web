@@ -40,7 +40,8 @@ class NewDND extends React.Component {
       fetching: false,
       inputDisabled: false,
       // File or MetaData
-      paper: {},
+      // paper: {},
+      // cslPaper: {},
       // Searching
       searching: false,
       searchResults: [],
@@ -51,14 +52,70 @@ class NewDND extends React.Component {
   componentDidMount() {
     window.addEventListener("dragenter", this.setDragOverState, false);
     window.addEventListener("mouseout", this.unsetDragOverState, false);
-    // window.addEventListener('drop', this.unsetDragOverState, false);
+    if (this.props.uploadedPaper) {
+      // only configure if there's a paper in redux
+      this.configureStateFromProps();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      if (prevProps.uploadedPaper !== this.props.uploadedPaper) {
+        if (Object.keys(this.props.uploadedPaper).length > 0) {
+          this.configureStateFromProps();
+        }
+      }
+    }
   }
 
   componentWillUnmount() {
     window.removeEventListener("dragenter", this.setDragOverState, false);
     window.removeEventListener("mouseout", this.unsetDragOverState, false);
-    // window.removeEventListener('drop', this.unsetDragOverState, false);
   }
+
+  configureStateFromProps = () => {
+    let { uploadedPaper, uploadedPaperMeta } = this.props;
+    // find a different way to determine whether paper is a file or upload
+    if (Object.keys(uploadedPaper).length > 0) {
+      if (
+        Object.keys(uploadedPaperMeta).length > 0 &&
+        !uploadedPaperMeta.isFile
+      ) {
+        // Configure to active Url State
+        this.setState(
+          {
+            urlInput: uploadedPaperMeta.url ? uploadedPaperMeta.url : "",
+            urlView: true,
+            urlIsValid: true,
+            fileDropped: false,
+            fileIsPdf: false,
+          },
+          () => {
+            if (this.state.searchResults.length < 1) {
+              let title = uploadedPaper.name;
+              this.searchTitle(title);
+            }
+          }
+        );
+      } else {
+        // Configure to successful Drop State
+        this.setState(
+          {
+            urlView: false,
+            urlIsValid: false,
+            fileDropped: true,
+            fileIsPdf: true,
+          },
+          () => {
+            if (this.state.searchResults.length < 1) {
+              let title = uploadedPaperMeta.csl_item.name;
+              this.searchTitle(title);
+            }
+          }
+        );
+      }
+    }
+  };
 
   setDragOverState = () => {
     !this.state.fileDragging && this.setState({ fileDragging: true });
@@ -81,17 +138,17 @@ class NewDND extends React.Component {
         metaData = { ...csl_item };
         metaData.name = csl_item.title;
         metaData.url = url;
-        this.props.paperActions.uploadPaperToState(metaData);
+        this.props.paperActions.uploadPaperToState(metaData, { ...res });
         this.setState(
           {
             fetching: false,
             urlIsValid: csl_item ? true : false,
-            paper: { ...res },
             inputDisabled: false,
           },
           () => {
             // when metadata returns, search existing papers using the title
             this.searchTitle(csl_item.title);
+            this.props.onValidUrl && this.props.onValidUrl();
           }
         );
       })
@@ -113,7 +170,10 @@ class NewDND extends React.Component {
     const config = {
       route: "all",
     };
-    fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
+    fetch(
+      API.SEARCH({ search: value, config, external_search: false }),
+      API.GET_CONFIG()
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -125,8 +185,10 @@ class NewDND extends React.Component {
   };
 
   toggleFormatState = () => {
-    if (Object.keys(this.state.paper).length < 1) {
-      this.setState({ urlView: !this.state.urlView });
+    if (Object.keys(this.props.uploadedPaper).length < 1) {
+      this.setState({ urlView: !this.state.urlView }, () => {
+        this.state.urlView && this.inputRef.current.focus();
+      });
     }
   };
 
@@ -139,21 +201,24 @@ class NewDND extends React.Component {
   resetState = () => {
     //remove paper from redux
     this.props.paperActions.removePaperFromState();
-    this.setState({
-      paper: {},
-      searchResults: [],
-      fileDragging: false,
-      fileLoading: false,
-      fileDropped: false,
-      fileIsPdf: false,
-    });
+    this.setState(
+      {
+        searchResults: [],
+        fileDragging: false,
+        fileLoading: false,
+        fileDropped: false,
+        fileIsPdf: false,
+      },
+      () => {
+        this.props.onRemove && this.props.onRemove();
+      }
+    );
   };
 
   resetStateFromUrl = () => {
     this.props.paperActions.removePaperFromState();
     this.setState(
       {
-        paper: {},
         urlInput: "",
         urlIsValid: false,
         fetching: false,
@@ -162,6 +227,7 @@ class NewDND extends React.Component {
       },
       () => {
         this.inputRef.current.focus();
+        this.props.onRemove && this.props.onRemove();
       }
     );
   };
@@ -188,27 +254,27 @@ class NewDND extends React.Component {
     }
     this.setState({ fileLoading: true }, () => {
       setTimeout(() => {
-        this.props.handleDrop && this.props.handleDrop(acceptedFiles);
-        let file = acceptedFiles[0];
-        let paper = this.formatFileToPaperObj(file);
-        let title = paper.csl_item.title.split(".pdf")[0];
+        let paperMetaData = this.formatFileToPaperObj(acceptedFiles[0]);
+        this.props.handleDrop &&
+          this.props.handleDrop(acceptedFiles, paperMetaData);
         this.setState({
           fileLoading: false,
           fileDropped: true,
           fileIsPdf: true,
-          paper: paper,
         });
-        this.searchTitle(title);
+        this.searchTitle(paperMetaData.csl_item.name);
       }, 400);
     });
   };
 
   formatFileToPaperObj = (file) => {
     let paper = { csl_item: {} };
+    paper.isFile = true;
     paper.url_is_pdf = true;
     paper.csl_item.title = file.name;
     paper.csl_item.type = file.type;
     paper.csl_item.URL = file.path && file.path;
+    paper.csl_item.name = file.name.split(".pdf")[0];
     return paper;
   };
 
@@ -221,19 +287,30 @@ class NewDND extends React.Component {
   };
 
   calculateButtonStyle = () => {
-    if (Object.keys(this.state.paper).length > 0) {
+    if (Object.keys(this.props.uploadedPaper).length > 0) {
       return styles.buttonDisabled;
     }
   };
 
   calculateInputDisabled = () => {
     if (
-      !Object.keys(this.state.paper).length < 1 &&
+      Object.keys(this.props.uploadedPaper).length > 0 &&
       !this.state.inputDisabled
     ) {
+      return this.setState({ inputDisabled: true }, () => {
+        this.state.inputDisabled;
+      });
+    } else if (
+      Object.keys(this.props.uploadedPaper).length < 1 &&
+      this.state.inputDisabled
+    ) {
       return this.setState(
-        { inputDisabled: true },
-        () => this.state.inputDisabled
+        {
+          inputDisabled: false,
+        },
+        () => {
+          this.state.inputDisabled;
+        }
       );
     }
     return this.state.inputDisabled;
@@ -303,9 +380,10 @@ class NewDND extends React.Component {
               ) : null
             }
           />
-          {this.state.paper.url && (
+          {(this.state.urlIsValid ||
+            Object.keys(this.props.uploadedPaperMeta).length > 0) && (
             <PaperMetaData
-              metaData={this.state.paper}
+              metaData={this.props.uploadedPaperMeta}
               onRemove={this.resetStateFromUrl}
             />
           )}
@@ -316,7 +394,7 @@ class NewDND extends React.Component {
         if (this.state.fileIsPdf) {
           return (
             <PaperMetaData
-              metaData={this.state.paper}
+              metaData={this.props.uploadedPaperMeta}
               onRemove={this.resetState}
             />
           );
@@ -464,13 +542,17 @@ const styles = StyleSheet.create({
   inputStyle: {
     paddingRight: 35,
     fontSize: 14,
+    "::placeholder": {
+      color: colors.BLUE(),
+      opacity: 0.9,
+    },
     "@media only screen and (max-width: 665px)": {
       fontSize: 12,
     },
   },
   icon: {
     fontSize: 20,
-    paddingBottom: 5,
+    // paddingBottom: 5,
   },
   successIcon: {
     color: colors.GREEN(),
@@ -481,17 +563,22 @@ const styles = StyleSheet.create({
   suggestions: {
     color: colors.RED(),
     fontSize: 12,
-    padding: "3px 5px",
+    padding: "3px 0px 3px 5px",
     position: "absolute",
     right: 0,
     bottom: -25,
     cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    },
   },
 });
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
   paper: state.paper,
+  uploadedPaper: state.paper.uploadedPaper,
+  uploadedPaperMeta: state.paper.uploadedPaperMeta,
   auth: state.auth,
   message: state.auth,
 });

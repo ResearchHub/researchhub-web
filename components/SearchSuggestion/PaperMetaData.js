@@ -13,7 +13,7 @@ import { ModalActions } from "~/redux/modals";
 
 const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
   const [blankState, toggleBlankState] = useState(
-    metaData.csl_item.URL ? false : true
+    metaData.csl_item ? false : true
   );
   const [editState, useEditState] = useState(false);
   const [editableCsl, updateEditableCsl] = useState(
