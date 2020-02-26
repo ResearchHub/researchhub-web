@@ -7,7 +7,6 @@ export const DOWNVOTE_ENUM = 2;
 
 export const DIGEST_FREQUENCY = {
   Daily: 1440,
-  Immediately: 0,
   "Every 3 Hours": 180,
   Weekly: 10080,
 };
