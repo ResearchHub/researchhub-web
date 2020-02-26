@@ -5,6 +5,7 @@ import Progress from "react-progressbar";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Value } from "slate";
+import { withAlert } from "react-alert";
 
 // Component
 import CheckBox from "../Form/CheckBox";
@@ -76,8 +77,8 @@ class PaperUploadInfo extends React.Component {
         author: false,
         tagline: false,
       },
-      summary: {},
-      summaryId: null,
+      // summary: {},
+      // summaryId: null,
       showAuthorList: false,
       progress: 0,
       activeStep: 1,
@@ -89,6 +90,7 @@ class PaperUploadInfo extends React.Component {
       suggestedHubs: [],
       editMode: false,
       edited: false,
+      suggestedPapers: false,
     };
 
     this.state = {
@@ -435,6 +437,14 @@ class PaperUploadInfo extends React.Component {
     });
   };
 
+  checkPaperSuggestions = (length) => {
+    if (length > 0) {
+      this.setState({ suggestedPapers: true });
+    } else {
+      this.state.suggestedPapers && this.setState({ suggestedPapers: false });
+    }
+  };
+
   // handleDiscussionInputChange = (id, value) => {
   //   let discussion = { ...this.state.discussion };
   //   discussion[id] = value;
@@ -486,7 +496,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   getHubs = () => {
-    fetch(API.HUB({}), API.GET_CONFIG())
+    fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -630,6 +640,7 @@ class PaperUploadInfo extends React.Component {
                     onDrop={null}
                     onValidUrl={this.checkFormProgress}
                     onRemove={this.checkFormProgress}
+                    onSearch={this.checkPaperSuggestions}
                   />
                 </div>
               )}
@@ -935,19 +946,17 @@ class PaperUploadInfo extends React.Component {
     }
   };
 
-  submitForm = async () => {
+  handleSubmitLogic = () => {
     if (this.validateSelectors()) {
-      if (!this.state.edited) {
-        return this.state.editMode ? this.navigateToSummary() : this.nextStep();
-      }
-      this.props.messageActions.showMessage({ load: true, show: true });
-      if (
-        this.props.paper.postedPaper &&
-        Object.keys(this.props.paper.postedPaper).length > 0
-      ) {
-        await this.postPaper("PATCH");
-      } else {
-        await this.postPaper();
+      let { suggestedPapers } = this.state;
+      if (suggestedPapers) {
+        this.props.alert.show({
+          text: "Are you sure you want to upload this paper?",
+          buttonText: "Yes",
+          onClick: () => {
+            return this.submitForm();
+          },
+        });
       }
     } else {
       this.props.messageActions.setMessage("Required fields must be filled.");
@@ -956,6 +965,21 @@ class PaperUploadInfo extends React.Component {
         show: true,
         error: true,
       });
+    }
+  };
+
+  submitForm = async () => {
+    if (!this.state.edited) {
+      return this.state.editMode ? this.navigateToSummary() : this.nextStep();
+    }
+    this.props.messageActions.showMessage({ load: true, show: true });
+    if (
+      this.props.paper.postedPaper &&
+      Object.keys(this.props.paper.postedPaper).length > 0
+    ) {
+      await this.postPaper("PATCH");
+    } else {
+      await this.postPaper();
     }
   };
 
@@ -1241,7 +1265,9 @@ class PaperUploadInfo extends React.Component {
           className={css(styles.form)}
           onSubmit={(e) => {
             e.preventDefault();
-            activeStep === 1 && this.submitForm();
+            if (activeStep === 1) {
+              this.handleSubmitLogic();
+            }
           }}
           autoComplete={"off"}
         >
@@ -1779,4 +1805,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PaperUploadInfo);
+)(withAlert()(PaperUploadInfo));

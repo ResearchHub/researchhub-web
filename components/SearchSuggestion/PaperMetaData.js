@@ -12,6 +12,9 @@ import icons from "~/config/themes/icons";
 import { ModalActions } from "~/redux/modals";
 
 const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
+  if (Object.keys(metaData).length < 1) {
+    return null;
+  }
   const [blankState, toggleBlankState] = useState(
     metaData.csl_item ? false : true
   );
@@ -75,8 +78,6 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
   const publishedDate = date && formatDate(date);
   const authors = author && formatAuthors(author);
 
-  const handleInput = () => {};
-
   const toggleEditState = () => {
     useEditState(!editState);
   };
@@ -119,15 +120,15 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
         <div className={css(styles.metaDataSummary)}>
           <div className={css(styles.text)}>
             <b>URL: </b>
-            {URL}
+            {URL && URL}
           </div>
           <div className={css(styles.text)}>
             <b>Issued Date: </b>
-            {publishedDate}
+            {publishedDate && publishedDate}
           </div>
           <div className={css(styles.text, styles.type)}>
             <b>Type: </b>
-            {type}
+            {type && type}
           </div>
         </div>
       );
