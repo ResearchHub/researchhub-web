@@ -96,7 +96,7 @@ const routes = (BASE_URL) => {
       }
 
       if (search) {
-        url += `search=${search}&`;
+        url += `search=${search}&external_search=false&`;
       }
 
       if (typeof page === "number") {
