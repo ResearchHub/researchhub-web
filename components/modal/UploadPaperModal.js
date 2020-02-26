@@ -16,10 +16,10 @@ import { MessageActions } from "../../redux/message";
 // Component
 import BaseModal from "../modal/BaseModal";
 import SearchEntry from "../SearchEntry";
+import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import colors from "~/config/themes/colors";
 
 const TRANSITION_TIME = 300;
 
@@ -134,6 +134,7 @@ class UploadPaperModal extends React.Component {
       paper.meta = {};
       return (
         <Fragment>
+          {results.length > 1 && <div className={css(styles.divider)} />}
           <Ripple className={css(styles.searchEntryContainer)}>
             <SearchEntry
               indexName="paper"
@@ -143,9 +144,7 @@ class UploadPaperModal extends React.Component {
             />
           </Ripple>
           {/** separate div needed to prevent ripple behavior which leaks to padding/margin */}
-          {this.state.papers.length > 1 && (
-            <div className={css(styles.divider)} />
-          )}
+          {results.length > 1 && <div className={css(styles.divider)} />}
         </Fragment>
       );
     });
@@ -162,14 +161,18 @@ class UploadPaperModal extends React.Component {
         removeDefault={true}
       >
         <div className={css(styles.modalContent)}>
-          <div className={css(styles.loadingMessage)}>
-            {`Showing ${count} similar papers:`}
-          </div>
           <img
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
             onClick={this.closeModal}
           />
+          <div className={css(styles.header)}>Search Results for:</div>
+          <div className={css(styles.paperSummary)}>
+            <PaperMetaData metaData={this.props.uploadedPaperMeta} />
+          </div>
+          <div className={css(styles.searchCount)}>
+            {`${count} similar papers already on ResearchHub`}
+          </div>
           <div className={css(styles.searchResults)}>
             {this.renderSearchResults()}
           </div>
@@ -227,6 +230,22 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     textAlign: "center",
+  },
+  header: {
+    fontWeight: 500,
+    width: "100%",
+    textAlign: "left",
+    marginBottom: 10,
+  },
+  searchCount: {
+    width: "100%",
+    textAlign: "center",
+    fontWeight: 400,
+    fontSize: 14,
+    color: "#4f4d5f",
+    // color: colors.BLUE(),
+    paddingBottom: 15,
+    textShadow: "1px 1px 2px #FAFAFA",
   },
   title: {
     fontWeight: "500",
@@ -297,6 +316,12 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "Roboto",
   },
+  paperSummary: {
+    marginBottom: 25,
+    width: "100%",
+    maxWidth: 600,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+  },
   searchResultContainer: {
     display: "flex",
     flexDirection: "column",
@@ -304,6 +329,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     overflowY: "auto",
+    boxShadow: "inset 0 1px 3px rgba(0,0,0,0.24)",
   },
   uploadContainer: {
     display: "flex",
@@ -340,6 +366,7 @@ const styles = StyleSheet.create({
     padding: "10px 15px",
     boxSizing: "border-box",
     position: "relative",
+    backgroundColor: "#F7F7FB",
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },
@@ -423,6 +450,7 @@ const styles = StyleSheet.create({
   },
   searchEntryContainer: {
     width: "100%",
+    backgroundColor: "#fff",
   },
   divider: {
     width: "100%",
@@ -434,6 +462,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   modals: state.modals,
   paper: state.paper,
+  uploadedPaper: state.paper.uploadedPaper,
+  uploadedPaperMeta: state.paper.uploadedPaperMeta,
 });
 
 const mapDispatchToProps = (dispatch) => ({
