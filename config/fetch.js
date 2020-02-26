@@ -20,3 +20,17 @@ export const updateEmailPreference = async (emailRecipientId, data) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const subscribeToHub = async (hubId) => {
+  const config = API.POST_CONFIG();
+  return await fetch(API.HUB_SUBSCRIBE({ hubId }), config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const unsubscribeFromHub = async (hubId) => {
+  const config = API.POST_CONFIG();
+  return await fetch(API.HUB_UNSUBSCRIBE({ hubId }), config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
