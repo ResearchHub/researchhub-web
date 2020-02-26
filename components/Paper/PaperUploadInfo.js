@@ -136,10 +136,20 @@ class PaperUploadInfo extends React.Component {
     let form = { ...this.state.form };
     let { DOI, url, URL, title, abstract, issued } = uploadedPaper;
 
-    form.title = this.props.paperTitle ? this.props.paperTitle : title && title;
-    form.tagline = abstract && abstract.slice(0, 255);
-    form.doi = DOI && DOI;
-    form.url = url && url;
+    if (title || this.props.paperTitle) {
+      form.title = this.props.paperTitle
+        ? this.props.paperTitle
+        : title && title;
+    }
+    if (abstract) {
+      form.tagline = abstract && abstract.slice(0, 255);
+    }
+    if (DOI) {
+      form.doi = DOI && DOI;
+    }
+    if (url) {
+      form.url = url && url;
+    }
     if (issued) {
       let date = issued["date-parts"][0];
       form.published.year = this.handleFormYear(date);
@@ -148,6 +158,7 @@ class PaperUploadInfo extends React.Component {
     }
     this.setState({ form: form }, () => {
       this.props.messageActions.showMessage({ show: false });
+      this.checkFormProgress();
     });
   };
 
@@ -316,10 +327,9 @@ class PaperUploadInfo extends React.Component {
       form[keys[0]][keys[1]] = value;
       keys[0] === "published" ? (error[keys[1]] = false) : null; // removes red border on select fields
     }
-    this.setState({ form, error, edited: true }),
-      () => {
-        this.checkFormProgress();
-      };
+    this.setState({ form, error, edited: true }, () => {
+      this.checkFormProgress();
+    });
   };
 
   handleSelfAuthorToggle = (id, value) => {
@@ -367,20 +377,22 @@ class PaperUploadInfo extends React.Component {
     if (error.hubs) {
       error.hubs = form.hubs.length > 0 ? false : true;
     }
-    this.setState({ form, error, edited: true });
+    this.setState({ form, error, edited: true }, () => {
+      this.checkFormProgress();
+    });
   };
 
   /**
    * PAPER PDF HANDLER
    */
 
-  uploadPaper = (acceptedFiles) => {
+  uploadPaper = (acceptedFiles, metaData) => {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
     let uploadedFile = acceptedFiles[0];
     this.setState({ uploadingPaper: true });
 
-    paperActions.uploadPaperToState(uploadedFile);
+    paperActions.uploadPaperToState(uploadedFile, metaData);
     error.dnd = false;
     this.setState(
       {
@@ -402,18 +414,25 @@ class PaperUploadInfo extends React.Component {
       metaData.name = metaData.title;
       paperActions.uploadPaperToState(metaData);
       error.dnd = false;
-      this.setState({
-        uploadingPaper: false,
-        error,
-        edited: true,
-      });
+      this.setState(
+        {
+          uploadingPaper: false,
+          error,
+          edited: true,
+        },
+        () => {
+          this.checkFormProgress();
+        }
+      );
     });
   };
 
   removePaper = () => {
     let { paperActions, modalActions } = this.props;
     paperActions.removePaperFromState();
-    this.setState({ edited: true });
+    this.setState({ edited: true }, () => {
+      this.checkFormProgress();
+    });
   };
 
   // handleDiscussionInputChange = (id, value) => {
@@ -606,7 +625,12 @@ class PaperUploadInfo extends React.Component {
                     Paper PDF
                     <span className={css(styles.asterick)}>*</span>
                   </div>
-                  <NewDND handleDrop={this.uploadPaper} />
+                  <NewDND
+                    handleDrop={this.uploadPaper}
+                    onDrop={null}
+                    onValidUrl={this.checkFormProgress}
+                    onRemove={this.checkFormProgress}
+                  />
                 </div>
               )}
             </div>
@@ -1066,23 +1090,23 @@ class PaperUploadInfo extends React.Component {
   };
 
   checkFormProgress = () => {
-    console.log("called");
     var count = 0;
-    let { title, tagline, hubs } = this.state;
+    let { title, tagline, hubs } = this.state.form;
     let uploadedPaper = this.props.paper.uploadedPaper;
-    if (title.trim() !== "") {
+    if (title && title.trim() !== "") {
       count++;
     }
-    if (tagline.trim() !== "") {
+    if (tagline && tagline.trim() !== "") {
       count++;
     }
-    if (hubs.length > 0) {
+    if (hubs && hubs.length > 0) {
       count++;
     }
     if (Object.keys(uploadedPaper).length > 0) {
       count++;
     }
-    this.setStaete({
+
+    this.setState({
       progress: count * 25,
     });
   };
@@ -1286,7 +1310,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     boxShadow: "0 1px 8px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);",
     padding: "30px 60px",
-    marginTop: 20,
+    marginTop: 10,
     borderTop: "4px solid #dedee5",
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
