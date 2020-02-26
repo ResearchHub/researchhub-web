@@ -66,8 +66,10 @@ class SummaryTab extends React.Component {
       return;
     }
 
+    console.log("paper", paper);
+
     localStorage.setItem(
-      `editorState-${paper.id}-${paper.summary.id}`,
+      `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
       editorJSON
     );
   };
@@ -91,7 +93,8 @@ class SummaryTab extends React.Component {
       .then(Helpers.parseJSON)
       .then((resp) => {
         let { paper } = this.props;
-        let localStorageKey = `editorState-${paper.id}-${paper.summary.id}`;
+        let localStorageKey = `editorState-${paper.id}-${paper.summary &&
+          paper.summary.id}`;
         if (localStorage.getItem(localStorageKey)) {
           localStorage.removeItem(localStorageKey);
         }
@@ -139,7 +142,7 @@ class SummaryTab extends React.Component {
      *******************************************************************************/
     let { paper } = this.props;
     let editorStateItem = localStorage.getItem(
-      `editorState-${paper.id}-${paper.summary.id}`
+      `editorState-${paper.id}-${paper.summary && paper.summary.id}`
     );
 
     if (editorStateItem) {
@@ -287,8 +290,18 @@ class SummaryTab extends React.Component {
                   hideButton={true}
                 />
                 <div className={css(styles.buttonRow)}>
-                  <div className={css(styles.cancelButton)}>Cancel</div>
-                  <div className={css(styles.submitButton)}>Submit</div>
+                  <Ripples
+                    className={css(styles.cancelButton)}
+                    onClick={this.cancel}
+                  >
+                    Cancel
+                  </Ripples>
+                  <Ripples
+                    className={css(styles.submitButton)}
+                    onClick={this.submitEdit}
+                  >
+                    Submit
+                  </Ripples>
                 </div>
               </div>
             ) : (
@@ -339,7 +352,7 @@ var styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
     padding: "10px 0px 15px",
-    marginLeft: 30,
+    // marginLeft: 30,
     // position: 'sticky',
     // top: 80,
     backgroundColor: "#FFF",
