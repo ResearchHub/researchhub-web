@@ -10,7 +10,7 @@ const icons = {
   burgerMenu: <i className="fal fa-bars"></i>,
   home: <i className="fad fa-home"></i>,
   help: <i className="fad fa-question-circle"></i>,
-  hub: <i className="fad fa-chart-network"></i>,
+  hub: <i className="fas fa-chart-network"></i>,
   "info-circle": <i className="fad fa-info-circle"></i>,
   addPaper: <i className="fad fa-file-upload"></i>,
   signOut: <i className="fad fa-sign-out"></i>,
@@ -23,6 +23,7 @@ const icons = {
   badge: <i className="fas fa-certificate" />,
   minusCircle: <i className="fad fa-minus-circle" />,
   ellipsisH: <i className="far fa-ellipsis-h" />,
+  date: <i className="far fa-calendar-day" />,
 };
 
 export const voteWidgetIcons = {
