@@ -177,10 +177,16 @@ class NewDND extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        this.setState({
-          searchResults: [...resp.results],
-          searching: false,
-        });
+        this.setState(
+          {
+            searchResults: [...resp.results],
+            searching: false,
+          },
+          () => {
+            this.props.onSearch &&
+              this.props.onSearch(this.state.searchResults.length);
+          }
+        );
       });
   };
 
@@ -481,7 +487,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     borderRadius: 3,
-    border: `1px solid #B3B3B3`,
   },
   dropzone: {
     display: "flex",
@@ -543,8 +548,14 @@ const styles = StyleSheet.create({
     paddingRight: 35,
     fontSize: 14,
     "::placeholder": {
-      color: colors.BLUE(),
-      opacity: 0.9,
+      transition: "all ease-in-out 0.2s",
+      opacity: 1,
+    },
+    ":focus": {
+      "::placeholder": {
+        transition: "all ease-in-out 0.2s",
+        opacity: 0,
+      },
     },
     "@media only screen and (max-width: 665px)": {
       fontSize: 12,
