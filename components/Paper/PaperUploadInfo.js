@@ -103,6 +103,8 @@ class PaperUploadInfo extends React.Component {
     let { messageActions, paperId, paperTitle } = this.props;
     this.props.authActions.getUser();
     this.getHubs();
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0;
     if (paperId) {
       // this determines whether the user is coming from the upload modal or the summary of the paper
       messageActions.showMessage({ load: true, show: true });
@@ -115,12 +117,16 @@ class PaperUploadInfo extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.paperTitle !== this.props.paperTitle) {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0;
       this.prefillPaperInfo();
     }
     if (
       Object.keys(prevProps.paper.uploadedPaper).length < 1 &&
       Object.keys(this.props.paper.uploadedPaper).length > 0
     ) {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0;
       this.prefillPaperInfo();
     }
   }
