@@ -5,6 +5,7 @@ import Progress from "react-progressbar";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Value } from "slate";
+import { withAlert } from "react-alert";
 
 // Component
 import CheckBox from "../Form/CheckBox";
@@ -16,6 +17,10 @@ import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import TextEditor from "~/components/TextEditor";
 import Message from "../Loader/Message";
+import PaperMetaData from "../SearchSuggestion/PaperMetaData";
+
+//Testing
+import NewDND from "../Form/NewDND";
 
 // Modal
 import AddAuthorModal from "../modal/AddAuthorModal";
@@ -60,21 +65,22 @@ class PaperUploadInfo extends React.Component {
         },
         hubs: [],
       },
-      discussion: {
-        title: "",
-        question: {},
-      },
+      // discussion: {
+      //   title: "",
+      //   question: {},
+      // },
       error: {
         year: false,
         month: false,
         hubs: false,
         dnd: false,
         author: false,
+        tagline: false,
       },
-      summary: {},
-      summaryId: null,
+      // summary: {},
+      // summaryId: null,
       showAuthorList: false,
-      progress: 33.33,
+      progress: 0,
       activeStep: 1,
       searchAuthor: "",
       suggestedAuthors: [], // TODO: Rename this to inididcate authors from search result
@@ -84,6 +90,7 @@ class PaperUploadInfo extends React.Component {
       suggestedHubs: [],
       editMode: false,
       edited: false,
+      suggestedPapers: false,
     };
 
     this.state = {
@@ -118,15 +125,33 @@ class PaperUploadInfo extends React.Component {
     }
   }
 
+  componentWillUnMount() {
+    this.setState({ ...initialState });
+  }
+
+  /**
+   * FORMATTING FORM
+   */
+
   prefillPaperInfo = () => {
     let { uploadedPaper } = this.props.paper;
     let form = { ...this.state.form };
     let { DOI, url, URL, title, abstract, issued } = uploadedPaper;
 
-    form.title = this.props.paperTitle ? this.props.paperTitle : title && title;
-    form.tagline = abstract && abstract.slice(0, 255);
-    form.doi = DOI && DOI;
-    form.url = url && url;
+    if (title || this.props.paperTitle) {
+      form.title = this.props.paperTitle
+        ? this.props.paperTitle
+        : title && title;
+    }
+    if (abstract) {
+      form.tagline = abstract && abstract.slice(0, 255);
+    }
+    if (DOI) {
+      form.doi = DOI && DOI;
+    }
+    if (url) {
+      form.url = url && url;
+    }
     if (issued) {
       let date = issued["date-parts"][0];
       form.published.year = this.handleFormYear(date);
@@ -135,6 +160,7 @@ class PaperUploadInfo extends React.Component {
     }
     this.setState({ form: form }, () => {
       this.props.messageActions.showMessage({ show: false });
+      this.checkFormProgress();
     });
   };
 
@@ -215,9 +241,18 @@ class PaperUploadInfo extends React.Component {
       });
   };
 
+  formatPublishDate = (published) => {
+    return `${published.year.value}-${published.month.value}-01`;
+  };
+
+  /**
+   * INPUT HANDLERS
+   */
+
   handleFormYear = (date) => {
     return date[0];
   };
+
   handleFormMonth = (date) => {
     if (date.length > 1) {
       return date[1];
@@ -225,6 +260,7 @@ class PaperUploadInfo extends React.Component {
       return "01";
     }
   };
+
   handleFormDay = (date) => {
     if (date.length > 2) {
       return date[2];
@@ -232,10 +268,6 @@ class PaperUploadInfo extends React.Component {
       return "01";
     }
   };
-
-  componentWillUnMount() {
-    this.setState({ ...initialState });
-  }
 
   handleAuthorSelect = (value) => {
     let userAuthorId = this.props.auth.user.author_profile.id;
@@ -297,7 +329,9 @@ class PaperUploadInfo extends React.Component {
       form[keys[0]][keys[1]] = value;
       keys[0] === "published" ? (error[keys[1]] = false) : null; // removes red border on select fields
     }
-    this.setState({ form, error, edited: true });
+    this.setState({ form, error, edited: true }, () => {
+      this.checkFormProgress();
+    });
   };
 
   handleSelfAuthorToggle = (id, value) => {
@@ -332,18 +366,6 @@ class PaperUploadInfo extends React.Component {
     }
   };
 
-  handleDiscussionInputChange = (id, value) => {
-    let discussion = { ...this.state.discussion };
-    discussion[id] = value;
-    this.setState({ discussion });
-  };
-
-  handleDiscussionTextEditor = (editorState) => {
-    let discussion = { ...this.state.discussion };
-    discussion.question = editorState;
-    this.setState({ discussion });
-  };
-
   handleHubSelection = (id, value) => {
     let form = JSON.parse(JSON.stringify(this.state.form));
     let error = { ...this.state.error };
@@ -357,8 +379,87 @@ class PaperUploadInfo extends React.Component {
     if (error.hubs) {
       error.hubs = form.hubs.length > 0 ? false : true;
     }
-    this.setState({ form, error, edited: true });
+    this.setState({ form, error, edited: true }, () => {
+      this.checkFormProgress();
+    });
   };
+
+  /**
+   * PAPER PDF HANDLER
+   */
+
+  uploadPaper = (acceptedFiles, metaData) => {
+    let { paperActions } = this.props;
+    let error = { ...this.state.error };
+    let uploadedFile = acceptedFiles[0];
+    this.setState({ uploadingPaper: true });
+
+    paperActions.uploadPaperToState(uploadedFile, metaData);
+    error.dnd = false;
+    this.setState(
+      {
+        uploadingPaper: false,
+        error,
+        edited: true,
+      },
+      () => {
+        this.checkFormProgress();
+      }
+    );
+  };
+
+  uploadUrl = (urlData) => {
+    let { paperActions } = this.props;
+    let error = { ...this.state.error };
+    this.setState({ uploadingPaper: true }, () => {
+      let metaData = { ...urlData.csl_item };
+      metaData.name = metaData.title;
+      paperActions.uploadPaperToState(metaData);
+      error.dnd = false;
+      this.setState(
+        {
+          uploadingPaper: false,
+          error,
+          edited: true,
+        },
+        () => {
+          this.checkFormProgress();
+        }
+      );
+    });
+  };
+
+  removePaper = () => {
+    let { paperActions, modalActions } = this.props;
+    paperActions.removePaperFromState();
+    this.setState({ edited: true }, () => {
+      this.checkFormProgress();
+    });
+  };
+
+  checkPaperSuggestions = (length) => {
+    if (length > 0) {
+      this.setState({ suggestedPapers: true });
+    } else {
+      this.state.suggestedPapers && this.setState({ suggestedPapers: false });
+    }
+  };
+
+  // handleDiscussionInputChange = (id, value) => {
+  //   let discussion = { ...this.state.discussion };
+  //   discussion[id] = value;
+  //   this.setState({ discussion });
+  // };
+
+  // handleDiscussionTextEditor = (editorState) => {
+  //   let discussion = { ...this.state.discussion };
+  //   discussion.question = editorState;
+  //   this.setState({ discussion });
+  // };
+
+  /**
+   * COMPONENT API
+   */
 
   searchAuthors = (value) => {
     clearTimeout(this.searchAuthorsTimeout);
@@ -394,37 +495,22 @@ class PaperUploadInfo extends React.Component {
     }, 400);
   };
 
-  uploadPaper = (acceptedFiles) => {
-    let { paperActions } = this.props;
-    let error = { ...this.state.error };
-    let uploadedFile = acceptedFiles[0];
-    this.setState({ uploadingPaper: true });
-
-    setTimeout(() => {
-      paperActions.uploadPaperToState(uploadedFile);
-      error.dnd = false;
-      this.setState({
-        uploadingPaper: false,
-        error,
-        edited: true,
+  getHubs = () => {
+    fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        let hubs = resp.results.map((hub, index) => {
+          return {
+            ...hub,
+            value: hub.id,
+            label: hub.name.charAt(0).toUpperCase() + hub.name.slice(1),
+          };
+        });
+        this.setState({
+          suggestedHubs: hubs,
+        });
       });
-    }, 400);
-  };
-
-  uploadUrl = (urlData) => {
-    let { paperActions } = this.props;
-    let error = { ...this.state.error };
-    this.setState({ uploadingPaper: true }, () => {
-      let metaData = { ...urlData.csl_item };
-      metaData.name = metaData.title;
-      paperActions.uploadPaperToState(metaData);
-      error.dnd = false;
-      this.setState({
-        uploadingPaper: false,
-        error,
-        edited: true,
-      });
-    });
   };
 
   openAddAuthorModal = async () => {
@@ -432,13 +518,9 @@ class PaperUploadInfo extends React.Component {
     await modalActions.openAddAuthorModal(true);
   };
 
-  removePaper = () => {
-    let { paperActions, modalActions } = this.props;
-    paperActions.removePaperFromState();
-    this.setState({ edited: true }, () => {
-      modalActions.openUploadPaperModal(true);
-    });
-  };
+  /**
+   * RENDERING FUNCTION
+   */
 
   renderTitle = () => {
     let { activeStep, editMode } = this.state;
@@ -484,24 +566,6 @@ class PaperUploadInfo extends React.Component {
         let selectedAuthors = [...this.state.selectedAuthors, resp];
         this.setState({
           selectedAuthors,
-        });
-      });
-  };
-
-  getHubs = () => {
-    fetch(API.HUB({}), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        let hubs = resp.results.map((hub, index) => {
-          return {
-            ...hub,
-            value: hub.id,
-            label: hub.name.charAt(0).toUpperCase() + hub.name.slice(1),
-          };
-        });
-        this.setState({
-          suggestedHubs: hubs,
         });
       });
   };
@@ -571,29 +635,17 @@ class PaperUploadInfo extends React.Component {
                     Paper PDF
                     <span className={css(styles.asterick)}>*</span>
                   </div>
-                  <DragNDrop
+                  <NewDND
                     handleDrop={this.uploadPaper}
-                    handleUrl={this.uploadUrl}
-                    loading={uploadingPaper}
-                    uploadFinish={
-                      Object.keys(this.props.paper.uploadedPaper).length > 0
-                    }
-                    uploadedPaper={this.props.paper.uploadedPaper}
-                    reset={this.removePaper}
-                    error={error.dnd}
-                    url={
-                      Object.keys(this.props.paper.uploadedPaper).length > 0 &&
-                      !this.props.paper.uploadedPaper.size
-                    }
-                    hideSuggestions={true}
-                    openUploadPaperModal={() =>
-                      this.props.modalActions.openUploadPaperModal(true)
-                    }
+                    onDrop={null}
+                    onValidUrl={this.checkFormProgress}
+                    onRemove={this.checkFormProgress}
+                    onSearch={this.checkPaperSuggestions}
                   />
                 </div>
               )}
             </div>
-            {this.renderHeader("Main Information")}
+            {/* {this.renderHeader("Main Information")} */}
             <div className={css(styles.section, styles.padding)}>
               <FormInput
                 label={"Paper Title"}
@@ -698,12 +750,7 @@ class PaperUploadInfo extends React.Component {
                           />
                         </div>
                       </span>
-                      <span
-                        className={css(
-                          styles.doi
-                          // !mobile && this.state.form.type.journal && styles.reveal,
-                        )}
-                      >
+                      <span className={css(styles.doi)}>
                         <FormInput
                           label={"DOI"}
                           placeholder="Enter DOI of paper"
@@ -735,12 +782,7 @@ class PaperUploadInfo extends React.Component {
                 onChange={this.handleHubSelection}
                 error={error.hubs}
               />
-              <span
-                className={css(
-                  styles.mobileDoi
-                  // mobile && this.state.form.type.journal && styles.reveal
-                )}
-              >
+              <span className={css(styles.mobileDoi)}>
                 <FormInput
                   label={"DOI"}
                   placeholder="Enter DOI of paper"
@@ -751,17 +793,12 @@ class PaperUploadInfo extends React.Component {
                   onChange={this.handleInputChange}
                 />
               </span>
-            </div>
-            <div className={css(styles.taglineHeader)}>
-              {this.renderHeader("Overview")}
-            </div>
-            <div className={css(styles.section)}>
               <span className={css(styles.tagline)}>
                 <FormTextArea
                   label={"Tag Line"}
                   placeholder="Enter a sentence or two describing the paper"
                   required={true}
-                  containerStyle={styles.container}
+                  containerStyle={styles.taglineContainer}
                   labelStyle={styles.labelStyle}
                   value={form.tagline}
                   id={"tagline"}
@@ -772,6 +809,7 @@ class PaperUploadInfo extends React.Component {
                 </div>
               </span>
             </div>
+            <div className={css(styles.section)}></div>
           </span>
         );
       case 2:
@@ -908,19 +946,17 @@ class PaperUploadInfo extends React.Component {
     }
   };
 
-  submitForm = async () => {
+  handleSubmitLogic = () => {
     if (this.validateSelectors()) {
-      if (!this.state.edited) {
-        return this.state.editMode ? this.navigateToSummary() : this.nextStep();
-      }
-      this.props.messageActions.showMessage({ load: true, show: true });
-      if (
-        this.props.paper.postedPaper &&
-        Object.keys(this.props.paper.postedPaper).length > 0
-      ) {
-        await this.postPaper("PATCH");
-      } else {
-        await this.postPaper();
+      let { suggestedPapers } = this.state;
+      if (suggestedPapers) {
+        this.props.alert.show({
+          text: "Are you sure you want to upload this paper?",
+          buttonText: "Yes",
+          onClick: () => {
+            return this.submitForm();
+          },
+        });
       }
     } else {
       this.props.messageActions.setMessage("Required fields must be filled.");
@@ -929,6 +965,21 @@ class PaperUploadInfo extends React.Component {
         show: true,
         error: true,
       });
+    }
+  };
+
+  submitForm = async () => {
+    if (!this.state.edited) {
+      return this.state.editMode ? this.navigateToSummary() : this.nextStep();
+    }
+    this.props.messageActions.showMessage({ load: true, show: true });
+    if (
+      this.props.paper.postedPaper &&
+      Object.keys(this.props.paper.postedPaper).length > 0
+    ) {
+      await this.postPaper("PATCH");
+    } else {
+      await this.postPaper();
     }
   };
 
@@ -1062,143 +1113,136 @@ class PaperUploadInfo extends React.Component {
     }
   };
 
-  formatPublishDate = (published) => {
-    return `${published.year.value}-${published.month.value}-01`;
-  };
-
-  nextStep = () => {
-    let { activeStep } = this.state;
-    if (activeStep < 3) {
-      this.setState(
-        {
-          progress: this.state.progress + 33.33,
-          activeStep: activeStep + 1,
-          edited: false,
-        },
-        () => {
-          setTimeout(
-            () => this.props.messageActions.showMessage({ show: false }),
-            400
-          );
-        }
-      );
-      window.scrollTo(0, this.titleRef.current.offsetTop);
+  checkFormProgress = () => {
+    var count = 0;
+    let { title, tagline, hubs } = this.state.form;
+    let uploadedPaper = this.props.paper.uploadedPaper;
+    if (title && title.trim() !== "") {
+      count++;
     }
-  };
-
-  prevStep = () => {
-    let { activeStep } = this.state;
-    this.setState(
-      {
-        progress: this.state.progress - 33.33,
-        activeStep: activeStep - 1,
-      },
-      () => {
-        window.scrollTo(0, this.titleRef.current.offsetTop);
-      }
-    );
-  };
-
-  handleSummaryChange = (summary) => {
-    this.setState({ summary });
-  };
-
-  saveSummary = async () => {
-    this.props.messageActions.showMessage({ load: true, show: true });
-
-    const param = {
-      summary: this.state.summary.toJSON({ preserveKeys: true }),
-      paper: this.props.paperId
-        ? this.props.paperId
-        : this.props.paper.postedPaper.id,
-    };
-
-    let config = API.POST_CONFIG(param);
-    let url = API.FIRST_SUMMARY();
-
-    if (this.state.summaryId) {
-      // if there is a summaryid, then a paper exists
-      const query = {};
-      query.summaryId = this.state.summaryId;
-      config = API.PATCH_CONFIG(param);
-      url = API.SUMMARY(query);
+    if (tagline && tagline.trim() !== "") {
+      count++;
+    }
+    if (hubs && hubs.length > 0) {
+      count++;
+    }
+    if (Object.keys(uploadedPaper).length > 0) {
+      count++;
     }
 
-    return await fetch(url, config)
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let response = { ...res };
-        setTimeout(() => {
-          this.props.messageActions.showMessage({ show: false });
-          let summaryJSON = response.summary;
-          let editorState = Value.fromJSON(summaryJSON);
-          this.setState({
-            summaryId: response.id,
-            summary: editorState,
-          });
-          this.nextStep();
-        }, 400);
-      })
-      .catch((err) => {
-        this.props.messageActions.showMessage({ show: false });
-        this.props.messageActions.setMessage("Unable to submit summary");
-        this.props.messageActions.showMessage({ show: true, error: true });
-        console.error(err);
-      });
+    this.setState({
+      progress: count * 25,
+    });
   };
 
-  saveDiscussion = async () => {
-    // if there's nothing to save, then don't save
-    this.props.messageActions.showMessage({ show: true, load: true });
-    if (
-      this.state.discussion.title === "" ||
-      Object.keys(this.state.discussion.question).length < 1
-    ) {
-      this.navigateToSummary();
-    }
+  // handleSummaryChange = (summary) => {
+  //   this.setState({ summary });
+  // };
 
-    let paperId = this.props.paperId
-      ? this.props.paperId
-      : this.props.paper.postedPaper.id;
+  // saveSummary = async () => {
+  //   this.props.messageActions.showMessage({ load: true, show: true });
 
-    let param = {
-      title: this.state.discussion.title,
-      text: this.state.discussion.question.toJSON(),
-      paper: paperId,
-    };
+  //   const param = {
+  //     summary: this.state.summary.toJSON({ preserveKeys: true }),
+  //     paper: this.props.paperId
+  //       ? this.props.paperId
+  //       : this.props.paper.postedPaper.id,
+  //   };
 
-    let config = await API.POST_CONFIG(param);
+  //   let config = API.POST_CONFIG(param);
+  //   let url = API.FIRST_SUMMARY();
 
-    return fetch(API.DISCUSSION(paperId), config)
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-        this.props.authActions.checkUserFirstTime(firstTime);
-        this.props.authActions.getUser();
-        Router.push(
-          "/paper/[paperId]/[tabName]",
-          `/paper/${this.props.paper.postedPaper.id}/summary`
-        );
-      });
-  };
+  //   if (this.state.summaryId) {
+  //     // if there is a summaryid, then a paper exists
+  //     const query = {};
+  //     query.summaryId = this.state.summaryId;
+  //     config = API.PATCH_CONFIG(param);
+  //     url = API.SUMMARY(query);
+  //   }
+
+  //   return await fetch(url, config)
+  //     .then(Helpers.checkStatus)
+  //     .then(Helpers.parseJSON)
+  //     .then((res) => {
+  //       let response = { ...res };
+  //       setTimeout(() => {
+  //         this.props.messageActions.showMessage({ show: false });
+  //         let summaryJSON = response.summary;
+  //         let editorState = Value.fromJSON(summaryJSON);
+  //         this.setState({
+  //           summaryId: response.id,
+  //           summary: editorState,
+  //         });
+  //         this.nextStep();
+  //       }, 400);
+  //     })
+  //     .catch((err) => {
+  //       this.props.messageActions.showMessage({ show: false });
+  //       this.props.messageActions.setMessage("Unable to submit summary");
+  //       this.props.messageActions.showMessage({ show: true, error: true });
+  //       console.error(err);
+  //     });
+  // };
+
+  // saveDiscussion = async () => {
+  //   // if there's nothing to save, then don't save
+  //   this.props.messageActions.showMessage({ show: true, load: true });
+  //   if (
+  //     this.state.discussion.title === "" ||
+  //     Object.keys(this.state.discussion.question).length < 1
+  //   ) {
+  //     this.navigateToSummary();
+  //   }
+
+  //   let paperId = this.props.paperId
+  //     ? this.props.paperId
+  //     : this.props.paper.postedPaper.id;
+
+  //   let param = {
+  //     title: this.state.discussion.title,
+  //     text: this.state.discussion.question.toJSON(),
+  //     paper: paperId,
+  //   };
+
+  //   let config = await API.POST_CONFIG(param);
+
+  //   return fetch(API.DISCUSSION(paperId), config)
+  //     .then(Helpers.checkStatus)
+  //     .then(Helpers.parseJSON)
+  //     .then((resp) => {
+  //       let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
+  //       this.props.authActions.checkUserFirstTime(firstTime);
+  //       this.props.authActions.getUser();
+  //       Router.push(
+  //         "/paper/[paperId]/[tabName]",
+  //         `/paper/${this.props.paper.postedPaper.id}/summary`
+  //       );
+  //     });
+  // };
 
   navigateToSummary = () => {
-    // this.props.messageActions.showMessage({ show: true, load: true });
+    this.props.messageActions.showMessage({ show: true, load: true });
+    this.setState({ ...this.initialState });
     let paperId = this.state.editMode
       ? this.props.paperId
       : this.props.paper.postedPaper.id;
 
     this.props.paperActions.clearPostedPaper();
+    this.props.paperActions.removePaperFromState();
     Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
   };
 
   cancel = () => {
     if (this.state.editMode) {
+      this.setState({ ...this.initialState });
+      this.props.paperActions.removePaperFromState();
+
       let { paperId } = this.props;
       Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
     } else {
+      this.setState({ ...this.initialState });
+      this.props.paperActions.removePaperFromState();
+
       Router.back();
     }
   };
@@ -1213,7 +1257,7 @@ class PaperUploadInfo extends React.Component {
           isOpen={modals.openAddAuthorModal}
           addNewUser={this.addNewUser}
         />
-        {this.renderTitle()}
+        {/* {this.renderTitle()} */}
         <div className={css(styles.mobileProgressBar)}>
           <Progress completed={progress} />
         </div>
@@ -1221,8 +1265,11 @@ class PaperUploadInfo extends React.Component {
           className={css(styles.form)}
           onSubmit={(e) => {
             e.preventDefault();
-            activeStep === 1 && this.submitForm();
+            if (activeStep === 1) {
+              this.handleSubmitLogic();
+            }
           }}
+          autoComplete={"off"}
         >
           <div className={css(styles.pageContent)}>
             <div className={css(styles.progressBar)}>
@@ -1252,7 +1299,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 500,
-    fontSize: 33,
+    fontSize: 28,
     color: "#232038",
     "@media only screen and (max-width: 665px)": {
       fontSize: 25,
@@ -1273,8 +1320,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     textAlign: "center",
-    marginTop: 80,
-    marginBottom: 60,
+    marginTop: 20,
+    marginBottom: 20,
   },
   form: {
     display: "flex",
@@ -1284,13 +1331,12 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   pageContent: {
-    width: "70%",
-    minWidth: 820,
     minHeight: 500,
     position: "relative",
     backgroundColor: "#FFF",
     boxShadow: "0 1px 8px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);",
-    padding: 60,
+    padding: "30px 60px",
+    marginTop: 10,
     borderTop: "4px solid #dedee5",
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
@@ -1359,6 +1405,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 600,
     alignItems: "center",
+    position: "relative",
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },
@@ -1382,8 +1429,8 @@ const styles = StyleSheet.create({
   },
   paper: {
     width: 601,
-    marginTop: 40,
-    marginBottom: 40,
+    marginTop: 15,
+    // marginBottom: 40,
     "@media only screen and (max-width: 665px)": {
       width: 380,
     },
@@ -1404,12 +1451,28 @@ const styles = StyleSheet.create({
     color: colors.BLUE(1),
   },
   padding: {
-    paddingTop: 40,
+    margin: 0,
     "@media only screen and (max-width: 665px)": {
       paddingTop: 20,
     },
   },
   container: {
+    marginBottom: 10,
+    width: 600,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
+  taglineContainer: {
+    padding: 0,
+    margin: 0,
+    marginBottom: 20,
     width: 600,
     "@media only screen and (max-width: 665px)": {
       width: 380,
@@ -1472,27 +1535,29 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   buttonRow: {
-    width: "70%",
-    minWidth: 820,
+    width: "100%",
+    // minWidth: 820,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
-    padding: 60,
+    position: "sticky",
+    backgroundColor: "#FCFCFC",
+    bottom: 0,
+    marginTop: 30,
+    paddingTop: 20,
+    paddingBottom: 20,
+    marginBottom: 10,
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
-      padding: "40px 0 50px 0",
+      // padding: "40px 0 50px 0",
     },
     "@media only screen and (max-width: 665px)": {
-      padding: "30px 0 50px 0",
+      // padding: "30px 0 50px 0",
       width: "90%",
     },
   },
   buttons: {
-    marginTop: 20,
     justifyContent: "center",
-    // width: "100%",
-    marginBottom: 80,
   },
   button: {
     width: 180,
@@ -1640,13 +1705,14 @@ const styles = StyleSheet.create({
   tagline: {
     position: "relative",
     paddingTop: 20,
-    marginBottom: 40,
+    // marginBottom: 40,
   },
   taglineCounter: {
     position: "absolute",
     bottom: 0,
     right: 0,
     fontSize: 12,
+    color: "rgb(122, 120, 135)",
   },
   sidenote: {
     fontSize: 14,
@@ -1654,6 +1720,8 @@ const styles = StyleSheet.create({
     color: "#7a7887",
     userSelect: "none",
     cursor: "default",
+    display: "flex",
+    alignItems: "flex-end",
     "@media only screen and (max-width: 665px)": {
       fontSize: 13,
     },
@@ -1663,6 +1731,18 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 10,
     },
+  },
+  type: {
+    color: colors.BLUE(),
+    cursor: "pointer",
+    backgroundColor: "#f7f7fb",
+    padding: "3px 10px",
+    border: "1px solid rgb(232, 232, 242)",
+    borderBottomColor: "#f7f7fb",
+    position: "absolute",
+    right: -1,
+    bottom: -2,
+    zIndex: 2,
   },
 });
 
@@ -1725,4 +1805,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PaperUploadInfo);
+)(withAlert()(PaperUploadInfo));
