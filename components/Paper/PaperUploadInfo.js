@@ -957,6 +957,8 @@ class PaperUploadInfo extends React.Component {
             return this.submitForm();
           },
         });
+      } else {
+        return this.submitForm();
       }
     } else {
       this.props.messageActions.setMessage("Required fields must be filled.");
