@@ -633,7 +633,7 @@ class PaperUploadInfo extends React.Component {
         return (
           <span>
             {!editMode &&
-              this.renderHeader("Academic Paper", "Up to 15MB (.pdf)", false)}
+              this.renderHeader("Upload Paper", "Up to 15MB (.pdf)", false)}
             <div className={css(styles.section)}>
               {!editMode && (
                 <div className={css(styles.paper)}>
