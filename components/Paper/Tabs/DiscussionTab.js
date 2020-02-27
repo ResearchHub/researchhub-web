@@ -1,21 +1,17 @@
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
-import Ripples from "react-ripples";
 import Plain from "slate-plain-serializer";
 import InfiniteScroll from "react-infinite-scroller";
 
 // Components
-import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import ComponentWrapper from "../../ComponentWrapper";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import AddDiscussionModal from "~/components/modal/AddDiscussionModal";
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
-import FormInput from "~/components/Form/FormInput";
-import Button from "~/components/Form/Button";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";

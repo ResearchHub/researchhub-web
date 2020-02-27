@@ -89,8 +89,6 @@ class DragNDrop extends React.Component {
 
     const reader = new FileReader();
 
-    reader.onabort = () => console.log("file reading was aborted");
-    reader.onerror = () => console.log("file reading has failed");
     reader.onload = () => {
       const binaryStr = reader.result;
       if (isPDF) {

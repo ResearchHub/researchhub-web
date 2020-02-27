@@ -48,14 +48,7 @@ class DiscussionEntry extends React.Component {
   }
 
   componentDidMount = async () => {
-    const {
-      paper,
-      index,
-      fetchComments,
-      discussion,
-      data,
-      newCard,
-    } = this.props;
+    const { data, newCard } = this.props;
     const comments = data.comments ? data.comments : [];
     const selectedVoteType = getNestedValue(this.props, [
       "data",
@@ -314,7 +307,7 @@ class DiscussionEntry extends React.Component {
   };
 
   render() {
-    const { data, hostname, hoverEvents, path, mobileView, index } = this.props;
+    const { data, hostname, path, mobileView } = this.props;
     let commentCount =
       this.state.comments.length > data.commentCount
         ? this.state.comments.length

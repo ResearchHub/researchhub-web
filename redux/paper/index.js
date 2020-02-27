@@ -75,7 +75,6 @@ export const PaperActions = {
           });
         })
         .catch((error) => {
-          console.log(error);
           return dispatch({
             type: types.GET_PAPER,
             payload: {
@@ -157,9 +156,6 @@ export const PaperActions = {
               doneFetching: true,
             },
           });
-        })
-        .catch((error) => {
-          console.log(error);
         });
     };
   },

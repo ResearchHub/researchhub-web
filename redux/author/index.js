@@ -23,9 +23,6 @@ export const AuthorActions = {
               doneFetching: true,
             },
           });
-        })
-        .catch((error) => {
-          console.log(error);
         });
     };
   },
@@ -154,9 +151,6 @@ export const AuthorActions = {
               doneFetching: true,
             },
           });
-        })
-        .catch((error) => {
-          console.log(error);
         });
     };
   },
