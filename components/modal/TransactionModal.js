@@ -101,7 +101,6 @@ class TransactionModal extends React.Component {
         .catch((error) => {
           if (error.code === 4001) {
             // EIP 1193 userRejectedRequest error
-            console.log("Please connect to MetaMask.");
           } else {
             console.error(error);
           }

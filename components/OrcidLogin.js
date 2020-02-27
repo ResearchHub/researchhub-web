@@ -61,9 +61,7 @@ const OrcidLogin = (props) => {
           try {
             checkLoginComplete(loginWindow.document.body);
             clearTimeout(windowTimeout);
-          } catch (e) {
-            console.log(e, "Not on our domain yet");
-          }
+          } catch (e) {}
         }, WATCH_WINDOW_INTERVAL)
       );
     }

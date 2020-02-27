@@ -26,7 +26,6 @@ const GoogleLoginButton = (props) => {
   };
 
   function showLoginFailureMessage(response) {
-    console.log(response);
     props.setMessage("Login failed");
     props.showMessage({ show: true, error: true });
   }

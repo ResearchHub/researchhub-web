@@ -21,8 +21,10 @@ export const TransactionActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let grabbedPages = { ...prevState.grabbedPages };
-          grabbedPages.page;
+          let grabbedPages = {};
+          if (prevState) {
+            grabbedPages = { ...prevState.grabbedPages };
+          }
 
           return dispatch({
             type: TransactionConstants.GET_WITHDRAWALS,
@@ -34,9 +36,6 @@ export const TransactionActions = {
               grabbedPages: grabbedPages,
             },
           });
-        })
-        .catch((error) => {
-          console.log(error);
         });
     };
   },
