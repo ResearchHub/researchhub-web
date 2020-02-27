@@ -70,7 +70,7 @@ const VoteWidget = (props) => {
     if (upvoteDisabled) {
       dispatch(ModalActions.openPermissionNotificationModal(true, "upvote"));
     } else if (upvoteSelected) {
-      console.log("Vote already cast");
+      // TODO: show a user state here?
     } else {
       if (isPaper || type === "discussion") {
         let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
@@ -85,7 +85,7 @@ const VoteWidget = (props) => {
     if (downvoteDisabled) {
       dispatch(ModalActions.openPermissionNotificationModal(true, "downvote"));
     } else if (downvoteSelected) {
-      console.log("Vote already cast");
+      // TODO: show a user state here?
     } else {
       if (isPaper || type === "discussion") {
         let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
@@ -105,8 +105,6 @@ const VoteWidget = (props) => {
           props.styles
         )}
         style={{ fontSize: fontSize, width: width }}
-        // data-tip
-        // data-for="reputationTooltip"
       >
         <PermissionNotificationWrapper
           loginRequired={true}

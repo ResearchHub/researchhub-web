@@ -60,7 +60,6 @@ const PermissionNotificationWrapper = (props) => {
     );
 
     if (!minimumReputation) {
-      console.log(`Can not get minimum reputation for ${permissionKey}.`);
     } else {
       if (
         currentUserHasMinimumReputation(store.getState(), minimumReputation)

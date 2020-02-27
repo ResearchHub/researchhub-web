@@ -178,11 +178,6 @@ export const AuthActions = {
           });
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            console.log(error.response);
-          } else {
-            console.log(error);
-          }
           return dispatch({
             type: AuthConstants.LOGIN_FAILURE,
             isLoggedIn: false,
