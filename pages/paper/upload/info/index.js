@@ -10,10 +10,7 @@ const Index = () => {
   const { uploadPaperTitle } = router.query;
   return (
     <Fragment>
-      <Head
-        title={`Upload Paper - ${uploadPaperTitle}`}
-        description="Upload paper to ResearchHub"
-      />
+      <Head title={`Upload Paper`} description="Upload paper to ResearchHub" />
       <PaperUploadInfo paperTitle={uploadPaperTitle} />
     </Fragment>
   );
