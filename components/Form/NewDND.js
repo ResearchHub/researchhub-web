@@ -184,7 +184,7 @@ class NewDND extends React.Component {
           },
           () => {
             this.props.onSearch &&
-              this.props.onSearch(this.state.searchResults.length);
+              this.props.onSearch(this.state.searchResults);
           }
         );
       });

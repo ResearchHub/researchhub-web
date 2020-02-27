@@ -443,7 +443,8 @@ class PaperUploadInfo extends React.Component {
     });
   };
 
-  checkPaperSuggestions = (length) => {
+  checkPaperSuggestions = (suggestedPapers) => {
+    let length = suggestedPapers.length;
     if (length > 0) {
       this.setState({ suggestedPapers: true });
     } else {
@@ -1060,8 +1061,9 @@ class PaperUploadInfo extends React.Component {
     let { paper, paperActions, messageActions, authActions } = this.props;
     // send form object to the backend
     if (!this.state.editMode) {
-      body.file =
-        !this.props.paper.uploadedPaper.url && this.props.paper.uploadedPaper;
+      body.file = this.props.paper.uploadedPaper.url
+        ? this.props.paper.uploadedPaper.url
+        : this.props.paper.uploadedPaper; // if url, then file is a url. else file is a file object
       let paperId =
         this.props.paper.postedPaper && this.props.paper.postedPaper.id;
       request === "POST"

@@ -706,7 +706,6 @@ const stylesEditor = StyleSheet.create({
     width: "100%",
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
-    marginBottom: 20,
   },
   label: {
     fontFamily: "Roboto",
