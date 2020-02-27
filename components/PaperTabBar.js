@@ -82,7 +82,10 @@ const Count = (props) => {
 const UIStyling = (props) => {
   const { isSelected, label } = props;
   return (
-    <span className={css(styles.ui, isSelected && styles.selectedUi)}>
+    <span
+      id={"count_border"}
+      className={css(styles.ui, isSelected && styles.selectedUi)}
+    >
       {props.children}
     </span>
   );
@@ -126,6 +129,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: paperTabColors.HOVER_FONT,
       cursor: "pointer",
+    },
+    ":hover #count_border": {
+      borderColor: colors.BLACK(),
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 13,
