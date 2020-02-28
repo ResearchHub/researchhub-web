@@ -45,8 +45,8 @@ class CommentEntry extends React.Component {
   componentDidMount() {
     const selectedVoteType = getNestedValue(this.props, [
       "comment",
-      "user_vote",
-      "vote_type",
+      "userVote",
+      "voteType",
     ]);
     // const revealReply =
     //   this.props.comment.replies.length > 0 &&
