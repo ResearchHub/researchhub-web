@@ -395,6 +395,7 @@ class UserSettings extends Component {
     let id = e.target.id;
     let nextActiveState = e.target.checked;
     const startingActiveState = this.state[id];
+
     this.setState({
       [id]: nextActiveState,
     });
@@ -455,7 +456,6 @@ class UserSettings extends Component {
   };
 
   displayError = (err) => {
-    console.error(err);
     this.props.dispatch(
       MessageActions.setMessage("Oops! Something went wrong.")
     );
@@ -469,7 +469,7 @@ class UserSettings extends Component {
       <ComponentWrapper>
         <div className={css(styles.settingsPage)}>
           <div className={css(defaultStyles.title, styles.title)}>
-            User Settings
+            Email Settings
           </div>
           {this.renderPrimaryEmail()}
           {this.renderFrequencySelect()}
