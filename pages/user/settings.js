@@ -23,6 +23,7 @@ import {
   digestSubscriptionPatch,
   emailPreferencePatch,
 } from "~/config/shims";
+import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { HubActions } from "~/redux/hub";
 import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
@@ -74,9 +75,12 @@ class UserSettings extends Component {
     });
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     if (doesNotExist(this.props.hubs)) {
       this.props.dispatch(HubActions.getHubs());
+    }
+    if (doesNotExist(this.props.user.email)) {
+      await this.props.dispatch(AuthActions.getUser());
     }
     fetchEmailPreference().then((preference) => {
       const frequency = this.getInitialFrequencyOption(preference);
@@ -89,9 +93,10 @@ class UserSettings extends Component {
         frequency,
         ...contentSubscriptions,
         isOptedOut,
+        email: this.props.user.email,
       });
     });
-  }
+  };
 
   getInitialFrequencyOption = (emailPreference) => {
     const initial = frequencyOptions.filter((option) => {
@@ -118,6 +123,34 @@ class UserSettings extends Component {
     return emailPreference.isOptedOut;
   };
 
+  saveEmail = () => {
+    this.props.dispatch(MessageActions.showMessage({ show: true, load: true }));
+    const currentEmail = this.props.user.email;
+    const nextEmail = this.state.email;
+    const data = emailPreferencePatch({
+      email: nextEmail,
+    });
+    const updateSubscriptions = false;
+    updateEmailPreference(
+      this.state.emailRecipientId,
+      data,
+      updateSubscriptions
+    )
+      .then(() => {
+        this.props.dispatch(MessageActions.showMessage({ show: false }));
+        this.props.dispatch(MessageActions.setMessage("Saved!"));
+        this.props.dispatch(MessageActions.showMessage({ show: true }));
+        this.setState({});
+        this.toggleEmailInput();
+      })
+      .catch((err) => {
+        this.displayError(err);
+        this.setState({
+          email: currentEmail,
+        });
+      });
+  };
+
   toggleEmailInput = () => {
     this.setState({ transition: true }, () => {
       setTimeout(() => {
@@ -139,8 +172,7 @@ class UserSettings extends Component {
   };
 
   renderPrimaryEmail = () => {
-    let { email } = this.props.user;
-    let { activeEmailInput, transition } = this.state;
+    let { email, activeEmailInput, transition } = this.state;
 
     return (
       <div className={css(styles.container)}>
@@ -166,18 +198,31 @@ class UserSettings extends Component {
           )}
         >
           {activeEmailInput ? (
-            <div className={css(styles.emailInputContainer)}>
+            <form
+              className={css(styles.emailInputContainer)}
+              onSubmit={(e) => {
+                e.preventDefault();
+                this.saveEmail();
+              }}
+            >
               <FormInput
                 getRef={this.emailInputRef}
                 placeholder={"Enter an email"}
                 containerStyle={styles.emailInputStyles}
+                inputStyle={styles.emailInput}
                 value={this.state.email}
                 onChange={this.handleEmailChange}
               />
-              <Ripples className={css(styles.saveIcon)}>
+              <Ripples
+                className={css(styles.saveIcon)}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  this.saveEmail();
+                }}
+              >
                 <i className="fad fa-paper-plane" />
               </Ripples>
-            </div>
+            </form>
           ) : (
             <div className={css(styles.paddedText)}>{email}</div>
           )}
@@ -332,12 +377,10 @@ class UserSettings extends Component {
           <Toggle
             key={option.id}
             defaultChecked={this.state[option.id]}
-            value={this.state[option.id]}
+            checked={this.state[option.id]}
             disabled={this.state.isOptedOut}
-            // label={option.label}
             id={option.id}
             onChange={this.handleContentSubscribe}
-            // labelStyle={styles.checkboxLabel}
           />
         </div>
       );
@@ -345,6 +388,7 @@ class UserSettings extends Component {
   };
 
   handleContentSubscribe = (e) => {
+    e && e.preventDefault();
     let id = e.target.id;
     let nextActiveState = e.target.checked;
     const startingActiveState = this.state[id];
@@ -374,12 +418,10 @@ class UserSettings extends Component {
         </div>
         <Toggle
           key={"optOut"}
-          // isSquare={true}
-          active={this.state.isOptedOut}
-          // label={"Opt out of all email updates"}
+          defaultChecked={this.state.isOptedOut}
+          checked={this.state.isOptedOut}
           id={"optOut"}
           onChange={this.handleOptOut}
-          // labelStyle={checkBoxStyles.labelStyle}
         />
       </div>
     );
@@ -495,8 +537,8 @@ const styles = StyleSheet.create({
     padding: "15px 10px",
     borderTop: "1px solid #EDEDED",
     transition: "all ease-in-out 0.2s",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
+    ":hover #hubListTitle": {
+      color: colors.BLACK(),
     },
   },
   formSelectContainer: {
@@ -562,11 +604,17 @@ const styles = StyleSheet.create({
   emailInputContainer: {
     display: "flex",
     alignItems: "center",
+    marginTop: 5,
   },
   emailInputStyles: {
     padding: 0,
     margin: 0,
     minHeight: "unset",
+    // width: '100%'
+    width: "calc(100% - 32px)",
+  },
+  emailInput: {
+    width: "100%",
   },
   hubsList: {
     width: "100%",
