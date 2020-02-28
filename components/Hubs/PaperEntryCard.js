@@ -45,6 +45,7 @@ const PaperEntryCard = ({
     tagline,
     user_vote,
     score,
+    paper_title,
   } = paper || null;
   let selected = null;
   let vote_type = 0;
@@ -122,6 +123,11 @@ const PaperEntryCard = ({
         >
           <div className={css(mobileStyles.title, styles.text)}>
             {title && title}
+          </div>
+          <div
+            className={css(styles.paperTitle, styles.text, styles.publishDate)}
+          >
+            From Paper: {paper_title && paper_title}
           </div>
           <span
             className={css(mobileStyles.voting)}
@@ -237,6 +243,17 @@ const PaperEntryCard = ({
             <div className={css(styles.title, styles.text)}>
               {title && title}
             </div>
+            {paper_title !== title && paper_title && (
+              <div
+                className={css(
+                  styles.paperTitle,
+                  styles.text,
+                  styles.publishDate
+                )}
+              >
+                From Paper: {paper_title && paper_title}
+              </div>
+            )}
             <div
               className={css(
                 styles.publishDate,
@@ -400,6 +417,10 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
+  },
+  paperTitle: {
+    color: "rgb(145, 143, 155)",
+    marginBottom: 16,
   },
   column: {
     display: "flex",
