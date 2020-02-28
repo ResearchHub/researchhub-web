@@ -57,10 +57,10 @@ const VoteWidget = (props) => {
   );
 
   useEffect(() => {
-    if (selected === UPVOTE) {
+    if (selected === UPVOTE || selected === UPVOTE_ENUM) {
       setUpvoteSelected(true);
       setDownvoteSelected(false);
-    } else if (selected === DOWNVOTE) {
+    } else if (selected === DOWNVOTE || selected === DOWNVOTE_ENUM) {
       setDownvoteSelected(true);
       setUpvoteSelected(false);
     }

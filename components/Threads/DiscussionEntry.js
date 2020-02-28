@@ -17,7 +17,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { getNestedValue } from "~/config/utils";
+import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
@@ -50,11 +50,7 @@ class DiscussionEntry extends React.Component {
   componentDidMount = async () => {
     const { data, newCard } = this.props;
     const comments = data.comments ? data.comments : [];
-    const selectedVoteType = getNestedValue(this.props, [
-      "data",
-      "userVote",
-      "voteType",
-    ]);
+    const selectedVoteType = getNestedValue(data, ["userVote", "voteType"]);
     this.setState(
       {
         comments,
@@ -75,7 +71,49 @@ class DiscussionEntry extends React.Component {
     );
   };
 
-  componentDidUpdate = async (prevProps) => {};
+  componentDidUpdate = async (prevProps, prevState) => {
+    this.handleVoteTypeUpdate(prevProps);
+  };
+
+  handleVoteTypeUpdate = (prevProps) => {
+    const stateToSet = {};
+
+    const nextSelectedVoteType = this.getNextSelectedVoteType(prevProps);
+    const nextCommentVoteType = this.getNextCommentVoteType(prevProps);
+    const nextComments = this.getNextComments();
+
+    if (nextSelectedVoteType !== undefined) {
+      // If this component's vote has changed, downstream votes *may* have
+      // changed too, so we update the state of the downstream children.
+      stateToSet["selectedVoteType"] = nextSelectedVoteType;
+      stateToSet["comments"] = nextComments;
+    }
+    if (nextCommentVoteType !== undefined) {
+      // In this case we *know* the downstream votes have changed.
+      stateToSet["comments"] = nextComments;
+    }
+
+    // Update state only if we detect a difference
+    if (Object.keys(stateToSet).length > 0) {
+      this.setState({
+        ...stateToSet,
+      });
+    }
+  };
+
+  getNextSelectedVoteType = (prevProps) => {
+    return checkVoteTypeChanged(prevProps.data, this.props.data);
+  };
+
+  getNextCommentVoteType = (prevProps) => {
+    const prevComment = getNestedValue(prevProps, ["data", "comments"], [])[0];
+    const nextComments = this.getNextComments();
+    return checkVoteTypeChanged(prevComment, nextComments[0]);
+  };
+
+  getNextComments = () => {
+    return getNestedValue(this.props, ["data", "comments"], []);
+  };
 
   fetchComments = (e) => {
     e && e.stopPropagation();
@@ -201,7 +239,7 @@ class DiscussionEntry extends React.Component {
     let { data, hostname, path, discussion } = this.props;
     let comments = this.state.comments;
 
-    if (comment.length) {
+    if (comments.length > 0) {
       return comments.map((comment, i) => {
         return (
           <CommentEntry
@@ -364,7 +402,10 @@ class DiscussionEntry extends React.Component {
               <Fragment>
                 <div className={css(styles.row, styles.topbar)}>
                   <DiscussionPostMetadata
-                    authorProfile={data && data.createdBy.authorProfile}
+                    authorProfile={
+                      data &&
+                      getNestedValue(data, ["createdBy", "authorProfile"], null)
+                    }
                     username={username}
                     date={date}
                     threadPath={path}
