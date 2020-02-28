@@ -254,7 +254,14 @@ const Paper = (props) => {
                 )}
               </div>
               <div className={css(styles.topHeader)}>
-                <div className={css(styles.title)}>{paper && paper.title}</div>
+                <div className={css(styles.title)}>
+                  {paper && paper.title}
+                  {paper.paper_title && paper.paper_title !== paper.title && (
+                    <div className={css(styles.info)}>
+                      From Paper: {paper.paper_title}
+                    </div>
+                  )}
+                </div>
                 <span className={css(styles.mobileRow)}>
                   <div className={css(styles.mobileVoting)}>
                     <VoteWidget
