@@ -617,6 +617,10 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: 0,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    flexWrap: "wrap",
     "@media only screen and (max-width: 1303px)": {
       padding: 0,
     },
@@ -626,15 +630,19 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     boxSizing: "border-box",
     marginBottom: 5,
-
     backgroundColor: "rgb(237, 238, 254)",
     color: colors.PURPLE(1),
     fontWeight: 500,
     textTransform: "uppercase",
     padding: "8px 12px",
+    border: "1px solid #fff",
+    letterSpacing: 1,
+    fontSize: 12,
+    marginRight: 5,
+    width: "unset",
     ":hover": {
-      backgroundColor: "rgba(237, 238, 254, .7)",
-      // borderColor: "hsl(0,0%,70%)",
+      backgroundColor: "rgb(237, 238, 254)",
+      borderColor: colors.BLUE(),
     },
   },
   closeIcon: {
@@ -645,6 +653,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    paddingLeft: 8,
     ":hover": {
       color: "#3f85f7",
     },
