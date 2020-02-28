@@ -2,9 +2,13 @@ import React, { Component, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
+import Toggle from "react-toggle";
+import "~/components/TextEditor/stylesheets/ReactToggle.css";
 
 import FormSelect from "~/components/Form/FormSelect";
+import FormInput from "~/components/Form/FormInput";
 import CheckBox from "~/components/Form/CheckBox";
+import ComponentWrapper from "~/components/ComponentWrapper";
 
 import { DIGEST_FREQUENCY } from "~/config/constants";
 import {
@@ -23,6 +27,7 @@ import { MessageActions } from "~/redux/message";
 import { HubActions } from "~/redux/hub";
 import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
 import { doesNotExist } from "~/config/utils";
+import colors from "../../config/themes/colors";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
@@ -34,19 +39,19 @@ const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
 const contentSubscriptionOptions = [
   {
     id: "paperSubscription",
-    label: "Someone posts a thread on a paper I authored",
+    label: "Threads on papers I authored",
   },
   {
     id: "threadSubscription",
-    label: "Someone comments on a thread I posted",
+    label: "Comments on a thread I posted",
   },
   {
     id: "commentSubscription",
-    label: "Someone replies to a comment I posted",
+    label: "Replies to a comment I posted",
   },
   {
     id: "replySubscription",
-    label: "Someone replies to a reply I posted",
+    label: "Responses to a reply I posted",
   },
 ];
 
@@ -58,8 +63,12 @@ class UserSettings extends Component {
       frequency: null,
       emailRecipientId: null,
       isOptedOut: null,
+      // Email Input
+      email: this.props.user.email && this.props.user.email,
+      activeEmailInput: false,
+      transition: false,
     };
-
+    this.emailInputRef = React.createRef();
     contentSubscriptionOptions.forEach((option) => {
       this.state[option.id] = true;
     });
@@ -109,22 +118,98 @@ class UserSettings extends Component {
     return emailPreference.isOptedOut;
   };
 
+  toggleEmailInput = () => {
+    this.setState({ transition: true }, () => {
+      setTimeout(() => {
+        this.setState(
+          {
+            activeEmailInput: !this.state.activeEmailInput,
+            transition: false,
+          },
+          () => {
+            this.state.activeEmailInput && this.emailInputRef.current.focus();
+          }
+        );
+      }, 50);
+    });
+  };
+
+  handleEmailChange = (id, value) => {
+    this.setState({ email: value });
+  };
+
+  renderPrimaryEmail = () => {
+    let { email } = this.props.user;
+    let { activeEmailInput, transition } = this.state;
+
+    return (
+      <div className={css(styles.container)}>
+        <div className={css(styles.labelContainer)}>
+          <div className={css(styles.listLabel)} id={"hubListTitle"}>
+            {"Primary Email"}
+          </div>
+          <Ripples
+            className={css(styles.editIcon)}
+            onClick={this.toggleEmailInput}
+          >
+            {activeEmailInput ? (
+              <i className="fal fa-times" />
+            ) : (
+              <i className="fas fa-pencil" />
+            )}
+          </Ripples>
+        </div>
+        <div
+          className={css(
+            styles.primaryEmail,
+            transition && styles.blurTransition
+          )}
+        >
+          {activeEmailInput ? (
+            <div className={css(styles.emailInputContainer)}>
+              <FormInput
+                getRef={this.emailInputRef}
+                placeholder={"Enter an email"}
+                containerStyle={styles.emailInputStyles}
+                value={this.state.email}
+                onChange={this.handleEmailChange}
+              />
+              <Ripples className={css(styles.saveIcon)}>
+                <i className="fad fa-paper-plane" />
+              </Ripples>
+            </div>
+          ) : (
+            <div className={css(styles.paddedText)}>{email}</div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   renderFrequencySelect() {
     return (
-      <Fragment>
-        <div className={css(defaultStyles.listLabel)} id={"hubListTitle"}>
+      <div className={css(styles.container)}>
+        <div className={css(styles.listLabel)} id={"hubListTitle"}>
           {"Hub Digest Frequency"}
         </div>
-        <FormSelect
-          id={"frequencySelect"}
-          options={frequencyOptions}
-          value={this.state.frequency}
-          containerStyle={selectStyles.container}
-          inputStyle={selectStyles.input}
-          onChange={this.handleFrequencyChange}
-          isSearchable={false}
-        />
-      </Fragment>
+        <div className={css(styles.formContainer)}>
+          {/* <div className={css(styles.currentValue)}> */}
+          {/* {this.state.frequency} */}
+          {/* Daily */}
+          {/* </div>   */}
+          <FormSelect
+            id={"frequencySelect"}
+            options={frequencyOptions}
+            value={this.state.frequency}
+            containerStyle={
+              (selectStyles.container, styles.formSelectContainer)
+            }
+            inputStyle={(selectStyles.input, styles.formSelectInput)}
+            onChange={this.handleFrequencyChange}
+            isSearchable={false}
+          />
+        </div>
+      </div>
     );
   }
 
@@ -151,27 +236,29 @@ class UserSettings extends Component {
 
   renderSubscribedHubs = () => {
     return (
-      <Fragment>
-        <div className={css(defaultStyles.listLabel)} id={"hubListTitle"}>
+      <div className={css(styles.container)}>
+        <div className={css(styles.listLabel)} id={"hubListTitle"}>
           {"Currently Subscribed Hubs"}
         </div>
-        <div className={css(hubStyles.list)}>
+        <div className={css(hubStyles.list, styles.hubsList)}>
           {this.props.subscribedHubs.map((hub) => {
             return this.renderHub(hub);
           })}
         </div>
-      </Fragment>
+      </div>
     );
   };
 
   renderHub = (hub) => {
     return (
-      <Ripples
-        key={hub.id}
-        className={css(hubStyles.entry)}
-        onClick={() => this.handleHubUnsubscribe(hub.id)}
-      >
-        {hub.name} X
+      <Ripples key={hub.id} className={css(hubStyles.entry, styles.hubEntry)}>
+        {hub.name}
+        <div
+          className={css(styles.closeIcon)}
+          onClick={() => this.handleHubUnsubscribe(hub.id)}
+        >
+          <i className="fal fa-times" />
+        </div>
       </Ripples>
     );
   };
@@ -193,20 +280,20 @@ class UserSettings extends Component {
       return !subscribedHubIds.includes(hub.id);
     });
     return (
-      <Fragment>
-        <div className={css(defaultStyles.listLabel)} id={"hubListTitle"}>
+      <div className={css(styles.container)}>
+        <div className={css(styles.listLabel)} id={"hubListTitle"}>
           {"Available Hubs"}
         </div>
         <FormSelect
           id={"hubSelect"}
           options={this.buildHubOptions(availableHubs)}
-          containerStyle={selectStyles.container}
-          inputStyle={selectStyles.input}
+          containerStyle={(selectStyles.container, styles.formSelectContainer)}
+          inputStyle={(selectStyles.input, styles.formSelectInput)}
           onChange={this.handleHubSubscribe}
           isSearchable={true}
           placeholder={"Subscribe to a hub"}
         />
-      </Fragment>
+      </div>
     );
   }
 
@@ -236,21 +323,30 @@ class UserSettings extends Component {
 
   renderContentSubscriptions = () => {
     return contentSubscriptionOptions.map((option) => {
+      console.log("this.state.isOptedOut", this.state.isOptedOut);
       return (
-        <CheckBox
-          key={option.id}
-          isSquare={true}
-          active={this.state[option.id]}
-          label={option.label}
-          id={option.id}
-          onChange={this.handleContentSubscribe}
-          labelStyle={checkBoxStyles.labelStyle}
-        />
+        <div className={css(styles.checkboxEntry)}>
+          <div className={css(styles.checkboxLabel)} id={"checkbox-label"}>
+            {option.label}
+          </div>
+          <Toggle
+            key={option.id}
+            defaultChecked={this.state[option.id]}
+            value={this.state[option.id]}
+            disabled={this.state.isOptedOut}
+            // label={option.label}
+            id={option.id}
+            onChange={this.handleContentSubscribe}
+            // labelStyle={styles.checkboxLabel}
+          />
+        </div>
       );
     });
   };
 
-  handleContentSubscribe = (id, nextActiveState) => {
+  handleContentSubscribe = (e) => {
+    let id = e.target.id;
+    let nextActiveState = e.target.checked;
     const startingActiveState = this.state[id];
     this.setState({
       [id]: nextActiveState,
@@ -272,22 +368,25 @@ class UserSettings extends Component {
 
   renderOptOut = () => {
     return (
-      <Fragment>
-        <p>I don't want emails</p>
-        <CheckBox
+      <div className={css(styles.checkboxEntry)}>
+        <div className={css(styles.checkboxLabel, styles.optOut)}>
+          {"Opt out of all email updates"}
+        </div>
+        <Toggle
           key={"optOut"}
-          isSquare={true}
+          // isSquare={true}
           active={this.state.isOptedOut}
-          label={"Opt out of all email updates"}
+          // label={"Opt out of all email updates"}
           id={"optOut"}
           onChange={this.handleOptOut}
-          labelStyle={checkBoxStyles.labelStyle}
+          // labelStyle={checkBoxStyles.labelStyle}
         />
-      </Fragment>
+      </div>
     );
   };
 
-  handleOptOut = (id, nextActiveState) => {
+  handleOptOut = (e) => {
+    let nextActiveState = e.target.checked;
     const startingActiveState = this.state.isOptedOut;
     this.setState({
       isOptedOut: nextActiveState,
@@ -319,24 +418,213 @@ class UserSettings extends Component {
 
   render() {
     return (
-      <div>
-        <div className={css(defaultStyles.title)}>User Settings</div>
-        <div className={css(defaultStyles.subtitle)}>Email Preferences</div>
-        {this.renderFrequencySelect()}
-        {this.renderSubscribedHubs()}
-        {this.renderHubSelect()}
-        <p>Email me when...</p>
-        {this.renderContentSubscriptions()}
-        {this.renderOptOut()}
-      </div>
+      <ComponentWrapper>
+        <div className={css(styles.settingsPage)}>
+          <div className={css(defaultStyles.title, styles.title)}>
+            User Settings
+          </div>
+          <div className={css(defaultStyles.subtitle, styles.subtitle)}>
+            <span className={css(styles.emailIcon)}>
+              <i className="fal fa-envelope"></i>
+            </span>
+            Email Preferences
+          </div>
+          {this.renderPrimaryEmail()}
+          {this.renderFrequencySelect()}
+          {this.renderSubscribedHubs()}
+          {/* {this.renderHubSelect()} */}
+
+          <div className={css(styles.container)}>
+            <div className={css(styles.listLabel)} id={"hubListTitle"}>
+              {"Notifications"}
+            </div>
+            {this.renderContentSubscriptions()}
+            {this.renderOptOut()}
+          </div>
+        </div>
+      </ComponentWrapper>
     );
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  settingsPage: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    paddingTop: 30,
+  },
+  title: {
+    paddingBottom: 30,
+    letterSpacing: 1.1,
+    fontWeight: 500,
+  },
+  subtitle: {
+    display: "flex",
+    alignItems: "center",
+    fontWeight: 500,
+    fontSize: 22,
+    paddingBottom: 10,
+    "@media only screen and (max-width: 1343px)": {
+      fontWeight: 500,
+      fontSize: 22,
+    },
+  },
+  labelContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  listLabel: {
+    textTransform: "uppercase",
+    fontWeight: 500,
+    fontSize: 13,
+    letterSpacing: 1.2,
+    marginBottom: 15,
+    textAlign: "left",
+    color: "#a7a6b0",
+    transition: "all ease-out 0.1s",
+    // paddingLeft: 35,
+    boxSizing: "border-box",
+    ":hover": {
+      color: colors.BLACK(),
+    },
+  },
+  container: {
+    padding: "15px 10px",
+    borderTop: "1px solid #EDEDED",
+    transition: "all ease-in-out 0.2s",
+    ":hover": {
+      backgroundColor: "#FAFAFA",
+    },
+  },
+  formSelectContainer: {
+    padding: 0,
+    margin: 0,
+    width: "100%",
+  },
+  formSelectInput: {
+    width: "100%",
+  },
+  formContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  currentValue: {},
+  primaryEmail: {
+    width: "100%",
+    transition: "all ease-in-out 0.1s",
+    fontSize: 16,
+    fontWeight: 300,
+  },
+  blurTransition: {
+    filter: "blur(4px)",
+  },
+  paddedText: {
+    paddingLeft: 20,
+  },
+  emailIcon: {
+    marginRight: 10,
+    color: "#707378",
+  },
+  saveIcon: {
+    height: 32,
+    width: 32,
+    fontSize: 12,
+    borderRadius: "50%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    backgroundColor: "#3f85f7",
+    color: "#FFF",
+    marginLeft: 15,
+  },
+  editIcon: {
+    cursor: "pointer",
+    // padding: 8,
+    borderRadius: "50%",
+    color: "#afb5bc",
+    boxSizing: "border-box",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 32,
+    width: 32,
+    ":hover": {
+      color: colors.BLACK(),
+      backgroundColor: "#EDEDED",
+    },
+  },
+  emailInputContainer: {
+    display: "flex",
+    alignItems: "center",
+  },
+  emailInputStyles: {
+    padding: 0,
+    margin: 0,
+    minHeight: "unset",
+  },
+  hubsList: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: 0,
+    "@media only screen and (max-width: 1303px)": {
+      padding: 0,
+    },
+  },
+  hubEntry: {
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "10px 13px",
+    paddingLeft: 20,
+    borderColor: "#E8E8F1",
+    backgroundColor: "#FBFBFD",
+    marginBottom: 5,
+    ":hover": {
+      backgroundColor: "#FBFBFD",
+      borderColor: "hsl(0,0%,70%)",
+    },
+  },
+  closeIcon: {
+    cursor: "pointer",
+    color: colors.BLACK(),
+    borderRadius: "50%",
+    boxSizing: "border-box",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    ":hover": {
+      color: "#3f85f7",
+    },
+  },
+  checkboxEntry: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingLeft: 10,
+    paddingBottom: 10,
+    ":hover #checkbox-label": {
+      fontWeight: 400,
+    },
+  },
+  checkboxLabel: {
+    fontSize: 16,
+    fontWeight: 300,
+  },
+  optOut: {
+    fontWeight: 400,
+  },
+});
 
 const mapStateToProps = (state) => ({
   ...state.hubs,
+  user: state.auth.user,
 });
 
 export default connect(
