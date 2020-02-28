@@ -299,12 +299,13 @@ class UserSettings extends Component {
 
   renderHub = (hub) => {
     return (
-      <Ripples key={hub.id} className={css(hubStyles.entry, styles.hubEntry)}>
+      <Ripples
+        onClick={() => this.handleHubUnsubscribe(hub.id)}
+        key={hub.id}
+        className={css(hubStyles.entry, styles.hubEntry)}
+      >
         {hub.name}
-        <div
-          className={css(styles.closeIcon)}
-          onClick={() => this.handleHubUnsubscribe(hub.id)}
-        >
+        <div className={css(styles.closeIcon)}>
           <i className="fal fa-times" />
         </div>
       </Ripples>
@@ -616,6 +617,10 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     padding: 0,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    flexWrap: "wrap",
     "@media only screen and (max-width: 1303px)": {
       padding: 0,
     },
@@ -623,16 +628,21 @@ const styles = StyleSheet.create({
   hubEntry: {
     display: "flex",
     justifyContent: "space-between",
-    width: "100%",
     boxSizing: "border-box",
-    padding: "10px 13px",
-    paddingLeft: 20,
-    borderColor: "#E8E8F1",
-    backgroundColor: "#FBFBFD",
     marginBottom: 5,
+    backgroundColor: "rgb(237, 238, 254)",
+    color: colors.PURPLE(1),
+    fontWeight: 500,
+    textTransform: "uppercase",
+    padding: "8px 12px",
+    border: "1px solid #fff",
+    letterSpacing: 1,
+    fontSize: 12,
+    marginRight: 5,
+    width: "unset",
     ":hover": {
-      backgroundColor: "#FBFBFD",
-      borderColor: "hsl(0,0%,70%)",
+      backgroundColor: "rgb(237, 238, 254)",
+      borderColor: colors.BLUE(),
     },
   },
   closeIcon: {
@@ -643,6 +653,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    paddingLeft: 8,
     ":hover": {
       color: "#3f85f7",
     },
