@@ -577,7 +577,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    backgroundColor: "#3f85f7",
+    backgroundColor: colors.BLUE(),
     color: "#FFF",
     marginLeft: 15,
   },
