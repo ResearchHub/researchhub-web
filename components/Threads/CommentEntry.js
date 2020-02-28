@@ -13,7 +13,7 @@ import ThreadTextEditor from "./ThreadTextEditor";
 // Config
 import colors from "~/config/themes/colors";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { getNestedValue } from "~/config/utils";
+import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
@@ -44,9 +44,9 @@ class CommentEntry extends React.Component {
 
   componentDidMount() {
     const selectedVoteType = getNestedValue(this.props, [
-      "data",
-      "userVote",
-      "voteType",
+      "comment",
+      "user_vote",
+      "vote_type",
     ]);
     // const revealReply =
     //   this.props.comment.replies.length > 0 &&
@@ -75,7 +75,50 @@ class CommentEntry extends React.Component {
 
   componentDidUpdate(prevProps) {
     this.calculateThreadHeight();
+    this.handleVoteTypeUpdate(prevProps);
   }
+
+  handleVoteTypeUpdate = (prevProps) => {
+    const stateToSet = {};
+
+    const nextSelectedVoteType = this.getNextSelectedVoteType(prevProps);
+    const nextReplyVoteType = this.getNextReplyVoteType(prevProps);
+    const nextReplies = this.getNextReplies();
+
+    if (nextSelectedVoteType !== undefined) {
+      // If this component's vote has changed, downstream votes *may* have
+      // changed too, so we update the state of the downstream children.
+      stateToSet["selectedVoteType"] = nextSelectedVoteType;
+      stateToSet["replies"] = nextReplies;
+    }
+    if (nextReplyVoteType !== undefined) {
+      // In this case we *know* the downstream votes have changed.
+      stateToSet["replies"] = nextReplies;
+    }
+
+    // Update state only if we detect a difference
+    if (Object.keys(stateToSet).length > 0) {
+      this.setState({
+        ...stateToSet,
+      });
+    }
+  };
+
+  getNextSelectedVoteType = (prevProps) => {
+    return checkVoteTypeChanged(prevProps.comment, this.props.comment);
+  };
+
+  getNextReplyVoteType = (prevProps) => {
+    const prevReplies = getNestedValue(prevProps, ["comment", "replies"], []);
+    const prevReply = prevReplies[0];
+    const nextReplies = this.getNextReplies();
+    const nextReply = nextReplies[0];
+    return checkVoteTypeChanged(prevReply, nextReply);
+  };
+
+  getNextReplies = () => {
+    return getNestedValue(this.props, ["comment", "replies"], []);
+  };
 
   calculateThreadHeight = (height) => {
     if (this.commentRef) {
@@ -401,7 +444,10 @@ class CommentEntry extends React.Component {
             {!this.state.removed && (
               <div className={css(styles.row, styles.topbar)}>
                 <DiscussionPostMetadata
-                  authorProfile={comment && comment.createdBy.authorProfile}
+                  authorProfile={getNestedValue(comment, [
+                    "createdBy",
+                    "authorProfile",
+                  ])}
                   username={username}
                   date={date}
                   smaller={true}
