@@ -47,6 +47,7 @@ class PaperUploadInfo extends React.Component {
     super(props);
     let initialState = {
       form: {
+        paper_title: "",
         title: "",
         doi: "",
         tagline: "",
@@ -65,10 +66,6 @@ class PaperUploadInfo extends React.Component {
         },
         hubs: [],
       },
-      // discussion: {
-      //   title: "",
-      //   question: {},
-      // },
       error: {
         year: false,
         month: false,
@@ -77,8 +74,6 @@ class PaperUploadInfo extends React.Component {
         author: false,
         tagline: false,
       },
-      // summary: {},
-      // summaryId: null,
       showAuthorList: false,
       progress: 0,
       activeStep: 1,
@@ -100,7 +95,7 @@ class PaperUploadInfo extends React.Component {
   }
 
   componentDidMount() {
-    let { messageActions, paperId, paperTitle } = this.props;
+    let { messageActions, paperId } = this.props;
     this.props.authActions.getUser();
     this.getHubs();
     document.body.scrollTop = 0; // For Safari
@@ -142,10 +137,10 @@ class PaperUploadInfo extends React.Component {
   prefillPaperInfo = () => {
     let { uploadedPaper } = this.props.paper;
     let form = { ...this.state.form };
-    let { DOI, url, URL, title, abstract, issued } = uploadedPaper;
+    let { DOI, url, title, abstract, issued } = uploadedPaper;
 
     if (title || this.props.paperTitle) {
-      form.title = this.props.paperTitle
+      form.paper_title = this.props.paperTitle
         ? this.props.paperTitle
         : title && title;
     }
@@ -184,11 +179,13 @@ class PaperUploadInfo extends React.Component {
           publication_type,
           title,
           tagline,
+          paper_title,
         } = res;
 
         let form = JSON.parse(JSON.stringify(this.state.form));
         form.doi = doi;
         form.title = title;
+        form.paper_title = paper_title;
         form.tagline = tagline;
         form.hubs = hubs.map((hub) => {
           return {
@@ -393,7 +390,6 @@ class PaperUploadInfo extends React.Component {
   /**
    * PAPER PDF HANDLER
    */
-
   uploadPaper = (acceptedFiles, metaData) => {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
@@ -658,6 +654,15 @@ class PaperUploadInfo extends React.Component {
                 label={"Paper Title"}
                 placeholder="Enter title of paper"
                 required={true}
+                containerStyle={styles.container}
+                labelStyle={styles.labelStyle}
+                value={form.paper_title}
+                id={"paper_title"}
+                onChange={this.handleInputChange}
+              />
+              <FormInput
+                label={"Editorialized Title (optional)"}
+                placeholder="Jargon free version of the title that regular people would understand"
                 containerStyle={styles.container}
                 labelStyle={styles.labelStyle}
                 value={form.title}
@@ -1066,6 +1071,7 @@ class PaperUploadInfo extends React.Component {
         : this.props.paper.uploadedPaper; // if url, then file is a url. else file is a file object
       let paperId =
         this.props.paper.postedPaper && this.props.paper.postedPaper.id;
+
       request === "POST"
         ? await this.props.paperActions.postPaper(body)
         : await this.props.paperActions.patchPaper(paperId, body);
@@ -1144,91 +1150,6 @@ class PaperUploadInfo extends React.Component {
       progress: count * 25,
     });
   };
-
-  // handleSummaryChange = (summary) => {
-  //   this.setState({ summary });
-  // };
-
-  // saveSummary = async () => {
-  //   this.props.messageActions.showMessage({ load: true, show: true });
-
-  //   const param = {
-  //     summary: this.state.summary.toJSON({ preserveKeys: true }),
-  //     paper: this.props.paperId
-  //       ? this.props.paperId
-  //       : this.props.paper.postedPaper.id,
-  //   };
-
-  //   let config = API.POST_CONFIG(param);
-  //   let url = API.FIRST_SUMMARY();
-
-  //   if (this.state.summaryId) {
-  //     // if there is a summaryid, then a paper exists
-  //     const query = {};
-  //     query.summaryId = this.state.summaryId;
-  //     config = API.PATCH_CONFIG(param);
-  //     url = API.SUMMARY(query);
-  //   }
-
-  //   return await fetch(url, config)
-  //     .then(Helpers.checkStatus)
-  //     .then(Helpers.parseJSON)
-  //     .then((res) => {
-  //       let response = { ...res };
-  //       setTimeout(() => {
-  //         this.props.messageActions.showMessage({ show: false });
-  //         let summaryJSON = response.summary;
-  //         let editorState = Value.fromJSON(summaryJSON);
-  //         this.setState({
-  //           summaryId: response.id,
-  //           summary: editorState,
-  //         });
-  //         this.nextStep();
-  //       }, 400);
-  //     })
-  //     .catch((err) => {
-  //       this.props.messageActions.showMessage({ show: false });
-  //       this.props.messageActions.setMessage("Unable to submit summary");
-  //       this.props.messageActions.showMessage({ show: true, error: true });
-  //       console.error(err);
-  //     });
-  // };
-
-  // saveDiscussion = async () => {
-  //   // if there's nothing to save, then don't save
-  //   this.props.messageActions.showMessage({ show: true, load: true });
-  //   if (
-  //     this.state.discussion.title === "" ||
-  //     Object.keys(this.state.discussion.question).length < 1
-  //   ) {
-  //     this.navigateToSummary();
-  //   }
-
-  //   let paperId = this.props.paperId
-  //     ? this.props.paperId
-  //     : this.props.paper.postedPaper.id;
-
-  //   let param = {
-  //     title: this.state.discussion.title,
-  //     text: this.state.discussion.question.toJSON(),
-  //     paper: paperId,
-  //   };
-
-  //   let config = await API.POST_CONFIG(param);
-
-  //   return fetch(API.DISCUSSION(paperId), config)
-  //     .then(Helpers.checkStatus)
-  //     .then(Helpers.parseJSON)
-  //     .then((resp) => {
-  //       let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-  //       this.props.authActions.checkUserFirstTime(firstTime);
-  //       this.props.authActions.getUser();
-  //       Router.push(
-  //         "/paper/[paperId]/[tabName]",
-  //         `/paper/${this.props.paper.postedPaper.id}/summary`
-  //       );
-  //     });
-  // };
 
   navigateToSummary = () => {
     this.props.messageActions.showMessage({ show: true, load: true });
