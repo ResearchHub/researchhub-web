@@ -244,7 +244,10 @@ class ReplyEntry extends React.Component {
             {!this.state.removed && (
               <div className={css(styles.row, styles.topbar)}>
                 <DiscussionPostMetadata
-                  authorProfile={reply && reply.createdBy.authorProfile}
+                  authorProfile={getNestedValue(reply, [
+                    "createdBy",
+                    "authorProfile",
+                  ])}
                   username={username}
                   date={date}
                   smaller={true}
