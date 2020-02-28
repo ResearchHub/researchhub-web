@@ -38,26 +38,26 @@ export const emailPreferencePatch = ({
   return data;
 };
 
-export const buildSubscriptionPatch = (subscription, disable) => {
+export const buildSubscriptionPatch = (subscription, receiveEmails) => {
   const patchShim = subscriptionPatchShims[subscription];
   const args = {};
 
-  if (disable === true) {
-    args["none"] = disable;
+  if (!receiveEmails) {
+    args["none"] = true;
   } else {
-    args["none"] = !disable;
+    args["none"] = !receiveEmails;
     switch (subscription) {
       case "paperSubscription":
-        args["threads"] = !disable;
+        args["threads"] = receiveEmails;
         break;
       case "threadSubscription":
-        args["comments"] = !disable;
+        args["comments"] = receiveEmails;
         break;
       case "commentSubscription":
-        args["replies"] = !disable;
+        args["replies"] = receiveEmails;
         break;
       case "replySubscription":
-        args["replies"] = !disable;
+        args["replies"] = receiveEmails;
         break;
       default:
         break;
