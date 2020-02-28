@@ -132,7 +132,7 @@ function PaperTab(props) {
   }
 
   function handleRenderState() {
-    if (file !== null && file !== undefined) {
+    if (file) {
       return (
         <Document
           // className={css(!loadSuccess && styles.hidden)}
