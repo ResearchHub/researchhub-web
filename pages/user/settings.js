@@ -371,7 +371,6 @@ class UserSettings extends Component {
 
   renderContentSubscriptions = () => {
     return contentSubscriptionOptions.map((option) => {
-      console.log("this.state.isOptedOut", this.state.isOptedOut);
       return (
         <div className={css(styles.checkboxEntry)}>
           <div className={css(styles.checkboxLabel)} id={"checkbox-label"}>
@@ -498,7 +497,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   title: {
-    paddingBottom: 30,
+    paddingBottom: 10,
     letterSpacing: 1.1,
     fontWeight: 500,
   },
