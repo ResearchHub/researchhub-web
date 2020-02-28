@@ -34,8 +34,8 @@ class ReplyEntry extends React.Component {
   componentDidMount() {
     const selectedVoteType = getNestedValue(this.props, [
       "reply",
-      "userVote",
-      "voteType",
+      "user_vote",
+      "vote_type",
     ]);
     const score = this.props.reply.score;
 
@@ -244,7 +244,10 @@ class ReplyEntry extends React.Component {
             {!this.state.removed && (
               <div className={css(styles.row, styles.topbar)}>
                 <DiscussionPostMetadata
-                  authorProfile={reply && reply.createdBy.authorProfile}
+                  authorProfile={getNestedValue(reply, [
+                    "createdBy",
+                    "authorProfile",
+                  ])}
                   username={username}
                   date={date}
                   smaller={true}
