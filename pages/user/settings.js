@@ -215,7 +215,7 @@ class UserSettings extends Component {
               />
               <Ripples
                 className={css(styles.saveIcon)}
-                onSubmit={(e) => {
+                onClick={(e) => {
                   e.preventDefault();
                   this.saveEmail();
                 }}
