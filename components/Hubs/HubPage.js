@@ -34,6 +34,10 @@ import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
 
 const filterOptions = [
   {
+    value: "hot",
+    label: "Hot",
+  },
+  {
     value: "top_rated",
     label: "Top Rated",
   },
