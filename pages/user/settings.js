@@ -30,6 +30,8 @@ import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
 import { doesNotExist } from "~/config/utils";
 import colors from "../../config/themes/colors";
 
+import "./stylesheets/toggle.css";
+
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
     value: DIGEST_FREQUENCY[key],
@@ -101,8 +103,9 @@ class UserSettings extends Component {
   getInitialFrequencyOption = (emailPreference) => {
     const initial = frequencyOptions.filter((option) => {
       return (
+        emailPreference.digestSubscription &&
         option.value ===
-        emailPreference.digestSubscription.notificationFrequency
+          emailPreference.digestSubscription.notificationFrequency
       );
     });
     return initial[0];
@@ -376,6 +379,7 @@ class UserSettings extends Component {
           </div>
           <Toggle
             key={option.id}
+            className={"react-toggle"}
             defaultChecked={this.state[option.id]}
             checked={this.state[option.id]}
             disabled={this.state.isOptedOut}
@@ -420,6 +424,9 @@ class UserSettings extends Component {
           key={"optOut"}
           defaultChecked={this.state.isOptedOut}
           checked={this.state.isOptedOut}
+          className={"react-toggle"}
+          active={this.state.isOptedOut}
+          // label={"Opt out of all email updates"}
           id={"optOut"}
           onChange={this.handleOptOut}
         />
@@ -464,12 +471,6 @@ class UserSettings extends Component {
         <div className={css(styles.settingsPage)}>
           <div className={css(defaultStyles.title, styles.title)}>
             User Settings
-          </div>
-          <div className={css(defaultStyles.subtitle, styles.subtitle)}>
-            <span className={css(styles.emailIcon)}>
-              <i className="fal fa-envelope"></i>
-            </span>
-            Email Preferences
           </div>
           {this.renderPrimaryEmail()}
           {this.renderFrequencySelect()}
@@ -527,7 +528,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
-    // paddingLeft: 35,
     boxSizing: "border-box",
     ":hover": {
       color: colors.BLACK(),
@@ -564,9 +564,6 @@ const styles = StyleSheet.create({
   },
   blurTransition: {
     filter: "blur(4px)",
-  },
-  paddedText: {
-    paddingLeft: 20,
   },
   emailIcon: {
     marginRight: 10,
@@ -655,7 +652,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingLeft: 10,
     paddingBottom: 10,
     ":hover #checkbox-label": {
       fontWeight: 400,
