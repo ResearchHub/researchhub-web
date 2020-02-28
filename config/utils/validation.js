@@ -12,12 +12,8 @@ export function currentUserHasMinimumReputation(stateObject, minimum) {
 }
 
 export const checkVoteTypeChanged = (prev, next) => {
-  console.log("prev", prev);
-  console.log("next", next);
   const prevVoteType = getNestedValue(prev, ["userVote", "voteType"]);
   const nextVoteType = getNestedValue(next, ["userVote", "voteType"]);
-  console.log("prev vote", prevVoteType);
-  console.log("next vote", nextVoteType);
   if (prevVoteType !== nextVoteType) {
     return nextVoteType;
   }
