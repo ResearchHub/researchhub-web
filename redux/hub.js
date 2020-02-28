@@ -37,11 +37,13 @@ export const HubActions = {
         .then((resp) => {
           let hubs = [...resp.results];
           let hubsByAlpha = shims.sortHubs([...hubs]);
+          const subscribedHubs = shims.subscribedHubs(hubs);
           return dispatch({
             type: HubConstants.GET_HUBS_SUCCESS,
             payload: {
               hubs,
               hubsByAlpha,
+              subscribedHubs,
               fetchedHubs: true,
             },
           });
@@ -85,9 +87,11 @@ export const HubActions = {
       let updatedTopHubsList = [...topHubs];
       updatedHubsList[allHubIndex] = newHubState;
       updatedTopHubsList[topHubIndex] = newHubState;
+      let updatedSubscribedHubsList = shims.subscribedHubs(updatedHubsList);
       return dispatch({
         type: HubConstants.UPDATE_HUB,
         payload: {
+          subscribedHubs: updatedSubscribedHubsList,
           topHubs: updatedTopHubsList,
           allHubs: updatedHubsList,
         },
@@ -106,6 +110,7 @@ const defaultHubState = {
   topHubs: [],
   hubsByAlpha: {},
   fetchedHubs: false,
+  subscribedHubs: [],
 };
 
 const HubReducer = (state = defaultHubState, action) => {
@@ -125,6 +130,11 @@ const HubReducer = (state = defaultHubState, action) => {
 };
 
 const shims = {
+  subscribedHubs: (hubs) => {
+    return hubs.filter((hub) => {
+      return hub.user_is_subscribed;
+    });
+  },
   sortHubs: (allHubs) => {
     let sortedHubs = {};
     allHubs.forEach((hub) => {

@@ -318,11 +318,13 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    EMAIL_PREFERENCE: ({ update_or_create }) => {
+    EMAIL_PREFERENCE: ({ update_or_create, emailRecipientId }) => {
       let url = BASE_URL + "email_recipient/";
 
       if (update_or_create) {
         url += "update_or_create_email_preference/";
+      } else if (emailRecipientId) {
+        url += `${emailRecipientId}/subscriptions/`;
       }
 
       return url;

@@ -100,6 +100,13 @@ const Navbar = (props) => {
     {
       label: "Login",
     },
+    {
+      label: "Settings",
+      route: {
+        href: "/user/settings",
+      },
+      icon: "signOut",
+    },
     { label: "Logout", onClick: signout, icon: "signOut" },
   ];
 
@@ -393,6 +400,14 @@ const Navbar = (props) => {
                         Profile
                       </div>
                     </Link>
+                    <Link href={"/user/settings"} as={`/user/settings`}>
+                      <div className={css(styles.option)}>
+                        <i
+                          className={css(styles.profileIcon) + " fas fa-cog"}
+                        ></i>
+                        Settings
+                      </div>
+                    </Link>
                     <div
                       className={css(styles.option, styles.lastOption)}
                       onClick={signout}
@@ -613,7 +628,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -126,
+    bottom: -170,
     right: 0,
     width: 200,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
