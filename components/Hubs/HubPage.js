@@ -36,6 +36,7 @@ const filterOptions = [
   {
     value: "hot",
     label: "Hot",
+    disableScope: true,
   },
   {
     value: "top_rated",
@@ -44,6 +45,7 @@ const filterOptions = [
   {
     value: "newest",
     label: "Newest",
+    disableScope: true,
   },
   {
     value: "most_discussed",
@@ -82,6 +84,7 @@ class HubPage extends React.Component {
       papers: [],
       filterBy: defaultFilter,
       scope: defaultScope,
+      disableScope: true,
       mobileView: false,
       mobileBanner: false,
       papersLoading: false,
@@ -481,14 +484,28 @@ class HubPage extends React.Component {
                     height: "100%",
                     backgroundColor: "#FFF",
                   }}
-                  onChange={(id, option) => this.onFilterSelect(option, id)}
+                  onChange={(id, option) => {
+                    if (option.disableScope) {
+                      this.setState({
+                        disableScope: true,
+                      });
+                    } else {
+                      this.setState({
+                        disableScope: false,
+                      });
+                    }
+                    this.onFilterSelect(option, id);
+                  }}
                   isSearchable={false}
                 />
                 <FormSelect
                   id={"scope"}
                   options={scopeOptions}
                   value={this.state.scope}
-                  containerStyle={styles.dropDown}
+                  containerStyle={[
+                    styles.dropDown,
+                    this.state.disableScope && styles.disableScope,
+                  ]}
                   inputStyle={{
                     fontSize: 14,
                     fontWeight: 500,
@@ -612,6 +629,11 @@ var styles = StyleSheet.create({
       height: "unset",
       justifyContent: "flex-start",
     },
+  },
+  disableScope: {
+    pointerEvents: "none",
+    cursor: "not-allowed",
+    opacity: 0.2,
   },
   centered: {
     height: 120,
