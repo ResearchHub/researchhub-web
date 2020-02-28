@@ -1,4 +1,5 @@
 import { StyleSheet } from "aphrodite";
+import colors from "./colors";
 
 export const modalStyles = StyleSheet.create({
   overlay: {
@@ -78,5 +79,146 @@ export const modalStyles = StyleSheet.create({
   logo: {
     height: 30,
     userSelect: "none",
+  },
+});
+
+export const selectStyles = StyleSheet.create({
+  container: {
+    width: 150,
+    margin: 0,
+    "@media only screen and (max-width: 1343px)": {
+      // width: 220,
+      height: "unset",
+    },
+    "@media only screen and (max-width: 1149px)": {
+      width: 150,
+    },
+    "@media only screen and (max-width: 895px)": {
+      width: 125,
+    },
+    "@media only screen and (max-width: 665px)": {
+      width: "100%",
+      height: 45,
+      margin: "10px 0px 10px 0px",
+    },
+    "@media only screen and (max-width: 375px)": {
+      width: 345,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 300,
+    },
+  },
+  input: {
+    fontSize: 14,
+    fontWeight: 500,
+    height: "100%",
+    backgroundColor: "#FFF",
+  },
+});
+
+export const checkBoxStyles = StyleSheet.create({
+  labelStyle: {
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
+  },
+});
+
+export const hubStyles = StyleSheet.create({
+  entry: {
+    fontSize: 16,
+    fontWeight: 300,
+    cursor: "pointer",
+    textTransform: "capitalize",
+    display: "flex",
+    alignItems: "center",
+    padding: "3px 5px",
+    boxSizing: "content-box",
+    width: "100%",
+    transition: "all ease-out 0.1s",
+    borderRadius: 3,
+    border: "1px solid #fff",
+    ":hover": {
+      borderColor: "rgb(237, 237, 237)",
+      backgroundColor: "#FAFAFA",
+    },
+  },
+  list: {
+    width: "90%",
+    boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    padding: "0px 30px",
+    "@media only screen and (max-width: 1303px)": {
+      padding: "0px 20px",
+    },
+  },
+});
+
+export const defaultStyles = StyleSheet.create({
+  title: {
+    fontSize: 33,
+    fontWeight: 500,
+    marginRight: 30,
+    color: "#232038",
+    cursor: "default",
+    userSelect: "none",
+  },
+  subtitle: {
+    fontFamily: "Roboto",
+    cursor: "default",
+    display: "flex",
+    alignItems: "center",
+    color: "#000",
+    fontWeight: "400",
+    fontSize: "33px",
+    flexWrap: "wrap",
+    whiteSpace: "pre-wrap",
+    "@media only screen and (max-width: 1343px)": {
+      fontSize: 25,
+    },
+    "@media only screen and (max-width: 1149px)": {
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 22,
+      fontWeight: 500,
+      marginBottom: 10,
+    },
+    "@media only screen and (max-width: 416px)": {
+      fontWeight: 400,
+      fontSize: 20,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+      textAlign: "center",
+    },
+  },
+  listLabel: {
+    textTransform: "uppercase",
+    fontWeight: 500,
+    fontSize: 13,
+    letterSpacing: 1.2,
+    marginBottom: 15,
+    textAlign: "left",
+    color: "#a7a6b0",
+    transition: "all ease-out 0.1s",
+    width: "90%",
+    paddingLeft: 35,
+    boxSizing: "border-box",
+    ":hover": {
+      color: colors.BLACK(),
+    },
+    "@media only screen and (max-width: 1303px)": {
+      paddingLeft: 25,
+    },
   },
 });
