@@ -76,6 +76,13 @@ const DiscussionTab = (props) => {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
+  useEffect(resetThreadsEffect, [props.threads]);
+
+  function resetThreadsEffect() {
+    setThreads(props.threads);
+    setFormattedThreads(formatThreads(props.threads, basePath));
+  }
+
   useEffect(() => {
     async function getThreadsByFilter() {
       dispatch(MessageActions.showMessage({ load: true, show: true }));
