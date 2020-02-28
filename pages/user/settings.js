@@ -299,12 +299,13 @@ class UserSettings extends Component {
 
   renderHub = (hub) => {
     return (
-      <Ripples key={hub.id} className={css(hubStyles.entry, styles.hubEntry)}>
+      <Ripples
+        onClick={() => this.handleHubUnsubscribe(hub.id)}
+        key={hub.id}
+        className={css(hubStyles.entry, styles.hubEntry)}
+      >
         {hub.name}
-        <div
-          className={css(styles.closeIcon)}
-          onClick={() => this.handleHubUnsubscribe(hub.id)}
-        >
+        <div className={css(styles.closeIcon)}>
           <i className="fal fa-times" />
         </div>
       </Ripples>
@@ -628,12 +629,12 @@ const styles = StyleSheet.create({
 
     backgroundColor: "rgb(237, 238, 254)",
     color: colors.PURPLE(1),
-    fontWeight: "bold",
+    fontWeight: 500,
     textTransform: "uppercase",
     padding: "8px 12px",
     ":hover": {
-      backgroundColor: "#FBFBFD",
-      borderColor: "hsl(0,0%,70%)",
+      backgroundColor: "rgba(237, 238, 254, .7)",
+      // borderColor: "hsl(0,0%,70%)",
     },
   },
   closeIcon: {
