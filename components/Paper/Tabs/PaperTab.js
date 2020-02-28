@@ -135,7 +135,7 @@ function PaperTab(props) {
     if (file !== null && file !== undefined) {
       return (
         <Document
-          className={css(!loadSuccess && styles.hidden)}
+          // className={css(!loadSuccess && styles.hidden)}
           file={file}
           onLoadSuccess={onLoadSuccess}
         >
@@ -202,7 +202,7 @@ function PaperTab(props) {
 
   return (
     <div className={css(styles.container)}>
-      {loadSuccess && file && (
+      {file && (
         <ComponentWrapper>
           <div className={css(styles.moderatorContainer)}>
             <ModeratorDeleteButton
