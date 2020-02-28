@@ -19,7 +19,7 @@ const PaperTabBar = (props) => {
         <Count isSelected={isSelected} amount={discussionCount} />
       ),
     },
-    { href: "full", label: "pdf" },
+    { href: "full", label: "Paper PDF" },
     // TODO: Add citations tab
     // { href: "citations", label: "citations" },
   ].map(formatTabs);
