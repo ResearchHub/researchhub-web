@@ -19,7 +19,7 @@ const PaperTabBar = (props) => {
         <Count isSelected={isSelected} amount={discussionCount} />
       ),
     },
-    { href: "full", label: "full paper" },
+    { href: "full", label: "pdf" },
     // TODO: Add citations tab
     // { href: "citations", label: "citations" },
   ].map(formatTabs);
@@ -50,6 +50,7 @@ function renderTab({ key, href, label, ui }, selected, index) {
     isSelected = true;
     classNames.push(styles.selected);
   }
+
   if (index === 2) {
     classNames.push(styles.lastTab);
   }
