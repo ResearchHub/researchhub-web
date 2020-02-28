@@ -623,13 +623,14 @@ const styles = StyleSheet.create({
   hubEntry: {
     display: "flex",
     justifyContent: "space-between",
-    width: "100%",
     boxSizing: "border-box",
-    padding: "10px 13px",
-    paddingLeft: 20,
-    borderColor: "#E8E8F1",
-    backgroundColor: "#FBFBFD",
     marginBottom: 5,
+
+    backgroundColor: "rgb(237, 238, 254)",
+    color: colors.PURPLE(1),
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    padding: "8px 12px",
     ":hover": {
       backgroundColor: "#FBFBFD",
       borderColor: "hsl(0,0%,70%)",
