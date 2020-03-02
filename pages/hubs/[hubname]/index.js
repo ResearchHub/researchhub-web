@@ -20,7 +20,9 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hubName: Router.router ? Router.router.query.hubname : "",
+      hubName: Router.router
+        ? decodeURIComponent(Router.router.query.hubname)
+        : "",
       currentHub: null,
       hubDescription: "", // TODO: Pull from hub description field
     };
@@ -86,7 +88,6 @@ class Index extends React.Component {
 
 async function fetchHub(name) {
   if (process.browser) {
-    name = name.split("-").join(" ");
     return await fetch(API.HUB({ name }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)

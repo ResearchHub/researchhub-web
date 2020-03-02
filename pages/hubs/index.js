@@ -152,7 +152,10 @@ class Index extends React.Component {
     const { hubsByAlpha } = this.state;
     return hubsByAlpha[key].map((hub) => {
       return (
-        <Link href="/hubs/[hubname]" as={`/hubs/${hub.name}`}>
+        <Link
+          href="/hubs/[hubname]"
+          as={`/hubs/${encodeURIComponent(hub.name)}`}
+        >
           <div key={hub.id} className={css(styles.hubEntry)}>
             {hub.name}
           </div>
