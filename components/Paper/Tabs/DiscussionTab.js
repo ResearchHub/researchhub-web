@@ -696,7 +696,7 @@ const stylesEditor = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     paddingLeft: 20,
-    paddingRight: 2,
+    paddingRight: 20,
     marginBottom: 8,
     backgroundColor: "#fff",
   },
