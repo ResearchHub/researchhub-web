@@ -25,17 +25,18 @@ class HubsList extends React.Component {
     super(props);
     this.state = {
       hubs: [],
-      reveal: false,
+      // reveal: false,
+      reveal: true,
     };
   }
 
   componentDidMount() {
     if (this.props.hubs) {
       this.setState({ hubs: this.props.hubs }, () => {
-        this.revealTimeout = setTimeout(
-          () => this.setState({ reveal: true }),
-          400
-        );
+        // this.revealTimeout = setTimeout(
+        //   () => this.setState({ reveal: true }),
+        //   400
+        // );
       });
     } else {
       this.fetchHubs();
@@ -46,23 +47,23 @@ class HubsList extends React.Component {
     if (prevProps.current !== this.props.current) {
       this.setState(
         {
-          reveal: false,
+          // reveal: false,
           hubs: this.props.hubs,
-        },
-        () => {
-          this.revealTimeout = setTimeout(
-            () => this.setState({ reveal: true }),
-            400
-          );
         }
+        // () => {
+        //   this.revealTimeout = setTimeout(
+        //     () => this.setState({ reveal: true }),
+        //     400
+        //   );
+        // }
       );
     }
     if (prevProps.hubs !== this.props.hubs) {
       this.setState({ hubs: this.props.hubs }, () => {
-        this.revealTimeout = setTimeout(
-          () => this.setState({ reveal: true }),
-          400
-        );
+        // this.revealTimeout = setTimeout(
+        //   () => this.setState({ reveal: true }),
+        //   400
+        // );
       });
     }
   }
