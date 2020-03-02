@@ -82,7 +82,6 @@ const OrcidLogin = (props) => {
     const loginComplete = checkBaseUriSuccessParam(loginWindowBody);
     if (loginComplete) {
       loginWindow.close();
-      onSuccess();
     }
   }
 
@@ -92,7 +91,8 @@ const OrcidLogin = (props) => {
     return regex.test(uri);
   }
 
-  function checkHasEmail() {
+  async function checkHasEmail() {
+    await dispatch(AuthActions.getUser());
     const state = store.getState();
     if (state.auth.user.email && state.auth.user.email != "") {
       // has email
