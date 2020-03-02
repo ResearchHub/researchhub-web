@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
@@ -32,24 +33,64 @@ import colors from "~/config/themes/colors";
 import { PaperActions } from "../../redux/paper";
 import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
 
+// marginRight: 5
+// marginRight: 5
+// marginRight: 5
+// marginRight: 5
 const filterOptions = [
   {
     value: "hot",
-    label: "Hot",
+    // label: "Trending",
+    label: (
+      <span>
+        <i
+          className="fad fa-chart-line"
+          style={{ width: 15, paddingRight: 10, color: colors.GREEN() }}
+        />
+        {"Trending"}
+      </span>
+    ),
     disableScope: true,
   },
   {
     value: "top_rated",
-    label: "Top Rated",
+    // label: "Top Rated",
+    label: (
+      <span>
+        <i
+          className="fad fa-flame"
+          style={{ width: 15, paddingRight: 10, color: colors.RED() }}
+        />
+        {"Top Rated"}
+      </span>
+    ),
   },
   {
     value: "newest",
-    label: "Newest",
+    // label: "Newest",
+    label: (
+      <span>
+        <i
+          className="fad fa-sparkles"
+          style={{ width: 15, paddingRight: 10, color: colors.YELLOW() }}
+        />
+        {"Newest"}
+      </span>
+    ),
     disableScope: true,
   },
   {
     value: "most_discussed",
-    label: "Most Discussed",
+    // label: "Most Discussed",
+    label: (
+      <span>
+        <i
+          className="fad fa-comments-alt"
+          style={{ width: 15, paddingRight: 10, color: colors.BLUE() }}
+        />
+        {"Most Discussed"}
+      </span>
+    ),
   },
 ];
 
@@ -264,6 +305,28 @@ class HubPage extends React.Component {
     return scope;
   };
 
+  getTitle = () => {
+    let { filterBy } = this.state;
+    let value = filterBy.value;
+    let isHomePage = this.props.home;
+    var prefix = "";
+    switch (value) {
+      case "hot":
+        prefix = "Trending";
+        break;
+      case "top_rated":
+        prefix = "Top";
+        break;
+      case "newest":
+        prefix = "Newest";
+        break;
+      case "most_discussed":
+        prefix = "Most Discussed";
+        break;
+    }
+    return `Showing ${isHomePage ? "All" : ""} ${prefix} Papers:`;
+  };
+
   onFilterSelect = (option, type) => {
     let { showMessage } = this.props;
     let param = {};
@@ -462,9 +525,9 @@ class HubPage extends React.Component {
             <HubsList current={this.props.home ? null : this.props.hub} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
-            <div className={css(styles.row, styles.topbar)}>
+            <div className={css(styles.column, styles.topbar)}>
               <div className={css(styles.text, styles.feedTitle)}>
-                Top Papers in{" "}
+                {/* {this.getTitle()} */}
                 <span className={css(styles.hubName)}>
                   {this.props.home ? "ResearchHub" : this.props.hub.name}
                 </span>
@@ -472,49 +535,53 @@ class HubPage extends React.Component {
                   {this.props.hub && this.renderSubscribeButton()}
                 </div>
               </div>
-              <div className={css(styles.row, styles.inputs)}>
-                <FormSelect
-                  id={"filterBy"}
-                  options={filterOptions}
-                  value={this.state.filterBy}
-                  containerStyle={styles.dropDown}
-                  inputStyle={{
-                    fontSize: 14,
-                    fontWeight: 500,
-                    height: "100%",
-                    backgroundColor: "#FFF",
-                  }}
-                  onChange={(id, option) => {
-                    if (option.disableScope) {
-                      this.setState({
-                        disableScope: true,
-                      });
-                    } else {
-                      this.setState({
-                        disableScope: false,
-                      });
-                    }
-                    this.onFilterSelect(option, id);
-                  }}
-                  isSearchable={false}
-                />
-                <FormSelect
-                  id={"scope"}
-                  options={scopeOptions}
-                  value={this.state.scope}
-                  containerStyle={[
-                    styles.dropDown,
-                    this.state.disableScope && styles.disableScope,
-                  ]}
-                  inputStyle={{
-                    fontSize: 14,
-                    fontWeight: 500,
-                    height: "100%",
-                    backgroundColor: "#FFF",
-                  }}
-                  onChange={(id, option) => this.onFilterSelect(option, id)}
-                  isSearchable={false}
-                />
+              <div className={css(styles.inputContainer)}>
+                {this.getTitle()}
+                <div className={css(styles.row, styles.inputs)}>
+                  <FormSelect
+                    id={"filterBy"}
+                    options={filterOptions}
+                    value={this.state.filterBy}
+                    containerStyle={[styles.dropDown, styles.dropwDownLeft]}
+                    inputStyle={{
+                      fontSize: 14,
+                      fontWeight: 500,
+                      minHeight: "unset",
+                      backgroundColor: "#FFF",
+                    }}
+                    onChange={(id, option) => {
+                      if (option.disableScope) {
+                        this.setState({
+                          disableScope: true,
+                        });
+                      } else {
+                        this.setState({
+                          disableScope: false,
+                        });
+                      }
+                      this.onFilterSelect(option, id);
+                    }}
+                    isSearchable={false}
+                  />
+                  <FormSelect
+                    id={"scope"}
+                    options={scopeOptions}
+                    value={this.state.scope}
+                    containerStyle={[
+                      styles.dropDown,
+                      this.state.disableScope && styles.disableScope,
+                    ]}
+                    inputStyle={{
+                      fontSize: 14,
+                      fontWeight: 500,
+
+                      minHeight: "unset",
+                      backgroundColor: "#FFF",
+                    }}
+                    onChange={(id, option) => this.onFilterSelect(option, id)}
+                    isSearchable={false}
+                  />
+                </div>
               </div>
             </div>
             <div className={css(styles.infiniteScroll)}>
@@ -791,6 +858,7 @@ var styles = StyleSheet.create({
     fontSize: 33,
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
+    width: "100%", //ADDED
     "@media only screen and (max-width: 1343px)": {
       fontSize: 25,
     },
@@ -812,7 +880,7 @@ var styles = StyleSheet.create({
     },
   },
   topbar: {
-    paddingTop: 30,
+    paddingTop: 25,
     paddingBottom: 20,
     width: "calc(100% - 140px)",
     position: "sticky",
@@ -840,8 +908,9 @@ var styles = StyleSheet.create({
     },
   },
   dropDown: {
-    width: 150,
+    width: 165,
     margin: 0,
+    minHeight: "unset",
     "@media only screen and (max-width: 1343px)": {
       // width: 220,
       height: "unset",
@@ -864,18 +933,16 @@ var styles = StyleSheet.create({
       width: 300,
     },
   },
+  dropwDownLeft: {
+    marginRight: 10,
+  },
+  inputContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
   inputs: {
-    width: 320,
-    "@media only screen and (max-width: 1343px)": {
-      // width: 460,
-    },
-    "@media only screen and (max-width: 1149px)": {
-      width: 320,
-    },
-    "@media only screen and (max-width: 895px)": {
-      width: 270,
-      // marginBottom: 10,
-    },
     "@media only screen and (max-width: 665px)": {
       width: "100%",
       flexDirection: "column",
@@ -974,29 +1041,33 @@ var styles = StyleSheet.create({
     },
   },
   subscribe: {
-    fontSize: 15,
-    width: 124,
-    height: 43,
+    fontSize: 14,
+    // width: 124,
+    // height: 43,
+    // height: '100%',
+    // height: 35,
+    padding: "10px 15px",
     fontWeight: 400,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    color: colors.BLUE(1),
-    border: `1px solid ${colors.BLUE(1)}`,
+    color: "#FFF",
+    backgroundColor: colors.BLUE(),
+
     borderRadius: 5,
+    boxSizing: "border-box",
     ":hover": {
-      background: colors.BLUE(0.1),
+      background: "#3E43E8",
     },
     "@media only screen and (max-width: 768px)": {
       fontSize: 15,
     },
   },
   subscribed: {
+    backgroundColor: "#FFF",
+    color: colors.BLUE(1),
     border: `1px solid ${colors.BLUE(1)}`,
-    backgroundColor: colors.BLUE(1),
-    color: "#FFF",
-
     ":hover": {
       border: `1px solid ${colors.BLUE(1)}`,
       backgroundColor: colors.BLUE(1),
@@ -1025,7 +1096,7 @@ var styles = StyleSheet.create({
   },
   subscribeContainer: {
     display: "flex",
-    flex: 1,
+    // flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
   },
