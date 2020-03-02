@@ -29,12 +29,13 @@ const OrcidLoginButton = (props) => {
   } = props;
 
   async function showSuccessMessage() {
-    getUser();
+    setMessage("Logged in!");
+    showMessage({ show: true, error: false });
   }
 
   function showLoginFailureMessage(response) {
     console.error(response);
-    setMessage("Login failed");
+    setMessage("ORCID login failed");
     showMessage({ show: true, error: true });
   }
 
