@@ -30,6 +30,5 @@ function setOrcidRedirect() {
 }
 
 export function nameToUrl(name) {
-  let arr = name.split(" ");
-  return arr.length > 1 ? arr.join("-").toLowerCase() : name.toLowerCase();
+  return encodeURIComponent(name);
 }
