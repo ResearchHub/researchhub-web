@@ -3,16 +3,11 @@ import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import colors from "~/config/themes/colors";
 import Ripples from "react-ripples";
+import { nameToUrl } from "~/config/constants";
 
 const HubTag = ({ tag, overrideStyle, hubName }) => {
   let { id, name, link, last } = tag;
   const nameArr = (name && name.split(" ")) || [];
-
-  function nameToUrl(name) {
-    return nameArr.length > 1
-      ? nameArr.join("-").toLowerCase()
-      : name.toLowerCase();
-  }
 
   if (name === hubName) {
     return (
