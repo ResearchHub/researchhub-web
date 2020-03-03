@@ -32,13 +32,6 @@ export const HubSearchResult = (props) => {
   // );
 };
 
-function hubNameToUrl(name) {
-  const nameArr = (name && name.split(" ")) || [];
-  return nameArr.length > 1
-    ? nameArr.join("-").toLowerCase()
-    : name.toLowerCase();
-}
-
 export const UniversitySearchResult = (props) => {
   const { result } = props || null;
   return <University university={result} />;
