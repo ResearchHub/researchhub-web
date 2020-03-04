@@ -52,7 +52,7 @@ const OrcidConnectButton = (props) => {
   }
 
   const buildRedirectUri = () => {
-    let hostname = props.hostname || window.location.hostname;
+    let hostname = props.hostname || window.location.host;
     let scheme = "http";
 
     if (!hostname.includes("localhost")) {
