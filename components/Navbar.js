@@ -32,6 +32,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { RHLogo } from "~/config/themes/icons";
 import "./stylesheets/Navbar.css";
+import OrcidConnectModal from "./modal/OrcidConnectModal";
 
 const Navbar = (props) => {
   const dispatch = useDispatch();
@@ -351,6 +352,7 @@ const Navbar = (props) => {
         <InviteToHubModal />
         <TransactionModal />
         <FirstVoteModal />
+        <OrcidConnectModal />
         <div className={css(styles.logoContainer)} onClick={navigateHome}>
           <RHLogo iconStyle={styles.logo} />
         </div>
