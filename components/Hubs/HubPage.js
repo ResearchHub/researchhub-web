@@ -1166,6 +1166,8 @@ var styles = StyleSheet.create({
   subscribed: {
     backgroundColor: "#FFF",
     color: colors.BLUE(1),
+    boxSizing: "border-box",
+    height: 38,
     border: `1px solid ${colors.BLUE(1)}`,
     ":hover": {
       border: `1px solid ${colors.BLUE(1)}`,
