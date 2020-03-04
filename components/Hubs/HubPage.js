@@ -467,14 +467,6 @@ class HubPage extends React.Component {
     });
   };
 
-  calculateStyles = () => {
-    let classNames = [styles.dropDownLeft];
-    // if (!this.state.disableScope) {
-    //   classNames.push(styles.dropDownMargin);
-    // }
-    return classNames;
-  };
-
   render() {
     let { auth } = this.props;
 
@@ -568,9 +560,8 @@ class HubPage extends React.Component {
                     id={"filterBy"}
                     options={filterOptions}
                     value={this.state.filterBy}
-                    containerStyle={this.calculateStyles()}
+                    containerStyle={styles.dropDownLeft}
                     inputStyle={{
-                      // fontSize: 14,
                       fontWeight: 500,
                       minHeight: "unset",
                       backgroundColor: "#FFF",
@@ -729,7 +720,6 @@ var styles = StyleSheet.create({
     pointerEvents: "none",
     cursor: "not-allowed",
     opacity: 0.4,
-    // border
   },
   centered: {
     height: 120,
@@ -999,7 +989,6 @@ var styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       flexDirection: "column",
-      // alignItems: 'flex-start'
       alignItems: "flex-end",
     },
   },
@@ -1012,7 +1001,6 @@ var styles = StyleSheet.create({
   inputs: {
     "@media only screen and (max-width: 665px)": {
       width: "100%",
-      // marginTop: 10,s
       justifyContent: "flex-end",
       alignItems: "center",
     },
