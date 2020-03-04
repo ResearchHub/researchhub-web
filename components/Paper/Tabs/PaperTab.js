@@ -347,7 +347,7 @@ var styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  paperUrl: state.paper.file ? state.paper.file : state.paper.url,
+  paperUrl: state.paper.file,
 });
 
 export default withRouter(connect(mapStateToProps)(PaperTab));
