@@ -7,7 +7,6 @@ import { GoogleLogin } from "react-google-login";
 // Component
 import Button from "../Form/Button";
 import BaseModal from "./BaseModal";
-// import OrcidLoginButton from "../OrcidLoginButton";
 
 // Redux
 import { AuthActions } from "../../redux/auth";
@@ -87,13 +86,6 @@ class LoginModal extends React.Component {
               />
             )}
           />
-          {/* <div className={css(styles.orcidButton)}>
-            <OrcidLoginButton
-              iconStyle={styles.iconStyle}
-              styles={styles.orchidButton}
-              customLabelStyle={styles.orchidLabel}
-            />
-          </div> */}
         </div>
       </BaseModal>
     );
