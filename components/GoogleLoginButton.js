@@ -6,6 +6,7 @@ import Button from "~/components/Form/Button";
 
 import { AuthActions } from "../redux/auth";
 import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 
@@ -22,6 +23,10 @@ const GoogleLoginButton = (props) => {
 
     if (props.auth.loginFailed) {
       showLoginFailureMessage();
+    } else {
+      if (!user.has_seen_orcid_connect_modal) {
+        props.openOrcidConnectModal(true);
+      }
     }
   };
 
@@ -71,6 +76,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
+  openOrcidConnectModal: ModalActions.openOrcidConnectModal,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };

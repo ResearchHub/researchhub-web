@@ -63,12 +63,18 @@ class OrcidConnectPage extends React.Component {
         .dispatch(
           AuthActions.orcidConnect({ accessToken, orcid: this.state.orcid })
         )
-        .then(() => {
-          console.log("success", this.props.auth.orcidConnectSuccess);
+        .then((action) => {
+          const success = action.orcidConnectSuccess;
+          if (success) {
+            Router.push({
+              pathname: `/orcid/login`,
+              query: { success: "true" },
+            });
+          } else {
+            console.error("ORCID connect failed");
+          }
         })
         .catch(console.error);
-    } else {
-      console.log("failed");
     }
   }
 
