@@ -34,7 +34,10 @@ class OrcidLoginPage extends React.Component {
 
     const hasEmailAlready = hasEmail == "true" ? true : false;
     if (hasEmailAlready) {
-      Router.push({ pathname: `/orcid/login`, query: { success: "true" } });
+      Router.push({
+        pathname: `/orcid/login/success`,
+        query: { success: "true" },
+      });
     }
   }
 
@@ -60,7 +63,10 @@ class OrcidLoginPage extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         this.toggleLoadingState();
-        Router.push({ pathname: `/orcid/login`, query: { success: "true" } });
+        Router.push({
+          pathname: `/orcid/login/success`,
+          query: { success: "true" },
+        });
       })
       .catch((err) => {
         this.toggleLoadingState();
