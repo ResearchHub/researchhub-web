@@ -24,7 +24,7 @@ const GoogleLoginButton = (props) => {
     if (props.auth.loginFailed) {
       showLoginFailureMessage();
     } else {
-      if (!user.has_seen_orcid_connect_modal) {
+      if (!props.auth.user.has_seen_orcid_connect_modal) {
         props.openOrcidConnectModal(true);
       }
     }
