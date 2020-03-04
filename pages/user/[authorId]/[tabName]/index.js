@@ -418,7 +418,10 @@ const AuthorPage = (props) => {
       return author.orcid_id ? (
         orcidLink
       ) : (
-        <OrcidConnectButton customLabel={"Verify your profile"} />
+        <OrcidConnectButton
+          hostname={hostname}
+          customLabel={"Verify your profile"}
+        />
       );
     } else {
       return author.orcid_id && orcidLink;

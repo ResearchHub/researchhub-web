@@ -13,6 +13,7 @@ export const ModalConstants = {
   ADD_HUB_MODAL_TOGGLE: "@@MODAL/ADD_HUB_MODAL_TOGGLE",
   TRANSACTION_MODAL_TOGGLE: "@@MODAL/TRANSACTION_MODAL_TOGGLE",
   FIRST_VOTE_MODAL_TOGGLE: "@@MODAL/FIRST_VOTE_MODAL_TOGGLE",
+  ORCID_CONNECT_MODAL_TOGGLE: "@@modal/ORCID_CONNECT_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -118,6 +119,16 @@ export const ModalActions = {
       });
     };
   },
+  openOrcidConnectModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.ORCID_CONNECT_MODAL_TOGGLE,
+        payload: {
+          openOrcidConnectModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -134,6 +145,7 @@ const defaultModalState = {
   openAddHubModal: false,
   openTransactionModal: false,
   openFirstVoteModal: false,
+  openOrcidConnectModal: false,
   loginModal: {},
   uploadPaperModal: {
     suggestedPapers: [],
@@ -151,6 +163,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.ADD_HUB_MODAL_TOGGLE:
     case ModalConstants.TRANSACTION_MODAL_TOGGLE:
     case ModalConstants.FIRST_VOTE_MODAL_TOGGLE:
+    case ModalConstants.ORCID_CONNECT_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
