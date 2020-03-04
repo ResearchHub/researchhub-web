@@ -880,7 +880,7 @@ var styles = StyleSheet.create({
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
     width: "100%",
-    marginBottom: 5,
+    marginBottom: 10,
     "@media only screen and (max-width: 1149px)": {
       fontSize: 30,
     },
@@ -907,7 +907,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   topbar: {
-    paddingTop: 20,
+    paddingTop: 30,
     paddingBottom: 20,
     width: "calc(100% - 140px)",
     position: "sticky",
@@ -1141,7 +1141,7 @@ var styles = StyleSheet.create({
     width: 120,
     height: 37,
     boxSizing: "border-box",
-    padding: "5px 1s5px",
+    padding: "5px 15px",
     fontWeight: 400,
     display: "flex",
     justifyContent: "center",
