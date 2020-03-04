@@ -1131,9 +1131,9 @@ class PaperUploadInfo extends React.Component {
 
   checkFormProgress = () => {
     var count = 0;
-    let { title, tagline, hubs } = this.state.form;
+    let { paper_title, tagline, hubs } = this.state.form;
     let uploadedPaper = this.props.paper.uploadedPaper;
-    if (title && title.trim() !== "") {
+    if (paper_title && paper_title.trim() !== "") {
       count++;
     }
     if (tagline && tagline.trim() !== "") {
@@ -1467,23 +1467,17 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     width: "100%",
-    // minWidth: 820,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    position: "sticky",
     backgroundColor: "#FCFCFC",
-    bottom: 0,
     marginTop: 30,
-    paddingTop: 20,
     paddingBottom: 20,
     marginBottom: 10,
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
-      // padding: "40px 0 50px 0",
     },
     "@media only screen and (max-width: 665px)": {
-      // padding: "30px 0 50px 0",
       width: "90%",
     },
   },
