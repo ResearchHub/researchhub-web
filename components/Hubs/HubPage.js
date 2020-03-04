@@ -549,14 +549,21 @@ class HubPage extends React.Component {
                   </span>
                 </span>
               </div>
-              <div className={css(styles.inputContainer)}>
-                <div className={css(styles.subscribeContainer)}>
+              <div
+                className={css(
+                  styles.inputContainer,
+                  this.props.home && styles.homeInputContainer
+                )}
+              >
+                <div
+                  className={css(
+                    styles.subscribeContainer,
+                    this.props.home && styles.hideBanner
+                  )}
+                >
                   {this.props.hub && this.renderSubscribeButton()}
                 </div>
                 <div className={css(styles.row, styles.inputs)}>
-                  {/* <div className={css(styles.mobileSubscribeContainer)}>
-                    {this.props.hub && this.renderSubscribeButton()}
-                  </div> */}
                   <FormSelect
                     id={"filterBy"}
                     options={filterOptions}
@@ -995,6 +1002,9 @@ var styles = StyleSheet.create({
       // alignItems: 'flex-start'
       alignItems: "flex-end",
     },
+  },
+  homeInputContainer: {
+    justifyContent: "flex-end",
   },
   smallerInputContainer: {
     width: "unset",
