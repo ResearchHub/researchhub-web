@@ -53,7 +53,7 @@ const DiscussionTab = (props) => {
       label: "Oldest",
     },
     {
-      value: "score",
+      value: "-score",
       label: "Top",
     },
   ];
