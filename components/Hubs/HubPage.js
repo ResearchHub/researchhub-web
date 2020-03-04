@@ -1141,7 +1141,7 @@ var styles = StyleSheet.create({
     width: 120,
     height: 37,
     boxSizing: "border-box",
-    padding: "5px 15px",
+    // padding: "5px 15px",
     fontWeight: 400,
     display: "flex",
     justifyContent: "center",
