@@ -16,8 +16,9 @@ import {
   ORCID_REDIRECT_URI,
   orcidMethods,
 } from "~/config/constants";
+import { useRouter } from "next/router";
 
-const OrcidLoginButton = (props) => {
+const OrcidConnectButton = (props) => {
   const {
     // state
     auth,
@@ -30,22 +31,40 @@ const OrcidLoginButton = (props) => {
     customLabel,
     customLabelStyle,
     iconStyle,
+    refreshProfileOnSuccess,
   } = props;
 
+  const router = useRouter();
+
   async function showSuccessMessage() {
-    getUser();
+    getUser().then((auth) => {
+      if (refreshProfileOnSuccess) {
+        const href = "/user/[authorId]/[tabName]";
+        router.push(href, `/user/${auth.user.author_profile.id}/contributions`);
+      }
+    });
   }
 
   function showLoginFailureMessage(response) {
     console.error(response);
-    setMessage("Login failed");
+    setMessage("Failed to connect with ORCID");
     showMessage({ show: true, error: true });
   }
+
+  const buildRedirectUri = () => {
+    let hostname = props.hostname || window.location.hostname;
+    let scheme = "http";
+
+    if (!hostname.includes("localhost")) {
+      scheme += "s";
+    }
+    return scheme + "://" + hostname + "/orcid/connect";
+  };
 
   return (
     <OrcidLogin
       clientId={ORCID_CLIENT_ID}
-      redirectUri={"http://localhost:3000/orcid/connect"}
+      redirectUri={buildRedirectUri()}
       method={orcidMethods.CONNECT}
       onSuccess={showSuccessMessage}
       onFailure={showLoginFailureMessage}
@@ -92,4 +111,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(OrcidLoginButton);
+)(OrcidConnectButton);
