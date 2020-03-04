@@ -40,57 +40,57 @@ import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
 const filterOptions = [
   {
     value: "hot",
-    // label: "Trending",
-    label: (
-      <span>
-        <i
-          className="fad fa-chart-line"
-          style={{ width: 15, paddingRight: 10, color: colors.GREEN() }}
-        />
-        {"Trending"}
-      </span>
-    ),
+    label: "Trending",
+    // label: (
+    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
+    //     <i
+    //       className="fad fa-chart-line"
+    //       style={{ width: 15, padding: 10, color: colors.GREEN(),}}
+    //     />
+    //     {"Trending"}
+    //   </span>
+    // ),
     disableScope: true,
   },
   {
     value: "top_rated",
-    // label: "Top Rated",
-    label: (
-      <span>
-        <i
-          className="fad fa-flame"
-          style={{ width: 15, paddingRight: 10, color: colors.RED() }}
-        />
-        {"Top Rated"}
-      </span>
-    ),
+    label: "Top Rated",
+    // label: (
+    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
+    //     <i
+    //       className="fad fa-flame"
+    //       style={{ width: 15, padding: 10, color: colors.RED(),}}
+    //     />
+    //     {"Top Rated"}
+    //   </span>
+    // ),
   },
   {
     value: "newest",
-    // label: "Newest",
-    label: (
-      <span>
-        <i
-          className="fad fa-sparkles"
-          style={{ width: 15, paddingRight: 10, color: colors.YELLOW() }}
-        />
-        {"Newest"}
-      </span>
-    ),
+    label: "Newest",
+    // label: (
+    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
+    //     <i
+    //       className="fad fa-sparkles"
+    //       style={{ width: 15, padding: 10, color: colors.YELLOW(),}}
+    //     />
+    //     {"Newest"}
+    //   </span>
+    // ),
     disableScope: true,
   },
   {
     value: "most_discussed",
-    // label: "Most Discussed",
-    label: (
-      <span>
-        <i
-          className="fad fa-comments-alt"
-          style={{ width: 15, paddingRight: 10, color: colors.BLUE() }}
-        />
-        {"Most Discussed"}
-      </span>
-    ),
+    label: "Most Discussed",
+    // label: (
+    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
+    //     <i
+    //       className="fad fa-comments-alt"
+    //       style={{ width: 15, padding: 10, color: colors.BLUE(),}}
+    //     />
+    //     {"Most Discussed"}
+    //   </span>
+    // ),
   },
 ];
 
@@ -324,7 +324,8 @@ class HubPage extends React.Component {
         prefix = "Most Discussed";
         break;
     }
-    return `Showing ${isHomePage ? "All" : ""} ${prefix} Papers:`;
+    //
+    return `${prefix} Papers ${isHomePage ? "on" : "in"} `;
   };
 
   onFilterSelect = (option, type) => {
@@ -367,7 +368,10 @@ class HubPage extends React.Component {
         : "Subscribed";
       let hover = this.state.unsubscribeHover && !this.state.subscribeClicked;
       return (
-        <Ripples onClick={this.subscribeToHub}>
+        <Ripples
+          onClick={this.subscribeToHub}
+          className={css(styles.subscribe)}
+        >
           <button
             className={css(
               styles.subscribe,
@@ -395,7 +399,10 @@ class HubPage extends React.Component {
       );
     } else {
       return (
-        <Ripples onClick={this.subscribeToHub}>
+        <Ripples
+          onClick={this.subscribeToHub}
+          className={css(styles.subscribe)}
+        >
           <button className={css(styles.subscribe)}>
             <span>
               {!this.state.transition ? (
@@ -458,6 +465,14 @@ class HubPage extends React.Component {
           });
       }
     });
+  };
+
+  calculateStyles = () => {
+    let classNames = [styles.dropDownLeft];
+    // if (!this.state.disableScope) {
+    //   classNames.push(styles.dropDownMargin);
+    // }
+    return classNames;
   };
 
   render() {
@@ -527,27 +542,33 @@ class HubPage extends React.Component {
           <div className={css(styles.mainFeed, styles.column)}>
             <div className={css(styles.column, styles.topbar)}>
               <div className={css(styles.text, styles.feedTitle)}>
-                {/* {this.getTitle()} */}
-                <span className={css(styles.hubName)}>
-                  {this.props.home ? "ResearchHub" : this.props.hub.name}
+                <span className={css(styles.fullWidth)}>
+                  {this.getTitle()}
+                  <span className={css(styles.hubName)}>
+                    {this.props.home ? "ResearchHub" : this.props.hub.name}
+                  </span>
                 </span>
+              </div>
+              <div className={css(styles.inputContainer)}>
                 <div className={css(styles.subscribeContainer)}>
                   {this.props.hub && this.renderSubscribeButton()}
                 </div>
-              </div>
-              <div className={css(styles.inputContainer)}>
-                {this.getTitle()}
                 <div className={css(styles.row, styles.inputs)}>
+                  {/* <div className={css(styles.mobileSubscribeContainer)}>
+                    {this.props.hub && this.renderSubscribeButton()}
+                  </div> */}
                   <FormSelect
                     id={"filterBy"}
                     options={filterOptions}
                     value={this.state.filterBy}
-                    containerStyle={[styles.dropDown, styles.dropwDownLeft]}
+                    containerStyle={this.calculateStyles()}
                     inputStyle={{
-                      fontSize: 14,
+                      // fontSize: 14,
                       fontWeight: 500,
                       minHeight: "unset",
                       backgroundColor: "#FFF",
+                      display: "flex",
+                      justifyContent: "space-between",
                     }}
                     onChange={(id, option) => {
                       if (option.disableScope) {
@@ -572,11 +593,11 @@ class HubPage extends React.Component {
                       this.state.disableScope && styles.disableScope,
                     ]}
                     inputStyle={{
-                      fontSize: 14,
                       fontWeight: 500,
-
                       minHeight: "unset",
                       backgroundColor: "#FFF",
+                      display: "flex",
+                      justifyContent: "space-between",
                     }}
                     onChange={(id, option) => this.onFilterSelect(option, id)}
                     isSearchable={false}
@@ -653,7 +674,6 @@ class HubPage extends React.Component {
               )}
             </div>
             <div className={css(styles.mobileHubListContainer)}>
-              {this.props.hub && <LiveFeed currentHub={this.props.hub} />}
               <HubsList
                 current={this.props.home ? null : this.props.hub}
                 overrideStyle={styles.mobileList}
@@ -678,6 +698,7 @@ var styles = StyleSheet.create({
   },
   row: {
     display: "flex",
+    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
@@ -700,7 +721,8 @@ var styles = StyleSheet.create({
   disableScope: {
     pointerEvents: "none",
     cursor: "not-allowed",
-    opacity: 0.2,
+    opacity: 0.4,
+    // border
   },
   centered: {
     height: 120,
@@ -790,6 +812,7 @@ var styles = StyleSheet.create({
   },
   sidebar: {
     width: "20%",
+    minWidth: 220,
     position: "relative",
     position: "sticky",
     top: 80,
@@ -852,35 +875,42 @@ var styles = StyleSheet.create({
   },
   feedTitle: {
     display: "flex",
+    justifyContent: "flex-start",
     alignItems: "center",
-    color: "#000",
-    fontWeight: "400",
-    fontSize: 33,
+    color: "#241F3A",
+    fontWeight: 400,
+    fontSize: 30,
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
-    width: "100%", //ADDED
-    "@media only screen and (max-width: 1343px)": {
-      fontSize: 25,
-    },
+    width: "100%",
+    marginBottom: 5,
     "@media only screen and (max-width: 1149px)": {
-      fontSize: 20,
+      fontSize: 30,
     },
     "@media only screen and (max-width: 665px)": {
-      fontSize: 22,
-      fontWeight: 500,
+      fontSize: 25,
       marginBottom: 10,
     },
     "@media only screen and (max-width: 416px)": {
-      fontWeight: 400,
-      fontSize: 20,
+      fontSize: 25,
+      textAlign: "left",
     },
     "@media only screen and (max-width: 321px)": {
-      width: 280,
-      textAlign: "center",
+      fontSize: 20,
     },
   },
+  feedSubtitle: {
+    fontSize: 14,
+    "@media only screen and (max-width: 665px)": {
+      display: "none",
+    },
+  },
+  fullWidth: {
+    width: "100%",
+    boxSizing: "border-box",
+  },
   topbar: {
-    paddingTop: 25,
+    paddingTop: 20,
     paddingBottom: 20,
     width: "calc(100% - 140px)",
     position: "sticky",
@@ -904,49 +934,76 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 577px)": {
       paddingLeft: 40,
       paddingRight: 40,
-      width: "calc(100% - 80px)",
+      width: "100%",
+      boxSizing: "border-box",
+    },
+    "@media only screen and (max-width: 416px)": {
+      paddingLeft: 30,
+      paddingRight: 30,
     },
   },
   dropDown: {
-    width: 165,
+    width: 140,
     margin: 0,
     minHeight: "unset",
+    fontSize: 14,
     "@media only screen and (max-width: 1343px)": {
-      // width: 220,
       height: "unset",
     },
     "@media only screen and (max-width: 1149px)": {
       width: 150,
-    },
-    "@media only screen and (max-width: 895px)": {
-      width: 125,
+      fontSize: 13,
     },
     "@media only screen and (max-width: 665px)": {
-      width: "100%",
-      height: 45,
-      margin: "10px 0px 10px 0px",
+      width: "calc(50% - 5px)",
+      fontSize: 14,
     },
-    "@media only screen and (max-width: 375px)": {
-      width: 345,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 300,
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(50% - 5px)",
     },
   },
-  dropwDownLeft: {
+  dropDownLeft: {
+    width: 140,
+    margin: 0,
+    minHeight: "unset",
+    fontSize: 14,
     marginRight: 10,
+    "@media only screen and (max-width: 1343px)": {
+      height: "unset",
+    },
+    "@media only screen and (max-width: 1149px)": {
+      width: 150,
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 665px)": {
+      width: "calc(50% - 5px)",
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(50% - 5px)",
+    },
   },
   inputContainer: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
+    "@media only screen and (max-width: 1149px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 415px)": {
+      flexDirection: "column",
+      // alignItems: 'flex-start'
+      alignItems: "flex-end",
+    },
+  },
+  smallerInputContainer: {
+    width: "unset",
   },
   inputs: {
     "@media only screen and (max-width: 665px)": {
       width: "100%",
-      flexDirection: "column",
-      justifyContent: "flex-start",
+      // marginTop: 10,s
+      justifyContent: "flex-end",
       alignItems: "center",
     },
   },
@@ -1040,39 +1097,14 @@ var styles = StyleSheet.create({
       width: "85%",
     },
   },
-  subscribe: {
-    fontSize: 14,
-    // width: 124,
-    // height: 43,
-    // height: '100%',
-    // height: 35,
-    padding: "10px 15px",
-    fontWeight: 400,
+  optionContainer: {
     display: "flex",
-    justifyContent: "center",
+    width: "100%",
+    justifyContent: "space-between",
     alignItems: "center",
-    cursor: "pointer",
-    color: "#FFF",
-    backgroundColor: colors.BLUE(),
-
-    borderRadius: 5,
-    boxSizing: "border-box",
-    ":hover": {
-      background: "#3E43E8",
-    },
-    "@media only screen and (max-width: 768px)": {
-      fontSize: 15,
-    },
   },
-  subscribed: {
-    backgroundColor: "#FFF",
-    color: colors.BLUE(1),
-    border: `1px solid ${colors.BLUE(1)}`,
-    ":hover": {
-      border: `1px solid ${colors.BLUE(1)}`,
-      backgroundColor: colors.BLUE(1),
-      color: "#FFF",
-    },
+  icon: {
+    marginLeft: 5,
   },
   loader: {
     opacity: 1,
@@ -1096,12 +1128,56 @@ var styles = StyleSheet.create({
   },
   subscribeContainer: {
     display: "flex",
-    // flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     alignItems: "center",
+    "@media only screen and (max-width: 665px)": {
+      marginRight: 10,
+    },
+    "@media only screen and (max-width: 415px)": {
+      marginRight: 0,
+      width: "100%",
+    },
+  },
+  subscribe: {
+    fontSize: 14,
+    width: 120,
+    height: 33,
+    boxSizing: "border-box",
+    padding: "5px 1s5px",
+    fontWeight: 400,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    color: "#FFF",
+    backgroundColor: colors.BLUE(),
+    borderRadius: 3,
+    border: "none",
+    outline: "none",
+    boxSizing: "border-box",
+    ":hover": {
+      background: "#3E43E8",
+    },
+    "@media only screen and (max-width: 768px)": {
+      fontSize: 15,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+    },
+  },
+  subscribed: {
+    backgroundColor: "#FFF",
+    color: colors.BLUE(1),
+    border: `1px solid ${colors.BLUE(1)}`,
+    ":hover": {
+      border: `1px solid ${colors.BLUE(1)}`,
+      backgroundColor: colors.BLUE(1),
+      color: "#FFF",
+    },
   },
   subscribeHover: {
     ":hover": {
+      color: "#fff",
       backgroundColor: colors.RED(1),
       border: `1px solid ${colors.RED(1)}`,
     },
