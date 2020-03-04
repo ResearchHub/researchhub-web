@@ -1,55 +1,62 @@
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import Router, { withRouter } from "next/router";
-
-import { AuthActions } from "~/redux/auth";
-
-import FormInput from "~/components/Form/FormInput";
-import Button from "~/components/Form/Button";
-import Loader from "~/components/Loader/Loader";
+import { withRouter } from "next/router";
+import Modal from "react-modal";
 
 import colors from "~/config/themes/colors";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { modalStyles } from "~/config/themes/styles";
 
 class OrcidLoginSuccessPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
   }
-
-  componentDidMount(props) {}
 
   render() {
     return (
-      <div className={css(styles.page)}>
-        <div className={css(styles.content)}>
-          <div className={css(styles.icons)}>
-            <img
-              className={css(styles.rhIcon)}
-              src={"/static/ResearchHubLogo.png"}
-            />
-            <img
-              className={css(styles.orcidIcon)}
-              src={
-                "https://ndownloader.figshare.com/files/8439047/preview/8439047/preview.jpg"
-              } // not sure how stable this link is
-            />
-          </div>
-          <div className={css(styles.headerContainer)}>
-            <React.Fragment>
-              <h1 className={css(styles.header)}>Successfully Logged in.</h1>
-            </React.Fragment>
+      <Modal
+        className={css(modalStyles.modal)}
+        isOpen={true}
+        closeModal={null}
+        shouldCloseOnOverlayClick={false}
+        style={overlay}
+        ariaHideApp={false}
+      >
+        <div className={css(styles.page)}>
+          <div className={css(styles.content)}>
+            <div className={css(styles.icons)}>
+              <img
+                className={css(styles.rhIcon)}
+                src={"/static/ResearchHubLogo.png"}
+              />
+              <img
+                className={css(styles.orcidIcon)}
+                src={"/static/icons/orcid.png"}
+              />
+            </div>
+            <div className={css(styles.headerContainer)}>
+              <React.Fragment>
+                <h1 className={css(styles.header)}>Successfully logged in.</h1>
+              </React.Fragment>
+            </div>
           </div>
         </div>
-      </div>
+      </Modal>
     );
   }
 }
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-});
+const overlay = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    zIndex: "11",
+    borderRadius: 5,
+  },
+};
 
 const styles = StyleSheet.create({
   page: {
@@ -61,6 +68,7 @@ const styles = StyleSheet.create({
     backgroundSize: "cover",
     paddingTop: 50,
     height: "100vh",
+    width: "100vw",
   },
   content: {
     padding: "30px 30px",
@@ -128,6 +136,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginRight: 5,
   },
+});
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
 export default withRouter(connect(mapStateToProps)(OrcidLoginSuccessPage));
