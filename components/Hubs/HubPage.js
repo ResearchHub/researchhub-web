@@ -1138,11 +1138,11 @@ var styles = StyleSheet.create({
   },
   subscribe: {
     fontSize: 14,
+    fontWeight: 500,
     width: 120,
     height: 37,
     boxSizing: "border-box",
     // padding: "5px 15px",
-    fontWeight: 400,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -1156,8 +1156,8 @@ var styles = StyleSheet.create({
     ":hover": {
       background: "#3E43E8",
     },
-    "@media only screen and (max-width: 768px)": {
-      fontSize: 15,
+    "@media only screen and (max-width: 1149px)": {
+      fontSize: 13,
     },
     "@media only screen and (max-width: 415px)": {
       width: "100%",
