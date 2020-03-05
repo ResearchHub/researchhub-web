@@ -61,6 +61,10 @@ function PaperTab(props) {
     toggleDnd(false);
   }
 
+  function downloadPDF() {
+    window.open(file, "_blank");
+  }
+
   function checkSearchResults(searchResults) {
     if (searchResults.length) {
       return !showConfirmation && toggleConfirmation(true);
@@ -225,6 +229,19 @@ function PaperTab(props) {
     );
   }
 
+  function renderDownloadPdf() {
+    return (
+      <Fragment>
+        <button
+          className={css(defaultStyles.secondaryButton, styles.downloadButton)}
+          onClick={downloadPDF}
+        >
+          Download PDF
+        </button>
+      </Fragment>
+    );
+  }
+
   return (
     <div className={css(styles.container)}>
       {file && (
@@ -243,6 +260,7 @@ function PaperTab(props) {
           </div>
         </ComponentWrapper>
       )}
+      {file && renderDownloadPdf()}
       {handleRenderState()}
     </div>
   );
@@ -256,6 +274,12 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
+  },
+  downloadButton: {
+    alignSelf: "flex-end",
+    display: "flex",
+    cursor: "pointer",
+    marginRight: "5%",
   },
   pageNavigator: {
     display: "flex",
