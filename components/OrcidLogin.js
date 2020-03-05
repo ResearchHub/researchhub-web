@@ -95,7 +95,10 @@ const OrcidLogin = (props) => {
     await dispatch(AuthActions.getUser());
     const state = store.getState();
     if (state.auth.user.email && state.auth.user.email != "") {
-      // has email
+      // TODO: Refactor this and handle all success and failure here too
+      if (method === orcidMethods.CONNECT) {
+        onSuccess();
+      }
     } else {
       dispatch(AuthActions.signout());
     }

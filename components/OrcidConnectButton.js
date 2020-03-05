@@ -37,12 +37,9 @@ const OrcidConnectButton = (props) => {
   const router = useRouter();
 
   async function showSuccessMessage() {
-    getUser().then((auth) => {
-      if (refreshProfileOnSuccess) {
-        const href = "/user/[authorId]/[tabName]";
-        router.push(href, `/user/${auth.user.author_profile.id}/contributions`);
-      }
-    });
+    if (refreshProfileOnSuccess) {
+      router.push(`/user/${auth.user.author_profile.id}`);
+    }
   }
 
   function showLoginFailureMessage(response) {
