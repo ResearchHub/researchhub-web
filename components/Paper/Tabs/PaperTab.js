@@ -61,6 +61,10 @@ function PaperTab(props) {
     toggleDnd(false);
   }
 
+  function downloadPDF() {
+    window.open(file, "_blank");
+  }
+
   function checkSearchResults(searchResults) {
     if (searchResults.length) {
       return !showConfirmation && toggleConfirmation(true);
@@ -134,21 +138,28 @@ function PaperTab(props) {
   function handleRenderState() {
     if (file) {
       return (
-        <Document
-          // className={css(!loadSuccess && styles.hidden)}
-          file={file}
-          onLoadSuccess={onLoadSuccess}
-        >
-          {Array.from(new Array(numPages), (el, index) => (
-            <Page
-              pageNumber={index + 1}
-              width={
-                isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
-              }
-              key={`page_${index + 1}`}
-            />
-          ))}
-        </Document>
+        <div>
+          <Ripples className={css(styles.action)} onClick={downloadPDF}>
+            Download PDF
+          </Ripples>
+          <Document
+            // className={css(!loadSuccess && styles.hidden)}
+            file={file}
+            onLoadSuccess={onLoadSuccess}
+          >
+            {Array.from(new Array(numPages), (el, index) => (
+              <Page
+                pageNumber={index + 1}
+                width={
+                  isMobile && window.innerWidth < 1000
+                    ? window.innerWidth
+                    : 1000
+                }
+                key={`page_${index + 1}`}
+              />
+            ))}
+          </Document>
+        </div>
       );
     } else {
       if (showDnd) {
@@ -246,6 +257,21 @@ function PaperTab(props) {
 }
 
 var styles = StyleSheet.create({
+  action: {
+    color: "#241F3A",
+    fontSize: 14,
+    opacity: 0.6,
+    display: "flex",
+    justifyContent: "flex-end",
+    cursor: "pointer",
+    transition: "all ease-out 0.1s",
+    padding: "3px 5px",
+    ":hover": {
+      color: colors.BLUE(1),
+      opacity: 1,
+      textDecoration: "underline",
+    },
+  },
   container: {
     width: "100%",
     display: "flex",
