@@ -254,7 +254,7 @@ var styles = StyleSheet.create({
     width: 670,
     fontSize: 16,
     fontWeight: 300,
-    "@media only screen and (max-width: 685px)": {
+    "@media only screen and (max-width: 799px)": {
       fontSize: 15,
       width: "100%",
     },

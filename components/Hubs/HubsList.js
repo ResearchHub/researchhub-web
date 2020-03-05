@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     height: 10,
   },
   subscribedIcon: {
-    marginLeft: 3,
+    marginLeft: "auto",
     color: colors.DARK_YELLOW(),
     fontSize: 11,
   },
