@@ -1032,6 +1032,11 @@ var styles = StyleSheet.create({
   },
   homeInputContainer: {
     justifyContent: "flex-end",
+
+    "@media only screen and (max-width: 799px)": {
+      width: "100%",
+      marginTop: 16,
+    },
   },
   smallerInputContainer: {
     width: "unset",
@@ -1053,7 +1058,9 @@ var styles = StyleSheet.create({
     paddingLeft: 70,
     paddingRight: 70,
     paddingBottom: 30,
-    paddingTop: 32,
+    "@media only screen and (min-width: 800px)": {
+      paddingTop: 32,
+    },
     "@media only screen and (max-width: 577px)": {
       paddingLeft: 40,
       paddingRight: 40,
