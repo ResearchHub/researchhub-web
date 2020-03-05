@@ -420,6 +420,7 @@ const AuthorPage = (props) => {
       ) : (
         <OrcidConnectButton
           hostname={hostname}
+          refreshProfileOnSuccess={true}
           customLabel={"Connect your ORCiD Profile"}
         />
       );
