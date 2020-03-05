@@ -29,17 +29,33 @@ class FormSelect extends React.Component {
       containerStyle,
       labelStyle,
       inputStyle,
+      multiTagStyle,
+      multiTagLabelStyle,
       value,
       options,
       isMulti,
       isDisabled,
       error,
       isSearchable,
+      isClearable,
     } = this.props;
 
     const defaultValue = {
       value: null,
       label: placeholder,
+    };
+
+    const formatStyle = (styleObject) => {
+      if (!styleObject) {
+        return;
+      }
+
+      var formattedStyle;
+      if (styleObject["_definition"]) {
+        formattedStyle = { ...styleObject["_definition"] };
+      }
+
+      return formattedStyle ? formattedStyle : styleObject;
     };
 
     const colorStyles = {
@@ -65,7 +81,7 @@ class FormSelect extends React.Component {
             cursor: "pointer",
           },
         },
-        ...inputStyle,
+        ...formatStyle(inputStyle),
       }),
       placeholder: (styles) => ({
         ...styles,
@@ -76,7 +92,13 @@ class FormSelect extends React.Component {
         return {
           ...styles,
           backgroundColor: "#edeefe",
-          color: colors.BLUE(1),
+          ...formatStyle(multiTagStyle),
+        };
+      },
+      multiValueLabel: (styles, { data }) => {
+        return {
+          ...styles,
+          ...formatStyle(multiTagLabelStyle),
         };
       },
     };
@@ -110,6 +132,7 @@ class FormSelect extends React.Component {
           isMulti={isMulti}
           isSearchable={isSearchable === null ? true : isSearchable}
           isDisabled={isDisabled}
+          isClearable={isClearable}
         />
       </div>
     );

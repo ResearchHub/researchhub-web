@@ -4,10 +4,10 @@ import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import Toggle from "react-toggle";
 import "~/components/TextEditor/stylesheets/ReactToggle.css";
+import { withAlert } from "react-alert";
 
 import FormSelect from "~/components/Form/FormSelect";
 import FormInput from "~/components/Form/FormInput";
-import CheckBox from "~/components/Form/CheckBox";
 import ComponentWrapper from "~/components/ComponentWrapper";
 
 import { DIGEST_FREQUENCY } from "~/config/constants";
@@ -29,6 +29,7 @@ import { HubActions } from "~/redux/hub";
 import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
 import { doesNotExist } from "~/config/utils";
 import colors from "../../config/themes/colors";
+import icons from "../../config/themes/icons";
 
 import "./stylesheets/toggle.css";
 
@@ -241,10 +242,6 @@ class UserSettings extends Component {
           {"Hub Digest Frequency"}
         </div>
         <div className={css(styles.formContainer)}>
-          {/* <div className={css(styles.currentValue)}> */}
-          {/* {this.state.frequency} */}
-          {/* Daily */}
-          {/* </div>   */}
           <FormSelect
             id={"frequencySelect"}
             options={frequencyOptions}
@@ -283,15 +280,35 @@ class UserSettings extends Component {
   };
 
   renderSubscribedHubs = () => {
+    const subscribedHubIds = this.props.subscribedHubs.map((hub) => hub.id);
+    const availableHubs = this.props.hubs.filter((hub) => {
+      return !subscribedHubIds.includes(hub.id);
+    });
+
     return (
       <div className={css(styles.container)}>
-        <div className={css(styles.listLabel)} id={"hubListTitle"}>
-          {"Currently Subscribed Hubs"}
+        <div className={css(styles.labelContainer)}>
+          <div className={css(styles.listLabel)} id={"hubListTitle"}>
+            {"Currently Subscribed Hubs"}
+          </div>
         </div>
         <div className={css(hubStyles.list, styles.hubsList)}>
-          {this.props.subscribedHubs.map((hub) => {
-            return this.renderHub(hub);
-          })}
+          <FormSelect
+            id={"hubSelect"}
+            options={this.buildHubOptions(availableHubs)}
+            containerStyle={
+              (selectStyles.container, styles.formSelectContainer)
+            }
+            inputStyle={(selectStyles.input, styles.formSelectInput)}
+            onChange={this.handleHubOnChange}
+            isSearchable={true}
+            placeholder={"Subscribe to a hub"}
+            value={this.buildHubOptions(this.props.subscribedHubs)}
+            isMulti={true}
+            multiTagStyle={styles.multiTagStyle}
+            multiTagLabelStyle={styles.multiTagLabelStyle}
+            isClearable={false}
+          />
         </div>
       </div>
     );
@@ -300,7 +317,7 @@ class UserSettings extends Component {
   renderHub = (hub) => {
     return (
       <Ripples
-        onClick={() => this.handleHubUnsubscribe(hub.id)}
+        onClick={() => this.confirmUnsubscribe(hub)}
         key={hub.id}
         className={css(hubStyles.entry, styles.hubEntry)}
       >
@@ -310,6 +327,21 @@ class UserSettings extends Component {
         </div>
       </Ripples>
     );
+  };
+
+  confirmUnsubscribe = (hub) => {
+    this.props.alert.show({
+      text: (
+        <span>
+          Unsubscribe from
+          <span className={css(styles.hubName)}>{` ${hub.name} `}</span>?
+        </span>
+      ),
+      buttonText: "Yes",
+      onClick: () => {
+        return this.handleHubUnsubscribe(hub.id);
+      },
+    });
   };
 
   handleHubUnsubscribe = (hubId) => {
@@ -350,24 +382,58 @@ class UserSettings extends Component {
     return (
       hubs &&
       hubs.map((hub) => {
+        let hubName = hub.name
+          .split(" ")
+          .map((el) => {
+            return el[0].toUpperCase() + el.slice(1);
+          })
+          .join(" ");
         return {
           value: hub.id,
-          label: hub.name,
+          label: hubName,
         };
       })
     );
   };
 
-  handleHubSubscribe = (id, option) => {
+  handleHubOnChange = (id, newHubList) => {
+    let prevState = this.props.subscribedHubs;
+
+    if (newHubList.length > prevState.length) {
+      let newHub = newHubList[newHubList.length - 1];
+      this.handleHubSubscribe(newHub);
+    } else {
+      let removedHub = this.detectRemovedHub(prevState, newHubList);
+      this.confirmUnsubscribe(removedHub);
+    }
+  };
+
+  handleHubSubscribe = (hub) => {
     const { hubs, topHubs } = this.props;
 
-    subscribeToHub(option.value)
+    subscribeToHub(hub.value)
       .then((res) => {
         this.props.dispatch(HubActions.updateHub(hubs, topHubs, { ...res }));
         this.props.dispatch(MessageActions.setMessage("Subscribed!"));
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
       .catch(this.displayError);
+  };
+
+  detectRemovedHub = (prevState, newState) => {
+    var cache = {};
+    prevState.forEach((hub) => {
+      cache[hub.id] = hub;
+    });
+
+    for (var i = 0; i < newState.length; i++) {
+      var id = newState[i].value;
+      if (cache[id]) {
+        delete cache[id];
+      }
+    }
+
+    return Object.values(cache)[0];
   };
 
   renderContentSubscriptions = () => {
@@ -457,6 +523,7 @@ class UserSettings extends Component {
   };
 
   displayError = (err) => {
+    console.log("err", err);
     this.props.dispatch(
       MessageActions.setMessage("Oops! Something went wrong.")
     );
@@ -548,6 +615,22 @@ const styles = StyleSheet.create({
   },
   formSelectInput: {
     width: "100%",
+  },
+  multiTagStyle: {
+    margin: "5px 0",
+    marginRight: 5,
+    border: "1px solid #fff",
+    padding: "5px 8px",
+    ":hover": {
+      border: `1px solid ${colors.BLUE()}`,
+    },
+  },
+  multiTagLabelStyle: {
+    color: colors.PURPLE(1),
+    fontSize: 12,
+    fontWeight: 500,
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
   formContainer: {
     display: "flex",
@@ -645,6 +728,10 @@ const styles = StyleSheet.create({
       borderColor: colors.BLUE(),
     },
   },
+  hubName: {
+    color: colors.BLUE(),
+    textTransform: "capitalize",
+  },
   closeIcon: {
     cursor: "pointer",
     color: colors.BLACK(),
@@ -674,6 +761,13 @@ const styles = StyleSheet.create({
   optOut: {
     fontWeight: 400,
   },
+  addIcon: {
+    fontSize: 18,
+    marginRight: 3,
+    ":hover": {
+      backgroundColor: "#fff",
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -684,4 +778,4 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps,
   null
-)(UserSettings);
+)(withAlert()(UserSettings));
