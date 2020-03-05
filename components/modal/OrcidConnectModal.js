@@ -34,11 +34,11 @@ class OrcidConnectModal extends React.Component {
       <BaseModal
         isOpen={modals.openOrcidConnectModal}
         closeModal={this.closeModal}
-        title={"Verify with ORCID"}
+        title={"Are you an author on ORCiD?"}
         subtitle={
           modals.loginModal.flavorText
             ? modals.loginModal.flavorText
-            : "Verify your author profile with ORCID"
+            : "Connect your ResearchHub profile with ORCiD to verify your authorship."
         }
         backgroundImage={true}
       >
