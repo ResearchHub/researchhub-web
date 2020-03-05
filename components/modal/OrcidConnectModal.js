@@ -1,7 +1,8 @@
 import React from "react";
+import { StyleSheet, css } from "aphrodite";
 import Router, { withRouter } from "next/router";
 import { connect } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
+import { Helpers } from "@quantfive/js-web-config";
 
 import BaseModal from "./BaseModal";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
@@ -9,8 +10,8 @@ import OrcidConnectButton from "~/components/OrcidConnectButton";
 import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "~/redux/message";
 
+import API from "~/config/api";
 import colors from "~/config/themes/colors";
-import { absoluteUrl } from "~/config/utils";
 
 class OrcidConnectModal extends React.Component {
   constructor(props) {
@@ -22,8 +23,9 @@ class OrcidConnectModal extends React.Component {
    * closes the modal on button click
    */
   closeModal = () => {
-    let { openOrcidConnectModal } = this.props;
-    openOrcidConnectModal(false);
+    const { openOrcidConnectModal } = this.props;
+    const hasSeen = this.props.auth.user.has_seen_orcid_connect_modal;
+    openOrcidConnectModal(false, !hasSeen);
   };
 
   render() {
@@ -155,6 +157,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  auth: state.auth,
   modals: state.modals,
 });
 

@@ -1,16 +1,21 @@
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "next/router";
-
-import colors from "~/config/themes/colors";
-
 import Modal from "react-modal";
 
+import { ModalActions } from "~/redux/modals";
+
+import colors from "~/config/themes/colors";
 import { modalStyles } from "~/config/themes/styles";
 
 class OrcidConnectSuccessPage extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    const setHasSeenModal = true;
+    this.props.openOrcidConnectModal(false, setHasSeenModal);
   }
 
   render() {
@@ -145,6 +150,16 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  openOrcidConnectModal: ModalActions.openOrcidConnectModal,
 });
 
-export default withRouter(connect(mapStateToProps)(OrcidConnectSuccessPage));
+const mapDispatchToProps = {
+  openOrcidConnectModal: ModalActions.openOrcidConnectModal,
+};
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(OrcidConnectSuccessPage)
+);
