@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
@@ -6,7 +5,6 @@ import moment from "moment";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Link from "next/link";
-import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 
 // Component
@@ -18,7 +16,6 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-import LiveFeed from "./LiveFeed";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -30,13 +27,7 @@ import { HubActions } from "~/redux/hub";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import { PaperActions } from "../../redux/paper";
-import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "../../config/constants";
 
-// marginRight: 5
-// marginRight: 5
-// marginRight: 5
-// marginRight: 5
 const filterOptions = [
   {
     value: "hot",
@@ -361,11 +352,19 @@ class HubPage extends React.Component {
 
   renderSubscribeButton = () => {
     if (this.state.subscribe) {
-      let text = this.state.unsubscribeHover
-        ? this.state.subscribeClicked
-          ? "Subscribed"
-          : "Unsubscribe"
-        : "Subscribed";
+      let text = this.state.unsubscribeHover ? (
+        this.state.subscribeClicked ? (
+          <span>
+            Subscribed <i className="fas fa-star" />
+          </span>
+        ) : (
+          "Unsubscribe"
+        )
+      ) : (
+        <span>
+          Subscribed <i className="fas fa-star" />
+        </span>
+      );
       let hover = this.state.unsubscribeHover && !this.state.subscribeClicked;
       return (
         <Ripples
@@ -375,7 +374,7 @@ class HubPage extends React.Component {
           <button
             className={css(
               styles.subscribe,
-              styles.subscribed,
+              // styles.subscribed,
               hover && styles.subscribeHover
             )}
             onMouseEnter={this.onMouseEnterSubscribe}
@@ -532,7 +531,13 @@ class HubPage extends React.Component {
             <HubsList current={this.props.home ? null : this.props.hub} />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
-            <div className={css(styles.column, styles.topbar)}>
+            <div
+              className={css(
+                styles.column,
+                styles.topbar,
+                this.props.home && styles.row
+              )}
+            >
               <div className={css(styles.text, styles.feedTitle)}>
                 <span className={css(styles.fullWidth)}>
                   {this.getTitle()}
@@ -544,6 +549,7 @@ class HubPage extends React.Component {
               <div
                 className={css(
                   styles.inputContainer,
+                  !this.props.home && styles.hubInputContainer,
                   this.props.home && styles.homeInputContainer
                 )}
               >
@@ -707,8 +713,10 @@ var styles = StyleSheet.create({
   },
   titleContainer: {
     alignItems: "flex-start",
-    marginLeft: "calc(100% * .08)",
     justifyContent: "space-between",
+    padding: 16,
+    paddingLeft: "8%",
+    boxSizing: "border-box",
     height: 200,
     zIndex: 2,
     "@media only screen and (max-width: 767px)": {
@@ -823,9 +831,9 @@ var styles = StyleSheet.create({
     width: 670,
     fontSize: 16,
     fontWeight: 300,
-    "@media only screen and (max-width: 685px)": {
-      fontSize: 15,
+    "@media only screen and (max-width: 799px)": {
       width: "100%",
+      fontSize: 16,
     },
     "@media only screen and (max-width: 577px)": {
       fontSize: 16,
@@ -880,17 +888,19 @@ var styles = StyleSheet.create({
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
     width: "100%",
-    marginBottom: 10,
+    textAlign: "center",
+    "@media only screen and (min-width: 800px)": {
+      textAlign: "left",
+      paddingRight: 16,
+    },
     "@media only screen and (max-width: 1149px)": {
       fontSize: 30,
     },
     "@media only screen and (max-width: 665px)": {
       fontSize: 25,
-      marginBottom: 10,
     },
     "@media only screen and (max-width: 416px)": {
       fontSize: 25,
-      textAlign: "left",
     },
     "@media only screen and (max-width: 321px)": {
       fontSize: 20,
@@ -917,6 +927,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 2,
     top: 80,
+    boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
@@ -951,12 +962,9 @@ var styles = StyleSheet.create({
       width: 150,
       fontSize: 13,
     },
-    "@media only screen and (max-width: 665px)": {
+    "@media only screen and (max-width: 779px)": {
       width: "calc(50% - 5px)",
       fontSize: 14,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: "calc(50% - 5px)",
     },
   },
   dropDownLeft: {
@@ -972,10 +980,7 @@ var styles = StyleSheet.create({
       width: 150,
       fontSize: 13,
     },
-    "@media only screen and (max-width: 665px)": {
-      width: "calc(50% - 5px)",
-    },
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 779px)": {
       width: "calc(50% - 5px)",
     },
   },
@@ -983,14 +988,17 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "100%",
     "@media only screen and (max-width: 1149px)": {
       fontSize: 13,
     },
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 779px)": {
       flexDirection: "column",
       alignItems: "flex-end",
     },
+  },
+  hubInputContainer: {
+    width: "100%",
+    marginTop: 16,
   },
   homeInputContainer: {
     justifyContent: "flex-end",
@@ -999,7 +1007,7 @@ var styles = StyleSheet.create({
     width: "unset",
   },
   inputs: {
-    "@media only screen and (max-width: 665px)": {
+    "@media only screen and (max-width: 779px)": {
       width: "100%",
       justifyContent: "flex-end",
       alignItems: "center",
@@ -1015,6 +1023,7 @@ var styles = StyleSheet.create({
     paddingLeft: 70,
     paddingRight: 70,
     paddingBottom: 30,
+    paddingTop: 32,
     "@media only screen and (max-width: 577px)": {
       paddingLeft: 40,
       paddingRight: 40,
@@ -1115,14 +1124,14 @@ var styles = StyleSheet.create({
   noResultsLine: {
     textAlign: "center",
     fontSize: 20,
-    marginBottom: 10,
+    marginBottom: 16,
     padding: 20,
     borderBottom: "1px solid",
   },
   relatedResults: {
     textAlign: "center",
     fontSize: 25,
-    marginBottom: 10,
+    marginBottom: 16,
   },
   subscribeContainer: {
     display: "flex",
@@ -1131,14 +1140,17 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 665px)": {
       marginRight: 10,
     },
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 799px)": {
       marginRight: 0,
       width: "100%",
+      justifyContent: "center",
+      marginBottom: 16,
     },
   },
   subscribe: {
     fontSize: 14,
     fontWeight: 500,
+    letterSpacing: 0.7,
     width: 120,
     height: 37,
     boxSizing: "border-box",
@@ -1159,7 +1171,7 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 1149px)": {
       fontSize: 13,
     },
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 801px)": {
       width: "100%",
     },
   },
