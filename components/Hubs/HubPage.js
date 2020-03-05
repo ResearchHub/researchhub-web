@@ -493,6 +493,8 @@ class HubPage extends React.Component {
     });
   };
 
+  renderTopBar = () => {};
+
   render() {
     let { auth } = this.props;
 

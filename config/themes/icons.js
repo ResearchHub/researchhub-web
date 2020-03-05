@@ -26,6 +26,7 @@ const icons = {
   ellipsisH: <i className="far fa-ellipsis-h" />,
   date: <i className="far fa-calendar-day" />,
   upload: <i class="fas fa-upload"></i>,
+  plusCircle: <i className="fal fa-plus-circle" />,
 };
 
 export const voteWidgetIcons = {
