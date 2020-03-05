@@ -1,10 +1,13 @@
 import { redirect } from "~/config/utils";
 
-function Paper() {}
+const redirectPath = "summary";
+
+function Paper() {
+  // TODO: Does this need to be a dynamic route or hard refresh?
+  Router.push(redirectPath);
+}
 
 Paper.getInitialProps = async (ctx) => {
-  const redirectPath = "summary";
-
   redirect(ctx, "paperId", redirectPath);
   return {};
 };

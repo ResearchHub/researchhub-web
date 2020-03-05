@@ -1,10 +1,14 @@
+import Router from "next/router";
 import { redirect } from "~/config/utils";
 
-function AuthorPageRedirect() {}
+const redirectPath = "contributions";
+
+function AuthorPageRedirect() {
+  // TODO: Does this need to be a dynamic route or hard refresh?
+  Router.push(redirectPath);
+}
 
 AuthorPageRedirect.getInitialProps = async (ctx) => {
-  const redirectPath = "contributions";
-
   redirect(ctx, "authorId", redirectPath);
   return {};
 };
