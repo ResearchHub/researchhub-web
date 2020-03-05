@@ -124,6 +124,7 @@ class HubPage extends React.Component {
       doneFetching: false,
       unsubscribeHover: false,
       subscribeClicked: false,
+      titleBoxShadow: false,
     };
   }
 
@@ -142,6 +143,31 @@ class HubPage extends React.Component {
     this.props.setUserBannerPreference(false);
   };
 
+  /**
+   * In this scroll listener, we're going to add a CSS class on the
+   * title bar when we hit a certain height
+   */
+  scrollListener = () => {
+    let { auth } = this.props;
+    if (auth.showBanner && window.scrollY > 323) {
+      this.setState({
+        titleBoxShadow: true,
+      });
+    } else if (!auth.showBanner && window.scrollY > 27) {
+      this.setState({
+        titleBoxShadow: true,
+      });
+    } else if (!auth.showBanner && window.scrollY < 27) {
+      this.setState({
+        titleBoxShadow: false,
+      });
+    } else if (auth.showBanner && window.scrollY < 323) {
+      this.setState({
+        titleBoxShadow: false,
+      });
+    }
+  };
+
   componentDidMount() {
     this.fetchPapers({ hub: this.props.hub });
     this.setState({
@@ -149,6 +175,7 @@ class HubPage extends React.Component {
     });
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
+    window.addEventListener("scroll", this.scrollListener);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -535,6 +562,7 @@ class HubPage extends React.Component {
               className={css(
                 styles.column,
                 styles.topbar,
+                this.state.titleBoxShadow && styles.titleBoxShadow,
                 this.props.home && styles.row
               )}
             >
@@ -916,6 +944,9 @@ var styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
   },
+  titleBoxShadow: {
+    boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
+  },
   topbar: {
     paddingTop: 30,
     paddingBottom: 20,
@@ -927,7 +958,6 @@ var styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 2,
     top: 80,
-    boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
