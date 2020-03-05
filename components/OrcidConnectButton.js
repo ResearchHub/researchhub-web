@@ -91,9 +91,9 @@ const styles = StyleSheet.create({
   },
   button: {
     height: 55,
-    width: 230,
-    marginTop: 10,
+    padding: "0px 16px",
     marginBottom: 0,
+    width: "unset",
   },
 });
 

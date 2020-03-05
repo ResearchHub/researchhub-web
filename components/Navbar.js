@@ -253,11 +253,6 @@ const Navbar = (props) => {
           customLabelStyle={[styles.googleLabel]}
         />
         <div className={css(styles.divider)}></div>
-        <OrcidLoginButton
-          styles={[styles.button, styles.googleLoginButton, styles.login]}
-          iconStyle={styles.orcidIcon}
-          customLabelStyle={[styles.googleLabel]}
-        />
       </div>
     );
   }
