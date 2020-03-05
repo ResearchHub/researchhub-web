@@ -4,6 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 const icons = {
   chat: <i className="fas fa-comment"></i>,
   chevronRight: <i className="far fa-chevron-right"></i>,
+  externalLink: <i class="fas fa-external-link-alt"></i>,
   longArrowLeft: <i className="fal fa-long-arrow-left"></i>,
   share: <i className="fas fa-share"></i>,
   shareAlt: <i className="fas fa-share-alt"></i>,
