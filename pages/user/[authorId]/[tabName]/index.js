@@ -420,7 +420,7 @@ const AuthorPage = (props) => {
       ) : (
         <OrcidConnectButton
           hostname={hostname}
-          customLabel={"Verify your profile"}
+          customLabel={"Connect your ORCiD Profile"}
         />
       );
     } else {
@@ -448,36 +448,45 @@ const AuthorPage = (props) => {
             )}
           </div>
           <div className={css(styles.profileInfo)}>
-            {!editName ? (
-              <div
-                className={css(styles.authorName, styles.editButtonContainer)}
-                onMouseEnter={() => onMouseEnter(SECTIONS.name)}
-                onMouseLeave={() => onMouseLeave(SECTIONS.name)}
-              >
-                {author.first_name} {author.last_name}
-                {hoverName &&
-                  allowEdit &&
-                  renderEditButton(() => {
-                    setHoverName(false);
-                    onEditToggle(SECTIONS.name);
-                  })}
-              </div>
-            ) : (
-              allowEdit && (
-                <div className={css(styles.editDescriptionContainer)}>
-                  <input
-                    className={css(styles.nameInput)}
-                    value={name}
-                    onChange={onNameChange}
-                  />
-                  <div className={css(styles.actionContainer)}>
-                    {renderCancelButton(SECTIONS.name)}
-                    {renderSaveButton(SECTIONS.name, {})}
-                  </div>
+            <div className={css(styles.nameLine)}>
+              {!editName ? (
+                <div
+                  className={css(styles.authorName, styles.editButtonContainer)}
+                  onMouseEnter={() => onMouseEnter(SECTIONS.name)}
+                  onMouseLeave={() => onMouseLeave(SECTIONS.name)}
+                >
+                  {author.first_name} {author.last_name}
+                  {hoverName &&
+                    allowEdit &&
+                    renderEditButton(() => {
+                      setHoverName(false);
+                      onEditToggle(SECTIONS.name);
+                    })}
                 </div>
-              )
-            )}
-            {renderOrcid()}
+              ) : (
+                allowEdit && (
+                  <div className={css(styles.editDescriptionContainer)}>
+                    <input
+                      className={css(styles.nameInput)}
+                      value={name}
+                      onChange={onNameChange}
+                    />
+                    <div className={css(styles.actionContainer)}>
+                      {renderCancelButton(SECTIONS.name)}
+                      {renderSaveButton(SECTIONS.name, {})}
+                    </div>
+                  </div>
+                )
+              )}
+              <div
+                className={css(
+                  styles.connectOrcid,
+                  author.orcid_id && styles.orcidAvailable
+                )}
+              >
+                {renderOrcid()}
+              </div>
+            </div>
             <div className={css(styles.reputation)}>
               <div className={css(styles.reputationTitle)}>
                 Lifetime Reputation:
@@ -688,6 +697,9 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     marginRight: 30,
   },
+  connectOrcid: {
+    marginBottom: 16,
+  },
   socialLinks: {
     display: "flex",
     height: 35,
@@ -706,6 +718,24 @@ const styles = StyleSheet.create({
       textAlign: "center",
     },
   },
+  nameLine: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    "@media only screen and (min-width: 768px)": {
+      alignItems: "flex-start",
+    },
+    "@media only screen and (min-width: 1280px)": {
+      display: "flex",
+      alignItems: "center",
+      flexDirection: "row",
+    },
+  },
+  orcidAvailable: {
+    "@media only screen and (min-width: 1280px)": {
+      flexDirection: "column",
+    },
+  },
   extraInfoContainer: {
     display: "flex",
   },
@@ -718,7 +748,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   description: {
-    marginBottom: 10,
+    marginBottom: 16,
+    justifyContent: "center",
   },
   socialMedia: {
     width: 35,
@@ -943,7 +974,7 @@ const styles = StyleSheet.create({
   reputation: {
     display: "flex",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 16,
 
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
