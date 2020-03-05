@@ -24,8 +24,12 @@ class OrcidConnectModal extends React.Component {
    */
   closeModal = () => {
     const { openOrcidConnectModal } = this.props;
+    let setHasSeen = false;
     const hasSeen = this.props.auth.user.has_seen_orcid_connect_modal;
-    openOrcidConnectModal(false, !hasSeen);
+    if (!hasSeen) {
+      setHasSeen = true;
+    }
+    openOrcidConnectModal(false, setHasSeen);
   };
 
   render() {
