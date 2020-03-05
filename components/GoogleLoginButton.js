@@ -17,20 +17,23 @@ const GoogleLoginButton = (props) => {
     let { googleLogin, getUser } = props;
     response["access_token"] = response["accessToken"];
 
-    await googleLogin(response).then((_) => {
-      getUser().then((_) => {});
-    });
-
-    if (props.auth.loginFailed) {
-      showLoginFailureMessage();
-    } else {
-      if (!props.auth.user.has_seen_orcid_connect_modal) {
-        props.openOrcidConnectModal(true);
+    await googleLogin(response).then((action) => {
+      if (action.loginFailed) {
+        showLoginFailureMessage();
+      } else {
+        getUser().then((userAction) => {
+          const hasSeenOrcidConnectModal =
+            props.auth.user.has_seen_orcid_connect_modal;
+          if (!hasSeenOrcidConnectModal) {
+            props.openOrcidConnectModal(true);
+          }
+        });
       }
-    }
+    });
   };
 
   function showLoginFailureMessage(response) {
+    console.error(response);
     props.setMessage("Login failed");
     props.showMessage({ show: true, error: true });
   }
