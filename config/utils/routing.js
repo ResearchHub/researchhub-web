@@ -46,3 +46,8 @@ export function absoluteUrl(req, setLocalhost) {
     origin: protocol + "//" + host,
   };
 }
+
+export function openExternalLink(url) {
+  const tab = window.open(url);
+  tab.focus();
+}

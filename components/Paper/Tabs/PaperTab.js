@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 
 // NPM Modules
 import { connect, useStore, useDispatch } from "react-redux";
@@ -26,22 +26,22 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "../../../config/themes/colors";
+import icons from "~/config/themes/icons";
+import { defaultStyles } from "~/config/themes/styles";
+import { openExternalLink } from "~/config/utils";
 
 function PaperTab(props) {
-  const { paperUrl, paperId } = props;
+  const { paper, paperId } = props;
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
 
   const [loadSuccess, setLoadSuccess] = useState(false);
   const [numPages, setNumPages] = useState(0);
-  const [file, setFile] = useState(paperUrl); // the path to file pdf
+  const [file, setFile] = useState((paper && paper.file) || null); // the path to file pdf
+  const [paperUrl, setPaperUrl] = useState((paper && paper.url) || null);
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
-
-  useEffect(() => {
-    setFile(props.paperUrl);
-  }, [props.paperUrl]);
 
   function onLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -183,21 +183,43 @@ function PaperTab(props) {
                 This academic paper hasn't been uploaded yet
               </div>
               <div className={css(styles.emptyPlaceholderSubtitle)}>
-                Click ‘Upload PDF’ button to add the paper
+                {paperUrl && "View the paper now by clicking the link below"}
+                {!paperUrl && "Click ‘Upload PDF’ button to add the paper"}
               </div>
-              <PermissionNotificationWrapper
-                onClick={() => toggleDnd(true)}
-                modalMessage="upload a paper"
-                loginRequired={true}
-                permissionKey="CreatePaper"
-              >
-                <Button label={"Upload PDF"} hideRipples={true} />
-              </PermissionNotificationWrapper>
+              <div className={css(styles.emptyStateButtonContainer)}>
+                {paperUrl && renderExternalLink()}
+                <PermissionNotificationWrapper
+                  onClick={() => toggleDnd(true)}
+                  modalMessage="upload a paper"
+                  loginRequired={true}
+                  permissionKey="CreatePaper"
+                >
+                  <Button label={"Upload PDF"} hideRipples={true} />
+                </PermissionNotificationWrapper>
+              </div>
             </div>
           </ComponentWrapper>
         );
       }
     }
+  }
+
+  function renderExternalLink() {
+    return (
+      <Fragment>
+        <button
+          className={css(defaultStyles.secondaryButton)}
+          onClick={() => {
+            openExternalLink(paperUrl);
+          }}
+        >
+          View on External Site {icons.externalLink}
+        </button>
+        <div className={css(styles.emptyPlaceholderFont, styles.orText)}>
+          {" or "}
+        </div>
+      </Fragment>
+    );
   }
 
   return (
@@ -322,6 +344,40 @@ var styles = StyleSheet.create({
       fontSize: 10,
     },
   },
+  emptyPlaceholderFont: {
+    fontSize: 16,
+    color: colors.BLACK(0.8),
+    textAlign: "center",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+    "@media only screen and (max-width: 320px)": {
+      fontSize: 10,
+    },
+  },
+  emptyStateButtonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: "auto",
+    verticalAlign: "center",
+    flexFlow: "row wrap",
+    "@media only screen and (max-width: 415px)": {
+      flexDirection: "column",
+    },
+  },
+  externalLinkText: {
+    paddingTop: 20,
+    fontSize: 16,
+    color: colors.PURPLE(),
+    textAlign: "center",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+    "@media only screen and (max-width: 320px)": {
+      fontSize: 10,
+    },
+  },
   buttonRow: {
     width: "100%",
     marginTop: 45,
@@ -343,6 +399,10 @@ var styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
     },
+  },
+  orText: {
+    paddingLeft: 15,
+    paddingRight: 15,
   },
 });
 

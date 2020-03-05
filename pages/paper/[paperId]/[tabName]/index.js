@@ -142,7 +142,7 @@ const Paper = (props) => {
           />
         );
       case "full":
-        return <PaperTab paperId={paperId} />;
+        return <PaperTab paperId={paperId} paper={paper} />;
       case "citations":
         return null;
     }
