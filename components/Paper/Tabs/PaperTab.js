@@ -279,7 +279,7 @@ var styles = StyleSheet.create({
     alignSelf: "flex-end",
     display: "flex",
     cursor: "pointer",
-    marginRight: "10%",
+    marginRight: "5%",
   },
   pageNavigator: {
     display: "flex",
