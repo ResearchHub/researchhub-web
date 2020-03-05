@@ -183,8 +183,9 @@ function PaperTab(props) {
                 This academic paper hasn't been uploaded yet
               </div>
               <div className={css(styles.emptyPlaceholderSubtitle)}>
-                {paperUrl && "View the paper now by clicking the link below"}
-                {!paperUrl && "Click ‘Upload PDF’ button to add the paper"}
+                {paperUrl &&
+                  "View the paper now by clicking the link below or upload the PDF"}
+                {!paperUrl && "Click the button below to add the paper"}
               </div>
               <div className={css(styles.emptyStateButtonContainer)}>
                 {paperUrl && renderExternalLink()}
@@ -194,7 +195,9 @@ function PaperTab(props) {
                   loginRequired={true}
                   permissionKey="CreatePaper"
                 >
-                  <Button label={"Upload PDF"} hideRipples={true} />
+                  <button className={css(defaultStyles.button)}>
+                    Upload the Paper PDF {icons.upload}
+                  </button>
                 </PermissionNotificationWrapper>
               </div>
             </div>
