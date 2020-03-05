@@ -138,28 +138,21 @@ function PaperTab(props) {
   function handleRenderState() {
     if (file) {
       return (
-        <div>
-          <Ripples className={css(styles.action)} onClick={downloadPDF}>
-            Download PDF
-          </Ripples>
-          <Document
-            // className={css(!loadSuccess && styles.hidden)}
-            file={file}
-            onLoadSuccess={onLoadSuccess}
-          >
-            {Array.from(new Array(numPages), (el, index) => (
-              <Page
-                pageNumber={index + 1}
-                width={
-                  isMobile && window.innerWidth < 1000
-                    ? window.innerWidth
-                    : 1000
-                }
-                key={`page_${index + 1}`}
-              />
-            ))}
-          </Document>
-        </div>
+        <Document
+          // className={css(!loadSuccess && styles.hidden)}
+          file={file}
+          onLoadSuccess={onLoadSuccess}
+        >
+          {Array.from(new Array(numPages), (el, index) => (
+            <Page
+              pageNumber={index + 1}
+              width={
+                isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
+              }
+              key={`page_${index + 1}`}
+            />
+          ))}
+        </Document>
       );
     } else {
       if (showDnd) {
@@ -251,6 +244,11 @@ function PaperTab(props) {
           </div>
         </ComponentWrapper>
       )}
+      {file && (
+        <Ripples className={css(styles.action)} onClick={downloadPDF}>
+          Download PDF
+        </Ripples>
+      )}
       {handleRenderState()}
     </div>
   );
@@ -258,12 +256,13 @@ function PaperTab(props) {
 
 var styles = StyleSheet.create({
   action: {
+    alignSelf: "flex-end",
     color: "#241F3A",
     fontSize: 14,
     opacity: 0.6,
     display: "flex",
-    justifyContent: "flex-end",
     cursor: "pointer",
+    marginRight: "10%",
     transition: "all ease-out 0.1s",
     padding: "3px 5px",
     ":hover": {
