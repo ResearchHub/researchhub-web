@@ -226,6 +226,19 @@ function PaperTab(props) {
     );
   }
 
+  function renderDownloadPdf() {
+    return (
+      <Fragment>
+        <button
+          className={css(defaultStyles.secondaryButton, styles.downloadButton)}
+          onClick={downloadPDF}
+        >
+          Download PDF
+        </button>
+      </Fragment>
+    );
+  }
+
   return (
     <div className={css(styles.container)}>
       {file && (
@@ -244,33 +257,13 @@ function PaperTab(props) {
           </div>
         </ComponentWrapper>
       )}
-      {file && (
-        <Ripples className={css(styles.action)} onClick={downloadPDF}>
-          Download PDF
-        </Ripples>
-      )}
+      {file && renderDownloadPdf()}
       {handleRenderState()}
     </div>
   );
 }
 
 var styles = StyleSheet.create({
-  action: {
-    alignSelf: "flex-end",
-    color: "#241F3A",
-    fontSize: 14,
-    opacity: 0.6,
-    display: "flex",
-    cursor: "pointer",
-    marginRight: "10%",
-    transition: "all ease-out 0.1s",
-    padding: "3px 5px",
-    ":hover": {
-      color: colors.BLUE(1),
-      opacity: 1,
-      textDecoration: "underline",
-    },
-  },
   container: {
     width: "100%",
     display: "flex",
@@ -278,6 +271,12 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
+  },
+  downloadButton: {
+    alignSelf: "flex-end",
+    display: "flex",
+    cursor: "pointer",
+    marginRight: "10%",
   },
   pageNavigator: {
     display: "flex",
