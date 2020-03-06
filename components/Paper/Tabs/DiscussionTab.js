@@ -445,7 +445,6 @@ var styles = StyleSheet.create({
       width: "100%",
       fontSize: 16,
       marginBottom: 0,
-      // marginTop: -10
     },
   },
   emptyStateBox: {
@@ -696,7 +695,6 @@ const stylesEditor = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     paddingLeft: 20,
-    paddingRight: 20,
     marginBottom: 8,
     backgroundColor: "#fff",
   },
