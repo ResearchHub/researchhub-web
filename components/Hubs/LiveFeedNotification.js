@@ -29,10 +29,22 @@ class LiveFeedNotification extends React.Component {
     return `${first_name} ${last_name}`;
   };
 
-  navigateToPaper = () => {
-    let { notification } = this.props;
-    let route = `/paper/${notification.paper_id}/summary`;
-    Router.push("/paper/[paperId]/[tabName]", route);
+  handleClickNavigation = () => {
+    let type = this.props.notification.content_type;
+    let paperId = notification.paper_id;
+    let threadId = notification.thread_id;
+    let href;
+    let route;
+
+    if (type === "paper" || type === "summary") {
+      href = "/paper/[paperId]/[tabName]";
+      route = `/paper/${paperId}/summary`;
+    } else if (type === "thread" || type === "comment" || type === "reply") {
+      href = "/paper/[paperId]/[tabName]/[discussionThreadId]";
+      route = `/paper/${paperId}/discussion/${threadId}`;
+    }
+
+    return href && route && Router.push(href, route);
   };
 
   renderNotification = () => {
@@ -114,6 +126,152 @@ class LiveFeedNotification extends React.Component {
             </span>
           </div>
         );
+      case "thread":
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            created a{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/discussion/${threadId}`}
+            >
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                thread
+              </a>
+            </Link>
+            {"in "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paperId}/summary`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "comment":
+        var commentTip = notification.tip;
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            left a{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/discussion/${threadId}`}
+            >
+              <a
+                className={css(styles.link)}
+                data-tip={commentTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                comment
+              </a>
+            </Link>
+            {"in "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paperId}/discussion`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={threadTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {threadTip && this.truncatePaperTitle(threadTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "reply":
+        var replyTip = notification.tip;
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            left a{" "}
+            <Link
+              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/discussion/${threadId}`}
+            >
+              <a
+                className={css(styles.link)}
+                data-tip={replyTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                reply
+              </a>
+            </Link>
+            {"in "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paperId}/discussion`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={threadTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {threadTip && this.truncatePaperTitle(threadTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      default:
+        return;
+    }
+  };
+
+  deprecatedCases = () => {
+    switch (type) {
       case "vote_paper":
         return (
           <div className={css(styles.message)}>
@@ -282,147 +440,6 @@ class LiveFeedNotification extends React.Component {
             </span>
           </div>
         );
-      case "thread":
-        return (
-          <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
-            >
-              <a
-                className={css(styles.username)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            created a{" "}
-            <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
-            >
-              <a
-                className={css(styles.link)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                thread
-              </a>
-            </Link>
-            {"in "}
-            <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
-            >
-              <a
-                className={css(styles.paper)}
-                data-tip={paperTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {paperTip && this.truncatePaperTitle(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
-          </div>
-        );
-      case "comment":
-        var commentTip = notification.tip;
-        return (
-          <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
-            >
-              <a
-                className={css(styles.username)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            left a{" "}
-            <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
-            >
-              <a
-                className={css(styles.link)}
-                data-tip={commentTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                comment
-              </a>
-            </Link>
-            {"in "}
-            <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/discussion`}
-            >
-              <a
-                className={css(styles.paper)}
-                data-tip={threadTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {threadTip && this.truncatePaperTitle(threadTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
-          </div>
-        );
-      case "reply":
-        var replyTip = notification.tip;
-        return (
-          <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
-            >
-              <a
-                className={css(styles.username)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            left a{" "}
-            <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
-            >
-              <a
-                className={css(styles.link)}
-                data-tip={replyTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                reply
-              </a>
-            </Link>
-            {"in "}
-            <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/discussion`}
-            >
-              <a
-                className={css(styles.paper)}
-                data-tip={threadTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {threadTip && this.truncatePaperTitle(threadTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
-          </div>
-        );
-      default:
-        return;
     }
   };
 
@@ -476,7 +493,7 @@ class LiveFeedNotification extends React.Component {
       return (
         <div
           className={css(styles.column, styles.notification)}
-          onClick={this.navigateToPaper}
+          onClick={this.handleClickNavigation}
         >
           <ReactTooltip
             place={"bottom"}
