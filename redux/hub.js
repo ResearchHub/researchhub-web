@@ -79,21 +79,36 @@ export const HubActions = {
    * @param { Object } - the hub object
    * @param { Boolean } - the new subscribed state of the hub
    */
-  updateHub: (allHubs, topHubs, newHubState) => {
+  updateHub: (prevState, newHubState) => {
     return (dispatch) => {
-      let allHubIndex = shims.findIndexById(newHubState.id, allHubs);
+      let { topHubs, subscribedHubs, hubs } = prevState;
+
+      let allHubIndex = shims.findIndexById(newHubState.id, hubs);
       let topHubIndex = shims.findIndexById(newHubState.id, topHubs);
-      let updatedHubsList = [...allHubs];
+
+      let updatedHubsList = [...hubs];
       let updatedTopHubsList = [...topHubs];
+      let updatedSubscribedHubsList = [...subscribedHubs];
+
       updatedHubsList[allHubIndex] = newHubState;
       updatedTopHubsList[topHubIndex] = newHubState;
-      let updatedSubscribedHubsList = shims.subscribedHubs(updatedHubsList);
+
+      if (newHubState.user_is_subscribed) {
+        updatedSubscribedHubsList.push(newHubState);
+      } else {
+        let subscribedHubIndex = shims.findIndexById(
+          newHubState.id,
+          subscribedHubs
+        );
+        updatedSubscribedHubsList.splice(subscribedHubIndex, 1);
+      }
+
       return dispatch({
         type: HubConstants.UPDATE_HUB,
         payload: {
           subscribedHubs: updatedSubscribedHubsList,
           topHubs: updatedTopHubsList,
-          allHubs: updatedHubsList,
+          hubs: updatedHubsList,
         },
       });
     };
@@ -131,7 +146,6 @@ const HubReducer = (state = defaultHubState, action) => {
 
 const shims = {
   subscribedHubs: (hubs) => {
-    console.log("hubs", hubs);
     return hubs.filter((hub) => {
       return hub.user_is_subscribed;
     });

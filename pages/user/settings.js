@@ -345,10 +345,10 @@ class UserSettings extends Component {
   };
 
   handleHubUnsubscribe = (hubId) => {
-    const { hubs, topHubs } = this.props;
+    const { hubState } = this.props;
     unsubscribeFromHub(hubId)
       .then((res) => {
-        this.props.dispatch(HubActions.updateHub(hubs, topHubs, { ...res }));
+        this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
         this.props.dispatch(MessageActions.setMessage("Unsubscribed!"));
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
@@ -409,11 +409,11 @@ class UserSettings extends Component {
   };
 
   handleHubSubscribe = (hub) => {
-    const { hubs, topHubs } = this.props;
+    let { hubState } = this.props;
 
     subscribeToHub(hub.value)
       .then((res) => {
-        this.props.dispatch(HubActions.updateHub(hubs, topHubs, { ...res }));
+        this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
         this.props.dispatch(MessageActions.setMessage("Subscribed!"));
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
@@ -523,7 +523,6 @@ class UserSettings extends Component {
   };
 
   displayError = (err) => {
-    console.log("err", err);
     this.props.dispatch(
       MessageActions.setMessage("Oops! Something went wrong.")
     );
@@ -772,6 +771,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   ...state.hubs,
+  hubState: state.hubs,
   user: state.auth.user,
 });
 
