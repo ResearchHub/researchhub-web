@@ -23,7 +23,9 @@ class UserTransaction extends React.Component {
 
   getWithdrawals = (nextPage) => {
     let prevState = this.props.transactions;
-    this.props.getWithdrawals(nextPage, prevState);
+    if (this.props.auth.isLoggedIn) {
+      this.props.getWithdrawals(nextPage, prevState);
+    }
   };
 
   render() {
@@ -94,6 +96,7 @@ var styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   transactions: state.transactions,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
