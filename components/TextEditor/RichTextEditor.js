@@ -1,7 +1,7 @@
 import React from "react";
 
 // NPM Components
-import { Editor } from "slate-react";
+import { Editor } from "@quantfive/slate-react-16.6.3";
 import { Value, Point, Decoration } from "slate";
 import Plain from "slate-plain-serializer";
 import { css, StyleSheet } from "aphrodite";
