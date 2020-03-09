@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import Ripples from "react-ripples";
 
 // Component
 import LiveFeedNotification from "./LiveFeedNotification";
@@ -13,8 +14,9 @@ import { Helpers } from "@quantfive/js-web-config";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
+import icons from "../../config/themes/icons";
 
-const DEFAULT_PING_REFRESH = 60000; // 1 minute
+const DEFAULT_PING_REFRESH = 5000; // 1 minute
 const DEFAULT_LOADING = 400; //
 
 class LiveFeed extends React.Component {
@@ -26,7 +28,9 @@ class LiveFeed extends React.Component {
       loading: true,
       hideFeed: false,
       notifications: [],
+      liveMode: false,
     };
+    // this.liveButton = React.createRef();
   }
 
   componentDidMount() {
@@ -38,18 +42,23 @@ class LiveFeed extends React.Component {
       } else {
         this.setState({ loading: false });
       }
-      this.setLivefeedInterval(this, hubId);
+      if (this.state.liveMode) {
+        this.setLivefeedInterval(this, hubId);
+      }
     }
   }
 
   setLivefeedInterval = (master, hubId) => {
-    let intervalPing = setInterval(() => {
-      let { getLivefeed, livefeed } = master.props;
-      getLivefeed(livefeed.hubs, hubId);
-    }, DEFAULT_PING_REFRESH);
-    this.setState({
-      intervalPing: intervalPing,
-    });
+    if (this.state.liveMode) {
+      let intervalPing = setInterval(() => {
+        let { getLivefeed, livefeed } = master.props;
+        getLivefeed(livefeed.hubs, hubId);
+        this.liveButton && this.liveButton.click();
+      }, DEFAULT_PING_REFRESH);
+      this.setState({
+        intervalPing: intervalPing,
+      });
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -63,7 +72,9 @@ class LiveFeed extends React.Component {
           } else {
             this.setState({ loading: false });
           }
-          this.setLivefeedInterval(this, this.props.currentHub.id);
+          if (this.state.liveMode) {
+            this.setLivefeedInterval(this, this.props.currentHub.id);
+          }
         });
       }
     }
@@ -88,6 +99,21 @@ class LiveFeed extends React.Component {
         this.setState({ loading: false });
       }, DEFAULT_LOADING);
     });
+  };
+
+  toggleLiveMode = (e) => {
+    if (e.target.id !== "syntheticClick") {
+      this.setState(
+        {
+          liveMode: !this.state.liveMode,
+        },
+        () => {
+          this.state.liveMode
+            ? this.setLivefeedInterval(this, 0)
+            : clearInterval(this.state.intervalPing);
+        }
+      );
+    }
   };
 
   renderNotifications = () => {
@@ -125,25 +151,45 @@ class LiveFeed extends React.Component {
     this.setState({ hideFeed: !this.state.hideFeed });
   };
 
+  showRipples = () => {
+    this.toggleLiveMode;
+  };
+
   render() {
     let { livefeed, currentHub, home } = this.props;
     let hubId = home ? 0 : currentHub.id;
     return (
       <div className={css(styles.livefeedComponent)}>
-        <div
-          className={css(styles.listLabel)}
-          // onClick={this.toggleFeedView}
-        >
+        <div className={css(styles.listLabel)}>
           <div className={css(styles.text, styles.feedTitle)}>
             {this.props.home
-              ? "ResearchHub Livefeed"
+              ? "ResearchHub Live"
               : `${this.props.currentHub.name} LiveFeed`}
           </div>
-          <div
-            className={css(styles.refreshIcon)}
-            onClick={() => this.fetchLiveFeed(hubId)}
-          >
-            <i className="fad fa-sync" />
+          <div className={css(styles.feedRow)}>
+            <Ripples
+              className={css(styles.toggleLive)}
+              onClick={this.toggleLiveMode}
+              during={1500}
+            >
+              <div
+                ref={(ref) => (this.liveButton = ref)}
+                id={"syntheticClick"}
+              ></div>
+              <i
+                className={
+                  css(styles.toggleIcon) +
+                  ` ${this.state.liveMode ? "fas fa-stop" : "fas fa-play"}`
+                }
+              />
+              Live Update
+            </Ripples>
+            {/* <div
+              className={css(styles.refreshIcon)}
+              onClick={() => this.fetchLiveFeed(hubId)}
+            >
+              <i className="fad fa-sync" />
+            </div> */}
           </div>
         </div>
         {!this.state.hideFeed && (
@@ -167,7 +213,8 @@ class LiveFeed extends React.Component {
 const styles = StyleSheet.create({
   listLabel: {
     display: "flex",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
     justifyContent: "center",
     fontWeight: "bold",
     position: "-webkit-sticky",
@@ -178,9 +225,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     background: "#FCFCFC",
     width: "100%",
-    padding: 50,
-    paddingBottom: 30,
-    height: 18,
+    padding: "20px 40px",
     cursor: "default",
     "@media only screen and (max-width: 768px)": {
       marginTop: 40,
@@ -192,10 +237,11 @@ const styles = StyleSheet.create({
   },
   feedTitle: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-start",
     color: "#000",
-    fontWeight: "400",
+    fontWeight: 500,
     fontSize: 33,
+    width: "100%",
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
     marginRight: 10,
@@ -218,6 +264,34 @@ const styles = StyleSheet.create({
       width: 280,
       textAlign: "center",
     },
+  },
+  feedRow: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    fontWeight: 400,
+    // color: colors.GREY(),
+    marginTop: 10,
+  },
+  toggleLive: {
+    padding: "8px 12px",
+    display: "flex",
+    alignItems: "center",
+    borderRadius: 3,
+    border: `1px solid ${colors.BLUE()}`,
+    backgroundColor: colors.BLUE(),
+    color: "#fff",
+    fontSize: 14,
+    ":hover": {
+      cursor: "pointer",
+      backgroundColor: "#3E43E8",
+    },
+  },
+  toggleIcon: {
+    fontSize: 13,
+    color: "#fff",
+    // color: colors.BLACK(),
+    marginRight: 6,
   },
   container: {
     display: "flex",
@@ -291,6 +365,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     background: "#FCFCFC",
+    // padding: '80px 20px 0px 20px',
+    // boxSizing: 'border-box'
   },
 });
 

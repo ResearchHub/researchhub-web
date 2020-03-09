@@ -99,9 +99,9 @@ class LiveFeedPage extends React.Component {
       <Fragment>
         <ResearchHubBanner all={true} />
         <div className={css(styles.content)}>
-          <div className={css(styles.sidebar, styles.column)}>
+          {/* <div className={css(styles.sidebar, styles.column)}>
             <HubsList exclude={null} livefeed={true} setHub={this.setHub} />
-          </div>
+          </div> */}
           <div className={css(styles.mainFeed, styles.column)}>
             <LiveFeed
               currentHub={this.state.hub && this.state.hub}
@@ -139,7 +139,8 @@ var styles = StyleSheet.create({
   },
   mainFeed: {
     height: "100%",
-    width: "85%",
+    // width: "85%",
+    width: "100%",
     backgroundColor: "#FCFCFC",
     borderLeft: "1px solid #ededed",
     backgroundColor: "#FFF",
