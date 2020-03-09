@@ -551,6 +551,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     background: "#FCFCFC",
+    // padding: '80px 20px 0px 20px',
+    // boxSizing: 'border-box'
   },
   content: {
     width: "100%",
