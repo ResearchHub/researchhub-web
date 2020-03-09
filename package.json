@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@quantfive/js-web-config": "latest",
-    "@quantfive/slate-react-16.6.3": "^0.22.20",
+    "@quantfive/slate-react-16.6.3": "^0.22.30",
     "@sentry/browser": "^5.9.1",
     "@sentry/cli": "^1.49.0",
     "@zeit/next-css": "^1.0.1",
