@@ -92,7 +92,7 @@ const FirstVoteModal = (props) => {
             Here's a ResearchCoin
             <img
               className={css(styles.coinIcon)}
-              src={"/static/icons/coin.png"}
+              src={"/static/icons/coin-filled.png"}
             />
           </div>
         );
