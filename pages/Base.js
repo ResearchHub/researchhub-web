@@ -29,13 +29,16 @@ class Base extends React.Component {
       getUserBannerPreference,
       getWithdrawals,
       getTopHubs,
+      auth,
     } = this.props;
 
-    getUser();
+    await getUser();
     getHubs();
     getTopHubs();
     getUniversities();
-    getWithdrawals();
+    if (auth.isLoggedIn) {
+      getWithdrawals();
+    }
     getUserBannerPreference();
     fetchPermissionsPending();
     await fetchPermissions();
@@ -77,6 +80,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   authChecked: state.auth.authChecked,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
