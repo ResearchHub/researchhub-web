@@ -5,6 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Router from "next/router";
 import ReactTooltip from "react-tooltip";
+import Ripples from "react-ripples";
 
 // Component
 import AuthorAvatar from "../AuthorAvatar";
@@ -30,9 +31,11 @@ class LiveFeedNotification extends React.Component {
   };
 
   handleClickNavigation = () => {
-    let type = this.props.notification.content_type;
-    let paperId = notification.paper_id;
-    let threadId = notification.thread_id;
+    let { notification } = this.props;
+    let { content_type, paper_id, thread_id } = notification;
+    let type = content_type;
+    let paperId = paper_id;
+    let threadId = thread_id;
     let href;
     let route;
 
@@ -74,7 +77,8 @@ class LiveFeedNotification extends React.Component {
                 {username}
               </a>
             </Link>{" "}
-            edited a summary for{" "}
+            edited a<span>summary </span>
+            for{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/summary`}
@@ -491,7 +495,7 @@ class LiveFeedNotification extends React.Component {
       return null;
     } else {
       return (
-        <div
+        <Ripples
           className={css(styles.column, styles.notification)}
           onClick={this.handleClickNavigation}
         >
@@ -501,6 +505,7 @@ class LiveFeedNotification extends React.Component {
             className={css(styles.tool)}
           />
           <div className={css(styles.type)}>{this.renderIcon()}</div>
+          <Ripples className={css(styles.dropdown)}>{icons.ellipsisH}</Ripples>
           <div className={css(styles.row, styles.container)}>
             <div
               className={css(styles.column, styles.left)}
@@ -518,7 +523,7 @@ class LiveFeedNotification extends React.Component {
               {this.renderNotification()}
             </div>
           </div>
-        </div>
+        </Ripples>
       );
     }
   }
@@ -624,6 +629,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     // color: "#AAAAAA",
     color: colors.YELLOW(),
+    position: "absolute",
+    bottom: 5,
+    right: 10,
+  },
+  dropdown: {
     position: "absolute",
     top: 5,
     right: 10,
