@@ -678,7 +678,7 @@ class PaperUploadInfo extends React.Component {
                       onChangeInput={this.searchAuthors}
                       inputValue={searchAuthor}
                       label={"Authors"}
-                      required={true}
+                      // required={true}
                       error={error.author}
                       labelStyle={styles.labelStyle}
                     />
