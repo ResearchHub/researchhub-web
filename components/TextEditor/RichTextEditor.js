@@ -753,7 +753,10 @@ class RichTextEditor extends React.Component {
     }
 
     // if not an insert we don't want to worry about the link/url changes
-    if (editor.operations.toJS()[0].type !== "insert_text") {
+    if (
+      editor.operations.toJS()[0] &&
+      editor.operations.toJS()[0].type !== "insert_text"
+    ) {
       this.setState({ value: selectedValue });
       this.props.onChange(selectedValue);
       return;
@@ -762,6 +765,7 @@ class RichTextEditor extends React.Component {
     // if insert and a link check if the insert type was a delimiter and if so
     // remove link mark for the new inserted text
     if (
+      editor.operations.toJS()[0] &&
       editor.operations.toJS()[0].type === "insert_text" &&
       (alreadyLink || isUrl)
     ) {
