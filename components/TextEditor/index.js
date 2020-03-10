@@ -59,6 +59,13 @@ const TextEditor = (props) => {
       return;
     }
 
+    const ua = navigator.userAgent.toLowerCase();
+    const isAndroid = ua.indexOf("android") > -1;
+
+    if (isAndroid) {
+      editorRef.editor.blur();
+    }
+
     let success = false;
     if (!isLoggedIn) {
       // TODO: pop login modal
@@ -80,6 +87,7 @@ const TextEditor = (props) => {
 
   function setInternalRef(editor) {
     props.setRef && props.setRef(editor);
+    setEditorRef(editor);
   }
 
   return (
