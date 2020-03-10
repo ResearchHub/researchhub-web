@@ -1,7 +1,7 @@
 import React from "react";
 
 // NPM Components
-import { Editor } from "slate-react";
+import { Editor } from "@quantfive/slate-react-16.6.3";
 import { Value, Point, Decoration } from "slate";
 import Plain from "slate-plain-serializer";
 import { css, StyleSheet } from "aphrodite";
@@ -169,6 +169,7 @@ class RichTextEditor extends React.Component {
               readOnly={this.props.readOnly}
               spellCheck
               autoFocus={true}
+              id="slate-editor"
               placeholder="What are your thoughts?"
               ref={this.ref}
               value={this.state.value}
@@ -753,7 +754,10 @@ class RichTextEditor extends React.Component {
     }
 
     // if not an insert we don't want to worry about the link/url changes
-    if (editor.operations.toJS()[0].type !== "insert_text") {
+    if (
+      editor.operations.toJS()[0] &&
+      editor.operations.toJS()[0].type !== "insert_text"
+    ) {
       this.setState({ value: selectedValue });
       this.props.onChange(selectedValue);
       return;
@@ -762,6 +766,7 @@ class RichTextEditor extends React.Component {
     // if insert and a link check if the insert type was a delimiter and if so
     // remove link mark for the new inserted text
     if (
+      editor.operations.toJS()[0] &&
       editor.operations.toJS()[0].type === "insert_text" &&
       (alreadyLink || isUrl)
     ) {

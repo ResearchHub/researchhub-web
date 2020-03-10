@@ -55,31 +55,42 @@ const TextEditor = (props) => {
   }
 
   async function submit() {
-    if (value.document.text === "" || value.document.text === " ") {
+    if (value.document.text.trim() === "") {
       return;
     }
 
-    let success = false;
-    if (!isLoggedIn) {
-      // TODO: pop login modal
-      openLoginModal(true, "Please login with Google to continue.");
-    } else {
-      onSubmit &&
-        (success = await onSubmit(
-          value.toJSON({ preserveKeys: true }),
-          Plain.serialize(value)
-        ));
-      if (success && clearOnSubmit !== false) {
-        editorRef.clear();
-      }
-      if (clearOnSubmit !== false) {
-        resetValue();
-      }
+    const ua = navigator.userAgent.toLowerCase();
+    const isAndroid = ua.indexOf("android") > -1;
+
+    if (isAndroid && window.androidObserver) {
+      // document.getElementById('slate-editor').blur();
+      window.androidObserver.onCompositionEnd();
     }
+
+    setTimeout(async () => {
+      let success = false;
+      if (!isLoggedIn) {
+        // TODO: pop login modal
+        openLoginModal(true, "Please login with Google to continue.");
+      } else {
+        onSubmit &&
+          (success = await onSubmit(
+            value.toJSON({ preserveKeys: true }),
+            Plain.serialize(value)
+          ));
+        if (success && clearOnSubmit !== false) {
+          editorRef.clear();
+        }
+        if (clearOnSubmit !== false) {
+          resetValue();
+        }
+      }
+    }, 500);
   }
 
   function setInternalRef(editor) {
     props.setRef && props.setRef(editor);
+    setEditorRef(editor);
   }
 
   return (

@@ -306,7 +306,7 @@ const DiscussionTab = (props) => {
           required={true}
         /> */}
         <div className={css(stylesEditor.discussionInputWrapper)}>
-          <div className={css(stylesEditor.label)}>
+          <div className={css(stylesEditor.label)} id="discussion-title">
             Discussion Post
             <span className={css(stylesEditor.asterick)}>*</span>
           </div>
@@ -658,6 +658,7 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: 10,
+    padding: "0px 16px",
   },
   overrideFormSelect: {
     marginTop: 0,
@@ -694,9 +695,14 @@ const stylesEditor = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
     boxSizing: "border-box",
-    paddingLeft: 20,
     marginBottom: 8,
     backgroundColor: "#fff",
+    paddingLeft: 20,
+
+    "@media only screen and (max-width: 767px)": {
+      paddingLeft: 16,
+      paddingRight: 16,
+    },
   },
   discTextEditorTitle: {},
   container: {

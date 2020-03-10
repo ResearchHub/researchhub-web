@@ -70,7 +70,7 @@ export const PaperActions = {
             payload: {
               ...shims.paper(resp),
               doneFetching: true,
-              status: resp.status,
+              status: resp && resp.status,
             },
           });
         })
@@ -78,7 +78,7 @@ export const PaperActions = {
           return dispatch({
             type: types.GET_PAPER,
             payload: {
-              status: error.response.status,
+              status: error.response && error.response.status,
             },
           });
         });
