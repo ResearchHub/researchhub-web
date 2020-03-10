@@ -879,10 +879,10 @@
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@quantfive/js-web-config/-/js-web-config-1.0.6.tgz#1c1aec6c2fed013605a28291f7a2d7b0d5a94534"
 
-"@quantfive/slate-react-16.6.3@^0.22.32":
-  version "0.22.32"
-  resolved "https://registry.yarnpkg.com/@quantfive/slate-react-16.6.3/-/slate-react-16.6.3-0.22.32.tgz#5f6269f2401f59c172fc96e5f738d51a937e3d26"
-  integrity sha512-kLe40Qr9vxpLihTsjvtyWoA1TCuBUBNAu2IKyw6K8Mf4xNVO+yTIQW4PEHWgYub59ET5zpVd/EHi/gNt3UU0Eg==
+"@quantfive/slate-react-16.6.3@^0.22.41":
+  version "0.22.41"
+  resolved "https://registry.yarnpkg.com/@quantfive/slate-react-16.6.3/-/slate-react-16.6.3-0.22.41.tgz#7dad5173803a26e4798591fd21b8ec3c7904f2be"
+  integrity sha512-9/dXQKy77yzXbqO7aRHn8cqmWniIQFW4VuGSo6lWBQ0/vg2nMw8WtmwcoNGRcjra6T/6pQ7nUZfPxNFD6aoLEA==
   dependencies:
     debug "^3.1.0"
     get-window "^1.1.1"

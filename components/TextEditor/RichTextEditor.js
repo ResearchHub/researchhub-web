@@ -169,6 +169,7 @@ class RichTextEditor extends React.Component {
               readOnly={this.props.readOnly}
               spellCheck
               autoFocus={true}
+              id="slate-editor"
               placeholder="What are your thoughts?"
               ref={this.ref}
               value={this.state.value}

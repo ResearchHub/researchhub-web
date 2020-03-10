@@ -306,7 +306,7 @@ const DiscussionTab = (props) => {
           required={true}
         /> */}
         <div className={css(stylesEditor.discussionInputWrapper)}>
-          <div className={css(stylesEditor.label)}>
+          <div className={css(stylesEditor.label)} id="discussion-title">
             Discussion Post
             <span className={css(stylesEditor.asterick)}>*</span>
           </div>
