@@ -311,7 +311,9 @@ class LiveFeed extends React.Component {
                     />
                   </div>
                 </div>
+
               </div>
+
             </div>
           </div>
         </div>
@@ -342,8 +344,7 @@ class LiveFeed extends React.Component {
               )}
             </div>
           </div>
-          )}
-        </div>
+        )}
       </div>
     );
   }
