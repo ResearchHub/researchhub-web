@@ -9,6 +9,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import Ripples from "react-ripples";
+import SummaryBulletPoint from "../SummaryBulletPoint";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -177,6 +178,9 @@ class SummaryTab extends React.Component {
     let { transition } = this.state;
     return (
       <ComponentWrapper>
+        <div>
+          <SummaryBulletPoint />
+        </div>
         <div>{this.state.errorMessage}</div>
         {(paper.summary && paper.summary.summary) ||
         this.state.summaryExists ? (
