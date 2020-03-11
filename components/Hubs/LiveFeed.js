@@ -280,7 +280,6 @@ class LiveFeed extends React.Component {
                   className={css(styles.toggleLive)}
                   onClick={this.toggleLiveMode}
                   during={1500}
-                  f
                 >
                   <div
                     ref={(ref) => (this.liveButton = ref)}
@@ -343,7 +342,8 @@ class LiveFeed extends React.Component {
               )}
             </div>
           </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }
@@ -551,8 +551,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     background: "#FCFCFC",
-    // padding: '80px 20px 0px 20px',
-    // boxSizing: 'border-box'
+  },
+  content: {
+    width: "100%",
+    maxWidth: 1000,
   },
   content: {
     width: "100%",
@@ -564,7 +566,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   livefeed: state.livefeed.livefeed,
   allHubs: state.hubs.hubs,
+<<<<<<< HEAD
   auth: state.auth,
+=======
+>>>>>>> closes ##222, Live Feed Cleanup
 });
 
 const mapDispatchToProps = {

@@ -221,6 +221,7 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "comment":
+        console.log("notification-comment", notification);
         var commentTip = notification.tip;
         return (
           <div className={css(styles.message)}>
