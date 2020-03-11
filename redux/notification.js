@@ -66,6 +66,7 @@ const shims = {
   handleChanges: (prevState, newResults, hubId, page) => {
     var updatedFeed = { ...prevState };
     if (doesNotExist(prevState.currentHub) || prevState.currentHub !== hubId) {
+      // reset state
       updatedFeed.currentHub = hubId;
       updatedFeed.count = newResults.count;
       updatedFeed.results = newResults.results;
