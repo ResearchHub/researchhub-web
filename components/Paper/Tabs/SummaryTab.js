@@ -313,7 +313,8 @@ class SummaryTab extends React.Component {
                   A summary hasn't been filled in yet.
                 </h2>
                 <div className={css(styles.text)}>
-                  Please add a summary to this paper
+                  Earn 5 RHC for being the first person to add a summary to this
+                  paper.
                 </div>
                 <PermissionNotificationWrapper
                   onClick={this.addSummary}
