@@ -83,7 +83,9 @@ class LiveFeedNotification extends React.Component {
       route = `/paper/${paperId}/discussion/${threadId}`;
     }
 
-    return href && route && Router.push(href, route);
+    href && route && Router.push(href, route);
+    document.body.scrollTop = 0; // For Safari
+    return (document.documentElement.scrollTop = 0);
   };
 
   renderNotification = () => {
