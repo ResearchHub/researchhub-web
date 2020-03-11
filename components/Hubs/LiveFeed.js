@@ -18,7 +18,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { NotificationActions } from "~/redux/notification";
 import icons from "../../config/themes/icons";
 
-const DEFAULT_PING_REFRESH = 5000; // 1 minute
+const DEFAULT_PING_REFRESH = 10000; // 1 minute
 const DEFAULT_LOADING = 400; //
 
 class LiveFeed extends React.Component {
@@ -29,10 +29,11 @@ class LiveFeed extends React.Component {
       newNotification: true,
       loading: true,
       hideFeed: false,
-      notifications: [],
-      liveMode: false,
-      filter: "",
       currentHub: { value: 0, label: "All" },
+      // Livefeed
+      liveMode: false,
+      liveFetching: false,
+      liveModeResults: [],
     };
     // this.liveButton = React.createRef();
   }
@@ -40,7 +41,7 @@ class LiveFeed extends React.Component {
   componentDidMount() {
     if (process.browser) {
       let hubId = this.state.currentHub.value;
-      this.fetchLiveFeed(hubId);
+      this.fetchInitialFeed(hubId);
       if (this.state.liveMode) {
         this.setLivefeedInterval(this, hubId);
       }
@@ -50,9 +51,8 @@ class LiveFeed extends React.Component {
   setLivefeedInterval = (master, hubId) => {
     if (this.state.liveMode) {
       let intervalPing = setInterval(() => {
-        let { getLivefeed, livefeed } = master.props;
-        getLivefeed(livefeed, hubId);
         this.liveButton && this.liveButton.click();
+        this.fetchLivefeed(hubId);
       }, DEFAULT_PING_REFRESH);
       this.setState({
         intervalPing: intervalPing,
@@ -66,7 +66,37 @@ class LiveFeed extends React.Component {
     clearInterval(this.state.intervalPing);
   }
 
-  fetchLiveFeed = (hubId) => {
+  fetchLivefeed = (hubId) => {
+    this.setState({ liveFetching: true });
+    fetch(API.GET_LIVE_FEED({ hubId }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        this.detectNewActions([...res.results]);
+      });
+  };
+
+  detectNewActions = (newList) => {
+    let prevList = this.props.livefeed.results;
+    let prevMostRecent = new Date(prevList[0].created_date);
+    let newUpdates = [];
+
+    for (var i = 0; i < newList.length; i++) {
+      let mostRecent = new Date(newList[i].created_date);
+      if (prevMostRecent < mostRecent) {
+        newUpdates.push(newList[i]);
+      } else {
+        break;
+      }
+    }
+
+    this.setState({
+      liveModeResults: [...newUpdates, ...this.state.liveModeResults],
+      liveFetching: false,
+    });
+  };
+
+  fetchInitialFeed = (hubId) => {
     this.setState({ loading: true }, async () => {
       let { getLivefeed, livefeed } = this.props;
       let { page } = this.state;
@@ -75,7 +105,7 @@ class LiveFeed extends React.Component {
     });
   };
 
-  fetchMoreLiveFeed = (page) => {
+  fetchNextPage = (page) => {
     let { livefeed, getLivefeed } = this.props;
     if (livefeed.count === livefeed.results.length) {
       return;
@@ -117,7 +147,7 @@ class LiveFeed extends React.Component {
         currentHub: hub,
       },
       () => {
-        this.fetchLiveFeed(this.state.currentHub.value);
+        this.fetchInitialFeed(this.state.currentHub.value);
         document.body.scrollTop = 0; // For Safari
         document.documentElement.scrollTop = 0;
       }
@@ -127,7 +157,10 @@ class LiveFeed extends React.Component {
   renderNotifications = () => {
     let { livefeed } = this.props;
     let currentHubId = this.state.currentHub.value;
-    let currentHubNotifications = livefeed && livefeed.results;
+    let currentHubNotifications = [...this.state.liveModeResults];
+    if (livefeed && livefeed.results) {
+      currentHubNotifications.push(...livefeed.results);
+    }
 
     if (currentHubNotifications) {
       if (!currentHubNotifications.length) {
@@ -255,7 +288,7 @@ class LiveFeed extends React.Component {
                   <InfiniteScroll
                     pageStart={this.findStartingPage()}
                     loadMore={(page) => {
-                      this.fetchMoreLiveFeed(page);
+                      this.fetchNextPage(page);
                     }}
                     initialLoad={true}
                     hasMore={livefeed.count > livefeed.results.length}
