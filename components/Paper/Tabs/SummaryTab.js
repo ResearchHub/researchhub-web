@@ -178,9 +178,9 @@ class SummaryTab extends React.Component {
     let { transition } = this.state;
     return (
       <ComponentWrapper>
-        <div>
+        {/* <div>
           <SummaryBulletPoint />
-        </div>
+        </div> */}
         <div>{this.state.errorMessage}</div>
         {(paper.summary && paper.summary.summary) ||
         this.state.summaryExists ? (
