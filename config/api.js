@@ -331,11 +331,17 @@ const routes = (BASE_URL) => {
     },
     // Used to check if url is a valid pdf
     CHECKURL: BASE_URL + "paper/check_url/",
-    GET_LIVE_FEED: ({ hubId, page = 1 }) => {
+    GET_LIVE_FEED: ({ hubId, page = 1, filter }) => {
       let url = BASE_URL + `hub/`;
 
       if (hubId !== undefined && hubId !== null) {
         url += `${hubId}/latest_actions/?page=${page}`;
+      }
+
+      if (filter !== undefined || filter !== null) {
+        if (typeof filter === "string") {
+          url += `&ordering=${filter}`;
+        }
       }
 
       return url;
