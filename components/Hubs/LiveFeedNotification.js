@@ -1,14 +1,21 @@
 import React, { Fragment } from "react";
 
 // NPM Modules
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Router from "next/router";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
+import { withAlert } from "react-alert";
 
 // Component
 import AuthorAvatar from "../AuthorAvatar";
+import ModeratorDeleteButton from "../Moderator/ModeratorDeleteButton";
+
+// Redux
+import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import icons from "~/config/themes/icons";
@@ -21,16 +28,45 @@ class LiveFeedNotification extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hideCard: false,
+      // hideCard: false,
+      showDropdown: false,
+      showPreview: false,
+      userFlag: false,
+      isRemoved: false,
     };
+    this.dropdownIcon;
+    this.dropdownMenu;
   }
+
+  componentDidMount() {
+    window.addEventListener("mousedown", this.handleOutsideClick);
+    this.setState({
+      userFlag: this.props.notification.user_flag ? true : false,
+      isRemoved: this.props.notification.is_removed,
+    });
+  }
+
+  componentWillUnmount() {
+    window.addEventListener("mousedown", this.handleOutsideClick);
+  }
+
+  handleOutsideClick = (e) => {
+    if (this.dropdownIcon && this.dropdownIcon.contains(e.target)) {
+      return;
+    }
+    if (this.dropdownMenu && !this.dropdownMenu.contains(e.target)) {
+      e.stopPropagation();
+      this.setState({ showDropdown: false });
+    }
+  };
 
   formatUsername = (userObject) => {
     let { first_name, last_name } = userObject;
     return `${first_name} ${last_name}`;
   };
 
-  handleClickNavigation = () => {
+  handleClickNavigation = (e) => {
+    e && e.stopPropagation();
     let { notification } = this.props;
     let { content_type, paper_id, thread_id } = notification;
     let type = content_type;
@@ -57,9 +93,13 @@ class LiveFeedNotification extends React.Component {
     const timestamp = this.formatTimestamp(created_date);
     const username = this.formatUsername(created_by);
     const authorId = created_by.author_profile.id;
-    let paperTip = notification.paper_title;
+    let paperTip = notification.paper_title
+      ? notification.paper_title
+      : notification.paper_official_title;
     let paperId = notification.paper_id;
-    let threadTip = notification.thread_title;
+    let threadTip = notification.thread_title
+      ? notification.thread_title
+      : notification.thread_plain_text;
     let threadId = notification.thread_id;
 
     switch (notificationType) {
@@ -77,7 +117,7 @@ class LiveFeedNotification extends React.Component {
                 {username}
               </a>
             </Link>{" "}
-            edited a<span>summary </span>
+            edited a <span>summary </span>
             for{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
@@ -98,6 +138,9 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "paper":
+        var paperTitle = notification.paper_title
+          ? notification.paper_title
+          : notification.paper_official_title;
         return (
           <div className={css(styles.message)}>
             <Link
@@ -118,10 +161,10 @@ class LiveFeedNotification extends React.Component {
             >
               <a
                 className={css(styles.paper)}
-                data-tip={paperTip}
+                data-tip={paperTitle}
                 onClick={(e) => e.stopPropagation()}
               >
-                {paperTip && this.truncatePaperTitle(paperTip)}
+                {paperTitle && this.truncatePaperTitle(paperTitle)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -176,6 +219,7 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "comment":
+        console.log("notification-comment", notification);
         var commentTip = notification.tip;
         return (
           <div className={css(styles.message)}>
@@ -454,24 +498,94 @@ class LiveFeedNotification extends React.Component {
     return title;
   };
 
-  renderIcon = () => {
-    const { notification } = this.props;
-    const notificationType = notification.content_type;
+  toggleDropdown = (e) => {
+    e && e.stopPropagation();
+    this.setState({
+      showDropdown: !this.state.showDropdown,
+    });
+  };
 
-    switch (notificationType) {
-      case "summary":
-      case "vote_paper":
-        return icons.file;
-      case "vote_comment":
-      case "comment":
-        return <i className="fad fa-comment-alt-dots" />;
-      case "reply":
-      case "vote_reply":
-        return <i className="fad fa-comment-alt-dots" />;
-      case "thread":
-      case "vote_thread":
-        return <i className="fad fa-comment-alt-lines" />;
+  togglePreview = (e) => {
+    e && e.stopPropagation();
+
+    // when on, show the full preview of the summary, thread, comment, and or reply
+
+    // upon close, hide the preview
+    this.setState({
+      showPreview: !this.state.showPreview,
+    });
+  };
+
+  promptFlagConfirmation = (e) => {
+    e && e.stopPropagation();
+    let { alert, auth, openLoginModal } = this.props;
+    let { userFlag } = this.state;
+    let isLoggedIn = auth.isLoggedIn;
+
+    if (!isLoggedIn) {
+      openLoginModal(true, "Please login with Google to continue.");
+    } else {
+      return alert.show({
+        text: `Are you sure you want to ${
+          userFlag ? "unflag" : "flag"
+        } this post?`,
+        buttonText: "Yes",
+        onClick: () => {
+          this.flagContent();
+        },
+      });
     }
+  };
+
+  flagContent = async () => {
+    let { showMessage, setMessage } = this.props;
+    showMessage({ load: true, show: true });
+    let metaData = this.formatMetaData();
+    let { paperId, threadId, commentId, replyId } = metaData;
+    let config = this.state.userFlag
+      ? API.DELETE_CONFIG()
+      : await API.POST_CONFIG({ reason: "censor" });
+    fetch(API.FLAG_POST({ paperId, threadId, commentId, replyId }), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        let message = this.state.userFlag
+          ? "Flag Removed "
+          : "Post Successfully Flagged";
+        showMessage({ show: false });
+        setMessage(message);
+        showMessage({ show: true });
+        this.setState({ userFlag: !this.state.userFlag });
+      })
+      .catch((err) => {
+        showMessage({ show: false });
+        setMessage("Something went wrong");
+        showMessage({ show: true, error: true });
+      });
+  };
+
+  formatMetaData = () => {
+    let { notification } = this.props;
+    let contentType = notification.content_type;
+    let metaData = {};
+
+    metaData.paperId = notification.paper_id;
+
+    if (
+      contentType === "thread" ||
+      contentType == "comment" ||
+      contentType === "reply"
+    ) {
+      metaData.threadId = notification.thread_id;
+    }
+    if (contentType === "comment" || contentType === "reply") {
+      metaData.commentId = notification.comment_id;
+    }
+    if (contentType === "reply") {
+      metaData.replyId = notification.reply_id;
+    }
+
+    return metaData;
   };
 
   hideCard = (e) => {
@@ -488,44 +602,136 @@ class LiveFeedNotification extends React.Component {
     return timeAgo.format(date);
   };
 
+  removeContent = () => {
+    this.setState({ isRemoved: true });
+  };
+
+  renderIcon = () => {
+    const { notification } = this.props;
+    const notificationType = notification.content_type;
+
+    switch (notificationType) {
+      case "summary":
+      case "vote_paper":
+      case "paper":
+        return icons.file;
+      case "vote_comment":
+      case "comment":
+        return <i className="fad fa-comment-alt-dots" />;
+      case "reply":
+      case "vote_reply":
+        return <i className="fad fa-comment-alt-dots" />;
+      case "thread":
+      case "vote_thread":
+        return <i className="fad fa-comment-alt-lines" />;
+    }
+  };
+
+  renderDropDown = () => {
+    let { showDropdown, userFlag } = this.state;
+    let { moderator } = this.props.auth.user;
+    // moderator = false;
+    function correctContent(contentType, isModerator) {
+      if (contentType === "summary") {
+        return false;
+      }
+      return true && isModerator;
+    }
+
+    let metaData = this.formatMetaData();
+
+    return (
+      <Fragment>
+        {showDropdown && (
+          <div
+            className={css(
+              styles.dropdownMenu,
+              correctContent(this.props.notification.content_type, moderator) &&
+                styles.twoItems
+            )}
+            ref={(ref) => (this.dropdownMenu = ref)}
+          >
+            <Ripples
+              className={css(styles.dropdownItem)}
+              onClick={this.promptFlagConfirmation}
+            >
+              <span className={css(styles.dropdownItemIcon)}>{icons.flag}</span>
+              {userFlag ? "Unflag" : "Flag"}
+            </Ripples>
+            {correctContent(
+              this.props.notification.content_type,
+              moderator
+            ) && (
+              <ModeratorDeleteButton
+                containerStyle={styles.dropdownItem}
+                labelStyle={[styles.text, styles.removeText]}
+                iconStyle={styles.expandIcon}
+                label={"Remove"}
+                actionType={"post"}
+                metaData={metaData}
+                onRemove={this.removeContent}
+              />
+            )}
+          </div>
+        )}
+      </Fragment>
+    );
+  };
+
   render() {
     let { notification } = this.props;
+    let { isRemoved } = this.state;
 
-    if (this.state.hideCard) {
-      return null;
-    } else {
-      return (
-        <Ripples
-          className={css(styles.column, styles.notification)}
-          onClick={this.handleClickNavigation}
-        >
-          <ReactTooltip
-            place={"bottom"}
-            delayShow={400}
-            className={css(styles.tool)}
-          />
-          <div className={css(styles.type)}>{this.renderIcon()}</div>
-          <Ripples className={css(styles.dropdown)}>{icons.ellipsisH}</Ripples>
-          <div className={css(styles.row, styles.container)}>
-            <div
-              className={css(styles.column, styles.left)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <AuthorAvatar
-                author={
-                  notification.created_by &&
-                  notification.created_by.author_profile
-                }
-                size={35}
-              />
-            </div>
-            <div className={css(styles.column, styles.right)}>
-              {this.renderNotification()}
-            </div>
+    return (
+      <div
+        className={css(
+          styles.column,
+          styles.notification,
+          isRemoved && styles.isRemoved
+        )}
+        onClick={this.handleClickNavigation}
+      >
+        {isRemoved && (
+          <div className={css(styles.removedText)}>
+            Content Removed By Moderator
           </div>
-        </Ripples>
-      );
-    }
+        )}
+        <ReactTooltip
+          place={"bottom"}
+          delayShow={400}
+          className={css(styles.tool)}
+        />
+        <div className={css(styles.type)}>{this.renderIcon()}</div>
+        {this.props.notification.content_type !== "summary" && (
+          <Ripples
+            className={css(styles.dropdownIcon)}
+            onClick={this.toggleDropdown}
+          >
+            <span ref={(ref) => (this.dropdownIcon = ref)}>
+              {icons.ellipsisH}
+            </span>
+          </Ripples>
+        )}
+        {this.renderDropDown()}
+        <div className={css(styles.row, styles.container)}>
+          <div
+            className={css(styles.column, styles.left)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <AuthorAvatar
+              author={
+                notification.created_by &&
+                notification.created_by.author_profile
+              }
+              size={35}
+            />
+          </div>
+          <div className={css(styles.column, styles.right)}>
+            {this.renderNotification()}
+          </div>
+        </div>
+      </div>
+    );
   }
 }
 
@@ -546,7 +752,9 @@ const styles = StyleSheet.create({
   },
   notification: {
     display: "inline-block",
-    width: "80%",
+    // maxWidth: 600,
+    boxSizing: "border-box",
+    width: "100%",
     padding: "25px 10px 20px 10px",
     backgroundColor: "#FFF",
     border: "1px solid rgb(237, 237, 237)",
@@ -554,9 +762,29 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     position: "relative",
     marginBottom: 15,
+    overflow: "visible",
     ":hover": {
       borderColor: "#AAAAAA",
     },
+  },
+  isRemoved: {
+    pointerEvents: "none",
+    userSelect: "none",
+  },
+  removedText: {
+    height: "100%",
+    width: "100%",
+    zIndex: 2,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backdropFilter: "blur(2px)",
+    fontSize: 13,
+    fontWeight: 500,
+    background: "rgba(255, 255, 255, 0.5)",
   },
   left: {
     justifyContent: "center",
@@ -633,16 +861,85 @@ const styles = StyleSheet.create({
     bottom: 5,
     right: 10,
   },
-  dropdown: {
+  dropdownMenu: {
     position: "absolute",
-    top: 5,
-    right: 10,
+    bottom: 20,
+    right: 0,
+    width: 120,
+    boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
+    boxSizing: "border-box",
+    background: "#fff",
+    border: "1px solid #eee",
+    borderRadius: 4,
+    zIndex: 2,
   },
+  twoItems: {
+    bottom: -20,
+  },
+  dropdownIcon: {
+    position: "absolute",
+    top: 4,
+    right: 5,
+    padding: "1px 5px",
+    borderRadius: 4,
+    cursor: "pointer",
+  },
+  dropdownItem: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    boxSizing: "border-box",
+    padding: 8,
+    width: "100%",
+    color: colors.BLACK(),
+    cursor: "pointer",
+    userSelect: "none",
+    borderBottom: "1px solid #F3F3F8",
+    width: "100%",
+    fontSize: 14,
+    ":hover": {
+      background: "#F3F3F8",
+    },
+  },
+  dropdownItemIcon: {
+    color: "#918f9b",
+    fontSize: 14,
+    paddingLeft: 8,
+    marginRight: 13,
+  },
+
   tool: {
     zIndex: 999,
     opacity: 0.4,
     maxWidth: 250,
   },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 12,
+    marginLeft: 14,
+    color: "#918f9b",
+  },
+  removeText: {
+    fontSize: 14,
+    color: colors.RED(),
+  },
+  expandIcon: {
+    fontSize: 14,
+    paddingLeft: 5,
+  },
 });
 
-export default LiveFeedNotification;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+  openLoginModal: ModalActions.openLoginModal,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withAlert()(LiveFeedNotification));
