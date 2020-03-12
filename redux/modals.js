@@ -179,7 +179,7 @@ const defaultModalState = {
   uploadPaperModal: {
     suggestedPapers: [],
   },
-  openManageBulletPointsModal: true,
+  openManageBulletPointsModal: false,
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
