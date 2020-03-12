@@ -30,7 +30,7 @@ export const BulletActions = {
             payload: {
               bullets: res.results,
               pending: false,
-              succsss: true,
+              success: true,
             },
           });
         })
@@ -39,7 +39,7 @@ export const BulletActions = {
             type: BulletsConstants.FETCH_FAILURE,
             payload: {
               pending: false,
-              sucess: false,
+              success: false,
             },
           });
         });
@@ -64,7 +64,7 @@ export const BulletActions = {
               bullets,
               newBullet,
               pending: false,
-              succsss: true,
+              success: true,
             },
           });
         })
