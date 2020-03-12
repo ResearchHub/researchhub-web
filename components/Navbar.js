@@ -186,7 +186,7 @@ const Navbar = (props) => {
         return (
           <div className={css(styles.menuItem)} key={`navbar_tab_${index}`}>
             <a
-              className={css(styles.menuItem)}
+              className={css(styles.menuItem, styles.noMargin)}
               href={
                 "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
               }
@@ -299,7 +299,7 @@ const Navbar = (props) => {
     },
     bmMenu: {
       background: "rgba(55, 58, 70, 1)",
-      padding: "2.5em 1.5em 0",
+      padding: "2.5em 0",
       fontSize: "1.15em",
     },
     bmMorphShape: {
@@ -312,6 +312,9 @@ const Navbar = (props) => {
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
+      padding: "0px 1.5em",
+      height: "100%",
+      overflow: "auto",
     },
     bmItem: {
       display: "inline-block",
@@ -627,8 +630,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     zIndex: 3,
   },
+  noMargin: {
+    margin: 0,
+  },
   menuItem: {
     display: "flex",
+    // flexDirection: 'row-reverse',
     alignItems: "center",
     cursor: "pointer",
     highlight: "none",
@@ -636,6 +643,9 @@ const styles = StyleSheet.create({
     fontVariant: "small-caps",
     letterSpacing: 0.7,
     fontSize: 20,
+    // justifyContent: 'space-between',
+    width: "100%",
+    margin: "12px 0px",
     color: "#FFF",
     textDecoration: "unset",
     ":hover": {
@@ -649,7 +659,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 20,
-    fontSize: 30,
+    fontSize: 25,
     width: 40,
     color: "#FFF",
     textAlign: "center",
