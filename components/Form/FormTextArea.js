@@ -16,7 +16,10 @@ const FormTextArea = (props) => {
     inputStyle,
     onChange,
     value,
+    passedRef,
+    autoFocus,
   } = props;
+
   return (
     <div
       id={id}
@@ -34,11 +37,9 @@ const FormTextArea = (props) => {
         {required && <div className={css(styles.asterick)}>*</div>}
       </div>
       <TextareaAutosize
-        className={css(
-          styles.input,
-          styles.text,
-          inputStyle && styles.inputStyle
-        )}
+        inputRef={(ref) => (passedRef = ref)}
+        autoFocus={autoFocus && autoFocus}
+        className={css(styles.input, styles.text, inputStyle && inputStyle)}
         required={required && required}
         placeholder={placeholder && placeholder}
         // style={inputStyle && inputStyle}
