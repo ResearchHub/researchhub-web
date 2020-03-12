@@ -53,10 +53,21 @@ export default class Search extends Component {
 
     const value = e.target.value;
 
-    this.setState({
-      showDropdown: true,
-      finished: false,
-    });
+    if (!value) {
+      this.setState({
+        showDropdown: false,
+        finished: true,
+        query: "",
+      });
+
+      return;
+    } else {
+      this.setState({
+        showDropdown: true,
+        finished: false,
+        query: value,
+      });
+    }
 
     this.searchTimeout = setTimeout(() => {
       const config = {
@@ -75,10 +86,6 @@ export default class Search extends Component {
           });
         });
     }, 1500);
-
-    this.setState({
-      query: e.target.value,
-    });
   };
 
   renderSearchResults = () => {
