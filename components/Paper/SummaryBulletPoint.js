@@ -10,7 +10,6 @@ import colors from "~/config/themes/colors";
 
 const SummaryBulletPoint = ({ data, editable }) => {
   let { text, plain_text } = data;
-
   return (
     <Ripples className={css(styles.bulletpoint)}>
       <div className={css(styles.bulletpointIcon)}>
