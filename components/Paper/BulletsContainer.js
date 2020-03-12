@@ -192,6 +192,7 @@ class BulletsContainer extends React.Component {
               labelStyle={inputStyles.formLabel}
               inputStyle={inputStyles.formInput}
               onChange={this.handleBulletText}
+              value={this.state.bulletText}
               passedRef={this.textInput}
               autoFocus={true}
             />
