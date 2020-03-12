@@ -105,23 +105,23 @@ class BulletsContainer extends React.Component {
   };
 
   submitBulletPoint = async () => {
-    let { dispatch, bulletRedux } = this.props;
+    let { dispatch, bulletsRedux } = this.props;
     let paperId = this.props.paperId;
     let bullet = this.formatNewBullet();
     let newBullets = [...this.state.bullets, bullet];
     this.setState({ pendingSubmission: true });
     await dispatch(
-      BulletActions.postBullet({ paperId, bullet, prevState: bulletRedux })
+      BulletActions.postBullet({ paperId, bullet, prevState: bulletsRedux })
     );
-    if (!bulletRedux.pending && bulletRedux.success) {
+    if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
       this.setState({
+        pendingSubmission: false,
+        bulletText: "",
         showForm: false,
-        bullets: newBullets,
       });
     } else {
       //handle error
     }
-    f;
   };
 
   renderBulletPoints = () => {
