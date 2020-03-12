@@ -1,12 +1,14 @@
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 
+import FormTextArea from "../Form/FormTextArea";
+
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 
-const SummaryBulletPoint = ({ data }) => {
+const SummaryBulletPoint = ({ data, editable }) => {
   let { text, plain_text } = data;
 
   return (
@@ -24,13 +26,20 @@ const SummaryBulletPoint = ({ data }) => {
 const styles = StyleSheet.create({
   bulletpoint: {
     display: "flex",
-    backgroundColor: "#F2F2F2",
-    alignItems: "flex-start",
+    backgroundColor: "#FBFBFD",
+    alignItems: "center",
     boxSizing: "border-box",
+    borderRadius: 3,
     padding: 20,
+    marginBottom: 10,
+    border: "1px solid #F0F0F0",
+    cursor: "pointer",
+    ":hover": {
+      borderColor: "#E0E0E0",
+    },
   },
   bulletpointIcon: {
-    color: colors.BLUE(),
+    color: "#3971FF",
     height: 30,
     minHeight: 30,
     maxHeight: 30,
@@ -44,12 +53,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 20,
-    border: `2px solid ${colors.BLUE()}`,
+    border: `1.5px solid #3971FF`,
   },
   bulletpointText: {
     color: "#241F3A",
-    fontWeight: 500,
+    fontWeight: 400,
     fontSize: 15,
+    width: "calc(100% - 90px)",
   },
 });
 
