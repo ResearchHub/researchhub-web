@@ -28,7 +28,7 @@ class NewDND extends React.Component {
     super(props);
     this.state = {
       // Toggle b/w DnD & Url
-      urlView: false,
+      urlView: true,
       // Drag N Drop
       fileDragging: false,
       fileLoading: false,
@@ -195,6 +195,8 @@ class NewDND extends React.Component {
       this.setState({ urlView: !this.state.urlView }, () => {
         this.state.urlView && this.inputRef.current.focus();
       });
+
+      this.props.toggleFormatState && this.props.toggleFormatState();
     }
   };
 

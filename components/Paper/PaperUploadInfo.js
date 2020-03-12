@@ -86,6 +86,7 @@ class PaperUploadInfo extends React.Component {
       editMode: false,
       edited: false,
       suggestedPapers: false,
+      urlView: true,
     };
 
     this.state = {
@@ -630,17 +631,22 @@ class PaperUploadInfo extends React.Component {
         return (
           <span>
             {!editMode &&
-              this.renderHeader("Upload Paper", "Up to 15MB (.pdf)", false)}
+              this.renderHeader("Add Paper", "Up to 15MB (.pdf)", false)}
             <div className={css(styles.section)}>
               {!editMode && (
                 <div className={css(styles.paper)}>
                   <div className={css(styles.label, styles.labelStyle)}>
-                    Paper PDF
+                    {this.state.urlView ? "Link to Paper" : "Paper PDF"}
                     <span className={css(styles.asterick)}>*</span>
                   </div>
                   <NewDND
                     handleDrop={this.uploadPaper}
                     onDrop={null}
+                    toggleFormatState={() => {
+                      this.setState({
+                        urlView: !this.state.urlView,
+                      });
+                    }}
                     onValidUrl={this.checkFormProgress}
                     onRemove={this.checkFormProgress}
                     onSearch={this.checkPaperSuggestions}
@@ -662,7 +668,7 @@ class PaperUploadInfo extends React.Component {
               />
               <FormInput
                 label={"Editorialized Title (optional)"}
-                placeholder="Jargon free version of the title that regular people would understand"
+                placeholder="Jargon free version of the title that the average person would understand"
                 containerStyle={styles.container}
                 labelStyle={styles.labelStyle}
                 value={form.title}
@@ -1016,25 +1022,6 @@ class PaperUploadInfo extends React.Component {
       error.year = true;
     }
     if (this.state.editMode) {
-      //   if (
-      //     author.self_author === false &&
-      //     this.state.selectedAuthors.length < 1
-      //   ) {
-      //     pass = false;
-      //     error.author = true;
-      //   }
-      //   if (!published.year) {
-      //     pass = false;
-      //     error.year = true;
-      //   }
-      //   if (!published.month) {
-      //     pass = false;
-      //     error.month = true;
-      //   }
-      //   if (hubs.length < 1) {
-      //     pass = false;
-      //     error.hubs = true;
-      //   }
       if (
         !this.state.editMode &&
         !(Object.keys(paper.uploadedPaper).length > 0)
