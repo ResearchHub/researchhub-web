@@ -352,35 +352,20 @@ var styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 20,
     marginBottom: 10,
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 767px)": {
       fontSize: 16,
-    },
-    "@media only screen and (max-width: 320px)": {
-      fontSize: 13,
     },
   },
   emptyPlaceholderSubtitle: {
     fontSize: 16,
     color: colors.BLACK(0.8),
     textAlign: "center",
-    marginBottom: 20,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
-    "@media only screen and (max-width: 320px)": {
-      fontSize: 10,
-    },
+    marginBottom: 16,
   },
   emptyPlaceholderFont: {
     fontSize: 16,
     color: colors.BLACK(0.8),
     textAlign: "center",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
-    "@media only screen and (max-width: 320px)": {
-      fontSize: 10,
-    },
   },
   emptyStateButtonContainer: {
     display: "flex",
