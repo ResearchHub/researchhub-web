@@ -10,6 +10,8 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import TextEditor from "~/components/TextEditor";
 import Ripples from "react-ripples";
 import BulletsContainer from "../BulletsContainer";
+import SummaryBulletPoint from "../SummaryBulletPoint";
+import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -331,6 +333,7 @@ class SummaryTab extends React.Component {
             )}
           </div>
         )}
+        <ManageBulletPointsModal />
       </ComponentWrapper>
     );
   }

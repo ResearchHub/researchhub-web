@@ -17,6 +17,7 @@ export const ModalConstants = {
   TRANSACTION_MODAL_TOGGLE: "@@MODAL/TRANSACTION_MODAL_TOGGLE",
   FIRST_VOTE_MODAL_TOGGLE: "@@MODAL/FIRST_VOTE_MODAL_TOGGLE",
   ORCID_CONNECT_MODAL_TOGGLE: "@@modal/ORCID_CONNECT_MODAL_TOGGLE",
+  MANAGE_BULLET_POINTS_MODAL_TOGGLE: "@@modal/MANAGE_BULLET_POINTS_TOGGLE",
 };
 
 export const ModalActions = {
@@ -56,6 +57,16 @@ export const ModalActions = {
           loginModal: {
             flavorText,
           },
+        },
+      });
+    };
+  },
+  openManageBulletPointsModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.LOGIN_MODAL_TOGGLE,
+        payload: {
+          openManageBulletPointsModal: openModal,
         },
       });
     };
@@ -168,6 +179,7 @@ const defaultModalState = {
   uploadPaperModal: {
     suggestedPapers: [],
   },
+  openManageBulletPointsModal: true,
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -182,6 +194,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.TRANSACTION_MODAL_TOGGLE:
     case ModalConstants.FIRST_VOTE_MODAL_TOGGLE:
     case ModalConstants.ORCID_CONNECT_MODAL_TOGGLE:
+    case ModalConstants.MANAGE_BULLET_POINTS_TOGGLE:
       return {
         ...state,
         ...action.payload,
