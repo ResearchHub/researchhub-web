@@ -389,6 +389,9 @@ const routes = (BASE_URL) => {
 
       return url + "censor/";
     },
+    BULLET_POINT: ({ paperId }) => {
+      return BASE_URL + `paper/${paperId}/bullet_point/`;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
