@@ -908,7 +908,6 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     marginRight: 13,
   },
-
   tool: {
     zIndex: 999,
     opacity: 0.4,

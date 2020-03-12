@@ -9,7 +9,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import Ripples from "react-ripples";
-import SummaryBulletPoint from "../SummaryBulletPoint";
+import BulletsContainer from "../BulletsContainer";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -178,36 +178,37 @@ class SummaryTab extends React.Component {
     let { transition } = this.state;
     return (
       <ComponentWrapper>
-        {/* <div>
-          <SummaryBulletPoint />
-        </div> */}
+        <BulletsContainer paperId={this.props.paperId} />
         <div>{this.state.errorMessage}</div>
         {(paper.summary && paper.summary.summary) ||
         this.state.summaryExists ? (
           <div className={css(styles.container)}>
             {this.state.readOnly ? (
-              <div className={css(styles.summaryActions)}>
-                <Link
-                  href={"/paper/[paperId]/[tabName]/edits"}
-                  as={`/paper/${paper.id}/summary/edits`}
-                >
-                  <Ripples className={css(styles.action)}>
-                    View Edit History
-                  </Ripples>
-                </Link>
-                <PermissionNotificationWrapper
-                  modalMessage="propose summary edits"
-                  onClick={this.edit}
-                  permissionKey="ProposeSummaryEdit"
-                  loginRequired={true}
-                >
-                  <div className={css(styles.action)}>
-                    <div className={css(styles.pencilIcon)}>
-                      <i className="fas fa-pencil"></i>
+              <div className={css(styles.sectionHeader)}>
+                <div className={css(styles.sectionTitle)}>Description</div>
+                <div className={css(styles.summaryActions)}>
+                  <Link
+                    href={"/paper/[paperId]/[tabName]/edits"}
+                    as={`/paper/${paper.id}/summary/edits`}
+                  >
+                    <Ripples className={css(styles.action)}>
+                      View Edit History
+                    </Ripples>
+                  </Link>
+                  <PermissionNotificationWrapper
+                    modalMessage="propose summary edits"
+                    onClick={this.edit}
+                    permissionKey="ProposeSummaryEdit"
+                    loginRequired={true}
+                  >
+                    <div className={css(styles.action)}>
+                      <div className={css(styles.pencilIcon)}>
+                        <i className="fas fa-pencil"></i>
+                      </div>
+                      Edit Summary
                     </div>
-                    Edit Summary
-                  </div>
-                </PermissionNotificationWrapper>
+                  </PermissionNotificationWrapper>
+                </div>
               </div>
             ) : (
               <div className={css(styles.headerContainer)}>
@@ -342,6 +343,19 @@ var styles = StyleSheet.create({
     alignItems: "flex-end",
     boxSizing: "border-box",
     transition: "all ease-in-out 0.3s",
+    backgroundColor: "#FFF",
+  },
+  sectionHeader: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  sectionTitle: {
+    fontSize: 26,
+    fontWeight: 500,
+    color: colors.BLACK(),
   },
   noSummaryContainer: {
     alignItems: "center",
@@ -400,7 +414,7 @@ var styles = StyleSheet.create({
   },
   summaryActions: {
     width: 250,
-    padding: 16,
+    // padding: 16,
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -420,6 +434,7 @@ var styles = StyleSheet.create({
     cursor: "pointer",
     transition: "all ease-out 0.1s",
     padding: "3px 5px",
+    paddingRight: 0,
     ":hover": {
       color: colors.BLUE(1),
       opacity: 1,
