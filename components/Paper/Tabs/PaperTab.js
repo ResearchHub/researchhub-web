@@ -398,11 +398,8 @@ var styles = StyleSheet.create({
     fontSize: 16,
     color: colors.PURPLE(),
     textAlign: "center",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
-    "@media only screen and (max-width: 320px)": {
-      fontSize: 10,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
     },
   },
   buttonRow: {
@@ -430,6 +427,9 @@ var styles = StyleSheet.create({
   orText: {
     paddingLeft: 15,
     paddingRight: 15,
+    "@media only screen and (max-width: 767px)": {
+      padding: 8,
+    },
   },
 });
 
