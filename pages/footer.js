@@ -28,7 +28,11 @@ class Footer extends React.Component {
             )}
           >
             <a
-              className={css(styles.tabLink, styles.tab)}
+              className={css(
+                styles.tabLink,
+                styles.tab,
+                index === 2 && styles.lastTab
+              )}
               href={
                 "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
               }
@@ -55,12 +59,14 @@ class Footer extends React.Component {
     let tabs = this.renderTabs();
     return (
       <footer className={css(styles.footer)}>
-        <img
-          src="/static/white_logo.png"
-          className={css(styles.researchHubLogo)}
-        />
-        <div className={css(styles.linkSection, styles.tabContainer)}>
-          {tabs}
+        <div className={css(styles.imgTab)}>
+          <img
+            src="/static/white_logo.png"
+            className={css(styles.researchHubLogo)}
+          />
+          <div className={css(styles.linkSection, styles.tabContainer)}>
+            {tabs}
+          </div>
         </div>
         <div className={css(styles.legal, styles.tabContainer)}>
           <Link href={"/about/tos"} as={"/about/tos"}>
@@ -83,14 +89,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexWrap: "wrap",
     // height: 97,
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "center",
+    },
     "@media only screen and (min-width: 1024px)": {
       padding: 32,
       paddingLeft: 62,
       paddingRight: 62,
     },
   },
+  imgTab: {
+    display: "flex",
+
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
+  },
+  lastTab: {
+    marginRight: 0,
+  },
   linkSection: {
-    marginLeft: "5%",
+    "@media only screen and (min-width: 768px)": {
+      marginLeft: "5%",
+    },
   },
   ccby: {
     color: "#fff",
@@ -104,16 +125,25 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   legal: {
-    marginLeft: "auto",
+    marginTop: 16,
+    marginBottom: 16,
+    "@media only screen and (min-width: 768px)": {
+      marginLeft: "auto",
+      marginTop: 0,
+      marginBottom: 0,
+    },
   },
   tabContainer: {
     display: "flex",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 16,
   },
   researchHubLogo: {
     width: 190,
     objectFit: "contain",
+    "@media only screen and (max-width: 767px)": {
+      height: 35,
+    },
   },
   arr: {
     color: "#fff",

@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Value } from "slate";
 import { withAlert } from "react-alert";
+import stripHtml from "string-strip-html";
 
 // Component
 import CheckBox from "../Form/CheckBox";
@@ -146,7 +147,7 @@ class PaperUploadInfo extends React.Component {
         : title && title;
     }
     if (abstract) {
-      form.tagline = abstract && abstract.slice(0, 255);
+      form.tagline = stripHtml(abstract.slice(0, 255));
     }
     if (DOI) {
       form.doi = DOI && DOI;
