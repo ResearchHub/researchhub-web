@@ -56,7 +56,7 @@ export const BulletActions = {
         .then(Helpers.parseJSON)
         .then((res) => {
           let newBullet = res;
-          let bullets = [...prevState.bullets, ...res];
+          let bullets = [...prevState.bullets, res];
 
           return dispatch({
             type: BulletsConstants.POST_SUCCESS,
@@ -69,6 +69,7 @@ export const BulletActions = {
           });
         })
         .catch((err) => {
+          console.log("err", err);
           return dispatch({
             type: BulletsConstants.POST_FAILURE,
             payload: {
