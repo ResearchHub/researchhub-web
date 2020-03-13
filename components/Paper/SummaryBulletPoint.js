@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     boxSizing: "border-box",
     borderRadius: 3,
-    padding: 20,
+    padding: 16,
     marginBottom: 10,
     border: "1px solid #F0F0F0",
     // cursor: "pointer",
