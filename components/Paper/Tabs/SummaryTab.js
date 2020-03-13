@@ -333,7 +333,7 @@ class SummaryTab extends React.Component {
             )}
           </div>
         )}
-        <ManageBulletPointsModal />
+        <ManageBulletPointsModal paperId={this.props.paperId} />
       </ComponentWrapper>
     );
   }

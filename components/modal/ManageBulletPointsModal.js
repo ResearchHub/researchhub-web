@@ -7,31 +7,26 @@ import Modal from "react-modal";
 import { useDrag, useDrop, DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import update from "immutability-helper";
+import Ripples from "react-ripples";
 
 // Redux
-import { ModalActions } from "../../redux/modals";
+import { ModalActions } from "~/redux/modals";
+import { BulletActions } from "~/redux/bullets";
+import { MessageActions } from "~/redux/message";
 
 // Component
 import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
+import Loader from "~/components/Loader/Loader";
 
-const FAKE_DATA = [
-  { id: 0, plain_text: "This is a bullet point" },
-  {
-    id: 1,
-    plain_text:
-      "This is an important point that helps summarize what this is all about!",
-  },
-  { id: 2, plain_text: "test test test" },
-  { id: 3, plain_text: "Check this out!" },
-];
 class ManageBulletPointsModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
       mobileView: false,
-      cards: FAKE_DATA,
+      cards: [],
+      pendingSubmission: false,
     };
 
     this.state = {
@@ -42,6 +37,14 @@ class ManageBulletPointsModal extends React.Component {
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.bulletsRedux.bullets !== prevProps.bulletsRedux.bullets) {
+      this.setState({
+        cards: this.props.bulletsRedux.bullets,
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -60,15 +63,27 @@ class ManageBulletPointsModal extends React.Component {
     }
   };
 
+  saveReorder = async () => {
+    let { dispatch, bulletActions, bulletsRedux, messageActions } = this.props;
+    let paperId = this.props.paperId;
+    this.setState({ pendingSubmission: true });
+    await bulletActions.reorderBullets({ paperId, bullets: this.state.cards });
+    if (!bulletsRedux.pending && bulletsRedux.success) {
+      this.setState({
+        pendingSubmission: false,
+      });
+      messageActions.setMessage("Order Saved!");
+      messageActions.showMessage({ show: true });
+      this.closeModal();
+    } else {
+      //handle error
+    }
+  };
   /**
    * closes the modal on button click
    */
   closeModal = () => {
     let { modalActions } = this.props;
-    this.setState({
-      ...this.initialState,
-    });
-    this.enableParentScroll();
     modalActions.openManageBulletPointsModal(false);
   };
 
@@ -102,7 +117,7 @@ class ManageBulletPointsModal extends React.Component {
 
   render() {
     let { modals } = this.props;
-    let { mobileView } = this.state;
+    let { mobileView, pendingSubmission, cards } = this.state;
     return (
       <Modal
         isOpen={modals.openManageBulletPointsModal}
@@ -110,20 +125,41 @@ class ManageBulletPointsModal extends React.Component {
         className={css(styles.modal)}
         shouldCloseOnOverlayClick={true}
         style={mobileView ? mobileOverlayStyles : overlayStyles}
-        onAfterOpen={this.disableParentScroll}
       >
         <div className={css(styles.modalContent)}>
-          <div className={css(styles.title)}>Selected Cliff Notes</div>
+          <div className={css(styles.title)}>Selected Main Points</div>
           <div className={css(styles.subtitle)}>
-            These notes will be visisable in the cliff notes section of the
-            paper.
+            The selected main points will be displayed on the paper in the main
+            points section.
           </div>
           <div className={css(styles.bulletPoints)}>
             <DndProvider backend={Backend}>
-              {this.renderCards(this.state.cards)}
+              {this.renderCards(cards)}
             </DndProvider>
           </div>
-          <Button label={"Save"} />
+          <div className={css(styles.buttonRow)}>
+            <Ripples
+              className={css(
+                styles.cancelButton,
+                pendingSubmission && styles.disabled
+              )}
+              onClick={pendingSubmission ? null : this.closeModal}
+            >
+              Cancel
+            </Ripples>
+            <Button
+              label={
+                pendingSubmission ? (
+                  <Loader loading={true} size={20} color={"#fff"} />
+                ) : (
+                  "Save"
+                )
+              }
+              size={"small"}
+              onClick={this.saveReorder}
+              disabled={pendingSubmission}
+            />
+          </div>
         </div>
       </Modal>
     );
@@ -246,15 +282,41 @@ const styles = StyleSheet.create({
       fontSize: 16,
     },
   },
+  buttonRow: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: 15,
+    paddingBottom: 15,
+    borderBottom: "1px solid #F0F0F0",
+  },
+  cancelButton: {
+    height: 37,
+    width: 126,
+    minWidth: 126,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 20,
+    cursor: "pointer",
+    borderRadius: 4,
+    userSelect: "none",
+    ":hover": {
+      color: "#3971FF",
+      // textDecoration: 'underline'
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
-  university: state.universities,
+  bulletsRedux: state.bullets,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
+  bulletActions: bindActionCreators(BulletActions, dispatch),
+  messageActions: bindActionCreators(MessageActions, dispatch),
 });
 
 export default connect(
