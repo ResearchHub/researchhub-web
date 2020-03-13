@@ -1051,6 +1051,10 @@ class PaperUploadInfo extends React.Component {
       body.type = null;
     }
 
+    if (!body.title) {
+      body.title = body.paper_title;
+    }
+
     let { paper, paperActions, messageActions, authActions } = this.props;
     // send form object to the backend
     if (!this.state.editMode) {
