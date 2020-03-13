@@ -392,6 +392,9 @@ const routes = (BASE_URL) => {
     BULLET_POINT: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/bullet_point/`;
     },
+    REORDER_BULLETS: () => {
+      return BASE_URL + `bullet_point/reorder_all/`;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

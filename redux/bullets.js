@@ -12,6 +12,9 @@ export const BulletsConstants = {
   POST_BULLET: "@@BULLETS/POST_BULLET",
   POST_SUCCESS: "@@BULLETS/POST_SUCCESS",
   POST_FAILURE: "@@BULLETS/POST_FAILURE",
+  REORDER_BULLETS: "@@BULLETS/REORDER_BULLETS",
+  REORDER_SUCCESS: "@@BULLETS/REORDER_SUCCESS",
+  REORDER_FAILURE: "@@BULLETS/REORDER_FAILURE",
 };
 
 export const BulletActions = {
@@ -80,6 +83,40 @@ export const BulletActions = {
         });
     };
   },
+  reorderBullets: ({ bullets, paperId }) => {
+    return (dispatch) => {
+      dispatch({
+        type: BulletsConstants.REORDER_BULLETS,
+        payload: { pending: true, success: false },
+      });
+      let order = [];
+      for (let i = 0; i < bullets.length; i++) {
+        order.push(bullets[i].id);
+      }
+      return fetch(API.REORDER_BULLETS(), API.PATCH_CONFIG({ order }))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          return dispatch({
+            type: BulletsConstants.REORDER_SUCCESS,
+            payload: {
+              bullets: bullets,
+              pending: false,
+              success: true,
+            },
+          });
+        })
+        .catch((err) => {
+          return dispatch({
+            type: BulletsConstants.REORDER_FAILURE,
+            payload: {
+              pending: false,
+              success: false,
+            },
+          });
+        });
+    };
+  },
 };
 
 /**********************************
@@ -100,6 +137,9 @@ const BulletsReducer = (state = defaultBulletsState, action) => {
     case BulletsConstants.POST_BULLET:
     case BulletsConstants.POST_SUCCESS:
     case BulletsConstants.POST_FAILURE:
+    case BulletsConstants.REORDER_BULLETS:
+    case BulletsConstants.REORDER_SUCCESS:
+    case BulletsConstants.REORDER_FAILURE:
       return {
         ...state,
         ...action.payload,
