@@ -315,12 +315,25 @@ class SummaryTab extends React.Component {
                 <div className={css(styles.sectionHeader)}>
                   <div className={css(styles.sectionTitle)}>Description</div>
                 </div>
-                <h2 className={css(styles.noSummaryTitle)}>
-                  A summary hasn't been filled in yet.
-                </h2>
-                <div className={css(styles.text)}>
-                  Earn 5 RHC for being the first person to add a summary to this
-                  paper.
+                <div className={css(styles.box) + " second-step"}>
+                  <div className={css(styles.icon)}>
+                    <i className="fad fa-file-alt" />
+                  </div>
+                  <h2 className={css(styles.noSummaryTitle)}>
+                    A summary hasn't been filled in yet
+                  </h2>
+                  <div className={css(styles.text)}>
+                    Earn 5 RHC for being the first person to add a summary to
+                    this paper.
+                  </div>
+                  <PermissionNotificationWrapper
+                    onClick={this.addSummary}
+                    modalMessage="propose a summary"
+                    permissionKey="ProposeSummaryEdit"
+                    loginRequired={true}
+                  >
+                    <button className={css(styles.button)}>Add Summary</button>
+                  </PermissionNotificationWrapper>
                 </div>
               </Fragment>
             )}
