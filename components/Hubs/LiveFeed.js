@@ -40,6 +40,7 @@ class LiveFeed extends React.Component {
 
   componentDidMount() {
     if (process.browser) {
+      window.addEventListener("scroll", this.scrollListener);
       let hubId = this.state.currentHub.value;
       this.fetchInitialFeed(hubId);
       if (this.state.liveMode) {
@@ -64,7 +65,33 @@ class LiveFeed extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.state.intervalPing);
+    window.removeEventListener("scroll", this.scrollListener);
   }
+
+  /**
+   * In this scroll listener, we're going to add a CSS class on the
+   * title bar when we hit a certain height
+   */
+  scrollListener = () => {
+    let { auth } = this.props;
+    if (auth.showBanner && window.scrollY > 323) {
+      this.setState({
+        titleBoxShadow: true,
+      });
+    } else if (!auth.showBanner && window.scrollY > 27) {
+      this.setState({
+        titleBoxShadow: true,
+      });
+    } else if (!auth.showBanner && window.scrollY < 27) {
+      this.setState({
+        titleBoxShadow: false,
+      });
+    } else if (auth.showBanner && window.scrollY < 323) {
+      this.setState({
+        titleBoxShadow: false,
+      });
+    }
+  };
 
   fetchLivefeed = (hubId) => {
     this.setState({ liveFetching: true });
@@ -231,96 +258,103 @@ class LiveFeed extends React.Component {
 
     return (
       <div className={css(styles.livefeedComponent)}>
-        <div className={css(styles.content)}>
-          <div className={css(styles.listLabel)}>
-            <div className={css(styles.text, styles.feedTitle)}>
-              {this.props.home
-                ? "ResearchHub Live"
-                : `${this.props.currentHub.name} LiveFeed`}
-            </div>
-            <div className={css(styles.feedRow)}>
-              <Ripples
-                className={css(styles.toggleLive)}
-                onClick={this.toggleLiveMode}
-                during={1500}
-                f
-              >
-                <div
-                  ref={(ref) => (this.liveButton = ref)}
-                  id={"syntheticClick"}
-                ></div>
-                <i
-                  className={
-                    css(styles.toggleIcon) +
-                    ` ${this.state.liveMode ? "fas fa-stop" : "fas fa-play"}`
-                  }
-                />
-                Live Update
-              </Ripples>
-              <div className={css(styles.filterContainer)}>
-                <div className={css(styles.filterSelect)}>
-                  <FormSelect
-                    id={"thread-filter"}
-                    options={this.buildHubOptions(this.props.allHubs)}
-                    placeholder={"Sort By Hubs"}
-                    onChange={this.handleHubChange}
-                    containerStyle={styles.overrideFormSelect}
-                    value={this.state.currentHub}
-                    inputStyle={{
-                      minHeight: "unset",
-                      padding: 0,
-                      backgroundColor: "#FFF",
-                      fontSize: 14,
-                    }}
+        <div
+          className={css(
+            styles.topContainer,
+            this.state.titleBoxShadow && styles.titleBoxShadow
+          )}
+        >
+          <div className={css(styles.content)}>
+            <div className={css(styles.listLabel)}>
+              <div className={css(styles.text, styles.feedTitle)}>
+                {this.props.home
+                  ? "ResearchHub Live"
+                  : `${this.props.currentHub.name} LiveFeed`}
+              </div>
+              <div className={css(styles.feedRow)}>
+                <Ripples
+                  className={css(styles.toggleLive)}
+                  onClick={this.toggleLiveMode}
+                  during={1500}
+                  f
+                >
+                  <div
+                    ref={(ref) => (this.liveButton = ref)}
+                    id={"syntheticClick"}
+                  ></div>
+                  <i
+                    className={
+                      css(styles.toggleIcon) +
+                      ` ${this.state.liveMode ? "fas fa-stop" : "fas fa-play"}`
+                    }
                   />
+                  Live Update
+                </Ripples>
+                <div className={css(styles.filterContainer)}>
+                  <div className={css(styles.filterSelect)}>
+                    <FormSelect
+                      id={"thread-filter"}
+                      options={this.buildHubOptions(this.props.allHubs)}
+                      placeholder={"Sort By Hubs"}
+                      onChange={this.handleHubChange}
+                      containerStyle={styles.overrideFormSelect}
+                      value={this.state.currentHub}
+                      inputStyle={{
+                        minHeight: "unset",
+                        padding: 0,
+                        backgroundColor: "#FFF",
+                        fontSize: 14,
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          {!this.state.hideFeed && (
-            <div className={css(styles.container)}>
-              <div className={css(styles.livefeed)}>
-                {this.state.loading ? (
-                  <span className={css(styles.loaderWrapper)}>
-                    <Loader loading={true} size={20} />
-                  </span>
-                ) : (
-                  <InfiniteScroll
-                    pageStart={this.findStartingPage()}
-                    loadMore={(page) => {
-                      this.fetchNextPage(page);
-                    }}
-                    initialLoad={true}
-                    hasMore={livefeed.count > livefeed.results.length}
-                    loader={
-                      <span className={css(styles.loaderWrapper)}>
-                        <Loader loading={true} size={20} />
-                      </span>
-                    }
-                    className={css(styles.infiniteScroll)}
-                  >
-                    {this.renderNotifications()}
-                  </InfiniteScroll>
-                )}
-              </div>
-            </div>
-          )}
         </div>
+        {!this.state.hideFeed && (
+          <div className={css(styles.container, styles.content)}>
+            <div className={css(styles.livefeed)}>
+              {this.state.loading ? (
+                <span className={css(styles.loaderWrapper)}>
+                  <Loader loading={true} size={20} />
+                </span>
+              ) : (
+                <InfiniteScroll
+                  pageStart={this.findStartingPage()}
+                  loadMore={(page) => {
+                    this.fetchNextPage(page);
+                  }}
+                  initialLoad={true}
+                  hasMore={livefeed.count > livefeed.results.length}
+                  loader={
+                    <span className={css(styles.loaderWrapper)}>
+                      <Loader loading={true} size={20} />
+                    </span>
+                  }
+                  className={css(styles.infiniteScroll)}
+                >
+                  {this.renderNotifications()}
+                </InfiniteScroll>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  titleBoxShadow: {
+    boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
+  },
   listLabel: {
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "center",
     fontWeight: "bold",
-    position: "-webkit-sticky",
-    position: "sticky",
-    top: 80,
     boxSizing: "border-box",
     letterSpacing: 1.2,
     zIndex: 3,
@@ -332,27 +366,43 @@ const styles = StyleSheet.create({
       position: "unset",
     },
   },
+  topContainer: {
+    width: "100%",
+    position: "-webkit-sticky",
+    position: "sticky",
+    top: 80,
+    zIndex: 3,
+  },
   text: {
     color: "#FFF",
     cursor: "default",
   },
   feedTitle: {
     display: "flex",
-    alignItems: "flex-start",
-    color: "#000",
-    fontWeight: 500,
-    fontSize: 33,
-    width: "100%",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    color: "#241F3A",
+    fontWeight: 400,
+    fontSize: 30,
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
-    marginRight: 10,
-
+    width: "100%",
+    textAlign: "center",
+    "@media only screen and (min-width: 800px)": {
+      textAlign: "left",
+      paddingRight: 16,
+    },
+    "@media only screen and (max-width: 1149px)": {
+      fontSize: 30,
+    },
     "@media only screen and (max-width: 665px)": {
       fontSize: 25,
     },
+    "@media only screen and (max-width: 416px)": {
+      fontSize: 25,
+    },
     "@media only screen and (max-width: 321px)": {
-      width: 280,
-      textAlign: "center",
+      fontSize: 20,
     },
   },
   feedRow: {
@@ -501,12 +551,14 @@ const styles = StyleSheet.create({
   content: {
     width: "100%",
     maxWidth: 1000,
+    margin: "0 auto",
   },
 });
 
 const mapStateToProps = (state) => ({
   livefeed: state.livefeed.livefeed,
   allHubs: state.hubs.hubs,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
