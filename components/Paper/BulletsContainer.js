@@ -75,10 +75,16 @@ class BulletsContainer extends React.Component {
   };
 
   toggleForm = () => {
-    this.setState({ showForm: !this.state.showForm }, () => {
-      this.state.showFocus && this.textInput && this.textInput.focus();
-      this.state.showDropdown && this.setState({ showDropdown: false });
-    });
+    this.setState(
+      {
+        showForm: !this.state.showForm,
+        bulletText: this.state.showForm ? "" : this.state.bulletText,
+      },
+      () => {
+        this.state.showFocus && this.textInput && this.textInput.focus();
+        this.state.showDropdown && this.setState({ showDropdown: false });
+      }
+    );
   };
 
   formatNewBullet = () => {
