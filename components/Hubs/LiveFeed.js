@@ -104,8 +104,12 @@ class LiveFeed extends React.Component {
   };
 
   detectNewActions = (newList) => {
+    let { liveModeResults } = this.state;
     let prevList = this.props.livefeed.results;
-    let prevMostRecent = new Date(prevList[0].created_date);
+    let prevMostRecent =
+      liveModeResults.length > 0
+        ? new Date(liveModeResults[0].created_date)
+        : new Date(prevList[0].created_date);
     let newUpdates = [];
 
     for (var i = 0; i < newList.length; i++) {
@@ -118,7 +122,7 @@ class LiveFeed extends React.Component {
     }
 
     this.setState({
-      liveModeResults: [...newUpdates, ...this.state.liveModeResults],
+      liveModeResults: [...newUpdates, ...liveModeResults],
       liveFetching: false,
     });
   };
