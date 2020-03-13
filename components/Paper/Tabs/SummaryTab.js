@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -310,9 +311,9 @@ class SummaryTab extends React.Component {
                 </div>
               </div>
             ) : (
-              <div className={css(styles.box) + " second-step"}>
-                <div className={css(styles.icon)}>
-                  <i className="fad fa-file-alt" />
+              <Fragment>
+                <div className={css(styles.sectionHeader)}>
+                  <div className={css(styles.sectionTitle)}>Description</div>
                 </div>
                 <h2 className={css(styles.noSummaryTitle)}>
                   A summary hasn't been filled in yet.
@@ -321,15 +322,7 @@ class SummaryTab extends React.Component {
                   Earn 5 RHC for being the first person to add a summary to this
                   paper.
                 </div>
-                <PermissionNotificationWrapper
-                  onClick={this.addSummary}
-                  modalMessage="propose a summary"
-                  permissionKey="ProposeSummaryEdit"
-                  loginRequired={true}
-                >
-                  <button className={css(styles.button)}>Add Summary</button>
-                </PermissionNotificationWrapper>
-              </div>
+              </Fragment>
             )}
           </div>
         )}
@@ -348,6 +341,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     transition: "all ease-in-out 0.3s",
     backgroundColor: "#FFF",
+    marginTop: 16,
   },
   sectionHeader: {
     display: "flex",

@@ -32,9 +32,9 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 10,
     border: "1px solid #F0F0F0",
-    cursor: "pointer",
+    // cursor: "pointer",
     ":hover": {
-      borderColor: "#E0E0E0",
+      // borderColor: "#E0E0E0",
     },
   },
   bulletpointIcon: {
