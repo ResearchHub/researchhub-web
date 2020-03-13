@@ -66,8 +66,6 @@ class SummaryTab extends React.Component {
       return;
     }
 
-    console.log("paper", paper);
-
     localStorage.setItem(
       `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
       editorJSON

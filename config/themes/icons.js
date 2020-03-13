@@ -27,6 +27,8 @@ const icons = {
   date: <i className="far fa-calendar-day" />,
   upload: <i class="fas fa-upload"></i>,
   plusCircle: <i className="fal fa-plus-circle" />,
+  play: <i className="fas fa-play" />,
+  stop: <i class="fas fa-stop" />,
 };
 
 export const voteWidgetIcons = {

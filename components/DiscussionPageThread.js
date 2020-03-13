@@ -124,7 +124,16 @@ const Thread = (props) => {
               !readOnly && styles.threadTitleEdit
             )}
           >
-            {title}
+            {/* {title} */}
+            <ThreadEditor
+              readOnly={readOnly}
+              styling={[styles.body]}
+              text={body}
+              setReadOnly={setReadOnly}
+              commentStyles={
+                readOnly ? styles.commentStyles : styles.commentStylesEdit
+              }
+            />
           </div>
           <div className={css(styles.actionbar)}>
             <div className={css(styles.mobileVoteWidget)}>
@@ -143,7 +152,7 @@ const Thread = (props) => {
             {renderActionBar()}
           </div>
         </div>
-        <div
+        {/* <div
           className={css(
             styles.threadInfo,
             !readOnly && styles.threadInfoEditView
@@ -158,7 +167,7 @@ const Thread = (props) => {
               readOnly ? styles.commentStyles : styles.commentStylesEdit
             }
           />
-        </div>
+        </div> */}
         {readOnly && (
           <DiscussionPostMetadata
             authorProfile={createdBy.authorProfile}
@@ -307,7 +316,7 @@ const styles = StyleSheet.create({
     width: "85%",
     minWidth: "85%",
     maxWidth: "85%",
-    fontSize: 33,
+    fontSize: 28,
     color: "#241F3A",
     "@media only screen and (max-width: 761px)": {
       fontSize: 22,
