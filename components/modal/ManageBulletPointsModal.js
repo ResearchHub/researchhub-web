@@ -64,7 +64,7 @@ class ManageBulletPointsModal extends React.Component {
   };
 
   saveReorder = async () => {
-    let { dispatch, bulletActions, bulletsRedux, messageActions } = this.props;
+    let { bulletActions, bulletsRedux, messageActions } = this.props;
     let paperId = this.props.paperId;
     this.setState({ pendingSubmission: true });
     await bulletActions.reorderBullets({ paperId, bullets: this.state.cards });
@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "50%",
+    height: "80%",
     "@media only screen and (max-width: 665px)": {
       width: "90%",
     },
@@ -230,6 +231,7 @@ const styles = StyleSheet.create({
   bulletPoints: {
     width: "100%",
     marginBottom: 20,
+    overflow: "scroll",
   },
   title: {
     display: "flex",
