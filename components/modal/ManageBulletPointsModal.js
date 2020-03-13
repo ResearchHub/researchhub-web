@@ -127,10 +127,10 @@ class ManageBulletPointsModal extends React.Component {
         style={mobileView ? mobileOverlayStyles : overlayStyles}
       >
         <div className={css(styles.modalContent)}>
-          <div className={css(styles.title)}>Selected Main Points</div>
+          <div className={css(styles.title)}>Selected Bullet Points</div>
           <div className={css(styles.subtitle)}>
-            The selected main points will be displayed on the paper in the main
-            points section.
+            The selected bullet points will be displayed on the paper in the
+            main points section.
           </div>
           <div className={css(styles.bulletPoints)}>
             <DndProvider backend={Backend}>
@@ -202,9 +202,10 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "50%",
-    height: "80%",
-    "@media only screen and (max-width: 665px)": {
+    maxHeight: "80%",
+    "@media only screen and (max-width: 767px)": {
       width: "90%",
+      maxHeight: "100%",
     },
     "@media only screen and (max-width: 436px)": {
       width: "100%",
