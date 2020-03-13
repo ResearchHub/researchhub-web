@@ -30,7 +30,9 @@ class BulletsContainer extends React.Component {
     super(props);
     this.state = {
       bulletText: "",
-      bullets: this.props.bulletsRedux.bullets,
+      bullets: this.props.bulletsRedux.bullets
+        ? this.props.bulletsRedux.bullets
+        : [],
       showDropdown: false,
       showForm: false,
       pendingSubmission: false,
@@ -136,7 +138,7 @@ class BulletsContainer extends React.Component {
   };
 
   renderBulletPoints = () => {
-    let { loading, bullets } = this.state;
+    let { loading, bullets, showForm } = this.state;
     if (loading) {
       return (
         <ReactPlaceholder
@@ -145,12 +147,12 @@ class BulletsContainer extends React.Component {
           customPlaceholder={<BulletPlaceholder color="#efefef" />}
         />
       );
-    } else if (bullets.length === 0) {
+    } else if (bullets.length === 0 && !showForm) {
       return (
         <EmptySummarySection
           message={"No bullets have been added yet"}
           subText={"Earn 1 RHC for adding a bullet to the paper"}
-          onClick={() => openManageBulletPointsModal(true)}
+          onClick={() => this.toggleForm()}
           modalMessage={"add a bullet"}
           buttonText={"Add a Bullet"}
           icon={
