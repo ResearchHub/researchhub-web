@@ -27,13 +27,14 @@ const prepFilters = (filters) => {
 const prepURL = (url, params) => {
   let { querystring, rest, filters } = params;
   let qs = "";
+  if (rest) {
+    if (rest.id !== null && rest.id !== undefined) {
+      url += `${rest.id}/`;
+    }
 
-  if (rest.id !== null && rest.id !== undefined) {
-    url += `${rest.id}/`;
-  }
-
-  if (rest.route) {
-    url += `${rest.route}/`;
+    if (rest.route) {
+      url += `${rest.route}/`;
+    }
   }
 
   let querystringKeys = Object.keys(querystring);
@@ -389,8 +390,15 @@ const routes = (BASE_URL) => {
 
       return url + "censor/";
     },
-    BULLET_POINT: ({ paperId }) => {
-      return BASE_URL + `paper/${paperId}/bullet_point/`;
+    BULLET_POINT: ({ paperId, ordinal__isnull }) => {
+      let url = BASE_URL + `paper/${paperId}/bullet_point/`;
+      let params = {
+        querystring: {
+          ordinal__isnull,
+        },
+      };
+      url = prepURL(url, params);
+      return url;
     },
     REORDER_BULLETS: () => {
       return BASE_URL + `bullet_point/reorder_all/`;

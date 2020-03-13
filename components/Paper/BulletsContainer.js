@@ -18,17 +18,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-const bullets = [
-  {
-    plain_text: `Bitcoin falls 12% as one of the world's biggest cryptocurrency markets readies a bill to ban trading`,
-  },
-  {
-    plain_text: `Bitcoin falls 12% as one of the world's biggest cryptocurrency markets readies a bill to ban trading`,
-  },
-  {
-    plain_text: `Bitcoin falls 12% as one of the world's biggest cryptocurrency markets readies a bill to ban trading`,
-  },
-];
+const BULLET_COUNT = 5;
 
 class BulletsContainer extends React.Component {
   constructor(props) {
@@ -93,7 +83,7 @@ class BulletsContainer extends React.Component {
   formatNewBullet = () => {
     let ordinal = this.state.bullets.length + 1;
 
-    if (ordinal > 10) {
+    if (ordinal > BULLET_COUNT) {
       ordinal = null;
     }
 
@@ -106,14 +96,12 @@ class BulletsContainer extends React.Component {
   };
 
   submitBulletPoint = async () => {
-    let { dispatch, bulletsRedux } = this.props;
+    let { bulletsRedux, postBullet } = this.props;
     let paperId = this.props.paperId;
     let bullet = this.formatNewBullet();
     let newBullets = [...this.state.bullets, bullet];
     this.setState({ pendingSubmission: true });
-    await dispatch(
-      BulletActions.postBullet({ paperId, bullet, prevState: bulletsRedux })
-    );
+    await postBullet({ paperId, bullet, prevState: bulletsRedux });
     if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
       this.setState({
         pendingSubmission: false,
@@ -380,6 +368,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   openManageBulletPointsModal: ModalActions.openManageBulletPointsModal,
   getBullets: BulletActions.getBullets,
+  postBullet: BulletActions.postBullet,
 };
 
 export default connect(

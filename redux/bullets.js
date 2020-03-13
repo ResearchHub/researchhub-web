@@ -17,6 +17,8 @@ export const BulletsConstants = {
   REORDER_FAILURE: "@@BULLETS/REORDER_FAILURE",
 };
 
+const BULLET_COUNT = 5;
+
 export const BulletActions = {
   getBullets: (paperId) => {
     return (dispatch) => {
@@ -24,7 +26,10 @@ export const BulletActions = {
         type: BulletsConstants.FETCH_BULLETS,
         payload: { pending: true, success: false },
       });
-      return fetch(API.BULLET_POINT({ paperId }), API.GET_CONFIG())
+      return fetch(
+        API.BULLET_POINT({ paperId, ordinal__isnull: false }),
+        API.GET_CONFIG()
+      )
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
