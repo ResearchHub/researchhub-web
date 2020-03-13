@@ -1158,7 +1158,7 @@ var styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 20,
     marginBottom: 16,
-    padding: 20,
+    padding: 16,
     borderBottom: "1px solid",
   },
   relatedResults: {
