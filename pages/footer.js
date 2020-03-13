@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     display: "flex",
     alignItems: "center",
-    marginTop: 16,
+    marginTop: 10,
   },
   researchHubLogo: {
     width: 190,
