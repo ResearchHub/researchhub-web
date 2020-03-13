@@ -2,7 +2,10 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
+import BulletPlaceholder from "../Placeholders/BulletPlaceholder";
 import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
@@ -11,6 +14,7 @@ import Loader from "~/components/Loader/Loader";
 // redux
 import { BulletActions } from "~/redux/bullets";
 import { ModalActions } from "~/redux/modals";
+import { MessageActions } from "~/redux/message";
 
 // Config
 import API from "~/config/api";
@@ -30,16 +34,18 @@ class BulletsContainer extends React.Component {
       showDropdown: false,
       showForm: false,
       pendingSubmission: false,
+      loading: true,
     };
     this.dropdownIcon;
     this.dropdownMenu;
     this.textInput;
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     window.addEventListener("mousedown", this.handleOutsideClick);
-    this.props.getBullets(this.props.paperId);
-  }
+    await this.props.getBullets(this.props.paperId);
+    this.setState({ loading: false });
+  };
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
@@ -103,29 +109,66 @@ class BulletsContainer extends React.Component {
   };
 
   submitBulletPoint = async () => {
-    let { bulletsRedux, postBullet } = this.props;
+    let { bulletsRedux, postBullet, showMessage, setMessage } = this.props;
+    this.props.showMessage({ load: true, show: true });
     let paperId = this.props.paperId;
     let bullet = this.formatNewBullet();
     let newBullets = [...this.state.bullets, bullet];
     this.setState({ pendingSubmission: true });
     await postBullet({ paperId, bullet, prevState: bulletsRedux });
     if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
+      showMessage({ show: false });
+      setMessage("Bullet successfully added!");
+      showMessage({ show: true });
       this.setState({
         pendingSubmission: false,
         bulletText: "",
         showForm: false,
       });
     } else {
-      //handle error
+      showMessage({ show: false });
+      setMessage("Something went wrong.");
+      showMessage({ show: true, error: true });
+      this.setState({
+        pendingSubmission: false,
+      });
     }
   };
 
   renderBulletPoints = () => {
-    return this.state.bullets.map((bullet, index) => {
+    let { loading, bullets } = this.state;
+    if (loading) {
       return (
-        <SummaryBulletPoint key={`summaryBulletPoint-${index}`} data={bullet} />
+        <ReactPlaceholder
+          ready={false}
+          showLoadingAnimation
+          customPlaceholder={<BulletPlaceholder color="#efefef" />}
+        />
       );
-    });
+    } else if (bullets.length === 0) {
+      return (
+        <EmptySummarySection
+          message={"No bullets have been added yet"}
+          subText={"Earn 1 RHC for adding a bullet to the paper"}
+          onClick={() => openManageBulletPointsModal(true)}
+          modalMessage={"add a bullet"}
+          buttonText={"Add a Bullet"}
+          icon={
+            <div className={css(styles.bulletpointIcon)}>
+              <i class="far fa-chevron-down" />
+            </div>
+          }
+        />
+      );
+    } else
+      return bullets.map((bullet, index) => {
+        return (
+          <SummaryBulletPoint
+            key={`summaryBulletPoint-${index}`}
+            data={bullet}
+          />
+        );
+      });
   };
 
   renderDropdown = () => {
@@ -223,22 +266,7 @@ class BulletsContainer extends React.Component {
               </div>
             </div>
           )}
-          {this.state.bullets.length === 0 ? (
-            <EmptySummarySection
-              message={"No bullets have been added yet"}
-              subText={"Earn 1 RHC for adding a bullet to the paper"}
-              onClick={() => openManageBulletPointsModal(true)}
-              modalMessage={"add a bullet"}
-              buttonText={"Add a Bullet"}
-              icon={
-                <div className={css(styles.bulletpointIcon)}>
-                  <i class="far fa-chevron-down" />
-                </div>
-              }
-            />
-          ) : (
-            this.renderBulletPoints()
-          )}
+          {this.renderBulletPoints()}
         </div>
       </div>
     );
@@ -407,6 +435,8 @@ const mapDispatchToProps = {
   openManageBulletPointsModal: ModalActions.openManageBulletPointsModal,
   getBullets: BulletActions.getBullets,
   postBullet: BulletActions.postBullet,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
