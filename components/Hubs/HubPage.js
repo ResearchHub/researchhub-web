@@ -208,6 +208,7 @@ class HubPage extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
+    window.removeEventListener("scroll", this.scrollListener);
   }
 
   fetchPapers = ({ hub }) => {
