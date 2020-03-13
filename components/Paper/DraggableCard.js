@@ -1,9 +1,10 @@
 import React, { useRef, useCallback } from "react";
 import { useDrag, useDrop } from "react-dnd";
+import { StyleSheet, css } from "aphrodite";
+
 import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";
 
 const style = {
-  marginBottom: "5px",
   cursor: "move",
 };
 
@@ -60,10 +61,12 @@ const DraggableCard = ({ id, text, index, moveCard }) => {
   drag(drop(ref));
 
   return (
-    <div ref={ref} style={{ ...style, opacity }}>
-      <SummaryBulletPoint data={{ plain_text: text }} />
+    <div ref={ref} style={{ opacity }}>
+      <SummaryBulletPoint manage={true} data={{ plain_text: text }} />
     </div>
   );
 };
+
+const styles = StyleSheet.create({});
 
 export default DraggableCard;

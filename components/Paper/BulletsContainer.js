@@ -10,6 +10,7 @@ import Loader from "~/components/Loader/Loader";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
@@ -46,7 +47,7 @@ class BulletsContainer extends React.Component {
 
   componentDidMount() {
     window.addEventListener("mousedown", this.handleOutsideClick);
-    this.props.dispatch(BulletActions.getBullets(this.props.paperId));
+    this.props.getBullets(this.props.paperId);
   }
 
   componentDidUpdate(prevProps) {
@@ -134,6 +135,7 @@ class BulletsContainer extends React.Component {
 
   renderDropdown = () => {
     let { showDropdown } = this.state;
+    let { openManageBulletPointsModal } = this.props;
     return (
       <Fragment>
         {showDropdown && (
@@ -150,7 +152,10 @@ class BulletsContainer extends React.Component {
               </span>
               Add a Bullet
             </Ripples>
-            <Ripples className={css(dropdownStyles.dropdownItem)}>
+            <Ripples
+              className={css(dropdownStyles.dropdownItem)}
+              onClick={() => openManageBulletPointsModal(true)}
+            >
               <span className={css(dropdownStyles.dropdownItemIcon)}>
                 <i class="fal fa-tasks-alt" />
               </span>
@@ -372,7 +377,12 @@ const mapStateToProps = (state) => ({
   bulletsRedux: state.bullets,
 });
 
+const mapDispatchToProps = {
+  openManageBulletPointsModal: ModalActions.openManageBulletPointsModal,
+  getBullets: BulletActions.getBullets,
+};
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(BulletsContainer);

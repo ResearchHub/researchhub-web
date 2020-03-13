@@ -8,10 +8,10 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 
-const SummaryBulletPoint = ({ data, editable }) => {
+const SummaryBulletPoint = ({ data, editable, manage }) => {
   let { text, plain_text } = data;
   return (
-    <Ripples className={css(styles.bulletpoint)}>
+    <Ripples className={css(styles.bulletpoint, manage && styles.cursorMove)}>
       <div className={css(styles.bulletpointIcon)}>
         <i class="far fa-chevron-down" />
       </div>
@@ -59,6 +59,9 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 15,
     width: "calc(100% - 90px)",
+  },
+  cursorMove: {
+    cursor: "move",
   },
 });
 
