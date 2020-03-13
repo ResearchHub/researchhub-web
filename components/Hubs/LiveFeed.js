@@ -311,9 +311,7 @@ class LiveFeed extends React.Component {
                     />
                   </div>
                 </div>
-
               </div>
-
             </div>
           </div>
         </div>
@@ -567,10 +565,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   livefeed: state.livefeed.livefeed,
   allHubs: state.hubs.hubs,
-<<<<<<< HEAD
   auth: state.auth,
-=======
->>>>>>> closes ##222, Live Feed Cleanup
 });
 
 const mapDispatchToProps = {
