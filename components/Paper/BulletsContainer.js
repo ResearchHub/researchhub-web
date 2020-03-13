@@ -17,6 +17,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import EmptySummarySection from "./Tabs/Summary/EmptySummary";
 
 const BULLET_COUNT = 5;
 
@@ -157,10 +158,11 @@ class BulletsContainer extends React.Component {
 
   render() {
     let { showForm, pendingSubmission } = this.state;
+    let { openManageBulletPointsModal } = this.props;
     return (
       <div className={css(dropdownStyles.bulletContainer)}>
         <div className={css(styles.bulletHeaderContainer)}>
-          <div className={css(styles.bulletTitle)}>Main Points</div>
+          <div className={css(styles.bulletTitle)}>Bullets</div>
           <div className={css(dropdownStyles.dropdownContainer)}>
             <Ripples
               className={css(styles.bulletAddIcon)}
@@ -173,47 +175,64 @@ class BulletsContainer extends React.Component {
           </div>
         </div>
         <div className={css(styles.bulletPoints)}>
-          <div
-            className={css(
-              styles.bulletForm,
-              showForm && styles.showBulletForm
-            )}
-          >
-            <FormTextArea
-              id={"bulletText"}
-              containerStyle={inputStyles.formContainer}
-              labelStyle={inputStyles.formLabel}
-              inputStyle={inputStyles.formInput}
-              onChange={this.handleBulletText}
-              value={this.state.bulletText}
-              passedRef={this.textInput}
-              autoFocus={true}
-            />
-            <div className={css(styles.buttonRow)}>
-              <Ripples
-                className={css(
-                  styles.cancelButton,
-                  pendingSubmission && styles.disabled
-                )}
-                onClick={pendingSubmission ? null : this.toggleForm}
-              >
-                Cancel
-              </Ripples>
-              <Button
-                label={
-                  pendingSubmission ? (
-                    <Loader loading={true} size={20} color={"#fff"} />
-                  ) : (
-                    "Submit"
-                  )
-                }
-                size={"small"}
-                onClick={this.submitBulletPoint}
-                disabled={pendingSubmission}
+          {showForm && (
+            <div
+              className={css(
+                styles.bulletForm,
+                showForm && styles.showBulletForm
+              )}
+            >
+              <FormTextArea
+                id={"bulletText"}
+                containerStyle={inputStyles.formContainer}
+                labelStyle={inputStyles.formLabel}
+                inputStyle={inputStyles.formInput}
+                onChange={this.handleBulletText}
+                value={this.state.bulletText}
+                passedRef={this.textInput}
+                autoFocus={true}
               />
+              <div className={css(styles.buttonRow)}>
+                <Ripples
+                  className={css(
+                    styles.cancelButton,
+                    pendingSubmission && styles.disabled
+                  )}
+                  onClick={pendingSubmission ? null : this.toggleForm}
+                >
+                  Cancel
+                </Ripples>
+                <Button
+                  label={
+                    pendingSubmission ? (
+                      <Loader loading={true} size={20} color={"#fff"} />
+                    ) : (
+                      "Submit"
+                    )
+                  }
+                  size={"small"}
+                  onClick={this.submitBulletPoint}
+                  disabled={pendingSubmission}
+                />
+              </div>
             </div>
-          </div>
-          {this.renderBulletPoints()}
+          )}
+          {this.state.bullets.length === 0 ? (
+            <EmptySummarySection
+              message={"No bullets have been added yet"}
+              subText={"Earn 1 RHC for adding a bullet to the paper"}
+              onClick={() => openManageBulletPointsModal(true)}
+              modalMessage={"add a bullet"}
+              buttonText={"Add a Bullet"}
+              icon={
+                <div className={css(styles.bulletpointIcon)}>
+                  <i class="far fa-chevron-down" />
+                </div>
+              }
+            />
+          ) : (
+            this.renderBulletPoints()
+          )}
         </div>
       </div>
     );
@@ -227,6 +246,19 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     boxSizing: "border-box",
     // border: '1px solid #F2F2F2'
+  },
+  bulletpointIcon: {
+    color: "#3971FF",
+    height: 50,
+    width: 50,
+    fontSize: 25,
+    borderRadius: "50%",
+    boxSizing: "border-box",
+    paddingTop: 3,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    border: `1.5px solid #3971FF`,
   },
   bulletHeaderContainer: {
     display: "flex",
