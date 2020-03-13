@@ -128,9 +128,9 @@ class ManageBulletPointsModal extends React.Component {
         style={mobileView ? mobileOverlayStyles : overlayStyles}
       >
         <div className={css(styles.modalContent)}>
-          <div className={css(styles.title)}>Selected Bullet Points</div>
+          <div className={css(styles.title)}>Selected Key Takeaways</div>
           <div className={css(styles.subtitle)}>
-            The selected bullet points will be displayed on the paper in the
+            The selected key takeaways will be displayed on the paper in the
             main points section.
           </div>
           <div className={css(styles.bulletPoints)}>

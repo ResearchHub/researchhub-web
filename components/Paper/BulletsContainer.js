@@ -29,14 +29,15 @@ class BulletsContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bulletText: "",
+      bulletText: "", // value of input
       bullets: this.props.bulletsRedux.bullets
         ? this.props.bulletsRedux.bullets
         : [],
-      showDropdown: false,
-      showForm: false,
-      pendingSubmission: false,
-      loading: true,
+      showDropdown: false, // boolean to show dropdown menu
+      showForm: false, // boolean to determine whether to show form or not
+      pendingSubmission: false, // boolean to show if api call is being made
+      loading: true, // boolean for initial fetch
+      transition: false,
     };
     this.dropdownIcon;
     this.dropdownMenu;
@@ -76,6 +77,15 @@ class BulletsContainer extends React.Component {
 
   handleBulletText = (id, value) => {
     this.setState({ [id]: value });
+  };
+
+  transitionWrapper = (fn) => {
+    this.setState({ transition: true }, () => {
+      setTimeout(() => {
+        fn();
+        this.setState({ transition: false });
+      }, 400);
+    });
   };
 
   toggleDropdown = () => {
@@ -120,7 +130,7 @@ class BulletsContainer extends React.Component {
     await postBullet({ paperId, bullet, prevState: bulletsRedux });
     if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
       showMessage({ show: false });
-      setMessage("Bullet successfully added!");
+      setMessage("Key takeaway successfully added!");
       showMessage({ show: true });
       this.setState({
         pendingSubmission: false,
@@ -149,18 +159,21 @@ class BulletsContainer extends React.Component {
       );
     } else if (bullets.length === 0 && !showForm) {
       return (
-        <EmptySummarySection
-          message={"No bullets have been added yet"}
-          subText={"Earn 1 RHC for adding a bullet to the paper"}
-          onClick={() => this.toggleForm()}
-          modalMessage={"add a bullet"}
-          buttonText={"Add a Bullet"}
-          icon={
-            <div className={css(styles.bulletpointIcon)}>
-              <i class="far fa-chevron-down" />
+        <Ripples
+          className={css(styles.emptyStateContainer)}
+          onClick={() => {
+            this.transitionWrapper(this.toggleForm);
+          }}
+        >
+          <div className={css(styles.text)}>
+            <div className={css(styles.mainText)}>
+              No key takeaways have been added yet
             </div>
-          }
-        />
+            <div className={css(styles.subText)}>
+              Earn 1 RHC for adding a key takeaway to the paper
+            </div>
+          </div>
+        </Ripples>
       );
     } else
       return bullets.map((bullet, index) => {
@@ -185,12 +198,12 @@ class BulletsContainer extends React.Component {
           >
             <Ripples
               className={css(dropdownStyles.dropdownItem)}
-              onClick={this.toggleForm}
+              onClick={() => this.transitionWrapper(this.toggleForm)}
             >
               <span className={css(dropdownStyles.dropdownItemIcon)}>
                 {icons.plusCircle}
               </span>
-              Add a Bullet
+              Add a Key Takeaway
             </Ripples>
             <Ripples
               className={css(dropdownStyles.dropdownItem)}
@@ -199,7 +212,7 @@ class BulletsContainer extends React.Component {
               <span className={css(dropdownStyles.dropdownItemIcon)}>
                 <i class="fal fa-tasks-alt" />
               </span>
-              Manage Bullets
+              Manage Key Takeaways
             </Ripples>
           </div>
         )}
@@ -208,12 +221,12 @@ class BulletsContainer extends React.Component {
   };
 
   render() {
-    let { showForm, pendingSubmission } = this.state;
+    let { showForm, pendingSubmission, transition } = this.state;
     let { openManageBulletPointsModal } = this.props;
     return (
       <div className={css(dropdownStyles.bulletContainer)}>
         <div className={css(styles.bulletHeaderContainer)}>
-          <div className={css(styles.bulletTitle)}>Bullets</div>
+          <div className={css(styles.bulletTitle)}>Key Takeaways</div>
           <div className={css(dropdownStyles.dropdownContainer)}>
             <Ripples
               className={css(styles.bulletAddIcon)}
@@ -225,7 +238,9 @@ class BulletsContainer extends React.Component {
             {this.renderDropdown()}
           </div>
         </div>
-        <div className={css(styles.bulletPoints)}>
+        <div
+          className={css(styles.bulletPoints, transition && styles.transition)}
+        >
           {showForm && (
             <div
               className={css(
@@ -249,7 +264,11 @@ class BulletsContainer extends React.Component {
                     styles.cancelButton,
                     pendingSubmission && styles.disabled
                   )}
-                  onClick={pendingSubmission ? null : this.toggleForm}
+                  onClick={
+                    pendingSubmission
+                      ? null
+                      : () => this.transitionWrapper(this.toggleForm)
+                  }
                 >
                   Cancel
                 </Ripples>
@@ -315,9 +334,14 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     boxSizing: "border-box",
   },
+  transition: {
+    opacity: 0,
+  },
   bulletPoints: {
     // padding: '0px 10px',
     boxSizing: "border-box",
+    opacity: 1,
+    transition: "all ease-in-out 0.3s",
   },
   bulletForm: {
     width: "100%",
@@ -360,6 +384,52 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: "0.4",
   },
+  emptyStateContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+    boxSizing: "border-box",
+    borderRadius: 3,
+    padding: 16,
+    border: `1px solid #F0F0F0`,
+    backgroundColor: "#FBFBFD",
+    cursor: "pointer",
+    ":hover": {
+      borderColor: colors.BLUE(),
+    },
+  },
+  emptyStateIcon: {
+    color: "#3971FF",
+    height: 30,
+    minHeight: 30,
+    maxHeight: 30,
+    width: 30,
+    minWidth: 30,
+    maxWidth: 30,
+    borderRadius: "50%",
+    boxSizing: "border-box",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 20,
+    paddingTop: 2,
+    border: `1.5px solid #3971FF`,
+  },
+  text: {
+    textAlign: "center",
+    // width: "calc(100% - 90px)",
+    width: "100%",
+  },
+  mainText: {
+    fontSize: 20,
+    fontWeight: 500,
+  },
+  subText: {
+    fontSize: 16,
+    color: "rgba(36, 31, 58, 0.8)",
+    marginTop: 5,
+  },
 });
 
 const dropdownStyles = StyleSheet.create({
@@ -370,7 +440,7 @@ const dropdownStyles = StyleSheet.create({
     position: "absolute",
     bottom: -75,
     right: 0,
-    width: 160,
+    width: 210,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
     boxSizing: "border-box",
     background: "#fff",
