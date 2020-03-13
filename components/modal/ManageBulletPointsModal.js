@@ -109,6 +109,7 @@ class ManageBulletPointsModal extends React.Component {
           index={index}
           id={card.id}
           text={card.plain_text}
+          data={card}
           moveCard={this.moveCard}
         />
       );

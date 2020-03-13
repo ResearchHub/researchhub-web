@@ -11,7 +11,7 @@ import colors from "~/config/themes/colors";
 
 const SummaryBulletPoint = ({ data, editable, manage }) => {
   let { text, plain_text, created_by } = data;
-  let authorProfile = created_by.author_profile;
+  let authorProfile = created_by && created_by.author_profile;
 
   return (
     <Ripples className={css(styles.bulletpoint, manage && styles.cursorMove)}>
@@ -23,10 +23,12 @@ const SummaryBulletPoint = ({ data, editable, manage }) => {
           {plain_text && plain_text}
         </div>
       </div>
-      <div className={css(styles.bottomRow)}>
-        <span className={css(styles.contributorText)}>Contributors</span>
-        <AuthorAvatar author={authorProfile} size={25} />
-      </div>
+      {authorProfile && (
+        <div className={css(styles.bottomRow)}>
+          <span className={css(styles.contributorText)}>Contributors</span>
+          <AuthorAvatar author={authorProfile} size={25} />
+        </div>
+      )}
     </Ripples>
   );
 };
