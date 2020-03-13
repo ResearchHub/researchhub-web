@@ -1,6 +1,6 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-
+import { doesNotExist } from "~/config/utils";
 /**********************************
  *        ACTIONS SECTION         *
  **********************************/
@@ -12,27 +12,23 @@ export const NotificationConstants = {
 };
 
 export const NotificationActions = {
-  getLivefeed: (prevState, hubId = 0) => {
+  getLivefeed: (prevState, hubId = 0, page) => {
     return (dispatch) => {
       dispatch({ type: NotificationConstants.GET_LIVEFEED });
-      return fetch(API.GET_LIVE_FEED({ hubId }), API.GET_CONFIG())
+      return fetch(API.GET_LIVE_FEED({ hubId, page }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          // Prevent unnecessary state change and re-rendering
-          // if (prevState[hubId]) {
-          //   if (prevState[hubId].length === res.results.length) {
-          //     return dispatch({ type: NotificationConstants.LIVEFEED_STATIC });
-          //   }
-          // }
-
-          let updatedHubs = { ...prevState };
-          updatedHubs[hubId] = [...res.results];
-
+          let livefeed = shims.handleChanges(
+            prevState,
+            { ...res },
+            hubId,
+            page
+          );
           return dispatch({
             type: NotificationConstants.LIVEFEED_UPDATED,
             payload: {
-              hubs: updatedHubs,
+              livefeed,
             },
           });
         });
@@ -49,7 +45,7 @@ export const NotificationActions = {
  **********************************/
 
 const defaultNotificationState = {
-  hubs: {},
+  livefeed: {},
 };
 
 const NotificationReducer = (state = defaultNotificationState, action) => {
@@ -64,6 +60,27 @@ const NotificationReducer = (state = defaultNotificationState, action) => {
     default:
       return state;
   }
+};
+
+const shims = {
+  handleChanges: (prevState, newResults, hubId, page) => {
+    var updatedFeed = { ...prevState };
+    if (doesNotExist(prevState.currentHub) || prevState.currentHub !== hubId) {
+      updatedFeed.currentHub = hubId;
+      updatedFeed.count = newResults.count;
+      updatedFeed.results = newResults.results;
+      updatedFeed.grabbedPage = { 0: true };
+      return updatedFeed;
+    } else {
+      if (!updatedFeed.grabbedPage[page]) {
+        // append to results if new page
+        updatedFeed.results = [...updatedFeed.results, ...newResults.results];
+        updatedFeed.grabbedPage[page] = true; // add page to cache
+        return updatedFeed;
+      }
+      return updatedFeed;
+    }
+  },
 };
 
 export default NotificationReducer;
