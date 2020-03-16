@@ -592,20 +592,14 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     marginBottom: 15,
     textAlign: "left",
-    color: "#a7a6b0",
+    color: colors.BLACK(),
     transition: "all ease-out 0.1s",
     boxSizing: "border-box",
-    ":hover": {
-      color: colors.BLACK(),
-    },
   },
   container: {
     padding: "15px 10px",
     borderTop: "1px solid #EDEDED",
     transition: "all ease-in-out 0.2s",
-    ":hover #hubListTitle": {
-      color: colors.BLACK(),
-    },
   },
   formSelectContainer: {
     padding: 0,
@@ -749,9 +743,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 10,
-    ":hover #checkbox-label": {
-      fontWeight: 400,
-    },
   },
   checkboxLabel: {
     fontSize: 16,

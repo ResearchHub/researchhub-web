@@ -132,7 +132,7 @@ var styles = StyleSheet.create({
     opacity: 0.5,
   },
   revisionTitle: {
-    padding: 20,
+    padding: 16,
     color: "#241F3A",
     textTransform: "uppercase",
   },

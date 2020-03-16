@@ -29,6 +29,7 @@ const icons = {
   plusCircle: <i className="fal fa-plus-circle" />,
   play: <i className="fas fa-play" />,
   stop: <i class="fas fa-stop" />,
+  chevronDown: <i class="far fa-chevron-down" />,
 };
 
 export const voteWidgetIcons = {
