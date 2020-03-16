@@ -34,6 +34,7 @@ class LiveFeed extends React.Component {
       liveMode: false,
       liveFetching: false,
       liveModeResults: [],
+      fetchingPage: false,
     };
     // this.liveButton = React.createRef();
   }
@@ -136,14 +137,22 @@ class LiveFeed extends React.Component {
     });
   };
 
-  fetchNextPage = (page) => {
+  fetchNextPage = async () => {
+    if (this.state.fetchingPage) {
+      return;
+    }
     let { livefeed, getLivefeed } = this.props;
     if (livefeed.count === livefeed.results.length) {
       return;
     }
-    if (!livefeed.grabbedPage || !livefeed.grabbedPage[page]) {
+    let page = this.findStartingPage();
+
+    if (livefeed.grabbedPage || !livefeed.grabbedPage[page]) {
       let hubId = this.state.currentHub.value;
-      getLivefeed(livefeed, hubId, page);
+      this.setState({ fetchingPage: true }, async () => {
+        await getLivefeed(livefeed, hubId, page);
+        this.setState({ fetchingPage: false });
+      });
     }
   };
 
@@ -252,7 +261,10 @@ class LiveFeed extends React.Component {
     let { livefeed } = this.props;
     if (livefeed.grabbedPage) {
       let seenPages = Object.keys(livefeed.grabbedPage);
-      page = Math.max(Number(...seenPages)) + 1;
+      seenPages.forEach((num, i, arr) => {
+        arr[i] = Number(num);
+      });
+      page = Math.max(...seenPages) + 1;
     }
     return page;
   };
@@ -280,7 +292,6 @@ class LiveFeed extends React.Component {
                   className={css(styles.toggleLive)}
                   onClick={this.toggleLiveMode}
                   during={1500}
-                  f
                 >
                   <div
                     ref={(ref) => (this.liveButton = ref)}
@@ -337,6 +348,7 @@ class LiveFeed extends React.Component {
                     </span>
                   }
                   className={css(styles.infiniteScroll)}
+                  threshold={0}
                 >
                   {this.renderNotifications()}
                 </InfiniteScroll>
@@ -551,6 +563,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     background: "#FCFCFC",
+  },
+  content: {
+    width: "100%",
+    maxWidth: 1000,
   },
   content: {
     width: "100%",

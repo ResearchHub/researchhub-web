@@ -13,6 +13,7 @@ import universityReducer from "./universities";
 import transactionReducer from "./transaction";
 import notificationReducer from "./notification";
 import flagReducer from "./flags";
+import bulletReducer from "./bullets";
 
 export default combineReducers({
   modals: modalReducer,
@@ -28,4 +29,5 @@ export default combineReducers({
   transactions: transactionReducer,
   livefeed: notificationReducer,
   flags: flagReducer,
+  bullets: bulletReducer,
 });
