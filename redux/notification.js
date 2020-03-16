@@ -12,7 +12,7 @@ export const NotificationConstants = {
 };
 
 export const NotificationActions = {
-  getLivefeed: (prevState, hubId = 0, page) => {
+  getLivefeed: (prevState, hubId = 0, page = 1) => {
     return (dispatch) => {
       dispatch({ type: NotificationConstants.GET_LIVEFEED });
       return fetch(API.GET_LIVE_FEED({ hubId, page }), API.GET_CONFIG())
