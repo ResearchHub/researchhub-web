@@ -22,7 +22,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { timeAgo } from "~/config/utils";
+import { doesNotExist, getNestedValue, timeAgo } from "~/config/utils";
 
 class LiveFeedNotification extends React.Component {
   constructor(props) {
@@ -61,8 +61,11 @@ class LiveFeedNotification extends React.Component {
   };
 
   formatUsername = (userObject) => {
-    let { first_name, last_name } = userObject;
-    return `${first_name} ${last_name}`;
+    if (!doesNotExist(userObject)) {
+      let { first_name, last_name } = userObject;
+      return `${first_name} ${last_name}`;
+    }
+    return "";
   };
 
   handleClickNavigation = (e) => {
@@ -94,7 +97,7 @@ class LiveFeedNotification extends React.Component {
     let notificationType = content_type;
     const timestamp = this.formatTimestamp(created_date);
     const username = this.formatUsername(created_by);
-    const authorId = created_by.author_profile.id;
+    const authorId = getNestedValue(created_by, ["author_profile", "id"]);
     let paperTip = notification.paper_title
       ? notification.paper_title
       : notification.paper_official_title;
@@ -105,6 +108,39 @@ class LiveFeedNotification extends React.Component {
     let threadId = notification.thread_id;
 
     switch (notificationType) {
+      case "bullet_point":
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions}`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>
+            {" added a key takeaway to "}
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paperId}/summary`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
       case "summary":
         return (
           <div className={css(styles.message)}>
