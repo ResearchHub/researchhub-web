@@ -15,6 +15,7 @@ import { getNestedValue } from "~/config/utils";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
+import { createUsername } from "../../config/utils";
 
 class ReplyEntry extends React.Component {
   constructor(props) {
@@ -72,14 +73,6 @@ class ReplyEntry extends React.Component {
       }
     }
     this.props.calculateThreadHeight();
-  };
-
-  createUsername = ({ createdBy }) => {
-    if (createdBy) {
-      const { firstName, lastName } = createdBy;
-      return `${firstName} ${lastName}`;
-    }
-    return null;
   };
 
   formatMetaData = () => {
@@ -195,7 +188,7 @@ class ReplyEntry extends React.Component {
     let date = reply.createdDate;
     // let title = reply.title;
     let body = reply.text;
-    let username = this.createUsername(reply);
+    let username = createUsername(reply);
     let metaIds = this.formatMetaData();
     const flexStyle = StyleSheet.create({
       threadline: {

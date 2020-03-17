@@ -18,6 +18,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
 import { convertToEditorValue } from "~/config/utils/serializers";
+import { createUsername } from "../config/utils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
@@ -195,14 +196,6 @@ const DiscussionThreadCard = (props) => {
     );
   }
 };
-
-function createUsername({ createdBy }) {
-  if (createdBy) {
-    const { firstName, lastName } = createdBy;
-    return `${firstName} ${lastName}`;
-  }
-  return null;
-}
 
 DiscussionThreadCard.propTypes = {
   date: PropTypes.object,

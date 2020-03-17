@@ -4,8 +4,11 @@ import Plain from "slate-plain-serializer";
 import { doesNotExist, getNestedValue } from "./index";
 
 export function createUsername({ createdBy }) {
-  const { firstName, lastName } = createdBy;
-  return `${firstName} ${lastName}`;
+  if (createdBy) {
+    const { first_name, last_name } = createdBy.authorProfile;
+    return `${first_name} ${last_name}`;
+  }
+  return null;
 }
 
 export function convertToEditorValue(text) {
