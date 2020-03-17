@@ -24,6 +24,7 @@ import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { comment } from "../../redux/discussion/shims";
 import { transformComments } from "~/redux/discussion/shims";
+import { createUsername } from "../../config/utils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
@@ -151,14 +152,6 @@ class DiscussionEntry extends React.Component {
           });
       }
     );
-  };
-
-  createUsername = ({ createdBy }) => {
-    if (createdBy) {
-      const { first_name, last_name } = createdBy.authorProfile;
-      return `${first_name} ${last_name}`;
-    }
-    return null;
   };
 
   calculateThreadHeight = (height) => {
@@ -353,7 +346,7 @@ class DiscussionEntry extends React.Component {
     let date = data.createdDate;
     let title = data.title;
     let body = data.text;
-    let username = this.createUsername(data);
+    let username = createUsername(data);
     let metaData = {
       threadId: data.id,
       paperId: data.paper,

@@ -21,6 +21,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { transformReplies } from "~/redux/discussion/shims";
+import { createUsername } from "../../config/utils";
 
 class CommentEntry extends React.Component {
   constructor(props) {
@@ -304,14 +305,6 @@ class CommentEntry extends React.Component {
     }
   };
 
-  createUsername = ({ createdBy }) => {
-    if (createdBy) {
-      const { firstName, lastName } = createdBy;
-      return `${firstName} ${lastName}`;
-    }
-    return null;
-  };
-
   formatMetaData = () => {
     let { data, comment } = this.props;
     return {
@@ -402,7 +395,7 @@ class CommentEntry extends React.Component {
 
     let date = comment.createdDate;
     let body = comment.text;
-    let username = this.createUsername(comment);
+    let username = createUsername(comment);
     let metaIds = this.formatMetaData();
 
     return (
