@@ -139,7 +139,7 @@ class HubsList extends React.Component {
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
           <div className={css(styles.listLabel)} id={"hubListTitle"}>
-            {"Top Hubs"}
+            Trending Hubs
           </div>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
