@@ -155,8 +155,8 @@ class DiscussionEntry extends React.Component {
 
   createUsername = ({ createdBy }) => {
     if (createdBy) {
-      const { firstName, lastName } = createdBy;
-      return `${firstName} ${lastName}`;
+      const { first_name, last_name } = createdBy.authorProfile;
+      return `${first_name} ${last_name}`;
     }
     return null;
   };
