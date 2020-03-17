@@ -96,7 +96,9 @@ class LiveFeedNotification extends React.Component {
     let { created_date, created_by, content_type } = notification;
     let notificationType = content_type;
     const timestamp = this.formatTimestamp(created_date);
-    const username = this.formatUsername(created_by);
+    const username = this.formatUsername(
+      getNestedValue(created_by, ["author_profile"])
+    );
     const authorId = getNestedValue(created_by, ["author_profile", "id"]);
     let paperTip = notification.paper_title
       ? notification.paper_title
