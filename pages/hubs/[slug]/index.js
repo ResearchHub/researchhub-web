@@ -21,7 +21,14 @@ class Index extends React.Component {
     super(props);
     this.state = {
       slug: Router.router ? decodeURIComponent(Router.router.query.slug) : "",
-      currentHub: null,
+      currentHub: {
+        name: Router.router
+          ? Router.router.query.name
+            ? decodeURIComponent(Router.router.query.name)
+            : "ResearchHub"
+          : "",
+        slug: Router.router ? decodeURIComponent(Router.router.query.slug) : "",
+      },
       hubDescription: "", // TODO: Pull from hub description field
     };
   }
