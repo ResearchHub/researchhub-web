@@ -153,12 +153,15 @@ class Index extends React.Component {
     return hubsByAlpha[key].map((hub) => {
       return (
         <Link
-          href="/hubs/[hubname]"
-          as={`/hubs/${encodeURIComponent(hub.name)}`}
+          href="/hubs/[slug]"
+          as={`/hubs/${encodeURIComponent(hub.slug)}`}
+          key={`hub_${hub.id}`}
         >
-          <div key={hub.id} className={css(styles.hubEntry)}>
-            {hub.name}
-          </div>
+          <a className={css(styles.slugLink)}>
+            <div key={hub.id} className={css(styles.hubEntry)}>
+              {hub.slug}
+            </div>
+          </a>
         </Link>
       );
     });
@@ -243,6 +246,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 421px)": {
       justifyContent: "center",
     },
+  },
+  slugLink: {
+    textDecoration: "none",
   },
   title: {
     fontSize: 33,

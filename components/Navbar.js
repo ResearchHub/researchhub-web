@@ -233,7 +233,7 @@ const Navbar = (props) => {
 
   function renderMenuLoginButtons() {
     return (
-      <div className={css(styles.loginContainer)}>
+      <div className={css(styles.loginContainer)} key={`navbar_tab_login`}>
         <GoogleLoginButton
           styles={[styles.loginMobile]}
           iconStyle={styles.googleIcon}
