@@ -1,9 +1,27 @@
 import React, { useState, useEffect } from "react";
 
 // TODO: Add reconnect interval
+// TODO: Send authtoken to socket server
 
-const GOING_AWAY = 1001;
+const ALLOWED_ORIGINS = ["localhost", "researchhub.com"];
 
+const CLOSE_CODES = {
+  GOING_AWAY: 1001,
+  POLICY_VIOLATION: 1008,
+};
+
+/**
+ * Returns a wrapped `Component` injected with websocket props.
+ *
+ * The browser can only connect to a given `url` once at a time. If it is
+ * already connected, subsequent connection attempts will fail.
+ *
+ * @param {React.Component} Component
+ * @param {string} url
+ * @param {boolean} autoReconnect
+ * @returns {React.Component}
+ *
+ */
 export default function withWebSocket(Component, url, autoReconnect = true) {
   return (props) => {
     const [ws, setWs] = useState(null);
@@ -21,20 +39,7 @@ export default function withWebSocket(Component, url, autoReconnect = true) {
       if (ws) {
         ws.readyState !== WebSocket.CLOSED && listen();
       }
-    }
-
-    useEffect(unmount, [ws]);
-    function unmount() {
-      return () => {
-        autoReconnect = false;
-        if (ws) {
-          try {
-            ws.close(GOING_AWAY, "Unmounting");
-          } catch (error) {
-            ws.close();
-          }
-        }
-      };
+      return stopListening;
     }
 
     function listen() {
@@ -44,7 +49,15 @@ export default function withWebSocket(Component, url, autoReconnect = true) {
       };
 
       ws.onmessage = (e) => {
-        setResponse(e.data);
+        const origin = new URL(e.origin);
+        const isAllowed = ALLOWED_ORIGINS.some((value, i) => {
+          return value === origin.hostname;
+        });
+        if (isAllowed) {
+          setResponse(e.data);
+        } else {
+          stopListening(CLOSE_CODES.POLICY_VIOLATION, "Host not allowed");
+        }
       };
 
       ws.onclose = () => {
@@ -58,6 +71,23 @@ export default function withWebSocket(Component, url, autoReconnect = true) {
       if (!ws || ws.readyState === WebSocket.CLOSED) {
         console.warn(`Attempting to reconnect to websocket at ${url}`);
         configureWebSocket();
+      }
+    }
+
+    function stopListening(code = null, reason = null) {
+      if (ws) {
+        code = code || CLOSE_CODES.GOING_AWAY;
+        reason = reason || "Unmounting";
+        ws.onclose = () => {
+          console.warn(`Closing websocket connection at ${url}: ${reason}`);
+        };
+        try {
+          // Params are not supported by some verisons of Firefox
+          // See https://bugzilla.mozilla.org/show_bug.cgi?id=674716
+          ws.close(code, reason);
+        } catch (error) {
+          ws.close();
+        }
       }
     }
 
