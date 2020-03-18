@@ -269,7 +269,6 @@ class HubPage extends React.Component {
   loadMore = () => {
     let { showMessage } = this.props;
     let { hub } = this.props;
-    let hubId = 0;
     if (hub) {
       hubId = hub.id;
     }
