@@ -103,6 +103,7 @@ class HubsList extends React.Component {
             styles.hubEntry,
             this.isCurrentHub(this.props.current, id) && styles.current
           )}
+          key={`${id}-${i}`}
         >
           <Link
             href={{
@@ -114,7 +115,6 @@ class HubsList extends React.Component {
               },
             }}
             as={`/hubs/${encodeURIComponent(hub.slug)}`}
-            key={`${id}-${i}`}
           >
             <a className={css(styles.hubLink)}>
               {name}
