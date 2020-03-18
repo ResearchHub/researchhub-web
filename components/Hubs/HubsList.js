@@ -109,6 +109,7 @@ class HubsList extends React.Component {
               pathname: "/hubs/[slug]",
               query: {
                 name: `${hub.name}`,
+
                 slug: `${encodeURIComponent(hub.slug)}`,
               },
             }}
