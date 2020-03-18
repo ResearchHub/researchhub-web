@@ -159,7 +159,7 @@ class Index extends React.Component {
         >
           <a className={css(styles.slugLink)}>
             <div key={hub.id} className={css(styles.hubEntry)}>
-              {hub.slug}
+              {hub.name}
             </div>
           </a>
         </Link>
