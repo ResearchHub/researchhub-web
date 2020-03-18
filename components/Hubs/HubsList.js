@@ -98,28 +98,27 @@ class HubsList extends React.Component {
       let { name, id, user_is_subscribed } = hub;
 
       return (
-        <Link
-          href={"/hubs/[hubSlug]"}
-          as={`/hubs/${encodeURIComponent(hub.slug)}`}
-          key={`${id}-${i}`}
+        <Ripples
+          className={css(
+            styles.hubEntry,
+            this.isCurrentHub(this.props.current, id) && styles.current
+          )}
         >
-          <a className={css(styles.hubLink)}>
-            <Ripples
-              className={css(
-                styles.hubEntry,
-                this.isCurrentHub(this.props.current, id) && styles.current
-              )}
-            >
+          <Link
+            href="/hubs/[slug]"
+            as={`/hubs/${encodeURIComponent(hub.slug)}`}
+            key={`${id}-${i}`}
+          >
+            <a className={css(styles.hubLink)}>
               {name}
               {user_is_subscribed && (
                 <span className={css(styles.subscribedIcon)}>
                   <i className="fas fa-star" />
                 </span>
               )}
-            </Ripples>
-            <div className={css(styles.space)} />
-          </a>
-        </Link>
+            </a>
+          </Link>
+        </Ripples>
       );
     });
   };
@@ -223,6 +222,7 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     borderRadius: 3,
     border: "1px solid #fff",
+    marginBottom: 8,
     ":hover": {
       borderColor: "rgb(237, 237, 237)",
       backgroundColor: "#FAFAFA",
@@ -232,6 +232,8 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     color: "#111",
     width: "100%",
+    display: "flex",
+    alignItems: "center",
   },
   current: {
     borderColor: "rgb(237, 237, 237)",
