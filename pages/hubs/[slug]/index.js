@@ -13,33 +13,38 @@ import { toTitleCase } from "~/config/utils";
 
 class Index extends React.Component {
   static async getInitialProps({ query }) {
-    const hub = await fetchHub(query.hubname);
+    const hub = await fetchHub(query.slug);
     return { hub };
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      hubName: Router.router
-        ? decodeURIComponent(Router.router.query.hubname)
-        : "",
-      currentHub: null,
+      slug: Router.router ? decodeURIComponent(Router.router.query.slug) : "",
+      currentHub: {
+        name: Router.router
+          ? Router.router.query.name
+            ? decodeURIComponent(Router.router.query.name)
+            : "ResearchHub"
+          : "",
+        slug: Router.router ? decodeURIComponent(Router.router.query.slug) : "",
+      },
       hubDescription: "", // TODO: Pull from hub description field
     };
   }
 
-  async componentDidMount() {
-    await this.fetchHubInfo(this.state.hubName);
+  componentDidMount() {
+    this.fetchHubInfo(this.state.slug);
   }
 
   componentDidUpdate(prevProp) {
-    if (Router.router.query.hubname !== this.state.hubName) {
+    if (Router.router.query.slug !== this.state.slug) {
       this.setState(
         {
-          hubName: Router.router.query.hubname,
+          slug: Router.router.query.slug,
         },
         () => {
-          this.fetchHubInfo(Router.router.query.hubname);
+          this.fetchHubInfo(Router.router.query.slug);
         }
       );
     }
@@ -56,17 +61,8 @@ class Index extends React.Component {
   };
 
   renderHub = () => {
-    const { currentHub, hubName } = this.state;
-
-    if (currentHub) {
-      if (currentHub.is_locked) {
-        return <LockedHubPage hub={currentHub} hubName={hubName} />;
-      } else {
-        return <HubPage hub={currentHub} hubName={hubName} />;
-      }
-    } else {
-      return null;
-    }
+    const { currentHub, slug } = this.state;
+    return <HubPage hub={currentHub} slug={slug} />;
   };
 
   render() {
@@ -74,7 +70,7 @@ class Index extends React.Component {
       <div>
         {process.browser ? (
           <Head
-            title={toTitleCase(this.state.hubName)}
+            title={toTitleCase(this.state.slug)}
             description={this.state.hubDescription}
           />
         ) : (
@@ -86,9 +82,9 @@ class Index extends React.Component {
   }
 }
 
-async function fetchHub(name) {
+async function fetchHub(slug) {
   if (process.browser) {
-    return await fetch(API.HUB({ name }), API.GET_CONFIG())
+    return await fetch(API.HUB({ slug }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {

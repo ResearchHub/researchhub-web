@@ -233,7 +233,7 @@ const Navbar = (props) => {
 
   function renderMenuLoginButtons() {
     return (
-      <div className={css(styles.loginContainer)}>
+      <div className={css(styles.loginContainer)} key={`navbar_tab_login`}>
         <GoogleLoginButton
           styles={[styles.loginMobile]}
           iconStyle={styles.googleIcon}
@@ -611,8 +611,9 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   logo: {
-    height: 40,
-    minWidth: 155,
+    height: 30,
+    objectFit: "contain",
+    marginBottom: 8,
   },
   reputation: {
     marginLeft: 11,
