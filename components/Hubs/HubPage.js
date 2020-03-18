@@ -185,24 +185,30 @@ class HubPage extends React.Component {
       prevProps.hub.id !== this.props.hub.id
     ) {
       this.updateDimensions();
-      this.fetchPapers({ hub: this.props.hub });
-      this.setState({
-        subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
-      });
+      if (this.props.hub.id) {
+        this.fetchPapers({ hub: this.props.hub });
+        this.setState({
+          subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+        });
+      }
     }
 
     if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
-      this.fetchPapers({ hub: this.props.hub });
-      this.setState({
-        subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
-      });
+      if (this.props.hub.id) {
+        this.fetchPapers({ hub: this.props.hub });
+        this.setState({
+          subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+        });
+      }
     }
 
     if (
       prevState.scope !== this.state.scope ||
       prevState.filterBy !== this.state.filterBy
     ) {
-      this.fetchPapers({ hub: this.props.hub });
+      if (this.props.hub.id) {
+        this.fetchPapers({ hub: this.props.hub });
+      }
     }
   }
 
@@ -219,7 +225,7 @@ class HubPage extends React.Component {
     this.state.doneFetching && this.setState({ doneFetching: false });
     let hubId = 0;
 
-    if (hub) {
+    if (hub && hub.id) {
       hubId = hub.id;
     }
     let scope = this.calculateScope();
