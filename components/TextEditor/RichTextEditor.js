@@ -79,7 +79,9 @@ class RichTextEditor extends React.Component {
     super(props);
 
     this.state = {
-      value: this.props.initialValue
+      value: this.props.value
+        ? this.props.value
+        : this.props.initialValue
         ? this.props.initialValue
         : this.props.commentEditor
         ? commentInitialValue
@@ -164,7 +166,12 @@ class RichTextEditor extends React.Component {
     return (
       <div className={css(styles.editor, this.props.containerStyles)}>
         {this.props.commentEditor ? (
-          <div className={css(styles.commentEditor)}>
+          <div
+            className={css(
+              styles.commentEditor,
+              this.props.commentEditorStyles && this.props.commentEditorStyles
+            )}
+          >
             <Editor
               readOnly={this.props.readOnly}
               spellCheck
