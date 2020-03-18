@@ -25,6 +25,7 @@ import Reputation from "./Reputation";
 import Search from "./Search";
 import TransactionModal from "../components/modal/TransactionModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
+import Notification from "./Notifications/Notification";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -372,6 +373,12 @@ const Navbar = (props) => {
                   <div className={css(styles.reputation)}>
                     <Reputation showBalance={true} />
                   </div>
+                  <div
+                    className={css(styles.notification)}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Notification />
+                  </div>
                 </div>
                 {openMenu && (
                   <div
@@ -525,7 +532,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   caret: {
-    marginLeft: 16,
+    marginLeft: 10,
     color: "#aaa",
   },
   userDropdown: {
@@ -696,6 +703,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  notification: {
+    marginLeft: 16,
   },
   searchDropdown: {
     width: "150%",
