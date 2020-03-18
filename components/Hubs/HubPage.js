@@ -194,7 +194,7 @@ class HubPage extends React.Component {
     }
 
     if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
-      if (this.props.hub.id) {
+      if (this.props.hub && this.props.hub.id) {
         this.fetchPapers({ hub: this.props.hub });
         this.setState({
           subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
