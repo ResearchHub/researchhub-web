@@ -611,8 +611,9 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   logo: {
-    height: 40,
-    minWidth: 155,
+    height: 30,
+    objectFit: "contain",
+    marginBottom: 8,
   },
   reputation: {
     marginLeft: 11,
