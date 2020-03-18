@@ -6,7 +6,7 @@ import Ripples from "react-ripples";
 import { nameToUrl } from "~/config/constants";
 
 const HubTag = ({ tag, overrideStyle, hubName }) => {
-  let { id, name, link, last } = tag;
+  let { id, name, link, last, slug } = tag;
   const nameArr = (name && name.split(" ")) || [];
 
   if (name === hubName) {
@@ -22,7 +22,7 @@ const HubTag = ({ tag, overrideStyle, hubName }) => {
     return (
       <Fragment>
         <Ripples>
-          <Link href={"/hubs/[hubname]"} as={`/hubs/${nameToUrl(name)}`}>
+          <Link href={"/hubs/[hubSlug]"} as={`/hubs/${nameToUrl(slug)}`}>
             <div className={css(styles.tag, overrideStyle && overrideStyle)}>
               <span className={css(styles.label)}>{name && name}</span>
             </div>
