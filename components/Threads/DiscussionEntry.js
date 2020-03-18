@@ -469,6 +469,7 @@ class DiscussionEntry extends React.Component {
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
+                    onChange={this.calculateThreadHeight}
                   />
                 </div>
               </Fragment>
