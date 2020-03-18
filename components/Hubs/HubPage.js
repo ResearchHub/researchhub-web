@@ -274,6 +274,14 @@ class HubPage extends React.Component {
       hubId = hub.id;
     }
 
+    if (this.state.loadingMore) {
+      return;
+    }
+
+    this.setState({
+      loadingMore: true,
+    });
+
     return fetch(this.state.next, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -282,6 +290,7 @@ class HubPage extends React.Component {
           papers: [...this.state.papers, ...res.results.data],
           next: res.next,
           page: this.state.page + 1,
+          loadingMore: false,
         });
       })
       .then(
