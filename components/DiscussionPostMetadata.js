@@ -33,6 +33,7 @@ const DiscussionPostMetadata = (props) => {
     metaData,
     onRemove,
     dropDownEnabled,
+    toggleEdit,
   } = props;
   const alert = useAlert();
   const store = useStore();
@@ -113,6 +114,29 @@ const DiscussionPostMetadata = (props) => {
     };
   });
 
+  const calculateDropdownPosition = () => {
+    let count = 1;
+    if (threadPath) {
+      count++;
+    }
+    if (isModerator) {
+      count++;
+    }
+    if (toggleEdit) {
+      count++;
+    }
+
+    if (count === 2) {
+      return styles.twoItems;
+    }
+    if (count === 3) {
+      return styles.threeItems;
+    }
+    if (count === 4) {
+      return styles.fourItems;
+    }
+  };
+
   return (
     <div className={css(styles.container)}>
       <User name={username} authorProfile={authorProfile} {...props} />
@@ -129,15 +153,19 @@ const DiscussionPostMetadata = (props) => {
           </div>
           {showDropDown && (
             <div
-              className={css(
-                styles.dropdown,
-                (threadPath || isModerator) && styles.twoItems,
-                threadPath && isModerator && styles.threeItems
-              )}
+              className={css(styles.dropdown, calculateDropdownPosition())}
               ref={(ref) => (dropdown = ref)}
             >
               {threadPath && <ExpandButton {...props} />}
-
+              {toggleEdit && (
+                <EditButton
+                  {...props}
+                  onClick={() => {
+                    props.toggleEdit();
+                    toggleDropDown();
+                  }}
+                />
+              )}
               <FlagButton
                 {...props}
                 onClick={promptFlagConfirmation}
@@ -263,6 +291,17 @@ const FlagButton = (props) => {
   );
 };
 
+const EditButton = (props) => {
+  return (
+    <Ripples className={css(styles.dropdownItem)} onClick={props.onClick}>
+      <span className={css(styles.icon, styles.expandIcon)}>
+        {icons.pencil}
+      </span>
+      <span className={css(styles.text, styles.expandText)}>Edit</span>
+    </Ripples>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     width: "100%",
@@ -362,7 +401,7 @@ const styles = StyleSheet.create({
   },
   expandIcon: {
     fontSize: 14,
-    paddingLeft: 5,
+    paddingLeft: 8,
   },
   expandText: {
     fontSize: 14,
@@ -403,6 +442,9 @@ const styles = StyleSheet.create({
   },
   threeItems: {
     bottom: -110,
+  },
+  fourItems: {
+    bottom: -150,
   },
 });
 
