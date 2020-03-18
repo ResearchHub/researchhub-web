@@ -525,6 +525,7 @@ class CommentEntry extends React.Component {
                     readOnly={true}
                     initialValue={body}
                     body={true}
+                    onChange={this.calculateThreadHeight}
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsComments}
