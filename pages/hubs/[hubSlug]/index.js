@@ -13,15 +13,15 @@ import { toTitleCase } from "~/config/utils";
 
 class Index extends React.Component {
   static async getInitialProps({ query }) {
-    const hub = await fetchHub(query.hubname);
+    const hub = await fetchHub(query.hubSlug);
     return { hub };
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      hubName: Router.router
-        ? decodeURIComponent(Router.router.query.hubname)
+      hubSlug: Router.router
+        ? decodeURIComponent(Router.router.query.hubSlug)
         : "",
       currentHub: null,
       hubDescription: "", // TODO: Pull from hub description field
@@ -29,17 +29,17 @@ class Index extends React.Component {
   }
 
   async componentDidMount() {
-    await this.fetchHubInfo(this.state.hubName);
+    await this.fetchHubInfo(this.state.hubSlug);
   }
 
   componentDidUpdate(prevProp) {
-    if (Router.router.query.hubname !== this.state.hubName) {
+    if (Router.router.query.hubSlug !== this.state.hubSlug) {
       this.setState(
         {
-          hubName: Router.router.query.hubname,
+          hubSlug: Router.router.query.hubSlug,
         },
         () => {
-          this.fetchHubInfo(Router.router.query.hubname);
+          this.fetchHubInfo(Router.router.query.hubSlug);
         }
       );
     }
@@ -56,13 +56,13 @@ class Index extends React.Component {
   };
 
   renderHub = () => {
-    const { currentHub, hubName } = this.state;
+    const { currentHub, hubSlug } = this.state;
 
     if (currentHub) {
       if (currentHub.is_locked) {
-        return <LockedHubPage hub={currentHub} hubName={hubName} />;
+        return <LockedHubPage hub={currentHub} hubSlug={hubSlug} />;
       } else {
-        return <HubPage hub={currentHub} hubName={hubName} />;
+        return <HubPage hub={currentHub} hubSlug={hubSlug} />;
       }
     } else {
       return null;
@@ -74,7 +74,7 @@ class Index extends React.Component {
       <div>
         {process.browser ? (
           <Head
-            title={toTitleCase(this.state.hubName)}
+            title={toTitleCase(this.state.hubSlug)}
             description={this.state.hubDescription}
           />
         ) : (

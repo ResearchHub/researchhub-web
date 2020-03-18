@@ -98,38 +98,30 @@ class HubsList extends React.Component {
       let { name, id, user_is_subscribed } = hub;
 
       return (
-        <Fragment key={`${id}-${i}`}>
-          <Ripples
-            className={css(
-              styles.hubEntry,
-              this.isCurrentHub(this.props.current, id) && styles.current
-            )}
-            onClick={() => this.handleClick(hub)}
-          >
-            {name}
-            {user_is_subscribed && (
-              <span className={css(styles.subscribedIcon)}>
-                <i className="fas fa-star" />
-              </span>
-            )}
-          </Ripples>
-          <div className={css(styles.space)} />
-        </Fragment>
+        <Link
+          href={"/hubs/[hubSlug]"}
+          as={`/hubs/${encodeURIComponent(hub.slug)}`}
+          key={`${id}-${i}`}
+        >
+          <a className={css(styles.hubLink)}>
+            <Ripples
+              className={css(
+                styles.hubEntry,
+                this.isCurrentHub(this.props.current, id) && styles.current
+              )}
+            >
+              {name}
+              {user_is_subscribed && (
+                <span className={css(styles.subscribedIcon)}>
+                  <i className="fas fa-star" />
+                </span>
+              )}
+            </Ripples>
+            <div className={css(styles.space)} />
+          </a>
+        </Link>
       );
     });
-  };
-
-  handleClick = (hub) => {
-    if (this.isCurrentHub(this.props.current, hub.id)) {
-      return;
-    }
-
-    if (this.props.livefeed) {
-      this.props.setHub(hub);
-    } else {
-      this.props.updateCurrentHubPage(hub);
-      Router.push(`/hubs/[hubname]`, `/hubs/${encodeURIComponent(hub.name)}`);
-    }
   };
 
   render() {
@@ -235,6 +227,11 @@ const styles = StyleSheet.create({
       borderColor: "rgb(237, 237, 237)",
       backgroundColor: "#FAFAFA",
     },
+  },
+  hubLink: {
+    textDecoration: "none",
+    color: "#111",
+    width: "100%",
   },
   current: {
     borderColor: "rgb(237, 237, 237)",
