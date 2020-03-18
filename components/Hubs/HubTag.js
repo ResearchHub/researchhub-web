@@ -22,7 +22,7 @@ const HubTag = ({ tag, overrideStyle, hubName }) => {
     return (
       <Fragment>
         <Ripples>
-          <Link href={"/hubs/[hubSlug]"} as={`/hubs/${nameToUrl(slug)}`}>
+          <Link href={"/hubs/[slug]"} as={`/hubs/${nameToUrl(slug)}`}>
             <div className={css(styles.tag, overrideStyle && overrideStyle)}>
               <span className={css(styles.label)}>{name && name}</span>
             </div>
