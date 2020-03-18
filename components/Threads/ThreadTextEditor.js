@@ -48,10 +48,15 @@ class ThreadTextEditor extends React.Component {
   };
 
   onChange = (value) => {
-    this.setState({
-      newEditorState: value,
-      editorState: value,
-    });
+    this.setState(
+      {
+        newEditorState: value,
+        editorState: value,
+      },
+      () => {
+        this.props.onChange && this.props.onChange(value);
+      }
+    );
   };
 
   onEditSubmit = (e) => {
@@ -150,7 +155,6 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.YELLOW()}`,
     ":hover": {
       backgroundColor: colors.LIGHT_YELLOW(),
-      // border: ,
     },
   },
 });
