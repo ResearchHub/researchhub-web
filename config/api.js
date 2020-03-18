@@ -242,7 +242,7 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    HUB: ({ hubId, search, name, pageLimit }) => {
+    HUB: ({ hubId, search, name, pageLimit, slug }) => {
       let url = BASE_URL + `hub/`;
 
       if (hubId) {
@@ -253,6 +253,10 @@ const routes = (BASE_URL) => {
 
       if (name) {
         url += `name__iexact=${name}&`;
+      }
+
+      if (slug) {
+        url += `slug=${encodeURIComponent(slug)}`;
       }
 
       if (search) {

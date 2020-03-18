@@ -98,38 +98,36 @@ class HubsList extends React.Component {
       let { name, id, user_is_subscribed } = hub;
 
       return (
-        <Fragment key={`${id}-${i}`}>
-          <Ripples
-            className={css(
-              styles.hubEntry,
-              this.isCurrentHub(this.props.current, id) && styles.current
-            )}
-            onClick={() => this.handleClick(hub)}
+        <Ripples
+          className={css(
+            styles.hubEntry,
+            this.isCurrentHub(this.props.current, id) && styles.current
+          )}
+        >
+          <Link
+            href={{
+              pathname: "/hubs/[slug]",
+              query: {
+                name: `${hub.name}`,
+
+                slug: `${encodeURIComponent(hub.slug)}`,
+              },
+            }}
+            as={`/hubs/${encodeURIComponent(hub.slug)}`}
+            key={`${id}-${i}`}
           >
-            {name}
-            {user_is_subscribed && (
-              <span className={css(styles.subscribedIcon)}>
-                <i className="fas fa-star" />
-              </span>
-            )}
-          </Ripples>
-          <div className={css(styles.space)} />
-        </Fragment>
+            <a className={css(styles.hubLink)}>
+              {name}
+              {user_is_subscribed && (
+                <span className={css(styles.subscribedIcon)}>
+                  <i className="fas fa-star" />
+                </span>
+              )}
+            </a>
+          </Link>
+        </Ripples>
       );
     });
-  };
-
-  handleClick = (hub) => {
-    if (this.isCurrentHub(this.props.current, hub.id)) {
-      return;
-    }
-
-    if (this.props.livefeed) {
-      this.props.setHub(hub);
-    } else {
-      this.props.updateCurrentHubPage(hub);
-      Router.push(`/hubs/[hubname]`, `/hubs/${encodeURIComponent(hub.name)}`);
-    }
   };
 
   render() {
@@ -225,16 +223,24 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
-    padding: "3px 5px",
     boxSizing: "content-box",
     width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
     border: "1px solid #fff",
+    marginBottom: 8,
     ":hover": {
       borderColor: "rgb(237, 237, 237)",
       backgroundColor: "#FAFAFA",
     },
+  },
+  hubLink: {
+    textDecoration: "none",
+    color: "#111",
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    padding: "8px",
   },
   current: {
     borderColor: "rgb(237, 237, 237)",
