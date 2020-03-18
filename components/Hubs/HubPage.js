@@ -222,10 +222,15 @@ class HubPage extends React.Component {
     if (this.state.papersLoading) {
       return null;
     }
+
+    if (hub && !hub.id) {
+      return null;
+    }
+
     this.state.doneFetching && this.setState({ doneFetching: false });
     let hubId = 0;
 
-    if (hub && hub.id) {
+    if (hub) {
       hubId = hub.id;
     }
     let scope = this.calculateScope();
