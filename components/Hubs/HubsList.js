@@ -216,7 +216,6 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
-    padding: "3px 5px",
     boxSizing: "content-box",
     width: "100%",
     transition: "all ease-out 0.1s",
@@ -234,6 +233,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     alignItems: "center",
+    padding: "8px",
   },
   current: {
     borderColor: "rgb(237, 237, 237)",
