@@ -282,12 +282,18 @@ const routes = (BASE_URL) => {
       return url;
     },
     GET_HUB_PAPERS: ({ hubId, timePeriod, ordering, page = 1 }) => {
-      let url =
-        BASE_URL +
-        `paper/get_hub_papers/?page=${page}
-        &start_date__gte=${timePeriod.start}
-        &end_date__lte=${timePeriod.end}
-        &ordering=${ordering}&hub_id=${hubId}`;
+      let url = BASE_URL + `paper/get_hub_papers/`;
+      let params = {
+        querystring: {
+          page,
+          start_date__gte: timePeriod.start,
+          end_date__lte: timePeriod.end,
+          ordering,
+          hub_id: hubId,
+        },
+      };
+      url = prepURL(url, params);
+
       return url;
     },
     HUB_SUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/subscribe/`,
