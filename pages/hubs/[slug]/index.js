@@ -70,11 +70,14 @@ class Index extends React.Component {
       <div>
         {process.browser ? (
           <Head
-            title={toTitleCase(this.state.slug)}
+            title={toTitleCase(this.state.currentHub.name)}
             description={this.state.hubDescription}
           />
         ) : (
-          <Head title={"ResearchHub"} description={"ResearchHub"} />
+          <Head
+            title={this.props.hub ? this.props.hub.name : "ResearchHub"}
+            description={this.props.hub ? this.props.hub.name : "ResearchHub"}
+          />
         )}
         {this.renderHub()}
       </div>

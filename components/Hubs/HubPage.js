@@ -244,6 +244,7 @@ class HubPage extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        console.log(res);
         this.setState({
           count: res.count,
           papers: res.results.data,
@@ -270,6 +271,7 @@ class HubPage extends React.Component {
     }
 
     let scope = this.calculateScope();
+    console.log(this.state.next);
     return fetch(
       this.state.next,
       // API.GET_HUB_PAPERS({
