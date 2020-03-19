@@ -206,9 +206,7 @@ class HubPage extends React.Component {
       prevState.scope !== this.state.scope ||
       prevState.filterBy !== this.state.filterBy
     ) {
-      if (this.props.hub.id) {
-        this.fetchPapers({ hub: this.props.hub });
-      }
+      this.fetchPapers({ hub: this.props.hub });
     }
   }
 
