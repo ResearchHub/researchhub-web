@@ -41,7 +41,7 @@ export default function withWebSocket(
     const [response, setResponse] = useState(null);
     const [stopped, setStopped] = useState(false);
     const store = useStore();
-    var userId = store.getState().auth.user && store.getState().auth.user.id;
+    let userId = store.getState().auth.user && store.getState().auth.user.id;
     const userUrl = userId && `${url}${userId}/`;
 
     useEffect(configureWebSocket, []);
