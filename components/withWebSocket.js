@@ -48,8 +48,6 @@ export default function withWebSocket(
 
     useEffect(configureWebSocket, []);
     function configureWebSocket() {
-      let webSocket = new WebSocket(url);
-
       let token = null;
       if (props.wsAuth) {
         try {
@@ -58,11 +56,13 @@ export default function withWebSocket(
           console.error("Did not find auth token");
           return err;
         }
-        webSocket = new WebSocket(url, ["Token", token]);
+        const webSocket = new WebSocket(url, ["Token", token]);
+        setWs(webSocket);
+      } else {
+        const webSocket = new WebSocket(url);
+        setWs(webSocket);
       }
-
       setConnectAttempts(connectAttempts + 1);
-      setWs(webSocket);
     }
 
     useEffect(stopConnectAttempts, [connectAttempts]);
