@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { useStore, useDispatch } from "react-redux";
 // TODO: Add reconnect interval
 // TODO: Send authtoken to socket server
 
@@ -43,7 +43,10 @@ export default function withWebSocket(
 
     useEffect(configureWebSocket, []);
     function configureWebSocket() {
-      const webSocket = new WebSocket(url);
+      const store = useStore();
+      var userId = store.getState().auth.user && store.getState().auth.user.id;
+      const userUrl = userId && `${url}${userId}/`;
+      const webSocket = new WebSocket(userUrl);
       console.log(connectAttempts);
       setConnectAttempts(connectAttempts + 1);
       setWs(webSocket);
@@ -70,12 +73,12 @@ export default function withWebSocket(
 
     function listen() {
       ws.onopen = () => {
-        console.info(`Connected to websocket at ${url}`);
+        console.info(`Connected to websocket at ${userUrl}`);
         setConnected(true);
       };
 
       ws.onmessage = (e) => {
-        const origin = new URL(e.origin);
+        const origin = new userUrl(e.origin);
         const isAllowed = ALLOWED_ORIGINS.some((value, i) => {
           return value === origin.hostname;
         });
@@ -88,14 +91,14 @@ export default function withWebSocket(
 
       ws.onclose = () => {
         setConnected(false);
-        console.warn(`Disconnected from websocket at ${url}`);
+        console.warn(`Disconnected from websocket at ${userUrl}`);
         autoReconnect && reconnect();
       };
     }
 
     function reconnect() {
       if (!ws || ws.readyState === WebSocket.CLOSED) {
-        console.warn(`Attempting to reconnect to websocket at ${url}`);
+        console.warn(`Attempting to reconnect to websocket at ${userUrl}`);
         configureWebSocket();
       }
     }
@@ -105,7 +108,7 @@ export default function withWebSocket(
         code = code || CLOSE_CODES.GOING_AWAY;
         reason = reason || "Unmounting";
         ws.onclose = () => {
-          console.warn(`Closing websocket connection at ${url}: ${reason}`);
+          console.warn(`Closing websocket connection at ${userUrl}: ${reason}`);
         };
         try {
           // Params are not supported by some verisons of Firefox
