@@ -414,11 +414,15 @@ const routes = (BASE_URL) => {
     REORDER_BULLETS: () => {
       return BASE_URL + `bullet_point/reorder_all/`;
     },
-    NOTIFICATION: ({ notifId }) => {
+    NOTIFICATION: ({ notifId, ids }) => {
       let url = BASE_URL + `notification/`;
 
       if (!doesNotExist(notifId)) {
         url += `${notifId}/`;
+      }
+
+      if (!doesNotExist(ids)) {
+        url += `mark_read/`;
       }
 
       return url;

@@ -13,6 +13,8 @@ export const NotificationConstants = {
   FETCH_SUCCESS: "@@notification/FETCH_SUCCESS",
   FETCH_FAILURE: "@@notification/FETCH_FAILURE",
   MARK_AS_READ: "@@notification/MARK_AS_READ",
+  MARK_ALL_AS_READ: "@@notification/MARK_ALL_AS_READ",
+  ADD_NOTIFICATION: "@@notification/ADD_NOTIFICATION",
 };
 
 export const NotificationActions = {
@@ -48,7 +50,7 @@ export const NotificationActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let notifications = [...res.results].reverse();
+          let notifications = [...res.results];
           return dispatch({
             type: NotificationConstants.FETCH_SUCCESS,
             payload: {
@@ -90,6 +92,37 @@ export const NotificationActions = {
         });
     };
   },
+  markAllAsRead: (prevState, ids) => {
+    return (dispatch) => {
+      return fetch(API.NOTIFICATION({ ids }), API.PATCH_CONFIG({ ids }))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          let notifications = prevState.map((notification) => {
+            let copy = { ...notification };
+            copy.read = true;
+            return copy;
+          });
+          return dispatch({
+            type: NotificationConstants.MARK_ALL_AS_READ,
+            payload: {
+              notifications,
+            },
+          });
+        });
+    };
+  },
+  addNotification: (prevState, notification) => {
+    return (dispatch) => {
+      let notifications = [notification, ...prevState];
+      return dispatch({
+        type: NotificationConstants.ADD_NOTIFICATION,
+        payload: {
+          notifications,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -108,6 +141,8 @@ const NotificationReducer = (state = defaultNotificationState, action) => {
     case NotificationConstants.FETCH_SUCCESS:
     case NotificationConstants.FETCH_FAILURE:
     case NotificationConstants.MARK_AS_READ:
+    case NotificationConstants.MARK_ALL_AS_READ:
+    case NotificationConstants.ADD_NOTIFICATION:
       return {
         ...state,
         ...action.payload,
