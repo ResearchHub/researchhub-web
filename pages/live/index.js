@@ -16,6 +16,7 @@ import ResearchHubBanner from "~/components/ResearchHubBanner";
 
 // Config
 import API from "~/config/api";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { PaperActions } from "~/redux/paper";
@@ -104,7 +105,7 @@ class LiveFeedPage extends React.Component {
           </div> */}
           <div className={css(styles.mainFeed, styles.column)}>
             <LiveFeed
-              wsUrl={`wss://staging-ws.researchhub.com/ws/notification/${auth.user.id}/`}
+              wsUrl={WS_ROUTES.NOTIFICATIONS(auth.user.id)}
               currentHub={this.state.hub && this.state.hub}
               home={!this.state.hub ? true : false}
             />
