@@ -380,7 +380,7 @@ const Navbar = (props) => {
                   >
                     <Notification
                       wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
-                      wsAuth={true}
+                      // wsAuth={true}
                     />
                   </div>
                 </div>
