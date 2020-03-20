@@ -25,6 +25,7 @@ class Notification extends React.Component {
     };
     this.notifIcon;
     this.notifMenu;
+    this.notifFeed;
   }
 
   componentDidMount = async () => {
@@ -97,11 +98,20 @@ class Notification extends React.Component {
     let length =
       this.props.notifications.length > 5 ? 5 : this.props.notifications.length;
 
+    let bottom = this.notifFeed
+      ? -30 + -this.notifFeed.clientHeight
+      : -30 + -80 * length;
     let position = StyleSheet.create({
       menu: {
-        bottom: -30 + -100 * length,
+        bottom:
+          this.state.dropdownPosition !== bottom
+            ? bottom
+            : this.state.dropdownPosition,
       },
     });
+    if (bottom !== this.state.dropdownPosition) {
+      this.setState({ dropdownPosition: bottom });
+    }
     return position.menu;
   };
 
@@ -114,7 +124,10 @@ class Notification extends React.Component {
           ref={(ref) => (this.notifMenu = ref)}
         >
           <div className={css(styles.menuTitle)}>Notifications</div>
-          <div className={css(styles.notificationFeed)}>
+          <div
+            className={css(styles.notificationFeed)}
+            ref={(ref) => (this.notifFeed = ref)}
+          >
             {this.renderNotifications()}
           </div>
         </div>
