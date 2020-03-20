@@ -18,7 +18,6 @@ import { Helpers } from "@quantfive/js-web-config";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
-import icons from "../../config/themes/icons";
 
 const DEFAULT_PING_REFRESH = 10000; // 1 minute
 const DEFAULT_LOADING = 400; //

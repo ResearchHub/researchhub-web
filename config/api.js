@@ -7,6 +7,7 @@ const apiRoot = {
   production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
   dev: "localhost:8000",
+  // dev: "staging-backend.researchhub.com",
 };
 
 const prepFilters = (filters) => {
@@ -412,6 +413,16 @@ const routes = (BASE_URL) => {
     },
     REORDER_BULLETS: () => {
       return BASE_URL + `bullet_point/reorder_all/`;
+    },
+    NOTIFICATION: ({ notifId }) => {
+      let url = BASE_URL + `notification/`;
+
+      if (!doesNotExist(notifId)) {
+        url += `${notifId}/`;
+      }
+
+      return url;
+      // return BASE_URL + `notification/${userId}`
     },
   };
 
