@@ -179,6 +179,7 @@ class DiscussionEntry extends React.Component {
       let newComment = { ...this.props.discussion.postedComment };
       newComment.highlight = true;
       let comments = [newComment, ...this.state.comments];
+      data.comments = comments;
       this.setState(
         {
           comments,
@@ -242,6 +243,7 @@ class DiscussionEntry extends React.Component {
             key={`disc${comment.id}-${i}`}
             calculateThreadHeight={this.calculateThreadHeight}
             comment={comment}
+            index={i}
           />
         );
       });
