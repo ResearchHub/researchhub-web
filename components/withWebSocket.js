@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useStore, useDispatch } from "react-redux";
+import { AUTH_TOKEN as TOKEN_NAME } from "../config/constants";
 // TODO: Add reconnect interval
-// TODO: Send authtoken to socket server
 
 const ALLOWED_ORIGINS = [
   "localhost",
-  "researchhub.com",
+  "localhost:8000",
+  "ws://localhost:8000",
+  "ws://localhost:8000/",
   "staging-ws.researchhub.com",
+  "wss://staging-ws.researchhub.com",
+  "researchhub.com",
+  "ws.researchhub.com",
+  "wss://ws.researchhub.com",
 ];
 
 const CLOSE_CODES = {
@@ -40,15 +45,22 @@ export default function withWebSocket(
     const [connectAttempts, setConnectAttempts] = useState(0);
     const [response, setResponse] = useState(null);
     const [stopped, setStopped] = useState(false);
-    const store = useStore();
-    let userId = store.getState().auth.user && store.getState().auth.user.id;
-    const userUrl = userId && `${url}${userId}/`;
 
     useEffect(configureWebSocket, []);
-
     function configureWebSocket() {
-      const webSocket = new WebSocket(userUrl);
-      console.log(connectAttempts);
+      let webSocket = new WebSocket(url);
+
+      let token = null;
+      if (props.wsAuth) {
+        try {
+          token = window.localStorage[TOKEN_NAME];
+        } catch (err) {
+          console.error("Did not find auth token");
+          return err;
+        }
+        webSocket = new WebSocket(url, ["Token", token]);
+      }
+
       setConnectAttempts(connectAttempts + 1);
       setWs(webSocket);
     }
@@ -74,7 +86,7 @@ export default function withWebSocket(
 
     function listen() {
       ws.onopen = () => {
-        console.info(`Connected to websocket at ${userUrl}`);
+        console.info(`Connected to websocket at ${url}`);
         setConnected(true);
       };
 
@@ -92,14 +104,14 @@ export default function withWebSocket(
 
       ws.onclose = () => {
         setConnected(false);
-        console.warn(`Disconnected from websocket at ${userUrl}`);
+        console.warn(`Disconnected from websocket at ${url}`);
         autoReconnect && reconnect();
       };
     }
 
     function reconnect() {
       if (!ws || ws.readyState === WebSocket.CLOSED) {
-        console.warn(`Attempting to reconnect to websocket at ${userUrl}`);
+        console.warn(`Attempting to reconnect to websocket at ${url}`);
         configureWebSocket();
       }
     }
@@ -109,7 +121,7 @@ export default function withWebSocket(
         code = code || CLOSE_CODES.GOING_AWAY;
         reason = reason || "Unmounting";
         ws.onclose = () => {
-          console.warn(`Closing websocket connection at ${userUrl}: ${reason}`);
+          console.warn(`Closing websocket connection at ${url}: ${reason}`);
         };
         try {
           // Params are not supported by some verisons of Firefox
