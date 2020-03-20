@@ -40,12 +40,13 @@ export default function withWebSocket(
     const [connectAttempts, setConnectAttempts] = useState(0);
     const [response, setResponse] = useState(null);
     const [stopped, setStopped] = useState(false);
+    const store = useStore();
+    var userId = store.getState().auth.user && store.getState().auth.user.id;
+    const userUrl = userId && `${url}${userId}/`;
 
     useEffect(configureWebSocket, []);
+
     function configureWebSocket() {
-      const store = useStore();
-      var userId = store.getState().auth.user && store.getState().auth.user.id;
-      const userUrl = userId && `${url}${userId}/`;
       const webSocket = new WebSocket(userUrl);
       console.log(connectAttempts);
       setConnectAttempts(connectAttempts + 1);
