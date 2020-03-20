@@ -22,7 +22,6 @@ class Notification extends React.Component {
       isOpen: false,
       newNotif: false,
       count: null,
-      notifications: [],
     };
     this.notifIcon;
     this.notifMenu;
@@ -32,20 +31,20 @@ class Notification extends React.Component {
     this.props.getNotifications();
     window.addEventListener("mousedown", this.handleOutsideClick);
     this.setState({
-      // notifications: this.props.notifications,
       count: this.countReadNotifications(),
     });
-    let response = JSON.parse(this.props.wsResponse);
-    console.log("response", response);
-    console.log("this.props", this.props);
   };
 
-  componentDidUpdate(prevProps) {
-    console.log("this.props", this.props);
+  componentDidUpdate = async (prevProps) => {
     if (prevProps !== this.props) {
       if (prevProps.wsResponse !== this.props.wsResponse) {
-        let response = JSON.parse(this.props.wsResponse);
-        console.log("response", response);
+        let { wsResponse, addNotification, notifications } = this.props;
+        let response = JSON.parse(wsResponse);
+        let notification = response.data;
+        await addNotification(notifications, notification);
+        this.setState({
+          count: this.countReadNotifications(),
+        });
       }
       if (prevProps.notifications !== this.props.notifications) {
         this.setState({
@@ -54,7 +53,7 @@ class Notification extends React.Component {
         });
       }
     }
-  }
+  };
 
   componentWillUnmount() {
     window.addEventListener("mousedown", this.handleOutsideClick);
@@ -81,7 +80,17 @@ class Notification extends React.Component {
   };
 
   toggleMenu = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+    this.setState({ isOpen: !this.state.isOpen }, () => {
+      let ids = this.formatIds();
+      this.state.isOpen &&
+        this.props.markAllAsRead(this.props.notifications, ids);
+    });
+  };
+
+  formatIds = () => {
+    return this.props.notifications.map((notification) => {
+      return notification.id;
+    });
   };
 
   calculatePosition = () => {
@@ -214,6 +223,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   getNotifications: NotificationActions.getNotifications,
+  markAllAsRead: NotificationActions.markAllAsRead,
+  addNotification: NotificationActions.addNotification,
 };
 // export default Notification;
 export default connect(
