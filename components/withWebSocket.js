@@ -3,7 +3,11 @@ import React, { useState, useEffect } from "react";
 // TODO: Add reconnect interval
 // TODO: Send authtoken to socket server
 
-const ALLOWED_ORIGINS = ["localhost", "researchhub.com"];
+const ALLOWED_ORIGINS = [
+  "localhost",
+  "researchhub.com",
+  "staging-ws.researchhub.com",
+];
 
 const CLOSE_CODES = {
   GOING_AWAY: 1001,
@@ -17,26 +21,48 @@ const CLOSE_CODES = {
  * already connected, subsequent connection attempts will fail.
  *
  * @param {React.Component} Component
- * @param {string} url
+ * @param {string} _url
  * @param {boolean} autoReconnect
  * @returns {React.Component}
  *
  */
-export default function withWebSocket(Component, url, autoReconnect = true) {
+export default function withWebSocket(
+  Component,
+  _url = "",
+  autoReconnect = true
+) {
   return (props) => {
+    const url = props.wsUrl || _url;
+    const connectAttemptLimit = props.wsConnectAttemptLimit || 5;
+
     const [ws, setWs] = useState(null);
     const [connected, setConnected] = useState(false);
+    const [connectAttempts, setConnectAttempts] = useState(0);
     const [response, setResponse] = useState(null);
+    const [stopped, setStopped] = useState(false);
 
     useEffect(configureWebSocket, []);
     function configureWebSocket() {
       const webSocket = new WebSocket(url);
+      console.log(connectAttempts);
+      setConnectAttempts(connectAttempts + 1);
       setWs(webSocket);
+    }
+
+    useEffect(stopConnectAttempts, [connectAttempts]);
+    function stopConnectAttempts() {
+      if (connectAttempts >= connectAttemptLimit) {
+        setStopped(true);
+        stopListening(
+          CLOSE_CODES.GOING_AWAY,
+          "Exceeded connection attempt limit"
+        );
+      }
     }
 
     useEffect(startingListening, [ws]);
     function startingListening() {
-      if (ws) {
+      if (ws && !stopped) {
         ws.readyState !== WebSocket.CLOSED && listen();
       }
       return stopListening;

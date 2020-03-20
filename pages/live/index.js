@@ -104,6 +104,7 @@ class LiveFeedPage extends React.Component {
           </div> */}
           <div className={css(styles.mainFeed, styles.column)}>
             <LiveFeed
+              wsUrl={`wss://staging-ws.researchhub.com/ws/notification/${auth.user.id}/`}
               currentHub={this.state.hub && this.state.hub}
               home={!this.state.hub ? true : false}
             />
@@ -150,7 +151,9 @@ var styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
 
 const mapDispatchToProps = {};
 

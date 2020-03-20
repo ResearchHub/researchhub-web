@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import InfiniteScroll from "react-infinite-scroller";
 
+import withWebSocket from "~/components/withWebSocket";
+
 // Component
 import LiveFeedNotification from "./LiveFeedNotification";
 import Loader from "~/components/Loader/Loader";
@@ -62,7 +64,11 @@ class LiveFeed extends React.Component {
     }
   };
 
-  componentDidUpdate(prevProps) {}
+  componentDidUpdate(prevProps) {
+    if (prevProps.wsResponse !== this.props.wsResponse) {
+      console.log(this.props.wsResponse);
+    }
+  }
 
   componentWillUnmount() {
     clearInterval(this.state.intervalPing);
@@ -588,4 +594,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LiveFeed);
+)(withWebSocket(LiveFeed));
