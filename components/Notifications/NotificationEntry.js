@@ -8,7 +8,6 @@ import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 
 // Component
-import withWebSocket from "./withWebSocket";
 import AuthorAvatar from "../AuthorAvatar";
 
 // Redux
