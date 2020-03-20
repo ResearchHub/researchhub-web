@@ -423,7 +423,7 @@ const NotificationEntry = (props) => {
           markAsRead(data);
         }}
       >
-        <ReactTooltip />
+        {/* <ReactTooltip /> */}
         {renderString(notification.context_type && notification.context_type)}
       </div>
     </Ripples>
