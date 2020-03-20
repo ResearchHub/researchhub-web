@@ -98,41 +98,43 @@ class Notification extends React.Component {
     let length =
       this.props.notifications.length > 5 ? 5 : this.props.notifications.length;
 
-    let bottom = this.notifFeed
-      ? -30 + -this.notifFeed.clientHeight
-      : -30 + -80 * length;
+    let bottom = this.notifFeed && -30 + -this.notifFeed.clientHeight;
     let position = StyleSheet.create({
       menu: {
-        bottom:
-          this.state.dropdownPosition !== bottom
-            ? bottom
-            : this.state.dropdownPosition,
+        bottom,
       },
     });
-    if (bottom !== this.state.dropdownPosition) {
-      this.setState({ dropdownPosition: bottom });
-    }
+
     return position.menu;
   };
 
   renderMenu = () => {
     let { isOpen } = this.state;
-    if (isOpen) {
-      return (
+    // this.props.notifications = []
+    // if (isOpen) {
+    return (
+      <div
+        className={css(
+          styles.notificationMenu,
+          this.calculatePosition(),
+          isOpen && styles.open
+        )}
+        ref={(ref) => (this.notifMenu = ref)}
+      >
+        <div className={css(styles.menuTitle)}>Notifications</div>
         <div
-          className={css(styles.notificationMenu, this.calculatePosition())}
-          ref={(ref) => (this.notifMenu = ref)}
+          className={css(styles.notificationFeed)}
+          ref={(ref) => (this.notifFeed = ref)}
         >
-          <div className={css(styles.menuTitle)}>Notifications</div>
-          <div
-            className={css(styles.notificationFeed)}
-            ref={(ref) => (this.notifFeed = ref)}
-          >
-            {this.renderNotifications()}
-          </div>
+          {this.props.notifications.length > 0 ? (
+            this.renderNotifications()
+          ) : (
+            <div className={css(styles.emptyState)}>No Notifications</div>
+          )}
         </div>
-      );
-    }
+      </div>
+    );
+    // }
   };
 
   renderNotifications = () => {
@@ -205,14 +207,22 @@ const styles = StyleSheet.create({
   notificationMenu: {
     width: 430,
     position: "absolute",
-    bottom: -25,
+    // bottom: -25,
     right: 0,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
     boxSizing: "border-box",
     background: "#fff",
     border: "1px solid #eee",
     borderRadius: 4,
+    opacity: 0,
+    zIndex: -100,
+    userSelect: "none",
+    pointerEvents: "none",
+  },
+  open: {
+    opacity: 1,
     zIndex: 2,
+    pointerEvents: "unset",
   },
   notificationFeed: {
     maxHeight: 500,
@@ -226,6 +236,18 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     fontSize: 13,
     fontWeight: 500,
+  },
+  emptyState: {
+    display: "flex",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    boxSizing: "border-box",
+    padding: 20,
+    borderBottom: "1px solid #dddfe2",
+    backgroundColor: "#FAFAFA",
+    fontSize: 14,
   },
 });
 
