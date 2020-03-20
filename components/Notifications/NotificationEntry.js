@@ -114,14 +114,29 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>
             {" added a key takeaway to "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={paperTip}
+              >
                 {paperTip && truncatePaperTitle(paperTip)}
               </a>
             </Link>
@@ -138,7 +153,15 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>{" "}
             edited a <span>summary </span>
             for{" "}
@@ -146,7 +169,14 @@ const NotificationEntry = (props) => {
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={paperTip}
+              >
                 {paperTip && truncatePaperTitle(paperTip)}
               </a>
             </Link>
@@ -166,14 +196,29 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>{" "}
             uploaded a new paper{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTitle}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={paperTitle}
+              >
                 {paperTitle && truncatePaperTitle(paperTitle)}
               </a>
             </Link>
@@ -190,21 +235,44 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>{" "}
             created a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)}>thread</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.link)}
+              >
+                thread
+              </a>
             </Link>
             {"in "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={paperTip}
+              >
                 {paperTip && truncatePaperTitle(paperTip)}
               </a>
             </Link>
@@ -222,14 +290,29 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>{" "}
             left a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)} data-tip={commentTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.link)}
+                data-tip={commentTip}
+              >
                 comment
               </a>
             </Link>
@@ -238,7 +321,14 @@ const NotificationEntry = (props) => {
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/discussion`}
             >
-              <a className={css(styles.paper)} data-tip={threadTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={threadTip}
+              >
                 {threadTip && truncatePaperTitle(threadTip)}
               </a>
             </Link>
@@ -256,14 +346,29 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>{" "}
             left a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)} data-tip={replyTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.link)}
+                data-tip={replyTip}
+              >
                 reply
               </a>
             </Link>
@@ -272,7 +377,14 @@ const NotificationEntry = (props) => {
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/discussion`}
             >
-              <a className={css(styles.paper)} data-tip={threadTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={threadTip}
+              >
                 {threadTip && truncatePaperTitle(threadTip)}
               </a>
             </Link>
@@ -289,14 +401,29 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>{" "}
             voted on{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={paperTip}
+              >
                 {paperTip && truncatePaperTitle(paperTip)}
               </a>
             </Link>
@@ -313,21 +440,44 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>{" "}
             voted on a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)}>thread</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.link)}
+              >
+                thread
+              </a>
             </Link>
             in{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={paperTip}
+              >
                 {paperTip && truncatePaperTitle(paperTip)}
               </a>
             </Link>
@@ -344,21 +494,44 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>{" "}
             voted on a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)}>comment</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.link)}
+              >
+                comment
+              </a>
             </Link>
             in{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={paperTip}
+              >
                 {truncatePaperTitle(paperTip)}
               </a>
             </Link>
@@ -375,21 +548,44 @@ const NotificationEntry = (props) => {
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${authorId}/contributions}`}
             >
-              <a className={css(styles.username)}>{username}</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.username)}
+              >
+                {username}
+              </a>
             </Link>{" "}
             voted on a{" "}
             <Link
               href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               as={`/paper/${paperId}/discussion/${threadId}`}
             >
-              <a className={css(styles.link)}>reply</a>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.link)}
+              >
+                reply
+              </a>
             </Link>
             in{" "}
             <Link
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paperId}/summary`}
             >
-              <a className={css(styles.paper)} data-tip={paperTip}>
+              <a
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(data);
+                }}
+                className={css(styles.paper)}
+                data-tip={paperTip}
+              >
                 {paperTip && truncatePaperTitle(paperTip)}
               </a>
             </Link>
@@ -415,13 +611,7 @@ const NotificationEntry = (props) => {
           author={notification.created_by.author_profile}
         />
       </div>
-      <div
-        className={css(styles.body)}
-        onClick={(e) => {
-          e.stopPropagation();
-          markAsRead(data);
-        }}
-      >
+      <div className={css(styles.body)}>
         {/* <ReactTooltip /> */}
         {renderString(notification.context_type && notification.context_type)}
       </div>
