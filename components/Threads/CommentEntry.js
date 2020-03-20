@@ -22,6 +22,7 @@ import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { transformReplies } from "~/redux/discussion/shims";
 import { createUsername } from "../../config/utils";
+import { comments } from "../../redux/discussion/shims";
 
 class CommentEntry extends React.Component {
   constructor(props) {
@@ -293,6 +294,7 @@ class CommentEntry extends React.Component {
       let newReply = { ...this.props.discussion.postedReply };
       newReply.highlight = true;
       let replies = [newReply, ...this.state.replies];
+      comment.replies = replies;
       this.setState(
         {
           revealReply: true,
