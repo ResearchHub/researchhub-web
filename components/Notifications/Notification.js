@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import InfiniteScroll from "react-infinite-scroller";
 
 // Component
-import withWebSocket from "./withWebSocket";
+import withWebSocket from "~/components/withWebSocket";
 import NotificationEntry from "./NotificationEntry";
 
 // Redux
@@ -219,4 +219,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withWebSocket(Notification, `ws://localhost:8000/ws/notifications/`));
+)(withWebSocket(Notification));

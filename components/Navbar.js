@@ -31,6 +31,7 @@ import Notification from "./Notifications/Notification";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { RHLogo } from "~/config/themes/icons";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
 import "./stylesheets/Navbar.css";
 import OrcidConnectModal from "./modal/OrcidConnectModal";
 
@@ -377,7 +378,10 @@ const Navbar = (props) => {
                     className={css(styles.notification)}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Notification />
+                    <Notification
+                      wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
+                      wsAuth={true}
+                    />
                   </div>
                 </div>
                 {openMenu && (
