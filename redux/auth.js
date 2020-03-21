@@ -69,6 +69,7 @@ let getUserHelper = (dispatch, dispatchFetching) => {
       });
     })
     .catch((error) => {
+      console.log("error", error);
       dispatch({
         type: AuthConstants.GOT_USER,
         isFetchingUser: false,

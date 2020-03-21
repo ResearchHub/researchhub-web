@@ -316,10 +316,11 @@ const styles = StyleSheet.create({
     width: "85%",
     minWidth: "85%",
     maxWidth: "85%",
-    fontSize: 28,
+    fontSize: 20,
     color: "#241F3A",
+    marginBottom: 20,
     "@media only screen and (max-width: 761px)": {
-      fontSize: 22,
+      fontSize: 18,
       width: "100%",
       minWidth: "100%",
       maxWidth: "100%",

@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 const icons = {
   chat: <i className="fas fa-comment"></i>,
   chevronRight: <i className="far fa-chevron-right"></i>,
-  externalLink: <i class="fas fa-external-link-alt"></i>,
+  externalLink: <i className="fas fa-external-link-alt"></i>,
   longArrowLeft: <i className="fal fa-long-arrow-left"></i>,
   share: <i className="fas fa-share"></i>,
   shareAlt: <i className="fas fa-share-alt"></i>,
@@ -25,11 +25,12 @@ const icons = {
   minusCircle: <i className="fad fa-minus-circle" />,
   ellipsisH: <i className="far fa-ellipsis-h" />,
   date: <i className="far fa-calendar-day" />,
-  upload: <i class="fas fa-upload"></i>,
+  upload: <i className="fas fa-upload"></i>,
   plusCircle: <i className="fal fa-plus-circle" />,
   play: <i className="fas fa-play" />,
-  stop: <i class="fas fa-stop" />,
-  chevronDown: <i class="far fa-chevron-down" />,
+  stop: <i className="fas fa-stop" />,
+  chevronDown: <i className="far fa-chevron-down" />,
+  bell: <i className="fas fa-bell" />,
 };
 
 export const voteWidgetIcons = {
