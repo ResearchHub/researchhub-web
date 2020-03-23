@@ -111,18 +111,11 @@ const VoteWidget = (props) => {
           onClick={horizontalView ? onDownvoteClick : onUpvoteClick}
           modalMessage={"vote"}
         >
-          {horizontalView ? (
-            <DownvoteButton
-              selected={downvoteSelected}
-              disabled={downvoteDisabled || searchResult}
-              horizontalView={horizontalView}
-            />
-          ) : (
-            <UpvoteButton
-              selected={upvoteSelected}
-              disabled={upvoteDisabled || searchResult}
-            />
-          )}
+          <UpvoteButton
+            selected={upvoteSelected}
+            disabled={upvoteDisabled || searchResult}
+            horizontalView={horizontalView && horizontalView}
+          />
         </PermissionNotificationWrapper>
         <ScorePill score={score} />
         <PermissionNotificationWrapper
@@ -130,18 +123,11 @@ const VoteWidget = (props) => {
           onClick={horizontalView ? onUpvoteClick : onDownvoteClick}
           modalMessage={"vote"}
         >
-          {horizontalView ? (
-            <UpvoteButton
-              selected={upvoteSelected}
-              disabled={upvoteDisabled || searchResult}
-              horizontalView={horizontalView}
-            />
-          ) : (
-            <DownvoteButton
-              selected={downvoteSelected}
-              disabled={downvoteDisabled || searchResult}
-            />
-          )}
+          <DownvoteButton
+            selected={downvoteSelected}
+            disabled={downvoteDisabled || searchResult}
+            horizontalView={horizontalView && horizontalView}
+          />
         </PermissionNotificationWrapper>
       </div>
       {/* {!searchResult && <ReputationTooltip />} */}
@@ -180,9 +166,9 @@ const VoteButton = (props) => {
   if (horizontalView) {
     style.push(styles.horizontalViewButton);
     if (right) {
-      style.push(styles.marginLeft);
-    } else {
       style.push(styles.marginRight);
+    } else {
+      style.push(styles.marginLeft);
     }
   }
 
