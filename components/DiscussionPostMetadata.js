@@ -153,7 +153,7 @@ const DiscussionPostMetadata = (props) => {
           </div>
           {showDropDown && (
             <div
-              className={css(styles.dropdown, calculateDropdownPosition())}
+              className={css(styles.dropdown)}
               ref={(ref) => (dropdown = ref)}
             >
               {threadPath && <ExpandButton {...props} />}
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -30,
+    top: 20,
     right: -4,
     width: 120,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
@@ -436,15 +436,6 @@ const styles = StyleSheet.create({
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 3,
-  },
-  twoItems: {
-    bottom: -70,
-  },
-  threeItems: {
-    bottom: -110,
-  },
-  fourItems: {
-    bottom: -150,
   },
 });
 

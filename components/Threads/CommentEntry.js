@@ -16,12 +16,12 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { createUsername } from "../../config/utils";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { transformReplies } from "~/redux/discussion/shims";
-import { createUsername } from "../../config/utils";
 import { comments } from "../../redux/discussion/shims";
 
 class CommentEntry extends React.Component {
@@ -351,14 +351,6 @@ class CommentEntry extends React.Component {
       setMessage("Something went wrong");
       showMessage({ show: true, error: true });
     }
-  };
-
-  createUsername = ({ createdBy }) => {
-    if (createdBy) {
-      const { firstName, lastName } = createdBy;
-      return `${firstName} ${lastName}`;
-    }
-    return null;
   };
 
   formatMetaData = () => {
