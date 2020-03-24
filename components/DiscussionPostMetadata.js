@@ -114,29 +114,6 @@ const DiscussionPostMetadata = (props) => {
     };
   });
 
-  const calculateDropdownPosition = () => {
-    let count = 1;
-    if (threadPath) {
-      count++;
-    }
-    if (isModerator) {
-      count++;
-    }
-    if (toggleEdit) {
-      count++;
-    }
-
-    if (count === 2) {
-      return styles.twoItems;
-    }
-    if (count === 3) {
-      return styles.threeItems;
-    }
-    if (count === 4) {
-      return styles.fourItems;
-    }
-  };
-
   return (
     <div className={css(styles.container)}>
       <User name={username} authorProfile={authorProfile} {...props} />
