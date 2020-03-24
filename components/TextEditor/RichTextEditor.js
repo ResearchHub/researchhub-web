@@ -950,7 +950,11 @@ const styles = StyleSheet.create({
     minHeight: 122,
   },
   comment: {
-    padding: "16px 16px 16px 16px",
+    padding: 16,
+
+    "@media only screen and (max-width: 767px)": {
+      paddingLeft: 0,
+    },
     // minHeight: 200,
   },
   button: {
