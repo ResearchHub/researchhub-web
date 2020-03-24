@@ -33,6 +33,7 @@ const DiscussionPostMetadata = (props) => {
     metaData,
     onRemove,
     dropDownEnabled,
+    toggleEdit,
   } = props;
   const alert = useAlert();
   const store = useStore();
@@ -129,15 +130,19 @@ const DiscussionPostMetadata = (props) => {
           </div>
           {showDropDown && (
             <div
-              className={css(
-                styles.dropdown,
-                (threadPath || isModerator) && styles.twoItems,
-                threadPath && isModerator && styles.threeItems
-              )}
+              className={css(styles.dropdown)}
               ref={(ref) => (dropdown = ref)}
             >
               {threadPath && <ExpandButton {...props} />}
-
+              {toggleEdit && (
+                <EditButton
+                  {...props}
+                  onClick={() => {
+                    props.toggleEdit();
+                    toggleDropDown();
+                  }}
+                />
+              )}
               <FlagButton
                 {...props}
                 onClick={promptFlagConfirmation}
@@ -263,6 +268,17 @@ const FlagButton = (props) => {
   );
 };
 
+const EditButton = (props) => {
+  return (
+    <Ripples className={css(styles.dropdownItem)} onClick={props.onClick}>
+      <span className={css(styles.icon, styles.expandIcon)}>
+        {icons.pencil}
+      </span>
+      <span className={css(styles.text, styles.expandText)}>Edit</span>
+    </Ripples>
+  );
+};
+
 const styles = StyleSheet.create({
   container: {
     width: "100%",
@@ -362,7 +378,7 @@ const styles = StyleSheet.create({
   },
   expandIcon: {
     fontSize: 14,
-    paddingLeft: 5,
+    paddingLeft: 8,
   },
   expandText: {
     fontSize: 14,
@@ -388,7 +404,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -30,
+    top: 20,
     right: -4,
     width: 120,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
@@ -397,12 +413,6 @@ const styles = StyleSheet.create({
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 3,
-  },
-  twoItems: {
-    bottom: -70,
-  },
-  threeItems: {
-    bottom: -110,
   },
 });
 

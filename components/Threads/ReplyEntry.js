@@ -16,6 +16,7 @@ import { getNestedValue } from "~/config/utils";
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { createUsername } from "../../config/utils";
+import { MessageActions } from "~/redux/message";
 
 class ReplyEntry extends React.Component {
   constructor(props) {
@@ -28,6 +29,9 @@ class ReplyEntry extends React.Component {
       selectedVoteType: "",
       // Removed
       removed: false,
+      // Edit
+      canEdit: false,
+      editing: false,
     };
     this.replyRef = null;
   }
@@ -46,6 +50,9 @@ class ReplyEntry extends React.Component {
         selectedVoteType,
         highlight: this.props.reply.highlight && true,
         removed: this.props.reply.isRemoved,
+        canEdit:
+          this.props.auth &&
+          this.props.auth.user.id === this.props.reply.createdBy.id,
       },
       () => {
         setTimeout(() => this.calculateThreadHeight(), 400);
@@ -62,6 +69,12 @@ class ReplyEntry extends React.Component {
 
   componentDidUpdate(prevProps) {
     this.calculateThreadHeight();
+    if (prevProps.auth !== this.props.auth) {
+      let { auth, reply } = this.props;
+      this.setState({
+        canEdit: auth.user.id === reply.createdBy.id,
+      });
+    }
   }
 
   calculateThreadHeight = () => {
@@ -98,6 +111,12 @@ class ReplyEntry extends React.Component {
   toggleCollapsed = (e) => {
     e && e.stopPropagation();
     this.setState({ collapsed: !this.state.collapsed });
+  };
+
+  toggleEdit = () => {
+    this.setState({ editing: !this.state.editing }, () => {
+      this.calculateThreadHeight();
+    });
   };
 
   removePostUI = () => {
@@ -181,6 +200,43 @@ class ReplyEntry extends React.Component {
     }
   };
 
+  saveEditsReply = async (text, plain_text, callback) => {
+    let {
+      data,
+      comment,
+      reply,
+      updateReply,
+      updateReplyPending,
+      showMessage,
+      setMessage,
+    } = this.props;
+    let paperId = data.paper;
+    let discussionThreadId = data.id;
+    let commentId = comment.id;
+    let replyId = reply.id;
+
+    updateReplyPending();
+    await updateReply(
+      paperId,
+      discussionThreadId,
+      commentId,
+      replyId,
+      text,
+      plain_text
+    );
+    if (this.props.discussion.doneUpdating && this.props.discussion.success) {
+      setMessage("Comment successfully updated!");
+      showMessage({ show: true });
+      callback();
+      this.setState({ editing: false }, () => {
+        this.calculateThreadHeight();
+      });
+    } else {
+      setMessage("Something went wrong");
+      showMessage({ show: true, error: true });
+    }
+  };
+
   render() {
     const { data, hostname, hoverEvents, path, mobileView, reply } = this.props;
     let threadId = reply.id;
@@ -250,6 +306,8 @@ class ReplyEntry extends React.Component {
                   // Moderator
                   metaData={metaIds}
                   onRemove={this.removePostUI}
+                  editing={this.state.editing}
+                  toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
               </div>
             )}
@@ -260,6 +318,10 @@ class ReplyEntry extends React.Component {
                     readOnly={true}
                     initialValue={body}
                     body={true}
+                    onChange={this.calculateThreadHeight}
+                    editing={this.state.editing}
+                    onEditCancel={this.toggleEdit}
+                    onEditSubmit={this.saveEditsReply}
                   />
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
@@ -372,7 +434,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  discussion: state.discussion,
   vote: state.vote,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -382,6 +446,10 @@ const mapDispatchToProps = {
   postUpvote: DiscussionActions.postUpvote,
   postDownvotePending: DiscussionActions.postDownvotePending,
   postDownvote: DiscussionActions.postDownvote,
+  updateReply: DiscussionActions.updateReply,
+  updateReplyPending: DiscussionActions.updateReplyPending,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
