@@ -16,12 +16,12 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { createUsername } from "../../config/utils";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { transformReplies } from "~/redux/discussion/shims";
-import { createUsername } from "../../config/utils";
 import { comments } from "../../redux/discussion/shims";
 
 class CommentEntry extends React.Component {
@@ -40,6 +40,9 @@ class CommentEntry extends React.Component {
       replies: [],
       // Removed
       removed: this.props.comment.isRemoved,
+      // Editing,
+      editing: false,
+      canEdit: false,
     };
     this.commentRef = null;
   }
@@ -61,6 +64,9 @@ class CommentEntry extends React.Component {
         selectedVoteType,
         score,
         highlight: this.props.comment.highlight && true,
+        canEdit:
+          this.props.auth &&
+          this.props.auth.user.id === this.props.comment.createdBy.id,
       },
       () => {
         this.calculateThreadHeight();
@@ -78,6 +84,12 @@ class CommentEntry extends React.Component {
   componentDidUpdate(prevProps) {
     this.calculateThreadHeight();
     this.handleVoteTypeUpdate(prevProps);
+    if (prevProps.auth !== this.props.auth) {
+      let { data, comment } = this.props;
+      this.setState({
+        canEdit: this.props.auth.user.id === comment.createdBy.id,
+      });
+    }
   }
 
   handleVoteTypeUpdate = (prevProps) => {
@@ -307,6 +319,40 @@ class CommentEntry extends React.Component {
     }
   };
 
+  saveEditsComments = async (text, plain_text, callback) => {
+    let {
+      data,
+      comment,
+      updateComment,
+      updateCommentPending,
+      showMessage,
+      setMessage,
+    } = this.props;
+    let paperId = data.paper;
+    let discussionThreadId = data.id;
+    let commentId = comment.id;
+
+    updateCommentPending();
+    await updateComment(
+      paperId,
+      discussionThreadId,
+      commentId,
+      text,
+      plain_text
+    );
+    if (this.props.discussion.doneUpdating && this.props.discussion.success) {
+      setMessage("Comment successfully updated!");
+      showMessage({ show: true });
+      callback();
+      this.setState({ editing: false }, () => {
+        this.calculateThreadHeight();
+      });
+    } else {
+      setMessage("Something went wrong");
+      showMessage({ show: true, error: true });
+    }
+  };
+
   formatMetaData = () => {
     let { data, comment } = this.props;
     return {
@@ -345,6 +391,12 @@ class CommentEntry extends React.Component {
   toggleCollapsed = (e) => {
     e && e.stopPropagation();
     this.setState({ collapsed: !this.state.collapsed });
+  };
+
+  toggleEdit = () => {
+    this.setState({ editing: !this.state.editing }, () => {
+      this.calculateThreadHeight();
+    });
   };
 
   removePostUI = () => {
@@ -452,6 +504,9 @@ class CommentEntry extends React.Component {
                   // Moderator
                   metaData={metaIds}
                   onRemove={this.removePostUI}
+                  // Editing
+                  editing={this.state.editing}
+                  toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
               </div>
             )}
@@ -462,6 +517,10 @@ class CommentEntry extends React.Component {
                     readOnly={true}
                     initialValue={body}
                     body={true}
+                    onChange={this.calculateThreadHeight}
+                    editing={this.state.editing}
+                    onEditCancel={this.toggleEdit}
+                    onEditSubmit={this.saveEditsComments}
                   />
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
@@ -626,6 +685,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   discussion: state.discussion,
   vote: state.vote,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -635,6 +695,8 @@ const mapDispatchToProps = {
   postUpvote: DiscussionActions.postUpvote,
   postDownvotePending: DiscussionActions.postDownvotePending,
   postDownvote: DiscussionActions.postDownvote,
+  updateComment: DiscussionActions.updateComment,
+  updateCommentPending: DiscussionActions.updateCommentPending,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };

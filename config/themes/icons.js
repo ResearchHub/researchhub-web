@@ -31,6 +31,7 @@ const icons = {
   stop: <i className="fas fa-stop" />,
   chevronDown: <i className="far fa-chevron-down" />,
   bell: <i className="fas fa-bell" />,
+  pencil: <i className="fas fa-pencil" />,
 };
 
 export const voteWidgetIcons = {

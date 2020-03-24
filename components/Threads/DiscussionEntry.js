@@ -44,6 +44,9 @@ class DiscussionEntry extends React.Component {
       fetching: false, // when true, we show loading state,
       // Removed
       removed: false,
+      // Edit
+      canEdit: false,
+      editing: false,
     };
     this.divRef = null;
   }
@@ -60,6 +63,7 @@ class DiscussionEntry extends React.Component {
         revealComment: comments.length > 0 && comments.length < 6,
         highlight: newCard,
         removed: this.props.data.isRemoved,
+        canEdit: this.props.auth.user.id === data.createdBy.id,
       },
       () => {
         newCard &&
@@ -74,6 +78,12 @@ class DiscussionEntry extends React.Component {
 
   componentDidUpdate = async (prevProps, prevState) => {
     this.handleVoteTypeUpdate(prevProps);
+    if (prevProps.auth !== this.props.auth) {
+      let { data } = this.props;
+      this.setState({
+        canEdit: this.props.auth.user.id === data.createdBy.id,
+      });
+    }
   };
 
   handleVoteTypeUpdate = (prevProps) => {
@@ -192,6 +202,37 @@ class DiscussionEntry extends React.Component {
     }
   };
 
+  saveEditsThread = async (text, plain_text, callback) => {
+    let {
+      data,
+      updateThread,
+      updateThreadPending,
+      showMessage,
+      setMessage,
+    } = this.props;
+    let discussionThreadId = data.id;
+    let paperId = data.paper;
+
+    let body = {
+      text,
+      plain_text,
+      paper: paperId,
+    };
+    updateThreadPending();
+    await updateThread(paperId, discussionThreadId, body);
+    if (this.props.discussion.doneUpdating && this.props.discussion.success) {
+      setMessage("Post successfully updated!");
+      showMessage({ show: true });
+      callback();
+      this.setState({ editing: false }, () => {
+        this.calculateThreadHeight();
+      });
+    } else {
+      setMessage("Something went wrong");
+      showMessage({ show: true, error: true });
+    }
+  };
+
   formatComment = (comment) => {
     let newComment = {};
     newComment.id = comment.id;
@@ -221,6 +262,12 @@ class DiscussionEntry extends React.Component {
   toggleHover = (e) => {
     e && e.stopPropagation();
     this.setState({ hovered: !this.state.hovered });
+  };
+
+  toggleEdit = () => {
+    this.setState({ editing: !this.state.editing }, () => {
+      this.calculateThreadHeight();
+    });
   };
 
   removePostUI = () => {
@@ -408,15 +455,21 @@ class DiscussionEntry extends React.Component {
                     // Moderator
                     metaData={metaData}
                     onRemove={this.removePostUI}
+                    // Editing
+                    editing={this.state.editing}
+                    toggleEdit={this.state.canEdit && this.toggleEdit}
                   />
                 </div>
                 <div className={css(styles.content)}>
-                  {/* <Title text={title} overrideStyle={styles.title} /> */}
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
                     body={true}
                     textStyles={styles.contentText}
+                    editing={this.state.editing}
+                    onEditCancel={this.toggleEdit}
+                    onEditSubmit={this.saveEditsThread}
+                    onChange={this.calculateThreadHeight}
                   />
                 </div>
               </Fragment>
@@ -592,6 +645,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   discussion: state.discussion,
   vote: state.vote,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -601,6 +655,8 @@ const mapDispatchToProps = {
   postUpvote: DiscussionActions.postUpvote,
   postDownvotePending: DiscussionActions.postDownvotePending,
   postDownvote: DiscussionActions.postDownvote,
+  updateThread: DiscussionActions.updateThread,
+  updateThreadPending: DiscussionActions.updateThreadPending,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };
