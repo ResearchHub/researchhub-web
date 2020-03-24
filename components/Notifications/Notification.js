@@ -94,31 +94,13 @@ class Notification extends React.Component {
     });
   };
 
-  calculatePosition = () => {
-    let length =
-      this.props.notifications.length > 5 ? 5 : this.props.notifications.length;
-
-    let bottom = this.notifFeed && -30 + -this.notifFeed.clientHeight;
-    let position = StyleSheet.create({
-      menu: {
-        bottom,
-      },
-    });
-
-    return position.menu;
-  };
-
   renderMenu = () => {
     let { isOpen } = this.state;
     // this.props.notifications = []
     // if (isOpen) {
     return (
       <div
-        className={css(
-          styles.notificationMenu,
-          this.calculatePosition(),
-          isOpen && styles.open
-        )}
+        className={css(styles.notificationMenu, isOpen && styles.open)}
         ref={(ref) => (this.notifMenu = ref)}
       >
         <div className={css(styles.menuTitle)}>Notifications</div>
@@ -207,7 +189,7 @@ const styles = StyleSheet.create({
   notificationMenu: {
     width: 430,
     position: "absolute",
-    // bottom: -25,
+    top: 38,
     right: 0,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
     boxSizing: "border-box",

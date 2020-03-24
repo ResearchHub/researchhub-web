@@ -1,7 +1,7 @@
 import React from "react";
-import dynamic from "next/dynamic";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import Plain from "slate-plain-serializer";
 
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import TextEditor from "../../components/TextEditor";
@@ -9,6 +9,9 @@ import TextEditor from "../../components/TextEditor";
 import DiscussionActions from "~/redux/discussion";
 
 import { doesNotExist } from "../../config/utils";
+
+import colors from "~/config/themes/colors";
+import { convertToEditorValue } from "~/config/utils";
 
 // const DynamicLoadedEditor = dynamic(import("../../components/TextEditor"), {
 //   loading: () => <p>loading...</p>,
@@ -20,6 +23,11 @@ class ThreadTextEditor extends React.Component {
     super(props);
     this.state = {
       loading: false,
+      editorState:
+        this.props.initialValue &&
+        convertToEditorValue(this.props.initialValue),
+      prevEditorState: this.props.initialValue && this.props.initialValue,
+      newEditorState: {},
     };
   }
 
@@ -39,8 +47,38 @@ class ThreadTextEditor extends React.Component {
     this.props.onCancel && this.props.onCancel(e);
   };
 
-  onChange = (e) => {
-    this.props.onChange && this.props.onChange();
+  onChange = (value) => {
+    this.setState(
+      {
+        newEditorState: value,
+        editorState: value,
+      },
+      () => {
+        this.props.onChange && this.props.onChange(value);
+      }
+    );
+  };
+
+  onEditSubmit = (e) => {
+    let value = this.state.editorState;
+    let text = value.toJSON({ preserveKeys: true });
+    let plain_text = Plain.serialize(value);
+    this.setState({ loading: true }, () => {
+      this.props.onEditSubmit &&
+        this.props.onEditSubmit(text, plain_text, () => {
+          this.setState({
+            editorState: convertToEditorValue(this.state.newEditorState),
+            loading: false,
+          });
+        });
+    });
+  };
+
+  onEditCancel = (e) => {
+    this.props.onEditCancel && this.props.onEditCancel();
+    this.setState({
+      editorState: convertToEditorValue(this.state.prevEditorState),
+    });
   };
 
   render() {
@@ -69,12 +107,25 @@ class ThreadTextEditor extends React.Component {
     } else {
       return (
         <TextEditor
-          readOnly={true}
-          initialValue={this.props.initialValue && this.props.initialValue}
+          readOnly={!this.props.editing}
+          // initialValue={this.props.initialValue && this.props.initialValue}
+          initialValue={this.state.editorState}
+          onSubmit={this.onEditSubmit}
+          onCancel={this.onEditCancel}
+          onChange={this.onChange}
+          smallToolBar={true}
+          commentEditor={true}
+          loading={this.state.loading}
           commentStyles={[
             styles.comment,
             this.props.textStyles && this.props.textStyles,
+            this.props.editing && styles.edit,
           ]}
+          commentEditorStyles={[
+            styles.textContainer,
+            // this.props.editing && styles.edit
+          ]}
+          passedValue={this.state.editorState}
         />
       );
     }
@@ -89,6 +140,22 @@ const styles = StyleSheet.create({
     lineHeight: 1.6,
     fontSize: 14,
     color: "#000",
+  },
+  textContainer: {
+    background: "unset",
+    border: "unset",
+    ":hover": {
+      backgroundColor: "unset",
+      border: "unset",
+    },
+  },
+  edit: {
+    padding: 16,
+    backgroundColor: colors.LIGHT_YELLOW(),
+    border: `1px solid ${colors.YELLOW()}`,
+    ":hover": {
+      backgroundColor: colors.LIGHT_YELLOW(),
+    },
   },
 });
 

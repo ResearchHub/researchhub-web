@@ -36,6 +36,7 @@ const TextEditor = (props) => {
     commentStyles,
     smallToolBar,
     loading,
+    commentEditorStyles,
   } = props;
 
   const [value, setValue] = useState(convertToEditorValue(initialValue));
@@ -106,6 +107,7 @@ const TextEditor = (props) => {
       commentStyles={commentStyles && commentStyles}
       smallToolBar={smallToolBar && smallToolBar}
       loading={loading && loading}
+      commentEditorStyles={commentEditorStyles && commentEditorStyles}
     />
   );
 };
