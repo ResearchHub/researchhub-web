@@ -366,7 +366,6 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
-      marginBottom: 8,
     },
   },
   sectionTitle: {
@@ -435,6 +434,9 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingBottom: 0,
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 8,
+    },
   },
   summaryEdit: {
     marginBottom: 50,
