@@ -362,6 +362,12 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: 20,
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+      marginBottom: 8,
+    },
   },
   sectionTitle: {
     fontSize: 26,
@@ -425,12 +431,10 @@ var styles = StyleSheet.create({
   },
   summaryActions: {
     width: 250,
-    // padding: 16,
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     paddingBottom: 0,
-    // marginBottom: 10,
   },
   summaryEdit: {
     marginBottom: 50,
@@ -446,6 +450,9 @@ var styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     padding: "3px 5px",
     paddingRight: 0,
+    "@media only screen and (max-width: 767px)": {
+      padding: 0,
+    },
     ":hover": {
       color: colors.BLUE(1),
       opacity: 1,
