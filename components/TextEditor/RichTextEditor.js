@@ -8,6 +8,7 @@ import { css, StyleSheet } from "aphrodite";
 import { isKeyHotkey } from "is-hotkey";
 import Sticky from "react-stickynode";
 import urlRegex from "url-regex";
+import ModalImage from "react-modal-image";
 
 // Components
 import { Button, Icon, ToolBar } from "./ToolBar";
@@ -642,7 +643,11 @@ class RichTextEditor extends React.Component {
         return (
           <div className={css(styles.imageBlock)} {...attributes}>
             <div className={css(styles.imageContainer)} contentEditable={false}>
-              <img src={node.data.get("url")} className={css(styles.image)} />
+              <ModalImage
+                small={node.data.get("url")}
+                large={node.data.get("url")}
+                className={css(styles.image)}
+              />
               {!this.props.readOnly && (
                 <div className={css(styles.imageOverlay)}>
                   <i
@@ -990,7 +995,7 @@ const styles = StyleSheet.create({
   image: {
     display: "block",
     maxWidth: "100%",
-    maxHeight: 300,
+    maxHeight: 500,
   },
   deleteImage: {
     position: "absolute",
