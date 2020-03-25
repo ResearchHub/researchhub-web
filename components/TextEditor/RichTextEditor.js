@@ -295,6 +295,7 @@ class RichTextEditor extends React.Component {
             value={this.state.link}
             onChange={this.onChangeLink}
             close={this.closeTooltipInput}
+            classContainer={styles.urlToolTip}
             save={() => this.setLink("link", this.state.link)}
           />
         )}
@@ -304,6 +305,7 @@ class RichTextEditor extends React.Component {
             value={this.state.image}
             onChange={this.onChangeImage}
             close={this.closeTooltipInput}
+            classContainer={styles.imgToolTip}
             save={() => this.setImage("image", this.state.image)}
           />
         )}
@@ -1037,6 +1039,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     top: 80,
     zIndex: 3,
+  },
+  urlToolTip: {
+    top: 60,
+    bottom: "unset",
+  },
+  imgToolTip: {
+    top: 60,
+    bottom: "unset",
   },
 });
 
