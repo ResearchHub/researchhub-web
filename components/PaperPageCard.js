@@ -4,6 +4,7 @@ import moment from "moment";
 import Router from "next/router";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
+import Ripples from "react-ripples";
 
 // Components
 import HubTag from "~/components/Hubs/HubTag";
@@ -19,6 +20,7 @@ import ActionButton from "~/components/ActionButton";
 import "./stylesheets/Carousel.css";
 
 // Config
+import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate } from "~/config/utils";

@@ -4,7 +4,6 @@ import { connect, useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
-import InfiniteScroll from "react-infinite-scroller";
 import Ripples from "react-ripples";
 
 // Components
