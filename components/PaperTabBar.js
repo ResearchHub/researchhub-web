@@ -39,6 +39,7 @@ const PaperTabBar = (props) => {
   }
 
   function scrollToPage(label) {
+    setSelectedTab(label);
     if (label === "key takeaway") {
       window.scrollTo(0, keyTakeawayRef.current.offsetTop - 100);
     } else if (label === "description") {
@@ -56,10 +57,10 @@ const PaperTabBar = (props) => {
     let isSelected = false;
     let classNames = [styles.tab];
 
-    // if (href === selected) {
-    //   isSelected = true;
-    //   classNames.push(styles.selected);
-    // }
+    if (label === selected) {
+      isSelected = true;
+      classNames.push(styles.selected);
+    }
 
     if (index === 2) {
       classNames.push(styles.lastTab);

@@ -93,7 +93,6 @@ class PaperPageCard extends React.Component {
                   className={css(
                     carousel.button,
                     carousel.left,
-                    currentSlide === 0 && carousel.pointer,
                     hovered && carousel.show
                   )}
                 >
@@ -105,7 +104,6 @@ class PaperPageCard extends React.Component {
                   className={css(
                     carousel.button,
                     carousel.right,
-                    currentSlide === slideCount && carousel.pointer,
                     hovered && carousel.show
                   )}
                 >
@@ -116,6 +114,7 @@ class PaperPageCard extends React.Component {
           }}
           renderCenterLeftControls={null}
           renderCenterRightControls={null}
+          wrapAround={true}
         >
           {this.state.previews.map((preview) => {
             return <img src={preview.file} className={css(styles.image)} />;
@@ -152,7 +151,6 @@ class PaperPageCard extends React.Component {
 
   renderHubs = () => {
     let { paper } = this.props;
-
     let hubs =
       paper &&
       paper.hubs.map((hub, index) => {
@@ -165,46 +163,46 @@ class PaperPageCard extends React.Component {
     let { paper, isModerator, flagged, setFlag } = this.props;
     let paperTitle = paper && paper.title;
 
-    if (paper && paper.hubs && paper.hubs.length > 0) {
-      return (
-        <div className={css(styles.topRow)}>
-          <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
-          <div className={css(styles.actions)}>
-            <PermissionNotificationWrapper
-              modalMessage="edit papers"
-              onClick={this.navigateToEditPaperInfo}
-              permissionKey="UpdatePaper"
-              loginRequired={true}
-            >
-              <div className={css(styles.actionIcon)}>
-                <i className="far fa-pencil" />
+    return (
+      <div className={css(styles.topRow)}>
+        <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
+        <div className={css(styles.actions)}>
+          <PermissionNotificationWrapper
+            modalMessage="edit papers"
+            onClick={this.navigateToEditPaperInfo}
+            permissionKey="UpdatePaper"
+            loginRequired={true}
+            hideRipples={true}
+          >
+            <Ripples className={css(styles.actionIcon)}>
+              <i className="far fa-pencil" />
+            </Ripples>
+          </PermissionNotificationWrapper>
+          <ShareAction
+            addRipples={true}
+            title={"Share this paper"}
+            subtitle={paperTitle}
+            url={this.props.shareUrl}
+            customButton={
+              <div className={css(styles.actionIcon, styles.middleIcon)}>
+                <i className="far fa-share-alt" />
               </div>
-            </PermissionNotificationWrapper>
-            <ShareAction
-              addRipples={true}
-              title={"Share this paper"}
-              subtitle={paperTitle}
-              url={this.props.shareUrl}
-              customButton={
-                <div className={css(styles.actionIcon, styles.middleIcon)}>
-                  <i className="far fa-share-alt" />
-                </div>
-              }
+            }
+          />
+          {/* !isModerator */}
+          {true ? (
+            <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
             />
-            {!isModerator ? (
-              <FlagButton
-                paperId={paper.id}
-                flagged={flagged}
-                setFlag={setFlag}
-                style={styles.actionIcon}
-              />
-            ) : (
-              <ActionButton isModerator={isModerator} paperId={paper.id} />
-            )}
-          </div>
+          ) : (
+            <ActionButton isModerator={isModerator} paperId={paper.id} />
+          )}
         </div>
-      );
-    }
+      </div>
+    );
   };
 
   render() {
@@ -264,39 +262,43 @@ class PaperPageCard extends React.Component {
             )}
           </div>
           <div className={css(styles.buttonRow)}>
-            <Button
-              label={() => {
-                return (
-                  <span>
-                    <span className={css(styles.downloadIcon)}>
-                      <i className="far fa-arrow-to-bottom" />
+            {paper && paper.file && (
+              <Button
+                label={() => {
+                  return (
+                    <span>
+                      <span className={css(styles.downloadIcon)}>
+                        <i className="far fa-arrow-to-bottom" />
+                      </span>
+                      Download PDF
                     </span>
-                    Download PDF
-                  </span>
-                );
-              }}
-              customButtonStyle={styles.button}
-              size={"med"}
-              hideRipples={false}
-              onClick={this.downloadPDF}
-            />
-            <Button
-              label={() => {
-                return (
-                  <span>
-                    <span className={css(styles.viewIcon)}>
-                      <i className="far fa-external-link"></i>
+                  );
+                }}
+                customButtonStyle={styles.button}
+                size={"med"}
+                hideRipples={false}
+                onClick={this.downloadPDF}
+              />
+            )}
+            {paper && paper.url && (
+              <Button
+                label={() => {
+                  return (
+                    <span>
+                      <span className={css(styles.viewIcon)}>
+                        <i className="far fa-external-link"></i>
+                      </span>
+                      View Externally
                     </span>
-                    View Externally
-                  </span>
-                );
-              }}
-              customButtonStyle={styles.buttonRight}
-              isWhite={true}
-              size={"med"}
-              hideRipples={false}
-              onClick={() => openExternalLink(paper.file)}
-            />
+                  );
+                }}
+                customButtonStyle={styles.buttonRight}
+                isWhite={true}
+                size={"med"}
+                hideRipples={false}
+                onClick={() => openExternalLink(paper.url)}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -477,15 +479,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   actionIcon: {
+    padding: 5,
+    borderRadius: "50%",
+    backgroundColor: "rgba(36, 31, 58, 0.03)",
     color: "rgba(36, 31, 58, 0.35)",
-    fontSize: 18,
+    width: 20,
+    minWidth: 20,
+    maxWidth: 20,
+    height: 20,
+    minHeight: 20,
+    maxHeight: 20,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 15,
     cursor: "pointer",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
     ":hover": {
       color: "rgba(36, 31, 58, 0.8)",
+      backgroundColor: "#EDEDF0",
+      borderColor: "#d8d8de",
     },
   },
   middleIcon: {
-    margin: "0px 15px",
+    margin: "0px 10px",
   },
 });
 

@@ -719,7 +719,7 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginBottom: 15,
+    marginBottom: 10,
   },
   discussionTitle: {
     display: "flex",
@@ -739,7 +739,7 @@ var styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     // marginTop: 10,
-    marginBottom: 18,
+    marginBottom: 10,
   },
   overrideFormSelect: {
     marginTop: 0,
@@ -814,7 +814,7 @@ const stylesEditor = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    marginBottom: 10,
+    marginBottom: 5,
   },
   discussionTextEditor: {
     width: "100%",
