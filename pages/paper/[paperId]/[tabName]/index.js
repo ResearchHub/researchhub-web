@@ -649,9 +649,9 @@ const styles = StyleSheet.create({
     position: "sticky",
     backgroundColor: "#FFF",
     zIndex: 3,
-    maxHeight: 184,
-    minHeight: 184,
-    height: 184,
+    // maxHeight: 184,
+    // minHeight: 184,
+    // height: 184,
   },
   scrollPadding: {
     paddingTop: 100,
