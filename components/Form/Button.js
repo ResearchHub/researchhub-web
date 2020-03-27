@@ -43,15 +43,15 @@ const Button = ({
               className={css(styles.icon, iconStyle && iconStyle)}
             />
           )}
-          <p
+          <div
             className={css(
               styles.label,
               isWhite && styles.isWhiteLabel,
               customLabelStyle && customLabelStyle
             )}
           >
-            {label && label}
-          </p>
+            {label && typeof label === "function" ? label() : label}
+          </div>
         </div>
       </Link>
     );
@@ -76,15 +76,15 @@ const Button = ({
             draggable={false}
           />
         )}
-        <p
+        <div
           className={css(
             styles.label,
             isWhite && styles.isWhiteLabel,
             customLabelStyle && customLabelStyle
           )}
         >
-          {label && label}
-        </p>
+          {label && typeof label === "function" ? label() : label}
+        </div>
       </button>
     );
     if (!hideRipples) {

@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
+import Ripples from "react-ripples";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
-import Ripples from "react-ripples";
 import BulletsContainer from "../BulletsContainer";
 import SummaryBulletPoint from "../SummaryBulletPoint";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
@@ -179,13 +179,22 @@ class SummaryTab extends React.Component {
   render() {
     let { paper } = this.props;
     let { transition } = this.state;
+
     return (
       <ComponentWrapper>
-        <BulletsContainer paperId={this.props.paperId} />
+        <div
+          className={css(styles.bulletsContainer)}
+          ref={this.props.keyTakeawayRef}
+        >
+          <BulletsContainer paperId={this.props.paperId} />
+        </div>
         <div>{this.state.errorMessage}</div>
         {(paper.summary && paper.summary.summary) ||
         this.state.summaryExists ? (
-          <div className={css(styles.container)}>
+          <div
+            className={css(styles.container)}
+            ref={this.props.descriptionRef}
+          >
             {this.state.readOnly ? (
               <div className={css(styles.sectionHeader)}>
                 <div className={css(styles.sectionTitle)}>Description</div>
@@ -242,6 +251,11 @@ class SummaryTab extends React.Component {
                 onChange={this.onEditorStateChange}
                 smallToolBar={true}
                 hideButton={true}
+                commentStyles={
+                  this.state.readOnly
+                    ? styles.commentReadStyles
+                    : styles.commentStyles
+                }
               />
             )}
             {!this.state.readOnly && (
@@ -268,6 +282,7 @@ class SummaryTab extends React.Component {
               styles.noSummaryContainer,
               transition && styles.transition
             )}
+            ref={!this.state.summaryExists && this.props.descriptionRef}
           >
             {this.state.addSummary ? (
               <div className={css(styles.summaryEdit)}>
@@ -294,6 +309,7 @@ class SummaryTab extends React.Component {
                   onChange={this.onEditorStateChange}
                   smallToolBar={true}
                   hideButton={true}
+                  commentStyles={styles.commentStyles}
                 />
                 <div className={css(styles.buttonRow)}>
                   <Ripples
@@ -351,10 +367,22 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    boxSizing: "border-box",
     transition: "all ease-in-out 0.3s",
-    backgroundColor: "#FFF",
-    marginTop: 16,
+    marginTop: 30,
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
+  },
+  bulletsContainer: {
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
   },
   sectionHeader: {
     display: "flex",
@@ -384,12 +412,8 @@ var styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
     padding: "10px 0px 15px",
-    // marginLeft: 30,
-    // position: 'sticky',
-    // top: 80,
     backgroundColor: "#FFF",
     borderBottom: "1px solid rgb(235, 235, 235)",
-    // zIndex: 3
   },
   header: {
     fontWeight: 500,
@@ -439,9 +463,8 @@ var styles = StyleSheet.create({
     },
   },
   summaryEdit: {
-    marginBottom: 50,
     width: "100%",
-    transition: "all ease-in-out 0.3s",
+    transition: "all ease-in-out 0.2s",
   },
   action: {
     color: "#241F3A",
@@ -527,7 +550,7 @@ var styles = StyleSheet.create({
   buttonRow: {
     width: "100%",
     position: "sticky",
-    paddingTop: 12,
+    paddingTop: 20,
     paddingBottom: 10,
     bottom: 0,
     display: "flex",
@@ -538,34 +561,53 @@ var styles = StyleSheet.create({
     zIndex: 3,
   },
   cancelButton: {
-    color: colors.BLUE(),
+    height: 37,
+    width: 126,
+    minWidth: 126,
+    fontSize: 15,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 20,
     cursor: "pointer",
-    height: 45,
-    padding: "0px 30px",
     borderRadius: 4,
-    marginRight: 5,
+    userSelect: "none",
     ":hover": {
-      textDecoration: "underline",
+      color: "#3971FF",
     },
   },
   submitButton: {
     marginLeft: 5,
     cursor: "pointer",
     color: "#fff",
-    backgroundColor: colors.BLUE(),
+    height: 37,
+    width: 126,
+    minWidth: 126,
+    fontSize: 15,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    height: 45,
     borderRadius: 4,
-    padding: "0px 30px",
+    userSelect: "none",
+    backgroundColor: colors.BLUE(),
     ":hover": {
-      backgroundColor: "#3E43E8",
+      color: "#3971FF",
     },
+  },
+  commentStyles: {
+    paddingTop: 5,
+    backgroundColor: "#fbfbfd",
+    borderRadius: 4,
+    border: "1px solid #F0F0F0",
+    boxSizing: "border-box",
+    marginTop: 20,
+  },
+  commentReadStyles: {
+    padding: 0,
+    paddingTop: 5,
+    boxSizing: "border-box",
+    // marginTop: 20
   },
 });
 

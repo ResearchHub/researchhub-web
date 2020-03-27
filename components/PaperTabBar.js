@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors, { paperTabColors } from "~/config/themes/colors";
@@ -7,22 +8,73 @@ import { paperTabFont } from "~/config/themes/fonts";
 import ComponentWrapper from "./ComponentWrapper";
 
 const PaperTabBar = (props) => {
-  const selectedTab = props.selectedTab;
-  const { discussionCount } = props;
+  // const selectedTab = props.selectedTab;
+  const [selectedTab, setSelectedTab] = useState("key takeaway");
+  const {
+    discussionCount,
+    keyTakeawayRef,
+    descriptionRef,
+    discussionRef,
+    paperPdfRef,
+  } = props;
 
   const tabs = [
-    { href: "summary", label: "summary" },
+    { href: "summary", label: "key takeaway" },
+    { href: "summary", label: "description" },
     {
       href: "discussion",
       label: "discussions",
-      ui: (isSelected) => (
-        <Count isSelected={isSelected} amount={discussionCount} />
-      ),
+      // ui: (isSelected) => (
+      //   <Count isSelected={isSelected} amount={discussionCount} />
+      // ),
     },
     { href: "full", label: "Paper PDF" },
     // TODO: Add citations tab
     // { href: "citations", label: "citations" },
   ].map(formatTabs);
+
+  function formatTabs(tab) {
+    tab.key = `nav-link-${tab.href}`;
+    return tab;
+  }
+
+  function scrollToPage(label) {
+    if (label === "key takeaway") {
+      window.scrollTo(0, keyTakeawayRef.current.offsetTop - 100);
+    } else if (label === "description") {
+      window.scrollTo(0, descriptionRef.current.offsetTop - 100);
+    } else if (label === "discussions") {
+      window.scrollTo(0, discussionRef.current.offsetTop - 100);
+    } else if (label === "Paper PDF") {
+      window.scrollTo(0, paperPdfRef.current.offsetTop - 155);
+    }
+  }
+
+  function renderTab({ key, href, label, ui }, selected, index) {
+    const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
+
+    let isSelected = false;
+    let classNames = [styles.tab];
+
+    // if (href === selected) {
+    //   isSelected = true;
+    //   classNames.push(styles.selected);
+    // }
+
+    if (index === 2) {
+      classNames.push(styles.lastTab);
+    }
+
+    return (
+      // <Link key={key} href={DYNAMIC_HREF} as={href}>
+      <div className={css(classNames)} onClick={() => scrollToPage(label)}>
+        <div className={css(styles.link)}>
+          {label} {ui && ui(isSelected)}
+        </div>
+      </div>
+      // </Link>
+    );
+  }
 
   return (
     <div className={css(styles.container)}>
@@ -34,37 +86,6 @@ const PaperTabBar = (props) => {
     </div>
   );
 };
-
-function formatTabs(tab) {
-  tab.key = `nav-link-${tab.href}`;
-  return tab;
-}
-
-function renderTab({ key, href, label, ui }, selected, index) {
-  const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
-
-  let isSelected = false;
-  let classNames = [styles.tab];
-
-  if (href === selected) {
-    isSelected = true;
-    classNames.push(styles.selected);
-  }
-
-  if (index === 2) {
-    classNames.push(styles.lastTab);
-  }
-
-  return (
-    <Link key={key} href={DYNAMIC_HREF} as={href}>
-      <div className={css(classNames)}>
-        <div className={css(styles.link)}>
-          {label} {ui && ui(isSelected)}
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 const Count = (props) => {
   const { amount, isSelected } = props;
@@ -97,7 +118,9 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     justifyContent: "center",
-    background: paperTabColors.BACKGROUND,
+    // background: paperTabColors.BACKGROUND,
+    background: "#fff",
+    borderBottom: "1.5px solid #F0F0F0",
   },
   tabContainer: {
     display: "flex",
@@ -117,15 +140,16 @@ const styles = StyleSheet.create({
     padding: "1rem",
 
     "@media only screen and (min-width: 768px)": {
-      marginRight: 28,
+      // marginRight: 28,
     },
 
     "@media only screen and (min-width: 1024px)": {
-      marginRight: 45,
+      // marginRight: 45,
     },
 
     "@media only screen and (min-width: 1288px)": {
-      marginRight: 80,
+      // marginRight: 80,
+      marginRight: 0,
     },
     ":hover": {
       color: paperTabColors.HOVER_FONT,

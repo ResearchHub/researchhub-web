@@ -5,6 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 import InfiniteScroll from "react-infinite-scroller";
+import Ripples from "react-ripples";
 
 // Components
 import ComponentWrapper from "../../ComponentWrapper";
@@ -36,7 +37,7 @@ const DiscussionTab = (props) => {
     question: discussionScaffoldInitialValue,
   };
 
-  let { hostname, paper } = props;
+  let { hostname, paper, discussionCount, discussionRef } = props;
 
   if (doesNotExist(props.threads)) {
     props.threads = [];
@@ -191,6 +192,7 @@ const DiscussionTab = (props) => {
           props.showMessage({ show: false });
           props.setMessage("Successfully Saved!");
           props.showMessage({ show: true });
+          props.setCount(props.discussionCount + 1);
           cancel();
           props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
           props.getUser();
@@ -293,23 +295,7 @@ const DiscussionTab = (props) => {
     return (
       <div className={css(stylesEditor.box)}>
         <Message />
-        {/* <div className={css(styles.discTextEditorTitle)}>
-          Posting a discussion as 
-        </div> */}
-        {/* <FormInput
-          label={"Discussion Title"}
-          placeholder="Title of discussion"
-          containerStyle={stylesEditor.container}
-          value={discussion.title}
-          id={"title"}
-          onChange={handleInput}
-          required={true}
-        /> */}
         <div className={css(stylesEditor.discussionInputWrapper)}>
-          <div className={css(stylesEditor.label)}>
-            Discussion Post
-            <span className={css(stylesEditor.asterick)}>*</span>
-          </div>
           <div
             className={css(stylesEditor.discussionTextEditor)}
             onClick={() => editorDormant && setEditorDormant(false)}
@@ -342,17 +328,30 @@ const DiscussionTab = (props) => {
         save={save}
       />
       {threads.length > 0 ? (
-        <div className={css(styles.threadsContainer)}>
+        <div
+          className={css(
+            styles.threadsContainer,
+            styles.discussionThreadContainer
+          )}
+          ref={discussionRef}
+        >
+          <div className={css(styles.header)}>
+            <div className={css(styles.discussionTitle)}>
+              Discussions
+              <span className={css(styles.discussionCount)}>
+                {discussionCount}
+              </span>
+            </div>
+            {!showEditor && renderAddDiscussion()}
+          </div>
           <div className={css(styles.box, !addView && styles.right)}>
             <div className={css(styles.addDiscussionContainer)}>
-              {showEditor
+              {/* {showEditor
                 ? renderDiscussionTextEditor()
-                : renderAddDiscussion()}
+                : renderAddDiscussion()} */}
+              {showEditor && renderDiscussionTextEditor()}
             </div>
             <div className={css(styles.rowContainer)}>
-              <div className={css(styles.discussionTitle)}>
-                {/* {`Discussions & Posts`} */}
-              </div>
               <div className={css(styles.filterContainer)}>
                 <div className={css(styles.filterSelect)}>
                   <FormSelect
@@ -365,13 +364,15 @@ const DiscussionTab = (props) => {
                       minHeight: "unset",
                       padding: 0,
                       backgroundColor: "#FFF",
+                      fontSize: 14,
+                      width: 150,
                     }}
                   />
                 </div>
               </div>
             </div>
           </div>
-          <InfiniteScroll
+          {/* <InfiniteScroll
             loadMore={fetchDiscussionThreads}
             initialLoad={false}
             hasMore={
@@ -387,12 +388,36 @@ const DiscussionTab = (props) => {
               />
             }
             threshold={0}
-          >
-            {renderThreads(formattedThreads, hostname)}
-          </InfiniteScroll>
+          > */}
+          {renderThreads(formattedThreads, hostname)}
+          {store.getState().paper.discussion.threads.length <
+            store.getState().paper.discussion.count && (
+            <div className={css(styles.buttonContainer)}>
+              {loading ? (
+                <Loader
+                  loading={true}
+                  key={`thread-loader`}
+                  size={10}
+                  type="beat"
+                />
+              ) : (
+                <Ripples
+                  className={css(styles.loadMoreButton)}
+                  onClick={fetchDiscussionThreads}
+                >
+                  Load More
+                </Ripples>
+              )}
+            </div>
+          )}
+          {/* </InfiniteScroll> */}
         </div>
       ) : (
-        <div className={css(styles.addDiscussionContainer)}>
+        <div
+          className={css(styles.addDiscussionContainer, styles.emptyState)}
+          ref={discussionRef}
+        >
+          <div className={css(styles.discussionTitle)}>Discussions</div>
           {showEditor ? renderDiscussionTextEditor() : renderAddDiscussion()}
         </div>
       )}
@@ -435,12 +460,25 @@ var styles = StyleSheet.create({
     marginBottom: 16,
     width: "100%",
   },
+  boxContainer: {
+    // backgroundColor: '#fff',
+    // padding: 50,
+    // border: '1.5px solid #F0F0F0',
+    // boxSizing: 'border-box',
+    // boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.02)',
+    // borderRadius: 4,
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
   box: {
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "center",
     flexDirection: "column",
     backgroundColor: "#FFF",
+
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       fontSize: 16,
@@ -461,6 +499,13 @@ var styles = StyleSheet.create({
   },
   right: {
     alignItems: "flex-end",
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 500,
+    color: colors.BLACK(),
+    width: "100%",
+    textAlign: "left",
   },
   noSummaryTitle: {
     color: colors.BLACK(1),
@@ -523,14 +568,19 @@ var styles = StyleSheet.create({
   },
   plainButton: {
     marginTop: 0,
-    backgroundColor: colors.BLUE(1),
+    // backgroundColor: colors.BLUE(1),
     border: "none",
-    padding: "10px 15px",
+    // padding: "10px 15px",
     height: "unset",
-    color: "#fff",
-    opacity: 1,
+    // color: "#fff",
+    // opacity: 1,
+    color: "rgba(26, 31, 58, 0.6)",
+    padding: "3px 0px 3px 5px",
+    fontSize: 14,
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: "#FFF",
+      color: colors.PURPLE(),
+      textDecoration: "underline",
     },
   },
   pencilIcon: {
@@ -619,6 +669,14 @@ var styles = StyleSheet.create({
       textDecoration: "underline",
     },
   },
+  discussionThreadContainer: {
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
+  },
   addDiscussionContainer: {
     transition: "all ease-in-out 0.3s",
     opacity: 1,
@@ -626,6 +684,14 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       height: "unset",
     },
+  },
+  emptyState: {
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
   },
   transition: {
     padding: 1,
@@ -648,29 +714,45 @@ var styles = StyleSheet.create({
     },
   },
   threadsContainer: {},
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 15,
+  },
   discussionTitle: {
-    fontSize: 25,
+    display: "flex",
+    alignItems: "center",
+    fontSize: 26,
     fontWeight: 500,
+  },
+  discussionCount: {
+    color: "rgba(36, 31, 58, 0.5)",
+    fontSize: 17,
+    fontWeight: 500,
+    marginLeft: 15,
   },
   rowContainer: {
     width: "100%",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
-    marginTop: 10,
+    // marginTop: 10,
+    marginBottom: 18,
   },
   overrideFormSelect: {
     marginTop: 0,
     marginBottom: 0,
     backgroundColor: "#FFF",
+    width: "unset",
   },
   filterContainer: {
     display: "flex",
     alignItems: "center",
-    marginBottom: 18,
   },
   filterSelect: {
-    width: 160,
+    width: 150,
   },
   filterText: {
     textTransform: "uppercase",
@@ -684,6 +766,32 @@ var styles = StyleSheet.create({
   infiniteContainer: {
     display: "flex",
   },
+  buttonContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 40,
+  },
+  loadMoreButton: {
+    // border: '1px solid #3971FF',
+    border: `1px solid ${colors.BLUE()}`,
+    boxSizing: "border-box",
+    borderRadius: 4,
+    height: 45,
+    width: 155,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    // color: '#3971FF',
+    color: colors.BLUE(),
+    cursor: "pointer",
+    ":hover": {
+      color: "#FFF",
+      // backgroundColor: '#3971FF'
+      backgroundColor: colors.BLUE(),
+    },
+  },
 });
 
 const stylesEditor = StyleSheet.create({
@@ -694,7 +802,7 @@ const stylesEditor = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
     boxSizing: "border-box",
-    paddingLeft: 20,
+    // paddingLeft: 20,
     marginBottom: 8,
     backgroundColor: "#fff",
   },
@@ -706,6 +814,7 @@ const stylesEditor = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    marginBottom: 10,
   },
   discussionTextEditor: {
     width: "100%",
