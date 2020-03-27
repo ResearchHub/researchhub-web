@@ -73,7 +73,7 @@ class PaperPageCard extends React.Component {
   };
 
   scrollListener = () => {
-    if (!this.state.scrollView && window.scrollY >= 20) {
+    if (!this.state.scrollView && window.scrollY >= 0) {
       this.setState({
         scrollView: true,
       });
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     display: "flex",
     padding: "50px 0",
     position: "relative",
-    transition: "all ease-in-out 0.175s",
+    transition: ".5s ease-in-out",
   },
   previewContainer: {
     minWidth: 220,
@@ -420,6 +420,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     boxSizing: "border-box",
+    transition: ".5s ease-in-out",
     "@media only screen and (max-width: 1280px)": {
       minWidth: 200,
       width: 200,
