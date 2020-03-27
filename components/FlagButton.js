@@ -14,7 +14,7 @@ import { FlagActions } from "~/redux/flags";
 // Utility
 import colors from "~/config/themes/colors";
 
-const FlagButton = ({ paperId, reason, flagged, setFlag }) => {
+const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
@@ -69,9 +69,15 @@ const FlagButton = ({ paperId, reason, flagged, setFlag }) => {
       }
       permissionKey="UpdatePaper"
       loginRequired={true}
-      styling={[styles.actionButton, flagged && styles.flagged]}
+      // styling={[styles.actionButton, flagged && styles.flagged]}
     >
-      <ActionButton icon={"fas fa-flag"} active={flagged} />
+      <span className={css(style && style)}>
+        {flagged ? (
+          <i className={"fas fa-flag"} />
+        ) : (
+          <i className={"far fa-flag"} />
+        )}
+      </span>
     </PermissionNotificationWrapper>
   );
 };

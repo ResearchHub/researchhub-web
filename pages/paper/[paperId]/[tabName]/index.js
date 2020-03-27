@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, useRef, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Router, { useRouter } from "next/router";
@@ -20,6 +20,7 @@ import HubTag from "~/components/Hubs/HubTag";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import FlagButton from "~/components/FlagButton";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import PaperPageCard from "~/components/PaperPageCard";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -68,13 +69,19 @@ const Paper = (props) => {
       disableBeacon: true,
     },
   ]);
+  const [discussionCount, setCount] = useState(
+    store.getState().paper.discussion.count
+  );
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
   const shareUrl = hostname + "/paper/" + paperId;
 
   const paperTitle = getNestedValue(paper, ["title"], "");
-  const discussionCount = getNestedValue(paper, ["discussion_count"], 0);
+  const keyTakeawayRef = useRef(null);
+  const descriptionRef = useRef(null);
+  const discussionRef = useRef(null);
+  const paperPdfRef = useRef(null);
 
   useEffect(() => {
     async function refetchPaper() {
@@ -165,7 +172,7 @@ const Paper = (props) => {
     let hubs =
       paper &&
       paper.hubs.map((hub, index) => {
-        return <HubTag tag={hub} />;
+        return <HubTag tag={hub} gray={true} />;
       });
     return hubs;
   }
@@ -205,15 +212,9 @@ const Paper = (props) => {
     }
   }
 
-  return (
-    <div className={css(styles.container)}>
-      {paper.status === 404 ? (
-        <Error statusCode={paper.status} />
-      ) : (
-        <Fragment>
-          <Head title={paper.title} description={paper.tagline} />
-          <ComponentWrapper overrideStyle={styles.componentWrapper}>
-            <div className={css(styles.header)}>
+  function renderDeprecated() {
+    {
+      /* <div className={css(styles.header)}>
               <div className={css(styles.voting)}>
                 <VoteWidget
                   score={score}
@@ -346,15 +347,61 @@ const Paper = (props) => {
                   <ActionButton isModerator={isModerator} paperId={paper.id} />
                 )}
               </div>
-            </div>
+            </div> */
+    }
+  }
+
+  return (
+    <div className={css(styles.container)}>
+      {paper.status === 404 ? (
+        <Error statusCode={paper.status} />
+      ) : (
+        <Fragment>
+          <Head title={paper.title} description={paper.tagline} />
+          <ComponentWrapper overrideStyle={styles.componentWrapper}>
+            <PaperPageCard
+              paper={paper}
+              score={score}
+              upvote={upvote}
+              downvote={downvote}
+              selected={selectedVoteType}
+              shareUrl={shareUrl}
+              isModerator={isModerator}
+              flagged={flagged}
+              setFlag={setFlag}
+            />
           </ComponentWrapper>
           <PaperTabBar
             baseUrl={paperId}
             selectedTab={tabName}
             discussionCount={discussionCount}
+            keyTakeawayRef={keyTakeawayRef}
+            descriptionRef={descriptionRef}
+            discussionRef={discussionRef}
+            paperPdfRef={paperPdfRef}
           />
           <div className={css(styles.contentContainer)}>
-            {renderTabContent()}
+            {/* {renderTabContent()} */}
+            <SummaryTab
+              paperId={paperId}
+              paper={paper}
+              keyTakeawayRef={keyTakeawayRef}
+              descriptionRef={descriptionRef}
+            />
+            <div className={css(styles.space)} />
+            <DiscussionTab
+              hostname={hostname}
+              paperId={paperId}
+              threads={discussionThreads}
+              discussionCount={discussionCount}
+              setCount={setCount}
+              discussionRef={discussionRef}
+            />
+            <PaperTab
+              paperId={paperId}
+              paper={paper}
+              paperPdfRef={paperPdfRef}
+            />
           </div>
           <Joyride
             steps={steps}
@@ -390,12 +437,12 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {},
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
-    //
-    // backgroundColor: '#F2F2F2',
-    //
+    backgroundColor: "#FAFAFA",
+    minHeight: "100vh",
     "@media only screen and (max-width: 415px)": {
       paddingTop: 20,
     },
@@ -583,6 +630,9 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: "none",
+  },
+  space: {
+    height: 30,
   },
 });
 

@@ -428,6 +428,9 @@ const routes = (BASE_URL) => {
       return url;
       // return BASE_URL + `notification/${userId}`
     },
+    GET_PAPER_FIGURES: ({ paperId }) => {
+      return BASE_URL + `figure/${paperId}/get_all_figures/`;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
