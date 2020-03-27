@@ -61,12 +61,17 @@ class PaperPageCard extends React.Component {
             previews: res.data,
             fetching: false,
           });
+        })
+        .catch((err) => {
+          this.setState({
+            fetching: false,
+          });
         });
     });
   };
 
   scrollListener = () => {
-    if (!this.state.scrollView && window.scrollY >= 370) {
+    if (!this.state.scrollView && window.scrollY >= 20) {
       this.setState({
         scrollView: true,
       });
@@ -662,9 +667,10 @@ const scrollStyles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    "@media only screen and (max-width: 760px)": {
-      // fontSize: 28,
+    "@media only screen and (max-width: 1280px)": {
+      fontSize: 22,
     },
+    "@media only screen and (max-width: 760px)": {},
     "@media only screen and (max-width: 415px)": {
       // fontSize: 25,
     },

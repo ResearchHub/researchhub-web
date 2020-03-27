@@ -371,6 +371,7 @@ const Paper = (props) => {
                 isModerator={isModerator}
                 flagged={flagged}
                 setFlag={setFlag}
+                sticky={sticky}
                 setSticky={setSticky}
               />
             </ComponentWrapper>
@@ -382,6 +383,7 @@ const Paper = (props) => {
               descriptionRef={descriptionRef}
               discussionRef={discussionRef}
               paperPdfRef={paperPdfRef}
+              sticky={sticky}
             />
           </div>
           <div
@@ -647,9 +649,12 @@ const styles = StyleSheet.create({
     position: "sticky",
     backgroundColor: "#FFF",
     zIndex: 3,
+    maxHeight: 184,
+    minHeight: 184,
+    height: 184,
   },
   scrollPadding: {
-    paddingTop: 390,
+    paddingTop: 100,
   },
 });
 
