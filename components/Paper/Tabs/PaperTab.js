@@ -42,7 +42,7 @@ function PaperTab(props) {
   const [paperUrl, setPaperUrl] = useState((paper && paper.url) || null);
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
-
+  const [showPaper, toggleShowPaper] = useState(false);
   const containerRef = useRef();
 
   function onLoadSuccess({ numPages }) {
@@ -139,28 +139,34 @@ function PaperTab(props) {
 
   function handleRenderState() {
     if (file) {
-      return (
-        <Document
-          // className={css(!loadSuccess && styles.hidden)}
-          file={file}
-          onLoadSuccess={onLoadSuccess}
-        >
-          {Array.from(new Array(numPages), (el, index) => (
-            <Page
-              pageNumber={index + 1}
-              width={
-                // isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
-                containerRef.current.offsetWidth - 10
-              }
-              key={`page_${index + 1}`}
-            />
-          ))}
-        </Document>
-      );
+      if (showPaper) {
+        return (
+          <Document file={file} onLoadSuccess={onLoadSuccess}>
+            {Array.from(new Array(numPages), (el, index) => (
+              <Page
+                pageNumber={index + 1}
+                width={
+                  // isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
+                  containerRef.current.offsetWidth - 10
+                }
+                key={`page_${index + 1}`}
+              />
+            ))}
+          </Document>
+        );
+      } else {
+        return (
+          <div
+            className={css(styles.showPaperButton)}
+            onClick={() => toggleShowPaper(true)}
+          >
+            Show Paper
+          </div>
+        );
+      }
     } else {
       if (showDnd) {
         return (
-          // <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
           <Fragment>
             <div className={css(styles.dndContainer)}>
               <NewDND
@@ -178,11 +184,9 @@ function PaperTab(props) {
               </div>
             </div>
           </Fragment>
-          // </ComponentWrapper>
         );
       } else {
         return (
-          // <ComponentWrapper>
           <Fragment>
             <div className={css(styles.emptyStateContainer)}>
               <img
@@ -212,7 +216,6 @@ function PaperTab(props) {
               </div>
             </div>
           </Fragment>
-          // </ComponentWrapper>
         );
       }
     }
@@ -269,7 +272,6 @@ function PaperTab(props) {
             </div>
           )}
         </div>
-        {/* {file && renderDownloadPdf()} */}
         {handleRenderState()}
       </div>
     </ComponentWrapper>
@@ -318,17 +320,16 @@ var styles = StyleSheet.create({
     justifyContent: "flex-end",
     width: "100%",
   },
-  moderatorLabel: {},
+  moderatorLabel: {
+    fontSize: 14,
+  },
   moderatorButton: {
-    padding: "10px 16px",
     width: "unset",
-    border: `1px solid ${colors.RED()}`,
     borderRadius: 3,
     color: colors.RED(),
     transition: "all ease-in-out 0.2s",
     ":hover": {
-      background: colors.RED(),
-      color: "#fff",
+      textDecoration: "underline",
     },
   },
   iconStyle: {
@@ -445,6 +446,10 @@ var styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 500,
     width: 300,
+  },
+  showPaperButton: {
+    marginTop: 15,
+    cursor: "pointer",
   },
 });
 
