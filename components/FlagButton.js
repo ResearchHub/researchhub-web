@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Ripples from "react-ripples";
 import { StyleSheet, css } from "aphrodite";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
@@ -69,20 +70,23 @@ const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
       }
       permissionKey="UpdatePaper"
       loginRequired={true}
-      // styling={[styles.actionButton, flagged && styles.flagged]}
+      styling={[styles.borderRadius, flagged && styles.flagged]}
     >
-      <span className={css(style && style)}>
+      <div className={css(style && style)}>
         {flagged ? (
           <i className={"fas fa-flag"} />
         ) : (
           <i className={"far fa-flag"} />
         )}
-      </span>
+      </div>
     </PermissionNotificationWrapper>
   );
 };
 
 const styles = StyleSheet.create({
+  borderRadius: {
+    borderRadius: "50%",
+  },
   actionButton: {
     width: 46,
     height: 46,

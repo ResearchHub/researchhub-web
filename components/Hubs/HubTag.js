@@ -77,7 +77,9 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     ":hover": {
       // color: "#FFF",
-      borderColor: "rgba(36, 31, 58, 0.8)",
+      // borderColor: "rgba(36, 31, 58, 0.8)",
+      backgroundColor: "#EDEDF0",
+      borderColor: "#d8d8de",
     },
   },
   grayLabel: {
