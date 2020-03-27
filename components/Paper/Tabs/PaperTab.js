@@ -139,31 +139,20 @@ function PaperTab(props) {
 
   function handleRenderState() {
     if (file) {
-      if (showPaper) {
-        return (
-          <Document file={file} onLoadSuccess={onLoadSuccess}>
-            {Array.from(new Array(numPages), (el, index) => (
-              <Page
-                pageNumber={index + 1}
-                width={
-                  // isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
-                  containerRef.current.offsetWidth - 10
-                }
-                key={`page_${index + 1}`}
-              />
-            ))}
-          </Document>
-        );
-      } else {
-        return (
-          <div
-            className={css(styles.showPaperButton)}
-            onClick={() => toggleShowPaper(true)}
-          >
-            Show Paper
-          </div>
-        );
-      }
+      return (
+        <Document file={file} onLoadSuccess={onLoadSuccess}>
+          {Array.from(new Array(numPages), (el, index) => (
+            <Page
+              pageNumber={index + 1}
+              width={
+                // isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
+                containerRef.current.offsetWidth - 10
+              }
+              key={`page_${index + 1}`}
+            />
+          ))}
+        </Document>
+      );
     } else {
       if (showDnd) {
         return (

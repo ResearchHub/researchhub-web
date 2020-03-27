@@ -31,6 +31,7 @@ class PaperPageCard extends React.Component {
     super(props);
     this.state = {
       previews: [],
+      figureUrls: [],
       hovered: false,
       toggleLightbox: true,
       scrollView: false,
@@ -59,6 +60,7 @@ class PaperPageCard extends React.Component {
         .then((res) => {
           this.setState({
             previews: res.data,
+            figureUrls: res.data.map((preview, index) => preview.file),
             fetching: false,
           });
         })
@@ -119,7 +121,6 @@ class PaperPageCard extends React.Component {
           )}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
-          onClick={this.toggleLightbox}
         >
           <Carousel
             renderBottomCenterControls={(arg) => {
@@ -166,6 +167,7 @@ class PaperPageCard extends React.Component {
                 return (
                   <img
                     src={preview.file}
+                    onClick={this.toggleLightbox}
                     className={css(
                       styles.image,
                       scrollView && scrollStyles.image
@@ -263,16 +265,13 @@ class PaperPageCard extends React.Component {
 
   render() {
     let { paper, score, upvote, downvote, selectedVoteType } = this.props;
-    let { scrollView, fetching, previews } = this.state;
+    let { scrollView, fetching, previews, figureUrls } = this.state;
+
     return (
       <div
         className={css(styles.container, scrollView && scrollStyles.container)}
         ref={this.containerRef}
       >
-        {/* <FsLightbox
-          toggler={true}
-          sources={sources}
-        /> */}
         <div className={css(styles.voting)}>
           <VoteWidget
             score={score}
@@ -283,6 +282,13 @@ class PaperPageCard extends React.Component {
           />
         </div>
         {this.renderPreview()}
+        {figureUrls.length > 0 && (
+          <FsLightbox
+            toggler={this.state.toggleLightbox}
+            type="image"
+            sources={[...figureUrls]}
+          />
+        )}
         <div
           className={css(
             styles.column,
@@ -316,6 +322,9 @@ class PaperPageCard extends React.Component {
                     {paper.paper_title}
                   </div>
                 ))}
+            </div>
+            <div className={css(styles.publishDate)}>
+              {paper && paper.tagline}
             </div>
             {!scrollView && (
               <Fragment>
@@ -362,7 +371,7 @@ class PaperPageCard extends React.Component {
                   onClick={this.downloadPDF}
                 />
               )}
-              {paper && paper.url && (
+              {paper && paper.url && !paper.file && (
                 <Button
                   label={() => {
                     return (
@@ -469,7 +478,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     position: "relative",
     wordBreak: "break-word",
-    textAlign: "justify",
     "@media only screen and (max-width: 760px)": {
       fontSize: 28,
     },
@@ -487,7 +495,6 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     opacity: 0.7,
     fontSize: 16,
-    textAlign: "justify",
   },
   dateAuthorContainer: {
     display: "flex",
