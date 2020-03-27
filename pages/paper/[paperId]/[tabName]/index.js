@@ -47,6 +47,7 @@ const Paper = (props) => {
   const [paper, setPaper] = useState(props.paper);
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
   const [flagged, setFlag] = useState(paper.user_flag !== null);
+  const [sticky, setSticky] = useState(false);
   const [discussionThreads, setDiscussionThreads] = useState(
     getDiscussionThreads(paper)
   );
@@ -358,30 +359,37 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
-          <ComponentWrapper overrideStyle={styles.componentWrapper}>
-            <PaperPageCard
-              paper={paper}
-              score={score}
-              upvote={upvote}
-              downvote={downvote}
-              selected={selectedVoteType}
-              shareUrl={shareUrl}
-              isModerator={isModerator}
-              flagged={flagged}
-              setFlag={setFlag}
+          <div className={css(sticky && styles.stickyComponent)}>
+            <ComponentWrapper overrideStyle={styles.componentWrapper}>
+              <PaperPageCard
+                paper={paper}
+                score={score}
+                upvote={upvote}
+                downvote={downvote}
+                selected={selectedVoteType}
+                shareUrl={shareUrl}
+                isModerator={isModerator}
+                flagged={flagged}
+                setFlag={setFlag}
+                setSticky={setSticky}
+              />
+            </ComponentWrapper>
+            <PaperTabBar
+              baseUrl={paperId}
+              selectedTab={tabName}
+              discussionCount={discussionCount}
+              keyTakeawayRef={keyTakeawayRef}
+              descriptionRef={descriptionRef}
+              discussionRef={discussionRef}
+              paperPdfRef={paperPdfRef}
             />
-          </ComponentWrapper>
-          <PaperTabBar
-            baseUrl={paperId}
-            selectedTab={tabName}
-            discussionCount={discussionCount}
-            keyTakeawayRef={keyTakeawayRef}
-            descriptionRef={descriptionRef}
-            discussionRef={discussionRef}
-            paperPdfRef={paperPdfRef}
-          />
-          <div className={css(styles.contentContainer)}>
-            {/* {renderTabContent()} */}
+          </div>
+          <div
+            className={css(
+              styles.contentContainer,
+              sticky && styles.scrollPadding
+            )}
+          >
             <SummaryTab
               paperId={paperId}
               paper={paper}
@@ -633,6 +641,15 @@ const styles = StyleSheet.create({
   },
   space: {
     height: 30,
+  },
+  stickyComponent: {
+    top: 80,
+    position: "sticky",
+    backgroundColor: "#FFF",
+    zIndex: 3,
+  },
+  scrollPadding: {
+    paddingTop: 390,
   },
 });
 
