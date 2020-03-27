@@ -79,6 +79,7 @@ const Paper = (props) => {
   const shareUrl = hostname + "/paper/" + paperId;
 
   const paperTitle = getNestedValue(paper, ["title"], "");
+  const paperCardRef = useRef(null);
   const keyTakeawayRef = useRef(null);
   const descriptionRef = useRef(null);
   const discussionRef = useRef(null);
@@ -359,7 +360,10 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
-          <div className={css(sticky && styles.stickyComponent)}>
+          <div
+            className={css(sticky && styles.stickyComponent)}
+            ref={paperCardRef}
+          >
             <ComponentWrapper overrideStyle={styles.componentWrapper}>
               <PaperPageCard
                 paper={paper}
@@ -383,7 +387,9 @@ const Paper = (props) => {
               descriptionRef={descriptionRef}
               discussionRef={discussionRef}
               paperPdfRef={paperPdfRef}
+              paperCardRef={paperCardRef}
               sticky={sticky}
+              setSticky={setSticky}
             />
           </div>
           <div
