@@ -14,6 +14,10 @@ export function formatTransactionDate(momentDate) {
   return momentDate.format("MMM Do YY, h:mm a");
 }
 
-export function formatPublishedDate(momentDate) {
-  return `Published: ${formatDateStandard(momentDate)}`;
+export function formatPublishedDate(momentDate, removeText) {
+  if (removeText) {
+    return formatDateStandard(momentDate);
+  } else {
+    return `Published: ${formatDateStandard(momentDate)}`;
+  }
 }
