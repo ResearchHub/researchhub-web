@@ -142,14 +142,7 @@ function PaperTab(props) {
       return (
         <Document file={file} onLoadSuccess={onLoadSuccess}>
           {Array.from(new Array(numPages), (el, index) => (
-            <Page
-              pageNumber={index + 1}
-              width={
-                // isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
-                containerRef.current.offsetWidth - 10
-              }
-              key={`page_${index + 1}`}
-            />
+            <Page pageNumber={index + 1} key={`page_${index + 1}`} />
           ))}
         </Document>
       );
