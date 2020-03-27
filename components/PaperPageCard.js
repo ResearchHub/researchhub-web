@@ -4,8 +4,8 @@ import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Router, { useRouter } from "next/router";
 import { connect } from "react-redux";
-
 import Carousel from "nuka-carousel";
+import FsLightbox from "fslightbox-react";
 
 // Components
 import HubTag from "~/components/Hubs/HubTag";
@@ -32,23 +32,52 @@ class PaperPageCard extends React.Component {
     this.state = {
       previews: [],
       hovered: false,
+      toggleLightbox: true,
+      scrollView: false,
+      fetching: false,
     };
+    this.containerRef = React.createRef();
   }
 
   componentDidMount() {
-    fetch(API.GET_PAPER_FIGURES({ paperId: 359 }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.setState({ previews: res.data });
-      });
+    this.fetchFigures();
+    window.addEventListener("scroll", this.scrollListener);
   }
 
   componentDidUpdate() {}
 
-  // handleSelect = (selectIndex, e) => {
-  //   this.setState({ previewIndex: selectIndex })
-  // }
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.scrollListener);
+  }
+
+  fetchFigures = () => {
+    this.setState({ fetching: true }, () => {
+      let { paper } = this.props;
+      fetch(API.GET_PAPER_FIGURES({ paperId: paper.id }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          this.setState({
+            previews: res.data,
+            fetching: false,
+          });
+        });
+    });
+  };
+
+  scrollListener = () => {
+    if (!this.state.scrollView && window.scrollY >= 370) {
+      this.setState({
+        scrollView: true,
+      });
+      this.props.setSticky(true);
+    } else if (this.state.scrollView && window.scrollY === 0) {
+      this.setState({
+        scrollView: false,
+      });
+      this.props.setSticky(false);
+    }
+  };
 
   navigateToEditPaperInfo = () => {
     let paperId = this.props.paper.id;
@@ -70,58 +99,80 @@ class PaperPageCard extends React.Component {
     this.state.hovered && this.setState({ hovered: false });
   };
 
+  toggleLightbox = () => {
+    this.setState({ toggleLightbox: !this.state.toggleLightbox });
+  };
+
   renderPreview = () => {
-    let { hovered } = this.state;
-    return (
-      <div
-        className={css(styles.previewContainer)}
-        onMouseEnter={this.setHover}
-        onMouseLeave={this.unsetHover}
-      >
-        <Carousel
-          renderBottomCenterControls={(arg) => {
-            let { currentSlide, slideCount, previousSlide, nextSlide } = arg;
-            return (
-              <div
-                className={css(
-                  carousel.bottomControl,
-                  hovered && carousel.show
-                )}
-              >
-                <span
-                  onClick={previousSlide}
-                  className={css(
-                    carousel.button,
-                    carousel.left,
-                    hovered && carousel.show
-                  )}
-                >
-                  <i className="far fa-angle-left" />
-                </span>
-                {`${currentSlide + 1} / ${slideCount}`}
-                <span
-                  onClick={nextSlide}
-                  className={css(
-                    carousel.button,
-                    carousel.right,
-                    hovered && carousel.show
-                  )}
-                >
-                  <i className="far fa-angle-right" />
-                </span>
-              </div>
-            );
-          }}
-          renderCenterLeftControls={null}
-          renderCenterRightControls={null}
-          wrapAround={true}
+    let { hovered, fetching, scrollView, previews } = this.state;
+    if (!fetching && previews.length > 0) {
+      return (
+        <div
+          className={css(
+            styles.previewContainer,
+            scrollView && scrollStyles.previewContainer
+          )}
+          onMouseEnter={this.setHover}
+          onMouseLeave={this.unsetHover}
+          onClick={this.toggleLightbox}
         >
-          {this.state.previews.map((preview) => {
-            return <img src={preview.file} className={css(styles.image)} />;
-          })}
-        </Carousel>
-      </div>
-    );
+          <Carousel
+            renderBottomCenterControls={(arg) => {
+              let { currentSlide, slideCount, previousSlide, nextSlide } = arg;
+              return (
+                <div
+                  className={css(
+                    carousel.bottomControl,
+                    hovered && carousel.show
+                  )}
+                >
+                  <span
+                    onClick={previousSlide}
+                    className={css(
+                      carousel.button,
+                      carousel.left,
+                      hovered && carousel.show
+                    )}
+                  >
+                    <i className="far fa-angle-left" />
+                  </span>
+                  {`${currentSlide + 1} / ${slideCount}`}
+                  <span
+                    onClick={nextSlide}
+                    className={css(
+                      carousel.button,
+                      carousel.right,
+                      hovered && carousel.show
+                    )}
+                  >
+                    <i className="far fa-angle-right" />
+                  </span>
+                </div>
+              );
+            }}
+            renderCenterLeftControls={null}
+            renderCenterRightControls={null}
+            wrapAround={true}
+          >
+            {fetching ? (
+              <Loader loading={true} />
+            ) : (
+              this.state.previews.map((preview) => {
+                return (
+                  <img
+                    src={preview.file}
+                    className={css(
+                      styles.image,
+                      scrollView && scrollStyles.image
+                    )}
+                  />
+                );
+              })
+            )}
+          </Carousel>
+        </div>
+      );
+    }
   };
 
   renderAuthors = () => {
@@ -172,11 +223,11 @@ class PaperPageCard extends React.Component {
             onClick={this.navigateToEditPaperInfo}
             permissionKey="UpdatePaper"
             loginRequired={true}
-            hideRipples={true}
+            hideRipples={false}
           >
-            <Ripples className={css(styles.actionIcon)}>
+            <div className={css(styles.actionIcon)}>
               <i className="far fa-pencil" />
-            </Ripples>
+            </div>
           </PermissionNotificationWrapper>
           <ShareAction
             addRipples={true}
@@ -207,8 +258,16 @@ class PaperPageCard extends React.Component {
 
   render() {
     let { paper, score, upvote, downvote, selectedVoteType } = this.props;
+    let { scrollView, fetching, previews } = this.state;
     return (
-      <div className={css(styles.container)}>
+      <div
+        className={css(styles.container, scrollView && scrollStyles.container)}
+        ref={this.containerRef}
+      >
+        {/* <FsLightbox
+          toggler={true}
+          sources={sources}
+        /> */}
         <div className={css(styles.voting)}>
           <VoteWidget
             score={score}
@@ -219,8 +278,19 @@ class PaperPageCard extends React.Component {
           />
         </div>
         {this.renderPreview()}
-        <div className={css(styles.column)}>
-          <div className={css(styles.cardContainer)}>
+        <div
+          className={css(
+            styles.column,
+            scrollView && scrollStyles.column,
+            !fetching && previews.length === 0 && styles.emptyPreview
+          )}
+        >
+          <div
+            className={css(
+              styles.cardContainer,
+              !fetching && previews.length === 0 && styles.emptyPreview
+            )}
+          >
             {this.renderTopRow()}
             <div className={css(styles.titleHeader)}>
               <div
@@ -228,78 +298,87 @@ class PaperPageCard extends React.Component {
                   styles.title,
                   paper.paper_title &&
                     paper.paper_title !== paper.title &&
-                    styles.titleMargin
+                    styles.titleMargin,
+                  scrollView && scrollStyles.title
                 )}
               >
                 {paper && paper.title}
               </div>
-              {paper.paper_title && paper.paper_title !== paper.title && (
-                <div className={css(styles.subtitle)}>
-                  Science is Shaped by Wikipedia: Evidence From a Randomized
-                  Control Trial
-                  {/* {paper.paper_title} */}
-                </div>
-              )}
+              {paper.paper_title &&
+                paper.paper_title !== paper.title &&
+                (!scrollView && (
+                  <div className={css(styles.subtitle)}>
+                    {paper.paper_title}
+                  </div>
+                ))}
             </div>
-            <div className={css(styles.dateAuthorContainer)}>
-              {paper && paper.paper_publish_date && (
-                <div className={css(styles.publishDate)}>
-                  <span className={css(styles.label)}>Published:</span>
-                  {this.renderPublishDate()}
+            {!scrollView && (
+              <Fragment>
+                <div className={css(styles.dateAuthorContainer)}>
+                  {paper && paper.paper_publish_date && (
+                    <div className={css(styles.publishDate)}>
+                      <span className={css(styles.label)}>Published:</span>
+                      {this.renderPublishDate()}
+                    </div>
+                  )}
+                  {paper && paper.authors && (
+                    <div className={css(styles.authors)}>
+                      {this.renderAuthors()}
+                    </div>
+                  )}
                 </div>
-              )}
-              {paper && paper.authors && (
-                <div className={css(styles.authors)}>
-                  {this.renderAuthors()}
-                </div>
-              )}
-            </div>
-            {paper && paper.doi && (
-              <div className={css(styles.doiDate)}>
-                <span className={css(styles.label, styles.doi)}>DOI:</span>
-                {paper.doi}
-              </div>
+                {paper && paper.doi && (
+                  <div className={css(styles.doiDate)}>
+                    <span className={css(styles.label, styles.doi)}>DOI:</span>
+                    {paper.doi}
+                  </div>
+                )}
+              </Fragment>
             )}
           </div>
-          <div className={css(styles.buttonRow)}>
-            {paper && paper.file && (
-              <Button
-                label={() => {
-                  return (
-                    <span>
-                      <span className={css(styles.downloadIcon)}>
-                        <i className="far fa-arrow-to-bottom" />
+          {!scrollView && (
+            <div className={css(styles.buttonRow)}>
+              {paper && paper.file && (
+                <Button
+                  label={() => {
+                    return (
+                      <span>
+                        <span className={css(styles.downloadIcon)}>
+                          <i className="far fa-arrow-to-bottom" />
+                        </span>
+                        Download PDF
                       </span>
-                      Download PDF
-                    </span>
-                  );
-                }}
-                customButtonStyle={styles.button}
-                size={"med"}
-                hideRipples={false}
-                onClick={this.downloadPDF}
-              />
-            )}
-            {paper && paper.url && (
-              <Button
-                label={() => {
-                  return (
-                    <span>
-                      <span className={css(styles.viewIcon)}>
-                        <i className="far fa-external-link"></i>
+                    );
+                  }}
+                  customButtonStyle={styles.button}
+                  customLabelStyle={scrollView && scrollStyles.button}
+                  size={"med"}
+                  hideRipples={false}
+                  onClick={this.downloadPDF}
+                />
+              )}
+              {paper && paper.url && (
+                <Button
+                  label={() => {
+                    return (
+                      <span>
+                        <span className={css(styles.viewIcon)}>
+                          <i className="far fa-external-link"></i>
+                        </span>
+                        View Externally
                       </span>
-                      View Externally
-                    </span>
-                  );
-                }}
-                customButtonStyle={styles.buttonRight}
-                isWhite={true}
-                size={"med"}
-                hideRipples={false}
-                onClick={() => openExternalLink(paper.url)}
-              />
-            )}
-          </div>
+                    );
+                  }}
+                  customButtonStyle={styles.buttonRight}
+                  customLabelStyle={scrollView && scrollStyles.buttonRight}
+                  isWhite={true}
+                  size={"med"}
+                  hideRipples={false}
+                  onClick={() => openExternalLink(paper.url)}
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -312,6 +391,7 @@ const styles = StyleSheet.create({
     display: "flex",
     padding: "50px 0",
     position: "relative",
+    transition: "all ease-in-out 0.175s",
   },
   previewContainer: {
     minWidth: 220,
@@ -331,6 +411,9 @@ const styles = StyleSheet.create({
       width: 200,
       maxWidth: 200,
     },
+  },
+  emptyPreview: {
+    minHeight: "unset",
   },
   image: {
     width: "100%",
@@ -508,7 +591,6 @@ const styles = StyleSheet.create({
 
 const carousel = StyleSheet.create({
   bottomControl: {
-    // background: 'rgba(0, 0, 0, 0.4)',
     background: "rgba(36, 31, 58, 0.65)",
     borderRadius: 230,
     height: 30,
@@ -552,4 +634,56 @@ const carousel = StyleSheet.create({
   },
 });
 
+const scrollStyles = StyleSheet.create({
+  container: {
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  previewContainer: {
+    height: 114,
+    maxHeight: 114,
+    minHeight: 114,
+    width: 76,
+    maxWidth: 76,
+    minWidth: 76,
+    "@media only screen and (max-width: 1280px)": {
+      // minWidth: 200,
+      // width: 200,
+      // maxWidth: 200,
+    },
+  },
+  image: {
+    height: 114,
+    maxHeight: 114,
+    minHeight: 114,
+  },
+  column: {
+    minHeight: "unset",
+  },
+  title: {
+    fontSize: 24,
+    "@media only screen and (max-width: 760px)": {
+      // fontSize: 28,
+    },
+    "@media only screen and (max-width: 415px)": {
+      // fontSize: 25,
+    },
+    "@media only screen and (max-width: 321px)": {
+      // fontSize: 22,
+    },
+  },
+  buttonColumn: {
+    display: "flex",
+    flexDirection: "column",
+    width: "calc(100% - 936px)",
+  },
+  button: {
+    fontSize: 14,
+    padding: 0,
+  },
+  buttonRight: {
+    fontSize: 14,
+    padding: 0,
+  },
+});
 export default PaperPageCard;
