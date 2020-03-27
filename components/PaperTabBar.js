@@ -41,20 +41,44 @@ const PaperTabBar = (props) => {
     setSelectedTab(label);
     if (label === "key takeaway") {
       sticky
-        ? window.scrollTo(0, keyTakeawayRef.current.offsetTop - 290)
-        : window.scrollTo(0, keyTakeawayRef.current.offsetTop - 420);
+        ? window.scrollTo({
+            behavior: "smooth",
+            top: keyTakeawayRef.current.offsetTop - 290,
+          })
+        : window.scrollTo({
+            behavior: "smooth",
+            top: keyTakeawayRef.current.offsetTop - 420,
+          });
     } else if (label === "description") {
       sticky
-        ? window.scrollTo(0, descriptionRef.current.offsetTop - 290)
-        : window.scrollTo(0, descriptionRef.current.offsetTop - 420);
+        ? window.scrollTo({
+            behavior: "smooth",
+            top: descriptionRef.current.offsetTop - 290,
+          })
+        : window.scrollTo({
+            behavior: "smooth",
+            top: descriptionRef.current.offsetTop - 420,
+          });
     } else if (label === "discussions") {
       sticky
-        ? window.scrollTo(0, discussionRef.current.offsetTop - 290)
-        : window.scrollTo(0, discussionRef.current.offsetTop - 420);
+        ? window.scrollTo({
+            behavior: "smooth",
+            top: discussionRef.current.offsetTop - 290,
+          })
+        : window.scrollTo({
+            behavior: "smooth",
+            top: discussionRef.current.offsetTop - 420,
+          });
     } else if (label === "Paper PDF") {
       sticky
-        ? window.scrollTo(0, paperPdfRef.current.offsetTop - 360)
-        : window.scrollTo(0, paperPdfRef.current.offsetTop - 420);
+        ? window.scrollTo({
+            behavior: "smooth",
+            top: paperPdfRef.current.offsetTop - 360,
+          })
+        : window.scrollTo({
+            behavior: "smooth",
+            top: paperPdfRef.current.offsetTop - 420,
+          });
     }
   }
 
