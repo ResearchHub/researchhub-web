@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 
 // NPM Modules
 import { connect, useStore, useDispatch } from "react-redux";
@@ -31,7 +31,7 @@ import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink } from "~/config/utils";
 
 function PaperTab(props) {
-  const { paper, paperId } = props;
+  const { paper, paperId, paperPdfRef } = props;
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
@@ -42,6 +42,8 @@ function PaperTab(props) {
   const [paperUrl, setPaperUrl] = useState((paper && paper.url) || null);
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
+
+  const containerRef = useRef();
 
   function onLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -147,7 +149,8 @@ function PaperTab(props) {
             <Page
               pageNumber={index + 1}
               width={
-                isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
+                // isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
+                containerRef.current.offsetWidth - 10
               }
               key={`page_${index + 1}`}
             />
@@ -157,7 +160,8 @@ function PaperTab(props) {
     } else {
       if (showDnd) {
         return (
-          <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+          // <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+          <Fragment>
             <div className={css(styles.dndContainer)}>
               <NewDND
                 handleDrop={handleFileDrop}
@@ -173,11 +177,13 @@ function PaperTab(props) {
                 <Button label={"Save PDF"} onClick={confirmSave} />
               </div>
             </div>
-          </ComponentWrapper>
+          </Fragment>
+          // </ComponentWrapper>
         );
       } else {
         return (
-          <ComponentWrapper>
+          // <ComponentWrapper>
+          <Fragment>
             <div className={css(styles.emptyStateContainer)}>
               <img
                 className={css(styles.emptyPlaceholderImage)}
@@ -205,7 +211,8 @@ function PaperTab(props) {
                 </PermissionNotificationWrapper>
               </div>
             </div>
-          </ComponentWrapper>
+          </Fragment>
+          // </ComponentWrapper>
         );
       }
     }
@@ -243,26 +250,29 @@ function PaperTab(props) {
   }
 
   return (
-    <div className={css(styles.container)}>
-      {file && (
-        <ComponentWrapper>
-          <div className={css(styles.moderatorContainer)}>
-            <ModeratorDeleteButton
-              label={`Remove PDF`}
-              labelStyle={styles.moderatorLabel}
-              containerStyle={styles.moderatorButton}
-              actionType={"pdf"}
-              metaData={{ paperId: props.paperId }}
-              onRemove={() => setFile(null)}
-              icon={" "}
-              iconStyle={styles.iconStyle}
-            />
-          </div>
-        </ComponentWrapper>
-      )}
-      {file && renderDownloadPdf()}
-      {handleRenderState()}
-    </div>
+    <ComponentWrapper>
+      <div className={css(styles.container)} ref={containerRef}>
+        <div className={css(styles.headerContainer)} ref={paperPdfRef}>
+          <div className={css(styles.title)}>Paper PDF</div>
+          {file && (
+            <div className={css(styles.moderatorContainer)}>
+              <ModeratorDeleteButton
+                label={`Remove PDF`}
+                labelStyle={styles.moderatorLabel}
+                containerStyle={styles.moderatorButton}
+                actionType={"pdf"}
+                metaData={{ paperId: props.paperId }}
+                onRemove={() => setFile(null)}
+                icon={" "}
+                iconStyle={styles.iconStyle}
+              />
+            </div>
+          )}
+        </div>
+        {/* {file && renderDownloadPdf()} */}
+        {handleRenderState()}
+      </div>
+    </ComponentWrapper>
   );
 }
 
@@ -274,6 +284,12 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
+    padding: 50,
+    backgroundColor: "#FFF",
+    marginTop: 30,
+    border: "1.5px solid #F0F0F0",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
   },
   downloadButton: {
     alignSelf: "flex-end",
@@ -300,6 +316,7 @@ var styles = StyleSheet.create({
   moderatorContainer: {
     display: "flex",
     justifyContent: "flex-end",
+    width: "100%",
   },
   moderatorLabel: {},
   moderatorButton: {
@@ -415,6 +432,19 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       padding: 8,
     },
+  },
+  headerContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  title: {
+    display: "flex",
+    alignItems: "center",
+    fontSize: 26,
+    fontWeight: 500,
+    width: 300,
   },
 });
 

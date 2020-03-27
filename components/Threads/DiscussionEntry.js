@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     position: "relative",
     boxSizing: "border-box",
     backgroundColor: "#FFF",
-    padding: 10,
+    // padding: 10,
     paddingRight: 0,
     cursor: "default",
     // borderBottom: "1px solid #E8E8F2",

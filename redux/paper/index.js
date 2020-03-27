@@ -84,10 +84,11 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: (paperId, paper, filter = "", page = 1) => {
+  getThreads: (paperId, paper, filter = null, page = 1) => {
     if (paper === null || paper === undefined) {
       return;
     }
+
     return (dispatch) => {
       return fetch(
         API.DISCUSSION(paperId, filter && filter, page),

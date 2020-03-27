@@ -338,7 +338,6 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
   bulletPoints: {
-    // padding: '0px 10px',
     boxSizing: "border-box",
     opacity: 1,
     transition: "all ease-in-out 0.3s",
@@ -354,16 +353,12 @@ const styles = StyleSheet.create({
   showBulletForm: {
     height: "unset",
     overflow: "unset",
-    marginBottom: 15,
-    // zIndex: 3
   },
   buttonRow: {
     width: "100%",
     display: "flex",
     justifyContent: "flex-end",
     marginTop: 15,
-    paddingBottom: 15,
-    borderBottom: "1px solid #F0F0F0",
   },
   cancelButton: {
     height: 37,

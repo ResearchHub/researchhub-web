@@ -96,7 +96,6 @@ class HubsList extends React.Component {
     let selectedHubs = this.state.hubs;
     return selectedHubs.map((hub, i) => {
       let { name, id, user_is_subscribed } = hub;
-
       return (
         <Ripples
           className={css(
@@ -111,10 +110,10 @@ class HubsList extends React.Component {
               query: {
                 name: `${hub.name}`,
 
-                slug: `${encodeURIComponent(hub.slug)}`,
+                slug: `${encodeURIComponent(hub.name)}`,
               },
             }}
-            as={`/hubs/${encodeURIComponent(hub.slug)}`}
+            as={`/hubs/${encodeURIComponent(hub.name)}`}
           >
             <a className={css(styles.hubLink)}>
               {name}
