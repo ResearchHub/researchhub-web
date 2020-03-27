@@ -1,9 +1,7 @@
-import { useEffect, useState, Fragment } from "react";
-import Ripples from "react-ripples";
+import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
-import Router, { useRouter } from "next/router";
-import { connect } from "react-redux";
+import Router from "next/router";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 
@@ -14,13 +12,13 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import ShareAction from "~/components/ShareAction";
 import Button from "./Form/Button";
 import AuthorAvatar from "~/components/AuthorAvatar";
-
 import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
 
+// Stylesheets
+import "./stylesheets/Carousel.css";
+
 // Config
-import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate } from "~/config/utils";
