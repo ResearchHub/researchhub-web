@@ -695,9 +695,9 @@ const scrollStyles = StyleSheet.create({
     paddingBottom: 10,
   },
   previewContainer: {
-    height: 114,
-    maxHeight: 114,
-    minHeight: 114,
+    height: "initial",
+    maxHeight: "initial",
+    minHeight: "initial",
     width: 76,
     maxWidth: 76,
     minWidth: 76,
