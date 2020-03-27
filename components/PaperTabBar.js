@@ -16,6 +16,7 @@ const PaperTabBar = (props) => {
     descriptionRef,
     discussionRef,
     paperPdfRef,
+    paperCardRef,
   } = props;
 
   const tabs = [
@@ -36,48 +37,48 @@ const PaperTabBar = (props) => {
   }
 
   function scrollToPage(label) {
-    let { sticky } = props;
-
+    let { setSticky, sticky, paperCardRef } = props;
+    let offset = paperCardRef.current.clientHeight + 100;
     setSelectedTab(label);
     if (label === "key takeaway") {
       sticky
         ? window.scrollTo({
             behavior: "smooth",
-            top: keyTakeawayRef.current.offsetTop - 290,
+            top: keyTakeawayRef.current.offsetTop - offset,
           })
         : window.scrollTo({
             behavior: "smooth",
-            top: keyTakeawayRef.current.offsetTop - 420,
+            top: keyTakeawayRef.current.offsetTop - offset + 80,
           });
     } else if (label === "description") {
       sticky
         ? window.scrollTo({
             behavior: "smooth",
-            top: descriptionRef.current.offsetTop - 290,
+            top: descriptionRef.current.offsetTop - offset,
           })
         : window.scrollTo({
             behavior: "smooth",
-            top: descriptionRef.current.offsetTop - 420,
+            top: descriptionRef.current.offsetTop - offset + 80,
           });
     } else if (label === "discussions") {
       sticky
         ? window.scrollTo({
             behavior: "smooth",
-            top: discussionRef.current.offsetTop - 290,
+            top: discussionRef.current.offsetTop - offset,
           })
         : window.scrollTo({
             behavior: "smooth",
-            top: discussionRef.current.offsetTop - 420,
+            top: discussionRef.current.offsetTop - offset + 80,
           });
     } else if (label === "Paper PDF") {
       sticky
         ? window.scrollTo({
             behavior: "smooth",
-            top: paperPdfRef.current.offsetTop - 360,
+            top: paperPdfRef.current.offsetTop - offset,
           })
         : window.scrollTo({
             behavior: "smooth",
-            top: paperPdfRef.current.offsetTop - 420,
+            top: paperPdfRef.current.offsetTop - offset + 80,
           });
     }
   }
