@@ -100,7 +100,11 @@ const PaperTabBar = (props) => {
 
     return (
       // <Link key={key} href={DYNAMIC_HREF} as={href}>
-      <div className={css(classNames)} onClick={() => scrollToPage(label)}>
+      <div
+        className={css(classNames)}
+        onClick={() => scrollToPage(label)}
+        key={`paper_tab_bar_${index}`}
+      >
         <div className={css(styles.link)}>
           {label} {ui && ui(isSelected)}
         </div>
