@@ -36,15 +36,25 @@ const PaperTabBar = (props) => {
   }
 
   function scrollToPage(label) {
+    let { sticky } = props;
+
     setSelectedTab(label);
     if (label === "key takeaway") {
-      window.scrollTo(0, keyTakeawayRef.current.offsetTop - 310);
+      sticky
+        ? window.scrollTo(0, keyTakeawayRef.current.offsetTop - 290)
+        : window.scrollTo(0, keyTakeawayRef.current.offsetTop - 420);
     } else if (label === "description") {
-      window.scrollTo(0, descriptionRef.current.offsetTop - 310);
+      sticky
+        ? window.scrollTo(0, descriptionRef.current.offsetTop - 290)
+        : window.scrollTo(0, descriptionRef.current.offsetTop - 420);
     } else if (label === "discussions") {
-      window.scrollTo(0, discussionRef.current.offsetTop - 310);
+      sticky
+        ? window.scrollTo(0, discussionRef.current.offsetTop - 290)
+        : window.scrollTo(0, discussionRef.current.offsetTop - 420);
     } else if (label === "Paper PDF") {
-      window.scrollTo(0, paperPdfRef.current.offsetTop - 365);
+      sticky
+        ? window.scrollTo(0, paperPdfRef.current.offsetTop - 360)
+        : window.scrollTo(0, paperPdfRef.current.offsetTop - 420);
     }
   }
 
