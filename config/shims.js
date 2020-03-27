@@ -1,5 +1,21 @@
 import { doesNotExist } from "~/config/utils";
 
+export const authorPost = (data) => {
+  const university =
+    data.university && data.university !== "" ? data.university : null;
+  const facebook = data.facebook && data.facebook !== "" ? data.facebook : null;
+  const linkedin = data.linkedin && data.linkedin !== "" ? data.linkedin : null;
+  const twitter = data.twitter && data.twitter !== "" ? data.twitter : null;
+  return {
+    facebook,
+    linkedin,
+    twitter,
+    first_name: data.first_name,
+    last_name: data.last_name,
+    university,
+  };
+};
+
 export const emailPreference = (data) => {
   return {
     id: data.id,
