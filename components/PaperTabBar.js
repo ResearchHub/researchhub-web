@@ -24,9 +24,6 @@ const PaperTabBar = (props) => {
     {
       href: "discussion",
       label: "discussions",
-      // ui: (isSelected) => (
-      //   <Count isSelected={isSelected} amount={discussionCount} />
-      // ),
     },
     { href: "full", label: "Paper PDF" },
     // TODO: Add citations tab
@@ -41,13 +38,13 @@ const PaperTabBar = (props) => {
   function scrollToPage(label) {
     setSelectedTab(label);
     if (label === "key takeaway") {
-      window.scrollTo(0, keyTakeawayRef.current.offsetTop - 100);
+      window.scrollTo(0, keyTakeawayRef.current.offsetTop - 310);
     } else if (label === "description") {
-      window.scrollTo(0, descriptionRef.current.offsetTop - 100);
+      window.scrollTo(0, descriptionRef.current.offsetTop - 310);
     } else if (label === "discussions") {
-      window.scrollTo(0, discussionRef.current.offsetTop - 100);
+      window.scrollTo(0, discussionRef.current.offsetTop - 310);
     } else if (label === "Paper PDF") {
-      window.scrollTo(0, paperPdfRef.current.offsetTop - 155);
+      window.scrollTo(0, paperPdfRef.current.offsetTop - 365);
     }
   }
 
