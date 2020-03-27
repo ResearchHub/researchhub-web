@@ -159,7 +159,8 @@ class PaperPageCard extends React.Component {
             wrapAround={true}
           >
             {fetching ? (
-              <Loader loading={true} />
+              // <Loader loading={true} />
+              <div></div>
             ) : (
               this.state.previews.map((preview) => {
                 return (
@@ -217,6 +218,7 @@ class PaperPageCard extends React.Component {
 
   renderTopRow = () => {
     let { paper, isModerator, flagged, setFlag } = this.props;
+    let { scrollView } = this.state;
     let paperTitle = paper && paper.title;
 
     return (
@@ -229,6 +231,7 @@ class PaperPageCard extends React.Component {
             permissionKey="UpdatePaper"
             loginRequired={true}
             hideRipples={false}
+            styling={styles.borderRadius}
           >
             <div className={css(styles.actionIcon)}>
               <i className="far fa-pencil" />
@@ -245,8 +248,27 @@ class PaperPageCard extends React.Component {
               </div>
             }
           />
-          {/* !isModerator */}
-          {true ? (
+          {scrollView && (
+            <Fragment>
+              {paper && paper.file && (
+                <Ripples
+                  className={css(styles.actionIcon, styles.downloadActionIcon)}
+                  onClick={this.downloadPDF}
+                >
+                  <i className="far fa-arrow-to-bottom" />
+                </Ripples>
+              )}
+              {paper && paper.url && (
+                <Ripples
+                  className={css(styles.actionIcon, styles.downloadActionIcon)}
+                  onClick={() => openExternalLink(paper.url)}
+                >
+                  <i className="far fa-external-link" />
+                </Ripples>
+              )}
+            </Fragment>
+          )}
+          {!isModerator ? (
             <FlagButton
               paperId={paper.id}
               flagged={flagged}
@@ -320,10 +342,11 @@ class PaperPageCard extends React.Component {
                     {paper.paper_title}
                   </div>
                 ))}
+              {paper && paper.tagline && (
+                <div className={css(styles.tagline)}>{paper.tagline}</div>
+              )}
             </div>
-            <div className={css(styles.publishDate)}>
-              {paper && paper.tagline}
-            </div>
+
             {!scrollView && (
               <Fragment>
                 <div className={css(styles.dateAuthorContainer)}>
@@ -369,7 +392,7 @@ class PaperPageCard extends React.Component {
                   onClick={this.downloadPDF}
                 />
               )}
-              {paper && paper.url && !paper.file && (
+              {paper && paper.url && (
                 <Button
                   label={() => {
                     return (
@@ -401,9 +424,8 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     display: "flex",
-    padding: "50px 0",
+    padding: "50px 0 30px 0",
     position: "relative",
-    transition: ".5s ease-in-out",
   },
   previewContainer: {
     minWidth: 220,
@@ -418,7 +440,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     boxSizing: "border-box",
-    transition: ".5s ease-in-out",
     "@media only screen and (max-width: 1280px)": {
       minWidth: 200,
       width: 200,
@@ -494,6 +515,13 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     opacity: 0.7,
     fontSize: 16,
+    marginTop: 10,
+  },
+  tagline: {
+    color: "#241F3A",
+    opacity: 0.7,
+    fontSize: 16,
+    marginTop: 10,
   },
   dateAuthorContainer: {
     display: "flex",
@@ -594,6 +622,20 @@ const styles = StyleSheet.create({
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },
+  },
+  downloadActionIcon: {
+    marginRight: 10,
+    color: "#fff",
+    backgroundColor: colors.BLUE(),
+    borderColor: colors.BLUE(),
+    ":hover": {
+      backgroundColor: "#3E43E8",
+      color: "#fff",
+      borderColor: "#3E43E8",
+    },
+  },
+  borderRadius: {
+    borderRadius: "50%",
   },
   middleIcon: {
     margin: "0px 10px",
