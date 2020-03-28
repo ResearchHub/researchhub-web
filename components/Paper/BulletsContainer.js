@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   bulletTitle: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
     textAlign: "left",
