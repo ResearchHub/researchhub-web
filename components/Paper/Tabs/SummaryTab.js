@@ -397,7 +397,7 @@ var styles = StyleSheet.create({
     },
   },
   sectionTitle: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
   },

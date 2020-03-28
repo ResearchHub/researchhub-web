@@ -5,6 +5,8 @@ import Router from "next/router";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 // Components
 import HubTag from "~/components/Hubs/HubTag";
@@ -15,6 +17,7 @@ import Button from "./Form/Button";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
+import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 
 // Stylesheets
 import "./stylesheets/Carousel.css";
@@ -112,6 +115,24 @@ class PaperPageCard extends React.Component {
 
   renderPreview = () => {
     let { hovered, fetching, scrollView, previews } = this.state;
+    if (fetching) {
+      return (
+        <div
+          className={css(
+            styles.previewContainer,
+            scrollView && scrollStyles.previewContainer
+          )}
+          onMouseEnter={this.setHover}
+          onMouseLeave={this.unsetHover}
+        >
+          <ReactPlaceholder
+            ready={false}
+            showLoadingAnimation
+            customPlaceholder={<PreviewPlaceholder color="#efefef" />}
+          />
+        </div>
+      );
+    }
     if (!fetching && previews.length > 0) {
       return (
         <div
@@ -160,23 +181,18 @@ class PaperPageCard extends React.Component {
             renderCenterRightControls={null}
             wrapAround={true}
           >
-            {fetching ? (
-              // <Loader loading={true} />
-              <div></div>
-            ) : (
-              this.state.previews.map((preview) => {
-                return (
-                  <img
-                    src={preview.file}
-                    onClick={this.toggleLightbox}
-                    className={css(
-                      styles.image,
-                      scrollView && scrollStyles.image
-                    )}
-                  />
-                );
-              })
-            )}
+            {this.state.previews.map((preview) => {
+              return (
+                <img
+                  src={preview.file}
+                  onClick={this.toggleLightbox}
+                  className={css(
+                    styles.image,
+                    scrollView && scrollStyles.image
+                  )}
+                />
+              );
+            })}
           </Carousel>
         </div>
       );
@@ -432,8 +448,8 @@ const styles = StyleSheet.create({
   previewContainer: {
     minWidth: 220,
     width: 220,
-    height: 333,
-    minHeight: 333,
+    height: 233,
+    minHeight: 233,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     marginRight: 30,
@@ -455,9 +471,9 @@ const styles = StyleSheet.create({
     width: "100%",
     minWidth: "100%",
     maxWidth: "100%",
-    height: 333,
-    minHeight: 333,
-    maxHeight: 333,
+    height: 233,
+    minHeight: 233,
+    maxHeight: 233,
     objectFit: "contain",
     "@media only screen and (max-width: 1280px)": {},
   },
@@ -466,7 +482,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     width: "100%",
-    minHeight: 333,
+    minHeight: 233,
   },
   cardContainer: {
     display: "flex",
@@ -645,6 +661,25 @@ const styles = StyleSheet.create({
 });
 
 const carousel = StyleSheet.create({
+  previewContainer: {
+    minWidth: 220,
+    width: 220,
+    height: 233,
+    minHeight: 233,
+    border: "1.5px solid rgba(36, 31, 58, 0.1)",
+    borderRadius: 3,
+    marginRight: 30,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    boxSizing: "border-box",
+    "@media only screen and (max-width: 1280px)": {
+      minWidth: 200,
+      width: 200,
+      maxWidth: 200,
+    },
+  },
   bottomControl: {
     background: "rgba(36, 31, 58, 0.65)",
     borderRadius: 230,
@@ -692,7 +727,7 @@ const carousel = StyleSheet.create({
 const scrollStyles = StyleSheet.create({
   container: {
     paddingTop: 20,
-    paddingBottom: 10,
+    paddingBottom: 0,
   },
   previewContainer: {
     height: "initial",
@@ -702,9 +737,9 @@ const scrollStyles = StyleSheet.create({
     maxWidth: 76,
     minWidth: 76,
     "@media only screen and (max-width: 1280px)": {
-      // minWidth: 200,
-      // width: 200,
-      // maxWidth: 200,
+      width: 76,
+      maxWidth: 76,
+      minWidth: 76,
     },
   },
   image: {
@@ -719,13 +754,6 @@ const scrollStyles = StyleSheet.create({
     fontSize: 24,
     "@media only screen and (max-width: 1280px)": {
       fontSize: 22,
-    },
-    "@media only screen and (max-width: 760px)": {},
-    "@media only screen and (max-width: 415px)": {
-      // fontSize: 25,
-    },
-    "@media only screen and (max-width: 321px)": {
-      // fontSize: 22,
     },
   },
   buttonColumn: {

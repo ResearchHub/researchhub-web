@@ -431,6 +431,9 @@ const routes = (BASE_URL) => {
     GET_PAPER_FIGURES: ({ paperId }) => {
       return BASE_URL + `figure/${paperId}/get_all_figures/`;
     },
+    MAKE_PAPER_PUBLIC: ({ paperId }) => {
+      return BASE_URL + `paper/${paperId}/?make_public=true/`;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

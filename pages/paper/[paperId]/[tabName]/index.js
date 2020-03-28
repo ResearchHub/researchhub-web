@@ -21,6 +21,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import FlagButton from "~/components/FlagButton";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import PaperPageCard from "~/components/PaperPageCard";
+import CitationCard from "~/components/Paper/CitationCard";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -83,6 +84,7 @@ const Paper = (props) => {
   const keyTakeawayRef = useRef(null);
   const descriptionRef = useRef(null);
   const discussionRef = useRef(null);
+  const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
 
   useEffect(() => {
@@ -387,6 +389,7 @@ const Paper = (props) => {
               descriptionRef={descriptionRef}
               discussionRef={discussionRef}
               paperPdfRef={paperPdfRef}
+              citationRef={citationRef}
               paperCardRef={paperCardRef}
               sticky={sticky}
               setSticky={setSticky}
@@ -413,6 +416,33 @@ const Paper = (props) => {
               setCount={setCount}
               discussionRef={discussionRef}
             />
+            <ComponentWrapper overrideStyle={styles.componentWrapper}>
+              <div className={css(styles.citationContainer)} ref={citationRef}>
+                <div className={css(styles.header)}>
+                  <div className={css(styles.citationTitle)}>Cited By</div>
+                  <span className={css(styles.citationCount)}>
+                    {paper.referenced_by.length > 0 &&
+                      paper.referenced_by.length}
+                  </span>
+                </div>
+                <div className={css(styles.citations)}>
+                  {paper.referenced_by.length > 0 ? (
+                    paper.referenced_by.map((reference, id) => {
+                      return (
+                        <CitationCard
+                          key={`citation-${reference.id}-${id}`}
+                          citation={reference}
+                        />
+                      );
+                    })
+                  ) : (
+                    <div className={css(styles.citationEmpty)}>
+                      There are no citations for this paper.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </ComponentWrapper>
             <PaperTab
               paperId={paperId}
               paper={paper}
@@ -655,12 +685,51 @@ const styles = StyleSheet.create({
     position: "sticky",
     backgroundColor: "#FFF",
     zIndex: 3,
-    // maxHeight: 184,
-    // minHeight: 184,
-    // height: 184,
   },
   scrollPadding: {
     paddingTop: 100,
+  },
+  citationContainer: {
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
+    marginTop: 30,
+  },
+  citations: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    minWidth: "100%",
+    width: "100%",
+    boxSizing: "border-box",
+    overflowX: "scroll",
+    paddingBottom: 10,
+  },
+  header: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 20,
+  },
+  citationTitle: {
+    fontSize: 22,
+    fontWeight: 500,
+  },
+  citationCount: {
+    color: "rgba(36, 31, 58, 0.5)",
+    fontSize: 17,
+    fontWeight: 500,
+    marginLeft: 15,
+  },
+  citationEmpty: {
+    fontSize: 20,
+    fontWeight: 500,
+    width: "100%",
+    textAlign: "center",
   },
 });
 
