@@ -416,7 +416,9 @@ const DiscussionTab = (props) => {
           className={css(styles.addDiscussionContainer, styles.emptyState)}
           ref={discussionRef}
         >
-          <div className={css(styles.discussionTitle)}>Discussions</div>
+          <div className={css(styles.header)}>
+            <div className={css(styles.discussionTitle)}>Discussions</div>
+          </div>
           {showEditor ? renderDiscussionTextEditor() : renderAddDiscussion()}
         </div>
       )}
@@ -718,12 +720,12 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginBottom: 10,
+    marginBottom: 20,
   },
   discussionTitle: {
     display: "flex",
     alignItems: "center",
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 500,
   },
   discussionCount: {
