@@ -16,6 +16,7 @@ const PaperTabBar = (props) => {
     descriptionRef,
     discussionRef,
     paperPdfRef,
+    citationRef,
     paperCardRef,
   } = props;
 
@@ -25,6 +26,10 @@ const PaperTabBar = (props) => {
     {
       href: "discussion",
       label: "discussions",
+    },
+    {
+      href: "citations",
+      label: "cited by",
     },
     { href: "full", label: "Paper PDF" },
     // TODO: Add citations tab
@@ -69,6 +74,16 @@ const PaperTabBar = (props) => {
         : window.scrollTo({
             behavior: "smooth",
             top: discussionRef.current.offsetTop - offset + 80,
+          });
+    } else if (label === "cited by") {
+      sticky
+        ? window.scrollTo({
+            behavior: "smooth",
+            top: citationRef.current.offsetTop - offset,
+          })
+        : window.scrollTo({
+            behavior: "smooth",
+            top: citationRef.current.offsetTop - offset + 80,
           });
     } else if (label === "Paper PDF") {
       sticky
@@ -164,9 +179,6 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     minWidth: 200,
-    "@media only screen and (max-width: 768px)": {
-      justifyContent: "space-between",
-    },
   },
   firstTab: {
     paddingLeft: 0,
@@ -185,7 +197,6 @@ const styles = StyleSheet.create({
     },
 
     "@media only screen and (min-width: 1288px)": {
-      // marginRight: 80,
       marginRight: 0,
     },
     ":hover": {

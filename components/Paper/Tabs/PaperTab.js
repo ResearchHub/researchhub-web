@@ -140,11 +140,12 @@ function PaperTab(props) {
   function handleRenderState() {
     if (file) {
       return (
-        <Document file={file} onLoadSuccess={onLoadSuccess}>
-          {Array.from(new Array(numPages), (el, index) => (
-            <Page pageNumber={index + 1} key={`page_${index + 1}`} />
-          ))}
-        </Document>
+        <span></span>
+        // <Document file={file} onLoadSuccess={onLoadSuccess}>
+        //   {Array.from(new Array(numPages), (el, index) => (
+        //     <Page pageNumber={index + 1} key={`page_${index + 1}`} />
+        //   ))}
+        // </Document>
       );
     } else {
       if (showDnd) {
@@ -425,7 +426,7 @@ var styles = StyleSheet.create({
   title: {
     display: "flex",
     alignItems: "center",
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 500,
     width: 300,
   },
