@@ -43,10 +43,11 @@ const PaperTabBar = (props) => {
 
   function scrollToPage(label) {
     let { setSticky, sticky, paperCardRef } = props;
+    // let offset = paperCardRef.current.clientHeight + 100;
     let offset = paperCardRef.current.clientHeight + 100;
     setSelectedTab(label);
     if (label === "key takeaway") {
-      sticky
+      !sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: keyTakeawayRef.current.offsetTop - offset,
@@ -56,7 +57,7 @@ const PaperTabBar = (props) => {
             top: keyTakeawayRef.current.offsetTop - offset + 80,
           });
     } else if (label === "description") {
-      sticky
+      !sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: descriptionRef.current.offsetTop - offset,
@@ -66,7 +67,7 @@ const PaperTabBar = (props) => {
             top: descriptionRef.current.offsetTop - offset + 80,
           });
     } else if (label === "discussions") {
-      sticky
+      !sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: discussionRef.current.offsetTop - offset,
@@ -76,7 +77,7 @@ const PaperTabBar = (props) => {
             top: discussionRef.current.offsetTop - offset + 80,
           });
     } else if (label === "cited by") {
-      sticky
+      !sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: citationRef.current.offsetTop - offset,
@@ -86,7 +87,7 @@ const PaperTabBar = (props) => {
             top: citationRef.current.offsetTop - offset + 80,
           });
     } else if (label === "Paper PDF") {
-      sticky
+      !sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: paperPdfRef.current.offsetTop - offset,
