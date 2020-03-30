@@ -362,25 +362,27 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
-          <div
-            className={css(sticky && styles.stickyComponent)}
-            ref={paperCardRef}
-          >
-            <ComponentWrapper overrideStyle={styles.componentWrapper}>
-              <PaperPageCard
-                paper={paper}
-                score={score}
-                upvote={upvote}
-                downvote={downvote}
-                selected={selectedVoteType}
-                shareUrl={shareUrl}
-                isModerator={isModerator}
-                flagged={flagged}
-                setFlag={setFlag}
-                sticky={sticky}
-                setSticky={setSticky}
-              />
-            </ComponentWrapper>
+          {/* <div
+           
+           
+          > */}
+          <ComponentWrapper overrideStyle={styles.componentWrapper}>
+            <PaperPageCard
+              paper={paper}
+              score={score}
+              upvote={upvote}
+              downvote={downvote}
+              selected={selectedVoteType}
+              shareUrl={shareUrl}
+              isModerator={isModerator}
+              flagged={flagged}
+              setFlag={setFlag}
+              sticky={sticky}
+              setSticky={setSticky}
+            />
+          </ComponentWrapper>
+          {/* </div> */}
+          <div className={css(styles.stickyComponent)} ref={paperCardRef}>
             <PaperTabBar
               baseUrl={paperId}
               selectedTab={tabName}
@@ -397,8 +399,8 @@ const Paper = (props) => {
           </div>
           <div
             className={css(
-              styles.contentContainer,
-              sticky && styles.scrollPadding
+              styles.contentContainer
+              // sticky && styles.scrollPadding
             )}
           >
             <SummaryTab

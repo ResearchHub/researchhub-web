@@ -45,13 +45,21 @@ class PaperPageCard extends React.Component {
 
   componentDidMount() {
     this.fetchFigures();
-    window.addEventListener("scroll", this.scrollListener);
+    // window.addEventListener("scroll", this.scrollListener);
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      if (prevProps.paper.id !== this.props.paper.id) {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0;
+        this.fetchFigures();
+      }
+    }
+  }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.scrollListener);
+    // window.removeEventListener("scroll", this.scrollListener);
   }
 
   fetchFigures = () => {
@@ -61,11 +69,13 @@ class PaperPageCard extends React.Component {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          this.setState({
-            previews: res.data,
-            figureUrls: res.data.map((preview, index) => preview.file),
-            fetching: false,
-          });
+          setTimeout(() => {
+            this.setState({
+              previews: res.data,
+              figureUrls: res.data.map((preview, index) => preview.file),
+              fetching: false,
+            });
+          }, 200);
         })
         .catch((err) => {
           this.setState({
@@ -448,8 +458,8 @@ const styles = StyleSheet.create({
   previewContainer: {
     minWidth: 220,
     width: 220,
-    height: 233,
-    minHeight: 233,
+    height: 333,
+    minHeight: 333,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     marginRight: 30,
@@ -471,9 +481,9 @@ const styles = StyleSheet.create({
     width: "100%",
     minWidth: "100%",
     maxWidth: "100%",
-    height: 233,
-    minHeight: 233,
-    maxHeight: 233,
+    height: 333,
+    minHeight: 333,
+    maxHeight: 333,
     objectFit: "contain",
     "@media only screen and (max-width: 1280px)": {},
   },
@@ -482,7 +492,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     width: "100%",
-    minHeight: 233,
+    minHeight: 333,
   },
   cardContainer: {
     display: "flex",
