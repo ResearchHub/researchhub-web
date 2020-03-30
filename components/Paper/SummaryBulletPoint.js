@@ -14,22 +14,24 @@ const SummaryBulletPoint = ({ data, editable, manage }) => {
   let authorProfile = created_by && created_by.author_profile;
 
   return (
-    <Ripples className={css(styles.bulletpoint, manage && styles.cursorMove)}>
+    // <Ripples className={css(styles.bulletpoint, manage && styles.cursorMove)}>
+    <div>
       <div className={css(styles.topRow)}>
         <div className={css(styles.bulletpointIcon)}>
-          <i class="far fa-chevron-down" />
+          <i class="fad fa-scrubber" />
         </div>
         <div className={css(styles.bulletpointText)}>
           {plain_text && plain_text}
         </div>
       </div>
-      {authorProfile && (
+      {/* {authorProfile && (
         <div className={css(styles.bottomRow)}>
           <span className={css(styles.contributorText)}>Contributors</span>
           <AuthorAvatar author={authorProfile} size={25} />
         </div>
-      )}
-    </Ripples>
+      )} */}
+    </div>
+    // </Ripples>
   );
 };
 
