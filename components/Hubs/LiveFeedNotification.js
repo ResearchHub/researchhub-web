@@ -84,6 +84,9 @@ class LiveFeedNotification extends React.Component {
     } else if (type === "thread" || type === "comment" || type === "reply") {
       href = "/paper/[paperId]/[tabName]/[discussionThreadId]";
       route = `/paper/${paperId}/discussion/${threadId}`;
+    } else if (type === "bullet_point") {
+      href = "/paper/[paperId]/[tabName]";
+      route = `/paper/${paperId}/summary`;
     }
 
     href && route && Router.push(href, route);
