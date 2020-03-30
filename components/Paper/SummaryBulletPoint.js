@@ -15,7 +15,7 @@ const SummaryBulletPoint = ({ data, editable, manage }) => {
 
   return (
     // <Ripples className={css(styles.bulletpoint, manage && styles.cursorMove)}>
-    <div>
+    <div className={css(styles.bulletpoint, manage && styles.cursorMove)}>
       <div className={css(styles.topRow)}>
         <div className={css(styles.bulletpointIcon)}>
           <i class="fad fa-scrubber" />
