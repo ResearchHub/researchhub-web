@@ -114,8 +114,8 @@ class LiveFeedNotification extends React.Component {
         return (
           <div className={css(styles.message)}>
             <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${paperId}/summary`}
             >
               <a
                 className={css(styles.username)}
