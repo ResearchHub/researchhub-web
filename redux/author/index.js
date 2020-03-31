@@ -86,6 +86,10 @@ export const AuthorActions = {
     paperUploadOffset = 0,
   }) => {
     return async (dispatch) => {
+      dispatch({
+        contributionsDoneFetching: false,
+        type: types.GET_USER_CONTRIBUTIONS_PENDING,
+      });
       const response = await fetch(
         API.USER_CONTRIBUTION({
           authorId,

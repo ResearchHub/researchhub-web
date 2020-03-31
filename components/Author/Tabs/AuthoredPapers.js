@@ -1,9 +1,11 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import ReactPlaceholder from "react-placeholder";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
+import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -24,18 +26,24 @@ class AuthoredPapersTab extends React.Component {
     });
     return (
       <ComponentWrapper>
-        {papers.length > 0 ? (
-          <div className={css(styles.container)}>{papers}</div>
-        ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-file-alt" />
+        <ReactPlaceholder
+          ready={this.props.author.authorDoneFetching}
+          showLoadingAnimation
+          customPlaceholder={<PaperPlaceholder color="#efefef" />}
+        >
+          {papers.length > 0 ? (
+            <div className={css(styles.container)}>{papers}</div>
+          ) : (
+            <div className={css(styles.box)}>
+              <div className={css(styles.icon)}>
+                <i className="fad fa-file-alt" />
+              </div>
+              <h2 className={css(styles.noContent)}>
+                User has not authored any papers.
+              </h2>
             </div>
-            <h2 className={css(styles.noContent)}>
-              User has not authored any papers.
-            </h2>
-          </div>
-        )}
+          )}
+        </ReactPlaceholder>
       </ComponentWrapper>
     );
   }

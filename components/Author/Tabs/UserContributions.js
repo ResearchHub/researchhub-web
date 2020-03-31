@@ -1,5 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import ReactPlaceholder from "react-placeholder";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -8,6 +9,7 @@ import { Reply, Comment } from "~/components/DiscussionComment";
 
 // Config
 import colors from "~/config/themes/colors";
+import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 class UserContributionsTab extends React.Component {
   constructor(props) {
@@ -42,8 +44,8 @@ class UserContributionsTab extends React.Component {
       contributions,
     });
   };
+
   render() {
-    let { author } = this.props;
     let contributions = this.state.contributions.map((contribution, index) => {
       return (
         <div className={css(styles.contributionContainer)}>
@@ -67,18 +69,24 @@ class UserContributionsTab extends React.Component {
     });
     return (
       <ComponentWrapper>
-        {contributions.length > 0 ? (
-          <div className={css(styles.container)}>{contributions}</div>
-        ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-comment-alt-edit"></i>
+        <ReactPlaceholder
+          ready={this.props.author.contributionsDoneFetching}
+          showLoadingAnimation
+          customPlaceholder={<PaperPlaceholder color="#efefef" />}
+        >
+          {contributions.length > 0 ? (
+            <div className={css(styles.container)}>{contributions}</div>
+          ) : (
+            <div className={css(styles.box)}>
+              <div className={css(styles.icon)}>
+                <i className="fad fa-comment-alt-edit"></i>
+              </div>
+              <h2 className={css(styles.noContent)}>
+                User has no contributions.
+              </h2>
             </div>
-            <h2 className={css(styles.noContent)}>
-              User has no contributions.
-            </h2>
-          </div>
-        )}
+          )}
+        </ReactPlaceholder>
       </ComponentWrapper>
     );
   }
