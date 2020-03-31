@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import Router from "next/router";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
+import Link from "next/link";
 import "./CitationCard.css";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
@@ -86,6 +87,12 @@ class CitationCard extends React.Component {
     } else {
       this.navigateToPage();
     }
+  };
+
+  getHref = () => {
+    let { citation } = this.props;
+    let paperId = citation.id;
+    return `/paper/${paperId}/summary`;
   };
 
   navigateToPage = () => {
@@ -197,29 +204,37 @@ class CitationCard extends React.Component {
     let { citation } = this.props;
 
     return (
-      <div className={css(styles.card)} onClick={this.checkIsPublic}>
-        {figureUrls.length > 0 && (
-          <FsLightbox
-            toggler={toggleLightbox}
-            type="image"
-            sources={[...figureUrls]}
-          />
-        )}
-        {this.renderPreview()}
-        <div className={css(styles.title)} id={"clamp"}>
-          {citation.title && citation.title}
+      <a className={css(styles.link)} href={this.getHref()}>
+        <div className={css(styles.card)} onClick={this.checkIsPublic}>
+          {figureUrls.length > 0 && (
+            <span onClick={(e) => e.stopPropagation()}>
+              <FsLightbox
+                toggler={toggleLightbox}
+                type="image"
+                sources={[...figureUrls]}
+              />
+            </span>
+          )}
+          {this.renderPreview()}
+          <div className={css(styles.title)} id={"clamp"}>
+            {citation.title && citation.title}
+          </div>
+          <div className={css(styles.hubs)}>{this.renderHubs()}</div>
         </div>
-        <div className={css(styles.hubs)}>{this.renderHubs()}</div>
-      </div>
+      </a>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  link: {
+    color: "unset",
+    textDecoration: "unset",
+  },
   card: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "flex-start",
     cursor: "pointer",
     marginRight: 30,
   },
@@ -228,9 +243,9 @@ const styles = StyleSheet.create({
     width: "100%",
     minWidth: "100%",
     maxWidth: "100%",
-    height: "100%",
-    minHeight: "100%",
-    maxHeight: "100%",
+    height: 240,
+    minHeight: 240,
+    maxHeight: 240,
     objectFit: "fill",
     "@media only screen and (max-width: 1280px)": {},
   },
