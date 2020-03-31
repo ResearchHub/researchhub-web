@@ -15,7 +15,7 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 // Redux
 import { MessageActions } from "~/redux/message";
 
-import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
@@ -124,7 +124,7 @@ class CitationCard extends React.Component {
         </div>
       );
     }
-    if (!fetchingPreview && previews.length > 0) {
+    if (previews.length > 0) {
       return (
         <div
           className={css(carousel.previewContainer)}
@@ -180,6 +180,23 @@ class CitationCard extends React.Component {
               );
             })}
           </Carousel>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          className={css(carousel.previewContainer)}
+          onMouseEnter={this.setHover}
+          onMouseLeave={this.unsetHover}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ReactPlaceholder
+            ready={false}
+            showLoadingAnimation={false}
+            customPlaceholder={
+              <PreviewPlaceholder hideAnimation={true} color="#efefef" />
+            }
+          />
         </div>
       );
     }
@@ -247,7 +264,6 @@ const styles = StyleSheet.create({
     minHeight: 240,
     maxHeight: 240,
     objectFit: "fill",
-    "@media only screen and (max-width: 1280px)": {},
   },
   title: {
     overflow: "hidden",
@@ -279,6 +295,24 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginBottom: 5,
   },
+  emptyState: {
+    zIndex: 2,
+    position: "absolute",
+    marginLeft: "auto",
+    marginRight: "auto",
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  emptyStateIcon: {
+    fontSize: 50,
+  },
+  emptyStateText: {
+    fontSize: 12,
+  },
 });
 
 const carousel = StyleSheet.create({
@@ -296,11 +330,7 @@ const carousel = StyleSheet.create({
     overflow: "hidden",
     boxSizing: "border-box",
     marginBottom: 15,
-    "@media only screen and (max-width: 1280px)": {
-      minWidth: 200,
-      width: 200,
-      maxWidth: 200,
-    },
+    position: "relative",
   },
   bottomControl: {
     background: "rgba(36, 31, 58, 0.65)",
