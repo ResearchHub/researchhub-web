@@ -49,7 +49,7 @@ const PaperTabBar = (props) => {
     setSelectedTab(label);
     if (label === "main") {
       window.scrollTo({
-        behavior: "smooth",
+        behavior: "auto",
         top: 0,
       });
     }
