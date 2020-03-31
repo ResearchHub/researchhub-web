@@ -17,11 +17,21 @@ import { TooltipInput } from "~/components/TooltipInput";
 // Styles
 import { textEditorIcons } from "~/config/themes/icons";
 import "./stylesheets/RichTextEditor.css";
+import "./stylesheets/iFrame.css";
 
 // Scaffold
 import summaryScaffold from "./summaryScaffold.json";
 import colors from "../../config/themes/colors";
 import Diff from "diff";
+
+const getUrlParameter = (name, url) => {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+  var results = regex.exec(url);
+  return results === null
+    ? ""
+    : decodeURIComponent(results[1].replace(/\+/g, " "));
+};
 
 const summaryScaffoldInitialValue = Value.fromJSON(summaryScaffold);
 const commentInitialValue = Value.fromJSON({
@@ -89,6 +99,7 @@ class RichTextEditor extends React.Component {
         : summaryScaffoldInitialValue,
       addLinkTooltip: false,
       addImageTooltip: false,
+      addVideoToolTip: false,
       imageTooltip: false,
       linkTooltip: false,
       link: "",
@@ -221,6 +232,7 @@ class RichTextEditor extends React.Component {
                 )}
                 {this.renderLinkButton("link", textEditorIcons.link)}
                 {this.renderImageButton("image", textEditorIcons.image)}
+                {this.renderVideoButton("video", textEditorIcons.video)}
               </ToolBar>
             )}
           </div>
@@ -262,6 +274,7 @@ class RichTextEditor extends React.Component {
                   )}
                   {this.renderLinkButton("link", textEditorIcons.link)}
                   {this.renderImageButton("image", textEditorIcons.image)}
+                  {this.renderVideoButton("video", textEditorIcons.video)}
                 </ToolBar>
               </div>
               // </Sticky>
@@ -307,6 +320,16 @@ class RichTextEditor extends React.Component {
             close={this.closeTooltipInput}
             classContainer={styles.imgToolTip}
             save={() => this.setImage("image", this.state.image)}
+          />
+        )}
+        {this.state.addVideoToolTip && (
+          <TooltipInput
+            title={"Video URL"}
+            value={this.state.video}
+            onChange={this.onChangeVideo}
+            close={this.closeTooltipInput}
+            classContainer={styles.imgToolTip}
+            save={() => this.setVideo("video", this.state.video)}
           />
         )}
       </div>
@@ -444,6 +467,25 @@ class RichTextEditor extends React.Component {
     return url;
   };
 
+  renderVideoButton = (type, icon) => {
+    return (
+      <span>
+        <Button
+          smallToolBar={this.props.smallToolBar && this.props.smallToolBar}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            this.setState({
+              addVideoToolTip: true,
+              selection: this.editor.value.selection,
+            });
+          }}
+        >
+          <Icon>{icon}</Icon>
+        </Button>
+      </span>
+    );
+  };
+
   renderImageButton = (type, icon) => {
     return (
       <span>
@@ -467,6 +509,7 @@ class RichTextEditor extends React.Component {
     this.setState({
       addLinkTooltip: false,
       addImageTooltip: false,
+      addVideoToolTip: false,
       imageTooltip: false,
       linkTooltip: false,
       link: "",
@@ -480,6 +523,12 @@ class RichTextEditor extends React.Component {
     });
   };
 
+  onChangeVideo = (e) => {
+    this.setState({
+      video: e.target.value,
+    });
+  };
+
   setImage = (type, url) => {
     if (url === "" || url === null) {
       this.closeTooltipInput();
@@ -490,6 +539,25 @@ class RichTextEditor extends React.Component {
       {
         addImageTooltip: false,
         image: "",
+      },
+      () => {
+        this.editor.value.setSelection(this.state.selection);
+        this.editor.focus();
+        this.editor.setBlocks(image);
+      }
+    );
+  };
+
+  setVideo = (type, url) => {
+    if (url === "" || url === null) {
+      this.closeTooltipInput();
+      return;
+    }
+    const image = { type, data: { url } };
+    this.setState(
+      {
+        addVideoToolTip: false,
+        video: "",
       },
       () => {
         this.editor.value.setSelection(this.state.selection);
@@ -641,6 +709,39 @@ class RichTextEditor extends React.Component {
         return <li {...attributes}>{children}</li>;
       case "numbered-list":
         return <ol {...attributes}>{children}</ol>;
+      case "video":
+        let video = node.data.get("url");
+        let youtubeID = getUrlParameter("v", video);
+        return (
+          <div className={css(styles.imageBlock)} {...attributes}>
+            <div className={css(styles.imageContainer)} contentEditable={false}>
+              {video.includes("youtube") ? (
+                <div className={""}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${youtubeID}`}
+                    frameborder="0"
+                    className={css(styles.iframe)}
+                    allow="accelerometer;autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+              ) : (
+                <video
+                  src={node.data.get("url")}
+                  className={css(styles.image)}
+                />
+              )}
+              {!this.props.readOnly && (
+                <div className={css(styles.imageOverlay, styles.smallOverlay)}>
+                  <i
+                    className={css(styles.deleteImage) + " fal fa-times"}
+                    onClick={() => this.deleteImage(node)}
+                  ></i>
+                </div>
+              )}
+            </div>
+          </div>
+        );
       case "image":
         return (
           <div className={css(styles.imageBlock)} {...attributes}>
@@ -1029,6 +1130,24 @@ const styles = StyleSheet.create({
       background: "linear-gradient(#000 1%, transparent 100%)",
       opacity: "100%",
     },
+  },
+  iframeContainer: {
+    position: "relative",
+    paddingBottom: "56.25%",
+    paddingTop: 30,
+    height: 0,
+    overflow: "hidden",
+  },
+  iframe: {
+    width: 543,
+    height: 305.5,
+
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
+  },
+  smallOverlay: {
+    height: 60,
   },
   bold: {
     fontWeight: 500,
