@@ -9,7 +9,7 @@ import ComponentWrapper from "./ComponentWrapper";
 
 const PaperTabBar = (props) => {
   // const selectedTab = props.selectedTab;
-  const [selectedTab, setSelectedTab] = useState("key takeaway");
+  const [selectedTab, setSelectedTab] = useState("main");
   const {
     discussionCount,
     keyTakeawayRef,
@@ -21,8 +21,9 @@ const PaperTabBar = (props) => {
   } = props;
 
   const tabs = [
-    { href: "summary", label: "key takeaway" },
-    { href: "summary", label: "description" },
+    { href: "main", label: "main" },
+    { href: "key takeaway", label: "key takeaway" },
+    { href: "description", label: "description" },
     {
       href: "discussion",
       label: "discussions",
@@ -43,11 +44,17 @@ const PaperTabBar = (props) => {
 
   function scrollToPage(label) {
     let { setSticky, sticky, paperCardRef } = props;
-    // let offset = paperCardRef.current.clientHeight + 100;
     let offset = paperCardRef.current.clientHeight + 100;
+
     setSelectedTab(label);
+    if (label === "main") {
+      window.scrollTo({
+        behavior: "smooth",
+        top: 0,
+      });
+    }
     if (label === "key takeaway") {
-      !sticky
+      sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: keyTakeawayRef.current.offsetTop - offset,
@@ -57,7 +64,7 @@ const PaperTabBar = (props) => {
             top: keyTakeawayRef.current.offsetTop - offset + 80,
           });
     } else if (label === "description") {
-      !sticky
+      sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: descriptionRef.current.offsetTop - offset,
@@ -67,7 +74,7 @@ const PaperTabBar = (props) => {
             top: descriptionRef.current.offsetTop - offset + 80,
           });
     } else if (label === "discussions") {
-      !sticky
+      sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: discussionRef.current.offsetTop - offset,
@@ -77,7 +84,7 @@ const PaperTabBar = (props) => {
             top: discussionRef.current.offsetTop - offset + 80,
           });
     } else if (label === "cited by") {
-      !sticky
+      sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: citationRef.current.offsetTop - offset,
@@ -87,7 +94,7 @@ const PaperTabBar = (props) => {
             top: citationRef.current.offsetTop - offset + 80,
           });
     } else if (label === "Paper PDF") {
-      !sticky
+      sticky
         ? window.scrollTo({
             behavior: "smooth",
             top: paperPdfRef.current.offsetTop - offset,
