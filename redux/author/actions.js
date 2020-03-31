@@ -3,56 +3,60 @@ import * as types from "./types";
 export function getAuthoredPapersPending() {
   return {
     type: types.GET_AUTHORED_PAPERS_PENDING,
-    payload: { doneFetching: false },
+    payload: { authorDoneFetching: false },
   };
 }
 export function getAuthoredPapersFailure() {
   return {
     type: types.GET_AUTHORED_PAPERS_FAILURE,
-    payload: { doneFetching: true, success: false },
+    payload: { authorDoneFetching: true, success: false },
   };
 }
 export function getAuthoredPapersSuccess(authoredPapers) {
   return {
     type: types.GET_AUTHORED_PAPERS_SUCCESS,
-    payload: { doneFetching: true, success: true, authoredPapers },
+    payload: { authorDoneFetching: true, success: true, authoredPapers },
   };
 }
 
 export function getUserDiscussionsPending() {
   return {
     type: types.GET_USER_DISCUSSIONS_PENDING,
-    payload: { doneFetching: false },
+    payload: { discussionsDoneFetching: false },
   };
 }
 export function getUserDiscussionsFailure() {
   return {
     type: types.GET_USER_DISCUSSIONS_FAILURE,
-    payload: { doneFetching: true, success: false },
+    payload: { discussionsDoneFetching: true, success: false },
   };
 }
 export function getUserDiscussionsSuccess(userDiscussions) {
   return {
     type: types.GET_USER_DISCUSSIONS_SUCCESS,
-    payload: { doneFetching: true, success: true, userDiscussions },
+    payload: { discussionsDoneFetching: true, success: true, userDiscussions },
   };
 }
 
 export function getUserContributionsPending() {
   return {
     type: types.GET_USER_CONTRIBUTIONS_PENDING,
-    payload: { doneFetching: false },
+    payload: { contributionsDoneFetching: false },
   };
 }
 export function getUserContributionsFailure() {
   return {
     type: types.GET_USER_CONTRIBUTIONS_FAILURE,
-    payload: { doneFetching: true, success: false },
+    payload: { contributionsDoneFetching: true, success: false },
   };
 }
 export function getUserContributionsSuccess(userContributions) {
   return {
     type: types.GET_USER_CONTRIBUTIONS_SUCCESS,
-    payload: { doneFetching: true, success: true, userContributions },
+    payload: {
+      contributionsDoneFetching: true,
+      success: true,
+      userContributions,
+    },
   };
 }

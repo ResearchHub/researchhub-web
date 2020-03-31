@@ -1,9 +1,11 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import ReactPlaceholder from "react-placeholder";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
+import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -31,18 +33,24 @@ class UserDiscussionsTab extends React.Component {
     );
     return (
       <ComponentWrapper>
-        {discussions.length > 0 ? (
-          <div className={css(styles.container)}>{discussions}</div>
-        ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-comments" />
+        <ReactPlaceholder
+          ready={this.props.author.discussionsDoneFetching}
+          showLoadingAnimation
+          customPlaceholder={<PaperPlaceholder color="#efefef" />}
+        >
+          {discussions.length > 0 ? (
+            <div className={css(styles.container)}>{discussions}</div>
+          ) : (
+            <div className={css(styles.box)}>
+              <div className={css(styles.icon)}>
+                <i className="fad fa-comments" />
+              </div>
+              <h2 className={css(styles.noContent)}>
+                User has not created any discussions
+              </h2>
             </div>
-            <h2 className={css(styles.noContent)}>
-              User has not created any discussions
-            </h2>
-          </div>
-        )}
+          )}
+        </ReactPlaceholder>
       </ComponentWrapper>
     );
   }
