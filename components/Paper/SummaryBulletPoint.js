@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 20,
-    border: `1.5px solid #3971FF`,
+    // border: `1.5px solid #3971FF`,
   },
   bulletpointText: {
     color: "#241F3A",
