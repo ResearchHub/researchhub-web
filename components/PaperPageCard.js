@@ -18,6 +18,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
+import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 
 // Stylesheets
 import "./stylesheets/Carousel.css";
@@ -39,28 +40,39 @@ class PaperPageCard extends React.Component {
       toggleLightbox: true,
       scrollView: false,
       fetching: false,
+      loading: true,
     };
     this.containerRef = React.createRef();
   }
 
   componentDidMount() {
     this.fetchFigures();
-    // window.addEventListener("scroll", this.scrollListener);
+    window.addEventListener("scroll", this.scrollListener);
+    this.revealPage(400);
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       if (prevProps.paper.id !== this.props.paper.id) {
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0;
-        this.fetchFigures();
+        this.setState({ loading: true }, () => {
+          document.body.scrollTop = 0; // For Safari
+          document.documentElement.scrollTop = 0;
+          this.fetchFigures();
+          this.revealPage(400);
+        });
       }
     }
   }
 
   componentWillUnmount() {
-    // window.removeEventListener("scroll", this.scrollListener);
+    window.removeEventListener("scroll", this.scrollListener);
   }
+
+  revealPage = (timeout) => {
+    setTimeout(() => {
+      this.setState({ loading: false });
+    }, timeout);
+  };
 
   fetchFigures = () => {
     this.setState({ fetching: true }, () => {
@@ -86,7 +98,7 @@ class PaperPageCard extends React.Component {
   };
 
   scrollListener = () => {
-    if (!this.state.scrollView && window.scrollY >= 0) {
+    if (!this.state.scrollView && window.scrollY >= 5) {
       this.setState({
         scrollView: true,
       });
@@ -125,6 +137,7 @@ class PaperPageCard extends React.Component {
 
   renderPreview = () => {
     let { hovered, fetching, scrollView, previews } = this.state;
+    if (scrollView) return;
     if (fetching) {
       return (
         <div
@@ -245,82 +258,160 @@ class PaperPageCard extends React.Component {
   };
 
   renderTopRow = () => {
-    let { paper, isModerator, flagged, setFlag } = this.props;
+    let {
+      paper,
+      isModerator,
+      flagged,
+      setFlag,
+      score,
+      upvote,
+      downvote,
+      selectedVoteType,
+    } = this.props;
+
     let { scrollView } = this.state;
     let paperTitle = paper && paper.title;
-
-    return (
-      <div className={css(styles.topRow)}>
-        <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
-        <div className={css(styles.actions)}>
-          <PermissionNotificationWrapper
-            modalMessage="edit papers"
-            onClick={this.navigateToEditPaperInfo}
-            permissionKey="UpdatePaper"
-            loginRequired={true}
-            hideRipples={false}
-            styling={styles.borderRadius}
-          >
-            <div className={css(styles.actionIcon)}>
-              <i className="far fa-pencil" />
-            </div>
-          </PermissionNotificationWrapper>
-          <ShareAction
-            addRipples={true}
-            title={"Share this paper"}
-            subtitle={paperTitle}
-            url={this.props.shareUrl}
-            customButton={
-              <div className={css(styles.actionIcon, styles.middleIcon)}>
-                <i className="far fa-share-alt" />
-              </div>
-            }
-          />
-          {scrollView && (
-            <Fragment>
-              {paper && paper.file && (
-                <Ripples
-                  className={css(styles.actionIcon, styles.downloadActionIcon)}
-                  onClick={this.downloadPDF}
-                >
-                  <i className="far fa-arrow-to-bottom" />
-                </Ripples>
-              )}
-              {paper && paper.url && (
-                <Ripples
-                  className={css(styles.actionIcon, styles.downloadActionIcon)}
-                  onClick={() => openExternalLink(paper.url)}
-                >
-                  <i className="far fa-external-link" />
-                </Ripples>
-              )}
-            </Fragment>
-          )}
-          {!isModerator ? (
-            <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
-            />
-          ) : (
-            <ActionButton isModerator={isModerator} paperId={paper.id} />
-          )}
+    if (scrollView) {
+      return (
+        <div className={css(styles.actions, scrollStyles.actions)}>
+          <Fragment>
+            {paper && paper.file && (
+              <Ripples
+                className={css(
+                  styles.actionIcon,
+                  styles.downloadActionIcon,
+                  !paper.url && styles.noMargin
+                )}
+                onClick={this.downloadPDF}
+              >
+                <i className="far fa-arrow-to-bottom" />
+              </Ripples>
+            )}
+            {paper && paper.url && (
+              <Ripples
+                className={css(
+                  styles.actionIcon,
+                  styles.downloadActionIcon,
+                  styles.noMargin
+                )}
+                onClick={() => openExternalLink(paper.url)}
+              >
+                <i className="far fa-external-link" />
+              </Ripples>
+            )}
+          </Fragment>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className={css(styles.topRow)}>
+          <div className={css(styles.mobileContainer)}>
+            <div className={css(styles.mobileVoting)}>
+              <VoteWidget
+                score={score}
+                onUpvote={upvote}
+                onDownvote={downvote}
+                selected={selectedVoteType}
+                isPaper={true}
+                horizontalView={true}
+              />
+            </div>
+            <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
+          </div>
+          <div className={css(styles.actions)}>
+            <PermissionNotificationWrapper
+              modalMessage="edit papers"
+              onClick={this.navigateToEditPaperInfo}
+              permissionKey="UpdatePaper"
+              loginRequired={true}
+              hideRipples={false}
+              styling={styles.borderRadius}
+            >
+              <div className={css(styles.actionIcon)}>
+                <i className="far fa-pencil" />
+              </div>
+            </PermissionNotificationWrapper>
+            <ShareAction
+              addRipples={true}
+              title={"Share this paper"}
+              subtitle={paperTitle}
+              url={this.props.shareUrl}
+              customButton={
+                <div className={css(styles.actionIcon, styles.middleIcon)}>
+                  <i className="far fa-share-alt" />
+                </div>
+              }
+            />
+            {scrollView && (
+              <Fragment>
+                {paper && paper.file && (
+                  <Ripples
+                    className={css(
+                      styles.actionIcon,
+                      styles.downloadActionIcon
+                    )}
+                    onClick={this.downloadPDF}
+                  >
+                    <i className="far fa-arrow-to-bottom" />
+                  </Ripples>
+                )}
+                {paper && paper.url && (
+                  <Ripples
+                    className={css(
+                      styles.actionIcon,
+                      styles.downloadActionIcon
+                    )}
+                    onClick={() => openExternalLink(paper.url)}
+                  >
+                    <i className="far fa-external-link" />
+                  </Ripples>
+                )}
+              </Fragment>
+            )}
+            {!isModerator ? (
+              <FlagButton
+                paperId={paper.id}
+                flagged={flagged}
+                setFlag={setFlag}
+                style={styles.actionIcon}
+              />
+            ) : (
+              <ActionButton isModerator={isModerator} paperId={paper.id} />
+            )}
+          </div>
+        </div>
+      );
+    }
   };
 
   render() {
     let { paper, score, upvote, downvote, selectedVoteType } = this.props;
-    let { scrollView, fetching, previews, figureUrls } = this.state;
+    let { scrollView, fetching, previews, figureUrls, loading } = this.state;
+
+    if (loading) {
+      return (
+        <div
+          className={css(
+            styles.container,
+            scrollView && scrollStyles.container
+          )}
+          ref={this.containerRef}
+        >
+          <ReactPlaceholder
+            ready={false}
+            showLoadingAnimation
+            customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
+          />
+        </div>
+      );
+    }
 
     return (
       <div
         className={css(styles.container, scrollView && scrollStyles.container)}
         ref={this.containerRef}
       >
-        <div className={css(styles.voting)}>
+        <div className={css(styles.voting, scrollView && scrollStyles.voting)}>
           <VoteWidget
             score={score}
             onUpvote={upvote}
@@ -329,7 +420,6 @@ class PaperPageCard extends React.Component {
             isPaper={true}
           />
         </div>
-        {this.renderPreview()}
         {figureUrls.length > 0 && (
           <FsLightbox
             toggler={this.state.toggleLightbox}
@@ -344,104 +434,115 @@ class PaperPageCard extends React.Component {
             !fetching && previews.length === 0 && styles.emptyPreview
           )}
         >
-          <div
-            className={css(
-              styles.cardContainer,
-              !fetching && previews.length === 0 && styles.emptyPreview
-            )}
-          >
-            {this.renderTopRow()}
-            <div className={css(styles.titleHeader)}>
-              <div
-                className={css(
-                  styles.title,
-                  paper.paper_title &&
-                    paper.paper_title !== paper.title &&
-                    styles.titleMargin,
-                  scrollView && scrollStyles.title
-                )}
-              >
-                {paper && paper.title}
-              </div>
-              {paper.paper_title &&
-                paper.paper_title !== paper.title &&
-                (!scrollView && (
-                  <div className={css(styles.subtitle)}>
-                    {paper.paper_title}
-                  </div>
-                ))}
-              {paper && paper.tagline && (
-                <div className={css(styles.tagline)}>{paper.tagline}</div>
+          {this.renderTopRow()}
+          <div className={css(styles.row)}>
+            <div
+              className={css(
+                styles.cardContainer,
+                !fetching && previews.length === 0 && styles.emptyPreview
               )}
-            </div>
-
-            {!scrollView && (
-              <Fragment>
-                <div className={css(styles.dateAuthorContainer)}>
-                  {paper && paper.paper_publish_date && (
-                    <div className={css(styles.publishDate)}>
-                      <span className={css(styles.label)}>Published:</span>
-                      {this.renderPublishDate()}
-                    </div>
+            >
+              <div className={css(styles.metaContainer)}>
+                <div
+                  className={css(
+                    styles.titleHeader,
+                    scrollView && scrollStyles.titleHeader
                   )}
-                  {paper && paper.authors && (
-                    <div className={css(styles.authors)}>
-                      {this.renderAuthors()}
-                    </div>
+                >
+                  <div
+                    className={css(
+                      styles.title,
+                      paper.paper_title &&
+                        paper.paper_title !== paper.title &&
+                        styles.titleMargin,
+                      scrollView && scrollStyles.title
+                    )}
+                  >
+                    {paper && paper.title}
+                  </div>
+                  {paper.paper_title &&
+                    paper.paper_title !== paper.title &&
+                    (!scrollView && (
+                      <div className={css(styles.subtitle)}>
+                        {paper.paper_title}
+                      </div>
+                    ))}
+                  {paper && paper.tagline && !scrollView && (
+                    <div className={css(styles.tagline)}>{paper.tagline}</div>
                   )}
                 </div>
-                {paper && paper.doi && (
-                  <div className={css(styles.doiDate)}>
-                    <span className={css(styles.label, styles.doi)}>DOI:</span>
-                    {paper.doi}
-                  </div>
+                {!scrollView && (
+                  <Fragment>
+                    <div className={css(styles.dateAuthorContainer)}>
+                      {paper && paper.paper_publish_date && (
+                        <div className={css(styles.publishDate)}>
+                          <span className={css(styles.label)}>Published:</span>
+                          {this.renderPublishDate()}
+                        </div>
+                      )}
+                      {paper && paper.authors && (
+                        <div className={css(styles.authors)}>
+                          {this.renderAuthors()}
+                        </div>
+                      )}
+                    </div>
+                    {paper && paper.doi && (
+                      <div className={css(styles.doiDate)}>
+                        <span className={css(styles.label, styles.doi)}>
+                          DOI:
+                        </span>
+                        {paper.doi}
+                      </div>
+                    )}
+                  </Fragment>
                 )}
-              </Fragment>
-            )}
-          </div>
-          {!scrollView && (
-            <div className={css(styles.buttonRow)}>
-              {paper && paper.file && (
-                <Button
-                  label={() => {
-                    return (
-                      <span>
-                        <span className={css(styles.downloadIcon)}>
-                          <i className="far fa-arrow-to-bottom" />
-                        </span>
-                        Download PDF
-                      </span>
-                    );
-                  }}
-                  customButtonStyle={styles.button}
-                  customLabelStyle={scrollView && scrollStyles.button}
-                  size={"med"}
-                  hideRipples={false}
-                  onClick={this.downloadPDF}
-                />
-              )}
-              {paper && paper.url && (
-                <Button
-                  label={() => {
-                    return (
-                      <span>
-                        <span className={css(styles.viewIcon)}>
-                          <i className="far fa-external-link"></i>
-                        </span>
-                        View Externally
-                      </span>
-                    );
-                  }}
-                  customButtonStyle={styles.buttonRight}
-                  customLabelStyle={scrollView && scrollStyles.buttonRight}
-                  isWhite={true}
-                  size={"med"}
-                  hideRipples={false}
-                  onClick={() => openExternalLink(paper.url)}
-                />
+              </div>
+              {!scrollView && (
+                <div className={css(styles.buttonRow)}>
+                  {paper && paper.file && (
+                    <Button
+                      label={() => {
+                        return (
+                          <span>
+                            <span className={css(styles.downloadIcon)}>
+                              <i className="far fa-arrow-to-bottom" />
+                            </span>
+                            Download PDF
+                          </span>
+                        );
+                      }}
+                      customButtonStyle={styles.button}
+                      customLabelStyle={scrollView && scrollStyles.button}
+                      size={"med"}
+                      hideRipples={false}
+                      onClick={this.downloadPDF}
+                    />
+                  )}
+                  {paper && paper.url && (
+                    <Button
+                      label={() => {
+                        return (
+                          <span>
+                            <span className={css(styles.viewIcon)}>
+                              <i className="far fa-external-link"></i>
+                            </span>
+                            View Externally
+                          </span>
+                        );
+                      }}
+                      customButtonStyle={styles.buttonRight}
+                      customLabelStyle={scrollView && scrollStyles.buttonRight}
+                      isWhite={true}
+                      size={"med"}
+                      hideRipples={false}
+                      onClick={() => openExternalLink(paper.url)}
+                    />
+                  )}
+                </div>
               )}
             </div>
-          )}
+            {this.renderPreview()}
+          </div>
         </div>
       </div>
     );
@@ -458,11 +559,10 @@ const styles = StyleSheet.create({
   previewContainer: {
     minWidth: 220,
     width: 220,
-    height: 333,
-    minHeight: 333,
+    height: 300,
+    minHeight: 300,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
-    marginRight: 30,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -481,9 +581,12 @@ const styles = StyleSheet.create({
     width: "100%",
     minWidth: "100%",
     maxWidth: "100%",
-    height: 333,
-    minHeight: 333,
-    maxHeight: 333,
+    height: "100%",
+    minHeight: 300,
+    maxHeight: 300,
+    // height: 333,
+    // minHeight: 333,
+    // maxHeight: 333,
     objectFit: "contain",
     "@media only screen and (max-width: 1280px)": {},
   },
@@ -492,9 +595,17 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     width: "100%",
-    minHeight: 333,
+    // minHeight: 333,
   },
   cardContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    position: "relative",
+    width: "100%",
+    boxSizing: "border-box",
+  },
+  metaContainer: {
     display: "flex",
     flexDirection: "column",
     position: "relative",
@@ -505,6 +616,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    width: "100%",
     marginBottom: 15,
   },
   hubTags: {
@@ -662,11 +774,29 @@ const styles = StyleSheet.create({
       borderColor: "#3E43E8",
     },
   },
+  noMargin: {
+    margin: 0,
+  },
   borderRadius: {
     borderRadius: "50%",
   },
   middleIcon: {
     margin: "0px 10px",
+  },
+  row: {
+    display: "flex",
+    alignItems: "flex-start",
+  },
+  mobileContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  mobileVoting: {
+    display: "none",
+    "@media only screen and (max-width: 768px)": {
+      display: "flex",
+    },
   },
 });
 
@@ -760,6 +890,15 @@ const scrollStyles = StyleSheet.create({
   column: {
     minHeight: "unset",
   },
+  actions: {
+    position: "absolute",
+    top: 35,
+    right: -75,
+  },
+  titleHeader: {
+    marginBottom: 5,
+    paddingTop: 15,
+  },
   title: {
     fontSize: 24,
     "@media only screen and (max-width: 1280px)": {
@@ -778,6 +917,9 @@ const scrollStyles = StyleSheet.create({
   buttonRight: {
     fontSize: 14,
     padding: 0,
+  },
+  voting: {
+    top: 15,
   },
 });
 export default PaperPageCard;
