@@ -37,13 +37,13 @@ const PaperTabBar = (props) => {
       setSelectedTab("main");
       return;
     }
-    if (window.scrollY >= 1399 + 350) {
+    if (window.scrollY >= 1737) {
       setSelectedTab("Paper PDF");
-    } else if (window.scrollY >= 1170 + 350) {
+    } else if (window.scrollY >= 1516) {
       setSelectedTab("cited by");
     } else if (window.scrollY >= 739 + 350) {
       setSelectedTab("discussions");
-    } else if (window.scrollY >= 346 + 350) {
+    } else if (window.scrollY >= 335 + 350) {
       setSelectedTab("description");
     } else if (window.scrollY >= 25 + 350) {
       setSelectedTab("key takeaway");
