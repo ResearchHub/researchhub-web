@@ -13,11 +13,6 @@ const PaperTabBar = (props) => {
     props.tabName ? props.tabName : "main"
   );
   const {
-    keyTakeawayRef,
-    descriptionRef,
-    discussionRef,
-    paperPdfRef,
-    citationRef,
     scrollView,
   } = props;
 
@@ -32,20 +27,36 @@ const PaperTabBar = (props) => {
     return () => window.removeEventListener("scroll", scrollListener);
   }, [scrollListener]);
 
+  const calculateOffset = (id, offset) => {
+    let offsetElement = document.getElementById(id);
+    if (!offsetElement) {
+      return 100000000;
+    }
+    return offsetElement.offsetTop + offsetElement.offsetHeight + offset;
+  };
+
   function scrollListener() {
     if (!scrollView) {
       setSelectedTab("main");
       return;
     }
-    if (window.scrollY >= 1737) {
+
+    let navbarHeight = 157.5 + 20;
+    if (window.scrollY >= calculateOffset("citedby-tab", -navbarHeight)) {
       setSelectedTab("Paper PDF");
-    } else if (window.scrollY >= 1516) {
+    } else if (
+      window.scrollY >= calculateOffset("discussions-tab", -navbarHeight)
+    ) {
       setSelectedTab("cited by");
-    } else if (window.scrollY >= 739 + 350) {
+    } else if (
+      window.scrollY >= calculateOffset("descriptions-tab", -navbarHeight)
+    ) {
       setSelectedTab("discussions");
-    } else if (window.scrollY >= 335 + 350) {
+    } else if (
+      window.scrollY >= calculateOffset("takeaways-tab", -navbarHeight)
+    ) {
       setSelectedTab("description");
-    } else if (window.scrollY >= 25 + 350) {
+    } else if (window.scrollY >= 15 + 350) {
       setSelectedTab("key takeaway");
     } else if (window.scrollY <= 10 + 350) {
       setSelectedTab("main");
@@ -67,75 +78,19 @@ const PaperTabBar = (props) => {
   }
 
   function scrollToPage(label) {
-    let { setSticky, sticky, paperCardRef } = props;
-    let offset = paperCardRef.current.clientHeight + 100;
-    !sticky && setSticky(true);
-    // setSelectedTab(label);
+    setSelectedTab(label);
     if (label === "main" || label === "summary") {
+      setSelectedTab("main");
       window.scrollTo({
         behavior: "auto",
         top: 0,
       });
     }
-    // if (label === "key takeaway" || label === 'key-takeaway') {
-    //   sticky
-    //     ? window.scrollTo({
-    //         behavior: "smooth",
-    //         top: keyTakeawayRef.current.offsetTop - offset,
-    //       })
-    //     : window.scrollTo({
-    //         behavior: "smooth",
-    //         top: keyTakeawayRef.current.offsetTop - offset + 80,
-    //       });
-    // } else if (label === "description") {
-    //   sticky
-    //     ? window.scrollTo({
-    //         behavior: "smooth",
-    //         top: descriptionRef.current.offsetTop - offset,
-    //       })
-    //     : window.scrollTo({
-    //         behavior: "smooth",
-    //         top: descriptionRef.current.offsetTop - offset + 80,
-    //       });
-    // } else if (label === "discussions" || label === 'discussion') {
-    //   sticky
-    //     ? window.scrollTo({
-    //         behavior: "smooth",
-    //         top: discussionRef.current.offsetTop - offset,
-    //       })
-    //     : window.scrollTo({
-    //         behavior: "smooth",
-    //         top: discussionRef.current.offsetTop - offset + 80,
-    //       });
-    // } else if (label === "cited by" || label === 'citations') {
-    //   sticky
-    //     ? window.scrollTo({
-    //         behavior: "smooth",
-    //         top: citationRef.current.offsetTop - offset,
-    //       })
-    //     : window.scrollTo({
-    //         behavior: "smooth",
-    //         top: citationRef.current.offsetTop - offset + 80,
-    //       });
-    // } else if (label === "Paper PDF" || label === 'full' ) {
-    //   sticky
-    //     ? window.scrollTo({
-    //         behavior: "smooth",
-    //         top: paperPdfRef.current.offsetTop - offset,
-    //       })
-    //     : window.scrollTo({
-    //         behavior: "smooth",
-    //         top: paperPdfRef.current.offsetTop - offset + 80,
-    //       });
-    // }
   }
 
   function renderTab({ key, href, label, ui }, selected, index) {
-    const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
-
     let isSelected = false;
     let classNames = [styles.tab];
-
     if (label === selected || href === selected) {
       isSelected = true;
       classNames.push(styles.selected);
@@ -144,9 +99,7 @@ const PaperTabBar = (props) => {
     if (index === 2) {
       classNames.push(styles.lastTab);
     }
-    // href = `/paper/${props.baseUrl}/${href}/`};
     return (
-      // <Link key={key} href={DYNAMIC_HREF} as={`/paper/${props.baseUrl}/${href}/`}>
       <a href={`#${href}`} className={css(styles.tag)}>
         <div
           className={css(classNames)}
@@ -158,7 +111,6 @@ const PaperTabBar = (props) => {
           </div>
         </div>
       </a>
-      // </Link>
     );
   }
 

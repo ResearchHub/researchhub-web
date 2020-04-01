@@ -345,9 +345,6 @@ const DiscussionTab = (props) => {
           </div>
           <div className={css(styles.box, !addView && styles.right)}>
             <div className={css(styles.addDiscussionContainer)}>
-              {/* {showEditor
-                ? renderDiscussionTextEditor()
-                : renderAddDiscussion()} */}
               {showEditor && renderDiscussionTextEditor()}
             </div>
             <div className={css(styles.rowContainer)}>
@@ -371,23 +368,6 @@ const DiscussionTab = (props) => {
               </div>
             </div>
           </div>
-          {/* <InfiniteScroll
-            loadMore={fetchDiscussionThreads}
-            initialLoad={false}
-            hasMore={
-              store.getState().paper.discussion.threads.length <
-              store.getState().paper.discussion.count
-            }
-            loader={
-              <Loader
-                loading={true}
-                key={`thread-loader`}
-                size={10}
-                type="beat"
-              />
-            }
-            threshold={0}
-          > */}
           {renderThreads(formattedThreads, hostname)}
           {store.getState().paper.discussion.threads.length <
             store.getState().paper.discussion.count && (
@@ -409,7 +389,6 @@ const DiscussionTab = (props) => {
               )}
             </div>
           )}
-          {/* </InfiniteScroll> */}
         </div>
       ) : (
         <div
