@@ -7,19 +7,14 @@ import Joyride from "react-joyride";
 import Error from "next/error";
 
 // Components
-import ActionButton from "~/components/ActionButton";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import ShareAction from "~/components/ShareAction";
-import VoteWidget from "~/components/VoteWidget";
 import HubTag from "~/components/Hubs/HubTag";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import FlagButton from "~/components/FlagButton";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 
@@ -27,13 +22,10 @@ import CitationCard from "~/components/Paper/CitationCard";
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
-import { ModalActions } from "~/redux/modals";
 import VoteActions from "~/redux/vote";
-import { FlagActions } from "~/redux/flags";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
@@ -49,6 +41,7 @@ const Paper = (props) => {
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
   const [flagged, setFlag] = useState(paper.user_flag !== null);
   const [sticky, setSticky] = useState(false);
+  const [scrollView, setScrollView] = useState(false);
   const [discussionThreads, setDiscussionThreads] = useState(
     getDiscussionThreads(paper)
   );
@@ -106,9 +99,14 @@ const Paper = (props) => {
     refetchPaper();
   }, [props.isServer, paperId]);
 
+  useEffect(() => {
+    window.addEventListener("scroll", scrollListener);
+
+    return () => window.removeEventListener("scroll", scrollListener);
+  }, [scrollListener]);
+
   function getDiscussionThreads(paper) {
     return paper.discussion.threads;
-    // return getNestedValue(paper, ["discussion", "threads"]);
   }
 
   async function upvote() {
@@ -140,63 +138,6 @@ const Paper = (props) => {
     }
   }
 
-  let renderTabContent = () => {
-    switch (tabName) {
-      case "summary":
-        return <SummaryTab paperId={paperId} paper={paper} />;
-      case "discussion":
-        return (
-          <DiscussionTab
-            hostname={hostname}
-            paperId={paperId}
-            threads={discussionThreads}
-          />
-        );
-      case "full":
-        return <PaperTab paperId={paperId} paper={paper} />;
-      case "citations":
-        return null;
-    }
-  };
-
-  function renderAuthors() {
-    let authors =
-      paper &&
-      paper.authors.map((author, index) => {
-        return (
-          <div className={css(styles.authorContainer)} key={`author_${index}`}>
-            <AuthorAvatar author={author} size={30} />
-          </div>
-        );
-      });
-    return authors;
-  }
-
-  function renderHubs() {
-    let hubs =
-      paper &&
-      paper.hubs.map((hub, index) => {
-        return <HubTag tag={hub} gray={true} />;
-      });
-    return hubs;
-  }
-
-  function renderPublishDate() {
-    if (paper.paper_publish_date) {
-      return (
-        <div className={css(styles.info)}>
-          {formatPublishedDate(moment(paper.paper_publish_date))}
-        </div>
-      );
-    }
-  }
-
-  function navigateToEditPaperInfo() {
-    let href = "/paper/upload/info/[paperId]";
-    let as = `/paper/upload/info/${paperId}`;
-    Router.push(href, as);
-  }
-
   function onJoyrideComplete(joyrideState) {
     let { auth, updateUser, setUploadingPaper } = props;
     if (
@@ -216,142 +157,13 @@ const Paper = (props) => {
     }
   }
 
-  function renderDeprecated() {
-    {
-      /* <div className={css(styles.header)}>
-              <div className={css(styles.voting)}>
-                <VoteWidget
-                  score={score}
-                  onUpvote={upvote}
-                  onDownvote={downvote}
-                  selected={selectedVoteType}
-                  isPaper={true}
-                />
-              </div>
-              <div className={css(styles.actionButtons)}>
-                <PermissionNotificationWrapper
-                  modalMessage="edit papers"
-                  onClick={navigateToEditPaperInfo}
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  styling={styles.actionButton}
-                >
-                  <ActionButton
-                    className={"first-step"}
-                    icon={"fas fa-pencil"}
-                  />
-                </PermissionNotificationWrapper>
-                <ShareAction
-                  iconNode={icons.shareAlt}
-                  addRipples={true}
-                  title={"Share this paper"}
-                  subtitle={paperTitle}
-                  url={shareUrl}
-                />
-                {!isModerator ? (
-                  <FlagButton
-                    paperId={paper.id}
-                    flagged={flagged}
-                    setFlag={setFlag}
-                  />
-                ) : (
-                  <ActionButton isModerator={isModerator} paperId={paper.id} />
-                )}
-              </div>
-              <div className={css(styles.topHeader)}>
-                <div className={css(styles.title)}>
-                  {paper && paper.title}
-                  {paper.paper_title && paper.paper_title !== paper.title && (
-                    <div className={css(styles.info)}>
-                      From Paper: {paper.paper_title}
-                    </div>
-                  )}
-                </div>
-                <span className={css(styles.mobileRow)}>
-                  <div className={css(styles.mobileVoting)}>
-                    <VoteWidget
-                      score={score}
-                      onUpvote={upvote}
-                      onDownvote={downvote}
-                      selected={selectedVoteType}
-                      horizontalView={true}
-                      isPaper={true}
-                    />
-                  </div>
-                </span>
-              </div>
-              <div className={css(styles.mobileInfoSection)}>
-                {renderPublishDate()}
-              </div>
-              <div className={css(styles.tags)}>
-                <div
-                  className={css(
-                    styles.authors,
-                    paper.authors.length < 1 && styles.hide
-                  )}
-                >
-                  {renderAuthors()}
-                </div>
-                <div className={css(styles.hubs)}>{renderHubs()}</div>
-              </div>
-              {paper && paper.tagline && (
-                <div className={css(styles.tagline)}>{paper.tagline}</div>
-              )}
-              {paper.doi && (
-                <div className={css(styles.mobileDoi)}>
-                  <div className={css(styles.info)}>
-                    DOI: {paper && paper.doi}
-                  </div>
-                </div>
-              )}
-              <div className={css(styles.infoSection)}>
-                {renderPublishDate()}
-                {paper.doi && (
-                  <div className={css(styles.info)}>
-                    DOI: {paper && paper.doi}
-                  </div>
-                )}
-              </div>
-              <div className={css(styles.mobileTags)}>
-                <div
-                  className={css(
-                    styles.authors,
-                    paper.authors.length < 1 && styles.hide
-                  )}
-                >
-                  {renderAuthors()}
-                </div>
-                <div className={css(styles.hubs)}>{renderHubs()}</div>
-                <PermissionNotificationWrapper
-                  modalMessage="edit papers"
-                  onClick={navigateToEditPaperInfo}
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  styling={styles.actionButton}
-                >
-                  <ActionButton
-                    className={"first-step"}
-                    icon={"fas fa-pencil"}
-                  />
-                </PermissionNotificationWrapper>
-                <ShareAction
-                  iconNode={icons.shareAlt}
-                  addRipples={true}
-                  title={"Share this paper"}
-                  subtitle={paperTitle}
-                  url={shareUrl}
-                />
-                {!isModerator ? (
-                  <FlagButton
-                    paperId={paper.id}
-                    flagged={flagged}
-                    setFlag={setFlag}
-                  />
-                ) : (
-                  <ActionButton isModerator={isModerator} paperId={paper.id} />
-                )}
-              </div>
-            </div> */
+  function scrollListener() {
+    if (!scrollView && window.scrollY >= 425) {
+      setScrollView(true);
+      setSticky(true);
+    } else if (scrollView && window.scrollY < 10) {
+      setScrollView(false);
+      setSticky(false);
     }
   }
 
@@ -362,7 +174,10 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
-          <div className={css(styles.stickyComponent)} ref={paperCardRef}>
+          <div
+            className={css(scrollView && styles.stickyComponent)}
+            ref={paperCardRef}
+          >
             <ComponentWrapper overrideStyle={styles.componentWrapper}>
               <PaperPageCard
                 paper={paper}
@@ -375,6 +190,7 @@ const Paper = (props) => {
                 flagged={flagged}
                 setFlag={setFlag}
                 sticky={sticky}
+                scrollView={scrollView}
                 setSticky={setSticky}
               />
             </ComponentWrapper>
@@ -391,6 +207,7 @@ const Paper = (props) => {
               paperCardRef={paperCardRef}
               sticky={sticky}
               setSticky={setSticky}
+              scrollView={scrollView}
             />
           </div>
           <div
@@ -685,7 +502,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   scrollPadding: {
-    paddingTop: 100,
+    paddingTop: 450,
   },
   citationContainer: {
     backgroundColor: "#fff",
