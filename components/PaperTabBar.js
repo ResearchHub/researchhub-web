@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors, { paperTabColors } from "~/config/themes/colors";
@@ -10,7 +10,9 @@ import { useEffect } from "react";
 
 const PaperTabBar = (props) => {
   // const selectedTab = props.selectedTab;
-  const [selectedTab, setSelectedTab] = useState("main");
+  const [selectedTab, setSelectedTab] = useState(
+    props.tabName ? props.tabName : "main"
+  );
   const {
     keyTakeawayRef,
     descriptionRef,
@@ -19,6 +21,11 @@ const PaperTabBar = (props) => {
     citationRef,
     scrollView,
   } = props;
+
+  userEffect(() => {
+    setSelectedTab(props.tabName);
+    scrollToPage(props.tabName);
+  }, [props.tabName]);
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
@@ -46,21 +53,14 @@ const PaperTabBar = (props) => {
     }
   }
 
+
   const tabs = [
     { href: "main", label: "main" },
-    { href: "key takeaway", label: "key takeaway" },
+    { href: "takeaways", label: "key takeaway" },
     { href: "description", label: "description" },
-    {
-      href: "discussion",
-      label: "discussions",
-    },
-    {
-      href: "citations",
-      label: "cited by",
-    },
-    { href: "full", label: "Paper PDF" },
-    // TODO: Add citations tab
-    // { href: "citations", label: "citations" },
+    { href: "discussions", label: "discussions" },
+    { href: "citations", label: "cited by" },
+    { href: "paper", label: "Paper PDF" },
   ].map(formatTabs);
 
   function formatTabs(tab) {
@@ -73,63 +73,63 @@ const PaperTabBar = (props) => {
     let offset = paperCardRef.current.clientHeight + 100;
 
     // setSelectedTab(label);
-    if (label === "main") {
+    if (label === "main" || label === "summary") {
       window.scrollTo({
         behavior: "smooth",
         top: 0,
       });
     }
-    if (label === "key takeaway") {
-      sticky
-        ? window.scrollTo({
-            behavior: "smooth",
-            top: keyTakeawayRef.current.offsetTop - offset,
-          })
-        : window.scrollTo({
-            behavior: "smooth",
-            top: keyTakeawayRef.current.offsetTop - offset + 80,
-          });
-    } else if (label === "description") {
-      sticky
-        ? window.scrollTo({
-            behavior: "smooth",
-            top: descriptionRef.current.offsetTop - offset,
-          })
-        : window.scrollTo({
-            behavior: "smooth",
-            top: descriptionRef.current.offsetTop - offset + 80,
-          });
-    } else if (label === "discussions") {
-      sticky
-        ? window.scrollTo({
-            behavior: "smooth",
-            top: discussionRef.current.offsetTop - offset,
-          })
-        : window.scrollTo({
-            behavior: "smooth",
-            top: discussionRef.current.offsetTop - offset + 80,
-          });
-    } else if (label === "cited by") {
-      sticky
-        ? window.scrollTo({
-            behavior: "smooth",
-            top: citationRef.current.offsetTop - offset,
-          })
-        : window.scrollTo({
-            behavior: "smooth",
-            top: citationRef.current.offsetTop - offset + 80,
-          });
-    } else if (label === "Paper PDF") {
-      sticky
-        ? window.scrollTo({
-            behavior: "smooth",
-            top: paperPdfRef.current.offsetTop - offset,
-          })
-        : window.scrollTo({
-            behavior: "smooth",
-            top: paperPdfRef.current.offsetTop - offset + 80,
-          });
-    }
+    // if (label === "key takeaway" || label === 'key-takeaway') {
+    //   sticky
+    //     ? window.scrollTo({
+    //         behavior: "smooth",
+    //         top: keyTakeawayRef.current.offsetTop - offset,
+    //       })
+    //     : window.scrollTo({
+    //         behavior: "smooth",
+    //         top: keyTakeawayRef.current.offsetTop - offset + 80,
+    //       });
+    // } else if (label === "description") {
+    //   sticky
+    //     ? window.scrollTo({
+    //         behavior: "smooth",
+    //         top: descriptionRef.current.offsetTop - offset,
+    //       })
+    //     : window.scrollTo({
+    //         behavior: "smooth",
+    //         top: descriptionRef.current.offsetTop - offset + 80,
+    //       });
+    // } else if (label === "discussions" || label === 'discussion') {
+    //   sticky
+    //     ? window.scrollTo({
+    //         behavior: "smooth",
+    //         top: discussionRef.current.offsetTop - offset,
+    //       })
+    //     : window.scrollTo({
+    //         behavior: "smooth",
+    //         top: discussionRef.current.offsetTop - offset + 80,
+    //       });
+    // } else if (label === "cited by" || label === 'citations') {
+    //   sticky
+    //     ? window.scrollTo({
+    //         behavior: "smooth",
+    //         top: citationRef.current.offsetTop - offset,
+    //       })
+    //     : window.scrollTo({
+    //         behavior: "smooth",
+    //         top: citationRef.current.offsetTop - offset + 80,
+    //       });
+    // } else if (label === "Paper PDF" || label === 'full' ) {
+    //   sticky
+    //     ? window.scrollTo({
+    //         behavior: "smooth",
+    //         top: paperPdfRef.current.offsetTop - offset,
+    //       })
+    //     : window.scrollTo({
+    //         behavior: "smooth",
+    //         top: paperPdfRef.current.offsetTop - offset + 80,
+    //       });
+    // }
   }
 
   function renderTab({ key, href, label, ui }, selected, index) {
@@ -138,7 +138,7 @@ const PaperTabBar = (props) => {
     let isSelected = false;
     let classNames = [styles.tab];
 
-    if (label === selected) {
+    if (label === selected || href === selected) {
       isSelected = true;
       classNames.push(styles.selected);
     }
@@ -146,18 +146,20 @@ const PaperTabBar = (props) => {
     if (index === 2) {
       classNames.push(styles.lastTab);
     }
-
+    // href = `/paper/${props.baseUrl}/${href}/`};
     return (
-      // <Link key={key} href={DYNAMIC_HREF} as={href}>
-      <div
-        className={css(classNames)}
-        onClick={() => scrollToPage(label)}
-        key={`paper_tab_bar_${index}`}
-      >
-        <div className={css(styles.link)}>
-          {label} {ui && ui(isSelected)}
+      // <Link key={key} href={DYNAMIC_HREF} as={`/paper/${props.baseUrl}/${href}/`}>
+      <a href={`#${href}`} className={css(styles.tag)}>
+        <div
+          className={css(classNames)}
+          onClick={() => scrollToPage(label)}
+          key={`paper_tab_bar_${index}`}
+        >
+          <div className={css(styles.link)}>
+            {label} {ui && ui(isSelected)}
+          </div>
         </div>
-      </div>
+      </a>
       // </Link>
     );
   }
@@ -282,6 +284,10 @@ const styles = StyleSheet.create({
     color: paperTabColors.SELECTED,
     borderBottom: "solid 3px",
     borderColor: paperTabColors.SELECTED,
+  },
+  tag: {
+    color: "unset",
+    textDecoration: "unset",
   },
 });
 
