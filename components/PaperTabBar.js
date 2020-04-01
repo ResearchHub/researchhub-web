@@ -6,7 +6,6 @@ import { paperTabFont } from "~/config/themes/fonts";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
-import { useEffect } from "react";
 
 const PaperTabBar = (props) => {
   // const selectedTab = props.selectedTab;
@@ -22,7 +21,7 @@ const PaperTabBar = (props) => {
     scrollView,
   } = props;
 
-  userEffect(() => {
+  useEffect(() => {
     setSelectedTab(props.tabName);
     scrollToPage(props.tabName);
   }, [props.tabName]);
@@ -52,7 +51,6 @@ const PaperTabBar = (props) => {
       setSelectedTab("main");
     }
   }
-
 
   const tabs = [
     { href: "main", label: "main" },
@@ -137,7 +135,7 @@ const PaperTabBar = (props) => {
 
     let isSelected = false;
     let classNames = [styles.tab];
-
+    console.log("selected", selected);
     if (label === selected || href === selected) {
       isSelected = true;
       classNames.push(styles.selected);

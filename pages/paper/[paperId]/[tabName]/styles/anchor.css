@@ -1,8 +1,8 @@
 :target:before {
   content: "";
   display: block;
-  height: 180px; /* fixed header height*/
-  margin: -180px 0 0; /* negative fixed header height */
+  height: 160px; /* fixed header height*/
+  margin: -160px 0 0; /* negative fixed header height */
 }
 
 #main {
