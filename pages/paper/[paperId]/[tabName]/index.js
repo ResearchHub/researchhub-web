@@ -161,8 +161,8 @@ const Paper = (props) => {
   function scrollListener() {
     if (
       !scrollView &&
-      window.scrollY >=
-        document.getElementById("paper-navigation").offsetTop - 79
+      window.scrollY >= 5
+      // document.getElementById("paper-navigation").offsetTop - 79
     ) {
       setScrollView(true);
       setSticky(true);
@@ -179,26 +179,24 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
-          <div
-            className={css(scrollView && styles.stickyComponent)}
-            ref={paperCardRef}
-          >
-            <ComponentWrapper overrideStyle={styles.componentWrapper}>
-              <PaperPageCard
-                paper={paper}
-                score={score}
-                upvote={upvote}
-                downvote={downvote}
-                selected={selectedVoteType}
-                shareUrl={shareUrl}
-                isModerator={isModerator}
-                flagged={flagged}
-                setFlag={setFlag}
-                sticky={sticky}
-                scrollView={scrollView}
-                setSticky={setSticky}
-              />
-            </ComponentWrapper>
+
+          <ComponentWrapper overrideStyle={styles.componentWrapper}>
+            <PaperPageCard
+              paper={paper}
+              score={score}
+              upvote={upvote}
+              downvote={downvote}
+              selected={selectedVoteType}
+              shareUrl={shareUrl}
+              isModerator={isModerator}
+              flagged={flagged}
+              setFlag={setFlag}
+              sticky={sticky}
+              scrollView={scrollView}
+              setSticky={setSticky}
+            />
+          </ComponentWrapper>
+          <div className={css(styles.stickyComponent)} ref={paperCardRef}>
             <PaperTabBar
               baseUrl={paperId}
               selectedTab={tabName}
@@ -215,12 +213,11 @@ const Paper = (props) => {
               scrollView={scrollView}
               tabName={tabName}
             />
-            {/* </a> */}
           </div>
           <div
             className={css(
-              styles.contentContainer,
-              sticky && styles.scrollPadding
+              styles.contentContainer
+              // sticky && styles.scrollPadding
             )}
           >
             <SummaryTab
@@ -517,7 +514,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   stickyComponent: {
-    top: 78,
+    top: 80,
     position: "sticky",
     backgroundColor: "#FFF",
     zIndex: 3,

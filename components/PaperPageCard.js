@@ -118,13 +118,13 @@ class PaperPageCard extends React.Component {
   renderPreview = () => {
     let { hovered, fetching, previews } = this.state;
     let { scrollView } = this.props;
-    if (scrollView) return;
+
     if (fetching) {
       return (
         <div
           className={css(
-            styles.previewContainer,
-            scrollView && scrollStyles.previewContainer
+            styles.previewContainer
+            // scrollView && scrollStyles.previewContainer
           )}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
@@ -141,8 +141,8 @@ class PaperPageCard extends React.Component {
       return (
         <div
           className={css(
-            styles.previewContainer,
-            scrollView && scrollStyles.previewContainer
+            styles.previewContainer
+            // scrollView && scrollStyles.previewContainer
           )}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
@@ -191,8 +191,8 @@ class PaperPageCard extends React.Component {
                   src={preview.file}
                   onClick={this.toggleLightbox}
                   className={css(
-                    styles.image,
-                    scrollView && scrollStyles.image
+                    styles.image
+                    // scrollView && scrollStyles.image
                   )}
                 />
               );
@@ -252,117 +252,84 @@ class PaperPageCard extends React.Component {
 
     let { scrollView } = this.props;
     let paperTitle = paper && paper.title;
-    if (scrollView) {
-      return (
-        <div className={css(styles.actions, scrollStyles.actions)}>
-          <Fragment>
-            {paper && paper.file && (
-              <Ripples
-                className={css(
-                  styles.actionIcon,
-                  styles.downloadActionIcon,
-                  !paper.url && styles.noMargin
-                )}
-                onClick={this.downloadPDF}
-              >
-                <i className="far fa-arrow-to-bottom" />
-              </Ripples>
-            )}
-            {paper && paper.url && (
-              <Ripples
-                className={css(
-                  styles.actionIcon,
-                  styles.downloadActionIcon,
-                  styles.noMargin
-                )}
-                onClick={() => openExternalLink(paper.url)}
-              >
-                <i className="far fa-external-link" />
-              </Ripples>
-            )}
-          </Fragment>
-        </div>
-      );
-    } else {
-      return (
-        <div className={css(styles.topRow)}>
-          <div className={css(styles.mobileContainer)}>
-            <div className={css(styles.mobileVoting)}>
-              <VoteWidget
-                score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                selected={selectedVoteType}
-                isPaper={true}
-                horizontalView={true}
-              />
-            </div>
-            <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
-          </div>
-          <div className={css(styles.actions)}>
-            <PermissionNotificationWrapper
-              modalMessage="edit papers"
-              onClick={this.navigateToEditPaperInfo}
-              permissionKey="UpdatePaper"
-              loginRequired={true}
-              hideRipples={false}
-              styling={styles.borderRadius}
-            >
-              <div className={css(styles.actionIcon)}>
-                <i className="far fa-pencil" />
-              </div>
-            </PermissionNotificationWrapper>
-            <ShareAction
-              addRipples={true}
-              title={"Share this paper"}
-              subtitle={paperTitle}
-              url={this.props.shareUrl}
-              customButton={
-                <div className={css(styles.actionIcon, styles.middleIcon)}>
-                  <i className="far fa-share-alt" />
-                </div>
-              }
+    return (
+      <div className={css(styles.topRow)}>
+        <div className={css(styles.mobileContainer)}>
+          <div className={css(styles.mobileVoting)}>
+            <VoteWidget
+              score={score}
+              onUpvote={upvote}
+              onDownvote={downvote}
+              selected={selectedVoteType}
+              isPaper={true}
+              horizontalView={true}
             />
-            {scrollView && (
-              <Fragment>
-                {paper && paper.file && (
-                  <Ripples
-                    className={css(
-                      styles.actionIcon,
-                      styles.downloadActionIcon
-                    )}
-                    onClick={this.downloadPDF}
-                  >
-                    <i className="far fa-arrow-to-bottom" />
-                  </Ripples>
-                )}
-                {paper && paper.url && (
-                  <Ripples
-                    className={css(
-                      styles.actionIcon,
-                      styles.downloadActionIcon
-                    )}
-                    onClick={() => openExternalLink(paper.url)}
-                  >
-                    <i className="far fa-external-link" />
-                  </Ripples>
-                )}
-              </Fragment>
-            )}
-            {!isModerator ? (
-              <FlagButton
-                paperId={paper.id}
-                flagged={flagged}
-                setFlag={setFlag}
-                style={styles.actionIcon}
-              />
-            ) : (
-              <ActionButton isModerator={isModerator} paperId={paper.id} />
-            )}
           </div>
+          <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
         </div>
-      );
-    }
+        <div className={css(styles.actions)}>
+          <PermissionNotificationWrapper
+            modalMessage="edit papers"
+            onClick={this.navigateToEditPaperInfo}
+            permissionKey="UpdatePaper"
+            loginRequired={true}
+            hideRipples={false}
+            styling={styles.borderRadius}
+          >
+            <div className={css(styles.actionIcon)}>
+              <i className="far fa-pencil" />
+            </div>
+          </PermissionNotificationWrapper>
+          <ShareAction
+            addRipples={true}
+            title={"Share this paper"}
+            subtitle={paperTitle}
+            url={this.props.shareUrl}
+            customButton={
+              <div className={css(styles.actionIcon, styles.middleIcon)}>
+                <i className="far fa-share-alt" />
+              </div>
+            }
+          />
+          {/* {scrollView && (
+            <Fragment>
+              {paper && paper.file && (
+                <Ripples
+                  className={css(
+                    styles.actionIcon,
+                    styles.downloadActionIcon
+                  )}
+                  onClick={this.downloadPDF}
+                >
+                  <i className="far fa-arrow-to-bottom" />
+                </Ripples>
+              )}
+              {paper && paper.url && (
+                <Ripples
+                  className={css(
+                    styles.actionIcon,
+                    styles.downloadActionIcon
+                  )}
+                  onClick={() => openExternalLink(paper.url)}
+                >
+                  <i className="far fa-external-link" />
+                </Ripples>
+              )}
+            </Fragment>
+          )} */}
+          {!isModerator ? (
+            <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            />
+          ) : (
+            <ActionButton isModerator={isModerator} paperId={paper.id} />
+          )}
+        </div>
+      </div>
+    );
   };
 
   render() {
@@ -395,23 +362,18 @@ class PaperPageCard extends React.Component {
     }
 
     return (
-      <div
-        className={css(styles.container, scrollView && scrollStyles.container)}
-        ref={this.containerRef}
-      >
-        {!scrollView && (
-          <div
-            className={css(styles.voting, scrollView && scrollStyles.voting)}
-          >
-            <VoteWidget
-              score={score}
-              onUpvote={upvote}
-              onDownvote={downvote}
-              selected={selectedVoteType}
-              isPaper={true}
-            />
-          </div>
-        )}
+      <div className={css(styles.container)} ref={this.containerRef}>
+        {/* {!scrollView && ( */}
+        <div className={css(styles.voting)}>
+          <VoteWidget
+            score={score}
+            onUpvote={upvote}
+            onDownvote={downvote}
+            selected={selectedVoteType}
+            isPaper={true}
+          />
+        </div>
+        {/* )} */}
         {figureUrls.length > 0 && (
           <FsLightbox
             toggler={this.state.toggleLightbox}
@@ -422,11 +384,10 @@ class PaperPageCard extends React.Component {
         <div
           className={css(
             styles.column,
-            scrollView && scrollStyles.column,
             !fetching && previews.length === 0 && styles.emptyPreview
           )}
         >
-          {!scrollView && this.renderTopRow()}
+          {this.renderTopRow()}
           <div className={css(styles.row)}>
             <div
               className={css(
@@ -434,108 +395,92 @@ class PaperPageCard extends React.Component {
                 !fetching && previews.length === 0 && styles.emptyPreview
               )}
             >
-              {!scrollView && (
-                <div className={css(styles.metaContainer)}>
+              <div className={css(styles.metaContainer)}>
+                <div className={css(styles.titleHeader)}>
                   <div
                     className={css(
-                      styles.titleHeader,
-                      scrollView && scrollStyles.titleHeader
+                      styles.title,
+                      paper.paper_title &&
+                        paper.paper_title !== paper.title &&
+                        styles.titleMargin
                     )}
                   >
-                    <div
-                      className={css(
-                        styles.title,
-                        paper.paper_title &&
-                          paper.paper_title !== paper.title &&
-                          styles.titleMargin,
-                        scrollView && scrollStyles.title
-                      )}
-                    >
-                      {paper && paper.title}
+                    {paper && paper.title}
+                  </div>
+                  {paper.paper_title && paper.paper_title !== paper.title && (
+                    <div className={css(styles.subtitle)}>
+                      {paper.paper_title}
                     </div>
-                    {paper.paper_title &&
-                      paper.paper_title !== paper.title &&
-                      (!scrollView && (
-                        <div className={css(styles.subtitle)}>
-                          {paper.paper_title}
-                        </div>
-                      ))}
-                    {paper && paper.tagline && !scrollView && (
-                      <div className={css(styles.tagline)}>{paper.tagline}</div>
+                  )}
+                  {paper && paper.tagline && (
+                    <div className={css(styles.tagline)}>{paper.tagline}</div>
+                  )}
+                </div>
+                <Fragment>
+                  <div className={css(styles.dateAuthorContainer)}>
+                    {paper && paper.paper_publish_date && (
+                      <div className={css(styles.publishDate)}>
+                        <span className={css(styles.label)}>Published:</span>
+                        {this.renderPublishDate()}
+                      </div>
+                    )}
+                    {paper && paper.authors && (
+                      <div className={css(styles.authors)}>
+                        {this.renderAuthors()}
+                      </div>
                     )}
                   </div>
-                  {!scrollView && (
-                    <Fragment>
-                      <div className={css(styles.dateAuthorContainer)}>
-                        {paper && paper.paper_publish_date && (
-                          <div className={css(styles.publishDate)}>
-                            <span className={css(styles.label)}>
-                              Published:
-                            </span>
-                            {this.renderPublishDate()}
-                          </div>
-                        )}
-                        {paper && paper.authors && (
-                          <div className={css(styles.authors)}>
-                            {this.renderAuthors()}
-                          </div>
-                        )}
-                      </div>
-                      {paper && paper.doi && (
-                        <div className={css(styles.doiDate)}>
-                          <span className={css(styles.label, styles.doi)}>
-                            DOI:
-                          </span>
-                          {paper.doi}
-                        </div>
-                      )}
-                    </Fragment>
+                  {paper && paper.doi && (
+                    <div className={css(styles.doiDate)}>
+                      <span className={css(styles.label, styles.doi)}>
+                        DOI:
+                      </span>
+                      {paper.doi}
+                    </div>
                   )}
-                </div>
-              )}
-              {!scrollView && (
-                <div className={css(styles.buttonRow)}>
-                  {paper && paper.file && (
-                    <Button
-                      label={() => {
-                        return (
-                          <span>
-                            <span className={css(styles.downloadIcon)}>
-                              <i className="far fa-arrow-to-bottom" />
-                            </span>
-                            Download PDF
+                </Fragment>
+              </div>
+              <div className={css(styles.buttonRow)}>
+                {paper && paper.file && (
+                  <Button
+                    label={() => {
+                      return (
+                        <span>
+                          <span className={css(styles.downloadIcon)}>
+                            <i className="far fa-arrow-to-bottom" />
                           </span>
-                        );
-                      }}
-                      customButtonStyle={styles.button}
-                      customLabelStyle={scrollView && scrollStyles.button}
-                      size={"med"}
-                      hideRipples={false}
-                      onClick={this.downloadPDF}
-                    />
-                  )}
-                  {paper && paper.url && !paper.file && (
-                    <Button
-                      label={() => {
-                        return (
-                          <span>
-                            <span className={css(styles.viewIcon)}>
-                              <i className="far fa-external-link"></i>
-                            </span>
-                            View Externally
+                          Download PDF
+                        </span>
+                      );
+                    }}
+                    customButtonStyle={styles.button}
+                    customLabelStyle={scrollStyles.button}
+                    size={"med"}
+                    hideRipples={false}
+                    onClick={this.downloadPDF}
+                  />
+                )}
+                {paper && paper.url && !paper.file && (
+                  <Button
+                    label={() => {
+                      return (
+                        <span>
+                          <span className={css(styles.viewIcon)}>
+                            <i className="far fa-external-link"></i>
                           </span>
-                        );
-                      }}
-                      customButtonStyle={styles.buttonRight}
-                      customLabelStyle={scrollView && scrollStyles.buttonRight}
-                      isWhite={true}
-                      size={"med"}
-                      hideRipples={false}
-                      onClick={() => openExternalLink(paper.url)}
-                    />
-                  )}
-                </div>
-              )}
+                          View Externally
+                        </span>
+                      );
+                    }}
+                    customButtonStyle={styles.buttonRight}
+                    customLabelStyle={scrollStyles.buttonRight}
+                    isWhite={true}
+                    size={"med"}
+                    hideRipples={false}
+                    onClick={() => openExternalLink(paper.url)}
+                  />
+                )}
+              </div>
             </div>
             {this.renderPreview()}
           </div>
