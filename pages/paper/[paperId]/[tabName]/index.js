@@ -278,6 +278,7 @@ const Paper = (props) => {
                   paperId={paperId}
                   paper={paper}
                   paperPdfRef={paperPdfRef}
+                  isModerator={isModerator}
                 />
               </div>
             </a>

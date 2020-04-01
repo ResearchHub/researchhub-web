@@ -34,7 +34,7 @@ import { openExternalLink } from "~/config/utils";
 import "./stylesheets/ReactPdf.css";
 
 function PaperTab(props) {
-  const { paper, paperId, paperPdfRef } = props;
+  const { paper, paperId, paperPdfRef, isModerator } = props;
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
@@ -152,9 +152,7 @@ function PaperTab(props) {
             <Page
               pageNumber={index + 1}
               key={`page_${index + 1}`}
-              width={
-                (isMobile || window.innerWidth < 761) && window.innerWidth - 80
-              }
+              width={window.innerWidth < 761 && window.innerWidth - 80}
             />
           ))}
         </Document>
@@ -263,7 +261,7 @@ function PaperTab(props) {
             <div className={css(styles.title)}>Paper PDF</div>
             {renderDownloadPdf()}
           </div>
-          {file && (
+          {file && isModerator && (
             <div className={css(styles.moderatorContainer)}>
               <ModeratorDeleteButton
                 label={`Remove PDF`}
@@ -341,7 +339,8 @@ var styles = StyleSheet.create({
   moderatorContainer: {
     display: "flex",
     justifyContent: "flex-end",
-    width: "100%",
+    marginLeft: 10,
+    width: 100,
   },
   moderatorLabel: {
     fontSize: 14,
