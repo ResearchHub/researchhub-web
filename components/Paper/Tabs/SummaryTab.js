@@ -182,110 +182,50 @@ class SummaryTab extends React.Component {
 
     return (
       <ComponentWrapper>
-        <div
-          className={css(styles.bulletsContainer)}
-          ref={this.props.keyTakeawayRef}
-        >
-          <BulletsContainer paperId={this.props.paperId} />
-        </div>
-        <div>{this.state.errorMessage}</div>
-        {(paper.summary && paper.summary.summary) ||
-        this.state.summaryExists ? (
+        <a name="takeaways">
           <div
-            className={css(styles.container)}
-            ref={this.props.descriptionRef}
+            className={css(styles.bulletsContainer)}
+            ref={this.props.keyTakeawayRef}
           >
-            {this.state.readOnly ? (
-              <div className={css(styles.sectionHeader)}>
-                <div className={css(styles.sectionTitle)}>Description</div>
-                <div className={css(styles.summaryActions)}>
-                  <Link
-                    href={"/paper/[paperId]/[tabName]/edits"}
-                    as={`/paper/${paper.id}/summary/edits`}
-                  >
-                    <Ripples className={css(styles.action)}>
-                      View Edit History
-                    </Ripples>
-                  </Link>
-                  <PermissionNotificationWrapper
-                    modalMessage="propose summary edits"
-                    onClick={this.edit}
-                    permissionKey="ProposeSummaryEdit"
-                    loginRequired={true}
-                  >
-                    <div className={css(styles.action)}>
-                      <div className={css(styles.pencilIcon)}>
-                        <i className="fas fa-pencil"></i>
-                      </div>
-                      Edit Summary
-                    </div>
-                  </PermissionNotificationWrapper>
-                </div>
-              </div>
-            ) : (
-              <div className={css(styles.headerContainer)}>
-                <div className={css(styles.header)}>Editing Summary</div>
-                <div className={css(styles.guidelines)}>
-                  Please review our{" "}
-                  <a
-                    className={css(styles.authorGuidelines)}
-                    href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
-                    target="_blank"
-                  >
-                    Summary Guidelines
-                  </a>{" "}
-                  to see how to write for ResearchHub
-                </div>
-              </div>
-            )}
-            {this.state.finishedLoading && (
-              <TextEditor
-                canEdit={true}
-                readOnly={this.state.readOnly}
-                canSubmit={true}
-                commentEditor={false}
-                initialValue={this.state.editorState}
-                passedValue={this.state.editorState}
-                onCancel={this.cancel}
-                onSubmit={this.submitEdit}
-                onChange={this.onEditorStateChange}
-                smallToolBar={true}
-                hideButton={true}
-                commentStyles={
-                  this.state.readOnly
-                    ? styles.commentReadStyles
-                    : styles.commentStyles
-                }
-              />
-            )}
-            {!this.state.readOnly && (
-              <div className={css(styles.buttonRow)}>
-                <Ripples
-                  className={css(styles.cancelButton)}
-                  onClick={this.cancel}
-                >
-                  Cancel
-                </Ripples>
-                <Ripples
-                  className={css(styles.submitButton)}
-                  onClick={this.submitEdit}
-                >
-                  Submit
-                </Ripples>
-              </div>
-            )}
+            <BulletsContainer paperId={this.props.paperId} />
           </div>
-        ) : (
-          <div
-            className={css(
-              styles.container,
-              styles.noSummaryContainer,
-              transition && styles.transition
-            )}
-            ref={!this.state.summaryExists && this.props.descriptionRef}
-          >
-            {this.state.addSummary ? (
-              <div className={css(styles.summaryEdit)}>
+        </a>
+        <div>{this.state.errorMessage}</div>
+        <a name="description">
+          {(paper.summary && paper.summary.summary) ||
+          this.state.summaryExists ? (
+            <div
+              className={css(styles.container)}
+              ref={this.props.descriptionRef}
+            >
+              {this.state.readOnly ? (
+                <div className={css(styles.sectionHeader)}>
+                  <div className={css(styles.sectionTitle)}>Description</div>
+                  <div className={css(styles.summaryActions)}>
+                    <Link
+                      href={"/paper/[paperId]/[tabName]/edits"}
+                      as={`/paper/${paper.id}/summary/edits`}
+                    >
+                      <Ripples className={css(styles.action)}>
+                        View Edit History
+                      </Ripples>
+                    </Link>
+                    <PermissionNotificationWrapper
+                      modalMessage="propose summary edits"
+                      onClick={this.edit}
+                      permissionKey="ProposeSummaryEdit"
+                      loginRequired={true}
+                    >
+                      <div className={css(styles.action)}>
+                        <div className={css(styles.pencilIcon)}>
+                          <i className="fas fa-pencil"></i>
+                        </div>
+                        Edit Summary
+                      </div>
+                    </PermissionNotificationWrapper>
+                  </div>
+                </div>
+              ) : (
                 <div className={css(styles.headerContainer)}>
                   <div className={css(styles.header)}>Editing Summary</div>
                   <div className={css(styles.guidelines)}>
@@ -300,17 +240,28 @@ class SummaryTab extends React.Component {
                     to see how to write for ResearchHub
                   </div>
                 </div>
+              )}
+              {this.state.finishedLoading && (
                 <TextEditor
                   canEdit={true}
+                  readOnly={this.state.readOnly}
                   canSubmit={true}
                   commentEditor={false}
+                  initialValue={this.state.editorState}
+                  passedValue={this.state.editorState}
                   onCancel={this.cancel}
                   onSubmit={this.submitEdit}
                   onChange={this.onEditorStateChange}
                   smallToolBar={true}
                   hideButton={true}
-                  commentStyles={styles.commentStyles}
+                  commentStyles={
+                    this.state.readOnly
+                      ? styles.commentReadStyles
+                      : styles.commentStyles
+                  }
                 />
+              )}
+              {!this.state.readOnly && (
                 <div className={css(styles.buttonRow)}>
                   <Ripples
                     className={css(styles.cancelButton)}
@@ -325,36 +276,91 @@ class SummaryTab extends React.Component {
                     Submit
                   </Ripples>
                 </div>
-              </div>
-            ) : (
-              <Fragment>
-                <div className={css(styles.sectionHeader)}>
-                  <div className={css(styles.sectionTitle)}>Description</div>
-                </div>
-                <div className={css(styles.box) + " second-step"}>
-                  <div className={css(styles.icon)}>
-                    <i className="fad fa-file-alt" />
+              )}
+            </div>
+          ) : (
+            <div
+              className={css(
+                styles.container,
+                styles.noSummaryContainer,
+                transition && styles.transition
+              )}
+              ref={!this.state.summaryExists && this.props.descriptionRef}
+            >
+              {this.state.addSummary ? (
+                <div className={css(styles.summaryEdit)}>
+                  <div className={css(styles.headerContainer)}>
+                    <div className={css(styles.header)}>Editing Summary</div>
+                    <div className={css(styles.guidelines)}>
+                      Please review our{" "}
+                      <a
+                        className={css(styles.authorGuidelines)}
+                        href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+                        target="_blank"
+                      >
+                        Summary Guidelines
+                      </a>{" "}
+                      to see how to write for ResearchHub
+                    </div>
                   </div>
-                  <h2 className={css(styles.noSummaryTitle)}>
-                    A summary hasn't been filled in yet
-                  </h2>
-                  <div className={css(styles.text)}>
-                    Earn 5 RHC for being the first person to add a summary to
-                    this paper.
+                  <TextEditor
+                    canEdit={true}
+                    canSubmit={true}
+                    commentEditor={false}
+                    onCancel={this.cancel}
+                    onSubmit={this.submitEdit}
+                    onChange={this.onEditorStateChange}
+                    smallToolBar={true}
+                    hideButton={true}
+                    commentStyles={styles.commentStyles}
+                  />
+                  <div className={css(styles.buttonRow)}>
+                    <Ripples
+                      className={css(styles.cancelButton)}
+                      onClick={this.cancel}
+                    >
+                      Cancel
+                    </Ripples>
+                    <Ripples
+                      className={css(styles.submitButton)}
+                      onClick={this.submitEdit}
+                    >
+                      Submit
+                    </Ripples>
                   </div>
-                  <PermissionNotificationWrapper
-                    onClick={this.addSummary}
-                    modalMessage="propose a summary"
-                    permissionKey="ProposeSummaryEdit"
-                    loginRequired={true}
-                  >
-                    <button className={css(styles.button)}>Add Summary</button>
-                  </PermissionNotificationWrapper>
                 </div>
-              </Fragment>
-            )}
-          </div>
-        )}
+              ) : (
+                <Fragment>
+                  <div className={css(styles.sectionHeader)}>
+                    <div className={css(styles.sectionTitle)}>Description</div>
+                  </div>
+                  <div className={css(styles.box) + " second-step"}>
+                    <div className={css(styles.icon)}>
+                      <i className="fad fa-file-alt" />
+                    </div>
+                    <h2 className={css(styles.noSummaryTitle)}>
+                      A summary hasn't been filled in yet
+                    </h2>
+                    <div className={css(styles.text)}>
+                      Earn 5 RHC for being the first person to add a summary to
+                      this paper.
+                    </div>
+                    <PermissionNotificationWrapper
+                      onClick={this.addSummary}
+                      modalMessage="propose a summary"
+                      permissionKey="ProposeSummaryEdit"
+                      loginRequired={true}
+                    >
+                      <button className={css(styles.button)}>
+                        Add Summary
+                      </button>
+                    </PermissionNotificationWrapper>
+                  </div>
+                </Fragment>
+              )}
+            </div>
+          )}
+        </a>
         <ManageBulletPointsModal paperId={this.props.paperId} />
       </ComponentWrapper>
     );
@@ -609,6 +615,10 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     // marginTop: 20
   },
+  // anchorTag: {
+  //   paddingTop: 100,
+  //   marginTop: -100,
+  // }
 });
 
 const mapStateToProps = (state) => ({
