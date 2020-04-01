@@ -23,7 +23,7 @@ const PaperTabBar = (props) => {
 
   useEffect(() => {
     setSelectedTab(props.tabName);
-    scrollToPage(props.tabName);
+    // scrollToPage(props.tabName);
   }, [props.tabName]);
 
   useEffect(() => {
@@ -69,11 +69,11 @@ const PaperTabBar = (props) => {
   function scrollToPage(label) {
     let { setSticky, sticky, paperCardRef } = props;
     let offset = paperCardRef.current.clientHeight + 100;
-
+    !sticky && setSticky(true);
     // setSelectedTab(label);
     if (label === "main" || label === "summary") {
       window.scrollTo({
-        behavior: "smooth",
+        behavior: "auto",
         top: 0,
       });
     }
@@ -135,7 +135,7 @@ const PaperTabBar = (props) => {
 
     let isSelected = false;
     let classNames = [styles.tab];
-    console.log("selected", selected);
+
     if (label === selected || href === selected) {
       isSelected = true;
       classNames.push(styles.selected);
