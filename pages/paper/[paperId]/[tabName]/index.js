@@ -227,20 +227,23 @@ const Paper = (props) => {
             />
             <a name="discussions">
               <div className={css(styles.space)} />
-              <DiscussionTab
-                hostname={hostname}
-                paperId={paperId}
-                threads={discussionThreads}
-                discussionCount={discussionCount}
-                setCount={setCount}
-                discussionRef={discussionRef}
-              />
+              <div id="discussions-tab">
+                <DiscussionTab
+                  hostname={hostname}
+                  paperId={paperId}
+                  threads={discussionThreads}
+                  discussionCount={discussionCount}
+                  setCount={setCount}
+                  discussionRef={discussionRef}
+                />
+              </div>
             </a>
             <a name="citations">
               <ComponentWrapper overrideStyle={styles.componentWrapper}>
                 <div
                   className={css(styles.citationContainer)}
                   ref={citationRef}
+                  id="citedby-tab"
                 >
                   <div className={css(styles.header)}>
                     <div className={css(styles.citationTitle)}>Cited By</div>
@@ -269,11 +272,13 @@ const Paper = (props) => {
               </ComponentWrapper>
             </a>
             <a name="paper">
-              <PaperTab
-                paperId={paperId}
-                paper={paper}
-                paperPdfRef={paperPdfRef}
-              />
+              <div id="paper-tab">
+                <PaperTab
+                  paperId={paperId}
+                  paper={paper}
+                  paperPdfRef={paperPdfRef}
+                />
+              </div>
             </a>
           </div>
           <Joyride
@@ -508,7 +513,7 @@ const styles = StyleSheet.create({
     height: 30,
   },
   stickyComponent: {
-    top: 80,
+    top: 78,
     position: "sticky",
     backgroundColor: "#FFF",
     zIndex: 3,
