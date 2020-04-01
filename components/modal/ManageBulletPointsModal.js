@@ -226,6 +226,9 @@ const styles = StyleSheet.create({
     padding: 50,
     overflow: "scroll",
     borderRadius: 5,
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
     "@media only screen and (max-width: 415px)": {
       padding: "50px 0px 0px 0px",
     },

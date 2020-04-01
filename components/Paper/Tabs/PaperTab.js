@@ -143,10 +143,6 @@ function PaperTab(props) {
   function handleRenderState() {
     if (file) {
       return (
-        // <object data={file} type="application/pdf">
-        //   <embed src={file} type="application/pdf" />
-        // </object>
-        // <iframe src={file}></iframe>
         <Document
           className={css(styles.pdfDocument)}
           file={file}
@@ -234,14 +230,22 @@ function PaperTab(props) {
 
   function renderDownloadPdf() {
     return (
-      <Fragment>
-        <button
-          className={css(defaultStyles.secondaryButton, styles.downloadButton)}
-          onClick={downloadPDF}
-        >
-          Download PDF
-        </button>
-      </Fragment>
+      <Button
+        label={() => {
+          return (
+            <Fragment>
+              <span className={css(styles.downloadIcon)}>
+                <i className="far fa-arrow-to-bottom" />
+              </span>
+              Download
+            </Fragment>
+          );
+        }}
+        customButtonStyle={styles.button}
+        size={"med"}
+        hideRipples={false}
+        onClick={downloadPDF}
+      />
     );
   }
 
@@ -249,7 +253,10 @@ function PaperTab(props) {
     <ComponentWrapper>
       <div className={css(styles.container)} ref={containerRef}>
         <div className={css(styles.headerContainer)} ref={paperPdfRef}>
-          <div className={css(styles.title)}>Paper PDF</div>
+          <div className={css(styles.titleContainer)}>
+            <div className={css(styles.title)}>Paper PDF</div>
+            {renderDownloadPdf()}
+          </div>
           {file && (
             <div className={css(styles.moderatorContainer)}>
               <ModeratorDeleteButton
@@ -285,9 +292,23 @@ var styles = StyleSheet.create({
     border: "1.5px solid #F0F0F0",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
+  },
+  downloadIcon: {
+    color: "#FFF",
+    marginRight: 10,
   },
   pdfDocument: {
     width: "100%",
+  },
+  button: {
+    height: "unset",
+    whiteSpace: "nowrap",
+    padding: 8,
+    width: "unset",
   },
   downloadButton: {
     alignSelf: "flex-end",
@@ -434,6 +455,12 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    width: "100%",
+  },
+  titleContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
   },
   title: {

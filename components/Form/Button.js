@@ -88,7 +88,14 @@ const Button = ({
       </button>
     );
     if (!hideRipples) {
-      return <Ripples onClick={onClick ? onClick : null}>{button}</Ripples>;
+      return (
+        <Ripples
+          className={css(styles.ripples)}
+          onClick={onClick ? onClick : null}
+        >
+          {button}
+        </Ripples>
+      );
     }
     return button;
   }
@@ -111,6 +118,9 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
+  },
+  ripples: {
+    overflow: "unset",
   },
   isWhite: {
     backgroundColor: "#FFF",

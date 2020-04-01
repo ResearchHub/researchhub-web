@@ -12,9 +12,7 @@ const PaperTabBar = (props) => {
   const [selectedTab, setSelectedTab] = useState(
     props.tabName ? props.tabName : "main"
   );
-  const {
-    scrollView,
-  } = props;
+  const { scrollView } = props;
 
   useEffect(() => {
     setSelectedTab(props.tabName);
@@ -56,10 +54,8 @@ const PaperTabBar = (props) => {
       window.scrollY >= calculateOffset("takeaways-tab", -navbarHeight)
     ) {
       setSelectedTab("description");
-    } else if (window.scrollY >= 15 + 350) {
+    } else {
       setSelectedTab("key takeaway");
-    } else if (window.scrollY <= 10 + 350) {
-      setSelectedTab("main");
     }
   }
 
@@ -106,16 +102,14 @@ const PaperTabBar = (props) => {
           onClick={() => scrollToPage(label)}
           key={`paper_tab_bar_${index}`}
         >
-          <div className={css(styles.link)}>
-            {label} {ui && ui(isSelected)}
-          </div>
+          {label} {ui && ui(isSelected)}
         </div>
       </a>
     );
   }
 
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.container)} id="paper-navigation">
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
           {tabs.map((tab, index) => renderTab(tab, selectedTab, index))}
@@ -159,6 +153,7 @@ const styles = StyleSheet.create({
     // background: paperTabColors.BACKGROUND,
     background: "#fff",
     borderBottom: "1.5px solid #F0F0F0",
+    overflow: "auto",
   },
   tabContainer: {
     display: "flex",
@@ -173,13 +168,13 @@ const styles = StyleSheet.create({
     color: paperTabColors.FONT,
     fontFamily: paperTabFont,
     padding: "1rem",
+    textAlign: "center",
+    textDecoration: "none",
+    textTransform: "capitalize",
+    whiteSpace: "nowrap",
 
-    "@media only screen and (min-width: 768px)": {
-      // marginRight: 28,
-    },
-
-    "@media only screen and (min-width: 1024px)": {
-      // marginRight: 45,
+    "@media only screen and (max-width: 767px)": {
+      padding: 16,
     },
 
     "@media only screen and (min-width: 1288px)": {
@@ -224,11 +219,6 @@ const styles = StyleSheet.create({
   },
   selectedUi: {
     borderColor: colors.PURPLE(1),
-  },
-  link: {
-    textAlign: "center",
-    textDecoration: "none",
-    textTransform: "capitalize",
   },
   selected: {
     color: paperTabColors.SELECTED,
