@@ -72,7 +72,7 @@ const PaperTabBar = (props) => {
     let { setSticky, sticky, paperCardRef } = props;
     let offset = paperCardRef.current.clientHeight + 100;
 
-    setSelectedTab(label);
+    // setSelectedTab(label);
     if (label === "main") {
       window.scrollTo({
         behavior: "smooth",
