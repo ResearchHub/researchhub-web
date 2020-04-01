@@ -30,6 +30,9 @@ import icons from "~/config/themes/icons";
 import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink } from "~/config/utils";
 
+// Stylesheets
+import "./stylesheets/ReactPdf.css";
+
 function PaperTab(props) {
   const { paper, paperId, paperPdfRef } = props;
   const alert = useAlert();
@@ -140,12 +143,19 @@ function PaperTab(props) {
   function handleRenderState() {
     if (file) {
       return (
-        <span></span>
-        // <Document file={file} onLoadSuccess={onLoadSuccess}>
-        //   {Array.from(new Array(numPages), (el, index) => (
-        //     <Page pageNumber={index + 1} key={`page_${index + 1}`} />
-        //   ))}
-        // </Document>
+        // <object data={file} type="application/pdf">
+        //   <embed src={file} type="application/pdf" />
+        // </object>
+        // <iframe src={file}></iframe>
+        <Document
+          className={css(styles.pdfDocument)}
+          file={file}
+          onLoadSuccess={onLoadSuccess}
+        >
+          {Array.from(new Array(numPages), (el, index) => (
+            <Page pageNumber={index + 1} key={`page_${index + 1}`} />
+          ))}
+        </Document>
       );
     } else {
       if (showDnd) {
@@ -275,6 +285,9 @@ var styles = StyleSheet.create({
     border: "1.5px solid #F0F0F0",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
+  },
+  pdfDocument: {
+    width: "100%",
   },
   downloadButton: {
     alignSelf: "flex-end",

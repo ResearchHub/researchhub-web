@@ -6,19 +6,45 @@ import { paperTabFont } from "~/config/themes/fonts";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
+import { useEffect } from "react";
 
 const PaperTabBar = (props) => {
   // const selectedTab = props.selectedTab;
   const [selectedTab, setSelectedTab] = useState("main");
   const {
-    discussionCount,
     keyTakeawayRef,
     descriptionRef,
     discussionRef,
     paperPdfRef,
     citationRef,
-    paperCardRef,
+    scrollView,
   } = props;
+
+  useEffect(() => {
+    window.addEventListener("scroll", scrollListener);
+
+    return () => window.removeEventListener("scroll", scrollListener);
+  }, [scrollListener]);
+
+  function scrollListener() {
+    if (!scrollView) {
+      setSelectedTab("main");
+      return;
+    }
+    if (window.scrollY >= 1399 + 350) {
+      setSelectedTab("Paper PDF");
+    } else if (window.scrollY >= 1170 + 350) {
+      setSelectedTab("cited by");
+    } else if (window.scrollY >= 739 + 350) {
+      setSelectedTab("discussions");
+    } else if (window.scrollY >= 346 + 350) {
+      setSelectedTab("description");
+    } else if (window.scrollY >= 25 + 350) {
+      setSelectedTab("key takeaway");
+    } else if (window.scrollY <= 10 + 350) {
+      setSelectedTab("main");
+    }
+  }
 
   const tabs = [
     { href: "main", label: "main" },
@@ -49,7 +75,7 @@ const PaperTabBar = (props) => {
     setSelectedTab(label);
     if (label === "main") {
       window.scrollTo({
-        behavior: "auto",
+        behavior: "smooth",
         top: 0,
       });
     }
