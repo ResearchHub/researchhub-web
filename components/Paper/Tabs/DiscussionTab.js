@@ -441,12 +441,6 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   boxContainer: {
-    // backgroundColor: '#fff',
-    // padding: 50,
-    // border: '1.5px solid #F0F0F0',
-    // boxSizing: 'border-box',
-    // boxShadow: '0px 3px 4px rgba(0, 0, 0, 0.02)',
-    // borderRadius: 4,
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "center",
@@ -656,6 +650,9 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
   },
   addDiscussionContainer: {
     transition: "all ease-in-out 0.3s",
@@ -672,6 +669,10 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
   },
   transition: {
     padding: 1,
