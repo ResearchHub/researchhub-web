@@ -5,6 +5,7 @@ import Router, { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 import Joyride from "react-joyride";
 import Error from "next/error";
+import "./styles/anchor.css";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -208,7 +209,9 @@ const Paper = (props) => {
               sticky={sticky}
               setSticky={setSticky}
               scrollView={scrollView}
+              tabName={tabName}
             />
+            {/* </a> */}
           </div>
           <div
             className={css(
@@ -223,46 +226,55 @@ const Paper = (props) => {
               descriptionRef={descriptionRef}
             />
             <div className={css(styles.space)} />
-            <DiscussionTab
-              hostname={hostname}
-              paperId={paperId}
-              threads={discussionThreads}
-              discussionCount={discussionCount}
-              setCount={setCount}
-              discussionRef={discussionRef}
-            />
+            <a name="discussions">
+              <DiscussionTab
+                hostname={hostname}
+                paperId={paperId}
+                threads={discussionThreads}
+                discussionCount={discussionCount}
+                setCount={setCount}
+                discussionRef={discussionRef}
+              />
+            </a>
             <ComponentWrapper overrideStyle={styles.componentWrapper}>
-              <div className={css(styles.citationContainer)} ref={citationRef}>
-                <div className={css(styles.header)}>
-                  <div className={css(styles.citationTitle)}>Cited By</div>
-                  <span className={css(styles.citationCount)}>
-                    {paper.referenced_by.length > 0 &&
-                      paper.referenced_by.length}
-                  </span>
+              <a name="citations">
+                <div
+                  className={css(styles.citationContainer)}
+                  ref={citationRef}
+                >
+                  <div className={css(styles.header)}>
+                    <div className={css(styles.citationTitle)}>Cited By</div>
+                    <span className={css(styles.citationCount)}>
+                      {paper.referenced_by.length > 0 &&
+                        paper.referenced_by.length}
+                    </span>
+                  </div>
+                  <div className={css(styles.citations)}>
+                    {paper.referenced_by.length > 0 ? (
+                      paper.referenced_by.map((reference, id) => {
+                        return (
+                          <CitationCard
+                            key={`citation-${reference.id}-${id}`}
+                            citation={reference}
+                          />
+                        );
+                      })
+                    ) : (
+                      <div className={css(styles.citationEmpty)}>
+                        There are no citations for this paper.
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className={css(styles.citations)}>
-                  {paper.referenced_by.length > 0 ? (
-                    paper.referenced_by.map((reference, id) => {
-                      return (
-                        <CitationCard
-                          key={`citation-${reference.id}-${id}`}
-                          citation={reference}
-                        />
-                      );
-                    })
-                  ) : (
-                    <div className={css(styles.citationEmpty)}>
-                      There are no citations for this paper.
-                    </div>
-                  )}
-                </div>
-              </div>
+              </a>
             </ComponentWrapper>
-            <PaperTab
-              paperId={paperId}
-              paper={paper}
-              paperPdfRef={paperPdfRef}
-            />
+            <a name="paper">
+              <PaperTab
+                paperId={paperId}
+                paper={paper}
+                paperPdfRef={paperPdfRef}
+              />
+            </a>
           </div>
           <Joyride
             steps={steps}
