@@ -38,7 +38,6 @@ class PaperPageCard extends React.Component {
       figureUrls: [],
       hovered: false,
       toggleLightbox: true,
-      scrollView: false,
       fetching: false,
       loading: true,
     };
@@ -47,7 +46,6 @@ class PaperPageCard extends React.Component {
 
   componentDidMount() {
     this.fetchFigures();
-    window.addEventListener("scroll", this.scrollListener);
     this.revealPage(400);
   }
 
@@ -62,10 +60,6 @@ class PaperPageCard extends React.Component {
         });
       }
     }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.scrollListener);
   }
 
   revealPage = (timeout) => {
@@ -97,20 +91,6 @@ class PaperPageCard extends React.Component {
     });
   };
 
-  scrollListener = () => {
-    if (!this.state.scrollView && window.scrollY >= 5) {
-      this.setState({
-        scrollView: true,
-      });
-      this.props.setSticky(true);
-    } else if (this.state.scrollView && window.scrollY === 0) {
-      this.setState({
-        scrollView: false,
-      });
-      this.props.setSticky(false);
-    }
-  };
-
   navigateToEditPaperInfo = () => {
     let paperId = this.props.paper.id;
     let href = "/paper/upload/info/[paperId]";
@@ -136,7 +116,8 @@ class PaperPageCard extends React.Component {
   };
 
   renderPreview = () => {
-    let { hovered, fetching, scrollView, previews } = this.state;
+    let { hovered, fetching, previews } = this.state;
+    let { scrollView } = this.props;
     if (scrollView) return;
     if (fetching) {
       return (
@@ -269,7 +250,7 @@ class PaperPageCard extends React.Component {
       selectedVoteType,
     } = this.props;
 
-    let { scrollView } = this.state;
+    let { scrollView } = this.props;
     let paperTitle = paper && paper.title;
     if (scrollView) {
       return (
@@ -385,8 +366,15 @@ class PaperPageCard extends React.Component {
   };
 
   render() {
-    let { paper, score, upvote, downvote, selectedVoteType } = this.props;
-    let { scrollView, fetching, previews, figureUrls, loading } = this.state;
+    let {
+      paper,
+      score,
+      upvote,
+      downvote,
+      selectedVoteType,
+      scrollView,
+    } = this.props;
+    let { fetching, previews, figureUrls, loading } = this.state;
 
     if (loading) {
       return (
@@ -411,15 +399,19 @@ class PaperPageCard extends React.Component {
         className={css(styles.container, scrollView && scrollStyles.container)}
         ref={this.containerRef}
       >
-        <div className={css(styles.voting, scrollView && scrollStyles.voting)}>
-          <VoteWidget
-            score={score}
-            onUpvote={upvote}
-            onDownvote={downvote}
-            selected={selectedVoteType}
-            isPaper={true}
-          />
-        </div>
+        {!scrollView && (
+          <div
+            className={css(styles.voting, scrollView && scrollStyles.voting)}
+          >
+            <VoteWidget
+              score={score}
+              onUpvote={upvote}
+              onDownvote={downvote}
+              selected={selectedVoteType}
+              isPaper={true}
+            />
+          </div>
+        )}
         {figureUrls.length > 0 && (
           <FsLightbox
             toggler={this.state.toggleLightbox}
@@ -434,7 +426,7 @@ class PaperPageCard extends React.Component {
             !fetching && previews.length === 0 && styles.emptyPreview
           )}
         >
-          {this.renderTopRow()}
+          {!scrollView && this.renderTopRow()}
           <div className={css(styles.row)}>
             <div
               className={css(
@@ -442,61 +434,65 @@ class PaperPageCard extends React.Component {
                 !fetching && previews.length === 0 && styles.emptyPreview
               )}
             >
-              <div className={css(styles.metaContainer)}>
-                <div
-                  className={css(
-                    styles.titleHeader,
-                    scrollView && scrollStyles.titleHeader
-                  )}
-                >
+              {!scrollView && (
+                <div className={css(styles.metaContainer)}>
                   <div
                     className={css(
-                      styles.title,
-                      paper.paper_title &&
-                        paper.paper_title !== paper.title &&
-                        styles.titleMargin,
-                      scrollView && scrollStyles.title
+                      styles.titleHeader,
+                      scrollView && scrollStyles.titleHeader
                     )}
                   >
-                    {paper && paper.title}
+                    <div
+                      className={css(
+                        styles.title,
+                        paper.paper_title &&
+                          paper.paper_title !== paper.title &&
+                          styles.titleMargin,
+                        scrollView && scrollStyles.title
+                      )}
+                    >
+                      {paper && paper.title}
+                    </div>
+                    {paper.paper_title &&
+                      paper.paper_title !== paper.title &&
+                      (!scrollView && (
+                        <div className={css(styles.subtitle)}>
+                          {paper.paper_title}
+                        </div>
+                      ))}
+                    {paper && paper.tagline && !scrollView && (
+                      <div className={css(styles.tagline)}>{paper.tagline}</div>
+                    )}
                   </div>
-                  {paper.paper_title &&
-                    paper.paper_title !== paper.title &&
-                    (!scrollView && (
-                      <div className={css(styles.subtitle)}>
-                        {paper.paper_title}
+                  {!scrollView && (
+                    <Fragment>
+                      <div className={css(styles.dateAuthorContainer)}>
+                        {paper && paper.paper_publish_date && (
+                          <div className={css(styles.publishDate)}>
+                            <span className={css(styles.label)}>
+                              Published:
+                            </span>
+                            {this.renderPublishDate()}
+                          </div>
+                        )}
+                        {paper && paper.authors && (
+                          <div className={css(styles.authors)}>
+                            {this.renderAuthors()}
+                          </div>
+                        )}
                       </div>
-                    ))}
-                  {paper && paper.tagline && !scrollView && (
-                    <div className={css(styles.tagline)}>{paper.tagline}</div>
+                      {paper && paper.doi && (
+                        <div className={css(styles.doiDate)}>
+                          <span className={css(styles.label, styles.doi)}>
+                            DOI:
+                          </span>
+                          {paper.doi}
+                        </div>
+                      )}
+                    </Fragment>
                   )}
                 </div>
-                {!scrollView && (
-                  <Fragment>
-                    <div className={css(styles.dateAuthorContainer)}>
-                      {paper && paper.paper_publish_date && (
-                        <div className={css(styles.publishDate)}>
-                          <span className={css(styles.label)}>Published:</span>
-                          {this.renderPublishDate()}
-                        </div>
-                      )}
-                      {paper && paper.authors && (
-                        <div className={css(styles.authors)}>
-                          {this.renderAuthors()}
-                        </div>
-                      )}
-                    </div>
-                    {paper && paper.doi && (
-                      <div className={css(styles.doiDate)}>
-                        <span className={css(styles.label, styles.doi)}>
-                          DOI:
-                        </span>
-                        {paper.doi}
-                      </div>
-                    )}
-                  </Fragment>
-                )}
-              </div>
+              )}
               {!scrollView && (
                 <div className={css(styles.buttonRow)}>
                   {paper && paper.file && (
@@ -518,7 +514,7 @@ class PaperPageCard extends React.Component {
                       onClick={this.downloadPDF}
                     />
                   )}
-                  {paper && paper.url && (
+                  {paper && paper.url && !paper.file && (
                     <Button
                       label={() => {
                         return (
@@ -555,6 +551,7 @@ const styles = StyleSheet.create({
     display: "flex",
     padding: "50px 0 30px 0",
     position: "relative",
+    // transition: '.25s ease-in-out',
   },
   previewContainer: {
     minWidth: 220,
