@@ -9,14 +9,11 @@ import ComponentWrapper from "./ComponentWrapper";
 
 const PaperTabBar = (props) => {
   // const selectedTab = props.selectedTab;
-  const [selectedTab, setSelectedTab] = useState(
-    props.tabName ? props.tabName : "main"
-  );
+  const [selectedTab, setSelectedTab] = useState("main");
   const { scrollView } = props;
 
   useEffect(() => {
     setSelectedTab(props.tabName);
-    // scrollToPage(props.tabName);
   }, [props.tabName]);
 
   useEffect(() => {
@@ -38,8 +35,12 @@ const PaperTabBar = (props) => {
       setSelectedTab("main");
       return;
     }
+    // console.log(props.paperCardRef.current.clientHeight);
+    // let navbarHeight = 157.5 + 20;
+    let navbarHeight = props.paperCardRef.current
+      ? props.paperCardRef.current.clientHeight + 80
+      : 139;
 
-    let navbarHeight = 157.5 + 20;
     if (window.scrollY >= calculateOffset("citedby-tab", -navbarHeight)) {
       setSelectedTab("Paper PDF");
     } else if (
