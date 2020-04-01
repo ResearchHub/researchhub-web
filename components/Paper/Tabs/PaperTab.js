@@ -152,7 +152,7 @@ function PaperTab(props) {
             <Page
               pageNumber={index + 1}
               key={`page_${index + 1}`}
-              width={window.innerWidth < 761 && window.innerWidth - 80}
+              width={window.innerWidth < 900 && window.innerWidth - 80}
             />
           ))}
         </Document>
@@ -307,6 +307,7 @@ var styles = StyleSheet.create({
   },
   pdfDocument: {
     width: "100%",
+    // overflowX: 'hidden'
   },
   button: {
     height: "unset",
@@ -478,6 +479,10 @@ var styles = StyleSheet.create({
   showPaperButton: {
     marginTop: 15,
     cursor: "pointer",
+  },
+  page: {
+    maxWidth: "90%",
+    width: "90%",
   },
 });
 
