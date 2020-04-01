@@ -159,7 +159,11 @@ const Paper = (props) => {
   }
 
   function scrollListener() {
-    if (!scrollView && window.scrollY >= 415) {
+    if (
+      !scrollView &&
+      window.scrollY >=
+        document.getElementById("paper-navigation").offsetTop - 79
+    ) {
       setScrollView(true);
       setSticky(true);
     } else if (scrollView && window.scrollY < 30) {
@@ -529,6 +533,9 @@ const styles = StyleSheet.create({
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
     marginTop: 30,
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
   },
   citations: {
     display: "flex",

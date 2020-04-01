@@ -387,6 +387,9 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
   },
   bulletsContainer: {
     backgroundColor: "#fff",
@@ -395,13 +398,16 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
   },
   sectionHeader: {
     display: "flex",
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 20,
 
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",

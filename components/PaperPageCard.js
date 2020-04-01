@@ -570,6 +570,10 @@ const styles = StyleSheet.create({
       width: 200,
       maxWidth: 200,
     },
+    "@media only screen and (min-width: 0px) and (max-width: 767px)": {
+      margin: "0 auto",
+      marginBottom: 16,
+    },
   },
   emptyPreview: {
     minHeight: "unset",
@@ -783,6 +787,10 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     alignItems: "flex-start",
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column-reverse",
+    },
   },
   mobileContainer: {
     display: "flex",
@@ -798,25 +806,6 @@ const styles = StyleSheet.create({
 });
 
 const carousel = StyleSheet.create({
-  previewContainer: {
-    minWidth: 220,
-    width: 220,
-    height: 233,
-    minHeight: 233,
-    border: "1.5px solid rgba(36, 31, 58, 0.1)",
-    borderRadius: 3,
-    marginRight: 30,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",
-    boxSizing: "border-box",
-    "@media only screen and (max-width: 1280px)": {
-      minWidth: 200,
-      width: 200,
-      maxWidth: 200,
-    },
-  },
   bottomControl: {
     background: "rgba(36, 31, 58, 0.65)",
     borderRadius: 230,
