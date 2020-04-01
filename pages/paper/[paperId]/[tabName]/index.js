@@ -225,8 +225,8 @@ const Paper = (props) => {
               keyTakeawayRef={keyTakeawayRef}
               descriptionRef={descriptionRef}
             />
-            <div className={css(styles.space)} />
             <a name="discussions">
+              <div className={css(styles.space)} />
               <DiscussionTab
                 hostname={hostname}
                 paperId={paperId}
@@ -236,8 +236,8 @@ const Paper = (props) => {
                 discussionRef={discussionRef}
               />
             </a>
-            <ComponentWrapper overrideStyle={styles.componentWrapper}>
-              <a name="citations">
+            <a name="citations">
+              <ComponentWrapper overrideStyle={styles.componentWrapper}>
                 <div
                   className={css(styles.citationContainer)}
                   ref={citationRef}
@@ -266,8 +266,8 @@ const Paper = (props) => {
                     )}
                   </div>
                 </div>
-              </a>
-            </ComponentWrapper>
+              </ComponentWrapper>
+            </a>
             <a name="paper">
               <PaperTab
                 paperId={paperId}
