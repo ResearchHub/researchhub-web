@@ -149,7 +149,13 @@ function PaperTab(props) {
           onLoadSuccess={onLoadSuccess}
         >
           {Array.from(new Array(numPages), (el, index) => (
-            <Page pageNumber={index + 1} key={`page_${index + 1}`} />
+            <Page
+              pageNumber={index + 1}
+              key={`page_${index + 1}`}
+              width={
+                (isMobile || window.innerWidth < 761) && window.innerWidth - 80
+              }
+            />
           ))}
         </Document>
       );
