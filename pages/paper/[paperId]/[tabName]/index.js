@@ -158,10 +158,10 @@ const Paper = (props) => {
   }
 
   function scrollListener() {
-    if (!scrollView && window.scrollY >= 425) {
+    if (!scrollView && window.scrollY >= 415) {
       setScrollView(true);
       setSticky(true);
-    } else if (scrollView && window.scrollY < 10) {
+    } else if (scrollView && window.scrollY < 30) {
       setScrollView(false);
       setSticky(false);
     }
