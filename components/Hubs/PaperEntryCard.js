@@ -124,11 +124,17 @@ const PaperEntryCard = ({
           <div className={css(mobileStyles.title, styles.text)}>
             {title && title}
           </div>
-          <div
-            className={css(styles.paperTitle, styles.text, styles.publishDate)}
-          >
-            From Paper: {paper_title && paper_title}
-          </div>
+          {paper_title !== title && paper_title && (
+            <div
+              className={css(
+                styles.paperTitle,
+                styles.text,
+                styles.publishDate
+              )}
+            >
+              From Paper: {paper_title && paper_title}
+            </div>
+          )}
           <span
             className={css(mobileStyles.voting)}
             onClick={(e) => e.stopPropagation()}
