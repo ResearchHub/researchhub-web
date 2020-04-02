@@ -310,10 +310,12 @@ var styles = StyleSheet.create({
     // overflowX: 'hidden'
   },
   button: {
-    height: "unset",
     whiteSpace: "nowrap",
-    padding: 8,
-    width: "unset",
+    "@media only screen and (max-width: 767px)": {
+      height: "unset",
+      padding: 8,
+      width: "unset",
+    },
   },
   downloadButton: {
     alignSelf: "flex-end",
