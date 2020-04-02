@@ -8,13 +8,8 @@ import { paperTabFont } from "~/config/themes/fonts";
 import ComponentWrapper from "./ComponentWrapper";
 
 const PaperTabBar = (props) => {
-  // const selectedTab = props.selectedTab;
   const [selectedTab, setSelectedTab] = useState("main");
   const { scrollView } = props;
-
-  useEffect(() => {
-    setSelectedTab(props.tabName);
-  }, [props.tabName]);
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
@@ -35,13 +30,16 @@ const PaperTabBar = (props) => {
       setSelectedTab("main");
       return;
     }
-    // console.log(props.paperCardRef.current.clientHeight);
+
     // let navbarHeight = 157.5 + 20;
     let navbarHeight = props.paperCardRef.current
       ? props.paperCardRef.current.clientHeight + 80
       : 139;
-
-    if (window.scrollY >= calculateOffset("citedby-tab", -navbarHeight)) {
+    if (window.scrollY < 200) {
+      setSelectedTab("main");
+    } else if (
+      window.scrollY >= calculateOffset("citedby-tab", -navbarHeight)
+    ) {
       setSelectedTab("Paper PDF");
     } else if (
       window.scrollY >= calculateOffset("discussions-tab", -navbarHeight)
