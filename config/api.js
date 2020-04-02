@@ -112,6 +112,8 @@ const routes = (BASE_URL) => {
         }
       }
 
+      url += "make_public=true&";
+
       url += prepFilters(filters);
 
       return url;

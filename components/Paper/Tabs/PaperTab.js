@@ -46,7 +46,21 @@ function PaperTab(props) {
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
   const [showPaper, toggleShowPaper] = useState(false);
+  const [loading, toggleLoading] = useState(false);
+  // const [windowWidth, setWindowWidth] = useState(window && window.innerWidth);
   const containerRef = useRef();
+
+  useEffect(() => {
+    function setWindow(e) {
+      clearTimeout(timeout);
+      let timeout = setTimeout(() => toggleLoading(false), 400);
+      toggleLoading(true);
+      // timeout();
+    }
+
+    window.addEventListener("resize", setWindow);
+    return () => window.removeEventListener("resize", setWindow);
+  });
 
   function onLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -141,7 +155,15 @@ function PaperTab(props) {
   }
 
   function handleRenderState() {
+    if (loading) {
+      return (
+        <div className={css(styles.loader)}>
+          <Loader loading={true} size={25} />
+        </div>
+      );
+    }
     if (file) {
+      let width = containerRef.current && containerRef.current.clientWidth - 60;
       return (
         <Document
           className={css(styles.pdfDocument)}
@@ -152,7 +174,7 @@ function PaperTab(props) {
             <Page
               pageNumber={index + 1}
               key={`page_${index + 1}`}
-              width={window.innerWidth < 900 && window.innerWidth - 80}
+              width={width <= 900 ? width : null}
             />
           ))}
         </Document>
@@ -485,6 +507,9 @@ var styles = StyleSheet.create({
   page: {
     maxWidth: "90%",
     width: "90%",
+  },
+  loader: {
+    marginTop: 30,
   },
 });
 

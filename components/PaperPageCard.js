@@ -42,11 +42,11 @@ class PaperPageCard extends React.Component {
       loading: true,
     };
     this.containerRef = React.createRef();
+    this.metaContainerRef = React.createRef();
   }
 
   componentDidMount() {
     this.fetchFigures();
-    this.revealPage(400);
   }
 
   componentDidUpdate(prevProps) {
@@ -56,7 +56,6 @@ class PaperPageCard extends React.Component {
           document.body.scrollTop = 0; // For Safari
           document.documentElement.scrollTop = 0;
           this.fetchFigures();
-          this.revealPage(400);
         });
       }
     }
@@ -64,7 +63,11 @@ class PaperPageCard extends React.Component {
 
   revealPage = (timeout) => {
     setTimeout(() => {
-      this.setState({ loading: false });
+      this.setState({ loading: false }, () => {
+        setTimeout(() => {
+          this.state.fetching && this.setState({ fetching: false });
+        }, 200);
+      });
     }, timeout);
   };
 
@@ -75,18 +78,28 @@ class PaperPageCard extends React.Component {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          setTimeout(() => {
-            this.setState({
-              previews: res.data,
-              figureUrls: res.data.map((preview, index) => preview.file),
-              fetching: false,
-            });
-          }, 200);
+          if (res.data.length === 0) {
+            return this.setState(
+              {
+                fetching: false,
+              },
+              this.revealPage()
+            );
+          } else {
+            this.setState(
+              {
+                previews: res.data,
+                figureUrls: res.data.map((preview, index) => preview.file),
+              },
+              this.revealPage()
+            );
+          }
         })
         .catch((err) => {
           this.setState({
             fetching: false,
           });
+          this.revealPage();
         });
     });
   };
@@ -117,17 +130,16 @@ class PaperPageCard extends React.Component {
 
   renderPreview = () => {
     let { hovered, fetching, previews } = this.state;
-    let { scrollView } = this.props;
-
+    let height =
+      this.metaContainerRef.current &&
+      this.metaContainerRef.current.clientHeight;
     if (fetching) {
       return (
         <div
-          className={css(
-            styles.previewContainer
-            // scrollView && scrollStyles.previewContainer
-          )}
+          className={css(styles.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
+          style={{ height, minHeight: height, maxHeight: height }}
         >
           <ReactPlaceholder
             ready={false}
@@ -140,12 +152,10 @@ class PaperPageCard extends React.Component {
     if (!fetching && previews.length > 0) {
       return (
         <div
-          className={css(
-            styles.previewContainer
-            // scrollView && scrollStyles.previewContainer
-          )}
+          className={css(styles.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
+          style={{ height, minHeight: height, maxHeight: height }}
         >
           <Carousel
             renderBottomCenterControls={(arg) => {
@@ -184,16 +194,15 @@ class PaperPageCard extends React.Component {
             renderCenterLeftControls={null}
             renderCenterRightControls={null}
             wrapAround={true}
+            enableKeyboardControls={true}
           >
             {this.state.previews.map((preview) => {
               return (
                 <img
                   src={preview.file}
                   onClick={this.toggleLightbox}
-                  className={css(
-                    styles.image
-                    // scrollView && scrollStyles.image
-                  )}
+                  className={css(styles.image)}
+                  style={{ height, minHeight: height, maxHeight: height }}
                 />
               );
             })}
@@ -363,7 +372,6 @@ class PaperPageCard extends React.Component {
 
     return (
       <div className={css(styles.container)} ref={this.containerRef}>
-        {/* {!scrollView && ( */}
         <div className={css(styles.voting)}>
           <VoteWidget
             score={score}
@@ -373,7 +381,6 @@ class PaperPageCard extends React.Component {
             isPaper={true}
           />
         </div>
-        {/* )} */}
         {figureUrls.length > 0 && (
           <FsLightbox
             toggler={this.state.toggleLightbox}
@@ -394,6 +401,7 @@ class PaperPageCard extends React.Component {
                 styles.cardContainer,
                 !fetching && previews.length === 0 && styles.emptyPreview
               )}
+              ref={this.metaContainerRef}
             >
               <div className={css(styles.metaContainer)}>
                 <div className={css(styles.titleHeader)}>
@@ -501,8 +509,8 @@ const styles = StyleSheet.create({
   previewContainer: {
     minWidth: 220,
     width: 220,
-    height: 300,
-    minHeight: 300,
+    // height: 300,
+    // minHeight: 300,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     display: "flex",
@@ -525,14 +533,11 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    minWidth: "100%",
-    maxWidth: "100%",
-    height: "100%",
-    minHeight: 300,
-    maxHeight: 300,
-    // height: 333,
-    // minHeight: 333,
-    // maxHeight: 333,
+    // minWidth: "100%",
+    // maxWidth: "100%",
+    // height: "100%",
+    // minHeight: 300,
+    // maxHeight: 300,
     objectFit: "contain",
     "@media only screen and (max-width: 1280px)": {},
   },
@@ -654,13 +659,13 @@ const styles = StyleSheet.create({
   buttonRow: {
     width: "100%",
     display: "flex",
+    marginTop: 10,
   },
   downloadIcon: {
     color: "#FFF",
     marginRight: 10,
   },
   viewIcon: {
-    // color: colors.BLUE(),
     marginRight: 10,
   },
   button: {

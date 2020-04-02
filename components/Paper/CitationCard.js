@@ -72,8 +72,9 @@ class CitationCard extends React.Component {
     let { citation, setMessage, showMessage } = this.props;
     showMessage({ show: true, load: true });
     let paperId = citation.id;
+    return this.navigateToPage();
     if (!citation.is_public) {
-      fetch(API.MAKE_PAPER_PUBLIC({ paperId }))
+      fetch(API.MAKE_PAPER_PUBLIC({ paperId }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
@@ -100,8 +101,6 @@ class CitationCard extends React.Component {
     let paperId = citation.id;
     Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
     setTimeout(() => {
-      document.body.scrollTop = 0; // For Safari
-      document.documentElement.scrollTop = 0;
       showMessage({ show: false });
     }, 400);
   };
@@ -216,30 +215,42 @@ class CitationCard extends React.Component {
     return hubs;
   };
 
-  render() {
+  renderCitation = () => {
     let { figureUrls, toggleLightbox } = this.state;
     let { citation } = this.props;
 
     return (
-      <a className={css(styles.link)} href={this.getHref()}>
-        <div className={css(styles.card)} onClick={this.checkIsPublic}>
-          {figureUrls.length > 0 && (
-            <span onClick={(e) => e.stopPropagation()}>
-              <FsLightbox
-                toggler={toggleLightbox}
-                type="image"
-                sources={[...figureUrls]}
-              />
-            </span>
-          )}
-          {this.renderPreview()}
-          <div className={css(styles.title)} id={"clamp"}>
-            {citation.title && citation.title}
-          </div>
-          <div className={css(styles.hubs)}>{this.renderHubs()}</div>
+      <div className={css(styles.card)} onClick={this.checkIsPublic}>
+        {figureUrls.length > 0 && (
+          <span onClick={(e) => e.stopPropagation()}>
+            <FsLightbox
+              toggler={toggleLightbox}
+              type="image"
+              sources={[...figureUrls]}
+            />
+          </span>
+        )}
+        {this.renderPreview()}
+        <div className={css(styles.title)} id={"clamp"}>
+          {citation.title && citation.title}
         </div>
-      </a>
+        <div className={css(styles.hubs)}>{this.renderHubs()}</div>
+      </div>
     );
+  };
+
+  render() {
+    let { citation } = this.props;
+
+    if (citation.is_public) {
+      return (
+        <a className={css(styles.link)} href={this.getHref()}>
+          {this.renderCitation()}
+        </a>
+      );
+    } else {
+      return this.renderCitation();
+    }
   }
 }
 
