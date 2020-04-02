@@ -117,136 +117,12 @@ const PaperEntryCard = ({
   if (mobileView) {
     return (
       <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
-        <div
-          className={css(mobileStyles.papercard, style && style)}
-          key={`${id}-${index}-${title}`}
-        >
-          <div className={css(mobileStyles.title, styles.text)}>
-            {title && title}
-          </div>
-          {paper_title !== title && paper_title && (
-            <div
-              className={css(
-                styles.paperTitle,
-                styles.text,
-                styles.publishDate
-              )}
-            >
-              From Paper: {paper_title && paper_title}
-            </div>
-          )}
-          <span
-            className={css(mobileStyles.voting)}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <VoteWidget
-              score={score}
-              onUpvote={onUpvote}
-              onDownvote={onDownvote}
-              selected={selected}
-              horizontalView={true}
-              isPaper={true}
-            />
-          </span>
+        <a className={css(styles.link)}>
           <div
-            className={css(
-              styles.publishDate,
-              styles.text,
-              mobileStyles.publishDate,
-              !paper_publish_date && styles.hide
-            )}
+            className={css(mobileStyles.papercard, style && style)}
+            key={`${id}-${index}-${title}`}
           >
-            {paper_publish_date && convertDate()}
-          </div>
-          <div
-            className={css(
-              mobileStyles.summary,
-              styles.text,
-              !tagline && mobileStyles.hide
-            )}
-          >
-            {tagline && tagline}
-          </div>
-          <div className={css(styles.bottomBar, mobileStyles.bottomBar)}>
-            <div className={css(styles.row)}>
-              <div
-                className={css(
-                  styles.avatars,
-                  authors.length < 1 && styles.hide
-                )}
-              >
-                {authors.length > 0 &&
-                  authors.map((author) => (
-                    <div
-                      className={css(styles.avatar)}
-                      key={`author_${author.id}_${id}_${Math.random()}`}
-                    >
-                      <AuthorAvatar
-                        key={`author_${author.id}_${id}`}
-                        size={30}
-                        textSizeRatio={2.5}
-                        author={author}
-                      />
-                    </div>
-                  ))}
-              </div>
-              <Link
-                href={"/paper/[paperId]/[tabName]"}
-                as={`/paper/${id}/discussion`}
-              >
-                <div className={css(styles.discussion)}>
-                  <span className={css(styles.icon)} id={"discIcon"}>
-                    {icons.chat}
-                  </span>
-                  <span
-                    className={css(
-                      styles.dicussionCount,
-                      mobileStyles.discussionCount
-                    )}
-                    id={"discCount"}
-                  >
-                    {renderDiscussionCount()}
-                  </span>
-                </div>
-              </Link>
-            </div>
-          </div>
-          <div className={css(styles.tags, mobileStyles.tags)}>
-            {hubs.length > 0 &&
-              hubs.map(
-                (tag, index) =>
-                  tag && (
-                    <HubTag key={`hub_${index}`} tag={tag} hubName={hubName} />
-                  )
-              )}
-          </div>
-        </div>
-      </Link>
-    );
-  } else {
-    return (
-      <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
-        <div
-          className={css(styles.papercard, style && style)}
-          key={`${id}-${index}-${title}`}
-        >
-          <div className={css(styles.column)}>
-            <span
-              className={css(styles.voting)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <VoteWidget
-                score={score}
-                onUpvote={onUpvote}
-                onDownvote={onDownvote}
-                selected={selected}
-                searchResult={searchResult}
-                isPaper={true}
-              />
-            </span>
-          </div>
-          <div className={css(styles.column, styles.metaData)}>
-            <div className={css(styles.title, styles.text)}>
+            <div className={css(mobileStyles.title, styles.text)}>
               {title && title}
             </div>
             {paper_title !== title && paper_title && (
@@ -260,10 +136,24 @@ const PaperEntryCard = ({
                 From Paper: {paper_title && paper_title}
               </div>
             )}
+            <span
+              className={css(mobileStyles.voting)}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <VoteWidget
+                score={score}
+                onUpvote={onUpvote}
+                onDownvote={onDownvote}
+                selected={selected}
+                horizontalView={true}
+                isPaper={true}
+              />
+            </span>
             <div
               className={css(
                 styles.publishDate,
                 styles.text,
+                mobileStyles.publishDate,
                 !paper_publish_date && styles.hide
               )}
             >
@@ -271,16 +161,16 @@ const PaperEntryCard = ({
             </div>
             <div
               className={css(
-                styles.summary,
+                mobileStyles.summary,
                 styles.text,
-                !tagline && styles.hide
+                !tagline && mobileStyles.hide
               )}
             >
-              {tagline ? tagline : null}
+              {tagline && tagline}
             </div>
-            <div className={css(styles.bottomBar)}>
+            <div className={css(styles.bottomBar, mobileStyles.bottomBar)}>
               <div className={css(styles.row)}>
-                <span
+                <div
                   className={css(
                     styles.avatars,
                     authors.length < 1 && styles.hide
@@ -289,8 +179,8 @@ const PaperEntryCard = ({
                   {authors.length > 0 &&
                     authors.map((author) => (
                       <div
-                        key={`author_${author.id}_${id}`}
                         className={css(styles.avatar)}
+                        key={`author_${author.id}_${id}_${Math.random()}`}
                       >
                         <AuthorAvatar
                           key={`author_${author.id}_${id}`}
@@ -300,20 +190,20 @@ const PaperEntryCard = ({
                         />
                       </div>
                     ))}
-                </span>
+                </div>
                 <Link
                   href={"/paper/[paperId]/[tabName]"}
                   as={`/paper/${id}/discussion`}
                 >
                   <div className={css(styles.discussion)}>
-                    <span
-                      className={css(styles.icon, mobileStyles.icon)}
-                      id={"discIcon"}
-                    >
+                    <span className={css(styles.icon)} id={"discIcon"}>
                       {icons.chat}
                     </span>
                     <span
-                      className={css(styles.dicussionCount)}
+                      className={css(
+                        styles.dicussionCount,
+                        mobileStyles.discussionCount
+                      )}
                       id={"discCount"}
                     >
                       {renderDiscussionCount()}
@@ -321,23 +211,143 @@ const PaperEntryCard = ({
                   </div>
                 </Link>
               </div>
-              <div className={css(styles.tags)}>
-                {hubs.length > 0 &&
-                  hubs.map(
-                    (tag, index) =>
-                      tag && (
-                        <HubTag
-                          key={`hub_${index}`}
-                          tag={tag}
-                          hubName={hubName}
-                          last={index === tag.length - 1}
-                        />
-                      )
+            </div>
+            <div className={css(styles.tags, mobileStyles.tags)}>
+              {hubs.length > 0 &&
+                hubs.map(
+                  (tag, index) =>
+                    tag && (
+                      <HubTag
+                        key={`hub_${index}`}
+                        tag={tag}
+                        hubName={hubName}
+                      />
+                    )
+                )}
+            </div>
+          </div>
+        </a>
+      </Link>
+    );
+  } else {
+    return (
+      <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
+        <a className={css(styles.link)}>
+          <div
+            className={css(styles.papercard, style && style)}
+            key={`${id}-${index}-${title}`}
+          >
+            <div className={css(styles.column)}>
+              <span
+                className={css(styles.voting)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <VoteWidget
+                  score={score}
+                  onUpvote={onUpvote}
+                  onDownvote={onDownvote}
+                  selected={selected}
+                  searchResult={searchResult}
+                  isPaper={true}
+                />
+              </span>
+            </div>
+            <div className={css(styles.column, styles.metaData)}>
+              <div className={css(styles.title, styles.text)}>
+                {title && title}
+              </div>
+              {paper_title !== title && paper_title && (
+                <div
+                  className={css(
+                    styles.paperTitle,
+                    styles.text,
+                    styles.publishDate
                   )}
+                >
+                  From Paper: {paper_title && paper_title}
+                </div>
+              )}
+              <div
+                className={css(
+                  styles.publishDate,
+                  styles.text,
+                  !paper_publish_date && styles.hide
+                )}
+              >
+                {paper_publish_date && convertDate()}
+              </div>
+              <div
+                className={css(
+                  styles.summary,
+                  styles.text,
+                  !tagline && styles.hide
+                )}
+              >
+                {tagline ? tagline : null}
+              </div>
+              <div className={css(styles.bottomBar)}>
+                <div className={css(styles.row)}>
+                  <span
+                    className={css(
+                      styles.avatars,
+                      authors.length < 1 && styles.hide
+                    )}
+                  >
+                    {authors.length > 0 &&
+                      authors.map((author) => (
+                        <div
+                          key={`author_${author.id}_${id}`}
+                          className={css(styles.avatar)}
+                        >
+                          <AuthorAvatar
+                            key={`author_${author.id}_${id}`}
+                            size={30}
+                            textSizeRatio={2.5}
+                            author={author}
+                          />
+                        </div>
+                      ))}
+                  </span>
+                  <Link
+                    href={"/paper/[paperId]/[tabName]"}
+                    as={`/paper/${id}/discussion`}
+                  >
+                    <a className={css(styles.link)}>
+                      <div className={css(styles.discussion)}>
+                        <span
+                          className={css(styles.icon, mobileStyles.icon)}
+                          id={"discIcon"}
+                        >
+                          {icons.chat}
+                        </span>
+                        <span
+                          className={css(styles.dicussionCount)}
+                          id={"discCount"}
+                        >
+                          {renderDiscussionCount()}
+                        </span>
+                      </div>
+                    </a>
+                  </Link>
+                </div>
+                <div className={css(styles.tags)}>
+                  {hubs.length > 0 &&
+                    hubs.map(
+                      (tag, index) =>
+                        tag && (
+                          <HubTag
+                            key={`hub_${index}`}
+                            tag={tag}
+                            hubName={hubName}
+                            last={index === tag.length - 1}
+                          />
+                        )
+                    )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </a>
       </Link>
     );
   }
@@ -472,6 +482,10 @@ const styles = StyleSheet.create({
     // marginTop: 16,
     bottom: 10,
     width: "100%",
+  },
+  link: {
+    textDecoration: "none",
+    color: "inherit",
   },
   icon: {
     color: "#C1C1CF",
