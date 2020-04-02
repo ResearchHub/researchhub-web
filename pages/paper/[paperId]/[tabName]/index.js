@@ -92,6 +92,8 @@ const Paper = (props) => {
       setSelectedVoteType(getVoteType(refetchedPaper.userVote));
       setDiscussionThreads(getDiscussionThreads(refetchedPaper));
       setFlag(refetchedPaper.user_flag !== null);
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0;
       showMessage({ show: false });
       if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
         props.setUploadingPaper(false);
@@ -265,7 +267,13 @@ const Paper = (props) => {
                       })
                     ) : (
                       <div className={css(styles.citationEmpty)}>
-                        There are no citations for this paper.
+                        <div className={css(styles.icon)}>
+                          <i className="fad fa-file-alt" />
+                        </div>
+                        This paper has not been cited yet
+                        <div className={css(styles.citationEmptySubtext)}>
+                          No citations have been found in RH papers
+                        </div>
                       </div>
                     )}
                   </div>
@@ -567,6 +575,22 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     width: "100%",
     textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icon: {
+    fontSize: 50,
+    color: "rgb(78, 83, 255)",
+    height: 50,
+    marginBottom: 25,
+  },
+  citationEmptySubtext: {
+    fontSize: 16,
+    color: "rgba(36, 31, 58, 0.8)",
+    fontWeight: 400,
+    marginTop: 10,
   },
 });
 
