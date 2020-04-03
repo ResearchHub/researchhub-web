@@ -49,10 +49,24 @@ const PaperTabBar = (props) => {
       window.scrollY >= calculateOffset("descriptions-tab", -navbarHeight)
     ) {
       setSelectedTab("discussions");
+      if (window.outerWidth < 667) {
+        let paperNavigation = document.getElementById("paper-navigation");
+        paperNavigation.scroll({
+          left: paperNavigation.offsetWidth,
+          // behavior: 'smooth',
+        });
+      }
     } else if (
       window.scrollY >= calculateOffset("takeaways-tab", -navbarHeight)
     ) {
       setSelectedTab("description");
+      if (window.outerWidth < 667) {
+        let paperNavigation = document.getElementById("paper-navigation");
+        paperNavigation.scroll({
+          left: 0,
+          // behavior: 'smooth',
+        });
+      }
     } else {
       setSelectedTab("key takeaway");
     }
@@ -77,7 +91,7 @@ const PaperTabBar = (props) => {
     if (label === "main" || label === "summary") {
       setSelectedTab("main");
       window.scrollTo({
-        behavior: "auto",
+        behavior: "smooth",
         top: 0,
       });
     }

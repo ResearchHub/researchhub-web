@@ -262,82 +262,63 @@ class PaperPageCard extends React.Component {
     let { scrollView } = this.props;
     let paperTitle = paper && paper.title;
     return (
-      <div className={css(styles.topRow)}>
-        <div className={css(styles.mobileContainer)}>
-          <div className={css(styles.mobileVoting)}>
-            <VoteWidget
-              score={score}
-              onUpvote={upvote}
-              onDownvote={downvote}
-              selected={selectedVoteType}
-              isPaper={true}
-              horizontalView={true}
-            />
-          </div>
-          <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
-        </div>
-        <div className={css(styles.actions)}>
-          <PermissionNotificationWrapper
-            modalMessage="edit papers"
-            onClick={this.navigateToEditPaperInfo}
-            permissionKey="UpdatePaper"
-            loginRequired={true}
-            hideRipples={false}
-            styling={styles.borderRadius}
-          >
-            <div className={css(styles.actionIcon)}>
-              <i className="far fa-pencil" />
+      <Fragment>
+        <div className={css(styles.topRow)}>
+          <div className={css(styles.mobileContainer)}>
+            <div className={css(styles.mobileVoting)}>
+              <VoteWidget
+                score={score}
+                onUpvote={upvote}
+                onDownvote={downvote}
+                selected={selectedVoteType}
+                isPaper={true}
+                horizontalView={true}
+              />
             </div>
-          </PermissionNotificationWrapper>
-          <ShareAction
-            addRipples={true}
-            title={"Share this paper"}
-            subtitle={paperTitle}
-            url={this.props.shareUrl}
-            customButton={
-              <div className={css(styles.actionIcon, styles.middleIcon)}>
-                <i className="far fa-share-alt" />
+            <div className={css(styles.hubTags, styles.desktop)}>
+              {this.renderHubs()}
+            </div>
+          </div>
+          <div className={css(styles.actions)}>
+            <PermissionNotificationWrapper
+              modalMessage="edit papers"
+              onClick={this.navigateToEditPaperInfo}
+              permissionKey="UpdatePaper"
+              loginRequired={true}
+              hideRipples={false}
+              styling={styles.borderRadius}
+            >
+              <div className={css(styles.actionIcon)}>
+                <i className="far fa-pencil" />
               </div>
-            }
-          />
-          {/* {scrollView && (
-            <Fragment>
-              {paper && paper.file && (
-                <Ripples
-                  className={css(
-                    styles.actionIcon,
-                    styles.downloadActionIcon
-                  )}
-                  onClick={this.downloadPDF}
-                >
-                  <i className="far fa-arrow-to-bottom" />
-                </Ripples>
-              )}
-              {paper && paper.url && (
-                <Ripples
-                  className={css(
-                    styles.actionIcon,
-                    styles.downloadActionIcon
-                  )}
-                  onClick={() => openExternalLink(paper.url)}
-                >
-                  <i className="far fa-external-link" />
-                </Ripples>
-              )}
-            </Fragment>
-          )} */}
-          {!isModerator ? (
-            <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
+            </PermissionNotificationWrapper>
+            <ShareAction
+              addRipples={true}
+              title={"Share this paper"}
+              subtitle={paperTitle}
+              url={this.props.shareUrl}
+              customButton={
+                <div className={css(styles.actionIcon, styles.middleIcon)}>
+                  <i className="far fa-share-alt" />
+                </div>
+              }
             />
-          ) : (
-            <ActionButton isModerator={isModerator} paperId={paper.id} />
-          )}
+            {!isModerator ? (
+              <FlagButton
+                paperId={paper.id}
+                flagged={flagged}
+                setFlag={setFlag}
+                style={styles.actionIcon}
+              />
+            ) : (
+              <ActionButton isModerator={isModerator} paperId={paper.id} />
+            )}
+          </div>
         </div>
-      </div>
+        <div className={css(styles.hubTags, styles.mobile)}>
+          {this.renderHubs()}
+        </div>
+      </Fragment>
     );
   };
 
@@ -504,7 +485,10 @@ const styles = StyleSheet.create({
     display: "flex",
     padding: "50px 0 30px 0",
     position: "relative",
-    // transition: '.25s ease-in-out',
+
+    "@media only screen and (max-width: 767px)": {
+      paddingTop: 20,
+    },
   },
   previewContainer: {
     minWidth: 220,
@@ -572,6 +556,20 @@ const styles = StyleSheet.create({
   },
   hubTags: {
     display: "flex",
+
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 16,
+    },
+  },
+  mobile: {
+    "@media only screen and (min-width: 768px)": {
+      display: "none",
+    },
+  },
+  desktop: {
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   title: {
     fontSize: 30,
