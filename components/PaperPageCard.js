@@ -573,18 +573,6 @@ const styles = StyleSheet.create({
   hubTags: {
     display: "flex",
   },
-  titleHeader: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 15,
-    "@media only screen and (max-width: 760px)": {
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
-    },
-  },
   title: {
     fontSize: 30,
     position: "relative",
@@ -834,6 +822,7 @@ const scrollStyles = StyleSheet.create({
   titleHeader: {
     marginBottom: 5,
     paddingTop: 15,
+    paddingRight: 16,
   },
   title: {
     fontSize: 24,
