@@ -144,7 +144,7 @@ class PaperPageCard extends React.Component {
           className={css(styles.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
-          style={{ height, minHeight: height, maxHeight: height }}
+          style={{ height, maxHeight: height }}
         >
           <ReactPlaceholder
             ready={false}
@@ -161,7 +161,7 @@ class PaperPageCard extends React.Component {
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
           onClick={this.toggleLightbox}
-          style={{ height, minHeight: height, maxHeight: height }}
+          style={{ height, maxHeight: height }}
         >
           <Carousel
             afterSlide={(slideIndex) =>
