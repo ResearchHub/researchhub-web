@@ -187,7 +187,7 @@ class CitationCard extends React.Component {
           className={css(carousel.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
-          onClick={(e) => e.stopPropagation()}
+          // onClick={(e) => e.stopPropagation()}
         >
           <ReactPlaceholder
             ready={false}
