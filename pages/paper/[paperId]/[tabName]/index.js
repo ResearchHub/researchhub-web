@@ -198,7 +198,7 @@ const Paper = (props) => {
         <Error statusCode={paper.status} />
       ) : (
         <Fragment>
-          <Head title={paper.title} description={paper.tagline} />
+          <Head title={paper.title} description={paper.tagline} socialImageUrl={props.paper.metatagImage}/>
           <div className={css(styles.paperPageContainer)}>
             <ComponentWrapper overrideStyle={styles.componentWrapper}>
               <PaperPageCard
