@@ -512,6 +512,9 @@ class TransactionModal extends React.Component {
 const styles = StyleSheet.create({
   modalContent: {
     padding: 50,
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
   },
   main: {
     paddingLeft: 30,
