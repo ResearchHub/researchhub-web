@@ -1,37 +1,32 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, useRef, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Router, { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 import Joyride from "react-joyride";
 import Error from "next/error";
+import "./styles/anchor.css";
 
 // Components
-import ActionButton from "~/components/ActionButton";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import ShareAction from "~/components/ShareAction";
-import VoteWidget from "~/components/VoteWidget";
 import HubTag from "~/components/Hubs/HubTag";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import FlagButton from "~/components/FlagButton";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import PaperPageCard from "~/components/PaperPageCard";
+import CitationCard from "~/components/Paper/CitationCard";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
-import { ModalActions } from "~/redux/modals";
 import VoteActions from "~/redux/vote";
-import { FlagActions } from "~/redux/flags";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import icons from "~/config/themes/icons";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
@@ -46,6 +41,8 @@ const Paper = (props) => {
   const [paper, setPaper] = useState(props.paper);
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
   const [flagged, setFlag] = useState(paper.user_flag !== null);
+  const [sticky, setSticky] = useState(false);
+  const [scrollView, setScrollView] = useState(false);
   const [discussionThreads, setDiscussionThreads] = useState(
     getDiscussionThreads(paper)
   );
@@ -68,13 +65,21 @@ const Paper = (props) => {
       disableBeacon: true,
     },
   ]);
+  const [discussionCount, setCount] = useState(
+    store.getState().paper.discussion.count
+  );
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
   const shareUrl = hostname + "/paper/" + paperId;
 
   const paperTitle = getNestedValue(paper, ["title"], "");
-  const discussionCount = getNestedValue(paper, ["discussion_count"], 0);
+  const paperCardRef = useRef(null);
+  const keyTakeawayRef = useRef(null);
+  const descriptionRef = useRef(null);
+  const discussionRef = useRef(null);
+  const citationRef = useRef(null);
+  const paperPdfRef = useRef(null);
 
   useEffect(() => {
     async function refetchPaper() {
@@ -87,6 +92,8 @@ const Paper = (props) => {
       setSelectedVoteType(getVoteType(refetchedPaper.userVote));
       setDiscussionThreads(getDiscussionThreads(refetchedPaper));
       setFlag(refetchedPaper.user_flag !== null);
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0;
       showMessage({ show: false });
       if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
         props.setUploadingPaper(false);
@@ -95,9 +102,14 @@ const Paper = (props) => {
     refetchPaper();
   }, [props.isServer, paperId]);
 
+  useEffect(() => {
+    window.addEventListener("scroll", scrollListener);
+
+    return () => window.removeEventListener("scroll", scrollListener);
+  }, [scrollListener]);
+
   function getDiscussionThreads(paper) {
     return paper.discussion.threads;
-    // return getNestedValue(paper, ["discussion", "threads"]);
   }
 
   async function upvote() {
@@ -129,63 +141,6 @@ const Paper = (props) => {
     }
   }
 
-  let renderTabContent = () => {
-    switch (tabName) {
-      case "summary":
-        return <SummaryTab paperId={paperId} paper={paper} />;
-      case "discussion":
-        return (
-          <DiscussionTab
-            hostname={hostname}
-            paperId={paperId}
-            threads={discussionThreads}
-          />
-        );
-      case "full":
-        return <PaperTab paperId={paperId} paper={paper} />;
-      case "citations":
-        return null;
-    }
-  };
-
-  function renderAuthors() {
-    let authors =
-      paper &&
-      paper.authors.map((author, index) => {
-        return (
-          <div className={css(styles.authorContainer)} key={`author_${index}`}>
-            <AuthorAvatar author={author} size={30} />
-          </div>
-        );
-      });
-    return authors;
-  }
-
-  function renderHubs() {
-    let hubs =
-      paper &&
-      paper.hubs.map((hub, index) => {
-        return <HubTag tag={hub} />;
-      });
-    return hubs;
-  }
-
-  function renderPublishDate() {
-    if (paper.paper_publish_date) {
-      return (
-        <div className={css(styles.info)}>
-          {formatPublishedDate(moment(paper.paper_publish_date))}
-        </div>
-      );
-    }
-  }
-
-  function navigateToEditPaperInfo() {
-    let href = "/paper/upload/info/[paperId]";
-    let as = `/paper/upload/info/${paperId}`;
-    Router.push(href, as);
-  }
-
   function onJoyrideComplete(joyrideState) {
     let { auth, updateUser, setUploadingPaper } = props;
     if (
@@ -205,6 +160,20 @@ const Paper = (props) => {
     }
   }
 
+  function scrollListener() {
+    if (
+      !scrollView &&
+      window.scrollY >= 5
+      // document.getElementById("paper-navigation").offsetTop - 79
+    ) {
+      setScrollView(true);
+      setSticky(true);
+    } else if (scrollView && window.scrollY < 30) {
+      setScrollView(false);
+      setSticky(false);
+    }
+  }
+
   return (
     <div className={css(styles.container)}>
       {paper.status === 404 ? (
@@ -212,149 +181,115 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
+
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
-            <div className={css(styles.header)}>
-              <div className={css(styles.voting)}>
-                <VoteWidget
-                  score={score}
-                  onUpvote={upvote}
-                  onDownvote={downvote}
-                  selected={selectedVoteType}
-                  isPaper={true}
-                />
-              </div>
-              <div className={css(styles.actionButtons)}>
-                <PermissionNotificationWrapper
-                  modalMessage="edit papers"
-                  onClick={navigateToEditPaperInfo}
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  styling={styles.actionButton}
-                >
-                  <ActionButton
-                    className={"first-step"}
-                    icon={"fas fa-pencil"}
-                  />
-                </PermissionNotificationWrapper>
-                <ShareAction
-                  iconNode={icons.shareAlt}
-                  addRipples={true}
-                  title={"Share this paper"}
-                  subtitle={paperTitle}
-                  url={shareUrl}
-                />
-                {!isModerator ? (
-                  <FlagButton
-                    paperId={paper.id}
-                    flagged={flagged}
-                    setFlag={setFlag}
-                  />
-                ) : (
-                  <ActionButton isModerator={isModerator} paperId={paper.id} />
-                )}
-              </div>
-              <div className={css(styles.topHeader)}>
-                <div className={css(styles.title)}>
-                  {paper && paper.title}
-                  {paper.paper_title && paper.paper_title !== paper.title && (
-                    <div className={css(styles.info)}>
-                      From Paper: {paper.paper_title}
-                    </div>
-                  )}
-                </div>
-                <span className={css(styles.mobileRow)}>
-                  <div className={css(styles.mobileVoting)}>
-                    <VoteWidget
-                      score={score}
-                      onUpvote={upvote}
-                      onDownvote={downvote}
-                      selected={selectedVoteType}
-                      horizontalView={true}
-                      isPaper={true}
-                    />
-                  </div>
-                </span>
-              </div>
-              <div className={css(styles.mobileInfoSection)}>
-                {renderPublishDate()}
-              </div>
-              <div className={css(styles.tags)}>
-                <div
-                  className={css(
-                    styles.authors,
-                    paper.authors.length < 1 && styles.hide
-                  )}
-                >
-                  {renderAuthors()}
-                </div>
-                <div className={css(styles.hubs)}>{renderHubs()}</div>
-              </div>
-              {paper && paper.tagline && (
-                <div className={css(styles.tagline)}>{paper.tagline}</div>
-              )}
-              {paper.doi && (
-                <div className={css(styles.mobileDoi)}>
-                  <div className={css(styles.info)}>
-                    DOI: {paper && paper.doi}
-                  </div>
-                </div>
-              )}
-              <div className={css(styles.infoSection)}>
-                {renderPublishDate()}
-                {paper.doi && (
-                  <div className={css(styles.info)}>
-                    DOI: {paper && paper.doi}
-                  </div>
-                )}
-              </div>
-              <div className={css(styles.mobileTags)}>
-                <div
-                  className={css(
-                    styles.authors,
-                    paper.authors.length < 1 && styles.hide
-                  )}
-                >
-                  {renderAuthors()}
-                </div>
-                <div className={css(styles.hubs)}>{renderHubs()}</div>
-                <PermissionNotificationWrapper
-                  modalMessage="edit papers"
-                  onClick={navigateToEditPaperInfo}
-                  permissionKey="UpdatePaper"
-                  loginRequired={true}
-                  styling={styles.actionButton}
-                >
-                  <ActionButton
-                    className={"first-step"}
-                    icon={"fas fa-pencil"}
-                  />
-                </PermissionNotificationWrapper>
-                <ShareAction
-                  iconNode={icons.shareAlt}
-                  addRipples={true}
-                  title={"Share this paper"}
-                  subtitle={paperTitle}
-                  url={shareUrl}
-                />
-                {!isModerator ? (
-                  <FlagButton
-                    paperId={paper.id}
-                    flagged={flagged}
-                    setFlag={setFlag}
-                  />
-                ) : (
-                  <ActionButton isModerator={isModerator} paperId={paper.id} />
-                )}
-              </div>
-            </div>
+            <PaperPageCard
+              paper={paper}
+              score={score}
+              upvote={upvote}
+              downvote={downvote}
+              selected={selectedVoteType}
+              shareUrl={shareUrl}
+              isModerator={isModerator}
+              flagged={flagged}
+              setFlag={setFlag}
+              sticky={sticky}
+              scrollView={scrollView}
+              setSticky={setSticky}
+            />
           </ComponentWrapper>
-          <PaperTabBar
-            baseUrl={paperId}
-            selectedTab={tabName}
-            discussionCount={discussionCount}
-          />
-          <div className={css(styles.contentContainer)}>
-            {renderTabContent()}
+          <div className={css(styles.stickyComponent)} ref={paperCardRef}>
+            <PaperTabBar
+              baseUrl={paperId}
+              selectedTab={tabName}
+              discussionCount={discussionCount}
+              paperCardRef={paperCardRef}
+              keyTakeawayRef={keyTakeawayRef}
+              descriptionRef={descriptionRef}
+              discussionRef={discussionRef}
+              paperPdfRef={paperPdfRef}
+              citationRef={citationRef}
+              paperCardRef={paperCardRef}
+              sticky={sticky}
+              setSticky={setSticky}
+              scrollView={scrollView}
+              tabName={tabName}
+            />
+          </div>
+          <div
+            className={css(
+              styles.contentContainer
+              // sticky && styles.scrollPadding
+            )}
+          >
+            <SummaryTab
+              paperId={paperId}
+              paper={paper}
+              keyTakeawayRef={keyTakeawayRef}
+              descriptionRef={descriptionRef}
+            />
+            <a name="discussions">
+              <div className={css(styles.space)} />
+              <div id="discussions-tab">
+                <DiscussionTab
+                  hostname={hostname}
+                  paperId={paperId}
+                  threads={discussionThreads}
+                  discussionCount={discussionCount}
+                  setCount={setCount}
+                  discussionRef={discussionRef}
+                />
+              </div>
+            </a>
+            <a name="citations">
+              <ComponentWrapper overrideStyle={styles.componentWrapper}>
+                <div
+                  className={css(styles.citationContainer)}
+                  ref={citationRef}
+                  id="citedby-tab"
+                >
+                  <div className={css(styles.header)}>
+                    <div className={css(styles.citationTitle)}>Cited By</div>
+                    <span className={css(styles.citationCount)}>
+                      {paper.referenced_by.length > 0 &&
+                        paper.referenced_by.length}
+                    </span>
+                  </div>
+                  <div className={css(styles.citations)}>
+                    {paper.referenced_by.length > 0 ? (
+                      paper.referenced_by.map((reference, id) => {
+                        return (
+                          <CitationCard
+                            key={`citation-${reference.id}-${id}`}
+                            citation={reference}
+                          />
+                        );
+                      })
+                    ) : (
+                      <div className={css(styles.citationEmpty)}>
+                        <div className={css(styles.icon)}>
+                          <i className="fad fa-file-alt" />
+                        </div>
+                        This paper has not been cited yet
+                        <div className={css(styles.citationEmptySubtext)}>
+                          No citations have been found in RH papers
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </ComponentWrapper>
+            </a>
+            <a name="paper">
+              <div id="paper-tab">
+                <PaperTab
+                  paperId={paperId}
+                  paper={paper}
+                  paperPdfRef={paperPdfRef}
+                  isModerator={isModerator}
+                />
+              </div>
+            </a>
           </div>
           <Joyride
             steps={steps}
@@ -390,12 +325,12 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {},
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
-    //
-    // backgroundColor: '#F2F2F2',
-    //
+    backgroundColor: "#FAFAFA",
+    minHeight: "100vh",
     "@media only screen and (max-width: 415px)": {
       paddingTop: 20,
     },
@@ -583,6 +518,79 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: "none",
+  },
+  space: {
+    height: 30,
+  },
+  stickyComponent: {
+    top: 80,
+    position: "sticky",
+    backgroundColor: "#FFF",
+    zIndex: 3,
+  },
+  scrollPadding: {
+    paddingTop: 450,
+  },
+  citationContainer: {
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
+    marginTop: 30,
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
+  },
+  citations: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    minWidth: "100%",
+    width: "100%",
+    boxSizing: "border-box",
+    overflowX: "scroll",
+    paddingBottom: 10,
+  },
+  header: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 20,
+  },
+  citationTitle: {
+    fontSize: 22,
+    fontWeight: 500,
+  },
+  citationCount: {
+    color: "rgba(36, 31, 58, 0.5)",
+    fontSize: 17,
+    fontWeight: 500,
+    marginLeft: 15,
+  },
+  citationEmpty: {
+    fontSize: 20,
+    fontWeight: 500,
+    width: "100%",
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icon: {
+    fontSize: 50,
+    color: "rgb(78, 83, 255)",
+    height: 50,
+    marginBottom: 25,
+  },
+  citationEmptySubtext: {
+    fontSize: 16,
+    color: "rgba(36, 31, 58, 0.8)",
+    fontWeight: 400,
+    marginTop: 10,
   },
 });
 

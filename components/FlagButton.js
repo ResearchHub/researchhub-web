@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Ripples from "react-ripples";
 import { StyleSheet, css } from "aphrodite";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
@@ -14,7 +15,7 @@ import { FlagActions } from "~/redux/flags";
 // Utility
 import colors from "~/config/themes/colors";
 
-const FlagButton = ({ paperId, reason, flagged, setFlag }) => {
+const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
@@ -69,14 +70,23 @@ const FlagButton = ({ paperId, reason, flagged, setFlag }) => {
       }
       permissionKey="UpdatePaper"
       loginRequired={true}
-      styling={[styles.actionButton, flagged && styles.flagged]}
+      styling={[styles.borderRadius, flagged && styles.flagged]}
     >
-      <ActionButton icon={"fas fa-flag"} active={flagged} />
+      <div className={css(style && style)}>
+        {flagged ? (
+          <i className={"fas fa-flag"} />
+        ) : (
+          <i className={"far fa-flag"} />
+        )}
+      </div>
     </PermissionNotificationWrapper>
   );
 };
 
 const styles = StyleSheet.create({
+  borderRadius: {
+    borderRadius: "50%",
+  },
   actionButton: {
     width: 46,
     height: 46,

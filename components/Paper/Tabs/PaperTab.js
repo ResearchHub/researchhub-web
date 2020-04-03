@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 
 // NPM Modules
 import { connect, useStore, useDispatch } from "react-redux";
@@ -30,8 +30,11 @@ import icons from "~/config/themes/icons";
 import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink } from "~/config/utils";
 
+// Stylesheets
+import "./stylesheets/ReactPdf.css";
+
 function PaperTab(props) {
-  const { paper, paperId } = props;
+  const { paper, paperId, paperPdfRef, isModerator } = props;
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
@@ -42,6 +45,22 @@ function PaperTab(props) {
   const [paperUrl, setPaperUrl] = useState((paper && paper.url) || null);
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
+  const [showPaper, toggleShowPaper] = useState(false);
+  const [loading, toggleLoading] = useState(false);
+  // const [windowWidth, setWindowWidth] = useState(window && window.innerWidth);
+  const containerRef = useRef();
+
+  useEffect(() => {
+    function setWindow(e) {
+      clearTimeout(timeout);
+      let timeout = setTimeout(() => toggleLoading(false), 400);
+      toggleLoading(true);
+      // timeout();
+    }
+
+    window.addEventListener("resize", setWindow);
+    return () => window.removeEventListener("resize", setWindow);
+  });
 
   function onLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -136,20 +155,26 @@ function PaperTab(props) {
   }
 
   function handleRenderState() {
+    if (loading) {
+      return (
+        <div className={css(styles.loader)}>
+          <Loader loading={true} size={25} />
+        </div>
+      );
+    }
     if (file) {
+      let width = containerRef.current && containerRef.current.clientWidth - 60;
       return (
         <Document
-          // className={css(!loadSuccess && styles.hidden)}
+          className={css(styles.pdfDocument)}
           file={file}
           onLoadSuccess={onLoadSuccess}
         >
           {Array.from(new Array(numPages), (el, index) => (
             <Page
               pageNumber={index + 1}
-              width={
-                isMobile && window.innerWidth < 1000 ? window.innerWidth : 1000
-              }
               key={`page_${index + 1}`}
+              width={width <= 900 ? width : null}
             />
           ))}
         </Document>
@@ -157,7 +182,7 @@ function PaperTab(props) {
     } else {
       if (showDnd) {
         return (
-          <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+          <Fragment>
             <div className={css(styles.dndContainer)}>
               <NewDND
                 handleDrop={handleFileDrop}
@@ -173,11 +198,11 @@ function PaperTab(props) {
                 <Button label={"Save PDF"} onClick={confirmSave} />
               </div>
             </div>
-          </ComponentWrapper>
+          </Fragment>
         );
       } else {
         return (
-          <ComponentWrapper>
+          <Fragment>
             <div className={css(styles.emptyStateContainer)}>
               <img
                 className={css(styles.emptyPlaceholderImage)}
@@ -205,7 +230,7 @@ function PaperTab(props) {
                 </PermissionNotificationWrapper>
               </div>
             </div>
-          </ComponentWrapper>
+          </Fragment>
         );
       }
     }
@@ -231,38 +256,51 @@ function PaperTab(props) {
 
   function renderDownloadPdf() {
     return (
-      <Fragment>
-        <button
-          className={css(defaultStyles.secondaryButton, styles.downloadButton)}
-          onClick={downloadPDF}
-        >
-          Download PDF
-        </button>
-      </Fragment>
+      <Button
+        label={() => {
+          return (
+            <Fragment>
+              <span className={css(styles.downloadIcon)}>
+                <i className="far fa-arrow-to-bottom" />
+              </span>
+              Download
+            </Fragment>
+          );
+        }}
+        customButtonStyle={styles.button}
+        size={"med"}
+        hideRipples={false}
+        onClick={downloadPDF}
+      />
     );
   }
 
   return (
-    <div className={css(styles.container)}>
-      {file && (
-        <ComponentWrapper>
-          <div className={css(styles.moderatorContainer)}>
-            <ModeratorDeleteButton
-              label={`Remove PDF`}
-              labelStyle={styles.moderatorLabel}
-              containerStyle={styles.moderatorButton}
-              actionType={"pdf"}
-              metaData={{ paperId: props.paperId }}
-              onRemove={() => setFile(null)}
-              icon={" "}
-              iconStyle={styles.iconStyle}
-            />
+    <ComponentWrapper>
+      <div className={css(styles.container)} ref={containerRef}>
+        <div className={css(styles.headerContainer)} ref={paperPdfRef}>
+          <div className={css(styles.titleContainer)}>
+            <div className={css(styles.title)}>Paper PDF</div>
+            {file && renderDownloadPdf()}
           </div>
-        </ComponentWrapper>
-      )}
-      {file && renderDownloadPdf()}
-      {handleRenderState()}
-    </div>
+          {file && isModerator && (
+            <div className={css(styles.moderatorContainer)}>
+              <ModeratorDeleteButton
+                label={`Remove PDF`}
+                labelStyle={styles.moderatorLabel}
+                containerStyle={styles.moderatorButton}
+                actionType={"pdf"}
+                metaData={{ paperId: props.paperId }}
+                onRemove={() => setFile(null)}
+                icon={" "}
+                iconStyle={styles.iconStyle}
+              />
+            </div>
+          )}
+        </div>
+        {handleRenderState()}
+      </div>
+    </ComponentWrapper>
   );
 }
 
@@ -274,6 +312,32 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
+    padding: 50,
+    backgroundColor: "#FFF",
+    marginTop: 30,
+    border: "1.5px solid #F0F0F0",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
+  },
+  downloadIcon: {
+    color: "#FFF",
+    marginRight: 10,
+  },
+  pdfDocument: {
+    width: "100%",
+    // overflowX: 'hidden'
+  },
+  button: {
+    whiteSpace: "nowrap",
+    "@media only screen and (max-width: 767px)": {
+      height: "unset",
+      padding: 8,
+      width: "unset",
+    },
   },
   downloadButton: {
     alignSelf: "flex-end",
@@ -300,18 +364,19 @@ var styles = StyleSheet.create({
   moderatorContainer: {
     display: "flex",
     justifyContent: "flex-end",
+    marginLeft: 10,
+    width: 100,
   },
-  moderatorLabel: {},
+  moderatorLabel: {
+    fontSize: 14,
+  },
   moderatorButton: {
-    padding: "10px 16px",
     width: "unset",
-    border: `1px solid ${colors.RED()}`,
     borderRadius: 3,
     color: colors.RED(),
     transition: "all ease-in-out 0.2s",
     ":hover": {
-      background: colors.RED(),
-      color: "#fff",
+      textDecoration: "underline",
     },
   },
   iconStyle: {
@@ -415,6 +480,36 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       padding: 8,
     },
+  },
+  headerContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  titleContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  title: {
+    display: "flex",
+    alignItems: "center",
+    fontSize: 22,
+    fontWeight: 500,
+    width: 300,
+  },
+  showPaperButton: {
+    marginTop: 15,
+    cursor: "pointer",
+  },
+  page: {
+    maxWidth: "90%",
+    width: "90%",
+  },
+  loader: {
+    marginTop: 30,
   },
 });
 
