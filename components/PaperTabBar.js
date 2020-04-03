@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors, { paperTabColors } from "~/config/themes/colors";
@@ -7,25 +8,107 @@ import { paperTabFont } from "~/config/themes/fonts";
 import ComponentWrapper from "./ComponentWrapper";
 
 const PaperTabBar = (props) => {
-  const selectedTab = props.selectedTab;
-  const { discussionCount } = props;
+  const [selectedTab, setSelectedTab] = useState("main");
+  const { scrollView } = props;
+
+  useEffect(() => {
+    window.addEventListener("scroll", scrollListener);
+
+    return () => window.removeEventListener("scroll", scrollListener);
+  }, [scrollListener]);
+
+  const calculateOffset = (id, offset) => {
+    let offsetElement = document.getElementById(id);
+    if (!offsetElement) {
+      return 100000000;
+    }
+    return offsetElement.offsetTop + offsetElement.offsetHeight + offset;
+  };
+
+  function scrollListener() {
+    if (!scrollView) {
+      setSelectedTab("main");
+      return;
+    }
+
+    // let navbarHeight = 157.5 + 20;
+    let navbarHeight = props.paperCardRef.current
+      ? props.paperCardRef.current.clientHeight + 80
+      : 139;
+    if (window.scrollY < 200) {
+      setSelectedTab("main");
+    } else if (
+      window.scrollY >= calculateOffset("citedby-tab", -navbarHeight)
+    ) {
+      setSelectedTab("Paper PDF");
+    } else if (
+      window.scrollY >= calculateOffset("discussions-tab", -navbarHeight)
+    ) {
+      setSelectedTab("cited by");
+    } else if (
+      window.scrollY >= calculateOffset("descriptions-tab", -navbarHeight)
+    ) {
+      setSelectedTab("discussions");
+    } else if (
+      window.scrollY >= calculateOffset("takeaways-tab", -navbarHeight)
+    ) {
+      setSelectedTab("description");
+    } else {
+      setSelectedTab("key takeaway");
+    }
+  }
 
   const tabs = [
-    { href: "summary", label: "summary" },
-    {
-      href: "discussion",
-      label: "discussions",
-      ui: (isSelected) => (
-        <Count isSelected={isSelected} amount={discussionCount} />
-      ),
-    },
-    { href: "full", label: "Paper PDF" },
-    // TODO: Add citations tab
-    // { href: "citations", label: "citations" },
+    { href: "main", label: "main" },
+    { href: "takeaways", label: "key takeaway" },
+    { href: "description", label: "description" },
+    { href: "discussions", label: "discussions" },
+    { href: "citations", label: "cited by" },
+    { href: "paper", label: "Paper PDF" },
   ].map(formatTabs);
 
+  function formatTabs(tab) {
+    tab.key = `nav-link-${tab.href}`;
+    return tab;
+  }
+
+  function scrollToPage(label) {
+    setSelectedTab(label);
+    if (label === "main" || label === "summary") {
+      setSelectedTab("main");
+      window.scrollTo({
+        behavior: "auto",
+        top: 0,
+      });
+    }
+  }
+
+  function renderTab({ key, href, label, ui }, selected, index) {
+    let isSelected = false;
+    let classNames = [styles.tab];
+    if (label === selected || href === selected) {
+      isSelected = true;
+      classNames.push(styles.selected);
+    }
+
+    if (index === 2) {
+      classNames.push(styles.lastTab);
+    }
+    return (
+      <a href={`#${href}`} className={css(styles.tag)}>
+        <div
+          className={css(classNames)}
+          onClick={() => scrollToPage(label)}
+          key={`paper_tab_bar_${index}`}
+        >
+          {label} {ui && ui(isSelected)}
+        </div>
+      </a>
+    );
+  }
+
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.container)} id="paper-navigation">
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
           {tabs.map((tab, index) => renderTab(tab, selectedTab, index))}
@@ -34,37 +117,6 @@ const PaperTabBar = (props) => {
     </div>
   );
 };
-
-function formatTabs(tab) {
-  tab.key = `nav-link-${tab.href}`;
-  return tab;
-}
-
-function renderTab({ key, href, label, ui }, selected, index) {
-  const DYNAMIC_HREF = "/paper/[paperId]/[tabName]";
-
-  let isSelected = false;
-  let classNames = [styles.tab];
-
-  if (href === selected) {
-    isSelected = true;
-    classNames.push(styles.selected);
-  }
-
-  if (index === 2) {
-    classNames.push(styles.lastTab);
-  }
-
-  return (
-    <Link key={key} href={DYNAMIC_HREF} as={href}>
-      <div className={css(classNames)}>
-        <div className={css(styles.link)}>
-          {label} {ui && ui(isSelected)}
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 const Count = (props) => {
   const { amount, isSelected } = props;
@@ -97,16 +149,16 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     justifyContent: "center",
-    background: paperTabColors.BACKGROUND,
+    // background: paperTabColors.BACKGROUND,
+    background: "#fff",
+    borderBottom: "1.5px solid #F0F0F0",
+    overflow: "auto",
   },
   tabContainer: {
     display: "flex",
     width: "100%",
     justifyContent: "flex-start",
     minWidth: 200,
-    "@media only screen and (max-width: 768px)": {
-      justifyContent: "space-between",
-    },
   },
   firstTab: {
     paddingLeft: 0,
@@ -115,17 +167,17 @@ const styles = StyleSheet.create({
     color: paperTabColors.FONT,
     fontFamily: paperTabFont,
     padding: "1rem",
+    textAlign: "center",
+    textDecoration: "none",
+    textTransform: "capitalize",
+    whiteSpace: "nowrap",
 
-    "@media only screen and (min-width: 768px)": {
-      marginRight: 28,
-    },
-
-    "@media only screen and (min-width: 1024px)": {
-      marginRight: 45,
+    "@media only screen and (max-width: 767px)": {
+      padding: 16,
     },
 
     "@media only screen and (min-width: 1288px)": {
-      marginRight: 80,
+      marginRight: 0,
     },
     ":hover": {
       color: paperTabColors.HOVER_FONT,
@@ -167,15 +219,14 @@ const styles = StyleSheet.create({
   selectedUi: {
     borderColor: colors.PURPLE(1),
   },
-  link: {
-    textAlign: "center",
-    textDecoration: "none",
-    textTransform: "capitalize",
-  },
   selected: {
     color: paperTabColors.SELECTED,
     borderBottom: "solid 3px",
     borderColor: paperTabColors.SELECTED,
+  },
+  tag: {
+    color: "unset",
+    textDecoration: "unset",
   },
 });
 

@@ -43,15 +43,15 @@ const Button = ({
               className={css(styles.icon, iconStyle && iconStyle)}
             />
           )}
-          <p
+          <div
             className={css(
               styles.label,
               isWhite && styles.isWhiteLabel,
               customLabelStyle && customLabelStyle
             )}
           >
-            {label && label}
-          </p>
+            {label && typeof label === "function" ? label() : label}
+          </div>
         </div>
       </Link>
     );
@@ -76,19 +76,26 @@ const Button = ({
             draggable={false}
           />
         )}
-        <p
+        <div
           className={css(
             styles.label,
             isWhite && styles.isWhiteLabel,
             customLabelStyle && customLabelStyle
           )}
         >
-          {label && label}
-        </p>
+          {label && typeof label === "function" ? label() : label}
+        </div>
       </button>
     );
     if (!hideRipples) {
-      return <Ripples onClick={onClick ? onClick : null}>{button}</Ripples>;
+      return (
+        <Ripples
+          className={css(styles.ripples)}
+          onClick={onClick ? onClick : null}
+        >
+          {button}
+        </Ripples>
+      );
     }
     return button;
   }
@@ -111,6 +118,9 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
+  },
+  ripples: {
+    overflow: "unset",
   },
   isWhite: {
     backgroundColor: "#FFF",

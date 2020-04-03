@@ -69,7 +69,7 @@ class CommentEntry extends React.Component {
           this.props.auth.user.id === this.props.comment.createdBy.id,
       },
       () => {
-        this.calculateThreadHeight();
+        setTimeout(() => this.calculateThreadHeight(), 400);
         this.props.calculateThreadHeight();
         this.props.comment.highlight &&
           setTimeout(() => {

@@ -218,6 +218,9 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     padding: 50,
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
     transition: "all ease-in-out 0.3s",
     opacity: 1,
     "@media only screen and (max-width: 415px)": {

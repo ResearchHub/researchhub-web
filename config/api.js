@@ -112,6 +112,8 @@ const routes = (BASE_URL) => {
         }
       }
 
+      url += "make_public=true&";
+
       url += prepFilters(filters);
 
       return url;
@@ -427,6 +429,12 @@ const routes = (BASE_URL) => {
 
       return url;
       // return BASE_URL + `notification/${userId}`
+    },
+    GET_PAPER_FIGURES: ({ paperId }) => {
+      return BASE_URL + `figure/${paperId}/get_all_figures/`;
+    },
+    MAKE_PAPER_PUBLIC: ({ paperId }) => {
+      return BASE_URL + `paper/${paperId}/?make_public=true/`;
     },
   };
 

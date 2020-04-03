@@ -23,6 +23,7 @@ const ActionButton = (props) => {
     active,
     isModerator,
     paperId,
+    style,
   } = props;
   const dispatch = useDispatch();
 
@@ -47,9 +48,8 @@ const ActionButton = (props) => {
   if (isModerator) {
     return (
       <ModeratorDeleteButton
-        containerStyle={[styles.actionButton, styles.deleteButton]}
         icon={<i className="fas fa-ban" />}
-        iconStyle={styles.icon}
+        iconStyle={styles.deleteIcon}
         actionType={"page"}
         metaData={{ paperId }}
         onRemove={paperPageDeleteCallback}
@@ -131,8 +131,12 @@ const styles = StyleSheet.create({
     },
   },
   deleteIcon: {
-    fontSize: 46,
-    paddingTop: 3,
+    color: "rgba(36, 31, 58, 0.35)",
+    fontSize: 18,
+    cursor: "pointer",
+    ":hover": {
+      color: colors.RED(1),
+    },
   },
   active: {
     color: "#FFF",
