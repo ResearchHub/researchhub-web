@@ -40,6 +40,7 @@ class PaperPageCard extends React.Component {
       toggleLightbox: true,
       fetching: false,
       loading: true,
+      slideIndex: 1,
     };
     this.containerRef = React.createRef();
     this.metaContainerRef = React.createRef();
@@ -159,9 +160,13 @@ class PaperPageCard extends React.Component {
           className={css(styles.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
+          onClick={this.toggleLightbox}
           style={{ height, minHeight: height, maxHeight: height }}
         >
           <Carousel
+            afterSlide={(slideIndex) =>
+              this.setState({ slideIndex: slideIndex + 1 })
+            }
             renderBottomCenterControls={(arg) => {
               let { currentSlide, slideCount, previousSlide, nextSlide } = arg;
               return (
@@ -172,7 +177,10 @@ class PaperPageCard extends React.Component {
                   )}
                 >
                   <span
-                    onClick={previousSlide}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      previousSlide(e);
+                    }}
                     className={css(
                       carousel.button,
                       carousel.left,
@@ -183,7 +191,10 @@ class PaperPageCard extends React.Component {
                   </span>
                   {`${currentSlide + 1} / ${slideCount}`}
                   <span
-                    onClick={nextSlide}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      nextSlide(e);
+                    }}
                     className={css(
                       carousel.button,
                       carousel.right,
@@ -201,14 +212,7 @@ class PaperPageCard extends React.Component {
             enableKeyboardControls={true}
           >
             {this.state.previews.map((preview) => {
-              return (
-                <img
-                  src={preview.file}
-                  onClick={this.toggleLightbox}
-                  className={css(styles.image)}
-                  // style={{ height, minHeight: height, maxHeight: height }}
-                />
-              );
+              return <img src={preview.file} className={css(styles.image)} />;
             })}
           </Carousel>
         </div>
@@ -263,7 +267,6 @@ class PaperPageCard extends React.Component {
       selectedVoteType,
     } = this.props;
 
-    let { scrollView } = this.props;
     let paperTitle = paper && paper.title;
     return (
       <Fragment>
@@ -371,6 +374,7 @@ class PaperPageCard extends React.Component {
             toggler={this.state.toggleLightbox}
             type="image"
             sources={[...figureUrls]}
+            slide={this.state.slideIndex}
           />
         )}
         <div
