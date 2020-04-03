@@ -190,33 +190,29 @@ class BulletsContainer extends React.Component {
     let { showDropdown } = this.state;
     let { openManageBulletPointsModal } = this.props;
     return (
-      <Fragment>
-        {showDropdown && (
-          <div
-            className={css(dropdownStyles.dropdownMenu)}
-            ref={(ref) => (this.dropdownMenu = ref)}
-          >
-            <Ripples
-              className={css(dropdownStyles.dropdownItem)}
-              onClick={() => this.transitionWrapper(this.toggleForm)}
-            >
-              <span className={css(dropdownStyles.dropdownItemIcon)}>
-                {icons.plusCircle}
-              </span>
-              Add a Key Takeaway
-            </Ripples>
-            <Ripples
-              className={css(dropdownStyles.dropdownItem)}
-              onClick={() => openManageBulletPointsModal(true)}
-            >
-              <span className={css(dropdownStyles.dropdownItemIcon)}>
-                <i class="fal fa-tasks-alt" />
-              </span>
-              Manage Key Takeaways
-            </Ripples>
-          </div>
-        )}
-      </Fragment>
+      <div
+        className={css(dropdownStyles.row)}
+        ref={(ref) => (this.dropdownMenu = ref)}
+      >
+        <Ripples
+          className={css(dropdownStyles.item)}
+          onClick={() => openManageBulletPointsModal(true)}
+        >
+          <span className={css(dropdownStyles.dropdownItemIcon)}>
+            <i class="fal fa-tasks-alt" />
+          </span>
+          Manage
+        </Ripples>
+        <Ripples
+          className={css(dropdownStyles.item, dropdownStyles.itemLast)}
+          onClick={() => this.transitionWrapper(this.toggleForm)}
+        >
+          <span className={css(dropdownStyles.dropdownItemIcon)}>
+            {icons.plusCircle}
+          </span>
+          Add Takeaway
+        </Ripples>
+      </div>
     );
   };
 
@@ -228,13 +224,6 @@ class BulletsContainer extends React.Component {
         <div className={css(styles.bulletHeaderContainer)}>
           <div className={css(styles.bulletTitle)}>Key Takeaways</div>
           <div className={css(dropdownStyles.dropdownContainer)}>
-            <Ripples
-              className={css(styles.bulletAddIcon)}
-              onClick={this.toggleDropdown}
-              ref={(ref) => (this.dropdownIcon = ref)}
-            >
-              {icons.ellipsisH}
-            </Ripples>
             {this.renderDropdown()}
           </div>
         </div>
@@ -320,6 +309,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
   },
   bulletTitle: {
     fontSize: 22,
@@ -348,6 +342,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     transition: "all ease-in-out 0.1s",
     height: 0,
+    paddingBottom: 16,
     overflow: "hidden",
   },
   showBulletForm: {
@@ -431,6 +426,12 @@ const dropdownStyles = StyleSheet.create({
   dropdownContainer: {
     position: "relative",
   },
+  row: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 8,
+  },
   dropdownMenu: {
     position: "absolute",
     bottom: -75,
@@ -468,11 +469,40 @@ const dropdownStyles = StyleSheet.create({
       background: "#F3F3F8",
     },
   },
-  dropdownItemIcon: {
-    color: "#918f9b",
+  itemLast: {
+    marginLeft: 16,
+
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: 32,
+    },
+  },
+  item: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    boxSizing: "border-box",
+    whiteSpace: "nowrap",
+    width: "100%",
+    color: colors.BLACK(),
+    cursor: "pointer",
+    opacity: 0.6,
+    overflow: "visible",
     fontSize: 14,
-    paddingLeft: 8,
-    marginRight: 13,
+    padding: 8,
+    ":hover": {
+      color: colors.PURPLE(),
+      textDecoration: "underline",
+      opacity: 1,
+    },
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 0,
+    },
+  },
+  dropdownItemIcon: {
+    // color: "#918f9b",
+    fontSize: 14,
+    marginRight: 6,
   },
 });
 

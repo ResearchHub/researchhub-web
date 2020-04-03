@@ -408,6 +408,7 @@ var styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
+    paddingBottom: 32,
 
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
