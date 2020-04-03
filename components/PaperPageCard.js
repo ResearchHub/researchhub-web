@@ -133,6 +133,10 @@ class PaperPageCard extends React.Component {
     let height =
       this.metaContainerRef.current &&
       this.metaContainerRef.current.clientHeight;
+
+    if (height > 300) {
+      height = 300;
+    }
     if (fetching) {
       return (
         <div
@@ -202,7 +206,7 @@ class PaperPageCard extends React.Component {
                   src={preview.file}
                   onClick={this.toggleLightbox}
                   className={css(styles.image)}
-                  style={{ height, minHeight: height, maxHeight: height }}
+                  // style={{ height, minHeight: height, maxHeight: height }}
                 />
               );
             })}
