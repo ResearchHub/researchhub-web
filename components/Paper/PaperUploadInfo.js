@@ -50,8 +50,8 @@ class PaperUploadInfo extends React.Component {
       form: {
         paper_title: "",
         title: "",
-        doi: "",
-        tagline: "",
+        doi: null,
+        tagline: null,
         published: {
           year: null,
           month: null,
@@ -150,10 +150,10 @@ class PaperUploadInfo extends React.Component {
       form.tagline = stripHtml(abstract.slice(0, 255));
     }
     if (DOI) {
-      form.doi = DOI && DOI;
+      form.doi = DOI;
     }
     if (url) {
-      form.url = url && url;
+      form.url = url;
     }
     if (issued) {
       let date = issued["date-parts"][0];
@@ -812,21 +812,23 @@ class PaperUploadInfo extends React.Component {
                   onChange={this.handleInputChange}
                 />
               </span>
-              <span className={css(styles.tagline)}>
-                <FormTextArea
-                  label={"Tag Line"}
-                  placeholder="Enter a sentence or two describing the paper"
-                  required={true}
-                  containerStyle={styles.taglineContainer}
-                  labelStyle={styles.labelStyle}
-                  value={form.tagline}
-                  id={"tagline"}
-                  onChange={this.handleInputChange}
-                />
-                <div className={css(styles.taglineCounter)}>
-                  {this.renderCharCount()} / 255
-                </div>
-              </span>
+              {editMode && (
+                <span className={css(styles.tagline)}>
+                  <FormTextArea
+                    label={"Tag Line"}
+                    placeholder="Enter a sentence or two describing the paper"
+                    required={true}
+                    containerStyle={styles.taglineContainer}
+                    labelStyle={styles.labelStyle}
+                    value={form.tagline}
+                    id={"tagline"}
+                    onChange={this.handleInputChange}
+                  />
+                  <div className={css(styles.taglineCounter)}>
+                    {this.renderCharCount()} / 255
+                  </div>
+                </span>
+              )}
             </div>
             <div className={css(styles.section)}></div>
           </span>
@@ -1128,9 +1130,9 @@ class PaperUploadInfo extends React.Component {
     if (paper_title && paper_title.trim() !== "") {
       count++;
     }
-    if (tagline && tagline.trim() !== "") {
-      count++;
-    }
+    // if (tagline && tagline.trim() !== "") {
+    //   count++;
+    // }
     if (hubs && hubs.length > 0) {
       count++;
     }
@@ -1139,7 +1141,7 @@ class PaperUploadInfo extends React.Component {
     }
 
     this.setState({
-      progress: count * 25,
+      progress: count * 33.33,
     });
   };
 
