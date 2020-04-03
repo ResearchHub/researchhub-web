@@ -546,6 +546,9 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
     boxSizing: "border-box",
+    "@media only screen and (min-width: 768px)": {
+      paddingRight: 16,
+    },
   },
   topRow: {
     display: "flex",
