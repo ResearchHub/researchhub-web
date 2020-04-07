@@ -181,7 +181,6 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
-
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
             <PaperPageCard
               paper={paper}
