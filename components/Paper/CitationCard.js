@@ -32,40 +32,14 @@ class CitationCard extends React.Component {
 
   componentDidMount() {
     let { citation } = this.props;
-    let { first_figure, first_preview, id } = citation;
-    let paperId = id;
-
-    if (first_figure === null && first_preview === null) {
-      this.fetchFigures(paperId);
-    } else {
-      let previews = [first_figure, first_preview].filter((el) => el !== null);
-      this.setState({
-        previews: previews,
-        figureUrl: previews.map((preview, index) => preview.file),
-        fetchingPreview: false,
-      });
-    }
-  }
-
-  fetchFigures = (paperId) => {
-    this.setState({ fetchingPreview: true }, () => {
-      fetch(API.GET_PAPER_FIGURES({ paperId }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          this.setState({
-            previews: res.data,
-            figureUrls: res.data.map((preview, index) => preview.file),
-            fetchingPreview: false,
-          });
-        })
-        .catch((err) => {
-          this.setState({
-            fetchingPreview: false,
-          });
-        });
+    let { first_figure, first_preview } = citation;
+    let previews = [first_preview, first_figure].filter((el) => el !== null);
+    this.setState({
+      previews: previews,
+      figureUrl: previews.map((preview, index) => preview.file),
+      fetchingPreview: false,
     });
-  };
+  }
 
   setHover = () => {
     !this.state.hovered && this.setState({ hovered: true });

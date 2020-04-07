@@ -170,6 +170,7 @@ const DiscussionTab = (props) => {
     props.showMessage({ load: true, show: true });
 
     let param = {
+      // title: discussion.title,
       text: discussion.question.toJSON(),
       paper: paperId,
       plain_text: Plain.serialize(discussion.question),
