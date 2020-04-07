@@ -5,8 +5,7 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
 import Ripples from "react-ripples";
-import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
-import ReactPlaceholder from "react-placeholder/lib";
+import FsLightbox from "fslightbox-react";
 import "react-placeholder/lib/reactPlaceholder.css";
 import "~/components/Paper/CitationCard.css";
 
@@ -59,16 +58,21 @@ const PaperEntryCard = ({
   } = paper || null;
   let selected = null;
   let vote_type = 0;
+  const [fetchedBullets, setFetchedBullets] = useState(false);
   const [hovered, toggleHover] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [lightbox, toggleLightbox] = useState(false);
+  const [bullets, setBullets] = useState([]);
+  const [slideIndex, setSlideIndex] = useState(1);
   const [previews, setPreviews] = useState(
     configurePreview([
       first_figure && first_figure,
       first_preview && first_preview,
     ])
   );
-  const [loading, setLoading] = useState(true);
-  const [lightbox, toggleLightbox] = useState(false);
-  const [bullets, setBullets] = useState([]);
+  const [figures, setFigures] = useState(
+    previews.map((preview, index) => preview.file)
+  );
 
   if (discussion_count == undefined) {
     discussion_count = discussionCount;
@@ -85,19 +89,22 @@ const PaperEntryCard = ({
 
   useEffect(() => {
     let paperId = id;
-    fetch(
-      API.BULLET_POINT({ paperId, ordinal__isnull: false }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setBullets(res.results);
-        setLoading(true);
-      });
+    if (!fetchedBullets) {
+      fetch(
+        API.BULLET_POINT({ paperId, ordinal__isnull: false }),
+        API.GET_CONFIG()
+      )
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          setBullets(res.results);
+          setLoading(true);
+          setFetchedBullets(true);
+        });
+    }
   });
 
-  function configurePreview(arr) {
+  function configurePreview(arr, setFigures) {
     return arr.filter((el) => {
       return el !== null;
     });
@@ -199,16 +206,20 @@ const PaperEntryCard = ({
       return (
         <div
           className={css(styles.column)}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
         >
           <div
             className={css(styles.preview)}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              toggleLightbox(!lightbox);
             }}
           >
             <Carousel
+              afterSlide={(slideIndex) => setSlideIndex(slideIndex + 1)}
               renderBottomCenterControls={(arg) => {
                 let {
                   currentSlide,
@@ -407,6 +418,16 @@ const PaperEntryCard = ({
         onMouseLeave={() => hovered && toggleHover(false)}
         onClick={navigateToPage}
       >
+        {figures.length > 0 && (
+          <div onClick={(e) => e.stopPropagation()}>
+            <FsLightbox
+              toggler={lightbox}
+              type="image"
+              sources={[...figures]}
+              slide={slideIndex}
+            />
+          </div>
+        )}
         <a className={css(styles.link)} href={`/paper/${id}/summary`}>
           <div className={css(styles.column)}>
             <span
