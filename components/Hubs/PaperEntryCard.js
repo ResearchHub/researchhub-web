@@ -146,17 +146,40 @@ const PaperEntryCard = ({
     Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
   }
 
-  function renderDiscussionCount() {
+  function formatDiscussionCount() {
     return `${discussion_count} ${
       discussion_count === 1 ? "Discussion" : "Discussions"
     }`;
   }
 
+  const renderDiscussionCount = () => {
+    return (
+      <Link
+        href={"/paper/[paperId]/[tabName]"}
+        as={`/paper/${id}/summary#discussions`}
+      >
+        <a className={css(styles.link)}>
+          <div className={css(styles.discussion)}>
+            <span className={css(styles.icon)} id={"discIcon"}>
+              {icons.chat}
+            </span>
+            <span className={css(styles.dicussionCount)} id={"discCount"}>
+              {formatDiscussionCount()}
+            </span>
+          </div>
+        </a>
+      </Link>
+    );
+  };
+
   const renderBullet = () => {
     if (bullet_points.length > 0) {
       return (
         <div className={css(styles.summary, styles.text)}>
-          <ul className={css(styles.bulletpoints)}>
+          <ul
+            className={css(styles.bulletpoints)}
+            id={mobileView ? "clamp1" : "clamp2"}
+          >
             {bullet_points.map((bullet, i) => {
               if (i < 3) {
                 return (
@@ -164,7 +187,12 @@ const PaperEntryCard = ({
                     key={`bullet-${bullet.id}`}
                     className={css(styles.bullet)}
                   >
-                    {bullet.plain_text}
+                    <div
+                      style={{ overflow: "hidden" }}
+                      id={mobileView ? "clamp1" : "clamp2"}
+                    >
+                      {bullet.plain_text}
+                    </div>
                   </li>
                 );
               }
@@ -269,325 +297,120 @@ const PaperEntryCard = ({
     }
   };
 
-  // if (mobileView) {
-  if (false) {
+  const renderHubTags = () => {
     return (
-      <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
-        <a className={css(styles.link)}>
-          <div
-            className={css(mobileStyles.papercard, style && style)}
-            key={`${id}-${index}-${title}`}
+      <div className={css(styles.tags)}>
+        {hubs.length > 0 &&
+          hubs.map(
+            (tag, index) =>
+              tag && (
+                <HubTag
+                  key={`hub_${index}`}
+                  tag={tag}
+                  hubName={hubName}
+                  last={index === hubs.length - 1}
+                  gray={true}
+                  labelStyle={styles.hubLabel}
+                />
+              )
+          )}
+      </div>
+    );
+  };
+
+  return (
+    <Ripples
+      className={css(styles.papercard, style && style)}
+      key={`${id}-${index}-${title}`}
+      onMouseEnter={() => !hovered && toggleHover(true)}
+      onMouseLeave={() => hovered && toggleHover(false)}
+      onClick={navigateToPage}
+    >
+      {figures.length > 0 && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <FsLightbox
+            toggler={lightbox}
+            type="image"
+            sources={[...figures]}
+            slide={slideIndex}
+          />
+        </div>
+      )}
+      <a className={css(styles.link)} href={`/paper/${id}/summary`}>
+        <div className={css(styles.column)}>
+          <span
+            className={css(styles.voting)}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div className={css(mobileStyles.title, styles.text)}>
-              {title && title}
-            </div>
+            <VoteWidget
+              score={score}
+              onUpvote={onUpvote}
+              onDownvote={onDownvote}
+              selected={selected}
+              searchResult={searchResult}
+              isPaper={true}
+              styles={styles.voteWidget}
+            />
+          </span>
+        </div>
+        <div
+          className={css(
+            styles.column,
+            styles.metaData,
+            previews.length > 0 && styles.metaDataPreview
+          )}
+        >
+          <div className={css(styles.title, styles.text)}>
+            {title && title}
             {paper_title !== title && paper_title && (
               <div
-                className={css(
-                  styles.paperTitle,
-                  styles.text,
-                  styles.publishDate
-                )}
+                className={css(styles.paperTitle, styles.text)}
+                id={"clamp1"}
               >
                 From Paper: {paper_title && paper_title}
               </div>
             )}
-            <span
-              className={css(mobileStyles.voting)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <VoteWidget
-                score={score}
-                onUpvote={onUpvote}
-                onDownvote={onDownvote}
-                selected={selected}
-                horizontalView={true}
-                isPaper={true}
-              />
-            </span>
-            <div
-              className={css(
-                styles.publishDate,
-                styles.text,
-                mobileStyles.publishDate,
-                !paper_publish_date && styles.hide
-              )}
-            >
-              {paper_publish_date && convertDate()}
-            </div>
-            <div
-              className={css(
-                mobileStyles.summary,
-                styles.text,
-                !tagline && mobileStyles.hide
-              )}
-            >
-              {/* {tagline && tagline} */}
-            </div>
-            <div className={css(styles.bottomBar, mobileStyles.bottomBar)}>
-              <div className={css(styles.row)}>
-                <div
-                  className={css(
-                    styles.avatars,
-                    authors.length < 1 && styles.hide
-                  )}
-                >
-                  {authors.length > 0 &&
-                    authors.map((author) => (
-                      <div
-                        className={css(styles.avatar)}
-                        key={`author_${author.id}_${id}_${Math.random()}`}
-                      >
-                        <AuthorAvatar
-                          key={`author_${author.id}_${id}`}
-                          size={30}
-                          textSizeRatio={2.5}
-                          author={author}
-                        />
-                      </div>
-                    ))}
-                </div>
-                <Link
-                  href={"/paper/[paperId]/[tabName]"}
-                  as={`/paper/${id}/discussion`}
-                >
-                  <div className={css(styles.discussion)}>
-                    <span className={css(styles.icon)} id={"discIcon"}>
-                      {icons.chat}
-                    </span>
-                    <span
-                      className={css(
-                        styles.dicussionCount,
-                        mobileStyles.discussionCount
-                      )}
-                      id={"discCount"}
-                    >
-                      {renderDiscussionCount()}
-                    </span>
-                  </div>
-                </Link>
-              </div>
-            </div>
-            <div className={css(styles.tags, mobileStyles.tags)}>
-              {hubs.length > 0 &&
-                hubs.map(
-                  (tag, index) =>
-                    tag && (
-                      <HubTag
-                        key={`hub_${index}`}
-                        tag={tag}
-                        hubName={hubName}
-                      />
-                    )
-                )}
-            </div>
           </div>
-        </a>
-      </Link>
-    );
-  } else {
-    return (
-      // <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
-      // <a
-      //   className={css(styles.link)}
-      //   onClick={e => false}
-      //   href={`/paper/${id}/summary`}
-      // >
-      <Ripples
-        className={css(styles.papercard, style && style)}
-        key={`${id}-${index}-${title}`}
-        onMouseEnter={() => !hovered && toggleHover(true)}
-        onMouseLeave={() => hovered && toggleHover(false)}
-        onClick={navigateToPage}
-      >
-        {figures.length > 0 && (
-          <div onClick={(e) => e.stopPropagation()}>
-            <FsLightbox
-              toggler={lightbox}
-              type="image"
-              sources={[...figures]}
-              slide={slideIndex}
-            />
-          </div>
-        )}
-        <a className={css(styles.link)} href={`/paper/${id}/summary`}>
-          <div className={css(styles.column)}>
-            <span
-              className={css(styles.voting)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <VoteWidget
-                score={score}
-                onUpvote={onUpvote}
-                onDownvote={onDownvote}
-                selected={selected}
-                searchResult={searchResult}
-                isPaper={true}
-                styles={styles.voteWidget}
-              />
-            </span>
-          </div>
+          {renderBullet()}
           <div
             className={css(
-              styles.column,
-              styles.metaData,
-              previews.length > 0 && styles.metaDataPreview
+              styles.publishContainer,
+              !paper_publish_date && styles.hide
             )}
           >
-            <div className={css(styles.title, styles.text)}>
-              {title && title}
-              {paper_title !== title && paper_title && (
-                <div
-                  className={css(styles.paperTitle, styles.text)}
-                  id={"clamp1"}
-                >
-                  From Paper: {paper_title && paper_title}
-                </div>
-              )}
-            </div>
-            {renderBullet()}
-            <div
-              className={css(
-                styles.publishContainer,
-                !paper_publish_date && styles.hide
-              )}
+            <span className={css(styles.publishDate, styles.text)}>
+              {paper_publish_date && convertDate()}
+            </span>
+            <span
+              className={css(styles.avatars, authors.length < 1 && styles.hide)}
             >
-              <span className={css(styles.publishDate, styles.text)}>
-                {paper_publish_date && convertDate()}
-              </span>
-              <span
-                className={css(
-                  styles.avatars,
-                  authors.length < 1 && styles.hide
-                )}
-              >
-                {authors.length > 0 &&
-                  authors.map((author) => (
-                    <div
+              {authors.length > 0 &&
+                authors.map((author) => (
+                  <div
+                    key={`author_${author.id}_${id}`}
+                    className={css(styles.avatar)}
+                  >
+                    <AuthorAvatar
                       key={`author_${author.id}_${id}`}
-                      className={css(styles.avatar)}
-                    >
-                      <AuthorAvatar
-                        key={`author_${author.id}_${id}`}
-                        size={25}
-                        textSizeRatio={2.5}
-                        author={author}
-                      />
-                    </div>
-                  ))}
-              </span>
-            </div>
-            <div className={css(styles.bottomBar)}>
-              <div className={css(styles.row)}>
-                <Link
-                  href={"/paper/[paperId]/[tabName]"}
-                  as={`/paper/${id}/summary#discussions`}
-                >
-                  <a className={css(styles.link)}>
-                    <div className={css(styles.discussion)}>
-                      <span
-                        className={css(styles.icon, mobileStyles.icon)}
-                        id={"discIcon"}
-                      >
-                        {icons.chat}
-                      </span>
-                      <span
-                        className={css(styles.dicussionCount)}
-                        id={"discCount"}
-                      >
-                        {renderDiscussionCount()}
-                      </span>
-                    </div>
-                  </a>
-                </Link>
-              </div>
-              <div className={css(styles.tags)}>
-                {hubs.length > 0 &&
-                  hubs.map(
-                    (tag, index) =>
-                      tag && (
-                        <HubTag
-                          key={`hub_${index}`}
-                          tag={tag}
-                          hubName={hubName}
-                          last={index === hubs.length - 1}
-                          gray={true}
-                          labelStyle={styles.hubLabel}
-                        />
-                      )
-                  )}
-              </div>
-            </div>
+                      size={25}
+                      textSizeRatio={2.5}
+                      author={author}
+                    />
+                  </div>
+                ))}
+            </span>
           </div>
-        </a>
-        {renderPreview()}
-      </Ripples>
-    );
-  }
+          {mobileView && renderHubTags()}
+          <div className={css(styles.bottomBar)}>
+            <div className={css(styles.row)}>{renderDiscussionCount()}</div>
+            {!mobileView && renderHubTags()}
+          </div>
+        </div>
+      </a>
+      {!mobileView && renderPreview()}
+    </Ripples>
+  );
 };
-
-const mobileStyles = StyleSheet.create({
-  papercard: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    maxHeight: 513,
-    padding: 30,
-    backgroundColor: "#FFF",
-    cursor: "pointer",
-    border: "1px solid #EDEDED",
-    marginTop: 10,
-    marginBottom: 10,
-    borderRadius: 3,
-
-    "@media only screen and (max-width: 767px)": {
-      maxHeight: "unset",
-    },
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-    },
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 500,
-    textOverflow: "ellipsis",
-    marginBottom: 15,
-    padding: 0,
-  },
-  voting: {
-    marginBottom: 15,
-  },
-  publishDate: {
-    height: 16,
-    marginBottom: 15,
-    "@media only screen and (max-width: 416px)": {
-      fontSize: 12,
-    },
-  },
-  summary: {
-    marginBottom: 15,
-    textOverflow: "ellipsis",
-    width: "calc(100% - 15px)",
-    overflow: "hidden",
-  },
-  hide: {
-    display: "none",
-  },
-  bottomBar: {
-    marginBottom: 15,
-    // overflowX: "scroll",
-    paddingTop: 2,
-  },
-  discussionCount: {
-    "@media only screen and (max-width: 416px)": {
-      fontSize: 12,
-    },
-  },
-  tags: {
-    // overflowX: "scroll",
-  },
-});
 
 const styles = StyleSheet.create({
   papercard: {
@@ -595,7 +418,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    // padding: "27px 15px 27px 15px",
     padding: 15,
     boxSizing: "border-box",
     backgroundColor: "#FFF",
@@ -643,6 +465,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 500,
     paddingBottom: 8,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 16,
+    },
   },
   publishContainer: {
     maxWidth: "100%",
@@ -668,7 +493,6 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
   },
   voting: {
-    // marginTop: -20,
     width: 65,
   },
   voteWidget: {
@@ -717,8 +541,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     flexWrap: "wrap",
-    "@media only screen and (max-width: 967px)": {
+    "@media only screen and (max-width: 970px)": {
+      marginBottom: 15,
       justifyContent: "flex-start",
+      width: "100%",
+      flexWrap: "wrap",
     },
   },
   row: {
@@ -769,6 +596,7 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     fontSize: 12,
+    display: "list-item",
   },
   hubLabel: {
     fontSize: 9,
