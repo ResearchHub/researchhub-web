@@ -40,6 +40,7 @@ const Paper = (props) => {
   const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
+  const [loadingPaper, setLoadingPaper] = useState(true);
   const [flagged, setFlag] = useState(paper.user_flag !== null);
   const [sticky, setSticky] = useState(false);
   const [scrollView, setScrollView] = useState(false);
@@ -81,26 +82,33 @@ const Paper = (props) => {
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
 
-  useEffect(() => {
-    async function refetchPaper() {
-      await dispatch(PaperActions.getPaper(paperId));
-      const fetchedPaper = store.getState().paper;
-      await dispatch(PaperActions.getThreads(paperId, fetchedPaper));
-      const refetchedPaper = store.getState().paper;
+  async function refetchPaper() {
+    setLoadingPaper(true);
+    await dispatch(PaperActions.getPaper(paperId));
+    const fetchedPaper = store.getState().paper;
+    await dispatch(PaperActions.getThreads(paperId, fetchedPaper));
+    const refetchedPaper = store.getState().paper;
 
-      setPaper(refetchedPaper);
-      setSelectedVoteType(getVoteType(refetchedPaper.userVote));
-      setDiscussionThreads(getDiscussionThreads(refetchedPaper));
-      setFlag(refetchedPaper.user_flag !== null);
-      document.body.scrollTop = 0; // For Safari
-      document.documentElement.scrollTop = 0;
-      showMessage({ show: false });
-      if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
-        props.setUploadingPaper(false);
-      }
+    setLoadingPaper(false);
+    setPaper(refetchedPaper);
+    setSelectedVoteType(getVoteType(refetchedPaper.userVote));
+    setDiscussionThreads(getDiscussionThreads(refetchedPaper));
+    setFlag(refetchedPaper.user_flag !== null);
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0;
+    showMessage({ show: false });
+    if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
+      props.setUploadingPaper(false);
     }
+  }
+
+  useEffect(() => {
     refetchPaper();
-  }, [props.isServer, paperId]);
+  }, []);
+
+  useEffect(() => {
+    refetchPaper();
+  }, [paperId]);
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
@@ -191,6 +199,7 @@ const Paper = (props) => {
               shareUrl={shareUrl}
               isModerator={isModerator}
               flagged={flagged}
+              doneFetchingPaper={!loadingPaper}
               setFlag={setFlag}
               sticky={sticky}
               scrollView={scrollView}
