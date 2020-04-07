@@ -4,7 +4,6 @@ import moment from "moment";
 import Router from "next/router";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
-import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
@@ -212,7 +211,13 @@ class PaperPageCard extends React.Component {
             enableKeyboardControls={true}
           >
             {this.state.previews.map((preview) => {
-              return <img src={preview.file} className={css(styles.image)} />;
+              return (
+                <img
+                  src={preview.file}
+                  className={css(styles.image)}
+                  style={{ height, maxHeight: height }}
+                />
+              );
             })}
           </Carousel>
         </div>
@@ -255,6 +260,16 @@ class PaperPageCard extends React.Component {
     return hubs;
   };
 
+  //   <div className={css(styles.hubTags, styles.desktop)}>
+  //   {this.renderHubs()}
+
+  // </div>
+
+  // {paper.paper_title && paper.paper_title !== paper.title && (
+  //   <div className={css(styles.subtitle)}>
+  //     {paper.paper_title}
+  //   </div>
+  // )}
   renderTopRow = () => {
     let {
       paper,
@@ -282,9 +297,7 @@ class PaperPageCard extends React.Component {
                 horizontalView={true}
               />
             </div>
-            <div className={css(styles.hubTags, styles.desktop)}>
-              {this.renderHubs()}
-            </div>
+            <div className={css(styles.title)}>{paper && paper.title}</div>
           </div>
           <div className={css(styles.actions)}>
             <PermissionNotificationWrapper
@@ -396,26 +409,9 @@ class PaperPageCard extends React.Component {
               ref={this.metaContainerRef}
             >
               <div className={css(styles.metaContainer)}>
-                <div className={css(styles.titleHeader)}>
-                  <div
-                    className={css(
-                      styles.title,
-                      paper.paper_title &&
-                        paper.paper_title !== paper.title &&
-                        styles.titleMargin
-                    )}
-                  >
-                    {paper && paper.title}
-                  </div>
-                  {paper.paper_title && paper.paper_title !== paper.title && (
-                    <div className={css(styles.subtitle)}>
-                      {paper.paper_title}
-                    </div>
-                  )}
-                  {paper && paper.tagline && (
-                    <div className={css(styles.tagline)}>{paper.tagline}</div>
-                  )}
-                </div>
+                {paper && paper.tagline && (
+                  <div className={css(styles.tagline)}>{paper.tagline}</div>
+                )}
                 <Fragment>
                   <div className={css(styles.dateAuthorContainer)}>
                     {paper && paper.paper_publish_date && (
@@ -502,10 +498,8 @@ const styles = StyleSheet.create({
     },
   },
   previewContainer: {
-    minWidth: 220,
-    width: 220,
-    // height: 300,
-    // minHeight: 300,
+    minWidth: 180,
+    width: 180,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     display: "flex",
@@ -527,21 +521,16 @@ const styles = StyleSheet.create({
     minHeight: "unset",
   },
   image: {
-    width: "100%",
-    // minWidth: "100%",
-    // maxWidth: "100%",
-    // height: "100%",
-    // minHeight: 300,
-    // maxHeight: 300,
+    height: "100%",
+    minHeight: "100%",
+    maxHeight: "100%",
     objectFit: "contain",
-    "@media only screen and (max-width: 1280px)": {},
   },
   column: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     width: "100%",
-    // minHeight: 333,
   },
   cardContainer: {
     display: "flex",
@@ -585,6 +574,10 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
+  titleHeader: {
+    display: "flex",
+    flexDirection: "column",
+  },
   title: {
     fontSize: 30,
     position: "relative",
@@ -600,13 +593,13 @@ const styles = StyleSheet.create({
     },
   },
   titleMargin: {
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   subtitle: {
     color: "#241F3A",
     opacity: 0.7,
     fontSize: 16,
-    marginTop: 10,
+    marginBottom: 10,
   },
   tagline: {
     color: "#241F3A",

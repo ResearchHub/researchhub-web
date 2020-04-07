@@ -23,23 +23,29 @@ const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
       <Fragment>
         <Ripples>
           <Link href={"/hubs/[slug]"} as={`/hubs/${nameToUrl(slug)}`}>
-            <div
-              className={css(
-                styles.tag,
-                gray && styles.grayTag,
-                overrideStyle && overrideStyle
-              )}
+            <a
+              className={css(styles.atag)}
+              onClick={(e) => e.preventDefault()}
+              href={`/hubs/${nameToUrl(slug)}`}
             >
-              <span
+              <div
                 className={css(
-                  styles.label,
-                  gray && styles.grayLabel,
-                  labelStyle && labelStyle
+                  styles.tag,
+                  gray && styles.grayTag,
+                  overrideStyle && overrideStyle
                 )}
               >
-                {name && name}
-              </span>
-            </div>
+                <span
+                  className={css(
+                    styles.label,
+                    gray && styles.grayLabel,
+                    labelStyle && labelStyle
+                  )}
+                >
+                  {name && name}
+                </span>
+              </div>
+            </a>
           </Link>
         </Ripples>
         {!last && <div className={css(styles.space)} />}
@@ -91,6 +97,10 @@ const styles = StyleSheet.create({
   grayLabel: {
     color: "#241F3A",
     opacity: 0.8,
+  },
+  atag: {
+    color: "unset",
+    textDecoration: "unset",
   },
 });
 
