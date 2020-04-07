@@ -613,6 +613,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     fontSize: 16,
     marginTop: 10,
+    marginBottom: 10,
   },
   dateAuthorContainer: {
     display: "flex",
