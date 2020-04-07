@@ -5,8 +5,8 @@ import colors from "~/config/themes/colors";
 import Ripples from "react-ripples";
 import { nameToUrl } from "~/config/constants";
 
-const HubTag = ({ tag, overrideStyle, hubName, gray }) => {
-  let { id, name, link, last, slug } = tag;
+const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
+  let { id, name, link, slug } = tag;
   const nameArr = (name && name.split(" ")) || [];
 
   if (name === hubName) {
@@ -30,7 +30,13 @@ const HubTag = ({ tag, overrideStyle, hubName, gray }) => {
                 overrideStyle && overrideStyle
               )}
             >
-              <span className={css(styles.label, gray && styles.grayLabel)}>
+              <span
+                className={css(
+                  styles.label,
+                  gray && styles.grayLabel,
+                  labelStyle && labelStyle
+                )}
+              >
                 {name && name}
               </span>
             </div>
