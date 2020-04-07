@@ -106,10 +106,7 @@ export const PaperActions = {
           const updatedPaper = { ...paper };
           let { discussion } = updatedPaper;
           // reset the list from page 1 when filter is changed; initial set state
-          if (
-            (!discussion.filter && page === 1) ||
-            discussion.filter !== filter
-          ) {
+          if ((!discussion && page === 1) || discussion.filter !== filter) {
             discussion.filter = filter; // set filter
             discussion.count = res.count; // set count
             discussion.threads = [...res.results]; // set threads

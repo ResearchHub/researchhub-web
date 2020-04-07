@@ -44,6 +44,7 @@ const PaperEntryCard = ({
   let {
     id,
     authors,
+    bullet_points,
     discussion,
     discussion_count,
     hubs,
@@ -56,9 +57,9 @@ const PaperEntryCard = ({
     first_figure,
     first_preview,
   } = paper || null;
+
   let selected = null;
   let vote_type = 0;
-  const [fetchedBullets, setFetchedBullets] = useState(false);
   const [hovered, toggleHover] = useState(false);
   const [loading, setLoading] = useState(true);
   const [lightbox, toggleLightbox] = useState(false);
@@ -86,23 +87,6 @@ const PaperEntryCard = ({
       selected = DOWNVOTE;
     }
   }
-
-  useEffect(() => {
-    let paperId = id;
-    if (!fetchedBullets) {
-      fetch(
-        API.BULLET_POINT({ paperId, ordinal__isnull: false }),
-        API.GET_CONFIG()
-      )
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          setBullets(res.results);
-          setLoading(true);
-          setFetchedBullets(true);
-        });
-    }
-  });
 
   function configurePreview(arr, setFigures) {
     return arr.filter((el) => {
@@ -169,13 +153,11 @@ const PaperEntryCard = ({
   }
 
   const renderBullet = () => {
-    if (loading) {
-    }
-    if (bullets.length > 0) {
+    if (bullet_points.length > 0) {
       return (
         <div className={css(styles.summary, styles.text)}>
           <ul className={css(styles.bulletpoints)}>
-            {bullets.map((bullet, i) => {
+            {bullet_points.map((bullet, i) => {
               if (i < 3) {
                 return (
                   <li

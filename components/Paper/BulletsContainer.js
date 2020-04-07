@@ -436,7 +436,7 @@ const dropdownStyles = StyleSheet.create({
     position: "absolute",
     bottom: -75,
     right: 0,
-    width: 210,
+    // width: 210,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
     boxSizing: "border-box",
     background: "#fff",
@@ -471,7 +471,9 @@ const dropdownStyles = StyleSheet.create({
   },
   itemLast: {
     marginLeft: 16,
-
+    widht: 119,
+    minWidth: 119,
+    maxWidth: 119,
     "@media only screen and (max-width: 767px)": {
       marginLeft: 32,
     },
@@ -486,7 +488,6 @@ const dropdownStyles = StyleSheet.create({
     color: colors.BLACK(),
     cursor: "pointer",
     opacity: 0.6,
-    overflow: "visible",
     fontSize: 14,
     padding: 8,
     ":hover": {
