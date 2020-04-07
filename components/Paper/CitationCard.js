@@ -230,25 +230,18 @@ class CitationCard extends React.Component {
           </span>
         )}
         {this.renderPreview()}
-        <div className={css(styles.title)} id={"clamp"}>
-          {citation.title && citation.title}
-        </div>
-        <div className={css(styles.hubs)}>{this.renderHubs()}</div>
+        <a className={css(styles.link)} href={this.getHref()}>
+          <div className={css(styles.title)} id={"clamp"}>
+            {citation.title && citation.title}
+          </div>
+          <div className={css(styles.hubs)}>{this.renderHubs()}</div>
+        </a>
       </div>
     );
   };
 
   render() {
-    let { citation } = this.props;
-    return (
-      <a
-        className={css(styles.link)}
-        href={this.getHref()}
-        onClick={(e) => e.preventDefault()}
-      >
-        {this.renderCitation()}
-      </a>
-    );
+    return <div>{this.renderCitation()}</div>;
   }
 }
 
