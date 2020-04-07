@@ -47,7 +47,7 @@ const Paper = (props) => {
     getDiscussionThreads(paper)
   );
   const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(paper.userVote.vote_type)
+    getVoteType(paper.userVote.voteType)
   );
   const [steps, setSteps] = useState([
     {

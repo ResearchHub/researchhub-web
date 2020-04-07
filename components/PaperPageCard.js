@@ -250,7 +250,7 @@ class PaperPageCard extends React.Component {
     let hubs =
       paper &&
       paper.hubs.map((hub, index) => {
-        return <HubTag tag={hub} gray={true} />;
+        return <HubTag tag={hub} gray={true} key={`hub_tag_index_${index}`} />;
       });
     return hubs;
   };
