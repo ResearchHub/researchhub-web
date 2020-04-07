@@ -47,9 +47,8 @@ class PaperPageCard extends React.Component {
   }
 
   componentDidMount() {
-    console.log("this.props", this.props);
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0;
+    // document.body.scrollTop = 0; // For Safari
+    // document.documentElement.scrollTop = 0;
     this.fetchFigures();
   }
 
@@ -172,7 +171,7 @@ class PaperPageCard extends React.Component {
             </span>
           </Ripples>
         )}
-        {paper && paper.url && (
+        {paper && paper.url && (paper && !paper.file) && (
           <Ripples
             className={css(styles.actionIcon, styles.downloadActionIcon)}
             onClick={() => openExternalLink(paper.url)}
