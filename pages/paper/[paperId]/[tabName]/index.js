@@ -117,8 +117,7 @@ const Paper = (props) => {
   }, [scrollListener]);
 
   function getDiscussionThreads(paper) {
-    console.log("paper", paper);
-    return paper.discussion.threads;
+    return paper.discussion ? paper.discussion.threads : [];
   }
 
   async function upvote() {
