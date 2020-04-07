@@ -85,6 +85,8 @@ const PaperPagePlaceholder = ({ color }) => (
             />
           </div>
         </div>
+      </div>
+      <div className={css(styles.columnRight)}>
         <div className={css(styles.row)}>
           <RoundShape
             className={css(styles.actions)}
@@ -104,16 +106,16 @@ const PaperPagePlaceholder = ({ color }) => (
           <RoundShape
             className={css(styles.actions)}
             color={color}
-            style={{ width: 30, height: 30 }}
+            style={{ width: 30, height: 30, marginRight: 10 }}
           />
         </div>
+        <RectShape
+          className={css(styles.textRow)}
+          // rows={1}
+          color={color}
+          style={{ width: 180, height: 250 }}
+        />
       </div>
-      <RectShape
-        className={css(styles.textRow)}
-        // rows={1}
-        color={color}
-        style={{ width: 180, height: 250 }}
-      />
     </div>
   </div>
 );
@@ -132,8 +134,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
   },
+  columnRight: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+  },
   row: {
     display: "flex",
+    marginBottom: 15,
   },
   spaceBetween: {
     display: "flex",

@@ -47,6 +47,7 @@ class PaperPageCard extends React.Component {
   }
 
   componentDidMount() {
+    console.log("this.props", this.props);
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0;
     this.fetchFigures();
@@ -69,7 +70,7 @@ class PaperPageCard extends React.Component {
       this.setState({ loading: false }, () => {
         setTimeout(() => {
           this.state.fetching && this.setState({ fetching: false });
-        }, 200);
+        }, 400);
       });
     }, timeout);
   };
@@ -171,7 +172,7 @@ class PaperPageCard extends React.Component {
             </span>
           </Ripples>
         )}
-        {true && (
+        {paper && paper.url && (
           <Ripples
             className={css(styles.actionIcon, styles.downloadActionIcon)}
             onClick={() => openExternalLink(paper.url)}
@@ -473,15 +474,12 @@ class PaperPageCard extends React.Component {
                   )}
                 </Fragment>
                 <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
-                <div className={css(styles.buttonRow)}>
-                  {this.renderActions()}
-                </div>
               </div>
             </div>
             <div className={css(styles.rightColumn)}>
-              {/* <div className={css(styles.actionMobileContainer)}>
+              <div className={css(styles.actionMobileContainer)}>
                 {this.renderActions()}
-              </div> */}
+              </div>
               {this.renderPreview()}
             </div>
           </div>
@@ -686,9 +684,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     width: "100%",
     paddingBottom: 15,
-    // "@media only screen and (max-width: 768px)": {
-    //   justifyContent: 'flex-end',
-    // },
   },
   actionIcon: {
     padding: 5,
@@ -751,7 +746,7 @@ const styles = StyleSheet.create({
     },
   },
   actionMobileContainer: {
-    display: "none",
+    paddingTop: 2,
     "@media only screen and (max-width: 768px)": {
       display: "flex",
     },
