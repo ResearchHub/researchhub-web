@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Router from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import Carousel from "nuka-carousel";
+import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
+import "~/components/Paper/CitationCard.css";
 
 // Components
 import VoteWidget from "../VoteWidget";
@@ -19,8 +25,9 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { formatPublishedDate } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
-
 import { PaperActions } from "~/redux/paper";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 const PaperEntryCard = ({
   paper,
@@ -46,9 +53,20 @@ const PaperEntryCard = ({
     user_vote,
     score,
     paper_title,
+    first_figure,
+    first_preview,
   } = paper || null;
   let selected = null;
   let vote_type = 0;
+  const [hovered, toggleHover] = useState(false);
+  const [previews, setPreviews] = useState([
+    first_figure && first_figure,
+    first_preview && first_preview,
+  ]);
+  const [loading, setLoading] = useState(true);
+  const [lightbox, toggleLightbox] = useState(false);
+  const [bullets, setBullets] = useState([]);
+
   if (discussion_count == undefined) {
     discussion_count = discussionCount;
   }
@@ -61,6 +79,20 @@ const PaperEntryCard = ({
       selected = DOWNVOTE;
     }
   }
+
+  useEffect(() => {
+    let paperId = id;
+    fetch(
+      API.BULLET_POINT({ paperId, ordinal__isnull: false }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setBullets(res.results);
+        setLoading(true);
+      });
+  });
 
   function convertDate() {
     return formatPublishedDate(transformDate(paper.paper_publish_date));
@@ -108,13 +140,151 @@ const PaperEntryCard = ({
     voteCallback(index, curPaper);
   }
 
+  function navigateToPage(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
+  }
+
   function renderDiscussionCount() {
     return `${discussion_count} ${
-      discussion_count === 1 ? "discussion" : "discussions"
+      discussion_count === 1 ? "Discussion" : "Discussions"
     }`;
   }
 
-  if (mobileView) {
+  const renderBullet = () => {
+    if (loading) {
+    }
+    if (bullets.length > 0) {
+      return (
+        <div
+          className={css(
+            styles.summary,
+            styles.text
+            // !tagline && styles.hide
+          )}
+        >
+          <ul className={css(styles.bulletpoints)}>
+            {bullets.map((bullet, i) => {
+              if (i < 3) {
+                return (
+                  <li
+                    key={`bullet-${bullet.id}`}
+                    className={css(styles.bullet)}
+                  >
+                    {bullet.plain_text}
+                  </li>
+                );
+              }
+            })}
+          </ul>
+        </div>
+      );
+    } else if (tagline) {
+      return (
+        <div
+          className={css(
+            styles.summary,
+            styles.text
+            // !tagline && styles.hide
+          )}
+        >
+          <div className={css(styles.bullet)} id={"clamp2"}>
+            {tagline && tagline}
+          </div>
+        </div>
+      );
+    }
+  };
+
+  const renderPreview = () => {
+    // let { hovered, fetching, previews } = this.state;
+    let figures = previews.filter((preview) => {
+      return preview !== null;
+    });
+
+    if (figures.length > 0) {
+      return (
+        <div
+          className={css(styles.column)}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            className={css(styles.preview)}
+            onMouseEnter={() => !hovered && toggleHover(true)}
+            onMouseLeave={() => hovered && toggleHover(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            <Carousel
+              renderBottomCenterControls={(arg) => {
+                let {
+                  currentSlide,
+                  slideCount,
+                  previousSlide,
+                  nextSlide,
+                } = arg;
+                return (
+                  <div
+                    className={css(
+                      carousel.bottomControl,
+                      hovered && carousel.show
+                    )}
+                  >
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        previousSlide(e);
+                      }}
+                      className={css(
+                        carousel.button,
+                        carousel.left,
+                        hovered && carousel.show
+                      )}
+                    >
+                      <i className="far fa-angle-left" />
+                    </span>
+                    {`${currentSlide + 1} / ${slideCount}`}
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        nextSlide(e);
+                      }}
+                      className={css(
+                        carousel.button,
+                        carousel.right,
+                        hovered && carousel.show
+                      )}
+                    >
+                      <i className="far fa-angle-right" />
+                    </span>
+                  </div>
+                );
+              }}
+              renderCenterLeftControls={null}
+              renderCenterRightControls={null}
+              wrapAround={true}
+              enableKeyboardControls={true}
+            >
+              {previews.map((preview) => {
+                if (preview) {
+                  return (
+                    <img src={preview.file} className={css(carousel.image)} />
+                  );
+                }
+              })}
+            </Carousel>
+          </div>
+        </div>
+      );
+    }
+  };
+
+  // if (mobileView) {
+  if (false) {
     return (
       <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
         <a className={css(styles.link)}>
@@ -166,7 +336,7 @@ const PaperEntryCard = ({
                 !tagline && mobileStyles.hide
               )}
             >
-              {tagline && tagline}
+              {/* {tagline && tagline} */}
             </div>
             <div className={css(styles.bottomBar, mobileStyles.bottomBar)}>
               <div className={css(styles.row)}>
@@ -232,7 +402,7 @@ const PaperEntryCard = ({
   } else {
     return (
       <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/${id}/summary`}>
-        <a className={css(styles.link)}>
+        <a className={css(styles.link)} onClick={navigateToPage}>
           <div
             className={css(styles.papercard, style && style)}
             key={`${id}-${index}-${title}`}
@@ -249,68 +419,59 @@ const PaperEntryCard = ({
                   selected={selected}
                   searchResult={searchResult}
                   isPaper={true}
+                  styles={styles.voteWidget}
                 />
               </span>
             </div>
             <div className={css(styles.column, styles.metaData)}>
               <div className={css(styles.title, styles.text)}>
                 {title && title}
+                {paper_title !== title && paper_title && (
+                  <div
+                    className={css(styles.paperTitle, styles.text)}
+                    id={"clamp1"}
+                  >
+                    From Paper: {paper_title && paper_title}
+                  </div>
+                )}
               </div>
-              {paper_title !== title && paper_title && (
-                <div
-                  className={css(
-                    styles.paperTitle,
-                    styles.text,
-                    styles.publishDate
-                  )}
-                >
-                  From Paper: {paper_title && paper_title}
-                </div>
-              )}
+              {renderBullet()}
               <div
                 className={css(
-                  styles.publishDate,
-                  styles.text,
+                  styles.publishContainer,
                   !paper_publish_date && styles.hide
                 )}
               >
-                {paper_publish_date && convertDate()}
-              </div>
-              <div
-                className={css(
-                  styles.summary,
-                  styles.text,
-                  !tagline && styles.hide
-                )}
-              >
-                {tagline ? tagline : null}
+                <span className={css(styles.publishDate, styles.text)}>
+                  {paper_publish_date && convertDate()}
+                </span>
+                <span
+                  className={css(
+                    styles.avatars,
+                    authors.length < 1 && styles.hide
+                  )}
+                >
+                  {authors.length > 0 &&
+                    authors.map((author) => (
+                      <div
+                        key={`author_${author.id}_${id}`}
+                        className={css(styles.avatar)}
+                      >
+                        <AuthorAvatar
+                          key={`author_${author.id}_${id}`}
+                          size={25}
+                          textSizeRatio={2.5}
+                          author={author}
+                        />
+                      </div>
+                    ))}
+                </span>
               </div>
               <div className={css(styles.bottomBar)}>
                 <div className={css(styles.row)}>
-                  <span
-                    className={css(
-                      styles.avatars,
-                      authors.length < 1 && styles.hide
-                    )}
-                  >
-                    {authors.length > 0 &&
-                      authors.map((author) => (
-                        <div
-                          key={`author_${author.id}_${id}`}
-                          className={css(styles.avatar)}
-                        >
-                          <AuthorAvatar
-                            key={`author_${author.id}_${id}`}
-                            size={30}
-                            textSizeRatio={2.5}
-                            author={author}
-                          />
-                        </div>
-                      ))}
-                  </span>
                   <Link
                     href={"/paper/[paperId]/[tabName]"}
-                    as={`/paper/${id}/discussion`}
+                    as={`/paper/${id}/summary#discussions`}
                   >
                     <a className={css(styles.link)}>
                       <div className={css(styles.discussion)}>
@@ -339,13 +500,16 @@ const PaperEntryCard = ({
                             key={`hub_${index}`}
                             tag={tag}
                             hubName={hubName}
-                            last={index === tag.length - 1}
+                            last={index === hubs.length - 1}
+                            gray={true}
+                            labelStyle={styles.hubLabel}
                           />
                         )
                     )}
                 </div>
               </div>
             </div>
+            {renderPreview()}
           </div>
         </a>
       </Link>
@@ -422,7 +586,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    padding: "27px 15px 27px 15px",
+    // padding: "27px 15px 27px 15px",
+    padding: 15,
     boxSizing: "border-box",
     backgroundColor: "#FFF",
     cursor: "pointer",
@@ -436,7 +601,25 @@ const styles = StyleSheet.create({
   },
   paperTitle: {
     color: "rgb(145, 143, 155)",
-    marginBottom: 16,
+    marginTop: 5,
+    fontSize: 12,
+    fontWeight: 400,
+    color: "#918F9B",
+  },
+  preview: {
+    height: 90,
+    maxHeight: 90,
+    width: 80,
+    minWidth: 80,
+    maxWidth: 80,
+    boxSizing: "border-box",
+    backgroundColor: "#FFF",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   column: {
     display: "flex",
@@ -447,17 +630,22 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   title: {
-    maxWidth: "95%",
-    fontSize: 22,
+    width: "100%",
+    fontSize: 18,
     fontWeight: 500,
-    marginBottom: 10,
+    paddingBottom: 8,
+  },
+  publishContainer: {
+    maxWidth: "100%",
+    paddingBottom: 8,
+    display: "flex",
+    alignItems: "center",
   },
   publishDate: {
-    maxWidth: "100%",
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 400,
     color: "#918F9B",
-    marginBottom: 15,
+    marginRight: 15,
   },
   summary: {
     minWidth: "100%",
@@ -465,22 +653,24 @@ const styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     color: "#4e4c5f",
     fontSize: 16,
-    marginBottom: 16,
+    paddingBottom: 8,
   },
   text: {
     fontFamily: "Roboto",
   },
   voting: {
-    marginTop: -20,
+    // marginTop: -20,
     width: 65,
+  },
+  voteWidget: {
+    marginRight: 15,
   },
   bottomBar: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     left: 0,
-    // marginTop: 16,
-    bottom: 10,
+    bottom: -10,
     width: "100%",
   },
   link: {
@@ -493,6 +683,7 @@ const styles = StyleSheet.create({
   discussion: {
     cursor: "pointer",
     minWidth: 140,
+    fontSize: 12,
     ":hover #discIcon": {
       color: colors.BLUE(1),
     },
@@ -528,8 +719,6 @@ const styles = StyleSheet.create({
   avatars: {
     display: "flex",
     justifyContent: "flex-start",
-    marginRight: 16,
-
     "@media only screen and (max-width: 767px)": {
       marginBottom: 5,
       marginTop: 5,
@@ -543,10 +732,82 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   metaData: {
-    width: "calc(100% - 48px)",
+    // minHeight: 80,
+    minHeight: 72,
+    width: "100%",
+    boxSizing: "border-box",
+    paddingRight: 15,
+    justifyContent: "space-between",
+    // position: 'relative'
   },
   hide: {
     display: "none",
+  },
+  bulletpoints: {
+    margin: 0,
+    padding: 0,
+    paddingLeft: 15,
+  },
+  bullet: {
+    margin: 0,
+    padding: 0,
+    fontSize: 12,
+  },
+  hubLabel: {
+    fontSize: 9,
+  },
+});
+
+const carousel = StyleSheet.create({
+  bottomControl: {
+    background: "rgba(36, 31, 58, 0.65)",
+    borderRadius: 230,
+    height: 30,
+    minWidth: 60,
+    color: "#FFF",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 5,
+    opacity: 0,
+    fontSize: 9,
+    transition: "all ease-out 0.3s",
+  },
+  button: {
+    border: 0,
+    textTransform: "uppercase",
+    cursor: "pointer",
+    opacity: 0,
+    transition: "all ease-out 0.3s",
+    fontSize: 18,
+    userSelect: "none",
+    paddingTop: 1,
+    color: "rgba(255, 255, 255, 0.45)",
+    ":hover": {
+      color: "#FFF",
+    },
+  },
+  left: {
+    marginLeft: 8,
+    marginRight: 5,
+  },
+  right: {
+    marginRight: 8,
+    marginLeft: 5,
+  },
+  pointer: {
+    cursor: "not-allowed",
+  },
+  show: {
+    opacity: 1,
+  },
+  image: {
+    objectFit: "contain",
+    maxHeight: 80,
+    height: 80,
+    width: 80,
+    minWidth: 80,
+    maxWidth: 80,
   },
 });
 
