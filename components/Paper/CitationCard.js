@@ -26,14 +26,25 @@ class CitationCard extends React.Component {
       previews: [],
       figureUrls: [],
       toggleLightbox: false,
-      fetchingPreview: false,
+      fetchingPreview: true,
     };
   }
 
   componentDidMount() {
     let { citation } = this.props;
-    let paperId = citation.id;
-    this.fetchFigures(paperId);
+    let { first_figure, first_preview, id } = citation;
+    let paperId = id;
+
+    if (first_figure === null && first_preview === null) {
+      this.fetchFigures(paperId);
+    } else {
+      let previews = [first_figure, first_preview].filter((el) => el !== null);
+      this.setState({
+        previews: previews,
+        figureUrl: previews.map((preview, index) => preview.file),
+        fetchingPreview: false,
+      });
+    }
   }
 
   fetchFigures = (paperId) => {
@@ -73,21 +84,6 @@ class CitationCard extends React.Component {
     showMessage({ show: true, load: true });
     let paperId = citation.id;
     return this.navigateToPage();
-    if (!citation.is_public) {
-      fetch(API.MAKE_PAPER_PUBLIC({ paperId }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          this.navigateToPage();
-        })
-        .catch((err) => {
-          showMessage({ show: false });
-          setMessage("Something went wrong.");
-          showMessage({ show: true, error: true });
-        });
-    } else {
-      this.navigateToPage();
-    }
   };
 
   getHref = () => {
@@ -111,8 +107,6 @@ class CitationCard extends React.Component {
       return (
         <div
           className={css(carousel.previewContainer)}
-          onMouseEnter={this.setHover}
-          onMouseLeave={this.unsetHover}
           onClick={(e) => e.stopPropagation()}
         >
           <ReactPlaceholder
@@ -220,7 +214,12 @@ class CitationCard extends React.Component {
     let { citation } = this.props;
 
     return (
-      <div className={css(styles.card)} onClick={this.checkIsPublic}>
+      <div
+        className={css(styles.card)}
+        onMouseEnter={this.setHover}
+        onMouseLeave={this.unsetHover}
+        onClick={this.checkIsPublic}
+      >
         {figureUrls.length > 0 && (
           <span onClick={(e) => e.stopPropagation()}>
             <FsLightbox
@@ -241,16 +240,15 @@ class CitationCard extends React.Component {
 
   render() {
     let { citation } = this.props;
-
-    if (citation.is_public) {
-      return (
-        <a className={css(styles.link)} href={this.getHref()}>
-          {this.renderCitation()}
-        </a>
-      );
-    } else {
-      return this.renderCitation();
-    }
+    return (
+      <a
+        className={css(styles.link)}
+        href={this.getHref()}
+        onClick={(e) => e.preventDefault()}
+      >
+        {this.renderCitation()}
+      </a>
+    );
   }
 }
 
