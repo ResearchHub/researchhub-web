@@ -337,10 +337,11 @@ class PaperPageCard extends React.Component {
       downvote,
       selectedVoteType,
       scrollView,
+      doneFetchingPaper,
     } = this.props;
-    let { fetching, previews, figureUrls, loading } = this.state;
+    let { fetching, previews, figureUrls } = this.state;
 
-    if (loading) {
+    if (!doneFetchingPaper) {
       return (
         <div
           className={css(
@@ -353,7 +354,9 @@ class PaperPageCard extends React.Component {
             ready={false}
             showLoadingAnimation
             customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
-          />
+          >
+            <div />
+          </ReactPlaceholder>
         </div>
       );
     }

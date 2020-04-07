@@ -6,6 +6,7 @@ const defaultPaperState = {
   uploadedPaperMeta: {},
   hubs: [],
   editHistory: [],
+  doneFetchingPaper: false,
 };
 
 const PaperReducer = (state = defaultPaperState, action) => {
