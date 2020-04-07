@@ -61,6 +61,12 @@ export const PaperActions = {
   },
   getPaper: (paperId) => {
     return (dispatch) => {
+      dispatch({
+        type: types.GET_PAPER,
+        payload: {
+          doneFetchingPaper: false,
+        },
+      });
       return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -69,7 +75,7 @@ export const PaperActions = {
             type: types.GET_PAPER,
             payload: {
               ...shims.paper(resp),
-              doneFetching: true,
+              doneFetchingPaper: true,
               status: resp.status,
             },
           });
