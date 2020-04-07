@@ -412,8 +412,8 @@ class PaperPageCard extends React.Component {
                       {paper.paper_title}
                     </div>
                   )}
-                  {paper && paper.tagline && (
-                    <div className={css(styles.tagline)}>{paper.tagline}</div>
+                  {paper && paper.abstract && (
+                    <div className={css(styles.tagline)}>{paper.abstract}</div>
                   )}
                 </div>
                 <Fragment>
