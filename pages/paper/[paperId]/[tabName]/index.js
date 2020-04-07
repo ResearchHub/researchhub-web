@@ -47,7 +47,7 @@ const Paper = (props) => {
     getDiscussionThreads(paper)
   );
   const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(paper.userVote)
+    getVoteType(paper.userVote.vote_type)
   );
   const [steps, setSteps] = useState([
     {
@@ -188,7 +188,7 @@ const Paper = (props) => {
               score={score}
               upvote={upvote}
               downvote={downvote}
-              selected={selectedVoteType}
+              selectedVoteType={selectedVoteType}
               shareUrl={shareUrl}
               isModerator={isModerator}
               flagged={flagged}
