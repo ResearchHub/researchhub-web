@@ -215,7 +215,7 @@ const PaperEntryCard = ({
     if (previews.length > 0) {
       return (
         <div
-          className={css(styles.column)}
+          className={css(styles.column, styles.previewColumn)}
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -249,7 +249,7 @@ const PaperEntryCard = ({
       );
     } else {
       return (
-        <div className={css(styles.column)}>
+        <div className={css(styles.column, styles.previewColumn)}>
           <div className={css(styles.preview, styles.previewEmpty)} />
         </div>
       );
@@ -418,6 +418,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       fontSize: 16,
     },
+  },
+  previewColumn: {
+    paddingBottom: 10,
   },
   preview: {
     height: 90,
