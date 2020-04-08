@@ -246,7 +246,6 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 14,
     color: "#4f4d5f",
-    // color: colors.BLUE(),
     paddingBottom: 15,
     textShadow: "1px 1px 2px #FAFAFA",
   },
@@ -436,7 +435,6 @@ const styles = StyleSheet.create({
   button: {
     width: 258,
     height: 55,
-    // marginTop: 10,
     "@media only screen and (max-width: 321px)": {
       width: 220,
       height: 45,
