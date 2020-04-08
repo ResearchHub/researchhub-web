@@ -215,7 +215,7 @@ const PaperEntryCard = ({
     if (previews.length > 0) {
       return (
         <div
-          className={css(styles.column, styles.previewColumn)}
+          className={css(styles.column)}
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -230,54 +230,6 @@ const PaperEntryCard = ({
           >
             <Carousel
               afterSlide={(slideIndex) => setSlideIndex(slideIndex + 1)}
-              // renderBottomCenterControls={(arg) => {
-              //   let {
-              //     currentSlide,
-              //     slideCount,
-              //     previousSlide,
-              //     nextSlide,
-              //   } = arg;
-              //   return (
-              //     <div
-              //       className={css(
-              //         carousel.bottomControl,
-              //         hovered && carousel.show
-              //       )}
-              //       onClick={(e) => {
-              //         e.preventDefault();
-              //         e.stopPropagation();
-              //       }}
-              //     >
-              //       <span
-              //         onClick={(e) => {
-              //           e.stopPropagation();
-              //           previousSlide(e);
-              //         }}
-              //         className={css(
-              //           carousel.button,
-              //           carousel.left,
-              //           hovered && carousel.show
-              //         )}
-              //       >
-              //         <i className="far fa-angle-left" />
-              //       </span>
-              //       {`${currentSlide + 1} / ${slideCount}`}
-              //       <span
-              //         onClick={(e) => {
-              //           e.stopPropagation();
-              //           nextSlide(e);
-              //         }}
-              //         className={css(
-              //           carousel.button,
-              //           carousel.right,
-              //           hovered && carousel.show
-              //         )}
-              //       >
-              //         <i className="far fa-angle-right" />
-              //       </span>
-              //     </div>
-              //   );
-              // }}
               renderBottomCenterControls={null}
               renderCenterLeftControls={null}
               renderCenterRightControls={null}
@@ -297,20 +249,18 @@ const PaperEntryCard = ({
       );
     } else {
       return (
-        <div className={css(styles.column, styles.previewColumn)}>
-          <div className={css(styles.preview, styles.previewEmpty)}>
-            {icons.file}
-          </div>
+        <div className={css(styles.column)}>
+          <div className={css(styles.preview, styles.previewEmpty)} />
         </div>
       );
     }
   };
 
   const renderHubTags = () => {
-    return (
-      <div className={css(styles.tags)}>
-        {hubs.length > 0 &&
-          hubs.map(
+    if (hubs && hubs.length > 0) {
+      return (
+        <div className={css(styles.tags)}>
+          {hubs.map(
             (tag, index) =>
               tag && (
                 <HubTag
@@ -323,16 +273,15 @@ const PaperEntryCard = ({
                 />
               )
           )}
-      </div>
-    );
+        </div>
+      );
+    }
   };
 
   return (
     <Ripples
       className={css(styles.papercard, style && style)}
       key={`${id}-${index}-${title}`}
-      // onMouseEnter={() => !hovered && toggleHover(true)}
-      // onMouseLeave={() => hovered && toggleHover(false)}
       onClick={navigateToPage}
     >
       {figures.length > 0 && (
@@ -345,10 +294,7 @@ const PaperEntryCard = ({
           />
         </div>
       )}
-      <a
-        className={css(styles.link, styles.votingLink)}
-        href={`/paper/${id}/summary`}
-      >
+      <a className={css(styles.link)} href={`/paper/${id}/summary`}>
         <div className={css(styles.column)}>
           <span
             className={css(styles.voting)}
@@ -365,57 +311,62 @@ const PaperEntryCard = ({
             />
           </span>
         </div>
-      </a>
-      {!mobileView && renderPreview()}
-      <a className={css(styles.link)} href={`/paper/${id}/summary`}>
-        <div
-          className={css(
-            styles.column,
-            styles.metaData,
-            previews.length > 0 && styles.metaDataPreview
-          )}
-        >
-          <div className={css(styles.title, styles.text)}>
-            {title && title}
-            {paper_title !== title && paper_title && (
-              <div
-                className={css(styles.paperTitle, styles.text)}
-                id={"clamp1"}
-              >
-                From Paper: {paper_title && paper_title}
-              </div>
-            )}
-          </div>
-          {renderBullet()}
-          <div
-            className={css(
-              styles.publishContainer,
-              !paper_publish_date && styles.hide
-            )}
-          >
-            <span className={css(styles.publishDate, styles.text)}>
-              {paper_publish_date && convertDate()}
-            </span>
-            <span
-              className={css(styles.avatars, authors.length < 1 && styles.hide)}
+        <div className={css(styles.container)}>
+          <div className={css(styles.rowContainer)}>
+            <div
+              className={css(
+                styles.column,
+                styles.metaData,
+                previews.length > 0 && styles.metaDataPreview
+              )}
             >
-              {authors.length > 0 &&
-                authors.map((author) => (
+              <div className={css(styles.title, styles.text)}>
+                {title && title}
+                {paper_title !== title && paper_title && (
                   <div
-                    key={`author_${author.id}_${id}`}
-                    className={css(styles.avatar)}
+                    className={css(styles.paperTitle, styles.text)}
+                    id={"clamp1"}
                   >
-                    <AuthorAvatar
-                      key={`author_${author.id}_${id}`}
-                      size={25}
-                      textSizeRatio={2.5}
-                      author={author}
-                    />
+                    From Paper: {paper_title && paper_title}
                   </div>
-                ))}
-            </span>
+                )}
+              </div>
+              {renderBullet()}
+              <div
+                className={css(
+                  styles.publishContainer,
+                  !paper_publish_date && styles.hide
+                )}
+              >
+                <span className={css(styles.publishDate, styles.text)}>
+                  {paper_publish_date && convertDate()}
+                </span>
+                <span
+                  className={css(
+                    styles.avatars,
+                    authors.length < 1 && styles.hide
+                  )}
+                >
+                  {authors.length > 0 &&
+                    authors.map((author) => (
+                      <div
+                        key={`author_${author.id}_${id}`}
+                        className={css(styles.avatar)}
+                      >
+                        <AuthorAvatar
+                          key={`author_${author.id}_${id}`}
+                          size={25}
+                          textSizeRatio={2.5}
+                          author={author}
+                        />
+                      </div>
+                    ))}
+                </span>
+              </div>
+              {mobileView && renderHubTags()}
+            </div>
+            {!mobileView && renderPreview()}
           </div>
-          {mobileView && renderHubTags()}
           <div className={css(styles.bottomBar)}>
             <div className={css(styles.row)}>{renderDiscussionCount()}</div>
             {!mobileView && renderHubTags()}
@@ -429,7 +380,6 @@ const PaperEntryCard = ({
 const styles = StyleSheet.create({
   papercard: {
     display: "flex",
-    flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     padding: 15,
@@ -443,6 +393,15 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    height: "100%",
+    width: "100%",
+    minHeight: 72,
   },
   paperTitle: {
     color: "rgb(145, 143, 155)",
@@ -476,12 +435,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   previewEmpty: {
-    backgroundColor: "#f8f8f8",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontSize: 20,
-    // color: '#c1c1ce'
+    border: "unset",
+    backgroundColor: "unset",
+    height: "usnet",
+    maxHeight: "usnet",
+    width: "unset",
+    minWidth: "unset",
+    maxWidth: "unset",
   },
   column: {
     display: "flex",
@@ -490,6 +453,11 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     height: "100%",
     position: "relative",
+  },
+  rowContainer: {
+    display: "flex",
+    alignItems: "flex-start",
+    width: "100%",
   },
   previewColumn: {
     marginRight: 20,
@@ -607,16 +575,13 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   metaData: {
-    minHeight: 90,
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
     paddingRight: 15,
     justifyContent: "space-between",
   },
-  metaDataPreview: {
-    minHeight: 90,
-  },
+  metaDataPreview: {},
   hide: {
     display: "none",
   },

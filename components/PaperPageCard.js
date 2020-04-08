@@ -5,6 +5,7 @@ import Router from "next/router";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
+import ReactTooltip from "react-tooltip";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
@@ -146,7 +147,7 @@ class PaperPageCard extends React.Component {
           hideRipples={false}
           styling={styles.borderRadius}
         >
-          <div className={css(styles.actionIcon)}>
+          <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
             <i className="far fa-pencil" />
           </div>
         </PermissionNotificationWrapper>
@@ -156,7 +157,10 @@ class PaperPageCard extends React.Component {
           subtitle={paperTitle}
           url={this.props.shareUrl}
           customButton={
-            <div className={css(styles.actionIcon, styles.middleIcon)}>
+            <div
+              className={css(styles.actionIcon, styles.middleIcon)}
+              data-tip={"Share Paper"}
+            >
               <i className="far fa-share-alt" />
             </div>
           }
@@ -166,7 +170,10 @@ class PaperPageCard extends React.Component {
             className={css(styles.actionIcon, styles.downloadActionIcon)}
             onClick={this.downloadPDF}
           >
-            <span className={css(styles.downloadIcon)}>
+            <span
+              className={css(styles.downloadIcon)}
+              data-tip={"Download PDF"}
+            >
               <i className="far fa-arrow-to-bottom" />
             </span>
           </Ripples>
@@ -176,20 +183,27 @@ class PaperPageCard extends React.Component {
             className={css(styles.actionIcon, styles.downloadActionIcon)}
             onClick={() => openExternalLink(paper.url)}
           >
-            <span className={css(styles.downloadIcon)}>
+            <span
+              className={css(styles.downloadIcon)}
+              data-tip={"Open in External Link"}
+            >
               <i className="far fa-external-link" />
             </span>
           </Ripples>
         )}
         {!isModerator ? (
-          <FlagButton
-            paperId={paper.id}
-            flagged={flagged}
-            setFlag={setFlag}
-            style={styles.actionIcon}
-          />
+          <span data-tip={"Flag Paper"}>
+            <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            />
+          </span>
         ) : (
-          <ActionButton isModerator={isModerator} paperId={paper.id} />
+          <span data-tip={"Remove Page"}>
+            <ActionButton isModerator={isModerator} paperId={paper.id} />
+          </span>
         )}
       </div>
     );
@@ -394,6 +408,7 @@ class PaperPageCard extends React.Component {
         onMouseEnter={this.setHover}
         onMouseLeave={this.unsetHover}
       >
+        <ReactTooltip />
         <div className={css(styles.voting)}>
           <VoteWidget
             score={score}
