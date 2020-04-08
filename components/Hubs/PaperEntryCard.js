@@ -462,9 +462,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
   },
-  previewColumn: {
-    marginRight: 20,
-  },
   publishContainer: {
     maxWidth: "100%",
     paddingBottom: 8,
