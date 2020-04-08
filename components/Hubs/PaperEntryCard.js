@@ -294,6 +294,14 @@ const PaperEntryCard = ({
           </div>
         </div>
       );
+    } else {
+      return (
+        <div className={css(styles.column, styles.previewColumn)}>
+          <div className={css(styles.preview, styles.previewEmpty)}>
+            {icons.file}
+          </div>
+        </div>
+      );
     }
   };
 
@@ -466,6 +474,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  previewEmpty: {
+    backgroundColor: "#f8f8f8",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   column: {
     display: "flex",
     flexDirection: "column",
@@ -590,7 +604,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   metaData: {
-    minHeight: 72,
+    minHeight: 90,
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
