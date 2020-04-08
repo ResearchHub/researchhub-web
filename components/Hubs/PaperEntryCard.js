@@ -67,8 +67,8 @@ const PaperEntryCard = ({
   const [slideIndex, setSlideIndex] = useState(1);
   const [previews, setPreviews] = useState(
     configurePreview([
-      first_figure && first_figure,
       first_preview && first_preview,
+      first_figure && first_figure,
     ])
   );
   const [figures, setFigures] = useState(
@@ -230,61 +230,62 @@ const PaperEntryCard = ({
           >
             <Carousel
               afterSlide={(slideIndex) => setSlideIndex(slideIndex + 1)}
-              renderBottomCenterControls={(arg) => {
-                let {
-                  currentSlide,
-                  slideCount,
-                  previousSlide,
-                  nextSlide,
-                } = arg;
-                return (
-                  <div
-                    className={css(
-                      carousel.bottomControl,
-                      hovered && carousel.show
-                    )}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                  >
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        previousSlide(e);
-                      }}
-                      className={css(
-                        carousel.button,
-                        carousel.left,
-                        hovered && carousel.show
-                      )}
-                    >
-                      <i className="far fa-angle-left" />
-                    </span>
-                    {`${currentSlide + 1} / ${slideCount}`}
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        nextSlide(e);
-                      }}
-                      className={css(
-                        carousel.button,
-                        carousel.right,
-                        hovered && carousel.show
-                      )}
-                    >
-                      <i className="far fa-angle-right" />
-                    </span>
-                  </div>
-                );
-              }}
+              // renderBottomCenterControls={(arg) => {
+              //   let {
+              //     currentSlide,
+              //     slideCount,
+              //     previousSlide,
+              //     nextSlide,
+              //   } = arg;
+              //   return (
+              //     <div
+              //       className={css(
+              //         carousel.bottomControl,
+              //         hovered && carousel.show
+              //       )}
+              //       onClick={(e) => {
+              //         e.preventDefault();
+              //         e.stopPropagation();
+              //       }}
+              //     >
+              //       <span
+              //         onClick={(e) => {
+              //           e.stopPropagation();
+              //           previousSlide(e);
+              //         }}
+              //         className={css(
+              //           carousel.button,
+              //           carousel.left,
+              //           hovered && carousel.show
+              //         )}
+              //       >
+              //         <i className="far fa-angle-left" />
+              //       </span>
+              //       {`${currentSlide + 1} / ${slideCount}`}
+              //       <span
+              //         onClick={(e) => {
+              //           e.stopPropagation();
+              //           nextSlide(e);
+              //         }}
+              //         className={css(
+              //           carousel.button,
+              //           carousel.right,
+              //           hovered && carousel.show
+              //         )}
+              //       >
+              //         <i className="far fa-angle-right" />
+              //       </span>
+              //     </div>
+              //   );
+              // }}
+              renderBottomCenterControls={null}
               renderCenterLeftControls={null}
               renderCenterRightControls={null}
               wrapAround={true}
               enableKeyboardControls={true}
             >
-              {previews.map((preview) => {
-                if (preview) {
+              {previews.map((preview, i) => {
+                if (preview && i == 0) {
                   return (
                     <img src={preview.file} className={css(carousel.image)} />
                   );
@@ -330,8 +331,8 @@ const PaperEntryCard = ({
     <Ripples
       className={css(styles.papercard, style && style)}
       key={`${id}-${index}-${title}`}
-      onMouseEnter={() => !hovered && toggleHover(true)}
-      onMouseLeave={() => hovered && toggleHover(false)}
+      // onMouseEnter={() => !hovered && toggleHover(true)}
+      // onMouseLeave={() => hovered && toggleHover(false)}
       onClick={navigateToPage}
     >
       {figures.length > 0 && (
