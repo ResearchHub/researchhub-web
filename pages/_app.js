@@ -15,6 +15,7 @@ import ReactGA from "react-ga";
 // Components
 import Base from "./Base";
 import Head from "~/components/Head";
+import "./stylesheets/App.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
