@@ -184,11 +184,6 @@ const styles = StyleSheet.create({
     top: 15,
     paddingRight: 7,
     cursor: "pointer",
-    // "@media only screen and (max-width: 670px)": {
-    //   top: "unset",
-    //   paddingRight: 15,
-    //   bottom: 0,
-    // },
   },
   error: {
     margin: 0,
