@@ -45,12 +45,11 @@ const PaperEntryCard = ({
     id,
     authors,
     bullet_points,
-    discussion,
     discussion_count,
     hubs,
     paper_publish_date,
     title,
-    tagline,
+    abstract,
     user_vote,
     score,
     paper_title,
@@ -200,11 +199,11 @@ const PaperEntryCard = ({
           </ul>
         </div>
       );
-    } else if (tagline) {
+    } else if (abstract) {
       return (
         <div className={css(styles.summary, styles.text)} id={"clamp2"}>
           <div className={css(styles.bullet)} id={"clamp2"}>
-            {tagline && tagline}
+            {abstract}
           </div>
         </div>
       );
