@@ -498,9 +498,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    left: 0,
-    bottom: -10,
     width: "100%",
+    marginTop: 8,
   },
   link: {
     textDecoration: "none",
