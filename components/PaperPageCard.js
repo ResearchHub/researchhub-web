@@ -331,12 +331,11 @@ class PaperPageCard extends React.Component {
 
   renderHubs = () => {
     let { paper } = this.props;
-    let hubs =
-      paper &&
-      paper.hubs.map((hub, index) => {
+    if (paper.hubs && paper.hubs.length > 0) {
+      return paper.hubs.map((hub, index) => {
         return <HubTag tag={hub} gray={true} key={`hub_tag_index_${index}`} />;
       });
-    return hubs;
+    }
   };
 
   renderTopRow = () => {
@@ -351,7 +350,6 @@ class PaperPageCard extends React.Component {
       selectedVoteType,
     } = this.props;
 
-    let paperTitle = paper && paper.title;
     return (
       <Fragment>
         <div className={css(styles.topRow)}>
@@ -465,19 +463,21 @@ class PaperPageCard extends React.Component {
                   )}
                 </div>
                 <Fragment>
-                  <div className={css(styles.dateAuthorContainer)}>
-                    {paper && paper.paper_publish_date && (
-                      <div className={css(styles.publishDate)}>
-                        <span className={css(styles.label)}>Published:</span>
-                        {this.renderPublishDate()}
-                      </div>
-                    )}
-                    {paper && paper.authors && (
-                      <div className={css(styles.authors)}>
-                        {this.renderAuthors()}
-                      </div>
-                    )}
-                  </div>
+                  {paper && (paper.paper_publish_date || paper.authors) && (
+                    <div className={css(styles.dateAuthorContainer)}>
+                      {paper && paper.paper_publish_date && (
+                        <div className={css(styles.publishDate)}>
+                          <span className={css(styles.label)}>Published:</span>
+                          {this.renderPublishDate()}
+                        </div>
+                      )}
+                      {paper && paper.authors && (
+                        <div className={css(styles.authors)}>
+                          {this.renderAuthors()}
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {paper && paper.doi && (
                     <div className={css(styles.doiDate)}>
                       <span className={css(styles.label, styles.doi)}>
@@ -607,7 +607,6 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     fontSize: 16,
     marginTop: 10,
-    marginBottom: 10,
   },
   dateAuthorContainer: {
     display: "flex",
