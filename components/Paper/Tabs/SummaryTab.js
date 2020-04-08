@@ -626,12 +626,7 @@ var styles = StyleSheet.create({
     padding: 0,
     paddingTop: 5,
     boxSizing: "border-box",
-    // marginTop: 20
   },
-  // anchorTag: {
-  //   paddingTop: 100,
-  //   marginTop: -100,
-  // }
 });
 
 const mapStateToProps = (state) => ({

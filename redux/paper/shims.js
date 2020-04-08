@@ -6,9 +6,10 @@ export const paper = (paper) => {
     publishedDate: transformDate(paper.paper_publish_date),
     tagline: paper.tagline,
     discussion: {
-      ...paper.discussion,
-      count: paper.discussion.count,
-      threads: transformThreads(paper.discussion.threads),
+      count: paper.discussion ? paper.discussion.count : 0,
+      threads: paper.discussion
+        ? transformThreads(paper.discussion.threads)
+        : [],
     },
     userVote: transformVote(paper.user_vote),
   };

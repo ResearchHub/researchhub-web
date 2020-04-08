@@ -5,8 +5,8 @@ import colors from "~/config/themes/colors";
 import Ripples from "react-ripples";
 import { nameToUrl } from "~/config/constants";
 
-const HubTag = ({ tag, overrideStyle, hubName, gray }) => {
-  let { id, name, link, last, slug } = tag;
+const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
+  let { id, name, link, slug } = tag;
   const nameArr = (name && name.split(" ")) || [];
 
   if (name === hubName) {
@@ -23,17 +23,29 @@ const HubTag = ({ tag, overrideStyle, hubName, gray }) => {
       <Fragment>
         <Ripples>
           <Link href={"/hubs/[slug]"} as={`/hubs/${nameToUrl(slug)}`}>
-            <div
-              className={css(
-                styles.tag,
-                gray && styles.grayTag,
-                overrideStyle && overrideStyle
-              )}
+            <a
+              className={css(styles.atag)}
+              onClick={(e) => e.preventDefault()}
+              href={`/hubs/${nameToUrl(slug)}`}
             >
-              <span className={css(styles.label, gray && styles.grayLabel)}>
-                {name && name}
-              </span>
-            </div>
+              <div
+                className={css(
+                  styles.tag,
+                  gray && styles.grayTag,
+                  overrideStyle && overrideStyle
+                )}
+              >
+                <span
+                  className={css(
+                    styles.label,
+                    gray && styles.grayLabel,
+                    labelStyle && labelStyle
+                  )}
+                >
+                  {name && name}
+                </span>
+              </div>
+            </a>
           </Link>
         </Ripples>
         {!last && <div className={css(styles.space)} />}
@@ -76,8 +88,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     boxSizing: "border-box",
     ":hover": {
-      // color: "#FFF",
-      // borderColor: "rgba(36, 31, 58, 0.8)",
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },
@@ -85,6 +95,10 @@ const styles = StyleSheet.create({
   grayLabel: {
     color: "#241F3A",
     opacity: 0.8,
+  },
+  atag: {
+    color: "unset",
+    textDecoration: "unset",
   },
 });
 

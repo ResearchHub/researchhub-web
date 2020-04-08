@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     scrollBehavior: "smooth",
-    // marginBottom: 15,
   },
   container: {
     width: 600,

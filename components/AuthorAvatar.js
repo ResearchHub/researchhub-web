@@ -57,7 +57,12 @@ const AuthorAvatar = (props) => {
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${authorId}/contributions`}
         >
-          {renderAvatar()}
+          <a
+            href={`/user/${authorId}/contributions`}
+            className={css(styles.atag)}
+          >
+            {renderAvatar()}
+          </a>
         </Link>
       )}
     </div>
@@ -82,6 +87,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: 20,
+  },
+  atag: {
+    color: "unset",
+    textDecoration: "unset",
   },
 });
 
