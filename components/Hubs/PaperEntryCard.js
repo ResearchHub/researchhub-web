@@ -202,7 +202,7 @@ const PaperEntryCard = ({
       );
     } else if (tagline) {
       return (
-        <div className={css(styles.summary, styles.text)}>
+        <div className={css(styles.summary, styles.text)} id={"clamp2"}>
           <div className={css(styles.bullet)} id={"clamp2"}>
             {tagline && tagline}
           </div>
