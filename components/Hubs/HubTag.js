@@ -68,6 +68,10 @@ const styles = StyleSheet.create({
       color: "#FFF",
       borderColor: colors.BLUE(1),
     },
+
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 8,
+    },
   },
   space: {
     width: 10,
