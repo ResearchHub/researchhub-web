@@ -107,14 +107,6 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 768px)": {
       marginRight: 28,
     },
-
-    "@media only screen and (min-width: 1024px)": {
-      // marginRight: 45,
-    },
-
-    "@media only screen and (min-width: 1288px)": {
-      // marginRight: 80,
-    },
     ":hover": {
       color: colors.PURPLE(1),
       cursor: "pointer",

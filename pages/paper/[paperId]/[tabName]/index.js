@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 import Joyride from "react-joyride";
 import Error from "next/error";
 import "./styles/anchor.css";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -14,8 +15,6 @@ import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import HubTag from "~/components/Hubs/HubTag";
-import AuthorAvatar from "~/components/AuthorAvatar";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 
@@ -41,6 +40,7 @@ const Paper = (props) => {
   const [paper, setPaper] = useState(props.paper);
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
   const [loadingPaper, setLoadingPaper] = useState(true);
+  const [loadingFile, setLoadingFile] = useState(true);
   const [flagged, setFlag] = useState(paper.user_flag !== null);
   const [sticky, setSticky] = useState(false);
   const [scrollView, setScrollView] = useState(false);
@@ -117,7 +117,7 @@ const Paper = (props) => {
   }, [scrollListener]);
 
   function getDiscussionThreads(paper) {
-    return paper.discussion.threads;
+    return paper.discussion ? paper.discussion.threads : [];
   }
 
   async function upvote() {
@@ -207,29 +207,33 @@ const Paper = (props) => {
             />
           </ComponentWrapper>
           <div className={css(styles.stickyComponent)} ref={paperCardRef}>
-            <PaperTabBar
-              baseUrl={paperId}
-              selectedTab={tabName}
-              discussionCount={discussionCount}
-              paperCardRef={paperCardRef}
-              keyTakeawayRef={keyTakeawayRef}
-              descriptionRef={descriptionRef}
-              discussionRef={discussionRef}
-              paperPdfRef={paperPdfRef}
-              citationRef={citationRef}
-              paperCardRef={paperCardRef}
-              sticky={sticky}
-              setSticky={setSticky}
-              scrollView={scrollView}
-              tabName={tabName}
-            />
-          </div>
-          <div
-            className={css(
-              styles.contentContainer
-              // sticky && styles.scrollPadding
+            {false ? (
+              <ComponentWrapper>
+                <ReactPlaceholder
+                  ready={false}
+                  showLoadingAnimation
+                  customPlaceholder={<PaperTabBarPlaceholder color="#efefef" />}
+                />
+              </ComponentWrapper>
+            ) : (
+              <PaperTabBar
+                baseUrl={paperId}
+                selectedTab={tabName}
+                discussionCount={discussionCount}
+                paperCardRef={paperCardRef}
+                keyTakeawayRef={keyTakeawayRef}
+                descriptionRef={descriptionRef}
+                discussionRef={discussionRef}
+                paperPdfRef={paperPdfRef}
+                citationRef={citationRef}
+                sticky={sticky}
+                setSticky={setSticky}
+                scrollView={scrollView}
+                tabName={tabName}
+              />
             )}
-          >
+          </div>
+          <div className={css(styles.contentContainer)}>
             <SummaryTab
               paperId={paperId}
               paper={paper}
@@ -295,6 +299,7 @@ const Paper = (props) => {
                   paper={paper}
                   paperPdfRef={paperPdfRef}
                   isModerator={isModerator}
+                  setLoadingFile={setLoadingFile}
                 />
               </div>
             </a>

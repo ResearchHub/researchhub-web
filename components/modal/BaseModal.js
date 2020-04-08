@@ -177,7 +177,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     borderRadius: 5,
-    // boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     "@media only screen and (max-width: 665px)": {
       width: "90%",
     },
@@ -200,7 +199,6 @@ const styles = StyleSheet.create({
     overflow: "scroll",
     opacity: 0,
     borderRadius: 5,
-    // boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     transition: "all ease-in-out 0.4s",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
