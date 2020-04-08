@@ -481,7 +481,6 @@ const styles = StyleSheet.create({
   toggleIcon: {
     fontSize: 13,
     color: "#fff",
-    // color: colors.BLACK(),
     marginRight: 6,
   },
   container: {

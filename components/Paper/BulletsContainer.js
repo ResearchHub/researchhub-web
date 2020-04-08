@@ -289,7 +289,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 20,
     boxSizing: "border-box",
-    // border: '1px solid #F2F2F2'
   },
   bulletpointIcon: {
     color: "#3971FF",
@@ -368,7 +367,6 @@ const styles = StyleSheet.create({
     userSelect: "none",
     ":hover": {
       color: "#3971FF",
-      // textDecoration: 'underline'
     },
   },
   disabled: {
@@ -408,7 +406,6 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "center",
-    // width: "calc(100% - 90px)",
     width: "100%",
   },
   mainText: {
@@ -436,7 +433,6 @@ const dropdownStyles = StyleSheet.create({
     position: "absolute",
     bottom: -75,
     right: 0,
-    // width: 210,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
     boxSizing: "border-box",
     background: "#fff",
@@ -501,7 +497,6 @@ const dropdownStyles = StyleSheet.create({
     },
   },
   dropdownItemIcon: {
-    // color: "#918f9b",
     fontSize: 14,
     marginRight: 6,
   },
@@ -520,7 +515,6 @@ const inputStyles = StyleSheet.create({
   },
   formInput: {
     margin: 0,
-    // padding: 0,
     minHeight: 50,
   },
 });
