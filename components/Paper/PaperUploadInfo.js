@@ -812,23 +812,6 @@ class PaperUploadInfo extends React.Component {
                   onChange={this.handleInputChange}
                 />
               </span>
-              {editMode && (
-                <span className={css(styles.tagline)}>
-                  <FormTextArea
-                    label={"Tag Line"}
-                    placeholder="Enter a sentence or two describing the paper"
-                    required={true}
-                    containerStyle={styles.taglineContainer}
-                    labelStyle={styles.labelStyle}
-                    value={form.tagline}
-                    id={"tagline"}
-                    onChange={this.handleInputChange}
-                  />
-                  <div className={css(styles.taglineCounter)}>
-                    {this.renderCharCount()} / 255
-                  </div>
-                </span>
-              )}
             </div>
             <div className={css(styles.section)}></div>
           </span>
