@@ -215,7 +215,7 @@ const PaperEntryCard = ({
     if (previews.length > 0) {
       return (
         <div
-          className={css(styles.column)}
+          className={css(styles.column, styles.previewColumn)}
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -336,7 +336,10 @@ const PaperEntryCard = ({
           />
         </div>
       )}
-      <a className={css(styles.link)} href={`/paper/${id}/summary`}>
+      <a
+        className={css(styles.link, styles.votingLink)}
+        href={`/paper/${id}/summary`}
+      >
         <div className={css(styles.column)}>
           <span
             className={css(styles.voting)}
@@ -353,6 +356,9 @@ const PaperEntryCard = ({
             />
           </span>
         </div>
+      </a>
+      {!mobileView && renderPreview()}
+      <a className={css(styles.link)} href={`/paper/${id}/summary`}>
         <div
           className={css(
             styles.column,
@@ -407,7 +413,6 @@ const PaperEntryCard = ({
           </div>
         </div>
       </a>
-      {!mobileView && renderPreview()}
     </Ripples>
   );
 };
@@ -469,7 +474,9 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
   },
-
+  previewColumn: {
+    marginRight: 20,
+  },
   publishContainer: {
     maxWidth: "100%",
     paddingBottom: 8,
@@ -518,6 +525,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: "100%",
+  },
+  votingLink: {
+    width: "unset",
   },
   icon: {
     color: "#C1C1CF",
