@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
+    boxSizing: "border-box",
   },
   textRow: {
     marginTop: 5,

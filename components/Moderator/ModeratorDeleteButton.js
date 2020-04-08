@@ -176,7 +176,6 @@ const ModeratorDeleteButton = (props) => {
 const styles = StyleSheet.create({
   buttonContainer: {
     cursor: "pointer",
-    width: "100%",
   },
   icon: {
     color: colors.RED(),

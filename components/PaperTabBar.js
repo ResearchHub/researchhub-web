@@ -9,7 +9,16 @@ import ComponentWrapper from "./ComponentWrapper";
 
 const PaperTabBar = (props) => {
   const [selectedTab, setSelectedTab] = useState("main");
-  const { scrollView } = props;
+
+  const {
+    scrollView,
+    paperCardRef,
+    keyTakeawayRef,
+    descriptionRef,
+    discussionRef,
+    paperPdfRef,
+    citationRef,
+  } = props;
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
@@ -35,6 +44,7 @@ const PaperTabBar = (props) => {
     let navbarHeight = props.paperCardRef.current
       ? props.paperCardRef.current.clientHeight + 80
       : 139;
+
     if (window.scrollY < 200) {
       setSelectedTab("main");
     } else if (

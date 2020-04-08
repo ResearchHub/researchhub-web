@@ -5,6 +5,7 @@ import Router from "next/router";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
+import ReactTooltip from "react-tooltip";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
@@ -47,6 +48,8 @@ class PaperPageCard extends React.Component {
   }
 
   componentDidMount() {
+    // document.body.scrollTop = 0; // For Safari
+    // document.documentElement.scrollTop = 0;
     this.fetchFigures();
   }
 
@@ -67,7 +70,7 @@ class PaperPageCard extends React.Component {
       this.setState({ loading: false }, () => {
         setTimeout(() => {
           this.state.fetching && this.setState({ fetching: false });
-        }, 200);
+        }, 400);
       });
     }, timeout);
   };
@@ -129,14 +132,91 @@ class PaperPageCard extends React.Component {
     this.setState({ toggleLightbox: !this.state.toggleLightbox });
   };
 
+  renderActions = () => {
+    let { paper, isModerator, flagged, setFlag } = this.props;
+
+    let paperTitle = paper && paper.title;
+
+    return (
+      <div className={css(styles.actions)}>
+        <PermissionNotificationWrapper
+          modalMessage="edit papers"
+          onClick={this.navigateToEditPaperInfo}
+          permissionKey="UpdatePaper"
+          loginRequired={true}
+          hideRipples={false}
+          styling={styles.borderRadius}
+        >
+          <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
+            <i className="far fa-pencil" />
+          </div>
+        </PermissionNotificationWrapper>
+        <ShareAction
+          addRipples={true}
+          title={"Share this paper"}
+          subtitle={paperTitle}
+          url={this.props.shareUrl}
+          customButton={
+            <div
+              className={css(styles.actionIcon, styles.middleIcon)}
+              data-tip={"Share Paper"}
+            >
+              <i className="far fa-share-alt" />
+            </div>
+          }
+        />
+        {paper && paper.file && (
+          <Ripples
+            className={css(styles.actionIcon, styles.downloadActionIcon)}
+            onClick={this.downloadPDF}
+          >
+            <span
+              className={css(styles.downloadIcon)}
+              data-tip={"Download PDF"}
+            >
+              <i className="far fa-arrow-to-bottom" />
+            </span>
+          </Ripples>
+        )}
+        {paper && paper.url && (paper && !paper.file) && (
+          <Ripples
+            className={css(styles.actionIcon, styles.downloadActionIcon)}
+            onClick={() => openExternalLink(paper.url)}
+          >
+            <span
+              className={css(styles.downloadIcon)}
+              data-tip={"Open in External Link"}
+            >
+              <i className="far fa-external-link" />
+            </span>
+          </Ripples>
+        )}
+        {!isModerator ? (
+          <span data-tip={"Flag Paper"}>
+            <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            />
+          </span>
+        ) : (
+          <span data-tip={"Remove Page"}>
+            <ActionButton isModerator={isModerator} paperId={paper.id} />
+          </span>
+        )}
+      </div>
+    );
+  };
+
   renderPreview = () => {
     let { hovered, fetching, previews } = this.state;
     let height =
       this.metaContainerRef.current &&
       this.metaContainerRef.current.clientHeight;
 
-    if (height > 300) {
-      height = 300;
+    if (height > 250) {
+      height = 250;
     }
     if (fetching) {
       return (
@@ -158,8 +238,6 @@ class PaperPageCard extends React.Component {
       return (
         <div
           className={css(styles.previewContainer)}
-          onMouseEnter={this.setHover}
-          onMouseLeave={this.unsetHover}
           onClick={this.toggleLightbox}
           style={{ height, maxHeight: height }}
         >
@@ -212,7 +290,13 @@ class PaperPageCard extends React.Component {
             enableKeyboardControls={true}
           >
             {this.state.previews.map((preview) => {
-              return <img src={preview.file} className={css(styles.image)} />;
+              return (
+                <img
+                  src={preview.file}
+                  className={css(styles.image)}
+                  style={{ height, maxHeight: height }}
+                />
+              );
             })}
           </Carousel>
         </div>
@@ -282,44 +366,6 @@ class PaperPageCard extends React.Component {
                 horizontalView={true}
               />
             </div>
-            <div className={css(styles.hubTags, styles.desktop)}>
-              {this.renderHubs()}
-            </div>
-          </div>
-          <div className={css(styles.actions)}>
-            <PermissionNotificationWrapper
-              modalMessage="edit papers"
-              onClick={this.navigateToEditPaperInfo}
-              permissionKey="UpdatePaper"
-              loginRequired={true}
-              hideRipples={false}
-              styling={styles.borderRadius}
-            >
-              <div className={css(styles.actionIcon)}>
-                <i className="far fa-pencil" />
-              </div>
-            </PermissionNotificationWrapper>
-            <ShareAction
-              addRipples={true}
-              title={"Share this paper"}
-              subtitle={paperTitle}
-              url={this.props.shareUrl}
-              customButton={
-                <div className={css(styles.actionIcon, styles.middleIcon)}>
-                  <i className="far fa-share-alt" />
-                </div>
-              }
-            />
-            {!isModerator ? (
-              <FlagButton
-                paperId={paper.id}
-                flagged={flagged}
-                setFlag={setFlag}
-                style={styles.actionIcon}
-              />
-            ) : (
-              <ActionButton isModerator={isModerator} paperId={paper.id} />
-            )}
           </div>
         </div>
         <div className={css(styles.hubTags, styles.mobile)}>
@@ -343,13 +389,7 @@ class PaperPageCard extends React.Component {
 
     if (!doneFetchingPaper) {
       return (
-        <div
-          className={css(
-            styles.container,
-            scrollView && scrollStyles.container
-          )}
-          ref={this.containerRef}
-        >
+        <div className={css(styles.container)} ref={this.containerRef}>
           <ReactPlaceholder
             ready={false}
             showLoadingAnimation
@@ -362,7 +402,13 @@ class PaperPageCard extends React.Component {
     }
 
     return (
-      <div className={css(styles.container)} ref={this.containerRef}>
+      <div
+        className={css(styles.container)}
+        ref={this.containerRef}
+        onMouseEnter={this.setHover}
+        onMouseLeave={this.unsetHover}
+      >
+        <ReactTooltip />
         <div className={css(styles.voting)}>
           <VoteWidget
             score={score}
@@ -370,6 +416,16 @@ class PaperPageCard extends React.Component {
             onDownvote={downvote}
             selected={selectedVoteType}
             isPaper={true}
+          />
+        </div>
+        <div className={css(styles.votingMobile)}>
+          <VoteWidget
+            score={score}
+            onUpvote={upvote}
+            onDownvote={downvote}
+            selected={selectedVoteType}
+            isPaper={true}
+            horizontalView={true}
           />
         </div>
         {figureUrls.length > 0 && (
@@ -386,7 +442,6 @@ class PaperPageCard extends React.Component {
             !fetching && previews.length === 0 && styles.emptyPreview
           )}
         >
-          {this.renderTopRow()}
           <div className={css(styles.row)}>
             <div
               className={css(
@@ -397,14 +452,7 @@ class PaperPageCard extends React.Component {
             >
               <div className={css(styles.metaContainer)}>
                 <div className={css(styles.titleHeader)}>
-                  <div
-                    className={css(
-                      styles.title,
-                      paper.paper_title &&
-                        paper.paper_title !== paper.title &&
-                        styles.titleMargin
-                    )}
-                  >
+                  <div className={css(styles.title)}>
                     {paper && paper.title}
                   </div>
                   {paper.paper_title && paper.paper_title !== paper.title && (
@@ -439,50 +487,15 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                 </Fragment>
-              </div>
-              <div className={css(styles.buttonRow)}>
-                {paper && paper.file && (
-                  <Button
-                    label={() => {
-                      return (
-                        <span>
-                          <span className={css(styles.downloadIcon)}>
-                            <i className="far fa-arrow-to-bottom" />
-                          </span>
-                          Download PDF
-                        </span>
-                      );
-                    }}
-                    customButtonStyle={styles.button}
-                    customLabelStyle={scrollStyles.button}
-                    size={"med"}
-                    hideRipples={false}
-                    onClick={this.downloadPDF}
-                  />
-                )}
-                {paper && paper.url && !paper.file && (
-                  <Button
-                    label={() => {
-                      return (
-                        <span>
-                          <span className={css(styles.viewIcon)}>
-                            <i className="far fa-external-link"></i>
-                          </span>
-                          View Externally
-                        </span>
-                      );
-                    }}
-                    customButtonStyle={styles.buttonRight}
-                    customLabelStyle={scrollStyles.buttonRight}
-                    isWhite={true}
-                    size={"med"}
-                    hideRipples={false}
-                    onClick={() => openExternalLink(paper.url)}
-                  />
-                )}
+                <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
               </div>
             </div>
-            {this.renderPreview()}
+            <div className={css(styles.rightColumn)}>
+              <div className={css(styles.actionMobileContainer)}>
+                {this.renderActions()}
+              </div>
+              {this.renderPreview()}
+            </div>
           </div>
         </div>
       </div>
@@ -502,10 +515,8 @@ const styles = StyleSheet.create({
     },
   },
   previewContainer: {
-    minWidth: 220,
-    width: 220,
-    // height: 300,
-    // minHeight: 300,
+    minWidth: 180,
+    width: 180,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     display: "flex",
@@ -513,6 +524,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     boxSizing: "border-box",
+    paddingTop: 25,
     "@media only screen and (max-width: 1280px)": {
       minWidth: 200,
       width: 200,
@@ -527,21 +539,14 @@ const styles = StyleSheet.create({
     minHeight: "unset",
   },
   image: {
-    width: "100%",
-    // minWidth: "100%",
-    // maxWidth: "100%",
-    // height: "100%",
-    // minHeight: 300,
-    // maxHeight: 300,
+    height: "100%",
     objectFit: "contain",
-    "@media only screen and (max-width: 1280px)": {},
   },
   column: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     width: "100%",
-    // minHeight: 333,
   },
   cardContainer: {
     display: "flex",
@@ -549,12 +554,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     position: "relative",
     width: "100%",
+    height: "100%",
     boxSizing: "border-box",
   },
   metaContainer: {
     display: "flex",
     flexDirection: "column",
     position: "relative",
+    height: "100%",
     width: "100%",
     boxSizing: "border-box",
     "@media only screen and (min-width: 768px)": {
@@ -570,20 +577,7 @@ const styles = StyleSheet.create({
   },
   hubTags: {
     display: "flex",
-
-    "@media only screen and (max-width: 767px)": {
-      marginBottom: 16,
-    },
-  },
-  mobile: {
-    "@media only screen and (min-width: 768px)": {
-      display: "none",
-    },
-  },
-  desktop: {
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
+    marginBottom: 20,
   },
   title: {
     fontSize: 30,
@@ -599,8 +593,8 @@ const styles = StyleSheet.create({
       fontSize: 22,
     },
   },
-  titleMargin: {
-    marginBottom: 10,
+  titleHeader: {
+    marginBottom: 15,
   },
   subtitle: {
     color: "#241F3A",
@@ -636,7 +630,7 @@ const styles = StyleSheet.create({
   },
   doiDate: {
     fontSize: 16,
-    marginBottom: 25,
+    marginBottom: 15,
     color: "#241F3A",
     opacity: 0.7,
     width: "100%",
@@ -655,16 +649,27 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 70,
     left: -70,
-    top: 43,
+    top: 37,
+    display: "block",
+    "@media only screen and (max-width: 768px)": {
+      display: "none",
+    },
+  },
+  votingMobile: {
+    "@media only screen and (min-width: 768px)": {
+      display: "none",
+    },
+    display: "unset",
+    position: "absolute",
+    top: 20,
+    left: 5,
   },
   buttonRow: {
     width: "100%",
     display: "flex",
-    marginTop: 10,
   },
   downloadIcon: {
     color: "#FFF",
-    marginRight: 10,
   },
   viewIcon: {
     marginRight: 10,
@@ -677,7 +682,7 @@ const styles = StyleSheet.create({
     width: "unset",
     boxSizing: "border-box",
     marginRight: 10,
-    padding: "8px 30px",
+    padding: "5px 20px",
   },
   buttonRight: {
     display: "flex",
@@ -691,6 +696,9 @@ const styles = StyleSheet.create({
   actions: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "flex-start",
+    width: "100%",
+    paddingBottom: 15,
   },
   actionIcon: {
     padding: 5,
@@ -738,18 +746,22 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     alignItems: "flex-start",
-
+    height: "100%",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column-reverse",
     },
   },
-  mobileContainer: {
+  rightColumn: {
     display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    flexDirection: "column",
+    justifiyContent: "flex-start",
+    alignItems: "flex-end",
+    "@media only screen and (max-width: 768px)": {
+      width: "100%",
+    },
   },
-  mobileVoting: {
-    display: "none",
+  actionMobileContainer: {
+    paddingTop: 2,
     "@media only screen and (max-width: 768px)": {
       display: "flex",
     },
@@ -801,63 +813,4 @@ const carousel = StyleSheet.create({
   },
 });
 
-const scrollStyles = StyleSheet.create({
-  container: {
-    paddingTop: 20,
-    paddingBottom: 0,
-  },
-  previewContainer: {
-    height: "initial",
-    maxHeight: "initial",
-    minHeight: "initial",
-    width: 76,
-    maxWidth: 76,
-    minWidth: 76,
-    "@media only screen and (max-width: 1280px)": {
-      width: 76,
-      maxWidth: 76,
-      minWidth: 76,
-    },
-  },
-  image: {
-    height: 114,
-    maxHeight: 114,
-    minHeight: 114,
-  },
-  column: {
-    minHeight: "unset",
-  },
-  actions: {
-    position: "absolute",
-    top: 35,
-    right: -75,
-  },
-  titleHeader: {
-    marginBottom: 5,
-    paddingTop: 15,
-    paddingRight: 16,
-  },
-  title: {
-    fontSize: 24,
-    "@media only screen and (max-width: 1280px)": {
-      fontSize: 22,
-    },
-  },
-  buttonColumn: {
-    display: "flex",
-    flexDirection: "column",
-    width: "calc(100% - 936px)",
-  },
-  button: {
-    fontSize: 14,
-    padding: 0,
-  },
-  buttonRight: {
-    fontSize: 14,
-    padding: 0,
-  },
-  voting: {
-    top: 15,
-  },
-});
 export default PaperPageCard;
