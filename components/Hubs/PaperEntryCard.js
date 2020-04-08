@@ -181,7 +181,7 @@ const PaperEntryCard = ({
             id={mobileView ? "clamp1" : "clamp2"}
           >
             {bullet_points.map((bullet, i) => {
-              if (i < 3) {
+              if (i < 2) {
                 return (
                   <li
                     key={`bullet-${bullet.id}`}
@@ -433,9 +433,18 @@ const styles = StyleSheet.create({
   paperTitle: {
     color: "rgb(145, 143, 155)",
     marginTop: 5,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 400,
     color: "#918F9B",
+  },
+  title: {
+    width: "100%",
+    fontSize: 19,
+    fontWeight: 500,
+    paddingBottom: 8,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 16,
+    },
   },
   preview: {
     height: 90,
@@ -460,15 +469,7 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
   },
-  title: {
-    width: "100%",
-    fontSize: 18,
-    fontWeight: 500,
-    paddingBottom: 8,
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 16,
-    },
-  },
+
   publishContainer: {
     maxWidth: "100%",
     paddingBottom: 8,
@@ -476,17 +477,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   publishDate: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 400,
     color: "#918F9B",
     marginRight: 15,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
   summary: {
     minWidth: "100%",
     maxWidth: "100%",
     whiteSpace: "pre-wrap",
     color: "#4e4c5f",
-    fontSize: 16,
+    fontSize: 14,
     paddingBottom: 8,
   },
   text: {
@@ -521,7 +525,7 @@ const styles = StyleSheet.create({
   discussion: {
     cursor: "pointer",
     minWidth: 140,
-    fontSize: 12,
+    fontSize: 14,
     ":hover #discIcon": {
       color: colors.BLUE(1),
     },
@@ -530,6 +534,9 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 967px)": {
       minWidth: "unset",
+    },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
     },
   },
   dicussionCount: {
@@ -579,7 +586,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     paddingRight: 15,
     justifyContent: "space-between",
-    // position: 'relative'
   },
   metaDataPreview: {
     minHeight: 90,
@@ -595,8 +601,11 @@ const styles = StyleSheet.create({
   bullet: {
     margin: 0,
     padding: 0,
-    fontSize: 12,
+    fontSize: 14,
     display: "list-item",
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
   hubLabel: {
     fontSize: 9,
