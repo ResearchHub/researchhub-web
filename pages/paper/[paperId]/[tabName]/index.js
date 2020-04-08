@@ -219,7 +219,6 @@ const Paper = (props) => {
               <PaperTabBar
                 baseUrl={paperId}
                 selectedTab={tabName}
-                discussionCount={discussionCount}
                 paperCardRef={paperCardRef}
                 keyTakeawayRef={keyTakeawayRef}
                 descriptionRef={descriptionRef}
