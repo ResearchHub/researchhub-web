@@ -480,6 +480,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    fontSize: 20,
+    // color: '#c1c1ce'
   },
   column: {
     display: "flex",
