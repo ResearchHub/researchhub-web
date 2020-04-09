@@ -7,6 +7,7 @@ import Button from "~/components/Form/Button";
 import { AuthActions } from "../redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
+import { BannerActions } from "~/redux/banner";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import colors from "~/config/themes/colors";
@@ -23,6 +24,7 @@ const GoogleLoginButton = (props) => {
         showLoginFailureMessage();
       } else {
         getUser().then((userAction) => {
+          props.showSignupBanner && props.removeBanner();
           if (!userAction.user.has_seen_orcid_connect_modal) {
             props.openOrcidConnectModal(true);
           }
@@ -95,6 +97,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  showSignupBanner: state.banners.showSignupBanner,
 });
 
 const mapDispatchToProps = {
@@ -103,6 +106,7 @@ const mapDispatchToProps = {
   openOrcidConnectModal: ModalActions.openOrcidConnectModal,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  removeBanner: BannerActions.removeBanner,
 };
 
 export default connect(
