@@ -1,16 +1,12 @@
 import { Fragment, useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useDispatch, useStore } from "react-redux";
-import Confetti from "react-confetti";
 
 // Component
 import BaseModal from "./BaseModal";
-import Loader from "../Loader/Loader";
-import Button from "../Form/Button";
 import GoogleLoginButton from "../GoogleLoginButton";
 
 // Redux
-import { AuthActions } from "~/redux/auth";
 import { ModalActions } from "~/redux/modals";
 
 // Config
@@ -19,16 +15,8 @@ import { RHLogo } from "~/config/themes/icons";
 const SignUpModal = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
-  const [userFirstVote, setFirstVote] = useState();
-  // store.getState().auth.user.has_seen_first_coin_modal
-  const [reveal, toggleReveal] = useState(false);
-  const [showButton, toggleButton] = useState(false);
 
-  useEffect(() => {
-    if (store.getState().modals.openSignUpModal) {
-      let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
-    }
-  }, [store.getState().modals.openSignUpModal]);
+  // const [offset, setOffset] = useState(props.paperCardRef.current && props.paperCardRef.current.clientHeight + 80)
 
   function closeModal() {
     dispatch(ModalActions.openSignUpModal(false));
@@ -49,9 +37,18 @@ const SignUpModal = (props) => {
     );
   }
 
+  function calculateOffset(mobileState) {
+    let offset =
+      props.paperCardRef.current && props.paperCardRef.current.clientHeight;
+    if (!mobileState) {
+      offset += 80;
+    }
+    setOffset(offset);
+  }
+
   return (
     <BaseModal
-      isOpen={store.getState().modals.openSignUpModal}
+      isOpen={useStore().getState().modals.openSignUpModal}
       closeModal={closeModal}
       title={() => {
         return <RHLogo iconStyle={styles.logo} />;
@@ -88,6 +85,7 @@ const SignUpModal = (props) => {
 
 const styles = StyleSheet.create({
   modalStyle: {
+    // top: '78%',
     "@media only screen and (max-width: 665px)": {
       width: "unset",
     },
@@ -125,7 +123,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: 400,
+    width: "100%",
   },
   divider: {
     padding: "20px 15px",
