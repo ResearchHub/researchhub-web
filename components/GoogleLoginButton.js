@@ -46,7 +46,10 @@ const GoogleLoginButton = (props) => {
       render={(renderProps) => {
         if (hideButton) {
           return (
-            <div className={css(styles.buttonLabel)}>
+            <div
+              className={css(styles.buttonLabel)}
+              onClick={renderProps.onClick}
+            >
               {customLabel && customLabel}
             </div>
           );

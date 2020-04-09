@@ -59,6 +59,7 @@ class BaseModal extends React.Component {
         mobileView: false,
       });
     }
+    this.getMobileState();
   };
 
   /**
@@ -88,11 +89,23 @@ class BaseModal extends React.Component {
     document.body.style.overflow = "scroll";
   };
 
+  getMobileState = () => {
+    this.props.getMobileState &&
+      this.props.getMobileState(this.state.mobileView);
+  };
+
   getOverlayStyle = () => {
+    if (this.props.overlayStyle) {
+      return this.props.overlayStyle;
+    }
     return {
       overlay: {
         position: "fixed",
-        top: this.state.mobileView ? 80 : 0,
+        top: this.props.offset
+          ? this.props.offset
+          : this.state.mobileView
+          ? 80
+          : 0,
         left: 0,
         right: 0,
         bottom: 0,
@@ -104,6 +117,7 @@ class BaseModal extends React.Component {
   };
 
   render() {
+    let { enableScroll } = this.props;
     return (
       <Modal
         isOpen={this.props.isOpen}
@@ -122,8 +136,8 @@ class BaseModal extends React.Component {
           className={css(
             styles.modalContent,
             this.props.removeDefault && styles.removeDefault,
-            this.state.reveal && styles.reveal,
-            this.props.modalContentStyle && this.props.modalContentStyle
+            this.props.modalContentStyle && this.props.modalContentStyle,
+            this.state.reveal && styles.reveal
           )}
         >
           {this.props.backgroundImage && (

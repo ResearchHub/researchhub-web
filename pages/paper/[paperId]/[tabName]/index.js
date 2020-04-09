@@ -17,11 +17,13 @@ import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
+import SignUpBanner from "~/components/modal/SignUpBanner";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
+import { ModalActions } from "~/redux/modals";
 import VoteActions from "~/redux/vote";
 
 // Config
@@ -76,6 +78,7 @@ const Paper = (props) => {
 
   const paperTitle = getNestedValue(paper, ["title"], "");
   const paperCardRef = useRef(null);
+  const paperTabsRef = useRef(null);
   const keyTakeawayRef = useRef(null);
   const descriptionRef = useRef(null);
   const discussionRef = useRef(null);
@@ -101,6 +104,13 @@ const Paper = (props) => {
       props.setUploadingPaper(false);
     }
   }
+
+  useEffect(() => {
+    // let store = useStore();
+    let isLoggedIn = store.getState().auth.isLoggedIn;
+    let authChecked = store.getState().auth.authChecked;
+    !isLoggedIn && authChecked && openSignUpModal();
+  }, [useStore().getState().auth.authChecked]);
 
   useEffect(() => {
     refetchPaper();
@@ -182,6 +192,11 @@ const Paper = (props) => {
     }
   }
 
+  function openSignUpModal() {
+    let coinFlip = Math.random() >= 0.5; // %50 probability of get "true"
+    // coinFlip && dispatch(ModalActions.openSignUpModal(true));
+  }
+
   return (
     <div className={css(styles.container)}>
       {paper.status === 404 ? (
@@ -189,33 +204,25 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
-          <ComponentWrapper overrideStyle={styles.componentWrapper}>
-            <PaperPageCard
-              paper={paper}
-              score={score}
-              upvote={upvote}
-              downvote={downvote}
-              selectedVoteType={selectedVoteType}
-              shareUrl={shareUrl}
-              isModerator={isModerator}
-              flagged={flagged}
-              doneFetchingPaper={!loadingPaper}
-              setFlag={setFlag}
-              sticky={sticky}
-              scrollView={scrollView}
-              setSticky={setSticky}
-            />
-          </ComponentWrapper>
-          <div className={css(styles.stickyComponent)} ref={paperCardRef}>
-            {false ? (
-              <ComponentWrapper>
-                <ReactPlaceholder
-                  ready={false}
-                  showLoadingAnimation
-                  customPlaceholder={<PaperTabBarPlaceholder color="#efefef" />}
-                />
-              </ComponentWrapper>
-            ) : (
+          <div ref={paperCardRef}>
+            <ComponentWrapper overrideStyle={styles.componentWrapper}>
+              <PaperPageCard
+                paper={paper}
+                score={score}
+                upvote={upvote}
+                downvote={downvote}
+                selectedVoteType={selectedVoteType}
+                shareUrl={shareUrl}
+                isModerator={isModerator}
+                flagged={flagged}
+                doneFetchingPaper={!loadingPaper}
+                setFlag={setFlag}
+                sticky={sticky}
+                scrollView={scrollView}
+                setSticky={setSticky}
+              />
+            </ComponentWrapper>
+            <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
               <PaperTabBar
                 baseUrl={paperId}
                 selectedTab={tabName}
@@ -225,14 +232,16 @@ const Paper = (props) => {
                 discussionRef={discussionRef}
                 paperPdfRef={paperPdfRef}
                 citationRef={citationRef}
+                paperTabsRef={paperTabsRef}
                 sticky={sticky}
                 setSticky={setSticky}
                 scrollView={scrollView}
                 tabName={tabName}
               />
-            )}
+            </div>
           </div>
           <div className={css(styles.contentContainer)}>
+            <SignUpBanner />
             <SummaryTab
               paperId={paperId}
               paper={paper}
@@ -343,6 +352,7 @@ const styles = StyleSheet.create({
     margin: "auto",
     backgroundColor: "#FAFAFA",
     minHeight: "100vh",
+    position: "relative",
     "@media only screen and (max-width: 415px)": {
       paddingTop: 20,
     },
