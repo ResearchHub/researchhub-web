@@ -10,15 +10,7 @@ import ComponentWrapper from "./ComponentWrapper";
 const PaperTabBar = (props) => {
   const [selectedTab, setSelectedTab] = useState("main");
 
-  const {
-    scrollView,
-    paperCardRef,
-    keyTakeawayRef,
-    descriptionRef,
-    discussionRef,
-    paperPdfRef,
-    citationRef,
-  } = props;
+  const { scrollView } = props;
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
@@ -69,7 +61,7 @@ const PaperTabBar = (props) => {
     } else if (
       window.scrollY >= calculateOffset("takeaways-tab", -navbarHeight)
     ) {
-      setSelectedTab("description");
+      setSelectedTab("summary");
       if (window.outerWidth < 667) {
         let paperNavigation = document.getElementById("paper-navigation");
         paperNavigation.scroll({
@@ -78,14 +70,14 @@ const PaperTabBar = (props) => {
         });
       }
     } else {
-      setSelectedTab("key takeaway");
+      setSelectedTab("key takeaways");
     }
   }
 
   const tabs = [
     { href: "main", label: "main" },
-    { href: "takeaways", label: "key takeaway" },
-    { href: "description", label: "description" },
+    { href: "takeaways", label: "key takeaways" },
+    { href: "summary", label: "summary" },
     { href: "discussions", label: "discussions" },
     { href: "citations", label: "cited by" },
     { href: "paper", label: "Paper PDF" },
@@ -97,9 +89,8 @@ const PaperTabBar = (props) => {
   }
 
   function scrollToPage(label) {
-    setSelectedTab(label);
+    // setSelectedTab(label);
     if (label === "main" || label === "summary") {
-      setSelectedTab("main");
       window.scrollTo({
         behavior: "smooth",
         top: 0,

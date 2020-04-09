@@ -182,17 +182,16 @@ class SummaryTab extends React.Component {
 
     return (
       <ComponentWrapper>
-        <a name="takeaways">
-          <div
-            className={css(styles.bulletsContainer)}
-            ref={this.props.keyTakeawayRef}
-            id="takeaways-tab"
-          >
-            <BulletsContainer paperId={this.props.paperId} />
-          </div>
-        </a>
+        <a name="takeaways" />
+        <div
+          className={css(styles.bulletsContainer)}
+          ref={this.props.keyTakeawayRef}
+          id="takeaways-tab"
+        >
+          <BulletsContainer paperId={this.props.paperId} />
+        </div>
         <div>{this.state.errorMessage}</div>
-        <a name="description">
+        <a name="summary">
           {(paper.summary && paper.summary.summary) ||
           this.state.summaryExists ? (
             <div
@@ -202,7 +201,7 @@ class SummaryTab extends React.Component {
             >
               {this.state.readOnly ? (
                 <div className={css(styles.sectionHeader)}>
-                  <div className={css(styles.sectionTitle)}>Description</div>
+                  <div className={css(styles.sectionTitle)}>Summary</div>
                   <div className={css(styles.summaryActions)}>
                     <Link
                       href={"/paper/[paperId]/[tabName]/edits"}
@@ -338,7 +337,7 @@ class SummaryTab extends React.Component {
               ) : (
                 <Fragment>
                   <div className={css(styles.sectionHeader)}>
-                    <div className={css(styles.sectionTitle)}>Description</div>
+                    <div className={css(styles.sectionTitle)}>Summary</div>
                   </div>
                   <div className={css(styles.box) + " second-step"}>
                     <div className={css(styles.icon)}>
