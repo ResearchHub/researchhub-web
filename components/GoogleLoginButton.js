@@ -1,5 +1,5 @@
 import { GoogleLogin } from "react-google-login";
-import { StyleSheet } from "aphrodite";
+import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
 import Button from "~/components/Form/Button";
@@ -9,9 +9,10 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
+import colors from "~/config/themes/colors";
 
 const GoogleLoginButton = (props) => {
-  let { customLabel } = props;
+  let { customLabel, hideButton } = props;
 
   const responseGoogle = async (response) => {
     let { googleLogin, getUser } = props;
@@ -42,17 +43,27 @@ const GoogleLoginButton = (props) => {
       onSuccess={responseGoogle}
       onFailure={showLoginFailureMessage}
       cookiePolicy={"single_host_origin"}
-      render={(renderProps) => (
-        <Button
-          disabled={renderProps.disabled}
-          onClick={renderProps.onClick}
-          customButtonStyle={[styles.button, props.styles]}
-          icon={"/static/icons/google.png"}
-          customLabelStyle={props.customLabelStyle}
-          customIconStyle={[styles.iconStyle, props.iconStyle]}
-          label={customLabel ? customLabel : "Log in with Google"}
-        />
-      )}
+      render={(renderProps) => {
+        if (hideButton) {
+          return (
+            <div className={css(styles.buttonLabel)}>
+              {customLabel && customLabel}
+            </div>
+          );
+        } else {
+          return (
+            <Button
+              disabled={renderProps.disabled}
+              onClick={renderProps.onClick}
+              customButtonStyle={[styles.button, props.styles]}
+              icon={"/static/icons/google.png"}
+              customLabelStyle={props.customLabelStyle}
+              customIconStyle={[styles.iconStyle, props.iconStyle]}
+              label={customLabel ? customLabel : "Log in with Google"}
+            />
+          );
+        }
+      }}
     />
   );
 };
@@ -67,6 +78,15 @@ const styles = StyleSheet.create({
     width: 230,
     marginTop: 10,
     marginBottom: 0,
+  },
+  buttonLabel: {
+    fontWeight: 600,
+    fontSize: 15,
+    cursor: "pointer",
+    color: colors.BLUE(),
+    ":hover": {
+      textDecoration: "underline",
+    },
   },
 });
 
