@@ -85,7 +85,6 @@ const SignUpModal = (props) => {
 
 const styles = StyleSheet.create({
   modalStyle: {
-    // top: '78%',
     "@media only screen and (max-width: 665px)": {
       width: "unset",
     },

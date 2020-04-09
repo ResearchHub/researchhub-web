@@ -106,13 +106,6 @@ const Paper = (props) => {
   }
 
   useEffect(() => {
-    // let store = useStore();
-    let isLoggedIn = store.getState().auth.isLoggedIn;
-    let authChecked = store.getState().auth.authChecked;
-    !isLoggedIn && authChecked && openSignUpModal();
-  }, [useStore().getState().auth.authChecked]);
-
-  useEffect(() => {
     refetchPaper();
   }, []);
 
@@ -190,11 +183,6 @@ const Paper = (props) => {
       setScrollView(false);
       setSticky(false);
     }
-  }
-
-  function openSignUpModal() {
-    let coinFlip = Math.random() >= 0.5; // %50 probability of get "true"
-    // coinFlip && dispatch(ModalActions.openSignUpModal(true));
   }
 
   return (
