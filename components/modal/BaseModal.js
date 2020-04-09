@@ -109,7 +109,10 @@ class BaseModal extends React.Component {
         isOpen={this.props.isOpen}
         closeModal={this.closeModal}
         onRequestClose={this.closeModal}
-        className={css(styles.modal)}
+        className={css(
+          styles.modal,
+          this.props.modalStyle && this.props.modalStyle
+        )}
         shouldCloseOnOverlayClick={true}
         style={this.getOverlayStyle()}
         onAfterOpen={this.disableParentScroll}
@@ -148,7 +151,9 @@ class BaseModal extends React.Component {
                 )}
               >
                 <div className={css(styles.title, styles.text)}>
-                  {this.props.title && this.props.title}
+                  {this.props.title && typeof this.props.title === "function"
+                    ? this.props.title()
+                    : this.props.title}
                 </div>
                 <div className={css(styles.subtitle, styles.text)}>
                   {this.props.subtitle &&
@@ -177,6 +182,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     borderRadius: 5,
+    boxSizing: "border-box",
     "@media only screen and (max-width: 665px)": {
       width: "90%",
     },
@@ -200,6 +206,7 @@ const styles = StyleSheet.create({
     opacity: 0,
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
+    boxSizing: "border-box",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
@@ -238,11 +245,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     textAlign: "center",
+    boxSizing: "border-box",
   },
   title: {
     fontWeight: "500",
     height: 30,
-    width: 426,
+    width: "100%",
     fontSize: 26,
     color: "#232038",
     "@media only screen and (max-width: 557px)": {
@@ -265,10 +273,11 @@ const styles = StyleSheet.create({
   subtitle: {
     marginTop: 15,
     fontSize: 16,
-    height: 22,
-    width: 484,
+    minHeight: 22,
+    width: "100%",
     fontWeight: "400",
     color: "#4f4d5f",
+    boxSizing: "border-box",
     "@media only screen and (max-width: 557px)": {
       fontSize: 14,
       width: 300,

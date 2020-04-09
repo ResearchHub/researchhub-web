@@ -25,6 +25,7 @@ import Reputation from "./Reputation";
 import Search from "./Search";
 import TransactionModal from "../components/modal/TransactionModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
+import SignUpModal from "../components/modal/SignUpModal";
 import Notification from "./Notifications/Notification";
 
 // Styles
@@ -72,6 +73,10 @@ const Navbar = (props) => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   });
+
+  useEffect(() => {
+    !isLoggedIn && authChecked && openSignUpModal();
+  }, [isLoggedIn]);
 
   const [openMenu, setOpenMenu] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
@@ -148,6 +153,14 @@ const Navbar = (props) => {
       );
     });
     return tabs;
+  }
+
+  function openSignUpModal() {
+    let coinFlip = Math.random() >= 0.5; // %50 probability of get "true"
+    coinFlip &&
+      setTimeout(() => {
+        props.openSignUpModal(true);
+      }, 3000);
   }
 
   function toggleMenu() {
@@ -345,6 +358,7 @@ const Navbar = (props) => {
         <TransactionModal />
         <FirstVoteModal />
         <OrcidConnectModal />
+        <SignUpModal />
         <div className={css(styles.logoContainer)} onClick={navigateHome}>
           <RHLogo iconStyle={styles.logo} />
         </div>
@@ -760,6 +774,7 @@ const mapDispatchToProps = {
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   openTransactionModal: ModalActions.openTransactionModal,
+  openSignUpModal: ModalActions.openSignUpModal,
 };
 
 export default connect(
