@@ -1,6 +1,5 @@
-import { Fragment, useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { useDispatch, useStore } from "react-redux";
+import { connect } from "react-redux";
 
 import { RHLogo } from "~/config/themes/icons";
 import GoogleLoginButton from "../GoogleLoginButton";
@@ -9,9 +8,30 @@ class SignUpBanner extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      reveal: true,
+      reveal: false,
     };
   }
+
+  componentDidMount() {
+    let { isLoggedIn, authChecked } = this.props.auth;
+    !isLoggedIn && authChecked && this.showBanner();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      if (
+        prevProps.auth.isLoggedIn !== this.props.isLoggedIn &&
+        prevProps.auth.authChecked !== this.props.auth.useDispatch
+      ) {
+        this.showBanner();
+      }
+    }
+  }
+
+  showBanner = () => {
+    let coinFlip = Math.random() >= 0.5;
+    coinFlip && this.setState({ reveal: true });
+  };
 
   renderDivider = () => {
     return (
@@ -42,7 +62,7 @@ class SignUpBanner extends React.Component {
             draggable={false}
           />
           <RHLogo iconStyle={styles.logo} />
-          <div className={css(styles.title)}>Welcome to our community!</div>
+          <div className={css(styles.title)}>Welcome to the community!</div>
           <div className={css(styles.modalBody)}>
             <div className={css(styles.subtitle)}>
               Join today and earn 50 RHC
@@ -83,7 +103,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     opacity: 0,
-    transition: "all ease-in-out 0.2s",
+    // transition: "all ease-in-out 0.2s",
   },
   reveal: {
     opacity: 1,
@@ -101,8 +121,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: 400,
     padding: 25,
-
-    // minHeight: 600
   },
   title: {
     paddingTop: 15,
@@ -171,4 +189,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUpBanner;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(SignUpBanner);
