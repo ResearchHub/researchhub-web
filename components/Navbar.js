@@ -25,8 +25,8 @@ import Reputation from "./Reputation";
 import Search from "./Search";
 import TransactionModal from "../components/modal/TransactionModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
-import SignUpModal from "../components/modal/SignUpModal";
 import Notification from "./Notifications/Notification";
+import SignUpModal from "~/components/modal/SignUpModal";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -73,10 +73,6 @@ const Navbar = (props) => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   });
-
-  useEffect(() => {
-    !isLoggedIn && authChecked && openSignUpModal();
-  }, [isLoggedIn]);
 
   const [openMenu, setOpenMenu] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
@@ -153,14 +149,6 @@ const Navbar = (props) => {
       );
     });
     return tabs;
-  }
-
-  function openSignUpModal() {
-    let coinFlip = Math.random() >= 0.5; // %50 probability of get "true"
-    coinFlip &&
-      setTimeout(() => {
-        props.openSignUpModal(true);
-      }, 3000);
   }
 
   function toggleMenu() {

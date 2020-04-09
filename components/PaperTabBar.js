@@ -33,8 +33,8 @@ const PaperTabBar = (props) => {
     }
 
     // let navbarHeight = 157.5 + 20;
-    let navbarHeight = props.paperCardRef.current
-      ? props.paperCardRef.current.clientHeight + 80
+    let navbarHeight = props.paperTabsRef.current
+      ? props.paperTabsRef.current.clientHeight + 80
       : 139;
 
     if (window.scrollY < 200) {
