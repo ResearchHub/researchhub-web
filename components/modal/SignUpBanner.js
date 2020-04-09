@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { RHLogo } from "~/config/themes/icons";
 import GoogleLoginButton from "../GoogleLoginButton";
 
+import { BannerActions } from "~/redux/banner";
+
 class SignUpBanner extends React.Component {
   constructor(props) {
     super(props);
@@ -13,8 +15,9 @@ class SignUpBanner extends React.Component {
   }
 
   componentDidMount() {
-    let { isLoggedIn, authChecked } = this.props.auth;
-    !isLoggedIn && authChecked && this.showBanner();
+    let { isLoggedIn } = this.props.auth;
+    let { showSignupBanner } = this.props.banners;
+    !isLoggedIn && showSignupBanner && this.showBanner();
   }
 
   componentDidUpdate(prevProps) {
@@ -23,14 +26,15 @@ class SignUpBanner extends React.Component {
         prevProps.auth.isLoggedIn !== this.props.isLoggedIn &&
         prevProps.auth.authChecked !== this.props.auth.useDispatch
       ) {
-        this.showBanner();
+        let { isLoggedIn } = this.props.auth;
+        let { showSignupBanner } = this.props.banners;
+        !isLoggedIn && showSignupBanner && this.showBanner();
       }
     }
   }
 
   showBanner = () => {
-    let coinFlip = Math.random() >= 0.5;
-    coinFlip && this.setState({ reveal: true });
+    this.setState({ reveal: true });
   };
 
   renderDivider = () => {
@@ -45,6 +49,7 @@ class SignUpBanner extends React.Component {
 
   closeBanner = () => {
     this.setState({ reveal: false });
+    this.props.removeBanner();
   };
 
   render() {
@@ -191,9 +196,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  banners: state.banners,
 });
+
+const mapDispatchToProps = {
+  removeBanner: BannerActions.removeBanner,
+};
 
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(SignUpBanner);
