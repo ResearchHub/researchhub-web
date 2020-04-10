@@ -52,6 +52,7 @@ const Paper = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper.userVote.voteType)
   );
+
   const [steps, setSteps] = useState([
     {
       target: ".first-step",
@@ -85,6 +86,10 @@ const Paper = (props) => {
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
 
+  useEffect(() => {
+    window.scroll({ top: 0, behavior: "auto" });
+  }, []);
+
   async function refetchPaper() {
     setLoadingPaper(true);
     await dispatch(PaperActions.getPaper(paperId));
@@ -97,8 +102,9 @@ const Paper = (props) => {
     setSelectedVoteType(getVoteType(refetchedPaper.userVote));
     setDiscussionThreads(getDiscussionThreads(refetchedPaper));
     setFlag(refetchedPaper.user_flag !== null);
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0;
+    // document.body.scroll = 0; // For Safari
+    // document.documentElement.scrollTop = 0;
+    window.scroll({ top: 0, behavior: "auto" });
     showMessage({ show: false });
     if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
       props.setUploadingPaper(false);

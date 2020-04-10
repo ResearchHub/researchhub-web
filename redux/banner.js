@@ -1,5 +1,6 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { AuthConstants } from "./auth";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -10,11 +11,46 @@ export const BannerConstants = {
   REMOVE_BANNER: "@@banner/REMOVE_BANNER",
 };
 
+const uuidv4 = () => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
+const reportBanner = (params) => {
+  return fetch(API.ANALYTICS_WEBSITEVIEWS({}), API.POST_CONFIG(params))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const BannerActions = {
   determineBanner: () => {
     return (dispatch) => {
+      let coinFlip = Math.random() >= 0.5; // 50% chance
+      let uuid = localStorage.getItem("researchhub.uuid");
+      if (!uuid) {
+        uuid = uuidv4();
+        localStorage.setItem("researchhub.uuid", coinFlip);
+      }
+
+      dispatch({
+        type: AuthConstants.UPDATE_USER_PROFILE,
+        user: {
+          uuid,
+        },
+      });
+
       let pref = localStorage.getItem("researchhub.signup.banner");
-      if (pref === "false") {
+      if (pref === "true") {
+        return dispatch({
+          type: BannerConstants.DETERMINE_BANNER,
+          payload: {
+            showSignupBanner: true,
+          },
+        });
+      } else if (pref === "false") {
         return dispatch({
           type: BannerConstants.DETERMINE_BANNER,
           payload: {
@@ -22,8 +58,7 @@ export const BannerActions = {
           },
         });
       } else if (pref === null || pref === undefined) {
-        let coinFlip = Math.random() >= 0.5; // 50% chance
-        localStorage.setItem("researchhub.signup.banner", coinFlip);
+        reportBanner({ uuid, saw_signup_banner: coinFlip });
         return dispatch({
           type: BannerConstants.DETERMINE_BANNER,
           payload: {
