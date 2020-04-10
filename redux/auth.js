@@ -42,6 +42,15 @@ function saveToLocalStorage(key, value) {
   return;
 }
 
+const alertSignedUp = (userId) => {
+  let params = {
+    user: userId,
+  };
+  return fetch(API.ANALYTICS_WEBSITEVIEWS({}), API.PATCH_REQUEST(params)).then(
+    Helpers.checkStatus
+  );
+};
+
 let getUserHelper = (dispatch, dispatchFetching) => {
   if (!dispatchFetching) {
     dispatch({ type: AuthConstants.FETCHING_USER, isFetchingUser: true });
@@ -166,7 +175,8 @@ export const AuthActions = {
    * @params { params } --
    */
   googleLogin: (params) => {
-    return (dispatch) => {
+    return (dispatch, getState) => {
+      params.uuid = getState().auth.user.uuid;
       let postConfig = API.POST_CONFIG(params);
       delete postConfig["headers"]["Authorization"];
       return fetch(API.GOOGLE_LOGIN, postConfig)
@@ -396,6 +406,7 @@ const defaultAuthState = {
   showBanner: true,
   uploadingPaper: false,
   userCoinAction: "",
+  uuid: null,
 };
 
 const AuthReducer = (state = defaultAuthState, action) => {

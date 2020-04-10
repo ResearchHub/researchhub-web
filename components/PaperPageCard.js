@@ -48,8 +48,6 @@ class PaperPageCard extends React.Component {
   }
 
   componentDidMount() {
-    // document.body.scrollTop = 0; // For Safari
-    // document.documentElement.scrollTop = 0;
     this.fetchFigures();
   }
 
@@ -63,6 +61,10 @@ class PaperPageCard extends React.Component {
         });
       }
     }
+  }
+
+  componentWillUnmount() {
+    document.body.style.overflow = "scroll";
   }
 
   revealPage = (timeout) => {
@@ -332,9 +334,15 @@ class PaperPageCard extends React.Component {
   renderHubs = () => {
     let { paper } = this.props;
     if (paper.hubs && paper.hubs.length > 0) {
-      return paper.hubs.map((hub, index) => {
-        return <HubTag tag={hub} gray={true} key={`hub_tag_index_${index}`} />;
-      });
+      return (
+        <div className={css(styles.hubTags)}>
+          {paper.hubs.map((hub, index) => {
+            return (
+              <HubTag tag={hub} gray={true} key={`hub_tag_index_${index}`} />
+            );
+          })}
+        </div>
+      );
     }
   };
 
@@ -487,7 +495,7 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                 </Fragment>
-                <div className={css(styles.hubTags)}>{this.renderHubs()}</div>
+                {this.renderHubs()}
               </div>
             </div>
             <div className={css(styles.rightColumn)}>

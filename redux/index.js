@@ -14,6 +14,7 @@ import transactionReducer from "./transaction";
 import notificationReducer from "./notification";
 import flagReducer from "./flags";
 import bulletReducer from "./bullets";
+import bannerReducer from "./banner";
 
 export default combineReducers({
   modals: modalReducer,
@@ -30,4 +31,5 @@ export default combineReducers({
   livefeed: notificationReducer,
   flags: flagReducer,
   bullets: bulletReducer,
+  banners: bannerReducer,
 });
