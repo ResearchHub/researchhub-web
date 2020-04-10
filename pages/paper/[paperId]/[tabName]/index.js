@@ -192,41 +192,39 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
-          <div ref={paperCardRef}>
-            <ComponentWrapper overrideStyle={styles.componentWrapper}>
-              <PaperPageCard
-                paper={paper}
-                score={score}
-                upvote={upvote}
-                downvote={downvote}
-                selectedVoteType={selectedVoteType}
-                shareUrl={shareUrl}
-                isModerator={isModerator}
-                flagged={flagged}
-                doneFetchingPaper={!loadingPaper}
-                setFlag={setFlag}
-                sticky={sticky}
-                scrollView={scrollView}
-                setSticky={setSticky}
-              />
-            </ComponentWrapper>
-            <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
-              <PaperTabBar
-                baseUrl={paperId}
-                selectedTab={tabName}
-                paperCardRef={paperCardRef}
-                keyTakeawayRef={keyTakeawayRef}
-                descriptionRef={descriptionRef}
-                discussionRef={discussionRef}
-                paperPdfRef={paperPdfRef}
-                citationRef={citationRef}
-                paperTabsRef={paperTabsRef}
-                sticky={sticky}
-                setSticky={setSticky}
-                scrollView={scrollView}
-                tabName={tabName}
-              />
-            </div>
+          <ComponentWrapper overrideStyle={styles.componentWrapper}>
+            <PaperPageCard
+              paper={paper}
+              score={score}
+              upvote={upvote}
+              downvote={downvote}
+              selectedVoteType={selectedVoteType}
+              shareUrl={shareUrl}
+              isModerator={isModerator}
+              flagged={flagged}
+              doneFetchingPaper={!loadingPaper}
+              setFlag={setFlag}
+              sticky={sticky}
+              scrollView={scrollView}
+              setSticky={setSticky}
+            />
+          </ComponentWrapper>
+          <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
+            <PaperTabBar
+              baseUrl={paperId}
+              selectedTab={tabName}
+              paperCardRef={paperCardRef}
+              keyTakeawayRef={keyTakeawayRef}
+              descriptionRef={descriptionRef}
+              discussionRef={discussionRef}
+              paperPdfRef={paperPdfRef}
+              citationRef={citationRef}
+              paperTabsRef={paperTabsRef}
+              sticky={sticky}
+              setSticky={setSticky}
+              scrollView={scrollView}
+              tabName={tabName}
+            />
           </div>
           <div className={css(styles.contentContainer)}>
             <SignUpBanner />

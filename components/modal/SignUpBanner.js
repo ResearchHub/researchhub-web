@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     outline: "none",
     position: "sticky",
     marginTop: 40,
-    top: 120,
+    top: 180,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     padding: 25,
   },
   title: {
-    paddingTop: 15,
+    paddingTop: 20,
     fontSize: 24,
     fontWeight: "500",
     color: "#000",
