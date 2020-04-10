@@ -630,11 +630,13 @@ var styles = StyleSheet.create({
     border: "1px solid #F0F0F0",
     boxSizing: "border-box",
     marginTop: 20,
+    lineHeight: 1.6,
   },
   commentReadStyles: {
     padding: 0,
     paddingTop: 5,
     boxSizing: "border-box",
+    lineHeight: 1.6,
   },
 });
 
