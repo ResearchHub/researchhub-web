@@ -254,7 +254,7 @@ const Paper = (props) => {
               </div>
             </a>
             <a name="citations">
-              <ComponentWrapper overrideStyle={styles.componentWrapper}>
+              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <div
                   className={css(styles.citationContainer)}
                   ref={citationRef}
@@ -338,6 +338,13 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
 };
 
 const styles = StyleSheet.create({
+  componentWrapperStyles: {
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
   container: {},
   contentContainer: {
     padding: "30px 0px",
@@ -577,6 +584,9 @@ const styles = StyleSheet.create({
   citationTitle: {
     fontSize: 22,
     fontWeight: 500,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 20,
+    },
   },
   citationCount: {
     color: "rgba(36, 31, 58, 0.5)",
@@ -593,6 +603,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 16,
+    },
   },
   icon: {
     fontSize: 50,
@@ -605,6 +618,9 @@ const styles = StyleSheet.create({
     color: "rgba(36, 31, 58, 0.8)",
     fontWeight: 400,
     marginTop: 10,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
 });
 

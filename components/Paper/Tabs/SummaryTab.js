@@ -181,7 +181,7 @@ class SummaryTab extends React.Component {
     let { transition } = this.state;
 
     return (
-      <ComponentWrapper>
+      <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
         <a name="takeaways">
           <div
             className={css(styles.bulletsContainer)}
@@ -371,6 +371,13 @@ class SummaryTab extends React.Component {
 }
 
 var styles = StyleSheet.create({
+  componentWrapperStyles: {
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
   container: {
     width: "100%",
     display: "flex",
@@ -416,6 +423,9 @@ var styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 20,
+    },
   },
   noSummaryContainer: {
     alignItems: "center",
@@ -464,8 +474,10 @@ var styles = StyleSheet.create({
     fontSize: 16,
     color: colors.BLACK(0.8),
     marginBottom: 24,
+    textAlign: "center",
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
+      width: 300,
     },
   },
   summaryActions: {

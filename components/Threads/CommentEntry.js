@@ -521,6 +521,7 @@ class CommentEntry extends React.Component {
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsComments}
+                    textStyles={styles.commentEditor}
                   />
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
@@ -608,6 +609,9 @@ const styles = StyleSheet.create({
     margin: "15px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      marginTop: 10,
+    },
   },
   content: {
     width: "100%",
@@ -626,6 +630,11 @@ const styles = StyleSheet.create({
     padding: "0px 10px 10px 8px",
     ":hover": {
       backgroundColor: "#FAFAFA",
+    },
+    "@media only screen and (max-width: 767px)": {
+      paddingLeft: 5,
+      paddingRight: 5,
+      paddingBottom: 5,
     },
   },
   active: {
@@ -679,6 +688,11 @@ const styles = StyleSheet.create({
   removedText: {
     fontStyle: "italic",
     fontSize: 13,
+  },
+  commentEditor: {
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
 });
 

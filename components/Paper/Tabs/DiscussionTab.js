@@ -701,12 +701,18 @@ var styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     marginBottom: 20,
+    "@media only screen and (max-width: 415px)": {
+      marginBottom: 10,
+    },
   },
   discussionTitle: {
     display: "flex",
     alignItems: "center",
     fontSize: 22,
     fontWeight: 500,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 20,
+    },
   },
   discussionCount: {
     color: "rgba(36, 31, 58, 0.5)",
@@ -755,7 +761,6 @@ var styles = StyleSheet.create({
     marginTop: 40,
   },
   loadMoreButton: {
-    // border: '1px solid #3971FF',
     border: `1px solid ${colors.BLUE()}`,
     boxSizing: "border-box",
     borderRadius: 4,
@@ -764,12 +769,10 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    // color: '#3971FF',
     color: colors.BLUE(),
     cursor: "pointer",
     ":hover": {
       color: "#FFF",
-      // backgroundColor: '#3971FF'
       backgroundColor: colors.BLUE(),
     },
   },
@@ -783,7 +786,6 @@ const stylesEditor = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
     boxSizing: "border-box",
-    // paddingLeft: 20,
     marginBottom: 8,
     backgroundColor: "#fff",
   },

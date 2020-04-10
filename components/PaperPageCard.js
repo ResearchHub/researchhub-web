@@ -533,11 +533,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     boxSizing: "border-box",
     paddingTop: 25,
-    "@media only screen and (max-width: 1280px)": {
-      minWidth: 200,
-      width: 200,
-      maxWidth: 200,
-    },
     "@media only screen and (min-width: 0px) and (max-width: 767px)": {
       margin: "0 auto",
       marginBottom: 16,
@@ -585,6 +580,8 @@ const styles = StyleSheet.create({
   },
   hubTags: {
     display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
     marginBottom: 20,
   },
   title: {

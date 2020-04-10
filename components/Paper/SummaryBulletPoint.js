@@ -46,9 +46,8 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 10,
     border: "1px solid #F0F0F0",
-    // cursor: "pointer",
-    ":hover": {
-      // borderColor: "#E0E0E0",
+    "@media only screen and (max-width: 415px)": {
+      padding: 8,
     },
   },
   topRow: {
@@ -71,14 +70,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 20,
-    // border: `1.5px solid #3971FF`,
+    "@media only screen and (max-width: 415px)": {
+      marginRight: 5,
+    },
   },
   bulletpointText: {
     color: "#241F3A",
     fontWeight: 400,
     fontSize: 15,
-    width: "calc(100% - 90px)",
+    width: "100%",
     paddingTop: 4,
+    boxSizing: "border-box",
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+      width: "100%",
+    },
   },
   bottomRow: {
     width: "100%",
