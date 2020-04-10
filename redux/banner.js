@@ -14,14 +14,7 @@ export const BannerActions = {
   determineBanner: () => {
     return (dispatch) => {
       let pref = localStorage.getItem("researchhub.signup.banner");
-      if (pref === "true") {
-        return dispatch({
-          type: BannerConstants.DETERMINE_BANNER,
-          payload: {
-            showSignupBanner: true,
-          },
-        });
-      } else if (pref === "false") {
+      if (pref === "false") {
         return dispatch({
           type: BannerConstants.DETERMINE_BANNER,
           payload: {
