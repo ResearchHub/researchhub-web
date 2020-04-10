@@ -342,7 +342,7 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
     const fetchedPaper = store.getState().paper;
     await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
   }
-  return { isServer, hostname };
+  return { isServer, hostname, paper: fetchedPaper } };
 };
 
 const styles = StyleSheet.create({
