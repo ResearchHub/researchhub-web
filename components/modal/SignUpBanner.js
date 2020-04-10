@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -55,41 +56,48 @@ class SignUpBanner extends React.Component {
   render() {
     const { reveal } = this.state;
     return (
-      <div
-        onClick={this.closeBanner}
-        className={css(styles.overlay, reveal && styles.reveal)}
-      >
-        <div className={css(styles.modal)} onClick={(e) => e.stopPropagation()}>
-          <img
-            src={"/static/icons/close.png"}
-            className={css(styles.closeButton)}
+      <Fragment>
+        {reveal ? (
+          <div
             onClick={this.closeBanner}
-            draggable={false}
-          />
-          <RHLogo iconStyle={styles.logo} />
-          <div className={css(styles.title)}>Welcome to the community!</div>
-          <div className={css(styles.modalBody)}>
-            <div className={css(styles.subtitle)}>
-              Join today and earn 50 RHC
+            className={css(styles.overlay, reveal && styles.reveal)}
+          >
+            <div
+              className={css(styles.modal)}
+              onClick={(e) => e.stopPropagation()}
+            >
               <img
-                className={css(styles.coinIcon)}
-                src={"/static/icons/coin-filled.png"}
+                src={"/static/icons/close.png"}
+                className={css(styles.closeButton)}
+                onClick={this.closeBanner}
+                draggable={false}
               />
-            </div>
-            <div className={css(styles.googleButton)}>
-              <GoogleLoginButton
-                customLabel={"Sign up with Google"}
-                loginCallback={this.closeBanner}
-              />
-            </div>
-            {this.renderDivider()}
-            <div className={css(styles.loginContainer)}>
-              {"Already a member? "}
-              <GoogleLoginButton customLabel={"Log in"} hideButton={true} />
+              <RHLogo iconStyle={styles.logo} />
+              <div className={css(styles.title)}>Welcome to the community!</div>
+              <div className={css(styles.modalBody)}>
+                <div className={css(styles.subtitle)}>
+                  Join today and earn 50 RHC
+                  <img
+                    className={css(styles.coinIcon)}
+                    src={"/static/icons/coin-filled.png"}
+                  />
+                </div>
+                <div className={css(styles.googleButton)}>
+                  <GoogleLoginButton
+                    customLabel={"Sign up with Google"}
+                    loginCallback={this.closeBanner}
+                  />
+                </div>
+                {this.renderDivider()}
+                <div className={css(styles.loginContainer)}>
+                  {"Already a member? "}
+                  <GoogleLoginButton customLabel={"Log in"} hideButton={true} />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        ) : null}
+      </Fragment>
     );
   }
 }
