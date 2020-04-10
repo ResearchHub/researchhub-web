@@ -268,6 +268,7 @@ function PaperTab(props) {
           );
         }}
         customButtonStyle={styles.button}
+        customLabelStyle={styles.label}
         size={"med"}
         hideRipples={false}
         onClick={downloadPDF}
@@ -276,7 +277,7 @@ function PaperTab(props) {
   }
 
   return (
-    <ComponentWrapper>
+    <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
       <div className={css(styles.container)} ref={containerRef}>
         <div className={css(styles.headerContainer)} ref={paperPdfRef}>
           <div className={css(styles.titleContainer)}>
@@ -305,6 +306,16 @@ function PaperTab(props) {
 }
 
 var styles = StyleSheet.create({
+  componentWrapperStyles: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
   container: {
     width: "100%",
     display: "flex",
@@ -329,7 +340,6 @@ var styles = StyleSheet.create({
   },
   pdfDocument: {
     width: "100%",
-    // overflowX: 'hidden'
   },
   button: {
     whiteSpace: "nowrap",
@@ -337,6 +347,11 @@ var styles = StyleSheet.create({
       height: "unset",
       padding: 8,
       width: "unset",
+    },
+  },
+  label: {
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
     },
   },
   downloadButton: {
@@ -369,6 +384,9 @@ var styles = StyleSheet.create({
   },
   moderatorLabel: {
     fontSize: 14,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   moderatorButton: {
     width: "unset",
@@ -382,11 +400,6 @@ var styles = StyleSheet.create({
   iconStyle: {
     margin: 0,
     padding: 0,
-  },
-  componentWrapperStyles: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
   },
   dndContainer: {
     width: 600,
@@ -419,6 +432,7 @@ var styles = StyleSheet.create({
     marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
       fontSize: 16,
+      width: 280,
     },
   },
   emptyPlaceholderSubtitle: {
@@ -426,6 +440,10 @@ var styles = StyleSheet.create({
     color: colors.BLACK(0.8),
     textAlign: "center",
     marginBottom: 16,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+      width: 280,
+    },
   },
   emptyPlaceholderFont: {
     fontSize: 16,
@@ -469,7 +487,6 @@ var styles = StyleSheet.create({
     padding: "0px 30px",
     marginRight: 30,
     borderRadius: 4,
-    // paddingLeft: 0,
     ":hover": {
       textDecoration: "underline",
     },
@@ -498,7 +515,9 @@ var styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 22,
     fontWeight: 500,
-    width: 300,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 20,
+    },
   },
   showPaperButton: {
     marginTop: 15,

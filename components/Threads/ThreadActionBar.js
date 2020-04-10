@@ -294,6 +294,9 @@ const styles = StyleSheet.create({
   },
   shareIcon: {
     fontSize: 13,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   active: {
     color: colors.BLUE(0.8),
