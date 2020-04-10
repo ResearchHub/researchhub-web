@@ -23,7 +23,8 @@ const PaperTabBar = (props) => {
     if (!offsetElement) {
       return 100000000;
     }
-    return offsetElement.offsetTop + offsetElement.offsetHeight + offset;
+    let value = offsetElement.offsetTop + offsetElement.offsetHeight + offset;
+    return value;
   };
 
   function scrollListener() {
@@ -32,7 +33,6 @@ const PaperTabBar = (props) => {
       return;
     }
 
-    // let navbarHeight = 157.5 + 20;
     let navbarHeight = props.paperTabsRef.current
       ? props.paperTabsRef.current.clientHeight + 80
       : 139;
@@ -48,14 +48,14 @@ const PaperTabBar = (props) => {
     ) {
       setSelectedTab("cited by");
     } else if (
-      window.scrollY >= calculateOffset("descriptions-tab", -navbarHeight)
+      window.scrollY >= calculateOffset("summary-tab", -navbarHeight)
     ) {
       setSelectedTab("discussions");
       if (window.outerWidth < 667) {
         let paperNavigation = document.getElementById("paper-navigation");
         paperNavigation.scroll({
           left: paperNavigation.offsetWidth,
-          // behavior: 'smooth',
+          behavior: "smooth",
         });
       }
     } else if (
@@ -66,7 +66,7 @@ const PaperTabBar = (props) => {
         let paperNavigation = document.getElementById("paper-navigation");
         paperNavigation.scroll({
           left: 0,
-          // behavior: 'smooth',
+          behavior: "smooth",
         });
       }
     } else {

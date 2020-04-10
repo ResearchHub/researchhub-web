@@ -24,6 +24,7 @@ const GoogleLoginButton = (props) => {
         showLoginFailureMessage();
       } else {
         getUser().then((userAction) => {
+          props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
           if (!userAction.user.has_seen_orcid_connect_modal) {
             props.openOrcidConnectModal(true);
