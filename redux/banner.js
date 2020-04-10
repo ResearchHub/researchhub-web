@@ -13,18 +13,37 @@ export const BannerConstants = {
 export const BannerActions = {
   determineBanner: () => {
     return (dispatch) => {
-      let coinFlip = Math.random() >= 0.5; // 50% chance
-
-      return dispatch({
-        type: BannerConstants.DETERMINE_BANNER,
-        payload: {
-          showSignupBanner: coinFlip,
-        },
-      });
+      let pref = localStorage.getItem("researchhub.signup.banner");
+      if (pref === "true") {
+        return dispatch({
+          type: BannerConstants.DETERMINE_BANNER,
+          payload: {
+            showSignupBanner: true,
+          },
+        });
+      } else if (pref === "false") {
+        return dispatch({
+          type: BannerConstants.DETERMINE_BANNER,
+          payload: {
+            showSignupBanner: false,
+          },
+        });
+      } else if (pref === null || pref === undefined) {
+        let coinFlip = Math.random() >= 0.5; // 50% chance
+        localStorage.setItem("researchhub.signup.banner", coinFlip);
+        return dispatch({
+          type: BannerConstants.DETERMINE_BANNER,
+          payload: {
+            showSignupBanner: coinFlip,
+          },
+        });
+      }
     };
   },
   removeBanner: () => {
     return (dispatch) => {
+      localStorage.setItem("researchhub.signup.banner", false);
+
       return dispatch({
         type: BannerConstants.REMOVE_BANNER,
         payload: {
