@@ -26,7 +26,6 @@ import Search from "./Search";
 import TransactionModal from "../components/modal/TransactionModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
 import Notification from "./Notifications/Notification";
-import SignUpModal from "~/components/modal/SignUpModal";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -39,14 +38,7 @@ import OrcidConnectModal from "./modal/OrcidConnectModal";
 const Navbar = (props) => {
   const dispatch = useDispatch();
 
-  const {
-    isLoggedIn,
-    user,
-    getUser,
-    authChecked,
-    openUploadPaperModal,
-    signout,
-  } = props;
+  const { isLoggedIn, user, authChecked, signout } = props;
 
   let dropdown;
   let avatar;
@@ -346,7 +338,6 @@ const Navbar = (props) => {
         <TransactionModal />
         <FirstVoteModal />
         <OrcidConnectModal />
-        <SignUpModal />
         <div className={css(styles.logoContainer)} onClick={navigateHome}>
           <RHLogo iconStyle={styles.logo} />
         </div>
