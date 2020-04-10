@@ -51,7 +51,7 @@ class PaperUploadInfo extends React.Component {
         paper_title: "",
         title: "",
         doi: null,
-        tagline: null,
+        abstract: null,
         published: {
           year: null,
           month: null,
@@ -147,7 +147,7 @@ class PaperUploadInfo extends React.Component {
         : title && title;
     }
     if (abstract) {
-      form.tagline = stripHtml(abstract.slice(0, 255));
+      form.abstract = abstract;
     }
     if (DOI) {
       form.doi = DOI;
@@ -181,14 +181,14 @@ class PaperUploadInfo extends React.Component {
           publication_type,
           title,
           tagline,
+          abstract,
           paper_title,
         } = res;
-
         let form = JSON.parse(JSON.stringify(this.state.form));
         form.doi = doi;
         form.title = title;
         form.paper_title = paper_title;
-        form.tagline = tagline;
+        form.abstract = abstract;
         form.hubs = hubs.map((hub) => {
           return {
             id: hub.id,
@@ -812,63 +812,19 @@ class PaperUploadInfo extends React.Component {
                   onChange={this.handleInputChange}
                 />
               </span>
+              <span className={css(styles.tagline)}>
+                <FormTextArea
+                  label={"Abstract"}
+                  placeholder="Enter the paper"
+                  containerStyle={styles.taglineContainer}
+                  labelStyle={styles.labelStyle}
+                  value={form.abstract}
+                  id={"abstract"}
+                  onChange={this.handleInputChange}
+                />
+              </span>
             </div>
             <div className={css(styles.section)}></div>
-          </span>
-        );
-      case 2:
-        return (
-          <span>
-            {this.renderHeader("Summary", "Summary Guideline")}
-            <div className={css(styles.draftEditor)}>
-              <TextEditor
-                canEdit={true}
-                readOnly={false}
-                onChange={this.handleSummaryChange}
-                hideButton={true}
-                initialValue={
-                  Object.keys(this.state.summary).length > 0
-                    ? this.state.summary
-                    : null
-                }
-              />
-            </div>
-          </span>
-        );
-      case 3:
-        return (
-          <span>
-            {this.renderHeader("Discussion")}
-            <div className={css(styles.section)}>
-              <FormInput
-                label={"Title"}
-                placeholder="Title of discussion"
-                containerStyle={styles.container}
-                labelStyle={styles.labelStyle}
-                value={discussion.title}
-                id={"title"}
-                onChange={this.handleDiscussionInputChange}
-              />
-              <div className={css(styles.discussionInputWrapper)}>
-                <div className={css(styles.label, styles.labelStyle)}>
-                  Question
-                </div>
-                <div className={css(styles.discussionTextEditor)}>
-                  <TextEditor
-                    canEdit={true}
-                    readOnly={false}
-                    onChange={this.handleDiscussionTextEditor}
-                    hideButton={true}
-                    placeholder={"Leave a question or a comment"}
-                    initialValue={
-                      Object.keys(this.state.discussion.question).length > 0
-                        ? this.state.discussion.question
-                        : discussionScaffoldInitialValue
-                    }
-                  />
-                </div>
-              </div>
-            </div>
           </span>
         );
     }
