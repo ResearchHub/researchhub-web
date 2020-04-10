@@ -433,7 +433,7 @@ const AuthorPage = (props) => {
     <div className={css(styles.container)}>
       <Head
         title={`${authorName} on ResearchHub`}
-        description={`${authorName} on ResearchHub`}
+        description={`View contributions by ${authorName} on ResearchHub`}
       />
       <ComponentWrapper>
         <div className={css(styles.profileContainer)}>
