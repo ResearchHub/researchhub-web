@@ -77,7 +77,10 @@ class SignUpBanner extends React.Component {
               />
             </div>
             <div className={css(styles.googleButton)}>
-              <GoogleLoginButton customLabel={"Sign up with Google"} />
+              <GoogleLoginButton
+                customLabel={"Sign up with Google"}
+                loginCallback={this.closeBanner}
+              />
             </div>
             {this.renderDivider()}
             <div className={css(styles.loginContainer)}>
@@ -124,7 +127,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 5,
     boxSizing: "border-box",
-    width: 400,
+    width: "100%",
+    maxWidth: 600,
     padding: 25,
   },
   title: {

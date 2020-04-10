@@ -182,14 +182,15 @@ class SummaryTab extends React.Component {
 
     return (
       <ComponentWrapper>
-        <a name="takeaways" />
-        <div
-          className={css(styles.bulletsContainer)}
-          ref={this.props.keyTakeawayRef}
-          id="takeaways-tab"
-        >
-          <BulletsContainer paperId={this.props.paperId} />
-        </div>
+        <a name="takeaways">
+          <div
+            className={css(styles.bulletsContainer)}
+            ref={this.props.keyTakeawayRef}
+            id="takeaways-tab"
+          >
+            <BulletsContainer paperId={this.props.paperId} />
+          </div>
+        </a>
         <div>{this.state.errorMessage}</div>
         <a name="summary">
           {(paper.summary && paper.summary.summary) ||
@@ -197,7 +198,7 @@ class SummaryTab extends React.Component {
             <div
               className={css(styles.container)}
               ref={this.props.descriptionRef}
-              id="descriptions-tab"
+              id="summary-tab"
             >
               {this.state.readOnly ? (
                 <div className={css(styles.sectionHeader)}>
@@ -227,10 +228,7 @@ class SummaryTab extends React.Component {
                   </div>
                 </div>
               ) : (
-                <div
-                  className={css(styles.headerContainer)}
-                  id="descriptions-tab"
-                >
+                <div className={css(styles.headerContainer)} id="summary-tab">
                   <div className={css(styles.header)}>Editing Summary</div>
                   <div className={css(styles.guidelines)}>
                     Please review our{" "}
@@ -289,7 +287,7 @@ class SummaryTab extends React.Component {
                 styles.noSummaryContainer,
                 transition && styles.transition
               )}
-              id="descriptions-tab"
+              id="summary-tab"
               ref={!this.state.summaryExists && this.props.descriptionRef}
             >
               {this.state.addSummary ? (
