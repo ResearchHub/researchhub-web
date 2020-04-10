@@ -2,7 +2,7 @@ import App from "next/app";
 import Router from "next/router";
 import React from "react";
 import withRedux from "next-redux-wrapper";
-import { Provider, connect } from "react-redux";
+import { Provider } from "react-redux";
 import { configureStore } from "~/redux/configureStore";
 import "isomorphic-unfetch";
 import "../components/Paper/progressbar.css";
@@ -19,7 +19,6 @@ import "./stylesheets/App.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import Footer from "./footer";
 
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
@@ -53,8 +52,6 @@ class MyApp extends App {
     Router.events.on("routeChangeError", () => {
       props.store.dispatch(MessageActions.showMessage({ show: false }));
     });
-
-    let oldFetch = fetch;
   }
 
   render() {

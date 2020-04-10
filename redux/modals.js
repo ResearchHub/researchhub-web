@@ -18,6 +18,7 @@ export const ModalConstants = {
   FIRST_VOTE_MODAL_TOGGLE: "@@MODAL/FIRST_VOTE_MODAL_TOGGLE",
   ORCID_CONNECT_MODAL_TOGGLE: "@@modal/ORCID_CONNECT_MODAL_TOGGLE",
   MANAGE_BULLET_POINTS_MODAL_TOGGLE: "@@modal/MANAGE_BULLET_POINTS_TOGGLE",
+  SIGN_UP_MODAL_TOGGLE: "@@modal/SIGN_UP_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -158,6 +159,16 @@ export const ModalActions = {
       }
     };
   },
+  openSignUpModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.SIGN_UP_MODAL_TOGGLE,
+        payload: {
+          openSignUpModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -180,6 +191,7 @@ const defaultModalState = {
     suggestedPapers: [],
   },
   openManageBulletPointsModal: false,
+  openSignUpModal: false,
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -195,6 +207,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.FIRST_VOTE_MODAL_TOGGLE:
     case ModalConstants.ORCID_CONNECT_MODAL_TOGGLE:
     case ModalConstants.MANAGE_BULLET_POINTS_TOGGLE:
+    case ModalConstants.SIGN_UP_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,

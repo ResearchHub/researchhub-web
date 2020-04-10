@@ -40,14 +40,6 @@ class AddAuthorModal extends React.Component {
     window.addEventListener("resize", this.updateDimensions);
   }
 
-  componentDidUpdate(prevProps) {
-    // if (prevProps !== this.props) {
-    //   document.body.scrollTop = 0; // For Safari
-    //   document.documentElement.scrollTop = 0;
-    //   this.updateDimensions();
-    // }
-  }
-
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
   }
