@@ -25,6 +25,7 @@ export const paperPost = ({
   url,
   type,
   tagline,
+  abstract,
   paper_title,
 }) => {
   let formData = new FormData();
@@ -43,6 +44,7 @@ export const paperPost = ({
   url && formData.append("url", url);
   type && formData.append("publication_type", type);
   tagline && formData.append("tagline", tagline);
+  abstract && formData.append("abstract", abstract);
   paper_title && formData.append("paper_title", paper_title);
   return formData;
 };
