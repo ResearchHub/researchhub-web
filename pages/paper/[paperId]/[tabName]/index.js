@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
     top: 80,
     position: "sticky",
     backgroundColor: "#FFF",
-    zIndex: 5,
+    zIndex: 3,
   },
   scrollPadding: {
     paddingTop: 450,
