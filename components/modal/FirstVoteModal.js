@@ -106,8 +106,8 @@ const FirstVoteModal = (props) => {
           height={469}
         />
         <div className={css(styles.text)}>
-          For the first week, all major actions you take on the site will help
-          you earn ResearchCoin (up to 100 RHC). After the week is over, you
+          For the first month, all major actions you take on the site will help
+          you earn ResearchCoin (up to 200 RHC). After the month is over, you
           will still earn coins on major actions, but not every single one.
         </div>
         <div className={css(styles.text)}>

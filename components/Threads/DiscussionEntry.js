@@ -540,19 +540,13 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: "100%",
     alignItems: "flex-start",
-    // marginBottom: 15,
     overflow: "visible",
     borderRadius: 3,
     position: "relative",
     boxSizing: "border-box",
     backgroundColor: "#FFF",
-    // padding: 10,
     paddingRight: 0,
     cursor: "default",
-    // borderBottom: "1px solid #E8E8F2",
-    // ":hover": {
-    //   borderColor: "rgb(179, 179, 179)",
-    // },
   },
   topbar: {
     width: "100%",
@@ -570,6 +564,12 @@ const styles = StyleSheet.create({
   contentText: {
     fontSize: 16,
     padding: 0,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   metaData: {
     width: "calc(100% - 48px)",
@@ -583,6 +583,11 @@ const styles = StyleSheet.create({
     padding: "0px 10px 10px 15px",
     ":hover": {
       backgroundColor: "#FAFAFA",
+    },
+    "@media only screen and (max-width: 767px)": {
+      paddingLeft: 5,
+      paddingRight: 5,
+      paddingBottom: 5,
     },
   },
   bottom: {

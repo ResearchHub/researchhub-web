@@ -306,8 +306,11 @@ const styles = StyleSheet.create({
     color: "#918f9b",
     fontSize: 14,
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 767px)": {
       fontSize: 12,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 10,
     },
   },
   smallerTimestamp: {
@@ -316,11 +319,20 @@ const styles = StyleSheet.create({
   name: {
     marginLeft: 8,
     color: colors.BLACK(1),
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   timestampDivider: {
     fontSize: 18,
     padding: "0px 10px",
     color: colors.GREY(1),
+    "@media only screen and (max-width: 767px)": {
+      padding: "0px 8px",
+    },
   },
   hideContainer: {
     display: "flex",
@@ -341,10 +353,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginLeft: 14,
     color: "#918f9b",
+    "@media only screen and (max-width: 415px)": {
+      marginLeft: 5,
+      fontSize: 9,
+    },
   },
   icon: {
     color: "#918f9b",
     fontSize: 13,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 9,
+    },
   },
   active: {
     color: "#000",

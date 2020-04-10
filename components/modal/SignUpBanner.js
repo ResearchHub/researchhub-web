@@ -58,10 +58,7 @@ class SignUpBanner extends React.Component {
     return (
       <Fragment>
         {reveal ? (
-          <div
-            onClick={this.closeBanner}
-            className={css(styles.overlay, reveal && styles.reveal)}
-          >
+          <div onClick={this.closeBanner} className={css(styles.overlay)}>
             <div
               className={css(styles.modal)}
               onClick={(e) => e.stopPropagation()}
@@ -76,7 +73,7 @@ class SignUpBanner extends React.Component {
               <div className={css(styles.title)}>Welcome to the community!</div>
               <div className={css(styles.modalBody)}>
                 <div className={css(styles.subtitle)}>
-                  Join today and earn 50 RHC
+                  Join today and earn 25 RHC
                   <img
                     className={css(styles.coinIcon)}
                     src={"/static/icons/coin-filled.png"}
@@ -91,7 +88,11 @@ class SignUpBanner extends React.Component {
                 {this.renderDivider()}
                 <div className={css(styles.loginContainer)}>
                   {"Already a member? "}
-                  <GoogleLoginButton customLabel={"Log in"} hideButton={true} />
+                  <GoogleLoginButton
+                    customLabel={"Log in"}
+                    hideButton={true}
+                    loginCallback={this.closeBanner}
+                  />
                 </div>
               </div>
             </div>
@@ -118,10 +119,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    opacity: 0,
-    // transition: "all ease-in-out 0.2s",
-  },
-  reveal: {
     opacity: 1,
   },
   modal: {

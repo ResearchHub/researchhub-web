@@ -319,6 +319,9 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: colors.BLACK(),
     textAlign: "left",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 20,
+    },
   },
   bulletAddIcon: {
     fontSize: 20,
@@ -411,11 +414,18 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 20,
     fontWeight: 500,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 16,
+    },
   },
   subText: {
     fontSize: 16,
     color: "rgba(36, 31, 58, 0.8)",
     marginTop: 5,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+      textAlign: "center",
+    },
   },
 });
 
