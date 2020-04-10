@@ -2,13 +2,6 @@ import React, { Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 
-import {
-  AuthorSearchResult,
-  UniversitySearchResult,
-  HubSearchResult,
-} from "./SearchResult";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
-import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import SearchEntry from "./SearchEntry";
 
 // Config

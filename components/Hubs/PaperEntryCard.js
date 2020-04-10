@@ -59,12 +59,9 @@ const PaperEntryCard = ({
 
   let selected = null;
   let vote_type = 0;
-  const [hovered, toggleHover] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [lightbox, toggleLightbox] = useState(false);
-  const [bullets, setBullets] = useState([]);
   const [slideIndex, setSlideIndex] = useState(1);
-  const [previews, setPreviews] = useState(
+  const [previews] = useState(
     configurePreview([
       first_preview && first_preview,
       first_figure && first_figure,
@@ -172,7 +169,7 @@ const PaperEntryCard = ({
   };
 
   const renderBullet = () => {
-    if (bullet_points.length > 0) {
+    if (bullet_points && bullet_points.length > 0) {
       return (
         <div className={css(styles.summary, styles.text)}>
           <ul
