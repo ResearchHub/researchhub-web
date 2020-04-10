@@ -17,11 +17,13 @@ import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
+import SignUpBanner from "~/components/modal/SignUpBanner";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
+import { ModalActions } from "~/redux/modals";
 import VoteActions from "~/redux/vote";
 
 // Config
@@ -50,6 +52,7 @@ const Paper = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper.userVote.voteType)
   );
+
   const [steps, setSteps] = useState([
     {
       target: ".first-step",
@@ -76,11 +79,16 @@ const Paper = (props) => {
 
   const paperTitle = getNestedValue(paper, ["title"], "");
   const paperCardRef = useRef(null);
+  const paperTabsRef = useRef(null);
   const keyTakeawayRef = useRef(null);
   const descriptionRef = useRef(null);
   const discussionRef = useRef(null);
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
+
+  useEffect(() => {
+    window.scroll({ top: 0, behavior: "auto" });
+  }, []);
 
   async function refetchPaper() {
     setLoadingPaper(true);
@@ -94,8 +102,9 @@ const Paper = (props) => {
     setSelectedVoteType(getVoteType(refetchedPaper.userVote));
     setDiscussionThreads(getDiscussionThreads(refetchedPaper));
     setFlag(refetchedPaper.user_flag !== null);
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0;
+    // document.body.scroll = 0; // For Safari
+    // document.documentElement.scrollTop = 0;
+    window.scroll({ top: 0, behavior: "auto" });
     showMessage({ show: false });
     if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
       props.setUploadingPaper(false);
@@ -206,33 +215,25 @@ const Paper = (props) => {
               setSticky={setSticky}
             />
           </ComponentWrapper>
-          <div className={css(styles.stickyComponent)} ref={paperCardRef}>
-            {false ? (
-              <ComponentWrapper>
-                <ReactPlaceholder
-                  ready={false}
-                  showLoadingAnimation
-                  customPlaceholder={<PaperTabBarPlaceholder color="#efefef" />}
-                />
-              </ComponentWrapper>
-            ) : (
-              <PaperTabBar
-                baseUrl={paperId}
-                selectedTab={tabName}
-                paperCardRef={paperCardRef}
-                keyTakeawayRef={keyTakeawayRef}
-                descriptionRef={descriptionRef}
-                discussionRef={discussionRef}
-                paperPdfRef={paperPdfRef}
-                citationRef={citationRef}
-                sticky={sticky}
-                setSticky={setSticky}
-                scrollView={scrollView}
-                tabName={tabName}
-              />
-            )}
+          <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
+            <PaperTabBar
+              baseUrl={paperId}
+              selectedTab={tabName}
+              paperCardRef={paperCardRef}
+              keyTakeawayRef={keyTakeawayRef}
+              descriptionRef={descriptionRef}
+              discussionRef={discussionRef}
+              paperPdfRef={paperPdfRef}
+              citationRef={citationRef}
+              paperTabsRef={paperTabsRef}
+              sticky={sticky}
+              setSticky={setSticky}
+              scrollView={scrollView}
+              tabName={tabName}
+            />
           </div>
           <div className={css(styles.contentContainer)}>
+            <SignUpBanner />
             <SummaryTab
               paperId={paperId}
               paper={paper}
@@ -343,6 +344,7 @@ const styles = StyleSheet.create({
     margin: "auto",
     backgroundColor: "#FAFAFA",
     minHeight: "100vh",
+    position: "relative",
     "@media only screen and (max-width: 415px)": {
       paddingTop: 20,
     },

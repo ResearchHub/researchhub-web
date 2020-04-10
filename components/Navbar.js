@@ -38,14 +38,7 @@ import OrcidConnectModal from "./modal/OrcidConnectModal";
 const Navbar = (props) => {
   const dispatch = useDispatch();
 
-  const {
-    isLoggedIn,
-    user,
-    getUser,
-    authChecked,
-    openUploadPaperModal,
-    signout,
-  } = props;
+  const { isLoggedIn, user, authChecked, signout } = props;
 
   let dropdown;
   let avatar;
@@ -760,6 +753,7 @@ const mapDispatchToProps = {
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   openTransactionModal: ModalActions.openTransactionModal,
+  openSignUpModal: ModalActions.openSignUpModal,
 };
 
 export default connect(

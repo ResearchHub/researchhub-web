@@ -69,6 +69,11 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    ANALYTICS_WEBSITEVIEWS: ({}) => {
+      let url = BASE_URL + "analytics/websiteviews/";
+
+      return url;
+    },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     ORCID_CONNECT: BASE_URL + "auth/orcid/connect/",
     SIGNOUT: BASE_URL + "auth/logout/",

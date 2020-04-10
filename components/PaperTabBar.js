@@ -18,12 +18,34 @@ const PaperTabBar = (props) => {
     return () => window.removeEventListener("scroll", scrollListener);
   }, [scrollListener]);
 
+  const getCoords = (elem) => {
+    // crossbrowser version
+    var box = elem.getBoundingClientRect();
+
+    var body = document.body;
+    var docEl = document.documentElement;
+
+    var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+    var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+
+    var clientTop = docEl.clientTop || body.clientTop || 0;
+    var clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+    var top = box.top + scrollTop - clientTop;
+    var left = box.left + scrollLeft - clientLeft;
+
+    return { top: Math.round(top), left: Math.round(left) };
+  };
+
   const calculateOffset = (id, offset) => {
     let offsetElement = document.getElementById(id);
     if (!offsetElement) {
       return 100000000;
     }
-    return offsetElement.offsetTop + offsetElement.offsetHeight + offset;
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    let value =
+      getCoords(offsetElement).top + offsetElement.offsetHeight + offset;
+    return value;
   };
 
   function scrollListener() {
@@ -32,9 +54,8 @@ const PaperTabBar = (props) => {
       return;
     }
 
-    // let navbarHeight = 157.5 + 20;
-    let navbarHeight = props.paperCardRef.current
-      ? props.paperCardRef.current.clientHeight + 80
+    let navbarHeight = props.paperTabsRef.current
+      ? props.paperTabsRef.current.clientHeight + 80
       : 139;
 
     if (window.scrollY < 200) {
@@ -48,14 +69,14 @@ const PaperTabBar = (props) => {
     ) {
       setSelectedTab("cited by");
     } else if (
-      window.scrollY >= calculateOffset("descriptions-tab", -navbarHeight)
+      window.scrollY >= calculateOffset("summary-tab", -navbarHeight)
     ) {
       setSelectedTab("discussions");
       if (window.outerWidth < 667) {
         let paperNavigation = document.getElementById("paper-navigation");
         paperNavigation.scroll({
           left: paperNavigation.offsetWidth,
-          // behavior: 'smooth',
+          behavior: "smooth",
         });
       }
     } else if (
@@ -66,7 +87,7 @@ const PaperTabBar = (props) => {
         let paperNavigation = document.getElementById("paper-navigation");
         paperNavigation.scroll({
           left: 0,
-          // behavior: 'smooth',
+          behavior: "smooth",
         });
       }
     } else {
@@ -89,8 +110,8 @@ const PaperTabBar = (props) => {
   }
 
   function scrollToPage(label) {
-    // setSelectedTab(label);
-    if (label === "main" || label === "summary") {
+    setSelectedTab(label);
+    if (label === "main") {
       window.scrollTo({
         behavior: "smooth",
         top: 0,
