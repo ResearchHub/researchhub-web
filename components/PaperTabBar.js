@@ -18,12 +18,33 @@ const PaperTabBar = (props) => {
     return () => window.removeEventListener("scroll", scrollListener);
   }, [scrollListener]);
 
+  const getCoords = (elem) => {
+    // crossbrowser version
+    var box = elem.getBoundingClientRect();
+
+    var body = document.body;
+    var docEl = document.documentElement;
+
+    var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+    var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+
+    var clientTop = docEl.clientTop || body.clientTop || 0;
+    var clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+    var top = box.top + scrollTop - clientTop;
+    var left = box.left + scrollLeft - clientLeft;
+
+    return { top: Math.round(top), left: Math.round(left) };
+  };
+
   const calculateOffset = (id, offset) => {
     let offsetElement = document.getElementById(id);
     if (!offsetElement) {
       return 100000000;
     }
-    let value = offsetElement.offsetTop + offsetElement.offsetHeight + offset;
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    let value =
+      getCoords(offsetElement).top + offsetElement.offsetHeight + offset;
     return value;
   };
 
@@ -89,8 +110,8 @@ const PaperTabBar = (props) => {
   }
 
   function scrollToPage(label) {
-    // setSelectedTab(label);
-    if (label === "main" || label === "summary") {
+    setSelectedTab(label);
+    if (label === "main") {
       window.scrollTo({
         behavior: "smooth",
         top: 0,
