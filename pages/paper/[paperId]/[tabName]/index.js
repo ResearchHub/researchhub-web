@@ -293,7 +293,7 @@ const Paper = (props) => {
               </ComponentWrapper>
             </a>
             <a name="paper">
-              <div id="paper-tab">
+              <div id="paper-tab" className={css(styles.paperTabContainer)}>
                 <PaperTab
                   paperId={paperId}
                   paper={paper}
@@ -621,6 +621,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  paperTabContainer: {
+    // position: 'sticky',
+    // bottom: 200,
   },
 });
 
