@@ -139,7 +139,12 @@ const PaperEntryCard = ({
   function navigateToPage(e) {
     e.preventDefault();
     e.stopPropagation();
-    Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
+
+    if (e.metaKey || e.ctrlKey) {
+      window.open(`/paper/${id}/summary`, "_blank");
+    } else {
+      Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
+    }
   }
 
   function formatDiscussionCount() {
@@ -290,85 +295,90 @@ const PaperEntryCard = ({
           />
         </div>
       )}
-      <a className={css(styles.link)} href={`/paper/${id}/summary`}>
-        <div className={css(styles.column)}>
-          <span
-            className={css(styles.voting)}
-            onClick={(e) => e.stopPropagation()}
+      <div className={css(styles.column)}>
+        <span
+          className={css(styles.voting)}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <VoteWidget
+            score={score}
+            onUpvote={onUpvote}
+            onDownvote={onDownvote}
+            selected={selected}
+            searchResult={searchResult}
+            isPaper={true}
+            styles={styles.voteWidget}
+          />
+        </span>
+      </div>
+      <div className={css(styles.container)}>
+        <div className={css(styles.rowContainer)}>
+          <div
+            className={css(
+              styles.column,
+              styles.metaData,
+              previews.length > 0 && styles.metaDataPreview
+            )}
           >
-            <VoteWidget
-              score={score}
-              onUpvote={onUpvote}
-              onDownvote={onDownvote}
-              selected={selected}
-              searchResult={searchResult}
-              isPaper={true}
-              styles={styles.voteWidget}
-            />
-          </span>
-        </div>
-        <div className={css(styles.container)}>
-          <div className={css(styles.rowContainer)}>
+            <Link
+              href={"/paper/[paperId]/[tabName]"}
+              as={`/paper/${id}/summary`}
+            >
+              <a className={css(styles.link)}>
+                <div className={css(styles.title, styles.text)}>
+                  {title && title}
+                  {paper_title !== title && paper_title && (
+                    <div
+                      className={css(styles.paperTitle, styles.text)}
+                      id={"clamp1"}
+                    >
+                      From Paper: {paper_title && paper_title}
+                    </div>
+                  )}
+                </div>
+              </a>
+            </Link>
+            {renderBullet()}
             <div
               className={css(
-                styles.column,
-                styles.metaData,
-                previews.length > 0 && styles.metaDataPreview
+                styles.publishContainer,
+                !paper_publish_date && styles.hide
               )}
             >
-              <div className={css(styles.title, styles.text)}>
-                {title && title}
-                {paper_title !== title && paper_title && (
-                  <div
-                    className={css(styles.paperTitle, styles.text)}
-                    id={"clamp1"}
-                  >
-                    From Paper: {paper_title && paper_title}
-                  </div>
-                )}
-              </div>
-              {renderBullet()}
-              <div
+              <span className={css(styles.publishDate, styles.text)}>
+                {paper_publish_date && convertDate()}
+              </span>
+              <span
                 className={css(
-                  styles.publishContainer,
-                  !paper_publish_date && styles.hide
+                  styles.avatars,
+                  authors.length < 1 && styles.hide
                 )}
               >
-                <span className={css(styles.publishDate, styles.text)}>
-                  {paper_publish_date && convertDate()}
-                </span>
-                <span
-                  className={css(
-                    styles.avatars,
-                    authors.length < 1 && styles.hide
-                  )}
-                >
-                  {authors.length > 0 &&
-                    authors.map((author) => (
-                      <div
+                {authors.length > 0 &&
+                  authors.map((author) => (
+                    <div
+                      key={`author_${author.id}_${id}`}
+                      className={css(styles.avatar)}
+                    >
+                      <AuthorAvatar
                         key={`author_${author.id}_${id}`}
-                        className={css(styles.avatar)}
-                      >
-                        <AuthorAvatar
-                          key={`author_${author.id}_${id}`}
-                          size={25}
-                          textSizeRatio={2.5}
-                          author={author}
-                        />
-                      </div>
-                    ))}
-                </span>
-              </div>
-              {mobileView && renderHubTags()}
+                        size={25}
+                        textSizeRatio={2.5}
+                        author={author}
+                      />
+                    </div>
+                  ))}
+              </span>
             </div>
-            {!mobileView && renderPreview()}
+            {mobileView && renderHubTags()}
           </div>
-          <div className={css(styles.bottomBar)}>
-            <div className={css(styles.row)}>{renderDiscussionCount()}</div>
-            {!mobileView && renderHubTags()}
-          </div>
+          {!mobileView && renderPreview()}
         </div>
-      </a>
+        <div className={css(styles.bottomBar)}>
+          <div className={css(styles.row)}>{renderDiscussionCount()}</div>
+          {!mobileView && renderHubTags()}
+        </div>
+      </div>
     </Ripples>
   );
 };
