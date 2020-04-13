@@ -291,10 +291,16 @@ const styles = StyleSheet.create({
   },
   pdfPreview: {
     position: "relative",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      height: 400,
+    },
   },
   navigation: {
     position: "absolute",
-    width: "100%",
+    width: "95%",
     left: "50%",
     top: "50%",
     transform: "translate(-50%, -50%)",
@@ -303,6 +309,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   navigationButton: {
-    fontSize: 18,
+    fontSize: 20,
   },
 });
