@@ -366,7 +366,7 @@ class RichTextEditor extends React.Component {
   renderLinkButton = (type, icon) => {
     const isActive = this.hasMark(type);
     return (
-      <span>
+      <span style={{ display: "flex" }}>
         <Button
           active={isActive}
           smallToolBar={this.props.smallToolBar && this.props.smallToolBar}
@@ -469,7 +469,7 @@ class RichTextEditor extends React.Component {
 
   renderVideoButton = (type, icon) => {
     return (
-      <span>
+      <span style={{ display: "flex" }}>
         <Button
           smallToolBar={this.props.smallToolBar && this.props.smallToolBar}
           onMouseDown={(event) => {
@@ -488,7 +488,7 @@ class RichTextEditor extends React.Component {
 
   renderImageButton = (type, icon) => {
     return (
-      <span>
+      <span style={{ display: "flex" }}>
         <Button
           smallToolBar={this.props.smallToolBar && this.props.smallToolBar}
           onMouseDown={(event) => {
@@ -1041,7 +1041,6 @@ const styles = StyleSheet.create({
   summaryEditor: {
     width: "100%",
     fontFamily: "Roboto",
-    // color: colors.BLACK(),
     color: "#241F3A",
     lineHeight: 1.2,
   },
@@ -1056,14 +1055,15 @@ const styles = StyleSheet.create({
   editSection: {
     padding: 16,
     minHeight: 122,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   comment: {
     padding: 16,
-
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 0,
     },
-    // minHeight: 200,
   },
   button: {
     width: 180,
