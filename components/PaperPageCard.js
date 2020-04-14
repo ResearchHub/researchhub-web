@@ -291,7 +291,7 @@ class PaperPageCard extends React.Component {
             wrapAround={true}
             enableKeyboardControls={true}
           >
-            {this.state.previews.map((preview) => {
+            {this.state.previews.slice(0, 10).map((preview) => {
               return (
                 <img
                   src={preview.file}
@@ -520,6 +520,7 @@ const styles = StyleSheet.create({
 
     "@media only screen and (max-width: 767px)": {
       paddingTop: 20,
+      paddingBottom: 0,
     },
   },
   previewContainer: {
@@ -592,10 +593,10 @@ const styles = StyleSheet.create({
       fontSize: 28,
     },
     "@media only screen and (max-width: 415px)": {
-      fontSize: 25,
+      fontSize: 22,
     },
     "@media only screen and (max-width: 321px)": {
-      fontSize: 22,
+      fontSize: 20,
     },
   },
   titleHeader: {
@@ -606,6 +607,9 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     fontSize: 16,
     marginTop: 10,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   tagline: {
     color: "#241F3A",
@@ -613,6 +617,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 10,
     whiteSpace: "pre-wrap",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   dateAuthorContainer: {
     display: "flex",
@@ -625,6 +632,9 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     marginRight: 60,
     display: "flex",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   authorContainer: {
     marginRight: 5,
@@ -640,12 +650,18 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     width: "100%",
     display: "flex",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   label: {
     fontSize: 16,
     fontWeight: 500,
     color: "#241F3A",
     marginRight: 30,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   doi: {
     marginRight: 74,

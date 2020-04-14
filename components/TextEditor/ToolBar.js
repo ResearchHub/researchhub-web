@@ -40,7 +40,7 @@ export const ToolBar = (props) => {
         props.smallToolBar && styles.smallToolBar
       )}
     >
-      <div>{props.children}</div>
+      <div className={css(styles.iconRow)}>{props.children}</div>
       <div className={css(styles.buttonRow)}>
         {!props.hideButton && !props.hideCancelButton && (
           <FormButton
@@ -110,10 +110,17 @@ const styles = StyleSheet.create({
       flexDirection: "column",
     },
   },
+  iconRow: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
   smallToolBar: {
     fontSize: 11,
     display: "flex",
     flexWrap: "flex-wrap",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 9,
+    },
   },
   smallToolBarButton: {
     marginLeft: 10,
@@ -121,6 +128,10 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLACK(1),
       backgroundColor: "#FAFAFA",
+    },
+    "@media only screen and (max-width: 415px)": {
+      margin: 5,
+      marginLeft: 0,
     },
   },
   submit: {
