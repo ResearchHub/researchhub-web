@@ -140,6 +140,9 @@ const styles = StyleSheet.create({
     lineHeight: 1.6,
     fontSize: 14,
     color: "#000",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   textContainer: {
     background: "unset",

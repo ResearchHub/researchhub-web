@@ -371,6 +371,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: "#3971FF",
     },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   disabled: {
     opacity: "0.4",
@@ -504,6 +507,9 @@ const dropdownStyles = StyleSheet.create({
 
     "@media only screen and (max-width: 767px)": {
       padding: 0,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
     },
   },
   dropdownItemIcon: {

@@ -310,6 +310,7 @@ const DiscussionTab = (props) => {
               smallToolBar={true}
               onCancel={cancel}
               onSubmit={save}
+              commentEditorStyles={styles.commentEditorStyles}
             />
           </div>
         </div>
@@ -362,6 +363,9 @@ const DiscussionTab = (props) => {
                       backgroundColor: "#FFF",
                       fontSize: 14,
                       width: 150,
+                      "@media only screen and (max-width: 415px)": {
+                        fontSize: 12,
+                      },
                     }}
                   />
                 </div>
@@ -536,18 +540,13 @@ var styles = StyleSheet.create({
       backgroundColor: colors.PURPLE(1),
     },
     "@media only screen and (max-width: 415px)": {
-      padding: "6px 24px",
-      fontSize: 14,
+      fontSize: 12,
     },
   },
   plainButton: {
     marginTop: 0,
-    // backgroundColor: colors.BLUE(1),
     border: "none",
-    // padding: "10px 15px",
     height: "unset",
-    // color: "#fff",
-    // opacity: 1,
     color: "rgba(26, 31, 58, 0.6)",
     padding: "3px 0px 3px 5px",
     fontSize: 14,
@@ -774,6 +773,14 @@ var styles = StyleSheet.create({
     ":hover": {
       color: "#FFF",
       backgroundColor: colors.BLUE(),
+    },
+  },
+  commentEditorStyles: {
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
     },
   },
 });
