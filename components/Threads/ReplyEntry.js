@@ -300,7 +300,7 @@ class ReplyEntry extends React.Component {
                   username={username}
                   date={date}
                   smaller={true}
-                  onHideClick={this.toggleCollapsed}
+                  onHideClick={!mobileView && this.toggleCollapsed}
                   hideState={this.state.collapsed}
                   dropDownEnabled={true}
                   // Moderator
@@ -374,12 +374,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     overflow: "visible",
     cursor: "pointer",
+    "@media only screen and (max-width: 415px)": {
+      justifyContent: "space-between",
+    },
   },
   topbar: {
     width: "100%",
     margin: "15px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      marginTop: 12,
+    },
   },
   content: {
     width: "100%",
@@ -387,9 +393,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflowWrap: "break-word",
     lineHeight: 1.6,
+    "@media only screen and (max-width: 415px)": {
+      marginTop: 10,
+      marginBottom: 10,
+    },
   },
   metaData: {
-    width: "calc(100% - 45px)",
+    boxSizing: "border-box",
+    width: "100%",
     marginLeft: 5,
   },
   highlight: {
@@ -399,6 +410,11 @@ const styles = StyleSheet.create({
     padding: "0px 10px 10px 8px",
     ":hover": {
       backgroundColor: "#FAFAFA",
+    },
+    "@media only screen and (max-width: 767px)": {
+      paddingLeft: 5,
+      paddingRight: 5,
+      paddingBottom: 5,
     },
   },
   active: {
@@ -423,6 +439,9 @@ const styles = StyleSheet.create({
   voteWidget: {
     margin: 0,
     backgroundColor: "#FFF",
+    "@media only screen and (max-width: 415px)": {
+      width: 35,
+    },
   },
   removedText: {
     fontStyle: "italic",

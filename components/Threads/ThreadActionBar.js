@@ -250,6 +250,9 @@ const styles = StyleSheet.create({
     ":hover #replyIcon": {
       color: colors.BLUE(),
     },
+    "@media only screen and (max-width: 415px)": {
+      marginRight: 10,
+    },
   },
   commentCountContainer: {
     marginRight: 20,
@@ -261,6 +264,9 @@ const styles = StyleSheet.create({
     },
     ":hover #chatIcon": {
       color: colors.BLUE(1),
+    },
+    "@media only screen and (max-width: 415px)": {
+      marginRight: 10,
     },
   },
   link: {
@@ -286,7 +292,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     color: "#AAAAAA",
     "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
+      fontSize: 9,
     },
   },
   iconChat: {
@@ -295,7 +301,7 @@ const styles = StyleSheet.create({
   shareIcon: {
     fontSize: 13,
     "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
+      fontSize: 9,
     },
   },
   active: {

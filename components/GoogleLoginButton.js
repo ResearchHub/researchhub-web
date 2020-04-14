@@ -84,6 +84,10 @@ const styles = StyleSheet.create({
     width: 230,
     marginTop: 10,
     marginBottom: 0,
+    "@media only screen and (max-width: 415px)": {
+      height: 50,
+      width: 200,
+    },
   },
   buttonLabel: {
     fontWeight: 600,

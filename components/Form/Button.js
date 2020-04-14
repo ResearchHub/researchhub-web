@@ -118,6 +118,10 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
+    "@media only screen and (max-width: 415px)": {
+      height: 30,
+      width: 100,
+    },
   },
   ripples: {
     overflow: "unset",
@@ -140,6 +144,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     margin: 0,
     padding: 0,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   isWhiteLabel: {
     color: "inherit",

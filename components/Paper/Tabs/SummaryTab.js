@@ -218,7 +218,7 @@ class SummaryTab extends React.Component {
                       permissionKey="ProposeSummaryEdit"
                       loginRequired={true}
                     >
-                      <div className={css(styles.action)}>
+                      <div className={css(styles.action, styles.editAction)}>
                         <div className={css(styles.pencilIcon)}>
                           <i className="fas fa-pencil"></i>
                         </div>
@@ -417,6 +417,7 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
+      paddingBottom: 20,
     },
   },
   sectionTitle: {
@@ -489,6 +490,9 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       marginTop: 8,
     },
+    "@media only screen and (max-width: 415px)": {
+      width: "unset",
+    },
   },
   summaryEdit: {
     width: "100%",
@@ -510,6 +514,14 @@ var styles = StyleSheet.create({
       color: colors.BLUE(1),
       opacity: 1,
       textDecoration: "underline",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  editAction: {
+    "@media only screen and (max-width: 415px)": {
+      marginLeft: 32,
     },
   },
   button: {
@@ -630,11 +642,25 @@ var styles = StyleSheet.create({
     border: "1px solid #F0F0F0",
     boxSizing: "border-box",
     marginTop: 20,
+    lineHeight: 1.6,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   commentReadStyles: {
     padding: 0,
     paddingTop: 5,
     boxSizing: "border-box",
+    lineHeight: 1.6,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
 });
 

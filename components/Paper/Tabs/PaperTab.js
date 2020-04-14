@@ -18,6 +18,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import NewDND from "../../Form/NewDND";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import Button from "../../Form/Button";
+import PaperPdf from "../PaperPdf";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -45,17 +46,13 @@ function PaperTab(props) {
   const [paperUrl, setPaperUrl] = useState((paper && paper.url) || null);
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
-  const [showPaper, toggleShowPaper] = useState(false);
   const [loading, toggleLoading] = useState(false);
-  // const [windowWidth, setWindowWidth] = useState(window && window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(900);
   const containerRef = useRef();
 
   useEffect(() => {
     function setWindow(e) {
-      clearTimeout(timeout);
-      let timeout = setTimeout(() => toggleLoading(false), 400);
-      toggleLoading(true);
-      // timeout();
+      setWindowWidth(e.target.innerWidth);
     }
 
     window.addEventListener("resize", setWindow);
@@ -163,21 +160,12 @@ function PaperTab(props) {
       );
     }
     if (file) {
-      let width = containerRef.current && containerRef.current.clientWidth - 60;
       return (
-        <Document
-          className={css(styles.pdfDocument)}
+        <PaperPdf
           file={file}
-          onLoadSuccess={onLoadSuccess}
-        >
-          {Array.from(new Array(numPages), (el, index) => (
-            <Page
-              pageNumber={index + 1}
-              key={`page_${index + 1}`}
-              width={width <= 900 ? width : null}
-            />
-          ))}
-        </Document>
+          windowWidth={windowWidth}
+          toggleLoading={toggleLoading}
+        />
       );
     } else {
       if (showDnd) {
@@ -329,7 +317,6 @@ var styles = StyleSheet.create({
     border: "1.5px solid #F0F0F0",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
-
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
