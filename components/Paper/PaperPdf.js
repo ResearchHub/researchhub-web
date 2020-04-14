@@ -168,7 +168,7 @@ export default class PaperPdf extends React.Component {
           className={css(styles.loadMoreButton)}
           onClick={this.renderMorePages}
         >
-          Load {addPages} More
+          Load {addPages} More Pages
         </div>
       );
     }
