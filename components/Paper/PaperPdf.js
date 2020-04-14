@@ -17,7 +17,6 @@ export default class PaperPdf extends React.Component {
 
   componentDidMount() {
     this.setPdfWidth(window.innerWidth);
-    // document.getElementById('pdfContainer').addEventListener('wheel', this.onScrollPDF.bind(this));
   }
 
   componentDidUpdate(prevProps) {
@@ -26,7 +25,6 @@ export default class PaperPdf extends React.Component {
         this.setPdfWidth();
       }
     }
-    // document.getElementById('pdfContainer').removeEventListener('wheel', this.onScrollPDF.bind(this));
   }
 
   setPdfWidth = (initialWidth) => {
@@ -279,9 +277,21 @@ class FakePage extends React.Component {
 
 const styles = StyleSheet.create({
   loadMoreButton: {
-    cursor: "pointer",
-    color: colors.BLUE(),
     fontSize: 14,
+    border: `1px solid ${colors.BLUE()}`,
+    boxSizing: "border-box",
+    borderRadius: 4,
+    height: 45,
+    width: 155,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: colors.BLUE(),
+    cursor: "pointer",
+    ":hover": {
+      color: "#FFF",
+      backgroundColor: colors.BLUE(),
+    },
   },
   desktopView: {
     display: "flex",
