@@ -427,6 +427,7 @@ class CommentEntry extends React.Component {
           calculateThreadHeight={this.calculateThreadHeight}
           comment={comment}
           reply={reply}
+          mobileView={this.props.mobileView}
         />
       );
     });
@@ -498,7 +499,7 @@ class CommentEntry extends React.Component {
                   username={username}
                   date={date}
                   smaller={true}
-                  onHideClick={this.toggleCollapsed}
+                  onHideClick={!mobileView && this.toggleCollapsed}
                   hideState={this.state.collapsed}
                   dropDownEnabled={true}
                   // Moderator
@@ -596,6 +597,9 @@ const styles = StyleSheet.create({
   left: {
     alignItems: "center",
     width: 44,
+    "@media only screen and (max-width: 415px)": {
+      width: 35,
+    },
   },
   commentCard: {
     width: "100%",
@@ -603,6 +607,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginBottom: 5,
     overflow: "visible",
+    "@media only screen and (max-width: 415px)": {
+      justifyContent: "space-between",
+    },
   },
   topbar: {
     width: "100%",
@@ -610,7 +617,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     "@media only screen and (max-width: 415px)": {
-      marginTop: 10,
+      marginTop: 13,
     },
   },
   content: {
@@ -619,9 +626,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflowWrap: "break-word",
     lineHeight: 1.6,
+    "@media only screen and (max-width: 415px)": {
+      marginTop: 10,
+      marginBottom: 10,
+    },
   },
   metaData: {
-    width: "calc(100% - 44px)",
+    boxSizing: "border-box",
+    width: "100%",
   },
   highlight: {
     width: "100%",
@@ -666,6 +678,9 @@ const styles = StyleSheet.create({
   voteWidget: {
     margin: 0,
     backgroundColor: "#FFF",
+    "@media only screen and (max-width: 415px)": {
+      width: 35,
+    },
   },
   viewMoreContainer: {
     width: "100%",
@@ -690,6 +705,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   commentEditor: {
+    fontSize: 14,
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
     },

@@ -215,7 +215,6 @@ function formatTimestamp(date) {
 
 const HideButton = (props) => {
   let { onHideClick, hideState } = props;
-
   let classNames = [styles.hideContainer];
 
   return (
@@ -391,16 +390,18 @@ const styles = StyleSheet.create({
     ":hover": {
       background: "#F3F3F8",
     },
-    // ":hover #expandIcon": {
-    //   color: colors.BLUE(),
-    // },
-    // ":hover #expandText": {
-    //   color: colors.BLUE(),
-    // },
   },
   expandIcon: {
     fontSize: 14,
     paddingLeft: 8,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+      marginRight: 5,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 9,
+      marginRight: 5,
+    },
   },
   expandText: {
     fontSize: 14,
@@ -423,6 +424,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: "#000",
     },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 16,
+    },
   },
   dropdown: {
     position: "absolute",
@@ -435,6 +439,9 @@ const styles = StyleSheet.create({
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 3,
+    "@media only screen and (max-width: 415px)": {
+      width: 80,
+    },
   },
 });
 

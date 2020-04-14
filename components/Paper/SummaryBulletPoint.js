@@ -82,8 +82,11 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     boxSizing: "border-box",
     "@media only screen and (max-width: 767px)": {
-      fontSize: 12,
+      fontSize: 14,
       width: "100%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
     },
   },
   bottomRow: {

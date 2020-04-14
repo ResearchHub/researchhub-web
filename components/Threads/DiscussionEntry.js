@@ -84,6 +84,7 @@ class DiscussionEntry extends React.Component {
         canEdit: this.props.auth.user.id === data.createdBy.id,
       });
     }
+    this.calculateThreadHeight();
   };
 
   handleVoteTypeUpdate = (prevProps) => {
@@ -291,6 +292,7 @@ class DiscussionEntry extends React.Component {
             calculateThreadHeight={this.calculateThreadHeight}
             comment={comment}
             index={i}
+            mobileView={this.props.mobileView}
           />
         );
       });
@@ -528,6 +530,9 @@ const styles = StyleSheet.create({
   left: {
     alignItems: "center",
     width: 48,
+    "@media only screen and (max-width: 415px)": {
+      width: 35,
+    },
   },
   container: {
     display: "flex",
@@ -547,12 +552,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     paddingRight: 0,
     cursor: "default",
+    justifyContent: "space-between",
   },
   topbar: {
     width: "100%",
     margin: "20px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      marginTop: 18,
+    },
   },
   content: {
     width: "100%",
@@ -572,7 +581,7 @@ const styles = StyleSheet.create({
     },
   },
   metaData: {
-    width: "calc(100% - 48px)",
+    width: "100%",
     paddingTop: 2,
     boxSizing: "border-box",
   },
@@ -615,6 +624,9 @@ const styles = StyleSheet.create({
   voteWidget: {
     margin: 0,
     backgroundColor: "#FFF",
+    "@media only screen and (max-width: 415px)": {
+      width: 35,
+    },
   },
   active: {
     backgroundColor: colors.LIGHT_YELLOW(),
