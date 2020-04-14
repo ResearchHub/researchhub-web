@@ -32,7 +32,7 @@ export const BannerActions = {
       let uuid = localStorage.getItem("researchhub.uuid");
       if (!uuid) {
         uuid = uuidv4();
-        localStorage.setItem("researchhub.uuid", coinFlip);
+        localStorage.setItem("researchhub.uuid", uuid);
       }
 
       dispatch({
