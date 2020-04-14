@@ -32,9 +32,9 @@ export default class PaperPdf extends React.Component {
   setPdfWidth = (initialWidth) => {
     let width = initialWidth ? initialWidth : this.props.windowWidth;
     if (width > 767) {
-      if (this.PDFWidth !== 700) {
+      if (this.PDFWidth !== 650) {
         this.toggleLoading(true);
-        this.PDFWidth = 700;
+        this.PDFWidth = 650;
         this.state.mobileView && this.toggleMobileView(false);
         this.toggleLoading(false);
       }
