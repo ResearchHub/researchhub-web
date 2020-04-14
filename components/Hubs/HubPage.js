@@ -1258,7 +1258,7 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
+    margin: "15px 0",
   },
   loadMoreButton: {
     fontSize: 14,
