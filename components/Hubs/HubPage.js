@@ -1258,8 +1258,12 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: "15px 0",
+    marginTop: 25,
     height: 45,
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 15,
+      marginBottom: 15,
+    },
   },
   loadMoreButton: {
     fontSize: 14,
