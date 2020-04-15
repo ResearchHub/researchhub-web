@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
@@ -495,7 +496,30 @@ class HubPage extends React.Component {
     });
   };
 
-  renderTopBar = () => {};
+  renderLoadMoreButton = () => {
+    const { next, loadingMore } = this.state;
+    if (next !== null) {
+      return (
+        <div className={css(styles.buttonContainer)}>
+          {!loadingMore ? (
+            <Ripples
+              className={css(styles.loadMoreButton)}
+              onClick={this.loadMore}
+            >
+              Load More Papers
+            </Ripples>
+          ) : (
+            <Loader
+              key={"paperLoader"}
+              loading={true}
+              size={25}
+              color={colors.BLUE()}
+            />
+          )}
+        </div>
+      );
+    }
+  };
 
   render() {
     let { auth } = this.props;
@@ -644,12 +668,7 @@ class HubPage extends React.Component {
             <div className={css(styles.infiniteScroll)}>
               {this.state.doneFetching ? (
                 this.state.papers.length > 0 ? (
-                  <InfiniteScroll
-                    pageStart={this.state.page}
-                    loadMore={this.loadMore}
-                    hasMore={this.state.next !== null}
-                    loader={<Loader key={"hubPageLoader"} loading={true} />}
-                  >
+                  <Fragment>
                     {this.state.papers.map((paper, i) => (
                       <PaperEntryCard
                         key={`${paper.id}-${i}`}
@@ -660,7 +679,8 @@ class HubPage extends React.Component {
                         voteCallback={this.voteCallback}
                       />
                     ))}
-                  </InfiniteScroll>
+                    {this.renderLoadMoreButton()}
+                  </Fragment>
                 ) : (
                   <div className={css(styles.column)}>
                     <img
@@ -1231,6 +1251,36 @@ var styles = StyleSheet.create({
       color: "#fff",
       backgroundColor: colors.RED(1),
       border: `1px solid ${colors.RED(1)}`,
+    },
+  },
+  buttonContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 25,
+    height: 45,
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 15,
+      marginBottom: 15,
+    },
+  },
+  loadMoreButton: {
+    fontSize: 14,
+    border: `1px solid ${colors.BLUE()}`,
+    boxSizing: "border-box",
+    borderRadius: 4,
+    height: 45,
+    width: 155,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: colors.BLUE(),
+    cursor: "pointer",
+    userSelect: "none",
+    ":hover": {
+      color: "#FFF",
+      backgroundColor: colors.BLUE(),
     },
   },
 });

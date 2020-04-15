@@ -43,6 +43,7 @@ export default class MyDocument extends Document {
             rel="apple-touch-icon"
             sizes="152x152"
             href="/static/favicons/apple-touch-icon.png"
+            preload
           />
           {/* <!-- Appzi: Capture Insightful Feedback --> */}
           <script
@@ -55,14 +56,16 @@ export default class MyDocument extends Document {
             type="image/png"
             sizes="32x32"
             href="/static/favicons/favicon-32x32.png"
+            preload
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
             href="/static/favicons/favicon-16x16.png"
+            preload
           />
-          <link rel="manifest" href="/static/favicons/site.webmanifest" />
+          <link rel="manifest" href="/static/favicons/site.webmanifest" async />
           <meta name="msapplication-TileColor" content="#da532c" />
           <meta name="theme-color" content="#ffffff" />
           <style
