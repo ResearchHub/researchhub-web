@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     color: "#AAAAAA",
     "@media only screen and (max-width: 415px)": {
-      fontSize: 9,
+      fontSize: 12,
     },
   },
   iconChat: {
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
   shareIcon: {
     fontSize: 13,
     "@media only screen and (max-width: 415px)": {
-      fontSize: 9,
+      fontSize: 12,
     },
   },
   active: {
