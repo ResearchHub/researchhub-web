@@ -71,17 +71,14 @@ export default class MyDocument extends Document {
           <style
             data-aphrodite
             dangerouslySetInnerHTML={{ __html: this.props.css.content }}
-            async
           />
           <script
             src="https://kit.fontawesome.com/f57f706c59.js"
             crossOrigin="anonymous"
-            async
           ></script>
           <link
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
             rel="stylesheet"
-            async
           />
 
           {/* Meta Tags */}
