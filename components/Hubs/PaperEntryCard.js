@@ -646,9 +646,6 @@ const carousel = StyleSheet.create({
     marginRight: 8,
     marginLeft: 5,
   },
-  pointer: {
-    cursor: "not-allowed",
-  },
   show: {
     opacity: 1,
   },
