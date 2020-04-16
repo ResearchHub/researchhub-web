@@ -6,11 +6,10 @@ import { StyleSheet, css } from "aphrodite";
 import VoteWidget from "../VoteWidget";
 import ThreadActionBar from "./ThreadActionBar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
-import { Title } from "../DiscussionThreadCard";
 import CommentEntry from "./CommentEntry";
-import { ClientLinkWrapper } from "../LinkWrapper";
 import ThreadLine from "./ThreadLine";
 import ThreadTextEditor from "./ThreadTextEditor";
+import { Event } from "../GAnalytics/EventTracker";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -22,7 +21,6 @@ import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
-import { comment } from "../../redux/discussion/shims";
 import { transformComments } from "~/redux/discussion/shims";
 import { createUsername } from "../../config/utils";
 
@@ -187,6 +185,7 @@ class DiscussionEntry extends React.Component {
     postCommentPending();
     await postComment(paperId, discussionThreadId, text, plain_text);
     if (this.props.discussion.donePosting && this.props.discussion.success) {
+      Event("COMMENT", "Submit", "Post Comment");
       let newComment = { ...this.props.discussion.postedComment };
       newComment.highlight = true;
       let comments = [newComment, ...this.state.comments];
