@@ -161,11 +161,9 @@ function PaperTab(props) {
     }
     if (file) {
       return (
-        <PaperPdf
-          file={file}
-          windowWidth={windowWidth}
-          toggleLoading={toggleLoading}
-        />
+        <div className={css(styles.pdfFrame)}>
+          <iframe src={file} height={800} width={"100%"} />
+        </div>
       );
     } else {
       if (showDnd) {
@@ -516,6 +514,10 @@ var styles = StyleSheet.create({
   },
   loader: {
     marginTop: 30,
+  },
+  pdfFrame: {
+    marginTop: 20,
+    width: "100%",
   },
 });
 
