@@ -308,6 +308,7 @@ const PaperEntryCard = ({
             searchResult={searchResult}
             isPaper={true}
             styles={styles.voteWidget}
+            type={"Paper"}
           />
         </span>
       </div>

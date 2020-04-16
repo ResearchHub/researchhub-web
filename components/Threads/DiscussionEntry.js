@@ -185,7 +185,7 @@ class DiscussionEntry extends React.Component {
     postCommentPending();
     await postComment(paperId, discussionThreadId, text, plain_text);
     if (this.props.discussion.donePosting && this.props.discussion.success) {
-      Event("COMMENT", "Submit", "Post Comment");
+      Event("Discussion", "Submit", "Post Comment");
       let newComment = { ...this.props.discussion.postedComment };
       newComment.highlight = true;
       let comments = [newComment, ...this.state.comments];
@@ -418,7 +418,7 @@ class DiscussionEntry extends React.Component {
             onUpvote={this.upvote}
             onDownvote={this.downvote}
             selected={this.state.selectedVoteType}
-            type={"discussion"}
+            type={"Discussion"}
             fontSize={"16px"}
             width={"44px"}
           />

@@ -55,8 +55,6 @@ class PaperPageCard extends React.Component {
     if (prevProps !== this.props) {
       if (prevProps.paper.id !== this.props.paper.id) {
         this.setState({ loading: true }, () => {
-          document.body.scrollTop = 0; // For Safari
-          document.documentElement.scrollTop = 0;
           this.fetchFigures();
         });
       }
@@ -226,7 +224,7 @@ class PaperPageCard extends React.Component {
           className={css(styles.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
-          style={{ height, maxHeight: height }}
+          style={{ maxHeight: height }}
         >
           <ReactPlaceholder
             ready={false}
@@ -241,7 +239,7 @@ class PaperPageCard extends React.Component {
         <div
           className={css(styles.previewContainer)}
           onClick={this.toggleLightbox}
-          style={{ height, maxHeight: height }}
+          style={{ maxHeight: height }}
         >
           <Carousel
             afterSlide={(slideIndex) =>
@@ -291,7 +289,7 @@ class PaperPageCard extends React.Component {
             wrapAround={true}
             enableKeyboardControls={true}
           >
-            {this.state.previews.slice(0, 10).map((preview) => {
+            {this.state.previews.map((preview) => {
               return (
                 <img
                   src={preview.file}
@@ -533,7 +531,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     boxSizing: "border-box",
-    paddingTop: 25,
+    // paddingTop: 25,
     "@media only screen and (min-width: 0px) and (max-width: 767px)": {
       margin: "0 auto",
       marginBottom: 16,

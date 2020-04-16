@@ -69,7 +69,11 @@ class ManageBulletPointsModal extends React.Component {
     this.setState({ pendingSubmission: true });
     await bulletActions.reorderBullets({ paperId, bullets: this.state.cards });
     if (!bulletsRedux.pending && bulletsRedux.success) {
-      Event("KEY TAKEAWAY", "Submit", "Manage Key Takeaways");
+      Event(
+        "Key Takeaways",
+        "Manage Key Takeaways",
+        `Key Takeaways Reordered Paper:${paperId}`
+      );
       this.setState({
         pendingSubmission: false,
       });

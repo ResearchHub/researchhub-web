@@ -183,7 +183,7 @@ const DiscussionTab = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        Event("THREAD", "Submit", "Post Discussion");
+        Event("Discussion", "Post Thread", `Thread Post for Paper:${paperId}`);
         let newDiscussion = { ...resp };
         newDiscussion = thread(newDiscussion);
         setThreads([newDiscussion, ...threads]);
