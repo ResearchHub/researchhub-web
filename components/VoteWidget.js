@@ -241,7 +241,6 @@ const styles = StyleSheet.create({
     },
   },
   iconDisabled: {
-    cursor: "not-allowed",
     color: voteWidgetColors.ARROW,
   },
   coins: {
@@ -249,7 +248,6 @@ const styles = StyleSheet.create({
   },
   selected: {
     color: colors.GREEN(),
-    cursor: "not-allowed",
   },
   marginLeft: {
     marginLeft: 8,
