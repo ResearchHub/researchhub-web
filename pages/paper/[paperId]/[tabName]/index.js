@@ -544,7 +544,8 @@ const styles = StyleSheet.create({
     height: 30,
   },
   stickyComponent: {
-    top: 80,
+    // top: 80,
+    top: 0,
     position: "sticky",
     backgroundColor: "#FFF",
     zIndex: 3,
