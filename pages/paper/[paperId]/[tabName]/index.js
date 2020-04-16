@@ -549,11 +549,13 @@ const styles = StyleSheet.create({
     height: 30,
   },
   stickyComponent: {
-    // top: 80,
     top: 0,
     position: "sticky",
     backgroundColor: "#FFF",
     zIndex: 3,
+    "@media only screen and (max-width: 760px)": {
+      top: 80,
+    },
   },
   scrollPadding: {
     paddingTop: 450,
