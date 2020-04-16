@@ -47,17 +47,7 @@ function PaperTab(props) {
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
   const [loading, toggleLoading] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(900);
   const containerRef = useRef();
-
-  useEffect(() => {
-    function setWindow(e) {
-      setWindowWidth(e.target.innerWidth);
-    }
-
-    window.addEventListener("resize", setWindow);
-    return () => window.removeEventListener("resize", setWindow);
-  });
 
   function onLoadSuccess({ numPages }) {
     setNumPages(numPages);
