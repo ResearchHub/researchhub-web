@@ -94,8 +94,8 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        Event("SUMMARY", "Submit", "Post Summary");
         let { paper } = this.props;
+        Event("Summary", "Post Summary", `Post Summary for Paper:${paper.id}`);
         let localStorageKey = `editorState-${paper.id}-${paper.summary &&
           paper.summary.id}`;
         if (localStorage.getItem(localStorageKey)) {

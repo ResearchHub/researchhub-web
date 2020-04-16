@@ -236,9 +236,9 @@ const styles = StyleSheet.create({
     width: "100%",
     minWidth: "100%",
     maxWidth: "100%",
-    height: 240,
-    minHeight: 240,
-    maxHeight: 240,
+    height: 220,
+    minHeight: 220,
+    maxHeight: 220,
     objectFit: "fill",
   },
   title: {
@@ -295,8 +295,8 @@ const carousel = StyleSheet.create({
   previewContainer: {
     minWidth: 160,
     width: 160,
-    height: 240,
-    minHeight: 240,
+    height: 220,
+    minHeight: 220,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     marginRight: 30,

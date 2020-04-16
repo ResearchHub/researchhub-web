@@ -304,7 +304,7 @@ class CommentEntry extends React.Component {
     postReplyPending();
     await postReply(paperId, discussionThreadId, commentId, text, plain_text);
     if (this.props.discussion.donePosting && this.props.discussion.success) {
-      Event("COMMENT", "Submit", "Post Reply");
+      Event("Discussion", "Submit", "Post Reply");
       let newReply = { ...this.props.discussion.postedReply };
       newReply.highlight = true;
       let replies = [newReply, ...this.state.replies];
@@ -472,6 +472,7 @@ class CommentEntry extends React.Component {
             selected={this.state.selectedVoteType}
             fontSize={"12px"}
             width={"40px"}
+            type={"Comment"}
           />
           {!this.state.collapsed && (
             <ThreadLine
