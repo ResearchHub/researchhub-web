@@ -182,7 +182,7 @@ class SummaryTab extends React.Component {
 
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-        <a name="takeaways">
+        <a name="takeaways" id={"takeaway"}>
           <div
             className={css(styles.bulletsContainer)}
             ref={this.props.keyTakeawayRef}
