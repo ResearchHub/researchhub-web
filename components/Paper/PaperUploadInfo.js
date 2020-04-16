@@ -16,9 +16,8 @@ import DragNDrop from "../Form/DragNDrop";
 import Button from "../Form/Button";
 import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
-import TextEditor from "~/components/TextEditor";
+import { Event } from "~/components/GAnalytics/EventTracker";
 import Message from "../Loader/Message";
-import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 
 //Testing
 import NewDND from "../Form/NewDND";
@@ -1009,6 +1008,7 @@ class PaperUploadInfo extends React.Component {
         ? await this.props.paperActions.postPaper(body)
         : await this.props.paperActions.patchPaper(paperId, body);
       if (this.props.paper.success) {
+        Event("PAPER", "Submit", "Paper Added");
         this.props.messageActions.setMessage(
           `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
         );
@@ -1016,6 +1016,7 @@ class PaperUploadInfo extends React.Component {
         this.props.messageActions.showMessage({ show: true });
         let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
         this.props.authActions.checkUserFirstTime(firstTime);
+
         this.props.authActions.getUser();
         this.navigateToSummary();
       } else {
@@ -1044,6 +1045,7 @@ class PaperUploadInfo extends React.Component {
     } else {
       paperActions.patchPaper(this.props.paperId, body).then((resp) => {
         if (resp.payload.success) {
+          Event("PAPER", "Submit", "Paper Updated");
           messageActions.setMessage(`Paper successfully updated`);
           messageActions.showMessage({ show: true });
           authActions.getUser();

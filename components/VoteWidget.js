@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-// import ReputationTooltip from "./ReputationTooltip";
+import { Event } from "~/components/GAnalytics/EventTracker";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
@@ -77,6 +77,7 @@ const VoteWidget = (props) => {
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
+      Event("VOTE", "Click", "Upvote");
       onUpvote(e);
     }
   }
@@ -92,6 +93,7 @@ const VoteWidget = (props) => {
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
+      Event("VOTE", "Click", "Downvote");
       onDownvote(e);
     }
   }

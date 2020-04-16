@@ -11,8 +11,8 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
-import SummaryBulletPoint from "../SummaryBulletPoint";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
+import { Event } from "~/components/GAnalytics/EventTracker";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -94,6 +94,7 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        Event("SUMMARY", "Submit", "Post Summary");
         let { paper } = this.props;
         let localStorageKey = `editorState-${paper.id}-${paper.summary &&
           paper.summary.id}`;
