@@ -15,10 +15,10 @@ import { BulletActions } from "~/redux/bullets";
 import { MessageActions } from "~/redux/message";
 
 // Component
-import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
+import { Event } from "~/components/GAnalytics/EventTracker";
 
 class ManageBulletPointsModal extends React.Component {
   constructor(props) {
@@ -69,6 +69,7 @@ class ManageBulletPointsModal extends React.Component {
     this.setState({ pendingSubmission: true });
     await bulletActions.reorderBullets({ paperId, bullets: this.state.cards });
     if (!bulletsRedux.pending && bulletsRedux.success) {
+      Event("KEY TAKEAWAY", "Submit", "Manage Key Takeaways");
       this.setState({
         pendingSubmission: false,
       });

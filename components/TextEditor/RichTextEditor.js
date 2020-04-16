@@ -695,13 +695,19 @@ class RichTextEditor extends React.Component {
         return <ul {...attributes}>{children}</ul>;
       case "heading-one":
         return (
-          <h2 style={{ fontSize: 22, fontWeight: 500 }} {...attributes}>
+          <h2
+            style={{ fontSize: 22, fontWeight: 500, paddingBottom: 10 }}
+            {...attributes}
+          >
             {children}
           </h2>
         );
       case "heading-two":
         return (
-          <h3 style={{ fontSize: 20, fontWeight: 500 }} {...attributes}>
+          <h3
+            style={{ fontSize: 20, fontWeight: 500, marginBottom: 10 }}
+            {...attributes}
+          >
             {children}
           </h3>
         );
