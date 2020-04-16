@@ -72,12 +72,12 @@ const VoteWidget = (props) => {
     } else if (upvoteSelected) {
       // TODO: show a user state here?
     } else {
-      if (isPaper || type === "discussion") {
+      if (isPaper || type === "Discussion") {
         let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
-      Event("VOTE", "Click", "Upvote");
+      Event("Vote", "Upvote", `Upvote ${isPaper ? "Paper" : type}`);
       onUpvote(e);
     }
   }
@@ -88,12 +88,12 @@ const VoteWidget = (props) => {
     } else if (downvoteSelected) {
       // TODO: show a user state here?
     } else {
-      if (isPaper || type === "discussion") {
+      if (isPaper || type === "Discussion") {
         let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
-      Event("VOTE", "Click", "Downvote");
+      Event("Vote", "Downvote", `Downvote ${isPaper ? "Paper" : type}`);
       onDownvote(e);
     }
   }

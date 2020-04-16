@@ -276,6 +276,7 @@ class ReplyEntry extends React.Component {
               selected={this.state.selectedVoteType}
               fontSize={"12px"}
               width={"40px"}
+              type={"Reply"}
             />
           </div>
           {this.handleStateRendering() && (
