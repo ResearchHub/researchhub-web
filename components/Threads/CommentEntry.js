@@ -637,6 +637,9 @@ const styles = StyleSheet.create({
   metaData: {
     boxSizing: "border-box",
     width: "100%",
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(100% - 35px)",
+    },
   },
   highlight: {
     width: "100%",
@@ -650,6 +653,9 @@ const styles = StyleSheet.create({
       paddingLeft: 5,
       paddingRight: 5,
       paddingBottom: 5,
+    },
+    "@media only screen and (max-width: 415px)": {
+      paddingRight: 0,
     },
   },
   active: {

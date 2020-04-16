@@ -104,6 +104,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
+    "@media only screen and (max-width: 415px)": {
+      justifyContent: "space-between",
+    },
   },
   lastTab: {
     marginRight: 0,
@@ -123,6 +126,12 @@ const styles = StyleSheet.create({
     marginRight: 16,
     cursor: "pointer",
     textDecoration: "none",
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   legal: {
     marginTop: 16,
@@ -143,6 +152,9 @@ const styles = StyleSheet.create({
     objectFit: "contain",
     "@media only screen and (max-width: 767px)": {
       height: 35,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 120,
     },
   },
   arr: {

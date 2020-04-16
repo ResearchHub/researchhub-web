@@ -368,6 +368,7 @@ class PaperPageCard extends React.Component {
                 selected={selectedVoteType}
                 isPaper={true}
                 horizontalView={true}
+                type={"Paper"}
               />
             </div>
           </div>
@@ -420,6 +421,7 @@ class PaperPageCard extends React.Component {
             onDownvote={downvote}
             selected={selectedVoteType}
             isPaper={true}
+            type={"Paper"}
           />
         </div>
         <div className={css(styles.votingMobile)}>
@@ -430,6 +432,7 @@ class PaperPageCard extends React.Component {
             selected={selectedVoteType}
             isPaper={true}
             horizontalView={true}
+            type={"Paper"}
           />
         </div>
         {figureUrls.length > 0 && (
