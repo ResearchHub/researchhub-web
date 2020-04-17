@@ -102,8 +102,7 @@ const Paper = (props) => {
     setSelectedVoteType(getVoteType(refetchedPaper.userVote));
     setDiscussionThreads(getDiscussionThreads(refetchedPaper));
     setFlag(refetchedPaper.user_flag !== null);
-    // document.body.scroll = 0; // For Safari
-    // document.documentElement.scrollTop = 0;
+
     window.scroll({ top: 0, behavior: "auto" });
     showMessage({ show: false });
     if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
@@ -112,11 +111,13 @@ const Paper = (props) => {
   }
 
   useEffect(() => {
-    refetchPaper();
-  }, []);
+    store.getState().paper.id && setLoadingPaper(false);
+  }, [store.getState().paper]);
 
   useEffect(() => {
-    refetchPaper();
+    if (store.getState().paper.id !== paperId) {
+      refetchPaper();
+    }
   }, [paperId]);
 
   useEffect(() => {
@@ -330,10 +331,15 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
   const { host } = absoluteUrl(req);
   const hostname = host;
 
-  await store.dispatch(PaperActions.getPaper(query.paperId));
-  const fetchedPaper = store.getState().paper;
-  await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
-
+  if (
+    (store.getState().paper.id !== query.paperId &&
+      store.getState().paper.doneFetchingPaper) ||
+    (!store.getState().paper.doneFetchingPaper && !store.getState().paper.id)
+  ) {
+    await store.dispatch(PaperActions.getPaper(query.paperId));
+    const fetchedPaper = store.getState().paper;
+    await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
+  }
   return { isServer, hostname };
 };
 
@@ -544,10 +550,13 @@ const styles = StyleSheet.create({
     height: 30,
   },
   stickyComponent: {
-    top: 80,
+    top: 0,
     position: "sticky",
     backgroundColor: "#FFF",
     zIndex: 3,
+    "@media only screen and (max-width: 760px)": {
+      top: 80,
+    },
   },
   scrollPadding: {
     paddingTop: 450,
