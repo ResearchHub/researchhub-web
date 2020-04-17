@@ -11,8 +11,8 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
-import SummaryBulletPoint from "../SummaryBulletPoint";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
+import { Event } from "~/components/GAnalytics/EventTracker";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -95,6 +95,7 @@ class SummaryTab extends React.Component {
       .then(Helpers.parseJSON)
       .then((resp) => {
         let { paper } = this.props;
+        Event("Summary", "Post Summary", `Post Summary for Paper:${paper.id}`);
         let localStorageKey = `editorState-${paper.id}-${paper.summary &&
           paper.summary.id}`;
         if (localStorage.getItem(localStorageKey)) {
@@ -182,7 +183,7 @@ class SummaryTab extends React.Component {
 
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-        <a name="takeaways">
+        <a name="takeaways" id={"takeaway"}>
           <div
             className={css(styles.bulletsContainer)}
             ref={this.props.keyTakeawayRef}

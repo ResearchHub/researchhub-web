@@ -47,17 +47,7 @@ function PaperTab(props) {
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
   const [loading, toggleLoading] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(900);
   const containerRef = useRef();
-
-  useEffect(() => {
-    function setWindow(e) {
-      setWindowWidth(e.target.innerWidth);
-    }
-
-    window.addEventListener("resize", setWindow);
-    return () => window.removeEventListener("resize", setWindow);
-  });
 
   function onLoadSuccess({ numPages }) {
     setNumPages(numPages);
@@ -161,11 +151,9 @@ function PaperTab(props) {
     }
     if (file) {
       return (
-        <PaperPdf
-          file={file}
-          windowWidth={windowWidth}
-          toggleLoading={toggleLoading}
-        />
+        <div className={css(styles.pdfFrame)}>
+          <iframe src={file} height={800} width={"100%"} />
+        </div>
       );
     } else {
       if (showDnd) {
@@ -516,6 +504,10 @@ var styles = StyleSheet.create({
   },
   loader: {
     marginTop: 30,
+  },
+  pdfFrame: {
+    marginTop: 20,
+    width: "100%",
   },
 });
 

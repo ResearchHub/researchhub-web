@@ -2,7 +2,7 @@ import { useEffect, useState, Fragment } from "react";
 
 // NPM Components
 import Link from "next/link";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect, useDispatch, useStore } from "react-redux";
 import "react-placeholder/lib/reactPlaceholder.css";
@@ -37,6 +37,7 @@ import OrcidConnectModal from "./modal/OrcidConnectModal";
 
 const Navbar = (props) => {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const { isLoggedIn, user, authChecked, signout } = props;
 
@@ -331,7 +332,12 @@ const Navbar = (props) => {
       >
         {renderMenuItems()}
       </Menu>
-      <div className={css(styles.navbarContainer)}>
+      <div
+        className={css(
+          styles.navbarContainer,
+          router.route === "/paper/[paperId]/[tabName]" && styles.unstickyNavbar
+        )}
+      >
         <UploadPaperModal />
         <LoginModal />
         <InviteToHubModal />
@@ -448,8 +454,6 @@ const styles = StyleSheet.create({
     height: 80,
     background: "#fff",
     alignItems: "center",
-    position: "fixed",
-    top: 0,
     borderBottom: "rgb(151,151,151, .2) 1px solid",
     justifyContent: "space-around",
     position: "sticky",
@@ -459,7 +463,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 760px)": {
       justifyContent: "space-between",
+      position: "sticky",
+      zIndex: 4,
     },
+  },
+  unstickyNavbar: {
+    position: "initial",
+    zIndex: "unset",
   },
   tabs: {
     display: "flex",
