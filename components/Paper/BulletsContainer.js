@@ -10,6 +10,7 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
+import { Event } from "~/components/GAnalytics/EventTracker";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -129,6 +130,11 @@ class BulletsContainer extends React.Component {
     this.setState({ pendingSubmission: true });
     await postBullet({ paperId, bullet, prevState: bulletsRedux });
     if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
+      Event(
+        "Key Takeaways",
+        "Add Key Takeaway",
+        `Key Takeaway Added Paper:${paperId}`
+      );
       showMessage({ show: false });
       setMessage("Key takeaway successfully added!");
       showMessage({ show: true });

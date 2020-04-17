@@ -15,6 +15,7 @@ import Message from "~/components/Loader/Message";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
+import { Event } from "~/components/GAnalytics/EventTracker";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -182,6 +183,7 @@ const DiscussionTab = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        Event("Discussion", "Post Thread", `Thread Post for Paper:${paperId}`);
         let newDiscussion = { ...resp };
         newDiscussion = thread(newDiscussion);
         setThreads([newDiscussion, ...threads]);

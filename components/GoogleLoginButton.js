@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
 import Button from "~/components/Form/Button";
+import { Event } from "~/components/GAnalytics/EventTracker";
 
 import { AuthActions } from "../redux/auth";
 import { MessageActions } from "~/redux/message";
@@ -28,6 +29,7 @@ const GoogleLoginButton = (props) => {
           props.showSignupBanner && props.removeBanner();
           if (!userAction.user.has_seen_orcid_connect_modal) {
             props.openOrcidConnectModal(true);
+            Event("Sign Up", "User Sign Up", "New User");
           }
         });
       }

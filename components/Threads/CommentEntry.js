@@ -9,6 +9,7 @@ import DiscussionPostMetadata from "../DiscussionPostMetadata";
 import ReplyEntry from "./ReplyEntry";
 import ThreadLine from "./ThreadLine";
 import ThreadTextEditor from "./ThreadTextEditor";
+import { Event } from "../GAnalytics/EventTracker";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -303,6 +304,7 @@ class CommentEntry extends React.Component {
     postReplyPending();
     await postReply(paperId, discussionThreadId, commentId, text, plain_text);
     if (this.props.discussion.donePosting && this.props.discussion.success) {
+      Event("Discussion", "Submit", "Post Reply");
       let newReply = { ...this.props.discussion.postedReply };
       newReply.highlight = true;
       let replies = [newReply, ...this.state.replies];
@@ -470,6 +472,7 @@ class CommentEntry extends React.Component {
             selected={this.state.selectedVoteType}
             fontSize={"12px"}
             width={"40px"}
+            type={"Comment"}
           />
           {!this.state.collapsed && (
             <ThreadLine
@@ -634,6 +637,9 @@ const styles = StyleSheet.create({
   metaData: {
     boxSizing: "border-box",
     width: "100%",
+    "@media only screen and (max-width: 415px)": {
+      width: "calc(100% - 35px)",
+    },
   },
   highlight: {
     width: "100%",
@@ -647,6 +653,9 @@ const styles = StyleSheet.create({
       paddingLeft: 5,
       paddingRight: 5,
       paddingBottom: 5,
+    },
+    "@media only screen and (max-width: 415px)": {
+      paddingRight: 0,
     },
   },
   active: {

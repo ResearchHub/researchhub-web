@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-// import ReputationTooltip from "./ReputationTooltip";
+import { Event } from "~/components/GAnalytics/EventTracker";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
@@ -72,11 +72,12 @@ const VoteWidget = (props) => {
     } else if (upvoteSelected) {
       // TODO: show a user state here?
     } else {
-      if (isPaper || type === "discussion") {
+      if (isPaper || type === "Discussion") {
         let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
+      Event("Vote", "Upvote", `Upvote ${isPaper ? "Paper" : type}`);
       onUpvote(e);
     }
   }
@@ -87,11 +88,12 @@ const VoteWidget = (props) => {
     } else if (downvoteSelected) {
       // TODO: show a user state here?
     } else {
-      if (isPaper || type === "discussion") {
+      if (isPaper || type === "Discussion") {
         let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
+      Event("Vote", "Downvote", `Downvote ${isPaper ? "Paper" : type}`);
       onDownvote(e);
     }
   }
