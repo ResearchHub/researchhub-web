@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Router from "next/router";
@@ -52,8 +51,6 @@ class PaperPageCard extends React.Component {
 
   componentDidMount() {
     this.fetchFigures();
-    console.log("this.props.paperId", this.props);
-    this.props.getBullets(this.props.paperId);
   }
 
   componentDidUpdate(prevProps) {
@@ -220,14 +217,32 @@ class PaperPageCard extends React.Component {
       this.metaContainerRef.current &&
       this.metaContainerRef.current.clientHeight;
 
-    height = 155;
+    let width;
+    if (this.metaContainerRef.current) {
+      width = (8.5 * height) / 11; // keeps paper ar
+    }
+
+    if (window.innerWidth < 769) {
+      height = 130;
+      width = 101;
+    }
+
+    width !== this.state.width && this.setState({ width });
+
     if (fetching) {
       return (
         <div
           className={css(styles.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
-          style={{ maxHeight: height, height }}
+          style={{
+            minHeight: height,
+            maxHeight: height,
+            height,
+            width,
+            minWidth: width,
+            maxWidth: width,
+          }}
         >
           <ReactPlaceholder
             ready={false}
@@ -242,7 +257,14 @@ class PaperPageCard extends React.Component {
         <div
           className={css(styles.previewContainer)}
           onClick={this.toggleLightbox}
-          style={{ maxHeight: height }}
+          style={{
+            minHeight: height,
+            maxHeight: height,
+            height,
+            width,
+            minWidth: width,
+            maxWidth: width,
+          }}
         >
           <Carousel
             afterSlide={(slideIndex) =>
@@ -297,7 +319,14 @@ class PaperPageCard extends React.Component {
                 <img
                   src={preview.file}
                   className={css(styles.image)}
-                  style={{ height, maxHeight: height }}
+                  style={{
+                    minHeight: height,
+                    maxHeight: height,
+                    height,
+                    width,
+                    minWidth: width,
+                    maxWidth: width,
+                  }}
                 />
               );
             })}
@@ -319,52 +348,6 @@ class PaperPageCard extends React.Component {
         );
       });
     return authors;
-  };
-
-  renderBullet = () => {
-    // let bullet_points = [
-    //   {
-    //     plain_text: "As of 2018, Sci-Hu provided access to almost 69% of all scholarly literature found in Cross-Ref database",
-    //   },
-    //   {
-    //     plain_text: "vnbj",
-    //   },
-    //   {
-    //     plain_text: "Sci-Hub's coverage of scholarly literature exceeded that of the University of Pennsylvania's academic library",
-    //   }
-    // ]
-    let bullet_points = this.props.bulletsRedux
-      ? this.props.bulletsRedux.bullets
-      : [];
-
-    if (bullet_points && bullet_points.length > 0) {
-      return (
-        <div className={css(styles.summary, styles.text)}>
-          <ul
-            className={css(styles.bulletpoints)}
-            // id={mobileView ? "clamp1" : "clamp2"}
-          >
-            {bullet_points.map((bullet, i) => {
-              if (i < 3) {
-                return (
-                  <li
-                    key={`bullet-${bullet.id}`}
-                    className={css(styles.bullet)}
-                  >
-                    <div
-                      style={{ overflow: "hidden" }}
-                      // id={mobileView ? "clamp1" : "clamp2"}
-                    >
-                      {bullet.plain_text}
-                    </div>
-                  </li>
-                );
-              }
-            })}
-          </ul>
-        </div>
-      );
-    }
   };
 
   renderPublishDate = () => {
@@ -489,6 +472,12 @@ class PaperPageCard extends React.Component {
             type={"Paper"}
           />
         </div>
+        <div
+          className={css(styles.absolutePreview)}
+          style={{ right: -1 * (this.state.width + 20) }}
+        >
+          {this.renderPreview()}
+        </div>
         {figureUrls.length > 0 && (
           <FsLightbox
             toggler={this.state.toggleLightbox}
@@ -502,6 +491,7 @@ class PaperPageCard extends React.Component {
             styles.column,
             !fetching && previews.length === 0 && styles.emptyPreview
           )}
+          ref={this.metaContainerRef}
         >
           <div className={css(styles.row)}>
             <div
@@ -509,7 +499,6 @@ class PaperPageCard extends React.Component {
                 styles.cardContainer,
                 !fetching && previews.length === 0 && styles.emptyPreview
               )}
-              ref={this.metaContainerRef}
             >
               <div className={css(styles.metaContainer)}>
                 <div className={css(styles.titleHeader)}>
@@ -523,9 +512,8 @@ class PaperPageCard extends React.Component {
                   )}
                 </div>
                 <div className={css(styles.column)}>
-                  {this.renderBullet()}
                   {paper && paper.doi && (
-                    <div className={css(styles.doiDate, styles.mobile)}>
+                    <div className={css(styles.doiDate)}>
                       <span className={css(styles.label, styles.doi)}>
                         DOI:
                       </span>
@@ -535,9 +523,9 @@ class PaperPageCard extends React.Component {
                   {paper && (paper.paper_publish_date || paper.authors) && (
                     <div
                       className={css(
-                        styles.dateAuthorContainer,
-                        styles.mobile,
-                        styles.mobileMargin
+                        styles.dateAuthorContainer
+                        // styles.mobile,
+                        // styles.mobileMargin
                       )}
                     >
                       {paper && paper.paper_publish_date && (
@@ -557,30 +545,16 @@ class PaperPageCard extends React.Component {
                 <div className={css(styles.mobile)}>{this.renderHubs()}</div>
               </div>
             </div>
-            <div className={css(styles.rightColumn)}>
+            <div className={css(styles.rightColumn, styles.mobile)}>
               <div className={css(styles.actionMobileContainer)}>
                 {this.renderActions()}
               </div>
               {this.renderPreview()}
             </div>
           </div>
-          <div className={css(styles.hubContainer)}>
-            {paper && (paper.paper_publish_date || paper.authors) && (
-              <div className={css(styles.dateAuthorContainer)}>
-                {paper && paper.paper_publish_date && (
-                  <div className={css(styles.publishDate)}>
-                    <span className={css(styles.label)}>Published:</span>
-                    {this.renderPublishDate()}
-                  </div>
-                )}
-                {paper && paper.authors && (
-                  <div className={css(styles.authors)}>
-                    {this.renderAuthors()}
-                  </div>
-                )}
-              </div>
-            )}
+          <div className={css(styles.bottomRow)}>
             {this.renderHubs()}
+            {this.renderActions()}
           </div>
         </div>
       </div>
@@ -601,8 +575,8 @@ const styles = StyleSheet.create({
     },
   },
   previewContainer: {
-    minWidth: 120,
-    width: 120,
+    // minWidth: 93,
+    // width: 93,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     display: "flex",
@@ -620,6 +594,7 @@ const styles = StyleSheet.create({
   },
   image: {
     height: "100%",
+    width: "100%",
     objectFit: "contain",
   },
   column: {
@@ -790,8 +765,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
-    width: "100%",
-    paddingBottom: 15,
+    "@media only screen and (max-width: 768px)": {
+      paddingBottom: 15,
+    },
   },
   actionIcon: {
     padding: 5,
@@ -869,9 +845,15 @@ const styles = StyleSheet.create({
   metaData: {
     justifyContent: "flex-start",
   },
-  absolute: {
+  absolutePreview: {
     position: "absolute",
-    right: -20,
+    "@media only screen and (min-width: 300px)": {},
+
+    "@media only screen and (min-width: 768px)": {},
+
+    "@media only screen and (min-width: 1280px)": {},
+
+    "@media only screen and (min-width: 1480px)": {},
   },
   left: {
     marginRight: 20,
@@ -882,12 +864,11 @@ const styles = StyleSheet.create({
       display: "flex",
     },
   },
-  hubContainer: {
+  bottomRow: {
     width: "100%",
     display: "flex",
-    // justifyContent: 'flex-end',
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-end",
     marginTop: 15,
     "@media only screen and (max-width: 767px)": {
       display: "none",
@@ -909,21 +890,6 @@ const styles = StyleSheet.create({
     color: "#4e4c5f",
     fontSize: 14,
     paddingBottom: 8,
-  },
-  bulletpoints: {
-    margin: 0,
-    padding: 0,
-    paddingLeft: 15,
-  },
-  bullet: {
-    margin: 0,
-    padding: 0,
-    fontSize: 16,
-    marginBottom: 5,
-    display: "list-item",
-    "@media only screen and (max-width: 767px)": {
-      // fontSize: 14,
-    },
   },
   mobileMargin: {
     marginTop: 10,
@@ -976,15 +942,4 @@ const carousel = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  bulletsRedux: state.bullets,
-});
-
-const mapDispatchToProps = {
-  getBullets: BulletActions.getBullets,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperPageCard);
+export default PaperPageCard;
