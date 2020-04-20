@@ -14,12 +14,14 @@ import HubTag from "~/components/Hubs/HubTag";
 import VoteWidget from "~/components/VoteWidget";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
-import Button from "./Form/Button";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
+
+// redux
+import { BulletActions } from "~/redux/bullets";
 
 // Stylesheets
 import "./stylesheets/Carousel.css";
@@ -215,16 +217,32 @@ class PaperPageCard extends React.Component {
       this.metaContainerRef.current &&
       this.metaContainerRef.current.clientHeight;
 
-    if (height > 250) {
-      height = 250;
+    let width;
+    if (this.metaContainerRef.current) {
+      width = (8.5 * height) / 11; // keeps paper ar
     }
+
+    if (window.innerWidth < 769) {
+      height = 130;
+      width = 101;
+    }
+
+    width !== this.state.width && this.setState({ width });
+
     if (fetching) {
       return (
         <div
           className={css(styles.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
-          style={{ maxHeight: height }}
+          style={{
+            minHeight: height,
+            maxHeight: height,
+            height,
+            width,
+            minWidth: width,
+            maxWidth: width,
+          }}
         >
           <ReactPlaceholder
             ready={false}
@@ -239,7 +257,14 @@ class PaperPageCard extends React.Component {
         <div
           className={css(styles.previewContainer)}
           onClick={this.toggleLightbox}
-          style={{ maxHeight: height }}
+          style={{
+            minHeight: height,
+            maxHeight: height,
+            height,
+            width,
+            minWidth: width,
+            maxWidth: width,
+          }}
         >
           <Carousel
             afterSlide={(slideIndex) =>
@@ -295,7 +320,14 @@ class PaperPageCard extends React.Component {
                 <img
                   src={preview.file}
                   className={css(styles.image)}
-                  style={{ height, maxHeight: height }}
+                  style={{
+                    minHeight: height,
+                    maxHeight: height,
+                    height,
+                    width,
+                    minWidth: width,
+                    maxWidth: width,
+                  }}
                 />
               );
             })}
@@ -337,7 +369,12 @@ class PaperPageCard extends React.Component {
         <div className={css(styles.hubTags)}>
           {paper.hubs.map((hub, index) => {
             return (
-              <HubTag tag={hub} gray={true} key={`hub_tag_index_${index}`} />
+              <HubTag
+                tag={hub}
+                gray={true}
+                key={`hub_tag_index_${index}`}
+                last={index === paper.hubs.length - 1}
+              />
             );
           })}
         </div>
@@ -436,6 +473,12 @@ class PaperPageCard extends React.Component {
             type={"Paper"}
           />
         </div>
+        <div
+          className={css(styles.absolutePreview)}
+          style={{ right: -1 * (this.state.width + 20) }}
+        >
+          {this.renderPreview()}
+        </div>
         {figureUrls.length > 0 && (
           <FsLightbox
             toggler={this.state.toggleLightbox}
@@ -449,6 +492,7 @@ class PaperPageCard extends React.Component {
             styles.column,
             !fetching && previews.length === 0 && styles.emptyPreview
           )}
+          ref={this.metaContainerRef}
         >
           <div className={css(styles.row)}>
             <div
@@ -456,7 +500,6 @@ class PaperPageCard extends React.Component {
                 styles.cardContainer,
                 !fetching && previews.length === 0 && styles.emptyPreview
               )}
-              ref={this.metaContainerRef}
             >
               <div className={css(styles.metaContainer)}>
                 <div className={css(styles.titleHeader)}>
@@ -465,16 +508,27 @@ class PaperPageCard extends React.Component {
                   </div>
                   {paper.paper_title && paper.paper_title !== paper.title && (
                     <div className={css(styles.subtitle)}>
-                      {paper.paper_title}
+                      {`From Paper: ${paper.paper_title}`}
                     </div>
                   )}
-                  {paper && paper.abstract && (
-                    <div className={css(styles.tagline)}>{paper.abstract}</div>
-                  )}
                 </div>
-                <Fragment>
+                <div className={css(styles.column)}>
+                  {paper && paper.doi && (
+                    <div className={css(styles.doiDate)}>
+                      <span className={css(styles.label, styles.doi)}>
+                        DOI:
+                      </span>
+                      {paper.doi}
+                    </div>
+                  )}
                   {paper && (paper.paper_publish_date || paper.authors) && (
-                    <div className={css(styles.dateAuthorContainer)}>
+                    <div
+                      className={css(
+                        styles.dateAuthorContainer
+                        // styles.mobile,
+                        // styles.mobileMargin
+                      )}
+                    >
                       {paper && paper.paper_publish_date && (
                         <div className={css(styles.publishDate)}>
                           <span className={css(styles.label)}>Published:</span>
@@ -488,24 +542,20 @@ class PaperPageCard extends React.Component {
                       )}
                     </div>
                   )}
-                  {paper && paper.doi && (
-                    <div className={css(styles.doiDate)}>
-                      <span className={css(styles.label, styles.doi)}>
-                        DOI:
-                      </span>
-                      {paper.doi}
-                    </div>
-                  )}
-                </Fragment>
-                {this.renderHubs()}
+                </div>
+                <div className={css(styles.mobile)}>{this.renderHubs()}</div>
               </div>
             </div>
-            <div className={css(styles.rightColumn)}>
+            <div className={css(styles.rightColumn, styles.mobile)}>
               <div className={css(styles.actionMobileContainer)}>
                 {this.renderActions()}
               </div>
               {this.renderPreview()}
             </div>
+          </div>
+          <div className={css(styles.bottomRow)}>
+            {this.renderHubs()}
+            {this.renderActions()}
           </div>
         </div>
       </div>
@@ -526,8 +576,6 @@ const styles = StyleSheet.create({
     },
   },
   previewContainer: {
-    minWidth: 180,
-    width: 180,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     display: "flex",
@@ -535,7 +583,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     boxSizing: "border-box",
-    // paddingTop: 25,
     "@media only screen and (min-width: 0px) and (max-width: 767px)": {
       margin: "0 auto",
       marginBottom: 16,
@@ -546,12 +593,13 @@ const styles = StyleSheet.create({
   },
   image: {
     height: "100%",
+    width: "100%",
     objectFit: "contain",
   },
   column: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     width: "100%",
   },
   cardContainer: {
@@ -570,9 +618,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    "@media only screen and (min-width: 768px)": {
-      paddingRight: 16,
-    },
+    "@media only screen and (min-width: 768px)": {},
   },
   topRow: {
     display: "flex",
@@ -585,7 +631,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
-    marginBottom: 20,
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 15,
+    },
   },
   title: {
     fontSize: 30,
@@ -626,20 +674,20 @@ const styles = StyleSheet.create({
   dateAuthorContainer: {
     display: "flex",
     alignItems: "center",
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   publishDate: {
     fontSize: 16,
     color: "#241F3A",
     opacity: 0.7,
-    marginRight: 60,
+    // marginRight: 60,
     display: "flex",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
   },
   authorContainer: {
-    marginRight: 5,
+    marginLeft: 30,
   },
   authors: {
     display: "flex",
@@ -647,10 +695,9 @@ const styles = StyleSheet.create({
   },
   doiDate: {
     fontSize: 16,
-    marginBottom: 15,
+    // marginBottom: 15,
     color: "#241F3A",
     opacity: 0.7,
-    width: "100%",
     display: "flex",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -720,8 +767,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
-    width: "100%",
-    paddingBottom: 15,
+    "@media only screen and (max-width: 768px)": {
+      paddingBottom: 15,
+    },
   },
   actionIcon: {
     padding: 5,
@@ -770,6 +818,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     height: "100%",
+    width: "100%",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column-reverse",
     },
@@ -779,6 +828,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifiyContent: "flex-start",
     alignItems: "flex-end",
+    marginLeft: 20,
     "@media only screen and (max-width: 768px)": {
       width: "100%",
     },
@@ -788,6 +838,64 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 768px)": {
       display: "flex",
     },
+  },
+  spacedRow: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+  },
+  metaData: {
+    justifyContent: "flex-start",
+  },
+  absolutePreview: {
+    position: "absolute",
+    "@media only screen and (min-width: 300px)": {},
+
+    "@media only screen and (min-width: 768px)": {},
+
+    "@media only screen and (min-width: 1280px)": {},
+
+    "@media only screen and (min-width: 1480px)": {},
+  },
+  left: {
+    marginRight: 20,
+  },
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+    },
+  },
+  bottomRow: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    marginTop: 15,
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  spaceBetween: {
+    justifyContent: "space-between",
+  },
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+    },
+  },
+  summary: {
+    minWidth: "100%",
+    maxWidth: "100%",
+    whiteSpace: "pre-wrap",
+    color: "#4e4c5f",
+    fontSize: 14,
+    paddingBottom: 8,
+  },
+  mobileMargin: {
+    marginTop: 10,
+    marginBottom: 15,
   },
 });
 
@@ -834,6 +942,9 @@ const carousel = StyleSheet.create({
   },
   show: {
     opacity: 1,
+  },
+  hide: {
+    display: "none",
   },
 });
 
