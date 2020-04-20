@@ -522,13 +522,7 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                   {paper && (paper.paper_publish_date || paper.authors) && (
-                    <div
-                      className={css(
-                        styles.dateAuthorContainer
-                        // styles.mobile,
-                        // styles.mobileMargin
-                      )}
-                    >
+                    <div className={css(styles.dateAuthorContainer)}>
                       {paper && paper.paper_publish_date && (
                         <div className={css(styles.publishDate)}>
                           <span className={css(styles.label)}>Published:</span>
@@ -543,6 +537,7 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                 </div>
+                <div className={css(styles.mobile)}>{this.renderPreview()}</div>
                 <div className={css(styles.mobile)}>{this.renderHubs()}</div>
               </div>
             </div>
@@ -550,7 +545,6 @@ class PaperPageCard extends React.Component {
               <div className={css(styles.actionMobileContainer)}>
                 {this.renderActions()}
               </div>
-              {this.renderPreview()}
             </div>
           </div>
           <div className={css(styles.bottomRow)}>
@@ -654,7 +648,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: "#241F3A",
-    opacity: 0.7,
+    opacity: 0.5,
     fontSize: 16,
     marginTop: 10,
     "@media only screen and (max-width: 415px)": {
@@ -849,7 +843,9 @@ const styles = StyleSheet.create({
   },
   absolutePreview: {
     position: "absolute",
-    "@media only screen and (min-width: 300px)": {},
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
 
     "@media only screen and (min-width: 768px)": {},
 
@@ -859,12 +855,6 @@ const styles = StyleSheet.create({
   },
   left: {
     marginRight: 20,
-  },
-  mobile: {
-    display: "none",
-    "@media only screen and (max-width: 767px)": {
-      display: "flex",
-    },
   },
   bottomRow: {
     width: "100%",
@@ -883,6 +873,7 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 767px)": {
       display: "flex",
+      marginLeft: 0,
     },
   },
   summary: {
