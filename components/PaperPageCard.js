@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Router from "next/router";
@@ -14,12 +15,14 @@ import HubTag from "~/components/Hubs/HubTag";
 import VoteWidget from "~/components/VoteWidget";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
-import Button from "./Form/Button";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
+
+// redux
+import { BulletActions } from "~/redux/bullets";
 
 // Stylesheets
 import "./stylesheets/Carousel.css";
@@ -49,6 +52,8 @@ class PaperPageCard extends React.Component {
 
   componentDidMount() {
     this.fetchFigures();
+    console.log("this.props.paperId", this.props);
+    this.props.getBullets(this.props.paperId);
   }
 
   componentDidUpdate(prevProps) {
@@ -215,16 +220,14 @@ class PaperPageCard extends React.Component {
       this.metaContainerRef.current &&
       this.metaContainerRef.current.clientHeight;
 
-    if (height > 250) {
-      height = 250;
-    }
+    height = 155;
     if (fetching) {
       return (
         <div
           className={css(styles.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
-          style={{ maxHeight: height }}
+          style={{ maxHeight: height, height }}
         >
           <ReactPlaceholder
             ready={false}
@@ -318,6 +321,52 @@ class PaperPageCard extends React.Component {
     return authors;
   };
 
+  renderBullet = () => {
+    // let bullet_points = [
+    //   {
+    //     plain_text: "As of 2018, Sci-Hu provided access to almost 69% of all scholarly literature found in Cross-Ref database",
+    //   },
+    //   {
+    //     plain_text: "vnbj",
+    //   },
+    //   {
+    //     plain_text: "Sci-Hub's coverage of scholarly literature exceeded that of the University of Pennsylvania's academic library",
+    //   }
+    // ]
+    let bullet_points = this.props.bulletsRedux
+      ? this.props.bulletsRedux.bullets
+      : [];
+
+    if (bullet_points && bullet_points.length > 0) {
+      return (
+        <div className={css(styles.summary, styles.text)}>
+          <ul
+            className={css(styles.bulletpoints)}
+            // id={mobileView ? "clamp1" : "clamp2"}
+          >
+            {bullet_points.map((bullet, i) => {
+              if (i < 3) {
+                return (
+                  <li
+                    key={`bullet-${bullet.id}`}
+                    className={css(styles.bullet)}
+                  >
+                    <div
+                      style={{ overflow: "hidden" }}
+                      // id={mobileView ? "clamp1" : "clamp2"}
+                    >
+                      {bullet.plain_text}
+                    </div>
+                  </li>
+                );
+              }
+            })}
+          </ul>
+        </div>
+      );
+    }
+  };
+
   renderPublishDate = () => {
     let { paper } = this.props;
     if (paper.paper_publish_date) {
@@ -336,7 +385,12 @@ class PaperPageCard extends React.Component {
         <div className={css(styles.hubTags)}>
           {paper.hubs.map((hub, index) => {
             return (
-              <HubTag tag={hub} gray={true} key={`hub_tag_index_${index}`} />
+              <HubTag
+                tag={hub}
+                gray={true}
+                key={`hub_tag_index_${index}`}
+                last={index === paper.hubs.length - 1}
+              />
             );
           })}
         </div>
@@ -464,16 +518,28 @@ class PaperPageCard extends React.Component {
                   </div>
                   {paper.paper_title && paper.paper_title !== paper.title && (
                     <div className={css(styles.subtitle)}>
-                      {paper.paper_title}
+                      {`From Paper: ${paper.paper_title}`}
                     </div>
                   )}
-                  {paper && paper.abstract && (
-                    <div className={css(styles.tagline)}>{paper.abstract}</div>
-                  )}
                 </div>
-                <Fragment>
+                <div className={css(styles.column)}>
+                  {this.renderBullet()}
+                  {paper && paper.doi && (
+                    <div className={css(styles.doiDate, styles.mobile)}>
+                      <span className={css(styles.label, styles.doi)}>
+                        DOI:
+                      </span>
+                      {paper.doi}
+                    </div>
+                  )}
                   {paper && (paper.paper_publish_date || paper.authors) && (
-                    <div className={css(styles.dateAuthorContainer)}>
+                    <div
+                      className={css(
+                        styles.dateAuthorContainer,
+                        styles.mobile,
+                        styles.mobileMargin
+                      )}
+                    >
                       {paper && paper.paper_publish_date && (
                         <div className={css(styles.publishDate)}>
                           <span className={css(styles.label)}>Published:</span>
@@ -487,16 +553,8 @@ class PaperPageCard extends React.Component {
                       )}
                     </div>
                   )}
-                  {paper && paper.doi && (
-                    <div className={css(styles.doiDate)}>
-                      <span className={css(styles.label, styles.doi)}>
-                        DOI:
-                      </span>
-                      {paper.doi}
-                    </div>
-                  )}
-                </Fragment>
-                {this.renderHubs()}
+                </div>
+                <div className={css(styles.mobile)}>{this.renderHubs()}</div>
               </div>
             </div>
             <div className={css(styles.rightColumn)}>
@@ -505,6 +563,24 @@ class PaperPageCard extends React.Component {
               </div>
               {this.renderPreview()}
             </div>
+          </div>
+          <div className={css(styles.hubContainer)}>
+            {paper && (paper.paper_publish_date || paper.authors) && (
+              <div className={css(styles.dateAuthorContainer)}>
+                {paper && paper.paper_publish_date && (
+                  <div className={css(styles.publishDate)}>
+                    <span className={css(styles.label)}>Published:</span>
+                    {this.renderPublishDate()}
+                  </div>
+                )}
+                {paper && paper.authors && (
+                  <div className={css(styles.authors)}>
+                    {this.renderAuthors()}
+                  </div>
+                )}
+              </div>
+            )}
+            {this.renderHubs()}
           </div>
         </div>
       </div>
@@ -525,8 +601,8 @@ const styles = StyleSheet.create({
     },
   },
   previewContainer: {
-    minWidth: 180,
-    width: 180,
+    minWidth: 120,
+    width: 120,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     display: "flex",
@@ -534,7 +610,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     overflow: "hidden",
     boxSizing: "border-box",
-    // paddingTop: 25,
     "@media only screen and (min-width: 0px) and (max-width: 767px)": {
       margin: "0 auto",
       marginBottom: 16,
@@ -550,7 +625,7 @@ const styles = StyleSheet.create({
   column: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     width: "100%",
   },
   cardContainer: {
@@ -569,9 +644,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    "@media only screen and (min-width: 768px)": {
-      paddingRight: 16,
-    },
+    "@media only screen and (min-width: 768px)": {},
   },
   topRow: {
     display: "flex",
@@ -584,7 +657,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
-    marginBottom: 20,
   },
   title: {
     fontSize: 30,
@@ -625,20 +697,20 @@ const styles = StyleSheet.create({
   dateAuthorContainer: {
     display: "flex",
     alignItems: "center",
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   publishDate: {
     fontSize: 16,
     color: "#241F3A",
     opacity: 0.7,
-    marginRight: 60,
+    // marginRight: 60,
     display: "flex",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
   },
   authorContainer: {
-    marginRight: 5,
+    marginLeft: 30,
   },
   authors: {
     display: "flex",
@@ -646,10 +718,9 @@ const styles = StyleSheet.create({
   },
   doiDate: {
     fontSize: 16,
-    marginBottom: 15,
+    // marginBottom: 15,
     color: "#241F3A",
     opacity: 0.7,
-    width: "100%",
     display: "flex",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -769,6 +840,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     height: "100%",
+    width: "100%",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column-reverse",
     },
@@ -778,6 +850,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifiyContent: "flex-start",
     alignItems: "flex-end",
+    marginLeft: 20,
     "@media only screen and (max-width: 768px)": {
       width: "100%",
     },
@@ -787,6 +860,74 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 768px)": {
       display: "flex",
     },
+  },
+  spacedRow: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+  },
+  metaData: {
+    justifyContent: "flex-start",
+  },
+  absolute: {
+    position: "absolute",
+    right: -20,
+  },
+  left: {
+    marginRight: 20,
+  },
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+    },
+  },
+  hubContainer: {
+    width: "100%",
+    display: "flex",
+    // justifyContent: 'flex-end',
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 15,
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  spaceBetween: {
+    justifyContent: "space-between",
+  },
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+    },
+  },
+  summary: {
+    minWidth: "100%",
+    maxWidth: "100%",
+    whiteSpace: "pre-wrap",
+    color: "#4e4c5f",
+    fontSize: 14,
+    paddingBottom: 8,
+  },
+  bulletpoints: {
+    margin: 0,
+    padding: 0,
+    paddingLeft: 15,
+  },
+  bullet: {
+    margin: 0,
+    padding: 0,
+    fontSize: 16,
+    marginBottom: 5,
+    display: "list-item",
+    "@media only screen and (max-width: 767px)": {
+      // fontSize: 14,
+    },
+  },
+  mobileMargin: {
+    marginTop: 10,
+    marginBottom: 15,
   },
 });
 
@@ -830,6 +971,20 @@ const carousel = StyleSheet.create({
   show: {
     opacity: 1,
   },
+  hide: {
+    display: "none",
+  },
 });
 
-export default PaperPageCard;
+const mapStateToProps = (state) => ({
+  bulletsRedux: state.bullets,
+});
+
+const mapDispatchToProps = {
+  getBullets: BulletActions.getBullets,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PaperPageCard);
