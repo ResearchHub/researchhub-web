@@ -630,6 +630,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 15,
+    },
   },
   title: {
     fontSize: 30,
