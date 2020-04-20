@@ -575,8 +575,6 @@ const styles = StyleSheet.create({
     },
   },
   previewContainer: {
-    // minWidth: 93,
-    // width: 93,
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
     borderRadius: 3,
     display: "flex",
