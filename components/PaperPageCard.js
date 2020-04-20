@@ -473,12 +473,14 @@ class PaperPageCard extends React.Component {
             type={"Paper"}
           />
         </div>
-        <div
-          className={css(styles.absolutePreview)}
-          style={{ right: -1 * (this.state.width + 20) }}
-        >
-          {this.renderPreview()}
-        </div>
+        {this.state.width > 0 && (
+          <div
+            className={css(styles.absolutePreview)}
+            style={{ right: -1 * (this.state.width + 20) }}
+          >
+            {this.renderPreview()}
+          </div>
+        )}
         {figureUrls.length > 0 && (
           <FsLightbox
             toggler={this.state.toggleLightbox}
