@@ -267,7 +267,8 @@ class PaperPageCard extends React.Component {
                   >
                     <i className="far fa-angle-left" />
                   </span>
-                  {`${currentSlide + 1} / ${slideCount}`}
+                  <span className={css(styles.slideCount)}>{`${currentSlide +
+                    1} / ${slideCount}`}</span>
                   <span
                     onClick={(e) => {
                       e.stopPropagation();
@@ -796,6 +797,7 @@ const carousel = StyleSheet.create({
     borderRadius: 230,
     height: 30,
     minWidth: 85,
+    whiteSpace: "nowrap",
     color: "#FFF",
     display: "flex",
     justifyContent: "space-between",
@@ -804,6 +806,9 @@ const carousel = StyleSheet.create({
     opacity: 0,
     fontSize: 14,
     transition: "all ease-out 0.3s",
+  },
+  slideCount: {
+    padding: "0px 8px",
   },
   button: {
     border: 0,
