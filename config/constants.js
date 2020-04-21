@@ -1,3 +1,5 @@
+export const COMPANY_NAME = "ResearchHub";
+
 export const AUTH_TOKEN = "researchhub.auth.token";
 export const UPVOTE = "upvote";
 export const DOWNVOTE = "downvote";
@@ -37,6 +39,9 @@ export const orcidMethods = {
 export const ORCID_JWKS_URI = "https://orcid.org/oauth/jwks";
 export const ORCID_KID =
   "production-orcid-org-7hdmdswarosg3gjujo8agwtazgkp1ojs";
+
+export const METATAG_DEFAULT_IMAGE_URL =
+  "https://www.researchhub.com/static/background/facebook-og.jpg";
 
 export function nameToUrl(name) {
   return encodeURIComponent(name);

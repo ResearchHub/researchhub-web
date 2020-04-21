@@ -11,6 +11,7 @@ export const paper = (paper) => {
         ? transformThreads(paper.discussion.threads)
         : [],
     },
+    metatagImage: paper.metatag_image,
     userVote: transformVote(paper.user_vote),
   };
 };

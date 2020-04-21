@@ -198,7 +198,7 @@ const Paper = (props) => {
         <Error statusCode={paper.status} />
       ) : (
         <Fragment>
-          <Head title={paper.title} description={paper.tagline} />
+          <Head title={paper.title} description={paper.tagline} socialImageUrl={props.paper.metatagImage}/>
           <div className={css(styles.paperPageContainer)}>
             <ComponentWrapper overrideStyle={styles.componentWrapper}>
               <PaperPageCard
@@ -342,7 +342,7 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
     const fetchedPaper = store.getState().paper;
     await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
   }
-  return { isServer, hostname };
+  return { isServer, hostname, paper: fetchedPaper } };
 };
 
 const styles = StyleSheet.create({
