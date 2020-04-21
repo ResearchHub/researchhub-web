@@ -4,37 +4,31 @@ function getPathsObject() {
   const fileObj = {};
 
   const walkSync = (dir) => {
-    // Get all files of the current directory & iterate over them
     const files = fs.readdirSync(dir);
     files.forEach((file) => {
-      // Construct whole file-path & retrieve file's stats
       const filePath = `${dir}${file}`;
       const fileStat = fs.statSync(filePath);
 
       if (fileStat.isDirectory()) {
-        // Recurse one folder deeper
         walkSync(`${filePath}/`);
       } else {
-        // Construct this file's pathname excluding the "pages" folder & its extension
         const cleanFileName = filePath
           .substr(0, filePath.lastIndexOf("."))
           .replace("pages/", "");
 
         if (
           !cleanFileName.includes("styles") &&
-          !cleanFileName.includes("orcid")
+          !cleanFileName.includes("orcid") //skip files that arn't pages or accessible to everyone
         ) {
           fileObj[`/${cleanFileName}`] = {
             page: `/${cleanFileName}`,
             lastModified: fileStat.mtime,
           };
         }
-        // Add this file to `fileObj`
       }
     });
   };
 
-  // Start recursion to fill `fileObj`
   walkSync("pages/");
 
   return fileObj;
