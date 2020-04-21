@@ -33,8 +33,7 @@ const getUrlParameter = (name, url) => {
     : decodeURIComponent(results[1].replace(/\+/g, " "));
 };
 
-const summaryScaffoldInitialValue = Value.fromJSON(summaryScaffold);
-const commentInitialValue = Value.fromJSON({
+const blankValue = {
   document: {
     nodes: [
       {
@@ -53,7 +52,9 @@ const commentInitialValue = Value.fromJSON({
       },
     ],
   },
-});
+};
+const summaryScaffoldInitialValue = Value.fromJSON(blankValue);
+const commentInitialValue = Value.fromJSON(blankValue);
 /**
  * Define the default node type.
  *
