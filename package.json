@@ -13,7 +13,8 @@
     "staging": "./scripts/deploy/staging.sh deploy",
     "run:staging": "docker run",
     "start:prod": "docker run -it -p 3010:3000 researchhub-web",
-    "start:staging": "docker run -it -p 3010:3000 researchhub-web-staging"
+    "start:staging": "docker run -it -p 3010:3000 researchhub-web-staging",
+    "sitemap": "node scripts/postExport.js"
   },
   "dependencies": {
     "@quantfive/js-web-config": "latest",
