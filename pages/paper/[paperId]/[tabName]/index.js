@@ -199,23 +199,25 @@ const Paper = (props) => {
       ) : (
         <Fragment>
           <Head title={paper.title} description={paper.tagline} />
-          <ComponentWrapper overrideStyle={styles.componentWrapper}>
-            <PaperPageCard
-              paper={paper}
-              score={score}
-              upvote={upvote}
-              downvote={downvote}
-              selectedVoteType={selectedVoteType}
-              shareUrl={shareUrl}
-              isModerator={isModerator}
-              flagged={flagged}
-              doneFetchingPaper={!loadingPaper}
-              setFlag={setFlag}
-              sticky={sticky}
-              scrollView={scrollView}
-              setSticky={setSticky}
-            />
-          </ComponentWrapper>
+          <div className={css(styles.paperPageContainer)}>
+            <ComponentWrapper overrideStyle={styles.componentWrapper}>
+              <PaperPageCard
+                paper={paper}
+                score={score}
+                upvote={upvote}
+                downvote={downvote}
+                selectedVoteType={selectedVoteType}
+                shareUrl={shareUrl}
+                isModerator={isModerator}
+                flagged={flagged}
+                doneFetchingPaper={!loadingPaper}
+                setFlag={setFlag}
+                sticky={sticky}
+                scrollView={scrollView}
+                setSticky={setSticky}
+              />
+            </ComponentWrapper>
+          </div>
           <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
             <PaperTabBar
               baseUrl={paperId}
@@ -631,9 +633,8 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  paperTabContainer: {
-    // position: 'sticky',
-    // bottom: 200,
+  paperPageContainer: {
+    overflowX: "hidden",
   },
 });
 
