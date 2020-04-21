@@ -23,8 +23,10 @@ const Diff = require("diff");
 class PaperEditHistory extends React.Component {
   static async getInitialProps({ store, isServer, query }) {
     await store.dispatch(PaperActions.getEditHistory(query.paperId));
+    await store.dispatch(PaperActions.getPaper(query.paperId));
+    const paper = store.getState().paper;
 
-    return { isServer };
+    return { isServer, paper };
   }
   constructor(props) {
     super(props);
@@ -222,8 +224,12 @@ class PaperEditHistory extends React.Component {
     return (
       <ComponentWrapper>
         <Head
-          title={paper.title}
-          description={`${paper.title} summary edit history`}
+          title={this.props.paper && this.props.paper.title}
+          description={
+            this.props.paper &&
+            `Add information about ${this.props.paper.title}`
+          }
+          socialImageUrl={this.props.paper && this.props.paper.metatagImage}
         />
         <div
           className={css(styles.container, isMobile && styles.mobileContainer)}
