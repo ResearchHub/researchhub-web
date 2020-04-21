@@ -1,6 +1,7 @@
 import Document, { Head, Main, NextScript } from "next/document";
 import { StyleSheetServer } from "aphrodite";
 import * as Sentry from "@sentry/browser";
+import CustomHead from "../components/Head";
 
 process.on("unhandledRejection", (err) => {
   Sentry.captureException(err);
@@ -80,13 +81,7 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
             rel="stylesheet"
           />
-
-          {/* Meta Tags */}
-          <meta
-            property="og:image"
-            content="https://www.researchhub.com/static/background/facebook-og.jpg"
-          />
-          <meta property="og:type" content="website" />
+          <CustomHead />
         </Head>
         <body style={{ margin: 0, fontFamily: "Roboto, sans-serif" }}>
           <Main />

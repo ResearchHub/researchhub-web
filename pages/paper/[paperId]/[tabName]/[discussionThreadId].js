@@ -143,7 +143,11 @@ const DiscussionThreadPage = (props) => {
   return (
     <div>
       <Message />
-      <Head title={title} description={title} />
+      <Head
+        title={title}
+        description={`Discuss on ResearchHub`}
+        socialImageUrl={this.props.paper && this.props.paper.metatagImage}
+      />
       <div className={css(styles.threadContainer)}>
         <Thread
           hostname={hostname}

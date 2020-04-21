@@ -13,8 +13,9 @@ import { toTitleCase } from "~/config/utils";
 
 class Index extends React.Component {
   static async getInitialProps({ query }) {
+    // TODO: This only works client side so we can remove it from here
     const hub = await fetchHub(query.slug);
-    return { hub };
+    return { hub, slug: query.slug };
   }
 
   constructor(props) {
@@ -66,17 +67,26 @@ class Index extends React.Component {
   };
 
   render() {
+    // TODO: Clean up head code and format slug
     return (
       <div>
         {process.browser ? (
           <Head
-            title={toTitleCase(this.state.currentHub.name)}
+            title={toTitleCase(this.state.currentHub.name) + " on ResearchHub"}
             description={this.state.hubDescription}
           />
         ) : (
           <Head
-            title={this.props.hub ? this.props.hub.name : "ResearchHub"}
-            description={this.props.hub ? this.props.hub.name : "ResearchHub"}
+            title={
+              this.props.hub
+                ? this.props.hub.name + " on ResearchHub"
+                : this.props.slug + " on ResearchHub"
+            }
+            description={
+              this.props.hub
+                ? "Discuss and Discover " + this.props.hub.name
+                : "Discuss and Discover " + this.props.slug
+            }
           />
         )}
         {this.renderHub()}
