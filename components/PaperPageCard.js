@@ -549,7 +549,12 @@ class PaperPageCard extends React.Component {
               </div>
             </div>
           </div>
-          <div className={css(styles.bottomRow)}>
+          <div
+            className={css(
+              styles.bottomRow,
+              paper.hubs && paper.hubs.length < 1 && styles.flexendRow
+            )}
+          >
             {this.renderHubs()}
             {this.renderActions()}
           </div>
@@ -867,6 +872,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
+  },
+  flexendRow: {
+    justifyContent: "flex-end",
   },
   spaceBetween: {
     justifyContent: "space-between",
