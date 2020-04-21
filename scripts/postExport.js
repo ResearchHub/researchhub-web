@@ -18,6 +18,8 @@ function getPathsObject() {
 
         if (
           !cleanFileName.includes("styles") &&
+          !cleanFileName.includes("_") &&
+          !cleanFileName.includes("Base") &&
           !cleanFileName.includes("orcid") //skip files that arn't pages or accessible to everyone
         ) {
           fileObj[`/${cleanFileName}`] = {
