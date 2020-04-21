@@ -15,7 +15,6 @@ function getPathsObject() {
         const cleanFileName = filePath
           .substr(0, filePath.lastIndexOf("."))
           .replace("pages/", "");
-
         if (
           !cleanFileName.includes("styles") &&
           !cleanFileName.includes("_") &&
@@ -55,7 +54,7 @@ const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
   ${Object.keys(pathsObj)
     .map(
       (path) => `<url>
-    <loc>https://researchhub.com${path}</loc>
+    <loc>https://staging-web.researchhub.com${path}</loc>
     <lastmod>${formatDate(new Date(pathsObj[path].lastModified))}</lastmod>
   </url>`
     )
