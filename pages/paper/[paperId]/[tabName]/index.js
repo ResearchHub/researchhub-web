@@ -198,7 +198,11 @@ const Paper = (props) => {
         <Error statusCode={paper.status} />
       ) : (
         <Fragment>
-          <Head title={paper.title} description={paper.tagline} socialImageUrl={props.paper.metatagImage}/>
+          <Head
+            title={paper.title}
+            description={paper.tagline}
+            socialImageUrl={props.paper.metatagImage}
+          />
           <div className={css(styles.paperPageContainer)}>
             <ComponentWrapper overrideStyle={styles.componentWrapper}>
               <PaperPageCard
@@ -332,17 +336,17 @@ const Paper = (props) => {
 Paper.getInitialProps = async ({ isServer, req, store, query }) => {
   const { host } = absoluteUrl(req);
   const hostname = host;
-
+  var fetchedPaper;
   if (
     (store.getState().paper.id !== query.paperId &&
       store.getState().paper.doneFetchingPaper) ||
     (!store.getState().paper.doneFetchingPaper && !store.getState().paper.id)
   ) {
     await store.dispatch(PaperActions.getPaper(query.paperId));
-    const fetchedPaper = store.getState().paper;
+    fetchedPaper = store.getState().paper;
     await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
   }
-  return { isServer, hostname, paper: fetchedPaper } };
+  return { isServer, hostname, paper: fetchedPaper };
 };
 
 const styles = StyleSheet.create({
