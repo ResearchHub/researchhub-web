@@ -23,6 +23,14 @@ class FigureTab extends React.Component {
     this.fetchFigures();
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      if (prevProps.paperId !== this.props.paperId) {
+        this.fetchFigures();
+      }
+    }
+  }
+
   fetchFigures = () => {
     let paperId = this.props.paperId;
     fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())

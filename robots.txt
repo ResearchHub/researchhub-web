@@ -1,0 +1,3 @@
+Sitemap: http://staging-web.researchhub.com/sitemap.xml
+User-agent:*
+Disallow: /
