@@ -471,23 +471,6 @@ const styles = StyleSheet.create({
       display: "flex",
     },
   },
-  actionButtons: {
-    position: "absolute",
-    top: 30,
-    right: -175,
-    display: "flex",
-    alignItems: "center",
-    "@media only screen and (max-width: 1033px)": {
-      flexDirection: "column",
-      justifyContent: "space-evenly",
-      top: 20,
-      right: -60,
-      height: 160,
-    },
-    "@media only screen and (max-width: 760px)": {
-      display: "none",
-    },
-  },
   buttonDivider: {
     height: 5,
   },

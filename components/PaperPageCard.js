@@ -44,6 +44,7 @@ class PaperPageCard extends React.Component {
       fetching: false,
       loading: true,
       slideIndex: 1,
+      width: 180,
     };
     this.containerRef = React.createRef();
     this.metaContainerRef = React.createRef();
@@ -373,7 +374,7 @@ class PaperPageCard extends React.Component {
             return (
               <HubTag
                 tag={hub}
-                gray={true}
+                gray={false}
                 key={`hub_tag_index_${index}`}
                 last={index === paper.hubs.length - 1}
               />
@@ -475,14 +476,6 @@ class PaperPageCard extends React.Component {
             type={"Paper"}
           />
         </div>
-        {this.state.width > 0 && (
-          <div
-            className={css(styles.absolutePreview)}
-            style={{ right: -1 * (this.state.width + 20) }}
-          >
-            {this.renderPreview()}
-          </div>
-        )}
         {figureUrls.length > 0 && (
           <FsLightbox
             toggler={this.state.toggleLightbox}
@@ -551,16 +544,21 @@ class PaperPageCard extends React.Component {
               </div>
             </div>
           </div>
-          <div
-            className={css(
-              styles.bottomRow,
-              paper.hubs && paper.hubs.length < 1 && styles.flexendRow
-            )}
-          >
+          <div className={css(styles.bottomRow)}>
+            <div className={css(styles.actionsContainer)}>
+              {this.renderActions()}
+            </div>
             {this.renderHubs()}
-            {this.renderActions()}
           </div>
         </div>
+        {this.state.width > 0 && (
+          <div
+            className={css(styles.absolutePreview)}
+            // style={{ right: -1 * (this.state.width + 20) }}
+          >
+            {this.renderPreview()}
+          </div>
+        )}
       </div>
     );
   }
@@ -774,6 +772,9 @@ const styles = StyleSheet.create({
       paddingBottom: 15,
     },
   },
+  actionsContainer: {
+    marginRight: 32,
+  },
   actionIcon: {
     padding: 5,
     borderRadius: "50%",
@@ -820,7 +821,6 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     alignItems: "flex-start",
-    height: "100%",
     width: "100%",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column-reverse",
@@ -851,7 +851,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   absolutePreview: {
-    position: "absolute",
+    marginLeft: 16,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -868,8 +868,7 @@ const styles = StyleSheet.create({
   bottomRow: {
     width: "100%",
     display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
+    alignItems: "center",
     marginTop: 15,
     "@media only screen and (max-width: 767px)": {
       display: "none",
