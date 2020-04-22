@@ -86,11 +86,11 @@ class FigureTab extends React.Component {
                     renderBottomCenterControls={() => null}
                     renderCenterLeftControls={(arg) => {
                       let { previousSlide } = arg;
-                      return this.renderButton(previousSlide, "PREV");
+                      return this.renderButton(previousSlide, "Prev");
                     }}
                     renderCenterRightControls={(arg) => {
                       let { nextSlide } = arg;
-                      return this.renderButton(nextSlide, "NEXT");
+                      return this.renderButton(nextSlide, "Next");
                     }}
                   >
                     {this.state.figures.map((figure) => {
@@ -196,10 +196,11 @@ const styles = StyleSheet.create({
   button: {
     cursor: "pointer",
     fontSize: 13,
-    padding: "8px 10px",
+    padding: "10px 16px",
     color: colors.BLUE(),
     border: `1px solid ${colors.BLUE()}`,
-    borderRadius: 2,
+    borderRadius: 4,
+    userSelect: "none",
     ":hover": {
       backgroundColor: colors.BLUE(),
       color: "#FFF",
