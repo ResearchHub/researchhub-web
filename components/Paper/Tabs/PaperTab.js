@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef, Fragment } from "react";
+import { useState, useRef, Fragment } from "react";
 
 // NPM Modules
 import { connect, useStore, useDispatch } from "react-redux";
 import { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { Document, Page, pdfjs } from "react-pdf";
-import { isMobile } from "react-device-detect";
+import { pdfjs } from "react-pdf";
 import { useAlert } from "react-alert";
 import Ripples from "react-ripples";
 
@@ -18,7 +17,6 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import NewDND from "../../Form/NewDND";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import Button from "../../Form/Button";
-import PaperPdf from "../PaperPdf";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
