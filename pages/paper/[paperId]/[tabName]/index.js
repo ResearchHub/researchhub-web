@@ -18,6 +18,7 @@ import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import SignUpBanner from "~/components/modal/SignUpBanner";
+import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -40,6 +41,9 @@ const Paper = (props) => {
   const router = useRouter();
   const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
+  const [referencedBy, setReferencedBy] = useState([]);
+  const [referencedByCount, setReferencedByCount] = useState(0);
+  const [loadingReferencedBy, setLoadingReferencedBy] = useState(true);
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
   const [loadingPaper, setLoadingPaper] = useState(true);
   const [loadingFile, setLoadingFile] = useState(true);
@@ -86,8 +90,28 @@ const Paper = (props) => {
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
 
+  // useEffect(() => {
+  //   window.scroll({ top: 0, behavior: "auto" });
+  // }, []);
+
+  const fetchReferences = () => {
+    let params = {
+      paperId: paperId,
+      route: "referenced_by",
+    };
+    return fetch(API.PAPER(params), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setLoadingReferencedBy(false);
+        let newReferencedBy = [...referencedBy, ...res.results];
+        setReferencedBy(newReferencedBy);
+        setReferencedByCount(res.count);
+      });
+  };
+
   useEffect(() => {
-    window.scroll({ top: 0, behavior: "auto" });
+    fetchReferences();
   }, []);
 
   async function refetchPaper() {
@@ -103,7 +127,7 @@ const Paper = (props) => {
     setDiscussionThreads(getDiscussionThreads(refetchedPaper));
     setFlag(refetchedPaper.user_flag !== null);
 
-    window.scroll({ top: 0, behavior: "auto" });
+    // window.scroll({ top: 0, behavior: "auto" });
     showMessage({ show: false });
     if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
       props.setUploadingPaper(false);
@@ -179,11 +203,7 @@ const Paper = (props) => {
   }
 
   function scrollListener() {
-    if (
-      !scrollView &&
-      window.scrollY >= 5
-      // document.getElementById("paper-navigation").offsetTop - 79
-    ) {
+    if (!scrollView && window.scrollY >= 5) {
       setScrollView(true);
       setSticky(true);
     } else if (scrollView && window.scrollY < 30) {
@@ -262,41 +282,48 @@ const Paper = (props) => {
             </a>
             <a name="citations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                <div
-                  className={css(styles.citationContainer)}
-                  ref={citationRef}
-                  id="citedby-tab"
+                <ReactPlaceholder
+                  ready={!loadingReferencedBy}
+                  showLoadingAnimation
+                  customPlaceholder={
+                    <CitationPreviewPlaceholder color="#efefef" />
+                  }
                 >
-                  <div className={css(styles.header)}>
-                    <div className={css(styles.citationTitle)}>Cited By</div>
-                    <span className={css(styles.citationCount)}>
-                      {paper.referenced_by.length > 0 &&
-                        paper.referenced_by.length}
-                    </span>
-                  </div>
-                  <div className={css(styles.citations)}>
-                    {paper.referenced_by.length > 0 ? (
-                      paper.referenced_by.map((reference, id) => {
-                        return (
-                          <CitationCard
-                            key={`citation-${reference.id}-${id}`}
-                            citation={reference}
-                          />
-                        );
-                      })
-                    ) : (
-                      <div className={css(styles.citationEmpty)}>
-                        <div className={css(styles.icon)}>
-                          <i className="fad fa-file-alt" />
+                  <div
+                    className={css(styles.citationContainer)}
+                    ref={citationRef}
+                    id="citedby-tab"
+                  >
+                    <div className={css(styles.header)}>
+                      <div className={css(styles.citationTitle)}>Cited By</div>
+                      <span className={css(styles.citationCount)}>
+                        {referencedByCount > 0 && referencedByCount}
+                      </span>
+                    </div>
+                    <div className={css(styles.citations)}>
+                      {referencedBy.length > 0 ? (
+                        referencedBy.map((reference, id) => {
+                          return (
+                            <CitationCard
+                              key={`citation-${reference.id}-${id}`}
+                              citation={reference}
+                            />
+                          );
+                        })
+                      ) : (
+                        <div className={css(styles.citationEmpty)}>
+                          <div className={css(styles.icon)}>
+                            <i className="fad fa-file-alt" />
+                          </div>
+                          This paper has not been cited yet
+                          <div className={css(styles.citationEmptySubtext)}>
+                            No citations have been found in RH papers
+                          </div>
                         </div>
-                        This paper has not been cited yet
-                        <div className={css(styles.citationEmptySubtext)}>
-                          No citations have been found in RH papers
-                        </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
+                </ReactPlaceholder>
               </ComponentWrapper>
             </a>
             <a name="paper">
@@ -357,7 +384,6 @@ const styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
-  container: {},
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
@@ -366,20 +392,6 @@ const styles = StyleSheet.create({
     position: "relative",
     "@media only screen and (max-width: 415px)": {
       paddingTop: 20,
-    },
-  },
-  header: {
-    padding: "30px 0px",
-    width: "100%",
-    boxSizing: "border-box",
-    position: "relative",
-    "@media only screen and (max-width: 768px)": {
-      marginLeft: 70,
-      maxWidth: 600,
-    },
-    "@media only screen and (max-width: 700px)": {
-      marginLeft: 0,
-      maxWidth: "unset",
     },
   },
   title: {

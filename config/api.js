@@ -94,22 +94,22 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    PAPER: ({ paperId, search, page, filters, highlights }) => {
+    PAPER: ({ paperId, search, page, filters, highlights, route }) => {
       let url = BASE_URL + `paper/`;
 
-      if (paperId) {
-        url += `${paperId}/?`;
-      } else {
-        url += "?";
-      }
+      let params = {
+        filters,
+        querystring: {
+          search,
+          page,
+        },
+        rest: {
+          route: route,
+          id: paperId,
+        },
+      };
 
-      if (search) {
-        url += `search=${search}&external_search=false&`;
-      }
-
-      if (typeof page === "number") {
-        url += `page=${page}&`;
-      }
+      url = prepURL(url, params);
 
       if (highlights) {
         for (let i = 0; i < highlights.length; i++) {
@@ -118,9 +118,6 @@ const routes = (BASE_URL) => {
       }
 
       url += "make_public=true&";
-
-      url += prepFilters(filters);
-
       return url;
     },
 
