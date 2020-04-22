@@ -1,4 +1,4 @@
-import { Fragment } from "React";
+import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Router from "next/router";
