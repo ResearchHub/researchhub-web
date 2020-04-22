@@ -68,3 +68,7 @@ input:focus {
 [data-slate-editor] > * + * {
   margin-top: 1em;
 }
+
+#summary-editor span {
+  white-space: pre !important;
+}

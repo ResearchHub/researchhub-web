@@ -289,6 +289,7 @@ class RichTextEditor extends React.Component {
               value={this.state.value}
               className={css(
                 styles.comment,
+                styles.summaryEditorBox,
                 this.props.commentStyles && this.props.commentStyles
               )}
               onChange={this.onChange}
@@ -298,6 +299,7 @@ class RichTextEditor extends React.Component {
               hideCancelButton={
                 this.props.hideCancelButton && this.props.hideCancelButton
               }
+              id={"summary-editor"}
               // decorateNode={this.decorateNode}
               // renderDecoration={this.renderDecoration}
             />
@@ -1050,6 +1052,9 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     color: "#241F3A",
     lineHeight: 1.2,
+  },
+  summaryEditorBox: {
+    minHeight: 180,
   },
   commentEditor: {
     background: "#FBFBFD",
