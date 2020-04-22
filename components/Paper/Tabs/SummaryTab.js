@@ -252,6 +252,14 @@ class SummaryTab extends React.Component {
                   commentEditor={false}
                   initialValue={this.state.editorState}
                   passedValue={this.state.editorState}
+                  placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
+                    
+                    Hypothesis: What question does this paper attempt to answer?
+
+                    Conclusion: What conclusion did the paper reach?
+
+                    Significance: What does this paper make possible in the world, and what should be tried from here?
+                    `}
                   onCancel={this.cancel}
                   onSubmit={this.submitEdit}
                   onChange={this.onEditorStateChange}
@@ -316,6 +324,14 @@ class SummaryTab extends React.Component {
                     onChange={this.onEditorStateChange}
                     smallToolBar={true}
                     hideButton={true}
+                    placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
+                      
+Hypothesis: What question does this paper attempt to answer?
+  
+Conclusion: What conclusion did the paper reach?
+  
+Significance: What does this paper make possible in the world, and what should be tried from here?
+                      `}
                     commentStyles={styles.commentStyles}
                   />
                   <div className={css(styles.buttonRow)}>
