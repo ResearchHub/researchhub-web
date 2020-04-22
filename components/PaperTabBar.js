@@ -61,15 +61,26 @@ const PaperTabBar = (props) => {
     if (window.scrollY < 200) {
       setSelectedTab("main");
     } else if (
-      window.scrollY >= calculateOffset("citedby-tab", -navbarHeight)
+      window.scrollY <= calculateOffset("takeaways-tab", -navbarHeight)
     ) {
-      setSelectedTab("Paper PDF");
+      setSelectedTab("key takeaways");
     } else if (
-      window.scrollY >= calculateOffset("discussions-tab", -navbarHeight)
+      window.scrollY <= calculateOffset("abstract-tab", -navbarHeight)
     ) {
-      setSelectedTab("cited by");
+      setSelectedTab("abstract");
     } else if (
-      window.scrollY >= calculateOffset("summary-tab", -navbarHeight)
+      window.scrollY <= calculateOffset("summary-tab", -navbarHeight)
+    ) {
+      setSelectedTab("summary");
+      if (window.outerWidth < 667) {
+        let paperNavigation = document.getElementById("paper-navigation");
+        paperNavigation.scroll({
+          left: 0,
+          behavior: "smooth",
+        });
+      }
+    } else if (
+      window.scrollY <= calculateOffset("discussions-tab", -navbarHeight)
     ) {
       setSelectedTab("discussions");
       if (window.outerWidth < 667) {
@@ -80,28 +91,29 @@ const PaperTabBar = (props) => {
         });
       }
     } else if (
-      window.scrollY >= calculateOffset("takeaways-tab", -navbarHeight)
+      window.scrollY <= calculateOffset("figures-tab", -navbarHeight)
     ) {
-      setSelectedTab("summary");
-      if (window.outerWidth < 667) {
-        let paperNavigation = document.getElementById("paper-navigation");
-        paperNavigation.scroll({
-          left: 0,
-          behavior: "smooth",
-        });
-      }
+      setSelectedTab("figures");
+    } else if (window.scrollY <= calculateOffset("paper-tab", -navbarHeight)) {
+      setSelectedTab("Paper PDF");
+    } else if (
+      window.scrollY <= calculateOffset("citedby-tab", -navbarHeight)
+    ) {
+      setSelectedTab("citations");
     } else {
-      setSelectedTab("key takeaways");
+      // setSelectedTab("key takeaways");
     }
   }
 
   const tabs = [
     { href: "main", label: "main" },
     { href: "takeaways", label: "key takeaways" },
+    { href: "abstract", label: "abstract" },
     { href: "summary", label: "summary" },
     { href: "discussions", label: "discussions" },
-    { href: "citations", label: "cited by" },
+    { href: "figures", label: "figures" },
     { href: "paper", label: "Paper PDF" },
+    { href: "citations", label: "cited by" },
   ].map(formatTabs);
 
   function formatTabs(tab) {
@@ -185,7 +197,6 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     justifyContent: "center",
-    // background: paperTabColors.BACKGROUND,
     background: "#fff",
     borderBottom: "1.5px solid #F0F0F0",
     overflow: "auto",
