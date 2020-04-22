@@ -4,6 +4,7 @@ import Carousel from "nuka-carousel";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
+import EmptyState from "~/components/Placeholders/EmptyState";
 
 // Config
 import API from "../../../config/api";
@@ -70,15 +71,10 @@ class FigureTab extends React.Component {
                 </div>
               </Fragment>
             ) : (
-              <div className={css(styles.citationEmpty)}>
-                <div className={css(styles.icon)}>
-                  <i className="fad fa-file-alt" />
-                </div>
-                This paper has no figures yet
-                <div className={css(styles.citationEmptySubtext)}>
-                  No figures have been found in RH papers
-                </div>
-              </div>
+              <EmptyState
+                text={"This paper has no figures yet"}
+                subtext={"No figures have been found in this paper's PDF"}
+              />
             )}
           </div>
         </div>
@@ -157,34 +153,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-  },
-  citationEmpty: {
-    fontSize: 20,
-    fontWeight: 500,
-    width: "100%",
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 16,
-    },
-  },
-  icon: {
-    fontSize: 50,
-    color: "rgb(78, 83, 255)",
-    height: 50,
-    marginBottom: 25,
-  },
-  citationEmptySubtext: {
-    fontSize: 16,
-    color: "rgba(36, 31, 58, 0.8)",
-    fontWeight: 400,
-    marginTop: 10,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
   },
 });
 
