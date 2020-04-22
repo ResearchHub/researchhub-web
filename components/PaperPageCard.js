@@ -248,7 +248,9 @@ class PaperPageCard extends React.Component {
             ready={false}
             showLoadingAnimation
             customPlaceholder={<PreviewPlaceholder color="#efefef" />}
-          />
+          >
+            <div />
+          </ReactPlaceholder>
         </div>
       );
     }

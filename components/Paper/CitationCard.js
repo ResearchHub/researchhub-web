@@ -1,3 +1,4 @@
+import { Fragment } from "React";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Router from "next/router";
@@ -14,10 +15,6 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-
-import icons from "~/config/themes/icons";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 class CitationCard extends React.Component {
   constructor(props) {
@@ -53,26 +50,10 @@ class CitationCard extends React.Component {
     this.setState({ toggleLightbox: !this.state.toggleLightbox });
   };
 
-  checkIsPublic = () => {
-    let { citation, setMessage, showMessage } = this.props;
-    showMessage({ show: true, load: true });
-    let paperId = citation.id;
-    return this.navigateToPage();
-  };
-
   getHref = () => {
     let { citation } = this.props;
     let paperId = citation.id;
     return `/paper/${paperId}/summary`;
-  };
-
-  navigateToPage = () => {
-    let { citation, showMessage } = this.props;
-    let paperId = citation.id;
-    Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
-    setTimeout(() => {
-      showMessage({ show: false });
-    }, 400);
   };
 
   renderPreview = () => {
@@ -87,7 +68,9 @@ class CitationCard extends React.Component {
             ready={false}
             showLoadingAnimation
             customPlaceholder={<PreviewPlaceholder color="#efefef" />}
-          />
+          >
+            <div />
+          </ReactPlaceholder>
         </div>
       );
     }
@@ -155,7 +138,6 @@ class CitationCard extends React.Component {
           className={css(carousel.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
-          // onClick={(e) => e.stopPropagation()}
         >
           <ReactPlaceholder
             ready={false}
@@ -175,7 +157,10 @@ class CitationCard extends React.Component {
       citation &&
       citation.hubs.map((hub, index) => {
         return (
-          <span className={css(styles.hubtag)}>
+          <span
+            key={`hub_${index}_${citation.id}`}
+            className={css(styles.hubtag)}
+          >
             <HubTag tag={hub} gray={true} />
           </span>
         );
@@ -192,30 +177,32 @@ class CitationCard extends React.Component {
         className={css(styles.card)}
         onMouseEnter={this.setHover}
         onMouseLeave={this.unsetHover}
-        onClick={this.checkIsPublic}
       >
-        {figureUrls.length > 0 && (
-          <span onClick={(e) => e.stopPropagation()}>
-            <FsLightbox
-              toggler={toggleLightbox}
-              type="image"
-              sources={[...figureUrls]}
-            />
-          </span>
-        )}
-        {this.renderPreview()}
-        <a className={css(styles.link)} href={this.getHref()}>
-          <div className={css(styles.title)} id={"clamp"}>
-            {citation.title && citation.title}
-          </div>
-          <div className={css(styles.hubs)}>{this.renderHubs()}</div>
-        </a>
+        <Link href={"/paper/[paperId]/[tabName]"} as={this.getHref()}>
+          <a className={css(styles.link)}>
+            {figureUrls.length > 0 && (
+              <span onClick={(e) => e.stopPropagation()}>
+                <FsLightbox
+                  toggler={toggleLightbox}
+                  type="image"
+                  sources={[...figureUrls]}
+                />
+              </span>
+            )}
+            {this.renderPreview()}
+
+            <div className={css(styles.title)} id={"clamp"}>
+              {citation.title && citation.title}
+            </div>
+          </a>
+        </Link>
+        <div className={css(styles.hubs)}>{this.renderHubs()}</div>
       </div>
     );
   };
 
   render() {
-    return <div>{this.renderCitation()}</div>;
+    return <Fragment>{this.renderCitation()}</Fragment>;
   }
 }
 
