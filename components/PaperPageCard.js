@@ -44,7 +44,6 @@ class PaperPageCard extends React.Component {
       fetching: false,
       loading: true,
       slideIndex: 1,
-      width: 180,
     };
     this.containerRef = React.createRef();
     this.metaContainerRef = React.createRef();
