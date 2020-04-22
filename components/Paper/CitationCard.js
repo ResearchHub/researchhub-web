@@ -161,7 +161,7 @@ class CitationCard extends React.Component {
             key={`hub_${index}_${citation.id}`}
             className={css(styles.hubtag)}
           >
-            <HubTag tag={hub} gray={true} />
+            <HubTag tag={hub} gray={false} />
           </span>
         );
       });
