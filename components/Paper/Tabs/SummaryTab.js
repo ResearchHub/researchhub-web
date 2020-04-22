@@ -14,6 +14,7 @@ import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import { Event } from "~/components/GAnalytics/EventTracker";
+import EmptyState from "~/components/Placeholders/EmptyState";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -222,9 +223,14 @@ class SummaryTab extends React.Component {
                 </div>
               </PermissionNotificationWrapper>
             </div>
-            <div className={css(styles.abstractText)}>
-              {paper && paper.abstract}
-            </div>
+            {paper && paper.abstract ? (
+              <div className={css(styles.abstractText)}>{paper.abstract}</div>
+            ) : (
+              <EmptyState
+                text={"An abstract hasn't been added yet"}
+                subtext={"Earn 1 RHC for adding an abstract to the paper"}
+              />
+            )}
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
