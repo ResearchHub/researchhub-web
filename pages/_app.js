@@ -45,6 +45,11 @@ class MyApp extends App {
     });
 
     Router.events.on("routeChangeComplete", () => {
+      window.scroll({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
       ReactGA.pageview(props.router.asPath);
       props.store.dispatch(MessageActions.showMessage({ show: false }));
     });
