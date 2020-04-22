@@ -23,11 +23,7 @@ const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
       <Fragment>
         <Ripples>
           <Link href={"/hubs/[slug]"} as={`/hubs/${nameToUrl(slug)}`}>
-            <a
-              className={css(styles.atag)}
-              onClick={(e) => e.preventDefault()}
-              href={`/hubs/${nameToUrl(slug)}`}
-            >
+            <a className={css(styles.atag)}>
               <div
                 className={css(
                   styles.tag,
