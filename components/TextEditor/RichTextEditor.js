@@ -299,7 +299,7 @@ class RichTextEditor extends React.Component {
               hideCancelButton={
                 this.props.hideCancelButton && this.props.hideCancelButton
               }
-              id={"summary-editor"}
+              id={this.props.readOnly ? null : "summary-editor"}
               // decorateNode={this.decorateNode}
               // renderDecoration={this.renderDecoration}
             />
