@@ -264,14 +264,6 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
-  function navigateHome() {
-    Router.push("/");
-    if (props.modals.openUploadPaperModal) {
-      props.openUploadPaperModal(false);
-      document.body.style.overflow = "scroll";
-    }
-  }
-
   const burgerMenuStyle = {
     bmBurgerBars: {
       background: "#373a47",
@@ -344,9 +336,11 @@ const Navbar = (props) => {
         <TransactionModal />
         <FirstVoteModal />
         <OrcidConnectModal />
-        <div className={css(styles.logoContainer)} onClick={navigateHome}>
-          <RHLogo iconStyle={styles.logo} />
-        </div>
+        <Link href={"/"} as={`/`}>
+          <a className={css(styles.logoContainer)}>
+            <RHLogo iconStyle={styles.logo} />
+          </a>
+        </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
         <Search />
         <div className={css(styles.actions)}>
