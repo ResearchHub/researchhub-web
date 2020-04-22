@@ -1,14 +1,9 @@
 import { Fragment } from "react";
-import Router from "next/link";
-import Link from "next/link";
-import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
 import Carousel from "nuka-carousel";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Config
 import API from "../../../config/api";
@@ -56,21 +51,35 @@ class FigureTab extends React.Component {
             </span>
           </div>
           <div className={css(styles.figuresWrapper)}>
-            <div className={css(styles.figures)}>
-              <Carousel
-                wrapAround={true}
-                enableKeyboardControls={true}
-                afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
-                renderBottomCenterControls={() => null}
-              >
-                {this.state.figures.map((figure) => {
-                  return <img src={figure} className={css(styles.image)} />;
-                })}
-              </Carousel>
-            </div>
-            <div className={css(styles.slideIndex)}>
-              {`Figure ${this.state.currentSlideIndex + 1} `}
-            </div>
+            {this.state.figures.length > 0 ? (
+              <Fragment>
+                <div className={css(styles.figures)}>
+                  <Carousel
+                    wrapAround={true}
+                    enableKeyboardControls={true}
+                    afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
+                    renderBottomCenterControls={() => null}
+                  >
+                    {this.state.figures.map((figure) => {
+                      return <img src={figure} className={css(styles.image)} />;
+                    })}
+                  </Carousel>
+                </div>
+                <div className={css(styles.slideIndex)}>
+                  {`Figure ${this.state.currentSlideIndex + 1} `}
+                </div>
+              </Fragment>
+            ) : (
+              <div className={css(styles.citationEmpty)}>
+                <div className={css(styles.icon)}>
+                  <i className="fad fa-file-alt" />
+                </div>
+                This paper has no figures yet
+                <div className={css(styles.citationEmptySubtext)}>
+                  No figures have been found in RH papers
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </ComponentWrapper>
@@ -148,6 +157,34 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  citationEmpty: {
+    fontSize: 20,
+    fontWeight: 500,
+    width: "100%",
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 16,
+    },
+  },
+  icon: {
+    fontSize: 50,
+    color: "rgb(78, 83, 255)",
+    height: 50,
+    marginBottom: 25,
+  },
+  citationEmptySubtext: {
+    fontSize: 16,
+    color: "rgba(36, 31, 58, 0.8)",
+    fontWeight: 400,
+    marginTop: 10,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
 });
 
