@@ -435,6 +435,9 @@ const routes = (BASE_URL) => {
     GET_PAPER_FIGURES: ({ paperId }) => {
       return BASE_URL + `figure/${paperId}/get_all_figures/`;
     },
+    GET_PAPER_FIGURES_ONLY: ({ paperId }) => {
+      return BASE_URL + `figure/${paperId}/get_regular_figures/`;
+    },
     MAKE_PAPER_PUBLIC: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/?make_public=true/`;
     },

@@ -15,6 +15,7 @@ import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
+import FigureTab from "~/components/Paper/Tabs/FigureTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
@@ -278,6 +279,22 @@ const Paper = (props) => {
                 />
               </div>
             </a>
+            <a name="figures">
+              <div className={css(styles.figuresContainer)}>
+                <FigureTab paperId={paperId} paper={paper} />
+              </div>
+            </a>
+            <a name="paper">
+              <div id="paper-tab" className={css(styles.paperTabContainer)}>
+                <PaperTab
+                  paperId={paperId}
+                  paper={paper}
+                  paperPdfRef={paperPdfRef}
+                  isModerator={isModerator}
+                  setLoadingFile={setLoadingFile}
+                />
+              </div>
+            </a>
             <a name="citations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <ReactPlaceholder
@@ -323,17 +340,6 @@ const Paper = (props) => {
                   </div>
                 </ReactPlaceholder>
               </ComponentWrapper>
-            </a>
-            <a name="paper">
-              <div id="paper-tab" className={css(styles.paperTabContainer)}>
-                <PaperTab
-                  paperId={paperId}
-                  paper={paper}
-                  paperPdfRef={paperPdfRef}
-                  isModerator={isModerator}
-                  setLoadingFile={setLoadingFile}
-                />
-              </div>
             </a>
           </div>
           <Joyride
@@ -632,6 +638,12 @@ const styles = StyleSheet.create({
   },
   paperPageContainer: {
     overflowX: "hidden",
+  },
+  abstractText: {
+    lineHeight: 1.6,
+  },
+  figuresContainer: {
+    marginTop: 32,
   },
 });
 
