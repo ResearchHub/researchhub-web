@@ -9,6 +9,7 @@ import EmptyState from "~/components/Placeholders/EmptyState";
 // Config
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import colors from "~/config/themes/colors";
 
 class FigureTab extends React.Component {
   constructor(props) {
@@ -49,6 +50,20 @@ class FigureTab extends React.Component {
     this.setState({ currentSlideIndex });
   };
 
+  renderButton = (onClick, label) => {
+    return (
+      <div
+        className={css(styles.button)}
+        onClick={(e) => {
+          e && e.stopPropagation();
+          onClick(e);
+        }}
+      >
+        {label && label}
+      </div>
+    );
+  };
+
   render() {
     return (
       <ComponentWrapper>
@@ -64,10 +79,19 @@ class FigureTab extends React.Component {
               <Fragment>
                 <div className={css(styles.figures)}>
                   <Carousel
+                    outline={"none"}
                     wrapAround={true}
                     enableKeyboardControls={true}
                     afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
                     renderBottomCenterControls={() => null}
+                    renderCenterLeftControls={(arg) => {
+                      let { previousSlide } = arg;
+                      return this.renderButton(previousSlide, "PREV");
+                    }}
+                    renderCenterRightControls={(arg) => {
+                      let { nextSlide } = arg;
+                      return this.renderButton(nextSlide, "NEXT");
+                    }}
                   >
                     {this.state.figures.map((figure) => {
                       return <img src={figure} className={css(styles.image)} />;
@@ -135,11 +159,19 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    outline: "none",
+    border: "none",
+    border: 0,
   },
   image: {
     width: 300,
+    height: "100%",
     marginRight: "auto",
     marginLeft: "auto",
+    marginTop: "auto",
+    marginBottom: "auto",
+    outline: "none",
+    border: "none",
   },
   bottomControl: {
     background: "rgba(36, 31, 58, 0.65)",
@@ -151,8 +183,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
-    // opacity: 0,
     fontSize: 14,
     transition: "all ease-out 0.3s",
   },
@@ -161,6 +191,22 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 20,
+  },
+  button: {
+    cursor: "pointer",
+    fontSize: 13,
+    padding: "8px 10px",
+    color: colors.BLUE(),
+    border: `1px solid ${colors.BLUE()}`,
+    borderRadius: 2,
+    ":hover": {
+      backgroundColor: colors.BLUE(),
+      color: "#FFF",
+    },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
 });
 
