@@ -218,6 +218,9 @@ class PaperPageCard extends React.Component {
       this.metaContainerRef.current.clientHeight;
 
     let width;
+    if (height < 137.545) {
+      height = 137.545;
+    }
     if (this.metaContainerRef.current) {
       width = (8.5 * height) / 11; // keeps paper ar
     }

@@ -269,7 +269,7 @@ const PaperEntryCard = ({
                   tag={tag}
                   hubName={hubName}
                   last={index === hubs.length - 1}
-                  gray={true}
+                  gray={false}
                   labelStyle={styles.hubLabel}
                 />
               )
