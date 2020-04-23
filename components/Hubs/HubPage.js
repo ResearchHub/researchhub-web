@@ -17,6 +17,7 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import ResearchHubBanner from "../ResearchHubBanner";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -522,69 +523,7 @@ class HubPage extends React.Component {
 
     return (
       <div className={css(styles.content, styles.column)}>
-        <div
-          className={css(
-            styles.homeBanner,
-            !auth.showBanner && styles.hideBanner
-          )}
-        >
-          <span
-            className={css(styles.closeButton)}
-            onClick={this.updateUserBannerPreference}
-          >
-            <i className="fal fa-times" />
-          </span>
-          <img
-            src={
-              this.state.mobileBanner
-                ? "/static/background/background-home-mobile.png"
-                : "/static/background/background-home.jpg"
-            }
-            className={css(
-              styles.bannerOverlay,
-              this.state.mobileView && styles.hideBanner
-            )}
-          />
-          <div
-            className={css(
-              styles.column,
-              styles.titleContainer,
-              auth.isLoggedIn && styles.centered
-            )}
-          >
-            <div className={css(styles.header, styles.text)}>
-              Welcome to{" "}
-              <span className={css(styles.hubName)}>
-                {this.props.home ? "ResearchHub" : this.props.hub.name}!
-              </span>
-            </div>
-            <div className={css(styles.subtext, styles.text)}>
-              We're a community seeking to improve prioritization,
-              collaboration, reproducibility, and funding of scientific
-              research.{" "}
-              <Link href={"/about"}>
-                <a className={css(styles.readMore)}>Read more</a>
-              </Link>
-            </div>
-            <div className={css(styles.subtext, styles.promo, styles.text)}>
-              Join today for 25 RHC
-              <img
-                className={css(styles.coinIcon)}
-                src={"/static/icons/coin-filled.png"}
-              />
-            </div>
-            <span className={css(styles.googleLogin)}>
-              {!auth.isLoggedIn && (
-                <GoogleLoginButton
-                  styles={styles.googleLoginButton}
-                  googleLogin={this.props.googleLogin}
-                  getUser={this.props.getUser}
-                  customLabel={"Sign up with Google"}
-                />
-              )}
-            </span>
-          </div>
-        </div>
+        <ResearchHubBanner home={this.props.home} hub={this.props.hub} />
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
             <HubsList current={this.props.home ? null : this.props.hub} />
