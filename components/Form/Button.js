@@ -119,8 +119,10 @@ const styles = StyleSheet.create({
       backgroundColor: "#3E43E8",
     },
     "@media only screen and (max-width: 415px)": {
-      height: 30,
-      width: 100,
+      width: "unset",
+      height: "unset",
+      minHeight: 30,
+      minWidth: 100,
     },
   },
   ripples: {
