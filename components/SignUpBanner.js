@@ -37,7 +37,9 @@ class SignUpBanner extends React.Component {
         !isLoggedIn && showSignupBanner && this.showBanner();
       }
       if (prevProps.route !== this.props.route) {
-        this.showBanner();
+        let { isLoggedIn } = this.props.auth;
+        let { showSignupBanner } = this.props.banners;
+        !isLoggedIn && showSignupBanner && this.showBanner();
       }
     }
   }
