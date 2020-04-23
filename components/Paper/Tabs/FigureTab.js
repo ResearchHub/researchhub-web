@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   button: {
     cursor: "pointer",
-    fontSize: 13,
+    fontSize: 14,
     padding: "10px 16px",
     color: colors.BLUE(),
     border: `1px solid ${colors.BLUE()}`,
@@ -206,6 +206,9 @@ const styles = StyleSheet.create({
       color: "#FFF",
     },
     "@media only screen and (max-width: 767px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
   },
