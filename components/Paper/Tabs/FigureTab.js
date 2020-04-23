@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
+import FsLightbox from "fslightbox-react";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -34,7 +35,7 @@ class FigureTab extends React.Component {
 
   fetchFigures = () => {
     let paperId = this.props.paperId;
-    fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
+    return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -75,12 +76,21 @@ class FigureTab extends React.Component {
             </span>
           </div>
           <div className={css(styles.figuresWrapper)}>
+            {this.state.figures.length > 0 && (
+              <FsLightbox
+                toggler={this.state.toggleLightbox}
+                type="image"
+                sources={[...this.state.figures]}
+                slide={this.state.slideIndex}
+              />
+            )}
             {this.state.figures.length > 0 ? (
               <Fragment>
                 <div className={css(styles.figures)}>
                   <Carousel
                     outline={"none"}
                     wrapAround={true}
+                    className={css(styles.slider)}
                     enableKeyboardControls={true}
                     afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
                     renderBottomCenterControls={() => null}
@@ -132,6 +142,9 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: 32,
   },
+  slider: {
+    outline: "none",
+  },
   sectionTitle: {
     fontSize: 22,
     fontWeight: 500,
@@ -173,6 +186,7 @@ const styles = StyleSheet.create({
     marginBottom: "auto",
     outline: "none",
     border: "none",
+    objectFit: "contain",
   },
   bottomControl: {
     background: "rgba(36, 31, 58, 0.65)",
