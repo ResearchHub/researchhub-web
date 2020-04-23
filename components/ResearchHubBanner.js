@@ -1,12 +1,7 @@
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import InfiniteScroll from "react-infinite-scroller";
-import moment from "moment";
-import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Link from "next/link";
-import ReactTooltip from "react-tooltip";
-import Ripples from "react-ripples";
 
 // Components
 import GoogleLoginButton from "~/components/GoogleLoginButton";
@@ -18,11 +13,7 @@ import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import { PaperActions } from "~/redux/paper";
-import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "~/config/constants";
 
 class ResearchHubBanner extends React.Component {
   constructor(props) {
@@ -51,6 +42,7 @@ class ResearchHubBanner extends React.Component {
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
+    let { showSignupBanner } = this.props.banners;
   }
 
   componentWillUnmount() {
@@ -61,51 +53,53 @@ class ResearchHubBanner extends React.Component {
     let { auth } = this.props;
 
     return (
-      <div className={css(styles.content, styles.column)}>
+      <div
+        className={css(
+          styles.homeBanner,
+          !auth.showBanner && styles.hideBanner
+        )}
+      >
+        <span
+          className={css(styles.closeButton)}
+          onClick={this.updateUserBannerPreference}
+        >
+          <i className="fal fa-times" />
+        </span>
+        <img
+          src={
+            this.state.mobileBanner
+              ? "/static/background/background-home-mobile.png"
+              : "/static/background/background-home.jpg"
+          }
+          className={css(
+            styles.bannerOverlay,
+            this.state.mobileView && styles.hideBanner
+          )}
+        />
         <div
           className={css(
-            styles.homeBanner,
-            !auth.showBanner && styles.hideBanner
+            styles.column,
+            styles.titleContainer,
+            auth.isLoggedIn && styles.centered
           )}
         >
-          <span
-            className={css(styles.closeButton)}
-            onClick={this.updateUserBannerPreference}
-          >
-            <i className="fal fa-times" />
-          </span>
-          <img
-            src={
-              this.state.mobileBanner
-                ? "/static/background/background-home-mobile.png"
-                : "/static/background/background-home.jpg"
-            }
-            className={css(
-              styles.bannerOverlay,
-              this.state.mobileView && styles.hideBanner
-            )}
-          />
-          <div
-            className={css(
-              styles.column,
-              styles.titleContainer,
-              auth.isLoggedIn && styles.centered
-            )}
-          >
-            <div className={css(styles.header, styles.text)}>
-              Welcome to{" "}
-              <span className={css(styles.hubName)}>
-                {this.props.all ? "ResearchHub" : this.props.hub.name}!
-              </span>
-            </div>
-            <div className={css(styles.subtext, styles.text)}>
-              We're a community seeking to improve prioritization,
-              collaboration, reproducibility, and funding of scientific
-              research.{" "}
-              <Link href={"/about"}>
-                <a className={css(styles.readMore)}>Read more</a>
-              </Link>
-            </div>
+          <div className={css(styles.header, styles.text)}>
+            Welcome to{" "}
+            <span className={css(styles.hubName)}>
+              {this.props.all || this.props.home
+                ? "ResearchHub"
+                : this.props.hub.name}
+              !
+            </span>
+          </div>
+          <div className={css(styles.subtext, styles.text)}>
+            We're a community seeking to improve prioritization, collaboration,
+            reproducibility, and funding of scientific research.{" "}
+            <Link href={"/about"}>
+              <a className={css(styles.readMore)}>Read more</a>
+            </Link>
+          </div>
+          {this.props.banners.showSignupBanner && (
             <div className={css(styles.subtext, styles.promo, styles.text)}>
               Join today for 25 RHC
               <img
@@ -113,17 +107,17 @@ class ResearchHubBanner extends React.Component {
                 src={"/static/icons/coin-filled.png"}
               />
             </div>
-            <span className={css(styles.googleLogin)}>
-              {!auth.isLoggedIn && (
-                <GoogleLoginButton
-                  styles={styles.googleLoginButton}
-                  googleLogin={this.props.googleLogin}
-                  getUser={this.props.getUser}
-                  customLabel={"Sign up with Google"}
-                />
-              )}
-            </span>
-          </div>
+          )}
+          <span className={css(styles.googleLogin)}>
+            {!auth.isLoggedIn && (
+              <GoogleLoginButton
+                styles={styles.googleLoginButton}
+                googleLogin={this.props.googleLogin}
+                getUser={this.props.getUser}
+                customLabel={"Sign up with Google"}
+              />
+            )}
+          </span>
         </div>
       </div>
     );
@@ -564,6 +558,7 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
   isLoggedIn: state.auth.isLoggedIn,
   allHubs: state.hubs.hubs,
+  banners: state.banners,
 });
 
 const mapDispatchToProps = {
