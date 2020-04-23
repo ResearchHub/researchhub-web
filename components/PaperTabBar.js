@@ -65,10 +65,6 @@ const PaperTabBar = (props) => {
     ) {
       setSelectedTab("key takeaways");
     } else if (
-      window.scrollY <= calculateOffset("abstract-tab", -navbarHeight)
-    ) {
-      setSelectedTab("abstract");
-    } else if (
       window.scrollY <= calculateOffset("summary-tab", -navbarHeight)
     ) {
       setSelectedTab("summary");
@@ -108,7 +104,6 @@ const PaperTabBar = (props) => {
   const tabs = [
     { href: "main", label: "main" },
     { href: "takeaways", label: "key takeaways" },
-    { href: "abstract", label: "abstract" },
     { href: "summary", label: "summary" },
     { href: "discussions", label: "discussions" },
     { href: "figures", label: "figures" },
