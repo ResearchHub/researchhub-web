@@ -2,10 +2,13 @@ import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyState from "~/components/Placeholders/EmptyState";
+import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 
 // Config
 import API from "../../../config/api";
@@ -18,6 +21,7 @@ class FigureTab extends React.Component {
     this.state = {
       figures: [],
       currentSlideIndex: 0,
+      fetching: true,
     };
   }
 
@@ -34,17 +38,20 @@ class FigureTab extends React.Component {
   }
 
   fetchFigures = () => {
-    let paperId = this.props.paperId;
-    return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.setState({
-          figures: res.data.map((el) => {
-            return el.file;
-          }),
+    this.setState({ fetching: true }, () => {
+      let paperId = this.props.paperId;
+      return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          this.setState({
+            figures: res.data.map((el) => {
+              return el.file;
+            }),
+            fetching: false,
+          });
         });
-      });
+    });
   };
 
   setCurrentSlideIndex = (currentSlideIndex) => {
@@ -65,9 +72,56 @@ class FigureTab extends React.Component {
     );
   };
 
+  renderContent = () => {
+    let { fetching } = this.state;
+    if (fetching) {
+      return (
+        <div className={css(styles.figures)}>
+          <div className={css(styles.image)}>
+            <ReactPlaceholder
+              ready={false}
+              showLoadingAnimation
+              customPlaceholder={<PreviewPlaceholder color="#efefef" />}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <Fragment>
+          <div className={css(styles.figures)}>
+            <Carousel
+              outline={"none"}
+              wrapAround={true}
+              className={css(styles.slider)}
+              enableKeyboardControls={true}
+              afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
+              renderBottomCenterControls={() => null}
+              renderCenterLeftControls={(arg) => {
+                let { previousSlide } = arg;
+                return this.renderButton(previousSlide, "Prev");
+              }}
+              renderCenterRightControls={(arg) => {
+                let { nextSlide } = arg;
+                return this.renderButton(nextSlide, "Next");
+              }}
+            >
+              {this.state.figures.map((figure) => {
+                return <img src={figure} className={css(styles.image)} />;
+              })}
+            </Carousel>
+          </div>
+          <div className={css(styles.slideIndex)}>
+            {`Figure ${this.state.currentSlideIndex + 1} `}
+          </div>
+        </Fragment>
+      );
+    }
+  };
+
   render() {
     return (
-      <ComponentWrapper>
+      <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
         <div className={css(styles.container)} id="figures-tab">
           <div className={css(styles.header)}>
             <div className={css(styles.sectionTitle)}>Figures</div>
@@ -85,33 +139,7 @@ class FigureTab extends React.Component {
               />
             )}
             {this.state.figures.length > 0 ? (
-              <Fragment>
-                <div className={css(styles.figures)}>
-                  <Carousel
-                    outline={"none"}
-                    wrapAround={true}
-                    className={css(styles.slider)}
-                    enableKeyboardControls={true}
-                    afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
-                    renderBottomCenterControls={() => null}
-                    renderCenterLeftControls={(arg) => {
-                      let { previousSlide } = arg;
-                      return this.renderButton(previousSlide, "Prev");
-                    }}
-                    renderCenterRightControls={(arg) => {
-                      let { nextSlide } = arg;
-                      return this.renderButton(nextSlide, "Next");
-                    }}
-                  >
-                    {this.state.figures.map((figure) => {
-                      return <img src={figure} className={css(styles.image)} />;
-                    })}
-                  </Carousel>
-                </div>
-                <div className={css(styles.slideIndex)}>
-                  {`Figure ${this.state.currentSlideIndex + 1} `}
-                </div>
-              </Fragment>
+              this.renderContent()
             ) : (
               <EmptyState
                 text={"No Figures Found"}
@@ -127,6 +155,13 @@ class FigureTab extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  componentWrapperStyles: {
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
   container: {
     backgroundColor: "#fff",
     padding: 50,
@@ -134,6 +169,9 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
   },
   header: {
     display: "flex",
@@ -187,6 +225,12 @@ const styles = StyleSheet.create({
     outline: "none",
     border: "none",
     objectFit: "contain",
+    "@media only screen and (max-width: 415px)": {
+      width: 180,
+    },
+    "@media only screen and (max-width: 320px)": {
+      width: 150,
+    },
   },
   bottomControl: {
     background: "rgba(36, 31, 58, 0.65)",
@@ -225,6 +269,7 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
+      padding: "5px 8px",
     },
   },
 });
