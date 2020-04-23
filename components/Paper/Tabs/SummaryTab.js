@@ -200,39 +200,6 @@ class SummaryTab extends React.Component {
             <BulletsContainer paperId={this.props.paperId} />
           </div>
         </a>
-        <a name="abstract">
-          <div
-            className={css(styles.bulletsContainer, styles.abstractContainer)}
-            id="abstract-tab"
-          >
-            <div className={css(styles.sectionHeader)}>
-              <div className={css(styles.sectionTitle)}>Abstract</div>
-              <PermissionNotificationWrapper
-                modalMessage="edit papers"
-                onClick={this.navigateToEditPaperInfo}
-                permissionKey="UpdatePaper"
-                loginRequired={true}
-                hideRipples={false}
-                styling={styles.borderRadius}
-              >
-                <div className={css(styles.action, styles.editAction)}>
-                  <div className={css(styles.pencilIcon)}>
-                    <i className="fas fa-pencil"></i>
-                  </div>
-                  {`${paper && paper.abstract ? "Edit" : "Add"} Abstract`}
-                </div>
-              </PermissionNotificationWrapper>
-            </div>
-            {paper && paper.abstract ? (
-              <div className={css(styles.abstractText)}>{paper.abstract}</div>
-            ) : (
-              <EmptyState
-                text={"An abstract hasn't been added yet"}
-                subtext={"Earn 1 RHC for adding an abstract to the paper"}
-              />
-            )}
-          </div>
-        </a>
         <div>{this.state.errorMessage}</div>
         <a name="summary">
           {(paper.summary && paper.summary.summary) ||
