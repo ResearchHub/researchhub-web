@@ -409,11 +409,7 @@ class HubPage extends React.Component {
           className={css(styles.subscribe)}
         >
           <button
-            className={css(
-              styles.subscribe,
-              // styles.subscribed,
-              hover && styles.subscribeHover
-            )}
+            className={css(styles.subscribe, hover && styles.subscribeHover)}
             onMouseEnter={this.onMouseEnterSubscribe}
             onMouseLeave={this.onMouseExitSubscribe}
           >
@@ -570,12 +566,20 @@ class HubPage extends React.Component {
                 <a className={css(styles.readMore)}>Read more</a>
               </Link>
             </div>
+            <div className={css(styles.subtext, styles.promo, styles.text)}>
+              Join today for 25 RHC
+              <img
+                className={css(styles.coinIcon)}
+                src={"/static/icons/coin-filled.png"}
+              />
+            </div>
             <span className={css(styles.googleLogin)}>
               {!auth.isLoggedIn && (
                 <GoogleLoginButton
                   styles={styles.googleLoginButton}
                   googleLogin={this.props.googleLogin}
                   getUser={this.props.getUser}
+                  customLabel={"Sign up with Google"}
                 />
               )}
             </span>
@@ -768,6 +772,7 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 16,
     paddingLeft: "8%",
+    paddingTop: 0,
     boxSizing: "border-box",
     height: 200,
     zIndex: 2,
@@ -896,6 +901,13 @@ var styles = StyleSheet.create({
       width: 280,
     },
   },
+  promo: {
+    marginTop: 15,
+    fontSize: 15,
+    fontWeight: 500,
+    display: "flex",
+    alignItems: "center",
+  },
   googleLogin: {
     "@media only screen and (max-width: 767px)": {
       margin: "0 auto",
@@ -916,6 +928,16 @@ var styles = StyleSheet.create({
   iconStyle: {
     height: 33,
     width: 33,
+  },
+  coinIcon: {
+    height: 20,
+    marginLeft: 8,
+    "@media only screen and (max-width: 760px)": {
+      height: 18,
+    },
+    "@media only screen and (max-width: 415px)": {
+      height: 16,
+    },
   },
   /**
    * MAIN FEED STYLES
