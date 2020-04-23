@@ -36,11 +36,22 @@ class SignUpBanner extends React.Component {
         let { showSignupBanner } = this.props.banners;
         !isLoggedIn && showSignupBanner && this.showBanner();
       }
+      if (prevProps.route !== this.props.route) {
+        this.showBanner();
+      }
     }
   }
 
   showBanner = () => {
-    this.setState({ showBanner: true });
+    let onHome =
+      this.props.route === "/" ||
+      this.props.route === "/hubs/[slug]" ||
+      this.props.route === "/live";
+    if (!onHome || localStorage.getItem("researchhub.banner.pref") !== "true") {
+      this.setState({ showBanner: true });
+    } else {
+      this.setState({ showBanner: false });
+    }
   };
 
   closeBanner = (e) => {
@@ -103,7 +114,7 @@ class SignUpBanner extends React.Component {
               disabled={renderProps.disabled}
               onClick={renderProps.onClick}
             >
-              Welcome to the community!{" "}
+              Welcome to the ResearchHub!{" "}
               <div className={css(styles.flexContainer)}>
                 Join today and earn 25 RHC
                 <img
@@ -174,9 +185,12 @@ const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
     color: "#FFF",
-    right: 20,
+    right: 30,
     fontSize: 20,
     cursor: "pointer",
+    "@media only screen and (max-width: 760px)": {
+      right: 20,
+    },
     "@media only screen and (max-width: 415px)": {
       top: 10,
     },

@@ -254,10 +254,6 @@ const Navbar = (props) => {
     );
   }
 
-  function closeBanner() {
-    toggleBanner(false);
-  }
-
   function addPaperModal() {
     dispatch(MessageActions.showMessage({ show: true, load: true }));
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
@@ -440,7 +436,7 @@ const Navbar = (props) => {
           {icons.burgerMenu}
         </div>
       </div>
-      <SignUpBanner />
+      <SignUpBanner route={router.route} />
     </Fragment>
   );
 };
