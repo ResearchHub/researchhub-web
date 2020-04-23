@@ -222,10 +222,7 @@ const styles = StyleSheet.create({
       width: 600,
     },
     "@media only screen and (max-width: 421px)": {
-      width: 400,
-    },
-    "@media only screen and (max-width: 325px)": {
-      width: 285,
+      width: "100%",
     },
   },
   titleContainer: {
@@ -299,12 +296,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 775px)": {
       fontSize: 16,
     },
-    // '@media only screen and (max-width: 421px)': {
-    //   fontSize: 14
-    // },
-    // '@media only screen and (max-width: 325px)': {
-    //   fontSize: 1
-    // },
   },
   list: {
     display: "flex",
