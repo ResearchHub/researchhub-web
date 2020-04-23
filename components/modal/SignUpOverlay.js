@@ -7,7 +7,7 @@ import GoogleLoginButton from "../GoogleLoginButton";
 
 import { BannerActions } from "~/redux/banner";
 
-class SignUpBanner extends React.Component {
+class SignUpOverlay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -215,4 +215,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SignUpBanner);
+)(SignUpOverlay);
