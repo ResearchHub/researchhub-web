@@ -908,14 +908,7 @@ var styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
-  googleLogin: {
-    "@media only screen and (max-width: 767px)": {
-      margin: "0 auto",
-      marginTop: 0,
-      marginTop: 18,
-      marginBottom: 18,
-    },
-  },
+  googleLogin: {},
   googleLoginButton: {
     border: "1px solid #fff",
   },
