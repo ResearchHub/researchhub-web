@@ -17,6 +17,7 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import ResearchHubBanner from "../ResearchHubBanner";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -409,11 +410,7 @@ class HubPage extends React.Component {
           className={css(styles.subscribe)}
         >
           <button
-            className={css(
-              styles.subscribe,
-              // styles.subscribed,
-              hover && styles.subscribeHover
-            )}
+            className={css(styles.subscribe, hover && styles.subscribeHover)}
             onMouseEnter={this.onMouseEnterSubscribe}
             onMouseLeave={this.onMouseExitSubscribe}
           >
@@ -526,61 +523,7 @@ class HubPage extends React.Component {
 
     return (
       <div className={css(styles.content, styles.column)}>
-        <div
-          className={css(
-            styles.homeBanner,
-            !auth.showBanner && styles.hideBanner
-          )}
-        >
-          <span
-            className={css(styles.closeButton)}
-            onClick={this.updateUserBannerPreference}
-          >
-            <i className="fal fa-times" />
-          </span>
-          <img
-            src={
-              this.state.mobileBanner
-                ? "/static/background/background-home-mobile.png"
-                : "/static/background/background-home.jpg"
-            }
-            className={css(
-              styles.bannerOverlay,
-              this.state.mobileView && styles.hideBanner
-            )}
-          />
-          <div
-            className={css(
-              styles.column,
-              styles.titleContainer,
-              auth.isLoggedIn && styles.centered
-            )}
-          >
-            <div className={css(styles.header, styles.text)}>
-              Welcome to{" "}
-              <span className={css(styles.hubName)}>
-                {this.props.home ? "ResearchHub" : this.props.hub.name}!
-              </span>
-            </div>
-            <div className={css(styles.subtext, styles.text)}>
-              We're a community seeking to improve prioritization,
-              collaboration, reproducibility, and funding of scientific
-              research.{" "}
-              <Link href={"/about"}>
-                <a className={css(styles.readMore)}>Read more</a>
-              </Link>
-            </div>
-            <span className={css(styles.googleLogin)}>
-              {!auth.isLoggedIn && (
-                <GoogleLoginButton
-                  styles={styles.googleLoginButton}
-                  googleLogin={this.props.googleLogin}
-                  getUser={this.props.getUser}
-                />
-              )}
-            </span>
-          </div>
-        </div>
+        <ResearchHubBanner home={this.props.home} hub={this.props.hub} />
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
             <HubsList current={this.props.home ? null : this.props.hub} />
@@ -768,6 +711,7 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 16,
     paddingLeft: "8%",
+    paddingTop: 0,
     boxSizing: "border-box",
     height: 200,
     zIndex: 2,
@@ -896,14 +840,14 @@ var styles = StyleSheet.create({
       width: 280,
     },
   },
-  googleLogin: {
-    "@media only screen and (max-width: 767px)": {
-      margin: "0 auto",
-      marginTop: 0,
-      marginTop: 18,
-      marginBottom: 18,
-    },
+  promo: {
+    marginTop: 15,
+    fontSize: 15,
+    fontWeight: 500,
+    display: "flex",
+    alignItems: "center",
   },
+  googleLogin: {},
   googleLoginButton: {
     border: "1px solid #fff",
   },
@@ -916,6 +860,16 @@ var styles = StyleSheet.create({
   iconStyle: {
     height: 33,
     width: 33,
+  },
+  coinIcon: {
+    height: 20,
+    marginLeft: 8,
+    "@media only screen and (max-width: 760px)": {
+      height: 18,
+    },
+    "@media only screen and (max-width: 415px)": {
+      height: 16,
+    },
   },
   /**
    * MAIN FEED STYLES
