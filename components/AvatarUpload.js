@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import BaseModal from "~/components/modal/BaseModal";
 
 // Config
-import colors from "~/config/themes/colors";
 import ResearchHubIcon from "../static/ResearchHubIcon";
 
 const AvatarEdit = dynamic(() => import("react-avatar-edit"), { ssr: false });
