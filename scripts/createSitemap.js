@@ -1,7 +1,8 @@
 const fs = require("fs");
 const axios = require("axios");
-var ProgressBar = require("progress");
+const ProgressBar = require("progress");
 
+console.log("pr", process.env);
 const start = new Date();
 const collectAllPaperIds = async () => {
   console.log("Updating Sitemap...");
@@ -115,7 +116,7 @@ collectAllPaperIds().then((paperIds) => {
           .join("")}
       </urlset>`;
 
-    fs.writeFileSync("./sitemap.xml.production", sitemapXml);
+    fs.writeFileSync("./Public/sitemap-prod.xml", sitemapXml);
     console.log(`Done. ${new Date() - start}ms`);
   });
 });
