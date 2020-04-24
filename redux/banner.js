@@ -58,6 +58,7 @@ export const BannerActions = {
           },
         });
       } else if (pref === null || pref === undefined) {
+        localStorage.setItem("researchhub.signup.banner", coinFlip);
         reportBanner({ uuid, saw_signup_banner: coinFlip });
         return dispatch({
           type: BannerConstants.DETERMINE_BANNER,
