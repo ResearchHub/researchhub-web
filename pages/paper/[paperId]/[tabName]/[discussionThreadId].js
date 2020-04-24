@@ -146,7 +146,7 @@ const DiscussionThreadPage = (props) => {
       <Head
         title={title}
         description={`Discuss on ResearchHub`}
-        socialImageUrl={this.props.paper && this.props.paper.metatagImage}
+        socialImageUrl={props.paper && props.paper.metatagImage}
       />
       <div className={css(styles.threadContainer)}>
         <Thread
