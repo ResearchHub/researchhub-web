@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import Router from "next/link";
 import Link from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -13,6 +14,7 @@ import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import { Event } from "~/components/GAnalytics/EventTracker";
+import EmptyState from "~/components/Placeholders/EmptyState";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -23,7 +25,6 @@ import { AuthActions } from "~/redux/auth";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
-import { convertToEditorValue } from "~/config/utils";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -171,6 +172,13 @@ class SummaryTab extends React.Component {
         });
       }
     }
+  };
+
+  navigateToEditPaperInfo = () => {
+    let paperId = this.props.paper.id;
+    let href = "/paper/upload/info/[paperId]";
+    let as = `/paper/upload/info/${paperId}`;
+    Router.push(href, as);
   };
 
   componentDidMount() {
@@ -424,12 +432,30 @@ var styles = StyleSheet.create({
       padding: 25,
     },
   },
+  abstractContainer: {
+    marginTop: 32,
+  },
+  abstractText: {
+    lineHeight: 1.6,
+    color: "#241F3A",
+    fontWeight: 400,
+    fontSize: 15,
+    width: "100%",
+    boxSizing: "border-box",
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+      width: "100%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
   sectionHeader: {
     display: "flex",
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: 32,
+    paddingBottom: 20,
 
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
