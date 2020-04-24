@@ -58,6 +58,10 @@ class FigureTab extends React.Component {
     this.setState({ currentSlideIndex });
   };
 
+  toggleLightbox = () => {
+    this.setState({ toggleLightbox: !this.state.toggleLightbox });
+  };
+
   renderButton = (onClick, label) => {
     return (
       <div
@@ -89,7 +93,7 @@ class FigureTab extends React.Component {
     } else {
       return (
         <Fragment>
-          <div className={css(styles.figures)}>
+          <div className={css(styles.figures)} onClick={this.toggleLightbox}>
             <Carousel
               outline={"none"}
               wrapAround={true}
@@ -256,12 +260,13 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     fontSize: 14,
     padding: "10px 16px",
-    color: colors.BLUE(),
+    color: "#FFF",
     border: `1px solid ${colors.BLUE()}`,
+    backgroundColor: colors.BLUE(),
     borderRadius: 4,
     userSelect: "none",
     ":hover": {
-      backgroundColor: colors.BLUE(),
+      backgroundColor: "#3E43E8",
       color: "#FFF",
     },
     "@media only screen and (max-width: 767px)": {
