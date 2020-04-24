@@ -40,7 +40,9 @@ function PaperTab(props) {
 
   const [loadSuccess, setLoadSuccess] = useState(false);
   const [numPages, setNumPages] = useState(0);
-  const [file, setFile] = useState((paper && paper.file) || null); // the path to file pdf
+  const [file, setFile] = useState(
+    (paper && (paper.file || paper.pdf_url)) || null
+  ); // the path to file pdf
   const [paperUrl, setPaperUrl] = useState((paper && paper.url) || null);
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
