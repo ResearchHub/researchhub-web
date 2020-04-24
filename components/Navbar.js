@@ -26,6 +26,7 @@ import Search from "./Search";
 import TransactionModal from "../components/modal/TransactionModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
 import Notification from "./Notifications/Notification";
+import SignUpBanner from "./SignUpBanner";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -435,6 +436,7 @@ const Navbar = (props) => {
           {icons.burgerMenu}
         </div>
       </div>
+      <SignUpBanner route={router.route} />
     </Fragment>
   );
 };
@@ -644,7 +646,6 @@ const styles = StyleSheet.create({
   },
   menuItem: {
     display: "flex",
-    // flexDirection: 'row-reverse',
     alignItems: "center",
     cursor: "pointer",
     highlight: "none",
@@ -652,17 +653,14 @@ const styles = StyleSheet.create({
     fontVariant: "small-caps",
     letterSpacing: 0.7,
     fontSize: 20,
-    // justifyContent: 'space-between',
     width: "100%",
     margin: "12px 0px",
     color: "#FFF",
     textDecoration: "unset",
     ":hover": {
       color: colors.BLUE(1),
-      // color: '#674ef5'
     },
     ":hover #icon": {
-      // color: '#674ef5'
       color: colors.BLUE(1),
     },
   },
