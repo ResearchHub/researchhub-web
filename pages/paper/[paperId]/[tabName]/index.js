@@ -17,7 +17,6 @@ import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
-import SignUpBanner from "~/components/modal/SignUpBanner";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
 
 // Redux
@@ -260,7 +259,6 @@ const Paper = (props) => {
             />
           </div>
           <div className={css(styles.contentContainer)}>
-            <SignUpBanner />
             <SummaryTab
               paperId={paperId}
               paper={paper}
