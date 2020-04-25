@@ -51,14 +51,23 @@ class ResearchHubBanner extends React.Component {
 
   render() {
     let { auth } = this.props;
+    let showBanner = true;
+
+    if (process.browser) {
+      let preference = localStorage.getItem("researchhub.banner.pref");
+      if (!preference || preference === "true") {
+        showBanner = true;
+      } else {
+        showBanner = false;
+      }
+    }
+
+    if (!showBanner) {
+      return null;
+    }
 
     return (
-      <div
-        className={css(
-          styles.homeBanner,
-          !auth.showBanner && styles.hideBanner
-        )}
-      >
+      <div className={css(styles.homeBanner)}>
         <span
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}
@@ -178,6 +187,9 @@ var styles = StyleSheet.create({
       alignItems: "unset",
       height: "unset",
     },
+  },
+  showBanner: {
+    display: "flex",
   },
   hideBanner: {
     display: "none",
