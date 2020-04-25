@@ -100,9 +100,6 @@ class LiveFeedPage extends React.Component {
       <Fragment>
         <ResearchHubBanner all={true} />
         <div className={css(styles.content)}>
-          {/* <div className={css(styles.sidebar, styles.column)}>
-            <HubsList exclude={null} livefeed={true} setHub={this.setHub} />
-          </div> */}
           <div className={css(styles.mainFeed, styles.column)}>
             <LiveFeed
               wsUrl={WS_ROUTES.NOTIFICATIONS(auth.user.id)}

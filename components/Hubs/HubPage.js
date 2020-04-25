@@ -13,7 +13,6 @@ import HubsList from "~/components/Hubs/HubsList";
 import FormSelect from "~/components/Form/FormSelect";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
-import GoogleLoginButton from "~/components/GoogleLoginButton";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
@@ -526,7 +525,11 @@ class HubPage extends React.Component {
 
     return (
       <div className={css(styles.content, styles.column)}>
-        <ResearchHubBanner home={this.props.home} hub={this.props.hub} />
+        <div className={css(styles.banner)}>
+          {process.browser && (
+            <ResearchHubBanner home={this.props.home} hub={this.props.hub} />
+          )}
+        </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
             <HubsList current={this.props.home ? null : this.props.hub} />
@@ -794,16 +797,15 @@ var styles = StyleSheet.create({
       width: 280,
     },
   },
+  banner: {
+    width: "100%",
+  },
   promo: {
     marginTop: 15,
     fontSize: 15,
     fontWeight: 500,
     display: "flex",
     alignItems: "center",
-  },
-  googleLogin: {},
-  googleLoginButton: {
-    border: "1px solid #fff",
   },
   button: {
     height: 55,
@@ -1203,7 +1205,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
   setUserBannerPreference: AuthActions.setUserBannerPreference,
   openUploadPaperModal: ModalActions.openUploadPaperModal,

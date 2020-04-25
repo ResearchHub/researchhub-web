@@ -8,18 +8,11 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
-import { MessageActions } from "~/redux/message";
-import { ModalActions } from "~/redux/modals";
-import { HubActions } from "~/redux/hub";
-
-// Config
-import colors from "~/config/themes/colors";
 
 class ResearchHubBanner extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mobileView: false,
       mobileBanner: false,
     };
   }
@@ -27,11 +20,10 @@ class ResearchHubBanner extends React.Component {
   updateDimensions = () => {
     if (window.innerWidth < 968) {
       this.setState({
-        mobileView: true,
         mobileBanner: window.innerWidth < 580 ? true : false,
       });
     } else {
-      this.setState({ mobileView: false, mobileBanner: false });
+      this.setState({ mobileBanner: false });
     }
   };
 
@@ -45,7 +37,6 @@ class ResearchHubBanner extends React.Component {
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
-    let { showSignupBanner } = this.props.banners;
     this.setState({
       browser: true,
     });
@@ -58,18 +49,15 @@ class ResearchHubBanner extends React.Component {
   render() {
     let { auth } = this.props;
     let showBanner = true;
-
-    if (process.browser) {
-      let preference = localStorage.getItem("researchhub.banner.pref");
-      if (!preference || preference === "true") {
-        showBanner = true;
-      } else {
-        showBanner = false;
-      }
+    let preference = localStorage.getItem("researchhub.banner.pref");
+    if (!preference || preference === "true") {
+      showBanner = true;
+    } else {
+      showBanner = false;
     }
 
     return (
-      <div className={css(styles.homeBanner, showBanner && styles.hideBanner)}>
+      <div className={css(styles.homeBanner, !showBanner && styles.hideBanner)}>
         <span
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}
@@ -82,10 +70,7 @@ class ResearchHubBanner extends React.Component {
               ? "/static/background/background-home-mobile.png"
               : "/static/background/background-home.jpg"
           }
-          className={css(
-            styles.bannerOverlay,
-            this.state.mobileView && styles.hideBanner
-          )}
+          className={css(styles.bannerOverlay)}
         />
         <div
           className={css(
@@ -136,9 +121,6 @@ class ResearchHubBanner extends React.Component {
 }
 
 var styles = StyleSheet.create({
-  content: {
-    backgroundColor: "#FFF",
-  },
   column: {
     display: "flex",
     flexDirection: "column",
@@ -226,6 +208,9 @@ var styles = StyleSheet.create({
       bottom: 0,
       right: 0,
     },
+    "@media only screen and (max-width: 967px)": {
+      display: "none",
+    },
   },
   readMore: {
     cursor: "pointer",
@@ -248,21 +233,6 @@ var styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 321px)": {
       width: 280,
-    },
-  },
-  body: {
-    backgroundColor: "#FFF",
-    width: "100%",
-    alignItems: "flex-start",
-  },
-  sidebar: {
-    width: "22%",
-    position: "relative",
-    position: "sticky",
-    top: 80,
-    backgroundColor: "#FFF",
-    "@media only screen and (max-width: 769px)": {
-      display: "none",
     },
   },
   subtext: {
@@ -390,7 +360,6 @@ var styles = StyleSheet.create({
     width: 150,
     height: 45,
     "@media only screen and (max-width: 1343px)": {
-      // width: 220,
       height: "unset",
     },
     "@media only screen and (max-width: 1149px)": {
@@ -413,15 +382,11 @@ var styles = StyleSheet.create({
   },
   inputs: {
     width: 320,
-    "@media only screen and (max-width: 1343px)": {
-      // width: 460,
-    },
     "@media only screen and (max-width: 1149px)": {
       width: 320,
     },
     "@media only screen and (max-width: 895px)": {
       width: 270,
-      // marginBottom: 10,
     },
     "@media only screen and (max-width: 665px)": {
       width: "100%",
@@ -429,41 +394,6 @@ var styles = StyleSheet.create({
       justifyContent: "flex-start",
       alignItems: "center",
     },
-  },
-  /**
-   * INFINITE SCROLL
-   */
-  infiniteScroll: {
-    width: "calc(100% - 140px)",
-    minHeight: "calc(100vh - 200px)",
-    backgroundColor: "#FCFCFC",
-    paddingLeft: 70,
-    paddingRight: 70,
-    paddingBottom: 30,
-    "@media only screen and (max-width: 577px)": {
-      paddingLeft: 40,
-      paddingRight: 40,
-      width: "calc(100% - 80px)",
-    },
-    "@media only screen and (max-width: 415px)": {
-      padding: 0,
-      width: "100%",
-    },
-  },
-  blur: {
-    height: 30,
-    marginTop: 10,
-    backgroundColor: colors.BLUE(0.2),
-    width: "100%",
-    "-webkit-filter": "blur(6px)",
-    "-moz-filter": "blur(6px)",
-    "-ms-filter": "blur(6px)",
-    "-o-filter": "blur(6px)",
-    filter: "blur(6px)",
-  },
-  blank: {
-    opacity: 0,
-    height: 60,
   },
   hubName: {
     textTransform: "capitalize",
@@ -475,103 +405,11 @@ var styles = StyleSheet.create({
       marginRight: 5,
     },
   },
-  mobileHubListContainer: {
-    display: "none",
-    backgroundColor: "#FFF",
-    "@media only screen and (max-width: 768px)": {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-      borderTop: "1px solid #EDEDED",
-    },
-  },
-  mobileList: {
-    paddingTop: 20,
-    width: "unset",
-  },
-  emptyPlaceholderImage: {
-    width: 400,
-    objectFit: "contain",
-    marginTop: 40,
-    "@media only screen and (max-width: 415px)": {
-      width: "70%",
-    },
-  },
-  emptyPlaceholderText: {
-    width: 500,
-    textAlign: "center",
-    fontSize: 18,
-    color: "#241F3A",
-    marginTop: 20,
-    "@media only screen and (max-width: 415px)": {
-      width: "85%",
-    },
-  },
-  emptyPlaceholderSubtitle: {
-    width: 500,
-    textAlign: "center",
-    fontSize: 14,
-    color: "#4e4c5f",
-    marginTop: 10,
-    marginBottom: 15,
-    "@media only screen and (max-width: 415px)": {
-      width: "85%",
-    },
-  },
-  subscribe: {
-    fontSize: 11,
-    letterSpacing: 0.4,
-    fontWeight: 400,
-    textTransform: "uppercase",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    cursor: "pointer",
-    backgroundColor: colors.BLUE(0.5),
-    color: "#FFF",
-    padding: 5,
-    border: "1px solid #FFF",
-    borderRadius: 3,
-    ":hover": {
-      border: `1px solid ${colors.BLUE(1)}`,
-    },
-    "@media only screen and (max-width: 768px)": {
-      fontSize: 8,
-    },
-  },
-  subscribed: {
-    border: `1px solid ${colors.BLUE(1)}`,
-    backgroundColor: colors.BLUE(1),
-  },
-  loader: {
-    opacity: 1,
-    height: 15,
-    width: 55,
-    "@media only screen and (max-width: 768px)": {
-      width: 48,
-    },
-  },
-  noResultsLine: {
-    textAlign: "center",
-    fontSize: 20,
-    marginBottom: 10,
-    padding: 20,
-    borderBottom: "1px solid",
-  },
-  relatedResults: {
-    textAlign: "center",
-    fontSize: 25,
-    marginBottom: 10,
-  },
 });
 
 const mapStateToProps = (state) => ({
-  modals: state.modals,
   auth: state.auth,
   isLoggedIn: state.auth.isLoggedIn,
-  allHubs: state.hubs.hubs,
   banners: state.banners,
 });
 
@@ -579,10 +417,6 @@ const mapDispatchToProps = {
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
   setUserBannerPreference: AuthActions.setUserBannerPreference,
-  openUploadPaperModal: ModalActions.openUploadPaperModal,
-  showMessage: MessageActions.showMessage,
-  setMessage: MessageActions.setMessage,
-  updateHub: HubActions.updateHub,
 };
 
 export default connect(

@@ -12,12 +12,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import { toTitleCase } from "~/config/utils";
 
 class Index extends React.Component {
-  static async getInitialProps({ query }) {
-    // TODO: This only works client side so we can remove it from here
-    const hub = await fetchHub(query.slug);
-    return { hub, slug: query.slug };
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -95,15 +89,13 @@ class Index extends React.Component {
   }
 }
 
-async function fetchHub(slug) {
-  if (process.browser) {
-    return await fetch(API.HUB({ slug }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        return res.results[0]; // TODO: Shim and catch errors
-      });
-  }
+function fetchHub(slug) {
+  return fetch(API.HUB({ slug }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => {
+      return res.results[0]; // TODO: Shim and catch errors
+    });
 }
 
 export default Index;
