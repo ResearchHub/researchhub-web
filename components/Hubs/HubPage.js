@@ -358,6 +358,9 @@ class HubPage extends React.Component {
   };
 
   onFilterSelect = (option, type) => {
+    if (this.state[type].label === option.label) {
+      return;
+    }
     let { showMessage } = this.props;
     let param = {};
     param[type] = option;
