@@ -60,9 +60,11 @@ class ResearchHubBanner extends React.Component {
       } else {
         showBanner = false;
       }
+    } else {
+      showBanner = false;
     }
 
-    if (!showBanner) {
+    if (!showBanner && process.browser) {
       return null;
     }
 
