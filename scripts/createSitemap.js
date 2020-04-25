@@ -2,7 +2,6 @@ const fs = require("fs");
 const axios = require("axios");
 const ProgressBar = require("progress");
 
-console.log("pr", process.env);
 const start = new Date();
 const collectAllPaperIds = async () => {
   console.log("Updating Sitemap...");
