@@ -37,12 +37,18 @@ class ResearchHubBanner extends React.Component {
 
   updateUserBannerPreference = () => {
     this.props.setUserBannerPreference(false);
+    this.setState({
+      banner: false,
+    });
   };
 
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
     let { showSignupBanner } = this.props.banners;
+    this.setState({
+      browser: true,
+    });
   }
 
   componentWillUnmount() {
@@ -60,16 +66,10 @@ class ResearchHubBanner extends React.Component {
       } else {
         showBanner = false;
       }
-    } else {
-      showBanner = false;
-    }
-
-    if (!showBanner && process.browser) {
-      return null;
     }
 
     return (
-      <div className={css(styles.homeBanner)}>
+      <div className={css(styles.homeBanner, showBanner && styles.hideBanner)}>
         <span
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}
