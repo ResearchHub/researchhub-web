@@ -27,6 +27,7 @@ const prepFilters = (filters) => {
  */
 const prepURL = (url, params) => {
   let { querystring, rest, filters } = params;
+
   let qs = "";
   if (rest) {
     if (rest.id !== null && rest.id !== undefined) {
@@ -405,13 +406,25 @@ const routes = (BASE_URL) => {
 
       return url + "censor/";
     },
-    BULLET_POINT: ({ paperId, ordinal__isnull }) => {
+    BULLET_POINT: ({ paperId, ordinal__isnull, type }) => {
       let url = BASE_URL + `paper/${paperId}/bullet_point/`;
       let params = {
         querystring: {
           ordinal__isnull,
         },
       };
+      if (type !== undefined || type !== null) {
+        if (typeof type === "string") {
+          params.filters = [
+            {
+              name: "bullet",
+              filter: "type",
+              value: type,
+            },
+          ];
+        }
+      }
+
       url = prepURL(url, params);
       return url;
     },
