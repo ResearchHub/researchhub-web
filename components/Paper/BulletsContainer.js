@@ -203,7 +203,7 @@ class BulletsContainer extends React.Component {
       >
         <Ripples
           className={css(dropdownStyles.item)}
-          onClick={() => openManageBulletPointsModal(true)}
+          onClick={() => openManageBulletPointsModal(true, "key_takeaway")}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
             <i class="fal fa-tasks-alt" />
