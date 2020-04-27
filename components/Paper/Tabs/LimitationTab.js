@@ -5,15 +5,15 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
-import BulletPlaceholder from "../Placeholders/BulletPlaceholder";
-import FormTextArea from "../Form/FormTextArea";
-import Button from "../Form/Button";
-import SummaryBulletPoint from "./SummaryBulletPoint";
+import BulletPlaceholder from "~/components/Placeholders/BulletPlaceholder";
+import FormTextArea from "~/components/Form/FormTextArea";
+import Button from "~/components/Form/Button";
+import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
 import { Event } from "~/components/GAnalytics/EventTracker";
 
 // redux
-import { BulletActions } from "~/redux/bullets";
+import { LimitationsActions } from "~/redux/limitations";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 
@@ -22,17 +22,17 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import EmptySummarySection from "./Tabs/Summary/EmptySummary";
+import EmptySummarySection from "./Summary/EmptySummary";
 
 const BULLET_COUNT = 5;
 
-class BulletsContainer extends React.Component {
+class LimitationTab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bulletText: "", // value of input
-      bullets: this.props.bulletsRedux.bullets
-        ? this.props.bulletsRedux.bullets
+      limitationText: "", // value of input
+      limits: this.props.limitations.limits
+        ? this.props.limitations.limits
         : [],
       showDropdown: false, // boolean to show dropdown menu
       showForm: false, // boolean to determine whether to show form or not
@@ -47,17 +47,18 @@ class BulletsContainer extends React.Component {
 
   componentDidMount = async () => {
     window.addEventListener("mousedown", this.handleOutsideClick);
-    await this.props.getBullets(this.props.paperId);
+    await this.props.getLimitations(this.props.paperId);
+    // TODO: await getLimitations
     this.setState({ loading: false });
   };
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       if (
-        JSON.stringify(prevProps.bulletsRedux.bullets) !==
-        JSON.stringify(this.props.bulletsRedux.bullets)
+        JSON.stringify(prevProps.limitations.limits) !==
+        JSON.stringify(this.props.limitations.limits)
       ) {
-        this.setState({ bullets: this.props.bulletsRedux.bullets });
+        this.setState({ bullets: this.props.limitations.limits });
       }
     }
   }
@@ -76,7 +77,7 @@ class BulletsContainer extends React.Component {
     }
   };
 
-  handleBulletText = (id, value) => {
+  handleLimitationText = (id, value) => {
     this.setState({ [id]: value });
   };
 
@@ -97,7 +98,7 @@ class BulletsContainer extends React.Component {
     this.setState(
       {
         showForm: !this.state.showForm,
-        bulletText: this.state.showForm ? "" : this.state.bulletText,
+        limitationText: this.state.showForm ? "" : this.state.limitationText,
       },
       () => {
         this.state.showFocus && this.textInput && this.textInput.focus();
@@ -106,42 +107,47 @@ class BulletsContainer extends React.Component {
     );
   };
 
-  formatNewBullet = () => {
-    let ordinal = this.state.bullets.length + 1;
+  formatNewLimitation = () => {
+    let ordinal = this.state.limits.length + 1;
 
     if (ordinal > BULLET_COUNT) {
       ordinal = null;
     }
 
     let newBullet = {
-      plain_text: this.state.bulletText,
+      plain_text: this.state.limitationText,
       ordinal,
-      bullet_type: "KEY_TAKEAWAY",
+      bullet_type: "LIMITATION",
     };
 
     return newBullet;
   };
 
-  submitBulletPoint = async () => {
-    let { bulletsRedux, postBullet, showMessage, setMessage } = this.props;
+  submitLimitation = async () => {
+    /**
+     *  submit limitation function
+     *
+     */
+
+    let { limitations, postLimitation, showMessage, setMessage } = this.props;
     this.props.showMessage({ load: true, show: true });
     let paperId = this.props.paperId;
-    let bullet = this.formatNewBullet();
-    let newBullets = [...this.state.bullets, bullet];
+    let limitation = this.formatNewLimitation();
+
     this.setState({ pendingSubmission: true });
-    await postBullet({ paperId, bullet, prevState: bulletsRedux });
-    if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
+    await postLimitation({ paperId, limitation, prevState: limitations });
+    if (!this.props.limitations.pending && this.props.limitations.success) {
       Event(
-        "Key Takeaways",
-        "Add Key Takeaway",
-        `Key Takeaway Added Paper:${paperId}`
+        "Limitations",
+        "Add Limitation",
+        `Limitation Added Paper:${paperId}`
       );
       showMessage({ show: false });
-      setMessage("Key takeaway successfully added!");
+      setMessage("Limitation successfully added!");
       showMessage({ show: true });
       this.setState({
         pendingSubmission: false,
-        bulletText: "",
+        limitationText: "",
         showForm: false,
       });
     } else {
@@ -154,8 +160,8 @@ class BulletsContainer extends React.Component {
     }
   };
 
-  renderBulletPoints = () => {
-    let { loading, bullets, showForm } = this.state;
+  renderLimitations = () => {
+    let { loading, limits, showForm } = this.state;
     if (loading) {
       return (
         <ReactPlaceholder
@@ -164,7 +170,7 @@ class BulletsContainer extends React.Component {
           customPlaceholder={<BulletPlaceholder color="#efefef" />}
         />
       );
-    } else if (bullets.length === 0 && !showForm) {
+    } else if (limits.length === 0 && !showForm) {
       return (
         <Ripples
           className={css(styles.emptyStateContainer)}
@@ -174,16 +180,16 @@ class BulletsContainer extends React.Component {
         >
           <div className={css(styles.text)}>
             <div className={css(styles.mainText)}>
-              No key takeaways have been added yet
+              No limitations have been added yet
             </div>
             <div className={css(styles.subText)}>
-              Earn 1 RHC for adding a key takeaway to the paper
+              Earn 1 RHC for adding a limitation to the paper
             </div>
           </div>
         </Ripples>
       );
     } else
-      return bullets.map((bullet, index) => {
+      return limits.map((bullet, index) => {
         return (
           <SummaryBulletPoint
             key={`summaryBulletPoint-${index}`}
@@ -217,7 +223,7 @@ class BulletsContainer extends React.Component {
           <span className={css(dropdownStyles.dropdownItemIcon)}>
             {icons.plusCircle}
           </span>
-          Add Takeaway
+          Add Limitation
         </Ripples>
       </div>
     );
@@ -229,7 +235,7 @@ class BulletsContainer extends React.Component {
     return (
       <div className={css(dropdownStyles.bulletContainer)}>
         <div className={css(styles.bulletHeaderContainer)}>
-          <div className={css(styles.bulletTitle)}>Key Takeaways</div>
+          <div className={css(styles.bulletTitle)}>Limitations</div>
           <div className={css(dropdownStyles.dropdownContainer)}>
             {this.renderDropdown()}
           </div>
@@ -245,12 +251,12 @@ class BulletsContainer extends React.Component {
               )}
             >
               <FormTextArea
-                id={"bulletText"}
+                id={"limitationText"}
                 containerStyle={inputStyles.formContainer}
                 labelStyle={inputStyles.formLabel}
                 inputStyle={inputStyles.formInput}
-                onChange={this.handleBulletText}
-                value={this.state.bulletText}
+                onChange={this.handleLimitationText}
+                value={this.state.limitationText}
                 passedRef={this.textInput}
                 autoFocus={true}
               />
@@ -277,13 +283,13 @@ class BulletsContainer extends React.Component {
                     )
                   }
                   size={"small"}
-                  onClick={this.submitBulletPoint}
+                  onClick={this.submitLimitation}
                   disabled={pendingSubmission}
                 />
               </div>
             </div>
           )}
-          {this.renderBulletPoints()}
+          {this.renderLimitations()}
         </div>
       </div>
     );
@@ -543,13 +549,13 @@ const inputStyles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  bulletsRedux: state.bullets,
+  limitations: state.limitations,
 });
 
 const mapDispatchToProps = {
-  openManageBulletPointsModal: ModalActions.openManageBulletPointsModal,
-  getBullets: BulletActions.getBullets,
-  postBullet: BulletActions.postBullet,
+  // openManageBulletPointsModal: ModalActions.openManageBulletPointsModal,
+  getLimitations: LimitationsActions.getLimitations,
+  postLimitation: LimitationsActions.postLimitation,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };
@@ -557,4 +563,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(BulletsContainer);
+)(LimitationTab);
