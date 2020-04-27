@@ -24,7 +24,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import EmptySummarySection from "./Summary/EmptySummary";
 
-const BULLET_COUNT = 5;
+const LIMITATIONS_COUNT = 5;
 
 class LimitationTab extends React.Component {
   constructor(props) {
@@ -190,12 +190,7 @@ class LimitationTab extends React.Component {
       );
     } else
       return limits.map((bullet, index) => {
-        return (
-          <SummaryBulletPoint
-            key={`summaryBulletPoint-${index}`}
-            data={bullet}
-          />
-        );
+        return <SummaryBulletPoint key={`limitation-${index}`} data={bullet} />;
       });
   };
 
@@ -209,7 +204,7 @@ class LimitationTab extends React.Component {
       >
         <Ripples
           className={css(dropdownStyles.item)}
-          onClick={() => openManageBulletPointsModal(true)}
+          onClick={() => openManageBulletPointsModal(true, "limitations")}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
             <i class="fal fa-tasks-alt" />
@@ -553,7 +548,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  // openManageBulletPointsModal: ModalActions.openManageBulletPointsModal,
+  openManageBulletPointsModal: ModalActions.openManageBulletPointsModal,
   getLimitations: LimitationsActions.getLimitations,
   postLimitation: LimitationsActions.postLimitation,
   setMessage: MessageActions.setMessage,
