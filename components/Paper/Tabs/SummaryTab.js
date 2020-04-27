@@ -13,7 +13,9 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
+import LimitationTab from "./LimitationTab";
 import { Event } from "~/components/GAnalytics/EventTracker";
+
 import EmptyState from "~/components/Placeholders/EmptyState";
 
 // Redux
@@ -198,6 +200,14 @@ class SummaryTab extends React.Component {
             id="takeaways-tab"
           >
             <BulletsContainer paperId={this.props.paperId} />
+          </div>
+        </a>
+        <a name="limitations">
+          <div
+            className={css(styles.bulletsContainer, styles.limitsContainer)}
+            id="limitations-tab"
+          >
+            <LimitationTab paperId={this.props.paperId} />
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
@@ -431,6 +441,9 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
+  },
+  limitsContainer: {
+    marginTop: 30,
   },
   abstractContainer: {
     marginTop: 32,
