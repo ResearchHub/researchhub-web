@@ -306,19 +306,6 @@ class PaperUploadInfo extends React.Component {
     }
   };
 
-  handleCheckBoxToggle = (id, state) => {
-    let form = JSON.parse(JSON.stringify(this.state.form));
-    let type = { ...form.type };
-    // set all values to false (so only 1 option can be selected)
-    type.journal = false;
-    type.conference = false;
-    type.other = false;
-    // set appropriate button to correct state
-    type[id] = state;
-    form.type = type;
-    this.setState({ form, edited: true });
-  };
-
   handleInputChange = (id, value) => {
     let form = JSON.parse(JSON.stringify(this.state.form));
     let error = { ...this.state.error };
@@ -448,18 +435,6 @@ class PaperUploadInfo extends React.Component {
       this.state.suggestedPapers && this.setState({ suggestedPapers: false });
     }
   };
-
-  // handleDiscussionInputChange = (id, value) => {
-  //   let discussion = { ...this.state.discussion };
-  //   discussion[id] = value;
-  //   this.setState({ discussion });
-  // };
-
-  // handleDiscussionTextEditor = (editorState) => {
-  //   let discussion = { ...this.state.discussion };
-  //   discussion.question = editorState;
-  //   this.setState({ discussion });
-  // };
 
   /**
    * COMPONENT API
@@ -654,7 +629,6 @@ class PaperUploadInfo extends React.Component {
                 </div>
               )}
             </div>
-            {/* {this.renderHeader("Main Information")} */}
             <div className={css(styles.section, styles.padding)}>
               <FormInput
                 label={"Paper Title"}
@@ -738,51 +712,23 @@ class PaperUploadInfo extends React.Component {
                       labelStyle={styles.labelStyle}
                     />
                   </div>
-                  <div className={css(styles.section, styles.leftAlign)}>
-                    <div className={css(styles.row, styles.minHeight)}>
-                      <span className={css(styles.section, styles.leftAlign)}>
-                        <p className={css(styles.label, styles.labelStyle)}>
-                          Type
-                        </p>
-                        <div className={css(styles.checkboxRow)}>
-                          <CheckBox
-                            active={form.type.journal}
-                            label={"Journal"}
-                            id={"journal"}
-                            onChange={this.handleCheckBoxToggle}
-                            labelStyle={styles.labelStyle}
-                          />
-                          <CheckBox
-                            active={form.type.conference}
-                            label={"Conference"}
-                            id={"conference"}
-                            onChange={this.handleCheckBoxToggle}
-                            labelStyle={styles.labelStyle}
-                          />
-                          <CheckBox
-                            active={form.type.other}
-                            label={"Other"}
-                            id={"other"}
-                            onChange={this.handleCheckBoxToggle}
-                            labelStyle={styles.labelStyle}
-                          />
-                        </div>
-                      </span>
-                      <span className={css(styles.doi)}>
-                        <FormInput
-                          label={"DOI"}
-                          placeholder="Enter DOI of paper"
-                          id={"doi"}
-                          value={form.doi}
-                          containerStyle={styles.doiInput}
-                          labelStyle={styles.labelStyle}
-                          onChange={this.handleInputChange}
-                        />
-                      </span>
-                    </div>
-                  </div>
                 </Fragment>
               )}
+              <div className={css(styles.section)}>
+                <div className={css(styles.row)}>
+                  <span className={css(styles.doi)}>
+                    <FormInput
+                      label={"DOI"}
+                      placeholder="Enter DOI of paper"
+                      id={"doi"}
+                      value={form.doi}
+                      containerStyle={styles.doiInput}
+                      labelStyle={styles.labelStyle}
+                      onChange={this.handleInputChange}
+                    />
+                  </span>
+                </div>
+              </div>
               <FormSelect
                 label={"Hubs"}
                 placeholder="Select up to 3 hubs"
@@ -979,16 +925,12 @@ class PaperUploadInfo extends React.Component {
     const body = { ...this.state.form };
     body.hubs = body.hubs.map((hub) => hub.id);
     body.authors = this.state.selectedAuthors.map((author) => author.id);
+    body.doi = body.doi;
     if (this.state.editMode) {
       if (body.published && body.published.year) {
         body.publishDate = this.formatPublishDate(body.published);
       }
       body.url = ""; // TODO: Add this optional field
-      body.type = Object.keys(body.type)
-        .filter((type) => body.type[type] && String(type))
-        .pop();
-    } else {
-      body.type = null;
     }
 
     if (!body.title) {
@@ -1042,7 +984,7 @@ class PaperUploadInfo extends React.Component {
           }
         });
       }
-    } else {
+    } else if (this.state.editMode) {
       paperActions.patchPaper(this.props.paperId, body).then((resp) => {
         if (resp.payload.success) {
           Event("Paper", "Paper Update", `Paper:${this.props.paperId} Updated`);
@@ -1071,9 +1013,7 @@ class PaperUploadInfo extends React.Component {
     if (paper_title && paper_title.trim() !== "") {
       count++;
     }
-    // if (tagline && tagline.trim() !== "") {
-    //   count++;
-    // }
+
     if (hubs && hubs.length > 0) {
       count++;
     }
@@ -1123,7 +1063,6 @@ class PaperUploadInfo extends React.Component {
           isOpen={modals.openAddAuthorModal}
           addNewUser={this.addNewUser}
         />
-        {/* {this.renderTitle()} */}
         <div className={css(styles.mobileProgressBar)}>
           <Progress completed={progress} />
         </div>
@@ -1363,6 +1302,8 @@ const styles = StyleSheet.create({
   },
   smallContainer: {
     width: 290,
+    marginTop: 10,
+    marginBottom: 0,
     "@media only screen and (max-width: 665px)": {
       width: 180,
     },
@@ -1503,36 +1444,28 @@ const styles = StyleSheet.create({
     },
   },
   doiInput: {
-    width: 290,
+    width: "100%",
     marginTop: 10,
     marginBottom: 0,
-    "@media only screen and (max-width: 665px)": {
-      width: 380,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: 338,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 270,
-    },
+    // "@media only screen and (max-width: 665px)": {
+    //   width: 380,
+    // },
+    // "@media only screen and (max-width: 415px)": {
+    //   width: 338,
+    // },
+    // "@media only screen and (max-width: 321px)": {
+    //   width: 270,
+    // },
   },
   doi: {
-    width: 290,
+    width: "100%",
     height: 90,
     transition: "all ease-in-out 0.2s",
     opacity: 1,
     overflow: "hidden",
     display: "unset",
     "@media only screen and (max-width: 665px)": {
-      width: 380,
-      height: 0,
       display: "none",
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: 338,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 270,
     },
   },
   mobileDoi: {
