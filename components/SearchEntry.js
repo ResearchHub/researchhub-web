@@ -64,6 +64,19 @@ class SearchEntry extends React.Component {
     setTimeout(() => onClickCallBack && onClickCallBack(), 400);
   };
 
+  parseTitleHighlight = (highlight, key) => {
+    const text = highlight[key][0];
+    const parts = text.split(/(<em>[^<]+<\/em>)/);
+    return parts.map((part) => {
+      if (part.includes("<em>")) {
+        let replaced = part.replace("<em>", "");
+        replaced = replaced.replace("</em>", "");
+        return <span className={css(styles.highlight)}>{replaced}</span>;
+      }
+      return <span>{part}</span>;
+    });
+  };
+
   parseHighlightField = (highlight, key) => {
     let { indexName, result } = this.props;
     let textArr = highlight[key][0].split(" ");
@@ -173,7 +186,7 @@ class SearchEntry extends React.Component {
       return (
         <span className={css(styles.paperTitle)}>
           {highlight && highlight.title
-            ? this.parseHighlightField(highlight, "title")
+            ? this.parseTitleHighlight(highlight, "title")
             : title}
           {authors && authors.length > 0 ? (
             this.transformAuthors()
