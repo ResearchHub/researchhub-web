@@ -47,13 +47,15 @@ class BulletsContainer extends React.Component {
 
   componentDidMount = async () => {
     window.addEventListener("mousedown", this.handleOutsideClick);
-    await this.props.getBullets(this.props.paperId);
+    this.fetchBullets();
     this.setState({ loading: false });
   };
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      if (
+      if (prevProps.paperId !== this.props.paperId) {
+        this.fetchBullets();
+      } else if (
         JSON.stringify(prevProps.bulletsRedux.bullets) !==
         JSON.stringify(this.props.bulletsRedux.bullets)
       ) {
@@ -61,6 +63,12 @@ class BulletsContainer extends React.Component {
       }
     }
   }
+
+  fetchBullets = async () => {
+    this.setState({ loading: true });
+    await this.props.getBullets(this.props.paperId);
+    this.setState({ loading: false });
+  };
 
   componentWillUnmount() {
     window.addEventListener("mousedown", this.handleOutsideClick);

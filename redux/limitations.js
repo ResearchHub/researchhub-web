@@ -37,11 +37,10 @@ export const LimitationsActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          console.log("res", res);
           return dispatch({
             type: LimitationsConstants.FETCH_SUCCESS,
             payload: {
-              limitations: res.results,
+              limits: res.results,
               pending: false,
               success: true,
             },
@@ -59,7 +58,6 @@ export const LimitationsActions = {
     };
   },
   postLimitation: ({ paperId, limitation, prevState }) => {
-    console.log("limitation", limitation);
     return (dispatch) => {
       dispatch({
         type: LimitationsConstants.POST_LIMITATION,
@@ -71,13 +69,13 @@ export const LimitationsActions = {
         .then((res) => {
           console.log("res", res);
           let newLimitation = res;
-          let limitations = [...prevState.limitations, res];
+          let limits = [...prevState.limits, res];
 
           return dispatch({
             type: LimitationsConstants.POST_SUCCESS,
             payload: {
-              limitations,
-              newBullet,
+              limits,
+              newLimitation,
               pending: false,
               success: true,
             },
@@ -95,15 +93,15 @@ export const LimitationsActions = {
         });
     };
   },
-  reorderLimitations: ({ limitations, paperId }) => {
+  reorderLimitations: ({ limits, paperId }) => {
     return (dispatch) => {
       dispatch({
         type: LimitationsConstants.REORDER_LIMITATIONS,
         payload: { pending: true, success: false },
       });
       let order = [];
-      for (let i = 0; i < limitations.length; i++) {
-        order.push(limitations[i].id);
+      for (let i = 0; i < limits.length; i++) {
+        order.push(limits[i].id);
       }
       return fetch(API.REORDER_BULLETS(), API.PATCH_CONFIG({ order }))
         .then(Helpers.checkStatus)
@@ -112,7 +110,7 @@ export const LimitationsActions = {
           return dispatch({
             type: LimitationsConstants.REORDER_SUCCESS,
             payload: {
-              limitations,
+              limits,
               pending: false,
               success: true,
             },

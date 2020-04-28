@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     },
   },
   ripples: {
-    overflow: "unset",
+    // overflow: "unset",
   },
   isWhite: {
     backgroundColor: "#FFF",
