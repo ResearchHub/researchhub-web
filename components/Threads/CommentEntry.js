@@ -307,7 +307,7 @@ class CommentEntry extends React.Component {
       Event("Discussion", "Submit", "Post Reply");
       let newReply = { ...this.props.discussion.postedReply };
       newReply.highlight = true;
-      let replies = [newReply, ...this.state.replies];
+      let replies = [...this.state.replies, newReply];
       comment.replies = replies;
       this.setState(
         {
@@ -419,20 +419,22 @@ class CommentEntry extends React.Component {
       this.state.replies.length < 1
         ? this.props.comment.replies
         : this.state.replies;
-    return replies.map((reply, i) => {
-      return (
-        <ReplyEntry
-          data={data}
-          hostname={hostname}
-          path={path}
-          key={`disc${reply.id}-${i}`}
-          calculateThreadHeight={this.calculateThreadHeight}
-          comment={comment}
-          reply={reply}
-          mobileView={this.props.mobileView}
-        />
-      );
-    });
+    return replies
+      .map((reply, i) => {
+        return (
+          <ReplyEntry
+            data={data}
+            hostname={hostname}
+            path={path}
+            key={`disc${reply.id}-${i}`}
+            calculateThreadHeight={this.calculateThreadHeight}
+            comment={comment}
+            reply={reply}
+            mobileView={this.props.mobileView}
+          />
+        );
+      })
+      .reverse();
   };
 
   render() {
