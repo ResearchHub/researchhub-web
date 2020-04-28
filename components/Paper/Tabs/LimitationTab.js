@@ -184,7 +184,7 @@ class LimitationTab extends React.Component {
               No limitations have been added yet
             </div>
             <div className={css(styles.subText)}>
-              Earn 1 RHC for adding a limitation to the paper
+              Add a limitation to the paper's research
             </div>
           </div>
         </Ripples>
