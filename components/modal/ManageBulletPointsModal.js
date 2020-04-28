@@ -12,6 +12,7 @@ import Ripples from "react-ripples";
 // Redux
 import { ModalActions } from "~/redux/modals";
 import { BulletActions } from "~/redux/bullets";
+import { LimitationsActions } from "~/redux/limitations";
 import { MessageActions } from "~/redux/message";
 
 // Component
@@ -40,10 +41,24 @@ class ManageBulletPointsModal extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.bulletsRedux.bullets !== prevProps.bulletsRedux.bullets) {
-      this.setState({
-        cards: this.props.bulletsRedux.bullets,
-      });
+    if (prevProps !== this.props) {
+      if (this.props.type === "key_takeaway") {
+        if (this.props.bulletsRedux.bullets !== this.state.cards) {
+          this.setState({
+            cards: this.props.bulletsRedux.bullets,
+          });
+        }
+      } else if (this.props.type === "limitations") {
+        if (this.props.limitations.limits !== this.state.cards) {
+          this.setState({
+            cards: this.props.limitations.limits,
+          });
+        }
+      } else {
+        this.setState({
+          cards: [],
+        });
+      }
     }
   }
 
@@ -64,32 +79,63 @@ class ManageBulletPointsModal extends React.Component {
   };
 
   saveReorder = async () => {
-    let { bulletActions, bulletsRedux, messageActions } = this.props;
+    let {
+      bulletActions,
+      bulletsRedux,
+      messageActions,
+      type,
+      limitations,
+      limitationActions,
+    } = this.props;
     let paperId = this.props.paperId;
     this.setState({ pendingSubmission: true });
-    await bulletActions.reorderBullets({ paperId, bullets: this.state.cards });
-    if (!bulletsRedux.pending && bulletsRedux.success) {
-      Event(
-        "Key Takeaways",
-        "Manage Key Takeaways",
-        `Key Takeaways Reordered Paper:${paperId}`
-      );
-      this.setState({
-        pendingSubmission: false,
+    if (type === "key_takeaway") {
+      await bulletActions.reorderBullets({
+        paperId,
+        bullets: [...this.state.cards],
       });
-      messageActions.setMessage("Order Saved!");
-      messageActions.showMessage({ show: true });
-      this.closeModal();
-    } else {
-      //handle error
+      if (!bulletsRedux.pending && bulletsRedux.success) {
+        Event(
+          "Key Takeaways",
+          "Manage Key Takeaways",
+          `Key Takeaways Reordered Paper:${paperId}`
+        );
+        this.setState({
+          pendingSubmission: false,
+        });
+        messageActions.setMessage("Order Saved!");
+        messageActions.showMessage({ show: true });
+        this.closeModal();
+      } else {
+        //handle error
+      }
+    } else if (type === "limitations") {
+      await limitationActions.reorderLimitations({
+        paperId,
+        limits: [...this.state.cards],
+      });
+      if (!limitations.pending && limitations.success) {
+        Event(
+          "Limitations",
+          "Manage Limitations",
+          `Limitations Reordered Paper:${paperId}`
+        );
+        this.setState({
+          pendingSubmission: false,
+        });
+        messageActions.setMessage("Order Saved!");
+        messageActions.showMessage({ show: true });
+        this.closeModal();
+      }
     }
   };
+
   /**
    * closes the modal on button click
    */
   closeModal = () => {
     let { modalActions } = this.props;
-    modalActions.openManageBulletPointsModal(false);
+    modalActions.openManageBulletPointsModal(false, null);
   };
 
   updateCards = ({ dragIndex, hoverIndex, dragCard }) => {
@@ -122,21 +168,24 @@ class ManageBulletPointsModal extends React.Component {
   };
 
   render() {
-    let { modals } = this.props;
+    let { modals, type } = this.props;
     let { mobileView, pendingSubmission, cards } = this.state;
     return (
       <Modal
-        isOpen={modals.openManageBulletPointsModal}
+        isOpen={modals.openManageBulletPointsModal.isOpen}
         closeModal={this.closeModal}
         className={css(styles.modal)}
         shouldCloseOnOverlayClick={true}
         style={mobileView ? mobileOverlayStyles : overlayStyles}
       >
         <div className={css(styles.modalContent)}>
-          <div className={css(styles.title)}>Selected Key Takeaways</div>
+          <div className={css(styles.title)}>{`Manage ${
+            type === "key_takeaway" ? "Key Takeaways" : "Limitations"
+          }`}</div>
           <div className={css(styles.subtitle)}>
-            The selected key takeaways will be displayed on the paper in the
-            main points section.
+            {`The selected ${
+              type === "key_takeaway" ? "key takeaways" : "limitations"
+            } will be displayed on the paper in the main points section.`}
           </div>
           <div className={css(styles.bulletPoints)}>
             <DndProvider backend={Backend}>
@@ -248,15 +297,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     color: "#241F3A",
-    fontWeight: 400,
-    fontSize: 30,
+    fontWeight: 500,
+    fontSize: 28,
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
-    marginBottom: 5,
+    marginBottom: 15,
     width: "100%",
     textAlign: "center",
     "@media only screen and (max-width: 1149px)": {
-      fontSize: 30,
+      fontSize: 28,
     },
     "@media only screen and (max-width: 665px)": {
       fontSize: 25,
@@ -275,23 +324,23 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     opacity: 0.6,
     fontWeight: 400,
-    fontSize: 18,
+    fontSize: 16,
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
     width: "100%",
     textAlign: "center",
     marginBottom: 20,
     "@media only screen and (max-width: 1149px)": {
-      fontSize: 18,
+      fontSize: 16,
     },
     "@media only screen and (max-width: 665px)": {
-      fontSize: 16,
+      fontSize: 14,
     },
     "@media only screen and (max-width: 416px)": {
-      fontSize: 16,
+      fontSize: 14,
     },
     "@media only screen and (max-width: 321px)": {
-      fontSize: 16,
+      fontSize: 12,
     },
   },
   buttonRow: {
@@ -299,8 +348,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-end",
     marginTop: 15,
-    paddingBottom: 15,
-    borderBottom: "1px solid #F0F0F0",
   },
   cancelButton: {
     height: 37,
@@ -315,7 +362,6 @@ const styles = StyleSheet.create({
     userSelect: "none",
     ":hover": {
       color: "#3971FF",
-      // textDecoration: 'underline'
     },
   },
 });
@@ -323,12 +369,15 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   modals: state.modals,
   bulletsRedux: state.bullets,
+  limitations: state.limitations,
+  type: state.modals.openManageBulletPointsModal.type,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   bulletActions: bindActionCreators(BulletActions, dispatch),
   messageActions: bindActionCreators(MessageActions, dispatch),
+  limitationActions: bindActionCreators(LimitationsActions, dispatch),
 });
 
 export default connect(

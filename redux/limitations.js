@@ -5,32 +5,32 @@ import { doesNotExist } from "~/config/utils";
  *        ACTIONS SECTION         *
  **********************************/
 
-export const BulletsConstants = {
-  FETCH_BULLETS: "@@BULLETS/FETCH_BULLETS",
-  FETCH_SUCCESS: "@@BULLETS/FETCH_SUCCESS",
-  FETCH_FAILURE: "@@BULLETS/FETCH_FAILURE",
-  POST_BULLET: "@@BULLETS/POST_BULLET",
-  POST_SUCCESS: "@@BULLETS/POST_SUCCESS",
-  POST_FAILURE: "@@BULLETS/POST_FAILURE",
-  REORDER_BULLETS: "@@BULLETS/REORDER_BULLETS",
-  REORDER_SUCCESS: "@@BULLETS/REORDER_SUCCESS",
-  REORDER_FAILURE: "@@BULLETS/REORDER_FAILURE",
+export const LimitationsConstants = {
+  FETCH_LIMITATIONS: "@@LIMITATIONS/FETCH_LIMITATIONS",
+  FETCH_SUCCESS: "@@LIMITATIONS/FETCH_SUCCESS",
+  FETCH_FAILURE: "@@LIMITATIONS/FETCH_FAILURE",
+  POST_LIMITATION: "@@LIMITATIONS/POST_LIMITATION",
+  POST_SUCCESS: "@@LIMITATIONS/POST_SUCCESS",
+  POST_FAILURE: "@@LIMITATIONS/POST_FAILURE",
+  REORDER_LIMITATIONS: "@@LIMITATIONS/REORDER_LIMITATIONS",
+  REORDER_SUCCESS: "@@LIMITATIONS/REORDER_SUCCESS",
+  REORDER_FAILURE: "@@LIMITATIONS/REORDER_FAILURE",
 };
 
 const BULLET_COUNT = 5;
 
-export const BulletActions = {
-  getBullets: (paperId) => {
+export const LimitationsActions = {
+  getLimitations: (paperId) => {
     return (dispatch) => {
       dispatch({
-        type: BulletsConstants.FETCH_BULLETS,
+        type: LimitationsConstants.FETCH_LIMITATIONS,
         payload: { pending: true, success: false },
       });
       return fetch(
         API.BULLET_POINT({
           paperId,
           ordinal__isnull: false,
-          type: "KEY_TAKEAWAY",
+          type: "LIMITATION",
         }),
         API.GET_CONFIG()
       )
@@ -38,9 +38,9 @@ export const BulletActions = {
         .then(Helpers.parseJSON)
         .then((res) => {
           return dispatch({
-            type: BulletsConstants.FETCH_SUCCESS,
+            type: LimitationsConstants.FETCH_SUCCESS,
             payload: {
-              bullets: res.results,
+              limits: res.results,
               pending: false,
               success: true,
             },
@@ -48,7 +48,7 @@ export const BulletActions = {
         })
         .catch((err) => {
           return dispatch({
-            type: BulletsConstants.FETCH_FAILURE,
+            type: LimitationsConstants.FETCH_FAILURE,
             payload: {
               pending: false,
               success: false,
@@ -57,24 +57,24 @@ export const BulletActions = {
         });
     };
   },
-  postBullet: ({ paperId, bullet, prevState }) => {
+  postLimitation: ({ paperId, limitation, prevState }) => {
     return (dispatch) => {
       dispatch({
-        type: BulletsConstants.POST_BULLET,
+        type: LimitationsConstants.POST_LIMITATION,
         payload: { pending: true, success: false },
       });
-      return fetch(API.BULLET_POINT({ paperId }), API.POST_CONFIG(bullet))
+      return fetch(API.BULLET_POINT({ paperId }), API.POST_CONFIG(limitation))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let newBullet = res;
-          let bullets = [...prevState.bullets, res];
+          let newLimitation = res;
+          let limits = [...prevState.limits, res];
 
           return dispatch({
-            type: BulletsConstants.POST_SUCCESS,
+            type: LimitationsConstants.POST_SUCCESS,
             payload: {
-              bullets,
-              newBullet,
+              limits,
+              newLimitation,
               pending: false,
               success: true,
             },
@@ -83,7 +83,7 @@ export const BulletActions = {
         .catch((err) => {
           console.log("err", err);
           return dispatch({
-            type: BulletsConstants.POST_FAILURE,
+            type: LimitationsConstants.POST_FAILURE,
             payload: {
               pending: false,
               success: false,
@@ -92,28 +92,30 @@ export const BulletActions = {
         });
     };
   },
-  reorderBullets: ({ bullets, paperId }) => {
+  reorderLimitations: ({ limits, paperId }) => {
     return (dispatch) => {
       dispatch({
-        type: BulletsConstants.REORDER_BULLETS,
+        type: LimitationsConstants.REORDER_LIMITATIONS,
         payload: { pending: true, success: false },
       });
       let order = [];
-      for (let i = 0; i < bullets.length; i++) {
-        order.push(bullets[i].id);
+      for (let i = 0; i < limits.length; i++) {
+        order.push(limits[i].id);
       }
+
       let params = {
         order,
-        bullet_type: "KEY_TAKEAWAY",
+        bullet_type: "LIMITATION",
       };
+
       return fetch(API.REORDER_BULLETS(), API.PATCH_CONFIG(params))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
           return dispatch({
-            type: BulletsConstants.REORDER_SUCCESS,
+            type: LimitationsConstants.REORDER_SUCCESS,
             payload: {
-              bullets: bullets,
+              limits,
               pending: false,
               success: true,
             },
@@ -121,7 +123,7 @@ export const BulletActions = {
         })
         .catch((err) => {
           return dispatch({
-            type: BulletsConstants.REORDER_FAILURE,
+            type: LimitationsConstants.REORDER_FAILURE,
             payload: {
               pending: false,
               success: false,
@@ -136,23 +138,22 @@ export const BulletActions = {
  *        REDUCER SECTION         *
  **********************************/
 
-const defaultBulletsState = {
-  bullets: [],
-  allBullets: [],
-  newBullet: null,
+const defaultLimitationsState = {
+  limits: [],
+  newLimitation: null,
 };
 
-const BulletsReducer = (state = defaultBulletsState, action) => {
+const LimitationsReducer = (state = defaultLimitationsState, action) => {
   switch (action.type) {
-    case BulletsConstants.FETCH_BULLETS:
-    case BulletsConstants.FETCH_FAILURE:
-    case BulletsConstants.FETCH_SUCCESS:
-    case BulletsConstants.POST_BULLET:
-    case BulletsConstants.POST_SUCCESS:
-    case BulletsConstants.POST_FAILURE:
-    case BulletsConstants.REORDER_BULLETS:
-    case BulletsConstants.REORDER_SUCCESS:
-    case BulletsConstants.REORDER_FAILURE:
+    case LimitationsConstants.FETCH_LIMITATIONS:
+    case LimitationsConstants.FETCH_FAILURE:
+    case LimitationsConstants.FETCH_SUCCESS:
+    case LimitationsConstants.POST_LIMITATION:
+    case LimitationsConstants.POST_SUCCESS:
+    case LimitationsConstants.POST_FAILURE:
+    case LimitationsConstants.REORDER_LIMITATIONS:
+    case LimitationsConstants.REORDER_SUCCESS:
+    case LimitationsConstants.REORDER_FAILURE:
       return {
         ...state,
         ...action.payload,
@@ -163,4 +164,4 @@ const BulletsReducer = (state = defaultBulletsState, action) => {
   }
 };
 
-export default BulletsReducer;
+export default LimitationsReducer;
