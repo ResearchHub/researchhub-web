@@ -1,11 +1,9 @@
 import { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import InfiniteScroll from "react-infinite-scroller";
 import moment from "moment";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
-import Link from "next/link";
 import Ripples from "react-ripples";
 
 // Component
@@ -17,6 +15,7 @@ import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ResearchHubBanner from "../ResearchHubBanner";
+import Head from "~/components/Head";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -529,6 +528,7 @@ class HubPage extends React.Component {
           {process.browser && (
             <ResearchHubBanner home={this.props.home} hub={this.props.hub} />
           )}
+          {this.props.home && <Head title={this.props.home && null} />}
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
