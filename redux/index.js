@@ -15,6 +15,7 @@ import notificationReducer from "./notification";
 import flagReducer from "./flags";
 import bulletReducer from "./bullets";
 import bannerReducer from "./banner";
+import limitationsReducer from "./limitations";
 
 export default combineReducers({
   modals: modalReducer,
@@ -32,4 +33,5 @@ export default combineReducers({
   flags: flagReducer,
   bullets: bulletReducer,
   banners: bannerReducer,
+  limitations: limitationsReducer,
 });

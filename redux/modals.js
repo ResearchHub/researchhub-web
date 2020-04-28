@@ -62,12 +62,15 @@ export const ModalActions = {
       });
     };
   },
-  openManageBulletPointsModal: (openModal) => {
+  openManageBulletPointsModal: (openModal, type) => {
     return (dispatch) => {
       return dispatch({
         type: ModalConstants.LOGIN_MODAL_TOGGLE,
         payload: {
-          openManageBulletPointsModal: openModal,
+          openManageBulletPointsModal: {
+            isOpen: openModal,
+            type,
+          },
         },
       });
     };
@@ -190,7 +193,10 @@ const defaultModalState = {
   uploadPaperModal: {
     suggestedPapers: [],
   },
-  openManageBulletPointsModal: false,
+  openManageBulletPointsModal: {
+    type: null,
+    isOpen: false,
+  },
   openSignUpModal: false,
 };
 
