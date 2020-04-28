@@ -24,7 +24,6 @@ import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPrevie
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
-import { ModalActions } from "~/redux/modals";
 import VoteActions from "~/redux/vote";
 
 // Config
@@ -33,7 +32,6 @@ import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { formatPublishedDate } from "~/config/utils";
 
 const Paper = (props) => {
   const dispatch = useDispatch();

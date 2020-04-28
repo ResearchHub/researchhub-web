@@ -1,4 +1,4 @@
-import { useState, useRef, Fragment } from "react";
+import { useState, useRef, Fragment, useEffect } from "react";
 
 // NPM Modules
 import { connect, useStore, useDispatch } from "react-redux";
@@ -53,6 +53,11 @@ function PaperTab(props) {
     setNumPages(numPages);
     setLoadSuccess(true);
   }
+
+  useEffect(() => {
+    setFile(paper.file || paper.pdf_url);
+    setPaperUrl(paper.url);
+  }, [paper]);
 
   /**
    * @param {Array} acceptedFiles - a list containing the file that the user has uploaded

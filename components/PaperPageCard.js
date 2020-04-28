@@ -54,12 +54,10 @@ class PaperPageCard extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      if (prevProps.paper.id !== this.props.paper.id) {
-        this.setState({ loading: true }, () => {
-          this.fetchFigures();
-        });
-      }
+    if (prevProps.paper.id !== this.props.paper.id) {
+      this.setState({ loading: true }, () => {
+        this.fetchFigures();
+      });
     }
   }
 
