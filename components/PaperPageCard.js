@@ -55,9 +55,8 @@ class PaperPageCard extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.paper.id !== this.props.paper.id) {
-      this.setState({ loading: true }, () => {
-        this.fetchFigures();
-      });
+      this.setState({ loading: true });
+      this.fetchFigures();
     }
   }
 
@@ -86,6 +85,8 @@ class PaperPageCard extends React.Component {
             return this.setState(
               {
                 fetching: false,
+                previews: [],
+                figureUrls: [],
               },
               this.revealPage()
             );
