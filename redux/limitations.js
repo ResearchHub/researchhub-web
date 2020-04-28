@@ -67,7 +67,6 @@ export const LimitationsActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          console.log("res", res);
           let newLimitation = res;
           let limits = [...prevState.limits, res];
 
@@ -103,7 +102,13 @@ export const LimitationsActions = {
       for (let i = 0; i < limits.length; i++) {
         order.push(limits[i].id);
       }
-      return fetch(API.REORDER_BULLETS(), API.PATCH_CONFIG({ order }))
+
+      let params = {
+        order,
+        bullet_type: "LIMITATION",
+      };
+
+      return fetch(API.REORDER_BULLETS(), API.PATCH_CONFIG(params))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {

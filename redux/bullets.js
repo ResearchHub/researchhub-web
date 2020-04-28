@@ -102,7 +102,11 @@ export const BulletActions = {
       for (let i = 0; i < bullets.length; i++) {
         order.push(bullets[i].id);
       }
-      return fetch(API.REORDER_BULLETS(), API.PATCH_CONFIG({ order }))
+      let params = {
+        order,
+        bullet_type: "KEY_TAKEAWAY",
+      };
+      return fetch(API.REORDER_BULLETS(), API.PATCH_CONFIG(params))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
