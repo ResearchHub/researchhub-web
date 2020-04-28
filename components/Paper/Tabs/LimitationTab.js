@@ -47,25 +47,31 @@ class LimitationTab extends React.Component {
 
   componentDidMount = async () => {
     window.addEventListener("mousedown", this.handleOutsideClick);
-    await this.props.getLimitations(this.props.paperId);
-    // TODO: await getLimitations
-    this.setState({ loading: false });
+    this.fetchLimitations();
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate = async (prevProps) => {
     if (prevProps !== this.props) {
-      if (
+      if (prevProps.paperId !== this.props.paperId) {
+        this.fetchLimitations();
+      } else if (
         JSON.stringify(prevProps.limitations.limits) !==
         JSON.stringify(this.props.limitations.limits)
       ) {
-        this.setState({ bullets: this.props.limitations.limits });
+        this.setState({ limits: this.props.limitations.limits });
       }
     }
-  }
+  };
 
   componentWillUnmount() {
     window.addEventListener("mousedown", this.handleOutsideClick);
   }
+
+  fetchLimitations = async () => {
+    this.setState({ loading: true });
+    await this.props.getLimitations(this.props.paperId);
+    this.setState({ loading: false });
+  };
 
   handleOutsideClick = (e) => {
     if (this.dropdownIcon && this.dropdownIcon.contains(e.target)) {
@@ -110,7 +116,7 @@ class LimitationTab extends React.Component {
   formatNewLimitation = () => {
     let ordinal = this.state.limits.length + 1;
 
-    if (ordinal > BULLET_COUNT) {
+    if (ordinal > LIMITATIONS_COUNT) {
       ordinal = null;
     }
 
@@ -124,11 +130,6 @@ class LimitationTab extends React.Component {
   };
 
   submitLimitation = async () => {
-    /**
-     *  submit limitation function
-     *
-     */
-
     let { limitations, postLimitation, showMessage, setMessage } = this.props;
     this.props.showMessage({ load: true, show: true });
     let paperId = this.props.paperId;

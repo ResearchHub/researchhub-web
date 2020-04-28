@@ -41,16 +41,22 @@ class ManageBulletPointsModal extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.type === "key_takeaway") {
-      if (this.props.bulletsRedux.bullets !== prevProps.bulletsRedux.bullets) {
+    if (prevProps !== this.props) {
+      if (this.props.type === "key_takeaway") {
+        if (this.props.bulletsRedux.bullets !== this.state.cards) {
+          this.setState({
+            cards: this.props.bulletsRedux.bullets,
+          });
+        }
+      } else if (this.props.type === "limitations") {
+        if (this.props.limitations.limits !== this.state.cards) {
+          this.setState({
+            cards: this.props.limitations.limits,
+          });
+        }
+      } else {
         this.setState({
-          cards: this.props.bulletsRedux.bullets,
-        });
-      }
-    } else if (this.props.type === "limitations") {
-      if (this.props.limitations.limits !== prevProps.limitations.limits) {
-        this.setState({
-          cards: this.props.limitations.limits,
+          cards: [],
         });
       }
     }
@@ -86,7 +92,7 @@ class ManageBulletPointsModal extends React.Component {
     if (type === "key_takeaway") {
       await bulletActions.reorderBullets({
         paperId,
-        bullets: this.state.cards,
+        bullets: [...this.state.cards],
       });
       if (!bulletsRedux.pending && bulletsRedux.success) {
         Event(
@@ -106,7 +112,7 @@ class ManageBulletPointsModal extends React.Component {
     } else if (type === "limitations") {
       await limitationActions.reorderLimitations({
         paperId,
-        limitations: this.state.card,
+        limits: [...this.state.cards],
       });
       if (!limitations.pending && limitations.success) {
         Event(
@@ -173,7 +179,7 @@ class ManageBulletPointsModal extends React.Component {
         style={mobileView ? mobileOverlayStyles : overlayStyles}
       >
         <div className={css(styles.modalContent)}>
-          <div className={css(styles.title)}>{`Selected ${
+          <div className={css(styles.title)}>{`Manage ${
             type === "key_takeaway" ? "Key Takeaways" : "Limitations"
           }`}</div>
           <div className={css(styles.subtitle)}>
@@ -291,15 +297,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     color: "#241F3A",
-    fontWeight: 400,
-    fontSize: 30,
+    fontWeight: 500,
+    fontSize: 28,
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
-    marginBottom: 5,
+    marginBottom: 15,
     width: "100%",
     textAlign: "center",
     "@media only screen and (max-width: 1149px)": {
-      fontSize: 30,
+      fontSize: 28,
     },
     "@media only screen and (max-width: 665px)": {
       fontSize: 25,
@@ -318,23 +324,23 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     opacity: 0.6,
     fontWeight: 400,
-    fontSize: 18,
+    fontSize: 16,
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
     width: "100%",
     textAlign: "center",
     marginBottom: 20,
     "@media only screen and (max-width: 1149px)": {
-      fontSize: 18,
+      fontSize: 16,
     },
     "@media only screen and (max-width: 665px)": {
-      fontSize: 16,
+      fontSize: 14,
     },
     "@media only screen and (max-width: 416px)": {
-      fontSize: 16,
+      fontSize: 14,
     },
     "@media only screen and (max-width: 321px)": {
-      fontSize: 16,
+      fontSize: 12,
     },
   },
   buttonRow: {
@@ -342,8 +348,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-end",
     marginTop: 15,
-    // paddingBottom: 15,
-    // borderBottom: "1px solid #F0F0F0",
   },
   cancelButton: {
     height: 37,
@@ -358,7 +362,6 @@ const styles = StyleSheet.create({
     userSelect: "none",
     ":hover": {
       color: "#3971FF",
-      // textDecoration: 'underline'
     },
   },
 });
