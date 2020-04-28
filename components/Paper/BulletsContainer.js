@@ -48,7 +48,6 @@ class BulletsContainer extends React.Component {
   componentDidMount = async () => {
     window.addEventListener("mousedown", this.handleOutsideClick);
     this.fetchBullets();
-    this.setState({ loading: false });
   };
 
   componentDidUpdate(prevProps) {
