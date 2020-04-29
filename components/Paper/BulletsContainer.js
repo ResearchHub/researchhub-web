@@ -138,11 +138,6 @@ class BulletsContainer extends React.Component {
     this.setState({ pendingSubmission: true });
     await postBullet({ paperId, bullet, prevState: bulletsRedux });
     if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
-      Event(
-        "Key Takeaways",
-        "Add Key Takeaway",
-        `Key Takeaway Added Paper:${paperId}`
-      );
       showMessage({ show: false });
       setMessage("Key takeaway successfully added!");
       showMessage({ show: true });

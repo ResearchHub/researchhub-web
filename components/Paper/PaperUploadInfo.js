@@ -950,7 +950,6 @@ class PaperUploadInfo extends React.Component {
         ? await this.props.paperActions.postPaper(body)
         : await this.props.paperActions.patchPaper(paperId, body);
       if (this.props.paper.success) {
-        Event("Paper", "Paper Upload", "User Paper Added");
         this.props.messageActions.setMessage(
           `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
         );
@@ -987,7 +986,6 @@ class PaperUploadInfo extends React.Component {
     } else if (this.state.editMode) {
       paperActions.patchPaper(this.props.paperId, body).then((resp) => {
         if (resp.payload.success) {
-          Event("Paper", "Paper Update", `Paper:${this.props.paperId} Updated`);
           messageActions.setMessage(`Paper successfully updated`);
           messageActions.showMessage({ show: true });
           authActions.getUser();
