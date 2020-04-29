@@ -139,9 +139,9 @@ function transformReplies(replies) {
       })
       .sort((a, b) => {
         if (a.createdDate < b.createdDate) {
-          return 1;
-        } else if (a.createdDate > b.createdDate) {
           return -1;
+        } else if (a.createdDate > b.createdDate) {
+          return 1;
         }
         return 0;
       })
