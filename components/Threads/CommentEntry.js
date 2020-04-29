@@ -419,22 +419,20 @@ class CommentEntry extends React.Component {
       this.state.replies.length < 1
         ? this.props.comment.replies
         : this.state.replies;
-    return replies
-      .map((reply, i) => {
-        return (
-          <ReplyEntry
-            data={data}
-            hostname={hostname}
-            path={path}
-            key={`disc${reply.id}-${i}`}
-            calculateThreadHeight={this.calculateThreadHeight}
-            comment={comment}
-            reply={reply}
-            mobileView={this.props.mobileView}
-          />
-        );
-      })
-      .reverse();
+    return replies.map((reply, i) => {
+      return (
+        <ReplyEntry
+          data={data}
+          hostname={hostname}
+          path={path}
+          key={`disc${reply.id}-${i}`}
+          calculateThreadHeight={this.calculateThreadHeight}
+          comment={comment}
+          reply={reply}
+          mobileView={this.props.mobileView}
+        />
+      );
+    });
   };
 
   render() {

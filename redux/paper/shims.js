@@ -1,4 +1,5 @@
 import { transformDate, transformUser, transformVote } from "../utils";
+import moment from "moment";
 
 export const paper = (paper) => {
   return {
@@ -132,9 +133,18 @@ export function transformComment(comment) {
 function transformReplies(replies) {
   return (
     replies &&
-    replies.map((reply) => {
-      return transformReply(reply);
-    })
+    replies
+      .map((reply) => {
+        return transformReply(reply);
+      })
+      .sort((a, b) => {
+        if (a.createdDate < b.createdDate) {
+          return 1;
+        } else if (a.createdDate > b.createdDate) {
+          return -1;
+        }
+        return 0;
+      })
   );
 }
 
