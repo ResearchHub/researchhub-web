@@ -49,6 +49,7 @@ export const HubActions = {
           });
         })
         .catch((err) => {
+          console.error(err);
           return dispatch({
             type: HubConstants.GET_HUBS_FAILURE,
             payload: {
@@ -153,7 +154,7 @@ const shims = {
   sortHubs: (allHubs) => {
     let sortedHubs = {};
     allHubs.forEach((hub) => {
-      let firstLetter = hub.name[0].toLowerCase();
+      let firstLetter = hub.name.slice(0, 1).toLowerCase();
       if (sortedHubs[firstLetter]) {
         sortedHubs[firstLetter].push(hub);
       } else {

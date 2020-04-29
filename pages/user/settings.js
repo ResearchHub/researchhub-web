@@ -27,7 +27,7 @@ import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { HubActions } from "~/redux/hub";
 import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist, isEmpty } from "~/config/utils";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 
@@ -382,12 +382,14 @@ class UserSettings extends Component {
     return (
       hubs &&
       hubs.map((hub) => {
-        let hubName = hub.name
-          .split(" ")
-          .map((el) => {
-            return el[0].toUpperCase() + el.slice(1);
-          })
-          .join(" ");
+        let hubName =
+          !isEmpty(hub.name) &&
+          hub.name
+            .split(" ")
+            .map((el) => {
+              return el[0].toUpperCase() + el.slice(1);
+            })
+            .join(" ");
         return {
           value: hub.id,
           label: hubName,
@@ -398,6 +400,10 @@ class UserSettings extends Component {
 
   handleHubOnChange = (id, newHubList) => {
     let prevState = this.props.subscribedHubs;
+
+    if (doesNotExist(newHubList)) {
+      newHubList = [];
+    }
 
     if (newHubList.length > prevState.length) {
       let newHub = newHubList[newHubList.length - 1];
