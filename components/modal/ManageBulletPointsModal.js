@@ -19,7 +19,6 @@ import { MessageActions } from "~/redux/message";
 import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
-import { Event } from "~/components/GAnalytics/EventTracker";
 
 class ManageBulletPointsModal extends React.Component {
   constructor(props) {
@@ -95,11 +94,6 @@ class ManageBulletPointsModal extends React.Component {
         bullets: [...this.state.cards],
       });
       if (!bulletsRedux.pending && bulletsRedux.success) {
-        Event(
-          "Key Takeaways",
-          "Manage Key Takeaways",
-          `Key Takeaways Reordered Paper:${paperId}`
-        );
         this.setState({
           pendingSubmission: false,
         });
@@ -115,11 +109,6 @@ class ManageBulletPointsModal extends React.Component {
         limits: [...this.state.cards],
       });
       if (!limitations.pending && limitations.success) {
-        Event(
-          "Limitations",
-          "Manage Limitations",
-          `Limitations Reordered Paper:${paperId}`
-        );
         this.setState({
           pendingSubmission: false,
         });
