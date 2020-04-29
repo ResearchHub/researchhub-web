@@ -70,5 +70,5 @@ input:focus {
 }
 
 #summary-editor span {
-  white-space: pre !important;
+  /* white-space: pre !important; */
 }
