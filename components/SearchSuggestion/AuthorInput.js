@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     miHeight: 79,
     marginTop: 20,
-    marginBottom: 20,
     width: "100%",
   },
   inputLabel: {
@@ -106,7 +105,6 @@ const styles = StyleSheet.create({
   },
   input: {
     minHeight: 50,
-    // width: 600,
   },
   text: {
     fontFamily: "Roboto",

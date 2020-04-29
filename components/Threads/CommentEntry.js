@@ -307,7 +307,7 @@ class CommentEntry extends React.Component {
       Event("Discussion", "Submit", "Post Reply");
       let newReply = { ...this.props.discussion.postedReply };
       newReply.highlight = true;
-      let replies = [newReply, ...this.state.replies];
+      let replies = [...this.state.replies, newReply];
       comment.replies = replies;
       this.setState(
         {
