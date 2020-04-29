@@ -527,8 +527,18 @@ class PaperPageCard extends React.Component {
                           {this.renderPublishDate()}
                         </div>
                       )}
-                      {paper && paper.authors && (
-                        <div className={css(styles.authors)}>
+                      {paper && paper.authors && paper.authors.length > 0 && (
+                        <div
+                          className={css(
+                            styles.authors,
+                            !paper.paper_publish_date && styles.marginTop
+                          )}
+                        >
+                          {!paper.paper_publish_date && (
+                            <span className={css(styles.label)}>
+                              {`Author${paper.authors.length > 1 ? "s" : ""}`}
+                            </span>
+                          )}
                           {this.renderAuthors()}
                         </div>
                       )}
@@ -676,28 +686,27 @@ const styles = StyleSheet.create({
   dateAuthorContainer: {
     display: "flex",
     alignItems: "center",
-    // marginBottom: 10,
   },
   publishDate: {
     fontSize: 16,
     color: "#241F3A",
     opacity: 0.7,
-    // marginRight: 60,
     display: "flex",
+    marginRight: 30,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
   },
-  authorContainer: {
-    marginLeft: 30,
-  },
+  authorContainer: {},
   authors: {
     display: "flex",
     alignItems: "center",
   },
+  marginTop: {
+    marginTop: 5,
+  },
   doiDate: {
     fontSize: 16,
-    // marginBottom: 15,
     color: "#241F3A",
     opacity: 0.7,
     display: "flex",
