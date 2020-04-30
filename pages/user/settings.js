@@ -78,6 +78,7 @@ class UserSettings extends Component {
   }
 
   componentDidMount = async () => {
+    this.props.dispatch(MessageActions.showMessage({ load: true, show: true }));
     if (doesNotExist(this.props.hubs)) {
       this.props.dispatch(HubActions.getHubs());
     }
@@ -90,13 +91,18 @@ class UserSettings extends Component {
         preference
       );
       const isOptedOut = this.getInitialIsOptedOut(preference);
-      this.setState({
-        emailRecipientId: preference.id,
-        frequency,
-        ...contentSubscriptions,
-        isOptedOut,
-        email: this.props.user.email,
-      });
+      this.setState(
+        {
+          emailRecipientId: preference.id,
+          frequency,
+          ...contentSubscriptions,
+          isOptedOut,
+          email: this.props.user.email,
+        },
+        () => {
+          this.props.dispatch(MessageActions.showMessage({ show: false }));
+        }
+      );
     });
   };
 
