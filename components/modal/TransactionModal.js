@@ -327,7 +327,7 @@ class TransactionModal extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         let newUser = { ...res.user };
-        this.props.updateUser(newUser);
+        // this.props.updateUser(newUser);
         this.setState({
           userBalance: res.user.balance,
           withdrawals: [...res.results],
