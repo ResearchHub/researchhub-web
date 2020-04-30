@@ -11,6 +11,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "../config/constants";
 import { useDispatch } from "react-redux";
 import { ModalActions } from "./modals";
+import { HubActions } from "./hub";
 import * as utils from "./utils";
 
 export const AuthConstants = {
@@ -60,6 +61,8 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((json) => {
+      dispatch(HubActions.updateSubscribedHubs(json.results[0].subscribed)); // updates the subscribedHubs on Hub Redux State
+
       if (json.results.length > 0) {
         return dispatch({
           type: AuthConstants.GOT_USER,
@@ -364,6 +367,7 @@ export const AuthActions = {
       }
     };
   },
+
   // /***
   //  * Save changes to user profile
   //  */
