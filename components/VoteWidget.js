@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-import { Event } from "~/components/GAnalytics/EventTracker";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
@@ -77,7 +76,6 @@ const VoteWidget = (props) => {
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
-      Event("Vote", "Upvote", `Upvote ${isPaper ? "Paper" : type}`);
       onUpvote(e);
     }
   }
@@ -93,7 +91,6 @@ const VoteWidget = (props) => {
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
-      Event("Vote", "Downvote", `Downvote ${isPaper ? "Paper" : type}`);
       onDownvote(e);
     }
   }
@@ -150,7 +147,6 @@ const ScorePill = (props) => {
   return (
     <div className={css(styles.pillContainer)}>
       <div>{score}</div>
-      {/* <div className={css(styles.coins)}> coins </div> */}
     </div>
   );
 };
