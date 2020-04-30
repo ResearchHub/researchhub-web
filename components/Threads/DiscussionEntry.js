@@ -9,7 +9,6 @@ import DiscussionPostMetadata from "../DiscussionPostMetadata";
 import CommentEntry from "./CommentEntry";
 import ThreadLine from "./ThreadLine";
 import ThreadTextEditor from "./ThreadTextEditor";
-import { Event } from "../GAnalytics/EventTracker";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -185,7 +184,6 @@ class DiscussionEntry extends React.Component {
     postCommentPending();
     await postComment(paperId, discussionThreadId, text, plain_text);
     if (this.props.discussion.donePosting && this.props.discussion.success) {
-      Event("Discussion", "Submit", "Post Comment");
       let newComment = { ...this.props.discussion.postedComment };
       newComment.highlight = true;
       let comments = [newComment, ...this.state.comments];

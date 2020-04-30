@@ -10,7 +10,6 @@ import FormTextArea from "~/components/Form/FormTextArea";
 import Button from "~/components/Form/Button";
 import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import { Event } from "~/components/GAnalytics/EventTracker";
 
 // redux
 import { LimitationsActions } from "~/redux/limitations";
@@ -138,11 +137,6 @@ class LimitationTab extends React.Component {
     this.setState({ pendingSubmission: true });
     await postLimitation({ paperId, limitation, prevState: limitations });
     if (!this.props.limitations.pending && this.props.limitations.success) {
-      Event(
-        "Limitations",
-        "Add Limitation",
-        `Limitation Added Paper:${paperId}`
-      );
       showMessage({ show: false });
       setMessage("Limitation successfully added!");
       showMessage({ show: true });

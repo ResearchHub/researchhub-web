@@ -1,7 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { GoogleLogin } from "react-google-login";
-import { Event } from "~/components/GAnalytics/EventTracker";
 
 import { AuthActions } from "../redux/auth";
 import { MessageActions } from "~/redux/message";
@@ -83,7 +82,6 @@ class SignUpBanner extends React.Component {
           this.closeBanner(); // close the banner and set preference
           if (!userAction.user.has_seen_orcid_connect_modal) {
             this.props.openOrcidConnectModal(true);
-            Event("Sign Up", "User Sign Up", "New User");
           }
         });
       }
