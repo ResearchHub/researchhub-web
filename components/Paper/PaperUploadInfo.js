@@ -171,7 +171,9 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let userAuthorId = this.props.auth.user.author_profile.id;
+        let userAuthorId =
+          this.props.auth.user.author_profile &&
+          this.props.auth.user.author_profile.id;
         let {
           authors,
           doi,
@@ -274,7 +276,9 @@ class PaperUploadInfo extends React.Component {
   };
 
   handleAuthorSelect = (value) => {
-    let userAuthorId = this.props.auth.user.author_profile.id;
+    let userAuthorId =
+      this.props.auth.user.author_profile &&
+      this.props.auth.user.author_profile.id;
     let form = { ...this.state.form };
     let error = { ...this.state.error };
     error.author = false;
@@ -293,7 +297,9 @@ class PaperUploadInfo extends React.Component {
 
   handleAuthorChange = (selectedAuthors) => {
     if (selectedAuthors.length < this.state.selectedAuthors.length) {
-      let userAuthorId = this.props.auth.user.author_profile.id;
+      let userAuthorId =
+        this.props.auth.user.author_profile &&
+        this.props.auth.user.author_profile.id;
       let form = { ...this.state.form };
       if (
         this.state.selectedAuthors.filter((author) => {
@@ -328,7 +334,9 @@ class PaperUploadInfo extends React.Component {
   handleSelfAuthorToggle = (id, value) => {
     let error = { ...this.state.error };
     let form = JSON.parse(JSON.stringify(this.state.form));
-    let userAuthorId = this.props.auth.user.author_profile.id;
+    let userAuthorId =
+      this.props.auth.user.author_profile &&
+      this.props.auth.user.author_profile.id;
     form.author.self_author = value;
     if (value) {
       error.author = false;
