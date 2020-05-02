@@ -138,7 +138,7 @@ class FigureTab extends React.Component {
         this.setState({
           figures,
           file: null,
-          slideIndex: figures.length - 1,
+          currentSlideIndex: figures.length - 1,
           pendingSubmission: false,
         });
         this.resetState();
@@ -168,18 +168,14 @@ class FigureTab extends React.Component {
   };
 
   renderContent = () => {
-    let { fetching, inputView, pendingSubmission } = this.state;
-    if (fetching) {
+    let { figures, inputView, pendingSubmission } = this.state;
+    if (!figures.length) {
       return (
-        <div className={css(styles.figures)}>
-          <div className={css(styles.image)}>
-            <ReactPlaceholder
-              ready={false}
-              showLoadingAnimation
-              customPlaceholder={<PreviewPlaceholder color="#efefef" />}
-            />
-          </div>
-        </div>
+        <EmptyState
+          text={"No Figures Found"}
+          icon={<i class="fad fa-image"></i>}
+          subtext={"No figures have been found in this paper's PDF"}
+        />
       );
     } else if (inputView) {
       return (
@@ -223,6 +219,7 @@ class FigureTab extends React.Component {
               className={css(styles.slider)}
               enableKeyboardControls={true}
               afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
+              slideIndex={this.state.currentSlideIndex}
               renderBottomCenterControls={() => null}
               renderCenterLeftControls={(arg) => {
                 let { previousSlide } = arg;
@@ -281,14 +278,18 @@ class FigureTab extends React.Component {
                 slide={this.state.slideIndex}
               />
             )}
-            {this.state.figures.length > 0 ? (
-              this.renderContent()
+            {this.state.fetching ? (
+              <div className={css(styles.figures)}>
+                <div className={css(styles.image)}>
+                  <ReactPlaceholder
+                    ready={false}
+                    showLoadingAnimation
+                    customPlaceholder={<PreviewPlaceholder color="#efefef" />}
+                  />
+                </div>
+              </div>
             ) : (
-              <EmptyState
-                text={"No Figures Found"}
-                icon={<i class="fad fa-image"></i>}
-                subtext={"No figures have been found in this paper's PDF"}
-              />
+              this.renderContent()
             )}
           </div>
         </div>
