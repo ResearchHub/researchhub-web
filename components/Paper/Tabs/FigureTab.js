@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
@@ -12,6 +13,7 @@ import EmptyState from "~/components/Placeholders/EmptyState";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import Loader from "~/components/Loader/Loader";
 import Button from "~/components/Form/Button";
+import { MessageActions } from "~/redux/message";
 
 // Config
 import API from "../../../config/api";
@@ -115,10 +117,13 @@ class FigureTab extends React.Component {
   };
 
   postFigure = () => {
+    let { showMessage, setMessage } = this.props;
+    showMessage({ load: true, show: true });
+    this.setState({ pendingSubmission: true });
     let paperId = this.props.paper.id;
     let params = new FormData();
 
-    params.append("files", this.state.file);
+    params.append("figure", this.state.file);
     params.append("paper", paperId);
     params.append("figure_type", "FIGURE");
 
@@ -126,10 +131,24 @@ class FigureTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        console.log("res", res);
+        showMessage({ show: false });
+        setMessage("Figure uploaded successfully");
+        showMessage({ show: true });
+        let figures = [...this.state.figures, res.file];
         this.setState({
-          figures: [...this.state.figures, res.file],
+          figures,
           file: null,
+          slideIndex: figures.length - 1,
+          pendingSubmission: false,
+        });
+        this.resetState();
+      })
+      .catch((err) => {
+        showMessage({ show: false });
+        setMessage("Something went wrong");
+        showMessage({ show: true, error: true });
+        this.setState({
+          pendingSubmission: false,
         });
       });
   };
@@ -469,4 +488,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FigureTab;
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(FigureTab);
