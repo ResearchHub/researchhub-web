@@ -5,6 +5,7 @@ import moment from "moment";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Ripples from "react-ripples";
+import * as Sentry from "@sentry/browser";
 
 // Component
 import HubsList from "~/components/Hubs/HubsList";
@@ -261,7 +262,21 @@ class HubPage extends React.Component {
         setTimeout(() => {
           showMessage({ show: false });
         }, 200)
-      );
+      )
+      .catch((error) => {
+        // If we get a 401 error it means the token is expired.
+        if (error.response.status === 401) {
+          this.setState(
+            {
+              papersLoading: false,
+            },
+            () => {
+              this.fetchPapers({ hub: this.props.hub });
+            }
+          );
+        }
+        Sentry.captureException(error);
+      });
   };
 
   loadMore = () => {
