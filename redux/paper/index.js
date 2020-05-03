@@ -4,6 +4,7 @@ import * as shims from "./shims";
 import * as types from "./types";
 import * as actions from "./actions";
 import * as utils from "../utils";
+import * as Sentry from "@sentry/browser";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -81,6 +82,7 @@ export const PaperActions = {
           });
         })
         .catch((error) => {
+          Sentry.captureException(error);
           return dispatch({
             type: types.GET_PAPER,
             payload: {
