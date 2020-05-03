@@ -12,6 +12,7 @@ import { AUTH_TOKEN } from "../config/constants";
 import { useDispatch } from "react-redux";
 import { ModalActions } from "./modals";
 import * as utils from "./utils";
+import * as Sentry from "@sentry/browser";
 
 export const AuthConstants = {
   LOGIN: "@@auth/LOGIN",
@@ -79,6 +80,7 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     })
     .catch((error) => {
       console.log("error", error);
+      Sentry.captureException(error);
       dispatch({
         type: AuthConstants.GOT_USER,
         isFetchingUser: false,
@@ -111,6 +113,7 @@ export const AuthActions = {
           });
         })
         .catch((error) => {
+          Sentry.captureException(error);
           if (error.message) {
             return dispatch({
               type: AuthConstants.ERROR,
@@ -155,6 +158,7 @@ export const AuthActions = {
           });
         })
         .catch((error) => {
+          Sentry.captureException(error);
           if (error.message) {
             return dispatch({
               type: AuthConstants.ERROR,
@@ -192,6 +196,7 @@ export const AuthActions = {
           });
         })
         .catch((error) => {
+          Sentry.captureException(error);
           return dispatch({
             type: AuthConstants.LOGIN_FAILURE,
             isLoggedIn: false,
@@ -237,6 +242,7 @@ export const AuthActions = {
           });
         })
         .catch((error) => {
+          Sentry.captureException(error);
           if (error.response && error.response.status === 401) {
             console.log(error.response);
           } else {
