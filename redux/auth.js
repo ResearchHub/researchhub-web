@@ -81,6 +81,7 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     .catch((error) => {
       console.log("error", error);
       Sentry.captureException(error);
+      window.localStorage.removeItem(AUTH_TOKEN);
       dispatch({
         type: AuthConstants.GOT_USER,
         isFetchingUser: false,
