@@ -45,6 +45,7 @@ const LeaderboardContainer = (props) => {
             }
             authorProfile={user.author_profile}
             reputation={user.reputation}
+            authorId={user.author_profile.id}
           />
         </div>
       );

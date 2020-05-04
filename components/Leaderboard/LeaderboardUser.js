@@ -4,22 +4,28 @@ import PropTypes from "prop-types";
 import colors from "~/config/themes/colors";
 import ReactPlaceholder from "react-placeholder/lib";
 import AuthorAvatar from "../AuthorAvatar";
+import Link from "next/link";
 
 const LeaderboardUser = (props) => {
-  const { name, authorProfile, reputation } = props;
+  const { name, authorProfile, reputation, authorId } = props;
   return (
     <div className={css(styles.container)}>
-      <div>
-        <div className={css(styles.nameRow)}>
-          <AuthorAvatar
-            author={authorProfile}
-            name={name}
-            disableLink={false}
-          />
-          <div className={css(styles.name)}>{name}</div>
-          <div className={css(styles.rep)}>{reputation}</div>
-        </div>
-      </div>
+      <Link
+        href={"/user/[authorId]/[tabName]"}
+        as={`/user/${authorId}/contributions`}
+      >
+        <a className={css(styles.link)}>
+          <div className={css(styles.nameRow)}>
+            <AuthorAvatar
+              author={authorProfile}
+              name={name}
+              disableLink={false}
+            />
+            <div className={css(styles.name)}>{name}</div>
+            <div className={css(styles.rep)}>{reputation}</div>
+          </div>
+        </a>
+      </Link>
     </div>
   );
 };
@@ -35,6 +41,10 @@ const styles = StyleSheet.create({
   nameRow: {
     display: "flex",
     alignItems: "center",
+  },
+  link: {
+    color: colors.BLACK(1),
+    textDecoration: "none",
   },
   name: {
     marginLeft: 16,
