@@ -711,7 +711,7 @@ class HubPage extends React.Component {
             className={css(styles.leaderboard)}
             style={{ marginTop: this.state.leaderboardTop }}
           >
-            <LeaderboardContainer />
+            <LeaderboardContainer hub={this.props.hub && this.props.hub.id} />
           </div>
         </div>
       </div>

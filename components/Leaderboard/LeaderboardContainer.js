@@ -20,7 +20,10 @@ const LeaderboardContainer = (props) => {
 
   const fetchLeaderboard = () => {
     setFetchingUsers(true);
-    return fetch(API.LEADERBOARD({ limit: 10, page: 1 }), API.GET_CONFIG())
+    return fetch(
+      API.LEADERBOARD({ limit: 10, page: 1, hubId: props.hubId }),
+      API.GET_CONFIG()
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
