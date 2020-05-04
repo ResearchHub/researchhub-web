@@ -89,7 +89,7 @@ class SignUpOverlay extends React.Component {
                 <div className={css(styles.loginContainer)}>
                   {"Already a member? "}
                   <GoogleLoginButton
-                    customLabel={"Log in"}
+                    customLabel={"Login"}
                     hideButton={true}
                     loginCallback={this.closeBanner}
                   />
