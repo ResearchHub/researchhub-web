@@ -28,6 +28,7 @@ import { HubActions } from "~/redux/hub";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 
 const filterOptions = [
   {
@@ -126,10 +127,15 @@ class HubPage extends React.Component {
       unsubscribeHover: false,
       subscribeClicked: false,
       titleBoxShadow: false,
+      leaderboardTop: 0,
     };
   }
 
   updateDimensions = () => {
+    let height = document.getElementById("topbar").offsetHeight + 34;
+    this.setState({
+      leaderboardTop: height,
+    });
     if (window.innerWidth < 968) {
       this.setState({
         mobileView: true,
@@ -557,6 +563,7 @@ class HubPage extends React.Component {
                 this.state.titleBoxShadow && styles.titleBoxShadow,
                 this.props.home && styles.row
               )}
+              id={"topbar"}
             >
               <div className={css(styles.text, styles.feedTitle)}>
                 <span className={css(styles.fullWidth)}>
@@ -700,6 +707,12 @@ class HubPage extends React.Component {
               />
             </div>
           </div>
+          <div
+            className={css(styles.leaderboard)}
+            style={{ marginTop: this.state.leaderboardTop }}
+          >
+            <LeaderboardContainer />
+          </div>
         </div>
       </div>
     );
@@ -779,12 +792,12 @@ var styles = StyleSheet.create({
     },
   },
   body: {
-    backgroundColor: "#FFF",
+    backgroundColor: "#FCFCFC",
     width: "100%",
     alignItems: "flex-start",
   },
   sidebar: {
-    width: "20%",
+    width: "18%",
     minWidth: 220,
     position: "relative",
     position: "sticky",
@@ -847,10 +860,13 @@ var styles = StyleSheet.create({
    */
   mainFeed: {
     height: "100%",
-    width: "80%",
+    width: "82%",
     backgroundColor: "#FCFCFC",
     borderLeft: "1px solid #ededed",
     backgroundColor: "#FFF",
+    "@media only screen and (min-width: 900px)": {
+      width: "67%",
+    },
     "@media only screen and (max-width: 768px)": {
       width: "100%",
     },
@@ -899,14 +915,27 @@ var styles = StyleSheet.create({
   topbar: {
     paddingTop: 30,
     paddingBottom: 20,
-    width: "calc(100% - 140px)",
-    position: "sticky",
+    width: "100%",
+    // position: "sticky",
     paddingLeft: 70,
     paddingRight: 70,
+    boxSizing: "border-box",
     backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
     top: 80,
+    "@media only screen and (min-width: 900px)": {
+      paddingLeft: 25,
+      paddingRight: 25,
+    },
+    "@media only screen and (min-width: 1200px)": {
+      paddingLeft: 50,
+      paddingRight: 50,
+    },
+    // "@media only screen and (min-width: 1440px)": {
+    //   paddingLeft: 70,
+    //   paddingRight: 70,
+    // },
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
@@ -1001,19 +1030,31 @@ var styles = StyleSheet.create({
    * INFINITE SCROLL
    */
   infiniteScroll: {
-    width: "calc(100% - 140px)",
+    width: "100%",
+    boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
     backgroundColor: "#FCFCFC",
     paddingLeft: 70,
     paddingRight: 70,
     paddingBottom: 30,
+    "@media only screen and (min-width: 900px)": {
+      paddingLeft: 25,
+      paddingRight: 25,
+    },
+    "@media only screen and (min-width: 1200px)": {
+      paddingLeft: 50,
+      paddingRight: 50,
+    },
+    // "@media only screen and (min-width: 1440px)": {
+    //   paddingLeft: 70,
+    //   paddingRight: 70,
+    // },
     "@media only screen and (min-width: 800px)": {
       paddingTop: 25,
     },
     "@media only screen and (max-width: 577px)": {
       paddingLeft: 40,
       paddingRight: 40,
-      width: "calc(100% - 80px)",
     },
     "@media only screen and (max-width: 415px)": {
       padding: 0,
@@ -1169,6 +1210,22 @@ var styles = StyleSheet.create({
       border: `1px solid ${colors.BLUE(1)}`,
       backgroundColor: colors.BLUE(1),
       color: "#FFF",
+    },
+  },
+  leaderboard: {
+    display: "none",
+    background: "#FCFCFC",
+    "@media only screen and (min-width: 900px)": {
+      display: "block",
+      width: "20%",
+      marginRight: 40,
+    },
+    "@media only screen and (min-width: 1200px)": {
+      width: "18%",
+    },
+    "@media only screen and (min-width: 1440px)": {
+      width: "15%",
+      marginRight: 50,
     },
   },
   subscribeHover: {
