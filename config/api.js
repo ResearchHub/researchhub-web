@@ -70,6 +70,19 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    LEADERBOARD: ({ page, limit, hubId }) => {
+      let url = BASE_URL + `user/leaderboard/`;
+      let params = {
+        querystring: {
+          page,
+          limit,
+          hub_id: hubId,
+        },
+      };
+      url = prepURL(url, params);
+
+      return url;
+    },
     ANALYTICS_WEBSITEVIEWS: ({}) => {
       let url = BASE_URL + "analytics/websiteviews/";
 
