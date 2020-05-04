@@ -60,11 +60,11 @@ class LoginModal extends React.Component {
       <BaseModal
         isOpen={modals.openLoginModal}
         closeModal={this.closeModal}
-        title={"Please, Log In"}
+        title={"Please, Login"}
         subtitle={
           modals.loginModal.flavorText
             ? modals.loginModal.flavorText
-            : "Log in with your Google account"
+            : "Login with your Google account"
         }
         backgroundImage={true}
       >
@@ -82,7 +82,7 @@ class LoginModal extends React.Component {
                 customButtonStyle={styles.button}
                 icon={"/static/icons/google.png"}
                 customIconStyle={styles.iconStyle}
-                label={"Log in with Google"}
+                label={"Login with Google"}
               />
             )}
           />
