@@ -1,26 +1,16 @@
 import { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import InfiniteScroll from "react-infinite-scroller";
-import moment from "moment";
-import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
-import Link from "next/link";
-import ReactTooltip from "react-tooltip";
-import Ripples from "react-ripples";
 
 // Component
 import LiveFeed from "~/components/Hubs/LiveFeed";
-import HubsList from "~/components/Hubs/HubsList";
 import ResearchHubBanner from "~/components/ResearchHubBanner";
 
 // Config
 import API from "~/config/api";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { Helpers } from "@quantfive/js-web-config";
-import colors from "~/config/themes/colors";
-import { PaperActions } from "~/redux/paper";
-import { UPVOTE_ENUM, DOWNVOTE_ENUM } from "~/config/constants";
 
 const filterOptions = [
   {
