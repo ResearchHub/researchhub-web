@@ -174,7 +174,9 @@ class ManageBulletPointsModal extends React.Component {
           <div className={css(styles.subtitle)}>
             {`The selected ${
               type === "key_takeaway" ? "key takeaways" : "limitations"
-            } will be displayed on the paper in the main points section.`}
+            } will be displayed on the paper in the ${
+              type === "key_takeaway" ? "key takeaways" : "limitations"
+            } section.`}
           </div>
           <div className={css(styles.bulletPoints)}>
             <DndProvider backend={Backend}>

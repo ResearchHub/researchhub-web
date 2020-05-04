@@ -76,7 +76,7 @@ const SignUpModal = (props) => {
         {renderDivider()}
         <div className={css(styles.loginContainer)}>
           {"Already a member? "}
-          <GoogleLoginButton customLabel={"Log in"} hideButton={true} />
+          <GoogleLoginButton customLabel={"Login"} hideButton={true} />
         </div>
       </div>
     </BaseModal>

@@ -55,7 +55,7 @@ const OrcidLoginButton = (props) => {
           icon={"/static/icons/orcid.png"}
           customLabelStyle={customLabelStyle}
           customIconStyle={[styles.iconStyle, iconStyle]}
-          label={customLabel ? customLabel : "Log in with ORCID"}
+          label={customLabel ? customLabel : "Login with ORCID"}
         />
       )}
     />

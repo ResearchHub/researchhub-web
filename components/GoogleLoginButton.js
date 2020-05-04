@@ -64,7 +64,7 @@ const GoogleLoginButton = (props) => {
               icon={"/static/icons/google.png"}
               customLabelStyle={props.customLabelStyle}
               customIconStyle={[styles.iconStyle, props.iconStyle]}
-              label={customLabel ? customLabel : "Log in with Google"}
+              label={customLabel ? customLabel : "Login with Google"}
             />
           );
         }
