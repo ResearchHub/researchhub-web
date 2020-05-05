@@ -81,6 +81,16 @@ class Index extends React.Component {
                 ? "Discuss and Discover " + this.props.hub.name
                 : "Discuss and Discover " + this.props.slug
             }
+            // parentPaths={[
+            //   {
+            //     name: "Hubs",
+            //     items: "https://researchhub.com/hubs"
+            //   },
+            //   {
+            //     name: toTitleCase(this.state.currentHub.name),
+            //     items: `https://researchhub.com/hubs/${this.props.hub ? this.props.hub : this.props.slug}`
+            //   }
+            // ]}
           />
         )}
         {this.renderHub()}
