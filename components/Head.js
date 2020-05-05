@@ -12,9 +12,34 @@ export default (props) => {
     `We're a community seeking to improve prioritization, collaboration, reproducibility, and funding of scientific research. Discuss and discover academic research on ${COMPANY_NAME}`;
   const socialImageUrl = props.socialImageUrl || METATAG_DEFAULT_IMAGE_URL;
 
+  const formatBreadCrumb = () => {
+    let { parentPaths } = props;
+
+    let itemListElement = [];
+    parentPaths.forEach((path, i) => {
+      let item = {
+        "@type": "ListItem",
+        position: i + 1,
+        name: path.name,
+        item: path.item,
+      };
+
+      itemListElement.push(item);
+    });
+
+    let body = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement,
+    };
+
+    return <script type="application/ld+json">{`${body}`}</script>;
+  };
+
   return (
     <Head>
       <title>{title}</title>
+      {/* {props.parentPaths && props.parentPaths.length > 0 && formatBreadCrumb()} */}
       <meta key="description" name="description" content={description} />
       {/* Social meta tags */}
       <meta property="og:description" content={description} />

@@ -13,7 +13,9 @@
     "staging": "./scripts/deploy/staging.sh deploy",
     "run:staging": "docker run",
     "start:prod": "docker run -it -p 3010:3000 researchhub-web",
-    "start:staging": "docker run -it -p 3010:3000 researchhub-web-staging"
+    "start:staging": "docker run -it -p 3010:3000 researchhub-web-staging",
+    "sitemap": "node scripts/createSitemap.js",
+    "sitemap-index": "node scripts/createSitemapIndex.js"
   },
   "dependencies": {
     "@quantfive/js-web-config": "latest",
@@ -22,6 +24,7 @@
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-source-maps": "^0.0.3",
     "aphrodite": "^2.4.0",
+    "axios": "^0.19.2",
     "diff": "^4.0.1",
     "fslightbox-react": "^1.4.9",
     "immutability-helper": "^3.0.1",
@@ -39,6 +42,7 @@
     "next-transpile-modules": "^2.3.1",
     "nuka-carousel": "^4.6.6",
     "numeral": "^2.0.6",
+    "progress": "^2.0.3",
     "q5-js-config": "^1.4.1",
     "react": "^16.10.1",
     "react-alert": "^6.0.0",
