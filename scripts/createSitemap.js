@@ -80,7 +80,7 @@ const writeFile = () => {
         .get(
           next
             ? next
-            : "https://backend.researchhub.com/api/paper/?limit=1000&offset=50"
+            : `https://backend.researchhub.com/api/paper/?limit=${LIMIT}&offset=0`
         )
         .then((res) => {
           console.log("next", next);
