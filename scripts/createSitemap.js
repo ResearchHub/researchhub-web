@@ -8,7 +8,7 @@ const LIMIT = 10000;
 
 const writeFile = () => {
   let fileCount = 1; // start at 1
-  let fileName = `./Public/sitemap.prod-${fileCount}.xml`; // needs to autoincrement
+  let fileName = `./public/sitemap.prod-${fileCount}.xml`; // needs to autoincrement
   let writeStream = fs.createWriteStream(fileName);
   let limit = LIMIT;
   let itemsWritten = 0;
@@ -65,7 +65,7 @@ const writeFile = () => {
 
   const configureState = () => {
     fileCount++;
-    fileName = `./Public/sitemap.prod-${fileCount}.xml`;
+    fileName = `./public/sitemap.prod-${fileCount}.xml`;
     writeStream = fs.createWriteStream(fileName);
     writeHeader();
   };
