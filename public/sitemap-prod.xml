@@ -1,6 +1,5 @@
-
-    <?xml version="1.0" encoding="UTF-8"?>
-      <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<?xml version="1.0" encoding="UTF-8"?>
+  <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <sitemap>
       <loc>https://www.researchhub.com/sitemap.prod-1.xml</loc>
     </sitemap>
@@ -216,4 +215,5 @@
     </sitemap>
     <sitemap>
       <loc>https://www.researchhub.com/sitemap.prod-72.xml</loc>
-    </sitemap></sitemapindex>
+    </sitemap>
+  </sitemapindex>
