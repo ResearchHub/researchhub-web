@@ -4,7 +4,7 @@ const ProgressBar = require("progress");
 
 const start = new Date();
 
-const LIMIT = 45000;
+const LIMIT = 10000;
 
 const writeFile = () => {
   let fileCount = 1; // start at 1
@@ -94,6 +94,7 @@ const writeFile = () => {
               writePaperUrl(paper.id);
               paperWritten++;
             } else {
+              writeStream.write(footer);
               configureState();
               writePaperUrl(paper.id);
               paperWritten = 0;
@@ -162,9 +163,7 @@ const writeFile = () => {
   collectAllPaperIds().then(() => {
     writeStream.write(footer);
     configureState();
-    collectAllHubSlugs().then(() => {
-      writeStream.write(footer);
-    });
+    collectAllHubSlugs();
   });
 };
 writeFile();
