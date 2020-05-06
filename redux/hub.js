@@ -158,7 +158,6 @@ const HubReducer = (state = defaultHubState, action) => {
 const shims = {
   subscribedHubs: (hubs) => {
     return hubs.filter((hub) => {
-      hub.user_is_subscribed && console.log(hub);
       return hub.user_is_subscribed;
     });
   },
