@@ -242,6 +242,9 @@ class LiveFeed extends React.Component {
         let hubName = hub.name
           .split(" ")
           .map((el) => {
+            if (!el[0]) {
+              return null;
+            }
             return el[0].toUpperCase() + el.slice(1);
           })
           .join(" ");
