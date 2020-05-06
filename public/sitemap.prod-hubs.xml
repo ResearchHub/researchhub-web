@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
       <loc>https://researchhub.com/hubs/algebraic-topology</loc>
       <lastmod>2020-05-05</lastmod>
@@ -929,5 +929,4 @@
       <loc>https://researchhub.com/hubs/artificial-intelligence</loc>
       <lastmod>2020-05-05</lastmod>
     </url>
-  </urlset>
     

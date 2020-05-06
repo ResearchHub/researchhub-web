@@ -1,0 +1,1 @@
+{"paperCount":698323,"fileCount":70,"hubCount":186,"prevTimestamp":null,"timestamp":"2020-05-06T01:19:52.854Z"}
