@@ -14,7 +14,7 @@ const getConfig = () => {
     console.log("Found Config:", JSON.parse(data));
     return JSON.parse(data);
   } else {
-    console.log("none");
+    console.log("No Config Found");
   }
 };
 
@@ -32,11 +32,6 @@ const writeFile = () => {
 
   let footer = `
   </urlset>`;
-
-  // process.on('exit', function(code) {
-  //     writeConfig();
-  //     return console.log(`About to exit with code ${code}`);
-  // });
 
   const writeHeader = () => {
     let header = `<?xml version="1.0" encoding="UTF-8"?>
@@ -108,7 +103,7 @@ const writeFile = () => {
         .then((res) => {
           next = res.data.next;
           count = res.data.count;
-          console.log("paperCount", paperCount);
+          console.log("Writing Papers", next);
 
           let papers = res.data.results;
 
@@ -143,7 +138,7 @@ const writeFile = () => {
   };
 
   const collectAllHubSlugs = async () => {
-    "Writing Hubs";
+    console.log("Writing Hubs");
     var hubsWritten = 0;
     var next;
     var count;
