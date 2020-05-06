@@ -98,7 +98,6 @@ class LiveFeedPage extends React.Component {
 
     return (
       <Fragment>
-        <ResearchHubBanner all={true} />
         <div className={css(styles.content)}>
           <div className={css(styles.mainFeed, styles.column)}>
             <LiveFeed
