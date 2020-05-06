@@ -81,8 +81,7 @@ const writeFile = () => {
     <url>
       <loc>https://researchhub.com/hubs/${hub.slug ? hub.slug : hub.name}</loc>
       <lastmod>${formatDate(new Date())}</lastmod>
-    </url>
-    `;
+    </url>`;
     writeStream.write(path);
   };
 
