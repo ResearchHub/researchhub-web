@@ -19,6 +19,7 @@ export const ModalConstants = {
   ORCID_CONNECT_MODAL_TOGGLE: "@@modal/ORCID_CONNECT_MODAL_TOGGLE",
   MANAGE_BULLET_POINTS_MODAL_TOGGLE: "@@modal/MANAGE_BULLET_POINTS_TOGGLE",
   SIGN_UP_MODAL_TOGGLE: "@@modal/SIGN_UP_MODAL_TOGGLE",
+  OPEN_DND_MODAL_TOGGLE: "@@modal/OPEN_DND_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -172,6 +173,19 @@ export const ModalActions = {
       });
     };
   },
+  openDndModal: (openModal, props) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.OPEN_DND_MODAL_TOGGLE,
+        payload: {
+          openDndModal: {
+            isOpen: openModal,
+            props,
+          },
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -198,6 +212,10 @@ const defaultModalState = {
     isOpen: false,
   },
   openSignUpModal: false,
+  openDndModal: {
+    isOpen: false,
+    props: {},
+  },
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -214,6 +232,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.ORCID_CONNECT_MODAL_TOGGLE:
     case ModalConstants.MANAGE_BULLET_POINTS_TOGGLE:
     case ModalConstants.SIGN_UP_MODAL_TOGGLE:
+    case ModalConstants.OPEN_DND_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
