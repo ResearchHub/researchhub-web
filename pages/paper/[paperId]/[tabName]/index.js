@@ -16,6 +16,7 @@ import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import FigureTab from "~/components/Paper/Tabs/FigureTab";
+import FileTab from "~/components/Paper/Tabs/FileTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
@@ -339,6 +340,7 @@ const Paper = (props) => {
                 </ReactPlaceholder>
               </ComponentWrapper>
             </a>
+            <FileTab paperId={paperId} />
           </div>
           <Joyride
             steps={steps}
