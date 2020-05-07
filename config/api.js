@@ -457,6 +457,9 @@ const routes = (BASE_URL) => {
     MAKE_PAPER_PUBLIC: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/?make_public=true/`;
     },
+    PAPER_FILES: ({ paperId }) => {
+      return BASE_URL + `paper/${paperId}/additional_file`;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
