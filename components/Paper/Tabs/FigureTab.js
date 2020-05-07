@@ -11,8 +11,8 @@ import "react-placeholder/lib/reactPlaceholder.css";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyState from "~/components/Placeholders/EmptyState";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
-import Loader from "~/components/Loader/Loader";
-import Button from "~/components/Form/Button";
+
+import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 
 // Config
@@ -33,14 +33,10 @@ class FigureTab extends React.Component {
       inputView: false,
       pendingSubmission: false,
     };
-
-    this.figureInput = React.createRef();
   }
 
   componentDidMount() {
     this.fetchFigures();
-    this.figureInput.current &&
-      this.figureInput.current.addEventListener("change", this.handleFileInput);
   }
 
   componentDidUpdate(prevProps) {
@@ -49,14 +45,6 @@ class FigureTab extends React.Component {
         this.fetchFigures();
       }
     }
-  }
-
-  componentWillUnmount() {
-    this.figureInput.current &&
-      this.figureInput.current.removeEventListener(
-        "change",
-        this.handleFileInput
-      );
   }
 
   fetchFigures = () => {
@@ -84,8 +72,15 @@ class FigureTab extends React.Component {
     this.setState({ toggleLightbox: !this.state.toggleLightbox });
   };
 
-  openFile = () => {
-    this.figureInput.current.click();
+  openDndModal = () => {
+    let { openDndModal } = this.props;
+    let props = {
+      title: "Add Figure",
+      subtitle: "Click to browse a figure to upload",
+      paperId: this.props.paperId,
+      callback: this.updateFiguresCallback,
+    };
+    openDndModal(true, props);
   };
 
   handleFileInput = (e) => {
@@ -116,41 +111,20 @@ class FigureTab extends React.Component {
     );
   };
 
-  postFigure = () => {
-    let { showMessage, setMessage } = this.props;
-    showMessage({ load: true, show: true });
-    this.setState({ pendingSubmission: true });
-    let paperId = this.props.paper.id;
-    let params = new FormData();
-
-    params.append("figure", this.state.file);
-    params.append("paper", paperId);
-    params.append("figure_type", "FIGURE");
-
-    return fetch(API.ADD_FIGURE({ paperId }), API.POST_FILE_CONFIG(params))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        showMessage({ show: false });
-        setMessage("Figure uploaded successfully");
-        showMessage({ show: true });
-        let figures = [...this.state.figures, res.file];
-        this.setState({
-          figures,
-          file: null,
-          currentSlideIndex: figures.length - 1,
-          pendingSubmission: false,
-        });
-        this.resetState();
-      })
-      .catch((err) => {
-        showMessage({ show: false });
-        setMessage("Something went wrong");
-        showMessage({ show: true, error: true });
-        this.setState({
-          pendingSubmission: false,
-        });
-      });
+  updateFiguresCallback = (newFigure) => {
+    let figures = [...this.state.figures, newFigure];
+    this.setState(
+      {
+        figures,
+        file: null,
+        currentSlideIndex: figures.length - 1,
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({ currentSlideIndex: figures.length - 1 });
+        }, 1200);
+      }
+    );
   };
 
   renderButton = (onClick, label) => {
@@ -176,38 +150,6 @@ class FigureTab extends React.Component {
           icon={<i class="fad fa-image"></i>}
           subtext={"No figures have been found in this paper's PDF"}
         />
-      );
-    } else if (inputView) {
-      return (
-        <div className={css(styles.column)}>
-          <div className={css(styles.figures)}>
-            <img id="preview" className={css(styles.image)} />
-          </div>
-          <div className={css(styles.slideIndex)}>{`Preview`}</div>
-          <div className={css(styles.buttonRow)}>
-            <Ripples
-              className={css(
-                styles.cancelButton,
-                pendingSubmission && styles.disabled
-              )}
-              onClick={pendingSubmission ? null : () => this.resetState()}
-            >
-              Cancel
-            </Ripples>
-            <Button
-              label={
-                pendingSubmission ? (
-                  <Loader loading={true} size={20} color={"#fff"} />
-                ) : (
-                  "Submit"
-                )
-              }
-              size={"small"}
-              onClick={this.postFigure}
-              disabled={pendingSubmission}
-            />
-          </div>
-        </div>
       );
     } else if (!inputView) {
       return (
@@ -254,19 +196,11 @@ class FigureTab extends React.Component {
                 {this.state.figures.length}
               </span>
             </div>
-            <Ripples className={css(styles.item)} onClick={this.openFile}>
-              <form enctype="multipart/form-data">
-                <input
-                  ref={this.figureInput}
-                  type="file"
-                  accept="image/png, image/jpeg"
-                  style={{ display: "none" }}
-                />
-                <span className={css(styles.dropdownItemIcon)}>
-                  {icons.plusCircle}
-                </span>
-                Add Figure
-              </form>
+            <Ripples className={css(styles.item)} onClick={this.openDndModal}>
+              <span className={css(styles.dropdownItemIcon)}>
+                {icons.plusCircle}
+              </span>
+              Add Figure
             </Ripples>
           </div>
           <div className={css(styles.figuresWrapper)}>
@@ -492,6 +426,7 @@ const styles = StyleSheet.create({
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
+  openDndModal: ModalActions.openDndModal,
 };
 
 export default connect(
