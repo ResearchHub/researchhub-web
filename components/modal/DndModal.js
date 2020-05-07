@@ -108,20 +108,23 @@ class DndModal extends React.Component {
       });
   };
 
-  handleFiles = (newFiles) => {
-    let files = [...this.state.files, ...newFiles];
-    this.setState({ files });
+  imageAddedCallback = (files) => {
+    let images = [...this.state.files, ...files];
+    this.setState({
+      files: images,
+    });
   };
 
-  removeFile = (index, o) => {
-    console.log("index", o);
-    let files = this.state.files.filter((file, i) => i !== index);
-    console.log("removed files", files);
-    this.setState({ files });
+  removeImageCallback = (index) => {
+    let images = [...this.state.files];
+    images.splice(index, 1);
+    this.setState({ files: images });
   };
 
-  onSortEnd = (files) => {
-    this.setState({ files });
+  onSortEnd = (images) => {
+    this.setState({
+      files: images,
+    });
   };
 
   renderDropContent = () => {
@@ -203,8 +206,8 @@ class DndModal extends React.Component {
         // </Ripples>
         <DragNDrop
           images={this.state.files}
-          imageAddedCallback={this.handleFiles}
-          removeImageCallback={this.removeFile}
+          imageAddedCallback={this.imageAddedCallback}
+          removeImageCallback={this.removeImageCallback}
           onSortEnd={this.onSortEnd}
         />
       );
