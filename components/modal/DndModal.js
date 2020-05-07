@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import Dropzone from "react-dropzone";
+import DragNDrop from "react-image-upload-grid";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -17,7 +18,6 @@ import { ModalActions } from "~/redux/modals";
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { ModalConstants } from "../../redux/modals";
 
 class DndModal extends React.Component {
   constructor(props) {
@@ -25,6 +25,7 @@ class DndModal extends React.Component {
     this.initialState = {
       loading: false,
       file: null,
+      files: [],
     };
     this.state = {
       ...this.initialState,
@@ -42,10 +43,14 @@ class DndModal extends React.Component {
   handleFileDrop = (acceptedFiles) => {
     let file = acceptedFiles && acceptedFiles[0]; // we grab the first file
     let reader = new FileReader();
-
     reader.onload = (event) => {
       this.setState({ loading: false, file }, () => {
-        document.getElementById("preview").src = event.target.result;
+        if (file.type === "application/pdf") {
+          let pdfPreview = URL.createObjectURL(file);
+          window.open(pdfPreview);
+        } else {
+          document.getElementById("preview").src = event.target.result;
+        }
       });
     };
 
@@ -103,6 +108,22 @@ class DndModal extends React.Component {
       });
   };
 
+  handleFiles = (newFiles) => {
+    let files = [...this.state.files, ...newFiles];
+    this.setState({ files });
+  };
+
+  removeFile = (index, o) => {
+    console.log("index", o);
+    let files = this.state.files.filter((file, i) => i !== index);
+    console.log("removed files", files);
+    this.setState({ files });
+  };
+
+  onSortEnd = (files) => {
+    this.setState({ files });
+  };
+
   renderDropContent = () => {
     if (this.state.loading) {
       return <Loader loading={true} size={28} />;
@@ -128,12 +149,17 @@ class DndModal extends React.Component {
   };
 
   renderContent = () => {
-    let { file, pendingSubmission } = this.state;
+    let { onSubmit, paperId } = this.props.modals.openDndModal.props;
+    let { file, pendingSubmission, pdfPreview } = this.state;
     if (file) {
       return (
         <Fragment>
           <div className={css(styles.imagePreview)}>
-            <img id="preview" className={css(styles.image)} />
+            {file.type !== "application/pdf" ? (
+              <img id="preview" className={css(styles.image)} />
+            ) : (
+              <div>Open</div>
+            )}
           </div>
           <div className={css(styles.buttonRow)}>
             <Ripples
@@ -154,7 +180,8 @@ class DndModal extends React.Component {
                 )
               }
               size={"small"}
-              onClick={this.postFigure}
+              // onClick={this.postFigure}
+              onClick={onSubmit}
               disabled={pendingSubmission}
             />
           </div>
@@ -162,18 +189,24 @@ class DndModal extends React.Component {
       );
     } else {
       return (
-        <Ripples className={css(styles.dropzoneContainer)}>
-          <Dropzone onDrop={this.handleFileDrop} accept="image/png, image/jpeg">
-            {({ getRootProps, getInputProps }) => (
-              <section className={css(styles.fullCanvas)}>
-                <div {...getRootProps()} className={css(styles.dropzone)}>
-                  <input {...getInputProps()} required={true} />
-                  {this.renderDropContent()}
-                </div>
-              </section>
-            )}
-          </Dropzone>
-        </Ripples>
+        // <Ripples className={css(styles.dropzoneContainer)}>
+        //   <Dropzone onDrop={this.handleFileDrop} accept="image/png, image/jpeg">
+        //     {({ getRootProps, getInputProps }) => (
+        //       <section className={css(styles.fullCanvas)}>
+        //         <div {...getRootProps()} className={css(styles.dropzone)}>
+        //           <input {...getInputProps()} required={true} />
+        //           {this.renderDropContent()}
+        //         </div>
+        //       </section>
+        //     )}
+        //   </Dropzone>
+        // </Ripples>
+        <DragNDrop
+          images={this.state.files}
+          imageAddedCallback={this.handleFiles}
+          removeImageCallback={this.removeFile}
+          onSortEnd={this.onSortEnd}
+        />
       );
     }
   };
