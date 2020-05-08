@@ -130,9 +130,9 @@ class FigureTab extends React.Component {
         setMessage("Figure uploaded successfully");
         showMessage({ show: true });
         this.setState({
-          figures,
+          figures: [...this.state.figures, ...res.files],
           file: null,
-          currentSlideIndex: figures.length - 1,
+          currentSlideIndex: this.state.figures.length - 1,
           pendingSubmission: false,
         });
         callback();
