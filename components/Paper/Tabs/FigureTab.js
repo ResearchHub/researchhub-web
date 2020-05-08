@@ -116,8 +116,8 @@ class FigureTab extends React.Component {
     this.setState({ pendingSubmission: true });
 
     let params = new FormData();
-    figures.forEach((figure) => {
-      params.append("figures", figure);
+    figures.forEach((figure, i) => {
+      params.append(`figure${i}`, figure);
     });
     params.append("paper", paperId);
     params.append("figure_type", "FIGURE");
