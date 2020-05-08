@@ -11,11 +11,10 @@ import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
-import FsLightbox from "fslightbox-react";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
-import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
+import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -26,6 +25,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
+import { openExternalLink } from "~/config/utils";
 
 class FileTab extends React.Component {
   constructor(props) {
@@ -98,6 +98,38 @@ class FileTab extends React.Component {
       });
   };
 
+  navigateToFile = (link) => {
+    openExternalLink(link);
+  };
+
+  renderPreview = (file) => {
+    if (file.file) {
+      return (
+        <div
+          className={css(styles.previewContainer)}
+          onClick={() => this.navigateToFile(file.file)}
+        >
+          <iframe src={file.file} className={css(styles.image)} />
+        </div>
+      );
+    } else {
+      return (
+        <div
+          className={css(styles.previewContainer)}
+          onClick={() => this.navigateToFile(file.file)}
+        >
+          <ReactPlaceholder
+            ready={false}
+            showLoadingAnimation={false}
+            customPlaceholder={
+              <PreviewPlaceholder hideAnimation={true} color="#efefef" />
+            }
+          />
+        </div>
+      );
+    }
+  };
+
   render() {
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
@@ -105,7 +137,9 @@ class FileTab extends React.Component {
           <div className={css(styles.header)}>
             <div className={css(styles.sectionTitle)}>
               <div className={css(styles.tile)}>Files</div>
-              <span className={css(styles.count)}>0</span>
+              <span className={css(styles.count)}>
+                {this.state.files.length}
+              </span>
             </div>
             <Ripples className={css(styles.item)} onClick={this.openDndModal}>
               <span className={css(styles.dropdownItemIcon)}>
@@ -117,11 +151,7 @@ class FileTab extends React.Component {
           <div className={css(styles.filesContainer)}>
             {this.state.files &&
               this.state.files.map((file, id) => {
-                return (
-                  <div>
-                    <img src={file.file} />
-                  </div>
-                );
+                return this.renderPreview(file);
               })}
           </div>
         </div>
@@ -245,6 +275,31 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  previewContainer: {
+    minWidth: 160,
+    width: 160,
+    height: 220,
+    minHeight: 220,
+    border: "1.5px solid rgba(36, 31, 58, 0.1)",
+    borderRadius: 3,
+    marginRight: 30,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    boxSizing: "border-box",
+    marginBottom: 15,
+    position: "relative",
+  },
+  image: {
+    width: "100%",
+    minWidth: "100%",
+    maxWidth: "100%",
+    height: 220,
+    minHeight: 220,
+    maxHeight: 220,
+    objectFit: "fill",
   },
 });
 
