@@ -61,7 +61,7 @@ class FileTab extends React.Component {
   openDndModal = () => {
     let props = {
       title: "Add Files",
-      fileAccept: "application/pdf",
+      // fileAccept: "application/pdf",
       onSubmit: this.addFile,
     };
     this.props.openDndModal(true, props);
