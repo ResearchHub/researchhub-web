@@ -441,6 +441,10 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
+    EDIT_BULLET_POINT: ({ paperId, bulletId }) => {
+      let url = BASE_URL + `paper/${paperId}/bullet_point/${bulletId}/edit/`;
+      return url;
+    },
     REORDER_BULLETS: () => {
       return BASE_URL + `bullet_point/reorder_all/`;
     },
