@@ -40,9 +40,51 @@
 .single {
   width: 100% !important;
   height: 160px !important;
+  z-index: 50 !important;
+}
+
+.half {
+  width: 45% !important;
+  height: 150px;
 }
 
 .DndItem {
   width: 120px !important;
   height: 150px !important;
+  z-index: 50 !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .DndItem {
+    width: 80px !important;
+    height: 100px !important;
+    z-index: 50 !important;
+  }
+  .single {
+    width: 100% !important;
+    height: 100px !important;
+    z-index: 50 !important;
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  .DndItem {
+    width: 80px !important;
+    height: 90px !important;
+    z-index: 50 !important;
+  }
+  .single {
+    width: 100% !important;
+    height: 90px !important;
+    z-index: 50 !important;
+  }
+  .DndHero {
+    border-width: 1px !important;
+    border-color: rgb(78, 83, 255) !important;
+    width: 100px !important;
+    height: 90px !important;
+    background-color: #f7f7fb !important;
+    color: rgb(36, 31, 58) !important;
+    font-size: 14px !important;
+  }
 }
