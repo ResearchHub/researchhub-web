@@ -60,21 +60,23 @@ class FileTab extends React.Component {
 
   openDndModal = () => {
     let props = {
-      title: "Add a file",
-      subtitle: "Drop or browse for a file",
-      accept: "application/pdf",
+      title: "Add Files",
+      fileAccept: "application/pdf",
       onSubmit: this.addFile,
     };
     this.props.openDndModal(true, props);
   };
 
-  addFile = (newFile) => {
+  addFile = (newFiles, callback) => {
+    console.log("newFiles", newFiles);
     let paperId = this.props.paperId;
     let { showMessage, setMessage } = this.props;
     showMessage({ load: true, show: true });
 
-    let params = newFormData();
-    params.append("file", newFile);
+    let params = new FormData();
+    newFiles.forEach((file) => {
+      params.append("file", file);
+    });
 
     return fetch(API.PAPER_FILES({ paperId }), API.POST_FILE_CONFIG(params))
       .then(Helpers.checkStatus)
@@ -82,7 +84,11 @@ class FileTab extends React.Component {
       .then((res) => {
         showMessage({ show: false });
         setMessage("File uploaded successfully");
-        console.log("res", res);
+        let files = [...this.state.files, res];
+        this.setState({
+          files,
+        });
+        callback();
       })
       .catch((err) => {
         console.log("err", err);
@@ -98,25 +104,25 @@ class FileTab extends React.Component {
         <div className={css(styles.container)} id="file-tab">
           <div className={css(styles.header)}>
             <div className={css(styles.sectionTitle)}>
-              <div className={css(styles.tile)}>File</div>
+              <div className={css(styles.tile)}>Files</div>
               <span className={css(styles.count)}>0</span>
             </div>
             <Ripples className={css(styles.item)} onClick={this.openDndModal}>
               <span className={css(styles.dropdownItemIcon)}>
                 {icons.plusCircle}
               </span>
-              Add Figure
+              Add Files
             </Ripples>
           </div>
           <div className={css(styles.filesContainer)}>
-            {/* {this.state.files && this.state.files.map((reference, id) => {
+            {this.state.files &&
+              this.state.files.map((file, id) => {
                 return (
-                  <CitationCard
-                    key={`citation-${reference.id}-${id}`}
-                    citation={reference}
-                  />
+                  <div>
+                    <img src={file.file} />
+                  </div>
                 );
-              })} */}
+              })}
           </div>
         </div>
       </ComponentWrapper>

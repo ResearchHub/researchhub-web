@@ -1,0 +1,48 @@
+.DndDefault {
+  border-width: 1px !important;
+  border-color: rgb(78, 83, 255) !important;
+  height: 200px !important;
+  width: 100% !important;
+  background-color: #f7f7fb !important;
+  color: rgb(36, 31, 58) !important;
+  font-size: 14px !important;
+}
+
+.DndDefault:hover {
+  border-width: 1px !important;
+  border-color: rgb(78, 83, 255) !important;
+  border-style: solid !important;
+}
+
+.meta {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.DndHero {
+  border-width: 1px !important;
+  border-color: rgb(78, 83, 255) !important;
+  width: 100px !important;
+  height: 120px !important;
+  background-color: #f7f7fb !important;
+  color: rgb(36, 31, 58) !important;
+  font-size: 14px !important;
+}
+
+.DndHero:hover {
+  border-width: 1px !important;
+  border-color: rgb(78, 83, 255) !important;
+  border-style: solid !important;
+}
+
+.single {
+  width: 130px !important;
+  height: 160px !important;
+}
+
+.DndItem {
+  width: 120px !important;
+  height: 150px !important;
+}

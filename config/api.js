@@ -458,7 +458,7 @@ const routes = (BASE_URL) => {
       return BASE_URL + `paper/${paperId}/?make_public=true/`;
     },
     PAPER_FILES: ({ paperId }) => {
-      return BASE_URL + `paper/${paperId}/additional_file`;
+      return BASE_URL + `paper/${paperId}/additional_file/`;
     },
   };
 

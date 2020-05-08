@@ -3,7 +3,8 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import Dropzone from "react-dropzone";
-import DragNDrop from "react-image-upload-grid";
+import DragNDrop from "@quantfive/react-image-upload-grid";
+import "./Stylesheets/Dnd.css";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -71,41 +72,9 @@ class DndModal extends React.Component {
     });
   };
 
-  postFigure = () => {
-    let { callback, paperId } = this.props.modals.openDndModal.props;
-    let { showMessage, setMessage } = this.props;
-    showMessage({ load: true, show: true });
-    this.setState({ pendingSubmission: true });
-
-    let params = new FormData();
-
-    params.append("figure", this.state.file);
-    params.append("paper", paperId);
-    params.append("figure_type", "FIGURE");
-
-    return fetch(API.ADD_FIGURE({ paperId }), API.POST_FILE_CONFIG(params))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.setState({
-          pendingSubmission: false,
-        });
-        showMessage({ show: false });
-        setMessage("Figure uploaded successfully");
-        showMessage({ show: true });
-        let newFigure = res.file;
-        callback(newFigure); // callback passed through redux
-        this.closeModal();
-      })
-      .catch((err) => {
-        console.log("err", err);
-        showMessage({ show: false });
-        setMessage("Something went wrong");
-        showMessage({ show: true, error: true });
-        this.setState({
-          pendingSubmission: false,
-        });
-      });
+  onSubmit = () => {
+    let { onSubmit, paperId } = this.props.modals.openDndModal.props;
+    onSubmit([...this.state.files], this.closeModal);
   };
 
   imageAddedCallback = (files) => {
@@ -152,18 +121,32 @@ class DndModal extends React.Component {
   };
 
   renderContent = () => {
-    let { onSubmit, paperId } = this.props.modals.openDndModal.props;
-    let { file, pendingSubmission, pdfPreview } = this.state;
-    if (file) {
-      return (
-        <Fragment>
-          <div className={css(styles.imagePreview)}>
-            {file.type !== "application/pdf" ? (
-              <img id="preview" className={css(styles.image)} />
+    let { fileAccept } = this.props.modals.openDndModal.props;
+
+    let { files, pendingSubmission, pdfPreview } = this.state;
+    return (
+      <Fragment>
+        <DragNDrop
+          images={this.state.files}
+          imageAddedCallback={this.imageAddedCallback}
+          removeImageCallback={this.removeImageCallback}
+          onSortEnd={this.onSortEnd}
+          addImageClassName={
+            this.state.files.length > 0 ? "DndHero single" : "DndDefault"
+          }
+          imageContainerClassName={
+            this.state.files.length > 2 ? "DndItem" : "single"
+          }
+          fileAccept={fileAccept}
+          addImageText={
+            this.state.files.length < 1 ? (
+              this.renderDropContent()
             ) : (
-              <div>Open</div>
-            )}
-          </div>
+              <i class="fal fa-plus" />
+            )
+          }
+        />
+        {files.length > 0 && (
           <div className={css(styles.buttonRow)}>
             <Ripples
               className={css(
@@ -183,35 +166,13 @@ class DndModal extends React.Component {
                 )
               }
               size={"small"}
-              // onClick={this.postFigure}
-              onClick={onSubmit}
+              onClick={this.onSubmit}
               disabled={pendingSubmission}
             />
           </div>
-        </Fragment>
-      );
-    } else {
-      return (
-        // <Ripples className={css(styles.dropzoneContainer)}>
-        //   <Dropzone onDrop={this.handleFileDrop} accept="image/png, image/jpeg">
-        //     {({ getRootProps, getInputProps }) => (
-        //       <section className={css(styles.fullCanvas)}>
-        //         <div {...getRootProps()} className={css(styles.dropzone)}>
-        //           <input {...getInputProps()} required={true} />
-        //           {this.renderDropContent()}
-        //         </div>
-        //       </section>
-        //     )}
-        //   </Dropzone>
-        // </Ripples>
-        <DragNDrop
-          images={this.state.files}
-          imageAddedCallback={this.imageAddedCallback}
-          removeImageCallback={this.removeImageCallback}
-          onSortEnd={this.onSortEnd}
-        />
-      );
-    }
+        )}
+      </Fragment>
+    );
   };
 
   render() {
@@ -232,7 +193,8 @@ class DndModal extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: 600,
+    minWidth: 500,
+    maxWidth: 800,
     overflowX: "hidden",
     marginTop: 30,
     display: "flex",
@@ -341,6 +303,11 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: "0.4",
+  },
+  dndHero: {
+    height: 150,
+    wdith: 150,
+    border: `1px dashed ${colors.BLUE()}`,
   },
 });
 
