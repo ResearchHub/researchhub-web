@@ -62,7 +62,9 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((json) => {
-      dispatch(HubActions.updateSubscribedHubs(json.results[0].subscribed)); // updates the subscribedHubs on Hub Redux State
+      if (json.results[0]) {
+        dispatch(HubActions.updateSubscribedHubs(json.results[0].subscribed)); // updates the subscribedHubs on Hub Redux State
+      }
 
       if (json.results.length > 0) {
         return dispatch({
