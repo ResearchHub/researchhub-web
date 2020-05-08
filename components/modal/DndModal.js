@@ -79,6 +79,12 @@ class DndModal extends React.Component {
 
   imageAddedCallback = (files) => {
     let images = [...this.state.files, ...files];
+
+    if (images.length > 3) {
+      images[2] = files[files.length - 1];
+      images = images.slice(0, 3);
+    }
+
     this.setState({
       files: images,
     });
