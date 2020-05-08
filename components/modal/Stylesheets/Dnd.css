@@ -1,0 +1,101 @@
+.DndDefault {
+  border-width: 1px !important;
+  border-color: rgb(78, 83, 255) !important;
+  height: 200px !important;
+  width: 100% !important;
+  background-color: #f7f7fb !important;
+  color: rgb(36, 31, 58) !important;
+  font-size: 14px !important;
+}
+
+.DndDefault:hover {
+  border-width: 1px !important;
+  border-color: rgb(78, 83, 255) !important;
+  border-style: solid !important;
+}
+
+.meta {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.DndHero {
+  border-width: 1px !important;
+  border-color: rgb(78, 83, 255) !important;
+  width: 100px !important;
+  height: 120px !important;
+  background-color: #f7f7fb !important;
+  color: rgb(36, 31, 58) !important;
+  font-size: 14px !important;
+}
+
+.DndHero:hover {
+  border-width: 1px !important;
+  border-color: rgb(78, 83, 255) !important;
+  border-style: solid !important;
+}
+
+.DndItem {
+  width: 120px !important;
+  height: 150px !important;
+  z-index: 90 !important;
+}
+
+.single {
+  width: 100% !important;
+  height: 160px !important;
+  z-index: 90 !important;
+}
+
+.half {
+  width: 45% !important;
+  height: 150px;
+  z-index: 90 !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .DndItem {
+    width: 80px !important;
+    height: 100px !important;
+    z-index: 90 !important;
+  }
+  .single {
+    width: 100% !important;
+    height: 100px !important;
+    z-index: 90 !important;
+  }
+  .half {
+    width: 45% !important;
+    height: 100px;
+    z-index: 90 !important;
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  .DndItem {
+    width: 80px !important;
+    height: 90px !important;
+    z-index: 90 !important;
+  }
+  .single {
+    width: 100% !important;
+    height: 90px !important;
+    z-index: 90 !important;
+  }
+  .half {
+    width: 45% !important;
+    height: 90px;
+    z-index: 90 !important;
+  }
+  .DndHero {
+    border-width: 1px !important;
+    border-color: rgb(78, 83, 255) !important;
+    width: 100px !important;
+    height: 90px !important;
+    background-color: #f7f7fb !important;
+    color: rgb(36, 31, 58) !important;
+    font-size: 14px !important;
+  }
+}
