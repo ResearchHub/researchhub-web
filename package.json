@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@quantfive/js-web-config": "latest",
+    "@quantfive/react-image-upload-grid": "1.1.3",
     "@sentry/browser": "^5.9.1",
     "@sentry/cli": "^1.49.0",
     "@zeit/next-css": "^1.0.1",
