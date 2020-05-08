@@ -75,10 +75,9 @@ class FigureTab extends React.Component {
   openDndModal = () => {
     let { openDndModal } = this.props;
     let props = {
-      title: "Add Figure",
-      subtitle: "Click to browse a figure to upload",
-      paperId: this.props.paperId,
-      callback: this.updateFiguresCallback,
+      title: "Add Figures",
+      fileAccept: "image/x-png,image/jpeg",
+      onSubmit: this.postFigures,
     };
     openDndModal(true, props);
   };
@@ -111,20 +110,42 @@ class FigureTab extends React.Component {
     );
   };
 
-  updateFiguresCallback = (newFigure) => {
-    let figures = [...this.state.figures, newFigure];
-    this.setState(
-      {
-        figures,
-        file: null,
-        currentSlideIndex: figures.length - 1,
-      },
-      () => {
-        setTimeout(() => {
-          this.setState({ currentSlideIndex: figures.length - 1 });
-        }, 1200);
-      }
-    );
+  postFigures = (figures, callback) => {
+    let { showMessage, setMessage, paperId } = this.props;
+    showMessage({ load: true, show: true });
+    this.setState({ pendingSubmission: true });
+
+    let params = new FormData();
+    figures.forEach((figure) => {
+      params.append("figures", figure);
+    });
+    params.append("paper", paperId);
+    params.append("figure_type", "FIGURE");
+
+    return fetch(API.ADD_FIGURE({ paperId }), API.POST_FILE_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        showMessage({ show: false });
+        setMessage("Figure uploaded successfully");
+        showMessage({ show: true });
+        this.setState({
+          figures,
+          file: null,
+          currentSlideIndex: figures.length - 1,
+          pendingSubmission: false,
+        });
+        callback();
+      })
+      .catch((err) => {
+        console.log("err", err);
+        showMessage({ show: false });
+        setMessage("Something went wrong");
+        showMessage({ show: true, error: true });
+        this.setState({
+          pendingSubmission: false,
+        });
+      });
   };
 
   renderButton = (onClick, label) => {
