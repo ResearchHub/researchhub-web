@@ -919,10 +919,10 @@
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@quantfive/js-web-config/-/js-web-config-1.0.6.tgz#1c1aec6c2fed013605a28291f7a2d7b0d5a94534"
 
-"@quantfive/react-image-upload-grid@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@quantfive/react-image-upload-grid/-/react-image-upload-grid-1.1.0.tgz#5db2584410ffd880d1ecb69c0cc0b147856d2ff2"
-  integrity sha512-YqedhRALPBygFn5uY23E9VicqibNYU2i4v/mWYNM+7WmrtjWFPi5TK0fUKWPog5Ppe4cCeGNUD8hhUUJ67TDNQ==
+"@quantfive/react-image-upload-grid@1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@quantfive/react-image-upload-grid/-/react-image-upload-grid-1.1.3.tgz#c2e4f514927d56ccbfbd73906a38e20965ff579c"
+  integrity sha512-Ab9RUI4bgd2V5B/f5WIgExgVOh916LUjA7qVqNZUktcYXvScgp373kEtYBTvuP7Op+mTA/GvEPubmoWjxJH0Tg==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.17"
     "@fortawesome/free-solid-svg-icons" "^5.8.1"

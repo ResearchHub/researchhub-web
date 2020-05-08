@@ -76,6 +76,7 @@ class FigureTab extends React.Component {
     let { openDndModal } = this.props;
     let props = {
       title: "Add Figures",
+      subtitle: "Upload up to 3 figures at a time",
       fileAccept: "image/x-png,image/jpeg",
       onSubmit: this.postFigures,
     };
@@ -136,6 +137,11 @@ class FigureTab extends React.Component {
           pendingSubmission: false,
         });
         callback();
+        setTimeout(() => {
+          this.setState({
+            currentSlideIndex: this.state.figures.length - 1,
+          });
+        }, 1000);
       })
       .catch((err) => {
         console.log("err", err);

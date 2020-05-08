@@ -340,7 +340,6 @@ const Paper = (props) => {
                 </ReactPlaceholder>
               </ComponentWrapper>
             </a>
-            <FileTab paperId={paperId} />
           </div>
           <Joyride
             steps={steps}
