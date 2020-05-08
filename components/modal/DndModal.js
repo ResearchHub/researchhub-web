@@ -126,6 +126,16 @@ class DndModal extends React.Component {
     }
   };
 
+  calculateStyle = () => {
+    if (this.state.files.length === 0) {
+      return "single";
+    } else if (this.state.files.length === 1) {
+      return "half";
+    } else if (this.state.files.length > 1) {
+      return "DndItem";
+    }
+  };
+
   renderContent = () => {
     let { fileAccept } = this.props.modals.openDndModal.props;
 
@@ -140,9 +150,7 @@ class DndModal extends React.Component {
           addImageClassName={
             this.state.files.length > 0 ? "DndHero single" : "DndDefault"
           }
-          imageContainerClassName={
-            this.state.files.length > 2 ? "DndItem" : "single"
-          }
+          imageContainerClassName={this.calculateStyle()}
           fileAccept={fileAccept}
           addImageText={
             this.state.files.length < 1 ? (
@@ -202,13 +210,15 @@ const styles = StyleSheet.create({
     minWidth: 500,
     maxWidth: 800,
     overflowX: "hidden",
-    marginTop: 30,
+    marginTop: 15,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     "@media only screen and (max-width: 415px)": {
       width: "90%",
+      minWidth: "unset",
+      maxWidth: "unset",
       boxSizing: "border-box",
     },
   },
