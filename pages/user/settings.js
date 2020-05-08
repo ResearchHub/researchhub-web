@@ -6,6 +6,7 @@ import Toggle from "react-toggle";
 import "~/components/TextEditor/stylesheets/ReactToggle.css";
 import { withAlert } from "react-alert";
 
+import Head from "~/components/Head";
 import FormSelect from "~/components/Form/FormSelect";
 import FormInput from "~/components/Form/FormInput";
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -243,6 +244,7 @@ class UserSettings extends Component {
   renderFrequencySelect() {
     return (
       <div className={css(styles.container)}>
+        <Head title={"User's Settings"} />
         <div className={css(styles.listLabel)} id={"hubListTitle"}>
           {"Hub Digest Frequency"}
         </div>
