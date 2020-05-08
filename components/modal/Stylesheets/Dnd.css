@@ -37,33 +37,39 @@
   border-style: solid !important;
 }
 
+.DndItem {
+  width: 120px !important;
+  height: 150px !important;
+  z-index: 90 !important;
+}
+
 .single {
   width: 100% !important;
   height: 160px !important;
-  z-index: 50 !important;
+  z-index: 90 !important;
 }
 
 .half {
   width: 45% !important;
   height: 150px;
-}
-
-.DndItem {
-  width: 120px !important;
-  height: 150px !important;
-  z-index: 50 !important;
+  z-index: 90 !important;
 }
 
 @media only screen and (max-width: 600px) {
   .DndItem {
     width: 80px !important;
     height: 100px !important;
-    z-index: 50 !important;
+    z-index: 90 !important;
   }
   .single {
     width: 100% !important;
     height: 100px !important;
-    z-index: 50 !important;
+    z-index: 90 !important;
+  }
+  .half {
+    width: 45% !important;
+    height: 100px;
+    z-index: 90 !important;
   }
 }
 
@@ -71,12 +77,17 @@
   .DndItem {
     width: 80px !important;
     height: 90px !important;
-    z-index: 50 !important;
+    z-index: 90 !important;
   }
   .single {
     width: 100% !important;
     height: 90px !important;
-    z-index: 50 !important;
+    z-index: 90 !important;
+  }
+  .half {
+    width: 45% !important;
+    height: 90px;
+    z-index: 90 !important;
   }
   .DndHero {
     border-width: 1px !important;

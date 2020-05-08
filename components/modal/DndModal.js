@@ -127,11 +127,11 @@ class DndModal extends React.Component {
   };
 
   calculateStyle = () => {
-    if (this.state.files.length === 0) {
+    if (this.state.files.length < 2) {
       return "single";
-    } else if (this.state.files.length === 1) {
+    } else if (this.state.files.length === 2) {
       return "half";
-    } else if (this.state.files.length > 1) {
+    } else if (this.state.files.length > 2) {
       return "DndItem";
     }
   };
