@@ -175,7 +175,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     border: "1px solid #F0F0F0",
     position: "relative",
-    cursor: "pointer",
     "@media only screen and (max-width: 415px)": {
       padding: 8,
     },
