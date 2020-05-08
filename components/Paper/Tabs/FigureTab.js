@@ -1,7 +1,9 @@
 import { Fragment } from "react";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
+import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
@@ -10,10 +12,14 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyState from "~/components/Placeholders/EmptyState";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 
+import { ModalActions } from "~/redux/modals";
+import { MessageActions } from "~/redux/message";
+
 // Config
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 class FigureTab extends React.Component {
   constructor(props) {
@@ -22,6 +28,10 @@ class FigureTab extends React.Component {
       figures: [],
       currentSlideIndex: 0,
       fetching: true,
+      file: null,
+      // Pending Submission
+      inputView: false,
+      pendingSubmission: false,
     };
   }
 
@@ -48,8 +58,8 @@ class FigureTab extends React.Component {
             figures: res.data.map((el) => {
               return el.file;
             }),
-            fetching: false,
           });
+          setTimeout(() => this.setState({ fetching: false }), 500);
         });
     });
   };
@@ -60,6 +70,88 @@ class FigureTab extends React.Component {
 
   toggleLightbox = () => {
     this.setState({ toggleLightbox: !this.state.toggleLightbox });
+  };
+
+  openDndModal = () => {
+    let { openDndModal } = this.props;
+    let props = {
+      title: "Add Figures",
+      subtitle: "Upload up to 3 figures at a time",
+      fileAccept: "image/x-png,image/jpeg",
+      onSubmit: this.postFigures,
+    };
+    openDndModal(true, props);
+  };
+
+  handleFileInput = (e) => {
+    if (e.target.files.length === 0) return;
+    this.setState({ fetching: true }, () => {
+      let file = e.target.files && e.target.files[0]; // we grab the first file
+      let reader = new FileReader();
+
+      reader.onload = (event) => {
+        this.setState({ inputView: true, fetching: false, file }, () => {
+          document.getElementById("preview").src = event.target.result;
+        });
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
+  resetState = () => {
+    this.setState(
+      {
+        inputView: false,
+        file: null,
+      },
+      () => {
+        this.figureInput.current.value = null;
+      }
+    );
+  };
+
+  postFigures = (figures, callback) => {
+    let { showMessage, setMessage, paperId } = this.props;
+    showMessage({ load: true, show: true });
+    this.setState({ pendingSubmission: true });
+
+    let params = new FormData();
+    figures.forEach((figure, i) => {
+      params.append(`figure${i}`, figure);
+    });
+    params.append("paper", paperId);
+    params.append("figure_type", "FIGURE");
+
+    return fetch(API.ADD_FIGURE({ paperId }), API.POST_FILE_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        showMessage({ show: false });
+        setMessage("Figure uploaded successfully");
+        showMessage({ show: true });
+        this.setState({
+          figures: [...this.state.figures, ...res.files],
+          file: null,
+          currentSlideIndex: this.state.figures.length - 1,
+          pendingSubmission: false,
+        });
+        callback();
+        setTimeout(() => {
+          this.setState({
+            currentSlideIndex: this.state.figures.length - 1,
+          });
+        }, 1000);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        showMessage({ show: false });
+        setMessage("Something went wrong");
+        showMessage({ show: true, error: true });
+        this.setState({
+          pendingSubmission: false,
+        });
+      });
   };
 
   renderButton = (onClick, label) => {
@@ -77,20 +169,16 @@ class FigureTab extends React.Component {
   };
 
   renderContent = () => {
-    let { fetching } = this.state;
-    if (fetching) {
+    let { figures, inputView, pendingSubmission } = this.state;
+    if (!figures.length) {
       return (
-        <div className={css(styles.figures)}>
-          <div className={css(styles.image)}>
-            <ReactPlaceholder
-              ready={false}
-              showLoadingAnimation
-              customPlaceholder={<PreviewPlaceholder color="#efefef" />}
-            />
-          </div>
-        </div>
+        <EmptyState
+          text={"No Figures Found"}
+          icon={<i class="fad fa-image"></i>}
+          subtext={"No figures have been found in this paper's PDF"}
+        />
       );
-    } else {
+    } else if (!inputView) {
       return (
         <Fragment>
           <div className={css(styles.figures)} onClick={this.toggleLightbox}>
@@ -100,6 +188,7 @@ class FigureTab extends React.Component {
               className={css(styles.slider)}
               enableKeyboardControls={true}
               afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
+              slideIndex={this.state.currentSlideIndex}
               renderBottomCenterControls={() => null}
               renderCenterLeftControls={(arg) => {
                 let { previousSlide } = arg;
@@ -128,10 +217,18 @@ class FigureTab extends React.Component {
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
         <div className={css(styles.container)} id="figures-tab">
           <div className={css(styles.header)}>
-            <div className={css(styles.sectionTitle)}>Figures</div>
-            <span className={css(styles.count)}>
-              {this.state.figures.length}
-            </span>
+            <div className={css(styles.sectionTitle)}>
+              Figures
+              <span className={css(styles.count)}>
+                {this.state.figures.length}
+              </span>
+            </div>
+            <Ripples className={css(styles.item)} onClick={this.openDndModal}>
+              <span className={css(styles.dropdownItemIcon)}>
+                {icons.plusCircle}
+              </span>
+              Add Figure
+            </Ripples>
           </div>
           <div className={css(styles.figuresWrapper)}>
             {this.state.figures.length > 0 && (
@@ -142,14 +239,18 @@ class FigureTab extends React.Component {
                 slide={this.state.slideIndex}
               />
             )}
-            {this.state.figures.length > 0 ? (
-              this.renderContent()
+            {this.state.fetching ? (
+              <div className={css(styles.figures)}>
+                <div className={css(styles.image)}>
+                  <ReactPlaceholder
+                    ready={false}
+                    showLoadingAnimation
+                    customPlaceholder={<PreviewPlaceholder color="#efefef" />}
+                  />
+                </div>
+              </div>
             ) : (
-              <EmptyState
-                text={"No Figures Found"}
-                icon={<i class="fad fa-image"></i>}
-                subtext={"No figures have been found in this paper's PDF"}
-              />
+              this.renderContent()
             )}
           </div>
         </div>
@@ -166,6 +267,13 @@ const styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
+    transition: "all ease-in-out 0.2s",
+  },
   container: {
     backgroundColor: "#fff",
     padding: 50,
@@ -179,7 +287,7 @@ const styles = StyleSheet.create({
   },
   header: {
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
     paddingBottom: 32,
@@ -190,6 +298,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: 500,
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
@@ -277,6 +388,75 @@ const styles = StyleSheet.create({
       padding: "5px 8px",
     },
   },
+  item: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    boxSizing: "border-box",
+    color: colors.BLACK(),
+    cursor: "pointer",
+    opacity: 0.6,
+    fontSize: 14,
+    padding: 8,
+    paddingRight: 0,
+    ":hover": {
+      color: colors.PURPLE(),
+      textDecoration: "underline",
+      opacity: 1,
+    },
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 0,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  dropdownItemIcon: {
+    fontSize: 14,
+    marginRight: 6,
+  },
+  inputButton: {
+    border: "none",
+    outline: "none",
+    highlight: "none",
+  },
+  buttonRow: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: 20,
+  },
+  cancelButton: {
+    height: 37,
+    width: 126,
+    minWidth: 126,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 20,
+    cursor: "pointer",
+    borderRadius: 4,
+    userSelect: "none",
+    ":hover": {
+      color: "#3971FF",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+  },
+  disabled: {
+    opacity: "0.4",
+  },
 });
 
-export default FigureTab;
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+  openDndModal: ModalActions.openDndModal,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(FigureTab);
