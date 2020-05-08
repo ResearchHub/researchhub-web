@@ -10,7 +10,6 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import { Event } from "~/components/GAnalytics/EventTracker";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -129,6 +128,8 @@ class BulletsContainer extends React.Component {
     return newBullet;
   };
 
+  onEditCallback = (bullet, index) => {};
+
   submitBulletPoint = async () => {
     let { bulletsRedux, postBullet, showMessage, setMessage } = this.props;
     this.props.showMessage({ load: true, show: true });
@@ -190,6 +191,9 @@ class BulletsContainer extends React.Component {
           <SummaryBulletPoint
             key={`summaryBulletPoint-${index}`}
             data={bullet}
+            onEditCallback={this.onEditCallback}
+            type={"KEY_TAKEAWAY"}
+            index={index}
           />
         );
       });
