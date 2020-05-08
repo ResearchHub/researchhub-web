@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import Router from "next/router";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Link from "next/link";
