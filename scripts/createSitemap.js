@@ -65,7 +65,7 @@ const writeFile = () => {
   const writePaperUrl = (paperId) => {
     let path = `
     <url>
-      <loc>https://researchhub.com/paper/${paperId}</loc>
+      <loc>https://researchhub.com/paper/${paperId}/summary</loc>
       <lastmod>${formatDate(new Date())}</lastmod>
     </url>`;
     writeStream.write(path);
