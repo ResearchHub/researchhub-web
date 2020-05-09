@@ -1,933 +1,746 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
       <loc>https://researchhub.com/hubs/algebraic-topology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/neuroscience</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/biology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/covid-19-coronavirus</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/genetics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/synthetic-biology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/bioinformatics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/general</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/cryptocurrency</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/psychology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/philosophy</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/robotics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/e-commerce</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/condensed-matter</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/algebraic-geometry</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/metascience</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/differential-geometry</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/entrepreneurship</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/business</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/drug-discovery</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/astrophysics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/analysis-of-pdes</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/combinatorics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/chemical-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/ecology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/geometric-topology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/quantitative-methods</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/cryptography-and-security</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/plant-biology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/systems-and-control</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/statistics-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computer-science</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/environmental-science</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/trading-and-market-microstructure</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/cybersecurity</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/general-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/number-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/high-energy-physics-phenomenology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/high-energy-physics-experiment</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/medicine</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/classical-analysis-and-odes</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/chemistry</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/materials-science</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/geology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/geography</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/sociology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/history</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/political-science</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/methodology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/general-relativity-and-quantum-cosmology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/other-statistics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/discrete-mathematics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/medical-sciences</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/instrumentation-and-methods-for-astrophysics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/rings-and-algebras</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/information-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/dynamical-systems</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computer-science-and-game-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computation-and-language</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/other-condensed-matter</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/physics-and-society</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/soft-condensed-matter</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/mesoscale-and-nanoscale-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/quantum-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computer-vision-and-pattern-recognition</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/data-structures-and-algorithms</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/representation-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/databases</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/social-and-information-networks</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/instrumentation-and-detectors</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/superconductivity</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/neural-and-evolutionary-computing</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/machine-learning</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/economics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/multiagent-systems</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/other</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/probability</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/design</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/high-energy-physics-lattice</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/researchhub</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/material-science</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/engineering</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/astrophysics-of-galaxies</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/information-retrieval</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/distributed-parallel-and-cluster-computing</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/programming-languages</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/optimization-and-control</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/high-energy-astrophysical-phenomena</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/software-engineering</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/optics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/earth-and-planetary-astrophysics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/networking-and-internet-architecture</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computational-complexity</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/cellular-automata-and-lattice-gases</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/logic</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/mathematical-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/high-energy-physics-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/plasma-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/logic-in-computer-science</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/solar-and-stellar-astrophysics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/operator-algebras</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/neurons-and-cognition</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computational-geometry</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/history-and-philosophy-of-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/mathematical-finance</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/nuclear-experiment</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/biological-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/biomolecules</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computational-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computers-and-society</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/functional-analysis</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/data-analysis-statistics-and-probability</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/applications</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/populations-and-evolution</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/pattern-formation-and-solitons</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/numerical-analysis</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/metric-geometry</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/space-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/geophysics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/complex-variables</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/nuclear-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/multimedia</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/exactly-solvable-and-integrable-systems</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/statistical-finance</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/disordered-systems-and-neural-networks</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/symplectic-geometry</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/adaptation-and-self-organizing-systems</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/commutative-algebra</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/k-theory-and-homology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/popular-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/other-computer-science</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/fluid-dynamics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/emerging-technologies</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computational-engineering-finance-and-science</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/genomics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/cell-behavior</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/tissues-and-organs</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/strongly-correlated-electrons</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/physics-education</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/graphics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/general-mathematics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/accelerator-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/chaotic-dynamics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/atomic-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/group-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/atmospheric-and-oceanic-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/spectral-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/quantum-algebra</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/quantum-gases</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/classical-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/cosmology-and-nongalactic-astrophysics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/medical-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/symbolic-computation</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/sound</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/atomic-and-molecular-clusters</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computation-1</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/formal-languages-and-automata-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/general-topology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/pricing-of-securities</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/performance</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/statistical-mechanics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/molecular-networks</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/category-theory</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/general-finance</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/digital-libraries</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/mathematical-software</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/hardware-architecture</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/history-and-overview</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/general-literature</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/operating-systems</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/subcellular-processes</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/portfolio-management</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/computational-finance</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/risk-management</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/econometrics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/audio-and-speech-processing</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/signal-processing</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/applied-physics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/other-quantitative-biology</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/human-computer-interaction</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/image-and-video-processing</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/mathematics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/theoretical-economics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/general-economics</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-    
     <url>
       <loc>https://researchhub.com/hubs/artificial-intelligence</loc>
-      <lastmod>2020-05-05</lastmod>
+      <lastmod>2020-05-06</lastmod>
     </url>
-  </urlset>
-    
