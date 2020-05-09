@@ -8,6 +8,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import LiveFeedNotification from "./LiveFeedNotification";
 import Loader from "~/components/Loader/Loader";
 import FormSelect from "~/components/Form/FormSelect";
+import Head from "~/components/Head";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -242,6 +243,9 @@ class LiveFeed extends React.Component {
         let hubName = hub.name
           .split(" ")
           .map((el) => {
+            if (!el[0]) {
+              return null;
+            }
             return el[0].toUpperCase() + el.slice(1);
           })
           .join(" ");
@@ -273,6 +277,10 @@ class LiveFeed extends React.Component {
 
     return (
       <div className={css(styles.livefeedComponent)}>
+        <Head
+          title={"Live on Researchhub"}
+          description={"View the latest contributions on Researchhub"}
+        />
         <div
           className={css(
             styles.topContainer,

@@ -11,6 +11,7 @@ export const HubConstants = {
   GET_HUBS_FAILURE: "@@hub/GET_HUBS_FAILURE",
   UPDATE_HUB: "@@hub/UPDATE_HUB",
   GET_TOP_HUBS_SUCCESS: "@@hub/GET_TOP_HUBS_SUCCESS",
+  UPDATE_SUBSCRIBED_HUBS: "@@hub/UPDATE_SUBSCRIBED_HUBS",
 };
 
 export const HubActions = {
@@ -37,13 +38,11 @@ export const HubActions = {
         .then((resp) => {
           let hubs = [...resp.results];
           let hubsByAlpha = shims.sortHubs([...hubs]);
-          const subscribedHubs = shims.subscribedHubs(hubs);
           return dispatch({
             type: HubConstants.GET_HUBS_SUCCESS,
             payload: {
               hubs,
               hubsByAlpha,
-              subscribedHubs,
               fetchedHubs: true,
             },
           });
@@ -114,6 +113,16 @@ export const HubActions = {
       });
     };
   },
+  updateSubscribedHubs: (subscribedHubs) => {
+    return (dispatch) => {
+      return dispatch({
+        type: HubConstants.UPDATE_SUBSCRIBED_HUBS,
+        payload: {
+          subscribedHubs: [...subscribedHubs],
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -136,6 +145,7 @@ const HubReducer = (state = defaultHubState, action) => {
     case HubConstants.GET_HUBS_FAILURE:
     case HubConstants.UPDATE_HUB:
     case HubConstants.GET_TOP_HUBS_SUCCESS:
+    case HubConstants.UPDATE_SUBSCRIBED_HUBS:
       return {
         ...state,
         ...action.payload,

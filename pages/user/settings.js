@@ -6,6 +6,7 @@ import Toggle from "react-toggle";
 import "~/components/TextEditor/stylesheets/ReactToggle.css";
 import { withAlert } from "react-alert";
 
+import Head from "~/components/Head";
 import FormSelect from "~/components/Form/FormSelect";
 import FormInput from "~/components/Form/FormInput";
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -29,7 +30,6 @@ import { HubActions } from "~/redux/hub";
 import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
 import { doesNotExist, isEmpty } from "~/config/utils";
 import colors from "../../config/themes/colors";
-import icons from "../../config/themes/icons";
 
 import "./stylesheets/toggle.css";
 
@@ -79,6 +79,7 @@ class UserSettings extends Component {
   }
 
   componentDidMount = async () => {
+    this.props.dispatch(MessageActions.showMessage({ load: true, show: true }));
     if (doesNotExist(this.props.hubs)) {
       this.props.dispatch(HubActions.getHubs());
     }
@@ -91,13 +92,18 @@ class UserSettings extends Component {
         preference
       );
       const isOptedOut = this.getInitialIsOptedOut(preference);
-      this.setState({
-        emailRecipientId: preference.id,
-        frequency,
-        ...contentSubscriptions,
-        isOptedOut,
-        email: this.props.user.email,
-      });
+      this.setState(
+        {
+          emailRecipientId: preference.id,
+          frequency,
+          ...contentSubscriptions,
+          isOptedOut,
+          email: this.props.user.email,
+        },
+        () => {
+          this.props.dispatch(MessageActions.showMessage({ show: false }));
+        }
+      );
     });
   };
 
@@ -238,6 +244,7 @@ class UserSettings extends Component {
   renderFrequencySelect() {
     return (
       <div className={css(styles.container)}>
+        <Head title={"User's Settings"} />
         <div className={css(styles.listLabel)} id={"hubListTitle"}>
           {"Hub Digest Frequency"}
         </div>
@@ -329,7 +336,7 @@ class UserSettings extends Component {
     );
   };
 
-  confirmUnsubscribe = (hub) => {
+  confirmUnsubscribe = (hub, newState) => {
     this.props.alert.show({
       text: (
         <span>
@@ -339,16 +346,16 @@ class UserSettings extends Component {
       ),
       buttonText: "Yes",
       onClick: () => {
-        return this.handleHubUnsubscribe(hub.id);
+        return this.handleHubUnsubscribe(hub.id, newState);
       },
     });
   };
 
-  handleHubUnsubscribe = (hubId) => {
+  handleHubUnsubscribe = (hubId, newState) => {
     const { hubState } = this.props;
     unsubscribeFromHub(hubId)
       .then((res) => {
-        this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
+        this.props.dispatch(HubActions.updateSubscribedHubs(newState));
         this.props.dispatch(MessageActions.setMessage("Unsubscribed!"));
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
@@ -390,10 +397,10 @@ class UserSettings extends Component {
               return el[0].toUpperCase() + el.slice(1);
             })
             .join(" ");
-        return {
-          value: hub.id,
-          label: hubName,
-        };
+        let obj = { ...hub };
+        obj.value = hub.id;
+        obj.label = hubName;
+        return obj;
       })
     );
   };
@@ -407,19 +414,19 @@ class UserSettings extends Component {
 
     if (newHubList.length > prevState.length) {
       let newHub = newHubList[newHubList.length - 1];
-      this.handleHubSubscribe(newHub);
+      this.handleHubSubscribe(newHub, newHubList);
     } else {
       let removedHub = this.detectRemovedHub(prevState, newHubList);
-      this.confirmUnsubscribe(removedHub);
+      this.confirmUnsubscribe(removedHub, newHubList);
     }
   };
 
-  handleHubSubscribe = (hub) => {
+  handleHubSubscribe = (hub, newState) => {
     let { hubState } = this.props;
-
     subscribeToHub(hub.value)
       .then((res) => {
-        this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
+        // this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
+        this.props.dispatch(HubActions.updateSubscribedHubs(newState));
         this.props.dispatch(MessageActions.setMessage("Subscribed!"));
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })

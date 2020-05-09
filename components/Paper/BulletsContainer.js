@@ -10,7 +10,6 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import { Event } from "~/components/GAnalytics/EventTracker";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -18,11 +17,8 @@ import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import EmptySummarySection from "./Tabs/Summary/EmptySummary";
 
 const BULLET_COUNT = 5;
 
@@ -129,6 +125,8 @@ class BulletsContainer extends React.Component {
     return newBullet;
   };
 
+  onEditCallback = (bullet, index) => {};
+
   submitBulletPoint = async () => {
     let { bulletsRedux, postBullet, showMessage, setMessage } = this.props;
     this.props.showMessage({ load: true, show: true });
@@ -190,6 +188,9 @@ class BulletsContainer extends React.Component {
           <SummaryBulletPoint
             key={`summaryBulletPoint-${index}`}
             data={bullet}
+            onEditCallback={this.onEditCallback}
+            type={"KEY_TAKEAWAY"}
+            index={index}
           />
         );
       });
