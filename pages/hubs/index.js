@@ -8,6 +8,7 @@ import Button from "../../components/Form/Button";
 import AddHubModal from "../../components/modal/AddHubModal";
 import Message from "../../components/Loader/Message";
 import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
+import Head from "~/components/Head";
 
 // Config
 import API from "~/config/api";
@@ -174,6 +175,10 @@ class Index extends React.Component {
       <div className={css(styles.background)}>
         <AddHubModal addHub={this.addNewHubToState} />
         <Message />
+        <Head
+          title={"Hubs on Researchhub"}
+          description={"View all of the communities on Researchhub"}
+        />
         <div className={css(styles.container)}>
           <div className={css(styles.titleContainer)}>
             <span className={css(styles.title)}>Hubs</span>

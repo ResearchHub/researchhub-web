@@ -185,7 +185,15 @@ class LimitationTab extends React.Component {
       );
     } else
       return limits.map((bullet, index) => {
-        return <SummaryBulletPoint key={`limitation-${index}`} data={bullet} />;
+        return (
+          <SummaryBulletPoint
+            key={`limitation-${index}`}
+            data={bullet}
+            // onEditCallback={this.onEditCallback}
+            type={"LIMITATION"}
+            index={index}
+          />
+        );
       });
   };
 
