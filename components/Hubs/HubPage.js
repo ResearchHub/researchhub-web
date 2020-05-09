@@ -798,6 +798,7 @@ var styles = StyleSheet.create({
   },
   sidebar: {
     width: "18%",
+    minHeight: "100vh",
     minWidth: 220,
     position: "relative",
     position: "sticky",
