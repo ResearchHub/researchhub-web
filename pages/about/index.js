@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { useTransition, useSpring, animated } from "react-spring";
 
 import Collapsible from "~/components/Form/Collapsible";
+import Head from "~/components/Head";
 
 import colors from "~/config/themes/colors";
 
@@ -284,6 +285,7 @@ class Index extends React.Component {
   render() {
     return (
       <div className={css(styles.page)}>
+        <Head title={"About Researchhub"} description={"What is Researchhub"} />
         <div className={css(styles.banner, this.state.reveal && styles.reveal)}>
           <img
             draggable={false}

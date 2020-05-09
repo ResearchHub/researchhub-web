@@ -70,6 +70,19 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    LEADERBOARD: ({ page, limit, hubId }) => {
+      let url = BASE_URL + `user/leaderboard/`;
+      let params = {
+        querystring: {
+          page,
+          limit,
+          hub_id: hubId,
+        },
+      };
+      url = prepURL(url, params);
+
+      return url;
+    },
     ANALYTICS_WEBSITEVIEWS: ({}) => {
       let url = BASE_URL + "analytics/websiteviews/";
 
@@ -428,6 +441,10 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
+    EDIT_BULLET_POINT: ({ paperId, bulletId }) => {
+      let url = BASE_URL + `paper/${paperId}/bullet_point/${bulletId}/edit/`;
+      return url;
+    },
     REORDER_BULLETS: () => {
       return BASE_URL + `bullet_point/reorder_all/`;
     },
@@ -451,8 +468,14 @@ const routes = (BASE_URL) => {
     GET_PAPER_FIGURES_ONLY: ({ paperId }) => {
       return BASE_URL + `figure/${paperId}/get_regular_figures/`;
     },
+    ADD_FIGURE: ({ paperId }) => {
+      return BASE_URL + `figure/${paperId}/add_figure/`;
+    },
     MAKE_PAPER_PUBLIC: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/?make_public=true/`;
+    },
+    PAPER_FILES: ({ paperId }) => {
+      return BASE_URL + `paper/${paperId}/additional_file/`;
     },
   };
 
