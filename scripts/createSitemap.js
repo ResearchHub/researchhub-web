@@ -1,28 +1,47 @@
 const fs = require("fs");
 const axios = require("axios");
-const ProgressBar = require("progress");
-
-const start = new Date();
 
 const LIMIT = 10000;
 
+const getConfig = () => {
+  console.log("Reading Config");
+  let data = fs.readFileSync("./public/config.txt", {
+    encoding: "utf8",
+    flag: "r",
+  });
+
+  if (data) {
+    console.log("Found Config:", JSON.parse(data));
+    return JSON.parse(data);
+  } else {
+    console.log("No Config Found");
+  }
+};
+
 const writeFile = () => {
-  let fileCount = 1; // start at 1
+  let config = getConfig();
+  let paperCount = config && config.paperCount ? config.paperCount : 0;
+  let offset = config && config.paperCount ? config.paperCount : null;
+  let hubCount = config && config.hubCount ? config.hubCount : 0;
+  let fileCount = config && config.fileCount ? config.fileCount + 1 : 1; // start at 1
+  let prevTimestamp = config && config.timestamp ? config.timestamp : null;
+
   let fileName = `./public/sitemap.prod-${fileCount}.xml`; // needs to autoincrement
   let writeStream = fs.createWriteStream(fileName);
   let limit = LIMIT;
-  let itemsWritten = 0;
-  let footer = "</urlset>";
 
-  let header = '<?xml version="1.0" encoding="UTF-8"?>';
+  let footer = `
+  </urlset>`;
 
   const writeHeader = () => {
     let header = `<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
     writeStream.write(header);
   };
 
   const writeStaticUrl = () => {
+    writeStream = fs.createWriteStream(`./public/sitemap.prod-static.xml`);
+    writeHeader();
     const static = [
       `https://researchhub.com`,
       `https://researchhub.com/hubs`,
@@ -34,11 +53,10 @@ const writeFile = () => {
 
     static.forEach((link) => {
       let path = `
-        <url>
-          <loc>${link}</loc>
-          <lastmod>${formatDate(new Date())}</lastmod>
-        </url>`;
-      itemsWritten++;
+      <url>
+        <loc>${link}</loc>
+        <lastmod>${formatDate(new Date())}</lastmod>
+      </url>`;
       writeStream.write(path);
     });
     writeStream.write(footer);
@@ -58,56 +76,60 @@ const writeFile = () => {
     <url>
       <loc>https://researchhub.com/hubs/${hub.slug ? hub.slug : hub.name}</loc>
       <lastmod>${formatDate(new Date())}</lastmod>
-    </url>
-    `;
+    </url>`;
     writeStream.write(path);
   };
 
-  const configureState = () => {
-    fileCount++;
-    fileName = `./public/sitemap.prod-${fileCount}.xml`;
+  const configureState = (name) => {
+    fileName = name ? name : `./public/sitemap.prod-${fileCount}.xml`;
     writeStream = fs.createWriteStream(fileName);
     writeHeader();
   };
 
   const collectAllPaperIds = async () => {
-    var paperWritten = 0;
+    var paperOnPage = 0;
     var next;
     var count;
-
+    writeHeader();
     const fetchPapers = () => {
       return axios
         .get(
           next
             ? next
-            : `https://backend.researchhub.com/api/paper/?limit=${LIMIT}&offset=0`
+            : `https://backend.researchhub.com/api/paper/?limit=${LIMIT}&offset=${
+                offset ? offset : 0
+              }&ignore_apm=true`
         )
         .then((res) => {
-          console.log("next", next);
-          console.log("count", count);
           next = res.data.next;
           count = res.data.count;
+          console.log("Writing Papers", next);
+
           let papers = res.data.results;
 
           papers.forEach((paper) => {
-            if (paperWritten < limit) {
+            if (paperOnPage < limit) {
               writePaperUrl(paper.id);
-              paperWritten++;
+              paperOnPage++;
+              paperCount++;
             } else {
               writeStream.write(footer);
               configureState();
+              fileCount++;
               writePaperUrl(paper.id);
-              paperWritten = 0;
+              paperCount++;
+              paperOnPage = 0;
             }
           });
 
           if (next) {
             return fetchPapers();
           } else {
-            return;
+            return paperCount;
           }
         })
         .catch((err) => {
+          console.log("err", err);
           return;
         });
     };
@@ -116,15 +138,17 @@ const writeFile = () => {
   };
 
   const collectAllHubSlugs = async () => {
+    console.log("Writing Hubs");
     var hubsWritten = 0;
     var next;
     var count;
+
     const fetchHubs = () => {
       return axios
         .get(
           next
             ? next
-            : "https://backend.researchhub.com/api/hub/?page_limit=1000&"
+            : "https://backend.researchhub.com/api/hub/?page_limit=1000&ignore_apm=true"
         )
         .then((res) => {
           next = res.data.next;
@@ -134,10 +158,12 @@ const writeFile = () => {
           hubSlugs.forEach((hub) => {
             if (hubsWritten < limit) {
               writeHubUrl(hub);
+              hubCount++;
               hubsWritten++;
             } else {
               configureState();
               writeHubUrl(hub);
+              hubCount++;
               hubsWritten = 0;
             }
           });
@@ -156,16 +182,68 @@ const writeFile = () => {
     return fetchHubs();
   };
 
-  writeHeader();
-  writeStaticUrl();
-  configureState();
+  const writeSitemapIndex = () => {
+    console.log("Writing Sitemap Index");
+    let fileName = `./public/sitemap-prod.xml`;
+    let writeStream = fs.createWriteStream(fileName);
+    let header = `<?xml version="1.0" encoding="UTF-8"?>
+    <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+    let footer = `
+    </sitemapindex>`;
+    writeStream.write(header);
+
+    fs.readdir("./public/", (err, files) => {
+      if (err) {
+        console.error("Could not list the directory.", err);
+        process.exit(1);
+      }
+
+      files.forEach((file) => {
+        if (file.includes("prod-")) {
+          writeStream.write(`
+        <sitemap>
+          <loc>https://www.researchhub.com/${file}</loc>
+        </sitemap>`);
+        }
+      });
+
+      writeStream.write(footer);
+    });
+  };
+
+  const writeConfig = () => {
+    let fileName = `./public/config.txt`;
+    let writeStream = fs.createWriteStream(fileName);
+
+    let newConfig = {
+      paperCount: paperCount,
+      fileCount: fileCount,
+      hubCount: hubCount,
+      prevTimestamp: prevTimestamp,
+      timestamp: new Date(),
+    };
+    console.log("Saving Config:", newConfig);
+    writeStream.write(JSON.stringify(newConfig));
+  };
 
   collectAllPaperIds().then(() => {
-    writeStream.write(footer);
-    configureState();
-    collectAllHubSlugs();
+    let configCount = config && paperCount;
+    if (paperCount !== configCount) {
+      writeStream.write(footer);
+    } else {
+      fs.unlink(fileName, () => {
+        fileCount = config && config.fileCount;
+      });
+    }
+    writeStaticUrl();
+    configureState(`./public/sitemap.prod-hubs.xml`);
+    collectAllHubSlugs().then(() => {
+      writeConfig();
+      writeSitemapIndex();
+    });
   });
 };
+
 writeFile();
 
 function formatDate(date) {
