@@ -70,10 +70,12 @@ class SummaryTab extends React.Component {
       return;
     }
 
-    localStorage.setItem(
-      `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
-      editorJSON
-    );
+    if (localStorage) {
+      localStorage.setItem(
+        `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
+        editorJSON
+      );
+    }
   };
 
   submitEdit = (raw, plain_text) => {
