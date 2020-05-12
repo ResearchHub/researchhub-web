@@ -1173,7 +1173,7 @@ const styles = StyleSheet.create({
   stickyBottom: {
     position: "sticky",
     backgroundColor: "#fff",
-    top: 80,
+    top: 59,
     zIndex: 3,
   },
   urlToolTip: {
