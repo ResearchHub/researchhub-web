@@ -17,6 +17,7 @@ import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import FigureTab from "~/components/Paper/Tabs/FigureTab";
 import FileTab from "~/components/Paper/Tabs/FileTab";
+import LimitationTab from "~/components/Paper/Tabs/LimitationTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
@@ -265,9 +266,9 @@ const Paper = (props) => {
               keyTakeawayRef={keyTakeawayRef}
               descriptionRef={descriptionRef}
             />
-            <a name="discussions">
+            <a name="comments" id="comments">
               <div className={css(styles.space)} />
-              <div id="discussions-tab">
+              <div id="comments-tab">
                 <DiscussionTab
                   hostname={hostname}
                   paperId={paperId}
@@ -338,6 +339,19 @@ const Paper = (props) => {
                     </div>
                   </div>
                 </ReactPlaceholder>
+              </ComponentWrapper>
+            </a>
+            <a name="limitations">
+              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+                <div
+                  className={css(
+                    styles.bulletsContainer,
+                    styles.limitsContainer
+                  )}
+                  id="limitations-tab"
+                >
+                  <LimitationTab paperId={paperId} />
+                </div>
               </ComponentWrapper>
             </a>
           </div>
@@ -643,6 +657,21 @@ const styles = StyleSheet.create({
   },
   figuresContainer: {
     marginTop: 32,
+  },
+  bulletsContainer: {
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
+  },
+  limitsContainer: {
+    marginTop: 30,
   },
 });
 
