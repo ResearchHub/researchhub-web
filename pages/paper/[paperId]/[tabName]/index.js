@@ -557,7 +557,7 @@ const styles = StyleSheet.create({
     top: 0,
     position: "sticky",
     backgroundColor: "#FFF",
-    zIndex: 3,
+    zIndex: 4,
     "@media only screen and (max-width: 760px)": {
       top: 80,
     },
