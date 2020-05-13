@@ -149,7 +149,7 @@ const PaperEntryCard = ({
 
   function formatDiscussionCount() {
     return `${discussion_count} ${
-      discussion_count === 1 ? "Discussion" : "Discussions"
+      discussion_count === 1 ? "Comment" : "Comments"
     }`;
   }
 
@@ -157,7 +157,7 @@ const PaperEntryCard = ({
     return (
       <Link
         href={"/paper/[paperId]/[tabName]"}
-        as={`/paper/${id}/summary#discussions`}
+        as={`/paper/${id}/summary#comments`}
       >
         <a className={css(styles.link)}>
           <div className={css(styles.discussion)}>
