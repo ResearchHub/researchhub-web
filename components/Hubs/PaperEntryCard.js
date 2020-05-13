@@ -157,7 +157,7 @@ const PaperEntryCard = ({
     return (
       <Link
         href={"/paper/[paperId]/[tabName]"}
-        as={`/paper/${id}/summary#discussions`}
+        as={`/paper/${id}/summary#comments`}
       >
         <a className={css(styles.link)}>
           <div className={css(styles.discussion)}>
