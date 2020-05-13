@@ -13,7 +13,6 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
-import LimitationTab from "./LimitationTab";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -198,14 +197,6 @@ class SummaryTab extends React.Component {
             id="takeaways-tab"
           >
             <BulletsContainer paperId={this.props.paperId} />
-          </div>
-        </a>
-        <a name="limitations">
-          <div
-            className={css(styles.bulletsContainer, styles.limitsContainer)}
-            id="limitations-tab"
-          >
-            <LimitationTab paperId={this.props.paperId} />
           </div>
         </a>
         <div>{this.state.errorMessage}</div>

@@ -337,7 +337,7 @@ const DiscussionTab = (props) => {
         >
           <div className={css(styles.header)}>
             <div className={css(styles.discussionTitle)}>
-              Discussions
+              Comments
               <span className={css(styles.discussionCount)}>
                 {discussionCount}
               </span>
