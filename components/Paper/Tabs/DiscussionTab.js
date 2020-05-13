@@ -261,10 +261,10 @@ const DiscussionTab = (props) => {
               <i className="fad fa-comments" />
             </span>
             <h2 className={css(styles.noSummaryTitle)}>
-              There are no discussions {mobileView && "\n"}for this paper yet.
+              There are no comments {mobileView && "\n"}for this paper yet.
             </h2>
             <div className={css(styles.text)}>
-              Please add a discussion to this paper
+              Please add a comment to this paper
             </div>
           </span>
         )}
@@ -283,7 +283,7 @@ const DiscussionTab = (props) => {
               threads.length > 0 && styles.plainButton
             )}
           >
-            Add Discussion
+            Add Comment
           </button>
         </PermissionNotificationWrapper>
       </div>
@@ -400,7 +400,7 @@ const DiscussionTab = (props) => {
           ref={discussionRef}
         >
           <div className={css(styles.header)}>
-            <div className={css(styles.discussionTitle)}>Discussions</div>
+            <div className={css(styles.discussionTitle)}>Comments</div>
           </div>
           {showEditor ? renderDiscussionTextEditor() : renderAddDiscussion()}
         </div>
