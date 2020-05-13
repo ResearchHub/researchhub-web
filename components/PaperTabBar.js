@@ -131,6 +131,28 @@ const PaperTabBar = (props) => {
     }
   }
 
+  function renderCount(label, selected) {
+    var count;
+
+    switch (label) {
+      case "comments":
+        count = props.discussionCount && props.discussionCount;
+        break;
+      case "figures":
+        count = props.figureCount && props.figureCount;
+        break;
+      case "cited-by":
+        count = 0;
+        break;
+      default:
+        break;
+    }
+
+    if (count) {
+      return <Count amount={count} isSelected={selected === label} />;
+    }
+  }
+
   function renderTab({ key, href, label, ui }, selected, index) {
     let isSelected = false;
     let classNames = [styles.tab];
@@ -150,7 +172,7 @@ const PaperTabBar = (props) => {
           key={`paper_tab_bar_${index}`}
         >
           {label} {ui && ui(isSelected)}
-          {/* <Count /> */}
+          {renderCount(label, selected)}
         </div>
       </a>
     );
@@ -249,7 +271,7 @@ const styles = StyleSheet.create({
     },
   },
   count: {
-    padding: "3px 8px",
+    padding: "3px 5px",
     borderRadius: 3,
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {

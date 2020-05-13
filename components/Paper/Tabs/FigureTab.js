@@ -59,6 +59,7 @@ class FigureTab extends React.Component {
               return el.file;
             }),
           });
+          this.props.setFigureCount(res.data.length);
           setTimeout(() => this.setState({ fetching: false }), 500);
         });
     });

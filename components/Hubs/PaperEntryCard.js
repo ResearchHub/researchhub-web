@@ -149,7 +149,7 @@ const PaperEntryCard = ({
 
   function formatDiscussionCount() {
     return `${discussion_count} ${
-      discussion_count === 1 ? "Discussion" : "Discussions"
+      discussion_count === 1 ? "Comment" : "Comments"
     }`;
   }
 
