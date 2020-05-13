@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { connect, useDispatch } from "react-redux";
+import ReactTooltip from "react-tooltip";
 
+// Redux
 import { AuthActions } from "~/redux/auth";
 import { AuthorActions } from "~/redux/author";
 
@@ -415,17 +417,41 @@ const AuthorPage = (props) => {
       <a href={`https://orcid.org/${author.orcid_id}`}>{author.orcid_id}</a>
     );
     if (allowEdit) {
-      return author.orcid_id ? (
-        orcidLink
-      ) : (
-        <OrcidConnectButton
-          hostname={hostname}
-          refreshProfileOnSuccess={true}
-          customLabel={"Connect your ORCiD Profile"}
-        />
-      );
+      return author.orcid_id
+        ? !editName && (
+            <Fragment>
+              <ReactTooltip />
+              <div data-tip={author.orcid_id && orcidLink}>
+                <img
+                  src="/static/icons/orcid.png"
+                  className={css(styles.orcidLogo)}
+                />
+              </div>
+            </Fragment>
+          )
+        : !editName && (
+            <OrcidConnectButton
+              hostname={hostname}
+              refreshProfileOnSuccess={true}
+              customLabel={"Connect your ORCiD Profile"}
+              styles={styles.orcidButton}
+            />
+          );
     } else {
-      return author.orcid_id && orcidLink;
+      return (
+        !editName &&
+        author.orcid_id && (
+          <Fragment>
+            <ReactTooltip />
+            <div data-tip={author.orcid_id && orcidLink}>
+              <img
+                src="/static/icons/orcid.png"
+                className={css(styles.orcidLogo)}
+              />
+            </div>
+          </Fragment>
+        )
+      );
     }
   };
 
@@ -700,6 +726,7 @@ const styles = StyleSheet.create({
   },
   connectOrcid: {
     marginBottom: 16,
+    marginLeft: 5,
   },
   socialLinks: {
     display: "flex",
@@ -733,6 +760,8 @@ const styles = StyleSheet.create({
     },
   },
   orcidAvailable: {
+    marginBottom: 10,
+    marginLeft: 0,
     "@media only screen and (min-width: 1280px)": {
       flexDirection: "column",
     },
@@ -784,8 +813,8 @@ const styles = StyleSheet.create({
     display: "flex",
     position: "relative",
     width: "fit-content",
-    paddingRight: 30,
-
+    paddingRight: 20,
+    marginRight: 3,
     "@media only screen and (max-width: 767px)": {
       width: "unset",
       paddingRight: 0,
@@ -983,6 +1012,11 @@ const styles = StyleSheet.create({
   },
   reputationTitle: {
     marginRight: 10,
+  },
+  orcidButton: {},
+  orcidLogo: {
+    height: 33,
+    width: 33,
   },
 });
 
