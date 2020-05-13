@@ -235,7 +235,7 @@ class LiveFeedNotification extends React.Component {
             created a{" "}
             <Link
               href="/paper/[paperId]/[tabName]"
-              as={`/paper/${paperId}/summary#discussions`}
+              as={`/paper/${paperId}/summary#comments`}
               // href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               // as={`/paper/${paperId}/discussion/${threadId}`}
             >
@@ -243,7 +243,7 @@ class LiveFeedNotification extends React.Component {
                 className={css(styles.link)}
                 onClick={(e) => e.stopPropagation()}
               >
-                thread
+                comment
               </a>
             </Link>
             {"in "}
