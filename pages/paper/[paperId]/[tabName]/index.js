@@ -74,10 +74,7 @@ const Paper = (props) => {
       disableBeacon: true,
     },
   ]);
-  const [discussionCount, setCount] = useState(
-    // store.getState().paper.discussion.count
-    calculateCommentCount()
-  );
+  const [discussionCount, setCount] = useState(calculateCommentCount());
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
@@ -147,6 +144,10 @@ const Paper = (props) => {
 
     return () => window.removeEventListener("scroll", scrollListener);
   }, [scrollListener]);
+
+  useEffect(() => {
+    setCount(calculateCommentCount());
+  }, [paper.discussion]);
 
   function getDiscussionThreads(paper) {
     return paper.discussion ? paper.discussion.threads : [];
