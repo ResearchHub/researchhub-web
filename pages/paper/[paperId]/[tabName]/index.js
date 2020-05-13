@@ -56,6 +56,7 @@ const Paper = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper.userVote.voteType)
   );
+  const [figureCount, setFigureCount] = useState(0);
 
   const [steps, setSteps] = useState([
     {
@@ -74,7 +75,8 @@ const Paper = (props) => {
     },
   ]);
   const [discussionCount, setCount] = useState(
-    store.getState().paper.discussion.count
+    // store.getState().paper.discussion.count
+    calculateCommentCount()
   );
 
   const { hostname, showMessage } = props;
@@ -89,10 +91,6 @@ const Paper = (props) => {
   const discussionRef = useRef(null);
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
-
-  // useEffect(() => {
-  //   window.scroll({ top: 0, behavior: "auto" });
-  // }, []);
 
   const fetchReferences = () => {
     let params = {
@@ -212,6 +210,34 @@ const Paper = (props) => {
     }
   }
 
+  function calculateCommentCount() {
+    var count = 0;
+    var threads = paper && paper.discussion ? paper.discussion.threads : [];
+
+    count += paper.discussion.count; // 4
+
+    threads &&
+      threads.forEach((thread) => {
+        count += thread.comments.length;
+        if (thread.comments.length > 0) {
+          var comments = thread.comments;
+          comments &&
+            comments.forEach((comment) => {
+              count += comment.replies.length;
+              if (comment.replies.lenght > 0) {
+                var replies = comment.replies;
+                replies &&
+                  replies.forEach((repy) => {
+                    count += replies.replies.length;
+                  });
+              }
+            });
+        }
+      });
+
+    return count;
+  }
+
   return (
     <div className={css(styles.container)}>
       {paper.status === 404 ? (
@@ -257,6 +283,9 @@ const Paper = (props) => {
               setSticky={setSticky}
               scrollView={scrollView}
               tabName={tabName}
+              discussionCount={discussionCount}
+              paper={paper}
+              figureCount={figureCount}
             />
           </div>
           <div className={css(styles.contentContainer)}>
@@ -281,7 +310,11 @@ const Paper = (props) => {
             </a>
             <a name="figures">
               <div className={css(styles.figuresContainer)}>
-                <FigureTab paperId={paperId} paper={paper} />
+                <FigureTab
+                  paperId={paperId}
+                  paper={paper}
+                  setFigureCount={setFigureCount}
+                />
               </div>
             </a>
             <a name="paper">
