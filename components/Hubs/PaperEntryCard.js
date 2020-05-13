@@ -55,6 +55,7 @@ const PaperEntryCard = ({
     paper_title,
     first_figure,
     first_preview,
+    uploaded_by,
   } = paper || null;
 
   let selected = null;
@@ -92,6 +93,35 @@ const PaperEntryCard = ({
 
   function convertDate() {
     return formatPublishedDate(transformDate(paper.paper_publish_date));
+  }
+
+  function renderUploadedBy() {
+    if (uploaded_by) {
+      let {
+        first_name,
+        last_name,
+        profile_image,
+        id,
+        user,
+      } = uploaded_by.author_profile;
+      return (
+        <div className={css(styles.uploadedBy)}>
+          {`Submitted by ${first_name} ${last_name}`}
+          <span className={css(styles.uploadedByAvatar)}>
+            <AuthorAvatar
+              key={`author_${id}_${user}`}
+              size={25}
+              textSizeRatio={2.5}
+              author={uploaded_by.author_profile}
+            />
+          </span>
+        </div>
+      );
+    } else {
+      return (
+        <div className={css(styles.uploadedBy)}>Submitted by ResearchHub</div>
+      );
+    }
   }
 
   /**
@@ -328,7 +358,7 @@ const PaperEntryCard = ({
               <a className={css(styles.link)}>
                 <div className={css(styles.title, styles.text)}>
                   {title && title}
-                  {paper_title !== title && paper_title && (
+                  {paper_title && (
                     <div
                       className={css(styles.paperTitle, styles.text)}
                       id={"clamp1"}
@@ -371,6 +401,7 @@ const PaperEntryCard = ({
                   ))}
               </span>
             </div>
+            {renderUploadedBy()}
             {mobileView && renderHubTags()}
           </div>
           {!mobileView && renderPreview()}
@@ -607,6 +638,21 @@ const styles = StyleSheet.create({
   },
   hubLabel: {
     fontSize: 9,
+  },
+  uploadedBy: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    fontSize: 14,
+    color: "rgb(145, 143, 155)",
+    fontWeight: 400,
+    // marginBottom: 10,
+  },
+  uploadedByAvatar: {
+    marginLeft: 15,
+  },
+  rhIcon: {
+    height: 20,
   },
 });
 
