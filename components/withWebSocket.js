@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { AUTH_TOKEN as TOKEN_NAME } from "../config/constants";
-// TODO: Add reconnect interval
-import * as Sentry from "@sentry/browser";
 
 const ALLOWED_ORIGINS = [
   "localhost",
@@ -129,7 +127,6 @@ export default function withWebSocket(
           // See https://bugzilla.mozilla.org/show_bug.cgi?id=674716
           ws.close(code, reason);
         } catch (error) {
-          Sentry.captureException(error);
           ws.close();
         }
       }
