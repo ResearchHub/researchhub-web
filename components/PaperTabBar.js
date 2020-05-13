@@ -65,10 +65,6 @@ const PaperTabBar = (props) => {
     ) {
       setSelectedTab("key takeaways");
     } else if (
-      window.scrollY <= calculateOffset("limitations-tab", -navbarHeight)
-    ) {
-      setSelectedTab("limitations");
-    } else if (
       window.scrollY <= calculateOffset("summary-tab", -navbarHeight)
     ) {
       setSelectedTab("summary");
@@ -80,9 +76,9 @@ const PaperTabBar = (props) => {
         });
       }
     } else if (
-      window.scrollY <= calculateOffset("discussions-tab", -navbarHeight)
+      window.scrollY <= calculateOffset("comments-tab", -navbarHeight)
     ) {
-      setSelectedTab("discussions");
+      setSelectedTab("comments");
       if (window.outerWidth < 667) {
         let paperNavigation = document.getElementById("paper-navigation");
         paperNavigation.scroll({
@@ -100,6 +96,10 @@ const PaperTabBar = (props) => {
       window.scrollY <= calculateOffset("citedby-tab", -navbarHeight)
     ) {
       setSelectedTab("citations");
+    } else if (
+      window.scrollY <= calculateOffset("limitations-tab", -navbarHeight)
+    ) {
+      setSelectedTab("limitations");
     } else {
       // setSelectedTab("key takeaways");
     }
@@ -108,12 +108,12 @@ const PaperTabBar = (props) => {
   const tabs = [
     { href: "main", label: "main" },
     { href: "takeaways", label: "key takeaways" },
-    { href: "limitations", label: "limitations" },
     { href: "summary", label: "summary" },
-    { href: "discussions", label: "discussions" },
+    { href: "comments", label: "comments" },
     { href: "figures", label: "figures" },
     { href: "paper", label: "Paper PDF" },
     { href: "citations", label: "cited by" },
+    { href: "limitations", label: "limitations" },
   ].map(formatTabs);
 
   function formatTabs(tab) {
@@ -128,6 +128,28 @@ const PaperTabBar = (props) => {
         behavior: "auto",
         top: 0,
       });
+    }
+  }
+
+  function renderCount(label, selected) {
+    var count;
+
+    switch (label) {
+      case "comments":
+        count = props.discussionCount && props.discussionCount;
+        break;
+      case "figures":
+        count = props.figureCount && props.figureCount;
+        break;
+      case "cited-by":
+        count = 0;
+        break;
+      default:
+        break;
+    }
+
+    if (count) {
+      return <Count amount={count} isSelected={selected === label} />;
     }
   }
 
@@ -150,6 +172,7 @@ const PaperTabBar = (props) => {
           key={`paper_tab_bar_${index}`}
         >
           {label} {ui && ui(isSelected)}
+          {renderCount(label, selected)}
         </div>
       </a>
     );
@@ -248,7 +271,7 @@ const styles = StyleSheet.create({
     },
   },
   count: {
-    padding: "3px 8px",
+    padding: "3px 5px",
     borderRadius: 3,
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {

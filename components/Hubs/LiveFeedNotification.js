@@ -85,7 +85,7 @@ class LiveFeedNotification extends React.Component {
       // href = "/paper/[paperId]/[tabName]/[discussionThreadId]";
       // route = `/paper/${paperId}/discussion/${threadId}`;
       href = "/paper/[paperId]/[tabName]";
-      route = `/paper/${paperId}/summary#discussions`;
+      route = `/paper/${paperId}/summary#comments`;
     } else if (type === "bullet_point") {
       href = "/paper/[paperId]/[tabName]";
       route = `/paper/${paperId}/summary`;
@@ -235,7 +235,7 @@ class LiveFeedNotification extends React.Component {
             created a{" "}
             <Link
               href="/paper/[paperId]/[tabName]"
-              as={`/paper/${paperId}/summary#discussions`}
+              as={`/paper/${paperId}/summary#comments`}
               // href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
               // as={`/paper/${paperId}/discussion/${threadId}`}
             >

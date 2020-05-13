@@ -17,6 +17,7 @@ import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import FigureTab from "~/components/Paper/Tabs/FigureTab";
 import FileTab from "~/components/Paper/Tabs/FileTab";
+import LimitationTab from "~/components/Paper/Tabs/LimitationTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
@@ -55,6 +56,7 @@ const Paper = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper.userVote.voteType)
   );
+  const [figureCount, setFigureCount] = useState(0);
 
   const [steps, setSteps] = useState([
     {
@@ -72,9 +74,7 @@ const Paper = (props) => {
       disableBeacon: true,
     },
   ]);
-  const [discussionCount, setCount] = useState(
-    store.getState().paper.discussion.count
-  );
+  const [discussionCount, setCount] = useState(calculateCommentCount());
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
@@ -88,10 +88,6 @@ const Paper = (props) => {
   const discussionRef = useRef(null);
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
-
-  // useEffect(() => {
-  //   window.scroll({ top: 0, behavior: "auto" });
-  // }, []);
 
   const fetchReferences = () => {
     let params = {
@@ -148,6 +144,10 @@ const Paper = (props) => {
 
     return () => window.removeEventListener("scroll", scrollListener);
   }, [scrollListener]);
+
+  useEffect(() => {
+    setCount(calculateCommentCount());
+  }, [paper.discussion]);
 
   function getDiscussionThreads(paper) {
     return paper.discussion ? paper.discussion.threads : [];
@@ -211,6 +211,34 @@ const Paper = (props) => {
     }
   }
 
+  function calculateCommentCount() {
+    var count = 0;
+    var threads = paper && paper.discussion ? paper.discussion.threads : [];
+
+    count += paper.discussion.count; // 4
+
+    threads &&
+      threads.forEach((thread) => {
+        count += thread.comments.length;
+        if (thread.comments.length > 0) {
+          var comments = thread.comments;
+          comments &&
+            comments.forEach((comment) => {
+              count += comment.replies.length;
+              if (comment.replies.lenght > 0) {
+                var replies = comment.replies;
+                replies &&
+                  replies.forEach((repy) => {
+                    count += replies.replies.length;
+                  });
+              }
+            });
+        }
+      });
+
+    return count;
+  }
+
   return (
     <div className={css(styles.container)}>
       {paper.status === 404 ? (
@@ -256,6 +284,9 @@ const Paper = (props) => {
               setSticky={setSticky}
               scrollView={scrollView}
               tabName={tabName}
+              discussionCount={discussionCount}
+              paper={paper}
+              figureCount={figureCount}
             />
           </div>
           <div className={css(styles.contentContainer)}>
@@ -265,9 +296,9 @@ const Paper = (props) => {
               keyTakeawayRef={keyTakeawayRef}
               descriptionRef={descriptionRef}
             />
-            <a name="discussions">
+            <a name="comments" id="comments">
               <div className={css(styles.space)} />
-              <div id="discussions-tab">
+              <div id="comments-tab">
                 <DiscussionTab
                   hostname={hostname}
                   paperId={paperId}
@@ -280,7 +311,11 @@ const Paper = (props) => {
             </a>
             <a name="figures">
               <div className={css(styles.figuresContainer)}>
-                <FigureTab paperId={paperId} paper={paper} />
+                <FigureTab
+                  paperId={paperId}
+                  paper={paper}
+                  setFigureCount={setFigureCount}
+                />
               </div>
             </a>
             <a name="paper">
@@ -338,6 +373,19 @@ const Paper = (props) => {
                     </div>
                   </div>
                 </ReactPlaceholder>
+              </ComponentWrapper>
+            </a>
+            <a name="limitations">
+              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+                <div
+                  className={css(
+                    styles.bulletsContainer,
+                    styles.limitsContainer
+                  )}
+                  id="limitations-tab"
+                >
+                  <LimitationTab paperId={paperId} />
+                </div>
               </ComponentWrapper>
             </a>
           </div>
@@ -643,6 +691,21 @@ const styles = StyleSheet.create({
   },
   figuresContainer: {
     marginTop: 32,
+  },
+  bulletsContainer: {
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
+  },
+  limitsContainer: {
+    marginTop: 30,
   },
 });
 
