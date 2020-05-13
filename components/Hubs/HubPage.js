@@ -917,7 +917,6 @@ var styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 20,
     width: "100%",
-    // position: "sticky",
     paddingLeft: 70,
     paddingRight: 70,
     boxSizing: "border-box",
@@ -933,10 +932,7 @@ var styles = StyleSheet.create({
       paddingLeft: 50,
       paddingRight: 50,
     },
-    // "@media only screen and (min-width: 1440px)": {
-    //   paddingLeft: 70,
-    //   paddingRight: 70,
-    // },
+
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
@@ -1046,10 +1042,6 @@ var styles = StyleSheet.create({
       paddingLeft: 50,
       paddingRight: 50,
     },
-    // "@media only screen and (min-width: 1440px)": {
-    //   paddingLeft: 70,
-    //   paddingRight: 70,
-    // },
     "@media only screen and (min-width: 800px)": {
       paddingTop: 25,
     },
