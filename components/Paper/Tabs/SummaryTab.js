@@ -184,6 +184,12 @@ class SummaryTab extends React.Component {
     this.initializeSummary();
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.paperId !== this.props.paperId) {
+      this.initializeSummary();
+    }
+  }
+
   render() {
     let { paper } = this.props;
     let { transition } = this.state;
