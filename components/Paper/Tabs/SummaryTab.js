@@ -185,10 +185,8 @@ class SummaryTab extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      if (prevProps.paperId !== this.props.paperId) {
-        this.initializeSummary();
-      }
+    if (prevProps.paperId !== this.props.paperId) {
+      this.initializeSummary();
     }
   }
 
