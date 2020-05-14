@@ -416,7 +416,8 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
   const hostname = host;
   var fetchedPaper;
   if (
-    store.getState().paper.id !== query.paperId ||
+    (store.getState().paper.id !== query.paperId &&
+      store.getState().paper.doneFetchingPaper) ||
     (!store.getState().paper.doneFetchingPaper && !store.getState().paper.id)
   ) {
     await store.dispatch(PaperActions.getPaper(query.paperId));
