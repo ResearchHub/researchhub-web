@@ -4,9 +4,11 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Plain from "slate-plain-serializer";
+import { isAndroid, isMobile } from "react-device-detect";
 
 // Components
 import RichTextEditor from "./RichTextEditor";
+import AndroidTextEditor from "./AndroidTextEditor";
 
 import { ModalActions } from "../../redux/modals";
 
@@ -55,8 +57,11 @@ const TextEditor = (props) => {
     setValue(convertToEditorValue(""));
   }
 
-  async function submit() {
-    if (value.document.text === "" || value.document.text === " ") {
+  async function submit(text, plain_text, callback) {
+    if (
+      (value.document.text === "" || value.document.text === " ") &&
+      isAndroid
+    ) {
       return;
     }
 
@@ -65,6 +70,12 @@ const TextEditor = (props) => {
       // TODO: pop login modal
       openLoginModal(true, "Please login with Google to continue.");
     } else {
+      if (!isAndroid) {
+        console.log("called submit");
+        onSubmit && onSubmit(text, plain_text);
+        return callback();
+      }
+
       onSubmit &&
         (success = await onSubmit(
           value.toJSON({ preserveKeys: true }),
@@ -83,33 +94,43 @@ const TextEditor = (props) => {
     props.setRef && props.setRef(editor);
   }
 
-  return (
-    <RichTextEditor
-      setRef={setInternalRef}
-      ref={setEditorRef}
-      readOnly={readOnly || false}
-      onChange={handleChange}
-      initialValue={passedValue ? passedValue : value}
-      canCancel={canCancel}
-      canSubmit={canSubmit}
-      containerStyles={containerStyles}
-      cancel={cancel}
-      submit={submit}
-      commentEditor={commentEditor}
-      value={passedValue ? passedValue : value}
-      hideButton={hideButton}
-      showDiff={showDiff}
-      previousVersion={previousVersion}
-      classNames={classNames}
-      placeholder={placeholder && placeholder}
-      autoFocus={true}
-      hideCancelButton={hideCancelButton && hideCancelButton}
-      commentStyles={commentStyles && commentStyles}
-      smallToolBar={smallToolBar && smallToolBar}
-      loading={loading && loading}
-      commentEditorStyles={commentEditorStyles && commentEditorStyles}
-    />
-  );
+  if (isAndroid && !readOnly) {
+    return (
+      <AndroidTextEditor
+        initialValue={passedValue ? passedValue : value}
+        onCancel={cancel}
+        onSubmit={submit}
+      />
+    );
+  } else {
+    return (
+      <RichTextEditor
+        setRef={setInternalRef}
+        ref={setEditorRef}
+        readOnly={readOnly || false}
+        onChange={handleChange}
+        initialValue={passedValue ? passedValue : value}
+        canCancel={canCancel}
+        canSubmit={canSubmit}
+        containerStyles={containerStyles}
+        cancel={cancel}
+        submit={submit}
+        commentEditor={commentEditor}
+        value={passedValue ? passedValue : value}
+        hideButton={hideButton}
+        showDiff={showDiff}
+        previousVersion={previousVersion}
+        classNames={classNames}
+        placeholder={placeholder && placeholder}
+        autoFocus={true}
+        hideCancelButton={hideCancelButton && hideCancelButton}
+        commentStyles={commentStyles && commentStyles}
+        smallToolBar={smallToolBar && smallToolBar}
+        loading={loading && loading}
+        commentEditorStyles={commentEditorStyles && commentEditorStyles}
+      />
+    );
+  }
 };
 
 TextEditor.propTypes = {

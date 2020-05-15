@@ -4,7 +4,6 @@ import { isAndroid, isMobile } from "react-device-detect";
 
 // Component
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
-import TextEditor from "../../components/TextEditor";
 import FormTextArea from "../../components/Form/FormTextArea";
 import Button from "../../components/Form/Button";
 
@@ -19,6 +18,14 @@ class AndroidTextEditor extends React.Component {
       text: "",
       prevText: "",
     };
+  }
+
+  componentDidMount() {
+    let text = this.props.initialValue && this.props.initialValue.document.text;
+    this.setState({
+      text,
+      prevText: text,
+    });
   }
 
   handleAndroidText = (id, value) => {
@@ -45,6 +52,7 @@ class AndroidTextEditor extends React.Component {
   };
 
   submitAndroid = (e) => {
+    console.log("called");
     let androidEditor = convertToEditorValue(this.state.text);
 
     let valueObj = androidEditor.toJSON({ preserveKeys: true });
@@ -59,6 +67,10 @@ class AndroidTextEditor extends React.Component {
           }, 400);
         });
     });
+  };
+
+  onCancel = () => {
+    this.props.onCancel && this.props.onCancel();
   };
 
   render() {
