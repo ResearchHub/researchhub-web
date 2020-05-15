@@ -421,11 +421,8 @@ const AuthorPage = (props) => {
         ? !editName && (
             <Fragment>
               <ReactTooltip />
-              <div data-tip={author.orcid_id && orcidLink}>
-                <img
-                  src="/static/icons/orcid.png"
-                  className={css(styles.orcidLogo)}
-                />
+              <div data-tip={author.orcid_id && author.orcid_id}>
+                {orcidLink}
               </div>
             </Fragment>
           )
