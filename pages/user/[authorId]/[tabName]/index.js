@@ -716,6 +716,8 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 35,
     position: "relative",
+    justifyContent: "flex-end",
+    width: "30%",
   },
   authorName: {
     fontWeight: 500,
