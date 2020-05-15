@@ -414,17 +414,20 @@ const AuthorPage = (props) => {
 
   let renderOrcid = () => {
     const orcidLink = (
-      <a href={`https://orcid.org/${author.orcid_id}`}>{author.orcid_id}</a>
+      <a target="_blank" href={`https://orcid.org/${author.orcid_id}`}>
+        {author.orcid_id}
+      </a>
     );
     if (allowEdit) {
       return author.orcid_id
         ? !editName && (
-            <Fragment>
-              <ReactTooltip />
-              <div data-tip={author.orcid_id && author.orcid_id}>
-                {orcidLink}
-              </div>
-            </Fragment>
+            <div className={css(styles.orcidSection)}>
+              <img
+                src="/static/icons/orcid.png"
+                className={css(styles.orcidLogo)}
+              />
+              <div>{orcidLink}</div>
+            </div>
           )
         : !editName && (
             <OrcidConnectButton
@@ -438,10 +441,13 @@ const AuthorPage = (props) => {
       return (
         !editName &&
         author.orcid_id && (
-          <Fragment>
-            <ReactTooltip />
-            <div data-tip={author.orcid_id && author.orcid_id}>{orcidLink}</div>
-          </Fragment>
+          <div className={css(styles.orcidSection)}>
+            <img
+              src="/static/icons/orcid.png"
+              className={css(styles.orcidLogo)}
+            />
+            <div>{orcidLink}</div>
+          </div>
         )
       );
     }
@@ -1006,9 +1012,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   orcidButton: {},
+  orcidSection: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   orcidLogo: {
     height: 33,
     width: 33,
+    marginRight: 8,
   },
 });
 
