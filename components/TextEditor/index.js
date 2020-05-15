@@ -70,8 +70,7 @@ const TextEditor = (props) => {
       // TODO: pop login modal
       openLoginModal(true, "Please login with Google to continue.");
     } else {
-      if (!isAndroid) {
-        console.log("called submit");
+      if (isAndroid) {
         onSubmit && onSubmit(text, plain_text);
         return callback();
       }

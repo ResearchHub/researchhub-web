@@ -450,13 +450,12 @@ class DiscussionEntry extends React.Component {
                     username={username}
                     date={date}
                     threadPath={path}
+                    hostname={hostname}
                     dropDownEnabled={true}
                     // Moderator
                     metaData={metaData}
                     onRemove={this.removePostUI}
                     // Editing
-                    editing={this.state.editing}
-                    toggleEdit={this.state.canEdit && this.toggleEdit}
                   />
                 </div>
                 <div className={css(styles.content)}>
@@ -481,8 +480,8 @@ class DiscussionEntry extends React.Component {
             )}
             <div className={css(styles.row, styles.bottom)}>
               <ThreadActionBar
-                hostname={hostname}
-                threadPath={path}
+                editing={this.state.editing}
+                toggleEdit={this.state.canEdit && this.toggleEdit}
                 title={title}
                 count={commentCount}
                 threadHeight={this.state.elementHeight}
