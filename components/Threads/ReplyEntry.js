@@ -326,8 +326,6 @@ class ReplyEntry extends React.Component {
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
                     hostname={hostname}
-                    hostname={hostname}
-                    hostname={hostname}
                     count={dataCount}
                     comment={true}
                     small={true}
