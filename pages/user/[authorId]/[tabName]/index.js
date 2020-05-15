@@ -413,22 +413,9 @@ const AuthorPage = (props) => {
   };
 
   let renderOrcid = () => {
-    const orcidLink = (
-      <a target="_blank" href={`https://orcid.org/${author.orcid_id}`}>
-        {author.orcid_id}
-      </a>
-    );
     if (allowEdit) {
       return author.orcid_id
-        ? !editName && (
-            <div className={css(styles.orcidSection)}>
-              <img
-                src="/static/icons/orcid.png"
-                className={css(styles.orcidLogo)}
-              />
-              <div>{orcidLink}</div>
-            </div>
-          )
+        ? null
         : !editName && (
             <OrcidConnectButton
               hostname={hostname}
@@ -437,19 +424,6 @@ const AuthorPage = (props) => {
               styles={styles.orcidButton}
             />
           );
-    } else {
-      return (
-        !editName &&
-        author.orcid_id && (
-          <div className={css(styles.orcidSection)}>
-            <img
-              src="/static/icons/orcid.png"
-              className={css(styles.orcidLogo)}
-            />
-            <div>{orcidLink}</div>
-          </div>
-        )
-      );
     }
   };
 
@@ -569,6 +543,18 @@ const AuthorPage = (props) => {
             </div>
           </div>
           <div className={css(styles.socialLinks)}>
+            {author.orcid_id && (
+              <a
+                className={css(styles.link)}
+                target="_blank"
+                href={`https://orcid.org/${author.orcid_id}`}
+              >
+                <img
+                  src="/static/icons/orcid.png"
+                  className={css(styles.orcidLogo)}
+                />
+              </a>
+            )}
             {!allowEdit ? (
               author.linkedin && (
                 <a
@@ -1018,9 +1004,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   orcidLogo: {
-    height: 33,
-    width: 33,
-    marginRight: 8,
+    height: 35,
+    width: 35,
+    objectFit: "contain",
+    marginLeft: 5,
+    marginRight: 5,
   },
 });
 
