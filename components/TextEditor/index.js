@@ -67,7 +67,6 @@ const TextEditor = (props) => {
 
     let success = false;
     if (!isLoggedIn) {
-      // TODO: pop login modal
       openLoginModal(true, "Please login with Google to continue.");
     } else {
       if (isAndroid) {
