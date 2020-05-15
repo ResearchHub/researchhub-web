@@ -477,6 +477,9 @@ const routes = (BASE_URL) => {
     PAPER_FILES: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/additional_file/`;
     },
+    GOOGLE_ANALYTICS: () => {
+      return BASE_URL + "google_analytics/forward_event/";
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
