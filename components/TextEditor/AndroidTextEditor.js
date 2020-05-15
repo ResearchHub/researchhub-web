@@ -52,7 +52,9 @@ class AndroidTextEditor extends React.Component {
   };
 
   submitAndroid = (e) => {
-    console.log("called");
+    if (this.state.text.trim() === "") {
+      return;
+    }
     let androidEditor = convertToEditorValue(this.state.text);
 
     let valueObj = androidEditor.toJSON({ preserveKeys: true });
