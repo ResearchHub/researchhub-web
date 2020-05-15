@@ -6,6 +6,7 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 import Ripples from "react-ripples";
+import { isAndroid, isMobile } from "react-device-detect";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -135,6 +136,11 @@ class SummaryTab extends React.Component {
   };
 
   edit = () => {
+    if (!isAndroid) {
+      this.props.setMessage("Use desktop view to edit the summary");
+      return this.props.showMessage({ show: true, error: true });
+    }
+
     this.setState({
       readOnly: false,
     });

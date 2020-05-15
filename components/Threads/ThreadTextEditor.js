@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { isAndroid, isMobile } from "react-device-detect";
+import Plain from "slate-plain-serializer";
 
 // Component
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
@@ -42,8 +43,6 @@ class ThreadTextEditor extends React.Component {
   }
 
   onSubmit = (text, plain_text) => {
-    console.log("text", text);
-    console.log("plain_text", plain_text);
     this.setState({ loading: true }, () => {
       this.props.onSubmit &&
         this.props.onSubmit(text, plain_text, () => {
@@ -73,17 +72,17 @@ class ThreadTextEditor extends React.Component {
 
   onEditSubmit = (e) => {
     let value = this.state.editorState;
-    // let text = value.toJSON({ preserveKeys: true });
-    // let plain_text = Plain.serialize(value);
-    // this.setState({ loading: true }, () => {
-    //   this.props.onEditSubmit &&
-    //     this.props.onEditSubmit(text, plain_text, () => {
-    //       this.setState({
-    //         editorState: convertToEditorValue(this.state.newEditorState),
-    //         loading: false,
-    //       });
-    //     });
-    // });
+    let text = value.toJSON({ preserveKeys: true });
+    let plain_text = Plain.serialize(value);
+    this.setState({ loading: true }, () => {
+      this.props.onEditSubmit &&
+        this.props.onEditSubmit(text, plain_text, () => {
+          this.setState({
+            editorState: convertToEditorValue(this.state.newEditorState),
+            loading: false,
+          });
+        });
+    });
   };
 
   onEditCancel = (e) => {
@@ -101,7 +100,7 @@ class ThreadTextEditor extends React.Component {
 
   handleAndroidEdit = (id, value) => {
     this.setState({
-      prevAndroidText: value,
+      androidText: value,
     });
   };
 
@@ -129,6 +128,29 @@ class ThreadTextEditor extends React.Component {
           setTimeout(() => {
             this.onCancel();
           }, 400);
+        });
+    });
+  };
+
+  onEditSubmitAndroid = () => {
+    let androidEditor = convertToEditorValue(this.state.androidText);
+
+    let valueObj = androidEditor.toJSON({ preserveKeys: true });
+    let plain_text = this.state.androidText;
+
+    this.setState({ loading: true }, () => {
+      this.props.onEditSubmit &&
+        this.props.onEditSubmit(valueObj, plain_text, () => {
+          this.setState(
+            {
+              prevAndroidText: this.state.androidText,
+              editorState: convertToEditorValue(this.state.androidText),
+              loading: false,
+            },
+            () => {
+              console.log("thistate", this.state);
+            }
+          );
         });
     });
   };
@@ -163,7 +185,13 @@ class ThreadTextEditor extends React.Component {
             size={"med"}
           />
           <span className={css(styles.divider)} />
-          <Button onClick={this.submitAndroid} label="Submit" size={"med"} />
+          <Button
+            onClick={
+              this.props.editing ? this.onEditSubmitAndroid : this.submitAndroid
+            }
+            label="Submit"
+            size={"med"}
+          />
         </div>
       </PermissionNotificationWrapper>
     );
@@ -172,7 +200,7 @@ class ThreadTextEditor extends React.Component {
 
   render() {
     if (!this.props.body) {
-      if (!isAndroid) {
+      if (isAndroid) {
         return this.renderAndroidEditor();
       } else {
         return (
@@ -198,13 +226,12 @@ class ThreadTextEditor extends React.Component {
         );
       }
     } else {
-      if (!isAndroid && this.props.editing) {
+      if (isAndroid && this.props.editing) {
         return this.renderAndroidEditor();
       } else {
         return (
           <TextEditor
             readOnly={!this.props.editing}
-            // initialValue={this.props.initialValue && this.props.initialValue}
             initialValue={this.state.editorState}
             onSubmit={this.onEditSubmit}
             onCancel={this.onEditCancel}
@@ -262,13 +289,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     height: 154,
   },
-  editAndroidContainer: {
-    backgroundColor: colors.LIGHT_YELLOW(),
-    border: `1px solid ${colors.YELLOW()}`,
-    ":hover": {
-      backgroundColor: colors.LIGHT_YELLOW(),
-    },
-  },
+  editAndroidContainer: {},
   androidInput: {
     minHeight: "100%",
     width: "100%",
