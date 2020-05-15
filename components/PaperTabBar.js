@@ -30,7 +30,7 @@ const PaperTabBar = (props) => {
 
   const startTimer = () => {
     timer = setTimeout(() => {
-      trackEvent("view", selectedTab);
+      trackEvent("scroll", selectedTab);
     }, VIEW_TIMER);
   };
 
