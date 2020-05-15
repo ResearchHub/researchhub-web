@@ -9,7 +9,7 @@ import ComponentWrapper from "./ComponentWrapper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-const VIEW_TIMER = 20000; // 20 seconds
+const VIEW_TIMER = 3000; // 3 seconds
 
 const PaperTabBar = (props) => {
   const [selectedTab, setSelectedTab] = useState("main");
@@ -155,8 +155,7 @@ const PaperTabBar = (props) => {
     return fetch(API.GOOGLE_ANALYTICS(), API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((res) => {})
-      .catch((err) => {});
+      .then((res) => {});
   }
 
   function scrollToPage(label) {
