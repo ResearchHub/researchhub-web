@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors, { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
@@ -7,16 +6,37 @@ import { paperTabFont } from "~/config/themes/fonts";
 // Components
 import ComponentWrapper from "./ComponentWrapper";
 
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+
+const VIEW_TIMER = 3000; // 3 seconds
+
 const PaperTabBar = (props) => {
   const [selectedTab, setSelectedTab] = useState("main");
 
   const { scrollView } = props;
+  var timer;
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
 
     return () => window.removeEventListener("scroll", scrollListener);
   }, [scrollListener]);
+
+  useEffect(() => {
+    clearTimer();
+    startTimer();
+  }, [selectedTab]);
+
+  const startTimer = () => {
+    timer = setTimeout(() => {
+      trackEvent("view", selectedTab);
+    }, VIEW_TIMER);
+  };
+
+  const clearTimer = () => {
+    clearTimeout(timer);
+  };
 
   const getCoords = (elem) => {
     // crossbrowser version
@@ -121,6 +141,23 @@ const PaperTabBar = (props) => {
     return tab;
   }
 
+  function trackEvent(interaction, label) {
+    let paperId = props.paper.id;
+    let payload = {
+      paper: paperId,
+      interaction,
+      item: {
+        name: "tab",
+        value: label,
+      },
+      utc: new Date(),
+    };
+    return fetch(API.GOOGLE_ANALYTICS(), API.POST_CONFIG(payload))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {});
+  }
+
   function scrollToPage(label) {
     setSelectedTab(label);
     if (label === "main") {
@@ -129,6 +166,7 @@ const PaperTabBar = (props) => {
         top: 0,
       });
     }
+    trackEvent("click", label);
   }
 
   function renderCount(label, selected) {
