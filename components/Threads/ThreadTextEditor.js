@@ -156,7 +156,6 @@ class ThreadTextEditor extends React.Component {
   };
 
   renderAndroidEditor = () => {
-    // if (isAndroid) {
     return (
       <PermissionNotificationWrapper
         modalMessage="post a comment"
@@ -195,7 +194,6 @@ class ThreadTextEditor extends React.Component {
         </div>
       </PermissionNotificationWrapper>
     );
-    // }
   };
 
   render() {
@@ -244,10 +242,7 @@ class ThreadTextEditor extends React.Component {
               this.props.textStyles && this.props.textStyles,
               this.props.editing && styles.edit,
             ]}
-            commentEditorStyles={[
-              styles.textContainer,
-              // this.props.editing && styles.edit
-            ]}
+            commentEditorStyles={[styles.textContainer]}
             passedValue={this.state.editorState}
           />
         );
