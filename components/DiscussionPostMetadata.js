@@ -9,6 +9,7 @@ import { useAlert } from "react-alert";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
+import ShareAction from "~/components/ShareAction";
 
 //Redux
 import { MessageActions } from "~/redux/message";
@@ -114,6 +115,33 @@ const DiscussionPostMetadata = (props) => {
     };
   });
 
+  const renderShareButton = () => {
+    const { hostname, threadPath, title, small } = props;
+    const shareUrl = hostname + threadPath;
+
+    const ShareButton = (props) => {
+      return (
+        <div className={css(styles.dropdownItem)} onClick={(e) => e.persist()}>
+          <span
+            className={css(styles.icon, styles.expandIcon, styles.shareIcon)}
+          >
+            <i className="fad fa-share-square" />
+          </span>
+          <span className={css(styles.text, styles.expandText)}>Share</span>
+        </div>
+      );
+    };
+
+    return (
+      <ShareAction
+        customButton={<ShareButton />}
+        title={"Share this discussion"}
+        subtitle={title}
+        url={shareUrl}
+      />
+    );
+  };
+
   return (
     <div className={css(styles.container)}>
       <User name={username} authorProfile={authorProfile} {...props} />
@@ -134,15 +162,7 @@ const DiscussionPostMetadata = (props) => {
               ref={(ref) => (dropdown = ref)}
             >
               {threadPath && <ExpandButton {...props} />}
-              {toggleEdit && (
-                <EditButton
-                  {...props}
-                  onClick={() => {
-                    props.toggleEdit();
-                    toggleDropDown();
-                  }}
-                />
-              )}
+              {threadPath && renderShareButton()}
               <FlagButton
                 {...props}
                 onClick={promptFlagConfirmation}
@@ -263,17 +283,6 @@ const FlagButton = (props) => {
       <span className={css(styles.text, styles.expandText)}>
         {props.isFlagged ? "Unflag" : "Flag"}
       </span>
-    </Ripples>
-  );
-};
-
-const EditButton = (props) => {
-  return (
-    <Ripples className={css(styles.dropdownItem)} onClick={props.onClick}>
-      <span className={css(styles.icon, styles.expandIcon)}>
-        {icons.pencil}
-      </span>
-      <span className={css(styles.text, styles.expandText)}>Edit</span>
     </Ripples>
   );
 };
@@ -442,6 +451,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: 80,
     },
+  },
+  shareIcon: {
+    marginRight: -3,
   },
 });
 

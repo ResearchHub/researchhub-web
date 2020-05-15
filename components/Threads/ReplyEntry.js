@@ -307,8 +307,6 @@ class ReplyEntry extends React.Component {
                   // Moderator
                   metaData={metaIds}
                   onRemove={this.removePostUI}
-                  editing={this.state.editing}
-                  toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
               </div>
             )}
@@ -328,12 +326,16 @@ class ReplyEntry extends React.Component {
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
                     hostname={hostname}
+                    hostname={hostname}
+                    hostname={hostname}
                     count={dataCount}
                     comment={true}
                     small={true}
                     calculateThreadHeight={this.calculateThreadHeight}
                     hideReply={true}
                     isRemoved={this.state.removed}
+                    editing={this.state.editing}
+                    toggleEdit={this.state.canEdit && this.toggleEdit}
                   />
                 </div>
               </Fragment>

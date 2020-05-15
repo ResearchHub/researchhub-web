@@ -136,7 +136,7 @@ class SummaryTab extends React.Component {
   };
 
   edit = () => {
-    if (!isAndroid) {
+    if (isAndroid) {
       this.props.setMessage("Use desktop view to edit the summary");
       return this.props.showMessage({ show: true, error: true });
     }
