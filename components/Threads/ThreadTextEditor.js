@@ -13,6 +13,9 @@ import Button from "../../components/Form/Button";
 import colors from "~/config/themes/colors";
 import { convertToEditorValue } from "~/config/utils";
 
+const ua = navigator && navigator.userAgent.toLowerCase();
+const isAndroidJS = ua && ua.indexOf("android") > -1;
+
 class ThreadTextEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -198,7 +201,7 @@ class ThreadTextEditor extends React.Component {
 
   render() {
     if (!this.props.body) {
-      if (isAndroid && isMobile) {
+      if (isAndroid || isAndroidJS) {
         return this.renderAndroidEditor();
       } else {
         return (
@@ -224,7 +227,7 @@ class ThreadTextEditor extends React.Component {
         );
       }
     } else {
-      if (isAndroid && this.props.editing) {
+      if ((isAndroid || isAndroidJS) && this.props.editing) {
         return this.renderAndroidEditor();
       } else {
         return (

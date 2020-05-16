@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { isAndroid, isMobile } from "react-device-detect";
 
 // Component
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
