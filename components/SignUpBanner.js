@@ -116,7 +116,7 @@ class SignUpBanner extends React.Component {
             >
               Welcome to the ResearchHub!{" "}
               <div className={css(styles.flexContainer)}>
-                Join today and earn 25 RHC
+                Join today and earn 25 RSC
                 <img
                   className={css(styles.coinIcon)}
                   src={"/static/icons/coin-filled.png"}

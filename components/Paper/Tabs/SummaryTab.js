@@ -375,7 +375,7 @@ Significance: What does this paper make possible in the world, and what should b
                       A summary hasn't been filled in yet
                     </h2>
                     <div className={css(styles.text)}>
-                      Earn 5 RHC for being the first person to add a summary to
+                      Earn 5 RSC for being the first person to add a summary to
                       this paper.
                     </div>
                     <PermissionNotificationWrapper
