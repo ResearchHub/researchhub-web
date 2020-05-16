@@ -5,9 +5,11 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Plain from "slate-plain-serializer";
 import { isAndroid, isMobile } from "react-device-detect";
-const ua = navigator && navigator.userAgent.toLowerCase();
-const isAndroidJS = ua && ua.indexOf("android") > -1;
-
+var isAndroidJS = false;
+if (process.browser) {
+  const ua = navigator.userAgent.toLowerCase();
+  isAndroidJS = ua && ua.indexOf("android") > -1;
+}
 // Components
 import RichTextEditor from "./RichTextEditor";
 import AndroidTextEditor from "./AndroidTextEditor";

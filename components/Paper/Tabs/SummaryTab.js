@@ -7,9 +7,11 @@ import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 import Ripples from "react-ripples";
 import { isAndroid, isMobile } from "react-device-detect";
-const ua = navigator && navigator.userAgent.toLowerCase();
-const isAndroidJS = ua && ua.indexOf("android") > -1;
-
+var isAndroidJS = false;
+if (process.browser) {
+  const ua = navigator.userAgent.toLowerCase();
+  isAndroidJS = ua && ua.indexOf("android") > -1;
+}
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
