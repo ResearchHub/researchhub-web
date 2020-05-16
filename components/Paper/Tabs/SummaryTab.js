@@ -7,6 +7,8 @@ import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 import Ripples from "react-ripples";
 import { isAndroid, isMobile } from "react-device-detect";
+const ua = navigator && navigator.userAgent.toLowerCase();
+const isAndroidJS = ua && ua.indexOf("android") > -1;
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -136,7 +138,7 @@ class SummaryTab extends React.Component {
   };
 
   edit = () => {
-    if (isAndroid && isMobile) {
+    if (isAndroid || isAndroidJS) {
       this.props.setMessage("Edit the summary on Desktop");
       return this.props.showMessage({ show: true });
     }

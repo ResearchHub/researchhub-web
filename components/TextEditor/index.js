@@ -5,6 +5,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Plain from "slate-plain-serializer";
 import { isAndroid, isMobile } from "react-device-detect";
+const ua = navigator && navigator.userAgent.toLowerCase();
+const isAndroidJS = ua && ua.indexOf("android") > -1;
 
 // Components
 import RichTextEditor from "./RichTextEditor";
@@ -60,7 +62,7 @@ const TextEditor = (props) => {
   async function submit(text, plain_text, callback) {
     if (
       (value.document.text === "" || value.document.text === " ") &&
-      isAndroid
+      (!isAndroid || !isAndroidJS)
     ) {
       return;
     }
@@ -69,7 +71,7 @@ const TextEditor = (props) => {
     if (!isLoggedIn) {
       openLoginModal(true, "Please login with Google to continue.");
     } else {
-      if (isAndroid) {
+      if (isAndroid || isAndroidJS) {
         onSubmit && onSubmit(text, plain_text);
         return callback();
       }
@@ -92,7 +94,7 @@ const TextEditor = (props) => {
     props.setRef && props.setRef(editor);
   }
 
-  if (isAndroid && isMobile && !readOnly) {
+  if ((isAndroid || isAndroidJS) && !readOnly) {
     return (
       <AndroidTextEditor
         initialValue={passedValue ? passedValue : value}
