@@ -13,9 +13,11 @@ import Button from "../../components/Form/Button";
 import colors from "~/config/themes/colors";
 import { convertToEditorValue } from "~/config/utils";
 
-const ua = navigator && navigator.userAgent.toLowerCase();
-const isAndroidJS = ua && ua.indexOf("android") > -1;
-
+var isAndroidJS = false;
+if (process.browser) {
+  const ua = navigator.userAgent.toLowerCase();
+  isAndroidJS = ua && ua.indexOf("android") > -1;
+}
 class ThreadTextEditor extends React.Component {
   constructor(props) {
     super(props);
