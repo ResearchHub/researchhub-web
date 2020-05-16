@@ -177,7 +177,7 @@ class BulletsContainer extends React.Component {
               No key takeaways have been added yet
             </div>
             <div className={css(styles.subText)}>
-              Earn 1 RHC for adding a key takeaway to the paper
+              Earn 1 RSC for adding a key takeaway to the paper
             </div>
           </div>
         </Ripples>
