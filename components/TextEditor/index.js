@@ -92,7 +92,7 @@ const TextEditor = (props) => {
     props.setRef && props.setRef(editor);
   }
 
-  if (isAndroid && !readOnly) {
+  if (isAndroid && isMobile && !readOnly) {
     return (
       <AndroidTextEditor
         initialValue={passedValue ? passedValue : value}
