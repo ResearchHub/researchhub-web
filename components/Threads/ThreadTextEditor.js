@@ -198,7 +198,7 @@ class ThreadTextEditor extends React.Component {
 
   render() {
     if (!this.props.body) {
-      if (isAndroid) {
+      if (isAndroid && isMobile) {
         return this.renderAndroidEditor();
       } else {
         return (
