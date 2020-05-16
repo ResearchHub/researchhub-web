@@ -73,7 +73,7 @@ class SignUpOverlay extends React.Component {
               <div className={css(styles.title)}>Welcome to the community!</div>
               <div className={css(styles.modalBody)}>
                 <div className={css(styles.subtitle)}>
-                  Join today and earn 25 RHC
+                  Join today and earn 25 RSC
                   <img
                     className={css(styles.coinIcon)}
                     src={"/static/icons/coin-filled.png"}

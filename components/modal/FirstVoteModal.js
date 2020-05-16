@@ -107,7 +107,7 @@ const FirstVoteModal = (props) => {
         />
         <div className={css(styles.text)}>
           For the first month, all major actions you take on the site will help
-          you earn ResearchCoin (up to 200 RHC). After the month is over, you
+          you earn ResearchCoin (up to 200 RSC). After the month is over, you
           will still earn coins on major actions, but not every single one.
         </div>
         <div className={css(styles.text)}>
@@ -116,7 +116,7 @@ const FirstVoteModal = (props) => {
         </div>
         <div className={css(styles.body, reveal && styles.reveal)}>
           <div className={css(styles.hyperlink)} onClick={openLinkInTab}>
-            Click here to learn more about RHC.
+            Click here to learn more about RSC.
           </div>
           <div className={css(styles.button, showButton && styles.showButton)}>
             <Button label={"Close"} onClick={closeModal} />

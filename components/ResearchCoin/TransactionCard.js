@@ -55,7 +55,7 @@ const TransactionCard = (props) => {
       </div>
       <div className={css(styles.row, styles.bottomRow)}>
         <div className={css(styles.column)}>
-          <div className={css(styles.sent)}>Withdrew RHC</div>
+          <div className={css(styles.sent)}>Withdrew RSC</div>
           <div className={css(styles.row, styles.addressContainer)}>
             <span className={css(styles.black)}>to</span>
             <div className={css(styles.address)}>

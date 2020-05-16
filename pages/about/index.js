@@ -353,7 +353,7 @@ class Index extends React.Component {
                 <p className={css(styles.subtext, styles.wideText)}>
                   To help bring this nascent community together and incentivize
                   contribution to the platform, a newly created ERC20 token,
-                  ResearchCoin (RHC), has been created. Users receive RHC for
+                  ResearchCoin (RSC), has been created. Users receive RSC for
                   uploading new content to the platform, as well as for
                   summarizing and discussion research. Rewards for contributions
                   are proportionate to how valuable the community perceives the
