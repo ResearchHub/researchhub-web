@@ -506,9 +506,6 @@ class CommentEntry extends React.Component {
                   // Moderator
                   metaData={metaIds}
                   onRemove={this.removePostUI}
-                  // Editing
-                  editing={this.state.editing}
-                  toggleEdit={this.state.canEdit && this.toggleEdit}
                 />
               </div>
             )}
@@ -539,6 +536,9 @@ class CommentEntry extends React.Component {
                     showChildrenState={this.state.revealReply}
                     onCountHover={this.toggleHover}
                     isRemoved={this.state.removed}
+                    // Editing
+                    editing={this.state.editing}
+                    toggleEdit={this.state.canEdit && this.toggleEdit}
                   />
                 </div>
               </Fragment>

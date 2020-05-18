@@ -105,6 +105,9 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontSize: 16,
   },
+  hide: {
+    display: "none",
+  },
 });
 
 export default FormTextArea;
