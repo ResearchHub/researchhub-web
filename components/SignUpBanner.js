@@ -88,6 +88,12 @@ class SignUpBanner extends React.Component {
     });
   };
 
+  navigateRSCNotion = () => {
+    let url =
+      "https://www.notion.so/ResearchCoin-21d1af8428824915a4d1f7c0b6b77cb4";
+    window.open(url, "_blank");
+  };
+
   showLoginFailureMessage = (response) => {
     console.error(response);
     this.props.setMessage("Login failed");
@@ -114,13 +120,16 @@ class SignUpBanner extends React.Component {
               disabled={renderProps.disabled}
               onClick={renderProps.onClick}
             >
-              Welcome to the ResearchHub!{" "}
-              <div className={css(styles.flexContainer)}>
-                Join today and earn 25 RSC
-                <img
-                  className={css(styles.coinIcon)}
-                  src={"/static/icons/coin-filled.png"}
-                />
+              Join today and earn 25 RSC
+              <img
+                className={css(styles.coinIcon)}
+                src={"/static/icons/coin-filled.png"}
+              />
+              <div
+                className={css(styles.flexContainer)}
+                onClick={this.navigateRSCNotion}
+              >
+                What is ResearchCoin?
               </div>
               <div
                 className={css(styles.closeButton)}
@@ -150,9 +159,6 @@ const styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     cursor: "pointer",
     transition: "all ease-in-out 0.2s",
-    ":hover": {
-      textDecoration: "underline",
-    },
     "@media only screen and (max-width: 760px)": {
       fontSize: 14,
     },
@@ -171,10 +177,14 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       marginTop: 5,
     },
+    ":hover": {
+      textDecoration: "underline",
+    },
   },
   coinIcon: {
     height: 20,
     marginLeft: 8,
+    marginRight: 8,
     "@media only screen and (max-width: 760px)": {
       height: 18,
     },
