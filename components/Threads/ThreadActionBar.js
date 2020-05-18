@@ -5,6 +5,7 @@ import ShareAction from "~/components/ShareAction";
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import ThreadTextEditor from "./ThreadTextEditor";
 
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { doesNotExist } from "~/config/utils";
 
@@ -107,36 +108,42 @@ class ThreadActionBar extends React.Component {
     );
   };
 
-  renderShareButton = () => {
-    const { hostname, threadPath, title, small } = this.props;
-    const shareUrl = hostname + threadPath;
+  renderEditButton = () => {
+    const { toggleEdit, editing, small } = this.props;
 
-    const ShareButton = () => {
-      return (
-        <div className={css(styles.shareContainer, small && styles.smallReply)}>
-          <span
-            className={css(styles.iconChat, styles.shareIcon)}
-            id={"shareIcon"}
-          >
-            <i className="fad fa-share-square" />
-          </span>
-          <span
-            className={css(styles.text, small && styles.smallReply)}
-            id={"text"}
-          >
-            Share
-          </span>
-        </div>
-      );
-    };
+    let classNames = [styles.commentCountContainer];
+
+    if (small) {
+      classNames.push(styles.smallReply);
+    }
+
+    if (editing) {
+      classNames.push(styles.active);
+    }
 
     return (
-      <ShareAction
-        customButton={<ShareButton />}
-        title={"Share this discussion"}
-        subtitle={title}
-        url={shareUrl}
-      />
+      <div className={css(classNames)} onClick={toggleEdit}>
+        <span
+          className={css(
+            styles.iconChat,
+            styles.iconEdit,
+            editing && styles.active
+          )}
+          id={"chatIcon"}
+        >
+          <i class="fad fa-pencil"></i>
+        </span>
+        <span
+          className={css(
+            styles.text,
+            small && styles.smallReply,
+            editing && styles.active
+          )}
+          id={"text"}
+        >
+          Edit
+        </span>
+      </div>
     );
   };
 
@@ -213,7 +220,7 @@ class ThreadActionBar extends React.Component {
               </div>
             )}
             {this.renderCommentCount()}
-            {this.props.threadPath && this.renderShareButton()}
+            {this.props.toggleEdit && this.renderEditButton()}
           </div>
           {!this.props.hideReply && (
             <div className={css(styles.container)}>{this.renderReplyBox()}</div>
@@ -297,6 +304,12 @@ const styles = StyleSheet.create({
   },
   iconChat: {
     color: "#918f9b",
+  },
+  iconEdit: {
+    fontSize: 13,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   shareIcon: {
     fontSize: 13,

@@ -6,6 +6,12 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 import Ripples from "react-ripples";
+import { isAndroid, isMobile } from "react-device-detect";
+var isAndroidJS = false;
+if (process.browser) {
+  const ua = navigator.userAgent.toLowerCase();
+  isAndroidJS = ua && ua.indexOf("android") > -1;
+}
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -135,6 +141,11 @@ class SummaryTab extends React.Component {
   };
 
   edit = () => {
+    if (isAndroid || isAndroidJS) {
+      this.props.setMessage("Edit the summary on Desktop");
+      return this.props.showMessage({ show: true });
+    }
+
     this.setState({
       readOnly: false,
     });
@@ -154,6 +165,11 @@ class SummaryTab extends React.Component {
         editorState,
       });
     }
+  };
+
+  showDesktopMsg = () => {
+    this.props.setMessage("Edit the summary on Desktop");
+    return this.props.showMessage({ show: true });
   };
 
   /**
@@ -379,7 +395,11 @@ Significance: What does this paper make possible in the world, and what should b
                       this paper.
                     </div>
                     <PermissionNotificationWrapper
-                      onClick={this.addSummary}
+                      onClick={
+                        isAndroid || isAndroidJS
+                          ? this.showDesktopMsg
+                          : this.addSummary
+                      }
                       modalMessage="propose a summary"
                       permissionKey="ProposeSummaryEdit"
                       loginRequired={true}
