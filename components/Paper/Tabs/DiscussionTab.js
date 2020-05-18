@@ -5,6 +5,12 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 import Ripples from "react-ripples";
+import { isAndroid, isMobile } from "react-device-detect";
+var isAndroidJS = false;
+if (process.browser) {
+  const ua = navigator.userAgent.toLowerCase();
+  isAndroidJS = ua && ua.indexOf("android") > -1;
+}
 
 // Components
 import ComponentWrapper from "../../ComponentWrapper";
@@ -161,8 +167,11 @@ const DiscussionTab = (props) => {
     props.openAddDiscussionModal(false);
   };
 
-  const save = async () => {
-    if (discussion.question.document.text === "") {
+  const save = async (text, plain_text) => {
+    if (
+      discussion.question.document.text === "" &&
+      (!isAndroid || !isAndroidJS)
+    ) {
       props.setMessage("Fields must not be empty.");
       return props.showMessage({ show: true, error: true });
     }
@@ -171,9 +180,12 @@ const DiscussionTab = (props) => {
 
     let param = {
       // title: discussion.title,
-      text: discussion.question.toJSON(),
+      text: isAndroid || isAndroidJS ? text : discussion.question.toJSON(),
       paper: paperId,
-      plain_text: Plain.serialize(discussion.question),
+      plain_text:
+        isAndroid || isAndroidJS
+          ? plain_text
+          : Plain.serialize(discussion.question),
     };
 
     let config = await API.POST_CONFIG(param);
