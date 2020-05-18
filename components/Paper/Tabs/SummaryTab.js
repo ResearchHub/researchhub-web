@@ -12,6 +12,7 @@ if (process.browser) {
   const ua = navigator.userAgent.toLowerCase();
   isAndroidJS = ua && ua.indexOf("android") > -1;
 }
+
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
