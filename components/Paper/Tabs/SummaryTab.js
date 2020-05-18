@@ -167,6 +167,11 @@ class SummaryTab extends React.Component {
     }
   };
 
+  showDesktopMsg = () => {
+    this.props.setMessage("Edit the summary on Desktop");
+    return this.props.showMessage({ show: true });
+  };
+
   /**
    * Initializes the summary from the paper redux
    */
@@ -390,7 +395,11 @@ Significance: What does this paper make possible in the world, and what should b
                       this paper.
                     </div>
                     <PermissionNotificationWrapper
-                      onClick={this.addSummary}
+                      onClick={
+                        isAndroid || isAndroidJS
+                          ? this.showDesktopMsg
+                          : this.addSummary
+                      }
                       modalMessage="propose a summary"
                       permissionKey="ProposeSummaryEdit"
                       loginRequired={true}
