@@ -146,16 +146,11 @@ class ThreadTextEditor extends React.Component {
     this.setState({ loading: true }, () => {
       this.props.onEditSubmit &&
         this.props.onEditSubmit(valueObj, plain_text, () => {
-          this.setState(
-            {
-              prevAndroidText: this.state.androidText,
-              editorState: convertToEditorValue(this.state.androidText),
-              loading: false,
-            },
-            () => {
-              console.log("thistate", this.state);
-            }
-          );
+          this.setState({
+            prevAndroidText: this.state.androidText,
+            editorState: convertToEditorValue(this.state.androidText),
+            loading: false,
+          });
         });
     });
   };
