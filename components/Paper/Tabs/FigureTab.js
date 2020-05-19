@@ -296,7 +296,7 @@ class FigureTab extends React.Component {
               <FsLightbox
                 toggler={this.state.toggleLightbox}
                 type="image"
-                sources={[...this.state.figures]}
+                sources={this.state.figures.map((figure) => figure.file)}
                 slide={this.state.slideIndex}
               />
             )}
