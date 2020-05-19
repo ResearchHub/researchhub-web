@@ -1,9 +1,11 @@
 import { StyleSheet, css } from "aphrodite";
+import { useState } from "react";
 import Avatar from "react-avatar";
 import Link from "next/link";
 import colors from "../config/themes/colors";
 
 const AuthorAvatar = (props) => {
+  const [error, setError] = useState(false);
   const { author, size = 30, disableLink, showModeratorBadge } = props;
   let deviceWidth = null;
   if (process.browser) {
@@ -24,15 +26,28 @@ const AuthorAvatar = (props) => {
     return (
       <div className={css(styles.avatar)}>
         {author && author.profile_image ? (
-          <img
-            src={author.profile_image}
-            style={{
-              width: finalSize,
-              height: finalSize,
-              objectFit: "cover",
-              borderRadius: "50%",
-            }}
-          />
+          !error ? (
+            <img
+              src={author.profile_image}
+              style={{
+                width: finalSize,
+                height: finalSize,
+                objectFit: "cover",
+                borderRadius: "50%",
+              }}
+              onError={(e) => {
+                setError(true);
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                fontSize: size,
+              }}
+            >
+              <i className="fas fa-user-circle" />
+            </div>
+          )
         ) : (
           <i
             className={css(styles.userCircle) + " fas fa-user-circle"}

@@ -134,7 +134,6 @@ class PaperPageCard extends React.Component {
   };
 
   renderUploadedBy = () => {
-    console.log("paper", this.props.paper);
     let { uploaded_by } = this.props.paper;
     if (uploaded_by) {
       let { author_profile } = uploaded_by;
@@ -531,6 +530,7 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                 </div>
+                {this.renderUploadedBy()}
                 <div className={css(styles.column)}>
                   {paper && paper.doi && (
                     <div className={css(styles.doiDate)}>
@@ -565,7 +565,6 @@ class PaperPageCard extends React.Component {
                       )}
                     </div>
                   )}
-                  {this.renderUploadedBy()}
                 </div>
                 <div className={css(styles.mobile)}>{this.renderPreview()}</div>
                 <div className={css(styles.mobile)}>{this.renderHubs()}</div>
@@ -932,14 +931,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   uploadedBy: {
-    marginTop: 10,
+    marginBottom: 10,
     width: "100%",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     fontSize: 16,
     color: "#646171",
-    fontWeight: 500,
   },
   uploadIcon: {
     marginLeft: 15,

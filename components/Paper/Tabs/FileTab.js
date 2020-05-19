@@ -68,7 +68,6 @@ class FileTab extends React.Component {
   };
 
   addFile = (newFiles, callback) => {
-    console.log("newFiles", newFiles);
     let paperId = this.props.paperId;
     let { showMessage, setMessage } = this.props;
     showMessage({ load: true, show: true });

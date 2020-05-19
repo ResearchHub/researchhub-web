@@ -33,7 +33,6 @@ export default (props) => {
       itemListElement,
     };
 
-    console.log("body", body);
     return <script type="application/ld+json">{`${body}`}</script>;
   };
 

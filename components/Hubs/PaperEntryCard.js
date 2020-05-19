@@ -369,6 +369,7 @@ const PaperEntryCard = ({
                 </div>
               </a>
             </Link>
+            {renderUploadedBy()}
             {renderBullet()}
             <div
               className={css(
@@ -401,7 +402,6 @@ const PaperEntryCard = ({
                   ))}
               </span>
             </div>
-            {renderUploadedBy()}
             {mobileView && renderHubTags()}
           </div>
           {!mobileView && renderPreview()}
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: 19,
     fontWeight: 500,
-    paddingBottom: 8,
+    paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
       fontSize: 16,
     },
@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "rgb(145, 143, 155)",
     fontWeight: 400,
-    // marginBottom: 10,
+    marginBottom: 8,
   },
   uploadedByAvatar: {
     marginLeft: 15,
