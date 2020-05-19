@@ -861,18 +861,7 @@ class PaperUploadInfo extends React.Component {
 
   handleSubmitLogic = () => {
     if (this.validateSelectors()) {
-      let { suggestedPapers } = this.state;
-      if (suggestedPapers) {
-        this.props.alert.show({
-          text: "Are you sure you want to upload this paper?",
-          buttonText: "Yes",
-          onClick: () => {
-            return this.submitForm();
-          },
-        });
-      } else {
-        return this.submitForm();
-      }
+      return this.submitForm();
     } else {
       this.props.messageActions.setMessage("Required fields must be filled.");
       this.props.messageActions.showMessage({
