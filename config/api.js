@@ -471,6 +471,9 @@ const routes = (BASE_URL) => {
     ADD_FIGURE: ({ paperId }) => {
       return BASE_URL + `figure/${paperId}/add_figure/`;
     },
+    DELETE_FIGURE: ({ figureId }) => {
+      return BASE_URL + `figure/${figureId}/delete_figure`;
+    },
     MAKE_PAPER_PUBLIC: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/?make_public=true/`;
     },
