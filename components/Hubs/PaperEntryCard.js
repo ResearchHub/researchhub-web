@@ -55,6 +55,7 @@ const PaperEntryCard = ({
     paper_title,
     first_figure,
     first_preview,
+    uploaded_by,
   } = paper || null;
 
   let selected = null;
@@ -92,6 +93,35 @@ const PaperEntryCard = ({
 
   function convertDate() {
     return formatPublishedDate(transformDate(paper.paper_publish_date));
+  }
+
+  function renderUploadedBy() {
+    if (uploaded_by) {
+      let {
+        first_name,
+        last_name,
+        profile_image,
+        id,
+        user,
+      } = uploaded_by.author_profile;
+      return (
+        <div className={css(styles.uploadedBy)}>
+          {`Submitted by ${first_name} ${last_name}`}
+          <span className={css(styles.uploadedByAvatar)}>
+            <AuthorAvatar
+              key={`author_${id}_${user}`}
+              size={25}
+              textSizeRatio={2.5}
+              author={uploaded_by.author_profile}
+            />
+          </span>
+        </div>
+      );
+    } else {
+      return (
+        <div className={css(styles.uploadedBy)}>Submitted by ResearchHub</div>
+      );
+    }
   }
 
   /**
@@ -328,7 +358,7 @@ const PaperEntryCard = ({
               <a className={css(styles.link)}>
                 <div className={css(styles.title, styles.text)}>
                   {title && title}
-                  {paper_title !== title && paper_title && (
+                  {paper_title && (
                     <div
                       className={css(styles.paperTitle, styles.text)}
                       id={"clamp1"}
@@ -339,6 +369,7 @@ const PaperEntryCard = ({
                 </div>
               </a>
             </Link>
+            {renderUploadedBy()}
             {renderBullet()}
             <div
               className={css(
@@ -421,7 +452,7 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: 19,
     fontWeight: 500,
-    paddingBottom: 8,
+    paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
       fontSize: 16,
     },
@@ -607,6 +638,21 @@ const styles = StyleSheet.create({
   },
   hubLabel: {
     fontSize: 9,
+  },
+  uploadedBy: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    fontSize: 14,
+    color: "rgb(145, 143, 155)",
+    fontWeight: 400,
+    marginBottom: 8,
+  },
+  uploadedByAvatar: {
+    marginLeft: 10,
+  },
+  rhIcon: {
+    height: 20,
   },
 });
 
