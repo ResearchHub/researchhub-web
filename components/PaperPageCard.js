@@ -109,7 +109,8 @@ class PaperPageCard extends React.Component {
     });
   };
 
-  navigateToEditPaperInfo = () => {
+  navigateToEditPaperInfo = (e) => {
+    e && e.stopPropagation();
     let paperId = this.props.paper.id;
     let href = "/paper/upload/info/[paperId]";
     let as = `/paper/upload/info/${paperId}`;
@@ -133,17 +134,26 @@ class PaperPageCard extends React.Component {
     this.setState({ toggleLightbox: !this.state.toggleLightbox });
   };
 
+  navigateToSubmitter = () => {
+    let { author_profile } = this.props.paper.uploaded_by;
+    let authorId = author_profile && author_profile.id;
+    Router.push(
+      "/user/[authorId]/[tabName]",
+      `/user/${authorId}/contributions`
+    );
+  };
+
   renderUploadedBy = () => {
     let { uploaded_by } = this.props.paper;
     if (uploaded_by) {
       let { author_profile } = uploaded_by;
       return (
-        <div className={css(styles.uploadedBy)}>
+        <div
+          className={css(styles.uploadedBy)}
+          onClick={this.navigateToSubmitter}
+        >
           Submitted by{" "}
           {`${author_profile.first_name} ${author_profile.last_name}`}
-          <span className={css(styles.uploadIcon)}>
-            <AuthorAvatar size={30} author={author_profile} />
-          </span>
         </div>
       );
     } else {
@@ -938,6 +948,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 16,
     color: "#646171",
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
   uploadIcon: {
     marginLeft: 10,
