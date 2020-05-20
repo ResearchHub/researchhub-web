@@ -95,6 +95,16 @@ const PaperEntryCard = ({
     return formatPublishedDate(transformDate(paper.paper_publish_date));
   }
 
+  function navigateToSubmitter(e) {
+    e && e.stopPropagation();
+    let { author_profile } = uploaded_by;
+    let authorId = author_profile && author_profile.id;
+    Router.push(
+      "/user/[authorId]/[tabName]",
+      `/user/${authorId}/contributions`
+    );
+  }
+
   function renderUploadedBy() {
     if (uploaded_by) {
       let {
@@ -105,16 +115,8 @@ const PaperEntryCard = ({
         user,
       } = uploaded_by.author_profile;
       return (
-        <div className={css(styles.uploadedBy)}>
+        <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
           {`Submitted by ${first_name} ${last_name}`}
-          <span className={css(styles.uploadedByAvatar)}>
-            <AuthorAvatar
-              key={`author_${id}_${user}`}
-              size={25}
-              textSizeRatio={2.5}
-              author={uploaded_by.author_profile}
-            />
-          </span>
         </div>
       );
     } else {
@@ -647,6 +649,10 @@ const styles = StyleSheet.create({
     color: "rgb(145, 143, 155)",
     fontWeight: 400,
     marginBottom: 8,
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
   uploadedByAvatar: {
     marginLeft: 10,
