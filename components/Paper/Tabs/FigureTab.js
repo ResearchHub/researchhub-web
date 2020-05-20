@@ -6,6 +6,8 @@ import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
+import { withAlert } from "react-alert";
+import { isMobile } from "react-device-detect";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -32,6 +34,7 @@ class FigureTab extends React.Component {
       // Pending Submission
       inputView: false,
       pendingSubmission: false,
+      hovered: false,
     };
   }
 
@@ -55,9 +58,7 @@ class FigureTab extends React.Component {
         .then(Helpers.parseJSON)
         .then((res) => {
           this.setState({
-            figures: res.data.map((el) => {
-              return el.file;
-            }),
+            figures: res.data,
           });
           this.props.setFigureCount(res.data.length);
           setTimeout(() => this.setState({ fetching: false }), 500);
@@ -98,6 +99,10 @@ class FigureTab extends React.Component {
 
       reader.readAsDataURL(file);
     });
+  };
+
+  setHovered = (state) => {
+    this.state.hovered !== state && this.setState({ hovered: state });
   };
 
   resetState = () => {
@@ -155,10 +160,41 @@ class FigureTab extends React.Component {
       });
   };
 
+  confirmRemove = (figure, index) => {
+    this.props.alert.show({
+      text: `Remove Figure ${index + 1} from this paper?`,
+      buttonText: "Yes",
+      onClick: () => {
+        this.removeFigure(figure, index);
+      },
+    });
+  };
+
+  removeFigure = (figure, index) => {
+    let { showMessage, setMessage } = this.props;
+    showMessage({ show: true, load: true });
+    let figureId = figure.id;
+    return fetch(API.DELETE_FIGURE({ figureId }), API.DELETE_CONFIG())
+      .then(Helpers.checkStatus)
+      .then((res) => {
+        showMessage({ show: false });
+        setMessage("Figure successfully removed!");
+        let newFigures = [...this.state.figures];
+        newFigures.splice(index, 1);
+        this.setState({ figures: newFigures });
+        showMessage({ show: true });
+      })
+      .catch((err) => {
+        showMessage({ show: false });
+        setMessage("Something went wrong.");
+        showMessage({ show: true, error: true });
+      });
+  };
+
   renderButton = (onClick, label) => {
     return (
       <div
-        className={css(styles.button)}
+        className={css(styles.button, this.state.hovered && styles.show)}
         onClick={(e) => {
           e && e.stopPropagation();
           onClick(e);
@@ -201,7 +237,7 @@ class FigureTab extends React.Component {
               }}
             >
               {this.state.figures.map((figure) => {
-                return <img src={figure} className={css(styles.image)} />;
+                return <img src={figure.file} className={css(styles.image)} />;
               })}
             </Carousel>
           </div>
@@ -216,7 +252,12 @@ class FigureTab extends React.Component {
   render() {
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-        <div className={css(styles.container)} id="figures-tab">
+        <div
+          className={css(styles.container)}
+          id="figures-tab"
+          onMouseEnter={() => this.setHovered(true)}
+          onMouseLeave={() => this.setHovered(false)}
+        >
           <div className={css(styles.header)}>
             <div className={css(styles.sectionTitle)}>
               Figures
@@ -224,19 +265,38 @@ class FigureTab extends React.Component {
                 {this.state.figures.length}
               </span>
             </div>
-            <Ripples className={css(styles.item)} onClick={this.openDndModal}>
-              <span className={css(styles.dropdownItemIcon)}>
-                {icons.plusCircle}
-              </span>
-              Add Figure
-            </Ripples>
+            <div className={css(styles.headerRow)}>
+              <Ripples
+                className={css(styles.item)}
+                onClick={() =>
+                  this.confirmRemove(
+                    this.state.figures[this.state.currentSlideIndex],
+                    this.state.currentSlideIndex
+                  )
+                }
+              >
+                <span className={css(styles.dropdownItemIcon)}>
+                  <i className="fal fa-minus-circle" />
+                </span>
+                Remove Figure
+              </Ripples>
+              <Ripples
+                className={css(styles.item, styles.right)}
+                onClick={this.openDndModal}
+              >
+                <span className={css(styles.dropdownItemIcon)}>
+                  {icons.plusCircle}
+                </span>
+                Add Figure
+              </Ripples>
+            </div>
           </div>
           <div className={css(styles.figuresWrapper)}>
             {this.state.figures.length > 0 && (
               <FsLightbox
                 toggler={this.state.toggleLightbox}
                 type="image"
-                sources={[...this.state.figures]}
+                sources={this.state.figures.map((figure) => figure.file)}
                 slide={this.state.slideIndex}
               />
             )}
@@ -292,6 +352,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     paddingBottom: 32,
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
   },
   slider: {
     outline: "none",
@@ -377,9 +441,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.BLUE(),
     borderRadius: 4,
     userSelect: "none",
+    opacity: 0,
+    transition: "all ease-out 0.2s",
     ":hover": {
       backgroundColor: "#3E43E8",
       color: "#FFF",
+    },
+    "@media only screen and (max-width: 1024px)": {
+      opacity: 1,
     },
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
@@ -388,6 +457,9 @@ const styles = StyleSheet.create({
       fontSize: 12,
       padding: "5px 8px",
     },
+  },
+  show: {
+    opacity: 1,
   },
   item: {
     display: "flex",
@@ -411,6 +483,16 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
+    },
+  },
+  right: {
+    marginLeft: 16,
+  },
+  headerRow: {
+    display: "flex",
+    justifyContent: "flex-end",
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 10,
     },
   },
   dropdownItemIcon: {
@@ -460,4 +542,4 @@ const mapDispatchToProps = {
 export default connect(
   null,
   mapDispatchToProps
-)(FigureTab);
+)(withAlert()(FigureTab));
