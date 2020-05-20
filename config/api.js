@@ -108,6 +108,25 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    SEARCH_MATCHING_PAPERS: ({
+      search,
+      page,
+      size,
+      external_search = true,
+    }) => {
+      let url = BASE_URL + "search/match/";
+      let params = {
+        querystring: {
+          search,
+          page,
+          size,
+          external_search,
+        },
+      };
+      url = prepURL(url, params);
+
+      return url;
+    },
     PAPER: ({ paperId, search, page, filters, highlights, route }) => {
       let url = BASE_URL + `paper/`;
 
