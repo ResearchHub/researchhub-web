@@ -649,7 +649,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   uploadedByAvatar: {
-    marginLeft: 15,
+    marginLeft: 10,
   },
   rhIcon: {
     height: 20,

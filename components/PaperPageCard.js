@@ -940,7 +940,7 @@ const styles = StyleSheet.create({
     color: "#646171",
   },
   uploadIcon: {
-    marginLeft: 15,
+    marginLeft: 10,
     opacity: 1,
   },
 });
