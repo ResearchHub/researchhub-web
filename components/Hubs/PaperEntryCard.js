@@ -360,7 +360,7 @@ const PaperEntryCard = ({
               <a className={css(styles.link)}>
                 <div className={css(styles.title, styles.text)}>
                   {title && title}
-                  {paper_title && (
+                  {paper_title && title !== paper_title && (
                     <div
                       className={css(styles.paperTitle, styles.text)}
                       id={"clamp1"}
