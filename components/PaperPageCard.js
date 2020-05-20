@@ -133,6 +133,26 @@ class PaperPageCard extends React.Component {
     this.setState({ toggleLightbox: !this.state.toggleLightbox });
   };
 
+  renderUploadedBy = () => {
+    let { uploaded_by } = this.props.paper;
+    if (uploaded_by) {
+      let { author_profile } = uploaded_by;
+      return (
+        <div className={css(styles.uploadedBy)}>
+          Submitted by{" "}
+          {`${author_profile.first_name} ${author_profile.last_name}`}
+          <span className={css(styles.uploadIcon)}>
+            <AuthorAvatar size={30} author={author_profile} />
+          </span>
+        </div>
+      );
+    } else {
+      return (
+        <div className={css(styles.uploadedBy)}>Submitted by ResearchHub</div>
+      );
+    }
+  };
+
   renderActions = () => {
     let { paper, isModerator, flagged, setFlag } = this.props;
 
@@ -510,6 +530,7 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                 </div>
+                {this.renderUploadedBy()}
                 <div className={css(styles.column)}>
                   {paper && paper.doi && (
                     <div className={css(styles.doiDate)}>
@@ -908,6 +929,19 @@ const styles = StyleSheet.create({
   mobileMargin: {
     marginTop: 10,
     marginBottom: 15,
+  },
+  uploadedBy: {
+    marginBottom: 10,
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    fontSize: 16,
+    color: "#646171",
+  },
+  uploadIcon: {
+    marginLeft: 10,
+    opacity: 1,
   },
 });
 
