@@ -167,11 +167,8 @@ class NewDND extends React.Component {
    */
   searchTitle = (value) => {
     this.setState({ searching: true });
-    const config = {
-      route: "all",
-    };
     fetch(
-      API.SEARCH({ search: value, config, external_search: false }),
+      API.SEARCH_MATCHING_PAPERS({ search: value, external_search: false }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
