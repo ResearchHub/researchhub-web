@@ -21,6 +21,7 @@ import LimitationTab from "~/components/Paper/Tabs/LimitationTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
+import PaperProgress from "~/components/Paper/PaperProgress";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -250,6 +251,7 @@ const Paper = (props) => {
             description={paper.tagline}
             socialImageUrl={props.paper.metatagImage}
           />
+          <PaperProgress paper={paper} />
           <div className={css(styles.paperPageContainer)}>
             <ComponentWrapper overrideStyle={styles.componentWrapper}>
               <PaperPageCard
