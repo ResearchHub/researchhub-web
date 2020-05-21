@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   reputable: {
     borderBottom: "1px solid #eee",
     marginTop: 0,
-    fontWeight: 500,
+    fontWeight: 400,
     paddingBottom: 8,
     textAlign: "center",
   },
