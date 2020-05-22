@@ -27,3 +27,5 @@ export const GET_EDITS = "@@paper/GET_EDITS";
 
 export const CLEAR_POSTED_PAPER = "@@paper/CLEAR_POSTED_PAPER";
 export const GET_THREADS = "@@paper/GET_THREADS";
+
+export const UPDATE_PAPER_STATE = "@@paper/UPDATE_PAPER_STATE";
