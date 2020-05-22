@@ -29,6 +29,7 @@ import { AuthActions } from "~/redux/auth";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
+import { update } from "immutable";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -202,7 +203,10 @@ class SummaryTab extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.paperId !== this.props.paperId) {
-      this.initializeSummary();
+      return this.initializeSummary();
+    }
+    if (prevProps.paper.summary !== this.props.paper.summary) {
+      return this.initializeSummary();
     }
   }
 
@@ -222,115 +226,44 @@ class SummaryTab extends React.Component {
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
-        <a name="summary">
-          {(paper.summary && paper.summary.summary) ||
-          this.state.summaryExists ? (
-            <div
-              className={css(styles.container)}
-              ref={this.props.descriptionRef}
-              id="summary-tab"
-            >
-              {this.state.readOnly ? (
-                <div className={css(styles.sectionHeader)}>
-                  <div className={css(styles.sectionTitle)}>Summary</div>
-                  <div className={css(styles.summaryActions)}>
-                    <Link
-                      href={"/paper/[paperId]/[tabName]/edits"}
-                      as={`/paper/${paper.id}/summary/edits`}
-                    >
-                      <Ripples className={css(styles.action)}>
-                        View Edit History
-                      </Ripples>
-                    </Link>
-                    <PermissionNotificationWrapper
-                      modalMessage="propose summary edits"
-                      onClick={this.edit}
-                      permissionKey="ProposeSummaryEdit"
-                      loginRequired={true}
-                    >
-                      <div className={css(styles.action, styles.editAction)}>
-                        <div className={css(styles.pencilIcon)}>
-                          <i className="fas fa-pencil"></i>
+        {paper.summary && (
+          <a name="summary">
+            {(paper.summary && paper.summary.summary) ||
+            this.state.summaryExists ? (
+              <div
+                className={css(styles.container)}
+                ref={this.props.descriptionRef}
+                id="summary-tab"
+              >
+                {this.state.readOnly ? (
+                  <div className={css(styles.sectionHeader)}>
+                    <div className={css(styles.sectionTitle)}>Summary</div>
+                    <div className={css(styles.summaryActions)}>
+                      <Link
+                        href={"/paper/[paperId]/[tabName]/edits"}
+                        as={`/paper/${paper.id}/summary/edits`}
+                      >
+                        <Ripples className={css(styles.action)}>
+                          View Edit History
+                        </Ripples>
+                      </Link>
+                      <PermissionNotificationWrapper
+                        modalMessage="propose summary edits"
+                        onClick={this.edit}
+                        permissionKey="ProposeSummaryEdit"
+                        loginRequired={true}
+                      >
+                        <div className={css(styles.action, styles.editAction)}>
+                          <div className={css(styles.pencilIcon)}>
+                            <i className="fas fa-pencil"></i>
+                          </div>
+                          Edit Summary
                         </div>
-                        Edit Summary
-                      </div>
-                    </PermissionNotificationWrapper>
+                      </PermissionNotificationWrapper>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className={css(styles.headerContainer)} id="summary-tab">
-                  <div className={css(styles.header)}>Editing Summary</div>
-                  <div className={css(styles.guidelines)}>
-                    Please review our{" "}
-                    <a
-                      className={css(styles.authorGuidelines)}
-                      href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
-                      target="_blank"
-                    >
-                      Summary Guidelines
-                    </a>{" "}
-                    to see how to write for ResearchHub
-                  </div>
-                </div>
-              )}
-              {this.state.finishedLoading && (
-                <TextEditor
-                  canEdit={true}
-                  readOnly={this.state.readOnly}
-                  canSubmit={true}
-                  commentEditor={false}
-                  initialValue={this.state.editorState}
-                  passedValue={this.state.editorState}
-                  placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
-                    
-                    Hypothesis: What question does this paper attempt to answer?
-
-                    Conclusion: What conclusion did the paper reach?
-
-                    Significance: What does this paper make possible in the world, and what should be tried from here?
-                    `}
-                  onCancel={this.cancel}
-                  onSubmit={this.submitEdit}
-                  onChange={this.onEditorStateChange}
-                  smallToolBar={true}
-                  hideButton={true}
-                  commentStyles={
-                    this.state.readOnly
-                      ? styles.commentReadStyles
-                      : styles.commentStyles
-                  }
-                />
-              )}
-              {!this.state.readOnly && (
-                <div className={css(styles.buttonRow)}>
-                  <Ripples
-                    className={css(styles.cancelButton)}
-                    onClick={this.cancel}
-                  >
-                    Cancel
-                  </Ripples>
-                  <Ripples
-                    className={css(styles.submitButton)}
-                    onClick={this.submitEdit}
-                  >
-                    Submit
-                  </Ripples>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div
-              className={css(
-                styles.container,
-                styles.noSummaryContainer,
-                transition && styles.transition
-              )}
-              id="summary-tab"
-              ref={!this.state.summaryExists && this.props.descriptionRef}
-            >
-              {this.state.addSummary ? (
-                <div className={css(styles.summaryEdit)}>
-                  <div className={css(styles.headerContainer)}>
+                ) : (
+                  <div className={css(styles.headerContainer)} id="summary-tab">
                     <div className={css(styles.header)}>Editing Summary</div>
                     <div className={css(styles.guidelines)}>
                       Please review our{" "}
@@ -344,25 +277,36 @@ class SummaryTab extends React.Component {
                       to see how to write for ResearchHub
                     </div>
                   </div>
+                )}
+                {this.state.finishedLoading && (
                   <TextEditor
                     canEdit={true}
+                    readOnly={this.state.readOnly}
                     canSubmit={true}
                     commentEditor={false}
+                    initialValue={this.state.editorState}
+                    passedValue={this.state.editorState}
+                    placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
+                    
+                    Hypothesis: What question does this paper attempt to answer?
+
+                    Conclusion: What conclusion did the paper reach?
+
+                    Significance: What does this paper make possible in the world, and what should be tried from here?
+                    `}
                     onCancel={this.cancel}
                     onSubmit={this.submitEdit}
                     onChange={this.onEditorStateChange}
                     smallToolBar={true}
                     hideButton={true}
-                    placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
-                      
-Hypothesis: What question does this paper attempt to answer?
-  
-Conclusion: What conclusion did the paper reach?
-  
-Significance: What does this paper make possible in the world, and what should be tried from here?
-                      `}
-                    commentStyles={styles.commentStyles}
+                    commentStyles={
+                      this.state.readOnly
+                        ? styles.commentReadStyles
+                        : styles.commentStyles
+                    }
                   />
+                )}
+                {!this.state.readOnly && (
                   <div className={css(styles.buttonRow)}>
                     <Ripples
                       className={css(styles.cancelButton)}
@@ -377,43 +321,105 @@ Significance: What does this paper make possible in the world, and what should b
                       Submit
                     </Ripples>
                   </div>
-                </div>
-              ) : (
-                <Fragment>
-                  <div className={css(styles.sectionHeader)}>
-                    <div className={css(styles.sectionTitle)}>Summary</div>
-                  </div>
-                  <div className={css(styles.box) + " second-step"}>
-                    <div className={css(styles.icon)}>
-                      <i className="fad fa-file-alt" />
+                )}
+              </div>
+            ) : (
+              <div
+                className={css(
+                  styles.container,
+                  styles.noSummaryContainer,
+                  transition && styles.transition
+                )}
+                id="summary-tab"
+                ref={!this.state.summaryExists && this.props.descriptionRef}
+              >
+                {this.state.addSummary ? (
+                  <div className={css(styles.summaryEdit)}>
+                    <div className={css(styles.headerContainer)}>
+                      <div className={css(styles.header)}>Editing Summary</div>
+                      <div className={css(styles.guidelines)}>
+                        Please review our{" "}
+                        <a
+                          className={css(styles.authorGuidelines)}
+                          href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+                          target="_blank"
+                        >
+                          Summary Guidelines
+                        </a>{" "}
+                        to see how to write for ResearchHub
+                      </div>
                     </div>
-                    <h2 className={css(styles.noSummaryTitle)}>
-                      A summary hasn't been filled in yet
-                    </h2>
-                    <div className={css(styles.text)}>
-                      Earn 5 RSC for being the first person to add a summary to
-                      this paper.
+                    <TextEditor
+                      canEdit={true}
+                      canSubmit={true}
+                      commentEditor={false}
+                      onCancel={this.cancel}
+                      onSubmit={this.submitEdit}
+                      onChange={this.onEditorStateChange}
+                      smallToolBar={true}
+                      hideButton={true}
+                      placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
+                      
+Hypothesis: What question does this paper attempt to answer?
+  
+Conclusion: What conclusion did the paper reach?
+  
+Significance: What does this paper make possible in the world, and what should be tried from here?
+                      `}
+                      commentStyles={styles.commentStyles}
+                    />
+                    <div className={css(styles.buttonRow)}>
+                      <Ripples
+                        className={css(styles.cancelButton)}
+                        onClick={this.cancel}
+                      >
+                        Cancel
+                      </Ripples>
+                      <Ripples
+                        className={css(styles.submitButton)}
+                        onClick={this.submitEdit}
+                      >
+                        Submit
+                      </Ripples>
                     </div>
-                    <PermissionNotificationWrapper
-                      onClick={
-                        isAndroid || isAndroidJS
-                          ? this.showDesktopMsg
-                          : this.addSummary
-                      }
-                      modalMessage="propose a summary"
-                      permissionKey="ProposeSummaryEdit"
-                      loginRequired={true}
-                    >
-                      <button className={css(styles.button)}>
-                        Add Summary
-                      </button>
-                    </PermissionNotificationWrapper>
                   </div>
-                </Fragment>
-              )}
-            </div>
-          )}
-        </a>
+                ) : (
+                  <Fragment>
+                    <div className={css(styles.sectionHeader)}>
+                      <div className={css(styles.sectionTitle)}>Summary</div>
+                    </div>
+                    <div className={css(styles.box) + " second-step"}>
+                      <div className={css(styles.icon)}>
+                        <i className="fad fa-file-alt" />
+                      </div>
+                      <h2 className={css(styles.noSummaryTitle)}>
+                        A summary hasn't been filled in yet
+                      </h2>
+                      <div className={css(styles.text)}>
+                        Earn 5 RSC for being the first person to add a summary
+                        to this paper.
+                      </div>
+                      <PermissionNotificationWrapper
+                        onClick={
+                          isAndroid || isAndroidJS
+                            ? this.showDesktopMsg
+                            : this.addSummary
+                        }
+                        modalMessage="propose a summary"
+                        permissionKey="ProposeSummaryEdit"
+                        loginRequired={true}
+                      >
+                        <button className={css(styles.button)}>
+                          Add Summary
+                        </button>
+                      </PermissionNotificationWrapper>
+                    </div>
+                  </Fragment>
+                )}
+              </div>
+            )}
+          </a>
+        )}
         <ManageBulletPointsModal paperId={this.props.paperId} />
       </ComponentWrapper>
     );

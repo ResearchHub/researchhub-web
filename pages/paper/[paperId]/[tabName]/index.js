@@ -51,13 +51,16 @@ const Paper = (props) => {
   const [flagged, setFlag] = useState(paper.user_flag !== null);
   const [sticky, setSticky] = useState(false);
   const [scrollView, setScrollView] = useState(false);
+
   const [discussionThreads, setDiscussionThreads] = useState(
     getDiscussionThreads(paper)
   );
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper.userVote.voteType)
   );
-  const [figureCount, setFigureCount] = useState(0);
+  const [figureCount, setFigureCount] = useState(1);
+  const [limitCount, setLimitCount] = useState(1);
+  const [tabs, setTabs] = useState(getActiveTabs());
 
   const [steps, setSteps] = useState([
     {
@@ -105,6 +108,19 @@ const Paper = (props) => {
         setReferencedByCount(res.count);
       });
   };
+
+  useEffect(() => {
+    setTabs(getActiveTabs());
+  }, [store.getState().paper.summary]);
+
+  useEffect(() => {
+    setTabs(getActiveTabs());
+  }, [figureCount]);
+
+  useEffect(() => {
+    setLimitCount(store.getState().limitations.limits.length);
+    setTabs(getActiveTabs());
+  }, [store.getState().limitations.limits.length]);
 
   useEffect(() => {
     fetchReferences();
@@ -212,6 +228,32 @@ const Paper = (props) => {
     }
   }
 
+  function getActiveTabs() {
+    let tabs = [
+      { href: "main", label: "main" },
+      { href: "takeaways", label: "key takeaways" },
+    ];
+
+    if (store.getState().paper.summary) {
+      tabs.push({ href: "summary", label: "summary" });
+    }
+    tabs.push({ href: "comments", label: "comments" });
+    if (figureCount) {
+      tabs.push({ href: "figures", label: "figures" });
+    }
+    if (paper.file || paper.url) {
+      tabs.push({ href: "paper", label: "Paper PDF" });
+    }
+    if (referencedByCount) {
+      tabs.push({ href: "citations", label: "cited by" });
+    }
+    if (limitCount > 0) {
+      tabs.push({ href: "limitations", label: "limitations" });
+    }
+
+    return tabs;
+  }
+
   function calculateCommentCount() {
     var count = 0;
     var threads = paper && paper.discussion ? paper.discussion.threads : [];
@@ -251,7 +293,6 @@ const Paper = (props) => {
             description={paper.tagline}
             socialImageUrl={props.paper.metatagImage}
           />
-          <PaperProgress paper={paper} />
           <div className={css(styles.paperPageContainer)}>
             <ComponentWrapper overrideStyle={styles.componentWrapper}>
               <PaperPageCard
@@ -289,9 +330,17 @@ const Paper = (props) => {
               discussionCount={discussionCount}
               paper={paper}
               figureCount={figureCount}
+              activeTabs={tabs}
             />
           </div>
           <div className={css(styles.contentContainer)}>
+            <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+              <PaperProgress
+                setFigureCount={setFigureCount}
+                figureCount={figureCount}
+                setLimitCount={setLimitCount}
+              />
+            </ComponentWrapper>
             <SummaryTab
               paperId={paperId}
               paper={paper}
@@ -311,15 +360,17 @@ const Paper = (props) => {
                 />
               </div>
             </a>
-            <a name="figures">
-              <div className={css(styles.figuresContainer)}>
-                <FigureTab
-                  paperId={paperId}
-                  paper={paper}
-                  setFigureCount={setFigureCount}
-                />
-              </div>
-            </a>
+            {figureCount > 0 && (
+              <a name="figures">
+                <div className={css(styles.figuresContainer)}>
+                  <FigureTab
+                    paperId={paperId}
+                    paper={paper}
+                    setFigureCount={setFigureCount}
+                  />
+                </div>
+              </a>
+            )}
             <a name="paper">
               <div id="paper-tab" className={css(styles.paperTabContainer)}>
                 <PaperTab
@@ -331,65 +382,74 @@ const Paper = (props) => {
                 />
               </div>
             </a>
-            <a name="citations">
-              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                <ReactPlaceholder
-                  ready={!loadingReferencedBy}
-                  showLoadingAnimation
-                  customPlaceholder={
-                    <CitationPreviewPlaceholder color="#efefef" />
-                  }
-                >
-                  <div
-                    className={css(styles.citationContainer)}
-                    ref={citationRef}
-                    id="citedby-tab"
+            {referencedByCount > 0 && (
+              <a name="citations">
+                <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+                  <ReactPlaceholder
+                    ready={!loadingReferencedBy}
+                    showLoadingAnimation
+                    customPlaceholder={
+                      <CitationPreviewPlaceholder color="#efefef" />
+                    }
                   >
-                    <div className={css(styles.header)}>
-                      <div className={css(styles.citationTitle)}>Cited By</div>
-                      <span className={css(styles.citationCount)}>
-                        {referencedByCount > 0 && referencedByCount}
-                      </span>
-                    </div>
-                    <div className={css(styles.citations)}>
-                      {referencedBy.length > 0 ? (
-                        referencedBy.map((reference, id) => {
-                          return (
-                            <CitationCard
-                              key={`citation-${reference.id}-${id}`}
-                              citation={reference}
-                            />
-                          );
-                        })
-                      ) : (
-                        <div className={css(styles.citationEmpty)}>
-                          <div className={css(styles.icon)}>
-                            <i className="fad fa-file-alt" />
-                          </div>
-                          This paper has not been cited yet
-                          <div className={css(styles.citationEmptySubtext)}>
-                            No citations have been found in RH papers
-                          </div>
+                    <div
+                      className={css(styles.citationContainer)}
+                      ref={citationRef}
+                      id="citedby-tab"
+                    >
+                      <div className={css(styles.header)}>
+                        <div className={css(styles.citationTitle)}>
+                          Cited By
                         </div>
-                      )}
+                        <span className={css(styles.citationCount)}>
+                          {referencedByCount > 0 && referencedByCount}
+                        </span>
+                      </div>
+                      <div className={css(styles.citations)}>
+                        {referencedBy.length > 0 ? (
+                          referencedBy.map((reference, id) => {
+                            return (
+                              <CitationCard
+                                key={`citation-${reference.id}-${id}`}
+                                citation={reference}
+                              />
+                            );
+                          })
+                        ) : (
+                          <div className={css(styles.citationEmpty)}>
+                            <div className={css(styles.icon)}>
+                              <i className="fad fa-file-alt" />
+                            </div>
+                            This paper has not been cited yet
+                            <div className={css(styles.citationEmptySubtext)}>
+                              No citations have been found in RH papers
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
+                  </ReactPlaceholder>
+                </ComponentWrapper>
+              </a>
+            )}
+            {limitCount && (
+              <a name="limitations">
+                <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+                  <div
+                    className={css(
+                      styles.bulletsContainer,
+                      styles.limitsContainer
+                    )}
+                    id="limitations-tab"
+                  >
+                    <LimitationTab
+                      paperId={paperId}
+                      setLimitCount={setLimitCount}
+                    />
                   </div>
-                </ReactPlaceholder>
-              </ComponentWrapper>
-            </a>
-            <a name="limitations">
-              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                <div
-                  className={css(
-                    styles.bulletsContainer,
-                    styles.limitsContainer
-                  )}
-                  id="limitations-tab"
-                >
-                  <LimitationTab paperId={paperId} />
-                </div>
-              </ComponentWrapper>
-            </a>
+                </ComponentWrapper>
+              </a>
+            )}
           </div>
           <Joyride
             steps={steps}

@@ -1077,6 +1077,7 @@ const styles = StyleSheet.create({
     },
   },
   comment: {
+    whiteSpace: "pre-wrap",
     padding: 16,
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 0,
