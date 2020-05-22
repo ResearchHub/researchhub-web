@@ -247,7 +247,7 @@ const Paper = (props) => {
     if (referencedByCount) {
       tabs.push({ href: "citations", label: "cited by" });
     }
-    if (limitCount > 0) {
+    if (store.getState().limitations.limits.length > 0) {
       tabs.push({ href: "limitations", label: "limitations" });
     }
 
