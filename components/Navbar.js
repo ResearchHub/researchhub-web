@@ -78,6 +78,7 @@ const Navbar = (props) => {
     { label: "About", route: "/about", icon: "info-circle" },
     { label: "Help", route: "/help", icon: "help" },
     { label: "Live", route: "/live", icon: "live" },
+    { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
   ];
 
   const menuTabs = [
@@ -482,6 +483,9 @@ const styles = StyleSheet.create({
       marginRight: 16,
     },
   },
+  loginContainer: {
+    width: "100%",
+  },
   googleLoginButton: {
     margin: 0,
     width: 180,
@@ -594,6 +598,10 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 16,
     height: "unset",
+
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+    },
   },
   addPaper: {
     background: colors.BLUE(),

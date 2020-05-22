@@ -33,11 +33,14 @@ class FormSelect extends React.Component {
       multiTagLabelStyle,
       value,
       options,
+      menu,
       isMulti,
       isDisabled,
       error,
       isSearchable,
       isClearable,
+      indicatorSeparator,
+      singleValue,
     } = this.props;
 
     const defaultValue = {
@@ -74,6 +77,7 @@ class FormSelect extends React.Component {
         color: "#232038",
         highlight: "none",
         outline: "none",
+        textTransform: "capitalize",
         cursor: "pointer",
         ":focus": {
           borderColor: "#D2D2E6",
@@ -82,6 +86,19 @@ class FormSelect extends React.Component {
           },
         },
         ...formatStyle(inputStyle),
+      }),
+      indicatorSeparator: (styles) => ({
+        ...styles,
+        ...formatStyle(indicatorSeparator),
+      }),
+      singleValue: (styles) => ({
+        ...styles,
+        ...formatStyle(singleValue),
+      }),
+      menu: (styles) => ({
+        ...styles,
+        ...formatStyle(menu),
+        textTransform: "capitalize",
       }),
       placeholder: (styles) => ({
         ...styles,
@@ -121,7 +138,6 @@ class FormSelect extends React.Component {
           {required && <div className={css(styles.asterick)}>*</div>}
         </div>
         <Select
-          // defaultValue={placeholder && defaultValue}
           components={animatedComponents}
           options={options && options}
           onChange={(option) => this.handleOnChange(id, option)}
