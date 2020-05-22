@@ -351,11 +351,13 @@ const Paper = (props) => {
           </div>
           <div className={css(styles.contentContainer)}>
             <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-              <PaperProgress
-                setFigureCount={setFigureCount}
-                figureCount={figureCount}
-                setLimitCount={setLimitCount}
-              />
+              <div className={css(styles.paperProgress)}>
+                <PaperProgress
+                  setFigureCount={setFigureCount}
+                  figureCount={figureCount}
+                  setLimitCount={setLimitCount}
+                />
+              </div>
             </ComponentWrapper>
             <SummaryTab
               paperId={paperId}
@@ -613,6 +615,9 @@ const styles = StyleSheet.create({
       justifyContent: "flex-start",
       alignItems: "flex-start",
     },
+  },
+  paperProgress: {
+    marginTop: 16,
   },
   mobileRow: {
     "@media only screen and (max-width: 760px)": {
