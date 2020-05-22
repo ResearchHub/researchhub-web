@@ -368,7 +368,7 @@ class Index extends React.Component {
             >
               {this.props.hub && this.renderSubscribeButton()}
             </div>
-            <div className={css(mainFeedStyles.row, mainFeedStyles.inputs)}>
+            {/* <div className={css(mainFeedStyles.row, mainFeedStyles.inputs)}>
               <FormSelect
                 options={filterOptions}
                 value={this.state.filterBy}
@@ -394,7 +394,7 @@ class Index extends React.Component {
                 }}
                 isSearchable={false}
               />
-            </div>
+            </div> */}
           </div>
         </div>
         <div className={css(mainFeedStyles.infiniteScroll)}>

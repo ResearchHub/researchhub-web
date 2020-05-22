@@ -70,13 +70,14 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    LEADERBOARD: ({ page, limit, hubId }) => {
+    LEADERBOARD: ({ page, limit, hubId, timeframe }) => {
       let url = BASE_URL + `user/leaderboard/`;
       let params = {
         querystring: {
           page,
           limit,
           hub_id: hubId,
+          timeframe,
         },
       };
       url = prepURL(url, params);
