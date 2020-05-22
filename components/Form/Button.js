@@ -125,10 +125,7 @@ const styles = StyleSheet.create({
       minWidth: 100,
     },
   },
-  ripples: {
-    // overflow: "unset",
-    width: "100%",
-  },
+  ripples: {},
   isWhite: {
     backgroundColor: "#FFF",
     border: `1px solid ${colors.BLUE(1)}`,
