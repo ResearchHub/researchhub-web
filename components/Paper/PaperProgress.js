@@ -186,7 +186,7 @@ class PaperProgress extends React.Component {
       return (
         <span
           className={css(styles.sectionLink)}
-          onClick={() => this.openPaperFeatureModal(section.label)}
+          onClick={() => this.openPaperFeatureModal(section)}
         >
           {`${section.label}.`}
         </span>
