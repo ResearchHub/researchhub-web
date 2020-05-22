@@ -303,6 +303,7 @@ class PaperFeatureModal extends React.Component {
                   size={"small"}
                   onClick={this.submitBulletPoint}
                   disabled={pendingSubmission}
+                  customButtonStyle={styles.customButtonStyle}
                 />
               </div>
             </div>
@@ -400,6 +401,7 @@ class PaperFeatureModal extends React.Component {
                   size={"small"}
                   onClick={this.submitLimitation}
                   disabled={pendingSubmission}
+                  customButtonStyle={styles.customButtonStyle}
                 />
               </div>
             </div>
@@ -540,6 +542,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  customButtonStyle: {
+    // width: 'unset'
   },
 });
 

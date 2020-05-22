@@ -186,7 +186,7 @@ class PaperProgress extends React.Component {
       return (
         <span
           className={css(styles.sectionLink)}
-          onClick={() => this.openPaperFeatureModal(section)}
+          onClick={() => this.openPaperFeatureModal(section.label)}
         >
           {`${section.label}.`}
         </span>
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     },
   },
   iconActive: {
-    color: colors.GREEN(),
+    color: colors.BLUE(),
   },
   left: {
     width: "60%",
