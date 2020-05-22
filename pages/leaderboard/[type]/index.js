@@ -121,9 +121,14 @@ class Index extends React.Component {
 
   onFilterSelect = (option, type) => {
     let by = option;
-    this.setState({
-      by,
-    });
+    this.setState(
+      {
+        by,
+      },
+      () => {
+        this.fetchLeaderboard();
+      }
+    );
   };
 
   /**
@@ -211,7 +216,9 @@ class Index extends React.Component {
             user.author_profile.first_name + " " + user.author_profile.last_name
           }
           authorProfile={user.author_profile}
-          reputation={user.reputation}
+          reputation={
+            this.state.by.value !== 0 ? user.hub_rep : user.reputation
+          }
           authorId={user.author_profile.id}
           extraInfo={
             <span className={css(styles.createdAt)}>
