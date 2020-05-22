@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     position: "relative",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 1024px)": {
       display: "none",
     },
   },
