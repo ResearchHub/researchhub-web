@@ -246,8 +246,13 @@ class PaperProgress extends React.Component {
           <div className={css(styles.maintext)}>
             {!this.state.loading && !this.state.complete ? (
               <Fragment>
-                {`This Paper is missing information. Please help us improve this paper by adding `}
-                {this.renderMainText()}
+                <h3 className={css(styles.title)}>
+                  {`This Paper is missing information. `}
+                </h3>
+                <div className={css(styles.passengerText)}>
+                  Please help us improve this paper by adding{" "}
+                  {this.renderMainText()}
+                </div>
               </Fragment>
             ) : null}
           </div>
@@ -290,16 +295,24 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-    padding: "20px 40px",
-    backgroundColor: "#FAFAFD",
+    padding: 50,
+    backgroundColor: "#FFF",
     minHeight: 80,
     boxSizing: "border-box",
-    border: "1px solid",
-    borderColor: "#E7E7E7",
+    border: "1.5px solid",
+    borderColor: "rgb(240, 240, 240)",
     marginTop: -30,
     marginBottom: 30,
+    boxShadow: "rgba(0, 0, 0, 0.02) 0px 3px 4px",
     borderTop: "none",
+    borderRadius: 4,
     backgroundColor: "#FFF",
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: "50px 0px 0px 0px",
+    },
     "@media only screen and (max-width: 661px)": {
       flexDirection: "column",
       alignItems: "center",
@@ -317,11 +330,17 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
   },
+  title: {
+    fontSize: 22,
+    color: "rgb(36, 31, 58)",
+    fontWeight: 500,
+    marginTop: 0,
+  },
+  passengerText: {},
   maintext: {
     fontSize: 15,
     color: "#5a566a",
     marginBottom: 15,
-    fontWeight: 500,
     minHeight: 36,
     "@media only screen and (max-width: 800px)": {
       fontSize: 14,
@@ -365,10 +384,10 @@ const styles = StyleSheet.create({
     transform: "translate(50%,-50%)",
     // fontWeight: 'bold',
     textShadow: "1px 1px 4px #000",
-    fontSize: 15,
+    fontSize: 16,
   },
   section: {
-    fontSize: 15,
+    fontSize: 16,
     display: "flex",
     alignItems: "center",
     cursor: "pointer",
@@ -376,6 +395,7 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLACK(),
     },
+    marginBottom: 16,
     "@media only screen and (max-width: 800px)": {
       fontSize: 13,
     },
@@ -419,7 +439,7 @@ const styles = StyleSheet.create({
   right: {
     width: "40%",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     paddingLeft: 15,
     boxSizing: "border-box",
     "@media only screen and (max-width: 767px)": {
@@ -436,7 +456,7 @@ const styles = StyleSheet.create({
   row: {
     width: "100%",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
   },
 });
 
