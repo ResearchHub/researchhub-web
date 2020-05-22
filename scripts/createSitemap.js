@@ -43,12 +43,12 @@ const writeFile = () => {
     writeStream = fs.createWriteStream(`./public/sitemap.prod-static.xml`);
     writeHeader();
     const static = [
-      `https://researchhub.com`,
-      `https://researchhub.com/hubs`,
-      `https://researchhub.com/live`,
-      `https://researchhub.com/about`,
-      `https://researchhub.com/about/tos`,
-      `https://researchhub.com/about/privacy`,
+      `https://www.researchhub.com`,
+      `https://www.researchhub.com/hubs`,
+      `https://www.researchhub.com/live`,
+      `https://www.researchhub.com/about`,
+      `https://www.researchhub.com/about/tos`,
+      `https://www.researchhub.com/about/privacy`,
     ];
 
     static.forEach((link) => {
@@ -65,7 +65,7 @@ const writeFile = () => {
   const writePaperUrl = (paperId) => {
     let path = `
     <url>
-      <loc>https://researchhub.com/paper/${paperId}/summary</loc>
+      <loc>https://www.researchhub.com/paper/${paperId}/summary</loc>
       <lastmod>${formatDate(new Date())}</lastmod>
     </url>`;
     writeStream.write(path);
@@ -74,7 +74,9 @@ const writeFile = () => {
   const writeHubUrl = (hub) => {
     let path = `
     <url>
-      <loc>https://researchhub.com/hubs/${hub.slug ? hub.slug : hub.name}</loc>
+      <loc>https://www.researchhub.com/hubs/${
+        hub.slug ? hub.slug : hub.name
+      }</loc>
       <lastmod>${formatDate(new Date())}</lastmod>
     </url>`;
     writeStream.write(path);
