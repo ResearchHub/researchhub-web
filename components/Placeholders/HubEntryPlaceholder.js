@@ -1,13 +1,7 @@
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import {
-  TextBlock,
-  MediaBlock,
-  TextRow,
-  RectShape,
-  RoundShape,
-} from "react-placeholder/lib/placeholders";
+import { TextBlock } from "react-placeholder/lib/placeholders";
 
 const HubEntryPlaceholder = ({ color, rows }) => {
   let blocks = new Array(rows).fill(0).map((el, i) => {

@@ -7,7 +7,14 @@ import AuthorAvatar from "../AuthorAvatar";
 import Link from "next/link";
 
 const LeaderboardUser = (props) => {
-  const { name, authorProfile, reputation, authorId } = props;
+  const {
+    name,
+    authorProfile,
+    reputation,
+    authorId,
+    userClass,
+    repClass,
+  } = props;
   return (
     <div className={css(styles.container)}>
       <Link
@@ -15,14 +22,15 @@ const LeaderboardUser = (props) => {
         as={`/user/${authorId}/contributions`}
       >
         <a className={css(styles.link)}>
-          <div className={css(styles.nameRow)}>
+          <div className={css(styles.nameRow, userClass)}>
             <AuthorAvatar
               author={authorProfile}
               name={name}
               disableLink={false}
             />
             <div className={css(styles.name)}>{name}</div>
-            <div className={css(styles.rep)}>{reputation}</div>
+            {props.extraInfo}
+            <div className={css(styles.rep, repClass)}>{reputation}</div>
           </div>
         </a>
       </Link>

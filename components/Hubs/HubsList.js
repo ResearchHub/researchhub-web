@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import Router from "next/router";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
@@ -12,8 +11,6 @@ import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import colors from "../../config/themes/colors";
-import API from "../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 // Redux
 import { HubActions } from "~/redux/hub";
