@@ -8,6 +8,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import ReactPlaceholder from "react-placeholder/lib";
 import LeaderboardPlaceholder from "../Placeholders/LeaderboardPlaceholder";
 import LeaderboardUser from "./LeaderboardUser";
+import Link from "next/link";
 
 const LeaderboardContainer = (props) => {
   const [users, setUsers] = useState([]);
@@ -60,6 +61,11 @@ const LeaderboardContainer = (props) => {
         customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
       >
         {renderLeaderboardUsers(users)}
+        <div className={css(styles.linkContainer)}>
+          <Link href={"/leaderboard/[type]"} as={"/leaderboard/users"}>
+            <a className={css(styles.link)}>View Leaderboard</a>
+          </Link>
+        </div>
       </ReactPlaceholder>
     </div>
   );
@@ -85,6 +91,22 @@ const styles = StyleSheet.create({
   },
   user: {
     marginBottom: 16,
+  },
+  link: {
+    textDecoration: "none",
+    color: "rgba(78, 83, 255)",
+    fontWeight: 300,
+    textTransform: "capitalize",
+    fontSize: 16,
+    padding: "3px 5px",
+    ":hover": {
+      color: "rgba(78, 83, 255, .5)",
+      textDecoration: "underline",
+    },
+  },
+  linkContainer: {
+    marginTop: 16,
+    textAlign: "center",
   },
 });
 
