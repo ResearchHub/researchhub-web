@@ -282,4 +282,14 @@ export const PaperActions = {
       });
     };
   },
+  updatePaperState: (key, value) => {
+    return (dispatch) => {
+      return dispatch({
+        type: types.UPDATE_PAPER_STATE,
+        payload: {
+          [key]: value,
+        },
+      });
+    };
+  },
 };

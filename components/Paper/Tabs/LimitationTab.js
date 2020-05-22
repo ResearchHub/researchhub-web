@@ -69,6 +69,7 @@ class LimitationTab extends React.Component {
   fetchLimitations = async () => {
     this.setState({ loading: true });
     await this.props.getLimitations(this.props.paperId);
+    this.props.setLimitCount(this.props.limitations.limits.length);
     this.setState({ loading: false });
   };
 

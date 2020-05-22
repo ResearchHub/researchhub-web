@@ -13,7 +13,7 @@ const VIEW_TIMER = 3000; // 3 seconds
 
 const PaperTabBar = (props) => {
   const [selectedTab, setSelectedTab] = useState("main");
-
+  const [tabs, setTabs] = useState(props.activeTabs.map(formatTabs));
   const { scrollView } = props;
   var timer;
 
@@ -27,6 +27,10 @@ const PaperTabBar = (props) => {
     clearTimer();
     startTimer();
   }, [selectedTab]);
+
+  useEffect(() => {
+    setTabs(props.activeTabs.map(formatTabs));
+  }, [props.activeTabs.length]);
 
   const startTimer = () => {
     timer = setTimeout(() => {
@@ -124,17 +128,6 @@ const PaperTabBar = (props) => {
       // setSelectedTab("key takeaways");
     }
   }
-
-  const tabs = [
-    { href: "main", label: "main" },
-    { href: "takeaways", label: "key takeaways" },
-    { href: "summary", label: "summary" },
-    { href: "comments", label: "comments" },
-    { href: "figures", label: "figures" },
-    { href: "paper", label: "Paper PDF" },
-    { href: "citations", label: "cited by" },
-    { href: "limitations", label: "limitations" },
-  ].map(formatTabs);
 
   function formatTabs(tab) {
     tab.key = `nav-link-${tab.href}`;
