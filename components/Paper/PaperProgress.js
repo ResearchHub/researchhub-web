@@ -247,20 +247,20 @@ class PaperProgress extends React.Component {
             {!this.state.loading && !this.state.complete ? (
               <Fragment>
                 <h3 className={css(styles.title)}>
-                  {`This Paper is missing information. `}
+                  {`This Paper is missing information`}
                 </h3>
                 <div className={css(styles.passengerText)}>
                   Please help us improve this paper by adding{" "}
                   {this.renderMainText()}
                 </div>
+                <div className={css(styles.imageContainer)}>
+                  <img
+                    className={css(styles.image)}
+                    src={"/static/background/homepage-empty-state.png"}
+                  />
+                </div>
               </Fragment>
             ) : null}
-          </div>
-          <div className={css(styles.imageContainer)}>
-            <img
-              className={css(styles.image)}
-              src={"/static/background/homepage-empty-state.png"}
-            />
           </div>
         </div>
         <div className={css(styles.column, styles.right)}>
@@ -301,7 +301,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     border: "1.5px solid",
     borderColor: "rgb(240, 240, 240)",
-    marginTop: -30,
     marginBottom: 30,
     boxShadow: "rgba(0, 0, 0, 0.02) 0px 3px 4px",
     borderTop: "none",
@@ -311,7 +310,7 @@ const styles = StyleSheet.create({
       padding: 25,
     },
     "@media only screen and (max-width: 415px)": {
-      padding: "50px 0px 0px 0px",
+      padding: 25,
     },
     "@media only screen and (max-width: 661px)": {
       flexDirection: "column",
@@ -331,22 +330,21 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     color: "rgb(36, 31, 58)",
     fontWeight: 500,
     marginTop: 0,
+
+    "@media only screen and (min-width: 425px)": {
+      fontSize: 22,
+    },
   },
   passengerText: {},
   maintext: {
-    fontSize: 15,
     color: "#5a566a",
-    marginBottom: 15,
     minHeight: 36,
     "@media only screen and (max-width: 800px)": {
       fontSize: 14,
-    },
-    "@media only screen and (max-width: 661px)": {
-      textAlign: "center",
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 13,
@@ -358,12 +356,13 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-  },
-  image: {
-    height: 80,
+    marginTop: 16,
     "@media only screen and (max-width: 661px)": {
       display: "none",
     },
+  },
+  image: {
+    height: 80,
   },
   progressContainer: {},
   progressBar: {
@@ -439,7 +438,7 @@ const styles = StyleSheet.create({
   right: {
     width: "40%",
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     paddingLeft: 15,
     boxSizing: "border-box",
     "@media only screen and (max-width: 767px)": {
