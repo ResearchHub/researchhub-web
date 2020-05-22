@@ -60,7 +60,7 @@ const Paper = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper.userVote.voteType)
   );
-  const [figureCount, setFigureCount] = useState(0);
+  const [figureCount, setFigureCount] = useState();
   const [limitCount, setLimitCount] = useState(
     store.getState().limitations.limits.length
   );
@@ -114,7 +114,7 @@ const Paper = (props) => {
   };
 
   const fetchFigures = () => {
-    let paperId = paperId;
+    let paperId = paper.id;
     return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
