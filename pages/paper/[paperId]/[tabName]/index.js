@@ -28,6 +28,8 @@ import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 import VoteActions from "~/redux/vote";
+import { LimitationsActions } from "~/redux/limitations";
+import { BulletActions } from "~/redux/bullets";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
@@ -59,7 +61,9 @@ const Paper = (props) => {
     getVoteType(paper.userVote.voteType)
   );
   const [figureCount, setFigureCount] = useState(1);
-  const [limitCount, setLimitCount] = useState(1);
+  const [limitCount, setLimitCount] = useState(
+    store.getState().limitations.limits.length
+  );
   const [tabs, setTabs] = useState(getActiveTabs());
 
   const [steps, setSteps] = useState([
@@ -484,6 +488,8 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
     await store.dispatch(PaperActions.getPaper(query.paperId));
     fetchedPaper = store.getState().paper;
     await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
+    await store.dispatch(LimitationsActions.getLimitations(query.paperId));
+    await store.dispatch(BulletActions.getBullets(query.paperId));
   }
   return { isServer, hostname, paper: fetchedPaper };
 };
@@ -780,6 +786,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   updateUser: AuthActions.updateUser,
   setUploadingPaper: AuthActions.setUploadingPaper,
+  getLimitations: LimitationsActions.getLimitations,
 };
 
 export default connect(
