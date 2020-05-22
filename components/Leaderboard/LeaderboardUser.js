@@ -7,7 +7,14 @@ import AuthorAvatar from "../AuthorAvatar";
 import Link from "next/link";
 
 const LeaderboardUser = (props) => {
-  const { name, authorProfile, reputation, authorId, userClass } = props;
+  const {
+    name,
+    authorProfile,
+    reputation,
+    authorId,
+    userClass,
+    repClass,
+  } = props;
   return (
     <div className={css(styles.container)}>
       <Link
@@ -23,7 +30,7 @@ const LeaderboardUser = (props) => {
             />
             <div className={css(styles.name)}>{name}</div>
             {props.extraInfo}
-            <div className={css(styles.rep)}>{reputation}</div>
+            <div className={css(styles.rep, repClass)}>{reputation}</div>
           </div>
         </a>
       </Link>

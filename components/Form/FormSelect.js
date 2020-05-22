@@ -33,6 +33,7 @@ class FormSelect extends React.Component {
       multiTagLabelStyle,
       value,
       options,
+      menu,
       isMulti,
       isDisabled,
       error,
@@ -96,6 +97,7 @@ class FormSelect extends React.Component {
       }),
       menu: (styles) => ({
         ...styles,
+        ...formatStyle(menu),
         textTransform: "capitalize",
       }),
       placeholder: (styles) => ({

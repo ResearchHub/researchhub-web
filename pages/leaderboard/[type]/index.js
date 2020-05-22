@@ -77,7 +77,13 @@ class Index extends React.Component {
       fetchingLeaderboard: true,
     });
     return fetch(
-      API.LEADERBOARD({ limit: 20, page: 1, hubId: this.state.by.value, type }),
+      API.LEADERBOARD({
+        limit: 20,
+        page: 1,
+        hubId: this.state.by.value,
+        type,
+        timeFrame: this.state.filterBy,
+      }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
@@ -124,6 +130,18 @@ class Index extends React.Component {
     this.setState(
       {
         by,
+      },
+      () => {
+        this.fetchLeaderboard();
+      }
+    );
+  };
+
+  onTimeframeChange = (option) => {
+    let filterBy = option;
+    this.setState(
+      {
+        filterBy,
       },
       () => {
         this.fetchLeaderboard();
@@ -219,6 +237,7 @@ class Index extends React.Component {
           reputation={
             this.state.by.value !== 0 ? user.hub_rep : user.reputation
           }
+          repClass={styles.repClass}
           authorId={user.author_profile.id}
           extraInfo={
             <span className={css(styles.createdAt)}>
@@ -300,7 +319,6 @@ class Index extends React.Component {
                 ]}
                 singleValue={{
                   color: colors.PURPLE(),
-                  fontSize: 30,
                 }}
                 indicatorSeparator={{
                   display: "none",
@@ -317,6 +335,9 @@ class Index extends React.Component {
                   display: "flex",
                   justifyContent: "space-between",
                 }}
+                menu={{
+                  fontSize: 16,
+                }}
                 onChange={(id, option) => {
                   if (option.disableScope) {
                     this.setState({
@@ -329,7 +350,6 @@ class Index extends React.Component {
                   }
                   this.onFilterSelect(option, id);
                 }}
-                isSearchable={false}
               />
             </div>
           </div>
@@ -370,7 +390,7 @@ class Index extends React.Component {
                       disableScope: false,
                     });
                   }
-                  this.onFilterSelect(option, id);
+                  this.onTimeframeChange(option, id);
                 }}
                 isSearchable={false}
               />
@@ -380,6 +400,12 @@ class Index extends React.Component {
         <div className={css(mainFeedStyles.infiniteScroll)}>
           {!this.state.fetchingLeaderboard ? (
             <Fragment>
+              <div className={css(styles.leaderboardNav)}>
+                <div className={css(styles.navItem, styles.userNav)}>User</div>
+                <div className={css(styles.navItem, styles.rep)}>
+                  Reputation
+                </div>
+              </div>
               <div className={css(styles.leaderboardSection)}>
                 {this.renderItems()}
               </div>
@@ -465,9 +491,35 @@ const styles = StyleSheet.create({
   leaderboardSection: {
     border: "1px solid #EDEDED",
     background: "#fff",
+    position: "relative",
+  },
+  leaderboardNav: {
+    display: "flex",
+    width: "100%",
+    marginBottom: 16,
+  },
+  userNav: {
+    marginLeft: 60,
+  },
+  navItem: {
+    color: "#241F3A",
+    opacity: 0.5,
+  },
+  rep: {
+    marginLeft: "auto",
+    paddingRight: 16,
+
+    "@media only screen and (min-width: 1024px)": {
+      paddingRight: 100,
+    },
   },
   createdAt: {
     color: "#918F9C",
+  },
+  repClass: {
+    "@media only screen and (min-width: 1024px)": {
+      paddingRight: 130,
+    },
   },
   bullet: {
     padding: "0px 16px",
@@ -663,6 +715,17 @@ const mainFeedStyles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     justifyContent: "unset",
+
+    "@media only screen and (min-width: 768px)": {
+      fontSize: 22,
+    },
+    "@media only screen and (min-width: 1024px)": {
+      fontSize: 30,
+    },
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+    },
   },
   titleBoxShadow: {
     boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
@@ -678,6 +741,13 @@ const mainFeedStyles = StyleSheet.create({
     alignItems: "center",
     zIndex: 2,
     top: 80,
+    "@media only screen and (min-width: 320px)": {
+      display: "flex",
+      flexDirection: "column",
+    },
+    "@media only screen and (min-width: 768px)": {
+      flexDirection: "row",
+    },
     "@media only screen and (min-width: 900px)": {
       paddingLeft: 25,
       paddingRight: 25,
@@ -728,11 +798,25 @@ const mainFeedStyles = StyleSheet.create({
   },
   dropdownForm: {
     width: 260,
+    fontSize: 30,
+    "@media only screen and (max-width: 1343px)": {
+      fontSize: 30,
+    },
     "@media only screen and (max-width: 1149px)": {
+      fontSize: 30,
       width: 260,
     },
-    "@media only screen and (max-width: 779px)": {
-      width: "calc(50% - 5px)",
+    "@media only screen and (min-width: 768px)": {
+      fontSize: 22,
+      width: 200,
+    },
+    "@media only screen and (min-width: 1024px)": {
+      width: 260,
+      fontSize: 30,
+    },
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      fontSize: 25,
     },
   },
   dropDownLeft: {
@@ -767,6 +851,9 @@ const mainFeedStyles = StyleSheet.create({
   },
   hubInputContainer: {
     // marginTop: 16,
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
   homeInputContainer: {
     justifyContent: "flex-end",
@@ -780,9 +867,9 @@ const mainFeedStyles = StyleSheet.create({
     width: "unset",
   },
   inputs: {
-    "@media only screen and (max-width: 779px)": {
+    "@media only screen and (max-width: 767px)": {
       width: "100%",
-      justifyContent: "flex-end",
+      justifyContent: "center",
       alignItems: "center",
     },
   },
