@@ -425,7 +425,9 @@ class PaperProgress extends React.Component {
             <div className={css(styles.sectionColumn)}>
               {this.renderItems(0, 3)}
             </div>
-            <div className={css(styles.sectionColumn)}>
+            <div
+              className={css(styles.sectionColumn, styles.sectionColumnRight)}
+            >
               {this.renderItems(3)}
             </div>
           </div>
@@ -599,7 +601,10 @@ const styles = StyleSheet.create({
     },
   },
   sectionColumn: {
-    width: "50%",
+    width: "65%",
+  },
+  sectionColumnRight: {
+    width: "35%",
   },
   row: {
     width: "100%",
