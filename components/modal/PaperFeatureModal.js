@@ -551,8 +551,9 @@ class PaperFeatureModal extends React.Component {
                   hideButton={true}
                   placeholder={`Description: Distill this paper into a short paragraph.`}
                   commentStyles={styles.commentStyles}
+                  removeStickyToolbar={true}
                 />
-                <div className={css(styles.buttonRow)}>
+                <div className={css(styles.buttonRow, styles.summaryButtonRow)}>
                   <Ripples
                     className={css(styles.cancelButton)}
                     onClick={this.closeModal}
@@ -696,7 +697,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-end",
     marginTop: 15,
+    paddingBottom: 15,
   },
+  summaryButtonRow: {},
   cancelButton: {
     height: 37,
     width: 126,
@@ -747,6 +750,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     boxSizing: "border-box",
     borderRadius: 4,
+    position: "sticky",
+    top: 0,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
