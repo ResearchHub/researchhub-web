@@ -500,8 +500,18 @@ const routes = (BASE_URL) => {
     PAPER_FILES: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/additional_file/`;
     },
-    GOOGLE_ANALYTICS: () => {
-      return BASE_URL + "events/forward_event/";
+    GOOGLE_ANALYTICS: ({ ignorePaper, ignoreUser }) => {
+      let url = BASE_URL + "events/forward_event/";
+      if (ignorePaper) {
+        url += "?ignore_paper=true&";
+      }
+      if (ignoreUser && !ignorePaper) {
+        url += "?ignore_user=true&";
+      } else if (ignoreUse && ignorePaper) {
+        url += "ignore_user=true&";
+      }
+
+      return url;
     },
   };
 
