@@ -59,7 +59,6 @@ class PaperFeatureModal extends React.Component {
       let editorStateItem = localStorage.getItem(
         `editorState-${paper.id}-${paper.summary && paper.summary.id}`
       );
-      // this.initializeSummary();
       if (editorStateItem) {
         let editorState = Value.fromJSON(JSON.parse(editorStateItem));
         this.setState({
@@ -358,7 +357,6 @@ class PaperFeatureModal extends React.Component {
         }, 800);
       })
       .catch((err) => {
-        console.log("err", err);
         setTimeout(() => {
           showMessage({ show: false });
           setMessage("Something went wrong");
