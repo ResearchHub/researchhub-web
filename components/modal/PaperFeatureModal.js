@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
+import { withAlert } from "react-alert";
 import { isAndroid, isMobile } from "react-device-detect";
 var isAndroidJS = false;
 if (process.browser) {
@@ -16,6 +17,7 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import Loader from "~/components/Loader/Loader";
 import TextEditor from "~/components/TextEditor";
+import NewDND from "~/components/Form/NewDND";
 
 // Redux
 import { BulletActions } from "~/redux/bullets";
@@ -105,6 +107,8 @@ class PaperFeatureModal extends React.Component {
           break;
         case "limitations":
           return "Add Limitation";
+        case "paper-pdf":
+          return "Add Paper PDF";
         default:
           break;
       }
@@ -335,6 +339,92 @@ class PaperFeatureModal extends React.Component {
       });
   };
 
+  paperPdfCancel = () => {
+    this.props.removePaperFromState();
+    this.closeModal();
+  };
+
+  /**
+   * Shows a confirmation to the user if there are 1 or more "similar papers" found in search
+   */
+  confirmSave = () => {
+    let { setMessage, showMessage, alert } = this.props;
+    let paperInReduxState = this.props.paper.uploadedPaper;
+    if (!Object.keys(paperInReduxState).length) {
+      setMessage("Add a PDF to upload");
+      return showMessage({ show: true, clickOff: true, error: true });
+    }
+
+    if (true) {
+      return alert.show({
+        text: "Are you sure this is the PDF for the paper?",
+        buttonText: "Yes",
+        onClick: () => {
+          this.savePdf();
+        },
+      });
+    } else {
+      return this.savePdf();
+    }
+  };
+
+  /**
+   * @param {Array} acceptedFiles - a list containing the file that the user has uploaded
+   * @param {Object} paperMetaData - a object decorated with the meta data for the file/paper the user has uploaded
+   */
+  handleFileDrop = (acceptedFiles, paperMetaData) => {
+    let paperFile = acceptedFiles[0];
+    this.props.uploadPaperToState(paperFile, paperMetaData);
+  };
+
+  /**
+   * Makes a call to save the pdf, then removes the paper from redux state
+   */
+  savePdf = async () => {
+    let {
+      paper,
+      showMessage,
+      setMessage,
+      checkUserFirstTime,
+      clearPostedPaper,
+      removePaperFromState,
+      patchPaper,
+      updatePaperState,
+    } = this.props;
+    showMessage({ load: true, show: true });
+    let paperId = paper.id;
+    let paperInReduxState = paper.uploadedPaper;
+    let body = {
+      file: paperInReduxState.url ? paperInReduxState.url : paperInReduxState,
+    };
+    await patchPaper(paperId, body);
+    let paperState = this.props.paper;
+
+    if (paperState.success) {
+      showMessage({ show: false });
+      setMessage("PDF successfully uploaded!");
+      showMessage({ show: true, clickOff: true });
+      checkUserFirstTime();
+      let postedPaper = paperState.postedPaper;
+      let paperFile = postedPaper.file ? postedPaper.file : postedPaper.url;
+      // setFile(paperFile);
+      console.log("postedPaper", postedPaper);
+      if (postedPaper.file) {
+        updatePaperState("file", paperFile);
+      } else if (postedPaper.url) {
+        updatePaperState("url", paperFile);
+      }
+      console.log("paper", this.props.paper);
+      clearPostedPaper();
+      removePaperFromState();
+      this.closeModal();
+    } else {
+      showMessage({ show: false });
+      setMessage("Something went wrong.");
+      showMessage({ show: true, clickOff: true, error: true });
+    }
+  };
+
   renderBody = () => {
     let { props, isOpen } = this.props.modals.openPaperFeatureModal;
     let { pendingSubmission } = this.state;
@@ -427,10 +517,6 @@ class PaperFeatureModal extends React.Component {
               </div>
             </div>
           );
-        case "figures":
-          break;
-        case "cited-by":
-          break;
         case "limitations":
           return (
             <div className={css(styles.bulletForm, styles.showBulletForm)}>
@@ -489,6 +575,28 @@ class PaperFeatureModal extends React.Component {
               />
             </div>
           );
+        case "paper-pdf":
+          return (
+            <div className={css(styles.dndContainer)}>
+              <NewDND
+                handleDrop={this.handleFileDrop}
+                // onSearch={checkSearchResults}
+              />
+              <div className={css(styles.buttonRow)}>
+                <Ripples
+                  className={css(styles.cancelButton)}
+                  onClick={this.paperPdfCancel}
+                >
+                  Cancel
+                </Ripples>
+                <Button label={"Save PDF"} onClick={this.confirmSave} />
+              </div>
+            </div>
+          );
+        case "figures":
+          break;
+        case "cited-by":
+          break;
         default:
           break;
       }
@@ -639,6 +747,7 @@ const styles = StyleSheet.create({
     border: "1px solid #E7E7E7",
     width: "100%",
     boxSizing: "border-box",
+    marginTop: 20,
   },
   commentEditorStyles: {
     width: "100%",
@@ -649,6 +758,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 12,
     },
+  },
+  dndContainer: {
+    marginTop: 20,
   },
 });
 
@@ -691,9 +803,14 @@ const mapDispatchToProps = {
   //SUMMARY
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   updatePaperState: PaperActions.updatePaperState,
+  //PAPER PDF
+  uploadPaperToState: PaperActions.uploadPaperToState,
+  clearPostedPaper: PaperActions.clearPostedPaper,
+  removePaperFromState: PaperActions.removePaperFromState,
+  patchPaper: PaperActions.patchPaper,
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PaperFeatureModal);
+)(withAlert()(PaperFeatureModal));
