@@ -135,13 +135,14 @@ class PaperProgress extends React.Component {
   };
 
   trackEvent = (interaction, label) => {
+    let value = label.toLowerCase();
     let paperId = this.props.paper.id;
     let payload = {
       paper: paperId,
       interaction,
       item: {
-        name: "Paper Progress",
-        value: label,
+        name: "progress",
+        value,
       },
       utc: new Date(),
     };

@@ -146,7 +146,10 @@ const PaperTabBar = (props) => {
       },
       utc: new Date(),
     };
-    return fetch(API.GOOGLE_ANALYTICS(), API.POST_CONFIG(payload))
+    return fetch(
+      API.GOOGLE_ANALYTICS({ ignorePaper: true, ignoreUser: true }),
+      API.POST_CONFIG(payload)
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {});
