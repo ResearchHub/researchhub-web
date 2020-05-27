@@ -277,13 +277,29 @@ class PaperProgress extends React.Component {
 
     if (sections.length > 0) {
       let section = sections[0];
-
+      let paper = this.props.paper;
+      let summary = paper.summary
+        ? paper.summary.summary &&
+          convertToEditorValue(paper.summary.summary).document.text
+        : "";
+      if (section.label === "Summary" && summary.length > 0) {
+        return (
+          <Fragment>
+            to the{" "}
+            <span
+              className={css(styles.sectionLink)}
+              onClick={() => this.openPaperFeatureModal(section)}
+            >
+              {`${section.label}.`}
+            </span>
+          </Fragment>
+        );
+      }
       return (
         <span
           className={css(styles.sectionLink)}
           onClick={() => this.openPaperFeatureModal(section)}
         >
-          {`${section.label === "Summary" ? "to the " : ""}`}
           {`${section.label}.`}
         </span>
       );
