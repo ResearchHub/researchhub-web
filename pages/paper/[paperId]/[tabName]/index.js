@@ -163,7 +163,6 @@ const Paper = (props) => {
 
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
-      console.log("UPDATE UPDATE");
       refetchPaper();
       fetchReferences();
       fetchFigures();

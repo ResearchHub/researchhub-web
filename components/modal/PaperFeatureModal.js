@@ -59,15 +59,43 @@ class PaperFeatureModal extends React.Component {
       let editorStateItem = localStorage.getItem(
         `editorState-${paper.id}-${paper.summary && paper.summary.id}`
       );
-
+      // this.initializeSummary();
       if (editorStateItem) {
         let editorState = Value.fromJSON(JSON.parse(editorStateItem));
         this.setState({
           summaryEditorState: editorState,
         });
+      } else {
+        this.initializeSummary();
       }
     }
   }
+
+  componentDidUpdate(prevProps) {
+    let { props, isOpen } = this.props.modals.openPaperFeatureModal;
+    if (
+      !prevProps.modals.openPaperFeatureModal.isOpen &&
+      (isOpen && props.tab === "summary")
+    ) {
+      this.initializeSummary();
+    }
+  }
+
+  /**
+   * Initializes the summary from the paper redux
+   */
+  initializeSummary = () => {
+    const { paper } = this.props;
+    if (paper.summary) {
+      if (paper.summary.summary) {
+        let summaryJSON = paper.summary.summary;
+        let editorState = Value.fromJSON(summaryJSON);
+        this.setState({
+          summaryEditorState: editorState,
+        });
+      }
+    }
+  };
 
   closeModal = () => {
     this.props.openPaperFeatureModal(false, {});
@@ -408,13 +436,11 @@ class PaperFeatureModal extends React.Component {
       let postedPaper = paperState.postedPaper;
       let paperFile = postedPaper.file ? postedPaper.file : postedPaper.url;
       // setFile(paperFile);
-      console.log("postedPaper", postedPaper);
       if (postedPaper.file) {
         updatePaperState("file", paperFile);
       } else if (postedPaper.url) {
         updatePaperState("url", paperFile);
       }
-      console.log("paper", this.props.paper);
       clearPostedPaper();
       removePaperFromState();
       this.closeModal();
@@ -492,6 +518,7 @@ class PaperFeatureModal extends React.Component {
                   canEdit={true}
                   canSubmit={true}
                   commentEditor={false}
+                  initialValue={this.state.summaryEditorState}
                   onCancel={this.cancel}
                   onSubmit={this.submitEdit}
                   onChange={this.onEditorStateChange}
