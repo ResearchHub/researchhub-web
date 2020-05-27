@@ -380,7 +380,7 @@ const Paper = (props) => {
                 />
               </div>
             </a>
-            {figureCount > 0 && (
+            {figureCount > 0 ? (
               <a name="figures">
                 <div className={css(styles.figuresContainer)}>
                   <FigureTab
@@ -390,7 +390,7 @@ const Paper = (props) => {
                   />
                 </div>
               </a>
-            )}
+            ) : null}
             <a name="paper">
               <div id="paper-tab" className={css(styles.paperTabContainer)}>
                 <PaperTab
@@ -402,7 +402,7 @@ const Paper = (props) => {
                 />
               </div>
             </a>
-            {referencedByCount > 0 && (
+            {referencedByCount > 0 ? (
               <a name="citations">
                 <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                   <ReactPlaceholder
@@ -451,8 +451,8 @@ const Paper = (props) => {
                   </ReactPlaceholder>
                 </ComponentWrapper>
               </a>
-            )}
-            {limitCount && (
+            ) : null}
+            {limitCount ? (
               <a name="limitations">
                 <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                   <div
@@ -469,7 +469,7 @@ const Paper = (props) => {
                   </div>
                 </ComponentWrapper>
               </a>
-            )}
+            ) : null}
           </div>
           <Joyride
             steps={steps}
