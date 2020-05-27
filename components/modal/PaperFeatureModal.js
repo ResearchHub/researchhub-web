@@ -743,7 +743,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    // marginTop: 30,
+    maxHeight: "60vh",
     backgroundColor: "#fff",
     boxSizing: "border-box",
     borderRadius: 4,
