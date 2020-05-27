@@ -77,20 +77,23 @@ class PaperProgress extends React.Component {
 
   formatSections = () => {
     let { limitations, bullets, figureCount, commentCount, paper } = this.props;
-
+    let summary = paper.summary
+      ? paper.summary.summary &&
+        convertToEditorValue(paper.summary.summary).document.text
+      : "";
     let sections = [
       {
         label: "Key Takeaways",
-        active: bullets && bullets.bullets && bullets.bullets.length > 0,
+        active: bullets && bullets.bullets && bullets.bullets.length >= 3,
         count: bullets && bullets.bullets && bullets.bullets.length,
       },
       {
         label: "Summary",
-        active: paper && paper.summary ? true : false,
+        active: summary.length >= 250,
       },
       {
         label: "Comments",
-        active: commentCount > 0,
+        active: commentCount >= 3,
         count: commentCount,
       },
       {
@@ -161,6 +164,25 @@ class PaperProgress extends React.Component {
           } else {
             progress += 25;
           }
+        } else {
+          if (section.label === "Key Takeaways") {
+            let num = bullets.bullets.length * (25 / 3);
+            progress += Math.min(num, 25);
+          } else if (section.label === "Comments") {
+            let num = commentCount * (25 / 3);
+            progress += Math.min(num, 25);
+          } else if (section.label === "Summary") {
+            let summary = paper.summary
+              ? paper.summary.summary &&
+                convertToEditorValue(paper.summary.summary).document.text
+              : "";
+
+            if (summary.length >= 250) {
+              progress += 25;
+            } else {
+              progress += (Math.min(250, summary.length) / 250) * 25;
+            }
+          }
         }
       }
     });
@@ -202,11 +224,7 @@ class PaperProgress extends React.Component {
   };
 
   openPaperFeatureModal = (section) => {
-    if (
-      section.active &&
-      section.label !== "Key Takeaways" &&
-      section.label !== "Comments"
-    ) {
+    if (section.active) {
       return;
     }
 
@@ -259,11 +277,13 @@ class PaperProgress extends React.Component {
 
     if (sections.length > 0) {
       let section = sections[0];
+
       return (
         <span
           className={css(styles.sectionLink)}
           onClick={() => this.openPaperFeatureModal(section)}
         >
+          {`${section.label === "Summary" ? "to the " : ""}`}
           {`${section.label}.`}
         </span>
       );
