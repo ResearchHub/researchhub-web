@@ -66,7 +66,10 @@ class PaperProgress extends React.Component {
       return this.formatSections();
     } else if (prevProps.commentCount !== this.props.commentCount) {
       return this.formatSections();
-    } else if (prevProps.paper.file !== this.props.paper.file) {
+    } else if (
+      prevProps.paper.file !== this.props.paper.file ||
+      prevProps.paper.pdf_url !== this.props.paper.pdf_url
+    ) {
       return this.formatSections();
     }
   }
@@ -89,7 +92,8 @@ class PaperProgress extends React.Component {
       },
       {
         label: "Summary",
-        active: summary.length >= 250,
+        active: summary.trim().length >= 250,
+        count: summary.trim().length,
       },
       {
         label: "Comments",
@@ -98,7 +102,7 @@ class PaperProgress extends React.Component {
       },
       {
         label: "Paper PDF",
-        active: paper.file,
+        active: paper.file ? paper.file : paper.pdf_url ? paper.pdf_url : false,
       },
       {
         label: "Figures",
@@ -130,6 +134,23 @@ class PaperProgress extends React.Component {
     );
   };
 
+  trackEvent = (interaction, label) => {
+    let paperId = this.props.paper.id;
+    let payload = {
+      paper: paperId,
+      interaction,
+      item: {
+        name: "Paper Progress",
+        value: label,
+      },
+      utc: new Date(),
+    };
+    return fetch(API.GOOGLE_ANALYTICS(), API.POST_CONFIG(payload))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {});
+  };
+
   calculateProgress = (sections) => {
     let { bullets, commentCount, paper } = this.props;
 
@@ -159,7 +180,7 @@ class PaperProgress extends React.Component {
             section.label === "Limitations"
           ) {
             if (section.active) {
-              progress += 5;
+              progress += 2;
             }
           } else {
             progress += 25;
@@ -229,7 +250,7 @@ class PaperProgress extends React.Component {
     }
 
     let label = section.label;
-
+    this.trackEvent("click", section.label);
     if (label === "Figures") {
       return this.props.openDndModal(true, {
         title: "Add Figures",
@@ -342,7 +363,9 @@ class PaperProgress extends React.Component {
             {section.label}
             {!!section.count && (
               <span className={css(styles.count)}>
-                {`${Math.min(section.count, 3)}/3`}
+                {section.label === "Summary"
+                  ? `${Math.min(section.count, 250)}/250`
+                  : `${Math.min(section.count, 3)}/3`}
               </span>
             )}
           </div>
