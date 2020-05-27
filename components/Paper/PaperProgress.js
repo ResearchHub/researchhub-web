@@ -503,7 +503,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: "100%",
     display: "flex",
-    // justifyContent: "center",
     justifyContent: "flex-start",
     alignItems: "center",
     marginTop: 16,
@@ -512,7 +511,7 @@ const styles = StyleSheet.create({
     },
   },
   image: {
-    height: 80,
+    height: 120,
   },
   progressContainer: {},
   progressBar: {
