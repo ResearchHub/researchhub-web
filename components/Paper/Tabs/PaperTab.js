@@ -454,7 +454,7 @@ var styles = StyleSheet.create({
     width: "100%",
     marginTop: 45,
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
   cancelButton: {

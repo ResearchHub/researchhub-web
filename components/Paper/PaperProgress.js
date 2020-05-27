@@ -23,6 +23,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { convertToEditorValue } from "~/config/utils";
 
 class PaperProgress extends React.Component {
   constructor(props) {
@@ -63,6 +64,8 @@ class PaperProgress extends React.Component {
       return this.formatSections();
     } else if (prevProps.paper.summary !== this.props.paper.summary) {
       return this.formatSections();
+    } else if (prevProps.commentCount !== this.props.commentCount) {
+      return this.formatSections();
     }
   }
 
@@ -71,34 +74,47 @@ class PaperProgress extends React.Component {
   }
 
   formatSections = () => {
-    let { limitations, bullets, figureCount, paper } = this.props;
-    let sections = [];
+    let { limitations, bullets, figureCount, commentCount, paper } = this.props;
 
-    let list = [
+    let sections = [
       {
         label: "Key Takeaways",
         active: bullets && bullets.bullets && bullets.bullets.length > 0,
+        count: bullets && bullets.bullets && bullets.bullets.length,
       },
       {
         label: "Summary",
         active: paper && paper.summary ? true : false,
       },
       {
+        label: "Comments",
+        active: commentCount > 0,
+        count: commentCount,
+      },
+      {
+        label: "Paper PDF",
+        active: paper.url || paper.file,
+      },
+      {
         label: "Figures",
         active: figureCount > 0,
+        optional: true,
       },
       {
         label: "Limitations",
         active:
           limitations && limitations.limits && limitations.limits.length > 0,
+        optional: true,
       },
     ];
 
+    let progress = this.calculateProgress(sections);
+
     this.setState(
       {
-        sections: list,
-        progress: (list.filter((el) => el.active).length / 4) * 100,
-        complete: (list.filter((el) => el.active).length / 4) * 100 === 100,
+        sections,
+        progress,
+        complete: progress === 100,
       },
       () => {
         this.state.loading &&
@@ -107,6 +123,40 @@ class PaperProgress extends React.Component {
           }, 400);
       }
     );
+  };
+
+  calculateProgress = (sections) => {
+    let { bullets, commentCount, paper } = this.props;
+
+    var progress = 0; // there are 4 actives
+    sections.forEach((section) => {
+      if (!section.optional) {
+        if (section.active) {
+          if (section.label === "Key Takeaways") {
+            let num = bullets.bullets.length * (25 / 3);
+            progress += Math.min(num, 25);
+          } else if (section.label === "Comments") {
+            let num = commentCount * (25 / 3);
+            progress += Math.min(num, 25);
+          } else if (section.label === "Summary") {
+            let summary = paper.summary
+              ? paper.summary.summary &&
+                convertToEditorValue(paper.summary.summary).document.text
+              : "";
+
+            if (summary.length >= 250) {
+              progress += 25;
+            } else {
+              progress += (summary.length / 250) * 25;
+            }
+          } else {
+            progress += 25;
+          }
+        }
+      }
+    });
+
+    return Math.min(Math.round(progress), 100);
   };
 
   postFigures = (figures, callback) => {
@@ -143,9 +193,14 @@ class PaperProgress extends React.Component {
   };
 
   openPaperFeatureModal = (section) => {
-    if (section.active) {
+    if (
+      section.active &&
+      section.label !== "Key Takeaways" &&
+      section.label !== "Comments"
+    ) {
       return;
     }
+
     let label = section.label;
 
     if (label === "Figures") {
@@ -156,6 +211,7 @@ class PaperProgress extends React.Component {
         onSubmit: this.postFigures,
       });
     }
+
     if (label === "Summary") {
       if ((isAndroid || isAndroidJS) && isMobile) {
         this.props.setMessage("Edit the summary on Desktop");
@@ -175,6 +231,17 @@ class PaperProgress extends React.Component {
     if (label === "Limitations") {
       props.setLimitCount = this.props.setLimitCount;
     }
+
+    if (label === "Comments") {
+      let commentProps = {
+        commentCount: this.props.commentCount,
+        setCount: this.props.setCount,
+        threads: this.props.threads,
+        setDiscussionThreads: this.props.setDiscussionThreads,
+      };
+      props = { ...props, ...commentProps };
+    }
+
     this.props.openPaperFeatureModal(true, props);
   };
 
@@ -228,6 +295,11 @@ class PaperProgress extends React.Component {
               )}
             </div>
             {section.label}
+            {!!section.count && (
+              <span className={css(styles.count)}>
+                {`${Math.min(section.count, 3)}/3`}
+              </span>
+            )}
           </div>
         </PermissionNotificationWrapper>
       );
@@ -278,10 +350,10 @@ class PaperProgress extends React.Component {
           </div>
           <div className={css(styles.row)}>
             <div className={css(styles.sectionColumn)}>
-              {this.renderItems(0, 2)}
+              {this.renderItems(0, 3)}
             </div>
             <div className={css(styles.sectionColumn)}>
-              {this.renderItems(2)}
+              {this.renderItems(3)}
             </div>
           </div>
         </div>
@@ -334,12 +406,16 @@ const styles = StyleSheet.create({
     color: "rgb(36, 31, 58)",
     fontWeight: 500,
     marginTop: 0,
-
+    marginBottom: 15,
     "@media only screen and (min-width: 425px)": {
       fontSize: 22,
     },
   },
-  passengerText: {},
+  passengerText: {
+    "@media only screen and (max-width: 661px)": {
+      marginBottom: 5,
+    },
+  },
   maintext: {
     color: "#5a566a",
     minHeight: 36,
@@ -354,7 +430,8 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: "100%",
     display: "flex",
-    justifyContent: "center",
+    // justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     marginTop: 16,
     "@media only screen and (max-width: 661px)": {
@@ -427,7 +504,7 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
   },
   left: {
-    width: "60%",
+    width: "50%",
     "@media only screen and (max-width: 767px)": {
       width: "50%",
     },
@@ -436,7 +513,7 @@ const styles = StyleSheet.create({
     },
   },
   right: {
-    width: "40%",
+    width: "50%",
     display: "flex",
     justifyContent: "center",
     paddingLeft: 15,
@@ -456,6 +533,9 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "flex-start",
+  },
+  count: {
+    marginLeft: 5,
   },
 });
 

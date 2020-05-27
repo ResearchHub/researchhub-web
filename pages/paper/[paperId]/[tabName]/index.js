@@ -107,7 +107,7 @@ const Paper = (props) => {
       .then(Helpers.parseJSON)
       .then((res) => {
         setLoadingReferencedBy(false);
-        let newReferencedBy = [...referencedBy, ...res.results];
+        let newReferencedBy = [...res.results];
         setReferencedBy(newReferencedBy);
         setReferencedByCount(res.count);
       });
@@ -137,11 +137,6 @@ const Paper = (props) => {
     setTabs(getActiveTabs());
   }, [store.getState().limitations.limits.length]);
 
-  useEffect(() => {
-    fetchReferences();
-    fetchFigures();
-  }, []);
-
   async function refetchPaper() {
     setLoadingPaper(true);
     await dispatch(PaperActions.getPaper(paperId));
@@ -168,7 +163,10 @@ const Paper = (props) => {
 
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
+      console.log("UPDATE UPDATE");
       refetchPaper();
+      fetchReferences();
+      fetchFigures();
     }
   }, [paperId]);
 
@@ -356,6 +354,11 @@ const Paper = (props) => {
                   setFigureCount={setFigureCount}
                   figureCount={figureCount}
                   setLimitCount={setLimitCount}
+                  commentCount={discussionCount}
+                  setCount={setCount}
+                  // comments threads
+                  threads={discussionThreads}
+                  setDiscussionThreads={setDiscussionThreads}
                 />
               </div>
             </ComponentWrapper>
