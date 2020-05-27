@@ -215,10 +215,10 @@ export const PaperActions = {
       return dispatch(action);
     };
   },
-  patchPaper: (paperId, body) => {
+  patchPaper: (paperId, body, progress) => {
     return async (dispatch) => {
       const response = await fetch(
-        API.PAPER({ paperId }),
+        API.PAPER({ paperId, progress }),
         API.PATCH_FILE_CONFIG(shims.paperPost(body))
       ).catch(utils.handleCatch);
 
