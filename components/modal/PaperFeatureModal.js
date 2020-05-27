@@ -172,7 +172,7 @@ class PaperFeatureModal extends React.Component {
       },
       utc: new Date(),
     };
-    return fetch(API.GOOGLE_ANALYTICS(), API.POST_CONFIG(payload))
+    return fetch(API.GOOGLE_ANALYTICS({}), API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {});
@@ -216,7 +216,12 @@ class PaperFeatureModal extends React.Component {
     let paperId = this.props.paperId;
     let bullet = this.formatNewBullet();
     this.setState({ pendingSubmission: true });
-    await postBullet({ paperId, bullet, prevState: bulletsRedux });
+    await postBullet({
+      paperId,
+      bullet,
+      prevState: bulletsRedux,
+      progress: true,
+    });
     if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
       showMessage({ show: false });
       setMessage("Key takeaway successfully added!");
@@ -238,7 +243,12 @@ class PaperFeatureModal extends React.Component {
     let limitation = this.formatNewLimitation();
 
     this.setState({ pendingSubmission: true });
-    await postLimitation({ paperId, limitation, prevState: limitations });
+    await postLimitation({
+      paperId,
+      limitation,
+      prevState: limitations,
+      progress: true,
+    });
     if (!this.props.limitations.pending && this.props.limitations.success) {
       showMessage({ show: false });
       setMessage("Limitation successfully added!");
@@ -294,7 +304,7 @@ class PaperFeatureModal extends React.Component {
       summary_plain_text,
     };
 
-    return fetch(API.SUMMARY({}), API.POST_CONFIG(param))
+    return fetch(API.SUMMARY({ progress: true }), API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -356,7 +366,7 @@ class PaperFeatureModal extends React.Component {
 
     let config = await API.POST_CONFIG(param);
 
-    return fetch(API.DISCUSSION(paperId), config)
+    return fetch(API.DISCUSSION(paperId, null, null, true), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -440,7 +450,7 @@ class PaperFeatureModal extends React.Component {
     let body = {
       file: paperInReduxState.url ? paperInReduxState.url : paperInReduxState,
     };
-    await patchPaper(paperId, body);
+    await patchPaper(paperId, body, true);
     let paperState = this.props.paper;
 
     if (paperState.success) {

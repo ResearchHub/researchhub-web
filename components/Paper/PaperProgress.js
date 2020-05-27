@@ -146,7 +146,7 @@ class PaperProgress extends React.Component {
       },
       utc: new Date(),
     };
-    return fetch(API.GOOGLE_ANALYTICS(), API.POST_CONFIG(payload))
+    return fetch(API.GOOGLE_ANALYTICS({}), API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {});
@@ -223,7 +223,10 @@ class PaperProgress extends React.Component {
     params.append("paper", paperId);
     params.append("figure_type", "FIGURE");
 
-    return fetch(API.ADD_FIGURE({ paperId }), API.POST_FILE_CONFIG(params))
+    return fetch(
+      API.ADD_FIGURE({ paperId, progress: true }),
+      API.POST_FILE_CONFIG(params)
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -362,10 +365,11 @@ class PaperProgress extends React.Component {
               )}
             </div>
             {section.label}
+            {!!section.count && ":"}
             {!!section.count && (
               <span className={css(styles.count)}>
                 {section.label === "Summary"
-                  ? `${Math.min(section.count, 250)}/250 char`
+                  ? `${Math.min(section.count, 250)}/250 chars`
                   : `${Math.min(section.count, 3)}/3`}
               </span>
             )}

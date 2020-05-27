@@ -57,13 +57,16 @@ export const BulletActions = {
         });
     };
   },
-  postBullet: ({ paperId, bullet, prevState }) => {
+  postBullet: ({ paperId, bullet, prevState, progress }) => {
     return (dispatch) => {
       dispatch({
         type: BulletsConstants.POST_BULLET,
         payload: { pending: true, success: false },
       });
-      return fetch(API.BULLET_POINT({ paperId }), API.POST_CONFIG(bullet))
+      return fetch(
+        API.BULLET_POINT({ paperId, progress }),
+        API.POST_CONFIG(bullet)
+      )
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
