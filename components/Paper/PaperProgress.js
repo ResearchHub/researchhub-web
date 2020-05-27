@@ -364,7 +364,7 @@ class PaperProgress extends React.Component {
             {!!section.count && (
               <span className={css(styles.count)}>
                 {section.label === "Summary"
-                  ? `${Math.min(section.count, 250)}/250`
+                  ? `${Math.min(section.count, 250)}/250 char`
                   : `${Math.min(section.count, 3)}/3`}
               </span>
             )}
