@@ -55,8 +55,6 @@ function PaperTab(props) {
   }
 
   useEffect(() => {
-    console.log("called");
-
     setFile(store.getState().paper.file || store.getState().paper.pdf_url);
     setPaperUrl(store.getState().paper.url);
   }, [store.getState().paper.file]);
