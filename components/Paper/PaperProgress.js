@@ -66,6 +66,8 @@ class PaperProgress extends React.Component {
       return this.formatSections();
     } else if (prevProps.commentCount !== this.props.commentCount) {
       return this.formatSections();
+    } else if (prevProps.paper.file !== this.props.paper.file) {
+      return this.formatSections();
     }
   }
 
@@ -93,7 +95,7 @@ class PaperProgress extends React.Component {
       },
       {
         label: "Paper PDF",
-        active: paper.url || paper.file,
+        active: paper.file,
       },
       {
         label: "Figures",
@@ -147,7 +149,14 @@ class PaperProgress extends React.Component {
             if (summary.length >= 250) {
               progress += 25;
             } else {
-              progress += (summary.length / 250) * 25;
+              progress += (Math.min(250, summary.length) / 250) * 25;
+            }
+          } else if (
+            section.label === "Figures" ||
+            section.label === "Limitations"
+          ) {
+            if (section.active) {
+              progress += 5;
             }
           } else {
             progress += 25;
