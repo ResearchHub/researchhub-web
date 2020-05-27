@@ -4,6 +4,12 @@ import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
+import { isAndroid, isMobile } from "react-device-detect";
+var isAndroidJS = false;
+if (process.browser) {
+  const ua = navigator.userAgent.toLowerCase();
+  isAndroidJS = ua && ua.indexOf("android") > -1;
+}
 
 import BaseModal from "./BaseModal";
 import FormTextArea from "../Form/FormTextArea";
@@ -24,6 +30,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { thread } from "~/redux/discussion/shims";
 
 const BULLET_COUNT = 5;
 const LIMITATIONS_COUNT = 5;
@@ -36,6 +43,7 @@ class PaperFeatureModal extends React.Component {
       limitationText: "",
       pendingSubmission: false,
       summaryEditorState: null,
+      commentEditorState: null,
     };
     this.state = {
       ...this.initialState,
@@ -69,6 +77,10 @@ class PaperFeatureModal extends React.Component {
     this.setState({ [id]: value });
   };
 
+  handleDiscussionTextEditor = (editorState) => {
+    this.setState({ commentEditorState: editorState });
+  };
+
   transitionWrapper = (fn) => {
     this.setState({ transition: true }, () => {
       setTimeout(() => {
@@ -87,6 +99,8 @@ class PaperFeatureModal extends React.Component {
           return "Add Key Takeaway";
         case "summary":
           return "Add Summary";
+        case "comments":
+          return "Add Comment";
         case "cited-by":
           break;
         case "limitations":
@@ -117,7 +131,7 @@ class PaperFeatureModal extends React.Component {
   };
 
   formatNewBullet = () => {
-    let ordinal = this.props.bulletsRedux.bullets + 1;
+    let ordinal = this.props.bulletsRedux.bullets.length + 1;
 
     if (ordinal > BULLET_COUNT) {
       ordinal = null;
@@ -244,7 +258,6 @@ class PaperFeatureModal extends React.Component {
           localStorage.removeItem(localStorageKey);
         }
         if (!res.approved) {
-          // this.initializeSummary();
           setMessage("Edits Submitted for Approval!");
         } else {
           updatePaperState("summary", { ...res });
@@ -259,6 +272,66 @@ class PaperFeatureModal extends React.Component {
         showMessage({ show: false });
         setMessage("Something went wrong");
         showMessage({ show: true, load: true });
+      });
+  };
+
+  submitComment = async (text, plain_text) => {
+    let {
+      setMessage,
+      showMessage,
+      checkUserFirstTime,
+      updatePaperState,
+      auth,
+      paper,
+    } = this.props;
+    if (
+      this.state.commentEditorState.document.text === "" &&
+      ((!isAndroid || !isAndroidJS) && isMobile)
+    ) {
+      setMessage("Fields must not be empty.");
+      return showMessage({ show: true, error: true });
+    }
+    let paperId = paper.id;
+    showMessage({ load: true, show: true });
+
+    let param = {
+      text:
+        isAndroid || isAndroidJS
+          ? text
+          : this.state.commentEditorState.toJSON(),
+      paper: paperId,
+      plain_text:
+        isAndroid || isAndroidJS
+          ? plain_text
+          : Plain.serialize(this.state.commentEditorState),
+    };
+
+    let config = await API.POST_CONFIG(param);
+
+    return fetch(API.DISCUSSION(paperId), config)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        let { props, isOpen } = this.props.modals.openPaperFeatureModal;
+        let newDiscussion = { ...resp };
+        newDiscussion = thread(newDiscussion);
+        props.setDiscussionThreads([newDiscussion, ...props.threads]);
+        props.setCount(props.commentCount + 1);
+        setTimeout(() => {
+          showMessage({ show: false });
+          setMessage("Successfully Saved!");
+          showMessage({ show: true });
+          checkUserFirstTime(!auth.user.has_seen_first_coin_modal);
+          this.closeModal();
+        }, 800);
+      })
+      .catch((err) => {
+        console.log("err", err);
+        setTimeout(() => {
+          showMessage({ show: false });
+          setMessage("Something went wrong");
+          showMessage({ show: true, error: true });
+        }, 800);
       });
   };
 
@@ -310,14 +383,7 @@ class PaperFeatureModal extends React.Component {
           );
         case "summary":
           return (
-            <div
-              className={css(
-                styles.container
-                // styles.noSummaryContainer,
-                // transition && styles.transition
-              )}
-              id="summary-tab"
-            >
+            <div className={css(styles.container)} id="summary-tab">
               <div className={css(styles.summaryEdit)}>
                 <div className={css(styles.headerContainer)}>
                   <div className={css(styles.guidelines)}>
@@ -406,6 +472,23 @@ class PaperFeatureModal extends React.Component {
               </div>
             </div>
           );
+        case "comments":
+          return (
+            <div className={css(styles.commentContainer)}>
+              <TextEditor
+                canEdit={true}
+                readOnly={false}
+                onChange={this.handleDiscussionTextEditor}
+                placeholder={"Leave a question or a comment"}
+                initialValue={this.state.commentEditorState}
+                commentEditor={true}
+                smallToolBar={true}
+                onCancel={this.closeModal}
+                onSubmit={this.submitComment}
+                commentEditorStyles={styles.commentEditorStyles}
+              />
+            </div>
+          );
         default:
           break;
       }
@@ -432,6 +515,12 @@ const styles = StyleSheet.create({
     padding: "20px",
     paddingBottom: 0,
     width: 600,
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: "80%",
+    },
   },
   // KEY TAKEAWAYS && LIMITATIONS
   bulletForm: {
@@ -545,6 +634,21 @@ const styles = StyleSheet.create({
   },
   customButtonStyle: {
     // width: 'unset'
+  },
+  commentContainer: {
+    border: "1px solid #E7E7E7",
+    width: "100%",
+    boxSizing: "border-box",
+  },
+  commentEditorStyles: {
+    width: "100%",
+    boxSizing: "border-box",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
 });
 

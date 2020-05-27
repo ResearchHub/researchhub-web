@@ -227,7 +227,9 @@ class BulletsContainer extends React.Component {
   };
 
   showForm = () => {
-    if (this.state.showForm) {
+    let { showForm, pendingSubmission } = this.state;
+
+    if (showForm) {
       return (
         <div
           className={css(styles.bulletForm, showForm && styles.showBulletForm)}

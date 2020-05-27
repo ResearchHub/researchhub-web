@@ -28,7 +28,7 @@ class FigureTab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      figures: [],
+      figures: this.props.figures ? this.props.figures : [],
       currentSlideIndex: 0,
       fetching: true,
       file: null,
@@ -40,16 +40,16 @@ class FigureTab extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchFigures();
+    this.setState({ fetching: false });
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.paperId !== this.props.paperId) {
-      this.fetchFigures();
+      this.setState({ figures: this.props.figures, fetching: false });
     } else if (
       JSON.stringify(prevProps.figures) !== JSON.stringify(this.props.figures)
     ) {
-      this.setState({ figures: this.props.figures });
+      this.setState({ figures: this.props.figures, fetching: false });
     }
   }
 
