@@ -246,7 +246,12 @@ class RichTextEditor extends React.Component {
           <div className={css(styles.summaryEditor)}>
             {!this.props.readOnly && (
               // <Sticky enabled={true} innerZ={3} bottom={30}>
-              <div className={css(styles.stickyBottom)}>
+              <div
+                className={css(
+                  styles.stickyBottom,
+                  this.props.removeStickyToolbar && styles.removeStickyToolbar
+                )}
+              >
                 <ToolBar
                   cancel={this.props.cancel}
                   submit={this.props.submit}
@@ -1176,6 +1181,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     top: 59,
     zIndex: 3,
+  },
+  removeStickyToolbar: {
+    position: "unset",
   },
   urlToolTip: {
     top: 60,
