@@ -89,6 +89,7 @@ const PaperTabBar = (props) => {
     ) {
       setSelectedTab("key takeaways");
     } else if (
+      document.getElementById("summary-tab") &&
       window.scrollY <= calculateOffset("summary-tab", -navbarHeight)
     ) {
       setSelectedTab("summary");
