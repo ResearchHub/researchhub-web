@@ -501,7 +501,7 @@ const routes = (BASE_URL) => {
       return BASE_URL + `paper/${paperId}/additional_file/`;
     },
     GOOGLE_ANALYTICS: () => {
-      return BASE_URL + "google_analytics/forward_event/";
+      return BASE_URL + "events/forward_event/";
     },
   };
 
