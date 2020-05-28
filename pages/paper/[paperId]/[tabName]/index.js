@@ -261,8 +261,12 @@ const Paper = (props) => {
       { href: "takeaways", label: "key takeaways" },
     ];
 
-    if (store.getState().paper.summary) {
-      tabs.push({ href: "summary", label: "summary" });
+    if (paper.summary || paper.abstract) {
+      if (paper.summary) {
+        tabs.push({ href: "summary", label: "summary" });
+      } else {
+        tabs.push({ href: "summary", label: "abstract" });
+      }
     }
     tabs.push({ href: "comments", label: "comments" });
     if (figureCount) {
