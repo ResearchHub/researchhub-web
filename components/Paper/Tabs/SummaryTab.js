@@ -19,6 +19,7 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
+import FormTextArea from "~/components/Form/FormTextArea";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -29,7 +30,7 @@ import { AuthActions } from "~/redux/auth";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
-import { update } from "immutable";
+import icons from "~/config/themes/icons";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -44,6 +45,10 @@ class SummaryTab extends React.Component {
       transition: false,
       firstLoad: true,
       summaryExists: false,
+      // abstract
+      abstract: "",
+      showAbstract: false,
+      editAbstract: false,
     };
   }
 
@@ -85,7 +90,13 @@ class SummaryTab extends React.Component {
   };
 
   submitEdit = (raw, plain_text) => {
-    let { setMessage, showMessage, checkUserFirstTime, getUser } = this.props;
+    let {
+      setMessage,
+      showMessage,
+      checkUserFirstTime,
+      getUser,
+      updatePaperState,
+    } = this.props;
     let value = this.state.editorState;
     let summary = value.toJSON({ preserveKeys: true });
     let summary_plain_text = Plain.serialize(value);
@@ -116,6 +127,7 @@ class SummaryTab extends React.Component {
           let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
           checkUserFirstTime(firstTime);
           getUser();
+          updatePaperState("summary", resp);
           this.setState({
             summaryExists: true,
           });
@@ -149,6 +161,7 @@ class SummaryTab extends React.Component {
 
     this.setState({
       readOnly: false,
+      editAbstract: false,
     });
 
     /********************************************************************************
@@ -166,6 +179,36 @@ class SummaryTab extends React.Component {
         editorState,
       });
     }
+  };
+
+  editAbstract = () => {
+    this.setState({ editAbstract: !this.state.editAbstract });
+  };
+
+  handleAbstract = (id, value) => {
+    this.setState({ abstract: value });
+  };
+
+  submitAbstract = () => {
+    const { paper, setMessage, showMessage } = this.props;
+    showMessage({ show: true, load: true });
+    let body = {
+      abstract: this.state.abstract,
+    };
+
+    this.props
+      .patchPaper(paper.id, body)
+      .then((res) => {
+        showMessage({ show: false });
+        setMessage("Abstract successfully edited.");
+        showMessage({ show: true });
+        this.setState({ editAbstract: false });
+      })
+      .catch((err) => {
+        showMessage({ show: false });
+        setMessage("Something went wrong.");
+        showMessage({ show: true, error: true });
+      });
   };
 
   showDesktopMsg = () => {
@@ -186,6 +229,10 @@ class SummaryTab extends React.Component {
           editorState,
           finishedLoading: true,
         });
+      }
+    } else {
+      if (paper.abstract) {
+        this.setState({ abstract: paper.abstract });
       }
     }
   };
@@ -210,6 +257,139 @@ class SummaryTab extends React.Component {
     }
   }
 
+  renderAbstract = () => {
+    let { paper } = this.props;
+    if (paper.abstract) {
+      return (
+        <a name="summary">
+          <div
+            className={css(styles.container)}
+            ref={this.props.descriptionRef}
+            id="summary-tab"
+          >
+            {this.state.readOnly ? (
+              <div className={css(styles.sectionHeader)}>
+                <div className={css(styles.sectionTitle)}>Abstract</div>
+                <div className={css(styles.summaryActions)}>
+                  <PermissionNotificationWrapper
+                    modalMessage="propose abstract edit"
+                    onClick={this.editAbstract}
+                    loginRequired={true}
+                  >
+                    <div className={css(styles.action, styles.editAction)}>
+                      <div className={css(styles.pencilIcon)}>
+                        <i className="fas fa-pencil"></i>
+                      </div>
+                      Edit Abstract
+                    </div>
+                  </PermissionNotificationWrapper>
+                  <PermissionNotificationWrapper
+                    modalMessage="propose summary"
+                    onClick={this.edit}
+                    permissionKey="ProposeSummaryEdit"
+                    loginRequired={true}
+                  >
+                    <div className={css(styles.action, styles.editAction)}>
+                      <div className={css(styles.pencilIcon)}>
+                        {icons.plusCircle}
+                      </div>
+                      Add Summary
+                    </div>
+                  </PermissionNotificationWrapper>
+                </div>
+              </div>
+            ) : (
+              <div className={css(styles.headerContainer)}>
+                <div className={css(styles.header)}>Adding Summary</div>
+                <div className={css(styles.guidelines)}>
+                  Please review our{" "}
+                  <a
+                    className={css(styles.authorGuidelines)}
+                    href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+                    target="_blank"
+                  >
+                    Summary Guidelines
+                  </a>{" "}
+                  to see how to write for ResearchHub
+                </div>
+                <TextEditor
+                  canEdit={true}
+                  readOnly={this.state.readOnly}
+                  canSubmit={true}
+                  commentEditor={false}
+                  initialValue={this.state.editorState}
+                  passedValue={this.state.editorState}
+                  placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
+                    
+                    Hypothesis: What question does this paper attempt to answer?
+
+                    Conclusion: What conclusion did the paper reach?
+
+                    Significance: What does this paper make possible in the world, and what should be tried from here?
+                    `}
+                  onCancel={this.cancel}
+                  onSubmit={this.submitEdit}
+                  onChange={this.onEditorStateChange}
+                  smallToolBar={true}
+                  hideButton={true}
+                  commentStyles={
+                    this.state.readOnly
+                      ? styles.commentReadStyles
+                      : styles.commentStyles
+                  }
+                />
+                <div className={css(styles.buttonRow)}>
+                  <Ripples
+                    className={css(styles.cancelButton)}
+                    onClick={this.cancel}
+                  >
+                    Cancel
+                  </Ripples>
+                  <Ripples
+                    className={css(styles.submitButton)}
+                    onClick={this.submitEdit}
+                  >
+                    Submit
+                  </Ripples>
+                </div>
+              </div>
+            )}
+            {this.state.readOnly && !this.state.editAbstract && (
+              <Fragment>
+                <div className={css(styles.abstractContainer)}>
+                  {this.state.abstract}
+                </div>
+              </Fragment>
+            )}
+            {this.state.editAbstract && (
+              <div className={css(styles.abstractTextEditor)}>
+                <FormTextArea
+                  value={this.state.abstract}
+                  onChange={this.handleAbstract}
+                  containerStyle={styles.formContainerStyle}
+                />
+                <div className={css(styles.buttonRow)}>
+                  <Ripples
+                    className={css(styles.cancelButton)}
+                    onClick={this.editAbstract}
+                  >
+                    Cancel
+                  </Ripples>
+                  <Ripples
+                    className={css(styles.submitButton)}
+                    onClick={this.submitAbstract}
+                  >
+                    Submit
+                  </Ripples>
+                </div>
+              </div>
+            )}
+          </div>
+        </a>
+      );
+    }
+  };
+
   render() {
     let { paper } = this.props;
     let { transition } = this.state;
@@ -226,7 +406,7 @@ class SummaryTab extends React.Component {
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
-        {paper.summary && (
+        {paper.summary ? (
           <a name="summary">
             {(paper.summary && paper.summary.summary) ||
             this.state.summaryExists ? (
@@ -419,6 +599,8 @@ Significance: What does this paper make possible in the world, and what should b
               </div>
             )}
           </a>
+        ) : (
+          this.renderAbstract()
         )}
         <ManageBulletPointsModal paperId={this.props.paperId} />
       </ComponentWrapper>
@@ -467,7 +649,11 @@ var styles = StyleSheet.create({
     marginTop: 30,
   },
   abstractContainer: {
-    marginTop: 32,
+    width: "100%",
+    // marginTop: 32,
+    lineHieght: 1.6,
+    display: "flex",
+    justifyContent: "flex-start",
   },
   abstractText: {
     lineHeight: 1.6,
@@ -483,6 +669,15 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  abstractTextEditor: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+  },
+  formContainerStyle: {
+    paddingBottom: 0,
+    marginBottom: 0,
   },
   sectionHeader: {
     display: "flex",
@@ -501,6 +696,7 @@ var styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
+    // display: 'flex',
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
@@ -739,6 +935,17 @@ var styles = StyleSheet.create({
       fontSize: 12,
     },
   },
+  description: {
+    fontStyle: "italic",
+    fontSize: 12,
+  },
+  tabLabel: {
+    color: colors.BLUE(),
+    fontSize: 14,
+    padding: "5px 8px",
+    cursor: "pointer",
+    backgroundColor: "#edeefe",
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -747,11 +954,13 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  getEditHistory: PaperActions.getEditHistory,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
+  getEditHistory: PaperActions.getEditHistory,
+  patchPaper: PaperActions.patchPaper,
+  updatePaperState: PaperActions.updatePaperState,
 };
 
 export default connect(
