@@ -103,7 +103,8 @@ const styles = StyleSheet.create({
     borderColor: "rgb(235, 235, 235)",
     padding: 16,
     display: "flex",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     background: "#fff",
     "@media only screen and (max-width: 577px)": {
@@ -113,6 +114,7 @@ const styles = StyleSheet.create({
   iconRow: {
     display: "flex",
     flexWrap: "wrap",
+    marginBottom: 10,
   },
   smallToolBar: {
     fontSize: 11,
@@ -150,9 +152,9 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
-
+    width: "100%",
     "@media only screen and (max-width: 577px)": {
       marginTop: 16,
     },

@@ -20,6 +20,7 @@ export const ModalConstants = {
   MANAGE_BULLET_POINTS_MODAL_TOGGLE: "@@modal/MANAGE_BULLET_POINTS_TOGGLE",
   SIGN_UP_MODAL_TOGGLE: "@@modal/SIGN_UP_MODAL_TOGGLE",
   OPEN_DND_MODAL_TOGGLE: "@@modal/OPEN_DND_MODAL_TOGGLE",
+  PAPER_FEATURE_MODAL_TOGGLE: "@@modal/PAPER_FEATURE_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -186,6 +187,19 @@ export const ModalActions = {
       });
     };
   },
+  openPaperFeatureModal: (openModal, props) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.PAPER_FEATURE_MODAL_TOGGLE,
+        payload: {
+          openPaperFeatureModal: {
+            isOpen: openModal,
+            props,
+          },
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -216,6 +230,10 @@ const defaultModalState = {
     isOpen: false,
     props: {},
   },
+  openPaperFeatureModal: {
+    isOpen: false,
+    props: {},
+  },
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -233,6 +251,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.MANAGE_BULLET_POINTS_TOGGLE:
     case ModalConstants.SIGN_UP_MODAL_TOGGLE:
     case ModalConstants.OPEN_DND_MODAL_TOGGLE:
+    case ModalConstants.PAPER_FEATURE_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
