@@ -19,6 +19,7 @@ import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
+import PaperProgress from "~/components/Paper/PaperProgress";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -576,6 +577,7 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                 </div>
+
                 <div className={css(styles.mobile)}>{this.renderPreview()}</div>
                 <div className={css(styles.mobile)}>{this.renderHubs()}</div>
               </div>
@@ -593,6 +595,9 @@ class PaperPageCard extends React.Component {
             {this.renderHubs()}
           </div>
         </div>
+        {/* <div className={css(styles.paperProgress)}>
+          <PaperProgress paper={paper} />
+        </div> */}
         {this.state.width > 0 && (
           <div
             className={css(styles.absolutePreview)}
@@ -942,7 +947,7 @@ const styles = StyleSheet.create({
   },
   uploadedBy: {
     marginBottom: 10,
-    width: "100%",
+    // width: "100%",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
@@ -956,6 +961,11 @@ const styles = StyleSheet.create({
   uploadIcon: {
     marginLeft: 10,
     opacity: 1,
+  },
+  paperProgress: {
+    position: "absolute",
+    bottom: 30,
+    right: 220,
   },
 });
 

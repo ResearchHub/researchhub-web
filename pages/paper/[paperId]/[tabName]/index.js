@@ -21,12 +21,15 @@ import LimitationTab from "~/components/Paper/Tabs/LimitationTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
+import PaperProgress from "~/components/Paper/PaperProgress";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 import VoteActions from "~/redux/vote";
+import { LimitationsActions } from "~/redux/limitations";
+import { BulletActions } from "~/redux/bullets";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
@@ -50,13 +53,18 @@ const Paper = (props) => {
   const [flagged, setFlag] = useState(paper.user_flag !== null);
   const [sticky, setSticky] = useState(false);
   const [scrollView, setScrollView] = useState(false);
+
   const [discussionThreads, setDiscussionThreads] = useState(
     getDiscussionThreads(paper)
   );
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper.userVote.voteType)
   );
-  const [figureCount, setFigureCount] = useState(0);
+  const [figureCount, setFigureCount] = useState();
+  const [limitCount, setLimitCount] = useState(
+    store.getState().limitations.limits.length
+  );
+  const [tabs, setTabs] = useState(getActiveTabs());
 
   const [steps, setSteps] = useState([
     {
@@ -99,15 +107,35 @@ const Paper = (props) => {
       .then(Helpers.parseJSON)
       .then((res) => {
         setLoadingReferencedBy(false);
-        let newReferencedBy = [...referencedBy, ...res.results];
+        let newReferencedBy = [...res.results];
         setReferencedBy(newReferencedBy);
         setReferencedByCount(res.count);
       });
   };
 
+  const fetchFigures = () => {
+    let paperId = paper.id;
+    return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setFigureCount(res.data.length);
+        dispatch(PaperActions.updatePaperState("figures", res.data));
+      });
+  };
+
   useEffect(() => {
-    fetchReferences();
-  }, []);
+    setTabs(getActiveTabs());
+  }, [store.getState().paper.summary]);
+
+  useEffect(() => {
+    setTabs(getActiveTabs());
+  }, [figureCount]);
+
+  useEffect(() => {
+    setLimitCount(store.getState().limitations.limits.length);
+    setTabs(getActiveTabs());
+  }, [store.getState().limitations.limits.length]);
 
   async function refetchPaper() {
     setLoadingPaper(true);
@@ -136,6 +164,8 @@ const Paper = (props) => {
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
       refetchPaper();
+      fetchReferences();
+      fetchFigures();
     }
   }, [paperId]);
 
@@ -209,6 +239,32 @@ const Paper = (props) => {
       setScrollView(false);
       setSticky(false);
     }
+  }
+
+  function getActiveTabs() {
+    let tabs = [
+      { href: "main", label: "main" },
+      { href: "takeaways", label: "key takeaways" },
+    ];
+
+    if (store.getState().paper.summary) {
+      tabs.push({ href: "summary", label: "summary" });
+    }
+    tabs.push({ href: "comments", label: "comments" });
+    if (figureCount) {
+      tabs.push({ href: "figures", label: "figures" });
+    }
+    if (paper.file || paper.url) {
+      tabs.push({ href: "paper", label: "Paper PDF" });
+    }
+    if (referencedByCount) {
+      tabs.push({ href: "citations", label: "cited by" });
+    }
+    if (store.getState().limitations.limits.length > 0) {
+      tabs.push({ href: "limitations", label: "limitations" });
+    }
+
+    return tabs;
   }
 
   function calculateCommentCount() {
@@ -287,9 +343,24 @@ const Paper = (props) => {
               discussionCount={discussionCount}
               paper={paper}
               figureCount={figureCount}
+              activeTabs={tabs}
             />
           </div>
           <div className={css(styles.contentContainer)}>
+            <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+              <div className={css(styles.paperProgress)}>
+                <PaperProgress
+                  setFigureCount={setFigureCount}
+                  figureCount={figureCount}
+                  setLimitCount={setLimitCount}
+                  commentCount={discussionCount}
+                  setCount={setCount}
+                  // comments threads
+                  threads={discussionThreads}
+                  setDiscussionThreads={setDiscussionThreads}
+                />
+              </div>
+            </ComponentWrapper>
             <SummaryTab
               paperId={paperId}
               paper={paper}
@@ -309,15 +380,17 @@ const Paper = (props) => {
                 />
               </div>
             </a>
-            <a name="figures">
-              <div className={css(styles.figuresContainer)}>
-                <FigureTab
-                  paperId={paperId}
-                  paper={paper}
-                  setFigureCount={setFigureCount}
-                />
-              </div>
-            </a>
+            {figureCount > 0 ? (
+              <a name="figures">
+                <div className={css(styles.figuresContainer)}>
+                  <FigureTab
+                    paperId={paperId}
+                    paper={paper}
+                    setFigureCount={setFigureCount}
+                  />
+                </div>
+              </a>
+            ) : null}
             <a name="paper">
               <div id="paper-tab" className={css(styles.paperTabContainer)}>
                 <PaperTab
@@ -329,65 +402,74 @@ const Paper = (props) => {
                 />
               </div>
             </a>
-            <a name="citations">
-              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                <ReactPlaceholder
-                  ready={!loadingReferencedBy}
-                  showLoadingAnimation
-                  customPlaceholder={
-                    <CitationPreviewPlaceholder color="#efefef" />
-                  }
-                >
-                  <div
-                    className={css(styles.citationContainer)}
-                    ref={citationRef}
-                    id="citedby-tab"
+            {referencedByCount > 0 ? (
+              <a name="citations">
+                <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+                  <ReactPlaceholder
+                    ready={!loadingReferencedBy}
+                    showLoadingAnimation
+                    customPlaceholder={
+                      <CitationPreviewPlaceholder color="#efefef" />
+                    }
                   >
-                    <div className={css(styles.header)}>
-                      <div className={css(styles.citationTitle)}>Cited By</div>
-                      <span className={css(styles.citationCount)}>
-                        {referencedByCount > 0 && referencedByCount}
-                      </span>
-                    </div>
-                    <div className={css(styles.citations)}>
-                      {referencedBy.length > 0 ? (
-                        referencedBy.map((reference, id) => {
-                          return (
-                            <CitationCard
-                              key={`citation-${reference.id}-${id}`}
-                              citation={reference}
-                            />
-                          );
-                        })
-                      ) : (
-                        <div className={css(styles.citationEmpty)}>
-                          <div className={css(styles.icon)}>
-                            <i className="fad fa-file-alt" />
-                          </div>
-                          This paper has not been cited yet
-                          <div className={css(styles.citationEmptySubtext)}>
-                            No citations have been found in RH papers
-                          </div>
+                    <div
+                      className={css(styles.citationContainer)}
+                      ref={citationRef}
+                      id="citedby-tab"
+                    >
+                      <div className={css(styles.header)}>
+                        <div className={css(styles.citationTitle)}>
+                          Cited By
                         </div>
-                      )}
+                        <span className={css(styles.citationCount)}>
+                          {referencedByCount > 0 && referencedByCount}
+                        </span>
+                      </div>
+                      <div className={css(styles.citations)}>
+                        {referencedBy.length > 0 ? (
+                          referencedBy.map((reference, id) => {
+                            return (
+                              <CitationCard
+                                key={`citation-${reference.id}-${id}`}
+                                citation={reference}
+                              />
+                            );
+                          })
+                        ) : (
+                          <div className={css(styles.citationEmpty)}>
+                            <div className={css(styles.icon)}>
+                              <i className="fad fa-file-alt" />
+                            </div>
+                            This paper has not been cited yet
+                            <div className={css(styles.citationEmptySubtext)}>
+                              No citations have been found in RH papers
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
+                  </ReactPlaceholder>
+                </ComponentWrapper>
+              </a>
+            ) : null}
+            {limitCount ? (
+              <a name="limitations">
+                <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+                  <div
+                    className={css(
+                      styles.bulletsContainer,
+                      styles.limitsContainer
+                    )}
+                    id="limitations-tab"
+                  >
+                    <LimitationTab
+                      paperId={paperId}
+                      setLimitCount={setLimitCount}
+                    />
                   </div>
-                </ReactPlaceholder>
-              </ComponentWrapper>
-            </a>
-            <a name="limitations">
-              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                <div
-                  className={css(
-                    styles.bulletsContainer,
-                    styles.limitsContainer
-                  )}
-                  id="limitations-tab"
-                >
-                  <LimitationTab paperId={paperId} />
-                </div>
-              </ComponentWrapper>
-            </a>
+                </ComponentWrapper>
+              </a>
+            ) : null}
           </div>
           <Joyride
             steps={steps}
@@ -422,6 +504,8 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
     await store.dispatch(PaperActions.getPaper(query.paperId));
     fetchedPaper = store.getState().paper;
     await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
+    await store.dispatch(LimitationsActions.getLimitations(query.paperId));
+    await store.dispatch(BulletActions.getBullets(query.paperId));
   }
   return { isServer, hostname, paper: fetchedPaper };
 };
@@ -533,6 +617,9 @@ const styles = StyleSheet.create({
       justifyContent: "flex-start",
       alignItems: "flex-start",
     },
+  },
+  paperProgress: {
+    marginTop: 16,
   },
   mobileRow: {
     "@media only screen and (max-width: 760px)": {
@@ -718,6 +805,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   updateUser: AuthActions.updateUser,
   setUploadingPaper: AuthActions.setUploadingPaper,
+  getLimitations: LimitationsActions.getLimitations,
 };
 
 export default connect(

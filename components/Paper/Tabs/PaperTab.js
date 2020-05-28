@@ -55,9 +55,9 @@ function PaperTab(props) {
   }
 
   useEffect(() => {
-    setFile(paper.file || paper.pdf_url);
-    setPaperUrl(paper.url);
-  }, [paper]);
+    setFile(store.getState().paper.file || store.getState().paper.pdf_url);
+    setPaperUrl(store.getState().paper.url);
+  }, [store.getState().paper.file]);
 
   /**
    * @param {Array} acceptedFiles - a list containing the file that the user has uploaded
@@ -217,6 +217,11 @@ function PaperTab(props) {
     }
   }
 
+  function onPdfRemove() {
+    dispatch(PaperActions.updatePaperState("file", null));
+    setFile(null);
+  }
+
   function renderExternalLink() {
     return (
       <Fragment>
@@ -273,7 +278,7 @@ function PaperTab(props) {
                 containerStyle={styles.moderatorButton}
                 actionType={"pdf"}
                 metaData={{ paperId: props.paperId }}
-                onRemove={() => setFile(null)}
+                onRemove={onPdfRemove}
                 icon={" "}
                 iconStyle={styles.iconStyle}
               />
@@ -454,7 +459,7 @@ var styles = StyleSheet.create({
     width: "100%",
     marginTop: 45,
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
   cancelButton: {

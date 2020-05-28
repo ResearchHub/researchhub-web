@@ -226,6 +226,56 @@ class BulletsContainer extends React.Component {
     );
   };
 
+  showForm = () => {
+    let { showForm, pendingSubmission } = this.state;
+
+    if (showForm) {
+      return (
+        <div
+          className={css(styles.bulletForm, showForm && styles.showBulletForm)}
+        >
+          <FormTextArea
+            id={"bulletText"}
+            containerStyle={inputStyles.formContainer}
+            labelStyle={inputStyles.formLabel}
+            inputStyle={inputStyles.formInput}
+            onChange={this.handleBulletText}
+            value={this.state.bulletText}
+            passedRef={this.textInput}
+            autoFocus={true}
+          />
+          <div className={css(styles.buttonRow)}>
+            <Ripples
+              className={css(
+                styles.cancelButton,
+                pendingSubmission && styles.disabled
+              )}
+              onClick={
+                pendingSubmission
+                  ? null
+                  : () => this.transitionWrapper(this.toggleForm)
+              }
+            >
+              Cancel
+            </Ripples>
+            <Button
+              label={
+                pendingSubmission ? (
+                  <Loader loading={true} size={20} color={"#fff"} />
+                ) : (
+                  "Submit"
+                )
+              }
+              size={"small"}
+              onClick={this.submitBulletPoint}
+              disabled={pendingSubmission}
+            />
+          </div>
+        </div>
+      );
+    }
+  };
+
   render() {
     let { showForm, pendingSubmission, transition } = this.state;
     let { openManageBulletPointsModal } = this.props;
@@ -240,52 +290,7 @@ class BulletsContainer extends React.Component {
         <div
           className={css(styles.bulletPoints, transition && styles.transition)}
         >
-          {showForm && (
-            <div
-              className={css(
-                styles.bulletForm,
-                showForm && styles.showBulletForm
-              )}
-            >
-              <FormTextArea
-                id={"bulletText"}
-                containerStyle={inputStyles.formContainer}
-                labelStyle={inputStyles.formLabel}
-                inputStyle={inputStyles.formInput}
-                onChange={this.handleBulletText}
-                value={this.state.bulletText}
-                passedRef={this.textInput}
-                autoFocus={true}
-              />
-              <div className={css(styles.buttonRow)}>
-                <Ripples
-                  className={css(
-                    styles.cancelButton,
-                    pendingSubmission && styles.disabled
-                  )}
-                  onClick={
-                    pendingSubmission
-                      ? null
-                      : () => this.transitionWrapper(this.toggleForm)
-                  }
-                >
-                  Cancel
-                </Ripples>
-                <Button
-                  label={
-                    pendingSubmission ? (
-                      <Loader loading={true} size={20} color={"#fff"} />
-                    ) : (
-                      "Submit"
-                    )
-                  }
-                  size={"small"}
-                  onClick={this.submitBulletPoint}
-                  disabled={pendingSubmission}
-                />
-              </div>
-            </div>
-          )}
+          {this.showForm()}
           {this.renderBulletPoints()}
         </div>
       </div>
