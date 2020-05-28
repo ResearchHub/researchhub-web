@@ -97,8 +97,7 @@ class PaperProgress extends React.Component {
       },
       {
         label: "Comments",
-        active: commentCount >= 3,
-        count: commentCount,
+        active: commentCount > 0,
       },
       {
         label: "Paper PDF",
@@ -157,53 +156,50 @@ class PaperProgress extends React.Component {
 
     var progress = 0; // there are 4 actives
     sections.forEach((section) => {
-      if (!section.optional) {
-        if (section.active) {
-          if (section.label === "Key Takeaways") {
-            let num = bullets.bullets.length * (25 / 3);
-            progress += Math.min(num, 25);
-          } else if (section.label === "Comments") {
-            let num = commentCount * (25 / 3);
-            progress += Math.min(num, 25);
-          } else if (section.label === "Summary") {
-            let summary = paper.summary
-              ? paper.summary.summary &&
-                convertToEditorValue(paper.summary.summary).document.text
-              : "";
+      if (section.active) {
+        if (section.label === "Key Takeaways") {
+          let num = bullets.bullets.length * (33 / 3);
+          progress += Math.min(num, 33);
+        } else if (section.label === "Summary") {
+          let summary = paper.summary
+            ? paper.summary.summary &&
+              convertToEditorValue(paper.summary.summary).document.text
+            : "";
 
-            if (summary.length >= 250) {
-              progress += 25;
-            } else {
-              progress += (Math.min(250, summary.length) / 250) * 25;
-            }
-          } else if (
-            section.label === "Figures" ||
-            section.label === "Limitations"
-          ) {
-            if (section.active) {
-              progress += 2;
-            }
+          if (summary.length >= 250) {
+            progress += 33;
           } else {
-            progress += 25;
+            progress += (Math.min(250, summary.length) / 250) * 33;
           }
-        } else {
-          if (section.label === "Key Takeaways") {
-            let num = bullets.bullets.length * (25 / 3);
-            progress += Math.min(num, 25);
-          } else if (section.label === "Comments") {
-            let num = commentCount * (25 / 3);
-            progress += Math.min(num, 25);
-          } else if (section.label === "Summary") {
-            let summary = paper.summary
-              ? paper.summary.summary &&
-                convertToEditorValue(paper.summary.summary).document.text
-              : "";
+        } else if (section.label === "Paper PDF") {
+          if (section.active) {
+            progress += 33;
+          }
+        } else if (
+          section.label === "Figures" ||
+          section.label === "Limitations"
+        ) {
+          if (section.active) {
+            progress += 2;
+          }
+        } else if (section.label === "Comments") {
+          let num = commentCount * 2;
+          progress += Math.min(num, 4);
+        }
+      } else {
+        if (section.label === "Key Takeaways") {
+          let num = bullets.bullets.length * (33 / 3);
+          progress += Math.min(num, 33);
+        } else if (section.label === "Summary") {
+          let summary = paper.summary
+            ? paper.summary.summary &&
+              convertToEditorValue(paper.summary.summary).document.text
+            : "";
 
-            if (summary.length >= 250) {
-              progress += 25;
-            } else {
-              progress += (Math.min(250, summary.length) / 250) * 25;
-            }
+          if (summary.length >= 250) {
+            progress += 33;
+          } else {
+            progress += (Math.min(250, summary.length) / 250) * 33;
           }
         }
       }
