@@ -128,7 +128,15 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    PAPER: ({ paperId, search, page, filters, highlights, route }) => {
+    PAPER: ({
+      paperId,
+      search,
+      page,
+      filters,
+      highlights,
+      route,
+      progress,
+    }) => {
       let url = BASE_URL + `paper/`;
 
       let params = {
@@ -152,6 +160,11 @@ const routes = (BASE_URL) => {
       }
 
       url += "make_public=true&";
+
+      if (progress) {
+        url += "created_location=progress";
+      }
+
       return url;
     },
 
@@ -195,8 +208,12 @@ const routes = (BASE_URL) => {
       return BASE_URL + "permissions/";
     },
 
-    DISCUSSION: (paperId, filter, page) => {
+    DISCUSSION: (paperId, filter, page, progress) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/`;
+
+      if (progress) {
+        url += "?created_location=progress";
+      }
 
       if (typeof page === "number") {
         url += `?page=${page}`;
@@ -211,13 +228,17 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    SUMMARY: ({ summaryId }) => {
+    SUMMARY: ({ summaryId, progress }) => {
       let url = BASE_URL + `summary/`;
 
       if (summaryId) {
         url += `${summaryId}/?`;
       } else {
         url += "?";
+      }
+
+      if (progress) {
+        url += "created_location=progress";
       }
 
       return url;
@@ -439,7 +460,7 @@ const routes = (BASE_URL) => {
 
       return url + "censor/";
     },
-    BULLET_POINT: ({ paperId, ordinal__isnull, type }) => {
+    BULLET_POINT: ({ paperId, ordinal__isnull, type, progress }) => {
       let url = BASE_URL + `paper/${paperId}/bullet_point/`;
       let params = {
         querystring: {
@@ -459,6 +480,11 @@ const routes = (BASE_URL) => {
       }
 
       url = prepURL(url, params);
+
+      if (progress) {
+        url += "created_location=progress";
+      }
+
       return url;
     },
     EDIT_BULLET_POINT: ({ paperId, bulletId }) => {
@@ -488,8 +514,14 @@ const routes = (BASE_URL) => {
     GET_PAPER_FIGURES_ONLY: ({ paperId }) => {
       return BASE_URL + `figure/${paperId}/get_regular_figures/`;
     },
-    ADD_FIGURE: ({ paperId }) => {
-      return BASE_URL + `figure/${paperId}/add_figure/`;
+    ADD_FIGURE: ({ paperId, progress }) => {
+      let url = BASE_URL + `figure/${paperId}/add_figure/`;
+
+      if (progress) {
+        url += `?created_location=progress`;
+      }
+
+      return url;
     },
     DELETE_FIGURE: ({ figureId }) => {
       return BASE_URL + `figure/${figureId}/delete_figure`;
@@ -500,8 +532,18 @@ const routes = (BASE_URL) => {
     PAPER_FILES: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/additional_file/`;
     },
-    GOOGLE_ANALYTICS: () => {
-      return BASE_URL + "events/forward_event/";
+    GOOGLE_ANALYTICS: ({ ignorePaper, ignoreUser }) => {
+      let url = BASE_URL + "events/forward_event/";
+      if (ignorePaper) {
+        url += "?ignore_paper=true&";
+      }
+      if (ignoreUser && !ignorePaper) {
+        url += "?ignore_user=true&";
+      } else if (ignoreUser && ignorePaper) {
+        url += "ignore_user=true&";
+      }
+
+      return url;
     },
   };
 

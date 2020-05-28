@@ -57,13 +57,16 @@ export const LimitationsActions = {
         });
     };
   },
-  postLimitation: ({ paperId, limitation, prevState }) => {
+  postLimitation: ({ paperId, limitation, prevState, progress }) => {
     return (dispatch) => {
       dispatch({
         type: LimitationsConstants.POST_LIMITATION,
         payload: { pending: true, success: false },
       });
-      return fetch(API.BULLET_POINT({ paperId }), API.POST_CONFIG(limitation))
+      return fetch(
+        API.BULLET_POINT({ paperId, progress }),
+        API.POST_CONFIG(limitation)
+      )
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {

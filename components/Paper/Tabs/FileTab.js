@@ -90,7 +90,6 @@ class FileTab extends React.Component {
         callback();
       })
       .catch((err) => {
-        console.log("err", err);
         showMessage({ show: false });
         setMessage("Something went wrong");
         showMessage({ show: true, error: true });

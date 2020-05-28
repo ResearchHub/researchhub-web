@@ -29,6 +29,7 @@ const PaperReducer = (state = defaultPaperState, action) => {
     case types.UPLOAD_PAPER_TO_STATE:
     case types.REMOVE_PAPER_FROM_STATE:
     case types.CLEAR_POSTED_PAPER:
+    case types.UPDATE_PAPER_STATE:
       return {
         ...state,
         ...action.payload,

@@ -28,6 +28,7 @@ import UploadPaperModal from "../components/modal/UploadPaperModal";
 import Notification from "./Notifications/Notification";
 import SignUpBanner from "./SignUpBanner";
 import DndModal from "../components/modal/DndModal";
+import PaperFeatureModal from "~/components/modal/PaperFeatureModal";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -340,6 +341,7 @@ const Navbar = (props) => {
         <FirstVoteModal />
         <OrcidConnectModal />
         <DndModal />
+        <PaperFeatureModal />
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />

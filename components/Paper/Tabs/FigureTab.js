@@ -16,6 +16,7 @@ import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
+import { PaperActions } from "~/redux/paper";
 
 // Config
 import API from "../../../config/api";
@@ -27,7 +28,7 @@ class FigureTab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      figures: [],
+      figures: this.props.figures ? this.props.figures : [],
       currentSlideIndex: 0,
       fetching: true,
       file: null,
@@ -39,14 +40,16 @@ class FigureTab extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchFigures();
+    this.setState({ fetching: false });
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      if (prevProps.paperId !== this.props.paperId) {
-        this.fetchFigures();
-      }
+    if (prevProps.paperId !== this.props.paperId) {
+      this.setState({ figures: this.props.figures, fetching: false });
+    } else if (
+      JSON.stringify(prevProps.figures) !== JSON.stringify(this.props.figures)
+    ) {
+      this.setState({ figures: this.props.figures, fetching: false });
     }
   }
 
@@ -61,6 +64,7 @@ class FigureTab extends React.Component {
             figures: res.data,
           });
           this.props.setFigureCount(res.data.length);
+          this.props.updatePaperState("figures", res.data);
           setTimeout(() => this.setState({ fetching: false }), 500);
         });
     });
@@ -136,21 +140,29 @@ class FigureTab extends React.Component {
         showMessage({ show: false });
         setMessage("Figure uploaded successfully");
         showMessage({ show: true });
-        this.setState({
-          figures: [...this.state.figures, ...res.files],
-          file: null,
-          currentSlideIndex: this.state.figures.length - 1,
-          pendingSubmission: false,
-        });
-        callback();
-        setTimeout(() => {
-          this.setState({
+        this.setState(
+          {
+            figures: [...this.state.figures, ...res.files],
+            file: null,
             currentSlideIndex: this.state.figures.length - 1,
-          });
-        }, 1000);
+            pendingSubmission: false,
+          },
+          () => {
+            this.props.updatePaperState("figures", [
+              ...this.state.figures,
+              ...res.files,
+            ]);
+            this.props.setFigureCount(this.state.figures.length);
+            callback();
+            setTimeout(() => {
+              this.setState({
+                currentSlideIndex: this.state.figures.length - 1,
+              });
+            }, 1000);
+          }
+        );
       })
       .catch((err) => {
-        console.log("err", err);
         showMessage({ show: false });
         setMessage("Something went wrong");
         showMessage({ show: true, error: true });
@@ -182,6 +194,7 @@ class FigureTab extends React.Component {
         let newFigures = [...this.state.figures];
         newFigures.splice(index, 1);
         this.setState({ figures: newFigures });
+        this.props.setFigureCount(newFigures.length);
         showMessage({ show: true });
       })
       .catch((err) => {
@@ -533,13 +546,18 @@ const styles = StyleSheet.create({
   },
 });
 
+const mapStateToProps = (state) => ({
+  figures: state.paper.figures,
+});
+
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   openDndModal: ModalActions.openDndModal,
+  updatePaperState: PaperActions.updatePaperState,
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(withAlert()(FigureTab));

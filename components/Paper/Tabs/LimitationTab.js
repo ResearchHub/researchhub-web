@@ -46,18 +46,27 @@ class LimitationTab extends React.Component {
 
   componentDidMount = async () => {
     window.addEventListener("mousedown", this.handleOutsideClick);
-    this.fetchLimitations();
+    // this.fetchLimitations();
+    this.setState({ loading: false });
   };
 
   componentDidUpdate = async (prevProps) => {
     if (prevProps !== this.props) {
       if (prevProps.paperId !== this.props.paperId) {
-        this.fetchLimitations();
+        this.setState({
+          limits: this.props.limitations.limits
+            ? this.props.limitations.limits
+            : [],
+          loading: false,
+        });
       } else if (
         JSON.stringify(prevProps.limitations.limits) !==
         JSON.stringify(this.props.limitations.limits)
       ) {
-        this.setState({ limits: this.props.limitations.limits });
+        this.setState({
+          limits: this.props.limitations.limits,
+          loading: false,
+        });
       }
     }
   };
@@ -69,6 +78,7 @@ class LimitationTab extends React.Component {
   fetchLimitations = async () => {
     this.setState({ loading: true });
     await this.props.getLimitations(this.props.paperId);
+    this.props.setLimitCount(this.props.limitations.limits.length);
     this.setState({ loading: false });
   };
 
