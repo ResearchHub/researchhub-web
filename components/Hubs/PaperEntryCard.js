@@ -116,7 +116,10 @@ const PaperEntryCard = ({
       } = uploaded_by.author_profile;
       return (
         <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
-          {`Submitted by ${first_name} ${last_name}`}
+          Submitted by{" "}
+          <span
+            className={css(styles.capitalize)}
+          >{`${first_name} ${last_name}`}</span>
         </div>
       );
     } else if (external_source) {
