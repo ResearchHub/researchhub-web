@@ -56,10 +56,8 @@ const PaperEntryCard = ({
     first_figure,
     first_preview,
     uploaded_by,
-    retrieved_from_external_source,
     external_source,
   } = paper || null;
-  console.log("paper", paper);
   let selected = null;
   let vote_type = 0;
   const [lightbox, toggleLightbox] = useState(false);
