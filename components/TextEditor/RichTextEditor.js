@@ -166,7 +166,7 @@ class RichTextEditor extends React.Component {
 
   ref = (editor) => {
     let style =
-      "pointer-events: none; display: inline-block; max-width: 100%; opacity: 0.333; vertical-align: text-top;";
+      "pointer-events: none; display: inline-block; max-width: 100%; opacity: 1; vertical-align: text-top;";
     if (document.querySelector("[contenteditable='false']")) {
       document.querySelector("[contenteditable='false']").style = style;
     }
