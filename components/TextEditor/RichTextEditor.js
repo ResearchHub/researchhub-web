@@ -1122,6 +1122,7 @@ const styles = StyleSheet.create({
     display: "block",
     maxWidth: "100%",
     maxHeight: 500,
+    opacity: 1,
   },
   deleteImage: {
     position: "absolute",
@@ -1148,7 +1149,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     opacity: "0%",
-
+    opacity: 1,
     ":hover": {
       background: "linear-gradient(#000 1%, transparent 100%)",
       opacity: "100%",
