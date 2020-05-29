@@ -145,7 +145,7 @@ class PaperPageCard extends React.Component {
   };
 
   renderUploadedBy = () => {
-    let { uploaded_by } = this.props.paper;
+    let { uploaded_by, external_source } = this.props.paper;
     if (uploaded_by) {
       let { author_profile } = uploaded_by;
       return (
@@ -155,6 +155,13 @@ class PaperPageCard extends React.Component {
         >
           Submitted by{" "}
           {`${author_profile.first_name} ${author_profile.last_name}`}
+        </div>
+      );
+    } else if (external_source) {
+      return (
+        <div className={css(styles.uploadedBy)}>
+          Retreived from{" "}
+          <span className={css(styles.capitalize)}>{external_source}</span>
         </div>
       );
     } else {
@@ -947,7 +954,7 @@ const styles = StyleSheet.create({
   },
   uploadedBy: {
     marginBottom: 10,
-    // width: "100%",
+    whiteSpace: "pre-wrap",
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
@@ -957,6 +964,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(),
     },
+  },
+  capitalize: {
+    textTransform: "capitalize",
   },
   uploadIcon: {
     marginLeft: 10,
