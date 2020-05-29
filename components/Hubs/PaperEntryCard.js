@@ -56,8 +56,8 @@ const PaperEntryCard = ({
     first_figure,
     first_preview,
     uploaded_by,
+    external_source,
   } = paper || null;
-
   let selected = null;
   let vote_type = 0;
   const [lightbox, toggleLightbox] = useState(false);
@@ -116,7 +116,17 @@ const PaperEntryCard = ({
       } = uploaded_by.author_profile;
       return (
         <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
-          {`Submitted by ${first_name} ${last_name}`}
+          Submitted by{" "}
+          <span
+            className={css(styles.capitalize)}
+          >{`${first_name} ${last_name}`}</span>
+        </div>
+      );
+    } else if (external_source) {
+      return (
+        <div className={css(styles.uploadedBy)}>
+          Retreived from{" "}
+          <span className={css(styles.capitalize)}>{external_source}</span>
         </div>
       );
     } else {
@@ -650,12 +660,16 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     marginBottom: 8,
     cursor: "pointer",
+    whiteSpace: "pre-wrap",
     ":hover": {
       color: colors.BLUE(),
     },
   },
   uploadedByAvatar: {
     marginLeft: 10,
+  },
+  capitalize: {
+    textTransform: "capitalize",
   },
   rhIcon: {
     height: 20,
