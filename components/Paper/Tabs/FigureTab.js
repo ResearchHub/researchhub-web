@@ -237,7 +237,6 @@ class FigureTab extends React.Component {
               wrapAround={true}
               className={css(styles.slider)}
               enableKeyboardControls={true}
-              initialSlideHeight={500}
               afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
               slideIndex={this.state.currentSlideIndex}
               renderBottomCenterControls={() => null}
@@ -411,8 +410,11 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 300,
-    height: "auto",
-    margin: "auto",
+    height: "100%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    marginTop: "auto",
+    marginBottom: "auto",
     outline: "none",
     border: "none",
     objectFit: "contain",
