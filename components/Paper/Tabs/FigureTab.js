@@ -411,11 +411,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 300,
-    height: "100%",
-    marginRight: "auto",
-    marginLeft: "auto",
-    marginTop: "auto",
-    marginBottom: "auto",
+    height: "auto",
+    margin: "auto",
     outline: "none",
     border: "none",
     objectFit: "contain",
