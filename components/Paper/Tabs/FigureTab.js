@@ -237,6 +237,7 @@ class FigureTab extends React.Component {
               wrapAround={true}
               className={css(styles.slider)}
               enableKeyboardControls={true}
+              initialSlideHeight={500}
               afterSlide={(slide) => this.setCurrentSlideIndex(slide)}
               slideIndex={this.state.currentSlideIndex}
               renderBottomCenterControls={() => null}
