@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
+import Router from "next/router";
 
 import { COMPANY_NAME, METATAG_DEFAULT_IMAGE_URL } from "../config/constants";
 
@@ -7,6 +8,7 @@ export default (props) => {
   const title = props.title || `${COMPANY_NAME} | Open Science Community`;
   // TODO: What url can we use when rendered server side?
   const url = props.url || ""; // (window && window.location);
+  const route = Router.router ? Router.router.route && Router.router.route : "";
   const description =
     props.description ||
     `We're a community seeking to improve prioritization, collaboration, reproducibility, and funding of scientific research. Discuss and discover academic research on ${COMPANY_NAME}`;
