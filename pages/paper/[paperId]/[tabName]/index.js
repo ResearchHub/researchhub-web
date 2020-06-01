@@ -170,16 +170,16 @@ const Paper = (props) => {
       refetchPaper();
       fetchReferences();
       fetchFigures();
-      if (document.getElementById("structuredData")) {
-        let script = document.getElementById("structuredData");
-        script.textContext = formatStructuredData();
-      } else {
-        let script = document.createElement("script");
-        script.setAttribute("type", "application/ld+json");
-        script.setAttribute("id", "structuredData");
-        script.textContext = formatStructuredData();
-        document.head.appendChild(script);
-      }
+      // if (document.getElementById("structuredData")) {
+      //   let script = document.getElementById("structuredData");
+      //   script.textContext = formatStructuredData();
+      // } else {
+      //   let script = document.createElement("script");
+      //   script.setAttribute("type", "application/ld+json");
+      //   script.setAttribute("id", "structuredData");
+      //   script.textContext = formatStructuredData();
+      //   document.head.appendChild(script);
+      // }
     }
   }, [paperId]);
 
