@@ -7,6 +7,7 @@ import Error from "next/error";
 import "./styles/anchor.css";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
+import moment from "moment";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -37,6 +38,9 @@ import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { convertToEditorValue } from "~/config/utils";
+import { formatPublishedDate } from "~/config/utils";
+import { transformDate } from "~/redux/utils";
 
 const Paper = (props) => {
   const dispatch = useDispatch();
@@ -166,6 +170,16 @@ const Paper = (props) => {
       refetchPaper();
       fetchReferences();
       fetchFigures();
+      if (document.getElementById("structuredData")) {
+        let script = document.getElementById("structuredData");
+        script.textContext = formatStructuredData();
+      } else {
+        let script = document.createElement("script");
+        script.setAttribute("type", "application/ld+json");
+        script.setAttribute("id", "structuredData");
+        script.textContext = formatStructuredData();
+        document.head.appendChild(script);
+      }
     }
   }, [paperId]);
 
@@ -295,6 +309,49 @@ const Paper = (props) => {
     return count;
   }
 
+  function formatDescription() {
+    if (paper.summary) {
+      if (paper.sumamry.summary) {
+        let summary = convertToEditorValue(paper.summary.summary).document.text;
+        return summary;
+      }
+    } else if (paper.abstract) {
+      return paper.abstract;
+    } else if (paper.tagline) {
+      return paper.tagline;
+    }
+  }
+
+  function formatStructuredData() {
+    let data = {
+      "@context": "https://schema.org/",
+      name: paper.title,
+      keywords: paper.title + "researchhub" + "research hub",
+      description: formatDescription(),
+    };
+
+    let image = [];
+
+    if (paper.first_preview) {
+      image.push(paper.first_preview);
+    }
+    if (paper.first_figure) {
+      image.push(paper.first_figure);
+    }
+    if (image.length) {
+      data["image"] = image;
+    }
+
+    if (paper.publishedDate) {
+      if (formatPublishedDate(paper.publishedDate, true)) {
+        let date = formatPublishedDate(paper.publishedDate, true);
+        data["datePublished"] = date;
+      }
+    }
+
+    return data;
+  }
+
   return (
     <div className={css(styles.container)}>
       {paper.status === 404 ? (
@@ -303,7 +360,7 @@ const Paper = (props) => {
         <Fragment>
           <Head
             title={paper.title}
-            description={paper.tagline}
+            description={formatDescription()}
             socialImageUrl={props.paper.metatagImage}
           />
           <div className={css(styles.paperPageContainer)}>
