@@ -170,16 +170,16 @@ const Paper = (props) => {
       refetchPaper();
       fetchReferences();
       fetchFigures();
-      // if (document.getElementById("structuredData")) {
-      //   let script = document.getElementById("structuredData");
-      //   script.textContext = formatStructuredData();
-      // } else {
-      //   let script = document.createElement("script");
-      //   script.setAttribute("type", "application/ld+json");
-      //   script.setAttribute("id", "structuredData");
-      //   script.textContext = formatStructuredData();
-      //   document.head.appendChild(script);
-      // }
+      if (document.getElementById("structuredData")) {
+        let script = document.getElementById("structuredData");
+        script.textContext = formatStructuredData();
+      } else {
+        let script = document.createElement("script");
+        script.setAttribute("type", "application/ld+json");
+        script.setAttribute("id", "structuredData");
+        script.textContext = formatStructuredData();
+        document.head.appendChild(script);
+      }
     }
   }, [paperId]);
 
@@ -310,15 +310,18 @@ const Paper = (props) => {
   }
 
   function formatDescription() {
-    if (paper.summary) {
-      if (paper.sumamry.summary) {
-        let summary = convertToEditorValue(paper.summary.summary).document.text;
-        return summary;
+    if (paper) {
+      if (paper.summary) {
+        if (paper.summary.summary) {
+          let summary = convertToEditorValue(paper.summary.summary).document
+            .text;
+          return summary;
+        }
+      } else if (paper.abstract) {
+        return paper.abstract;
+      } else if (paper.tagline) {
+        return paper.tagline;
       }
-    } else if (paper.abstract) {
-      return paper.abstract;
-    } else if (paper.tagline) {
-      return paper.tagline;
     }
   }
 
@@ -340,13 +343,6 @@ const Paper = (props) => {
     }
     if (image.length) {
       data["image"] = image;
-    }
-
-    if (paper.publishedDate) {
-      if (formatPublishedDate(paper.publishedDate, true)) {
-        let date = formatPublishedDate(paper.publishedDate, true);
-        data["datePublished"] = date;
-      }
     }
 
     return data;
