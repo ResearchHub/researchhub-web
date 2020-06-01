@@ -129,13 +129,6 @@ const Paper = (props) => {
   };
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.setAttribute("type", "application/ld+json");
-    script.textContext = formatStructuredData();
-    document.head.appendChild(script);
-  });
-
-  useEffect(() => {
     setTabs(getActiveTabs());
   }, [store.getState().paper.summary]);
 
@@ -317,7 +310,7 @@ const Paper = (props) => {
   }
 
   function formatDescription() {
-    if (paper.sumamry) {
+    if (paper.summary) {
       if (paper.sumamry.summary) {
         let summary = convertToEditorValue(paper.summary.summary).document.text;
         return summary;
