@@ -32,7 +32,7 @@ class PaperProgress extends React.Component {
       loading: true,
       sections: [],
       progress: 0,
-      complete: false,
+      complete: true,
     };
     this.state = {
       ...this.initialState,
@@ -188,8 +188,8 @@ class PaperProgress extends React.Component {
         }
       } else {
         if (section.label === "Key Takeaways") {
-          let num = bullets.bullets.length * (33 / 3);
-          progress += Math.min(num, 33);
+          let num = bullets.bullets.length * (34 / 3);
+          progress += Math.min(num, 34);
         } else if (section.label === "Summary") {
           let summary = paper.summary
             ? paper.summary.summary &&
