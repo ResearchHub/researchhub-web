@@ -27,6 +27,7 @@ import LeaderboardPlaceholder from "../../../components/Placeholders/Leaderboard
 import colors from "../../../config/themes/colors";
 import LeaderboardUser from "../../../components/Leaderboard/LeaderboardUser";
 import Loader from "~/components/Loader/Loader";
+import PaperEntryCard from "../../../components/Hubs/PaperEntryCard";
 
 const filterOptions = [
   {
@@ -64,9 +65,20 @@ class Index extends React.Component {
       loadingMore: false,
       page: 1,
       next: null,
+      type: "users",
     };
 
-    this.items = [{ name: "Users", id: "users", type: "users" }];
+    Router.events.on("routeChangeComplete", (url) => {
+      this.setState({
+        type: Router.router.query.type,
+        fetchingLeaderboard: true,
+      });
+    });
+
+    this.items = [
+      { name: "Users", id: "users", type: "users" },
+      { name: "Papers", id: "papers", type: "papers" },
+    ];
   }
 
   /**
@@ -167,14 +179,21 @@ class Index extends React.Component {
   };
 
   componentDidMount() {
-    this.type = decodeURIComponent(Router.router.query.type);
-    this.fetchLeaderboard(this.type);
+    let type = decodeURIComponent(Router.router.query.type);
+    this.setState({
+      type,
+    });
+    this.fetchLeaderboard(type);
     this.setHubs(this.props.hubs.hubs);
   }
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = (prevProps, prevState) => {
     if (prevProps.hubs.hubs !== this.props.hubs.hubs) {
       this.setHubs(this.props.hubs.hubs);
+    }
+
+    if (prevState.type !== this.state.type) {
+      this.fetchLeaderboard(this.state.type);
     }
   };
 
@@ -183,7 +202,7 @@ class Index extends React.Component {
   };
 
   getTitle = () => {
-    let value = this.type;
+    let value = this.state.type;
     let type = "";
     switch (value) {
       case "users":
@@ -223,6 +242,16 @@ class Index extends React.Component {
     }
   };
 
+  renderLeaderboardPapers = () => {
+    return this.state.items.map((paper, index) => {
+      return (
+        <div className={css(styles.paperEntryContainer)}>
+          <PaperEntryCard paper={paper} index={index} />
+        </div>
+      );
+    });
+  };
+
   renderLeaderboardUsers = () => {
     return this.state.items.map((user, index) => {
       return (
@@ -254,11 +283,11 @@ class Index extends React.Component {
    * Rendering items
    */
   renderItems = () => {
-    switch (this.type) {
+    switch (this.state.type) {
       case "users":
         return this.renderLeaderboardUsers();
       default:
-        return null;
+        return this.renderLeaderboardPapers();
     }
   };
 
@@ -273,7 +302,7 @@ class Index extends React.Component {
         <Ripples
           className={css(
             styles.sidebarEntry,
-            this.isCurrentItem(this.type, id) && styles.current
+            this.isCurrentItem(this.state.type, id) && styles.current
           )}
           key={`${id}-${i}`}
         >
