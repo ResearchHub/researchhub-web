@@ -314,7 +314,7 @@ class SummaryTab extends React.Component {
                     <div className={css(styles.pencilIcon)}>
                       <i className="fas fa-pencil"></i>
                     </div>
-                    {paper.abstract ? "Add Abstract" : "Edit Abstract"}
+                    {paper.abstract ? "Edit Abstract" : "Add Abstract"}
                   </div>
                 </PermissionNotificationWrapper>
               </div>
