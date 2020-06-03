@@ -70,15 +70,18 @@ const AuthorAvatar = (props) => {
     );
   }
 
-  function openTwitter(url) {
-    window.open(url, "_blank");
+  if (twitterUrl) {
+    return (
+      <div className={css(styles.avatar)}>
+        <a target="_blank" href={twitterUrl} className={css(styles.atag)}>
+          {renderAvatar()}
+        </a>
+      </div>
+    );
   }
 
   return (
-    <div
-      className={css(styles.avatar)}
-      onClick={() => twitterUrl && openTwitter(twitterUrl)}
-    >
+    <div className={css(styles.avatar)}>
       {disableLink || !authorId ? (
         renderAvatar()
       ) : (
