@@ -146,6 +146,7 @@ const Paper = (props) => {
     await dispatch(PaperActions.getPaper(paperId));
     const fetchedPaper = store.getState().paper;
     await dispatch(PaperActions.getThreads(paperId, fetchedPaper));
+    // await dispatch(PaperActions.getTwitterThreads(paperId, fetchedPaper));
     const refetchedPaper = store.getState().paper;
 
     setLoadingPaper(false);
@@ -576,6 +577,7 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
     await store.dispatch(PaperActions.getPaper(query.paperId));
     fetchedPaper = store.getState().paper;
     await store.dispatch(PaperActions.getThreads(query.paperId, fetchedPaper));
+    // await store.dispatch(PaperActions.getTwitterThreads(query.paperId, fetchedPaper));
     await store.dispatch(LimitationsActions.getLimitations(query.paperId));
     await store.dispatch(BulletActions.getBullets(query.paperId));
   }

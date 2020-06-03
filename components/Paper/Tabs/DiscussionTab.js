@@ -71,6 +71,9 @@ const DiscussionTab = (props) => {
   const [formattedThreads, setFormattedThreads] = useState(
     formatThreads(paper.discussion.threads, basePath)
   );
+  // const [formattedTweets, setFormattedTweets] = useState(
+  //   formatThreads(paper.twitter.threads, basePath)
+  // )
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
@@ -256,6 +259,7 @@ const DiscussionTab = (props) => {
       PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
     );
     const sortedThreads = store.getState().paper.discussion.threads;
+
     setThreads(sortedThreads);
     setFormattedThreads(formatThreads(sortedThreads, basePath));
     setPage(page + 1);
@@ -385,8 +389,9 @@ const DiscussionTab = (props) => {
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-          {store.getState().paper.discussion.threads.length <
-            store.getState().paper.discussion.count && (
+          {(store.getState().paper.discussion.threads.length <
+            store.getState().paper.discussion.count ||
+            store.getState().paper.discussion.next) && (
             <div className={css(styles.buttonContainer)}>
               {loading ? (
                 <Loader

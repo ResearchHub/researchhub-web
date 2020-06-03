@@ -35,6 +35,8 @@ const DiscussionPostMetadata = (props) => {
     onRemove,
     dropDownEnabled,
     toggleEdit,
+    twitter,
+    twitterUrl,
   } = props;
   const alert = useAlert();
   const store = useStore();
@@ -193,8 +195,12 @@ DiscussionPostMetadata.propTypes = {
   authorProfile: PropTypes.object,
 };
 
+function openTwitter(url) {
+  window.open(url, "_blank");
+}
+
 const User = (props) => {
-  const { name, authorProfile, smaller } = props;
+  const { name, authorProfile, smaller, twitterUrl } = props;
   return (
     <div
       className={css(
@@ -207,6 +213,7 @@ const User = (props) => {
         name={name}
         disableLink={false}
         size={smaller && 25}
+        twitterUrl={twitterUrl}
       />
       <div className={css(styles.name)}>{name}</div>
     </div>
@@ -219,11 +226,24 @@ const Timestamp = (props) => {
     <div
       className={css(
         styles.timestampContainer,
-        props.smaller && styles.smallerTimestamp
+        props.smaller && styles.smallerTimestamp,
+        props.twitter && styles.twitterUrl
       )}
+      onClick={() => props.twitterUrl && openTwitter(props.twitterUrl)}
     >
       <span className={css(styles.timestampDivider)}>•</span>
       {timestamp}
+      {props.twitter ? (
+        <Fragment>
+          {" "}
+          from Twitter
+          <div className={css(styles.twitterIcon)}>
+            <i className="fab fa-twitter" />
+          </div>
+        </Fragment>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
@@ -454,6 +474,16 @@ const styles = StyleSheet.create({
   },
   shareIcon: {
     marginRight: -3,
+  },
+  twitterIcon: {
+    marginLeft: 8,
+    color: "#00ACEE",
+  },
+  twitterUrl: {
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
 });
 

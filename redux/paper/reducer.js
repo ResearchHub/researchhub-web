@@ -30,6 +30,7 @@ const PaperReducer = (state = defaultPaperState, action) => {
     case types.REMOVE_PAPER_FROM_STATE:
     case types.CLEAR_POSTED_PAPER:
     case types.UPDATE_PAPER_STATE:
+    case types.GET_TWITTER_THREADS:
       return {
         ...state,
         ...action.payload,
