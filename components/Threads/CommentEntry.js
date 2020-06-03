@@ -65,8 +65,10 @@ class CommentEntry extends React.Component {
         score,
         highlight: this.props.comment.highlight && true,
         canEdit:
-          this.props.auth &&
-          this.props.auth.user.id === this.props.comment.createdBy.id,
+          this.props.comment.source === "twitter"
+            ? false
+            : this.props.auth &&
+              this.props.auth.user.id === this.props.comment.createdBy.id,
       },
       () => {
         setTimeout(() => this.calculateThreadHeight(), 400);
@@ -87,7 +89,10 @@ class CommentEntry extends React.Component {
     if (prevProps.auth !== this.props.auth) {
       let { data, comment } = this.props;
       this.setState({
-        canEdit: this.props.auth.user.id === comment.createdBy.id,
+        canEdit:
+          this.props.comment.source === "twitter"
+            ? false
+            : this.props.auth.user.id === comment.createdBy.id,
       });
     }
   }
@@ -447,9 +452,8 @@ class CommentEntry extends React.Component {
       this.state.replies.length > comment.replyCount
         ? this.state.replies.length
         : comment.replyCount;
-
     let date = comment.createdDate;
-    let body = comment.text;
+    let body = comment.source === "twitter" ? comment.plainText : comment.text;
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
 
@@ -506,6 +510,8 @@ class CommentEntry extends React.Component {
                   // Moderator
                   metaData={metaIds}
                   onRemove={this.removePostUI}
+                  twitter={data.source === "twitter"}
+                  twitterUrl={data.url}
                 />
               </div>
             )}
