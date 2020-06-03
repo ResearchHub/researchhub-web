@@ -107,17 +107,23 @@ export const PaperActions = {
         .then((res) => {
           const updatedPaper = { ...paper };
           let { discussion } = updatedPaper;
+
           // reset the list from page 1 when filter is changed; initial set state
-          if ((!discussion && page === 1) || discussion.filter !== filter) {
+          if (page === 1 || discussion.filter !== filter) {
             discussion.filter = filter; // set filter
             discussion.count = res.count; // set count
             discussion.threads = [...res.results]; // set threads
             discussion.seenPages = {};
             discussion.seenPages[page] = true; // set seenPages ex. { 1: true, 2: true, ...}
+            discussion.next = res.next;
           } else {
             // additional pages are appended to list
-            discussion.threads = [...discussion.threads, ...res.results];
+            discussion.threads = [
+              ...discussion.threads,
+              ...shims.transformThreads(res.results),
+            ];
             discussion.seenPages[page] = true;
+            discussion.next = res.next;
           }
 
           return dispatch({
