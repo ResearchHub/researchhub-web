@@ -33,7 +33,7 @@ class ThreadLine extends React.Component {
     if (prevProps !== this.props) {
       if (prevProps.parentHeight !== this.props.parentHeight) {
         let height = this.props.parent && this.props.parentHeight;
-        this.setState({ height: height });
+        height !== this.state.height && this.setState({ height: height });
       }
 
       if (prevProps.active !== this.props.active) {
