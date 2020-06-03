@@ -262,11 +262,7 @@ const Paper = (props) => {
     ];
 
     if (paper.summary || paper.abstract) {
-      if (paper.summary) {
-        tabs.push({ href: "summary", label: "summary" });
-      } else {
-        tabs.push({ href: "summary", label: "abstract" });
-      }
+      tabs.push({ href: "summary", label: "description" });
     }
     tabs.push({ href: "comments", label: "comments" });
     if (figureCount) {
