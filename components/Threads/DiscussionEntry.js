@@ -20,7 +20,7 @@ import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
-import { transformComments } from "~/redux/discussion/shims";
+import { transformComments } from "~/redux/paper/shims";
 import { createUsername } from "../../config/utils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
@@ -60,7 +60,10 @@ class DiscussionEntry extends React.Component {
         revealComment: comments.length > 0 && comments.length < 6,
         highlight: newCard,
         removed: this.props.data.isRemoved,
-        canEdit: this.props.auth.user.id === data.createdBy.id,
+        canEdit:
+          data.source !== "twitter"
+            ? this.props.auth.user.id === data.createdBy.id
+            : false,
       },
       () => {
         newCard &&
@@ -78,7 +81,10 @@ class DiscussionEntry extends React.Component {
     if (prevProps.auth !== this.props.auth) {
       let { data } = this.props;
       this.setState({
-        canEdit: this.props.auth.user.id === data.createdBy.id,
+        canEdit:
+          data.source !== "twitter"
+            ? this.props.auth.user.id === data.createdBy.id
+            : false,
       });
     }
     this.calculateThreadHeight();
@@ -393,8 +399,8 @@ class DiscussionEntry extends React.Component {
         : data.commentCount;
     let date = data.createdDate;
     let title = data.title;
-    let body = data.text;
-    let username = createUsername(data);
+    let body = data.source === "twitter" ? data.plainText : data.text;
+    let username = data.createdBy ? createUsername(data) : "";
     let metaData = {
       threadId: data.id,
       paperId: data.paper,
@@ -455,7 +461,9 @@ class DiscussionEntry extends React.Component {
                     // Moderator
                     metaData={metaData}
                     onRemove={this.removePostUI}
-                    // Editing
+                    // Twitter
+                    twitter={data.source === "twitter"}
+                    twitterUrl={data.url}
                   />
                 </div>
                 <div className={css(styles.content)}>

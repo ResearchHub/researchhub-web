@@ -344,6 +344,25 @@ const Paper = (props) => {
     if (image.length) {
       data["image"] = image;
     }
+    if (paper.authors && paper.authors.length > 0) {
+      let author = paper.authors[0];
+      let authorData = {
+        "@type": "Person",
+        name: `${author.first_name} ${author.last_name}`,
+      };
+
+      data.author = authorData;
+    }
+
+    if (
+      paper.paper_publish_date &&
+      typeof paper.paper_publish_date === "string"
+    ) {
+      let date = paper.paper_publish_date.split("-");
+      date.pop();
+      date = date.join("-");
+      data["datePublished"] = date;
+    }
 
     return data;
   }
