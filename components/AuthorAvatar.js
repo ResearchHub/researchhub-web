@@ -6,7 +6,13 @@ import colors from "../config/themes/colors";
 
 const AuthorAvatar = (props) => {
   const [error, setError] = useState(false);
-  const { author, size = 30, disableLink, showModeratorBadge } = props;
+  const {
+    author,
+    size = 30,
+    disableLink,
+    showModeratorBadge,
+    twitterUrl,
+  } = props;
   let deviceWidth = null;
   if (process.browser) {
     if (window.outerHeight) {
@@ -63,8 +69,16 @@ const AuthorAvatar = (props) => {
       </div>
     );
   }
+
+  function openTwitter(url) {
+    window.open(url, "_blank");
+  }
+
   return (
-    <div className={css(styles.avatar)}>
+    <div
+      className={css(styles.avatar)}
+      onClick={() => twitterUrl && openTwitter(twitterUrl)}
+    >
       {disableLink || !authorId ? (
         renderAvatar()
       ) : (

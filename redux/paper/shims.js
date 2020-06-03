@@ -11,6 +11,14 @@ export const paper = (paper) => {
       threads: paper.discussion
         ? transformThreads(paper.discussion.threads)
         : [],
+      filter:
+        paper.discussion && paper.discussion.filter
+          ? paper.discussion.filter
+          : null,
+      seenPages:
+        paper.discussion && paper.discussion.seenPages
+          ? paper.discussion.seenPages
+          : null,
     },
     metatagImage: paper.metatag_image,
     userVote: transformVote(paper.user_vote),
@@ -70,6 +78,42 @@ export const vote = (vote) => {
 
 export function transformThreads(threads) {
   return threads.map((thread) => {
+    if (thread.transform) {
+      return thread;
+    }
+    if (thread.source === "twitter") {
+      return {
+        id: thread.id,
+        commentCount: thread.comment_count,
+        comments: transformComments(thread.comments),
+        createdBy: thread.external_metadata
+          ? {
+              authorProfile: {
+                first_name: thread.external_metadata.username,
+                last_name: "",
+                profile_image: thread.external_metadata.picture,
+              },
+            }
+          : {},
+        url: thread.external_metadata ? thread.external_metadata.url : "",
+        createdDate: transformDate(thread.created_date),
+        ipAddress: thread.ip_address,
+        isPublic: thread.is_public,
+        isRemoved: thread.is_removed,
+        paper: thread.paper,
+        plainText: thread.plain_text,
+        score: thread.score,
+        source: thread.source,
+        sourceId: thread.source_id,
+        text: thread.text,
+        updatedDate: thread.updated_date,
+        userFlag: thread.user_flag,
+        userVote: thread.user_vote,
+        username: thread.username,
+        wasEdited: thread.wasEdited,
+        transform: true,
+      };
+    }
     if (thread.created_by) {
       return {
         id: thread.id,
@@ -85,6 +129,7 @@ export function transformThreads(threads) {
         comments: transformComments(thread.comments),
         isRemoved: thread.is_removed,
         userFlag: thread.user_flag,
+        transform: true,
       };
     } else {
       return thread;
@@ -114,6 +159,43 @@ export function transformComments(comments) {
 }
 
 export function transformComment(comment) {
+  if (comment.transform) {
+    return comment;
+  }
+  if (comment.source === "twitter") {
+    return {
+      id: comment.id,
+      replyCount: comment.reply_count,
+      replies: transformReplies(comment.replies),
+      createdBy: comment.external_metadata
+        ? {
+            authorProfile: {
+              first_name: comment.external_metadata.username,
+              last_name: "",
+              profile_image: comment.external_metadata.picture,
+            },
+          }
+        : {},
+      url: comment.external_metadata ? comment.external_metadata.url : "",
+      createdDate: transformDate(comment.created_date),
+      ipAddress: comment.ip_address,
+      isPublic: comment.is_public,
+      isRemoved: comment.is_removed,
+      paper: comment.paper_id,
+      parent: comment.parent,
+      plainText: comment.plain_text,
+      score: comment.score,
+      source: comment.source,
+      sourceId: comment.source_id,
+      text: comment.text,
+      updatedDate: comment.updated_date,
+      userFlag: comment.user_flag,
+      userVote: comment.user_vote,
+      username: comment.username,
+      wasEdited: comment.wasEdited,
+      transform: true,
+    };
+  }
   return {
     id: comment.id,
     text: comment.text,
@@ -127,6 +209,7 @@ export function transformComment(comment) {
     thread: comment.thread,
     isRemoved: comment.is_removed,
     userFlag: comment.user_flag,
+    transform: true,
   };
 }
 
