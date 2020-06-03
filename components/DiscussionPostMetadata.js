@@ -222,28 +222,40 @@ const User = (props) => {
 
 const Timestamp = (props) => {
   const timestamp = formatTimestamp(props.date);
+
+  if (props.twitter && props.twitterUrl) {
+    return (
+      <div
+        className={css(
+          styles.timestampContainer,
+          props.smaller && styles.smallerTimestamp,
+          props.twitter && styles.twitterUrl
+        )}
+      >
+        <a
+          target="_blank"
+          href={props.twitterUrl}
+          className={css(styles.twitterTag)}
+        >
+          <span className={css(styles.timestampDivider)}>•</span>
+          {timestamp} from Twitter
+          <div className={css(styles.twitterIcon)}>
+            <i className="fab fa-twitter" />
+          </div>
+        </a>
+      </div>
+    );
+  }
+
   return (
     <div
       className={css(
         styles.timestampContainer,
-        props.smaller && styles.smallerTimestamp,
-        props.twitter && styles.twitterUrl
+        props.smaller && styles.smallerTimestamp
       )}
-      onClick={() => props.twitterUrl && openTwitter(props.twitterUrl)}
     >
       <span className={css(styles.timestampDivider)}>•</span>
       {timestamp}
-      {props.twitter ? (
-        <Fragment>
-          {" "}
-          from Twitter
-          <div className={css(styles.twitterIcon)}>
-            <i className="fab fa-twitter" />
-          </div>
-        </Fragment>
-      ) : (
-        ""
-      )}
     </div>
   );
 };
@@ -343,6 +355,12 @@ const styles = StyleSheet.create({
   },
   smallerTimestamp: {
     fontSize: 12,
+  },
+  twitterTag: {
+    color: "unset",
+    textDecoration: "unset",
+    display: "flex",
+    alignItems: "center",
   },
   name: {
     marginLeft: 8,
