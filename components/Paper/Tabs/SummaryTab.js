@@ -230,9 +230,12 @@ class SummaryTab extends React.Component {
           finishedLoading: true,
         });
       }
+      if (paper.abstract) {
+        this.setState({ abstract: paper.abstract, showAbstract: true });
+      }
     } else {
       if (paper.abstract) {
-        this.setState({ abstract: paper.abstract });
+        this.setState({ abstract: paper.abstract, showAbstract: true });
       }
     }
   };
@@ -257,9 +260,38 @@ class SummaryTab extends React.Component {
     }
   }
 
+  toggleDescription = (state) => {
+    this.setState({ showAbstract: state });
+  };
+
+  renderTabs = () => {
+    return (
+      <div className={css(styles.tabRow)}>
+        <div
+          className={css(
+            styles.tab,
+            !this.state.showAbstract && styles.activeTab
+          )}
+          onClick={() => this.toggleDescription(false)}
+        >
+          Summary
+        </div>
+        <div
+          className={css(
+            styles.tab,
+            this.state.showAbstract && styles.activeTab
+          )}
+          onClick={() => this.toggleDescription(true)}
+        >
+          Abstract
+        </div>
+      </div>
+    );
+  };
+
   renderAbstract = () => {
     let { paper } = this.props;
-    if (paper.abstract) {
+    if (this.state.showAbstract) {
       return (
         <a name="summary">
           <div
@@ -267,93 +299,26 @@ class SummaryTab extends React.Component {
             ref={this.props.descriptionRef}
             id="summary-tab"
           >
-            {this.state.readOnly ? (
-              <div className={css(styles.sectionHeader)}>
-                <div className={css(styles.sectionTitle)}>Abstract</div>
-                <div className={css(styles.summaryActions)}>
-                  <PermissionNotificationWrapper
-                    modalMessage="propose abstract edit"
-                    onClick={this.editAbstract}
-                    loginRequired={true}
-                  >
-                    <div className={css(styles.action, styles.editAction)}>
-                      <div className={css(styles.pencilIcon)}>
-                        <i className="fas fa-pencil"></i>
-                      </div>
-                      Edit Abstract
-                    </div>
-                  </PermissionNotificationWrapper>
-                  <PermissionNotificationWrapper
-                    modalMessage="propose summary"
-                    onClick={this.edit}
-                    permissionKey="ProposeSummaryEdit"
-                    loginRequired={true}
-                  >
-                    <div className={css(styles.action, styles.editAction)}>
-                      <div className={css(styles.pencilIcon)}>
-                        {icons.plusCircle}
-                      </div>
-                      Add Summary
-                    </div>
-                  </PermissionNotificationWrapper>
-                </div>
+            <div className={css(styles.sectionHeader)}>
+              <div className={css(styles.sectionTitle)}>
+                Description
+                {this.renderTabs()}
               </div>
-            ) : (
-              <div className={css(styles.headerContainer)}>
-                <div className={css(styles.header)}>Adding Summary</div>
-                <div className={css(styles.guidelines)}>
-                  Please review our{" "}
-                  <a
-                    className={css(styles.authorGuidelines)}
-                    href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
-                    target="_blank"
-                  >
-                    Summary Guidelines
-                  </a>{" "}
-                  to see how to write for ResearchHub
-                </div>
-                <TextEditor
-                  canEdit={true}
-                  readOnly={this.state.readOnly}
-                  canSubmit={true}
-                  commentEditor={false}
-                  initialValue={this.state.editorState}
-                  passedValue={this.state.editorState}
-                  placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
-                    
-                    Hypothesis: What question does this paper attempt to answer?
-
-                    Conclusion: What conclusion did the paper reach?
-
-                    Significance: What does this paper make possible in the world, and what should be tried from here?
-                    `}
-                  onCancel={this.cancel}
-                  onSubmit={this.submitEdit}
-                  onChange={this.onEditorStateChange}
-                  smallToolBar={true}
-                  hideButton={true}
-                  commentStyles={
-                    this.state.readOnly
-                      ? styles.commentReadStyles
-                      : styles.commentStyles
-                  }
-                />
-                <div className={css(styles.buttonRow)}>
-                  <Ripples
-                    className={css(styles.cancelButton)}
-                    onClick={this.cancel}
-                  >
-                    Cancel
-                  </Ripples>
-                  <Ripples
-                    className={css(styles.submitButton)}
-                    onClick={this.submitEdit}
-                  >
-                    Submit
-                  </Ripples>
-                </div>
+              <div className={css(styles.abstractActions)}>
+                <PermissionNotificationWrapper
+                  modalMessage="propose abstract edit"
+                  onClick={this.editAbstract}
+                  loginRequired={true}
+                >
+                  <div className={css(styles.action, styles.editAction)}>
+                    <div className={css(styles.pencilIcon)}>
+                      <i className="fas fa-pencil"></i>
+                    </div>
+                    {paper.abstract ? "Add Abstract" : "Edit Abstract"}
+                  </div>
+                </PermissionNotificationWrapper>
               </div>
-            )}
+            </div>
             {this.state.readOnly && !this.state.editAbstract && (
               <Fragment>
                 <div className={css(styles.abstractContainer)}>
@@ -406,7 +371,7 @@ class SummaryTab extends React.Component {
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
-        {paper.summary ? (
+        {!this.state.showAbstract && (paper.abstract || paper.summary) ? (
           <a name="summary">
             {(paper.summary && paper.summary.summary) ||
             this.state.summaryExists ? (
@@ -416,32 +381,39 @@ class SummaryTab extends React.Component {
                 id="summary-tab"
               >
                 {this.state.readOnly ? (
-                  <div className={css(styles.sectionHeader)}>
-                    <div className={css(styles.sectionTitle)}>Summary</div>
-                    <div className={css(styles.summaryActions)}>
-                      <Link
-                        href={"/paper/[paperId]/[tabName]/edits"}
-                        as={`/paper/${paper.id}/summary/edits`}
-                      >
-                        <Ripples className={css(styles.action)}>
-                          View Edit History
-                        </Ripples>
-                      </Link>
-                      <PermissionNotificationWrapper
-                        modalMessage="propose summary edits"
-                        onClick={this.edit}
-                        permissionKey="ProposeSummaryEdit"
-                        loginRequired={true}
-                      >
-                        <div className={css(styles.action, styles.editAction)}>
-                          <div className={css(styles.pencilIcon)}>
-                            <i className="fas fa-pencil"></i>
+                  <Fragment>
+                    <div className={css(styles.sectionHeader)}>
+                      <div className={css(styles.sectionTitle)}>
+                        Description
+                        {this.renderTabs()}
+                      </div>
+                      <div className={css(styles.summaryActions)}>
+                        <Link
+                          href={"/paper/[paperId]/[tabName]/edits"}
+                          as={`/paper/${paper.id}/summary/edits`}
+                        >
+                          <Ripples className={css(styles.action)}>
+                            View Edit History
+                          </Ripples>
+                        </Link>
+                        <PermissionNotificationWrapper
+                          modalMessage="propose summary edits"
+                          onClick={this.edit}
+                          permissionKey="ProposeSummaryEdit"
+                          loginRequired={true}
+                        >
+                          <div
+                            className={css(styles.action, styles.editAction)}
+                          >
+                            <div className={css(styles.pencilIcon)}>
+                              <i className="fas fa-pencil"></i>
+                            </div>
+                            Edit Summary
                           </div>
-                          Edit Summary
-                        </div>
-                      </PermissionNotificationWrapper>
+                        </PermissionNotificationWrapper>
+                      </div>
                     </div>
-                  </div>
+                  </Fragment>
                 ) : (
                   <div className={css(styles.headerContainer)} id="summary-tab">
                     <div className={css(styles.header)}>Editing Summary</div>
@@ -566,7 +538,10 @@ Significance: What does this paper make possible in the world, and what should b
                 ) : (
                   <Fragment>
                     <div className={css(styles.sectionHeader)}>
-                      <div className={css(styles.sectionTitle)}>Summary</div>
+                      <div className={css(styles.sectionTitle)}>
+                        Description
+                        {this.renderTabs()}
+                      </div>
                     </div>
                     <div className={css(styles.box) + " second-step"}>
                       <div className={css(styles.icon)}>
@@ -650,10 +625,11 @@ var styles = StyleSheet.create({
   },
   abstractContainer: {
     width: "100%",
-    // marginTop: 32,
     lineHieght: 1.6,
     display: "flex",
     justifyContent: "flex-start",
+    minHeight: 173,
+    paddingTop: 7,
   },
   abstractText: {
     lineHeight: 1.6,
@@ -674,6 +650,7 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    paddingTop: 5,
   },
   formContainerStyle: {
     paddingBottom: 0,
@@ -696,7 +673,11 @@ var styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
-    // display: 'flex',
+    display: "flex",
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "space-between",
+      width: "100%",
+    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
@@ -760,6 +741,14 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingBottom: 0,
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 8,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: "unset",
+    },
+  },
+  abstractActions: {
     "@media only screen and (max-width: 767px)": {
       marginTop: 8,
     },
@@ -945,6 +934,31 @@ var styles = StyleSheet.create({
     padding: "5px 8px",
     cursor: "pointer",
     backgroundColor: "#edeefe",
+  },
+  tabRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginLeft: 20,
+  },
+  tab: {
+    padding: "4px 12px",
+    fontSize: 14,
+    fontWeight: 500,
+    cursor: "pointer",
+    marginRight: 8,
+    color: "rgba(36, 31, 58, 0.6)",
+    borderRadius: 4,
+    ":hover": {
+      color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  activeTab: {
+    backgroundColor: colors.BLUE(0.11),
+    color: colors.BLUE(),
   },
 });
 
