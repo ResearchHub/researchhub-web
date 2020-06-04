@@ -1,3 +1,2 @@
-Sitemap: https://www.researchhub.com/sitemap-prod.xml
 User-agent: *
-Allow: /
+Disallow: /
