@@ -493,6 +493,7 @@ const styles = StyleSheet.create({
   maintext: {
     color: "#5a566a",
     minHeight: 36,
+    transition: "all ease-in-out 0.2s",
     "@media only screen and (max-width: 800px)": {
       fontSize: 14,
     },

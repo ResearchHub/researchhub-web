@@ -117,7 +117,6 @@ const Paper = (props) => {
         setReferencedBy(newReferencedBy);
         setReferencedByCount(res.count);
         setDoneCitations(true);
-        console.log("fetched references");
       });
   };
 
@@ -130,7 +129,6 @@ const Paper = (props) => {
         setFigureCount(res.data.length);
         dispatch(PaperActions.updatePaperState("figures", res.data));
         setDoneFigures(true);
-        console.log("fetched figures");
       });
   };
 
