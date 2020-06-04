@@ -718,8 +718,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   commentEditor: {
-    fontSize: 14,
+    fontSize: 16,
     "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
   },
