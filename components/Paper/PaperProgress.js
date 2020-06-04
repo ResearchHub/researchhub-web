@@ -50,6 +50,8 @@ class PaperProgress extends React.Component {
       return this.setState({ ...this.initialState }, () => {
         this.formatSections();
       });
+    } else if (prevProps.doneFetching !== this.props.doneFetching) {
+      return this.formatSections();
     } else if (
       prevProps.limitations.limits.length !==
       this.props.limitations.limits.length
@@ -80,6 +82,7 @@ class PaperProgress extends React.Component {
 
   formatSections = () => {
     let { limitations, bullets, figureCount, commentCount, paper } = this.props;
+
     let summary = paper.summary
       ? paper.summary.summary &&
         convertToEditorValue(paper.summary.summary).document.text
@@ -122,7 +125,7 @@ class PaperProgress extends React.Component {
       {
         sections,
         progress,
-        complete: progress === 100,
+        complete: this.props.doneFetching ? progress === 100 : true,
       },
       () => {
         this.state.loading &&
@@ -449,6 +452,7 @@ const styles = StyleSheet.create({
     borderTop: "none",
     borderRadius: 4,
     backgroundColor: "#FFF",
+    transition: "all ease-in-out 0.2",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },

@@ -68,6 +68,7 @@ const Paper = (props) => {
   const [limitCount, setLimitCount] = useState(
     store.getState().limitations.limits.length
   );
+  const [discussionCount, setCount] = useState(calculateCommentCount());
   const [tabs, setTabs] = useState(getActiveTabs());
 
   const [steps, setSteps] = useState([
@@ -86,7 +87,8 @@ const Paper = (props) => {
       disableBeacon: true,
     },
   ]);
-  const [discussionCount, setCount] = useState(calculateCommentCount());
+  const [doneCitations, setDoneCitations] = useState(false);
+  const [doneFigures, setDoneFigures] = useState(false);
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
@@ -114,6 +116,8 @@ const Paper = (props) => {
         let newReferencedBy = [...res.results];
         setReferencedBy(newReferencedBy);
         setReferencedByCount(res.count);
+        setDoneCitations(true);
+        console.log("fetched references");
       });
   };
 
@@ -125,6 +129,8 @@ const Paper = (props) => {
       .then((res) => {
         setFigureCount(res.data.length);
         dispatch(PaperActions.updatePaperState("figures", res.data));
+        setDoneFigures(true);
+        console.log("fetched figures");
       });
   };
 
@@ -167,6 +173,8 @@ const Paper = (props) => {
 
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
+      setDoneFigures(false);
+      setDoneCitations(false);
       refetchPaper();
       fetchReferences();
       fetchFigures();
@@ -430,6 +438,8 @@ const Paper = (props) => {
                   // comments threads
                   threads={discussionThreads}
                   setDiscussionThreads={setDiscussionThreads}
+                  //
+                  doneFetching={doneCitations && doneFigures}
                 />
               </div>
             </ComponentWrapper>
