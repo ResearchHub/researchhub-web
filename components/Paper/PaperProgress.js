@@ -452,7 +452,6 @@ const styles = StyleSheet.create({
     borderTop: "none",
     borderRadius: 4,
     backgroundColor: "#FFF",
-    transition: "all ease-in-out 0.2",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
