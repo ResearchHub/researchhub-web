@@ -321,6 +321,7 @@ class ReplyEntry extends React.Component {
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsReply}
+                    textStyles={styles.commentEditor}
                   />
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
@@ -456,6 +457,15 @@ const styles = StyleSheet.create({
   },
   noPadding: {
     paddingBottom: 0,
+  },
+  commentEditor: {
+    fontSize: 16,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
 });
 
