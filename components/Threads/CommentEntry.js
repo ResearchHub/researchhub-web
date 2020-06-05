@@ -301,7 +301,14 @@ class CommentEntry extends React.Component {
   };
 
   submitReply = async (text, plain_text, callback) => {
-    let { data, comment, postReply, postReplyPending } = this.props;
+    let {
+      data,
+      comment,
+      postReply,
+      postReplyPending,
+      discussionCount,
+      setCount,
+    } = this.props;
     let paperId = data.paper;
     let discussionThreadId = data.id;
     let commentId = comment.id;
@@ -312,6 +319,7 @@ class CommentEntry extends React.Component {
       newReply.highlight = true;
       let replies = [...this.state.replies, newReply];
       comment.replies = replies;
+      setCount(discussionCount + 1);
       this.setState(
         {
           revealReply: true,

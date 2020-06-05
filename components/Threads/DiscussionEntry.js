@@ -184,7 +184,13 @@ class DiscussionEntry extends React.Component {
   };
 
   submitComment = async (text, plain_text, callback) => {
-    let { data, postComment, postCommentPending } = this.props;
+    let {
+      data,
+      postComment,
+      postCommentPending,
+      discussionCount,
+      setCount,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     postCommentPending();
@@ -194,6 +200,7 @@ class DiscussionEntry extends React.Component {
       newComment.highlight = true;
       let comments = [newComment, ...this.state.comments];
       data.comments = comments;
+      setCount(discussionCount + 1);
       this.setState(
         {
           comments,
@@ -281,7 +288,14 @@ class DiscussionEntry extends React.Component {
   };
 
   renderComments = () => {
-    let { data, hostname, path, discussion } = this.props;
+    let {
+      data,
+      hostname,
+      path,
+      discussion,
+      discussionCount,
+      setCount,
+    } = this.props;
     let comments = this.state.comments;
 
     if (comments.length > 0) {
@@ -296,6 +310,8 @@ class DiscussionEntry extends React.Component {
             comment={comment}
             index={i}
             mobileView={this.props.mobileView}
+            discussionCount={discussionCount}
+            setCount={setCount}
           />
         );
       });
