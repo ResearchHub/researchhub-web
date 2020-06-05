@@ -49,6 +49,7 @@ const AuthorAvatar = (props) => {
             <div
               style={{
                 fontSize: size,
+                paddingTop: 3,
               }}
             >
               <i className="fas fa-user-circle" />
@@ -57,7 +58,7 @@ const AuthorAvatar = (props) => {
         ) : (
           <i
             className={css(styles.userCircle) + " fas fa-user-circle"}
-            style={{ fontSize: finalSize + 1, color: "#aaa" }}
+            style={{ fontSize: finalSize + 1, color: "#aaa", paddingTop: 3 }}
           ></i>
         )}
         {showModeratorBadge && (

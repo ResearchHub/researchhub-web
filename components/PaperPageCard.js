@@ -155,6 +155,9 @@ class PaperPageCard extends React.Component {
         >
           Submitted by{" "}
           {`${author_profile.first_name} ${author_profile.last_name}`}
+          <div className={css(styles.avatar)}>
+            <AuthorAvatar author={author_profile} size={25} />
+          </div>
         </div>
       );
     } else if (external_source) {
@@ -385,9 +388,15 @@ class PaperPageCard extends React.Component {
       paper &&
       paper.authors.map((author, index) => {
         return (
-          <div className={css(styles.authorContainer)} key={`author_${index}`}>
-            <AuthorAvatar author={author} size={30} />
-          </div>
+          <Fragment>
+            <div
+              className={css(styles.authorContainer)}
+              key={`author_${index}`}
+            >
+              <AuthorAvatar author={author} size={25} />
+            </div>
+            <div className={css(styles.space)} />
+          </Fragment>
         );
       });
     return authors;
@@ -729,6 +738,7 @@ const styles = StyleSheet.create({
   dateAuthorContainer: {
     display: "flex",
     alignItems: "center",
+    marginTop: 5,
   },
   publishDate: {
     fontSize: 16,
@@ -965,6 +975,9 @@ const styles = StyleSheet.create({
       color: colors.BLUE(),
     },
   },
+  avatar: {
+    marginLeft: 8,
+  },
   capitalize: {
     textTransform: "capitalize",
   },
@@ -976,6 +989,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 30,
     right: 220,
+  },
+  space: {
+    marginLeft: 5,
   },
 });
 
