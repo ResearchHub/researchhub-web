@@ -36,6 +36,14 @@ const filterOptions = [
     disableScope: true,
   },
   {
+    value: "today",
+    label: "Today",
+  },
+  {
+    value: "past_week",
+    label: "Past Week",
+  },
+  {
     value: "past_month",
     label: "Past Month",
   },
@@ -94,7 +102,7 @@ class Index extends React.Component {
         page: 1,
         hubId: this.state.by.value,
         type,
-        timeFrame: this.state.filterBy,
+        timeframe: this.state.filterBy.value,
       }),
       API.GET_CONFIG()
     )
@@ -144,7 +152,7 @@ class Index extends React.Component {
         by,
       },
       () => {
-        this.fetchLeaderboard();
+        this.fetchLeaderboard(this.state.type);
       }
     );
   };
@@ -156,7 +164,7 @@ class Index extends React.Component {
         filterBy,
       },
       () => {
-        this.fetchLeaderboard();
+        this.fetchLeaderboard(this.state.type);
       }
     );
   };
@@ -285,7 +293,17 @@ class Index extends React.Component {
   renderItems = () => {
     switch (this.state.type) {
       case "users":
-        return this.renderLeaderboardUsers();
+        return (
+          <Fragment>
+            <div className={css(styles.leaderboardNav)}>
+              <div className={css(styles.navItem, styles.userNav)}>User</div>
+              <div className={css(styles.navItem, styles.rep)}>Reputation</div>
+            </div>
+            <div className={css(styles.leaderboardSection)}>
+              {this.renderLeaderboardUsers()}
+            </div>
+          </Fragment>
+        );
       default:
         return this.renderLeaderboardPapers();
     }
@@ -397,7 +415,7 @@ class Index extends React.Component {
             >
               {this.props.hub && this.renderSubscribeButton()}
             </div>
-            {/* <div className={css(mainFeedStyles.row, mainFeedStyles.inputs)}>
+            <div className={css(mainFeedStyles.row, mainFeedStyles.inputs)}>
               <FormSelect
                 options={filterOptions}
                 value={this.state.filterBy}
@@ -423,21 +441,13 @@ class Index extends React.Component {
                 }}
                 isSearchable={false}
               />
-            </div> */}
+            </div>
           </div>
         </div>
         <div className={css(mainFeedStyles.infiniteScroll)}>
           {!this.state.fetchingLeaderboard ? (
             <Fragment>
-              <div className={css(styles.leaderboardNav)}>
-                <div className={css(styles.navItem, styles.userNav)}>User</div>
-                <div className={css(styles.navItem, styles.rep)}>
-                  Reputation
-                </div>
-              </div>
-              <div className={css(styles.leaderboardSection)}>
-                {this.renderItems()}
-              </div>
+              {this.renderItems()}
               {this.renderLoadMoreButton()}
             </Fragment>
           ) : (

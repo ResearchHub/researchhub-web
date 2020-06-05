@@ -69,7 +69,7 @@ const PaperEntryCard = ({
     ])
   );
   const [figures, setFigures] = useState(
-    previews.map((preview, index) => preview.file)
+    previews.map((preview, index) => preview && preview.file)
   );
 
   if (discussion_count == undefined) {
@@ -395,10 +395,11 @@ const PaperEntryCard = ({
               <span
                 className={css(
                   styles.avatars,
-                  authors.length < 1 && styles.hide
+                  authors && authors.length < 1 && styles.hide
                 )}
               >
-                {authors.length > 0 &&
+                {authors &&
+                  authors.length > 0 &&
                   authors.map((author) => (
                     <div
                       key={`author_${author.id}_${id}`}
