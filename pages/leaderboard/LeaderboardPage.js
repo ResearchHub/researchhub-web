@@ -91,7 +91,7 @@ class Index extends React.Component {
       type: "users",
     };
 
-    Router.events.on("routeChangeStart", (url) => {
+    Router.events.on("routeChangeComplete", (url) => {
       console.log(url);
       this.setState({
         type: Router.router.query.type,
@@ -880,21 +880,21 @@ const mainFeedStyles = StyleSheet.create({
     },
   },
   dropdownForm: {
-    width: 260,
+    width: 400,
     fontSize: 30,
     "@media only screen and (max-width: 1343px)": {
       fontSize: 30,
     },
     "@media only screen and (max-width: 1149px)": {
       fontSize: 30,
-      width: 260,
+      width: 400,
     },
     "@media only screen and (min-width: 768px)": {
       fontSize: 22,
-      width: 200,
+      width: 300,
     },
     "@media only screen and (min-width: 1024px)": {
-      width: 260,
+      width: 400,
       fontSize: 30,
     },
     "@media only screen and (max-width: 767px)": {
