@@ -19,6 +19,7 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
+import FormTextArea from "~/components/Form/FormTextArea";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -29,7 +30,7 @@ import { AuthActions } from "~/redux/auth";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
-import { update } from "immutable";
+import icons from "~/config/themes/icons";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -44,6 +45,10 @@ class SummaryTab extends React.Component {
       transition: false,
       firstLoad: true,
       summaryExists: false,
+      // abstract
+      abstract: "",
+      showAbstract: false,
+      editAbstract: false,
     };
   }
 
@@ -85,7 +90,13 @@ class SummaryTab extends React.Component {
   };
 
   submitEdit = (raw, plain_text) => {
-    let { setMessage, showMessage, checkUserFirstTime, getUser } = this.props;
+    let {
+      setMessage,
+      showMessage,
+      checkUserFirstTime,
+      getUser,
+      updatePaperState,
+    } = this.props;
     let value = this.state.editorState;
     let summary = value.toJSON({ preserveKeys: true });
     let summary_plain_text = Plain.serialize(value);
@@ -116,6 +127,7 @@ class SummaryTab extends React.Component {
           let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
           checkUserFirstTime(firstTime);
           getUser();
+          updatePaperState("summary", resp);
           this.setState({
             summaryExists: true,
           });
@@ -149,6 +161,7 @@ class SummaryTab extends React.Component {
 
     this.setState({
       readOnly: false,
+      editAbstract: false,
     });
 
     /********************************************************************************
@@ -166,6 +179,36 @@ class SummaryTab extends React.Component {
         editorState,
       });
     }
+  };
+
+  editAbstract = () => {
+    this.setState({ editAbstract: !this.state.editAbstract });
+  };
+
+  handleAbstract = (id, value) => {
+    this.setState({ abstract: value });
+  };
+
+  submitAbstract = () => {
+    const { paper, setMessage, showMessage } = this.props;
+    showMessage({ show: true, load: true });
+    let body = {
+      abstract: this.state.abstract,
+    };
+
+    this.props
+      .patchPaper(paper.id, body)
+      .then((res) => {
+        showMessage({ show: false });
+        setMessage("Abstract successfully edited.");
+        showMessage({ show: true });
+        this.setState({ editAbstract: false });
+      })
+      .catch((err) => {
+        showMessage({ show: false });
+        setMessage("Something went wrong.");
+        showMessage({ show: true, error: true });
+      });
   };
 
   showDesktopMsg = () => {
@@ -186,6 +229,13 @@ class SummaryTab extends React.Component {
           editorState,
           finishedLoading: true,
         });
+      }
+      if (paper.abstract) {
+        this.setState({ abstract: paper.abstract, showAbstract: true });
+      }
+    } else {
+      if (paper.abstract) {
+        this.setState({ abstract: paper.abstract, showAbstract: true });
       }
     }
   };
@@ -208,7 +258,161 @@ class SummaryTab extends React.Component {
     if (prevProps.paper.summary !== this.props.paper.summary) {
       return this.initializeSummary();
     }
+    if (prevProps.paper.abstract !== this.props.paper.abstract) {
+      return this.initializeSummary();
+    }
   }
+
+  toggleDescription = (state) => {
+    this.setState({ showAbstract: state });
+  };
+
+  renderTabs = () => {
+    return (
+      <div className={css(styles.tabRow)}>
+        <div
+          className={css(
+            styles.tab,
+            !this.state.showAbstract && styles.activeTab
+          )}
+          onClick={() => this.toggleDescription(false)}
+        >
+          Summary
+        </div>
+        <div
+          className={css(
+            styles.tab,
+            this.state.showAbstract && styles.activeTab
+          )}
+          onClick={() => this.toggleDescription(true)}
+        >
+          Abstract
+        </div>
+      </div>
+    );
+  };
+
+  renderAbstract = () => {
+    let { paper } = this.props;
+    if (this.state.showAbstract) {
+      if (this.state.editAbstract) {
+        return (
+          <a name="summary">
+            <div
+              className={css(styles.container)}
+              ref={this.props.descriptionRef}
+              id="summary-tab"
+            >
+              <div className={css(styles.sectionHeader)}>
+                <div className={css(styles.sectionTitle)}>
+                  Description
+                  {this.renderTabs()}
+                </div>
+              </div>
+              <div className={css(styles.abstractTextEditor)}>
+                <FormTextArea
+                  value={this.state.abstract}
+                  onChange={this.handleAbstract}
+                  containerStyle={styles.formContainerStyle}
+                />
+                <div className={css(styles.buttonRow)}>
+                  <Ripples
+                    className={css(styles.cancelButton)}
+                    onClick={this.editAbstract}
+                  >
+                    Cancel
+                  </Ripples>
+                  <Ripples
+                    className={css(styles.submitButton)}
+                    onClick={this.submitAbstract}
+                  >
+                    Submit
+                  </Ripples>
+                </div>
+              </div>
+            </div>
+          </a>
+        );
+      }
+      if (paper.abstract || this.state.abstract) {
+        return (
+          <a name="summary">
+            <div
+              className={css(styles.container)}
+              ref={this.props.descriptionRef}
+              id="summary-tab"
+            >
+              <div className={css(styles.sectionHeader)}>
+                <div className={css(styles.sectionTitle)}>
+                  Description
+                  {this.renderTabs()}
+                </div>
+                <div className={css(styles.abstractActions)}>
+                  <PermissionNotificationWrapper
+                    modalMessage="propose abstract edit"
+                    onClick={this.editAbstract}
+                    loginRequired={true}
+                  >
+                    <div className={css(styles.action, styles.editAction)}>
+                      <div className={css(styles.pencilIcon)}>
+                        <i className="fas fa-pencil"></i>
+                      </div>
+                      {"Edit Abstract"}
+                    </div>
+                  </PermissionNotificationWrapper>
+                </div>
+              </div>
+              {this.state.readOnly && !this.state.editAbstract && (
+                <Fragment>
+                  <div className={css(styles.abstractContainer)}>
+                    {this.state.abstract}
+                  </div>
+                </Fragment>
+              )}
+            </div>
+          </a>
+        );
+      } else {
+        return (
+          <a name="summary">
+            <div
+              className={css(styles.container)}
+              ref={this.props.descriptionRef}
+              id="summary-tab"
+            >
+              <div className={css(styles.sectionHeader)}>
+                <div className={css(styles.sectionTitle)}>
+                  Description
+                  {this.renderTabs()}
+                </div>
+              </div>
+              <div className={css(styles.centerColumn)}>
+                <div className={css(styles.box) + " second-step"}>
+                  <div className={css(styles.icon)}>
+                    <i className="fad fa-file-alt" />
+                  </div>
+                  <h2 className={css(styles.noSummaryTitle)}>
+                    An abstract hasn't been filled in yet
+                  </h2>
+                  <div className={css(styles.text)}>
+                    Be the first person to add an abstract to this paper.
+                  </div>
+                  <PermissionNotificationWrapper
+                    onClick={this.editAbstract}
+                    modalMessage="propose a summary"
+                    permissionKey="ProposeSummaryEdit"
+                    loginRequired={true}
+                  >
+                    <button className={css(styles.button)}>Add Abstract</button>
+                  </PermissionNotificationWrapper>
+                </div>
+              </div>
+            </div>
+          </a>
+        );
+      }
+    }
+  };
 
   render() {
     let { paper } = this.props;
@@ -226,7 +430,7 @@ class SummaryTab extends React.Component {
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
-        {paper.summary && (
+        {!this.state.showAbstract && (paper.abstract || paper.summary) ? (
           <a name="summary">
             {(paper.summary && paper.summary.summary) ||
             this.state.summaryExists ? (
@@ -236,32 +440,39 @@ class SummaryTab extends React.Component {
                 id="summary-tab"
               >
                 {this.state.readOnly ? (
-                  <div className={css(styles.sectionHeader)}>
-                    <div className={css(styles.sectionTitle)}>Summary</div>
-                    <div className={css(styles.summaryActions)}>
-                      <Link
-                        href={"/paper/[paperId]/[tabName]/edits"}
-                        as={`/paper/${paper.id}/summary/edits`}
-                      >
-                        <Ripples className={css(styles.action)}>
-                          View Edit History
-                        </Ripples>
-                      </Link>
-                      <PermissionNotificationWrapper
-                        modalMessage="propose summary edits"
-                        onClick={this.edit}
-                        permissionKey="ProposeSummaryEdit"
-                        loginRequired={true}
-                      >
-                        <div className={css(styles.action, styles.editAction)}>
-                          <div className={css(styles.pencilIcon)}>
-                            <i className="fas fa-pencil"></i>
+                  <Fragment>
+                    <div className={css(styles.sectionHeader)}>
+                      <div className={css(styles.sectionTitle)}>
+                        Description
+                        {this.renderTabs()}
+                      </div>
+                      <div className={css(styles.summaryActions)}>
+                        <Link
+                          href={"/paper/[paperId]/[tabName]/edits"}
+                          as={`/paper/${paper.id}/summary/edits`}
+                        >
+                          <Ripples className={css(styles.action)}>
+                            View Edit History
+                          </Ripples>
+                        </Link>
+                        <PermissionNotificationWrapper
+                          modalMessage="propose summary edits"
+                          onClick={this.edit}
+                          permissionKey="ProposeSummaryEdit"
+                          loginRequired={true}
+                        >
+                          <div
+                            className={css(styles.action, styles.editAction)}
+                          >
+                            <div className={css(styles.pencilIcon)}>
+                              <i className="fas fa-pencil"></i>
+                            </div>
+                            Edit Summary
                           </div>
-                          Edit Summary
-                        </div>
-                      </PermissionNotificationWrapper>
+                        </PermissionNotificationWrapper>
+                      </div>
                     </div>
-                  </div>
+                  </Fragment>
                 ) : (
                   <div className={css(styles.headerContainer)} id="summary-tab">
                     <div className={css(styles.header)}>Editing Summary</div>
@@ -386,7 +597,10 @@ Significance: What does this paper make possible in the world, and what should b
                 ) : (
                   <Fragment>
                     <div className={css(styles.sectionHeader)}>
-                      <div className={css(styles.sectionTitle)}>Summary</div>
+                      <div className={css(styles.sectionTitle)}>
+                        Description
+                        {this.renderTabs()}
+                      </div>
                     </div>
                     <div className={css(styles.box) + " second-step"}>
                       <div className={css(styles.icon)}>
@@ -419,6 +633,8 @@ Significance: What does this paper make possible in the world, and what should b
               </div>
             )}
           </a>
+        ) : (
+          this.renderAbstract()
         )}
         <ManageBulletPointsModal paperId={this.props.paperId} />
       </ComponentWrapper>
@@ -451,6 +667,12 @@ var styles = StyleSheet.create({
       padding: 25,
     },
   },
+  centerColumn: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+  },
   bulletsContainer: {
     backgroundColor: "#fff",
     padding: 50,
@@ -467,7 +689,12 @@ var styles = StyleSheet.create({
     marginTop: 30,
   },
   abstractContainer: {
-    marginTop: 32,
+    width: "100%",
+    lineHieght: 1.6,
+    display: "flex",
+    justifyContent: "flex-start",
+    minHeight: 173,
+    paddingTop: 7,
   },
   abstractText: {
     lineHeight: 1.6,
@@ -483,6 +710,16 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  abstractTextEditor: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    paddingTop: 5,
+  },
+  formContainerStyle: {
+    paddingBottom: 0,
+    marginBottom: 0,
   },
   sectionHeader: {
     display: "flex",
@@ -501,6 +738,11 @@ var styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
+    display: "flex",
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "space-between",
+      width: "100%",
+    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
@@ -564,6 +806,14 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingBottom: 0,
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 8,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: "unset",
+    },
+  },
+  abstractActions: {
     "@media only screen and (max-width: 767px)": {
       marginTop: 8,
     },
@@ -739,6 +989,42 @@ var styles = StyleSheet.create({
       fontSize: 12,
     },
   },
+  description: {
+    fontStyle: "italic",
+    fontSize: 12,
+  },
+  tabLabel: {
+    color: colors.BLUE(),
+    fontSize: 14,
+    padding: "5px 8px",
+    cursor: "pointer",
+    backgroundColor: "#edeefe",
+  },
+  tabRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginLeft: 20,
+  },
+  tab: {
+    padding: "4px 12px",
+    fontSize: 14,
+    fontWeight: 500,
+    cursor: "pointer",
+    marginRight: 8,
+    color: "rgba(36, 31, 58, 0.6)",
+    borderRadius: 4,
+    ":hover": {
+      color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  activeTab: {
+    backgroundColor: colors.BLUE(0.11),
+    color: colors.BLUE(),
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -747,11 +1033,13 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  getEditHistory: PaperActions.getEditHistory,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
+  getEditHistory: PaperActions.getEditHistory,
+  patchPaper: PaperActions.patchPaper,
+  updatePaperState: PaperActions.updatePaperState,
 };
 
 export default connect(
