@@ -70,7 +70,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    LEADERBOARD: ({ page, limit, hubId, timeframe }) => {
+    LEADERBOARD: ({ page, limit, hubId, timeframe, type, dateOption }) => {
       let url = BASE_URL + `user/leaderboard/`;
       let params = {
         querystring: {
@@ -78,6 +78,8 @@ const routes = (BASE_URL) => {
           limit,
           hub_id: hubId,
           timeframe,
+          dateOption,
+          type,
         },
       };
       url = prepURL(url, params);
