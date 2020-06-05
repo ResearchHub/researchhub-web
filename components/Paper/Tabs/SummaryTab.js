@@ -258,6 +258,9 @@ class SummaryTab extends React.Component {
     if (prevProps.paper.summary !== this.props.paper.summary) {
       return this.initializeSummary();
     }
+    if (prevProps.paper.abstract !== this.props.paper.abstract) {
+      return this.initializeSummary();
+    }
   }
 
   toggleDescription = (state) => {
@@ -292,41 +295,20 @@ class SummaryTab extends React.Component {
   renderAbstract = () => {
     let { paper } = this.props;
     if (this.state.showAbstract) {
-      return (
-        <a name="summary">
-          <div
-            className={css(styles.container)}
-            ref={this.props.descriptionRef}
-            id="summary-tab"
-          >
-            <div className={css(styles.sectionHeader)}>
-              <div className={css(styles.sectionTitle)}>
-                Description
-                {this.renderTabs()}
-              </div>
-              <div className={css(styles.abstractActions)}>
-                <PermissionNotificationWrapper
-                  modalMessage="propose abstract edit"
-                  onClick={this.editAbstract}
-                  loginRequired={true}
-                >
-                  <div className={css(styles.action, styles.editAction)}>
-                    <div className={css(styles.pencilIcon)}>
-                      <i className="fas fa-pencil"></i>
-                    </div>
-                    {paper.abstract ? "Edit Abstract" : "Add Abstract"}
-                  </div>
-                </PermissionNotificationWrapper>
-              </div>
-            </div>
-            {this.state.readOnly && !this.state.editAbstract && (
-              <Fragment>
-                <div className={css(styles.abstractContainer)}>
-                  {this.state.abstract}
+      if (this.state.editAbstract) {
+        return (
+          <a name="summary">
+            <div
+              className={css(styles.container)}
+              ref={this.props.descriptionRef}
+              id="summary-tab"
+            >
+              <div className={css(styles.sectionHeader)}>
+                <div className={css(styles.sectionTitle)}>
+                  Description
+                  {this.renderTabs()}
                 </div>
-              </Fragment>
-            )}
-            {this.state.editAbstract && (
+              </div>
               <div className={css(styles.abstractTextEditor)}>
                 <FormTextArea
                   value={this.state.abstract}
@@ -348,10 +330,87 @@ class SummaryTab extends React.Component {
                   </Ripples>
                 </div>
               </div>
-            )}
-          </div>
-        </a>
-      );
+            </div>
+          </a>
+        );
+      }
+      if (paper.abstract || this.state.abstract) {
+        return (
+          <a name="summary">
+            <div
+              className={css(styles.container)}
+              ref={this.props.descriptionRef}
+              id="summary-tab"
+            >
+              <div className={css(styles.sectionHeader)}>
+                <div className={css(styles.sectionTitle)}>
+                  Description
+                  {this.renderTabs()}
+                </div>
+                <div className={css(styles.abstractActions)}>
+                  <PermissionNotificationWrapper
+                    modalMessage="propose abstract edit"
+                    onClick={this.editAbstract}
+                    loginRequired={true}
+                  >
+                    <div className={css(styles.action, styles.editAction)}>
+                      <div className={css(styles.pencilIcon)}>
+                        <i className="fas fa-pencil"></i>
+                      </div>
+                      {"Edit Abstract"}
+                    </div>
+                  </PermissionNotificationWrapper>
+                </div>
+              </div>
+              {this.state.readOnly && !this.state.editAbstract && (
+                <Fragment>
+                  <div className={css(styles.abstractContainer)}>
+                    {this.state.abstract}
+                  </div>
+                </Fragment>
+              )}
+            </div>
+          </a>
+        );
+      } else {
+        return (
+          <a name="summary">
+            <div
+              className={css(styles.container)}
+              ref={this.props.descriptionRef}
+              id="summary-tab"
+            >
+              <div className={css(styles.sectionHeader)}>
+                <div className={css(styles.sectionTitle)}>
+                  Description
+                  {this.renderTabs()}
+                </div>
+              </div>
+              <div className={css(styles.centerColumn)}>
+                <div className={css(styles.box) + " second-step"}>
+                  <div className={css(styles.icon)}>
+                    <i className="fad fa-file-alt" />
+                  </div>
+                  <h2 className={css(styles.noSummaryTitle)}>
+                    An abstract hasn't been filled in yet
+                  </h2>
+                  <div className={css(styles.text)}>
+                    Be the first person to add an abstract to this paper.
+                  </div>
+                  <PermissionNotificationWrapper
+                    onClick={this.editAbstract}
+                    modalMessage="propose a summary"
+                    permissionKey="ProposeSummaryEdit"
+                    loginRequired={true}
+                  >
+                    <button className={css(styles.button)}>Add Abstract</button>
+                  </PermissionNotificationWrapper>
+                </div>
+              </div>
+            </div>
+          </a>
+        );
+      }
     }
   };
 
@@ -607,6 +666,12 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
+  },
+  centerColumn: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
   },
   bulletsContainer: {
     backgroundColor: "#fff",
