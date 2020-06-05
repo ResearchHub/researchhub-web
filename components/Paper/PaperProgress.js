@@ -167,9 +167,9 @@ class PaperProgress extends React.Component {
             : "";
 
           if (summary.length >= 250) {
-            progress += 33;
+            progress += 34;
           } else {
-            progress += (Math.min(250, summary.length) / 250) * 33;
+            progress += (Math.min(250, summary.length) / 250) * 34;
           }
         } else if (section.label === "Paper PDF") {
           if (section.active) {
@@ -188,8 +188,8 @@ class PaperProgress extends React.Component {
         }
       } else {
         if (section.label === "Key Takeaways") {
-          let num = bullets.bullets.length * (34 / 3);
-          progress += Math.min(num, 34);
+          let num = bullets.bullets.length * (33 / 3);
+          progress += Math.min(num, 33);
         } else if (section.label === "Summary") {
           let summary = paper.summary
             ? paper.summary.summary &&
@@ -197,9 +197,9 @@ class PaperProgress extends React.Component {
             : "";
 
           if (summary.length >= 250) {
-            progress += 33;
+            progress += 34;
           } else {
-            progress += (Math.min(250, summary.length) / 250) * 33;
+            progress += (Math.min(250, summary.length) / 250) * 34;
           }
         }
       }
