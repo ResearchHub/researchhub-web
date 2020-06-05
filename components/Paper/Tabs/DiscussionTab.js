@@ -42,7 +42,7 @@ const DiscussionTab = (props) => {
     question: discussionScaffoldInitialValue,
   };
 
-  let { hostname, paper, discussionCount, discussionRef } = props;
+  let { hostname, paper, discussionCount, setCount, discussionRef } = props;
 
   if (doesNotExist(props.threads)) {
     props.threads = [];
@@ -145,6 +145,8 @@ const DiscussionTab = (props) => {
             newCard={transition && i === 0} //conditions when a new card is made
             mobileView={mobileView}
             index={i}
+            discussionCount={discussionCount}
+            setCount={setCount}
           />
         );
       })

@@ -282,31 +282,25 @@ const Paper = (props) => {
   }
 
   function calculateCommentCount() {
+    let commentCount = paper.discussion_count;
+
     var count = 0;
     var threads = paper && paper.discussion ? paper.discussion.threads : [];
 
     count += paper.discussion.count; // 4
-
     threads &&
       threads.forEach((thread) => {
-        count += thread.comments.length;
-        if (thread.comments.length > 0) {
+        count += thread.commentCount;
+        if (thread.commentCount > 0) {
           var comments = thread.comments;
           comments &&
             comments.forEach((comment) => {
-              count += comment.replies.length;
-              if (comment.replies.lenght > 0) {
-                var replies = comment.replies;
-                replies &&
-                  replies.forEach((repy) => {
-                    count += replies.replies.length;
-                  });
-              }
+              count += comment.replyCount;
             });
         }
       });
 
-    return count;
+    return Math.max(count, commentCount);
   }
 
   function formatDescription() {
