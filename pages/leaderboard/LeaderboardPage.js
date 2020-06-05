@@ -65,6 +65,7 @@ const createdOptions = [
   },
 ];
 
+const createdByOptions = createdOptions[0];
 const defaultFilterBy = filterOptions[0];
 
 class Index extends React.Component {
@@ -84,6 +85,7 @@ class Index extends React.Component {
       fetchingLeaderboard: true,
       byOptions,
       by: defaultBy,
+      createdByOptions,
       filterBy: defaultFilterBy,
       loadingMore: false,
       page: 1,
@@ -92,10 +94,8 @@ class Index extends React.Component {
     };
 
     Router.events.on("routeChangeComplete", (url) => {
-      console.log(url);
       this.setState({
         type: Router.router.query.type,
-        fetchingLeaderboard: true,
       });
     });
 
@@ -112,11 +112,13 @@ class Index extends React.Component {
     this.setState({
       fetchingLeaderboard: true,
     });
+    console.log(this.state.createdByOptions);
     return fetch(
       API.LEADERBOARD({
         limit: 20,
         page: 1,
         hubId: this.state.by.value,
+        dateOption: this.state.createdByOptions.value,
         type,
         timeframe: this.state.filterBy.value,
       }),
@@ -174,6 +176,18 @@ class Index extends React.Component {
     this.setState(
       {
         by,
+      },
+      () => {
+        this.fetchLeaderboard(this.state.type);
+      }
+    );
+  };
+
+  onCreatedByChange = (option) => {
+    let createdByOptions = option;
+    this.setState(
+      {
+        createdByOptions,
       },
       () => {
         this.fetchLeaderboard(this.state.type);
@@ -347,6 +361,11 @@ class Index extends React.Component {
             styles.sidebarEntry,
             this.isCurrentItem(this.state.type, id) && styles.current
           )}
+          onClick={() => {
+            this.setState({
+              fetchingLeaderboard: true,
+            });
+          }}
           key={`${id}-${i}`}
         >
           <Link
@@ -436,8 +455,11 @@ class Index extends React.Component {
               {this.state.type === "papers" && (
                 <FormSelect
                   options={createdOptions}
-                  value={this.state.filterBy}
-                  containerStyle={mainFeedStyles.dropDownLeft}
+                  value={this.state.createdByOptions}
+                  containerStyle={[
+                    mainFeedStyles.dropDownLeft,
+                    mainFeedStyles.dropdownCreatedBy,
+                  ]}
                   inputStyle={{
                     fontWeight: 500,
                     minHeight: "unset",
@@ -446,16 +468,7 @@ class Index extends React.Component {
                     justifyContent: "space-between",
                   }}
                   onChange={(id, option) => {
-                    if (option.disableScope) {
-                      this.setState({
-                        disableScope: true,
-                      });
-                    } else {
-                      this.setState({
-                        disableScope: false,
-                      });
-                    }
-                    this.onTimeframeChange(option, id);
+                    this.onCreatedByChange(option, id);
                   }}
                   isSearchable={false}
                 />
@@ -570,6 +583,14 @@ const styles = StyleSheet.create({
   user: {
     borderBottom: "1px solid #EDEDED",
     padding: 16,
+  },
+  current: {
+    borderColor: "rgb(237, 237, 237)",
+    backgroundColor: "#FAFAFA",
+    ":hover": {
+      borderColor: "rgb(227, 227, 227)",
+      backgroundColor: "#EAEAEA",
+    },
   },
   leaderboardSection: {
     border: "1px solid #EDEDED",
@@ -919,6 +940,9 @@ const mainFeedStyles = StyleSheet.create({
     "@media only screen and (max-width: 779px)": {
       width: "calc(50% - 5px)",
     },
+  },
+  dropdownCreatedBy: {
+    width: 230,
   },
   inputContainer: {
     display: "flex",
