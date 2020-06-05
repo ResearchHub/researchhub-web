@@ -261,8 +261,8 @@ const Paper = (props) => {
       { href: "takeaways", label: "key takeaways" },
     ];
 
-    if (store.getState().paper.summary) {
-      tabs.push({ href: "summary", label: "summary" });
+    if (paper.summary || paper.abstract) {
+      tabs.push({ href: "summary", label: "description" });
     }
     tabs.push({ href: "comments", label: "comments" });
     if (figureCount) {
