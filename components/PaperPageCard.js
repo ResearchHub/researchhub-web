@@ -738,7 +738,6 @@ const styles = StyleSheet.create({
   dateAuthorContainer: {
     display: "flex",
     alignItems: "center",
-    marginTop: 5,
   },
   publishDate: {
     fontSize: 16,
@@ -763,6 +762,7 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     opacity: 0.7,
     display: "flex",
+    marginBottom: 5,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
