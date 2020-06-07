@@ -231,7 +231,7 @@ class SummaryTab extends React.Component {
         });
       }
       if (paper.abstract) {
-        this.setState({ abstract: paper.abstract, showAbstract: true });
+        this.setState({ abstract: paper.abstract, showAbstract: false });
       }
     } else {
       if (paper.abstract) {
