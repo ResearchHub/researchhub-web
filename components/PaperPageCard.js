@@ -635,11 +635,11 @@ class PaperPageCard extends React.Component {
               {this.renderActions()}
             </div>
             {this.renderHubs()}
+            <div>
+              <Ripples className={css(styles.promotionButton)}>Promote</Ripples>
+            </div>
           </div>
         </div>
-        {/* <div className={css(styles.paperProgress)}>
-          <PaperProgress paper={paper} />
-        </div> */}
         {this.state.width > 0 && (
           <div
             className={css(styles.absolutePreview)}
@@ -721,6 +721,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
+    marginRight: 32,
     "@media only screen and (max-width: 768px)": {
       marginTop: 15,
     },
@@ -1062,6 +1063,16 @@ const styles = StyleSheet.create({
   atag: {
     color: "unset",
     textDecoration: "unset",
+  },
+  promotionButton: {
+    padding: "6px 20px",
+    borderRadius: 4,
+    backgroundColor: colors.BLUE(),
+    color: "#FFF",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: "#3E43E8",
+    },
   },
 });
 
