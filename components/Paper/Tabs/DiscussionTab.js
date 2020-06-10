@@ -71,9 +71,6 @@ const DiscussionTab = (props) => {
   const [formattedThreads, setFormattedThreads] = useState(
     formatThreads(paper.discussion.threads, basePath)
   );
-  // const [formattedTweets, setFormattedTweets] = useState(
-  //   formatThreads(paper.twitter.threads, basePath)
-  // )
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
@@ -84,6 +81,7 @@ const DiscussionTab = (props) => {
   const [filter, setFilter] = useState("-score");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [showTwitterComments, toggleTwitterComments] = useState(false);
 
   useEffect(resetThreadsEffect, [props.threads]);
 
@@ -97,7 +95,13 @@ const DiscussionTab = (props) => {
       dispatch(MessageActions.showMessage({ load: true, show: true }));
       const currentPaper = store.getState().paper;
       await dispatch(
-        PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
+        PaperActions.getThreads(
+          props.paper.id,
+          currentPaper,
+          filter,
+          page,
+          showTwitterComments
+        )
       );
       const sortedThreads = store.getState().paper.discussion.threads;
       setThreads(sortedThreads);
@@ -128,6 +132,32 @@ const DiscussionTab = (props) => {
     };
   }, [filter]);
 
+  useEffect(() => {
+    async function getThreadsByFilter() {
+      dispatch(MessageActions.showMessage({ load: true, show: true }));
+      const currentPaper = store.getState().paper;
+      setPage(1);
+      await dispatch(
+        PaperActions.getThreads(
+          props.paper.id,
+          currentPaper,
+          filter,
+          1,
+          showTwitterComments
+        )
+      );
+      const sortedThreads = store.getState().paper.discussion.threads;
+      setThreads(sortedThreads);
+      setFormattedThreads(formatThreads(sortedThreads, basePath));
+      // setPage(page + 1);
+      setTimeout(() => {
+        dispatch(MessageActions.showMessage({ show: false }));
+      }, 200);
+    }
+
+    getThreadsByFilter();
+  }, [showTwitterComments]);
+
   function renderThreads(threads) {
     if (!Array.isArray(threads)) {
       threads = [];
@@ -135,20 +165,41 @@ const DiscussionTab = (props) => {
     return (
       threads &&
       threads.map((t, i) => {
-        return (
-          <DiscussionEntry
-            key={`${t.key}-disc${i}`}
-            data={t.data}
-            hostname={hostname}
-            hoverEvents={true}
-            path={t.path}
-            newCard={transition && i === 0} //conditions when a new card is made
-            mobileView={mobileView}
-            index={i}
-            discussionCount={discussionCount}
-            setCount={setCount}
-          />
-        );
+        if (!showTwitterComments) {
+          if (t.data.source !== "twitter") {
+            return (
+              <DiscussionEntry
+                key={`${t.key}-disc${i}`}
+                data={t.data}
+                hostname={hostname}
+                hoverEvents={true}
+                path={t.path}
+                newCard={transition && i === 0} //conditions when a new card is made
+                mobileView={mobileView}
+                index={i}
+                discussionCount={discussionCount}
+                setCount={setCount}
+              />
+            );
+          }
+        } else {
+          if (t.data.source === "twitter") {
+            return (
+              <DiscussionEntry
+                key={`${t.key}-disc${i}`}
+                data={t.data}
+                hostname={hostname}
+                hoverEvents={true}
+                path={t.path}
+                newCard={transition && i === 0} //conditions when a new card is made
+                mobileView={mobileView}
+                index={i}
+                discussionCount={discussionCount}
+                setCount={setCount}
+              />
+            );
+          }
+        }
       })
     );
   }
@@ -259,7 +310,13 @@ const DiscussionTab = (props) => {
     const currentPaper = store.getState().paper;
     debugger;
     await dispatch(
-      PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
+      PaperActions.getThreads(
+        props.paper.id,
+        currentPaper,
+        filter,
+        page,
+        showTwitterComments
+      )
     );
     const sortedThreads = store.getState().paper.discussion.threads;
 
@@ -368,6 +425,26 @@ const DiscussionTab = (props) => {
               {showEditor && renderDiscussionTextEditor()}
             </div>
             <div className={css(styles.rowContainer)}>
+              <div className={css(styles.tabRow)}>
+                <div
+                  className={css(
+                    styles.tab,
+                    !showTwitterComments && styles.activeTab
+                  )}
+                  onClick={() => toggleTwitterComments(false)}
+                >
+                  Comments
+                </div>
+                <div
+                  className={css(
+                    styles.tab,
+                    showTwitterComments && styles.activeTab
+                  )}
+                  onClick={() => toggleTwitterComments(true)}
+                >
+                  Tweets
+                </div>
+              </div>
               <div className={css(styles.filterContainer)}>
                 <div className={css(styles.filterSelect)}>
                   <FormSelect
@@ -803,6 +880,31 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 12,
     },
+  },
+  tabRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    // marginLeft: 20,
+  },
+  tab: {
+    padding: "4px 12px",
+    fontSize: 14,
+    fontWeight: 500,
+    cursor: "pointer",
+    marginRight: 8,
+    color: "rgba(36, 31, 58, 0.6)",
+    borderRadius: 4,
+    ":hover": {
+      color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  activeTab: {
+    backgroundColor: colors.BLUE(0.11),
+    color: colors.BLUE(),
   },
 });
 
