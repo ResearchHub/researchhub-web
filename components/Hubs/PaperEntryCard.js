@@ -107,6 +107,10 @@ const PaperEntryCard = ({
     );
   }
 
+  function renderPromoter() {
+    return <span className={css(styles.promotion)}>Promoted</span>;
+  }
+
   function renderUploadedBy() {
     if (uploaded_by) {
       let {
@@ -217,6 +221,7 @@ const PaperEntryCard = ({
             <span className={css(styles.dicussionCount)} id={"discCount"}>
               {formatDiscussionCount()}
             </span>
+            {renderPromoter()}
           </div>
         </a>
       </Link>
@@ -566,7 +571,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
+    alignItems: "flex-end",
     width: "100%",
   },
   votingLink: {
@@ -577,7 +582,7 @@ const styles = StyleSheet.create({
   },
   discussion: {
     cursor: "pointer",
-    minWidth: 140,
+    minWidth: 100,
     fontSize: 14,
     ":hover #discIcon": {
       color: colors.BLUE(1),
@@ -673,6 +678,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(),
     },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
   uploadedByAvatar: {
     marginLeft: 10,
@@ -682,6 +690,24 @@ const styles = StyleSheet.create({
   },
   rhIcon: {
     height: 20,
+  },
+  divider: {
+    margin: "0px 5px",
+  },
+  promotion: {
+    fontSize: 12,
+    fontWeight: 400,
+    // textTransform: 'uppercase',
+    // fontWeight: 'bold',
+    // letterSpacing: 1,
+    color: "rgb(145, 143, 155)",
+    marginLeft: 15,
+    // color: '#FFF',
+    // backgroundColor: colors.BLUE(),
+    // padding: '3px 10px'
+    "@media only screen and (max-width: 767px)": {
+      // fontSize: 12,
+    },
   },
 });
 
