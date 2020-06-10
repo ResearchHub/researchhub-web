@@ -331,7 +331,7 @@ const DiscussionTab = (props) => {
       <div
         className={css(styles.box, threads.length < 1 && styles.emptyStateBox)}
       >
-        {threads.length < 1 && (
+        {discussionCount < 1 && (
           <span className={css(styles.box, styles.emptyStateBox)}>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
@@ -356,7 +356,7 @@ const DiscussionTab = (props) => {
           <button
             className={css(
               styles.addDiscussionButton,
-              threads.length > 0 && styles.plainButton
+              discussionCount > 0 && styles.plainButton
             )}
           >
             Add Comment
@@ -403,7 +403,7 @@ const DiscussionTab = (props) => {
         cancel={cancel}
         save={save}
       />
-      {threads.length > 0 ? (
+      {discussionCount > 0 ? (
         <div
           className={css(
             styles.threadsContainer,
@@ -562,7 +562,9 @@ var styles = StyleSheet.create({
     },
   },
   emptyStateBox: {
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "flex-end",
     width: "100%",
   },
   plainBox: {
