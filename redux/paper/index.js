@@ -84,14 +84,13 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: (paperId, paper, filter = null, page = 1) => {
+  getThreads: (paperId, paper, filter = null, page = 1, twitter) => {
     if (paper === null || paper === undefined) {
       return;
     }
-
     return (dispatch) => {
       return fetch(
-        API.DISCUSSION(paperId, filter && filter, page),
+        API.DISCUSSION(paperId, filter && filter, page, false, twitter),
         API.GET_CONFIG()
       )
         .then(Helpers.checkStatus)
