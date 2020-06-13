@@ -550,6 +550,8 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    PROMOTION_PURCHASE: BASE_URL + "purchase/",
+    PROMOTION_TRANSACTIONS: BASE_URL + "purchase/user_transactions/",
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
