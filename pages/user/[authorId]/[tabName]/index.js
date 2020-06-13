@@ -21,10 +21,13 @@ import TabBar from "~/components/TabBar";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
+import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 
 // Config
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 const AuthorPage = (props) => {
   let { author, hostname, user, transactions } = props;
@@ -116,6 +119,21 @@ const AuthorPage = (props) => {
     );
   }
 
+  async function fetchUserPromotions() {
+    fetch(API.PROMOTION_TRANSACTIONS, API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(async (res) => {
+        await dispatch(
+          AuthorActions.updateAuthorByKey({
+            key: "promotions",
+            value: res,
+            prevState: props.author,
+          })
+        );
+      });
+  }
+
   useEffect(() => {
     async function refetchAuthor() {
       await dispatch(
@@ -125,6 +143,7 @@ const AuthorPage = (props) => {
     fetchAuthoredPapers();
     fetchUserDiscussions();
     fetchUserContributions();
+    fetchUserPromotions();
     refetchAuthor();
   }, [props.isServer, router.query.authorId]);
 
@@ -202,6 +221,12 @@ const AuthorPage = (props) => {
       showCount: true,
       count: transactions.count,
     },
+    {
+      href: "promotions",
+      label: "promotions",
+      showCount: true,
+      count: author.promotions && author.promotions.length,
+    },
   ];
 
   let renderTabContent = () => {
@@ -216,6 +241,8 @@ const AuthorPage = (props) => {
         return null;
       case "transactions":
         return <UserTransactionsTab />;
+      case "promotions":
+        return <UserPromotionsTab />;
     }
   };
 

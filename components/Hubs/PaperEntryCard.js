@@ -221,7 +221,6 @@ const PaperEntryCard = ({
             <span className={css(styles.dicussionCount)} id={"discCount"}>
               {formatDiscussionCount()}
             </span>
-            {renderPromoter()}
           </div>
         </a>
       </Link>
