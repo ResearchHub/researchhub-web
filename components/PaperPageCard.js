@@ -7,6 +7,7 @@ import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
 import ReactTooltip from "react-tooltip";
+import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
@@ -21,6 +22,9 @@ import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 
+// redux
+import { ModalActions } from "~/redux/modals";
+
 // Stylesheets
 import "./stylesheets/Carousel.css";
 
@@ -30,6 +34,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate } from "~/config/utils";
 import { openExternalLink } from "~/config/utils";
+import { ModalConstants } from "../redux/modals";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -636,7 +641,12 @@ class PaperPageCard extends React.Component {
             </div>
             {this.renderHubs()}
             <div>
-              <Ripples className={css(styles.promotionButton)}>Promote</Ripples>
+              <Ripples
+                className={css(styles.promotionButton)}
+                onClick={() => this.props.openPaperTransactionModal(true)}
+              >
+                Promote
+              </Ripples>
             </div>
           </div>
         </div>
@@ -1125,4 +1135,11 @@ const carousel = StyleSheet.create({
   },
 });
 
-export default PaperPageCard;
+const mapDispatchToProps = {
+  openPaperTransactionModal: ModalActions.openPaperTransactionModal,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(PaperPageCard);

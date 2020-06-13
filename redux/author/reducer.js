@@ -29,6 +29,7 @@ const AuthorReducer = (state = defaultAuthorState, action) => {
     case types.GET_USER_CONTRIBUTIONS_PENDING:
     case types.GET_USER_CONTRIBUTIONS_FAILURE:
     case types.GET_USER_CONTRIBUTIONS_SUCCESS:
+    case types.UPDATE_AUTHOR_BY_KEY:
       return {
         ...state,
         ...action.payload,
