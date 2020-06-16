@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Router from "next/router";
-import { connect } from "react-redux";
+import { connect, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
 import Ripples from "react-ripples";
@@ -40,6 +40,7 @@ const PaperEntryCard = ({
   voteCallback,
   postUpvote,
   postDownvote,
+  reduxPaper,
 }) => {
   let {
     id,
@@ -71,6 +72,7 @@ const PaperEntryCard = ({
   const [figures, setFigures] = useState(
     previews.map((preview, index) => preview && preview.file)
   );
+  const store = useStore();
 
   if (discussion_count == undefined) {
     discussion_count = discussionCount;
@@ -143,18 +145,21 @@ const PaperEntryCard = ({
   async function onUpvote(e) {
     e.stopPropagation();
     let curPaper = { ...paper };
-    postUpvote(curPaper.id);
-    if (curPaper.user_vote) {
-      curPaper.score += 2;
-    } else {
-      curPaper.score += 1;
-    }
-    curPaper.user_vote = {
-      vote_type: UPVOTE_ENUM,
-    };
-    selected = UPVOTE;
+    await postUpvote(curPaper.id);
+    let userVote = store.getState().paper.userVote;
+    if (userVote.doneFetching && userVote.success) {
+      if (curPaper.user_vote) {
+        curPaper.score += 2;
+      } else {
+        curPaper.score += 1;
+      }
+      curPaper.user_vote = {
+        vote_type: UPVOTE_ENUM,
+      };
+      selected = UPVOTE;
 
-    voteCallback(index, curPaper);
+      voteCallback(index, curPaper);
+    }
   }
 
   /**
@@ -164,18 +169,21 @@ const PaperEntryCard = ({
   async function onDownvote(e) {
     e.stopPropagation();
     let curPaper = { ...paper };
-    postDownvote(curPaper.id);
-    if (curPaper.user_vote) {
-      curPaper.score -= 2;
-    } else {
-      curPaper.score -= 1;
-    }
-    curPaper.user_vote = {
-      vote_type: DOWNVOTE_ENUM,
-    };
-    selected = DOWNVOTE;
+    await postDownvote(curPaper.id);
+    let userVote = store.getState().paper.userVote;
+    if (userVote.doneFetching && userVote.success) {
+      if (curPaper.user_vote) {
+        curPaper.score -= 2;
+      } else {
+        curPaper.score -= 1;
+      }
+      curPaper.user_vote = {
+        vote_type: DOWNVOTE_ENUM,
+      };
+      selected = DOWNVOTE;
 
-    voteCallback(index, curPaper);
+      voteCallback(index, curPaper);
+    }
   }
 
   function navigateToPage(e) {
@@ -724,8 +732,8 @@ const carousel = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ vote }) => ({
-  vote,
+const mapStateToProps = (state) => ({
+  vote: state.vote,
 });
 
 const mapDispatchToProps = {

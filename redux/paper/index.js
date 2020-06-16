@@ -15,24 +15,21 @@ export const PaperActions = {
     const isUpvote = true;
 
     return async (dispatch) => {
-      const response = await fetch(
-        API.UPVOTE(paperId),
-        API.POST_CONFIG()
-      ).catch(utils.handleCatch);
+      await fetch(API.UPVOTE(paperId), API.POST_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          const vote = shims.vote(res);
+          let action = actions.setUserVoteSuccess(vote);
 
-      let status = await Helpers.checkStatus(response).catch(utils.handleCatch);
-      let res = await Helpers.parseJSON(status);
-
-      let action = actions.setUserVoteFailure(isUpvote);
-
-      if (response.ok) {
-        const vote = shims.vote(res);
-        action = actions.setUserVoteSuccess(vote);
-      } else {
-        utils.logFetchError(response);
-      }
-
-      // return dispatch(action);
+          return dispatch(action);
+        })
+        .catch((err) => {
+          utils.logFetchError(err);
+          utils.handleCatch(err);
+          let action = actions.setUserVoteFailure(isUpvote);
+          return dispatch(action);
+        });
     };
   },
 
@@ -40,24 +37,19 @@ export const PaperActions = {
     const isUpvote = false;
 
     return async (dispatch) => {
-      const response = await fetch(
-        API.DOWNVOTE(paperId),
-        API.POST_CONFIG()
-      ).catch(utils.handleCatch);
-
-      let status = await Helpers.checkStatus(response).catch(utils.handleCatch);
-      let res = await Helpers.parseJSON(status);
-
-      let action = actions.setUserVoteFailure(isUpvote);
-
-      if (response.ok) {
-        const vote = shims.vote(res);
-        action = actions.setUserVoteSuccess(vote);
-      } else {
-        utils.logFetchError(response);
-      }
-
-      // return dispatch(action);
+      await fetch(API.DOWNVOTE(paperId), API.POST_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          const vote = shims.vote(res);
+          let action = actions.setUserVoteSuccess(vote);
+          return dispatch(action);
+        })
+        .catch((err) => {
+          utils.handleCatch(err);
+          let action = actions.setUserVoteFailure(isUpvote);
+          return dispatch(action);
+        });
     };
   },
   getPaper: (paperId) => {
