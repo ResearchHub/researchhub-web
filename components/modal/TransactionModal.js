@@ -394,6 +394,9 @@ class TransactionModal extends React.Component {
           }, 400);
         });
     } else {
+      showMessage({ show: false });
+      setMessage("Please enter a valid address.");
+      showMessage({ show: true, error: true, clickoff: true });
     }
   };
 
