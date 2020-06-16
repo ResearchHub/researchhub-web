@@ -264,6 +264,14 @@ class Index extends React.Component {
     return `Top ${type} ${this.state.by.value === 0 ? "on" : "in"}`;
   };
 
+  voteCallback = (index, paper) => {
+    let items = [...this.state.items];
+    items[index] = paper;
+    this.setState({
+      items,
+    });
+  };
+
   renderLoadMoreButton = () => {
     const { next, loadingMore } = this.state;
     if (next !== null) {
@@ -293,7 +301,11 @@ class Index extends React.Component {
     return this.state.items.map((paper, index) => {
       return (
         <div className={css(styles.paperEntryContainer)}>
-          <PaperEntryCard paper={paper} index={index} />
+          <PaperEntryCard
+            paper={paper}
+            index={index}
+            voteCallback={this.voteCallback}
+          />
         </div>
       );
     });
