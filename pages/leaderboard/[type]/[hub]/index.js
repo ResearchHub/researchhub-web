@@ -11,7 +11,6 @@ const fetchHub = (slug) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((res) => {
-      console.log(res);
       return res.results[0]; // TODO: Shim and catch errors
     });
 };

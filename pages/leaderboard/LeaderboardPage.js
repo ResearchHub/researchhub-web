@@ -112,7 +112,6 @@ class Index extends React.Component {
     this.setState({
       fetchingLeaderboard: true,
     });
-    console.log(this.state.createdByOptions);
     return fetch(
       API.LEADERBOARD({
         limit: 20,
