@@ -386,9 +386,10 @@ class TransactionModal extends React.Component {
           }
         })
         .catch((err) => {
+          err.name = "";
           setTimeout(() => {
             showMessage({ show: false });
-            setMessage("There is no balance to transfer.");
+            setMessage(err.toString());
             showMessage({ show: true, error: true, clickoff: true });
           }, 400);
         });
