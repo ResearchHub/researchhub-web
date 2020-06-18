@@ -5,6 +5,7 @@ import { withAlert } from "react-alert";
 import ReactTooltip from "react-tooltip";
 import { keccak256, sha3_256 } from "js-sha3";
 import miniToken from "./Artifacts/mini-me-token";
+import contractAbi from "./Artifacts/contract-abi";
 import { ethers } from "ethers";
 
 // Component
@@ -16,6 +17,7 @@ import FormInput from "~/components/Form/FormInput";
 // Redux
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
+import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -43,10 +45,17 @@ class PaperTransactionModal extends React.Component {
       validating: false,
       valid: false,
       transactionHash: "",
+      // Finish
+      finish: false,
     };
     this.state = {
       ...this.initialState,
     };
+
+    // Contract Constants
+    this.provider;
+    this.signer;
+    this.RSCContract;
   }
 
   closeModal = () => {
@@ -62,23 +71,89 @@ class PaperTransactionModal extends React.Component {
     this.createContract();
   }
 
-  createContract = async (account) => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+  createContract = () => {
+    this.provider = new ethers.providers.Web3Provider(window.ethereum);
+    this.signer = this.provider.getSigner(0);
     ethereum.autoRefreshOnNetworkChange = false;
-
-    const contract = new ethers.Contract(
+    this.RSCContract = new ethers.Contract(
       "0x7d50101bbfa12f4a1b4e6de0dd58ad36de150d55",
       miniToken.abi,
-      provider
+      this.provider
     );
-    let rawBalance = await contract.balanceOf(account);
+  };
+
+  checkRSCBalance = async (account) => {
+    let rawBalance = await this.RSCContract.balanceOf(account);
     let balance = ethers.utils.formatUnits(rawBalance, 18);
     this.setState({ balance }, () => {
       this.setState({
         error: this.handleError(this.state.value),
       });
     });
+  };
+
+  signTransaction = async (item) => {
+    let { setMessage, showMessage } = this.props;
+    let { purchase_hash, id } = item;
+    console.log("purchase", purchase_hash);
+
+    const appContract = new ethers.Contract(
+      "0xd2Abb07F644FDA2CB423220b80cEeb4e81C4B5ca",
+      contractAbi,
+      this.provider
+    );
+
+    let rawAllowance = await this.RSCContract.functions.allowance(
+      this.state.networkAddress,
+      appContract.address
+    );
+
+    let allowance = ethers.utils.formatUnits(rawAllowance[0], 18);
+
+    if (Number(allowance) < Number(this.state.value)) {
+      await this.RSCContract.connect(this.signer).functions.approve(
+        appContract.address,
+        ethers.utils.parseEther(`${this.state.value}`)
+      );
+    }
+
+    let hash = await appContract.connect(this.signer).functions.buy(
+      "0x7d50101bbfa12f4a1b4e6de0dd58ad36de150d55", // address of token contract
+      ethers.utils.parseEther(`${this.state.value}`), // amount of RSC parsed
+      ethers.utils.formatBytes32String("test") // convert item to bytes, (item)
+    );
+
+    let payload = { transaction_hash: hash.hash };
+
+    fetch(API.PROMOTION({ purchaseId: id }), API.PATCH_CONFIG(payload))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        showMessage({ show: false });
+        setMessage("Transaction Successful!");
+        showMessage({ show: true });
+        this.setState({ finish: true });
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  };
+
+  updateBalance = () => {
+    if (!this.props.auth.isLoggedIn) {
+      return;
+    }
+    fetch(API.WITHDRAW_COIN({}), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        let newUser = { ...res.user };
+        this.props.updateUser(newUser);
+        this.setState({
+          userBalance: res.user.balance,
+          withdrawals: [...res.results],
+        });
+      });
   };
 
   handleInput = (e) => {
@@ -91,13 +166,12 @@ class PaperTransactionModal extends React.Component {
 
   handleError = (value) => {
     if (!this.state.offChain) {
-      if (value > this.state.balance || value < 0) {
+      if (value > Number(this.state.balance) || value < 0) {
         return true;
       } else {
         return false;
       }
     } else {
-      x;
       if (value > this.props.user.balance || value < 0) {
         return true;
       }
@@ -128,7 +202,7 @@ class PaperTransactionModal extends React.Component {
       object_id: paperId,
       content_type: "paper",
       user: userId,
-      purchase_method: "OFF_CHAIN",
+      purchase_method: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
       purchase_type: "BOOST",
     };
 
@@ -136,10 +210,18 @@ class PaperTransactionModal extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        showMessage({ show: false });
-        setMessage("Transaction Successful!");
-        showMessage({ show: true });
-        setTimeout(() => this.closeModal(), 400);
+        if (!this.state.offChain) {
+          let item = { ...res };
+          this.signTransaction(item);
+        } else {
+          showMessage({ show: false });
+          setMessage("Transaction Successful!");
+          showMessage({ show: true });
+          this.transitionScreen(() => {
+            this.setState({ finish: true });
+            this.updateBalance();
+          });
+        }
       })
       .catch((err) => {
         showMessage({ show: false });
@@ -183,7 +265,7 @@ class PaperTransactionModal extends React.Component {
 
   checkBalance = (accountAddress) => {
     let account = accountAddress ? accountAddress : this.state.networkAddress;
-    this.createContract(account);
+    this.checkRSCBalance(account);
   };
 
   updateChainId = (chainId) => {
@@ -207,7 +289,7 @@ class PaperTransactionModal extends React.Component {
                 {
                   transition: false,
                 },
-                () => this.checkBalance()
+                () => this.checkRSCBalance(this.state.networkAddress)
               );
             }, 300);
         }
@@ -217,9 +299,14 @@ class PaperTransactionModal extends React.Component {
 
   updateAccount = (accounts) => {
     let account = accounts && accounts[0] && accounts[0];
-    this.setState({
-      networkAddress: account,
-    });
+    this.setState(
+      {
+        networkAddress: account,
+      },
+      () => {
+        this.checkRSCBalance(account);
+      }
+    );
   };
 
   handleNetworkAddressInput = (id, value) => {
@@ -357,7 +444,46 @@ class PaperTransactionModal extends React.Component {
       networkVersion,
       validating,
       valid,
+      finish,
     } = this.state;
+
+    if (finish) {
+      return (
+        <Fragment>
+          <div className={css(styles.row)}>
+            <div className={css(styles.column)}>
+              <div className={css(styles.mainHeader)}>
+                Transaction Successful
+                <span className={css(styles.icon)}>
+                  <i className="fal fa-check-circle" />
+                </span>
+              </div>
+              <div className={css(styles.confirmation)}>
+                Click{" "}
+                <span
+                  className={css(styles.transactionHashLink)}
+                  onClick={() =>
+                    this.openTransactionConfirmation(
+                      `https://rinkeby.etherscan.io/tx/${transactionHash}`
+                    )
+                  }
+                >
+                  here
+                </span>{" "}
+                to view the transaction confirmation.
+              </div>
+            </div>
+          </div>
+          <div className={css(styles.buttons, styles.confirmationButtons)}>
+            <Button
+              label={"Finish"}
+              onClick={this.closeModal}
+              customButtonStyle={styles.button}
+            />
+          </div>
+        </Fragment>
+      );
+    }
     if (!nextScreen) {
       return (
         <div className={css(styles.content, transition && styles.transition)}>
@@ -666,6 +792,17 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     height: "100%",
   },
+  mainHeader: {
+    fontWeight: "500",
+    fontSize: 22,
+    color: "#000 ",
+    width: "100%",
+    marginTop: 20,
+  },
+  icon: {
+    color: colors.GREEN(1),
+    marginLeft: 5,
+  },
   mobileCenter: {
     paddingTop: 10,
     "@media only screen and (max-width: 767px)": {
@@ -819,18 +956,31 @@ const styles = StyleSheet.create({
     objectFit: "contain",
     width: 250,
   },
+  confirmation: {
+    color: "#000",
+    margin: "10px 0",
+  },
+  transactionHashLink: {
+    cursor: "pointer",
+    color: colors.BLUE(1),
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
   modals: state.modals,
   paper: state.paper,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
+  updateUser: AuthActions.updateUser,
 };
 
 export default connect(

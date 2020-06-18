@@ -34,7 +34,7 @@ const VoteWidget = (props) => {
     searchResult,
     isPaper,
     type,
-    paper,
+    promoted,
   } = props;
 
   const score = getScore(props);
@@ -116,10 +116,10 @@ const VoteWidget = (props) => {
             selected={upvoteSelected}
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={paper && paper.promoted}
+            promoted={promoted}
           />
         </PermissionNotificationWrapper>
-        <ScorePill score={score} promoted={paper && paper.promoted} />
+        <ScorePill score={promoted ? promoted : score} promoted={promoted} />
         <PermissionNotificationWrapper
           loginRequired={true}
           onClick={onDownvoteClick}
@@ -129,11 +129,11 @@ const VoteWidget = (props) => {
             selected={downvoteSelected}
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={paper && paper.promoted}
+            promoted={promoted}
           />
         </PermissionNotificationWrapper>
       </div>
-      {paper && paper.promoted && (
+      {promoted && (
         <div className={css(styles.promotionContainer)}>
           <div className={css(styles.divider)} />
           <div className={css(styles.scoreContainer)}>{score}</div>
