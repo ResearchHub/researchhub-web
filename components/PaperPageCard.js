@@ -60,6 +60,7 @@ class PaperPageCard extends React.Component {
     if (prevProps.paper.id !== this.props.paper.id) {
       this.setState({ loading: true });
       this.fetchFigures();
+    } else if (prevProps.paper.promoted !== this.props.paper.promoted) {
     }
   }
 
@@ -466,7 +467,6 @@ class PaperPageCard extends React.Component {
       downvote,
       selectedVoteType,
     } = this.props;
-
     return (
       <Fragment>
         <div className={css(styles.topRow)}>
@@ -480,7 +480,7 @@ class PaperPageCard extends React.Component {
                 isPaper={true}
                 horizontalView={true}
                 type={"Paper"}
-                paper={paper}
+                promoted={paper && paper.promoted}
               />
             </div>
           </div>
@@ -502,6 +502,7 @@ class PaperPageCard extends React.Component {
       scrollView,
       doneFetchingPaper,
     } = this.props;
+
     let { fetching, previews, figureUrls } = this.state;
     if (!doneFetchingPaper) {
       return (
@@ -533,7 +534,7 @@ class PaperPageCard extends React.Component {
             selected={selectedVoteType}
             isPaper={true}
             type={"Paper"}
-            paper={paper}
+            promoted={paper && paper.promoted}
           />
         </div>
         <div className={css(styles.votingMobile)}>
@@ -545,7 +546,7 @@ class PaperPageCard extends React.Component {
             isPaper={true}
             horizontalView={true}
             type={"Paper"}
-            paper={paper}
+            promoted={paper && paper.promoted}
           />
         </div>
         {figureUrls.length > 0 && (
