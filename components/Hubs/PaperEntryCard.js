@@ -365,7 +365,7 @@ const PaperEntryCard = ({
             isPaper={true}
             styles={styles.voteWidget}
             type={"Paper"}
-            paper={paper}
+            promoted={promoted}
           />
         </span>
       </div>

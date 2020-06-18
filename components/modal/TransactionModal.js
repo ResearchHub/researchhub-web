@@ -381,7 +381,7 @@ class TransactionModal extends React.Component {
               setMessage("Your transaction request has been made.");
               showMessage({ show: true, clickoff: true });
               this.setState({ transactionHash: transaction_hash }, () => {
-                this.props.getUser();
+                this.getBalance();
               });
             }, 400);
           }

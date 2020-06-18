@@ -550,6 +550,10 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    PROMOTION: ({ purchaseId }) => {
+      let url = BASE_URL + `purchase/${purchaseId}/`;
+      return url;
+    },
     PROMOTION_PURCHASE: BASE_URL + "purchase/",
     PROMOTION_TRANSACTIONS: BASE_URL + "purchase/user_transactions/",
   };
