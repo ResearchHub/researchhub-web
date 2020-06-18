@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   searchDropdown: {
     width: "150%",
     position: "absolute",
-    zIndex: 4,
+    zIndex: 10,
     top: 60,
     maxHeight: 400,
     left: "50%",
