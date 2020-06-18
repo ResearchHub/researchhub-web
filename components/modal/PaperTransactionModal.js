@@ -2,11 +2,16 @@ import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { withAlert } from "react-alert";
+import ReactTooltip from "react-tooltip";
+import { keccak256, sha3_256 } from "js-sha3";
+import miniToken from "./Artifacts/mini-me-token";
+import { ethers } from "ethers";
 
 // Component
 import BaseModal from "./BaseModal";
 import Loader from "~/components/Loader/Loader";
 import Button from "~/components/Form/Button";
+import FormInput from "~/components/Form/FormInput";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -24,6 +29,20 @@ class PaperTransactionModal extends React.Component {
     this.initialState = {
       value: 1,
       error: false,
+      nextScreen: false,
+      offChain: false,
+      transition: false,
+      // OnChain
+      balance: 0,
+      networkVersion: null, //
+      networkAddress: "",
+      connectedMetaMask: false,
+      transition: false,
+      listenerNetwork: null,
+      listenerAccount: null,
+      validating: false,
+      valid: false,
+      transactionHash: "",
     };
     this.state = {
       ...this.initialState,
@@ -36,6 +55,32 @@ class PaperTransactionModal extends React.Component {
     });
   };
 
+  componentDidMount() {
+    if (this.handleError(this.state.value)) {
+      this.setState({ error: true });
+    }
+    this.createContract();
+  }
+
+  createContract = async (account) => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    ethereum.autoRefreshOnNetworkChange = false;
+
+    const contract = new ethers.Contract(
+      "0x7d50101bbfa12f4a1b4e6de0dd58ad36de150d55",
+      miniToken.abi,
+      provider
+    );
+    let rawBalance = await contract.balanceOf(account);
+    let balance = ethers.utils.formatUnits(rawBalance, 18);
+    this.setState({ balance }, () => {
+      this.setState({
+        error: this.handleError(this.state.value),
+      });
+    });
+  };
+
   handleInput = (e) => {
     let value = e.target.value;
     this.setState({
@@ -45,8 +90,17 @@ class PaperTransactionModal extends React.Component {
   };
 
   handleError = (value) => {
-    if (!value > 0 || value > this.props.user.balance) {
-      return true;
+    if (!this.state.offChain) {
+      if (value > this.state.balance || value < 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      x;
+      if (value > this.props.user.balance || value < 0) {
+        return true;
+      }
     }
     return false;
   };
@@ -70,7 +124,7 @@ class PaperTransactionModal extends React.Component {
     let userId = user.id;
 
     let payload = {
-      amount: this.state.value,
+      amount: Number(this.state.value),
       object_id: paperId,
       content_type: "paper",
       user: userId,
@@ -94,21 +148,282 @@ class PaperTransactionModal extends React.Component {
       });
   };
 
-  render() {
-    let { user, modals } = this.props;
+  connectWallet = async () => {
+    if (!this.state.connectedMetaMask) {
+      ethereum
+        .send("eth_requestAccounts")
+        .then((accounts) => {
+          let account = accounts && accounts.result ? accounts.result[0] : [];
+          this.setState(
+            {
+              connectedMetaMask: true,
+              networkAddress: account,
+              listenerNetwork: ethereum.on(
+                "networkChanged",
+                this.updateChainId
+              ),
+              listenerAccount: ethereum.on(
+                "accountsChanged",
+                this.updateAccount
+              ),
+              valid: true,
+            },
+            () => this.checkBalance()
+          );
+        })
+        .catch((error) => {
+          if (error.code === 4001) {
+            // EIP 1193 userRejectedRequest error
+          } else {
+            console.error(error);
+          }
+        });
+    }
+  };
+
+  checkBalance = (accountAddress) => {
+    let account = accountAddress ? accountAddress : this.state.networkAddress;
+    this.createContract(account);
+  };
+
+  updateChainId = (chainId) => {
+    if (chainId !== this.state.networkVersion) {
+      let transition = false;
+      if (this.state.networkVersion !== "1" && chainId === "1") {
+        transition = true;
+      }
+      if (this.state.networkVersion === "1" && chainId !== "1") {
+        transition = true;
+      }
+      this.setState(
+        {
+          networkVersion: chainId, // shows the eth network
+          transition: transition,
+        },
+        () => {
+          this.state.transition &&
+            setTimeout(() => {
+              this.setState(
+                {
+                  transition: false,
+                },
+                () => this.checkBalance()
+              );
+            }, 300);
+        }
+      );
+    }
+  };
+
+  updateAccount = (accounts) => {
+    let account = accounts && accounts[0] && accounts[0];
+    this.setState({
+      networkAddress: account,
+    });
+  };
+
+  handleNetworkAddressInput = (id, value) => {
+    this.setState(
+      {
+        networkAddress: value,
+        validating: true,
+      },
+      () => {
+        setTimeout(() => {
+          this.setState({
+            validating: false,
+            valid: this.isAddress(this.state.networkAddress),
+            balance: this.isAddress(this.state.networkAddress)
+              ? this.checkBalance(value)
+              : null,
+          });
+        }, 400);
+      }
+    );
+  };
+
+  toCheckSumAddress = (address) => {
+    address = address.toLowerCase().replace("0x", "");
+    let hash = keccak256(address);
+    let ret = "0x";
+
+    for (var i = 0; i < address.length; i++) {
+      if (parseInt(hash[i], 16) >= 8) {
+        ret += address[i].toUpperCase();
+      } else {
+        ret += address[i];
+      }
+    }
+
+    return ret;
+  };
+
+  /**
+   * Checks if the given string is an address
+   *
+   * @method isAddress
+   * @param {String} address the given HEX adress
+   * @return {Boolean}
+   */
+  isAddress = (address) => {
+    if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+      // check if it has the basic requirements of an address
+      return false;
+    } else if (
+      /^(0x)?[0-9a-f]{40}$/.test(address) ||
+      /^(0x)?[0-9A-F]{40}$/.test(address)
+    ) {
+      // If it's all small caps or all all caps, return true
+      return true;
+    } else {
+      return true;
+      // Otherwise check each case
+      // return this.isChecksumAddress(address);
+    }
+  };
+
+  /**
+   * Checks if the given string is a checksummed address
+   *
+   * @method isChecksumAddress
+   * @param {String} address the given HEX adress
+   * @return {Boolean}
+   */
+  isChecksumAddress = (address) => {
+    // Check each case
+    address = address.replace("0x", "");
+    var addressHash = sha3_256(address.toLowerCase());
+    for (var i = 0; i < 40; i++) {
+      // the nth letter should be uppercase if the nth digit of casemap is 1
+      if (
+        (parseInt(addressHash[i], 16) > 7 &&
+          address[i].toUpperCase() !== address[i]) ||
+        (parseInt(addressHash[i], 16) <= 7 &&
+          address[i].toLowerCase() !== address[i])
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  transitionScreen = (callback) => {
+    this.setState({ transition: true }, () => {
+      setTimeout(() => {
+        callback();
+        this.setState({ transition: false }, () => {
+          !this.state.offChain && this.connectWallet();
+          this.state.offChain &&
+            this.setState({ error: this.handleError(this.state.value) });
+        });
+      }, 300);
+    });
+  };
+
+  renderSwitchNetworkMsg = () => {
+    let { transition } = this.state;
     return (
-      <BaseModal
-        isOpen={modals.openPaperTransactionModal}
-        closeModal={this.closeModal}
-        title={"Promote Paper"} // this needs to
-      >
-        <div className={css(styles.content)}>
+      <div className={css(styles.networkContainer)}>
+        {transition ? (
+          <Loader loading={true} />
+        ) : (
+          <Fragment>
+            <div className={css(styles.title)}>
+              Oops, you're on the wrong network
+            </div>
+            <div className={css(styles.instruction)}>
+              Simply open MetaMask and switch over {"\n"}to the
+              <b>{" Main Ethereum Network"}</b>
+            </div>
+            <img
+              src={"/static/background/metamask.png"}
+              className={css(styles.image)}
+              draggable={false}
+            />
+          </Fragment>
+        )}
+      </div>
+    );
+  };
+
+  renderContent = () => {
+    let { user } = this.props;
+    let {
+      nextScreen,
+      offChain,
+      transition,
+      connectedMetaMask,
+      networkAddress,
+      networkVersion,
+      validating,
+      valid,
+    } = this.state;
+    if (!nextScreen) {
+      return (
+        <div className={css(styles.content, transition && styles.transition)}>
           <div className={css(styles.description)}>
             {
               "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
             }
           </div>
-          <div className={css(styles.row, styles.numbers)}>
+          <div className={css(styles.row, styles.mobileCenter)}>
+            <div className={css(styles.column, styles.center)}>
+              <Button
+                customButtonStyle={styles.button}
+                label={() => {
+                  return (
+                    <div className={css(styles.buttonLabel)}>
+                      <div className={css(styles.label)}>Use RSC in App</div>
+                      <img
+                        src={"/static/icons/coin-filled.png"}
+                        draggable={false}
+                        className={css(styles.coinIcon)}
+                      />
+                    </div>
+                  );
+                }}
+                onClick={() =>
+                  this.transitionScreen(() =>
+                    this.setState({ nextScreen: true, offChain: true })
+                  )
+                }
+              />
+            </div>
+            <div className={css(styles.column, styles.center)}>
+              <Button
+                customButtonStyle={styles.button}
+                isWhite={true}
+                label={() => {
+                  return (
+                    <div className={css(styles.buttonLabel)}>
+                      <div className={css(styles.label)}>Use RSC in Wallet</div>
+                      <img
+                        src={"/static/icons/coin-filled.png"}
+                        draggable={false}
+                        className={css(styles.coinIcon)}
+                      />
+                    </div>
+                  );
+                }}
+                onClick={() =>
+                  this.transitionScreen(() =>
+                    this.setState({ nextScreen: true, offChain: false })
+                  )
+                }
+              />
+            </div>
+          </div>
+        </div>
+      );
+    } else if (nextScreen && offChain) {
+      return (
+        <div className={css(styles.content, transition && styles.transition)}>
+          <div className={css(styles.description)}>
+            {
+              "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
+            }
+          </div>
+          <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Total Balance</div>
               <div className={css(styles.subtitle)}>
@@ -128,14 +443,9 @@ class PaperTransactionModal extends React.Component {
           </div>
           <div className={css(styles.row, styles.numbers)}>
             <div className={css(styles.column, styles.left)}>
-              <div className={css(styles.title)}>Amount to Spend</div>
+              <div className={css(styles.title)}>Amount</div>
               <div className={css(styles.subtitle)}>
                 Your total must exceed 1 RSC
-                {/* <img
-                  src={"/static/icons/coin-filled.png"}
-                  draggable={false}
-                  className={css(styles.coinIcon)}
-                /> */}
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -151,6 +461,140 @@ class PaperTransactionModal extends React.Component {
             <Button label="Confirm" onClick={this.confirmTransaction} />
           </div>
         </div>
+      );
+    } else if (nextScreen && !offChain) {
+      return (
+        <div className={css(styles.content, transition && styles.transition)}>
+          {/* {connectedMetaMask && networkVersion !== "1" ? ( */}
+          {false ? (
+            this.renderSwitchNetworkMsg()
+          ) : (
+            <Fragment>
+              <div className={css(styles.description)}>
+                {
+                  "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
+                }
+              </div>
+              {connectedMetaMask && (
+                <div className={css(styles.connectStatus)}>
+                  <div
+                    className={css(
+                      styles.dot,
+                      connectedMetaMask && styles.connected
+                    )}
+                  />
+                  Connected wallet: MetaMask
+                </div>
+              )}
+              <div className={css(styles.inputLabel)}>
+                Wallet Address
+                <span
+                  className={css(styles.infoIcon)}
+                  data-tip={"The address of your ETH Account (ex. 0x0000...)"}
+                >
+                  {icons["info-circle"]}
+                  <ReactTooltip />
+                </span>
+              </div>
+              <FormInput
+                value={networkAddress}
+                containerStyle={styles.formInput}
+                // onChange={this.handleNetworkAddressInput}
+                // disabled={true}
+                inlineNodeRight={
+                  networkAddress !== "" ? (
+                    validating ? (
+                      <span className={css(styles.successIcon)}>
+                        <Loader loading={true} size={23} />
+                      </span>
+                    ) : (
+                      <span
+                        className={css(
+                          styles.successIcon,
+                          !valid && styles.errorIcon
+                        )}
+                      >
+                        {valid ? (
+                          <i className="fal fa-check-circle" />
+                        ) : (
+                          <i className="fal fa-times-circle" />
+                        )}
+                      </span>
+                    )
+                  ) : null
+                }
+              />
+
+              <div
+                className={css(styles.row, styles.numbers, styles.borderBottom)}
+              >
+                <div className={css(styles.column, styles.left)}>
+                  <div className={css(styles.title)}>Total Balance</div>
+                  <div className={css(styles.subtitle)}>
+                    Your current wallet balance in RSC
+                  </div>
+                </div>
+                <div className={css(styles.column, styles.right)}>
+                  <div className={css(styles.userBalance)}>
+                    {this.state.balance}
+                    <img
+                      src={"/static/icons/coin-filled.png"}
+                      draggable={false}
+                      className={css(styles.coinIcon)}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className={css(styles.row, styles.numbers)}>
+                <div className={css(styles.column, styles.left)}>
+                  <div className={css(styles.title)}>Amount</div>
+                  <div className={css(styles.subtitle)}>
+                    Your total must exceed 1 RSC
+                  </div>
+                </div>
+                <div className={css(styles.column, styles.right)}>
+                  <input
+                    type="number"
+                    className={css(
+                      styles.input,
+                      this.state.error && styles.error
+                    )}
+                    value={this.state.value}
+                    onChange={this.handleInput}
+                  />
+                </div>
+              </div>
+
+              <div className={css(styles.buttonRow)}>
+                <Button label="Confirm" onClick={this.confirmTransaction} />
+              </div>
+            </Fragment>
+          )}
+        </div>
+      );
+    }
+  };
+
+  render() {
+    let { modals } = this.props;
+
+    return (
+      <BaseModal
+        isOpen={modals.openPaperTransactionModal}
+        closeModal={this.closeModal}
+        title={"Promote Paper"} // this needs to
+      >
+        {this.renderContent()}
+        {this.state.nextScreen && (
+          <div
+            className={css(styles.backButton)}
+            onClick={() =>
+              this.transitionScreen(() => this.setState({ nextScreen: false }))
+            }
+          >
+            <i class="fal fa-long-arrow-left" />
+          </div>
+        )}
       </BaseModal>
     );
   }
@@ -160,10 +604,16 @@ const styles = StyleSheet.create({
   content: {
     // paddingTop: 30,
     width: 420,
+    opacity: 1,
+    transition: "all ease-in-out 0.2s",
+    position: "relative",
+  },
+  transition: {
+    opacity: 0,
   },
   description: {
     marginTop: 15,
-    marginBottom: 20,
+    marginBottom: 15,
     fontSize: 16,
     minHeight: 22,
     width: "100%",
@@ -176,7 +626,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     "@media only screen and (max-width: 557px)": {
       fontSize: 14,
-      width: 300,
+      // width: 300,
     },
   },
   row: {
@@ -184,7 +634,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     boxSizing: "border-box",
-    padding: "15px 0",
+    padding: "20px 0",
+  },
+  networkContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    transition: "all ease-in-out 0.3s",
+    marginTop: 20,
+  },
+  borderBottom: {
+    borderBottom: ".1rem dotted #e7e6e4",
   },
   border: {
     borderBottom: ".1rem dotted #e7e6e4",
@@ -205,6 +666,18 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     height: "100%",
   },
+  mobileCenter: {
+    paddingTop: 10,
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+    },
+  },
+  center: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
   numbers: {
     alignItems: "flex-end",
   },
@@ -212,12 +685,13 @@ const styles = StyleSheet.create({
     height: 50,
     width: 80,
     fontSize: 16,
+    borderRadius: 4,
   },
   error: {
     borderColor: "red",
   },
   title: {
-    fontSize: 22,
+    fontSize: 19,
     color: "#2a2825",
     fontWeight: 500,
     marginBottom: 10,
@@ -228,6 +702,36 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     // fontWeight: 500
+  },
+  instruction: {
+    color: "#83817c",
+    fontSize: 14,
+    marginBottom: 25,
+    fontFamily: "Roboto",
+    textAlign: "center",
+    whiteSpace: "pre-wrap",
+  },
+  label: {
+    marginBottom: 0,
+    marginRight: 5,
+    fontSize: 18,
+  },
+  button: {
+    width: "unset",
+    height: "unset",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    padding: "10px 16px",
+    "@media only screen and (max-width: 767px)": {
+      margin: "10px 0",
+    },
+  },
+  buttonLabel: {
+    display: "flex",
+  },
+  blue: {
+    color: colors.BLUE(),
   },
   text: {
     fontSize: 18,
@@ -248,6 +752,72 @@ const styles = StyleSheet.create({
   coinIcon: {
     height: 20,
     marginLeft: 5,
+  },
+  backButton: {
+    position: "absolute",
+    left: 20,
+    top: 15,
+    cursor: "pointer",
+    color: "#A5A5A5",
+    fontSize: 20,
+    ":hover": {
+      color: "#000",
+    },
+  },
+  connectStatus: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 14,
+    margin: "15px 0",
+  },
+  dot: {
+    height: 10,
+    maxHeight: 10,
+    minHeight: 10,
+    width: 10,
+    maxWidth: 10,
+    minWidth: 10,
+    borderRadius: "50%",
+    marginRight: 5,
+    backgroundColor: "#f9f4d3",
+    border: "2px solid #f8de5a",
+  },
+  connected: {
+    backgroundColor: "#d5f3d7",
+    border: "2px solid #7ae9b1",
+  },
+  formInput: {
+    width: "100%",
+    margin: 0,
+    minHeight: "unset",
+    paddingBottom: 10,
+  },
+  infoIcon: {
+    marginLeft: 5,
+    cursor: "pointer",
+    color: "#82817D",
+    color: "#DFDFDF",
+  },
+  inputLabel: {
+    padding: "10px 0",
+  },
+  successIcon: {
+    color: "#7ae9b1",
+    fontSize: 28,
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FBFBFB",
+    cursor: "default",
+  },
+  errorIcon: {
+    color: colors.RED(1),
+  },
+  image: {
+    objectFit: "contain",
+    width: 250,
   },
 });
 

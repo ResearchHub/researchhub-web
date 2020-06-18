@@ -58,6 +58,7 @@ const PaperEntryCard = ({
     first_preview,
     uploaded_by,
     external_source,
+    promoted,
   } = paper || null;
   let selected = null;
   let vote_type = 0;
@@ -69,6 +70,7 @@ const PaperEntryCard = ({
       first_figure && first_figure,
     ])
   );
+
   const [figures, setFigures] = useState(
     previews.map((preview, index) => preview && preview.file)
   );
@@ -363,6 +365,7 @@ const PaperEntryCard = ({
             isPaper={true}
             styles={styles.voteWidget}
             type={"Paper"}
+            paper={paper}
           />
         </span>
       </div>

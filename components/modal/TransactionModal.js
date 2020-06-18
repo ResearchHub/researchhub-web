@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import { keccak256, sha3_256 } from "js-sha3";
-
+import { ethers } from "ethers";
 // Component
 import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
@@ -45,7 +45,8 @@ class TransactionModal extends React.Component {
   componentDidMount() {
     if (this.props.auth.isLoggedIn) {
       if (typeof window.ethereum !== "undefined") {
-        const provider = window["ethereum"];
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
         if (
           this.props.modals.openTransactionModal &&
           !this.state.connectedMetaMask
@@ -327,7 +328,7 @@ class TransactionModal extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         let newUser = { ...res.user };
-        // this.props.updateUser(newUser);
+        this.props.updateUser(newUser);
         this.setState({
           userBalance: res.user.balance,
           withdrawals: [...res.results],

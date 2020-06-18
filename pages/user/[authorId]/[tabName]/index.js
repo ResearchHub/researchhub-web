@@ -225,7 +225,7 @@ const AuthorPage = (props) => {
       href: "promotions",
       label: "promotions",
       showCount: true,
-      count: author.promotions && author.promotions.length,
+      count: author.promotions && author.promotions.results.length,
     },
   ];
 
