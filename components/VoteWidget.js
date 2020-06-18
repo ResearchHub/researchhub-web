@@ -34,7 +34,9 @@ const VoteWidget = (props) => {
     searchResult,
     isPaper,
     type,
+    paper,
   } = props;
+
   const score = getScore(props);
   const userReputation = getCurrentUserReputation(store.getState());
   const { permission } = store.getState();
@@ -114,9 +116,10 @@ const VoteWidget = (props) => {
             selected={upvoteSelected}
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
+            promoted={paper && paper.promoted}
           />
         </PermissionNotificationWrapper>
-        <ScorePill score={score} />
+        <ScorePill score={score} promoted={paper && paper.promoted} />
         <PermissionNotificationWrapper
           loginRequired={true}
           onClick={onDownvoteClick}
@@ -126,10 +129,16 @@ const VoteWidget = (props) => {
             selected={downvoteSelected}
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
+            promoted={paper && paper.promoted}
           />
         </PermissionNotificationWrapper>
       </div>
-      {/* {!searchResult && <ReputationTooltip />} */}
+      {paper && paper.promoted && (
+        <div className={css(styles.promotionContainer)}>
+          <div className={css(styles.divider)} />
+          <div className={css(styles.scoreContainer)}>{score}</div>
+        </div>
+      )}
     </Fragment>
   );
 };
@@ -145,18 +154,40 @@ VoteWidget.propTypes = {
 const ScorePill = (props) => {
   const { score } = props;
   return (
-    <div className={css(styles.pillContainer)}>
+    <div
+      className={css(
+        styles.pillContainer,
+        props.promoted && styles.promotedPillContainer
+      )}
+    >
       <div>{score}</div>
+      {props.promoted && (
+        <span className={css(styles.promotionIcon)}>
+          {/* <i className="fas fa-long-arrow-alt-up" /> */}
+          {/* <i class="fad fa-long-arrow-alt-up"></i> */}
+          <i class="fal fa-long-arrow-up"></i>
+        </span>
+      )}
     </div>
   );
 };
 
 const VoteButton = (props) => {
-  const { onClick, selected, disabled, horizontalView, right } = props;
+  const {
+    onClick,
+    selected,
+    disabled,
+    horizontalView,
+    right,
+    promoted,
+  } = props;
 
   let style = [styles.icon];
+  if (promoted && styles) {
+    style.push(styles.iconBlue);
+  }
   if (selected) {
-    style.push(styles.selected);
+    style.push(styles.selected, promoted && styles.selectedBlue);
   }
   if (disabled) {
     style = [styles.iconDisabled];
@@ -231,6 +262,17 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
+  promotedPillContainer: {
+    justifyContent: "space-between",
+    color: colors.BLUE(),
+    background: "#eaebfe",
+    ":hover": {
+      background: "#eaebfe",
+    },
+  },
+  promotionIcon: {
+    marginLeft: 2,
+  },
   icon: {
     cursor: "pointer",
     color: voteWidgetColors.ARROW,
@@ -238,11 +280,17 @@ const styles = StyleSheet.create({
       color: colors.BLUE(1),
     },
   },
+  iconBlue: {
+    color: "#eaebfe",
+  },
   iconDisabled: {
     color: voteWidgetColors.ARROW,
   },
   coins: {
     fontSize: 10,
+  },
+  selectedBlue: {
+    color: colors.BLUE(),
   },
   selected: {
     color: colors.GREEN(),
@@ -252,6 +300,32 @@ const styles = StyleSheet.create({
   },
   marginRight: {
     marginRight: 8,
+  },
+  promotionContainer: {
+    marginRight: 17,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    boxSizing: "border-box",
+    width: "75%",
+  },
+  divider: {
+    margin: "5px 0 15px",
+    width: "100%",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+  },
+  scoreContainer: {
+    width: "60%",
+    borderRadius: 71,
+    padding: ".1em .3em",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "rgba(36, 31, 58, 0.07)",
+    color: "rgba(36, 31, 58, 0.4)",
+    fontWeight: "bold",
+    fontSize: 13,
   },
 });
 

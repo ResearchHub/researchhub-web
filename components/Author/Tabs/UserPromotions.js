@@ -48,7 +48,7 @@ class UserPromotions extends React.Component {
     let { author } = this.props;
     return (
       author.promotions &&
-      author.promotions.map((promotion, i) => {
+      author.promotions.results.map((promotion, i) => {
         return (
           <div className={css(styles.card)}>
             <div className={css(styles.timestamp)}>
