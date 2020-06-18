@@ -480,6 +480,7 @@ class PaperPageCard extends React.Component {
                 isPaper={true}
                 horizontalView={true}
                 type={"Paper"}
+                paper={paper}
               />
             </div>
           </div>
@@ -502,7 +503,6 @@ class PaperPageCard extends React.Component {
       doneFetchingPaper,
     } = this.props;
     let { fetching, previews, figureUrls } = this.state;
-
     if (!doneFetchingPaper) {
       return (
         <div className={css(styles.container)} ref={this.containerRef}>
@@ -533,6 +533,7 @@ class PaperPageCard extends React.Component {
             selected={selectedVoteType}
             isPaper={true}
             type={"Paper"}
+            paper={paper}
           />
         </div>
         <div className={css(styles.votingMobile)}>
@@ -544,6 +545,7 @@ class PaperPageCard extends React.Component {
             isPaper={true}
             horizontalView={true}
             type={"Paper"}
+            paper={paper}
           />
         </div>
         {figureUrls.length > 0 && (
