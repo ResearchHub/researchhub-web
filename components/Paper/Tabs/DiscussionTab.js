@@ -51,16 +51,16 @@ const DiscussionTab = (props) => {
   // TODO: move to config
   const filterOptions = [
     {
+      value: "-score",
+      label: "Top",
+    },
+    {
       value: "-created_date",
       label: "Most Recent",
     },
     {
       value: "created_date",
       label: "Oldest",
-    },
-    {
-      value: "-score",
-      label: "Top",
     },
   ];
 
