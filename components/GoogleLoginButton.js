@@ -62,6 +62,7 @@ const GoogleLoginButton = (props) => {
               onClick={renderProps.onClick}
               customButtonStyle={[styles.button, props.styles]}
               icon={"/static/icons/google.png"}
+              rippleClass={props.rippleClass}
               customLabelStyle={props.customLabelStyle}
               customIconStyle={[styles.iconStyle, props.iconStyle]}
               label={customLabel ? customLabel : "Login with Google"}
