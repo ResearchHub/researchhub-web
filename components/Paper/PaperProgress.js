@@ -388,7 +388,7 @@ class PaperProgress extends React.Component {
             {!this.state.loading && !this.state.complete ? (
               <Fragment>
                 <h3 className={css(styles.title)}>
-                  {`This Paper is missing information`}
+                  {`Help us add more details to this page`}
                 </h3>
                 <div className={css(styles.passengerText)}>
                   Please help us improve this paper by adding{" "}
