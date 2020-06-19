@@ -260,7 +260,9 @@ class Index extends React.Component {
       default:
         return null;
     }
-    return `Top ${type} ${this.state.by.value === 0 ? "on" : "in"}`;
+    return `Top ${type} ${this.state.by.value === 0 ? "on" : "in"} ${
+      this.state.by.label
+    } ${this.state.filterBy.label}`;
   };
 
   voteCallback = (index, paper) => {
@@ -412,13 +414,20 @@ class Index extends React.Component {
           <div className={css(mainFeedStyles.text, mainFeedStyles.feedTitle)}>
             <div className={css(mainFeedStyles.row, mainFeedStyles.fullWidth)}>
               {this.getTitle()}
+            </div>
+          </div>
+          <div
+            className={css(
+              mainFeedStyles.inputContainer,
+              !this.props.home && mainFeedStyles.hubInputContainer,
+              this.props.home && mainFeedStyles.homeInputContainer
+            )}
+          >
+            <div className={css(mainFeedStyles.row, mainFeedStyles.inputs)}>
               <FormSelect
                 options={this.state.byOptions}
                 value={this.state.by}
-                containerStyle={[
-                  mainFeedStyles.dropDownLeft,
-                  mainFeedStyles.dropdownForm,
-                ]}
+                containerStyle={mainFeedStyles.dropDownLeft}
                 singleValue={{
                   color: colors.PURPLE(),
                 }}
@@ -428,12 +437,7 @@ class Index extends React.Component {
                 inputStyle={{
                   fontWeight: 500,
                   minHeight: "unset",
-                  border: 0,
-                  borderColor: "transparent!important",
-                  boxShadow: "none!important",
-                  borderBottom: `1px solid ${colors.PURPLE()}!important`,
-                  backgroundColor: "transparent",
-                  outline: "none",
+                  backgroundColor: "#FFF",
                   display: "flex",
                   justifyContent: "space-between",
                 }}
@@ -453,16 +457,6 @@ class Index extends React.Component {
                   this.onFilterSelect(option, id);
                 }}
               />
-            </div>
-          </div>
-          <div
-            className={css(
-              mainFeedStyles.inputContainer,
-              !this.props.home && mainFeedStyles.hubInputContainer,
-              this.props.home && mainFeedStyles.homeInputContainer
-            )}
-          >
-            <div className={css(mainFeedStyles.row, mainFeedStyles.inputs)}>
               {this.state.type === "papers" && (
                 <FormSelect
                   options={createdOptions}
@@ -803,6 +797,7 @@ const mainFeedStyles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     width: "100%",
     textAlign: "center",
+    textTransform: "capitalize",
     "@media only screen and (min-width: 800px)": {
       textAlign: "left",
       paddingRight: 16,
@@ -949,7 +944,8 @@ const mainFeedStyles = StyleSheet.create({
       fontSize: 13,
     },
     "@media only screen and (max-width: 779px)": {
-      width: "calc(50% - 5px)",
+      width: "100%",
+      marginTop: 8,
     },
   },
   dropdownCreatedBy: {
@@ -989,6 +985,7 @@ const mainFeedStyles = StyleSheet.create({
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
+      flexWrap: "wrap",
     },
   },
   /**
@@ -1036,16 +1033,6 @@ const mainFeedStyles = StyleSheet.create({
   blank: {
     opacity: 0,
     height: 60,
-  },
-  hubName: {
-    textTransform: "capitalize",
-    marginRight: 13,
-    "@media only screen and (max-width: 1343px)": {
-      marginRight: 8,
-    },
-    "@media only screen and (max-width: 1149px)": {
-      marginRight: 5,
-    },
   },
   mobileHubListContainer: {
     display: "none",
