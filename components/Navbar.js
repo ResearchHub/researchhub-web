@@ -6,7 +6,8 @@ import Router, { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect, useDispatch, useStore } from "react-redux";
 import "react-placeholder/lib/reactPlaceholder.css";
-import { slide as Menu } from "react-burger-menu";
+import { slide as Menu } from "@quantfive/react-burger-menu";
+import Collapsible from "react-collapsible";
 
 // Redux
 import { MessageActions } from "../redux/message";
@@ -82,32 +83,49 @@ const Navbar = (props) => {
     { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
   ];
 
-  const menuTabs = [
-    { label: "Add Paper", onClick: addPaperModal, icon: "addPaper" },
+  const menuTabsUpper = [
     {
-      label: "Withdraw",
-      onClick: openTransactionModal,
-      icon: "coins",
-    },
-    {
-      label: "Profile",
-      route: {
-        href: "/user/[authorId]/[tabName]",
-      },
-      icon: "user",
-    },
-    {
-      label: "Login",
+      label: "Explore ResearchHub",
+      icon: "compass",
+      key: "explore",
     },
     {
       label: "Settings",
-      route: {
-        href: "/user/settings",
-      },
-      icon: "signOut",
+      icon: "cog",
+      key: "settings",
     },
-    { label: "Logout", onClick: signout, icon: "signOut" },
   ];
+
+  const menuTabs = {
+    explore: [
+      { label: "Hubs", route: "/hubs", icon: "hub" },
+      {
+        label: "Withdraw RSC",
+        onClick: openTransactionModal,
+        icon: "coins",
+      },
+      { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
+      { label: "Live", route: "/live", icon: "live" },
+      { label: "About", route: "/about", icon: "info-circle" },
+      { label: "Help", route: "/help", icon: "help" },
+    ],
+    settings: [
+      {
+        label: "Profile",
+        route: {
+          href: "/user/[authorId]/[tabName]",
+        },
+        icon: "user",
+      },
+      {
+        label: "Profile Settings",
+        route: {
+          href: "/user/settings",
+        },
+        icon: "signOut",
+      },
+    ],
+  };
 
   function renderTabs() {
     let tabs = tabData.map((tab, index) => {
@@ -153,7 +171,6 @@ const Navbar = (props) => {
   }
 
   function onAddPaperClick() {
-    dispatch(MessageActions.showMessage({ show: true, load: true }));
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
   }
 
@@ -179,8 +196,7 @@ const Navbar = (props) => {
     toggleSideMenu();
   }
 
-  function renderMenuItems() {
-    const tabs = [...tabData, ...menuTabs];
+  function renderCollapsible(tabs) {
     return tabs.map((tab, index) => {
       if (tab.label === "Help") {
         return (
@@ -200,14 +216,12 @@ const Navbar = (props) => {
           </div>
         );
       }
-      if (tab.label === "Login") {
-        if (!isLoggedIn) {
-          return renderMenuLoginButtons();
-        } else {
-          return null;
-        }
-      }
-      if ((tab.label === "Logout" || tab.label === "Profile") && !isLoggedIn) {
+      if (
+        (tab.label === "Logout" ||
+          tab.label === "Profile" ||
+          tab.label === "Profile Settings") &&
+        !isLoggedIn
+      ) {
         return null;
       }
       return (
@@ -231,12 +245,67 @@ const Navbar = (props) => {
     });
   }
 
+  function renderMenuItems() {
+    const tabs = [...menuTabsUpper];
+    let menuTabsRender = tabs.map((tab, index) => {
+      if (!isLoggedIn && tab.key === "settings") {
+        return null;
+      }
+
+      return (
+        <Collapsible
+          trigger={
+            <div className={css(styles.trigger)}>
+              <div>
+                <i
+                  className={css(styles.tabIcon) + ` fal fa-${tab.icon}`}
+                  aria-hidden="true"
+                ></i>
+                {tab.label}
+              </div>
+              <i className={css(styles.chevronDown) + " fal fa-chevron-down"} />
+            </div>
+          }
+          open={tab.key === "explore"}
+          key={`${tab.key}_${index}`}
+          openedClassName={css(styles.collapsible)}
+          className={css(styles.collapsible)}
+        >
+          {renderCollapsible(menuTabs[tab.key])}
+        </Collapsible>
+      );
+    });
+    return (
+      <Fragment>
+        {/* Search Here */}
+        <Search
+          searchClass={styles.mobileSearch}
+          inputClass={styles.inputClass}
+          searchIconClass={styles.searchIconClass}
+          dropdownClass={styles.dropdownClass}
+        />
+        {menuTabsRender}
+        {!isLoggedIn ? (
+          renderMenuLoginButtons()
+        ) : (
+          <Button
+            label={"Add Paper"}
+            onClick={addPaperModal}
+            hideRipples={true}
+            customButtonStyle={[styles.addPaperButton]}
+          />
+        )}
+      </Fragment>
+    );
+  }
+
   function renderMenuLoginButtons() {
     return (
       <div className={css(styles.loginContainer)} key={`navbar_tab_login`}>
         <GoogleLoginButton
           styles={[styles.loginMobile]}
           iconStyle={styles.googleIcon}
+          rippleClass={styles.rippleClass}
           customLabel="Login"
           customLabelStyle={[styles.googleLabelMobile]}
         />
@@ -258,8 +327,7 @@ const Navbar = (props) => {
   }
 
   function addPaperModal() {
-    dispatch(MessageActions.showMessage({ show: true, load: true }));
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
+    Router.push(`/paper/upload/info`);
     setSideMenu(!sideMenu);
   }
 
@@ -285,28 +353,28 @@ const Navbar = (props) => {
     },
     bmMenuWrap: {
       position: "fixed",
-      height: "100%",
-      width: process.browser && window.innerWidth < 436 ? 210 : 300,
+      width: "100%",
       zIndex: 3147480000,
+      height: "unset",
     },
     bmMenu: {
       background: "rgba(55, 58, 70, 1)",
-      padding: "2.5em 0",
       fontSize: "1.15em",
+      padding: "2.5em .6em 32px",
     },
     bmMorphShape: {
       fill: "#373a47",
     },
     bmItemList: {
       color: "#b8b7ad",
-      padding: "0.8em",
       display: "flex",
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
-      padding: "0px 1.5em",
       height: "100%",
       overflow: "auto",
+      borderTop: "1px solid rgba(255,255,255,.2)",
+      paddingTop: 16,
     },
     bmItem: {
       display: "inline-block",
@@ -321,11 +389,16 @@ const Navbar = (props) => {
   return (
     <Fragment>
       <Menu
-        right
+        top
         isOpen={sideMenu}
         styles={burgerMenuStyle}
         customBurgerIcon={false}
       >
+        <Link href={"/"} as={`/`}>
+          <a className={css(styles.logoContainer, styles.mobileLogoContainer)}>
+            <RHLogo iconStyle={styles.logo} white={true} />
+          </a>
+        </Link>
         {renderMenuItems()}
       </Menu>
       <div
@@ -485,12 +558,28 @@ const styles = StyleSheet.create({
       marginRight: 16,
     },
   },
+  mobileSearch: {
+    width: "100%",
+    marginBottom: 16,
+    borderRadius: 32,
+    height: 32,
+    "@media only screen and (max-width: 1024px)": {
+      display: "flex",
+    },
+  },
+  searchIconClass: {
+    top: 7,
+  },
   loginContainer: {
     width: "100%",
   },
+  tabIcon: {
+    marginRight: 8,
+    color: "#787c7e",
+  },
   googleLoginButton: {
     margin: 0,
-    width: 180,
+    width: "100%",
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
@@ -500,6 +589,30 @@ const styles = StyleSheet.create({
     height: 25,
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     borderRadius: "50%",
+  },
+  inputClass: {
+    padding: 16,
+    marginBottom: 0,
+    outline: "none",
+    borderRadius: 32,
+  },
+  dropdownClass: {
+    top: 40,
+    width: "100%",
+    minWidth: "unset",
+  },
+  collapsible: {
+    color: "#fff",
+    width: "100%",
+    marginBottom: 8,
+  },
+  chevronDown: {
+    color: "#787c7e",
+  },
+  trigger: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   orcidIcon: {
     width: 25,
@@ -554,6 +667,15 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
+  addPaperButton: {
+    width: "100%",
+    height: 50,
+
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      height: 50,
+    },
+  },
   searchbar: {
     padding: 10,
     boxSizing: "border-box",
@@ -584,6 +706,9 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
     cursor: "pointer",
+  },
+  rippleClass: {
+    width: "100%",
   },
   login: {
     color: colors.BLUE(),
@@ -632,6 +757,11 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
   },
+  mobileLogoContainer: {
+    position: "absolute",
+    top: 6,
+    left: 6,
+  },
   logo: {
     height: 30,
     objectFit: "contain",
@@ -662,9 +792,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     highlight: "none",
     outline: "none",
-    fontVariant: "small-caps",
     letterSpacing: 0.7,
-    fontSize: 20,
+    fontSize: 16,
     width: "100%",
     margin: "12px 0px",
     color: "#FFF",
@@ -678,7 +807,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 20,
-    fontSize: 25,
+    fontSize: 18,
     width: 40,
     color: "#FFF",
     textAlign: "center",
@@ -751,6 +880,7 @@ const styles = StyleSheet.create({
   oauthContainer: {
     display: "flex",
     alignItems: "center",
+    width: "100%",
   },
 });
 
