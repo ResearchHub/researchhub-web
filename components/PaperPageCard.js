@@ -616,7 +616,9 @@ class PaperPageCard extends React.Component {
                       {paper.doi}
                     </div>
                   )}
-                  {this.renderUploadedBy()}
+                  <div className={css(styles.uploadedByContainer)}>
+                    {this.renderUploadedBy()}
+                  </div>
                 </div>
                 <div className={css(styles.mobile)}>{this.renderPreview()}</div>
                 <div className={css(styles.mobile)}>{this.renderHubs()}</div>
@@ -1015,6 +1017,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 15,
   },
+  uploadedByContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+  },
   uploadedBy: {
     whiteSpace: "pre-wrap",
     display: "flex",
@@ -1025,6 +1033,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     marginBottom: 5,
     marginTop: 10,
+    width: "unset",
     ":hover": {
       color: colors.BLUE(),
     },
