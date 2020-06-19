@@ -187,16 +187,24 @@ export default class Search extends Component {
 
   render() {
     return (
-      <div ref={this.ref} className={css(styles.search)}>
+      <div
+        ref={this.ref}
+        className={css(styles.search, this.props.searchClass)}
+      >
         <input
-          className={css(styles.searchbar)}
+          className={css(styles.searchbar, this.props.inputClass)}
           placeholder={"Search..."}
           onChange={this.onSearchChange}
           value={this.state.query}
         />
-        <i className={css(styles.searchIcon) + " far fa-search"}></i>
+        <i
+          className={
+            css(styles.searchIcon, this.props.searchIconClass) +
+            " far fa-search"
+          }
+        ></i>
         {this.state.showDropdown && (
-          <div className={css(styles.searchDropdown)}>
+          <div className={css(styles.searchDropdown, this.props.dropdownClass)}>
             <ReactPlaceholder
               ready={this.state.finished}
               showLoadingAnimation
