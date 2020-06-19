@@ -47,7 +47,7 @@ const PaperTabBar = (props) => {
       tabs.push({ href: "limitations", label: "limitations" });
       return tabs;
     }
-    if (showAllSections) {
+    if (props.showAllSections) {
       setTabs(getActiveTabs().map(formatTabs));
     }
   }, [props.showAllSections]);
