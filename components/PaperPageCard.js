@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Router from "next/router";
+import Link from "next/link";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
@@ -19,10 +20,6 @@ import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
-import PaperProgress from "~/components/Paper/PaperProgress";
-
-// redux
-import { BulletActions } from "~/redux/bullets";
 
 // Stylesheets
 import "./stylesheets/Carousel.css";
@@ -384,18 +381,37 @@ class PaperPageCard extends React.Component {
 
   renderAuthors = () => {
     let { paper } = this.props;
+    let uploadedBy = paper.uploaded_by
+      ? paper.uploaded_by.author_profile.id
+      : null;
     let authors =
       paper &&
       paper.authors.map((author, index) => {
         return (
           <Fragment>
-            <div
-              className={css(styles.authorContainer)}
-              key={`author_${index}`}
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${author.id}/contributions`}
             >
-              <AuthorAvatar author={author} size={25} />
-            </div>
-            <div className={css(styles.space)} />
+              <a
+                href={`/user/${author.id}/contributions`}
+                className={css(styles.atag)}
+              >
+                <div
+                  className={css(styles.authorContainer)}
+                  key={`author_${index}`}
+                >
+                  <span className={css(styles.authorName)}>
+                    {`${author.first_name} ${author.last_name}`}
+                  </span>
+                  {author.id !== uploadedBy && (
+                    <span className={css(styles.authorAvatar)}>
+                      <AuthorAvatar author={author} size={25} />
+                    </span>
+                  )}
+                </div>
+              </a>
+            </Link>
           </Fragment>
         );
       });
@@ -557,14 +573,28 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                 </div>
-                {this.renderUploadedBy()}
                 <div className={css(styles.column)}>
-                  {paper && paper.doi && (
-                    <div className={css(styles.doiDate)}>
-                      <span className={css(styles.label, styles.doi)}>
-                        DOI:
-                      </span>
-                      {paper.doi}
+                  {paper && paper.authors && paper.authors.length > 0 && (
+                    <div
+                      className={css(
+                        styles.authors,
+                        !paper.paper_publish_date && styles.marginTop
+                      )}
+                    >
+                      {paper.paper_publish_date && (
+                        <span
+                          className={css(
+                            styles.label,
+                            styles.authorLabel,
+                            paper.authors.length > 1 && styles.padding
+                          )}
+                        >
+                          {`Author${paper.authors.length > 1 ? "s" : ""}:`}
+                        </span>
+                      )}
+                      <div className={css(styles.authors)}>
+                        {this.renderAuthors()}
+                      </div>
                     </div>
                   )}
                   {paper && (paper.paper_publish_date || paper.authors) && (
@@ -575,25 +605,18 @@ class PaperPageCard extends React.Component {
                           {this.renderPublishDate()}
                         </div>
                       )}
-                      {paper && paper.authors && paper.authors.length > 0 && (
-                        <div
-                          className={css(
-                            styles.authors,
-                            !paper.paper_publish_date && styles.marginTop
-                          )}
-                        >
-                          {!paper.paper_publish_date && (
-                            <span className={css(styles.label)}>
-                              {`Author${paper.authors.length > 1 ? "s" : ""}`}
-                            </span>
-                          )}
-                          {this.renderAuthors()}
-                        </div>
-                      )}
                     </div>
                   )}
+                  {paper && paper.doi && (
+                    <div className={css(styles.doiDate)}>
+                      <span className={css(styles.label, styles.doi)}>
+                        DOI:
+                      </span>
+                      {paper.doi}
+                    </div>
+                  )}
+                  {this.renderUploadedBy()}
                 </div>
-
                 <div className={css(styles.mobile)}>{this.renderPreview()}</div>
                 <div className={css(styles.mobile)}>{this.renderHubs()}</div>
               </div>
@@ -744,12 +767,33 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     opacity: 0.7,
     display: "flex",
-    marginRight: 30,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
   },
-  authorContainer: {},
+  authors: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  authorContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginRight: 8,
+    cursor: "pointer",
+  },
+  authorName: {
+    marginRight: 8,
+    opacity: 0.7,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+    ":hover": {
+      color: colors.BLUE(),
+      opacity: 1,
+    },
+  },
   authors: {
     display: "flex",
     alignItems: "center",
@@ -772,9 +816,17 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: "#241F3A",
     marginRight: 30,
+
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
+  },
+  authorLabel: {
+    marginRight: 53,
+    opacity: 0.7,
+  },
+  padding: {
+    marginRight: 46,
   },
   doi: {
     marginRight: 74,
@@ -963,7 +1015,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   uploadedBy: {
-    marginBottom: 10,
     whiteSpace: "pre-wrap",
     display: "flex",
     justifyContent: "flex-start",
@@ -971,8 +1022,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#646171",
     cursor: "pointer",
+    marginBottom: 5,
+    marginTop: 10,
     ":hover": {
       color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 15,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
     },
   },
   avatar: {
@@ -990,8 +1049,9 @@ const styles = StyleSheet.create({
     bottom: 30,
     right: 220,
   },
-  space: {
-    marginLeft: 5,
+  atag: {
+    color: "unset",
+    textDecoration: "unset",
   },
 });
 
