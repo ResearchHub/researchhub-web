@@ -48,6 +48,7 @@ const Paper = (props) => {
   const router = useRouter();
   const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
+  const [showAllSections, toggleShowAllSections] = useState(false);
   const [referencedBy, setReferencedBy] = useState([]);
   const [referencedByCount, setReferencedByCount] = useState(0);
   const [loadingReferencedBy, setLoadingReferencedBy] = useState(true);
@@ -87,7 +88,6 @@ const Paper = (props) => {
     },
   ]);
   const [discussionCount, setCount] = useState(calculateCommentCount());
-  const [showAllSections, toggleShowAllSections] = useState(false);
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
@@ -411,6 +411,7 @@ const Paper = (props) => {
               paper={paper}
               figureCount={figureCount}
               activeTabs={tabs}
+              showAllSections={showAllSections}
             />
           </div>
           <div className={css(styles.contentContainer)}>
