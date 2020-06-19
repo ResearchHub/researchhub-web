@@ -39,8 +39,6 @@ const VoteWidget = (props) => {
     promoted,
   } = props;
 
-  console.log("promoted", promoted);
-
   const score = getScore(props);
   const userReputation = getCurrentUserReputation(store.getState());
   const { permission } = store.getState();
