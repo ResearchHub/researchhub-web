@@ -277,12 +277,12 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        {/* Search Here */}
         <Search
           searchClass={styles.mobileSearch}
           inputClass={styles.inputClass}
           searchIconClass={styles.searchIconClass}
           dropdownClass={styles.dropdownClass}
+          afterSearchClick={toggleSideMenu}
         />
         {menuTabsRender}
         {!isLoggedIn ? (
@@ -311,6 +311,10 @@ const Navbar = (props) => {
         />
       </div>
     );
+  }
+
+  function menuChange(state) {
+    setSideMenu(state.isOpen);
   }
 
   function renderLoginButtons() {
@@ -393,6 +397,7 @@ const Navbar = (props) => {
         isOpen={sideMenu}
         styles={burgerMenuStyle}
         customBurgerIcon={false}
+        onStateChange={menuChange}
       >
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer, styles.mobileLogoContainer)}>

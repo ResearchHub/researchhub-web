@@ -183,6 +183,7 @@ export default class Search extends Component {
 
   clearQuery = () => {
     this.setState({ query: "" });
+    this.props.afterSearchClick && this.props.afterSearchClick();
   };
 
   render() {
