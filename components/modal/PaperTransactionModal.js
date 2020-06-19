@@ -18,6 +18,7 @@ import FormInput from "~/components/Form/FormInput";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
+import { PaperActions } from "~/redux/paper";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -93,9 +94,9 @@ class PaperTransactionModal extends React.Component {
   };
 
   signTransaction = async (item) => {
-    let { setMessage, showMessage } = this.props;
+    let { setMessage, showMessage, paper, updatePaperState } = this.props;
     let { purchase_hash, id } = item;
-    console.log("purchase", purchase_hash);
+    let allow = true;
 
     const appContract = new ethers.Contract(
       "0xd2Abb07F644FDA2CB423220b80cEeb4e81C4B5ca",
@@ -111,32 +112,49 @@ class PaperTransactionModal extends React.Component {
     let allowance = ethers.utils.formatUnits(rawAllowance[0], 18);
 
     if (Number(allowance) < Number(this.state.value)) {
-      await this.RSCContract.connect(this.signer).functions.approve(
+      allow = await this.RSCContract.connect(this.signer).functions.approve(
         appContract.address,
         ethers.utils.parseEther(`${this.state.value}`)
       );
     }
 
-    let hash = await appContract.connect(this.signer).functions.buy(
-      "0x7d50101bbfa12f4a1b4e6de0dd58ad36de150d55", // address of token contract
-      ethers.utils.parseEther(`${this.state.value}`), // amount of RSC parsed
-      ethers.utils.formatBytes32String("test") // convert item to bytes, (item)
-    );
+    if (allow) {
+      let hash = await appContract.connect(this.signer).functions.buy(
+        "0x7d50101bbfa12f4a1b4e6de0dd58ad36de150d55", // address of token contract
+        ethers.utils.parseEther(`${this.state.value}`), // amount of RSC parsed
+        ethers.utils.hexZeroPad(`0x${purchase_hash}`, 32) // convert item to bytes, (item)
+      );
 
-    let payload = { transaction_hash: hash.hash };
+      let payload = { transaction_hash: hash.hash };
 
-    fetch(API.PROMOTION({ purchaseId: id }), API.PATCH_CONFIG(payload))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        showMessage({ show: false });
-        setMessage("Transaction Successful!");
-        showMessage({ show: true });
-        this.setState({ finish: true });
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
+      fetch(API.PROMOTION({ purchaseId: id }), API.PATCH_CONFIG(payload))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          showMessage({ show: false });
+          setMessage("Transaction Successful!");
+          showMessage({ show: true });
+          this.setState({ transactionHash: hash.hash }, () => {
+            let promoted = paper.promoted ? paper.promoted : 0;
+            updatePaperState("promoted", promoted + Number(this.state.value));
+            this.setState({ finish: true });
+          });
+        })
+        .catch((err) => {
+          showMessage({ show: false });
+          setMessage("Something went wrong.");
+          showMessage({ show: true, error: true });
+        });
+    } else {
+      showMessage({ show: false });
+      setMessage("Something went wrong.");
+      showMessage({ show: true, error: true });
+    }
+  };
+
+  openTransactionConfirmation = (url) => {
+    let win = window.open(url, "_blank");
+    win.focus();
   };
 
   updateBalance = () => {
@@ -191,7 +209,7 @@ class PaperTransactionModal extends React.Component {
   };
 
   sendTransaction = () => {
-    let { showMessage, setMessage, paper, user } = this.props;
+    let { showMessage, setMessage, updatePaperState, paper, user } = this.props;
     showMessage({ show: true, load: true });
 
     let paperId = paper.id;
@@ -214,11 +232,17 @@ class PaperTransactionModal extends React.Component {
           let item = { ...res };
           this.signTransaction(item);
         } else {
+          console.log("res", res);
           showMessage({ show: false });
           setMessage("Transaction Successful!");
           showMessage({ show: true });
           this.transitionScreen(() => {
-            this.setState({ finish: true });
+            this.setState({
+              transactionHash: res.trasaction_hash,
+              finish: true,
+            });
+            let promoted = paper.promoted ? paper.promoted : 0;
+            updatePaperState("promoted", promoted + Number(this.state.value));
             this.updateBalance();
           });
         }
@@ -445,6 +469,7 @@ class PaperTransactionModal extends React.Component {
       validating,
       valid,
       finish,
+      transactionHash,
     } = this.state;
 
     if (finish) {
@@ -472,6 +497,7 @@ class PaperTransactionModal extends React.Component {
                 </span>{" "}
                 to view the transaction confirmation.
               </div>
+              <div>You can also view your promotions on your profile page.</div>
             </div>
           </div>
           <div className={css(styles.buttons, styles.confirmationButtons)}>
@@ -711,7 +737,7 @@ class PaperTransactionModal extends React.Component {
         title={"Promote Paper"} // this needs to
       >
         {this.renderContent()}
-        {this.state.nextScreen && (
+        {this.state.nextScreen && !this.state.finish && (
           <div
             className={css(styles.backButton)}
             onClick={() =>
@@ -981,6 +1007,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
   updateUser: AuthActions.updateUser,
+  updatePaperState: PaperActions.updatePaperState,
 };
 
 export default connect(

@@ -62,6 +62,7 @@ const PaperEntryCard = ({
   } = paper || null;
   let selected = null;
   let vote_type = 0;
+  console.log("paper", paper);
   const [lightbox, toggleLightbox] = useState(false);
   const [slideIndex, setSlideIndex] = useState(1);
   const [previews] = useState(
