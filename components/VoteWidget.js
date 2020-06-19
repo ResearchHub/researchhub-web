@@ -24,6 +24,8 @@ const VoteWidget = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
 
+  useEffect(() => {}, [props.promoted]);
+
   const {
     onUpvote,
     onDownvote,
@@ -36,6 +38,8 @@ const VoteWidget = (props) => {
     type,
     promoted,
   } = props;
+
+  console.log("promoted", promoted);
 
   const score = getScore(props);
   const userReputation = getCurrentUserReputation(store.getState());
@@ -133,12 +137,12 @@ const VoteWidget = (props) => {
           />
         </PermissionNotificationWrapper>
       </div>
-      {promoted && (
+      {/* {promoted && (
         <div className={css(styles.promotionContainer)}>
           <div className={css(styles.divider)} />
           <div className={css(styles.scoreContainer)}>{score}</div>
         </div>
-      )}
+      )} */}
     </Fragment>
   );
 };
@@ -291,6 +295,7 @@ const styles = StyleSheet.create({
   },
   selectedBlue: {
     color: colors.BLUE(),
+    // color: colors.GREEN(),
   },
   selected: {
     color: colors.GREEN(),
@@ -322,10 +327,12 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    background: "rgba(36, 31, 58, 0.07)",
-    color: "rgba(36, 31, 58, 0.4)",
+    // background: "rgba(36, 31, 58, 0.07)",
+    // color: "rgba(36, 31, 58, 0.4)",
     fontWeight: "bold",
     fontSize: 13,
+    background: voteWidgetColors.BACKGROUND,
+    color: colors.GREEN(),
   },
 });
 
