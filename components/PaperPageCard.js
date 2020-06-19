@@ -502,6 +502,8 @@ class PaperPageCard extends React.Component {
       scrollView,
       doneFetchingPaper,
     } = this.props;
+
+    console.log("paper", paper);
     let { fetching, previews, figureUrls } = this.state;
     if (!doneFetchingPaper) {
       return (
@@ -533,6 +535,7 @@ class PaperPageCard extends React.Component {
             selected={selectedVoteType}
             isPaper={true}
             type={"Paper"}
+            paperPage={true}
             promoted={paper && paper.promoted}
           />
         </div>
@@ -545,6 +548,7 @@ class PaperPageCard extends React.Component {
             isPaper={true}
             horizontalView={true}
             type={"Paper"}
+            paperPage={true}
             promoted={paper && paper.promoted}
           />
         </div>

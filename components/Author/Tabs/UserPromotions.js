@@ -22,18 +22,20 @@ class UserPromotions extends React.Component {
 
   renderStatus = (status) => {
     switch (status) {
-      case "initiated":
-      case "INITIATED":
+      case "PAID":
+      case "paid":
         return (
           <div className={css(styles.status, styles.confirmed)}>{status}</div>
         );
+      case "initiated":
+      case "INITIATED":
       case "PENDING":
       case "pending":
         return (
           <div className={css(styles.status, styles.pending)}>{status}</div>
         );
-      case "SUCCESS":
-      case "success":
+      case "FAILED":
+      case "failed":
         return (
           <div className={css(styles.status, styles.confirmed)}>{status}</div>
         );
@@ -49,6 +51,7 @@ class UserPromotions extends React.Component {
     return (
       author.promotions &&
       author.promotions.results.map((promotion, i) => {
+        console.log("promotion", promotion);
         return (
           <div className={css(styles.card)}>
             <div className={css(styles.timestamp)}>
@@ -58,7 +61,7 @@ class UserPromotions extends React.Component {
               {formatTransactionDate(transformDate(promotion.created_date))}
             </div>
             <div className={css(styles.statusContainer)}>
-              {this.renderStatus(promotion.status)}
+              {this.renderStatus(promotion.paid_status)}
             </div>
             <Link
               href={"/paper/[paperId]/[tabName]"}
