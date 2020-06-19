@@ -384,6 +384,9 @@ class PaperPageCard extends React.Component {
 
   renderAuthors = () => {
     let { paper } = this.props;
+    let uploadedBy = paper.uploaded_by
+      ? paper.uploaded_by.author_profile.id
+      : null;
     let authors =
       paper &&
       paper.authors.map((author, index) => {
@@ -393,7 +396,14 @@ class PaperPageCard extends React.Component {
               className={css(styles.authorContainer)}
               key={`author_${index}`}
             >
-              <AuthorAvatar author={author} size={25} />
+              <span className={css(styles.authorName)}>
+                {`${author.first_name} ${author.last_name}`}
+              </span>
+              {author.id !== uploadedBy && (
+                <span className={css(styles.authorAvatar)}>
+                  <AuthorAvatar author={author} size={25} />
+                </span>
+              )}
             </div>
             <div className={css(styles.space)} />
           </Fragment>
@@ -557,14 +567,20 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                 </div>
-                {this.renderUploadedBy()}
                 <div className={css(styles.column)}>
-                  {paper && paper.doi && (
-                    <div className={css(styles.doiDate)}>
-                      <span className={css(styles.label, styles.doi)}>
-                        DOI:
-                      </span>
-                      {paper.doi}
+                  {paper && paper.authors && paper.authors.length > 0 && (
+                    <div
+                      className={css(
+                        styles.authors,
+                        !paper.paper_publish_date && styles.marginTop
+                      )}
+                    >
+                      {paper.paper_publish_date && (
+                        <span className={css(styles.label, styles.authorLabel)}>
+                          {`Author${paper.authors.length > 1 ? "s" : ""}:`}
+                        </span>
+                      )}
+                      {this.renderAuthors()}
                     </div>
                   )}
                   {paper && (paper.paper_publish_date || paper.authors) && (
@@ -575,25 +591,18 @@ class PaperPageCard extends React.Component {
                           {this.renderPublishDate()}
                         </div>
                       )}
-                      {paper && paper.authors && paper.authors.length > 0 && (
-                        <div
-                          className={css(
-                            styles.authors,
-                            !paper.paper_publish_date && styles.marginTop
-                          )}
-                        >
-                          {!paper.paper_publish_date && (
-                            <span className={css(styles.label)}>
-                              {`Author${paper.authors.length > 1 ? "s" : ""}`}
-                            </span>
-                          )}
-                          {this.renderAuthors()}
-                        </div>
-                      )}
                     </div>
                   )}
+                  {paper && paper.doi && (
+                    <div className={css(styles.doiDate)}>
+                      <span className={css(styles.label, styles.doi)}>
+                        DOI:
+                      </span>
+                      {paper.doi}
+                    </div>
+                  )}
+                  {this.renderUploadedBy()}
                 </div>
-
                 <div className={css(styles.mobile)}>{this.renderPreview()}</div>
                 <div className={css(styles.mobile)}>{this.renderHubs()}</div>
               </div>
@@ -744,12 +753,21 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     opacity: 0.7,
     display: "flex",
-    marginRight: 30,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
   },
-  authorContainer: {},
+  authorContainer: {
+    display: "flex",
+    alignItems: "center",
+  },
+  authorName: {
+    marginRight: 8,
+    opacity: 0.7,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+  },
   authors: {
     display: "flex",
     alignItems: "center",
@@ -772,9 +790,14 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: "#241F3A",
     marginRight: 30,
+
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
+  },
+  authorLabel: {
+    marginRight: 53,
+    opacity: 0.7,
   },
   doi: {
     marginRight: 74,
@@ -963,7 +986,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   uploadedBy: {
-    marginBottom: 10,
     whiteSpace: "pre-wrap",
     display: "flex",
     justifyContent: "flex-start",
@@ -971,8 +993,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#646171",
     cursor: "pointer",
+    marginBottom: 5,
+    marginTop: 10,
     ":hover": {
       color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 15,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
     },
   },
   avatar: {
@@ -991,7 +1021,7 @@ const styles = StyleSheet.create({
     right: 220,
   },
   space: {
-    marginLeft: 5,
+    marginLeft: 8,
   },
 });
 
