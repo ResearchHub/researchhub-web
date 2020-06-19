@@ -32,6 +32,24 @@ const PaperTabBar = (props) => {
     setTabs(props.activeTabs.map(formatTabs));
   }, [props.activeTabs.length]);
 
+  useEffect(() => {
+    function getActiveTabs() {
+      let tabs = [
+        { href: "main", label: "main" },
+        { href: "takeaways", label: "key takeaways" },
+      ];
+
+      tabs.push({ href: "summary", label: "description" });
+      tabs.push({ href: "comments", label: "comments" });
+      tabs.push({ href: "figures", label: "figures" });
+      tabs.push({ href: "paper", label: "Paper PDF" });
+      tabs.push({ href: "citations", label: "cited by" });
+      tabs.push({ href: "limitations", label: "limitations" });
+      return tabs;
+    }
+    setTabs(getActiveTabs().map(formatTabs));
+  }, [props.showAllSections]);
+
   const startTimer = () => {
     timer = setTimeout(() => {
       trackEvent("scroll", selectedTab);

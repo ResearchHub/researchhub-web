@@ -266,8 +266,9 @@ class PaperPageCard extends React.Component {
       height = 130;
       width = 101;
     }
-
-    width !== this.state.width && this.setState({ width });
+    if (!fetching) {
+      width !== this.state.width && this.setState({ width });
+    }
 
     if (fetching) {
       return (
