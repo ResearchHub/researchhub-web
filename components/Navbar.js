@@ -171,7 +171,6 @@ const Navbar = (props) => {
   }
 
   function onAddPaperClick() {
-    dispatch(MessageActions.showMessage({ show: true, load: true }));
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
   }
 
@@ -267,7 +266,7 @@ const Navbar = (props) => {
               <i className={css(styles.chevronDown) + " fal fa-chevron-down"} />
             </div>
           }
-          open={true}
+          open={tab.key === "explore"}
           key={`${tab.key}_${index}`}
           openedClassName={css(styles.collapsible)}
           className={css(styles.collapsible)}
@@ -286,7 +285,16 @@ const Navbar = (props) => {
           dropdownClass={styles.dropdownClass}
         />
         {menuTabsRender}
-        {!isLoggedIn ? renderMenuLoginButtons() : null}
+        {isLoggedIn ? (
+          renderMenuLoginButtons()
+        ) : (
+          <Button
+            label={"Add Paper"}
+            onClick={addPaperModal}
+            hideRipples={true}
+            customButtonStyle={[styles.addPaperButton]}
+          />
+        )}
       </Fragment>
     );
   }
@@ -319,8 +327,7 @@ const Navbar = (props) => {
   }
 
   function addPaperModal() {
-    dispatch(MessageActions.showMessage({ show: true, load: true }));
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
+    Router.push(`/paper/upload/info`);
     setSideMenu(!sideMenu);
   }
 
@@ -658,6 +665,15 @@ const styles = StyleSheet.create({
     zIndex: 5,
     "@media only screen and (max-width: 760px)": {
       display: "none",
+    },
+  },
+  addPaperButton: {
+    width: "100%",
+    height: 50,
+
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      height: 50,
     },
   },
   searchbar: {
