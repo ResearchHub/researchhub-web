@@ -1,6 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
 import { useState } from "react";
-import Avatar from "react-avatar";
 import Link from "next/link";
 import colors from "../config/themes/colors";
 
