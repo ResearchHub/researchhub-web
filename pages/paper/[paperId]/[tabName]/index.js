@@ -48,6 +48,7 @@ const Paper = (props) => {
   const router = useRouter();
   const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
+  const [showAllSections, toggleShowAllSections] = useState(false);
   const [referencedBy, setReferencedBy] = useState([]);
   const [referencedByCount, setReferencedByCount] = useState(0);
   const [loadingReferencedBy, setLoadingReferencedBy] = useState(true);
@@ -261,20 +262,20 @@ const Paper = (props) => {
       { href: "takeaways", label: "key takeaways" },
     ];
 
-    if (paper.summary || paper.abstract) {
+    if (paper.summary || paper.abstract || showAllSections) {
       tabs.push({ href: "summary", label: "description" });
     }
     tabs.push({ href: "comments", label: "comments" });
-    if (figureCount) {
+    if (figureCount || showAllSections) {
       tabs.push({ href: "figures", label: "figures" });
     }
-    if (paper.file || paper.url) {
+    if (paper.file || paper.url || showAllSections) {
       tabs.push({ href: "paper", label: "Paper PDF" });
     }
-    if (referencedByCount) {
+    if (referencedByCount || showAllSections) {
       tabs.push({ href: "citations", label: "cited by" });
     }
-    if (store.getState().limitations.limits.length > 0) {
+    if (store.getState().limitations.limits.length > 0 || showAllSections) {
       tabs.push({ href: "limitations", label: "limitations" });
     }
 
@@ -410,6 +411,7 @@ const Paper = (props) => {
               paper={paper}
               figureCount={figureCount}
               activeTabs={tabs}
+              showAllSections={showAllSections}
             />
           </div>
           <div className={css(styles.contentContainer)}>
@@ -424,6 +426,9 @@ const Paper = (props) => {
                   // comments threads
                   threads={discussionThreads}
                   setDiscussionThreads={setDiscussionThreads}
+                  // toggle sections
+                  showAllSections={showAllSections}
+                  toggleShowAllSections={toggleShowAllSections}
                 />
               </div>
             </ComponentWrapper>
@@ -446,7 +451,7 @@ const Paper = (props) => {
                 />
               </div>
             </a>
-            {figureCount > 0 ? (
+            {figureCount > 0 || showAllSections ? (
               <a name="figures">
                 <div className={css(styles.figuresContainer)}>
                   <FigureTab
@@ -468,7 +473,7 @@ const Paper = (props) => {
                 />
               </div>
             </a>
-            {referencedByCount > 0 ? (
+            {referencedByCount > 0 || showAllSections ? (
               <a name="citations">
                 <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                   <ReactPlaceholder
@@ -518,7 +523,7 @@ const Paper = (props) => {
                 </ComponentWrapper>
               </a>
             ) : null}
-            {limitCount ? (
+            {limitCount || showAllSections ? (
               <a name="limitations">
                 <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                   <div
