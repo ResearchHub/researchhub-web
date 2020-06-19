@@ -56,10 +56,10 @@ export const textEditorIcons = {
   video: <i class="far fa-video-plus"></i>,
 };
 
-export const RHLogo = ({ iconStyle }) => {
+export const RHLogo = ({ iconStyle, white }) => {
   return (
     <img
-      src={"/static/ResearchHubLogo.png"}
+      src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.png"}
       className={css(styles.logo, iconStyle && iconStyle)}
       draggable={false}
     />

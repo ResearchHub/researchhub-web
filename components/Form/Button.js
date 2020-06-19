@@ -20,6 +20,7 @@ const Button = ({
   icon,
   customIconStyle,
   hideRipples,
+  rippleClass,
 }) => {
   if (isLink) {
     let { href, linkAs, query } = isLink;
@@ -90,7 +91,7 @@ const Button = ({
     if (!hideRipples) {
       return (
         <Ripples
-          className={css(styles.ripples)}
+          className={css(styles.ripples, rippleClass)}
           onClick={onClick ? onClick : null}
         >
           {button}

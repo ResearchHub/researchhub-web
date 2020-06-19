@@ -919,6 +919,17 @@
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@quantfive/js-web-config/-/js-web-config-1.0.6.tgz#1c1aec6c2fed013605a28291f7a2d7b0d5a94534"
 
+"@quantfive/react-burger-menu@^2.6.19":
+  version "2.6.19"
+  resolved "https://registry.yarnpkg.com/@quantfive/react-burger-menu/-/react-burger-menu-2.6.19.tgz#63055d2ce8db03cc47d97be7fede6ab2ce9cd149"
+  integrity sha512-aWQjozofv6GP8zK5uRzEIIuzlp+hC2lnkd2p7lVMBfL0SAN91M+rX/AEP1btodKTMbXpapz1OMr/jM1XyDYs3A==
+  dependencies:
+    browserify-optional "^1.0.0"
+    classnames "^2.2.6"
+    eve "~0.5.1"
+    prop-types "^15.7.2"
+    snapsvg-cjs "0.0.6"
+
 "@quantfive/react-image-upload-grid@1.1.3":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@quantfive/react-image-upload-grid/-/react-image-upload-grid-1.1.3.tgz#c2e4f514927d56ccbfbd73906a38e20965ff579c"
@@ -5970,6 +5981,11 @@ react-burger-menu@^2.6.11:
     eve "~0.5.1"
     prop-types "^15.7.2"
     snapsvg-cjs "0.0.6"
+
+react-collapsible@^2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/react-collapsible/-/react-collapsible-2.8.0.tgz#dce2ff7703d4456c5bb70cc1b53d3f80acf76526"
+  integrity sha512-QTxGyp4iL8N57FcU1RGt4wD7vqOTRYAHNukxtSeVMkZ+/d1WNWXRIakzhYhC/5TDERihPdp1IvKIJlrLLPyQ/A==
 
 react-confetti@4.0.1:
   version "4.0.1"
