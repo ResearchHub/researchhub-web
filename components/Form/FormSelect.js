@@ -41,12 +41,8 @@ class FormSelect extends React.Component {
       isClearable,
       indicatorSeparator,
       singleValue,
+      defaultValue,
     } = this.props;
-
-    const defaultValue = {
-      value: null,
-      label: placeholder,
-    };
 
     const formatStyle = (styleObject) => {
       if (!styleObject) {
@@ -144,6 +140,7 @@ class FormSelect extends React.Component {
           styles={colorStyles}
           placeholder={placeholder}
           value={value}
+          defaultValue={defaultValue}
           required={required ? required : "false"}
           isMulti={isMulti}
           isSearchable={isSearchable === null ? true : isSearchable}

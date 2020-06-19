@@ -51,16 +51,16 @@ const DiscussionTab = (props) => {
   // TODO: move to config
   const filterOptions = [
     {
-      value: "-score",
-      label: "Top",
-    },
-    {
       value: "-created_date",
       label: "Most Recent",
     },
     {
       value: "created_date",
       label: "Oldest",
+    },
+    {
+      value: "-score",
+      label: "Top",
     },
   ];
 
@@ -81,7 +81,7 @@ const DiscussionTab = (props) => {
   const [discussion, setDiscussion] = useState(initialDiscussionState);
   const [mobileView, setMobileView] = useState(false);
   const [threads, setThreads] = useState(props.threads);
-  const [filter, setFilter] = useState(null);
+  const [filter, setFilter] = useState("-score");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
@@ -257,6 +257,7 @@ const DiscussionTab = (props) => {
     }
     setLoading(true);
     const currentPaper = store.getState().paper;
+    debugger;
     await dispatch(
       PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
     );
@@ -372,6 +373,7 @@ const DiscussionTab = (props) => {
                   <FormSelect
                     id={"thread-filter"}
                     options={filterOptions}
+                    defaultValue={filterOptions[2]}
                     placeholder={"Sort Threads"}
                     onChange={handleFilterChange}
                     containerStyle={styles.overrideFormSelect}
@@ -741,7 +743,7 @@ var styles = StyleSheet.create({
   rowContainer: {
     width: "100%",
     display: "flex",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     alignItems: "center",
     // marginTop: 10,
     marginBottom: 10,
