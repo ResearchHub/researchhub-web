@@ -285,7 +285,7 @@ const Navbar = (props) => {
           dropdownClass={styles.dropdownClass}
         />
         {menuTabsRender}
-        {isLoggedIn ? (
+        {!isLoggedIn ? (
           renderMenuLoginButtons()
         ) : (
           <Button
