@@ -122,9 +122,14 @@ class PaperProgress extends React.Component {
       {
         sections,
         progress,
-        complete: progress === 100,
+        complete: progress >= 50,
       },
       () => {
+        if (this.state.complete && !this.props.showAllSections) {
+          this.props.toggleShowAllSections(true);
+        } else if (!this.state.complete && this.props.showAllSections) {
+          this.props.toggleShowAllSections(false);
+        }
         this.state.loading &&
           setTimeout(() => {
             this.setState({ loading: false });
