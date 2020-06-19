@@ -502,7 +502,6 @@ class PaperPageCard extends React.Component {
       scrollView,
       doneFetchingPaper,
     } = this.props;
-
     let { fetching, previews, figureUrls } = this.state;
     if (!doneFetchingPaper) {
       return (
