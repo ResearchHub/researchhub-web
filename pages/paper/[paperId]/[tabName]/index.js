@@ -7,7 +7,6 @@ import Error from "next/error";
 import "./styles/anchor.css";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
-import moment from "moment";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -23,6 +22,7 @@ import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
 import PaperProgress from "~/components/Paper/PaperProgress";
+import UserPrompt from "~/components/modal/UserPrompt";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -39,8 +39,6 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { convertToEditorValue } from "~/config/utils";
-import { formatPublishedDate } from "~/config/utils";
-import { transformDate } from "~/redux/utils";
 
 const Paper = (props) => {
   const dispatch = useDispatch();
@@ -364,6 +362,7 @@ const Paper = (props) => {
 
   return (
     <div className={css(styles.container)}>
+      <UserPrompt paper={paper} />
       {paper.status === 404 ? (
         <Error statusCode={paper.status} />
       ) : (
