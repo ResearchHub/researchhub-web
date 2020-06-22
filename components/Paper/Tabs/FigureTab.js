@@ -407,10 +407,12 @@ const styles = StyleSheet.create({
     outline: "none",
     border: "none",
     border: 0,
+    maxHeight: 500,
   },
   image: {
     width: 300,
     height: "100%",
+    maxHeight: 500,
     marginRight: "auto",
     marginLeft: "auto",
     marginTop: "auto",
