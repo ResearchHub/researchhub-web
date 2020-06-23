@@ -370,7 +370,9 @@ const Paper = (props) => {
           <Head
             title={paper.title}
             description={formatDescription()}
-            socialImageUrl={props.paper.metatagImage}
+            socialImageUrl={
+              props.paper.metatagImage || props.paper.first_preview
+            }
           />
           <div className={css(styles.paperPageContainer)}>
             <ComponentWrapper overrideStyle={styles.componentWrapper}>
