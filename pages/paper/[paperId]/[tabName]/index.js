@@ -360,6 +360,8 @@ const Paper = (props) => {
     return data;
   }
 
+  console.log(props.paper);
+
   return (
     <div className={css(styles.container)}>
       <UserPrompt paper={paper} />
@@ -371,7 +373,8 @@ const Paper = (props) => {
             title={paper.title}
             description={formatDescription()}
             socialImageUrl={
-              props.paper.metatagImage || props.paper.first_preview
+              props.paper.metatagImage ||
+              (props.paper.first_preview && props.paper.first_preview.file)
             }
           />
           <div className={css(styles.paperPageContainer)}>
