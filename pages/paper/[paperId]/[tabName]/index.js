@@ -360,7 +360,12 @@ const Paper = (props) => {
     return data;
   }
 
-  console.log(props.paper);
+  let socialImageUrl = props.paper.metatagImage;
+
+  if (!socialImageUrl) {
+    socialImageUrl =
+      props.paper.first_preview && props.paper.first_preview.file;
+  }
 
   return (
     <div className={css(styles.container)}>
