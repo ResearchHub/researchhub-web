@@ -123,7 +123,7 @@ const SummaryBulletPoint = (props) => {
           )}
           <div className={css(styles.topRow)}>
             <div className={css(styles.bulletpointIcon)}>
-              <i class="fas fa-dot-circle" />
+              <i className="fas fa-dot-circle" />
             </div>
             <div className={css(styles.bulletpointText)}>
               {plain_text && text}

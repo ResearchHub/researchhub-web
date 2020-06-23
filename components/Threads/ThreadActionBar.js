@@ -131,7 +131,7 @@ class ThreadActionBar extends React.Component {
           )}
           id={"chatIcon"}
         >
-          <i class="fad fa-pencil"></i>
+          <i className="fad fa-pencil"></i>
         </span>
         <span
           className={css(
