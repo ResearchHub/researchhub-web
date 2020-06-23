@@ -38,6 +38,8 @@ export default (props) => {
     return <script type="application/ld+json">{`${body}`}</script>;
   };
 
+  console.log(props.socialImageUrl);
+
   return (
     <Head>
       <title>{title}</title>
