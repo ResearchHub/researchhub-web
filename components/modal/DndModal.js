@@ -156,7 +156,7 @@ class DndModal extends React.Component {
             this.state.files.length < 1 ? (
               this.renderDropContent()
             ) : (
-              <i class="fal fa-plus" />
+              <i className="fal fa-plus" />
             )
           }
         />

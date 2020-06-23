@@ -220,7 +220,7 @@ class LimitationTab extends React.Component {
           onClick={() => openManageBulletPointsModal(true, "limitations")}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            <i class="fal fa-tasks-alt" />
+            <i className="fal fa-tasks-alt" />
           </span>
           Manage
         </Ripples>

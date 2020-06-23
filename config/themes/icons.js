@@ -53,7 +53,7 @@ export const textEditorIcons = {
   numberedList: <i className="fas fa-list-ol"></i>,
   link: <i className="far fa-link"></i>,
   image: <i className="far fa-image-polaroid"></i>,
-  video: <i class="far fa-video-plus"></i>,
+  video: <i className="far fa-video-plus"></i>,
 };
 
 export const RHLogo = ({ iconStyle, white }) => {

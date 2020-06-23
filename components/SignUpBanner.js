@@ -135,7 +135,7 @@ class SignUpBanner extends React.Component {
                 className={css(styles.closeButton)}
                 onClick={this.closeBanner}
               >
-                <i class="fal fa-times" />
+                <i className="fal fa-times" />
               </div>
             </div>
           );

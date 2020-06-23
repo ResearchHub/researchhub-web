@@ -224,7 +224,7 @@ class FigureTab extends React.Component {
       return (
         <EmptyState
           text={"No Figures Found"}
-          icon={<i class="fad fa-image"></i>}
+          icon={<i className="fad fa-image"></i>}
           subtext={"No figures have been found in this paper's PDF"}
         />
       );
