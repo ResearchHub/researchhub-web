@@ -58,6 +58,9 @@ export default (props) => {
       <meta property="og:url" content={url} />
       {/* Facebook */}
       <meta property="fb:app_id" content={"id"} />
+      {process.env.REACT_APP_ENV === "staging" && (
+        <meta name="robots" content="noindex" />
+      )}
       {/* Twitter */}
       <meta property="twitter:card" content={"summary_large_image"} />
       <meta property="twitter:site" content={"@researchhub"} />
