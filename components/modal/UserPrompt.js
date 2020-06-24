@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     right: 20,
     padding: 20,
     background: "#FFF",
-    zIndex: 3,
+    zIndex: 5,
   },
   header: {
     marginBottom: 15,
