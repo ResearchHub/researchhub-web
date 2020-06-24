@@ -7,7 +7,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-const TIMEOUT = 3000; // 1 minute in ms
+const TIMEOUT = 5000; // 1 minute in ms
 
 const UserPrompt = (props) => {
   let { paper } = props;
@@ -31,56 +31,23 @@ const UserPrompt = (props) => {
     let delay = performance.now() - startTime;
     delay = Math.ceil(delay * 100) / 100;
 
-    let payloadOne = {
-      paper: paper.id,
-      interaction: "rate_delay",
-      item: {
-        name: `thumbs ${value}`,
-        value: `${delay}`,
-      },
-      utc: new Date(),
-    };
-
-    let payloadTwo = {
-      paper: paper.id,
-      interaction: "rate",
-      item: {
-        name: "thumbs",
-        value,
-      },
+    let payload = {
+      category: "Paper",
+      action: "Rate",
+      label: `Thumbs ${value}`,
+      value: Number(delay),
       utc: new Date(),
     };
 
     // send first event
-    fetch(
-      API.GOOGLE_ANALYTICS({ ignorePaper: true, ignoreUser: true }),
-      API.POST_CONFIG(payloadOne)
-    )
+    fetch(API.GOOGLE_ANALYTICS({ manual: true }), API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        // send second event
-        fetch(API.GOOGLE_ANALYTICS({}), API.POST_CONFIG(payloadTwo))
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {
-            displayShowPrompt(false);
-          })
-          .catch((err) => {
-            displayShowPrompt(false);
-          });
+        displayShowPrompt(false);
       })
       .catch((err) => {
-        // try second event
-        fetch(API.GOOGLE_ANALYTICS({}), API.POST_CONFIG(payloadTwo))
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {
-            displayShowPrompt(false);
-          })
-          .catch((err) => {
-            displayShowPrompt(false);
-          });
+        displayShowPrompt(false);
       });
   };
 
