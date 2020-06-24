@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     color: colors.BLUE(),
     background: "#eaebfe",
+    cursor: "help",
     ":hover": {
       background: "#eaebfe",
     },
@@ -334,4 +335,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { ScorePill };
 export default VoteWidget;

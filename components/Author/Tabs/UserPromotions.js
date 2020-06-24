@@ -5,8 +5,7 @@ import Link from "next/link";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
-import { Reply, Comment } from "~/components/DiscussionComment";
+import { ScorePill } from "~/components/VoteWidget";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -51,40 +50,65 @@ class UserPromotions extends React.Component {
     return (
       author.promotions &&
       author.promotions.results.map((promotion, i) => {
-        console.log("promotion", promotion);
+        const { source } = promotion;
+
         return (
           <div className={css(styles.card)}>
-            <div className={css(styles.timestamp)}>
-              <span className={css(styles.clockIcon)}>
-                <i className={"fad fa-clock"} />
-              </span>
-              {formatTransactionDate(transformDate(promotion.created_date))}
-            </div>
-            <div className={css(styles.statusContainer)}>
-              {this.renderStatus(promotion.paid_status)}
-            </div>
-            <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${promotion.source.id}/summary`}
-            >
-              <a
-                href={"/paper/[paperId]/[tabName]"}
-                as={`/paper/${promotion.source.id}/summary`}
-                className={css(styles.link)}
-              >
-                <div className={css(styles.title)}>
-                  {promotion.source.title}
+            <div className={css(styles.metadata)}>
+              <div className={css(styles.column, styles.vote)}>
+                <ScorePill
+                  score={source.promoted ? source.promoted : source.score}
+                  promoted={source.promoted}
+                />
+              </div>
+              <div className={css(styles.column)}>
+                <Link
+                  href={"/paper/[paperId]/[tabName]"}
+                  as={`/paper/${promotion.source.id}/summary`}
+                >
+                  <a
+                    href={"/paper/[paperId]/[tabName]"}
+                    as={`/paper/${promotion.source.id}/summary`}
+                    className={css(styles.link)}
+                  >
+                    <div className={css(styles.title)}>{source.title}</div>
+                  </a>
+                </Link>
+                <div className={css(styles.metatext)}>
+                  Promotion Date:{" "}
+                  {formatTransactionDate(transformDate(promotion.created_date))}
+                  {this.renderStatus(promotion.paid_status)}
                 </div>
-              </a>
-            </Link>
-            <div className={css(styles.amountContainer)}>
-              {"Amount Used in Promotion: "}
-              <div className={css(styles.amount)}>{promotion.amount}</div>
-              <img
-                className={css(styles.coin)}
-                src={"/static/icons/coin-filled.png"}
-                draggable={false}
-              />
+                <div className={css(styles.amountContainer, styles.metatext)}>
+                  {"Amount Used in Promotion: "}
+                  <div className={css(styles.amount)}>{promotion.amount}</div>
+                  <img
+                    className={css(styles.coin)}
+                    src={"/static/icons/coin-filled.png"}
+                    draggable={false}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={css(styles.dataContainer)}>
+              <div className={css(styles.statsColumn)}>
+                <span className={css(styles.icon)}>
+                  <i className="fas fa-eye" />
+                </span>
+                <div className={css(styles.stats)}>5424</div>
+              </div>
+              <div className={css(styles.statsColumn)}>
+                <span className={css(styles.icon)}>
+                  <i className="fas fa-mouse-pointer" />
+                </span>
+                <div className={css(styles.stats)}>424</div>
+              </div>
+              <div className={css(styles.statsColumn)}>
+                <span className={css(styles.icon)}>
+                  <i className="fas fa-share-square" />
+                </span>
+                <div className={css(styles.stats)}>424</div>
+              </div>
             </div>
           </div>
         );
@@ -114,9 +138,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: "27px 20px",
     display: "flex",
-    flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "flex-start",
     cursor: "pointer",
     border: "1px solid #EDEDED",
     marginBottom: 10,
@@ -127,9 +149,10 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 767px)": {
       width: "85%",
+      flexDirection: "column",
     },
     "@media only screen and (max-width: 620px)": {
-      height: 110,
+      // height: 110,
       position: "relative",
     },
   },
@@ -159,24 +182,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     minWidth: 40,
-    maxWidth: 40,
-    padding: "7px 20px",
-    fontSize: 12,
+    padding: "1px 8px",
+    fontSize: 11,
     textTransform: "uppercase",
     letterSpacing: 1.1,
-    borderRadius: 5,
+    borderRadius: 3,
     fontWeight: 500,
+    marginLeft: 10,
     border: "1px solid #FFF",
     "@media only screen and (max-width: 620px)": {
       fontSize: 11,
-      padding: "5px 15px",
     },
   },
   confirmed: {
     color: "#2a6218",
     backgroundColor: "#D5F3D7",
     borderColor: "#D5F3D7",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     ":hover": {
       borderColor: "#2a6218",
     },
@@ -185,7 +206,6 @@ const styles = StyleSheet.create({
     color: "#DCAA72",
     backgroundColor: "#FDF2DE",
     borderColor: "#FDF2DE",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     ":hover": {
       borderColor: "#DCAA72",
     },
@@ -194,7 +214,6 @@ const styles = StyleSheet.create({
     color: colors.RED(),
     backgroundColor: "rgba(235, 51, 35, 0.2)",
     borderColor: "rgba(235, 51, 35, 0.2)",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     ":hover": {
       borderColor: colors.RED(),
     },
@@ -208,18 +227,18 @@ const styles = StyleSheet.create({
     right: 20,
   },
   amountContainer: {
-    height: "100%",
     display: "flex",
     alignItems: "center",
     fontWeight: 400,
-    "@media only screen and (max-width: 620px)": {
+    marginTop: 5,
+    "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
   },
   amount: {
     fontWeight: "bold",
-    marginLeft: 10,
-    "@media only screen and (max-width: 620px)": {
+    marginLeft: 5,
+    "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
   },
@@ -230,6 +249,63 @@ const styles = StyleSheet.create({
   link: {
     color: "unset",
     textDecoration: "unset",
+  },
+  metadata: {
+    width: "50%",
+    display: "flex",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
+  },
+  metatext: {
+    display: "flex",
+    alignItems: "center",
+    fontSize: 14,
+    color: "rgba(36, 31, 58, 0.5)",
+  },
+  vote: {
+    marginRight: 15,
+  },
+  statsColumn: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 25,
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: 25,
+    },
+  },
+  icon: {
+    color: "rgba(36, 31, 58, 0.25)",
+    fontSize: 18,
+    marginRight: 8,
+    // width: 20,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+      width: "unset",
+    },
+  },
+  stats: {
+    color: "#241F3A",
+    fontSize: 16,
+    fontWeight: 500,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
+  },
+  dataContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    paddingRight: 30,
+    width: "60%",
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 10,
+      width: "100%",
+      boxSizing: "border-box",
+      paddingRight: 0,
+      justifyContent: "flex-end",
+      // paddingLeft: 45
+    },
   },
 });
 
