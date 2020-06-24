@@ -181,7 +181,7 @@ class PaperPageCard extends React.Component {
     let { paper, isModerator, flagged, setFlag } = this.props;
 
     let paperTitle = paper && paper.title;
-
+    console.log("paper", paper);
     return (
       <div className={css(styles.actions)}>
         <PermissionNotificationWrapper
@@ -480,7 +480,7 @@ class PaperPageCard extends React.Component {
                 isPaper={true}
                 horizontalView={true}
                 type={"Paper"}
-                promoted={paper && paper.promoted}
+                promoted={this.props.paper && this.props.paper.promoted}
               />
             </div>
           </div>
@@ -536,7 +536,7 @@ class PaperPageCard extends React.Component {
             isPaper={true}
             type={"Paper"}
             paperPage={true}
-            promoted={paper && paper.promoted}
+            promoted={this.props.paper && this.props.paper.promoted}
           />
         </div>
         <div className={css(styles.votingMobile)}>
@@ -549,7 +549,7 @@ class PaperPageCard extends React.Component {
             horizontalView={true}
             type={"Paper"}
             paperPage={true}
-            promoted={paper && paper.promoted}
+            promoted={this.props.paper && this.props.paper.promoted}
           />
         </div>
         {figureUrls.length > 0 && (
@@ -1141,11 +1141,15 @@ const carousel = StyleSheet.create({
   },
 });
 
+const mapStateToProps = (state) => ({
+  paper: state.paper,
+});
+
 const mapDispatchToProps = {
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(PaperPageCard);
