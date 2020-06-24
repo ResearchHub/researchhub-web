@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import Link from "next/link";
 import { withAlert } from "react-alert";
 import ReactTooltip from "react-tooltip";
 import { keccak256, sha3_256 } from "js-sha3";
@@ -232,7 +233,6 @@ class PaperTransactionModal extends React.Component {
           let item = { ...res };
           this.signTransaction(item);
         } else {
-          console.log("res", res);
           showMessage({ show: false });
           setMessage("Transaction Successful!");
           showMessage({ show: true });
@@ -241,8 +241,8 @@ class PaperTransactionModal extends React.Component {
               transactionHash: res.trasaction_hash,
               finish: true,
             });
-            let promoted = paper.promoted ? paper.promoted : 0;
-            updatePaperState("promoted", promoted + Number(this.state.value));
+            let promoted = res.source.promoted && res.source.promoted;
+            promoted && updatePaperState("promoted", promoted);
             this.updateBalance();
           });
         }
@@ -471,7 +471,6 @@ class PaperTransactionModal extends React.Component {
       finish,
       transactionHash,
     } = this.state;
-
     if (finish) {
       return (
         <Fragment>
@@ -483,21 +482,40 @@ class PaperTransactionModal extends React.Component {
                   <i className="fal fa-check-circle" />
                 </span>
               </div>
-              <div className={css(styles.confirmation)}>
-                Click{" "}
-                <span
-                  className={css(styles.transactionHashLink)}
-                  onClick={() =>
-                    this.openTransactionConfirmation(
-                      `https://rinkeby.etherscan.io/tx/${transactionHash}`
-                    )
-                  }
+              {!offChain && (
+                <div className={css(styles.confirmation)}>
+                  Click{" "}
+                  <span
+                    className={css(styles.transactionHashLink)}
+                    onClick={() =>
+                      this.openTransactionConfirmation(
+                        `https://rinkeby.etherscan.io/tx/${transactionHash}`
+                      )
+                    }
+                  >
+                    here
+                  </span>{" "}
+                  to view the transaction confirmation.
+                </div>
+              )}
+              <div onClick={this.closeModal}>
+                You can view your promotions on your
+                <Link
+                  href={"/user/[authorId]/[tabName]"}
+                  as={`/user/${user.author_profile.id}/promotions`}
                 >
-                  here
-                </span>{" "}
-                to view the transaction confirmation.
+                  <a
+                    href={"/user/[authorId]/[tabName]"}
+                    as={`/user/${user.author_profile.id}/promotions`}
+                    className={css(
+                      styles.transactionHashLink,
+                      styles.marginLeft
+                    )}
+                  >
+                    profile page.
+                  </a>
+                </Link>
               </div>
-              <div>You can also view your promotions on your profile page.</div>
             </div>
           </div>
           <div className={css(styles.buttons, styles.confirmationButtons)}>
@@ -824,6 +842,7 @@ const styles = StyleSheet.create({
     color: "#000 ",
     width: "100%",
     marginTop: 20,
+    marginBottom: 10,
   },
   icon: {
     color: colors.GREEN(1),
@@ -984,7 +1003,7 @@ const styles = StyleSheet.create({
   },
   confirmation: {
     color: "#000",
-    margin: "10px 0",
+    marginBottom: 10,
   },
   transactionHashLink: {
     cursor: "pointer",
@@ -992,6 +1011,10 @@ const styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
     },
+  },
+  marginLeft: {
+    marginLeft: 5,
+    textDecoration: "unset",
   },
 });
 
