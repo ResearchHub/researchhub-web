@@ -62,7 +62,6 @@ const PaperEntryCard = ({
   } = paper || null;
   let selected = null;
   let vote_type = 0;
-  console.log("paper", paper);
   const [lightbox, toggleLightbox] = useState(false);
   const [slideIndex, setSlideIndex] = useState(1);
   const [previews] = useState(
@@ -193,6 +192,25 @@ const PaperEntryCard = ({
     }
   }
 
+  function postEvent() {
+    if (promoted) {
+      let payload = {
+        paper: id,
+        paper_is_boosted: true,
+        interaction: "CLICK",
+        utc: new Date(),
+        created_location: "FEED",
+        created_location_meta: "trending",
+      };
+
+      fetch(API.PROMOTION_STATS, API.POST_CONFIG(payload))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {})
+        .catch((err) => {});
+    }
+  }
+
   function navigateToPage(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -200,6 +218,7 @@ const PaperEntryCard = ({
     if (e.metaKey || e.ctrlKey) {
       window.open(`/paper/${id}/summary`, "_blank");
     } else {
+      postEvent();
       Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
     }
   }
