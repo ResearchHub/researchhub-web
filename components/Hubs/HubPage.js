@@ -222,6 +222,32 @@ class HubPage extends React.Component {
     window.removeEventListener("scroll", this.scrollListener);
   }
 
+  detectPromoted = (papers) => {
+    papers.forEach((paper) => {
+      if (paper.promoted) {
+        let createdLocationMeta = this.state.filterBy;
+        if (createdLocationMeta === "hot") {
+          createdLocationMeta = "trending";
+        }
+
+        let payload = {
+          paper: paper.id,
+          paper_is_boosted: true,
+          interaction: "VIEW",
+          utc: new Date(),
+          created_location: "FEED",
+          created_location_meta: "trending",
+        };
+
+        fetch(API.PROMOTION_STATS, API.POST_CONFIG(payload))
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((res) => {})
+          .catch((err) => {});
+      }
+    });
+  };
+
   fetchPapers = ({ hub }) => {
     let { showMessage } = this.props;
     if (this.state.papersLoading) {
@@ -254,6 +280,7 @@ class HubPage extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        this.detectPromoted([...res.results.data]);
         this.setState({
           count: res.count,
           papers: res.results.data,
@@ -305,6 +332,7 @@ class HubPage extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        this.detectPromoted([...res.results.data]);
         this.setState({
           papers: [...this.state.papers, ...res.results.data],
           next: res.next,
