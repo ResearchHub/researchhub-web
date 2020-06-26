@@ -239,7 +239,7 @@ class HubPage extends React.Component {
           created_location_meta: "trending",
         };
 
-        fetch(API.PROMOTION_STATS, API.POST_CONFIG(payload))
+        fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {})
