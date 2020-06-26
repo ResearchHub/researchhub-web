@@ -367,7 +367,7 @@ class TransactionModal extends React.Component {
         .then(Helpers.parseJSON)
         .then((res) => {
           let { id, paid_status, transaction_hash } = res;
-          if (transaction_hash === "" || paid_status === "failed") {
+          if (paid_status === "failed") {
             setTimeout(() => {
               showMessage({ show: false });
               setMessage(
