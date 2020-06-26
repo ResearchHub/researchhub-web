@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
+import ReactPlaceholder from "react-placeholder";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PromotionCard from "./Promotions/PromotionCard";
 import Loader from "~/components/Loader/Loader";
+import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 
 import { AuthorActions } from "~/redux/author";
 
@@ -18,7 +20,27 @@ const UserPromotions = (props) => {
   const [loading, setLoading] = useState(false);
 
   const renderPromotions = () => {
-    let { author } = props;
+    let { author, fetching } = props;
+    if (fetching) {
+      return (
+        <Fragment>
+          <div className={css(styles.card)}>
+            <ReactPlaceholder
+              ready={false}
+              showLoadingAnimation
+              customPlaceholder={<PaperPlaceholder color="#efefef" />}
+            />
+          </div>
+          <div className={css(styles.card)}>
+            <ReactPlaceholder
+              ready={false}
+              showLoadingAnimation
+              customPlaceholder={<PaperPlaceholder color="#efefef" />}
+            />
+          </div>
+        </Fragment>
+      );
+    }
     return (
       author.promotions &&
       author.promotions.results.map((promotion, i) => {
@@ -51,6 +73,7 @@ const UserPromotions = (props) => {
   };
 
   const renderLoadMoreButton = () => {
+    if (props.fetching) return;
     if (props.author && props.author.promotions) {
       let { next } = props.author.promotions;
       if (next !== null) {
@@ -124,6 +147,11 @@ const styles = StyleSheet.create({
       color: "#FFF",
       backgroundColor: colors.BLUE(),
     },
+  },
+  card: {
+    width: "100%",
+    marginBottom: 10,
+    borderRadius: 3,
   },
 });
 

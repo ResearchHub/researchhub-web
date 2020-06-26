@@ -69,20 +69,26 @@ class PromotionCard extends React.Component {
     switch (status) {
       case "PAID":
       case "paid":
-        return (
-          <div className={css(styles.status, styles.confirmed)}>{status}</div>
-        );
+        return <div className={css(styles.status, styles.progress)}>Paid</div>;
       case "initiated":
       case "INITIATED":
       case "PENDING":
       case "pending":
         return (
-          <div className={css(styles.status, styles.pending)}>{status}</div>
+          <div className={css(styles.status, styles.pending)}>Pending</div>
         );
       case "FAILED":
       case "failed":
         return (
-          <div className={css(styles.status, styles.confirmed)}>{status}</div>
+          <div className={css(styles.status, styles.confirmed)}>Failed</div>
+        );
+      case "active":
+        return (
+          <div className={css(styles.status, styles.progress)}>Active</div>
+        );
+      case "completed":
+        return (
+          <div className={css(styles.status, styles.completed)}>Completed</div>
         );
       default:
         return (
@@ -91,13 +97,84 @@ class PromotionCard extends React.Component {
     }
   };
 
+  renderData = () => {
+    let { fetchingClicks, fetchingViews } = this.state;
+
+    return (
+      <div className={css(styles.row)}>
+        <div
+          className={css(
+            styles.statsColumn,
+            this.state.showViews && styles.activeTab
+          )}
+          onClick={() => this.toggleGraph(true)}
+        >
+          <span
+            className={css(styles.icon, this.state.showViews && styles.active)}
+            id={"statIcon"}
+          >
+            <i className="fas fa-eye" />
+          </span>
+          <div
+            className={css(styles.stats, this.state.showViews && styles.active)}
+            id={"stat"}
+          >
+            {fetchingViews ? (
+              <Loader
+                key={"viewloader"}
+                loading={true}
+                size={10}
+                color={"rgba(36, 31, 58, 0.25)"}
+              />
+            ) : (
+              this.state.views
+            )}
+          </div>
+        </div>
+        <div
+          className={css(
+            styles.statsColumn,
+            styles.right,
+            !this.state.showViews && styles.activeTab
+          )}
+          onClick={() => this.toggleGraph(false)}
+        >
+          <span
+            className={css(styles.icon, !this.state.showViews && styles.active)}
+            id={"statIcon"}
+          >
+            <i className="fas fa-mouse-pointer" />
+          </span>
+          <div
+            className={css(
+              styles.stats,
+              !this.state.showViews && styles.active
+            )}
+            id={"stat"}
+          >
+            {fetchingClicks ? (
+              <Loader
+                key={"clickLoader"}
+                loading={true}
+                size={10}
+                color={"rgba(36, 31, 58, 0.25)"}
+              />
+            ) : (
+              this.state.clicks
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     /**
      * show loading state,
      * add pagination
      */
     let { promotion, paper } = this.props;
-    let { fetchingClicks, fetchingViews, hovered, remove } = this.state;
+    let { hovered, remove } = this.state;
     return (
       <div
         className={css(styles.card, remove && styles.hide)}
@@ -130,12 +207,24 @@ class PromotionCard extends React.Component {
               </a>
             </Link>
             <div className={css(styles.metatext)}>
-              Promotion Date:{" "}
+              Start Date:{" "}
               {formatTransactionDate(transformDate(promotion.created_date))}
-              {this.renderStatus(promotion.paid_status)}
+              {promotion.end_date
+                ? this.renderStatus(
+                    promotion.created_date < promotion.end_date
+                      ? "active"
+                      : "completed"
+                  )
+                : this.renderStatus(promotion.paid_status)}
             </div>
+            {promotion.end_date && (
+              <div className={css(styles.metatext)}>
+                End Date:{" "}
+                {formatTransactionDate(transformDate(promotion.end_date))}
+              </div>
+            )}
             <div className={css(styles.amountContainer, styles.metatext)}>
-              {"Amount Used in Promotion: "}
+              {"Promoted Amount: "}
               <div className={css(styles.amount)}>{promotion.amount}</div>
               <img
                 className={css(styles.coin)}
@@ -143,74 +232,11 @@ class PromotionCard extends React.Component {
                 draggable={false}
               />
             </div>
+            {this.renderData()}
           </div>
         </div>
         <div className={css(styles.dataContainer)}>
-          <div
-            className={css(styles.statsColumn)}
-            onClick={() => this.toggleGraph(true)}
-          >
-            <span
-              className={css(
-                styles.icon,
-                this.state.showViews && styles.active
-              )}
-              id={"statIcon"}
-            >
-              <i className="fas fa-eye" />
-            </span>
-            <div
-              className={css(
-                styles.stats,
-                this.state.showViews && styles.active
-              )}
-              id={"stat"}
-            >
-              {fetchingViews ? (
-                <Loader
-                  key={"viewloader"}
-                  loading={true}
-                  size={10}
-                  color={"rgba(36, 31, 58, 0.25)"}
-                />
-              ) : (
-                this.state.views
-              )}
-            </div>
-          </div>
-          <div
-            className={css(styles.statsColumn)}
-            onClick={() => this.toggleGraph(false)}
-          >
-            <span
-              className={css(
-                styles.icon,
-                !this.state.showViews && styles.active
-              )}
-              id={"statIcon"}
-            >
-              <i className="fas fa-mouse-pointer" />
-            </span>
-            <div
-              className={css(
-                styles.stats,
-                !this.state.showViews && styles.active
-              )}
-              id={"stat"}
-            >
-              {fetchingClicks ? (
-                <Loader
-                  key={"clickLoader"}
-                  loading={true}
-                  size={10}
-                  color={"rgba(36, 31, 58, 0.25)"}
-                />
-              ) : (
-                this.state.clicks
-              )}
-            </div>
-          </div>
-          <div className={css(styles.statsColumn, styles.graph)}>
+          <div className={css(styles.graph)}>
             <PromotionGraph
               paper={paper}
               setCount={this.setStateByKey}
@@ -218,9 +244,7 @@ class PromotionCard extends React.Component {
             />
           </div>
         </div>
-        <div
-          className={css(styles.statsColumn, styles.graph, styles.mobileGraph)}
-        >
+        <div className={css(styles.graph, styles.mobileGraph)}>
           <PromotionGraph
             paper={paper}
             setCount={this.setStateByKey}
@@ -244,9 +268,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 3,
     position: "relative",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-    },
     "@media only screen and (max-width: 767px)": {
       width: "85%",
       flexDirection: "column",
@@ -285,9 +306,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     minWidth: 40,
-    padding: "1px 8px",
-    fontSize: 11,
-    textTransform: "uppercase",
+    padding: "0.5px 8px",
+    fontSize: 12,
+    textTransform: "capitalize",
     letterSpacing: 1.1,
     borderRadius: 3,
     fontWeight: 500,
@@ -296,6 +317,21 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 620px)": {
       fontSize: 11,
     },
+  },
+  progress: {
+    color: "#FFF",
+    backgroundColor: "#48C055",
+    borderColor: "#48C055",
+    textTransform: "unset",
+    ":hover": {
+      borderColor: "#2a6218",
+    },
+  },
+  completed: {
+    textTransform: "unset",
+    color: "#241F3A",
+    background: "rgba(36, 31, 58, 0.03)",
+    border: "1px solid rgba(36, 31, 58, 0.15)",
   },
   confirmed: {
     color: "#2a6218",
@@ -333,7 +369,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontWeight: 400,
-    marginTop: 5,
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
@@ -362,33 +397,37 @@ const styles = StyleSheet.create({
   },
   metatext: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-start",
     fontSize: 14,
     color: "rgba(36, 31, 58, 0.5)",
+    marginBottom: 5,
   },
   vote: {
     marginRight: 15,
   },
   statsColumn: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
-    marginLeft: 25,
+    padding: "4px 12px",
     ":hover #statIcon": {
-      // color: colors.BLUE()
-      color: "#241F3A",
+      color: colors.BLUE(),
     },
     ":hover #stat": {
-      // color: colors.BLUE()
-      color: "#241F3A",
+      color: colors.BLUE(),
     },
     "@media only screen and (max-width: 767px)": {
       marginLeft: 25,
     },
   },
+  right: {
+    marginLeft: 20,
+  },
   active: {
-    // color: colors.BLUE()
-    color: "#241F3A",
+    color: colors.BLUE(),
+  },
+  activeTab: {
+    backgroundColor: colors.BLUE(0.11),
   },
   icon: {
     color: "rgba(36, 31, 58, 0.25)",
@@ -422,7 +461,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     paddingRight: 30,
-    width: "60%",
+    width: "50%",
     "@media only screen and (max-width: 767px)": {
       margin: "15px 0",
       width: "100%",
@@ -432,10 +471,22 @@ const styles = StyleSheet.create({
       paddingLeft: 36,
     },
   },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  row: {
+    display: "flex",
+    justifyContent: "flex-start",
+    width: "100%",
+    marginTop: 10,
+  },
   graph: {
-    width: 300,
-    height: 100,
-    border: "1px solid #FAFAFA",
+    width: "100%",
+    height: 200,
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -460,6 +511,9 @@ const styles = StyleSheet.create({
     ":hover": {
       opacity: 1,
     },
+  },
+  italics: {
+    fontStyle: "italic",
   },
 });
 
