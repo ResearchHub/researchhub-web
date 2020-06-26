@@ -78,7 +78,7 @@ class PaperTransactionModal extends React.Component {
     this.signer = this.provider.getSigner(0);
     ethereum.autoRefreshOnNetworkChange = false;
     this.RSCContract = new ethers.Contract(
-      "0x7d50101bbfa12f4a1b4e6de0dd58ad36de150d55",
+      "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be",
       miniToken.abi,
       this.provider
     );

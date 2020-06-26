@@ -72,7 +72,7 @@ class PromotionGraph extends React.Component {
     let options = {
       curveType: "function",
       legend: { position: "bottom" },
-      // vAxis: { viewWindow: { min: 0, max: max + 1}}
+      vAxis: { viewWindow: { min: 0, max: max + 1 } },
     };
 
     this.setState({ [value]: data.reverse(), options });
@@ -98,6 +98,7 @@ class PromotionGraph extends React.Component {
           data={this.props.showViews ? this.state.views : this.state.clicks}
           options={this.state.options}
           loader={<div>Loading Chart</div>}
+          rootProps={{ "data-testid": "1" }}
         />
       );
     }

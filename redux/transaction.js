@@ -9,23 +9,16 @@ import { AuthActions } from "./auth";
 export const TransactionConstants = {
   UPDATE_BALANCE: "@@transaction/UPDATE_BALANCE",
   GET_WITHDRAWALS: "@@transaction/GET_WITHDRAWALS",
+  UPDATE_STATE: "@@transaction/UPDATE_STATE",
 };
 
 export const TransactionActions = {
   getWithdrawals: (page = 1, prevState) => {
-    if (prevState && prevState.grabbedPages[page]) {
-      return;
-    }
     return async (dispatch) => {
       return fetch(API.WITHDRAW_COIN({ page }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let grabbedPages = {};
-          if (prevState) {
-            grabbedPages = { ...prevState.grabbedPages };
-          }
-
           return dispatch({
             type: TransactionConstants.GET_WITHDRAWALS,
             payload: {
@@ -33,11 +26,18 @@ export const TransactionActions = {
               withdrawals: [...res.results],
               count: res.count,
               next: res.next,
-              grabbedPages: grabbedPages,
             },
           });
         });
     };
+  },
+  updateState: (newState) => {
+    return dispatch({
+      type: TransactionConstants.UPDATE_STATE,
+      payload: {
+        newState,
+      },
+    });
   },
 };
 
@@ -56,10 +56,9 @@ const TransactionReducer = (state = defaultTransactionState, action) => {
   switch (action.type) {
     case TransactionConstants.UPDATE_BALANCE:
     case TransactionConstants.GET_WITHDRAWALS:
+    case TransactionConstants.UPDATE_STATE:
       return {
-        ...state,
         ...action.payload,
-        withdrawals: [...state.withdrawals, ...action.payload.withdrawals],
       };
     default:
       return state;

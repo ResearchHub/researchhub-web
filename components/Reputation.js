@@ -36,7 +36,6 @@ const Reputation = (props) => {
   return (
     <div
       className={css(styles.reputationContainer)}
-      data-tip
       data-for="reputationTooltip"
       onClick={openTransactionModal}
     >

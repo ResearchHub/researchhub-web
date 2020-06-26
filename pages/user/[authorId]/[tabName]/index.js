@@ -1,12 +1,13 @@
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState, Fragment } from "react";
-import { connect, useDispatch } from "react-redux";
+import { connect, useStore, useDispatch } from "react-redux";
 import ReactTooltip from "react-tooltip";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
 import { AuthorActions } from "~/redux/author";
+import { TransactionActions } from "~/redux/transaction";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -34,7 +35,7 @@ const AuthorPage = (props) => {
   let router = useRouter();
   let { tabName } = router.query;
   const dispatch = useDispatch();
-
+  const store = useStore();
   const [openShareModal, setOpenShareModal] = useState(false);
   const [hoverName, setHoverName] = useState(false);
   const [hoverDescription, setHoverDescription] = useState(false);
@@ -50,6 +51,8 @@ const AuthorPage = (props) => {
   const [name, setName] = useState("");
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
+
+  const [fetchingPromotions, setFetchingPromotions] = useState(false);
 
   let facebookRef;
   let linkedinRef;
@@ -119,7 +122,14 @@ const AuthorPage = (props) => {
     );
   }
 
+  function fetchUserTransactions() {
+    dispatch(
+      TransactionActions.getWithdrawals(1, store.getState().transactions)
+    );
+  }
+
   async function fetchUserPromotions() {
+    setFetchingPromotions(true);
     fetch(API.PROMOTION_TRANSACTIONS, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -128,9 +138,10 @@ const AuthorPage = (props) => {
           AuthorActions.updateAuthorByKey({
             key: "promotions",
             value: res,
-            prevState: props.author,
+            prevState: store.getState().author,
           })
         );
+        setFetchingPromotions(false);
       });
   }
 
@@ -144,6 +155,7 @@ const AuthorPage = (props) => {
     fetchUserDiscussions();
     fetchUserContributions();
     fetchUserPromotions();
+    fetchUserTransactions();
     refetchAuthor();
   }, [props.isServer, router.query.authorId]);
 
@@ -242,7 +254,7 @@ const AuthorPage = (props) => {
       case "transactions":
         return <UserTransactionsTab />;
       case "promotions":
-        return <UserPromotionsTab />;
+        return <UserPromotionsTab fetching={fetchingPromotions} />;
     }
   };
 
