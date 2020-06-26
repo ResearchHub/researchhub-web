@@ -550,13 +550,21 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    PROMOTION_STATS: BASE_URL + "events/paper/",
+    PROMOTION_STATS: ({ paperId, interaction }) => {
+      let url = BASE_URL + "events/paper/";
+
+      if (!doesNotExist(paperId)) {
+        url += `?paper=${paperId}&ordering=-created_date&paper_is_boosted=True&interaction=${interaction}`;
+      }
+
+      return url;
+    },
     PROMOTION: ({ purchaseId }) => {
       let url = BASE_URL + `purchase/${purchaseId}/`;
       return url;
     },
     PROMOTION_PURCHASE: BASE_URL + "purchase/",
-    PROMOTION_TRANSACTIONS: BASE_URL + "purchase/user_transactions/",
+    PROMOTION_TRANSACTIONS: BASE_URL + "purchase/user_transactions_by_item/",
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

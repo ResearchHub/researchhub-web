@@ -2,7 +2,7 @@ import { useEffect, useState, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
-
+import ReactTooltip from "react-tooltip";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 
 import { ModalActions } from "../redux/modals";
@@ -121,6 +121,12 @@ const VoteWidget = (props) => {
             promoted={promoted}
           />
         </PermissionNotificationWrapper>
+        <ReactTooltip
+          id="reputationTooltip"
+          className={css(styles.tooltip)}
+          place="bottom"
+          effect="solid"
+        />
         <ScorePill score={promoted ? promoted : score} promoted={promoted} />
         <PermissionNotificationWrapper
           loginRequired={true}
@@ -134,13 +140,23 @@ const VoteWidget = (props) => {
             promoted={promoted}
           />
         </PermissionNotificationWrapper>
+        {promoted && (
+          <div
+            className={css(
+              styles.promotionContainer,
+              horizontalView && styles.marginLeft
+            )}
+          >
+            {/* <div className={css(styles.divider)} /> */}
+            <div
+              className={css(styles.scoreContainer)}
+              data-tip={"This paper has been promoted."}
+            >
+              <i class="fas fa-question"></i>
+            </div>
+          </div>
+        )}
       </div>
-      {/* {promoted && (
-        <div className={css(styles.promotionContainer)}>
-          <div className={css(styles.divider)} />
-          <div className={css(styles.scoreContainer)}>{score}</div>
-        </div>
-      )} */}
     </Fragment>
   );
 };
@@ -161,12 +177,11 @@ const ScorePill = (props) => {
         styles.pillContainer,
         props.promoted && styles.promotedPillContainer
       )}
+      data-tip={"This paper has been promoted."}
     >
       <div>{score}</div>
       {props.promoted && (
         <span className={css(styles.promotionIcon)}>
-          {/* <i className="fas fa-long-arrow-alt-up" /> */}
-          {/* <i class="fad fa-long-arrow-alt-up"></i> */}
           <i class="fal fa-long-arrow-up"></i>
         </span>
       )}
@@ -268,7 +283,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     color: colors.BLUE(),
     background: "#eaebfe",
-    cursor: "help",
     ":hover": {
       background: "#eaebfe",
     },
@@ -306,13 +320,20 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   promotionContainer: {
-    marginRight: 17,
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
     boxSizing: "border-box",
-    width: "75%",
+    width: "100%",
+    display: "none",
+    cursor: "pointer",
+    "@media only screen and (max-width: 767px)": {
+      display: "unset",
+    },
+  },
+  marginLeft: {
+    marginLeft: 10,
   },
   divider: {
     margin: "5px 0 15px",
@@ -320,18 +341,21 @@ const styles = StyleSheet.create({
     border: "1px solid rgba(36, 31, 58, 0.1)",
   },
   scoreContainer: {
-    width: "60%",
-    borderRadius: 71,
-    padding: ".1em .3em",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    // background: "rgba(36, 31, 58, 0.07)",
-    // color: "rgba(36, 31, 58, 0.4)",
+    color: "rgba(36, 31, 58, 0.4)",
     fontWeight: "bold",
-    fontSize: 13,
-    background: voteWidgetColors.BACKGROUND,
-    color: colors.GREEN(),
+    fontSize: 14,
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  tooltip: {
+    maxWidth: 200,
+    width: 200,
+    padding: 15,
+    fontSize: 14,
+    // background: colors.BLUE(1),
+    background: "rgba(0, 0, 0, 0.7)",
+    opacity: 1,
   },
 });
 
