@@ -410,6 +410,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     padding: "4px 12px",
+    borderRadius: 4,
     ":hover #statIcon": {
       color: colors.BLUE(),
     },
