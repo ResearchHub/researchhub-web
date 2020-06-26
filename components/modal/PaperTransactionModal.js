@@ -100,7 +100,7 @@ class PaperTransactionModal extends React.Component {
     let allow = true;
 
     const appContract = new ethers.Contract(
-      "0xd2Abb07F644FDA2CB423220b80cEeb4e81C4B5ca",
+      "0x486a754f4E5286d8797d92750F1a56DFd384b106",
       contractAbi,
       this.provider
     );
