@@ -33,8 +33,8 @@ class PaperTransactionModal extends React.Component {
     this.initialState = {
       value: 1,
       error: false,
-      nextScreen: false,
-      offChain: false,
+      nextScreen: true,
+      offChain: true,
       transition: false,
       // OnChain
       balance: 0,
@@ -597,7 +597,7 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Total Balance</div>
               <div className={css(styles.subtitle)}>
-                Your current total balance in RSC
+                Your current total balance in ResearchHub
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -625,6 +625,18 @@ class PaperTransactionModal extends React.Component {
                 value={this.state.value}
                 onChange={this.handleInput}
               />
+            </div>
+          </div>
+          <div className={css(styles.toggleContainer)}>
+            <div
+              className={css(styles.toggle)}
+              onClick={() =>
+                this.transitionScreen(() =>
+                  this.setState({ nextScreen: true, offChain: false })
+                )
+              }
+            >
+              Use Withdrawn Coins
             </div>
           </div>
           <div className={css(styles.buttonRow)}>
@@ -734,7 +746,16 @@ class PaperTransactionModal extends React.Component {
                   />
                 </div>
               </div>
-
+              <div
+                className={css(styles.toggleContainer)}
+                onClick={() =>
+                  this.transitionScreen(() =>
+                    this.setState({ nextScreen: true, offChain: true })
+                  )
+                }
+              >
+                <div className={css(styles.toggle)}>Use In-App Coins</div>
+              </div>
               <div className={css(styles.buttonRow)}>
                 <Button label="Confirm" onClick={this.confirmTransaction} />
               </div>
@@ -755,16 +776,6 @@ class PaperTransactionModal extends React.Component {
         title={"Promote Paper"} // this needs to
       >
         {this.renderContent()}
-        {this.state.nextScreen && !this.state.finish && (
-          <div
-            className={css(styles.backButton)}
-            onClick={() =>
-              this.transitionScreen(() => this.setState({ nextScreen: false }))
-            }
-          >
-            <i class="fal fa-long-arrow-left" />
-          </div>
-        )}
       </BaseModal>
     );
   }
@@ -1015,6 +1026,19 @@ const styles = StyleSheet.create({
   marginLeft: {
     marginLeft: 5,
     textDecoration: "unset",
+  },
+  toggleContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  toggle: {
+    color: colors.BLUE(),
+    cursor: "pointer",
+    fontSize: 14,
+    ":hover": {
+      textDecoration: "underline",
+    },
   },
 });
 
