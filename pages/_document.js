@@ -2,6 +2,7 @@ import Document, { Head, Main, NextScript } from "next/document";
 import { StyleSheetServer } from "aphrodite";
 import * as Sentry from "@sentry/browser";
 import CustomHead from "../components/Head";
+import { hotjar } from "react-hotjar";
 
 process.on("unhandledRejection", (err) => {
   Sentry.captureException(err);
@@ -31,6 +32,17 @@ export default class MyDocument extends Document {
       __NEXT_DATA__.ids = this.props.ids;
     }
   }
+
+  componentDidMount = () => {
+    if (
+      process.env.NODE_ENV === "production" &&
+      process.env.REACT_APP_ENV !== "staging"
+    ) {
+      let hjid = 1876155;
+      let hjsv = 6;
+      hotjar.initialize(hjid, hjsv);
+    }
+  };
 
   render() {
     /* Make sure to use data-aphrodite attribute in the style tag here
