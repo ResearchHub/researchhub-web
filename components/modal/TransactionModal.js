@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import { keccak256, sha3_256 } from "js-sha3";
 import { ethers } from "ethers";
+import Link from "next/link";
+
 // Component
 import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
@@ -207,19 +209,23 @@ class TransactionModal extends React.Component {
                     <i className="fal fa-check-circle" />
                   </span>
                 </div>
-                <div className={css(styles.confirmation)}>
-                  Click{" "}
-                  <span
-                    className={css(styles.transactionHashLink)}
-                    onClick={() =>
-                      this.openTransactionConfirmation(
-                        `https://rinkeby.etherscan.io/tx/${transactionHash}`
-                      )
-                    }
+                <div
+                  className={css(styles.confirmation)}
+                  onClick={this.closeModal}
+                >
+                  Review your transactions in your
+                  <Link
+                    href={"/user/[authorId]/[tabName]"}
+                    as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
                   >
-                    here
-                  </span>{" "}
-                  to view the transaction confirmation.
+                    <a
+                      href={"/user/[authorId]/[tabName]"}
+                      as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+                      className={css(styles.transactionHashLink)}
+                    >
+                      profile page
+                    </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -380,7 +386,7 @@ class TransactionModal extends React.Component {
               showMessage({ show: false });
               setMessage("Your transaction request has been made.");
               showMessage({ show: true, clickoff: true });
-              this.setState({ transactionHash: transaction_hash }, () => {
+              this.setState({ transactionHash: true }, () => {
                 this.getBalance();
               });
             }, 400);
@@ -701,6 +707,7 @@ const styles = StyleSheet.create({
   transactionHashLink: {
     cursor: "pointer",
     color: colors.BLUE(1),
+    marginLeft: 6,
     ":hover": {
       textDecoration: "underline",
     },
