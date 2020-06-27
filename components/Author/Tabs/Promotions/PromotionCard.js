@@ -44,27 +44,6 @@ class PromotionCard extends React.Component {
     }
   };
 
-  toggleHover = (state) => {
-    if (state !== this.state.hovered) {
-      this.setState({ hovered: state });
-    }
-  };
-
-  toggleRemove = () => {
-    this.setState({ remove: true }, () => {
-      let obj = { ...this.props.author.promotions };
-      obj["count"]--;
-      obj["results"].splice(this.props.index, 1);
-      this.props.dispatch(
-        AuthorActions.updateAuthorByKey({
-          key: "promotions",
-          value: obj,
-          prevState: this.props.author,
-        })
-      );
-    });
-  };
-
   renderStatus = (status) => {
     switch (status) {
       case "PAID":
@@ -98,8 +77,7 @@ class PromotionCard extends React.Component {
   };
 
   renderData = () => {
-    let { fetchingClicks, fetchingViews } = this.state;
-
+    let { promotion } = this.props;
     return (
       <div className={css(styles.row)}>
         <div
@@ -119,16 +97,7 @@ class PromotionCard extends React.Component {
             className={css(styles.stats, this.state.showViews && styles.active)}
             id={"stat"}
           >
-            {fetchingViews ? (
-              <Loader
-                key={"viewloader"}
-                loading={true}
-                size={10}
-                color={"rgba(36, 31, 58, 0.25)"}
-              />
-            ) : (
-              this.state.views
-            )}
+            {promotion.stats.total_views}
           </div>
         </div>
         <div
@@ -152,16 +121,7 @@ class PromotionCard extends React.Component {
             )}
             id={"stat"}
           >
-            {fetchingClicks ? (
-              <Loader
-                key={"clickLoader"}
-                loading={true}
-                size={10}
-                color={"rgba(36, 31, 58, 0.25)"}
-              />
-            ) : (
-              this.state.clicks
-            )}
+            {promotion.stats.total_clicks}
           </div>
         </div>
       </div>
@@ -174,18 +134,8 @@ class PromotionCard extends React.Component {
      * add pagination
      */
     let { promotion, paper } = this.props;
-    let { hovered, remove } = this.state;
     return (
-      <div
-        className={css(styles.card, remove && styles.hide)}
-        onMouseEnter={() => this.toggleHover(true)}
-        onMouseLeave={() => this.toggleHover(false)}
-      >
-        {hovered && (
-          <div className={css(styles.trashIcon)} onClick={this.toggleRemove}>
-            <i className="fad fa-trash-alt" />
-          </div>
-        )}
+      <div className={css(styles.card)}>
         <div className={css(styles.metadata)}>
           <div className={css(styles.column, styles.vote)}>
             <ScorePill
@@ -239,7 +189,9 @@ class PromotionCard extends React.Component {
           <div className={css(styles.graph)}>
             <PromotionGraph
               paper={paper}
-              setCount={this.setStateByKey}
+              promotion={promotion}
+              clicks={promotion.stats.clicks ? promotion.stats.clicks : []}
+              views={promotion.stats.views ? promotion.stats.views : []}
               showViews={this.state.showViews}
             />
           </div>
@@ -247,7 +199,9 @@ class PromotionCard extends React.Component {
         <div className={css(styles.graph, styles.mobileGraph)}>
           <PromotionGraph
             paper={paper}
-            setCount={this.setStateByKey}
+            promotion={promotion}
+            clicks={promotion.stats.clicks ? promotion.stats.clicks : []}
+            views={promotion.stats.views ? promotion.stats.views : []}
             showViews={this.state.showViews}
           />
         </div>

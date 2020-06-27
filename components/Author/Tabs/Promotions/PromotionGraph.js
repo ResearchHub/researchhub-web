@@ -7,7 +7,7 @@ import Loader from "../../../Loader/Loader";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import { formatTransactionDate } from "~/config/utils";
+import { formatDate } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 
 class PromotionGraph extends React.Component {
@@ -17,65 +17,43 @@ class PromotionGraph extends React.Component {
     this.state = {
       views: [["x", "Views"], [0, 0]],
       clicks: [["x", "Clicks"], [0, 0]],
-      data: [],
       options: {},
       loading: true,
     };
   }
 
   componentDidMount() {
-    this.fetchInteractions("CLICK");
-    this.fetchInteractions("VIEW");
+    this.formatData("clicks", this.props.clicks);
+    this.formatData("views", this.props.views);
   }
 
-  fetchInteractions = (value) => {
-    let paperId = this.props.paper.id;
-    fetch(
-      API.PROMOTION_STATS({ paperId, interaction: value }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let key = `${value.toLowerCase()}s`;
-        this.props.setCount(key, res.count);
-        if (res.count) {
-          this.formatData(key, res.results);
-        }
-        if (value === "VIEW") {
-          this.setState({ loading: false });
-        }
-      });
-  };
-
-  formatData = (value, interactions) => {
-    let data = [];
-
-    var dates = {};
-    var max = 0;
-    interactions.forEach((interaction) => {
-      var date = formatTransactionDate(transformDate(interaction.created_date));
-      if (dates[date]) {
-        dates[date]++;
-      } else {
-        dates[date] = 1;
-      }
-    });
-
-    for (var key in dates) {
-      data.push([key, dates[key]]);
-      max = Math.max(max, dates[key]);
-    }
-
+  formatData = (value, interactions = []) => {
+    var data = [];
     data.push(["x", `${value[0].toUpperCase()}${value.slice(1)}`]);
+
+    interactions.forEach((interaction) => {
+      // var date = formatTransactionDate(transformDate(interaction.created_date));
+      var date = formatDate(transformDate(interaction.created_date));
+      var amount = interaction[value] ? interaction[value] : 0;
+      data.push([date, amount]);
+    });
 
     let options = {
       curveType: "function",
       legend: { position: "bottom" },
-      vAxis: { viewWindow: { min: 0, max: max + 1 } },
+      // legend: 'none',
+      // hAxis: { title: "Date" },
+      // vAxis: { title: `${value[0].toUpperCase()}${value.slice(1)}` },
     };
 
-    this.setState({ [value]: data.reverse(), options });
+    if (data.length === 1) {
+      data.push([
+        formatDate(transformDate(this.props.promotion.created_date)),
+        0,
+      ]);
+    }
+
+    this.setState({ [value]: data, options, loading: value !== "views" });
   };
 
   formatOptions = () => {
