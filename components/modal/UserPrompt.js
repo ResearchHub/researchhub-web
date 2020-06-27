@@ -7,7 +7,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-const TIMEOUT = 5000; // 1 minute in ms
+const TIMEOUT = 60000; // 1 minute in ms
 
 const UserPrompt = (props) => {
   let { paper } = props;
