@@ -181,7 +181,6 @@ class PaperPageCard extends React.Component {
     let { paper, isModerator, flagged, setFlag } = this.props;
 
     let paperTitle = paper && paper.title;
-    console.log("paper", paper);
     return (
       <div className={css(styles.actions)}>
         <PermissionNotificationWrapper
@@ -503,7 +502,6 @@ class PaperPageCard extends React.Component {
       doneFetchingPaper,
     } = this.props;
 
-    console.log("paper", paper);
     let { fetching, previews, figureUrls } = this.state;
     if (!doneFetchingPaper) {
       return (
