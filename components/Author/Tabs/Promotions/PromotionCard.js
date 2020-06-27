@@ -371,9 +371,6 @@ const styles = StyleSheet.create({
     ":hover #stat": {
       color: colors.BLUE(),
     },
-    "@media only screen and (max-width: 767px)": {
-      marginLeft: 25,
-    },
   },
   right: {
     marginLeft: 20,
@@ -424,6 +421,7 @@ const styles = StyleSheet.create({
       paddingRight: 0,
       justifyContent: "flex-start",
       paddingLeft: 36,
+      display: "none",
     },
   },
   column: {
