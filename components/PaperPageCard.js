@@ -480,6 +480,11 @@ class PaperPageCard extends React.Component {
                 horizontalView={true}
                 type={"Paper"}
                 promoted={this.props.paper && this.props.paper.promoted}
+                paper={
+                  this.props.paper && this.props.paper.promoted
+                    ? this.props.paper
+                    : null
+                }
               />
             </div>
           </div>
@@ -535,6 +540,11 @@ class PaperPageCard extends React.Component {
             type={"Paper"}
             paperPage={true}
             promoted={this.props.paper && this.props.paper.promoted}
+            paper={
+              this.props.paper && this.props.paper.promoted
+                ? this.props.paper
+                : null
+            }
           />
         </div>
         <div className={css(styles.votingMobile)}>
@@ -548,6 +558,11 @@ class PaperPageCard extends React.Component {
             type={"Paper"}
             paperPage={true}
             promoted={this.props.paper && this.props.paper.promoted}
+            paper={
+              this.props.paper && this.props.paper.promoted
+                ? this.props.paper
+                : null
+            }
           />
         </div>
         {figureUrls.length > 0 && (

@@ -22,6 +22,7 @@ export const ModalConstants = {
   OPEN_DND_MODAL_TOGGLE: "@@modal/OPEN_DND_MODAL_TOGGLE",
   PAPER_FEATURE_MODAL_TOGGLE: "@@modal/PAPER_FEATURE_MODAL_TOGGLE",
   PAPER_TRANSACTION_MODAL_TOGGLE: "@@modal/PAPER_TRANSACTION_MODAL_TOGGLE",
+  PROMOTION_INFO_MODAL_TOGGLE: "@@modal/PROMOTION_INFO_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -211,6 +212,19 @@ export const ModalActions = {
       });
     };
   },
+  openPromotionInfoModal: (openModal, props) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.PROMOTION_INFO_MODAL_TOGGLE,
+        payload: {
+          openPromotionInfoModal: {
+            isOpen: openModal,
+            props,
+          },
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -246,6 +260,10 @@ const defaultModalState = {
     isOpen: false,
     props: {},
   },
+  openPromotionInfoModal: {
+    isOpen: false,
+    props: {},
+  },
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -265,6 +283,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.OPEN_DND_MODAL_TOGGLE:
     case ModalConstants.PAPER_FEATURE_MODAL_TOGGLE:
     case ModalConstants.PAPER_TRANSACTION_MODAL_TOGGLE:
+    case ModalConstants.PROMOTION_INFO_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
