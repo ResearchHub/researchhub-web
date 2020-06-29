@@ -141,6 +141,7 @@ class PromotionCard extends React.Component {
             <ScorePill
               score={paper.promoted ? paper.promoted : paper.score}
               promoted={paper.promoted}
+              paper={paper}
             />
           </div>
           <div className={css(styles.column)}>
