@@ -37,6 +37,7 @@ const VoteWidget = (props) => {
     isPaper,
     type,
     promoted,
+    paper,
   } = props;
 
   const score = getScore(props);
@@ -99,6 +100,11 @@ const VoteWidget = (props) => {
     }
   }
 
+  const openPromotionInfoModal = (e) => {
+    e && e.stopPropagation();
+    dispatch(ModalActions.openPromotionInfoModal(true, paper));
+  };
+
   return (
     <Fragment>
       <div
@@ -127,7 +133,11 @@ const VoteWidget = (props) => {
           place="bottom"
           effect="solid"
         />
-        <ScorePill score={promoted ? promoted : score} promoted={promoted} />
+        <ScorePill
+          score={promoted ? promoted : score}
+          promoted={promoted}
+          paper={paper}
+        />
         <PermissionNotificationWrapper
           loginRequired={true}
           onClick={onDownvoteClick}
@@ -150,7 +160,7 @@ const VoteWidget = (props) => {
             {/* <div className={css(styles.divider)} /> */}
             <div
               className={css(styles.scoreContainer)}
-              data-tip={"This paper has been promoted."}
+              onClick={openPromotionInfoModal}
             >
               <i class="fas fa-question"></i>
             </div>
@@ -170,16 +180,24 @@ VoteWidget.propTypes = {
 };
 
 const ScorePill = (props) => {
-  const { score } = props;
+  const dispatch = useDispatch();
+  const { score, paper, small } = props;
+
+  const openPromotionInfoModal = (e) => {
+    e && e.stopPropagation();
+    dispatch(ModalActions.openPromotionInfoModal(true, paper));
+  };
+
   return (
     <div
       className={css(
         styles.pillContainer,
         props.promoted && styles.promotedPillContainer
       )}
-      data-tip={"This paper has been promoted."}
+      // data-tip={"This paper has been promoted."}
+      onClick={(e) => props.promoted && openPromotionInfoModal(e)}
     >
-      <div>{score}</div>
+      <div className={css(small && styles.small)}>{score}</div>
       {props.promoted && (
         <span className={css(styles.promotionIcon)}>
           <i class="fal fa-long-arrow-up"></i>
@@ -283,8 +301,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     color: colors.BLUE(),
     background: "#eaebfe",
+    cursor: "help",
     ":hover": {
-      background: "#eaebfe",
+      background: colors.BLUE(0.2),
+    },
+  },
+  small: {
+    fontSize: 14,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
     },
   },
   promotionIcon: {

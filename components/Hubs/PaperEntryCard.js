@@ -385,6 +385,7 @@ const PaperEntryCard = ({
             isPaper={true}
             styles={styles.voteWidget}
             type={"Paper"}
+            paper={promoted ? paper : null}
             promoted={promoted}
           />
         </span>

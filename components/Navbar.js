@@ -31,6 +31,7 @@ import SignUpBanner from "./SignUpBanner";
 import DndModal from "../components/modal/DndModal";
 import PaperFeatureModal from "~/components/modal/PaperFeatureModal";
 import PaperTransactionModal from "~/components/modal/PaperTransactionModal";
+import PromotionInfoModal from "~/components/modal/PromotionInfoModal";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -422,6 +423,7 @@ const Navbar = (props) => {
         <DndModal />
         <PaperFeatureModal />
         <PaperTransactionModal />
+        <PromotionInfoModal />
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />
