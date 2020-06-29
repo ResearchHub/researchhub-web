@@ -73,6 +73,12 @@ class PaperTransactionModal extends React.Component {
     this.createContract();
   }
 
+  componentDidUpdate() {
+    if (this.handleError(this.state.value) && !this.state.error) {
+      this.setState({ error: true });
+    }
+  }
+
   createContract = () => {
     this.provider = new ethers.providers.Web3Provider(window.ethereum);
     this.signer = this.provider.getSigner(0);
@@ -199,7 +205,23 @@ class PaperTransactionModal extends React.Component {
   };
 
   confirmTransaction = () => {
-    let { value } = this.state;
+    let { value, error } = this.state;
+    if (error) {
+      this.props.setMessage("Not enough coins in balance");
+      return this.props.showMessage({
+        show: true,
+        clickoff: true,
+        error: true,
+      });
+    }
+    if (value == 0) {
+      this.props.setMessage("Must spend at least 1 RSC");
+      return this.props.showMessage({
+        show: true,
+        clickoff: true,
+        error: true,
+      });
+    }
     return this.props.alert.show({
       text: `Use ${value} RSC to promote this paper?`,
       buttonText: "Yes",
@@ -527,64 +549,6 @@ class PaperTransactionModal extends React.Component {
           </div>
         </Fragment>
       );
-    }
-    if (!nextScreen) {
-      return (
-        <div className={css(styles.content, transition && styles.transition)}>
-          <div className={css(styles.description)}>
-            {
-              "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
-            }
-          </div>
-          <div className={css(styles.row, styles.mobileCenter)}>
-            <div className={css(styles.column, styles.center)}>
-              <Button
-                customButtonStyle={styles.button}
-                label={() => {
-                  return (
-                    <div className={css(styles.buttonLabel)}>
-                      <div className={css(styles.label)}>Use RSC in App</div>
-                      <img
-                        src={"/static/icons/coin-filled.png"}
-                        draggable={false}
-                        className={css(styles.coinIcon)}
-                      />
-                    </div>
-                  );
-                }}
-                onClick={() =>
-                  this.transitionScreen(() =>
-                    this.setState({ nextScreen: true, offChain: true })
-                  )
-                }
-              />
-            </div>
-            <div className={css(styles.column, styles.center)}>
-              <Button
-                customButtonStyle={styles.button}
-                isWhite={true}
-                label={() => {
-                  return (
-                    <div className={css(styles.buttonLabel)}>
-                      <div className={css(styles.label)}>Use RSC in Wallet</div>
-                      <img
-                        src={"/static/icons/coin-filled.png"}
-                        draggable={false}
-                        className={css(styles.coinIcon)}
-                      />
-                    </div>
-                  );
-                }}
-                onClick={() =>
-                  this.transitionScreen(() =>
-                    this.setState({ nextScreen: true, offChain: false })
-                  )
-                }
-              />
-            </div>
-          </div>
-        </div>
-      );
     } else if (nextScreen && offChain) {
       return (
         <div className={css(styles.content, transition && styles.transition)}>
@@ -592,6 +556,32 @@ class PaperTransactionModal extends React.Component {
             {
               "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
             }
+          </div>
+          <div className={css(styles.toggleContainer)}>
+            <div
+              className={css(
+                styles.toggle,
+                styles.toggleRight,
+                offChain && styles.activeToggle
+              )}
+              onClick={() =>
+                this.transitionScreen(() =>
+                  this.setState({ nextScreen: true, offChain: true })
+                )
+              }
+            >
+              In-App
+            </div>
+            <div
+              className={css(styles.toggle, !offChain && styles.activeToggle)}
+              onClick={() =>
+                this.transitionScreen(() =>
+                  this.setState({ nextScreen: true, offChain: false })
+                )
+              }
+            >
+              External Wallet
+            </div>
           </div>
           <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
             <div className={css(styles.column, styles.left)}>
@@ -615,7 +605,7 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Amount</div>
               <div className={css(styles.subtitle)}>
-                Your total must exceed 1 RSC
+                {this.state.value} RSC = {this.state.value} Day of Promotion
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -625,18 +615,6 @@ class PaperTransactionModal extends React.Component {
                 value={this.state.value}
                 onChange={this.handleInput}
               />
-            </div>
-          </div>
-          <div className={css(styles.toggleContainer)}>
-            <div
-              className={css(styles.toggle)}
-              onClick={() =>
-                this.transitionScreen(() =>
-                  this.setState({ nextScreen: true, offChain: false })
-                )
-              }
-            >
-              Use Withdrawn Coins
             </div>
           </div>
           <div className={css(styles.buttonRow)}>
@@ -656,6 +634,41 @@ class PaperTransactionModal extends React.Component {
                 {
                   "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
                 }
+              </div>
+
+              <div
+                className={css(
+                  styles.toggleContainer,
+                  styles.toggleContainerOnChain
+                )}
+              >
+                <div
+                  className={css(
+                    styles.toggle,
+                    styles.toggleRight,
+                    offChain && styles.activeToggle
+                  )}
+                  onClick={() =>
+                    this.transitionScreen(() =>
+                      this.setState({ nextScreen: true, offChain: true })
+                    )
+                  }
+                >
+                  In-App
+                </div>
+                <div
+                  className={css(
+                    styles.toggle,
+                    !offChain && styles.activeToggle
+                  )}
+                  onClick={() =>
+                    this.transitionScreen(() =>
+                      this.setState({ nextScreen: true, offChain: false })
+                    )
+                  }
+                >
+                  External Wallet
+                </div>
               </div>
               {connectedMetaMask && (
                 <div className={css(styles.connectStatus)}>
@@ -731,7 +744,7 @@ class PaperTransactionModal extends React.Component {
                 <div className={css(styles.column, styles.left)}>
                   <div className={css(styles.title)}>Amount</div>
                   <div className={css(styles.subtitle)}>
-                    Your total must exceed 1 RSC
+                    {this.state.value} RSC = {this.state.value} Day of Promotion
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
@@ -746,16 +759,7 @@ class PaperTransactionModal extends React.Component {
                   />
                 </div>
               </div>
-              <div
-                className={css(styles.toggleContainer)}
-                onClick={() =>
-                  this.transitionScreen(() =>
-                    this.setState({ nextScreen: true, offChain: true })
-                  )
-                }
-              >
-                <div className={css(styles.toggle)}>Use In-App Coins</div>
-              </div>
+
               <div className={css(styles.buttonRow)}>
                 <Button label="Confirm" onClick={this.confirmTransaction} />
               </div>
@@ -827,6 +831,8 @@ const styles = StyleSheet.create({
   },
   borderBottom: {
     borderBottom: ".1rem dotted #e7e6e4",
+    marginTop: 0,
+    paddingTop: 0,
   },
   border: {
     borderBottom: ".1rem dotted #e7e6e4",
@@ -846,6 +852,11 @@ const styles = StyleSheet.create({
     width: "40%",
     alignItems: "flex-end",
     height: "100%",
+  },
+  amountContainer: {
+    justifyContent: "space-between",
+    position: "relative",
+    minHeight: 60,
   },
   mainHeader: {
     fontWeight: "500",
@@ -887,7 +898,7 @@ const styles = StyleSheet.create({
     fontSize: 19,
     color: "#2a2825",
     fontWeight: 500,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   subtitle: {
     fontSize: 14,
@@ -993,7 +1004,7 @@ const styles = StyleSheet.create({
     color: "#DFDFDF",
   },
   inputLabel: {
-    padding: "10px 0",
+    paddingBottom: 10,
   },
   successIcon: {
     color: "#7ae9b1",
@@ -1030,15 +1041,30 @@ const styles = StyleSheet.create({
   toggleContainer: {
     width: "100%",
     display: "flex",
-    justifyContent: "flex-end",
+    // justifyContent: "flex-end",
+    justifyContent: "center",
+    marginBottom: 15,
+    marginTop: 15,
+  },
+  toggleContainerOnChain: {
+    marginTop: 0,
   },
   toggle: {
-    color: colors.BLUE(),
+    color: "rgba(36, 31, 58, 0.6)",
     cursor: "pointer",
+    padding: "2px 8px",
     fontSize: 14,
     ":hover": {
-      textDecoration: "underline",
+      color: colors.BLUE(),
     },
+  },
+  toggleRight: {
+    marginLeft: 5,
+  },
+  activeToggle: {
+    background: "#eaebfe",
+    borderRadius: 4,
+    color: colors.BLUE(),
   },
 });
 
