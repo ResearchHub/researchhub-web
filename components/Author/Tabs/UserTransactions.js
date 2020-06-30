@@ -51,7 +51,7 @@ class UserTransaction extends React.Component {
                 className={css(styles.loadMoreButton)}
                 onClick={this.loadMore}
               >
-                Load More Papers
+                Load More
               </Ripples>
             ) : (
               <Loader
