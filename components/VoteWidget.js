@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     color: colors.GREEN(),
     fontWeight: "bold",
     borderRadius: 24,
-    padding: ".2em .9em",
+    padding: ".2em .5em",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     },
   },
   promotedPillContainer: {
-    justifyContent: "space-between",
+    justifyContent: "center",
     color: colors.BLUE(),
     background: "#eaebfe",
     cursor: "help",
