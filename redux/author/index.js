@@ -158,4 +158,16 @@ export const AuthorActions = {
         });
     };
   },
+  updateAuthorByKey: ({ key, value, prevState }) => {
+    return (dispatch) => {
+      let updatedState = { ...prevState };
+      updatedState[key] = value;
+      return dispatch({
+        type: types.UPDATE_AUTHOR_BY_KEY,
+        payload: {
+          ...updatedState,
+        },
+      });
+    };
+  },
 };

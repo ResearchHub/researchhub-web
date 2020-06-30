@@ -2,7 +2,7 @@ import { useEffect, useState, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
-
+import ReactTooltip from "react-tooltip";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 
 import { ModalActions } from "../redux/modals";
@@ -24,6 +24,8 @@ const VoteWidget = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
 
+  useEffect(() => {}, [props.promoted]);
+
   const {
     onUpvote,
     onDownvote,
@@ -34,7 +36,11 @@ const VoteWidget = (props) => {
     searchResult,
     isPaper,
     type,
+    promoted,
+    paper,
+    showPromotion,
   } = props;
+
   const score = getScore(props);
   const userReputation = getCurrentUserReputation(store.getState());
   const { permission } = store.getState();
@@ -95,6 +101,11 @@ const VoteWidget = (props) => {
     }
   }
 
+  const openPromotionInfoModal = (e) => {
+    e && e.stopPropagation();
+    dispatch(ModalActions.openPromotionInfoModal(true, paper));
+  };
+
   return (
     <Fragment>
       <div
@@ -114,9 +125,21 @@ const VoteWidget = (props) => {
             selected={upvoteSelected}
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
+            promoted={promoted}
           />
         </PermissionNotificationWrapper>
-        <ScorePill score={score} />
+        <ReactTooltip
+          id="reputationTooltip"
+          className={css(styles.tooltip)}
+          place="bottom"
+          effect="solid"
+        />
+        <ScorePill
+          score={promoted ? promoted : score}
+          promoted={promoted}
+          paper={paper}
+          showPromotion={showPromotion}
+        />
         <PermissionNotificationWrapper
           loginRequired={true}
           onClick={onDownvoteClick}
@@ -126,10 +149,26 @@ const VoteWidget = (props) => {
             selected={downvoteSelected}
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
+            promoted={promoted}
           />
         </PermissionNotificationWrapper>
+        {promoted && (
+          <div
+            className={css(
+              styles.promotionContainer,
+              horizontalView && styles.marginLeft
+            )}
+          >
+            {/* <div className={css(styles.divider)} /> */}
+            <div
+              className={css(styles.scoreContainer)}
+              onClick={openPromotionInfoModal}
+            >
+              <i className="fas fa-question"></i>
+            </div>
+          </div>
+        )}
       </div>
-      {/* {!searchResult && <ReputationTooltip />} */}
     </Fragment>
   );
 };
@@ -143,20 +182,53 @@ VoteWidget.propTypes = {
 };
 
 const ScorePill = (props) => {
-  const { score } = props;
+  const dispatch = useDispatch();
+  const { score, paper, small, showPromotion } = props;
+
+  const openPromotionInfoModal = (e) => {
+    e && e.stopPropagation();
+    let reduxProps = { ...paper };
+    if (showPromotion) {
+      reduxProps.showPromotion = true;
+    }
+    dispatch(ModalActions.openPromotionInfoModal(true, reduxProps));
+  };
+
   return (
-    <div className={css(styles.pillContainer)}>
-      <div>{score}</div>
+    <div
+      className={css(
+        styles.pillContainer,
+        props.promoted && styles.promotedPillContainer
+      )}
+      // data-tip={"This paper has been promoted."}
+      onClick={(e) => props.promoted && openPromotionInfoModal(e)}
+    >
+      <div className={css(small && styles.small)}>{score}</div>
+      {props.promoted && (
+        <span className={css(styles.promotionIcon)}>
+          <i className="fal fa-long-arrow-up"></i>
+        </span>
+      )}
     </div>
   );
 };
 
 const VoteButton = (props) => {
-  const { onClick, selected, disabled, horizontalView, right } = props;
+  const {
+    onClick,
+    selected,
+    disabled,
+    horizontalView,
+    right,
+    promoted,
+  } = props;
 
   let style = [styles.icon];
+  if (promoted && styles) {
+    style.push(styles.iconBlue);
+  }
   if (selected) {
-    style.push(styles.selected);
+    style.push(styles.selected, promoted && styles.selectedBlue);
   }
   if (disabled) {
     style = [styles.iconDisabled];
@@ -220,7 +292,7 @@ const styles = StyleSheet.create({
     color: colors.GREEN(),
     fontWeight: "bold",
     borderRadius: 24,
-    padding: ".2em .9em",
+    padding: ".2em .5em",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -231,6 +303,24 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
+  promotedPillContainer: {
+    justifyContent: "center",
+    color: colors.BLUE(),
+    background: "#eaebfe",
+    cursor: "help",
+    ":hover": {
+      background: colors.BLUE(0.2),
+    },
+  },
+  small: {
+    fontSize: 14,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  promotionIcon: {
+    marginLeft: 2,
+  },
   icon: {
     cursor: "pointer",
     color: voteWidgetColors.ARROW,
@@ -238,11 +328,18 @@ const styles = StyleSheet.create({
       color: colors.BLUE(1),
     },
   },
+  iconBlue: {
+    color: "#eaebfe",
+  },
   iconDisabled: {
     color: voteWidgetColors.ARROW,
   },
   coins: {
     fontSize: 10,
+  },
+  selectedBlue: {
+    color: colors.BLUE(),
+    // color: colors.GREEN(),
   },
   selected: {
     color: colors.GREEN(),
@@ -253,6 +350,45 @@ const styles = StyleSheet.create({
   marginRight: {
     marginRight: 8,
   },
+  promotionContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    boxSizing: "border-box",
+    width: "100%",
+    display: "none",
+    cursor: "pointer",
+    "@media only screen and (max-width: 767px)": {
+      display: "unset",
+    },
+  },
+  marginLeft: {
+    marginLeft: 10,
+  },
+  divider: {
+    margin: "5px 0 15px",
+    width: "100%",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+  },
+  scoreContainer: {
+    color: "rgba(36, 31, 58, 0.4)",
+    fontWeight: "bold",
+    fontSize: 14,
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  tooltip: {
+    maxWidth: 200,
+    width: 200,
+    padding: 15,
+    fontSize: 14,
+    // background: colors.BLUE(1),
+    background: "rgba(0, 0, 0, 0.7)",
+    opacity: 1,
+  },
 });
 
+export { ScorePill };
 export default VoteWidget;

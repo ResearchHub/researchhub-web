@@ -60,7 +60,7 @@ class LoginModal extends React.Component {
       <BaseModal
         isOpen={modals.openLoginModal}
         closeModal={this.closeModal}
-        title={"Please, Login"}
+        title={"Login to your account"}
         subtitle={
           modals.loginModal.flavorText
             ? modals.loginModal.flavorText

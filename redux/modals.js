@@ -21,6 +21,8 @@ export const ModalConstants = {
   SIGN_UP_MODAL_TOGGLE: "@@modal/SIGN_UP_MODAL_TOGGLE",
   OPEN_DND_MODAL_TOGGLE: "@@modal/OPEN_DND_MODAL_TOGGLE",
   PAPER_FEATURE_MODAL_TOGGLE: "@@modal/PAPER_FEATURE_MODAL_TOGGLE",
+  PAPER_TRANSACTION_MODAL_TOGGLE: "@@modal/PAPER_TRANSACTION_MODAL_TOGGLE",
+  PROMOTION_INFO_MODAL_TOGGLE: "@@modal/PROMOTION_INFO_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -200,6 +202,29 @@ export const ModalActions = {
       });
     };
   },
+  openPaperTransactionModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.PAPER_TRANSACTION_MODAL_TOGGLE,
+        payload: {
+          openPaperTransactionModal: openModal,
+        },
+      });
+    };
+  },
+  openPromotionInfoModal: (openModal, props) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.PROMOTION_INFO_MODAL_TOGGLE,
+        payload: {
+          openPromotionInfoModal: {
+            isOpen: openModal,
+            props,
+          },
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -217,6 +242,7 @@ const defaultModalState = {
   openTransactionModal: false,
   openFirstVoteModal: false,
   openOrcidConnectModal: false,
+  openPaperTransactionModal: false,
   loginModal: {},
   uploadPaperModal: {
     suggestedPapers: [],
@@ -231,6 +257,10 @@ const defaultModalState = {
     props: {},
   },
   openPaperFeatureModal: {
+    isOpen: false,
+    props: {},
+  },
+  openPromotionInfoModal: {
     isOpen: false,
     props: {},
   },
@@ -252,6 +282,8 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.SIGN_UP_MODAL_TOGGLE:
     case ModalConstants.OPEN_DND_MODAL_TOGGLE:
     case ModalConstants.PAPER_FEATURE_MODAL_TOGGLE:
+    case ModalConstants.PAPER_TRANSACTION_MODAL_TOGGLE:
+    case ModalConstants.PROMOTION_INFO_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
