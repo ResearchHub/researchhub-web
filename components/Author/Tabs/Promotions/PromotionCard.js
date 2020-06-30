@@ -134,6 +134,7 @@ class PromotionCard extends React.Component {
      * add pagination
      */
     let { promotion, paper } = this.props;
+
     return (
       <div className={css(styles.card)}>
         <div className={css(styles.metadata)}>
@@ -344,7 +345,7 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
   },
   metadata: {
-    width: "50%",
+    width: "55%",
     display: "flex",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
@@ -414,7 +415,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     paddingRight: 30,
-    width: "50%",
+    width: "45%",
     "@media only screen and (max-width: 767px)": {
       margin: "15px 0",
       width: "100%",
@@ -437,7 +438,7 @@ const styles = StyleSheet.create({
   },
   graph: {
     width: "100%",
-    height: 200,
+    height: 180,
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",

@@ -150,7 +150,6 @@ const styles = StyleSheet.create({
     color: "#2a6218",
     backgroundColor: "#D5F3D7",
     borderColor: "#D5F3D7",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     ":hover": {
       borderColor: "#2a6218",
     },
@@ -159,7 +158,6 @@ const styles = StyleSheet.create({
     color: "#DCAA72",
     backgroundColor: "#FDF2DE",
     borderColor: "#FDF2DE",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     ":hover": {
       borderColor: "#DCAA72",
     },
@@ -168,7 +166,6 @@ const styles = StyleSheet.create({
     color: colors.RED(),
     backgroundColor: "rgba(235, 51, 35, 0.2)",
     borderColor: "rgba(235, 51, 35, 0.2)",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     ":hover": {
       borderColor: colors.RED(),
     },
