@@ -6,9 +6,9 @@ import Ripples from "react-ripples";
 // Component
 import BaseModal from "./BaseModal";
 import { ScorePill } from "~/components/VoteWidget";
+import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 // Redux
-import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
 import { PaperActions } from "~/redux/paper";
@@ -87,12 +87,15 @@ const PromotionInfoModal = (props) => {
           </div>
         </div>
         <div className={css(styles.display, styles.title)}>
-          {store.getState().modals.openPromotionInfoModal.props.title}
-          <div className={css(styles.abstract)}>{renderText()}</div>
+          <PaperEntryCard
+            promotionSummary={true}
+            paper={store.getState().modals.openPromotionInfoModal.props}
+            mobileView={true}
+            style={styles.paper}
+          />
         </div>
       </div>
-      {store.getState().paper.id ===
-        store.getState().modals.openPromotionInfoModal.props.id && (
+      {store.getState().modals.openPromotionInfoModal.props.showPromotion && (
         <Ripples
           className={css(styles.promotionButton)}
           onClick={openPaperTransactionModal}
@@ -105,9 +108,14 @@ const PromotionInfoModal = (props) => {
 };
 
 const styles = StyleSheet.create({
+  paper: {
+    border: "none",
+    padding: 0,
+    margin: 0,
+  },
   card: {
     border: "1px solid #E8E8F2",
-    padding: 10,
+    padding: "20px 15px",
     borderRadius: 4,
     marginTop: 25,
     marginBottom: 30,

@@ -3,7 +3,6 @@ import Chart from "react-google-charts";
 
 import Loader from "../../../Loader/Loader";
 
-import colors from "~/config/themes/colors";
 import { formatDate } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 
@@ -45,6 +44,8 @@ class PromotionGraph extends React.Component {
         formatDate(transformDate(this.props.promotion.created_date)),
         0,
       ]);
+      options.legend = { position: "top", alignment: "center" };
+    } else if (data.length === 2) {
       options.legend = { position: "top", alignment: "center" };
     } else {
       let customOptions = {

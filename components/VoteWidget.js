@@ -38,6 +38,7 @@ const VoteWidget = (props) => {
     type,
     promoted,
     paper,
+    showPromotion,
   } = props;
 
   const score = getScore(props);
@@ -137,6 +138,7 @@ const VoteWidget = (props) => {
           score={promoted ? promoted : score}
           promoted={promoted}
           paper={paper}
+          showPromotion={showPromotion}
         />
         <PermissionNotificationWrapper
           loginRequired={true}
@@ -162,7 +164,7 @@ const VoteWidget = (props) => {
               className={css(styles.scoreContainer)}
               onClick={openPromotionInfoModal}
             >
-              <i class="fas fa-question"></i>
+              <i className="fas fa-question"></i>
             </div>
           </div>
         )}
@@ -181,11 +183,15 @@ VoteWidget.propTypes = {
 
 const ScorePill = (props) => {
   const dispatch = useDispatch();
-  const { score, paper, small } = props;
+  const { score, paper, small, showPromotion } = props;
 
   const openPromotionInfoModal = (e) => {
     e && e.stopPropagation();
-    dispatch(ModalActions.openPromotionInfoModal(true, paper));
+    let reduxProps = { ...paper };
+    if (showPromotion) {
+      reduxProps.showPromotion = true;
+    }
+    dispatch(ModalActions.openPromotionInfoModal(true, reduxProps));
   };
 
   return (
@@ -200,7 +206,7 @@ const ScorePill = (props) => {
       <div className={css(small && styles.small)}>{score}</div>
       {props.promoted && (
         <span className={css(styles.promotionIcon)}>
-          <i class="fal fa-long-arrow-up"></i>
+          <i className="fal fa-long-arrow-up"></i>
         </span>
       )}
     </div>
