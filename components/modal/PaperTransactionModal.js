@@ -71,7 +71,7 @@ class PaperTransactionModal extends React.Component {
     if (this.handleError(this.state.value)) {
       this.setState({ error: true });
     }
-    this.createContract();
+    // this.createContract();
   }
 
   componentDidUpdate() {
