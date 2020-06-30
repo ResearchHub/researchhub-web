@@ -1,11 +1,8 @@
 import React from "react";
-import { StyleSheet, css } from "aphrodite";
 import Chart from "react-google-charts";
 
 import Loader from "../../../Loader/Loader";
 
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { formatDate } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
@@ -40,10 +37,7 @@ class PromotionGraph extends React.Component {
 
     let options = {
       curveType: "function",
-      legend: { position: "bottom" },
-      // legend: 'none',
-      // hAxis: { title: "Date" },
-      // vAxis: { title: `${value[0].toUpperCase()}${value.slice(1)}` },
+      axisFontSize: 0,
     };
 
     if (data.length === 1) {
@@ -51,6 +45,51 @@ class PromotionGraph extends React.Component {
         formatDate(transformDate(this.props.promotion.created_date)),
         0,
       ]);
+      options.legend = { position: "bottom" };
+    } else {
+      let customOptions = {
+        legend: {
+          position: "top",
+          alignment: "center",
+          textStyle: {
+            fontSize: 12,
+          },
+        },
+        series: {
+          0: { color: "rgb(78, 83, 255)" },
+        },
+        backgroundColor: { fill: "transparent" },
+        hAxis: {
+          gridlines: {
+            color: "transparent",
+            count: 0,
+          },
+          minorGridlines: {
+            color: "transparent",
+            count: 0,
+          },
+          baselineColor: "transparent",
+          textStyle: {
+            fontSize: 8,
+          },
+        },
+        vAxis: {
+          gridlines: {
+            color: "transparent",
+            count: 0,
+          },
+          minorGridlines: {
+            color: "transparent",
+            count: 0,
+          },
+          baselineColor: "transparent",
+          textStyle: {
+            color: "#ffffff",
+          },
+        },
+      };
+
+      options = { ...options, ...customOptions };
     }
 
     this.setState({ [value]: data, options, loading: value !== "views" });
