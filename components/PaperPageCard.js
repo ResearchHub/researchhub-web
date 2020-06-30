@@ -363,11 +363,12 @@ class PaperPageCard extends React.Component {
             wrapAround={true}
             enableKeyboardControls={true}
           >
-            {this.state.previews.map((preview) => {
+            {this.state.previews.map((preview, i) => {
               return (
                 <img
                   src={preview.file}
                   className={css(styles.image)}
+                  key={`preview-${preview.id}-${i}`}
                   style={{
                     minHeight: height,
                     maxHeight: height,
@@ -485,6 +486,7 @@ class PaperPageCard extends React.Component {
                     ? this.props.paper
                     : null
                 }
+                showPromotion={true}
               />
             </div>
           </div>
@@ -545,6 +547,7 @@ class PaperPageCard extends React.Component {
                 ? this.props.paper
                 : null
             }
+            showPromotion={true}
           />
         </div>
         <div className={css(styles.votingMobile)}>
@@ -563,6 +566,7 @@ class PaperPageCard extends React.Component {
                 ? this.props.paper
                 : null
             }
+            showPromotion={true}
           />
         </div>
         {figureUrls.length > 0 && (
@@ -642,6 +646,25 @@ class PaperPageCard extends React.Component {
                   )}
                   <div className={css(styles.uploadedByContainer)}>
                     {this.renderUploadedBy()}
+                    <div className={css(styles.mobile)}>
+                      <PermissionNotificationWrapper
+                        modalMessage="promote paper"
+                        onClick={() =>
+                          this.props.openPaperTransactionModal(true)
+                        }
+                        loginRequired={true}
+                        hideRipples={false}
+                      >
+                        <div className={css(styles.promotionButton)}>
+                          <i
+                            className={
+                              css(styles.promotionIcon) + " far fa-chart-line"
+                            }
+                          />
+                          Promote
+                        </div>
+                      </PermissionNotificationWrapper>
+                    </div>
                   </div>
                 </div>
                 <div className={css(styles.mobile)}>{this.renderPreview()}</div>
@@ -658,16 +681,21 @@ class PaperPageCard extends React.Component {
             <div className={css(styles.actionsContainer)}>
               {this.renderActions()}
             </div>
-            {this.renderHubs()}
-            <div>
-              <Ripples
-                className={css(styles.promotionButton)}
-                onClick={() => this.props.openPaperTransactionModal(true)}
-              >
+            <PermissionNotificationWrapper
+              modalMessage="promote paper"
+              onClick={() => this.props.openPaperTransactionModal(true)}
+              loginRequired={true}
+              hideRipples={false}
+            >
+              <div className={css(styles.promotionButton)}>
+                <i
+                  className={css(styles.promotionIcon) + " far fa-chart-line"}
+                />
                 Promote
-              </Ripples>
-            </div>
+              </div>
+            </PermissionNotificationWrapper>
           </div>
+          <div className={css(styles.bottomRow)}>{this.renderHubs()}</div>
         </div>
         {this.state.width > 0 && (
           <div
@@ -750,7 +778,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
-    marginRight: 32,
     "@media only screen and (max-width: 768px)": {
       marginTop: 15,
     },
@@ -921,7 +948,7 @@ const styles = StyleSheet.create({
     },
   },
   actionsContainer: {
-    marginRight: 32,
+    marginRight: 30,
   },
   actionIcon: {
     padding: 5,
@@ -1003,12 +1030,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
-
-    "@media only screen and (min-width: 768px)": {},
-
-    "@media only screen and (min-width: 1280px)": {},
-
-    "@media only screen and (min-width: 1480px)": {},
   },
   left: {
     marginRight: 20,
@@ -1017,7 +1038,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     alignItems: "center",
-    marginTop: 15,
+    marginTop: 20,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -1052,6 +1073,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+    marginTop: 10,
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 15,
+    },
   },
   uploadedBy: {
     whiteSpace: "pre-wrap",
@@ -1062,13 +1087,13 @@ const styles = StyleSheet.create({
     color: "#646171",
     cursor: "pointer",
     marginBottom: 5,
-    marginTop: 10,
     width: "unset",
     ":hover": {
       color: colors.BLUE(),
     },
     "@media only screen and (max-width: 767px)": {
-      marginBottom: 15,
+      marginBottom: 0,
+      marginRight: 20,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -1094,14 +1119,24 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
   },
   promotionButton: {
-    padding: "6px 20px",
+    padding: "5px 20px",
     borderRadius: 4,
-    backgroundColor: colors.BLUE(),
-    color: "#FFF",
+    display: "flex",
+    alignItems: "center",
+    background: "#FFF",
+    border: `1px solid ${colors.BLUE()}`,
+    color: colors.BLUE(),
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "#3E43E8",
+      backgroundColor: colors.BLUE(),
+      color: "#FFF",
     },
+    "@media only screen and (max-width: 768px)": {
+      fontSize: 12,
+    },
+  },
+  promotionIcon: {
+    marginRight: 8,
   },
 });
 

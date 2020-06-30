@@ -8,6 +8,7 @@ import { keccak256, sha3_256 } from "js-sha3";
 import miniToken from "./Artifacts/mini-me-token";
 import contractAbi from "./Artifacts/contract-abi";
 import { ethers } from "ethers";
+import * as Sentry from "@sentry/browser";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -119,18 +120,35 @@ class PaperTransactionModal extends React.Component {
     let allowance = ethers.utils.formatUnits(rawAllowance[0], 18);
 
     if (Number(allowance) < Number(this.state.value)) {
-      allow = await this.RSCContract.connect(this.signer).functions.approve(
-        appContract.address,
-        ethers.utils.parseEther(`${this.state.value}`)
-      );
+      allow = await this.RSCContract.connect(this.signer)
+        .functions.approve(
+          appContract.address,
+          ethers.utils.parseEther(`${this.state.value}`)
+        )
+        .catch((err) => {
+          Sentry.captureException(err);
+        });
     }
 
     if (allow) {
-      let hash = await appContract.connect(this.signer).functions.buy(
-        "0x7d50101bbfa12f4a1b4e6de0dd58ad36de150d55", // address of token contract
-        ethers.utils.parseEther(`${this.state.value}`), // amount of RSC parsed
-        ethers.utils.hexZeroPad(`0x${purchase_hash}`, 32) // convert item to bytes, (item)
-      );
+      let hash = await appContract
+        .connect(this.signer)
+        .functions.buy(
+          "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be", // address of token contract
+          ethers.utils.parseEther(`${this.state.value}`), // amount of RSC parsed
+          ethers.utils.hexZeroPad(`0x${purchase_hash}`, 32) // convert item to bytes, (item)
+        )
+        .catch((err) => {
+          Sentry.captureException(err);
+        });
+
+      if (!hash) {
+        showMessage({ show: false });
+        setMessage(
+          "Transaction failed. Please email hello@researchhub.com for help."
+        );
+        return showMessage({ show: true, error: true });
+      }
 
       let payload = { transaction_hash: hash.hash };
 
@@ -154,7 +172,9 @@ class PaperTransactionModal extends React.Component {
         });
     } else {
       showMessage({ show: false });
-      setMessage("Something went wrong.");
+      setMessage(
+        "Transaction failed. Please email hello@researchhub.com for help."
+      );
       showMessage({ show: true, error: true });
     }
   };
@@ -572,7 +592,7 @@ class PaperTransactionModal extends React.Component {
             >
               In-App
             </div>
-            <div
+            {/* <div
               className={css(styles.toggle, !offChain && styles.activeToggle)}
               onClick={() =>
                 this.transitionScreen(() =>
@@ -581,7 +601,7 @@ class PaperTransactionModal extends React.Component {
               }
             >
               External Wallet
-            </div>
+            </div> */}
           </div>
           <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
             <div className={css(styles.column, styles.left)}>
@@ -656,7 +676,7 @@ class PaperTransactionModal extends React.Component {
                 >
                   In-App
                 </div>
-                <div
+                {/* <div
                   className={css(
                     styles.toggle,
                     !offChain && styles.activeToggle
@@ -668,7 +688,7 @@ class PaperTransactionModal extends React.Component {
                   }
                 >
                   External Wallet
-                </div>
+                </div> */}
               </div>
               {/* {connectedMetaMask && (
                 <div className={css(styles.connectStatus)}>
@@ -785,11 +805,15 @@ class PaperTransactionModal extends React.Component {
 
 const styles = StyleSheet.create({
   content: {
-    // paddingTop: 30,
     width: 420,
     opacity: 1,
     transition: "all ease-in-out 0.2s",
     position: "relative",
+    "@media only screen and (max-width: 557px)": {
+      padding: 25,
+      width: "100%",
+      boxSizing: "border-box",
+    },
   },
   transition: {
     opacity: 0,
@@ -809,7 +833,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     "@media only screen and (max-width: 557px)": {
       fontSize: 14,
-      // width: 300,
     },
   },
   row: {

@@ -7,7 +7,7 @@ import ReputationTooltip from "./ReputationTooltip";
 import colors from "~/config/themes/colors";
 
 const Reputation = (props) => {
-  const { reputation, balance, showBalance } = props;
+  const { reputation, balance, showBalance, auth } = props;
   const dispatch = useDispatch();
   const [prevCount, setPrevCount] = useState(balance);
   const [count, setBalance] = useState(balance);
@@ -19,7 +19,7 @@ const Reputation = (props) => {
       if (auth.isFetchingUser) {
         setTransition(true);
       }
-      if (!auth.isFetchingUser && auth.user.balance) {
+      if (!auth.isFetchingUser) {
         setBalance(balance);
         setTimeout(() => {
           setTransition(false);
