@@ -7,6 +7,7 @@ import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
 import ReactTooltip from "react-tooltip";
+import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
@@ -21,6 +22,9 @@ import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 
+// redux
+import { ModalActions } from "~/redux/modals";
+
 // Stylesheets
 import "./stylesheets/Carousel.css";
 
@@ -30,6 +34,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate } from "~/config/utils";
 import { openExternalLink } from "~/config/utils";
+import { ModalConstants } from "../redux/modals";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -55,6 +60,7 @@ class PaperPageCard extends React.Component {
     if (prevProps.paper.id !== this.props.paper.id) {
       this.setState({ loading: true });
       this.fetchFigures();
+    } else if (prevProps.paper.promoted !== this.props.paper.promoted) {
     }
   }
 
@@ -175,7 +181,6 @@ class PaperPageCard extends React.Component {
     let { paper, isModerator, flagged, setFlag } = this.props;
 
     let paperTitle = paper && paper.title;
-
     return (
       <div className={css(styles.actions)}>
         <PermissionNotificationWrapper
@@ -358,11 +363,12 @@ class PaperPageCard extends React.Component {
             wrapAround={true}
             enableKeyboardControls={true}
           >
-            {this.state.previews.map((preview) => {
+            {this.state.previews.map((preview, i) => {
               return (
                 <img
                   src={preview.file}
                   className={css(styles.image)}
+                  key={`preview-${preview.id}-${i}`}
                   style={{
                     minHeight: height,
                     maxHeight: height,
@@ -461,7 +467,6 @@ class PaperPageCard extends React.Component {
       downvote,
       selectedVoteType,
     } = this.props;
-
     return (
       <Fragment>
         <div className={css(styles.topRow)}>
@@ -475,6 +480,13 @@ class PaperPageCard extends React.Component {
                 isPaper={true}
                 horizontalView={true}
                 type={"Paper"}
+                promoted={this.props.paper && this.props.paper.promoted}
+                paper={
+                  this.props.paper && this.props.paper.promoted
+                    ? this.props.paper
+                    : null
+                }
+                showPromotion={true}
               />
             </div>
           </div>
@@ -496,8 +508,8 @@ class PaperPageCard extends React.Component {
       scrollView,
       doneFetchingPaper,
     } = this.props;
-    let { fetching, previews, figureUrls } = this.state;
 
+    let { fetching, previews, figureUrls } = this.state;
     if (!doneFetchingPaper) {
       return (
         <div className={css(styles.container)} ref={this.containerRef}>
@@ -528,6 +540,14 @@ class PaperPageCard extends React.Component {
             selected={selectedVoteType}
             isPaper={true}
             type={"Paper"}
+            paperPage={true}
+            promoted={this.props.paper && this.props.paper.promoted}
+            paper={
+              this.props.paper && this.props.paper.promoted
+                ? this.props.paper
+                : null
+            }
+            showPromotion={true}
           />
         </div>
         <div className={css(styles.votingMobile)}>
@@ -539,6 +559,14 @@ class PaperPageCard extends React.Component {
             isPaper={true}
             horizontalView={true}
             type={"Paper"}
+            paperPage={true}
+            promoted={this.props.paper && this.props.paper.promoted}
+            paper={
+              this.props.paper && this.props.paper.promoted
+                ? this.props.paper
+                : null
+            }
+            showPromotion={true}
           />
         </div>
         {figureUrls.length > 0 && (
@@ -618,6 +646,25 @@ class PaperPageCard extends React.Component {
                   )}
                   <div className={css(styles.uploadedByContainer)}>
                     {this.renderUploadedBy()}
+                    <div className={css(styles.mobile)}>
+                      <PermissionNotificationWrapper
+                        modalMessage="promote paper"
+                        onClick={() =>
+                          this.props.openPaperTransactionModal(true)
+                        }
+                        loginRequired={true}
+                        hideRipples={false}
+                      >
+                        <div className={css(styles.promotionButton)}>
+                          <i
+                            className={
+                              css(styles.promotionIcon) + " far fa-chart-line"
+                            }
+                          />
+                          Promote
+                        </div>
+                      </PermissionNotificationWrapper>
+                    </div>
                   </div>
                 </div>
                 <div className={css(styles.mobile)}>{this.renderPreview()}</div>
@@ -634,12 +681,22 @@ class PaperPageCard extends React.Component {
             <div className={css(styles.actionsContainer)}>
               {this.renderActions()}
             </div>
-            {this.renderHubs()}
+            <PermissionNotificationWrapper
+              modalMessage="promote paper"
+              onClick={() => this.props.openPaperTransactionModal(true)}
+              loginRequired={true}
+              hideRipples={false}
+            >
+              <div className={css(styles.promotionButton)}>
+                <i
+                  className={css(styles.promotionIcon) + " far fa-chart-line"}
+                />
+                Promote
+              </div>
+            </PermissionNotificationWrapper>
           </div>
+          <div className={css(styles.bottomRow)}>{this.renderHubs()}</div>
         </div>
-        {/* <div className={css(styles.paperProgress)}>
-          <PaperProgress paper={paper} />
-        </div> */}
         {this.state.width > 0 && (
           <div
             className={css(styles.absolutePreview)}
@@ -891,7 +948,7 @@ const styles = StyleSheet.create({
     },
   },
   actionsContainer: {
-    marginRight: 32,
+    marginRight: 30,
   },
   actionIcon: {
     padding: 5,
@@ -973,12 +1030,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
-
-    "@media only screen and (min-width: 768px)": {},
-
-    "@media only screen and (min-width: 1280px)": {},
-
-    "@media only screen and (min-width: 1480px)": {},
   },
   left: {
     marginRight: 20,
@@ -987,7 +1038,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     alignItems: "center",
-    marginTop: 15,
+    marginTop: 20,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -1022,6 +1073,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+    marginTop: 10,
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 15,
+    },
   },
   uploadedBy: {
     whiteSpace: "pre-wrap",
@@ -1032,13 +1087,13 @@ const styles = StyleSheet.create({
     color: "#646171",
     cursor: "pointer",
     marginBottom: 5,
-    marginTop: 10,
     width: "unset",
     ":hover": {
       color: colors.BLUE(),
     },
     "@media only screen and (max-width: 767px)": {
-      marginBottom: 15,
+      marginBottom: 0,
+      marginRight: 20,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -1062,6 +1117,26 @@ const styles = StyleSheet.create({
   atag: {
     color: "unset",
     textDecoration: "unset",
+  },
+  promotionButton: {
+    padding: "5px 20px",
+    borderRadius: 4,
+    display: "flex",
+    alignItems: "center",
+    background: "#FFF",
+    border: `1px solid ${colors.BLUE()}`,
+    color: colors.BLUE(),
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: colors.BLUE(),
+      color: "#FFF",
+    },
+    "@media only screen and (max-width: 768px)": {
+      fontSize: 12,
+    },
+  },
+  promotionIcon: {
+    marginRight: 8,
   },
 });
 
@@ -1114,4 +1189,15 @@ const carousel = StyleSheet.create({
   },
 });
 
-export default PaperPageCard;
+const mapStateToProps = (state) => ({
+  paper: state.paper,
+});
+
+const mapDispatchToProps = {
+  openPaperTransactionModal: ModalActions.openPaperTransactionModal,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PaperPageCard);

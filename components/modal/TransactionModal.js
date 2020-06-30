@@ -3,6 +3,8 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import { keccak256, sha3_256 } from "js-sha3";
+import { ethers } from "ethers";
+import Link from "next/link";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -45,7 +47,8 @@ class TransactionModal extends React.Component {
   componentDidMount() {
     if (this.props.auth.isLoggedIn) {
       if (typeof window.ethereum !== "undefined") {
-        const provider = window["ethereum"];
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
         if (
           this.props.modals.openTransactionModal &&
           !this.state.connectedMetaMask
@@ -206,19 +209,23 @@ class TransactionModal extends React.Component {
                     <i className="fal fa-check-circle" />
                   </span>
                 </div>
-                <div className={css(styles.confirmation)}>
-                  Click{" "}
-                  <span
-                    className={css(styles.transactionHashLink)}
-                    onClick={() =>
-                      this.openTransactionConfirmation(
-                        `https://rinkeby.etherscan.io/tx/${transactionHash}`
-                      )
-                    }
+                <div
+                  className={css(styles.confirmation)}
+                  onClick={this.closeModal}
+                >
+                  Review your transactions in your
+                  <Link
+                    href={"/user/[authorId]/[tabName]"}
+                    as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
                   >
-                    here
-                  </span>{" "}
-                  to view the transaction confirmation.
+                    <a
+                      href={"/user/[authorId]/[tabName]"}
+                      as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+                      className={css(styles.transactionHashLink)}
+                    >
+                      profile page
+                    </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -327,7 +334,7 @@ class TransactionModal extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         let newUser = { ...res.user };
-        // this.props.updateUser(newUser);
+        this.props.updateUser(newUser);
         this.setState({
           userBalance: res.user.balance,
           withdrawals: [...res.results],
@@ -366,7 +373,7 @@ class TransactionModal extends React.Component {
         .then(Helpers.parseJSON)
         .then((res) => {
           let { id, paid_status, transaction_hash } = res;
-          if (transaction_hash === "" || paid_status === "failed") {
+          if (paid_status === "failed") {
             setTimeout(() => {
               showMessage({ show: false });
               setMessage(
@@ -379,8 +386,8 @@ class TransactionModal extends React.Component {
               showMessage({ show: false });
               setMessage("Your transaction request has been made.");
               showMessage({ show: true, clickoff: true });
-              this.setState({ transactionHash: transaction_hash }, () => {
-                this.props.getUser();
+              this.setState({ transactionHash: true }, () => {
+                this.getBalance();
               });
             }, 400);
           }
@@ -700,6 +707,7 @@ const styles = StyleSheet.create({
   transactionHashLink: {
     cursor: "pointer",
     color: colors.BLUE(1),
+    marginLeft: 6,
     ":hover": {
       textDecoration: "underline",
     },

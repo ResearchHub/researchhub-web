@@ -344,13 +344,13 @@ class PaperProgress extends React.Component {
           onClick={() => this.openPaperFeatureModal(section)}
           permissionKey="ProposeSummaryEdit"
           loginRequired={true}
+          key={`paper${this.props.paper.id}-progress-${i}`}
         >
           <div
             className={css(
               styles.section,
               section.active && !loading & styles.sectionActive
             )}
-            key={`paper${this.props.paper.id}-progress-${i}`}
           >
             <div
               className={css(

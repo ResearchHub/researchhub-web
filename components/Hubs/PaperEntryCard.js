@@ -41,6 +41,7 @@ const PaperEntryCard = ({
   postUpvote,
   postDownvote,
   reduxPaper,
+  promotionSummary,
 }) => {
   let {
     id,
@@ -58,6 +59,7 @@ const PaperEntryCard = ({
     first_preview,
     uploaded_by,
     external_source,
+    promoted,
   } = paper || null;
   let selected = null;
   let vote_type = 0;
@@ -69,6 +71,7 @@ const PaperEntryCard = ({
       first_figure && first_figure,
     ])
   );
+
   const [figures, setFigures] = useState(
     previews.map((preview, index) => preview && preview.file)
   );
@@ -105,6 +108,10 @@ const PaperEntryCard = ({
       "/user/[authorId]/[tabName]",
       `/user/${authorId}/contributions`
     );
+  }
+
+  function renderPromoter() {
+    return <span className={css(styles.promotion)}>Promoted</span>;
   }
 
   function renderUploadedBy() {
@@ -186,6 +193,25 @@ const PaperEntryCard = ({
     }
   }
 
+  function postEvent() {
+    if (promoted) {
+      let payload = {
+        paper: id,
+        paper_is_boosted: true,
+        interaction: "CLICK",
+        utc: new Date(),
+        created_location: "FEED",
+        created_location_meta: "trending",
+      };
+
+      fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {})
+        .catch((err) => {});
+    }
+  }
+
   function navigateToPage(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -193,6 +219,7 @@ const PaperEntryCard = ({
     if (e.metaKey || e.ctrlKey) {
       window.open(`/paper/${id}/summary`, "_blank");
     } else {
+      postEvent();
       Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
     }
   }
@@ -235,7 +262,7 @@ const PaperEntryCard = ({
               if (i < 2) {
                 return (
                   <li
-                    key={`bullet-${bullet.id}`}
+                    key={`bullet-${bullet.paper}-${i}`}
                     className={css(styles.bullet)}
                   >
                     <div
@@ -345,23 +372,27 @@ const PaperEntryCard = ({
           />
         </div>
       )}
-      <div className={css(styles.column)}>
-        <span
-          className={css(styles.voting)}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <VoteWidget
-            score={score}
-            onUpvote={onUpvote}
-            onDownvote={onDownvote}
-            selected={selected}
-            searchResult={searchResult}
-            isPaper={true}
-            styles={styles.voteWidget}
-            type={"Paper"}
-          />
-        </span>
-      </div>
+      {!promotionSummary && (
+        <div className={css(styles.column)}>
+          <span
+            className={css(styles.voting)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <VoteWidget
+              score={score}
+              onUpvote={onUpvote}
+              onDownvote={onDownvote}
+              selected={selected}
+              searchResult={searchResult}
+              isPaper={true}
+              styles={styles.voteWidget}
+              type={"Paper"}
+              paper={promoted ? paper : null}
+              promoted={promoted}
+            />
+          </span>
+        </div>
+      )}
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div
@@ -566,7 +597,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
+    alignItems: "flex-end",
     width: "100%",
   },
   votingLink: {
@@ -577,7 +608,7 @@ const styles = StyleSheet.create({
   },
   discussion: {
     cursor: "pointer",
-    minWidth: 140,
+    minWidth: 100,
     fontSize: 14,
     ":hover #discIcon": {
       color: colors.BLUE(1),
@@ -673,6 +704,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(),
     },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
   uploadedByAvatar: {
     marginLeft: 10,
@@ -682,6 +716,24 @@ const styles = StyleSheet.create({
   },
   rhIcon: {
     height: 20,
+  },
+  divider: {
+    margin: "0px 5px",
+  },
+  promotion: {
+    fontSize: 12,
+    fontWeight: 400,
+    // textTransform: 'uppercase',
+    // fontWeight: 'bold',
+    // letterSpacing: 1,
+    color: "rgb(145, 143, 155)",
+    marginLeft: 15,
+    // color: '#FFF',
+    // backgroundColor: colors.BLUE(),
+    // padding: '3px 10px'
+    "@media only screen and (max-width: 767px)": {
+      // fontSize: 12,
+    },
   },
 });
 
