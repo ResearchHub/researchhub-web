@@ -670,7 +670,7 @@ class PaperTransactionModal extends React.Component {
                   External Wallet
                 </div>
               </div>
-              {connectedMetaMask && (
+              {/* {connectedMetaMask && (
                 <div className={css(styles.connectStatus)}>
                   <div
                     className={css(
@@ -680,7 +680,7 @@ class PaperTransactionModal extends React.Component {
                   />
                   Connected wallet: MetaMask
                 </div>
-              )}
+              )} */}
               <div className={css(styles.inputLabel)}>
                 Wallet Address
                 <span
@@ -720,9 +720,7 @@ class PaperTransactionModal extends React.Component {
                 }
               />
 
-              <div
-                className={css(styles.row, styles.numbers, styles.borderBottom)}
-              >
+              <div className={css(styles.row, styles.numbers, styles.border)}>
                 <div className={css(styles.column, styles.left)}>
                   <div className={css(styles.title)}>Total Balance</div>
                   <div className={css(styles.subtitle)}>

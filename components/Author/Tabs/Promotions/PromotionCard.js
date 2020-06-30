@@ -2,12 +2,11 @@ import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
+import moment from "moment";
 
-import Loader from "~/components/Loader/Loader";
+// Components
 import { ScorePill } from "~/components/VoteWidget";
 import PromotionGraph from "./PromotionGraph";
-
-import { AuthorActions } from "~/redux/author";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -134,7 +133,6 @@ class PromotionCard extends React.Component {
      * add pagination
      */
     let { promotion, paper } = this.props;
-
     return (
       <div className={css(styles.card)}>
         <div className={css(styles.metadata)}>
@@ -163,7 +161,7 @@ class PromotionCard extends React.Component {
               {formatTransactionDate(transformDate(promotion.created_date))}
               {promotion.end_date
                 ? this.renderStatus(
-                    promotion.created_date < promotion.end_date
+                    moment() < moment(promotion.end_date)
                       ? "active"
                       : "completed"
                   )
