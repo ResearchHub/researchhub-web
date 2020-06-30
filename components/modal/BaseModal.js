@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "#4f4d5f",
     boxSizing: "border-box",
+    whiteSpace: "pre-wrap",
     "@media only screen and (max-width: 557px)": {
       fontSize: 14,
       width: 300,
