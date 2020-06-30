@@ -41,6 +41,7 @@ const PaperEntryCard = ({
   postUpvote,
   postDownvote,
   reduxPaper,
+  promotionSummary,
 }) => {
   let {
     id,
@@ -261,7 +262,7 @@ const PaperEntryCard = ({
               if (i < 2) {
                 return (
                   <li
-                    key={`bullet-${bullet.id}`}
+                    key={`bullet-${bullet.paper}-${i}`}
                     className={css(styles.bullet)}
                   >
                     <div
@@ -371,25 +372,27 @@ const PaperEntryCard = ({
           />
         </div>
       )}
-      <div className={css(styles.column)}>
-        <span
-          className={css(styles.voting)}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <VoteWidget
-            score={score}
-            onUpvote={onUpvote}
-            onDownvote={onDownvote}
-            selected={selected}
-            searchResult={searchResult}
-            isPaper={true}
-            styles={styles.voteWidget}
-            type={"Paper"}
-            paper={promoted ? paper : null}
-            promoted={promoted}
-          />
-        </span>
-      </div>
+      {!promotionSummary && (
+        <div className={css(styles.column)}>
+          <span
+            className={css(styles.voting)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <VoteWidget
+              score={score}
+              onUpvote={onUpvote}
+              onDownvote={onDownvote}
+              selected={selected}
+              searchResult={searchResult}
+              isPaper={true}
+              styles={styles.voteWidget}
+              type={"Paper"}
+              paper={promoted ? paper : null}
+              promoted={promoted}
+            />
+          </span>
+        </div>
+      )}
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div

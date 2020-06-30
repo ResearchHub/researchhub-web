@@ -715,7 +715,9 @@ class HubPage extends React.Component {
                     ready={false}
                     showLoadingAnimation
                     customPlaceholder={<PaperPlaceholder color="#efefef" />}
-                  />
+                  >
+                    <div />
+                  </ReactPlaceholder>
                   <div className={css(styles.placeholderBottom)}>
                     <ReactPlaceholder
                       ready={false}
