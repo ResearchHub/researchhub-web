@@ -196,15 +196,6 @@ class PromotionCard extends React.Component {
             />
           </div>
         </div>
-        <div className={css(styles.graph, styles.mobileGraph)}>
-          <PromotionGraph
-            paper={paper}
-            promotion={promotion}
-            clicks={promotion.stats.clicks ? promotion.stats.clicks : []}
-            views={promotion.stats.views ? promotion.stats.views : []}
-            showViews={this.state.showViews}
-          />
-        </div>
       </div>
     );
   }
@@ -415,13 +406,9 @@ const styles = StyleSheet.create({
     paddingRight: 30,
     width: "45%",
     "@media only screen and (max-width: 767px)": {
-      margin: "15px 0",
-      width: "100%",
-      boxSizing: "border-box",
+      justifyContent: "center",
       paddingRight: 0,
-      justifyContent: "flex-start",
-      paddingLeft: 36,
-      display: "none",
+      width: "100%",
     },
   },
   column: {
@@ -441,13 +428,14 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     "@media only screen and (max-width: 767px)": {
-      display: "none",
+      height: 200,
     },
   },
   mobileGraph: {
     display: "none",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
+      height: 200,
       display: "flex",
       marginLeft: "auto",
       marginRight: "auto",

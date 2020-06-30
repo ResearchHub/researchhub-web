@@ -28,7 +28,6 @@ class PromotionGraph extends React.Component {
     data.push(["x", `${value[0].toUpperCase()}${value.slice(1)}`]);
 
     interactions.forEach((interaction) => {
-      // var date = formatTransactionDate(transformDate(interaction.created_date));
       var date = formatDate(transformDate(interaction.created_date));
       var amount = interaction[value] ? interaction[value] : 0;
       data.push([date, amount]);
@@ -45,16 +44,16 @@ class PromotionGraph extends React.Component {
         0,
       ]);
       options.legend = { position: "top", alignment: "center" };
+      options.series = { 0: { color: "rgb(78, 83, 255)" } };
     } else if (data.length === 2) {
       options.legend = { position: "top", alignment: "center" };
+      options.series = { 0: { color: "rgb(78, 83, 255)" } };
     } else {
       let customOptions = {
         legend: {
           position: "top",
           alignment: "center",
-          textStyle: {
-            fontSize: 12,
-          },
+          maxLines: 1,
         },
         series: {
           0: { color: "rgb(78, 83, 255)" },
