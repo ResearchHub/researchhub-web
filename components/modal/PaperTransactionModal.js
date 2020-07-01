@@ -28,6 +28,11 @@ import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
+// Constants
+const RinkebyRSCContractAddress = "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be";
+const RinkebyAppPurchaseContractAddress =
+  "0x486a754f4E5286d8797d92750F1a56DFd384b106";
+
 class PaperTransactionModal extends React.Component {
   constructor(props) {
     super(props);
@@ -39,6 +44,7 @@ class PaperTransactionModal extends React.Component {
       transition: false,
       // OnChain
       balance: 0,
+      hasEthereum: false,
       networkVersion: null, //
       networkAddress: "",
       connectedMetaMask: false,
@@ -48,6 +54,8 @@ class PaperTransactionModal extends React.Component {
       validating: false,
       valid: false,
       transactionHash: "",
+      AppPurchaseContractAddress: "",
+      RSCContractAddress: "",
       // Finish
       finish: false,
     };
@@ -71,21 +79,52 @@ class PaperTransactionModal extends React.Component {
     if (this.handleError(this.state.value)) {
       this.setState({ error: true });
     }
-    // this.createContract();
+    if (window.ethereum) {
+      this.setState(
+        {
+          hasEthereum: true,
+          networkVersion: window.ethereum.networkVersion,
+        },
+        () => {
+          this.createContract(window.ethereum);
+        }
+      );
+    }
   }
 
   componentDidUpdate() {
     if (this.handleError(this.state.value) && !this.state.error) {
       this.setState({ error: true });
     }
+    if (window.ethereum) {
+      if (!this.state.hasEthereum) {
+        this.setState(
+          {
+            hasEthereum: true,
+            networkVersion: window.ethereum.networkVersion,
+          },
+          () => {
+            if (!this.RSCContract) {
+              this.createContract(window.ethereum);
+            }
+          }
+        );
+      }
+    }
   }
 
-  createContract = () => {
-    this.provider = new ethers.providers.Web3Provider(window.ethereum);
+  createContract = (injectedEthereum) => {
+    this.provider = new ethers.providers.Web3Provider(injectedEthereum);
     this.signer = this.provider.getSigner(0);
     ethereum.autoRefreshOnNetworkChange = false;
+
+    let address = this.state.RSCContractAddress;
+    if (injectedEthereum.networkVersion === "4") {
+      address = RinkebyRSCContractAddress;
+    }
+
     this.RSCContract = new ethers.Contract(
-      "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be",
+      address,
       miniToken.abi,
       this.provider
     );
@@ -107,7 +146,7 @@ class PaperTransactionModal extends React.Component {
     let allow = true;
 
     const appContract = new ethers.Contract(
-      "0x486a754f4E5286d8797d92750F1a56DFd384b106",
+      this.state.AppPurchaseContractAddress,
       contractAbi,
       this.provider
     );
@@ -134,7 +173,7 @@ class PaperTransactionModal extends React.Component {
       let hash = await appContract
         .connect(this.signer)
         .functions.buy(
-          "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be", // address of token contract
+          this.state.RSCContractAddress, // address of token contract
           ethers.utils.parseEther(`${this.state.value}`), // amount of RSC parsed
           ethers.utils.hexZeroPad(`0x${purchase_hash}`, 32) // convert item to bytes, (item)
         )
@@ -335,6 +374,7 @@ class PaperTransactionModal extends React.Component {
   };
 
   updateChainId = (chainId) => {
+    // TODO: Error if not 1 or 4
     if (chainId !== this.state.networkVersion) {
       let transition = false;
       if (this.state.networkVersion !== "1" && chainId === "1") {
@@ -343,10 +383,21 @@ class PaperTransactionModal extends React.Component {
       if (this.state.networkVersion === "1" && chainId !== "1") {
         transition = true;
       }
+
+      // TODO: Replace this with mainnet addresses
+      let RSCContractAddress = "";
+      let AppPurchaseContractAddress = "";
+      if (chainId === "4") {
+        RSCContractAddress = RinkebyRSCContractAddress;
+        AppPurchaseContractAddress = RinkebyAppPurchaseContractAddress;
+      }
+
       this.setState(
         {
           networkVersion: chainId, // shows the eth network
           transition: transition,
+          RSCContractAddress,
+          AppPurchaseContractAddress,
         },
         () => {
           this.state.transition &&
@@ -465,9 +516,11 @@ class PaperTransactionModal extends React.Component {
       setTimeout(() => {
         callback();
         this.setState({ transition: false }, () => {
-          !this.state.offChain && this.connectWallet();
-          this.state.offChain &&
+          if (this.state.offChain || !this.state.hasEthereum) {
             this.setState({ error: this.handleError(this.state.value) });
+          } else {
+            this.connectWallet();
+          }
         });
       }, 300);
     });
@@ -497,6 +550,23 @@ class PaperTransactionModal extends React.Component {
         )}
       </div>
     );
+  };
+
+  renderExternalWalletButton = (offChain) => {
+    if (this.state.hasEthereum) {
+      return (
+        <div
+          className={css(styles.toggle, !offChain && styles.activeToggle)}
+          onClick={() =>
+            this.transitionScreen(() =>
+              this.setState({ nextScreen: true, offChain: false })
+            )
+          }
+        >
+          External Wallet
+        </div>
+      );
+    }
   };
 
   renderContent = () => {
@@ -592,16 +662,7 @@ class PaperTransactionModal extends React.Component {
             >
               In-App
             </div>
-            {/* <div
-              className={css(styles.toggle, !offChain && styles.activeToggle)}
-              onClick={() =>
-                this.transitionScreen(() =>
-                  this.setState({ nextScreen: true, offChain: false })
-                )
-              }
-            >
-              External Wallet
-            </div> */}
+            {this.renderExternalWalletButton(offChain)}
           </div>
           <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
             <div className={css(styles.column, styles.left)}>
@@ -676,7 +737,7 @@ class PaperTransactionModal extends React.Component {
                 >
                   In-App
                 </div>
-                {/* <div
+                <div
                   className={css(
                     styles.toggle,
                     !offChain && styles.activeToggle
@@ -688,9 +749,9 @@ class PaperTransactionModal extends React.Component {
                   }
                 >
                   External Wallet
-                </div> */}
+                </div>
               </div>
-              {/* {connectedMetaMask && (
+              {connectedMetaMask && (
                 <div className={css(styles.connectStatus)}>
                   <div
                     className={css(
@@ -700,7 +761,7 @@ class PaperTransactionModal extends React.Component {
                   />
                   Connected wallet: MetaMask
                 </div>
-              )} */}
+              )}
               <div className={css(styles.inputLabel)}>
                 Wallet Address
                 <span
