@@ -417,6 +417,26 @@ const DiscussionTab = (props) => {
               <span className={css(styles.discussionCount)}>
                 {discussionCount}
               </span>
+              <div className={css(styles.tabRow)}>
+                <div
+                  className={css(
+                    styles.tab,
+                    !showTwitterComments && styles.activeTab
+                  )}
+                  onClick={() => toggleTwitterComments(false)}
+                >
+                  Comments
+                </div>
+                <div
+                  className={css(
+                    styles.tab,
+                    showTwitterComments && styles.activeTab
+                  )}
+                  onClick={() => toggleTwitterComments(true)}
+                >
+                  Tweets
+                </div>
+              </div>
             </div>
             {!showEditor && renderAddDiscussion()}
           </div>
@@ -887,7 +907,7 @@ var styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
-    // marginLeft: 20,
+    marginLeft: 20,
   },
   tab: {
     padding: "4px 12px",
