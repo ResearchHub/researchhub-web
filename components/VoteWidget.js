@@ -125,7 +125,7 @@ const VoteWidget = (props) => {
             selected={upvoteSelected}
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={promoted}
+            promoted={promoted !== false}
           />
         </PermissionNotificationWrapper>
         <ReactTooltip
@@ -135,7 +135,7 @@ const VoteWidget = (props) => {
           effect="solid"
         />
         <ScorePill
-          score={promoted ? promoted : score}
+          score={promoted !== false ? promoted : score}
           promoted={promoted}
           paper={paper}
           showPromotion={showPromotion}
@@ -149,10 +149,10 @@ const VoteWidget = (props) => {
             selected={downvoteSelected}
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={promoted}
+            promoted={promoted !== false}
           />
         </PermissionNotificationWrapper>
-        {promoted && (
+        {promoted !== false && (
           <div
             className={css(
               styles.promotionContainer,
@@ -198,13 +198,13 @@ const ScorePill = (props) => {
     <div
       className={css(
         styles.pillContainer,
-        props.promoted && styles.promotedPillContainer
+        props.promoted !== false && styles.promotedPillContainer
       )}
       // data-tip={"This paper has been promoted."}
-      onClick={(e) => props.promoted && openPromotionInfoModal(e)}
+      onClick={(e) => props.promote !== false && openPromotionInfoModal(e)}
     >
       <div className={css(small && styles.small)}>{score}</div>
-      {props.promoted && (
+      {props.promoted !== false && (
         <span className={css(styles.promotionIcon)}>
           <i className="fal fa-long-arrow-up"></i>
         </span>
