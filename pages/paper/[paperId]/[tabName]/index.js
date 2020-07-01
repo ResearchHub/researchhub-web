@@ -218,9 +218,11 @@ const Paper = (props) => {
       if (voteType === UPVOTE) {
         setSelectedVoteType(UPVOTE);
         setScore(score + 1);
+        props.updatePaperState("promoted", paper.promoted + 1);
       } else if (voteType === DOWNVOTE) {
         setSelectedVoteType(DOWNVOTE);
         setScore(score - 1);
+        props.updatePaperState("promoted", paper.promoted - 1);
       }
     }
   }
@@ -886,6 +888,7 @@ const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
   setUploadingPaper: AuthActions.setUploadingPaper,
   getLimitations: LimitationsActions.getLimitations,
+  updatePaperState: PaperActions.updatePaperState,
 };
 
 export default connect(
