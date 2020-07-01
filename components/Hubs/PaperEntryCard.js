@@ -153,18 +153,22 @@ const PaperEntryCard = ({
     e.stopPropagation();
     let curPaper = { ...paper };
     await postUpvote(curPaper.id);
-    let userVote = curPaper.userVote;
+    let userVote = store.getState().paper.userVote;
     if (
       userVote.doneFetching &&
       userVote.success &&
       userVote.vote.voteType === "upvote"
     ) {
       if (curPaper.user_vote) {
-        curPaper.promoted += 2;
         curPaper.score += 2;
+        if (curPaper.promoted) {
+          curPaper.promoted += 2;
+        }
       } else {
-        curPaper.promoted += 1;
         curPaper.score += 1;
+        if (curPaper.promoted) {
+          curPaper.promoted += 1;
+        }
       }
       curPaper.user_vote = {
         vote_type: UPVOTE_ENUM,
@@ -190,11 +194,15 @@ const PaperEntryCard = ({
       userVote.vote.voteType === "downvote"
     ) {
       if (curPaper.user_vote) {
-        curPaper.promoted -= 2;
         curPaper.score -= 2;
+        if (curPaper.promoted !== false) {
+          curPaper.promoted -= 2;
+        }
       } else {
-        curPaper.promoted -= 1;
         curPaper.score -= 1;
+        if (curPaper.promoted !== false) {
+          curPaper.promoted -= 1;
+        }
       }
       curPaper.user_vote = {
         vote_type: DOWNVOTE_ENUM,

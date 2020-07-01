@@ -543,7 +543,7 @@ class PaperPageCard extends React.Component {
             paperPage={true}
             promoted={this.props.paper && this.props.paper.promoted}
             paper={
-              this.props.paper && this.props.paper.promoted
+              this.props.paper && this.props.paper.promoted !== false
                 ? this.props.paper
                 : null
             }
