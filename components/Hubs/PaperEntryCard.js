@@ -153,11 +153,17 @@ const PaperEntryCard = ({
     e.stopPropagation();
     let curPaper = { ...paper };
     await postUpvote(curPaper.id);
-    let userVote = store.getState().paper.userVote;
-    if (userVote.doneFetching && userVote.success) {
+    let userVote = curPaper.userVote;
+    if (
+      userVote.doneFetching &&
+      userVote.success &&
+      userVote.vote.voteType === "upvote"
+    ) {
       if (curPaper.user_vote) {
+        curPaper.promoted += 2;
         curPaper.score += 2;
       } else {
+        curPaper.promoted += 1;
         curPaper.score += 1;
       }
       curPaper.user_vote = {
@@ -178,10 +184,16 @@ const PaperEntryCard = ({
     let curPaper = { ...paper };
     await postDownvote(curPaper.id);
     let userVote = store.getState().paper.userVote;
-    if (userVote.doneFetching && userVote.success) {
+    if (
+      userVote.doneFetching &&
+      userVote.success &&
+      userVote.vote.voteType === "downvote"
+    ) {
       if (curPaper.user_vote) {
+        curPaper.promoted -= 2;
         curPaper.score -= 2;
       } else {
+        curPaper.promoted -= 1;
         curPaper.score -= 1;
       }
       curPaper.user_vote = {
@@ -791,6 +803,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   postUpvote: PaperActions.postUpvote,
   postDownvote: PaperActions.postDownvote,
+  updatePaperState: PaperActions.updatePaperState,
 };
 
 export default connect(
