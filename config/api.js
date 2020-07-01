@@ -227,7 +227,7 @@ const routes = (BASE_URL) => {
         }
       }
 
-      url += `&source=${twitter ? "twitter" : "researchhub"}`;
+      url += `&source=${twitter ? "twitter" : "researchhub"}/`;
 
       return url;
     },
