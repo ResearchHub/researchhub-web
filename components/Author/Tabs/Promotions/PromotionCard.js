@@ -141,6 +141,7 @@ class PromotionCard extends React.Component {
               score={paper.promoted ? paper.promoted : paper.score}
               promoted={paper.promoted}
               paper={paper}
+              type={"Paper"}
             />
           </div>
           <div className={css(styles.column)}>

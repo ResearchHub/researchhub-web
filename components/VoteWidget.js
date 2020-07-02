@@ -125,7 +125,7 @@ const VoteWidget = (props) => {
             selected={upvoteSelected}
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={promoted !== false && type === "paper"}
+            promoted={promoted !== false && type === "Paper"}
           />
         </PermissionNotificationWrapper>
         <ReactTooltip
@@ -135,7 +135,7 @@ const VoteWidget = (props) => {
           effect="solid"
         />
         <ScorePill
-          score={promoted !== false && type === "paper" ? promoted : score}
+          score={promoted !== false && type === "Paper" ? promoted : score}
           promoted={promoted}
           paper={paper}
           showPromotion={showPromotion}
@@ -150,10 +150,10 @@ const VoteWidget = (props) => {
             selected={downvoteSelected}
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={promoted !== false && type === "paper"}
+            promoted={promoted !== false && type === "Paper"}
           />
         </PermissionNotificationWrapper>
-        {promoted !== false && type === "paper" && (
+        {promoted !== false && type === "Paper" && (
           <div
             className={css(
               styles.promotionContainer,
@@ -200,14 +200,14 @@ const ScorePill = (props) => {
       className={css(
         styles.pillContainer,
         props.promoted !== false &&
-          props.type === "paper" &&
+          props.type === "Paper" &&
           styles.promotedPillContainer
       )}
       // data-tip={"This paper has been promoted."}
       onClick={(e) => props.promote !== false && openPromotionInfoModal(e)}
     >
       <div className={css(small && styles.small)}>{score}</div>
-      {props.promoted !== false && props.type === "paper" && (
+      {props.promoted !== false && props.type === "Paper" && (
         <span className={css(styles.promotionIcon)}>
           <i className="fal fa-long-arrow-up"></i>
         </span>
