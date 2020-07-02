@@ -167,6 +167,7 @@ const DiscussionThreadCard = (props) => {
                 onUpvote={upvote}
                 onDownvote={downvote}
                 type={"discussion"}
+                promoted={false}
               />
               <DiscussionPostMetadata
                 authorProfile={data && data.createdBy.authorProfile}

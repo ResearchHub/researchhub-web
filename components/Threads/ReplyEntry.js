@@ -277,6 +277,7 @@ class ReplyEntry extends React.Component {
               fontSize={"12px"}
               width={"40px"}
               type={"Reply"}
+              promoted={false}
             />
           </div>
           {this.handleStateRendering() && (

@@ -125,7 +125,7 @@ const VoteWidget = (props) => {
             selected={upvoteSelected}
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={promoted !== false}
+            promoted={promoted !== false && type === "paper"}
           />
         </PermissionNotificationWrapper>
         <ReactTooltip
@@ -135,10 +135,11 @@ const VoteWidget = (props) => {
           effect="solid"
         />
         <ScorePill
-          score={promoted !== false ? promoted : score}
+          score={promoted !== false && type === "paper" ? promoted : score}
           promoted={promoted}
           paper={paper}
           showPromotion={showPromotion}
+          type={type}
         />
         <PermissionNotificationWrapper
           loginRequired={true}
@@ -149,10 +150,10 @@ const VoteWidget = (props) => {
             selected={downvoteSelected}
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={promoted !== false}
+            promoted={promoted !== false && type === "paper"}
           />
         </PermissionNotificationWrapper>
-        {promoted !== false && (
+        {promoted !== false && type === "paper" && (
           <div
             className={css(
               styles.promotionContainer,
@@ -198,13 +199,15 @@ const ScorePill = (props) => {
     <div
       className={css(
         styles.pillContainer,
-        props.promoted !== false && styles.promotedPillContainer
+        props.promoted !== false &&
+          props.type === "paper" &&
+          styles.promotedPillContainer
       )}
       // data-tip={"This paper has been promoted."}
       onClick={(e) => props.promote !== false && openPromotionInfoModal(e)}
     >
       <div className={css(small && styles.small)}>{score}</div>
-      {props.promoted !== false && (
+      {props.promoted !== false && props.type === "paper" && (
         <span className={css(styles.promotionIcon)}>
           <i className="fal fa-long-arrow-up"></i>
         </span>

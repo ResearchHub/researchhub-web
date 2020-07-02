@@ -441,6 +441,7 @@ class DiscussionEntry extends React.Component {
             type={"Discussion"}
             fontSize={"16px"}
             width={"44px"}
+            promoted={false}
           />
           <ThreadLine
             parent={this.divRef}
