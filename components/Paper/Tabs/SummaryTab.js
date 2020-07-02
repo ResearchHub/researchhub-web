@@ -690,7 +690,8 @@ var styles = StyleSheet.create({
   },
   abstractContainer: {
     width: "100%",
-    lineHeight: 1.6,
+    lineHeight: 2,
+    whiteSpace: "pre-wrap",
     display: "flex",
     justifyContent: "flex-start",
     minHeight: 173,
