@@ -483,6 +483,7 @@ class CommentEntry extends React.Component {
             fontSize={"12px"}
             width={"40px"}
             type={"Comment"}
+            promoted={false}
           />
           {!this.state.collapsed && (
             <ThreadLine
