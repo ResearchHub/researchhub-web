@@ -204,7 +204,11 @@ const ScorePill = (props) => {
           styles.promotedPillContainer
       )}
       // data-tip={"This paper has been promoted."}
-      onClick={(e) => props.promote !== false && openPromotionInfoModal(e)}
+      onClick={(e) =>
+        props.promoted !== false &&
+        props.type === "Paper" &&
+        openPromotionInfoModal(e)
+      }
     >
       <div className={css(small && styles.small)}>{score}</div>
       {props.promoted !== false && props.type === "Paper" && (
