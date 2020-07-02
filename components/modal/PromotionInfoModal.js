@@ -79,6 +79,7 @@ const PromotionInfoModal = (props) => {
                 store.getState().modals.openPromotionInfoModal.props.promoted
               }
               promoted={true}
+              type={"Paper"}
             />
           </div>
           <div className={css(styles.divider)} />
