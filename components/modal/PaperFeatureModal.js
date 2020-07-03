@@ -366,7 +366,7 @@ class PaperFeatureModal extends React.Component {
 
     let config = await API.POST_CONFIG(param);
 
-    return fetch(API.DISCUSSION(paperId, null, null, true), config)
+    return fetch(API.DISCUSSION({ paperId, progress: true }), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
