@@ -221,13 +221,13 @@ const routes = (BASE_URL) => {
         url += `?page=${page}`;
       }
 
-      if (filter !== undefined || filter !== null) {
+      if (filter !== undefined && filter !== null) {
         if (typeof filter === "string") {
           url += `&ordering=${filter}`;
         }
       }
 
-      if (twitter !== undefined || twitter !== null) {
+      if (twitter !== undefined && twitter !== null) {
         url += `&source=${twitter ? "twitter" : "researchhub"}`;
       }
 
