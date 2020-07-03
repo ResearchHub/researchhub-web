@@ -599,7 +599,9 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
   ) {
     await store.dispatch(PaperActions.getPaper(query.paperId));
     fetchedPaper = store.getState().paper;
-    // await store.dispatch(PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper}));
+    await store.dispatch(
+      PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
+    );
     await store.dispatch(LimitationsActions.getLimitations(query.paperId));
     await store.dispatch(BulletActions.getBullets(query.paperId));
   }
