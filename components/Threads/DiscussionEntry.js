@@ -517,6 +517,7 @@ class DiscussionEntry extends React.Component {
                 onCountHover={this.toggleHover}
                 small={mobileView}
                 isRemoved={this.state.removed}
+                hideReply={data.source === "twitter"}
               />
             </div>
           </span>
