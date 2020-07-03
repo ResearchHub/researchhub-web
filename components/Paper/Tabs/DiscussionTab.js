@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -6,6 +6,7 @@ import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 import Ripples from "react-ripples";
 import { isAndroid, isMobile } from "react-device-detect";
+import ReactPlaceholder from "react-placeholder";
 var isAndroidJS = false;
 if (process.browser) {
   const ua = navigator.userAgent.toLowerCase();
@@ -21,6 +22,7 @@ import Message from "~/components/Loader/Message";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
+import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -71,9 +73,6 @@ const DiscussionTab = (props) => {
   const [formattedThreads, setFormattedThreads] = useState(
     formatThreads(paper.discussion.threads, basePath)
   );
-  // const [formattedTweets, setFormattedTweets] = useState(
-  //   formatThreads(paper.twitter.threads, basePath)
-  // )
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
@@ -84,6 +83,8 @@ const DiscussionTab = (props) => {
   const [filter, setFilter] = useState("-score");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [showTwitterComments, toggleTwitterComments] = useState(false);
+  const [fetching, setFetching] = useState(false);
 
   useEffect(resetThreadsEffect, [props.threads]);
 
@@ -93,16 +94,23 @@ const DiscussionTab = (props) => {
   }
 
   useEffect(() => {
+    setFetching(true);
     async function getThreadsByFilter() {
       dispatch(MessageActions.showMessage({ load: true, show: true }));
       const currentPaper = store.getState().paper;
       await dispatch(
-        PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
+        PaperActions.getThreads({
+          paperId: props.paper.id,
+          paper: currentPaper,
+          filter,
+          page: 1,
+          twitter: showTwitterComments,
+        })
       );
       const sortedThreads = store.getState().paper.discussion.threads;
       setThreads(sortedThreads);
       setFormattedThreads(formatThreads(sortedThreads, basePath));
-      setPage(page + 1);
+      setFetching(false);
       setTimeout(() => {
         dispatch(MessageActions.showMessage({ show: false }));
       }, 200);
@@ -126,31 +134,144 @@ const DiscussionTab = (props) => {
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
-  }, [filter]);
+  }, [filter, showTwitterComments]);
+
+  // useEffect(() => {
+  //   async function getThreadsByFilter() {
+  //     dispatch(MessageActions.showMessage({ load: true, show: true }));
+  //     const currentPaper = store.getState().paper;
+  //     // setPage(1);
+  //     await dispatch(
+  //       PaperActions.getThreads({
+  //         paperId: props.paper.id,
+  //         paper: currentPaper,
+  //         filter,
+  //         twitter: showTwitterComments
+  //       })
+  //     );
+  //     const sortedThreads = store.getState().paper.discussion.threads;
+  //     setThreads(sortedThreads);
+  //     setFormattedThreads(formatThreads(sortedThreads, basePath));
+  //     // setPage(page + 1);
+  //     setTimeout(() => {
+  //       dispatch(MessageActions.showMessage({ show: false }));
+  //     }, 200);
+  //   }
+
+  //   getThreadsByFilter();
+  // }, [showTwitterComments]);
 
   function renderThreads(threads) {
     if (!Array.isArray(threads)) {
       threads = [];
     }
-    return (
-      threads &&
-      threads.map((t, i) => {
+
+    if (fetching) {
+      return (
+        <div className={css(styles.placeholderContainer)}>
+          <div className={css(styles.placeholder)}>
+            <ReactPlaceholder
+              ready={false}
+              showLoadingAnimation
+              customPlaceholder={<PaperPlaceholder color="#efefef" />}
+            />
+          </div>
+        </div>
+      );
+    } else {
+      if (threads.length > 0) {
         return (
-          <DiscussionEntry
-            key={`${t.key}-disc${i}`}
-            data={t.data}
-            hostname={hostname}
-            hoverEvents={true}
-            path={t.path}
-            newCard={transition && i === 0} //conditions when a new card is made
-            mobileView={mobileView}
-            index={i}
-            discussionCount={discussionCount}
-            setCount={setCount}
-          />
+          threads &&
+          threads.map((t, i) => {
+            if (!showTwitterComments) {
+              if (t.data.source !== "twitter") {
+                return (
+                  <DiscussionEntry
+                    key={`${t.key}-disc${i}`}
+                    data={t.data}
+                    hostname={hostname}
+                    hoverEvents={true}
+                    path={t.path}
+                    newCard={transition && i === 0} //conditions when a new card is made
+                    mobileView={mobileView}
+                    index={i}
+                    discussionCount={store.getState().paper.discussion.count}
+                    setCount={setCount}
+                  />
+                );
+              }
+            } else {
+              if (t.data.source === "twitter") {
+                return (
+                  <DiscussionEntry
+                    key={`${t.key}-disc${i}`}
+                    data={t.data}
+                    hostname={hostname}
+                    hoverEvents={true}
+                    path={t.path}
+                    newCard={transition && i === 0} //conditions when a new card is made
+                    mobileView={mobileView}
+                    index={i}
+                    discussionCount={store.getState().paper.discussion.count}
+                    setCount={setCount}
+                  />
+                );
+              }
+            }
+          })
         );
-      })
-    );
+      } else {
+        if (showTwitterComments) {
+          return (
+            <span className={css(styles.box, styles.emptyStateBox)}>
+              <span className={css(styles.icon, styles.twitterIcon)}>
+                <i className="fab fa-twitter" />
+              </span>
+              <h2 className={css(styles.noSummaryTitle)}>
+                There are no tweets {mobileView && "\n"}for this paper yet.
+              </h2>
+            </span>
+          );
+        } else {
+          return (
+            <div className={css(styles.box, styles.emptyStateBox)}>
+              {discussionCount < 1 && (
+                <span className={css(styles.box, styles.emptyStateBox)}>
+                  <span className={css(styles.icon)}>
+                    <i className="fad fa-comments" />
+                  </span>
+                  <h2 className={css(styles.noSummaryTitle)}>
+                    There are no comments {mobileView && "\n"}for this paper
+                    yet.
+                  </h2>
+                  <div className={css(styles.text)}>
+                    Please add a comment to this paper
+                  </div>
+                </span>
+              )}
+
+              <PermissionNotificationWrapper
+                onClick={() => {
+                  setShowEditor(true);
+                }}
+                modalMessage="create a discussion thread"
+                permissionKey="CreateDiscussionThread"
+                loginRequired={true}
+              >
+                <button
+                  className={css(
+                    styles.addDiscussionButton,
+                    discussionCount > 0 && styles.plainButton
+                  )}
+                >
+                  Add Comment
+                </button>
+              </PermissionNotificationWrapper>
+            </div>
+          );
+        }
+      }
+    }
   }
 
   const handleFilterChange = (id, filter) => {
@@ -180,6 +301,7 @@ const DiscussionTab = (props) => {
       props.setMessage("Fields must not be empty.");
       return props.showMessage({ show: true, error: true });
     }
+
     let { paperId } = router.query;
     props.showMessage({ load: true, show: true });
 
@@ -195,7 +317,7 @@ const DiscussionTab = (props) => {
 
     let config = await API.POST_CONFIG(param);
 
-    return fetch(API.DISCUSSION(paperId), config)
+    return fetch(API.DISCUSSION({ paperId, twitter: null }), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -257,24 +379,31 @@ const DiscussionTab = (props) => {
     }
     setLoading(true);
     const currentPaper = store.getState().paper;
-    debugger;
     await dispatch(
-      PaperActions.getThreads(props.paper.id, currentPaper, filter, page)
+      PaperActions.getThreads({
+        paperId: props.paper.id,
+        paper: currentPaper,
+        filter,
+        twitter: showTwitterComments,
+        loadMore: true,
+      })
     );
     const sortedThreads = store.getState().paper.discussion.threads;
 
     setThreads(sortedThreads);
     setFormattedThreads(formatThreads(sortedThreads, basePath));
-    setPage(page + 1);
     setLoading(false);
   };
 
   const renderAddDiscussion = () => {
     return (
       <div
-        className={css(styles.box, threads.length < 1 && styles.emptyStateBox)}
+        className={css(
+          styles.box,
+          !fetching && threads.length < 1 && styles.emptyStateBox
+        )}
       >
-        {threads.length < 1 && (
+        {discussionCount < 1 && (
           <span className={css(styles.box, styles.emptyStateBox)}>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
@@ -299,7 +428,7 @@ const DiscussionTab = (props) => {
           <button
             className={css(
               styles.addDiscussionButton,
-              threads.length > 0 && styles.plainButton
+              discussionCount > 0 && styles.plainButton
             )}
           >
             Add Comment
@@ -346,7 +475,7 @@ const DiscussionTab = (props) => {
         cancel={cancel}
         save={save}
       />
-      {threads.length > 0 ? (
+      {discussionCount > 0 ? (
         <div
           className={css(
             styles.threadsContainer,
@@ -358,14 +487,51 @@ const DiscussionTab = (props) => {
             <div className={css(styles.discussionTitle)}>
               Comments
               <span className={css(styles.discussionCount)}>
-                {discussionCount}
+                {fetching ? (
+                  <Loader
+                    key={"discussionLoader"}
+                    loading={true}
+                    size={2}
+                    color={"rgba(36, 31, 58, 0.5)"}
+                    type="beat"
+                  />
+                ) : showTwitterComments ? (
+                  store.getState().paper.discussion.count
+                ) : (
+                  Math.max(
+                    discussionCount,
+                    store.getState().paper.discussion.count
+                  )
+                )}
               </span>
+              <div className={css(styles.tabRow)}>
+                <div
+                  className={css(
+                    styles.tab,
+                    !showTwitterComments && styles.activeTab
+                  )}
+                  onClick={() => toggleTwitterComments(false)}
+                >
+                  Comments
+                </div>
+                <div
+                  className={css(
+                    styles.tab,
+                    showTwitterComments && styles.activeTab
+                  )}
+                  onClick={() => toggleTwitterComments(true)}
+                >
+                  Tweets
+                </div>
+              </div>
             </div>
-            {!showEditor && renderAddDiscussion()}
+            {!showEditor && !showTwitterComments && renderAddDiscussion()}
           </div>
           <div className={css(styles.box, !addView && styles.right)}>
             <div className={css(styles.addDiscussionContainer)}>
-              {showEditor && renderDiscussionTextEditor()}
+              {showEditor &&
+                !showTwitterComments &&
+                renderDiscussionTextEditor()}
             </div>
             <div className={css(styles.rowContainer)}>
               <div className={css(styles.filterContainer)}>
@@ -393,9 +559,7 @@ const DiscussionTab = (props) => {
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-          {(store.getState().paper.discussion.threads.length <
-            store.getState().paper.discussion.count ||
-            store.getState().paper.discussion.next) && (
+          {store.getState().paper.discussion.next && !fetching && (
             <div className={css(styles.buttonContainer)}>
               {loading ? (
                 <Loader
@@ -485,6 +649,7 @@ var styles = StyleSheet.create({
     },
   },
   emptyStateBox: {
+    flexDirection: "column",
     alignItems: "center",
     width: "100%",
   },
@@ -704,6 +869,9 @@ var styles = StyleSheet.create({
     height: 50,
     marginBottom: 10,
   },
+  twitterIcon: {
+    color: "#00ACEE",
+  },
   asterick: {
     color: colors.BLUE(1),
   },
@@ -803,6 +971,34 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 12,
     },
+  },
+  tabRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    marginLeft: 20,
+  },
+  tab: {
+    padding: "4px 12px",
+    fontSize: 14,
+    fontWeight: 500,
+    cursor: "pointer",
+    marginRight: 8,
+    color: "rgba(36, 31, 58, 0.6)",
+    borderRadius: 4,
+    ":hover": {
+      color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  activeTab: {
+    backgroundColor: colors.BLUE(0.11),
+    color: colors.BLUE(),
+  },
+  placholder: {
+    width: "100%",
   },
 });
 

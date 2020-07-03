@@ -7,7 +7,7 @@ export const paper = (paper) => {
     publishedDate: transformDate(paper.paper_publish_date),
     tagline: paper.tagline,
     discussion: {
-      count: paper.discussion ? paper.discussion.count : 0,
+      count: paper.discussion ? paper.discussion.count : null,
       threads: paper.discussion
         ? transformThreads(paper.discussion.threads)
         : [],
@@ -15,9 +15,13 @@ export const paper = (paper) => {
         paper.discussion && paper.discussion.filter
           ? paper.discussion.filter
           : null,
-      seenPages:
-        paper.discussion && paper.discussion.seenPages
-          ? paper.discussion.seenPages
+      next:
+        paper.discussion && paper.discussion.next
+          ? paper.discussion.next
+          : null,
+      source:
+        paper.discussion && paper.discussion.source
+          ? paper.discussion.source
           : null,
     },
     metatagImage: paper.metatag_image,
