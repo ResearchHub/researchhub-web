@@ -84,37 +84,52 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: (paperId, paper, filter = null, page = 1) => {
+  getThreads: ({
+    paperId,
+    paper,
+    filter = null,
+    page,
+    twitter,
+    loadMore = false,
+  }) => {
     if (paper === null || paper === undefined) {
       return;
     }
 
     return (dispatch) => {
-      return fetch(
-        API.DISCUSSION(paperId, filter && filter, page),
-        API.GET_CONFIG()
-      )
+      let endpoint = loadMore
+        ? paper.discussion.next
+        : API.DISCUSSION({ paperId, filter, page, progress: false, twitter });
+      return fetch(endpoint, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          console.log("res", res);
           const updatedPaper = { ...paper };
           let { discussion } = updatedPaper;
+          let source = twitter ? "twitter" : "researchhub";
 
+          console.log("source", source);
+          console.log("discussion.source", discussion.source);
+          console.log("filter", filter);
+          console.log("discussion.filter", discussion.filter);
           // reset the list from page 1 when filter is changed; initial set state
-          if (page === 1 || discussion.filter !== filter) {
+          if (
+            discussion.source !== source ||
+            discussion.filter !== filter ||
+            page === 1
+          ) {
             discussion.filter = filter; // set filter
             discussion.count = res.count; // set count
             discussion.threads = [...res.results]; // set threads
-            discussion.seenPages = {};
-            discussion.seenPages[page] = true; // set seenPages ex. { 1: true, 2: true, ...}
             discussion.next = res.next;
+            discussion.source = source;
           } else {
             // additional pages are appended to list
             discussion.threads = [
               ...discussion.threads,
               ...shims.transformThreads(res.results),
             ];
-            discussion.seenPages[page] = true;
             discussion.next = res.next;
           }
 
