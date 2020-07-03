@@ -88,7 +88,7 @@ export const PaperActions = {
     paperId,
     paper,
     filter = null,
-    page = 1,
+    page,
     twitter,
     loadMore = false,
   }) => {
