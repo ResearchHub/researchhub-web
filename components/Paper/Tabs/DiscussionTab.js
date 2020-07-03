@@ -168,15 +168,15 @@ const DiscussionTab = (props) => {
 
     if (fetching) {
       return (
-        <Fragment>
-          <div className={css(styles.card)}>
+        <div className={css(styles.placeholderContainer)}>
+          <div className={css(styles.placeholder)}>
             <ReactPlaceholder
               ready={false}
               showLoadingAnimation
               customPlaceholder={<PaperPlaceholder color="#efefef" />}
             />
           </div>
-        </Fragment>
+        </div>
       );
     } else {
       if (threads.length > 0) {
@@ -234,12 +234,7 @@ const DiscussionTab = (props) => {
           );
         } else {
           return (
-            <div
-              className={css(
-                styles.box,
-                threads.length < 1 && styles.emptyStateBox
-              )}
-            >
+            <div className={css(styles.box, styles.emptyStateBox)}>
               {discussionCount < 1 && (
                 <span className={css(styles.box, styles.emptyStateBox)}>
                   <span className={css(styles.icon)}>
@@ -403,7 +398,10 @@ const DiscussionTab = (props) => {
   const renderAddDiscussion = () => {
     return (
       <div
-        className={css(styles.box, threads.length < 1 && styles.emptyStateBox)}
+        className={css(
+          styles.box,
+          !fetching && threads.length < 1 && styles.emptyStateBox
+        )}
       >
         {discussionCount < 1 && (
           <span className={css(styles.box, styles.emptyStateBox)}>
@@ -497,6 +495,8 @@ const DiscussionTab = (props) => {
                     color={"rgba(36, 31, 58, 0.5)"}
                     type="beat"
                   />
+                ) : showTwitterComments ? (
+                  store.getState().paper.discussion.count
                 ) : (
                   Math.max(
                     discussionCount,
@@ -525,7 +525,7 @@ const DiscussionTab = (props) => {
                 </div>
               </div>
             </div>
-            {!showEditor && !showTwitter && renderAddDiscussion()}
+            {!showEditor && !showTwitterComments && renderAddDiscussion()}
           </div>
           <div className={css(styles.box, !addView && styles.right)}>
             <div className={css(styles.addDiscussionContainer)}>
@@ -996,6 +996,9 @@ var styles = StyleSheet.create({
   activeTab: {
     backgroundColor: colors.BLUE(0.11),
     color: colors.BLUE(),
+  },
+  placholder: {
+    width: "100%",
   },
 });
 
