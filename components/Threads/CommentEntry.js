@@ -554,6 +554,7 @@ class CommentEntry extends React.Component {
                     // Editing
                     editing={this.state.editing}
                     toggleEdit={this.state.canEdit && this.toggleEdit}
+                    hideReply={comment.source === "twitter"}
                   />
                 </div>
               </Fragment>
@@ -578,6 +579,7 @@ class CommentEntry extends React.Component {
                     showChildrenState={this.state.revealReply}
                     onCountHover={this.toggleHover}
                     isRemoved={this.state.removed}
+                    hideReply={comment.source === "twitter"}
                   />
                 </div>
               </Fragment>
