@@ -210,7 +210,7 @@ const routes = (BASE_URL) => {
       return BASE_URL + "permissions/";
     },
 
-    DISCUSSION: (paperId, filter, page, progress, twitter) => {
+    DISCUSSION: ({ paperId, filter, page, progress, twitter }) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/`;
 
       if (progress) {
@@ -227,7 +227,9 @@ const routes = (BASE_URL) => {
         }
       }
 
-      url += `&source=${twitter ? "twitter" : "researchhub"}/`;
+      if (twitter !== undefined || twitter !== null) {
+        url += `&source=${twitter ? "twitter" : "researchhub"}`;
+      }
 
       return url;
     },

@@ -91,22 +91,23 @@ const DiscussionTab = (props) => {
   }
 
   useEffect(() => {
+    console.log("UPDATE CALLED");
     async function getThreadsByFilter() {
       dispatch(MessageActions.showMessage({ load: true, show: true }));
       const currentPaper = store.getState().paper;
       await dispatch(
-        PaperActions.getThreads(
-          props.paper.id,
-          currentPaper,
+        PaperActions.getThreads({
+          paperId: props.paper.id,
+          paper: currentPaper,
           filter,
-          page,
-          showTwitterComments
-        )
+          page: 1,
+          twitter: showTwitterComments,
+        })
       );
       const sortedThreads = store.getState().paper.discussion.threads;
       setThreads(sortedThreads);
       setFormattedThreads(formatThreads(sortedThreads, basePath));
-      setPage(page + 1);
+      // setPage(page + 1);
       setTimeout(() => {
         dispatch(MessageActions.showMessage({ show: false }));
       }, 200);
@@ -130,33 +131,32 @@ const DiscussionTab = (props) => {
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
-  }, [filter]);
+  }, [filter, showTwitterComments]);
 
-  useEffect(() => {
-    async function getThreadsByFilter() {
-      dispatch(MessageActions.showMessage({ load: true, show: true }));
-      const currentPaper = store.getState().paper;
-      setPage(1);
-      await dispatch(
-        PaperActions.getThreads(
-          props.paper.id,
-          currentPaper,
-          filter,
-          1,
-          showTwitterComments
-        )
-      );
-      const sortedThreads = store.getState().paper.discussion.threads;
-      setThreads(sortedThreads);
-      setFormattedThreads(formatThreads(sortedThreads, basePath));
-      // setPage(page + 1);
-      setTimeout(() => {
-        dispatch(MessageActions.showMessage({ show: false }));
-      }, 200);
-    }
+  // useEffect(() => {
+  //   async function getThreadsByFilter() {
+  //     dispatch(MessageActions.showMessage({ load: true, show: true }));
+  //     const currentPaper = store.getState().paper;
+  //     // setPage(1);
+  //     await dispatch(
+  //       PaperActions.getThreads({
+  //         paperId: props.paper.id,
+  //         paper: currentPaper,
+  //         filter,
+  //         twitter: showTwitterComments
+  //       })
+  //     );
+  //     const sortedThreads = store.getState().paper.discussion.threads;
+  //     setThreads(sortedThreads);
+  //     setFormattedThreads(formatThreads(sortedThreads, basePath));
+  //     // setPage(page + 1);
+  //     setTimeout(() => {
+  //       dispatch(MessageActions.showMessage({ show: false }));
+  //     }, 200);
+  //   }
 
-    getThreadsByFilter();
-  }, [showTwitterComments]);
+  //   getThreadsByFilter();
+  // }, [showTwitterComments]);
 
   function renderThreads(threads) {
     if (!Array.isArray(threads)) {
@@ -177,7 +177,7 @@ const DiscussionTab = (props) => {
                 newCard={transition && i === 0} //conditions when a new card is made
                 mobileView={mobileView}
                 index={i}
-                discussionCount={discussionCount}
+                discussionCount={store.getState().paper.discussion.count}
                 setCount={setCount}
               />
             );
@@ -194,7 +194,7 @@ const DiscussionTab = (props) => {
                 newCard={transition && i === 0} //conditions when a new card is made
                 mobileView={mobileView}
                 index={i}
-                discussionCount={discussionCount}
+                discussionCount={store.getState().paper.discussion.count}
                 setCount={setCount}
               />
             );
@@ -246,7 +246,7 @@ const DiscussionTab = (props) => {
 
     let config = await API.POST_CONFIG(param);
 
-    return fetch(API.DISCUSSION(paperId), config)
+    return fetch(API.DISCUSSION({ paperId }), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -308,15 +308,14 @@ const DiscussionTab = (props) => {
     }
     setLoading(true);
     const currentPaper = store.getState().paper;
-    debugger;
     await dispatch(
-      PaperActions.getThreads(
-        props.paper.id,
-        currentPaper,
+      PaperActions.getThreads({
+        paperId: props.paper.id,
+        paper: currentPaper,
         filter,
-        page,
-        showTwitterComments
-      )
+        twitter: showTwitterComments,
+        loadMore: true,
+      })
     );
     const sortedThreads = store.getState().paper.discussion.threads;
 
@@ -415,7 +414,7 @@ const DiscussionTab = (props) => {
             <div className={css(styles.discussionTitle)}>
               Comments
               <span className={css(styles.discussionCount)}>
-                {discussionCount}
+                {store.getState().paper.discussion.count}
               </span>
               <div className={css(styles.tabRow)}>
                 <div
@@ -445,26 +444,6 @@ const DiscussionTab = (props) => {
               {showEditor && renderDiscussionTextEditor()}
             </div>
             <div className={css(styles.rowContainer)}>
-              <div className={css(styles.tabRow)}>
-                <div
-                  className={css(
-                    styles.tab,
-                    !showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(false)}
-                >
-                  Comments
-                </div>
-                <div
-                  className={css(
-                    styles.tab,
-                    showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(true)}
-                >
-                  Tweets
-                </div>
-              </div>
               <div className={css(styles.filterContainer)}>
                 <div className={css(styles.filterSelect)}>
                   <FormSelect
@@ -490,9 +469,7 @@ const DiscussionTab = (props) => {
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-          {(store.getState().paper.discussion.threads.length <
-            store.getState().paper.discussion.count ||
-            store.getState().paper.discussion.next) && (
+          {store.getState().paper.discussion.next && (
             <div className={css(styles.buttonContainer)}>
               {loading ? (
                 <Loader
