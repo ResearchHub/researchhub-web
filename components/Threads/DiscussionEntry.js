@@ -483,7 +483,12 @@ class DiscussionEntry extends React.Component {
                     twitterUrl={data.url}
                   />
                 </div>
-                <div className={css(styles.content)}>
+                <div
+                  className={css(
+                    styles.content,
+                    this.state.editing && styles.contentEdit
+                  )}
+                >
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
@@ -591,6 +596,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     overflowWrap: "break-word",
     lineHeight: 1.6,
+  },
+  contentEdit: {
+    border: `1px soild`,
+    borderColor: "rgb(170, 170, 170)",
   },
   contentText: {
     fontSize: 16,

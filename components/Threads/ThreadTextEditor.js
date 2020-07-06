@@ -242,7 +242,10 @@ class ThreadTextEditor extends React.Component {
               this.props.textStyles && this.props.textStyles,
               this.props.editing && styles.edit,
             ]}
-            commentEditorStyles={[styles.textContainer]}
+            commentEditorStyles={[
+              styles.textContainer,
+              this.props.editing && styles.editTextContainer,
+            ]}
             passedValue={this.state.editorState}
           />
         );
@@ -271,10 +274,16 @@ const styles = StyleSheet.create({
       border: "unset",
     },
   },
+  editTextContainer: {
+    border: "1px solid #E8E8F2",
+    ":hover": {
+      border: "1px solid #E7E7E7",
+    },
+  },
   edit: {
     padding: 16,
     backgroundColor: colors.LIGHT_YELLOW(),
-    border: `1px solid ${colors.YELLOW()}`,
+    // border: `1px solid ${colors.YELLOW()}`,
     ":hover": {
       backgroundColor: colors.LIGHT_YELLOW(),
     },
