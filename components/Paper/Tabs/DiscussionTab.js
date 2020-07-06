@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -96,7 +96,6 @@ const DiscussionTab = (props) => {
   useEffect(() => {
     setFetching(true);
     async function getThreadsByFilter() {
-      dispatch(MessageActions.showMessage({ load: true, show: true }));
       const currentPaper = store.getState().paper;
       await dispatch(
         PaperActions.getThreads({
@@ -111,9 +110,6 @@ const DiscussionTab = (props) => {
       setThreads(sortedThreads);
       setFormattedThreads(formatThreads(sortedThreads, basePath));
       setFetching(false);
-      setTimeout(() => {
-        dispatch(MessageActions.showMessage({ show: false }));
-      }, 200);
     }
     if (filter !== null) {
       getThreadsByFilter();
@@ -135,31 +131,6 @@ const DiscussionTab = (props) => {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, [filter, showTwitterComments]);
-
-  // useEffect(() => {
-  //   async function getThreadsByFilter() {
-  //     dispatch(MessageActions.showMessage({ load: true, show: true }));
-  //     const currentPaper = store.getState().paper;
-  //     // setPage(1);
-  //     await dispatch(
-  //       PaperActions.getThreads({
-  //         paperId: props.paper.id,
-  //         paper: currentPaper,
-  //         filter,
-  //         twitter: showTwitterComments
-  //       })
-  //     );
-  //     const sortedThreads = store.getState().paper.discussion.threads;
-  //     setThreads(sortedThreads);
-  //     setFormattedThreads(formatThreads(sortedThreads, basePath));
-  //     // setPage(page + 1);
-  //     setTimeout(() => {
-  //       dispatch(MessageActions.showMessage({ show: false }));
-  //     }, 200);
-  //   }
-
-  //   getThreadsByFilter();
-  // }, [showTwitterComments]);
 
   function renderThreads(threads) {
     if (!Array.isArray(threads)) {
@@ -232,43 +203,6 @@ const DiscussionTab = (props) => {
               </h2>
             </span>
           );
-        } else {
-          return (
-            <div className={css(styles.box, styles.emptyStateBox)}>
-              {discussionCount < 1 && (
-                <span className={css(styles.box, styles.emptyStateBox)}>
-                  <span className={css(styles.icon)}>
-                    <i className="fad fa-comments" />
-                  </span>
-                  <h2 className={css(styles.noSummaryTitle)}>
-                    There are no comments {mobileView && "\n"}for this paper
-                    yet.
-                  </h2>
-                  <div className={css(styles.text)}>
-                    Please add a comment to this paper
-                  </div>
-                </span>
-              )}
-
-              <PermissionNotificationWrapper
-                onClick={() => {
-                  setShowEditor(true);
-                }}
-                modalMessage="create a discussion thread"
-                permissionKey="CreateDiscussionThread"
-                loginRequired={true}
-              >
-                <button
-                  className={css(
-                    styles.addDiscussionButton,
-                    discussionCount > 0 && styles.plainButton
-                  )}
-                >
-                  Add Comment
-                </button>
-              </PermissionNotificationWrapper>
-            </div>
-          );
         }
       }
     }
@@ -278,11 +212,6 @@ const DiscussionTab = (props) => {
     let { value } = filter;
     setFilter(value);
     setPage(1);
-  };
-
-  const addDiscussion = () => {
-    props.showMessage({ show: false });
-    props.openAddDiscussionModal(true);
   };
 
   const cancel = () => {
@@ -741,6 +670,9 @@ var styles = StyleSheet.create({
       color: colors.PURPLE(),
       textDecoration: "underline",
     },
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 5,
+    },
   },
   pencilIcon: {
     marginRight: 5,
@@ -889,6 +821,10 @@ var styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     marginBottom: 20,
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
     "@media only screen and (max-width: 415px)": {
       marginBottom: 10,
     },
@@ -913,7 +849,6 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    // marginTop: 10,
     marginBottom: 10,
   },
   overrideFormSelect: {
@@ -1013,7 +948,6 @@ const stylesEditor = StyleSheet.create({
     marginBottom: 8,
     backgroundColor: "#fff",
   },
-  discTextEditorTitle: {},
   container: {
     width: "100%",
   },
