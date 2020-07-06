@@ -210,7 +210,8 @@ class Index extends React.Component {
    * Setting up hubs
    */
   setHubs = (hubs) => {
-    let byOptions = [{ label: "ResearchHub", value: 0 }];
+    let byOptions = [];
+
     for (let i = 0; i < hubs.length; i++) {
       byOptions.push({
         label: hubs[i].name,
@@ -218,6 +219,13 @@ class Index extends React.Component {
         slug: hubs[i].slug,
       });
     }
+
+    byOptions = [
+      { label: "ResearchHub", value: 0 },
+      ...byOptions.sort((a, b) => {
+        return a.label.localeCompare(b.label);
+      }),
+    ];
 
     this.setState({
       byOptions,
@@ -375,6 +383,9 @@ class Index extends React.Component {
             this.isCurrentItem(this.state.type, id) && styles.current
           )}
           onClick={() => {
+            if (this.state.type === item.type) {
+              return;
+            }
             this.setState({
               fetchingLeaderboard: true,
             });
