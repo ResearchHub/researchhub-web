@@ -385,7 +385,6 @@ const Paper = (props) => {
 
   return (
     <div className={css(styles.container)}>
-      <UserPrompt paper={paper} />
       {paper.status === 404 ? (
         <Error statusCode={paper.status} />
       ) : (
