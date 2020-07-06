@@ -144,13 +144,13 @@ const Paper = (props) => {
     setLoadingPaper(true);
     await dispatch(PaperActions.getPaper(paperId));
     const fetchedPaper = store.getState().paper;
-    // await dispatch(PaperActions.getThreads(paperId, fetchedPaper));
+    await dispatch(PaperActions.getThreads({ paperId, paper: fetchedPaper }));
     const refetchedPaper = store.getState().paper;
 
     setLoadingPaper(false);
     setPaper(refetchedPaper);
     setSelectedVoteType(getVoteType(refetchedPaper.userVote));
-    // setDiscussionThreads(getDiscussionThreads(refetchedPaper));
+    setDiscussionThreads(getDiscussionThreads(refetchedPaper));
     setFlag(refetchedPaper.user_flag !== null);
 
     // window.scroll({ top: 0, behavior: "auto" });
