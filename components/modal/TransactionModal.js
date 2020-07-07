@@ -22,21 +22,25 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import { useMetaMask, useWalletLink } from "../connectEthereum";
+
+const RINKEBY_CHAIN_ID = "4";
 
 class TransactionModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      networkVersion: null, //
-      networkAddress: "",
+      networkVersion: null,
       connectedMetaMask: false,
+      connectedWalletLink: false,
+      ethAccount: "",
+      ethAccountIsValid: false,
       transition: false,
       listenerNetwork: null,
       listenerAccount: null,
       userBalance: 0,
       withdrawals: [],
       validating: false,
-      valid: false,
       transactionHash: "",
     };
     this.state = {
@@ -46,18 +50,6 @@ class TransactionModal extends React.Component {
 
   componentDidMount() {
     if (this.props.auth.isLoggedIn) {
-      if (typeof window.ethereum !== "undefined") {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        if (
-          this.props.modals.openTransactionModal &&
-          !this.state.connectedMetaMask
-        ) {
-          this.checkNetwork();
-          this.updateChainId(ethereum.networkVersion);
-        }
-      }
-
       this.getBalance();
     }
   }
@@ -69,10 +61,6 @@ class TransactionModal extends React.Component {
           this.props.modals.openTransactionModal &&
         this.props.modals.openTransactionModal
       ) {
-        if (typeof window.ethereum !== "undefined") {
-          this.checkNetwork();
-          this.updateChainId(ethereum.networkVersion);
-        }
         this.getBalance();
       }
       if (
@@ -93,12 +81,7 @@ class TransactionModal extends React.Component {
           let account = accounts && accounts.result ? accounts.result[0] : [];
           that.setState({
             connectedMetaMask: true,
-            networkAddress: account,
-            listenerNetwork: ethereum.on("networkChanged", () =>
-              this.updateChainId(ethereum.networkVersion)
-            ),
-            listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
-            valid: true,
+            ethAccount: account,
           });
         })
         .catch((error) => {
@@ -114,10 +97,16 @@ class TransactionModal extends React.Component {
   updateChainId = (chainId) => {
     if (chainId !== this.state.networkVersion) {
       let transition = false;
-      if (this.state.networkVersion !== "1" && chainId === "1") {
+      if (
+        this.state.networkVersion !== RINKEBY_CHAIN_ID &&
+        chainId === RINKEBY_CHAIN_ID
+      ) {
         transition = true;
       }
-      if (this.state.networkVersion === "1" && chainId !== "1") {
+      if (
+        this.state.networkVersion === RINKEBY_CHAIN_ID &&
+        chainId !== RINKEBY_CHAIN_ID
+      ) {
         transition = true;
       }
       this.setState(
@@ -139,8 +128,10 @@ class TransactionModal extends React.Component {
 
   updateAccount = (accounts) => {
     let account = accounts && accounts[0] && accounts[0];
+    let valid = this.isAddress(account);
     this.setState({
-      networkAddress: account,
+      ethAccount: account,
+      ethAccountIsValid: valid,
     });
   };
 
@@ -163,6 +154,7 @@ class TransactionModal extends React.Component {
   };
 
   renderSwitchNetworkMsg = () => {
+    // TODO: For now let's just tell them to use rinkeby
     let { transition } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
@@ -175,13 +167,13 @@ class TransactionModal extends React.Component {
             </div>
             <div className={css(styles.subtitle)}>
               Simply open MetaMask and switch over to the
-              <b>{" Main Ethereum Network"}</b>
+              <b>{" Rinkeby Test Network"}</b>
             </div>
-            <img
+            {/* <img
               src={"/static/background/metamask.png"}
               className={css(styles.image)}
               draggable={false}
-            />
+            /> */}
           </Fragment>
         )}
       </div>
@@ -189,12 +181,7 @@ class TransactionModal extends React.Component {
   };
 
   renderTransactionScreen = () => {
-    let {
-      transition,
-      userBalance,
-      networkAddress,
-      transactionHash,
-    } = this.state;
+    let { transition, userBalance, ethAccount, transactionHash } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
         {transition ? (
@@ -264,7 +251,7 @@ class TransactionModal extends React.Component {
                 onClick: "",
               },
               {
-                value: networkAddress,
+                value: ethAccount,
                 onChange: this.handleNetworkAddressInput,
               }
             )}
@@ -282,7 +269,7 @@ class TransactionModal extends React.Component {
   };
 
   renderRow = (left, right) => {
-    let { networkAddress, validating, valid } = this.state;
+    let { ethAccount, validating, ethAccountIsValid } = this.state;
     return (
       <div className={css(styles.row)}>
         <div className={css(styles.left, styles.spacedContent)}>
@@ -298,7 +285,7 @@ class TransactionModal extends React.Component {
             containerStyle={styles.formInput}
             onChange={right.onChange && right.onChange}
             inlineNodeRight={
-              networkAddress !== "" ? (
+              ethAccount !== "" ? (
                 validating ? (
                   <span className={css(styles.successIcon)}>
                     <Loader loading={true} size={23} />
@@ -307,10 +294,10 @@ class TransactionModal extends React.Component {
                   <span
                     className={css(
                       styles.successIcon,
-                      !valid && styles.errorIcon
+                      !ethAccountIsValid && styles.errorIcon
                     )}
                   >
-                    {valid ? (
+                    {ethAccountIsValid ? (
                       <i className="fal fa-check-circle" />
                     ) : (
                       <i className="fal fa-times-circle" />
@@ -345,14 +332,14 @@ class TransactionModal extends React.Component {
   handleNetworkAddressInput = (id, value) => {
     this.setState(
       {
-        networkAddress: value,
+        ethAccount: value,
         validating: true,
       },
       () => {
         setTimeout(() => {
           this.setState({
             validating: false,
-            valid: this.isAddress(this.state.networkAddress),
+            ethAccountIsValid: this.isAddress(value),
           });
         }, 400);
       }
@@ -361,12 +348,12 @@ class TransactionModal extends React.Component {
 
   sendWithdrawalRequest = (e) => {
     e.stopPropagation();
-    let { networkAddress } = this.state;
+    let { ethAccount } = this.state;
     let { showMessage, setMessage } = this.props;
     showMessage({ load: true, show: true });
-    if (this.isAddress(networkAddress)) {
+    if (this.isAddress(ethAccount)) {
       let param = {
-        to_address: this.toCheckSumAddress(networkAddress),
+        to_address: this.toCheckSumAddress(ethAccount),
       };
       fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
@@ -472,6 +459,73 @@ class TransactionModal extends React.Component {
     return true;
   };
 
+  connectMetaMask = async () => {
+    const { connected, account } = await useMetaMask();
+    if (connected) {
+      this.setUpEthListeners();
+      console.log("Connected to MetaMask");
+      this.setState({
+        connectedMetaMask: connected,
+        connectedWalletLink: false,
+        ethAccount: account,
+        networkVersion: ethereum.networkVersion,
+        ethAccountIsValid: this.isAddress(account),
+      });
+    } else {
+      console.log("Failed to connect MetaMask");
+      this.setState({
+        connectedMetaMask: false,
+        connectedWalletLink: false,
+      });
+    }
+  };
+
+  setUpEthListeners() {
+    this.setState({
+      listenerNetwork: ethereum.on("networkChanged", () =>
+        this.updateChainId(ethereum.networkVersion)
+      ),
+      listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
+    });
+  }
+
+  connectWalletLink = async () => {
+    if (this.state.connectedWalletLink) {
+      this.disconnectWalletLink();
+      return;
+    }
+
+    const { connected, account, walletLink } = await useWalletLink();
+    if (connected) {
+      console.log("Connected to WalletLink");
+      this.setState({
+        walletLink,
+        connectedMetaMask: false,
+        connectedWalletLink: connected,
+        ethAccount: account,
+        ethAccountIsValid: this.isAddress(account),
+      });
+    } else {
+      console.log("Failed to connect WalletLink");
+      this.setState({
+        connectedMetaMask: false,
+        connectedWalletLink: false,
+      });
+    }
+  };
+
+  disconnectWalletLink = async () => {
+    if (this.state.walletLink) {
+      this.state.walletLink.disconnect();
+      console.log("Disconnected WalletLink");
+    } else {
+      console.log("Nothing to disconnect");
+    }
+    this.setState({
+      connectedWalletLink: false,
+    });
+  };
+
   render() {
     let { modals } = this.props;
     let { networkVersion, connectedMetaMask } = this.state;
@@ -484,15 +538,15 @@ class TransactionModal extends React.Component {
         <div
           className={css(
             styles.modalContent,
-            networkVersion === "1" && styles.main
+            networkVersion === RINKEBY_CHAIN_ID && styles.main
           )}
         >
           <div className={css(styles.header, styles.text)}>
             Withdraw ResearchCoin
           </div>
-          {/* <div className={css(styles.testnetBanner)}>
-            Currently on Testnet
-          </div> */}
+          <div onClick={this.connectMetaMask}>Use MetaMask</div>
+          <div onClick={this.connectWalletLink}>Use WalletLink</div>
+          <div className={css(styles.testnetBanner)}>Currently on Testnet</div>
           <img
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
@@ -510,9 +564,8 @@ class TransactionModal extends React.Component {
               Connected wallet: MetaMask
             </div>
           )}
-          {connectedMetaMask && networkVersion !== "1"
-            ? // ? this.renderSwitchNetworkMsg() comment back when on mainnet
-              this.renderTransactionScreen()
+          {connectedMetaMask && networkVersion !== RINKEBY_CHAIN_ID
+            ? this.renderSwitchNetworkMsg()
             : this.renderTransactionScreen()}
         </div>
       </BaseModal>

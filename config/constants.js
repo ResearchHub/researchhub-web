@@ -46,3 +46,5 @@ export const METATAG_DEFAULT_IMAGE_URL =
 export function nameToUrl(name) {
   return encodeURIComponent(name);
 }
+
+export const WEB3_INFURA_API_KEY = "";
