@@ -64,6 +64,13 @@ export default class MyDocument extends Document {
             src="https://app.appzi.io/bootstrap/bundle.js?token=ECg1v"
           ></script>
           {/* <!-- End Appzi --> */}
+
+          {/* Google one tap */}
+          <script
+            src="https://accounts.google.com/gsi/client"
+            async
+            defer
+          ></script>
           <link
             rel="icon"
             type="image/png"
