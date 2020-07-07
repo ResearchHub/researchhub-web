@@ -16,7 +16,7 @@ export const DIGEST_FREQUENCY = {
 export const GOOGLE_CLIENT_ID =
   process.env.NODE_ENV === "production"
     ? "192509748493-3enrmve4vlikpff88lujns7b4d72hgbg.apps.googleusercontent.com"
-    : "192509748493-amjlt30mbpo9lq5gppn7bfd5c52i0ioe.apps.googleusercontent.com";
+    : "708688924921-aqjof10cjpd7n3ie33kltloiughp14vh.apps.googleusercontent.com";
 
 export const ORCID_CLIENT_ID = "APP-28GINQJPUWS3ZTW1";
 export const ORCID_REDIRECT_URI = setOrcidRedirect();
