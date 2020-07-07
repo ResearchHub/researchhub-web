@@ -366,6 +366,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   handleHubSelection = (id, value) => {
+    debugger;
     let form = JSON.parse(JSON.stringify(this.state.form));
     let error = { ...this.state.error };
     value = value || [];
