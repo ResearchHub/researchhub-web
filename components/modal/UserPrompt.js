@@ -52,8 +52,6 @@ const UserPrompt = (props) => {
   };
 
   const renderContent = () => {
-    let coinFlip = Math.random() >= 0.5; // 50% chance
-
     return (
       <Fragment>
         <div className={css(styles.header)}>

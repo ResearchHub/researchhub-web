@@ -10,9 +10,10 @@ import { BannerActions } from "~/redux/banner";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import colors from "~/config/themes/colors";
+import API from "../config/api";
 
 const GoogleLoginButton = (props) => {
-  let { customLabel, hideButton } = props;
+  let { customLabel, hideButton, isLoggedIn } = props;
 
   const responseGoogle = async (response) => {
     let { googleLogin, getUser } = props;
@@ -57,16 +58,25 @@ const GoogleLoginButton = (props) => {
           );
         } else {
           return (
-            <Button
-              disabled={renderProps.disabled}
-              onClick={renderProps.onClick}
-              customButtonStyle={[styles.button, props.styles]}
-              icon={"/static/icons/google.png"}
-              rippleClass={props.rippleClass}
-              customLabelStyle={props.customLabelStyle}
-              customIconStyle={[styles.iconStyle, props.iconStyle]}
-              label={customLabel ? customLabel : "Login with Google"}
-            />
+            <div className={css(styles.glogin)}>
+              <Button
+                disabled={renderProps.disabled}
+                onClick={renderProps.onClick}
+                customButtonStyle={[styles.button, props.styles]}
+                icon={"/static/icons/google.png"}
+                rippleClass={props.rippleClass}
+                customLabelStyle={props.customLabelStyle}
+                customIconStyle={[styles.iconStyle, props.iconStyle]}
+                label={customLabel ? customLabel : "Login with Google"}
+              />
+              <div
+                className={css(styles.onetap)}
+                id="g_id_onload"
+                data-auto_select="true"
+                data-client_id={GOOGLE_CLIENT_ID}
+                data-login_uri={API.GOOGLE_LOGIN}
+              ></div>
+            </div>
           );
         }
       }}
