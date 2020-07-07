@@ -2,7 +2,6 @@ import Document, { Head, Main, NextScript } from "next/document";
 import { StyleSheetServer } from "aphrodite";
 import * as Sentry from "@sentry/browser";
 import CustomHead from "../components/Head";
-import { hotjar } from "react-hotjar";
 
 process.on("unhandledRejection", (err) => {
   Sentry.captureException(err);
@@ -33,17 +32,6 @@ export default class MyDocument extends Document {
     }
   }
 
-  componentDidMount = () => {
-    if (
-      process.env.NODE_ENV === "production" &&
-      process.env.REACT_APP_ENV !== "staging"
-    ) {
-      let hjid = 1876155;
-      let hjsv = 6;
-      hotjar.initialize(hjid, hjsv);
-    }
-  };
-
   render() {
     /* Make sure to use data-aphrodite attribute in the style tag here
     so that aphrodite knows which style tag it's in control of when
@@ -52,6 +40,19 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+              (function(h,o,t,j,a,r){
+                  h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                  h._hjSettings={hjid:1876155,hjsv:6};
+                  a=o.getElementsByTagName('head')[0];
+                  r=o.createElement('script');r.async=1;
+                  r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                  a.appendChild(r);
+              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`,
+            }}
+          />
           <link
             rel="apple-touch-icon"
             sizes="152x152"
