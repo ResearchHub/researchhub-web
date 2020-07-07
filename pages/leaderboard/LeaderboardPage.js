@@ -31,11 +31,6 @@ import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 
 const filterOptions = [
   {
-    value: "all_time",
-    label: "All Time",
-    disableScope: true,
-  },
-  {
     value: "today",
     label: "Today",
   },
@@ -52,6 +47,11 @@ const filterOptions = [
     label: "Past Year",
     disableScope: true,
   },
+  {
+    value: "all_time",
+    label: "All Time",
+    disableScope: true,
+  },
 ];
 
 const createdOptions = [
@@ -66,7 +66,7 @@ const createdOptions = [
 ];
 
 const createdByOptions = createdOptions[0];
-const defaultFilterBy = filterOptions[0];
+const defaultFilterBy = filterOptions[4];
 
 class Index extends React.Component {
   constructor(props) {
