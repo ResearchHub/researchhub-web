@@ -2,7 +2,7 @@
 if git diff-index --quiet HEAD --; then
     set -o errexit; # Exit on error
 echo Step 1/3: Logging into ECR;
-    $(aws ecr get-login-password --region us-west-2 --profile researchhub);
+    $(aws ecr get-login --no-include-email --region us-west-2 --profile researchhub);
 echo Step 2/3: Creating new production image;
     yarn run build:staging;
     docker tag researchhub-web-staging:latest 794128250202.dkr.ecr.us-west-2.amazonaws.com/researchhub-web-staging:latest
