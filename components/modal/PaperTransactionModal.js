@@ -60,8 +60,8 @@ class PaperTransactionModal extends React.Component {
       validating: false,
       ethAccountIsValid: false,
       transactionHash: "",
-      AppPurchaseContractAddress: "",
-      RSCContractAddress: "",
+      AppPurchaseContractAddress: RinkebyAppPurchaseContractAddress,
+      RSCContractAddress: RinkebyRSCContractAddress,
       // Finish
       finish: false,
     };
@@ -104,7 +104,12 @@ class PaperTransactionModal extends React.Component {
       address = RinkebyRSCContractAddress;
     }
 
-    return new ethers.Contract(address, miniToken.abi, this.provider);
+    this.RSCContract = new ethers.Contract(
+      address,
+      miniToken.abi,
+      this.provider
+    );
+    return this.RSCContract;
   };
 
   checkRSCBalance = async (contract, account) => {
