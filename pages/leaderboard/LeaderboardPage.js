@@ -206,16 +206,15 @@ class Index extends React.Component {
     if (filterBy !== this.state.filterBy) {
       let option = this.state.by;
       let slug = this.convertToSlug(filterBy.value);
-      console.log("this.state.by", this.state.by);
       if (!option.slug) {
         Router.push(
-          "/leaderboard/[type]/[scope]",
+          "/leaderboard/[type]/[hub]",
           `/leaderboard/${this.state.type}/${slug}`
         );
       } else {
         Router.push(
           "/leaderboard/[type]/[hub]/[scope]",
-          `/leaderboard/${this.state.type}/${this.state.by.slug}/${slug}`
+          `/leaderboard/${this.state.type}/${option.slug}/${slug}`
         );
       }
       this.setState(
