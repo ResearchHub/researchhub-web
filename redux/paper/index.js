@@ -104,15 +104,10 @@ export const PaperActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          console.log("res", res);
           const updatedPaper = { ...paper };
           let { discussion } = updatedPaper;
           let source = twitter ? "twitter" : "researchhub";
 
-          console.log("source", source);
-          console.log("discussion.source", discussion.source);
-          console.log("filter", filter);
-          console.log("discussion.filter", discussion.filter);
           // reset the list from page 1 when filter is changed; initial set state
           if (
             discussion.source !== source ||

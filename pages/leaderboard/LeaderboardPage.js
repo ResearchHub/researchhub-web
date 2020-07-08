@@ -169,7 +169,12 @@ class Index extends React.Component {
   onFilterSelect = (option, type) => {
     let by = option;
     if (!option.slug) {
-      Router.push("/leaderboard/[type]", `/leaderboard/${this.state.type}`);
+      Router.push(
+        "/leaderboard/[type]/[hub]",
+        `/leaderboard/${this.state.type}/${this.convertToSlug(
+          this.state.filterBy.value
+        )}`
+      );
     } else {
       Router.push(
         "/leaderboard/[type]/[hub]/[scope]",
@@ -253,11 +258,11 @@ class Index extends React.Component {
       byOptions,
     });
 
-    return hubs;
+    return byOptions;
   };
 
   componentDidMount() {
-    let hubs = this.setHubs(this.props.hubs.hubs);
+    let byOptions = this.setHubs(this.props.hubs.hubs);
     let type = decodeURIComponent(Router.router.query.type);
     let hub = decodeURIComponent(Router.router.query.hub);
     let scope = Router.router.query.scope
@@ -266,8 +271,8 @@ class Index extends React.Component {
 
     let by =
       hub &&
-      hubs.filter((hub) => {
-        hub.slug === hub;
+      byOptions.filter((option) => {
+        return option.slug === hub;
       })[0];
 
     let filterBy =
@@ -441,12 +446,14 @@ class Index extends React.Component {
         >
           <Link
             href={{
-              pathname: "/leaderboard/[type]",
+              pathname: "/leaderboard/[type]/[hub]",
               query: {
                 type: `${encodeURIComponent(item.type)}`,
               },
             }}
-            as={`/leaderboard/${encodeURIComponent(item.type)}`}
+            as={`/leaderboard/${encodeURIComponent(
+              item.type
+            )}/${this.convertToSlug(this.state.filterBy.value)}`}
           >
             <a className={css(styles.sidebarLink)}>{name}</a>
           </Link>
