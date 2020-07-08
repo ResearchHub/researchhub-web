@@ -162,14 +162,20 @@ class Index extends React.Component {
       });
   };
 
+  convertToSlug = (value) => {
+    return value.split("_").join("-");
+  };
+
   onFilterSelect = (option, type) => {
     let by = option;
     if (!option.slug) {
       Router.push("/leaderboard/[type]", `/leaderboard/${this.state.type}`);
     } else {
       Router.push(
-        "/leaderboard/[type]/[hub]",
-        `/leaderboard/${this.state.type}/${option.slug}`
+        "/leaderboard/[type]/[hub]/[scope]",
+        `/leaderboard/${this.state.type}/${option.slug}/${this.convertToSlug(
+          this.state.filterBy.value
+        )}`
       );
     }
     this.setState(
@@ -196,14 +202,31 @@ class Index extends React.Component {
 
   onTimeframeChange = (option) => {
     let filterBy = option;
-    this.setState(
-      {
-        filterBy,
-      },
-      () => {
-        this.fetchLeaderboard(this.state.type);
+
+    if (filterBy !== this.state.filterBy) {
+      let option = this.state.by;
+      let slug = this.convertToSlug(filterBy.value);
+      console.log("this.state.by", this.state.by);
+      if (!option.slug) {
+        Router.push(
+          "/leaderboard/[type]/[scope]",
+          `/leaderboard/${this.state.type}/${slug}`
+        );
+      } else {
+        Router.push(
+          "/leaderboard/[type]/[hub]/[scope]",
+          `/leaderboard/${this.state.type}/${this.state.by.slug}/${slug}`
+        );
       }
-    );
+      this.setState(
+        {
+          filterBy,
+        },
+        () => {
+          this.fetchLeaderboard(this.state.type);
+        }
+      );
+    }
   };
 
   /**
@@ -230,15 +253,40 @@ class Index extends React.Component {
     this.setState({
       byOptions,
     });
+
+    return hubs;
   };
 
   componentDidMount() {
+    let hubs = this.setHubs(this.props.hubs.hubs);
     let type = decodeURIComponent(Router.router.query.type);
-    this.setState({
-      type,
-    });
-    this.fetchLeaderboard(type);
-    this.setHubs(this.props.hubs.hubs);
+    let hub = decodeURIComponent(Router.router.query.hub);
+    let scope = Router.router.query.scope
+      ? decodeURIComponent(Router.router.query.scope)
+      : hub;
+
+    let by =
+      hub &&
+      hubs.filter((hub) => {
+        hub.slug === hub;
+      })[0];
+
+    let filterBy =
+      scope &&
+      filterOptions.filter((filter) => {
+        return filter.value === scope.split("-").join("_");
+      })[0];
+
+    this.setState(
+      {
+        type,
+        by: by ? by : { label: "ResearchHub", value: 0 },
+        filterBy: filterBy ? filterBy : defaultFilterBy,
+      },
+      () => {
+        this.fetchLeaderboard(type);
+      }
+    );
   }
 
   componentDidUpdate = (prevProps, prevState) => {
