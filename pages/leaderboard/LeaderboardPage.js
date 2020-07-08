@@ -168,21 +168,14 @@ class Index extends React.Component {
 
   onFilterSelect = (option, type) => {
     let by = option;
-    if (!option.slug) {
-      Router.push(
-        "/leaderboard/[type]/[hub]",
-        `/leaderboard/${this.state.type}/${this.convertToSlug(
-          this.state.filterBy.value
-        )}`
-      );
-    } else {
-      Router.push(
-        "/leaderboard/[type]/[hub]/[scope]",
-        `/leaderboard/${this.state.type}/${option.slug}/${this.convertToSlug(
-          this.state.filterBy.value
-        )}`
-      );
-    }
+
+    Router.push(
+      "/leaderboard/[type]/[hub]/[scope]",
+      `/leaderboard/${this.state.type}/${option.slug}/${this.convertToSlug(
+        this.state.filterBy.value
+      )}`
+    );
+
     this.setState(
       {
         by,
@@ -211,17 +204,11 @@ class Index extends React.Component {
     if (filterBy !== this.state.filterBy) {
       let option = this.state.by;
       let slug = this.convertToSlug(filterBy.value);
-      if (!option.slug) {
-        Router.push(
-          "/leaderboard/[type]/[hub]",
-          `/leaderboard/${this.state.type}/${slug}`
-        );
-      } else {
-        Router.push(
-          "/leaderboard/[type]/[hub]/[scope]",
-          `/leaderboard/${this.state.type}/${option.slug}/${slug}`
-        );
-      }
+
+      Router.push(
+        "/leaderboard/[type]/[hub]/[scope]",
+        `/leaderboard/${this.state.type}/${option.slug}/${slug}`
+      );
       this.setState(
         {
           filterBy,
@@ -248,7 +235,7 @@ class Index extends React.Component {
     }
 
     byOptions = [
-      { label: "ResearchHub", value: 0 },
+      { label: "ResearchHub", value: 0, slug: "researchhub" },
       ...byOptions.sort((a, b) => {
         return a.label.localeCompare(b.label);
       }),
@@ -284,7 +271,7 @@ class Index extends React.Component {
     this.setState(
       {
         type,
-        by: by ? by : { label: "ResearchHub", value: 0 },
+        by: by ? by : { label: "ResearchHub", value: 0, slug: "researchhub" },
         filterBy: filterBy ? filterBy : defaultFilterBy,
       },
       () => {
@@ -446,14 +433,14 @@ class Index extends React.Component {
         >
           <Link
             href={{
-              pathname: "/leaderboard/[type]/[hub]",
+              pathname: "/leaderboard/[type]/[hub]/[scope]",
               query: {
                 type: `${encodeURIComponent(item.type)}`,
               },
             }}
-            as={`/leaderboard/${encodeURIComponent(
-              item.type
-            )}/${this.convertToSlug(this.state.filterBy.value)}`}
+            as={`/leaderboard/${encodeURIComponent(item.type)}/${
+              this.state.by.slug
+            }/${this.convertToSlug(this.state.filterBy.value)}`}
           >
             <a className={css(styles.sidebarLink)}>{name}</a>
           </Link>
