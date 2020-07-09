@@ -60,7 +60,10 @@ const PaperEntryCard = ({
     uploaded_by,
     external_source,
     promoted,
+    raw_authors,
   } = paper || null;
+
+  paper.raw_authors && console.log("paper", paper);
   let selected = null;
   let vote_type = 0;
   const [lightbox, toggleLightbox] = useState(false);
@@ -376,6 +379,32 @@ const PaperEntryCard = ({
     }
   };
 
+  const renderRawAuthors = () => {
+    const formatAuthors = (authors) => {
+      let { first_name, last_name } = authors[0];
+
+      if (authors.length === 1) {
+        return `${last_name}, ${first_name[0]}`;
+      } else if (authors.length === 2) {
+        let secondAuthor = authors[1];
+        return `${last_name}, ${first_name}, and ${secondAuthor.first_name} ${secondAuthor.last_name}`;
+      } else if (authors.length >= 3) {
+        return `${last_name}, ${first_name}, et al`;
+      }
+    };
+
+    if (raw_authors && raw_authors.length) {
+      return (
+        <div className={css(styles.publishContainer, styles.publishDate)}>
+          <div className={css(styles.publishDate)}>
+            {raw_authors.length < 2 ? "Author: " : "Authors: "}
+          </div>
+          {formatAuthors(raw_authors)}
+        </div>
+      );
+    }
+  };
+
   return (
     <Ripples
       className={css(styles.papercard, style && style)}
@@ -440,7 +469,8 @@ const PaperEntryCard = ({
                 </div>
               </a>
             </Link>
-            {renderUploadedBy()}
+            {/* {renderUploadedBy()} */}
+            {renderRawAuthors()}
             {renderBullet()}
             <div
               className={css(
