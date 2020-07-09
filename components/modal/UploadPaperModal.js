@@ -84,38 +84,6 @@ class UploadPaperModal extends React.Component {
   };
 
   /**
-   * grabs the appropriate status tex,
-   * depending on where the user is in the upload flow
-   */
-  getStatusText = () => {
-    let {
-      search,
-      searching,
-      papers,
-      uploadView,
-      selectedPaper,
-      uploadFinish,
-      mobileView,
-    } = this.state;
-
-    if (search === "") {
-      return `First check to make sure your paper${
-        mobileView ? "\n" : " "
-      }isn't already on ResearchHub`;
-    } else if (searching) {
-      return "Searching by name and DOI...";
-    } else if (papers.length === 0) {
-      return "Looks like this paper is not on ResearchHub yet.";
-    } else if (papers.length > 3) {
-      return "Scroll through the results";
-    } else if (selectedPaper) {
-      return "This paper is on ResearchHub!";
-    } else if (uploadFinish) {
-      return "We’re almost done! Click ‘continue’ to add more information";
-    }
-  };
-
-  /**
    * prevents scrolling of parent component when modal is open
    * & renables scrolling of parent component when modal is closed
    */
