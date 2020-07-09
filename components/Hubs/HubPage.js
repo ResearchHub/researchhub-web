@@ -89,16 +89,16 @@ const filterOptions = [
 
 const scopeOptions = [
   {
+    value: "day",
+    label: "Today",
+  },
+  {
     value: "week",
     label: "This Week",
   },
   {
     value: "month",
     label: "This Month",
-  },
-  {
-    value: "day",
-    label: "Today",
   },
   {
     value: "year",
