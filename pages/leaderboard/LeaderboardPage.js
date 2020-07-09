@@ -31,11 +31,6 @@ import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 
 const filterOptions = [
   {
-    value: "all_time",
-    label: "All Time",
-    disableScope: true,
-  },
-  {
     value: "today",
     label: "Today",
   },
@@ -52,6 +47,11 @@ const filterOptions = [
     label: "Past Year",
     disableScope: true,
   },
+  {
+    value: "all_time",
+    label: "All Time",
+    disableScope: true,
+  },
 ];
 
 const createdOptions = [
@@ -66,7 +66,7 @@ const createdOptions = [
 ];
 
 const createdByOptions = createdOptions[0];
-const defaultFilterBy = filterOptions[0];
+const defaultFilterBy = filterOptions[4];
 
 class Index extends React.Component {
   constructor(props) {
@@ -162,16 +162,20 @@ class Index extends React.Component {
       });
   };
 
+  convertToSlug = (value) => {
+    return value.split("_").join("-");
+  };
+
   onFilterSelect = (option, type) => {
     let by = option;
-    if (!option.slug) {
-      Router.push("/leaderboard/[type]", `/leaderboard/${this.state.type}`);
-    } else {
-      Router.push(
-        "/leaderboard/[type]/[hub]",
-        `/leaderboard/${this.state.type}/${option.slug}`
-      );
-    }
+
+    Router.push(
+      "/leaderboard/[type]/[hub]/[scope]",
+      `/leaderboard/${this.state.type}/${option.slug}/${this.convertToSlug(
+        this.state.filterBy.value
+      )}`
+    );
+
     this.setState(
       {
         by,
@@ -196,14 +200,24 @@ class Index extends React.Component {
 
   onTimeframeChange = (option) => {
     let filterBy = option;
-    this.setState(
-      {
-        filterBy,
-      },
-      () => {
-        this.fetchLeaderboard(this.state.type);
-      }
-    );
+
+    if (filterBy !== this.state.filterBy) {
+      let option = this.state.by;
+      let slug = this.convertToSlug(filterBy.value);
+
+      Router.push(
+        "/leaderboard/[type]/[hub]/[scope]",
+        `/leaderboard/${this.state.type}/${option.slug}/${slug}`
+      );
+      this.setState(
+        {
+          filterBy,
+        },
+        () => {
+          this.fetchLeaderboard(this.state.type);
+        }
+      );
+    }
   };
 
   /**
@@ -221,7 +235,7 @@ class Index extends React.Component {
     }
 
     byOptions = [
-      { label: "ResearchHub", value: 0 },
+      { label: "ResearchHub", value: 0, slug: "researchhub" },
       ...byOptions.sort((a, b) => {
         return a.label.localeCompare(b.label);
       }),
@@ -230,15 +244,40 @@ class Index extends React.Component {
     this.setState({
       byOptions,
     });
+
+    return byOptions;
   };
 
   componentDidMount() {
+    let byOptions = this.setHubs(this.props.hubs.hubs);
     let type = decodeURIComponent(Router.router.query.type);
-    this.setState({
-      type,
-    });
-    this.fetchLeaderboard(type);
-    this.setHubs(this.props.hubs.hubs);
+    let hub = decodeURIComponent(Router.router.query.hub);
+    let scope = Router.router.query.scope
+      ? decodeURIComponent(Router.router.query.scope)
+      : hub;
+
+    let by =
+      hub &&
+      byOptions.filter((option) => {
+        return option.slug === hub;
+      })[0];
+
+    let filterBy =
+      scope &&
+      filterOptions.filter((filter) => {
+        return filter.value === scope.split("-").join("_");
+      })[0];
+
+    this.setState(
+      {
+        type,
+        by: by ? by : { label: "ResearchHub", value: 0, slug: "researchhub" },
+        filterBy: filterBy ? filterBy : defaultFilterBy,
+      },
+      () => {
+        this.fetchLeaderboard(type);
+      }
+    );
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -394,12 +433,14 @@ class Index extends React.Component {
         >
           <Link
             href={{
-              pathname: "/leaderboard/[type]",
+              pathname: "/leaderboard/[type]/[hub]/[scope]",
               query: {
                 type: `${encodeURIComponent(item.type)}`,
               },
             }}
-            as={`/leaderboard/${encodeURIComponent(item.type)}`}
+            as={`/leaderboard/${encodeURIComponent(item.type)}/${
+              this.state.by.slug
+            }/${this.convertToSlug(this.state.filterBy.value)}`}
           >
             <a className={css(styles.sidebarLink)}>{name}</a>
           </Link>
