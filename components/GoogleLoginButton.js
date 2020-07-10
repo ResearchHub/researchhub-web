@@ -1,6 +1,8 @@
 import { GoogleLogin } from "react-google-login";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import { Helpers } from "@quantfive/js-web-config";
+import { useRouter } from "next/router";
 
 import Button from "~/components/Form/Button";
 import { AuthActions } from "../redux/auth";
@@ -10,9 +12,46 @@ import { BannerActions } from "~/redux/banner";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import colors from "~/config/themes/colors";
+import API from "../config/api";
+import { useEffect } from "react";
 
 const GoogleLoginButton = (props) => {
-  let { customLabel, hideButton } = props;
+  let { customLabel, hideButton, isLoggedIn, auth } = props;
+  const router = useRouter();
+
+  useEffect(promptYolo, [auth.authChecked]);
+
+  function promptYolo() {
+    if (!auth.isLoggedIn && auth.authChecked && router.query.onetap) {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleYolo,
+      });
+      google.accounts.id.prompt((notification) => {
+        console.log(notification);
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        }
+      });
+    }
+  }
+
+  async function handleYolo(data) {
+    let { googleYoloLogin, getUser } = props;
+
+    await googleYoloLogin(data).then((action) => {
+      if (action.loginFailed) {
+        showLoginFailureMessage();
+      } else {
+        getUser().then((userAction) => {
+          props.loginCallback && props.loginCallback();
+          props.showSignupBanner && props.removeBanner();
+          if (!userAction.user.has_seen_orcid_connect_modal) {
+            props.openOrcidConnectModal(true);
+          }
+        });
+      }
+    });
+  }
 
   const responseGoogle = async (response) => {
     let { googleLogin, getUser } = props;
@@ -57,16 +96,18 @@ const GoogleLoginButton = (props) => {
           );
         } else {
           return (
-            <Button
-              disabled={renderProps.disabled}
-              onClick={renderProps.onClick}
-              customButtonStyle={[styles.button, props.styles]}
-              icon={"/static/icons/google.png"}
-              rippleClass={props.rippleClass}
-              customLabelStyle={props.customLabelStyle}
-              customIconStyle={[styles.iconStyle, props.iconStyle]}
-              label={customLabel ? customLabel : "Login with Google"}
-            />
+            <div className={css(styles.glogin)}>
+              <Button
+                disabled={renderProps.disabled}
+                onClick={renderProps.onClick}
+                customButtonStyle={[styles.button, props.styles]}
+                icon={"/static/icons/google.png"}
+                rippleClass={props.rippleClass}
+                customLabelStyle={props.customLabelStyle}
+                customIconStyle={[styles.iconStyle, props.iconStyle]}
+                label={customLabel ? customLabel : "Login with Google"}
+              />
+            </div>
           );
         }
       }}
@@ -106,6 +147,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
+  googleYoloLogin: AuthActions.googleYoloLogin,
   googleLogin: AuthActions.googleLogin,
   getUser: AuthActions.getUser,
   openOrcidConnectModal: ModalActions.openOrcidConnectModal,

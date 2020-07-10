@@ -288,7 +288,7 @@ const Navbar = (props) => {
         />
         {menuTabsRender}
         {!isLoggedIn ? (
-          renderMenuLoginButtons()
+          renderMenuLoginButtons(isLoggedIn)
         ) : (
           <Button
             label={"Add Paper"}
@@ -301,7 +301,7 @@ const Navbar = (props) => {
     );
   }
 
-  function renderMenuLoginButtons() {
+  function renderMenuLoginButtons(isLoggedIn) {
     return (
       <div className={css(styles.loginContainer)} key={`navbar_tab_login`}>
         <GoogleLoginButton
@@ -310,6 +310,7 @@ const Navbar = (props) => {
           rippleClass={styles.rippleClass}
           customLabel="Login"
           customLabelStyle={[styles.googleLabelMobile]}
+          isLoggedIn
         />
       </div>
     );
@@ -319,13 +320,14 @@ const Navbar = (props) => {
     setSideMenu(state.isOpen);
   }
 
-  function renderLoginButtons() {
+  function renderLoginButtons(isLoggedIn) {
     return (
       <div className={css(styles.oauthContainer)}>
         <GoogleLoginButton
           styles={[styles.button, styles.googleLoginButton, styles.login]}
           iconStyle={styles.googleIcon}
           customLabelStyle={[styles.googleLabel]}
+          isLoggedIn={isLoggedIn}
         />
         <div className={css(styles.divider)}></div>
       </div>
@@ -435,7 +437,7 @@ const Navbar = (props) => {
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
               authChecked ? (
-                renderLoginButtons()
+                renderLoginButtons(isLoggedIn)
               ) : null
             ) : (
               <div className={css(styles.userDropdown)}>
@@ -887,7 +889,7 @@ const styles = StyleSheet.create({
     },
   },
   oauthContainer: {
-    display: "flex",
+    position: "relative",
     alignItems: "center",
     width: "100%",
     minWidth: 160,
