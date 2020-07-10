@@ -214,6 +214,38 @@ export const AuthActions = {
   },
 
   /**
+   * Login with google yolo
+   */
+  googleYoloLogin: (params) => {
+    return (dispatch, getState) => {
+      params.uuid = getState().auth.user.uuid;
+      let postConfig = API.POST_CONFIG(params);
+      delete postConfig["headers"]["Authorization"];
+      return fetch(API.GOOGLE_YOLO, postConfig)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((json) => {
+          saveToLocalStorage(AUTH_TOKEN, json.key);
+          return dispatch({
+            type: AuthConstants.LOGIN,
+            isLoggedIn: true,
+            isFetchingLogin: false,
+            loginFailed: false,
+          });
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+          return dispatch({
+            type: AuthConstants.LOGIN_FAILURE,
+            isLoggedIn: false,
+            isFetchingLogin: false,
+            loginFailed: true,
+          });
+        });
+    };
+  },
+
+  /**
    * Login with ORCID
    */
   orcidLogin: (params) => {
