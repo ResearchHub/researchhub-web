@@ -92,6 +92,7 @@ const routes = (BASE_URL) => {
       return url;
     },
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
+    GOOGLE_YOLO: BASE_URL + "auth/google/yolo/",
     ORCID_CONNECT: BASE_URL + "auth/orcid/connect/",
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({ search, config, page, size, external_search = true }) => {
