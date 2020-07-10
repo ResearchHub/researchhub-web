@@ -2,6 +2,7 @@ import { GoogleLogin } from "react-google-login";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { Helpers } from "@quantfive/js-web-config";
+import { useRouter } from "next/router";
 
 import Button from "~/components/Form/Button";
 import { AuthActions } from "../redux/auth";
@@ -16,11 +17,12 @@ import { useEffect } from "react";
 
 const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth } = props;
+  const router = useRouter();
 
   useEffect(promptYolo, [auth.authChecked]);
 
   function promptYolo() {
-    if (!auth.isLoggedIn && auth.authChecked) {
+    if (!auth.isLoggedIn && auth.authChecked && router.query.onetap) {
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleYolo,
