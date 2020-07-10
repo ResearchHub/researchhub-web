@@ -13,10 +13,11 @@ if (process.browser) {
 // Components
 import RichTextEditor from "./RichTextEditor";
 import AndroidTextEditor from "./AndroidTextEditor";
+import QuillTextEditor from "./QuillTextEditor";
 
 import { ModalActions } from "../../redux/modals";
 
-import { convertToEditorValue } from "~/config/utils";
+import { convertToEditorValue, convertEditorValueToHtml } from "~/config/utils";
 
 const TextEditor = (props) => {
   const {
@@ -97,44 +98,54 @@ const TextEditor = (props) => {
     props.setRef && props.setRef(editor);
   }
 
-  if ((isAndroid || isAndroidJS) && !readOnly) {
-    return (
-      <AndroidTextEditor
-        initialValue={passedValue ? passedValue : value}
-        onCancel={cancel}
-        onSubmit={submit}
-      />
-    );
-  } else {
-    return (
-      <RichTextEditor
-        setRef={setInternalRef}
-        ref={setEditorRef}
-        readOnly={readOnly || false}
-        onChange={handleChange}
-        initialValue={passedValue ? passedValue : value}
-        canCancel={canCancel}
-        canSubmit={canSubmit}
-        containerStyles={containerStyles}
-        cancel={cancel}
-        submit={submit}
-        commentEditor={commentEditor}
-        value={passedValue ? passedValue : value}
-        hideButton={hideButton}
-        showDiff={showDiff}
-        previousVersion={previousVersion}
-        classNames={classNames}
-        placeholder={placeholder && placeholder}
-        autoFocus={true}
-        hideCancelButton={hideCancelButton && hideCancelButton}
-        commentStyles={commentStyles && commentStyles}
-        smallToolBar={smallToolBar && smallToolBar}
-        loading={loading && loading}
-        commentEditorStyles={commentEditorStyles && commentEditorStyles}
-        removeStickyToolbar={removeStickyToolbar && removeStickyToolbar}
-      />
-    );
-  }
+  return (
+    <QuillTextEditor
+      value={
+        passedValue
+          ? convertEditorValueToHtml(passedValue)
+          : convertEditorValueToHtml(value)
+      }
+    />
+  );
+
+  // if ((isAndroid || isAndroidJS) && !readOnly) {
+  //   return (
+  //     <AndroidTextEditor
+  //       initialValue={passedValue ? passedValue : value}
+  //       onCancel={cancel}
+  //       onSubmit={submit}
+  //     />
+  //   );
+  // } else {
+  //   return (
+  //     <RichTextEditor
+  //       setRef={setInternalRef}
+  //       ref={setEditorRef}
+  //       readOnly={readOnly || false}
+  //       onChange={handleChange}
+  //       initialValue={passedValue ? passedValue : value}
+  //       canCancel={canCancel}
+  //       canSubmit={canSubmit}
+  //       containerStyles={containerStyles}
+  //       cancel={cancel}
+  //       submit={submit}
+  //       commentEditor={commentEditor}
+  //       value={passedValue ? passedValue : value}
+  //       hideButton={hideButton}
+  //       showDiff={showDiff}
+  //       previousVersion={previousVersion}
+  //       classNames={classNames}
+  //       placeholder={placeholder && placeholder}
+  //       autoFocus={true}
+  //       hideCancelButton={hideCancelButton && hideCancelButton}
+  //       commentStyles={commentStyles && commentStyles}
+  //       smallToolBar={smallToolBar && smallToolBar}
+  //       loading={loading && loading}
+  //       commentEditorStyles={commentEditorStyles && commentEditorStyles}
+  //       removeStickyToolbar={removeStickyToolbar && removeStickyToolbar}
+  //     />
+  //   );
+  // }
 };
 
 TextEditor.propTypes = {
