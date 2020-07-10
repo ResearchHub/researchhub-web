@@ -15,23 +15,22 @@ import API from "../config/api";
 import { useEffect } from "react";
 
 const GoogleLoginButton = (props) => {
-  let { customLabel, hideButton, isLoggedIn } = props;
+  let { customLabel, hideButton, isLoggedIn, auth } = props;
 
-  useEffect(promptYolo, []);
+  useEffect(promptYolo, [isLoggedIn, auth.isFetchingLogin]);
 
   function promptYolo() {
-    window.onload = function() {
-      if (!isLoggedIn) {
-        google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleYolo,
-        });
-        google.accounts.id.prompt((notification) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          }
-        });
-      }
-    };
+    if (!auth.isLoggedIn && !auth.isFetchingLogin) {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleYolo,
+      });
+      google.accounts.id.prompt((notification) => {
+        console.log(notification);
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        }
+      });
+    }
   }
 
   async function handleYolo(data) {
