@@ -21,14 +21,16 @@ const GoogleLoginButton = (props) => {
 
   function promptYolo() {
     window.onload = function() {
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleYolo,
-      });
-      google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        }
-      });
+      if (!isLoggedIn) {
+        google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleYolo,
+        });
+        google.accounts.id.prompt((notification) => {
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          }
+        });
+      }
     };
   }
 
