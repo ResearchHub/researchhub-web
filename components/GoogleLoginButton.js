@@ -17,12 +17,10 @@ import { useEffect } from "react";
 const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth } = props;
 
-  useEffect(promptYolo, [auth.isLoggedIn, auth.isFetchingLogin]);
+  useEffect(promptYolo, [auth.isLoggedIn, auth.loginFetched]);
 
   function promptYolo() {
-    console.log(auth.isLoggedIn);
-    console.log(auth.isFetchingLogin);
-    if (!auth.isLoggedIn && !auth.isFetchingLogin) {
+    if (!auth.isLoggedIn && auth.loginFetched) {
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleYolo,
@@ -107,16 +105,6 @@ const GoogleLoginButton = (props) => {
                 customIconStyle={[styles.iconStyle, props.iconStyle]}
                 label={customLabel ? customLabel : "Login with Google"}
               />
-              {/* TODO: Remove <div
-                ref={yoloRef}
-                className={css(styles.onetap)}
-                id="g_id_onload"
-                data-auto_select={false}
-                data-client_id={GOOGLE_CLIENT_ID}
-                // data-login_uri={API.GOOGLE_YOLO}
-                // data-callback="console.log"
-                data-skip_prompt_cookie="somecookie"
-              >yolo</div> */}
             </div>
           );
         }

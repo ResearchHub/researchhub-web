@@ -199,6 +199,7 @@ export const AuthActions = {
             isLoggedIn: true,
             isFetchingLogin: false,
             loginFailed: false,
+            loginFetched: true,
           });
         })
         .catch((error) => {
@@ -208,6 +209,7 @@ export const AuthActions = {
             isLoggedIn: false,
             isFetchingLogin: false,
             loginFailed: true,
+            loginFetched: true,
           });
         });
     };
