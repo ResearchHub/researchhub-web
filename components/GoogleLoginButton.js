@@ -17,9 +17,11 @@ import { useEffect } from "react";
 const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth } = props;
 
-  useEffect(promptYolo, [isLoggedIn, auth.isFetchingLogin]);
+  useEffect(promptYolo, [auth.isLoggedIn, auth.isFetchingLogin]);
 
   function promptYolo() {
+    console.log(auth.isLoggedIn);
+    console.log(auth.isFetchingLogin);
     if (!auth.isLoggedIn && !auth.isFetchingLogin) {
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
