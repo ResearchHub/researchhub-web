@@ -1,10 +1,9 @@
 import { StyleSheet, css } from "aphrodite";
 import numeral from "numeral";
-import { useDispatch, useStore, connect } from "react-redux";
+import { useDispatch, connect } from "react-redux";
 import { ModalActions } from "~/redux/modals";
 import { useState, useEffect } from "react";
 import ReputationTooltip from "./ReputationTooltip";
-import colors from "~/config/themes/colors";
 
 const Reputation = (props) => {
   const { reputation, balance, showBalance, auth } = props;
@@ -36,6 +35,7 @@ const Reputation = (props) => {
   return (
     <div
       className={css(styles.reputationContainer)}
+      data-tip={""}
       data-for="reputationTooltip"
       onClick={openTransactionModal}
     >
