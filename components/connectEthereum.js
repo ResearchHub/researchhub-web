@@ -56,6 +56,6 @@ export async function disconnect(provider) {
 }
 
 async function getEthAccounts(eth) {
-  const accounts = await eth.request({ method: "eth_requestAccounts" });
+  const accounts = await eth.enable();
   return accounts;
 }
