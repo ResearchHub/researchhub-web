@@ -490,9 +490,7 @@ class TransactionModal extends React.Component {
           <div className={css(styles.header, styles.text)}>
             Withdraw ResearchCoin
           </div>
-          {/* <div className={css(styles.testnetBanner)}>
-            Currently on Testnet
-          </div> */}
+          <div className={css(styles.testnetBanner)}>Currently on Testnet</div>
           <img
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
