@@ -35,18 +35,21 @@ const LeaderboardContainer = (props) => {
 
   const renderLeaderboardUsers = (users) => {
     return users.map((user, index) => {
+      let name = "Anonymous";
+      let authorId = user.author_profile && user.author_profile.id;
+      if (user.author_profile) {
+        name =
+          user.author_profile.first_name + " " + user.author_profile.last_name;
+      }
+
       return (
         <div className={css(styles.user)} key={`user_${index}_${user.id}`}>
           <LeaderboardUser
             user={user}
-            name={
-              user.author_profile.first_name +
-              " " +
-              user.author_profile.last_name
-            }
+            name={name}
             authorProfile={user.author_profile}
             reputation={user.reputation}
-            authorId={user.author_profile.id}
+            authorId={authorId}
           />
         </div>
       );
