@@ -45,7 +45,7 @@ const Navbar = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { isLoggedIn, user, authChecked, signout } = props;
+  const { isLoggedIn, user, authChecked, signout, walletLink } = props;
 
   let dropdown;
   let avatar;
@@ -496,7 +496,9 @@ const Navbar = (props) => {
                     </Link>
                     <div
                       className={css(styles.option, styles.lastOption)}
-                      onClick={signout}
+                      onClick={() => {
+                        signout({ walletLink });
+                      }}
                     >
                       <i
                         className={css(styles.profileIcon) + " fad fa-sign-out"}
@@ -901,6 +903,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
   isLoggedIn: state.auth.isLoggedIn,
   authChecked: state.auth.authChecked,
+  walletLink: state.auth.walletLink,
 });
 
 const mapDispatchToProps = {

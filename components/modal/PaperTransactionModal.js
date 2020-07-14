@@ -54,7 +54,6 @@ class PaperTransactionModal extends React.Component {
       connectedMetaMask: false,
       connectedWalletLink: false,
       ethProvider: null,
-      transition: false,
       listenerNetwork: null,
       listenerAccount: null,
       validating: false,
@@ -508,16 +507,16 @@ class PaperTransactionModal extends React.Component {
         )}
         onClick={async () => {
           if (!this.state.connectedMetaMask) {
-            this.transitionScreen(() =>
-              this.setState({
-                nextScreen: true,
-                offChain: false,
-                metaMaskVisible: true,
-                walletLinkVisible: false,
-              })
-            );
             await this.connectMetaMask();
           }
+          this.transitionScreen(() =>
+            this.setState({
+              nextScreen: true,
+              offChain: false,
+              metaMaskVisible: true,
+              walletLinkVisible: false,
+            })
+          );
         }}
       >
         MetaMask
@@ -638,7 +637,6 @@ class PaperTransactionModal extends React.Component {
   };
 
   renderToggleContainer = (className) => {
-    console.log(this.state.offChain);
     return (
       <div className={className}>
         <div
@@ -661,7 +659,7 @@ class PaperTransactionModal extends React.Component {
           In-App
         </div>
         {this.renderMetaMaskButton()}
-        {this.renderWalletLinkButton()}
+        {/* {this.renderWalletLinkButton()} */}
       </div>
     );
   };
