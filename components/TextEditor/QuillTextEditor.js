@@ -16,6 +16,7 @@ class Editor extends React.Component {
       readOnly: false,
       value: this.props.value ? this.props.value : { ops: [] },
       events: [],
+      uid: this.id(),
     };
   }
 
@@ -24,7 +25,7 @@ class Editor extends React.Component {
   }
 
   onEditorChange = (value, delta, source, editor) => {
-    // console.log('editor.getContents()', editor.getContents());
+    console.log("editor.getContents()", editor.getContents());
     // console.log(value);
     // console.log("html", editor.getHTML());
     // console.log("text", editor.getText());
@@ -63,17 +64,63 @@ class Editor extends React.Component {
     });
   };
 
-  onToggle = () => {
-    this.setState({ enabled: !this.state.enabled });
+  handleEvent = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
-  onToggleReadOnly = () => {
-    this.setState({ readOnly: !this.state.readOnly });
+  id = () => {
+    // Math.random should be unique because of its seeding algorithm.
+    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+    // after the decimal.
+    return (
+      "_" +
+      Math.random()
+        .toString(36)
+        .substr(2, 9)
+    );
   };
 
-  onSetContents = () => {
-    this.setState({ value: "This is some <b>fine</b> example content" });
+  renderToolbar = (id) => {
+    var state = this.state;
+    var enabled = state.enabled;
+    var readOnly = state.readOnly;
+    var selection = this.formatRange(state.selection);
+    return (
+      <div id={"#" + id} className={"ql-toolbar"} onClick={this.handleEvent}>
+        {/* <select className="ql-size">
+          <option value={"header-1"} className={css(styles.headerOne)}>Header 1</option>
+          <option value={"header-2"} className={css(styles.headerTwo)}>Header 2</option>
+          <option value={"body"} className={css(styles.body)} selected>Body</option>
+        </select> */}
+        <span className="ql-formats">
+          <button
+            className="ql-list"
+            value="ordered"
+            onClick={this.handleEvent}
+          />
+          <button
+            className="ql-list"
+            value="bullet"
+            onClick={this.handleEvent}
+          />
+          <button className="ql-indent" value="-1" onClick={this.handleEvent} />
+          <button className="ql-indent" value="+1" onClick={this.handleEvent} />
+        </span>
+        <button className="ql-bold" onClick={this.handleEvent} />
+        <button className="ql-italic" onClick={this.handleEvent} />
+        <button className="ql-underline" onClick={this.handleEvent} />
+        <span className="ql-formats">
+          <button className="ql-link"></button>
+          <button className="ql-image"></button>
+          <button className="ql-video"></button>
+          <button className="ql-formula"></button>
+        </span>
+      </div>
+    );
   };
+
+  renderButtons = () => {};
 
   render() {
     return (
@@ -84,60 +131,47 @@ class Editor extends React.Component {
             this.props.commentEditorStyles && this.props.commentEditorStyles
           )}
         >
-          {this.state.enabled && (
-            <ReactQuill
-              theme={this.state.theme}
-              readOnly={this.state.readOnly}
-              onChange={this.onEditorChange}
-              onChangeSelection={this.onEditorChangeSelection}
-              onFocus={this.onEditorFocus}
-              onBlur={this.onEditorBlur}
-              defaultValue={this.props.value}
-            />
-          )}
+          {this.renderToolbar(this.state.uid)}
+          <ReactQuill
+            theme={"snow"}
+            readOnly={this.state.readOnly}
+            onChange={this.onEditorChange}
+            onChangeSelection={this.onEditorChangeSelection}
+            onFocus={this.onEditorFocus}
+            onBlur={this.onEditorBlur}
+            defaultValue={this.props.value}
+            modules={Editor.modules(this.state.uid)}
+            formats={Editor.formats}
+          />
+          {this.renderButtons()}
         </div>
       </div>
     );
   }
-
-  renderToolbar() {
-    var state = this.state;
-    var enabled = state.enabled;
-    var readOnly = state.readOnly;
-    var selection = this.formatRange(state.selection);
-    return (
-      <div>
-        <button onClick={this.onToggle}>
-          {enabled ? "Disable" : "Enable"}
-        </button>
-        <button onClick={this.onToggleReadOnly}>
-          Set {readOnly ? "read/Write" : "read-only"}
-        </button>
-        <button onClick={this.onSetContents}>
-          Fill contents programmatically
-        </button>
-        <button disabled={true}>Selection: ({selection})</button>
-      </div>
-    );
-  }
-
-  renderSidebar() {
-    return (
-      <div style={{ overflow: "hidden", float: "right" }}>
-        <textarea
-          style={{ display: "block", width: 300, height: 300 }}
-          value={JSON.stringify(this.state.value, null, 2)}
-          readOnly={true}
-        />
-        <textarea
-          style={{ display: "block", width: 300, height: 300 }}
-          value={this.state.events.join("\n")}
-          readOnly={true}
-        />
-      </div>
-    );
-  }
 }
+
+Editor.modules = (toolbarId) => ({
+  toolbar: {
+    container: "#" + toolbarId,
+  },
+});
+
+Editor.formats = [
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "link",
+  "image",
+  "color",
+];
 
 const styles = StyleSheet.create({
   editor: {
@@ -280,6 +314,16 @@ const styles = StyleSheet.create({
   imgToolTip: {
     top: 60,
     bottom: "unset",
+  },
+  headerOne: {
+    fontSize: 22,
+    fontWeight: 500,
+    paddingBottom: 10,
+  },
+  headingTwo: {
+    fontSize: 20,
+    fontWeight: 500,
+    paddingBottom: 10,
   },
 });
 
