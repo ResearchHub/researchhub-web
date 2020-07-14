@@ -36,6 +36,7 @@ export const AuthConstants = {
   SET_UPLOADING_PAPER: "@@auth/SET_UPLOADING_PAPER",
   CHECK_USER_FIRST_TIME: "@@auth/CHECK_USER_FIRST_TIME",
   UPDATE_USER_COIN_ACTION: "@@auth/UPDATE_USER_COIN_ACTION",
+  SET_WALLETLINK: "@@auth/SET_WALLETLINK",
 };
 
 function saveToLocalStorage(key, value) {
@@ -299,12 +300,19 @@ export const AuthActions = {
   /**
    * Signs a user out
    */
-  signout: () => {
+  signout: ({ walletLink }) => {
     return (dispatch) => {
       return fetch(API.SIGNOUT, API.POST_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
-        .then((json) => {
+        .then(() => {
+          try {
+            if (walletLink) {
+              walletLink.disconnect();
+            }
+          } catch (error) {
+            console.error(error);
+          }
           window.localStorage.removeItem(AUTH_TOKEN);
           window.location.replace("/");
         });
@@ -409,6 +417,15 @@ export const AuthActions = {
     };
   },
 
+  setWalletLink: (walletLink) => {
+    return (dispatch) => {
+      return dispatch({
+        type: AuthConstants.SET_WALLETLINK,
+        walletLink,
+      });
+    };
+  },
+
   // /***
   //  * Save changes to user profile
   //  */
@@ -452,6 +469,7 @@ const defaultAuthState = {
   uploadingPaper: false,
   userCoinAction: "",
   uuid: null,
+  walletLink: null,
 };
 
 const AuthReducer = (state = defaultAuthState, action) => {
@@ -467,6 +485,7 @@ const AuthReducer = (state = defaultAuthState, action) => {
     case AuthConstants.SET_USER_BANNER_PREFERENCE:
     case AuthConstants.GET_USER_BANNER_PREFERENCE:
     case AuthConstants.SET_UPLOADING_PAPER:
+    case AuthConstants.SET_WALLETLINK:
       return {
         ...state,
         ...action,
