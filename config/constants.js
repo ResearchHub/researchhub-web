@@ -46,3 +46,7 @@ export const METATAG_DEFAULT_IMAGE_URL =
 export function nameToUrl(name) {
   return encodeURIComponent(name);
 }
+
+export const WEB3_INFURA_PROJECT_ID = "a7ccde5d021c48e1a0525dfd6e58490f";
+export const MAINNET_CHAIN_ID = "1";
+export const RINKEBY_CHAIN_ID = "4";

@@ -22,21 +22,27 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import { useMetaMask, useWalletLink } from "../connectEthereum";
+import CheckBox from "../Form/CheckBox";
+
+const RINKEBY_CHAIN_ID = "4";
 
 class TransactionModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      networkVersion: null, //
-      networkAddress: "",
+      buttonEnabled: false,
+      networkVersion: null,
       connectedMetaMask: false,
+      connectedWalletLink: false,
+      ethAccount: "",
+      ethAccountIsValid: false,
       transition: false,
       listenerNetwork: null,
       listenerAccount: null,
       userBalance: 0,
       withdrawals: [],
       validating: false,
-      valid: false,
       transactionHash: "",
     };
     this.state = {
@@ -46,33 +52,22 @@ class TransactionModal extends React.Component {
 
   componentDidMount() {
     if (this.props.auth.isLoggedIn) {
-      if (typeof window.ethereum !== "undefined") {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        if (
-          this.props.modals.openTransactionModal &&
-          !this.state.connectedMetaMask
-        ) {
-          this.checkNetwork();
-          this.updateChainId(ethereum.networkVersion);
-        }
-      }
-
       this.getBalance();
     }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.auth.isLoggedIn) {
+      if (!this.state.buttonEnabled && this.props.agreedToTerms) {
+        this.setState({
+          buttonEnabled: true,
+        });
+      }
       if (
         prevProps.modals.openTransactionModal !==
           this.props.modals.openTransactionModal &&
         this.props.modals.openTransactionModal
       ) {
-        if (typeof window.ethereum !== "undefined") {
-          this.checkNetwork();
-          this.updateChainId(ethereum.networkVersion);
-        }
         this.getBalance();
       }
       if (
@@ -93,12 +88,7 @@ class TransactionModal extends React.Component {
           let account = accounts && accounts.result ? accounts.result[0] : [];
           that.setState({
             connectedMetaMask: true,
-            networkAddress: account,
-            listenerNetwork: ethereum.on("networkChanged", () =>
-              this.updateChainId(ethereum.networkVersion)
-            ),
-            listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
-            valid: true,
+            ethAccount: account,
           });
         })
         .catch((error) => {
@@ -114,10 +104,16 @@ class TransactionModal extends React.Component {
   updateChainId = (chainId) => {
     if (chainId !== this.state.networkVersion) {
       let transition = false;
-      if (this.state.networkVersion !== "1" && chainId === "1") {
+      if (
+        this.state.networkVersion !== RINKEBY_CHAIN_ID &&
+        chainId === RINKEBY_CHAIN_ID
+      ) {
         transition = true;
       }
-      if (this.state.networkVersion === "1" && chainId !== "1") {
+      if (
+        this.state.networkVersion === RINKEBY_CHAIN_ID &&
+        chainId !== RINKEBY_CHAIN_ID
+      ) {
         transition = true;
       }
       this.setState(
@@ -139,8 +135,10 @@ class TransactionModal extends React.Component {
 
   updateAccount = (accounts) => {
     let account = accounts && accounts[0] && accounts[0];
+    let valid = this.isAddress(account);
     this.setState({
-      networkAddress: account,
+      ethAccount: account,
+      ethAccountIsValid: valid,
     });
   };
 
@@ -163,6 +161,7 @@ class TransactionModal extends React.Component {
   };
 
   renderSwitchNetworkMsg = () => {
+    // TODO: For now let's just tell them to use rinkeby
     let { transition } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
@@ -175,13 +174,13 @@ class TransactionModal extends React.Component {
             </div>
             <div className={css(styles.subtitle)}>
               Simply open MetaMask and switch over to the
-              <b>{" Main Ethereum Network"}</b>
+              <b>{" Rinkeby Test Network"}</b>
             </div>
-            <img
+            {/* <img
               src={"/static/background/metamask.png"}
               className={css(styles.image)}
               draggable={false}
-            />
+            /> */}
           </Fragment>
         )}
       </div>
@@ -189,12 +188,7 @@ class TransactionModal extends React.Component {
   };
 
   renderTransactionScreen = () => {
-    let {
-      transition,
-      userBalance,
-      networkAddress,
-      transactionHash,
-    } = this.state;
+    let { transition, userBalance, ethAccount, transactionHash } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
         {transition ? (
@@ -264,12 +258,31 @@ class TransactionModal extends React.Component {
                 onClick: "",
               },
               {
-                value: networkAddress,
+                value: ethAccount,
                 onChange: this.handleNetworkAddressInput,
               }
             )}
+            {!this.props.agreedToTerms && (
+              <div className={css(styles.checkBoxContainer)}>
+                <CheckBox
+                  id={"tos"}
+                  active={this.state.buttonEnabled}
+                  isSquare={true}
+                  label={
+                    <span>
+                      I agree to the ResearchHub{" "}
+                      <a href={"/about/tos"} target="_blank">
+                        Terms of Service
+                      </a>
+                    </span>
+                  }
+                  onChange={this.toggleButton}
+                />
+              </div>
+            )}
             <div className={css(styles.buttons)}>
               <Button
+                disabled={!this.state.buttonEnabled || !ethAccount}
                 label={"Confirm"}
                 onClick={this.sendWithdrawalRequest}
                 customButtonStyle={styles.button}
@@ -281,8 +294,12 @@ class TransactionModal extends React.Component {
     );
   };
 
+  toggleButton = () => {
+    this.setState({ buttonEnabled: !this.state.buttonEnabled });
+  };
+
   renderRow = (left, right) => {
-    let { networkAddress, validating, valid } = this.state;
+    let { ethAccount, validating, ethAccountIsValid } = this.state;
     return (
       <div className={css(styles.row)}>
         <div className={css(styles.left, styles.spacedContent)}>
@@ -298,7 +315,7 @@ class TransactionModal extends React.Component {
             containerStyle={styles.formInput}
             onChange={right.onChange && right.onChange}
             inlineNodeRight={
-              networkAddress !== "" ? (
+              ethAccount !== "" ? (
                 validating ? (
                   <span className={css(styles.successIcon)}>
                     <Loader loading={true} size={23} />
@@ -307,10 +324,10 @@ class TransactionModal extends React.Component {
                   <span
                     className={css(
                       styles.successIcon,
-                      !valid && styles.errorIcon
+                      !ethAccountIsValid && styles.errorIcon
                     )}
                   >
-                    {valid ? (
+                    {ethAccountIsValid ? (
                       <i className="fal fa-check-circle" />
                     ) : (
                       <i className="fal fa-times-circle" />
@@ -345,14 +362,14 @@ class TransactionModal extends React.Component {
   handleNetworkAddressInput = (id, value) => {
     this.setState(
       {
-        networkAddress: value,
+        ethAccount: value,
         validating: true,
       },
       () => {
         setTimeout(() => {
           this.setState({
             validating: false,
-            valid: this.isAddress(this.state.networkAddress),
+            ethAccountIsValid: this.isAddress(value),
           });
         }, 400);
       }
@@ -361,12 +378,13 @@ class TransactionModal extends React.Component {
 
   sendWithdrawalRequest = (e) => {
     e.stopPropagation();
-    let { networkAddress } = this.state;
+    let { ethAccount } = this.state;
     let { showMessage, setMessage } = this.props;
     showMessage({ load: true, show: true });
-    if (this.isAddress(networkAddress)) {
+    if (this.isAddress(ethAccount)) {
       let param = {
-        to_address: this.toCheckSumAddress(networkAddress),
+        to_address: this.toCheckSumAddress(ethAccount),
+        agreed_to_terms: true,
       };
       fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
@@ -472,47 +490,225 @@ class TransactionModal extends React.Component {
     return true;
   };
 
+  renderToggleContainer = (className) => {
+    console.log(this.state.offChain);
+    return (
+      <div className={className}>
+        {this.renderMetaMaskButton()}
+        {this.renderWalletLinkButton()}
+      </div>
+    );
+  };
+
+  renderMetaMaskButton = () => {
+    return (
+      <div
+        className={css(
+          styles.toggle,
+          this.state.metaMaskVisible && styles.activeToggle
+        )}
+        onClick={async () => {
+          if (!this.state.connectedMetaMask) {
+            await this.connectMetaMask();
+          }
+          this.transitionScreen(() =>
+            this.setState({
+              nextScreen: true,
+              offChain: false,
+              metaMaskVisible: true,
+              walletLinkVisible: false,
+            })
+          );
+        }}
+      >
+        MetaMask
+      </div>
+    );
+  };
+
+  connectMetaMask = async () => {
+    const { connected, account } = await useMetaMask();
+    if (connected) {
+      this.setUpEthListeners();
+      console.log("Connected to MetaMask");
+      this.setState({
+        connectedMetaMask: connected,
+        connectedWalletLink: false,
+        ethAccount: account,
+        networkVersion: ethereum.networkVersion,
+        ethAccountIsValid: this.isAddress(account),
+      });
+    } else {
+      console.log("Failed to connect MetaMask");
+      this.setState({
+        connectedMetaMask: false,
+        connectedWalletLink: false,
+      });
+    }
+  };
+
+  setUpEthListeners() {
+    this.setState({
+      listenerNetwork: ethereum.on("networkChanged", () =>
+        this.updateChainId(ethereum.networkVersion)
+      ),
+      listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
+    });
+  }
+
+  renderWalletLinkButton = () => {
+    return (
+      <div
+        className={css(
+          styles.toggle,
+          this.state.walletLinkVisible && styles.activeToggle
+        )}
+        onClick={async () => {
+          if (!this.state.connectedWalletLink) {
+            await this.connectWalletLink();
+          }
+          this.transitionScreen(() => {
+            this.setState({
+              nextScreen: true,
+              walletLinkVisible: true,
+              connectedMetaMask: false,
+              metaMaskVisible: false,
+              offChain: false,
+            });
+          });
+        }}
+      >
+        WalletLink
+      </div>
+    );
+  };
+
+  connectWalletLink = async () => {
+    if (this.state.connectedWalletLink) {
+      this.disconnectWalletLink();
+      return;
+    }
+
+    const { connected, account, walletLink } = await useWalletLink();
+    if (connected) {
+      this.props.setWalletLink(walletLink);
+      console.log("Connected to WalletLink");
+      this.setState({
+        walletLink,
+        connectedMetaMask: false,
+        connectedWalletLink: connected,
+        ethAccount: account,
+        ethAccountIsValid: this.isAddress(account),
+      });
+    } else {
+      console.log("Failed to connect WalletLink");
+      this.setState({
+        connectedMetaMask: false,
+        connectedWalletLink: false,
+      });
+    }
+  };
+
+  disconnectWalletLink = async () => {
+    if (this.state.walletLink) {
+      this.state.walletLink.disconnect();
+      console.log("Disconnected WalletLink");
+    } else {
+      console.log("Nothing to disconnect");
+    }
+    this.setState({
+      connectedWalletLink: false,
+    });
+  };
+
+  transitionScreen = (callback) => {
+    this.setState({ transition: true }, () => {
+      setTimeout(() => {
+        callback();
+        this.setState({ transition: false }, () => {
+          if (this.state.offChain || !this.state.hasEthereum) {
+            this.setState({ error: this.handleError(this.state.value) });
+          }
+        });
+      }, 300);
+    });
+  };
+
+  handleError = (value) => {
+    if (!this.state.offChain) {
+      if (value > Number(this.state.balance) || value < 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      if (value > this.props.user.balance || value < 0) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  renderContent = () => {
+    return (
+      <div
+        className={css(
+          styles.modalContent,
+          this.state.networkVersion === RINKEBY_CHAIN_ID && styles.main
+        )}
+      >
+        <div className={css(styles.header, styles.text)}>
+          Withdraw ResearchCoin
+        </div>
+        {this.renderToggleContainer(css(styles.toggleContainer))}
+        <div className={css(styles.testnetBanner)}>
+          Currently on Rinkeby Testnet
+        </div>
+        <img
+          src={"/static/icons/close.png"}
+          className={css(styles.closeButton)}
+          onClick={this.closeModal}
+          draggable={false}
+        />
+        {this.state.connectedWalletLink && (
+          <div className={css(styles.connectStatus)}>
+            <div
+              className={css(
+                styles.dot,
+                this.state.connectedWalletLink && styles.connected
+              )}
+            />
+            Connected to WalletLink
+          </div>
+        )}
+        {this.state.connectedMetaMask && (
+          <div className={css(styles.connectStatus)}>
+            <div
+              className={css(
+                styles.dot,
+                this.state.connectedMetaMask && styles.connected
+              )}
+            />
+            Connected to MetaMask
+          </div>
+        )}
+        {this.state.connectedMetaMask &&
+        this.state.networkVersion !== RINKEBY_CHAIN_ID
+          ? this.renderSwitchNetworkMsg()
+          : this.renderTransactionScreen()}
+      </div>
+    );
+  };
+
   render() {
     let { modals } = this.props;
-    let { networkVersion, connectedMetaMask } = this.state;
     return (
       <BaseModal
         isOpen={modals.openTransactionModal}
         closeModal={this.closeModal}
         removeDefault={true}
       >
-        <div
-          className={css(
-            styles.modalContent,
-            networkVersion === "1" && styles.main
-          )}
-        >
-          <div className={css(styles.header, styles.text)}>
-            Withdraw ResearchCoin
-          </div>
-          <div className={css(styles.testnetBanner)}>Currently on Testnet</div>
-          <img
-            src={"/static/icons/close.png"}
-            className={css(styles.closeButton)}
-            onClick={this.closeModal}
-            draggable={false}
-          />
-          {connectedMetaMask && (
-            <div className={css(styles.connectStatus)}>
-              <div
-                className={css(
-                  styles.dot,
-                  connectedMetaMask && styles.connected
-                )}
-              />
-              Connected wallet: MetaMask
-            </div>
-          )}
-          {connectedMetaMask && networkVersion !== "1"
-            ? // ? this.renderSwitchNetworkMsg() comment back when on mainnet
-              this.renderTransactionScreen()
-            : this.renderTransactionScreen()}
-        </div>
+        {this.renderContent()}
       </BaseModal>
     );
   }
@@ -559,6 +755,11 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 22,
     },
+  },
+  text: {
+    fontSize: 18,
+    color: "#82817d",
+    fontWeight: 500,
   },
   title: {
     fontWeight: 500,
@@ -635,6 +836,9 @@ const styles = StyleSheet.create({
     border: "1px solid #82817d",
     borderRadius: ".5rem",
     // fontSize: '1.8rem'
+  },
+  checkBoxContainer: {
+    marginTop: 40,
   },
   infoIcon: {
     marginLeft: 5,
@@ -718,16 +922,46 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   testnetBanner: {
+    color: colors.BLUE(0.5),
     fontSize: 12,
     position: "absolute",
     right: 20,
     bottom: 25,
+  },
+  toggleContainer: {
+    width: "100%",
+    display: "flex",
+    // justifyContent: "flex-end",
+    justifyContent: "center",
+    marginBottom: 15,
+    marginTop: 15,
+  },
+  toggleContainerOnChain: {
+    marginTop: 0,
+  },
+  toggle: {
+    color: "rgba(36, 31, 58, 0.6)",
+    cursor: "pointer",
+    padding: "2px 8px",
+    fontSize: 14,
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  toggleRight: {
+    marginLeft: 5,
+  },
+  activeToggle: {
+    background: "#eaebfe",
+    borderRadius: 4,
+    color: colors.BLUE(),
   },
 });
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
   modals: state.modals,
+  agreedToTerms: state.auth.user.agreed_to_terms,
 });
 
 const mapDispatchToProps = {
@@ -736,6 +970,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   getUser: AuthActions.getUser,
   updateUser: AuthActions.updateUser,
+  setWalletLink: AuthActions.setWalletLink,
 };
 
 export default connect(

@@ -100,7 +100,7 @@ const OrcidLogin = (props) => {
         onSuccess();
       }
     } else {
-      dispatch(AuthActions.signout());
+      dispatch(AuthActions.signout({ walletLink: state.auth.walletLink }));
     }
   }
 
