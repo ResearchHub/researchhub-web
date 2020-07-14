@@ -27,6 +27,13 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { useMetaMask, useWalletLink } from "../connectEthereum";
+import { RINKEBY_CHAIN_ID } from "../../config/constants";
+
+// Constants
+const RinkebyRSCContractAddress = "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be";
+const RinkebyAppPurchaseContractAddress =
+  "0x486a754f4E5286d8797d92750F1a56DFd384b106";
 
 class PaperTransactionModal extends React.Component {
   constructor(props) {
@@ -38,16 +45,22 @@ class PaperTransactionModal extends React.Component {
       offChain: true,
       transition: false,
       // OnChain
+      metaMaskVisible: false,
+      walletLinkVisible: false,
       balance: 0,
-      networkVersion: null, //
-      networkAddress: "",
+      hasEthereum: false,
+      networkVersion: null,
+      ethAccount: "",
       connectedMetaMask: false,
-      transition: false,
+      connectedWalletLink: false,
+      ethProvider: null,
       listenerNetwork: null,
       listenerAccount: null,
       validating: false,
-      valid: false,
+      ethAccountIsValid: false,
       transactionHash: "",
+      AppPurchaseContractAddress: RinkebyAppPurchaseContractAddress,
+      RSCContractAddress: RinkebyRSCContractAddress,
       // Finish
       finish: false,
     };
@@ -71,7 +84,6 @@ class PaperTransactionModal extends React.Component {
     if (this.handleError(this.state.value)) {
       this.setState({ error: true });
     }
-    // this.createContract();
   }
 
   componentDidUpdate() {
@@ -80,19 +92,27 @@ class PaperTransactionModal extends React.Component {
     }
   }
 
-  createContract = () => {
-    this.provider = new ethers.providers.Web3Provider(window.ethereum);
+  createContract = async (provider) => {
+    this.provider = provider;
     this.signer = this.provider.getSigner(0);
     ethereum.autoRefreshOnNetworkChange = false;
+
+    let address = this.state.RSCContractAddress;
+    const { chainId } = await provider.getNetwork();
+    if (String(chainId) === RINKEBY_CHAIN_ID) {
+      address = RinkebyRSCContractAddress;
+    }
+
     this.RSCContract = new ethers.Contract(
-      "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be",
+      address,
       miniToken.abi,
       this.provider
     );
+    return this.RSCContract;
   };
 
-  checkRSCBalance = async (account) => {
-    let rawBalance = await this.RSCContract.balanceOf(account);
+  checkRSCBalance = async (contract, account) => {
+    let rawBalance = await contract.balanceOf(account);
     let balance = ethers.utils.formatUnits(rawBalance, 18);
     this.setState({ balance }, () => {
       this.setState({
@@ -107,13 +127,13 @@ class PaperTransactionModal extends React.Component {
     let allow = true;
 
     const appContract = new ethers.Contract(
-      "0x486a754f4E5286d8797d92750F1a56DFd384b106",
+      this.state.AppPurchaseContractAddress,
       contractAbi,
       this.provider
     );
 
     let rawAllowance = await this.RSCContract.functions.allowance(
-      this.state.networkAddress,
+      this.state.ethAccount,
       appContract.address
     );
 
@@ -134,7 +154,7 @@ class PaperTransactionModal extends React.Component {
       let hash = await appContract
         .connect(this.signer)
         .functions.buy(
-          "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be", // address of token contract
+          this.state.RSCContractAddress, // address of token contract
           ethers.utils.parseEther(`${this.state.value}`), // amount of RSC parsed
           ethers.utils.hexZeroPad(`0x${purchase_hash}`, 32) // convert item to bytes, (item)
         )
@@ -296,45 +316,13 @@ class PaperTransactionModal extends React.Component {
       });
   };
 
-  connectWallet = async () => {
-    if (!this.state.connectedMetaMask) {
-      ethereum
-        .send("eth_requestAccounts")
-        .then((accounts) => {
-          let account = accounts && accounts.result ? accounts.result[0] : [];
-          this.setState(
-            {
-              connectedMetaMask: true,
-              networkAddress: account,
-              listenerNetwork: ethereum.on(
-                "networkChanged",
-                this.updateChainId
-              ),
-              listenerAccount: ethereum.on(
-                "accountsChanged",
-                this.updateAccount
-              ),
-              valid: true,
-            },
-            () => this.checkBalance()
-          );
-        })
-        .catch((error) => {
-          if (error.code === 4001) {
-            // EIP 1193 userRejectedRequest error
-          } else {
-            console.error(error);
-          }
-        });
-    }
-  };
-
-  checkBalance = (accountAddress) => {
-    let account = accountAddress ? accountAddress : this.state.networkAddress;
-    this.checkRSCBalance(account);
+  checkBalance = (contract, accountAddress = null) => {
+    let account = accountAddress ? accountAddress : this.state.ethAccount;
+    this.checkRSCBalance(contract, account);
   };
 
   updateChainId = (chainId) => {
+    // TODO: Error if not 1 or 4
     if (chainId !== this.state.networkVersion) {
       let transition = false;
       if (this.state.networkVersion !== "1" && chainId === "1") {
@@ -343,10 +331,21 @@ class PaperTransactionModal extends React.Component {
       if (this.state.networkVersion === "1" && chainId !== "1") {
         transition = true;
       }
+
+      // TODO: Replace this with mainnet addresses
+      let RSCContractAddress = "";
+      let AppPurchaseContractAddress = "";
+      if (chainId === "4") {
+        RSCContractAddress = RinkebyRSCContractAddress;
+        AppPurchaseContractAddress = RinkebyAppPurchaseContractAddress;
+      }
+
       this.setState(
         {
           networkVersion: chainId, // shows the eth network
           transition: transition,
+          RSCContractAddress,
+          AppPurchaseContractAddress,
         },
         () => {
           this.state.transition &&
@@ -355,7 +354,7 @@ class PaperTransactionModal extends React.Component {
                 {
                   transition: false,
                 },
-                () => this.checkRSCBalance(this.state.networkAddress)
+                () => this.checkRSCBalance(this.state.ethAccount)
               );
             }, 300);
         }
@@ -367,7 +366,7 @@ class PaperTransactionModal extends React.Component {
     let account = accounts && accounts[0] && accounts[0];
     this.setState(
       {
-        networkAddress: account,
+        ethAccount: account,
       },
       () => {
         this.checkRSCBalance(account);
@@ -378,15 +377,15 @@ class PaperTransactionModal extends React.Component {
   handleNetworkAddressInput = (id, value) => {
     this.setState(
       {
-        networkAddress: value,
+        ethAccount: value,
         validating: true,
       },
       () => {
         setTimeout(() => {
           this.setState({
             validating: false,
-            valid: this.isAddress(this.state.networkAddress),
-            balance: this.isAddress(this.state.networkAddress)
+            ethAccountIsValid: this.isAddress(this.state.ethAccount),
+            balance: this.isAddress(this.state.ethAccount)
               ? this.checkBalance(value)
               : null,
           });
@@ -465,9 +464,9 @@ class PaperTransactionModal extends React.Component {
       setTimeout(() => {
         callback();
         this.setState({ transition: false }, () => {
-          !this.state.offChain && this.connectWallet();
-          this.state.offChain &&
+          if (this.state.offChain || !this.state.hasEthereum) {
             this.setState({ error: this.handleError(this.state.value) });
+          }
         });
       }, 300);
     });
@@ -486,15 +485,181 @@ class PaperTransactionModal extends React.Component {
             </div>
             <div className={css(styles.instruction)}>
               Simply open MetaMask and switch over {"\n"}to the
-              <b>{" Main Ethereum Network"}</b>
+              <b>{" Rinkeby Test Network"}</b>
             </div>
-            <img
+            {/* <img
               src={"/static/background/metamask.png"}
               className={css(styles.image)}
               draggable={false}
-            />
+            /> */}
           </Fragment>
         )}
+      </div>
+    );
+  };
+
+  renderMetaMaskButton = () => {
+    return (
+      <div
+        className={css(
+          styles.toggle,
+          this.state.metaMaskVisible && styles.activeToggle
+        )}
+        onClick={async () => {
+          if (!this.state.connectedMetaMask) {
+            await this.connectMetaMask();
+          }
+          this.transitionScreen(() =>
+            this.setState({
+              nextScreen: true,
+              offChain: false,
+              metaMaskVisible: true,
+              walletLinkVisible: false,
+            })
+          );
+        }}
+      >
+        MetaMask
+      </div>
+    );
+  };
+
+  connectMetaMask = async () => {
+    const { connected, account, provider } = await useMetaMask();
+    if (connected) {
+      this.setUpEthListeners();
+      console.log("Connected to MetaMask");
+      const valid = this.isAddress(account);
+      this.setState(
+        {
+          connectedMetaMask: connected,
+          connectedWalletLink: false,
+          ethAccount: account,
+          networkVersion: ethereum.networkVersion,
+          ethAccountIsValid: this.isAddress(account),
+        },
+        () => {
+          valid && this.updateBalance(provider);
+        }
+      );
+    } else {
+      console.log("Failed to connect MetaMask");
+      this.setState({
+        connectedMetaMask: false,
+        connectedWalletLink: false,
+      });
+    }
+  };
+
+  setUpEthListeners() {
+    this.setState({
+      listenerNetwork: ethereum.on("networkChanged", () =>
+        this.updateChainId(ethereum.networkVersion)
+      ),
+      listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
+    });
+  }
+
+  renderWalletLinkButton = () => {
+    return (
+      <div
+        className={css(
+          styles.toggle,
+          this.state.walletLinkVisible && styles.activeToggle
+        )}
+        onClick={async () => {
+          if (!this.state.connectedWalletLink) {
+            this.transitionScreen(() => {
+              this.setState({
+                nextScreen: true,
+                walletLinkVisible: true,
+                connectedMetaMask: false,
+                metaMaskVisible: false,
+                offChain: false,
+              });
+            });
+            await this.connectWalletLink();
+          }
+        }}
+      >
+        WalletLink
+      </div>
+    );
+  };
+
+  connectWalletLink = async () => {
+    if (this.state.connectedWalletLink) {
+      this.disconnectWalletLink();
+      return;
+    }
+
+    const { connected, account, walletLink, provider } = await useWalletLink();
+    if (connected) {
+      console.log("Connected to WalletLink");
+      const valid = this.isAddress(account);
+      this.setState(
+        {
+          walletLink,
+          connectedMetaMask: false,
+          connectedWalletLink: connected,
+          ethAccount: account,
+          ethAccountIsValid: valid,
+        },
+        () => {
+          valid && this.updateBalance(provider);
+        }
+      );
+    } else {
+      console.log("Failed to connect WalletLink");
+      this.setState({
+        connectedMetaMask: false,
+        connectedWalletLink: false,
+      });
+    }
+  };
+
+  updateBalance = async (provider) => {
+    const contract = await this.createContract(provider);
+    console.log(contract);
+    this.checkBalance(contract);
+  };
+
+  disconnectWalletLink = async () => {
+    if (this.state.walletLink) {
+      this.state.walletLink.disconnect();
+      console.log("Disconnected WalletLink");
+    } else {
+      console.log("Nothing to disconnect");
+    }
+    this.setState({
+      connectedWalletLink: false,
+    });
+  };
+
+  renderToggleContainer = (className) => {
+    return (
+      <div className={className}>
+        <div
+          className={css(
+            styles.toggle,
+            styles.toggleRight,
+            this.state.offChain && styles.activeToggle
+          )}
+          onClick={() =>
+            this.transitionScreen(() =>
+              this.setState({
+                nextScreen: true,
+                offChain: true,
+                metaMaskVisible: false,
+                walletLinkVisible: false,
+              })
+            )
+          }
+        >
+          In-App
+        </div>
+        {this.renderMetaMaskButton()}
+        {/* {this.renderWalletLinkButton()} */}
       </div>
     );
   };
@@ -506,10 +671,10 @@ class PaperTransactionModal extends React.Component {
       offChain,
       transition,
       connectedMetaMask,
-      networkAddress,
+      ethAccount,
       networkVersion,
       validating,
-      valid,
+      ethAccountIsValid,
       finish,
       transactionHash,
     } = this.state;
@@ -577,32 +742,7 @@ class PaperTransactionModal extends React.Component {
               "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
             }
           </div>
-          <div className={css(styles.toggleContainer)}>
-            <div
-              className={css(
-                styles.toggle,
-                styles.toggleRight,
-                offChain && styles.activeToggle
-              )}
-              onClick={() =>
-                this.transitionScreen(() =>
-                  this.setState({ nextScreen: true, offChain: true })
-                )
-              }
-            >
-              In-App
-            </div>
-            {/* <div
-              className={css(styles.toggle, !offChain && styles.activeToggle)}
-              onClick={() =>
-                this.transitionScreen(() =>
-                  this.setState({ nextScreen: true, offChain: false })
-                )
-              }
-            >
-              External Wallet
-            </div> */}
-          </div>
+          {this.renderToggleContainer(css(styles.toggleContainer))}
           <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Total Balance</div>
@@ -645,8 +785,7 @@ class PaperTransactionModal extends React.Component {
     } else if (nextScreen && !offChain) {
       return (
         <div className={css(styles.content, transition && styles.transition)}>
-          {/* {connectedMetaMask && networkVersion !== "1" ? ( */}
-          {false ? (
+          {connectedMetaMask && networkVersion !== RINKEBY_CHAIN_ID ? (
             this.renderSwitchNetworkMsg()
           ) : (
             <Fragment>
@@ -655,42 +794,10 @@ class PaperTransactionModal extends React.Component {
                   "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
                 }
               </div>
-
-              <div
-                className={css(
-                  styles.toggleContainer,
-                  styles.toggleContainerOnChain
-                )}
-              >
-                <div
-                  className={css(
-                    styles.toggle,
-                    styles.toggleRight,
-                    offChain && styles.activeToggle
-                  )}
-                  onClick={() =>
-                    this.transitionScreen(() =>
-                      this.setState({ nextScreen: true, offChain: true })
-                    )
-                  }
-                >
-                  In-App
-                </div>
-                {/* <div
-                  className={css(
-                    styles.toggle,
-                    !offChain && styles.activeToggle
-                  )}
-                  onClick={() =>
-                    this.transitionScreen(() =>
-                      this.setState({ nextScreen: true, offChain: false })
-                    )
-                  }
-                >
-                  External Wallet
-                </div> */}
-              </div>
-              {/* {connectedMetaMask && (
+              {this.renderToggleContainer(
+                css(styles.toggleContainer, styles.toggleContainerOnChain)
+              )}
+              {connectedMetaMask && (
                 <div className={css(styles.connectStatus)}>
                   <div
                     className={css(
@@ -700,7 +807,7 @@ class PaperTransactionModal extends React.Component {
                   />
                   Connected wallet: MetaMask
                 </div>
-              )} */}
+              )}
               <div className={css(styles.inputLabel)}>
                 Wallet Address
                 <span
@@ -712,12 +819,12 @@ class PaperTransactionModal extends React.Component {
                 </span>
               </div>
               <FormInput
-                value={networkAddress}
+                value={ethAccount}
                 containerStyle={styles.formInput}
                 // onChange={this.handleNetworkAddressInput}
                 // disabled={true}
                 inlineNodeRight={
-                  networkAddress !== "" ? (
+                  ethAccount !== "" ? (
                     validating ? (
                       <span className={css(styles.successIcon)}>
                         <Loader loading={true} size={23} />
@@ -726,10 +833,10 @@ class PaperTransactionModal extends React.Component {
                       <span
                         className={css(
                           styles.successIcon,
-                          !valid && styles.errorIcon
+                          !ethAccountIsValid && styles.errorIcon
                         )}
                       >
-                        {valid ? (
+                        {ethAccountIsValid ? (
                           <i className="fal fa-check-circle" />
                         ) : (
                           <i className="fal fa-times-circle" />
