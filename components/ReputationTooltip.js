@@ -2,8 +2,9 @@ import { StyleSheet, css } from "aphrodite";
 import ReactTooltip from "react-tooltip";
 import { Fragment } from "react";
 
-import colors from "~/config/themes/colors";
 const ReputationTooltip = (props) => {
+  ReactTooltip.rebuild();
+
   return (
     <Fragment>
       {process.browser && (
@@ -55,7 +56,6 @@ const styles = StyleSheet.create({
   comingSoon: {
     fontSize: 15,
     fontWeight: 500,
-    // textTransform: "uppercase",
     marginBottom: 10,
     display: "flex",
     alignItems: "center",
