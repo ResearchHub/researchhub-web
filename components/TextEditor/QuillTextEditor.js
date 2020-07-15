@@ -7,10 +7,6 @@ import { css, StyleSheet } from "aphrodite";
 // Component
 import FormButton from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
-const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
 
 // Config
 import colors from "~/config/themes/colors";
@@ -32,31 +28,36 @@ class Editor extends React.Component {
       editPlainText: "",
       editEvnts: [],
       focus: false,
+      ReactQuill: null,
+      Quill: null,
     };
     this.reactQuillRef = React.createRef();
     this.quillRef = null;
-    this.ReactQuill = null;
   }
 
   componentDidMount = async () => {
-    // this.attachQuillRefs()
+    // After so many trial & errors, import NEEDS to be done this way. Doesn't work with Dynamic import with Next.js
+    import("react-quill").then((val) => {
+      this.setState({
+        ReactQuill: val.default,
+        Quill: val.Quill,
+      });
+    });
   };
 
   componentDidUpdate() {
-    // this.attachQuillRefs()
+    this.attachQuillRefs();
   }
 
-  attachQuillRefs() {
-    console.log("this.reactQuillRef", this.reactQuillRef);
-    if (this.reactQuillRef === null) return;
-    // Ensure React-Quill reference is available:
-    if (typeof this.reactQuillRef.getEditor !== "function") return;
-    // Skip if Quill reference is defined:
-    if (this.quillRef != null) return;
+  registerQuillModules = () => {};
 
-    const quillRef = this.reactQuillRef.getEditor();
-    if (quillRef != null) this.quillRef = quillRef;
-  }
+  attachQuillRefs = () => {
+    if (this.reactQuillRef.current === null) return;
+    if (typeof this.reactQuillRef.current.getEditor !== "function") return;
+    if (this.quillRef !== null) return;
+
+    this.quillRef = this.reactQuillRef.current.getEditor();
+  };
 
   imageHandler = () => {
     const input = document.createElement("input");
@@ -68,34 +69,37 @@ class Editor extends React.Component {
       // const fileString = await this.toBase64(file);
       // const type = file.type;
       // const fileUrl = await this.getFileUrl({ fileString, type })
-      const fileUrl =
-        "https://researchhub-paper-dev1.s3.amazonaws.com/comment_files/jpeg/73380103aef94d81f020d8abbcc9587c.jpeg?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=G1fLEjk5%2FwJAPJieGBbuKntUbIw%3D&Expires=1595452926";
-      // console.log('User trying to uplaod this:', file);
-      console.log(this.quillRef.getSelection());
-      console.log("insertEmbed", this.quillRef.getContents());
+      // const fileUrl =
+      //   "https://researchhub-paper-dev1.s3.amazonaws.com/comment_files/jpeg/73380103aef94d81f020d8abbcc9587c.jpeg?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=G1fLEjk5%2FwJAPJieGBbuKntUbIw%3D&Expires=1595452926";
+
+      let fileUrl = "https://picsum.photos/200";
       let fileObject = {
         insert: {
           image: `data:image/jpeg;base64,${fileUrl}`,
         },
       };
 
-      let content = { ...this.quillRef.getContents() };
-      content.ops = [fileObject, ...content.ops];
-      this.setState(
-        {
-          value: content,
-        },
-        () => {
-          console.log("STATE", this.state);
-        }
-      );
-      // const id = await uploadFile(file); // I'm using react, so whatever upload function
-      // const range = this.quill.getSelection();
-      // const link = `${ROOT_URL}/file/${id}`;
+      console.log("this.reactQuillRef", this.reactQuillRef);
+      // console.log("this.reactQuillRef.current.getEditor()",this.reactQuillRef.current.getEditor());
+      // this.quillRef = this.reactQuillRef.current.getEditor();
+      console.log("this.quillRef", this.quillRef);
+
+      // let content = { ...this.quillRef.getContents() };
+      // content.ops = [fileObject, ...content.ops];
+      // this.setState(
+      //   {
+      //     value: content,
+      //   },
+      //   () => {
+      //     console.log("STATE", this.state);
+      //   }
+      // );
+
+      const range = this.quillRef.getSelection();
 
       // this part the image is inserted
       // by 'image' option below, you just have to put src(link) of img here.
-      // this.quill.insertEmbed(range.index, 'image', link);
+      this.quillRef.insertEmbed(range.index, "image", fileUrl);
     }.bind(this);
   };
 
@@ -132,11 +136,16 @@ class Editor extends React.Component {
       });
     }
 
-    this.setState({
-      value: editor.getContents(),
-      events: [`[${source}] text-change`, ...this.state.events],
-      plainText: editor.getText(),
-    });
+    this.setState(
+      {
+        value: editor.getContents(),
+        events: [`[${source}] text-change`, ...this.state.events],
+        plainText: editor.getText(),
+      },
+      () => {
+        console.log(this.state.value);
+      }
+    );
   };
 
   onEditorChangeSelection = (range, source) => {
@@ -153,9 +162,6 @@ class Editor extends React.Component {
   };
 
   onEditorFocus = (range, source, editor) => {
-    if (!this.quillRef) {
-      this.quillRef = editor;
-    }
     this.setState({
       events: [`[${source}] focus(${this.formatRange(range)})`].concat(
         this.state.events
@@ -294,6 +300,7 @@ class Editor extends React.Component {
   };
 
   render() {
+    const { ReactQuill } = this.state;
     return (
       <div className={css(styles.editor, this.props.containerStyles)}>
         {this.props.commentEditor ? (
@@ -305,25 +312,27 @@ class Editor extends React.Component {
             )}
           >
             {this.renderToolbar(this.props.uid)}
-            <ReactQuill
-              ref={this.reactQuillRef}
-              theme={this.state.theme}
-              readOnly={this.props.readOnly}
-              onChange={this.onEditorChange}
-              onChangeSelection={this.onEditorChangeSelection}
-              onFocus={this.onEditorFocus}
-              onBlur={this.onEditorBlur}
-              defaultValue={
-                this.props.editing ? this.state.editValue : this.state.value
-              }
-              modules={Editor.modules(this.props.uid, this.imageHandler)}
-              formats={Editor.formats}
-              className={css(
-                styles.editSection,
-                this.props.commentStyles && this.props.commentStyles
-              )}
-              placeholder={this.props.placeholder && this.props.placeholder}
-            />
+            {ReactQuill && (
+              <ReactQuill
+                ref={this.reactQuillRef}
+                theme={this.state.theme}
+                readOnly={this.props.readOnly}
+                onChange={this.onEditorChange}
+                onChangeSelection={this.onEditorChangeSelection}
+                onFocus={this.onEditorFocus}
+                onBlur={this.onEditorBlur}
+                defaultValue={
+                  this.props.editing ? this.state.editValue : this.state.value
+                }
+                modules={Editor.modules(this.props.uid, this.imageHandler)}
+                formats={Editor.formats}
+                className={css(
+                  styles.editSection,
+                  this.props.commentStyles && this.props.commentStyles
+                )}
+                placeholder={this.props.placeholder && this.props.placeholder}
+              />
+            )}
             {!this.props.readOnly && this.renderButtons(this.props)}
           </div>
         ) : (
@@ -334,26 +343,28 @@ class Editor extends React.Component {
             )}
           >
             {this.renderToolbar(this.props.uid)}
-            <ReactQuill
-              ref={this.reactQuillRef}
-              theme={this.state.theme}
-              readOnly={this.props.readOnly}
-              onChange={this.onEditorChange}
-              onChangeSelection={this.onEditorChangeSelection}
-              onFocus={this.onEditorFocus}
-              onBlur={this.onEditorBlur}
-              defaultValue={
-                this.props.editing ? this.state.editValue : this.state.value
-              }
-              modules={Editor.modules(this.props.uid, this.imageHandler)}
-              formats={Editor.formats}
-              className={css(
-                styles.comment,
-                styles.summaryEditorBox,
-                this.props.commentStyles && this.props.commentStyles
-              )}
-              placeholder={this.props.placeholder && this.props.placeholder}
-            />
+            {ReactQuill && (
+              <ReactQuill
+                ref={this.reactQuillRef}
+                theme={this.state.theme}
+                readOnly={this.props.readOnly}
+                onChange={this.onEditorChange}
+                onChangeSelection={this.onEditorChangeSelection}
+                onFocus={this.onEditorFocus}
+                onBlur={this.onEditorBlur}
+                defaultValue={
+                  this.props.editing ? this.state.editValue : this.state.value
+                }
+                modules={Editor.modules(this.props.uid, this.imageHandler)}
+                formats={Editor.formats}
+                className={css(
+                  styles.comment,
+                  styles.summaryEditorBox,
+                  this.props.commentStyles && this.props.commentStyles
+                )}
+                placeholder={this.props.placeholder && this.props.placeholder}
+              />
+            )}
             {!this.props.readOnly && this.renderButtons(this.props)}
           </div>
         )}
