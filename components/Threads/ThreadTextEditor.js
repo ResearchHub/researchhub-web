@@ -198,58 +198,52 @@ class ThreadTextEditor extends React.Component {
 
   render() {
     if (!this.props.body) {
-      if (isAndroid || isAndroidJS) {
-        return this.renderAndroidEditor();
-      } else {
-        return (
-          <PermissionNotificationWrapper
-            modalMessage="post a comment"
-            permissionKey="CreateDiscussionComment"
-            onClick={null}
-            loginRequired={true}
-            hideRipples={true}
-          >
-            <TextEditor
-              readOnly={false}
-              onSubmit={this.onSubmit}
-              clearOnSubmit={true}
-              hideCancelButton={false}
-              commentEditor={true}
-              smallToolBar={true}
-              onCancel={this.onCancel}
-              onChange={this.onChange}
-              loading={this.state.loading}
-            />
-          </PermissionNotificationWrapper>
-        );
-      }
-    } else {
-      if ((isAndroid || isAndroidJS) && this.props.editing) {
-        return this.renderAndroidEditor();
-      } else {
-        return (
+      return (
+        <PermissionNotificationWrapper
+          modalMessage="post a comment"
+          permissionKey="CreateDiscussionComment"
+          onClick={null}
+          loginRequired={true}
+          hideRipples={true}
+        >
           <TextEditor
-            readOnly={!this.props.editing}
-            initialValue={this.state.editorState}
-            onSubmit={this.onEditSubmit}
-            onCancel={this.onEditCancel}
-            onChange={this.onChange}
-            smallToolBar={true}
+            readOnly={false}
+            onSubmit={this.onSubmit}
+            clearOnSubmit={true}
+            hideCancelButton={false}
             commentEditor={true}
+            smallToolBar={true}
+            onCancel={this.onCancel}
+            onChange={this.onChange}
             loading={this.state.loading}
-            commentStyles={[
-              styles.comment,
-              this.props.textStyles && this.props.textStyles,
-              this.props.editing && styles.edit,
-            ]}
-            commentEditorStyles={[
-              styles.textContainer,
-              this.props.editing && styles.editTextContainer,
-            ]}
-            passedValue={this.state.editorState}
+            editing={this.props.editing}
           />
-        );
-      }
+        </PermissionNotificationWrapper>
+      );
+    } else {
+      return (
+        <TextEditor
+          readOnly={!this.props.editing}
+          initialValue={this.state.editorState}
+          onSubmit={this.onEditSubmit}
+          onCancel={this.onEditCancel}
+          onChange={this.onChange}
+          smallToolBar={true}
+          commentEditor={true}
+          loading={this.state.loading}
+          commentStyles={[
+            styles.comment,
+            this.props.textStyles && this.props.textStyles,
+            this.props.editing && styles.edit,
+          ]}
+          commentEditorStyles={[
+            styles.textContainer,
+            this.props.editing && styles.editTextContainer,
+          ]}
+          passedValue={this.state.editorState}
+          editing={this.props.editing}
+        />
+      );
     }
   }
 }
