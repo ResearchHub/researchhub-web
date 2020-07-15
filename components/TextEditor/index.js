@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // NPM Components
 import PropTypes from "prop-types";
@@ -45,10 +45,12 @@ const TextEditor = (props) => {
     loading,
     commentEditorStyles,
     removeStickyToolbar,
+    editing,
   } = props;
 
   const [value, setValue] = useState(convertToEditorValue(initialValue));
   const [editorRef, setEditorRef] = useState(null);
+  const [uid, setUid] = useState(createUid());
 
   function handleChange(value) {
     setValue(value);
@@ -98,13 +100,45 @@ const TextEditor = (props) => {
     props.setRef && props.setRef(editor);
   }
 
+  function createUid() {
+    return (
+      "_" +
+      Math.random()
+        .toString(36)
+        .substr(2, 9)
+    );
+  }
+
   return (
     <QuillTextEditor
       value={
         passedValue
-          ? convertEditorValueToHtml(passedValue)
+          ? convertEditorValueToHtml(convertToEditorValue(passedValue))
           : convertEditorValueToHtml(value)
       }
+      uid={uid}
+      key={`textEditor-${uid}`}
+      setRef={setInternalRef}
+      ref={setEditorRef}
+      readOnly={readOnly || false}
+      onChange={handleChange}
+      canCancel={canCancel}
+      canSubmit={canSubmit}
+      containerStyles={containerStyles}
+      cancel={cancel}
+      submit={submit}
+      commentEditor={commentEditor}
+      hideButton={hideButton}
+      showDiff={showDiff}
+      previousVersion={previousVersion}
+      classNames={classNames}
+      placeholder={placeholder && placeholder}
+      hideCancelButton={hideCancelButton && hideCancelButton}
+      commentStyles={commentStyles && commentStyles}
+      smallToolBar={smallToolBar && smallToolBar}
+      loading={loading && loading}
+      commentEditorStyles={commentEditorStyles && commentEditorStyles}
+      editing={editing}
     />
   );
 

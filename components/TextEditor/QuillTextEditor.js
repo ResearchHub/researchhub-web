@@ -1,10 +1,21 @@
+// NPM
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css";
+import "./stylesheets/QuillTextEditor.css";
+import { css, StyleSheet } from "aphrodite";
+
+// Component
+import FormButton from "~/components/Form/Button";
+import Loader from "~/components/Loader/Loader";
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
+
 // Config
 import colors from "~/config/themes/colors";
-
-import dynamic from "next/dynamic";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css";
-import { css, StyleSheet } from "aphrodite";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -15,23 +26,116 @@ class Editor extends React.Component {
       enabled: true,
       readOnly: false,
       value: this.props.value ? this.props.value : { ops: [] },
+      plainText: "",
       events: [],
-      uid: this.id(),
+      editValue: this.props.value ? this.props.value : { ops: [] },
+      editPlainText: "",
+      editEvnts: [],
+      focus: false,
     };
+    this.reactQuillRef = React.createRef();
+    this.quillRef = null;
+    this.ReactQuill = null;
   }
 
+  componentDidMount = async () => {
+    // this.attachQuillRefs()
+  };
+
+  componentDidUpdate() {
+    // this.attachQuillRefs()
+  }
+
+  attachQuillRefs() {
+    console.log("this.reactQuillRef", this.reactQuillRef);
+    if (this.reactQuillRef === null) return;
+    // Ensure React-Quill reference is available:
+    if (typeof this.reactQuillRef.getEditor !== "function") return;
+    // Skip if Quill reference is defined:
+    if (this.quillRef != null) return;
+
+    const quillRef = this.reactQuillRef.getEditor();
+    if (quillRef != null) this.quillRef = quillRef;
+  }
+
+  imageHandler = () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+    input.onchange = async function() {
+      // const file = input.files[0]
+      // const fileString = await this.toBase64(file);
+      // const type = file.type;
+      // const fileUrl = await this.getFileUrl({ fileString, type })
+      const fileUrl =
+        "https://researchhub-paper-dev1.s3.amazonaws.com/comment_files/jpeg/73380103aef94d81f020d8abbcc9587c.jpeg?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=G1fLEjk5%2FwJAPJieGBbuKntUbIw%3D&Expires=1595452926";
+      // console.log('User trying to uplaod this:', file);
+      console.log(this.quillRef.getSelection());
+      console.log("insertEmbed", this.quillRef.getContents());
+      let fileObject = {
+        insert: {
+          image: `data:image/jpeg;base64,${fileUrl}`,
+        },
+      };
+
+      let content = { ...this.quillRef.getContents() };
+      content.ops = [fileObject, ...content.ops];
+      this.setState(
+        {
+          value: content,
+        },
+        () => {
+          console.log("STATE", this.state);
+        }
+      );
+      // const id = await uploadFile(file); // I'm using react, so whatever upload function
+      // const range = this.quill.getSelection();
+      // const link = `${ROOT_URL}/file/${id}`;
+
+      // this part the image is inserted
+      // by 'image' option below, you just have to put src(link) of img here.
+      // this.quill.insertEmbed(range.index, 'image', link);
+    }.bind(this);
+  };
+
+  toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  getFileUrl = ({ fileString, type }) => {
+    let payload = {
+      content_type: type.split("/")[1],
+      content: fileString,
+    };
+    return fetch(API.SAVE_IMAGE, API.POST_CONFIG(payload))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        console.log("res", res);
+      });
+  };
   formatRange(range) {
     return range ? [range.index, range.index + range.length].join(",") : "none";
   }
 
   onEditorChange = (value, delta, source, editor) => {
-    console.log("editor.getContents()", editor.getContents());
-    // console.log(value);
-    // console.log("html", editor.getHTML());
-    // console.log("text", editor.getText());
+    if (this.props.editing) {
+      return this.setState({
+        editValue: editor.getContents(),
+        editEvents: [`[${source}] text-change`, ...this.state.events],
+        editPlainText: editor.getText(),
+      });
+    }
+
     this.setState({
       value: editor.getContents(),
       events: [`[${source}] text-change`, ...this.state.events],
+      plainText: editor.getText(),
     });
   };
 
@@ -48,11 +152,15 @@ class Editor extends React.Component {
       });
   };
 
-  onEditorFocus = (range, source) => {
+  onEditorFocus = (range, source, editor) => {
+    if (!this.quillRef) {
+      this.quillRef = editor;
+    }
     this.setState({
       events: [`[${source}] focus(${this.formatRange(range)})`].concat(
         this.state.events
       ),
+      focus: true,
     });
   };
 
@@ -61,7 +169,15 @@ class Editor extends React.Component {
       events: [`[${source}] blur(${this.formatRange(previousRange)})`].concat(
         this.state.events
       ),
+      focus: false,
     });
+  };
+
+  onCancel = () => {};
+
+  onSubmit = () => {
+    let { value, plainText } = this.state;
+    // this.props.submit(value, plainText)
   };
 
   handleEvent = (e) => {
@@ -69,94 +185,194 @@ class Editor extends React.Component {
     e.stopPropagation();
   };
 
-  id = () => {
-    // Math.random should be unique because of its seeding algorithm.
-    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-    // after the decimal.
-    return (
-      "_" +
-      Math.random()
-        .toString(36)
-        .substr(2, 9)
-    );
-  };
+  tipPlacement = () => {};
 
-  renderToolbar = (id) => {
+  renderToolbar = () => {
     var state = this.state;
     var enabled = state.enabled;
     var readOnly = state.readOnly;
     var selection = this.formatRange(state.selection);
+    let id = this.props.uid;
+
     return (
-      <div id={"#" + id} className={"ql-toolbar"} onClick={this.handleEvent}>
-        {/* <select className="ql-size">
-          <option value={"header-1"} className={css(styles.headerOne)}>Header 1</option>
-          <option value={"header-2"} className={css(styles.headerTwo)}>Header 2</option>
-          <option value={"body"} className={css(styles.body)} selected>Body</option>
-        </select> */}
+      <div
+        id={id}
+        className="toolbar ql-toolbar ql-snow"
+        style={{ display: this.props.readOnly ? "none" : "" }}
+      >
         <span className="ql-formats">
-          <button
-            className="ql-list"
-            value="ordered"
-            onClick={this.handleEvent}
-          />
-          <button
-            className="ql-list"
-            value="bullet"
-            onClick={this.handleEvent}
-          />
-          <button className="ql-indent" value="-1" onClick={this.handleEvent} />
-          <button className="ql-indent" value="+1" onClick={this.handleEvent} />
+          <select className="ql-header">
+            <option value="2">Heading 1</option>
+            <option value="3">Heading 2</option>
+            <option defaultValue />
+          </select>
+          <button className="ql-bold" />
+          <button className="ql-italic" />
+          <button className="ql-underline" />
         </span>
-        <button className="ql-bold" onClick={this.handleEvent} />
-        <button className="ql-italic" onClick={this.handleEvent} />
-        <button className="ql-underline" onClick={this.handleEvent} />
         <span className="ql-formats">
-          <button className="ql-link"></button>
-          <button className="ql-image"></button>
-          <button className="ql-video"></button>
-          <button className="ql-formula"></button>
+          <button className="ql-blockquote"></button>
+          <button className="ql-code-block"></button>
+          <button className="ql-strike"></button>
+          <select class="ql-background"></select>
+        </span>
+        <span className="ql-formats">
+          <button className="ql-list" value="ordered" />
+          <button className="ql-list" value="bullet" />
+          <button className="ql-indent" value="-1" />
+          <button className="ql-indent" value="+1" />
+        </span>
+
+        <span className="ql-formats">
+          <button
+            className="ql-link"
+            onClick={() => this.tipPlacement("ql-link")}
+          ></button>
+          <button className="ql-image" />
+          <button
+            className="ql-video"
+            onClick={() => this.tipPlacement("ql-video")}
+          ></button>
+          <button class="ql-clean"></button>
         </span>
       </div>
     );
   };
 
-  renderButtons = () => {};
+  renderButtons = (props) => {
+    return (
+      <div
+        className={css(
+          toolbarStyles.toolbar,
+          props.summaryEditor && toolbarStyles.toolbarSummary,
+          props.smallToolBar && toolbarStyles.smallToolBar
+        )}
+      >
+        <div className={css(toolbarStyles.iconRow)}>{props.children}</div>
+        <div className={css(toolbarStyles.buttonRow)}>
+          {!props.hideButton && !props.hideCancelButton && (
+            <FormButton
+              isWhite={true}
+              onClick={props.cancel}
+              label={props.smallToolBar ? "Hide" : "Cancel"}
+              size={props.smallToolBar && "med"}
+              customButtonStyle={
+                props.smallToolBar
+                  ? toolbarStyles.smallButton
+                  : toolbarStyles.cancelButton
+              }
+            />
+          )}
+          <span className={css(toolbarStyles.divider)} />
+          {!props.hideButton &&
+            (props.loading ? (
+              <FormButton
+                onClick={null}
+                label={<Loader loading={true} color={"#FFF"} size={20} />}
+                size={props.smallToolBar && "med"}
+                customButtonStyle={
+                  props.smallToolBar
+                    ? toolbarStyles.smallButton
+                    : toolbarStyles.buttonStyle
+                }
+              />
+            ) : (
+              <FormButton
+                onClick={this.onSubmit}
+                label="Submit"
+                size={props.smallToolBar && "med"}
+                customButtonStyle={
+                  props.smallToolBar
+                    ? toolbarStyles.smallButton
+                    : toolbarStyles.buttonStyle
+                }
+              />
+            ))}
+        </div>
+      </div>
+    );
+  };
 
   render() {
     return (
       <div className={css(styles.editor, this.props.containerStyles)}>
-        <div
-          className={css(
-            styles.commentEditor,
-            this.props.commentEditorStyles && this.props.commentEditorStyles
-          )}
-        >
-          {this.renderToolbar(this.state.uid)}
-          <ReactQuill
-            theme={"snow"}
-            readOnly={this.state.readOnly}
-            onChange={this.onEditorChange}
-            onChangeSelection={this.onEditorChangeSelection}
-            onFocus={this.onEditorFocus}
-            onBlur={this.onEditorBlur}
-            defaultValue={this.props.value}
-            modules={Editor.modules(this.state.uid)}
-            formats={Editor.formats}
-          />
-          {this.renderButtons()}
-        </div>
+        {this.props.commentEditor ? (
+          <div
+            className={css(
+              styles.commentEditor,
+              this.props.commentEditorStyles && this.props.commentEditorStyles,
+              this.state.focus && styles.focus
+            )}
+          >
+            {this.renderToolbar(this.props.uid)}
+            <ReactQuill
+              ref={this.reactQuillRef}
+              theme={this.state.theme}
+              readOnly={this.props.readOnly}
+              onChange={this.onEditorChange}
+              onChangeSelection={this.onEditorChangeSelection}
+              onFocus={this.onEditorFocus}
+              onBlur={this.onEditorBlur}
+              defaultValue={
+                this.props.editing ? this.state.editValue : this.state.value
+              }
+              modules={Editor.modules(this.props.uid, this.imageHandler)}
+              formats={Editor.formats}
+              className={css(
+                styles.editSection,
+                this.props.commentStyles && this.props.commentStyles
+              )}
+              placeholder={this.props.placeholder && this.props.placeholder}
+            />
+            {!this.props.readOnly && this.renderButtons(this.props)}
+          </div>
+        ) : (
+          <div
+            className={css(
+              styles.summaryEditor,
+              this.state.focus && styles.focus
+            )}
+          >
+            {this.renderToolbar(this.props.uid)}
+            <ReactQuill
+              ref={this.reactQuillRef}
+              theme={this.state.theme}
+              readOnly={this.props.readOnly}
+              onChange={this.onEditorChange}
+              onChangeSelection={this.onEditorChangeSelection}
+              onFocus={this.onEditorFocus}
+              onBlur={this.onEditorBlur}
+              defaultValue={
+                this.props.editing ? this.state.editValue : this.state.value
+              }
+              modules={Editor.modules(this.props.uid, this.imageHandler)}
+              formats={Editor.formats}
+              className={css(
+                styles.comment,
+                styles.summaryEditorBox,
+                this.props.commentStyles && this.props.commentStyles
+              )}
+              placeholder={this.props.placeholder && this.props.placeholder}
+            />
+            {!this.props.readOnly && this.renderButtons(this.props)}
+          </div>
+        )}
       </div>
     );
   }
 }
 
-Editor.modules = (toolbarId) => ({
+Editor.modules = (toolbarId, imageHandler) => ({
   toolbar: {
     container: "#" + toolbarId,
+    handlers: {
+      image: imageHandler,
+    },
   },
 });
 
 Editor.formats = [
+  "image",
   "header",
   "font",
   "size",
@@ -169,8 +385,11 @@ Editor.formats = [
   "bullet",
   "indent",
   "link",
-  "image",
-  "color",
+  "video",
+  "clean",
+  "background",
+  "code-block",
+  "direction",
 ];
 
 const styles = StyleSheet.create({
@@ -191,15 +410,22 @@ const styles = StyleSheet.create({
     background: "#FBFBFD",
     border: "1px solid #fff",
     color: "#000",
-    ":hover": {
-      borderColor: "#E7E7E7",
-    },
+    borderColor: "#E7E7E7",
+    // ":hover": {
+    //   borderColor: "#E7E7E7",
+    // },
+  },
+  focus: {
+    borderColor: colors.BLUE(),
   },
   editSection: {
     padding: 16,
     minHeight: 122,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
+    },
+    ":focus": {
+      border: `1px solid ${colors.BLUE()}`,
     },
   },
   comment: {
@@ -324,6 +550,101 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     paddingBottom: 10,
+  },
+});
+
+const toolbarStyles = StyleSheet.create({
+  buttonActive: {
+    color: colors.BLACK(1),
+  },
+  button: {
+    color: "rgb(204, 204, 204)",
+    cursor: "pointer",
+    marginLeft: 24,
+    ":hover": {
+      color: colors.BLACK(1),
+    },
+  },
+  toolbarSummary: {
+    borderBottom: "1px solid",
+    borderTop: 0,
+    borderColor: "rgb(235, 235, 235)",
+    background: "#fff",
+    paddingLeft: 0,
+  },
+  toolbar: {
+    borderTop: "1px solid",
+    borderColor: "rgb(235, 235, 235)",
+    padding: 16,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    background: "#fff",
+    "@media only screen and (max-width: 577px)": {
+      flexDirection: "column",
+    },
+  },
+  iconRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    marginBottom: 10,
+  },
+  smallToolBar: {
+    fontSize: 11,
+    display: "flex",
+    flexWrap: "flex-wrap",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 9,
+    },
+  },
+  smallToolBarButton: {
+    marginLeft: 10,
+    padding: 5,
+    ":hover": {
+      color: colors.BLACK(1),
+      backgroundColor: "#FAFAFA",
+    },
+    "@media only screen and (max-width: 415px)": {
+      margin: 5,
+      marginLeft: 0,
+    },
+  },
+  submit: {
+    background: colors.PURPLE(1),
+    color: "#fff",
+    border: "none",
+    padding: "12px 36px",
+    fontSize: 16,
+    cursor: "pointer",
+    outline: "none",
+    borderRadius: 4,
+  },
+  first: {
+    marginLeft: 0,
+  },
+  buttonRow: {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    width: "100%",
+    "@media only screen and (max-width: 577px)": {
+      marginTop: 16,
+    },
+  },
+  cancelButton: {
+    "@media only screen and (max-width: 577px)": {
+      width: 100,
+    },
+  },
+  buttonStyle: {
+    "@media only screen and (max-width: 577px)": {
+      width: 100,
+    },
+  },
+  smallButton: {},
+  divider: {
+    width: 10,
   },
 });
 
