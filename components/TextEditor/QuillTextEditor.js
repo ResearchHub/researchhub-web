@@ -321,7 +321,7 @@ class Editor extends React.Component {
               this.state.focus && styles.focus
             )}
           >
-            {this.renderToolbar(this.props.uid)}
+            {ReactQuill && this.renderToolbar(this.props.uid)}
             {ReactQuill && (
               <ReactQuill
                 ref={this.reactQuillRef}
@@ -352,7 +352,7 @@ class Editor extends React.Component {
               this.state.focus && styles.focus
             )}
           >
-            {this.renderToolbar(this.props.uid)}
+            {ReactQuill && this.renderToolbar(this.props.uid)}
             {ReactQuill && (
               <ReactQuill
                 ref={this.reactQuillRef}

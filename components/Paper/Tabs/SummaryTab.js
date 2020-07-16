@@ -223,7 +223,7 @@ class SummaryTab extends React.Component {
         let summaryJSON = paper.summary.summary;
         let editorState = Value.fromJSON(summaryJSON);
         this.setState({
-          editorState,
+          editorState: editorState ? editorState : "",
           finishedLoading: true,
         });
       }
