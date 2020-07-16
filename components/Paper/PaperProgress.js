@@ -80,7 +80,11 @@ class PaperProgress extends React.Component {
 
   checkSummaryFormat(summary) {
     if (summary.summary && summary.summary.hasOwnProperty("ops")) {
-      return summary.summary_plain_text;
+      if (summary.summary_plain_text) {
+        return summary.summary_plain_text;
+      } else {
+        return summary.summary.ops[0].insert;
+      }
     } else {
       return convertToEditorValue(summary.summary).document.text;
     }
@@ -97,8 +101,8 @@ class PaperProgress extends React.Component {
       },
       {
         label: "Summary",
-        active: summary.trim().length >= 250,
-        count: summary.trim().length,
+        active: summary && summary.trim().length >= 250,
+        count: summary ? summary.trim().length : 0,
       },
       {
         label: "Comments",
@@ -171,12 +175,9 @@ class PaperProgress extends React.Component {
           let num = bullets.bullets.length * (33 / 3);
           progress += Math.min(num, 33);
         } else if (section.label === "Summary") {
-          let summary = paper.summary
-            ? paper.summary.summary &&
-              convertToEditorValue(paper.summary.summary).document.text
-            : "";
+          let summary = paper.summary && this.checkSummaryFormat(paper.summary);
 
-          if (summary.length >= 250) {
+          if (summary && summary.length >= 250) {
             progress += 34;
           } else {
             progress += (Math.min(250, summary.length) / 250) * 34;
@@ -203,10 +204,11 @@ class PaperProgress extends React.Component {
         } else if (section.label === "Summary") {
           let summary = paper.summary && this.checkSummaryFormat(paper.summary);
 
-          if (summary.length >= 250) {
+          if (summary && summary.length >= 250) {
             progress += 34;
           } else {
-            progress += (Math.min(250, summary.length) / 250) * 34;
+            progress +=
+              (Math.min(250, summary ? summary.length : 0) / 250) * 34;
           }
         }
       }
@@ -306,10 +308,7 @@ class PaperProgress extends React.Component {
     if (sections.length > 0) {
       let section = sections[0];
       let paper = this.props.paper;
-      let summary = paper.summary
-        ? paper.summary.summary &&
-          convertToEditorValue(paper.summary.summary).document.text
-        : "";
+      let summary = paper.summary && this.checkSummaryFormat(paper.summary);
       if (section.label === "Summary" && summary.length > 0) {
         return (
           <Fragment>
