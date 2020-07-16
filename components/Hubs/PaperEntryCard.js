@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import { connect, useStore } from "react-redux";
@@ -63,7 +63,6 @@ const PaperEntryCard = ({
     raw_authors,
   } = paper || null;
 
-  paper.raw_authors && console.log("paper", paper);
   let selected = null;
   let vote_type = 0;
   const [lightbox, toggleLightbox] = useState(false);
