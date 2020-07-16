@@ -22,8 +22,10 @@ export function convertToEditorValue(text) {
     return Plain.deserialize(text);
   }
 
-  if (typeof text === "object" && text.hasOwnProperty("ops")) {
-    return text;
+  if (typeof text === "object" && text !== null) {
+    if (text.hasOwnProperty("ops")) {
+      return text;
+    }
   }
 
   try {
