@@ -26,31 +26,22 @@ class ThreadTextEditor extends React.Component {
       editorState:
         this.props.initialValue &&
         convertToEditorValue(this.props.initialValue),
-      prevEditorState: this.props.initialValue && this.props.initialValue,
-      newEditorState: {},
-      //
-      androidText: "",
-      prevAndroidText: "",
     };
   }
 
   componentDidMount() {
     let editorState =
       this.props.initialValue && convertToEditorValue(this.props.initialValue);
-    let androidText = editorState && editorState.document.text;
 
     this.setState({
       editorState: editorState,
-      prevEditorState: this.props.initialValue,
-      androidText: androidText ? androidText : "",
-      prevAndroidText: androidText ? androidText : "",
     });
   }
 
-  onSubmit = (text, plain_text) => {
+  onSubmit = (content, plain_text) => {
     this.setState({ loading: true }, () => {
       this.props.onSubmit &&
-        this.props.onSubmit(text, plain_text, () => {
+        this.props.onSubmit(content, plain_text, () => {
           this.setState({ loading: false });
           setTimeout(() => {
             this.onCancel();
@@ -63,27 +54,23 @@ class ThreadTextEditor extends React.Component {
     this.props.onCancel && this.props.onCancel(e);
   };
 
-  onChange = (value) => {
-    this.setState(
-      {
-        newEditorState: value,
-        editorState: value,
-      },
-      () => {
-        this.props.onChange && this.props.onChange(value);
-      }
-    );
-  };
+  // onChange = (value) => {
+  //   this.setState(
+  //     {
+  //       newEditorState: value,
+  //       editorState: value,
+  //     },
+  //     () => {
+  //       this.props.onChange && this.props.onChange(value);
+  //     }
+  //   );
+  // };
 
-  onEditSubmit = (e) => {
-    let value = this.state.editorState;
-    let text = value.toJSON({ preserveKeys: true });
-    let plain_text = Plain.serialize(value);
+  onEditSubmit = (content, plain_text) => {
     this.setState({ loading: true }, () => {
       this.props.onEditSubmit &&
-        this.props.onEditSubmit(text, plain_text, () => {
+        this.props.onEditSubmit(content, plain_text, () => {
           this.setState({
-            editorState: convertToEditorValue(this.state.newEditorState),
             loading: false,
           });
         });
@@ -92,108 +79,6 @@ class ThreadTextEditor extends React.Component {
 
   onEditCancel = (e) => {
     this.props.onEditCancel && this.props.onEditCancel();
-    this.setState({
-      editorState: convertToEditorValue(this.state.prevEditorState),
-    });
-  };
-
-  handleAndroidText = (id, value) => {
-    this.setState({
-      androidText: value,
-    });
-  };
-
-  handleAndroidEdit = (id, value) => {
-    this.setState({
-      androidText: value,
-    });
-  };
-
-  onAndroidEditCancel = (e) => {
-    this.setState(
-      {
-        androidText: this.state.prevAndroidText,
-      },
-      () => {
-        this.props.onEditCancel && this.props.onEditCancel();
-      }
-    );
-  };
-
-  submitAndroid = (e) => {
-    let androidEditor = convertToEditorValue(this.state.androidText);
-
-    let valueObj = androidEditor.toJSON({ preserveKeys: true });
-    let plain_text = this.state.androidText;
-
-    this.setState({ loading: true }, () => {
-      this.props.onSubmit &&
-        this.props.onSubmit(valueObj, plain_text, () => {
-          this.setState({ loading: false });
-          setTimeout(() => {
-            this.onCancel();
-          }, 400);
-        });
-    });
-  };
-
-  onEditSubmitAndroid = () => {
-    let androidEditor = convertToEditorValue(this.state.androidText);
-
-    let valueObj = androidEditor.toJSON({ preserveKeys: true });
-    let plain_text = this.state.androidText;
-
-    this.setState({ loading: true }, () => {
-      this.props.onEditSubmit &&
-        this.props.onEditSubmit(valueObj, plain_text, () => {
-          this.setState({
-            prevAndroidText: this.state.androidText,
-            editorState: convertToEditorValue(this.state.androidText),
-            loading: false,
-          });
-        });
-    });
-  };
-
-  renderAndroidEditor = () => {
-    return (
-      <PermissionNotificationWrapper
-        modalMessage="post a comment"
-        permissionKey="CreateDiscussionComment"
-        onClick={null}
-        loginRequired={true}
-        hideRipples={true}
-      >
-        <FormTextArea
-          containerStyle={[
-            styles.androidContainer,
-            this.props.editing && styles.editAndroidContainer,
-          ]}
-          placeholder={"What are your thoughts?"}
-          inputStyle={styles.androidInput}
-          value={this.state.androidText}
-          onChange={this.handleAndroidText}
-        />
-        <div className={css(styles.buttonRow)}>
-          <Button
-            isWhite={true}
-            onClick={
-              this.props.editing ? this.onAndroidEditCancel : this.onCancel
-            }
-            label={"Hide"}
-            size={"med"}
-          />
-          <span className={css(styles.divider)} />
-          <Button
-            onClick={
-              this.props.editing ? this.onEditSubmitAndroid : this.submitAndroid
-            }
-            label="Submit"
-            size={"med"}
-          />
-        </div>
-      </PermissionNotificationWrapper>
-    );
   };
 
   render() {

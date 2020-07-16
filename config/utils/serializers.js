@@ -22,6 +22,10 @@ export function convertToEditorValue(text) {
     return Plain.deserialize(text);
   }
 
+  if (typeof text === "object" && text.hasOwnProperty("ops")) {
+    return text;
+  }
+
   try {
     return Value.fromJSON(text);
   } catch {
@@ -60,6 +64,10 @@ export function toTitleCase(str) {
 }
 
 export function convertEditorValueToHtml(value) {
+  if (typeof value === "object" && value.hasOwnProperty("ops")) {
+    return value;
+  }
+
   const styles = StyleSheet.create({
     added: {
       background: "rgba(19, 145, 26, .2)",
@@ -308,5 +316,6 @@ export function convertEditorValueToHtml(value) {
     rules,
     parseHtml: null,
   });
+
   return value && html.serialize(value); // hmtl
 }
