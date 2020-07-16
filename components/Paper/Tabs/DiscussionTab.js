@@ -85,6 +85,7 @@ const DiscussionTab = (props) => {
   const [page, setPage] = useState(1);
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
+  const [focus, setFocus] = useState(false);
 
   useEffect(resetThreadsEffect, [props.threads]);
 
@@ -218,6 +219,7 @@ const DiscussionTab = (props) => {
     setDiscussion(initialDiscussionState);
     setEditorDormant(true);
     setShowEditor(false);
+    setFocus(false);
     document.body.style.overflow = "scroll";
     props.openAddDiscussionModal(false);
   };
@@ -338,6 +340,7 @@ const DiscussionTab = (props) => {
         <PermissionNotificationWrapper
           onClick={() => {
             setShowEditor(true);
+            setFocus(true);
           }}
           modalMessage="create a discussion thread"
           permissionKey="CreateDiscussionThread"
@@ -377,6 +380,7 @@ const DiscussionTab = (props) => {
               onCancel={cancel}
               onSubmit={save}
               commentEditorStyles={styles.commentEditorStyles}
+              focusEditor={focus}
             />
           </div>
         </div>

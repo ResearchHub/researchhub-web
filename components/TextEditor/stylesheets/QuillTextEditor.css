@@ -1,13 +1,25 @@
 .ql-container {
   border: none !important;
 }
+.ql-editor.ql-blank::before {
+  content: none;
+}
+
+.ql-editor.ql-blank::after {
+  color: rgba(0, 0, 0, 0.6);
+  content: attr(data-placeholder);
+  font-style: italic;
+  pointer-events: none;
+  display: block;
+  margin-top: -1.42rem;
+}
 
 .ql-blank {
   min-height: 5em;
 }
 
 .ql-editor {
-  cursor: text;
+  /* cursor: text; */
   padding: 0;
   font-family: "Roboto";
   line-height: 1.8;
