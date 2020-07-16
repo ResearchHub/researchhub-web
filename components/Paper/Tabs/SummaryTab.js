@@ -24,7 +24,6 @@ import { AuthActions } from "~/redux/auth";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
-import icons from "~/config/themes/icons";
 
 class SummaryTab extends React.Component {
   constructor(props) {
