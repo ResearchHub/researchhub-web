@@ -620,7 +620,6 @@ class PaperTransactionModal extends React.Component {
 
   updateBalance = async (provider) => {
     const contract = await this.createContract(provider);
-    console.log(contract);
     this.checkBalance(contract);
   };
 
