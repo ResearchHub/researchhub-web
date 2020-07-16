@@ -39,20 +39,30 @@ class Editor extends React.Component {
 
   componentDidMount = async () => {
     // After so many trial & errors, import NEEDS to be done this way. Doesn't work with Dynamic import with Next.js
-
     import("react-quill").then((val) => {
-      this.setState({
-        ReactQuill: val.default,
-        Quill: val.Quill,
-      });
+      this.setState(
+        {
+          ReactQuill: val.default,
+          Quill: val.Quill,
+        },
+        () => {
+          this.attachQuillRefs();
+          !this.state.focus &&
+            this.props.focusEditor &&
+            this.quillRef &&
+            this.focusEditor();
+          console.log("mount");
+        }
+      );
     });
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.attachQuillRefs();
+    if (!prevProps.editing && this.props.editing) {
+      !this.state.focus && this.quillRef && this.focusEditor();
+    }
   }
-
-  registerQuillModules = () => {};
 
   showLoader = (state) => {
     this.props.showMessage({ load: state, show: state });
@@ -170,6 +180,11 @@ class Editor extends React.Component {
     });
   };
 
+  focusEditor = () => {
+    this.quillRef.focus();
+    this.setState({ focus: true });
+  };
+
   convertHtmlToDelta = (value) => {
     if (typeof value === "string") {
       return this.quillRef.clipboard.convert(value);
@@ -195,13 +210,6 @@ class Editor extends React.Component {
     let plainText = this.quillRef.getText();
     this.props.submit(content, plainText, this.clearEditorContent);
   };
-
-  handleEvent = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  tipPlacement = () => {};
 
   renderToolbar = () => {
     var state = this.state;
@@ -240,15 +248,9 @@ class Editor extends React.Component {
         </span>
 
         <span className="ql-formats">
-          <button
-            className="ql-link"
-            onClick={() => this.tipPlacement("ql-link")}
-          ></button>
+          <button className="ql-link"></button>
           <button className="ql-image" />
-          <button
-            className="ql-video"
-            onClick={() => this.tipPlacement("ql-video")}
-          ></button>
+          <button className="ql-video"></button>
           <button class="ql-clean"></button>
         </span>
       </div>
@@ -438,6 +440,9 @@ const styles = StyleSheet.create({
   },
   focus: {
     borderColor: colors.BLUE(),
+    ":hover": {
+      borderColor: colors.BLUE(),
+    },
   },
   editSection: {
     padding: 16,
@@ -654,16 +659,48 @@ const toolbarStyles = StyleSheet.create({
     },
   },
   cancelButton: {
+    height: 37,
+    width: 126,
+    minWidth: 126,
+    fontSize: 15,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    borderRadius: 4,
+    userSelect: "none",
     "@media only screen and (max-width: 577px)": {
       width: 100,
     },
   },
   buttonStyle: {
+    height: 37,
+    width: 126,
+    minWidth: 126,
+    fontSize: 15,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    borderRadius: 4,
+    userSelect: "none",
     "@media only screen and (max-width: 577px)": {
       width: 100,
     },
   },
-  smallButton: {},
+  smallButton: {
+    height: 37,
+    width: 126,
+    minWidth: 126,
+    fontSize: 15,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    // marginRight: 20,
+    cursor: "pointer",
+    borderRadius: 4,
+    userSelect: "none",
+  },
   divider: {
     width: 10,
   },

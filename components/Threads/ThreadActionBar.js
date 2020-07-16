@@ -52,6 +52,7 @@ class ThreadActionBar extends React.Component {
             this.props.calculateThreadHeight &&
             this.props.calculateThreadHeight()
           }
+          editing={this.state.showReplyBox}
         />
       </div>
     );

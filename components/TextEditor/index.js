@@ -47,6 +47,7 @@ const TextEditor = (props) => {
     commentEditorStyles,
     removeStickyToolbar,
     editing,
+    focusEditor,
   } = props;
 
   const [value, setValue] = useState(convertToEditorValue(initialValue)); // need this only to initialize value, not to keep state
@@ -133,6 +134,7 @@ const TextEditor = (props) => {
       loading={loading && loading}
       commentEditorStyles={commentEditorStyles && commentEditorStyles}
       editing={editing}
+      focusEditor={focusEditor && focusEditor}
     />
   );
 };
@@ -152,6 +154,7 @@ TextEditor.propTypes = {
   readOnly: PropTypes.bool,
   hideButton: PropTypes.bool,
   loading: PropTypes.bool,
+  focusEditor: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({

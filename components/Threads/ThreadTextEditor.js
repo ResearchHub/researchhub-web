@@ -102,6 +102,7 @@ class ThreadTextEditor extends React.Component {
             onChange={this.onChange}
             loading={this.state.loading}
             editing={this.props.editing}
+            focusEditor={this.props.focusEditor}
           />
         </PermissionNotificationWrapper>
       );
@@ -127,6 +128,7 @@ class ThreadTextEditor extends React.Component {
           ]}
           passedValue={this.state.editorState}
           editing={this.props.editing}
+          focusEditor={this.props.focusEditor}
         />
       );
     }
@@ -163,9 +165,6 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.LIGHT_YELLOW(),
     // border: `1px solid ${colors.YELLOW()}`,
-    ":hover": {
-      backgroundColor: colors.LIGHT_YELLOW(),
-    },
   },
   androidContainer: {
     margin: 0,
