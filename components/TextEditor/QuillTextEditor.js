@@ -76,9 +76,8 @@ class Editor extends React.Component {
       const file = input.files[0];
       const fileString = await this.toBase64(file);
       const type = file.type;
-      // const fileUrl = await this.getFileUrl({ fileString, type })
+      const fileUrl = await this.getFileUrl({ fileString, type });
       const range = this.quillRef.getSelection();
-      const fileUrl = "https://picsum.photos/200";
 
       // this part the image is inserted
       // by 'image' option below, you just have to put src(link) of img here.
