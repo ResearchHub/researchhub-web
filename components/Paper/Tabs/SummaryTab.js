@@ -67,26 +67,25 @@ class SummaryTab extends React.Component {
     });
   };
 
+  // TODO: come back to this
   onEditorStateChange = (editorState) => {
-    let { paper } = this.props;
-    this.setState({
-      editorState,
-    });
-    let editorJSON = JSON.stringify(editorState.toJSON());
-
-    if (this.state.firstLoad) {
-      this.setState({
-        firstLoad: false,
-      });
-      return;
-    }
-
-    if (localStorage) {
-      localStorage.setItem(
-        `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
-        editorJSON
-      );
-    }
+    // let { paper } = this.props;
+    // this.setState({
+    //   editorState,
+    // });
+    // let editorJSON = JSON.stringify(editorState.toJSON());
+    // if (this.state.firstLoad) {
+    //   this.setState({
+    //     firstLoad: false,
+    //   });
+    //   return;
+    // }
+    // if (localStorage) {
+    //   localStorage.setItem(
+    //     `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
+    //     editorJSON
+    //   );
+    // }
   };
 
   submitEdit = (raw, plain_text) => {

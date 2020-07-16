@@ -1,12 +1,14 @@
 // NPM
-import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
 import "./stylesheets/QuillTextEditor.css";
 import { css, StyleSheet } from "aphrodite";
+import { connect } from "react-redux";
 
 // Component
 import FormButton from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
+
+import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -37,6 +39,7 @@ class Editor extends React.Component {
 
   componentDidMount = async () => {
     // After so many trial & errors, import NEEDS to be done this way. Doesn't work with Dynamic import with Next.js
+
     import("react-quill").then((val) => {
       this.setState({
         ReactQuill: val.default,
@@ -51,6 +54,10 @@ class Editor extends React.Component {
 
   registerQuillModules = () => {};
 
+  showLoader = (state) => {
+    this.props.showMessage({ load: state, show: state });
+  };
+
   attachQuillRefs = () => {
     if (this.reactQuillRef.current === null) return;
     if (typeof this.reactQuillRef.current.getEditor !== "function") return;
@@ -60,46 +67,23 @@ class Editor extends React.Component {
   };
 
   imageHandler = () => {
+    this.showLoader(true);
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
     input.click();
     input.onchange = async function() {
-      // const file = input.files[0]
-      // const fileString = await this.toBase64(file);
-      // const type = file.type;
+      const file = input.files[0];
+      const fileString = await this.toBase64(file);
+      const type = file.type;
       // const fileUrl = await this.getFileUrl({ fileString, type })
-      // const fileUrl =
-      //   "https://researchhub-paper-dev1.s3.amazonaws.com/comment_files/jpeg/73380103aef94d81f020d8abbcc9587c.jpeg?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=G1fLEjk5%2FwJAPJieGBbuKntUbIw%3D&Expires=1595452926";
-
-      let fileUrl = "https://picsum.photos/200";
-      let fileObject = {
-        insert: {
-          image: `data:image/jpeg;base64,${fileUrl}`,
-        },
-      };
-
-      console.log("this.reactQuillRef", this.reactQuillRef);
-      // console.log("this.reactQuillRef.current.getEditor()",this.reactQuillRef.current.getEditor());
-      // this.quillRef = this.reactQuillRef.current.getEditor();
-      console.log("this.quillRef", this.quillRef);
-
-      // let content = { ...this.quillRef.getContents() };
-      // content.ops = [fileObject, ...content.ops];
-      // this.setState(
-      //   {
-      //     value: content,
-      //   },
-      //   () => {
-      //     console.log("STATE", this.state);
-      //   }
-      // );
-
       const range = this.quillRef.getSelection();
+      const fileUrl = "https://picsum.photos/200";
 
       // this part the image is inserted
       // by 'image' option below, you just have to put src(link) of img here.
       this.quillRef.insertEmbed(range.index, "image", fileUrl);
+      this.showLoader(false);
     }.bind(this);
   };
 
@@ -120,7 +104,7 @@ class Editor extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        console.log("res", res);
+        return res;
       });
   };
   formatRange(range) {
@@ -129,11 +113,19 @@ class Editor extends React.Component {
 
   onEditorChange = (value, delta, source, editor) => {
     if (this.props.editing) {
-      return this.setState({
-        editValue: editor.getContents(),
-        editEvents: [`[${source}] text-change`, ...this.state.events],
-        editPlainText: editor.getText(),
-      });
+      return this.setState(
+        {
+          editValue: editor.getContents(),
+          editEvents: [`[${source}] text-change`, ...this.state.events],
+          editPlainText: editor.getText(),
+          editIndex: this.state.editIndex
+            ? this.state.editIndex
+            : editor.getContents().ops.length,
+        },
+        () => {
+          this.props.onChange && this.props.onChange();
+        }
+      );
     }
 
     this.setState(
@@ -143,7 +135,7 @@ class Editor extends React.Component {
         plainText: editor.getText(),
       },
       () => {
-        console.log(this.state.value);
+        this.props.onChange && this.props.onChange();
       }
     );
   };
@@ -179,11 +171,30 @@ class Editor extends React.Component {
     });
   };
 
-  onCancel = () => {};
+  convertHtmlToDelta = (value) => {
+    if (typeof value === "string") {
+      return this.quillRef.clipboard.convert(value);
+    } else {
+      return value;
+    }
+  };
+
+  clearEditorContent = () => {
+    this.quillRef.setContents([]);
+  };
+
+  onCancel = () => {
+    if (this.props.editing) {
+      let content = this.convertHtmlToDelta(this.state.value);
+      this.quillRef.setContents(content);
+    }
+    this.props.cancel && this.props.cancel();
+  };
 
   onSubmit = () => {
-    let { value, plainText } = this.state;
-    // this.props.submit(value, plainText)
+    let content = this.quillRef.getContents();
+    let plainText = this.quillRef.getText();
+    this.props.submit(content, plainText, this.clearEditorContent);
   };
 
   handleEvent = (e) => {
@@ -259,7 +270,7 @@ class Editor extends React.Component {
           {!props.hideButton && !props.hideCancelButton && (
             <FormButton
               isWhite={true}
-              onClick={props.cancel}
+              onClick={this.onCancel}
               label={props.smallToolBar ? "Hide" : "Cancel"}
               size={props.smallToolBar && "med"}
               customButtonStyle={
@@ -659,4 +670,12 @@ const toolbarStyles = StyleSheet.create({
   },
 });
 
-export default Editor;
+const mapDispatchToProps = {
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Editor);
