@@ -78,12 +78,17 @@ class PaperProgress extends React.Component {
     this.setState({ ...this.initialState });
   }
 
+  checkSummaryFormat(summary) {
+    if (summary.summary && summary.summary.hasOwnProperty("ops")) {
+      return summary.summary_plain_text;
+    } else {
+      return convertToEditorValue(summary.summary).document.text;
+    }
+  }
+
   formatSections = () => {
     let { limitations, bullets, figureCount, commentCount, paper } = this.props;
-    let summary = paper.summary
-      ? paper.summary.summary &&
-        convertToEditorValue(paper.summary.summary).document.text
-      : "";
+    let summary = paper.summary && this.checkSummaryFormat(paper.summary);
     let sections = [
       {
         label: "Key Takeaways",
@@ -196,10 +201,7 @@ class PaperProgress extends React.Component {
           let num = bullets.bullets.length * (33 / 3);
           progress += Math.min(num, 33);
         } else if (section.label === "Summary") {
-          let summary = paper.summary
-            ? paper.summary.summary &&
-              convertToEditorValue(paper.summary.summary).document.text
-            : "";
+          let summary = paper.summary && this.checkSummaryFormat(paper.summary);
 
           if (summary.length >= 250) {
             progress += 34;

@@ -320,9 +320,13 @@ const Paper = (props) => {
     if (paper) {
       if (paper.summary) {
         if (paper.summary.summary) {
-          let summary = convertToEditorValue(paper.summary.summary).document
-            .text;
-          return summary;
+          if (paper.summary.summary.hasOwnProperty("ops")) {
+            return paper.summary.summary_plain_text;
+          } else {
+            let summary = convertToEditorValue(paper.summary.summary).document
+              .text;
+            return summary;
+          }
         }
       } else if (paper.abstract) {
         return paper.abstract;
