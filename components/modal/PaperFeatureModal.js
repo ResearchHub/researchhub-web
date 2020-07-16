@@ -3,14 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import { Value } from "slate";
-import Plain from "slate-plain-serializer";
 import { withAlert } from "react-alert";
-import { isAndroid, isMobile } from "react-device-detect";
-var isAndroidJS = false;
-if (process.browser) {
-  const ua = navigator.userAgent.toLowerCase();
-  isAndroidJS = ua && ua.indexOf("android") > -1;
-}
 
 import BaseModal from "./BaseModal";
 import FormTextArea from "../Form/FormTextArea";
@@ -30,9 +23,9 @@ import { PaperActions } from "~/redux/paper";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import colors, { discussionPageColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
 import { thread } from "~/redux/discussion/shims";
+import { isQuillDelta } from "~/config/utils/";
 
 const BULLET_COUNT = 5;
 const LIMITATIONS_COUNT = 5;
@@ -87,6 +80,9 @@ class PaperFeatureModal extends React.Component {
     const { paper } = this.props;
     if (paper.summary) {
       if (paper.summary.summary) {
+        if (isQuillDelta(paper.summary.summary)) {
+          return this.setState({ summaryEditorState: paper.summary.summary });
+        }
         let summaryJSON = paper.summary.summary;
         let editorState = Value.fromJSON(summaryJSON);
         this.setState({

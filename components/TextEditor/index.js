@@ -105,11 +105,7 @@ const TextEditor = (props) => {
 
   return (
     <QuillTextEditor
-      value={
-        passedValue
-          ? convertEditorValueToHtml(convertToEditorValue(passedValue))
-          : convertEditorValueToHtml(value)
-      } // update this formula to detect if value is delta or previous data
+      value={passedValue ? convertToEditorValue(passedValue) : value} // update this formula to detect if value is delta or previous data
       uid={uid}
       key={`textEditor-${uid}`}
       setRef={setInternalRef}
