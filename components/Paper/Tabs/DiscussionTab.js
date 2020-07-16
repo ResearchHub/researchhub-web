@@ -223,25 +223,14 @@ const DiscussionTab = (props) => {
   };
 
   const save = async (text, plain_text) => {
-    if (
-      discussion.question.document.text === "" &&
-      (!isAndroid || !isAndroidJS)
-    ) {
-      props.setMessage("Fields must not be empty.");
-      return props.showMessage({ show: true, error: true });
-    }
-
     let { paperId } = router.query;
     props.showMessage({ load: true, show: true });
 
     let param = {
       // title: discussion.title,
-      text: isAndroid || isAndroidJS ? text : discussion.question.toJSON(),
+      text: text,
       paper: paperId,
-      plain_text:
-        isAndroid || isAndroidJS
-          ? plain_text
-          : Plain.serialize(discussion.question),
+      plain_text: plain_text,
     };
 
     let config = await API.POST_CONFIG(param);
