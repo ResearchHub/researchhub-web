@@ -3,6 +3,7 @@ import Plain from "slate-plain-serializer";
 import Html from "slate-html-serializer";
 import { doesNotExist, getNestedValue } from "./index";
 import ModalImage from "react-modal-image";
+import QuillToPlaintext from "quill-to-plaintext";
 import { css, StyleSheet } from "aphrodite";
 
 export function createUsername({ createdBy }) {
@@ -14,25 +15,37 @@ export function createUsername({ createdBy }) {
 }
 
 export function convertToEditorValue(text) {
-  if (Value.isValue(text)) {
+  if (isQuillDelta(text)) {
     return text;
   }
 
-  if (typeof text === "string") {
-    return Plain.deserialize(text);
+  if (Value.isValue(text)) {
+    return convertEditorValueToHtml(text);
   }
 
-  if (typeof text === "object" && text !== null) {
-    if (text.hasOwnProperty("ops")) {
-      return text;
-    }
+  if (typeof text === "string") {
+    return convertEditorValueToHtml(Plain.deserialize(text));
   }
 
   try {
-    return Value.fromJSON(text);
+    return convertEditorValueToHtml(Value.fromJSON(text));
   } catch {
     return undefined;
   }
+}
+
+export function isQuillDelta(value) {
+  if (typeof value === "object" && value !== null) {
+    if (value.hasOwnProperty("ops")) {
+      return true;
+    }
+  } else {
+    return false;
+  }
+}
+
+export function convertDeltaToText(delta) {
+  return QuillToPlaintext(delta);
 }
 
 export function getCurrentUser(storeState) {

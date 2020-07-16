@@ -47,6 +47,7 @@
     "numeral": "^2.0.6",
     "progress": "^2.0.3",
     "q5-js-config": "^1.4.1",
+    "quill-to-plaintext": "^1.0.0",
     "react": "^16.10.1",
     "react-alert": "^6.0.0",
     "react-alert-template-basic": "^1.0.0",
