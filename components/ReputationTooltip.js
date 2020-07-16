@@ -3,8 +3,6 @@ import ReactTooltip from "react-tooltip";
 import { Fragment } from "react";
 
 const ReputationTooltip = (props) => {
-  ReactTooltip.rebuild();
-
   return (
     <Fragment>
       {process.browser && (
