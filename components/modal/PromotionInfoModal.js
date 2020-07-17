@@ -31,25 +31,6 @@ const PromotionInfoModal = (props) => {
     dispatch(ModalActions.openPaperTransactionModal(true));
   };
 
-  const renderText = () => {
-    if (!store.getState().modals.openPromotionInfoModal.props.id) {
-      return;
-    }
-    let abstract = store.getState().modals.openPromotionInfoModal.props
-      .abstract;
-    let tagline = store.getState().modals.openPromotionInfoModal.props.abstract;
-    let summary = convertToEditorValue(
-      store.getState().modals.openPromotionInfoModal.props.summary.summary
-    ).document.text;
-    if (abstract) {
-      return abstract.length > 255 ? abstract.slice(0, 255) + "..." : abstract;
-    } else if (summary) {
-      return summary.length > 255 ? summary.slice(0, 255) + "..." : summary;
-    } else if (tagline) {
-      return tagline.length > 255 ? tagline.slice(0, 255) + "..." : tagline;
-    }
-  };
-
   return (
     <BaseModal
       isOpen={store.getState().modals.openPromotionInfoModal.isOpen}

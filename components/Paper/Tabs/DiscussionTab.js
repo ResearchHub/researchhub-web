@@ -85,6 +85,7 @@ const DiscussionTab = (props) => {
   const [page, setPage] = useState(1);
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
+  const [focus, setFocus] = useState(false);
 
   useEffect(resetThreadsEffect, [props.threads]);
 
@@ -218,30 +219,20 @@ const DiscussionTab = (props) => {
     setDiscussion(initialDiscussionState);
     setEditorDormant(true);
     setShowEditor(false);
+    setFocus(false);
     document.body.style.overflow = "scroll";
     props.openAddDiscussionModal(false);
   };
 
   const save = async (text, plain_text) => {
-    if (
-      discussion.question.document.text === "" &&
-      (!isAndroid || !isAndroidJS)
-    ) {
-      props.setMessage("Fields must not be empty.");
-      return props.showMessage({ show: true, error: true });
-    }
-
     let { paperId } = router.query;
     props.showMessage({ load: true, show: true });
 
     let param = {
       // title: discussion.title,
-      text: isAndroid || isAndroidJS ? text : discussion.question.toJSON(),
+      text: text,
       paper: paperId,
-      plain_text:
-        isAndroid || isAndroidJS
-          ? plain_text
-          : Plain.serialize(discussion.question),
+      plain_text: plain_text,
     };
 
     let config = await API.POST_CONFIG(param);
@@ -349,6 +340,7 @@ const DiscussionTab = (props) => {
         <PermissionNotificationWrapper
           onClick={() => {
             setShowEditor(true);
+            setFocus(true);
           }}
           modalMessage="create a discussion thread"
           permissionKey="CreateDiscussionThread"
@@ -388,6 +380,7 @@ const DiscussionTab = (props) => {
               onCancel={cancel}
               onSubmit={save}
               commentEditorStyles={styles.commentEditorStyles}
+              focusEditor={focus}
             />
           </div>
         </div>

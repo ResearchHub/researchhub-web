@@ -3,12 +3,6 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Progress from "react-progressbar";
 import "./PaperProgress.css";
-import { isAndroid, isMobile } from "react-device-detect";
-var isAndroidJS = false;
-if (process.browser) {
-  const ua = navigator.userAgent.toLowerCase();
-  isAndroidJS = ua && ua.indexOf("android") > -1;
-}
 
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Loader from "~/components/Loader/Loader";
@@ -23,7 +17,11 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { convertToEditorValue } from "~/config/utils";
+import {
+  convertToEditorValue,
+  convertDeltaToText,
+  isQuillDelta,
+} from "~/config/utils/";
 
 class PaperProgress extends React.Component {
   constructor(props) {
@@ -78,12 +76,23 @@ class PaperProgress extends React.Component {
     this.setState({ ...this.initialState });
   }
 
+  getSummaryText(summary) {
+    if (summary.summary) {
+      if (summary.summary_plain_text) {
+        return summary.summary_plain_text;
+      }
+      if (isQuillDelta(summary.summary)) {
+        return convertDeltaToText(summary.summary);
+      }
+      return convertToEditorValue(summary.summary).document.text;
+    } else {
+      return "";
+    }
+  }
+
   formatSections = () => {
     let { limitations, bullets, figureCount, commentCount, paper } = this.props;
-    let summary = paper.summary
-      ? paper.summary.summary &&
-        convertToEditorValue(paper.summary.summary).document.text
-      : "";
+    let summary = paper.summary && this.getSummaryText(paper.summary);
     let sections = [
       {
         label: "Key Takeaways",
@@ -92,8 +101,8 @@ class PaperProgress extends React.Component {
       },
       {
         label: "Summary",
-        active: summary.trim().length >= 250,
-        count: summary.trim().length,
+        active: summary && summary.trim().length >= 250,
+        count: summary ? summary.trim().length : 0,
       },
       {
         label: "Comments",
@@ -166,12 +175,9 @@ class PaperProgress extends React.Component {
           let num = bullets.bullets.length * (33 / 3);
           progress += Math.min(num, 33);
         } else if (section.label === "Summary") {
-          let summary = paper.summary
-            ? paper.summary.summary &&
-              convertToEditorValue(paper.summary.summary).document.text
-            : "";
+          let summary = paper.summary && this.getSummaryText(paper.summary);
 
-          if (summary.length >= 250) {
+          if (summary && summary.length >= 250) {
             progress += 34;
           } else {
             progress += (Math.min(250, summary.length) / 250) * 34;
@@ -196,15 +202,13 @@ class PaperProgress extends React.Component {
           let num = bullets.bullets.length * (33 / 3);
           progress += Math.min(num, 33);
         } else if (section.label === "Summary") {
-          let summary = paper.summary
-            ? paper.summary.summary &&
-              convertToEditorValue(paper.summary.summary).document.text
-            : "";
+          let summary = paper.summary && this.getSummaryText(paper.summary);
 
-          if (summary.length >= 250) {
+          if (summary && summary.length >= 250) {
             progress += 34;
           } else {
-            progress += (Math.min(250, summary.length) / 250) * 34;
+            progress +=
+              (Math.min(250, summary ? summary.length : 0) / 250) * 34;
           }
         }
       }
@@ -265,13 +269,6 @@ class PaperProgress extends React.Component {
       });
     }
 
-    if (label === "Summary") {
-      if ((isAndroid || isAndroidJS) && isMobile) {
-        this.props.setMessage("Edit the summary on Desktop");
-        return this.props.showMessage({ show: true });
-      }
-    }
-
     let props = {
       tab:
         label &&
@@ -304,10 +301,7 @@ class PaperProgress extends React.Component {
     if (sections.length > 0) {
       let section = sections[0];
       let paper = this.props.paper;
-      let summary = paper.summary
-        ? paper.summary.summary &&
-          convertToEditorValue(paper.summary.summary).document.text
-        : "";
+      let summary = paper.summary && this.getSummaryText(paper.summary);
       if (section.label === "Summary" && summary.length > 0) {
         return (
           <Fragment>

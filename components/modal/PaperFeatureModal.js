@@ -3,14 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import { Value } from "slate";
-import Plain from "slate-plain-serializer";
 import { withAlert } from "react-alert";
-import { isAndroid, isMobile } from "react-device-detect";
-var isAndroidJS = false;
-if (process.browser) {
-  const ua = navigator.userAgent.toLowerCase();
-  isAndroidJS = ua && ua.indexOf("android") > -1;
-}
 
 import BaseModal from "./BaseModal";
 import FormTextArea from "../Form/FormTextArea";
@@ -30,9 +23,9 @@ import { PaperActions } from "~/redux/paper";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import colors, { discussionPageColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
 import { thread } from "~/redux/discussion/shims";
+import { isQuillDelta } from "~/config/utils/";
 
 const BULLET_COUNT = 5;
 const LIMITATIONS_COUNT = 5;
@@ -87,6 +80,9 @@ class PaperFeatureModal extends React.Component {
     const { paper } = this.props;
     if (paper.summary) {
       if (paper.summary.summary) {
+        if (isQuillDelta(paper.summary.summary)) {
+          return this.setState({ summaryEditorState: paper.summary.summary });
+        }
         let summaryJSON = paper.summary.summary;
         let editorState = Value.fromJSON(summaryJSON);
         this.setState({
@@ -271,16 +267,16 @@ class PaperFeatureModal extends React.Component {
   };
 
   onEditorStateChange = (editorState) => {
-    let { paper } = this.props;
-    this.setState({ summaryEditorState: editorState }, () => {
-      let editorJSON = JSON.stringify(editorState.toJSON());
-      if (localStorage) {
-        localStorage.setItem(
-          `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
-          editorJSON
-        );
-      }
-    });
+    // let { paper } = this.props;
+    // this.setState({ summaryEditorState: editorState }, () => {
+    //   let editorJSON = JSON.stringify(editorState.toJSON());
+    //   if (localStorage) {
+    //     localStorage.setItem(
+    //       `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
+    //       editorJSON
+    //     );
+    //   }
+    // });
   };
 
   submitSummary = (raw, plain_text) => {
@@ -291,9 +287,8 @@ class PaperFeatureModal extends React.Component {
       updatePaperState,
     } = this.props;
     showMessage({ show: true, load: true });
-    let value = this.state.summaryEditorState;
-    let summary = value.toJSON({ preserveKeys: true });
-    let summary_plain_text = Plain.serialize(value);
+    let summary = raw;
+    let summary_plain_text = plain_text;
 
     let param = {
       summary,
@@ -342,26 +337,14 @@ class PaperFeatureModal extends React.Component {
       auth,
       paper,
     } = this.props;
-    if (
-      this.state.commentEditorState.document.text === "" &&
-      ((!isAndroid || !isAndroidJS) && isMobile)
-    ) {
-      setMessage("Fields must not be empty.");
-      return showMessage({ show: true, error: true });
-    }
+
     let paperId = paper.id;
     showMessage({ load: true, show: true });
 
     let param = {
-      text:
-        isAndroid || isAndroidJS
-          ? text
-          : this.state.commentEditorState.toJSON(),
+      text,
       paper: paperId,
-      plain_text:
-        isAndroid || isAndroidJS
-          ? plain_text
-          : Plain.serialize(this.state.commentEditorState),
+      plain_text,
     };
 
     let config = await API.POST_CONFIG(param);
@@ -544,29 +527,15 @@ class PaperFeatureModal extends React.Component {
                   canSubmit={true}
                   commentEditor={false}
                   initialValue={this.state.summaryEditorState}
-                  onCancel={this.cancel}
-                  onSubmit={this.submitEdit}
+                  onCancel={this.closeModal}
+                  onSubmit={this.submitSummary}
                   onChange={this.onEditorStateChange}
                   smallToolBar={true}
-                  hideButton={true}
+                  // hideButton={true}
                   placeholder={`Description: Distill this paper into a short paragraph.`}
                   commentStyles={styles.commentStyles}
                   removeStickyToolbar={true}
                 />
-                <div className={css(styles.buttonRow, styles.summaryButtonRow)}>
-                  <Ripples
-                    className={css(styles.cancelButton)}
-                    onClick={this.closeModal}
-                  >
-                    Cancel
-                  </Ripples>
-                  <Ripples
-                    className={css(styles.submitButton)}
-                    onClick={this.submitSummary}
-                  >
-                    Submit
-                  </Ripples>
-                </div>
               </div>
             </div>
           );
