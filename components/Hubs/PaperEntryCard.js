@@ -468,8 +468,8 @@ const PaperEntryCard = ({
                 </div>
               </a>
             </Link>
-            {/* {renderUploadedBy()} */}
-            {renderRawAuthors()}
+            {renderUploadedBy()}
+            {/* {renderRawAuthors()} */}
             {renderBullet()}
             <div
               className={css(
