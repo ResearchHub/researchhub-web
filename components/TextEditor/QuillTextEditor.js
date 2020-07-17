@@ -27,8 +27,6 @@ class Editor extends React.Component {
       plainText: "",
       events: [],
       editValue: this.props.value ? this.props.value : { ops: [] },
-      editPlainText: "",
-      editEvnts: [],
       focus: false,
       ReactQuill: null,
       Quill: null,
@@ -168,11 +166,6 @@ class Editor extends React.Component {
       return this.setState(
         {
           editValue: editor.getContents(),
-          editEvents: [`[${source}] text-change`, ...this.state.events],
-          editPlainText: editor.getText(),
-          editIndex: this.state.editIndex
-            ? this.state.editIndex
-            : editor.getContents().ops.length,
         },
         () => {
           this.props.onChange && this.props.onChange();
@@ -185,6 +178,7 @@ class Editor extends React.Component {
         value: editor.getContents(),
         events: [`[${source}] text-change`, ...this.state.events],
         plainText: editor.getText(),
+        editValue: editor.getContents(),
       },
       () => {
         this.props.onChange && this.props.onChange();
@@ -210,7 +204,7 @@ class Editor extends React.Component {
       events: [`[${source}] focus(${this.formatRange(range)})`].concat(
         this.state.events
       ),
-      focus: true,
+      focus: !this.props.readOnly && true,
     });
   };
 
@@ -244,13 +238,26 @@ class Editor extends React.Component {
     if (this.props.editing) {
       let content = this.convertHtmlToDelta(this.state.value);
       this.quillRef.setContents(content);
+      this.quillRef.blur();
     }
-    this.props.cancel && this.props.cancel();
+    this.setState(
+      {
+        focus: false,
+      },
+      () => {
+        this.props.cancel && this.props.cancel();
+      }
+    );
   };
 
   onSubmit = () => {
     let content = this.quillRef.getContents();
     let plainText = this.quillRef.getText();
+    this.setState({
+      value: content,
+      plainText,
+      editValue: content,
+    });
     this.props.submit(content, plainText, this.clearEditorContent);
   };
 
@@ -397,8 +404,8 @@ class Editor extends React.Component {
         ) : (
           <div
             className={css(
-              styles.summaryEditor,
-              this.state.focus && styles.focus
+              styles.summaryEditor
+              // this.state.focus && styles.focus
             )}
           >
             {ReactQuill && this.renderToolbar(this.props.uid)}
@@ -483,17 +490,18 @@ const styles = StyleSheet.create({
   },
   commentEditor: {
     background: "#FBFBFD",
-    border: "1px solid #fff",
+    border: "1px solid rgb(232, 232, 242)",
     color: "#000",
-    borderColor: "#E7E7E7",
-    // ":hover": {
-    //   borderColor: "#E7E7E7",
-    // },
-  },
-  focus: {
-    borderColor: colors.BLUE(),
     ":hover": {
-      borderColor: colors.BLUE(),
+      borderColor: "rgb(179, 179, 179)",
+    },
+  },
+  editable: {},
+  focus: {
+    borderColor: "rgb(63, 133, 247)",
+    ":hover": {
+      borderColor: "rgb(63, 133, 247)",
+      boxShadow: "rgb(63, 133, 247) 0px 0px 1px 1px",
     },
   },
   editSection: {
@@ -502,9 +510,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
-    ":focus": {
-      border: `1px solid ${colors.BLUE()}`,
-    },
+    // ":focus": {
+    //   border: `1px solid 'rgb(63, 133, 247)`,
+    //   boxShadow: 'rgb(63, 133, 247) 0px 0px 1px 1px'
+    // },
   },
   comment: {
     whiteSpace: "pre-wrap",
