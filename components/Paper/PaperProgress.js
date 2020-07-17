@@ -3,12 +3,6 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Progress from "react-progressbar";
 import "./PaperProgress.css";
-import { isAndroid, isMobile } from "react-device-detect";
-var isAndroidJS = false;
-if (process.browser) {
-  const ua = navigator.userAgent.toLowerCase();
-  isAndroidJS = ua && ua.indexOf("android") > -1;
-}
 
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Loader from "~/components/Loader/Loader";
@@ -273,13 +267,6 @@ class PaperProgress extends React.Component {
         fileAccept: "image/x-png,image/jpeg",
         onSubmit: this.postFigures,
       });
-    }
-
-    if (label === "Summary") {
-      if ((isAndroid || isAndroidJS) && isMobile) {
-        this.props.setMessage("Edit the summary on Desktop");
-        return this.props.showMessage({ show: true });
-      }
     }
 
     let props = {
