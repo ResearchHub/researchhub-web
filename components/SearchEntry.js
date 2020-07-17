@@ -17,7 +17,6 @@ import colors from "../config/themes/colors";
 import icons from "~/config/themes/icons";
 import { formatDateStandard } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
-import { convertToEditorValue } from "~/config/utils";
 
 const search_fields = [
   "title",
