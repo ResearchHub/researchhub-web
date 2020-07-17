@@ -11,8 +11,10 @@ class Privacy extends React.Component {
       <div className={css(styles.page)}>
         <ComponentWrapper>
           <h1>ResearchHub Privacy Policy</h1>
-          <p>Effective May 20, 2020. Last Revised July 7, 2020</p>
-          <p>
+          <p className={css(styles.paragraph)}>
+            Effective May 20, 2020. Last Revised July 7, 2020
+          </p>
+          <p className={css(styles.paragraph)}>
             We want you to understand how and why ResearchHub, Inc.
             (“ResearchHub,” “we” or “us”) collects, uses, and shares information
             about you when you use our websites, mobile apps, and other online
@@ -20,26 +22,26 @@ class Privacy extends React.Component {
             otherwise interact with us or receive a communication from us. This
             Privacy Policy applies to all of our Services.
           </p>
-          <p>
+          <h2>
             <strong>What We Collect</strong>
-          </p>
-          <p>Information You Provide to Us</p>
-          <p>
+          </h2>
+          <h3 className={css(styles.header)}>Information You Provide to Us</h3>
+          <p className={css(styles.paragraph)}>
             We collect information you provide to us directly when you use the
             Services. This includes:
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <i>Account information.</i> To create an account, you must provide a
             username and password. Your username is public, and it doesn’t have
             to be related to your real name. You may also provide an email
             address. We also store your user account preferences and settings.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <i>Content you submit.</i> We collect the content you submit to the
             Services. Your content may include research outputs, text, links,
             images, gifs, and videos.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <i>Actions you take.</i> We collect information about the actions
             you take when using the Services. This includes your interactions
             with content, like voting, saving, hiding, and reporting. It also
@@ -47,25 +49,27 @@ class Privacy extends React.Component {
             friending, and blocking. We collect your interactions with
             communities, like your subscriptions or moderator status.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <i>Transactional information.</i> If you purchase products or
             services from us we will collect certain information from you,
             including your name, address, email address, and information about
             the product or service you are purchasing.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <i>Other information.</i> You may choose to provide other
             information directly to us. For example, we may collect information
             when you fill out a form, participate in ResearchHub-sponsored
             activities or promotions, apply for a job, request customer support
             or otherwise communicate with us.
           </p>
-          <p>Information We Collect Automatically</p>
-          <p>
+          <h3 className={css(styles.header)}>
+            Information We Collect Automatically
+          </h3>
+          <p className={css(styles.paragraph)}>
             When you access or use our Services, we may also automatically
             collect information about you. This includes:
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <i>Log and usage data.</i> We may log information when you access
             and use the Services. This may include your IP address, user-agent
             string, browser type, operating system, referral URLs, device
@@ -74,7 +78,7 @@ class Privacy extends React.Component {
             IP address used to create your account, ResearchHub will delete any
             IP addresses collected after 100 days.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <i>Information collected from cookies and similar technologies.</i>{" "}
             We may receive information from cookies, which are pieces of data
             your browser stores and sends back to us when making requests, and
@@ -84,7 +88,7 @@ class Privacy extends React.Component {
             information on how you can disable cookies, please see “Your
             Choices” below.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <i>Location information.</i> We may receive and process information
             about your location. For example, with your consent, we may collect
             information about the specific location of your mobile device (for
@@ -94,8 +98,10 @@ class Privacy extends React.Component {
             or we may derive your approximate location from other information
             about you, including your IP address.
           </p>
-          <p>Information Collected from Other Sources</p>
-          <p>
+          <h3 className={css(styles.header)}>
+            Information Collected from Other Sources
+          </h3>
+          <p className={css(styles.paragraph)}>
             <i>Linked services.</i> If you authorize or link other services
             (e.g., third-party apps or websites) to access your ResearchHub
             account, ResearchHub receives information about your use of that
@@ -104,16 +110,18 @@ class Privacy extends React.Component {
             with that service. To learn how information is shared with linked
             services, see “How Information About You Is Shared” below.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <i>Information collected from integrations.</i> We also may receive
             information about you, including log and usage data and cookie
             information, from third-party websites that integrate our Services,
             including our embeds, buttons, and advertising technology.
           </p>
-          <p>
+          <h2>
             <strong>How We Use Information About You</strong>
+          </h2>
+          <p className={css(styles.paragraph)}>
+            We use information about you to:
           </p>
-          <p>We use information about you to:</p>
           <ul>
             <li>Provide, maintain, and improve the Services;</li>
           </ul>
@@ -141,10 +149,10 @@ class Privacy extends React.Component {
             Personalize the Services and provide advertisements, content and
             features that match user profiles or interests.{" "}
           </li>
-          <p>
+          <h2>
             <strong>How Information About You Is Shared</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             When you use the Services, certain information may be shared with
             other users and the public. For example:
           </p>
@@ -192,12 +200,12 @@ class Privacy extends React.Component {
               that provide these social sharing features (e.g.Twitter).
             </li>
           </ul>
-          <p>
+          <p className={css(styles.paragraph)}>
             Please note that, even when you delete your account, the posts,
             comments and messages you submit through the Services may still be
             viewable or available on our servers.{" "}
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             Otherwise, we do not share, sell, or give away your personal
             information to third parties unless one of the following
             circumstances applies:
@@ -268,10 +276,10 @@ class Privacy extends React.Component {
               identifying who the visitors were.
             </li>
           </ul>
-          <p>
+          <h2>
             <strong>Analytics Partners</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             We may partner with analytics providers to deliver advertising and
             content targeted to your interests and to better understand your use
             of the Services. These third parties may collect information sent by
@@ -279,26 +287,26 @@ class Privacy extends React.Component {
             for content, such as unique identifiers, your IP address, or other
             information about your computer or device. For example:
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             We use analytics partners (such as Google Analytics) to help analyze
             usage and traffic for our Services. As an example, we may use
             analytics partners to analyze and measure, in the aggregate, the
             number of unique visitors to our Services.
           </p>
-          <p>
+          <h2>
             <strong>Your Choices</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             As a ResearchHub user, you have choices about how to protect and
             limit the collection, use, and disclosure of information about you.
           </p>
-          <p>Accessing Your Information</p>
-          <p>
+          <h3 className={css(styles.header)}>Accessing Your Information</h3>
+          <p className={css(styles.paragraph)}>
             You can also request a copy of the personal information ResearchHub
             maintains about you by emailing hello@ResearchHub.com
           </p>
-          <p>Deleting Your Account</p>
-          <p>
+          <h3 className={css(styles.header)}>Deleting Your Account</h3>
+          <p className={css(styles.paragraph)}>
             You may delete your account information at any time from the user
             settings page. You can also submit a request to delete the personal
             information ResearchHub maintains about you by emailing
@@ -311,24 +319,24 @@ class Privacy extends React.Component {
             required by law or for legitimate business purposes after you delete
             your account.
           </p>
-          <p>Controlling the Use of Cookies</p>
-          <p>
+          <h3 className={css(styles.header)}>Controlling the Use of Cookies</h3>
+          <p className={css(styles.paragraph)}>
             Most web browsers are set to accept cookies by default. If you
             prefer, you can usually choose to set your browser to remove or
             reject first- and third-party cookies. Please note that if you
             choose to remove or reject cookies, this could affect the
             availability and functionality of our Services.
           </p>
-          <p>Controlling Analytics</p>
-          <p>
+          <h3 className={css(styles.header)}>Controlling Analytics</h3>
+          <p className={css(styles.paragraph)}>
             Some analytics providers we partner with may provide specific
             opt-out mechanisms and we may provide, as needed and as available,
             additional tools and third-party services that allow you to better
             understand cookies and how you can opt-out. For example, you may
             manage the use and collection{" "}
           </p>
-          <p>Do Not Track</p>
-          <p>
+          <h3 className={css(styles.header)}>Do Not Track</h3>
+          <p className={css(styles.paragraph)}>
             Most modern web browsers give you the option to send a Do Not Track
             signal to the websites you visit, indicating that you do not wish to
             be tracked. However, there is no accepted standard for how a website
@@ -338,11 +346,11 @@ class Privacy extends React.Component {
             to manage the collection and use of information about you.
           </p>
 
-          <p>
+          <h2>
             <strong>Other Information</strong>
-          </p>
-          <p>Information Security</p>
-          <p>
+          </h2>
+          <h3 className={css(styles.header)}>Information Security</h3>
+          <p className={css(styles.paragraph)}>
             We take measures to help protect information about you from loss,
             theft, misuse and unauthorized access, disclosure, alteration, and
             destruction. For example, we use HTTPS while information is being
@@ -350,15 +358,15 @@ class Privacy extends React.Component {
             controls to limit which of our employees have access to non-public
             personal information.
           </p>
-          <p>Data Retention</p>
-          <p>
+          <h3 className={css(styles.header)}>Data Retention</h3>
+          <p className={css(styles.paragraph)}>
             We store the information we collect for as long as it is necessary
             for the purpose(s) for which we originally collected it. We may
             retain certain information for legitimate business purposes or as
             required by law.
           </p>
-          <p>International Data Transfers</p>
-          <p>
+          <h3 className={css(styles.header)}>International Data Transfers</h3>
+          <p className={css(styles.paragraph)}>
             We are based in the United States and we process and store
             information on servers located in the United States. We may store
             information on servers and equipment in other countries depending on
@@ -368,13 +376,13 @@ class Privacy extends React.Component {
             and storage of information in and to the U.S. and other countries,
             where you may not have the same rights as you do under local law.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             In connection with ResearchHub's processing of personal data
             received from the European Union and Switzerland, we adhere to the
             EU-U.S. and Swiss-U.S. Privacy Shield Program (“Privacy Shield”) and
             comply with its framework and principles.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             Please direct any inquiries or complaints regarding our compliance
             with the Privacy Shield principles to the point of contact listed in
             the “Contact Us” section below. If we do not resolve your complaint,
@@ -387,8 +395,10 @@ class Privacy extends React.Component {
             behalf, then we will be liable for that third party’s processing of
             EU or Swiss data{" "}
           </p>
-          <p>Additional Information for EEA Users</p>
-          <p>
+          <h3 className={css(styles.header)}>
+            Additional Information for EEA Users
+          </h3>
+          <p className={css(styles.paragraph)}>
             Users in the European Economic Area have the right to request access
             to, rectification of, or erasure of their personal data; to data
             portability in certain circumstances; to request restriction of
@@ -400,7 +410,7 @@ class Privacy extends React.Component {
             the right to lodge a complaint with their local supervisory
             authority.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             As required by applicable law, we collect and process information
             about individuals in the EEA only where we have legal bases for
             doing so. Our legal bases depend on the Services you use and how you
@@ -432,21 +442,23 @@ class Privacy extends React.Component {
               obligations.
             </li>
           </ul>
-          <p>Data Subject and Consumer Information Requests</p>
-          <p>
+          <h3 className={css(styles.header)}>
+            Data Subject and Consumer Information Requests
+          </h3>
+          <p className={css(styles.paragraph)}>
             Requests for a copy of the information ResearchHub has about your
             account—including EU General Data Protection Regulation (GDPR) data
             subject access requests and California Consumer Privacy Act (CCPA)
             consumer information requests—can be submitted by emailing
             hello@ResearchHub.com
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             All other data subject and consumer requests under data protection
             laws should be sent via email to <u>hello@ResearchHub.com</u> from
             the email address that you have verified with your ResearchHub
             account.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             Before we process a request from you about your personal
             information, we need to verify the request via your access to your
             ResearchHub account or to a verified email address associated with
@@ -456,16 +468,16 @@ class Privacy extends React.Component {
             protection laws to make requests regarding their personal
             information.
           </p>
-          <p>Children</p>
-          <p>
+          <h3 className={css(styles.header)}>Children</h3>
+          <p className={css(styles.paragraph)}>
             Children under the age of 13 are not allowed to create an account or
             otherwise use the Services. Additionally, if you are in the EEA, you
             must be over the age required by the laws of your country to create
             an account or otherwise use the Services, or we need to have
             obtained verifiable consent from your parent or legal guardian.
           </p>
-          <p>Changes to This Policy</p>
-          <p>
+          <h3 className={css(styles.header)}>Changes to This Policy</h3>
+          <p className={css(styles.paragraph)}>
             We may change this Privacy Policy from time to time. If we do, we
             will let you know by revising the date at the top of the policy. If
             we make a change to this policy that, in our sole discretion, is
@@ -476,12 +488,14 @@ class Privacy extends React.Component {
             privacy. By continuing to use our Services after Privacy Policy
             changes go into effect, you agree to be bound by the revised policy.
           </p>
-          <p>
+          <h2>
             <strong>Contact Us</strong>
-          </p>
-          <p>
-            If you would like to get in contact with us, please reach out to
-            hello@ResearchHub.com
+          </h2>
+          <p className={css(styles.paragraph)}>
+            If you would like to get in contact with us, please reach out to{" "}
+            <a href="mailto:hello@researchhub.com" target="_blank">
+              hello@ResearchHub.com
+            </a>
           </p>
         </ComponentWrapper>
       </div>
@@ -495,10 +509,15 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     maxWidth: "100vw",
     overflow: "hidden",
+    lineHeight: 1.6,
   },
   paragraph: {
     marginTop: 7,
     marginBottom: 7,
+    fontWeight: 400,
+  },
+  header: {
+    fontWeight: 500,
   },
 });
 
