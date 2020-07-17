@@ -54,11 +54,11 @@ const PromotionInfoModal = (props) => {
     <BaseModal
       isOpen={store.getState().modals.openPromotionInfoModal.isOpen}
       closeModal={closeModal}
-      title={"About Paper Promotion"} // this needs to
+      title={"About Paper Boost"} // this needs to
     >
       <div className={css(styles.description)}>
-        Papers can be promoted using RSC, which gives papers increased
-        visibility in the app.{" "}
+        Papers can be boosted using RSC, which gives papers increased visibility
+        in the app.{" "}
         <a
           href={
             "https://www.notion.so/researchhub/RSC-Promotion-f3cb4ee4487046d88201062b1d6b1efa"
@@ -101,7 +101,7 @@ const PromotionInfoModal = (props) => {
           className={css(styles.promotionButton)}
           onClick={openPaperTransactionModal}
         >
-          Promote
+          Boost
         </Ripples>
       )}
     </BaseModal>

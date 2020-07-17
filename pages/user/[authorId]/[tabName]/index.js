@@ -234,8 +234,8 @@ const AuthorPage = (props) => {
       count: transactions.count,
     },
     {
-      href: "promotions",
-      label: "promotions",
+      href: "boosts",
+      label: "boosts",
       showCount: true,
       count: author.promotions && author.promotions.count,
     },
@@ -253,7 +253,7 @@ const AuthorPage = (props) => {
         return null;
       case "transactions":
         return <UserTransactionsTab />;
-      case "promotions":
+      case "boosts":
         return <UserPromotionsTab fetching={fetchingPromotions} />;
     }
   };
