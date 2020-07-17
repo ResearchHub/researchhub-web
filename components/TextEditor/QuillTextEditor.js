@@ -47,11 +47,11 @@ class Editor extends React.Component {
         },
         () => {
           this.attachQuillRefs();
+          !this.state.handlerAdded && this.addLinkSantizer();
           !this.state.focus &&
             this.props.focusEditor &&
             this.quillRef &&
             this.focusEditor();
-          console.log("mount");
         }
       );
     });
@@ -63,6 +63,32 @@ class Editor extends React.Component {
       !this.state.focus && this.quillRef && this.focusEditor();
     }
   }
+
+  addLinkSantizer = () => {
+    const Link = this.state.Quill.import("formats/link");
+    const builtInFunc = Link.sanitize;
+    Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
+      const formatURL = (url) => {
+        let http = "http://";
+        let https = "https://";
+        if (!url) {
+          return;
+        }
+        if (url.startsWith(http)) {
+          return url;
+        }
+
+        if (!url.startsWith(https)) {
+          url = https + url;
+        }
+        return url;
+      };
+
+      let val = formatURL(linkValueInput);
+      return builtInFunc.call(this, val); // retain the built-in logic
+    };
+    this.setState({ handlerAdded: true });
+  };
 
   showLoader = (state) => {
     this.props.showMessage({ load: state, show: state });
@@ -77,12 +103,12 @@ class Editor extends React.Component {
   };
 
   imageHandler = () => {
-    this.showLoader(true);
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
     input.click();
     input.onchange = async function() {
+      this.showLoader(true);
       const file = input.files[0];
       const fileString = await this.toBase64(file);
       const type = file.type;
@@ -116,6 +142,23 @@ class Editor extends React.Component {
         return res;
       });
   };
+
+  formatURL = (url) => {
+    let http = "http://";
+    let https = "https://";
+    if (!url) {
+      return;
+    }
+    if (url.startsWith(http)) {
+      return url;
+    }
+
+    if (!url.startsWith(https)) {
+      url = https + url;
+    }
+    return url;
+  };
+
   formatRange(range) {
     return range ? [range.index, range.index + range.length].join(",") : "none";
   }
@@ -336,7 +379,11 @@ class Editor extends React.Component {
                 defaultValue={
                   this.props.editing ? this.state.editValue : this.state.value
                 }
-                modules={Editor.modules(this.props.uid, this.imageHandler)}
+                modules={Editor.modules(
+                  this.props.uid,
+                  this.imageHandler,
+                  this.linkHandler
+                )}
                 formats={Editor.formats}
                 className={css(
                   styles.editSection,
@@ -367,7 +414,11 @@ class Editor extends React.Component {
                 defaultValue={
                   this.props.editing ? this.state.editValue : this.state.value
                 }
-                modules={Editor.modules(this.props.uid, this.imageHandler)}
+                modules={Editor.modules(
+                  this.props.uid,
+                  this.imageHandler,
+                  this.linkHandler
+                )}
                 formats={Editor.formats}
                 className={css(
                   styles.comment,
@@ -385,11 +436,12 @@ class Editor extends React.Component {
   }
 }
 
-Editor.modules = (toolbarId, imageHandler) => ({
+Editor.modules = (toolbarId, imageHandler, linkHandler) => ({
   toolbar: {
     container: "#" + toolbarId,
     handlers: {
       image: imageHandler,
+      // link: linkHandler
     },
   },
 });
