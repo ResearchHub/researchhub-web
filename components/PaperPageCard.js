@@ -34,7 +34,6 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate } from "~/config/utils";
 import { openExternalLink } from "~/config/utils";
-import { ModalConstants } from "../redux/modals";
 
 class PaperPageCard extends React.Component {
   constructor(props) {

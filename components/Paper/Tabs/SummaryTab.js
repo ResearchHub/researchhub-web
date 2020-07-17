@@ -6,12 +6,6 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 import Ripples from "react-ripples";
-import { isAndroid, isMobile } from "react-device-detect";
-var isAndroidJS = false;
-if (process.browser) {
-  const ua = navigator.userAgent.toLowerCase();
-  isAndroidJS = ua && ua.indexOf("android") > -1;
-}
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -30,7 +24,7 @@ import { AuthActions } from "~/redux/auth";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
-import icons from "~/config/themes/icons";
+import { isQuillDelta } from "~/config/utils/";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -45,6 +39,7 @@ class SummaryTab extends React.Component {
       transition: false,
       firstLoad: true,
       summaryExists: false,
+      editing: false,
       // abstract
       abstract: "",
       showAbstract: false,
@@ -62,34 +57,34 @@ class SummaryTab extends React.Component {
           addSummary: true,
           readOnly: false,
           transition: false,
+          editing: true,
         });
       }, 200);
     });
   };
 
+  // TODO: come back to this
   onEditorStateChange = (editorState) => {
-    let { paper } = this.props;
-    this.setState({
-      editorState,
-    });
-    let editorJSON = JSON.stringify(editorState.toJSON());
-
-    if (this.state.firstLoad) {
-      this.setState({
-        firstLoad: false,
-      });
-      return;
-    }
-
-    if (localStorage) {
-      localStorage.setItem(
-        `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
-        editorJSON
-      );
-    }
+    // let { paper } = this.props;
+    // this.setState({
+    //   editorState,
+    // });
+    // let editorJSON = JSON.stringify(editorState.toJSON());
+    // if (this.state.firstLoad) {
+    //   this.setState({
+    //     firstLoad: false,
+    //   });
+    //   return;
+    // }
+    // if (localStorage) {
+    //   localStorage.setItem(
+    //     `editorState-${paper.id}-${paper.summary && paper.summary.id}`,
+    //     editorJSON
+    //   );
+    // }
   };
 
-  submitEdit = (raw, plain_text) => {
+  submitEdit = (content, plain_text) => {
     let {
       setMessage,
       showMessage,
@@ -97,9 +92,8 @@ class SummaryTab extends React.Component {
       getUser,
       updatePaperState,
     } = this.props;
-    let value = this.state.editorState;
-    let summary = value.toJSON({ preserveKeys: true });
-    let summary_plain_text = Plain.serialize(value);
+    let summary = content;
+    let summary_plain_text = plain_text;
 
     let param = {
       summary,
@@ -148,37 +142,34 @@ class SummaryTab extends React.Component {
           readOnly: true,
           addSummary: false,
           transition: false,
+          editing: false,
         });
       }, 200);
     });
   };
 
   edit = () => {
-    if (isAndroid || isAndroidJS) {
-      this.props.setMessage("Edit the summary on Desktop");
-      return this.props.showMessage({ show: true });
-    }
-
     this.setState({
       readOnly: false,
       editAbstract: false,
+      editing: true,
     });
 
     /********************************************************************************
      * If we go into edit mode, if we have the editor state saved into local storage
      * then try to pull it back and reuse that localstorage state
      *******************************************************************************/
-    let { paper } = this.props;
-    let editorStateItem = localStorage.getItem(
-      `editorState-${paper.id}-${paper.summary && paper.summary.id}`
-    );
+    // let { paper } = this.props;
+    // let editorStateItem = localStorage.getItem(
+    //   `editorState-${paper.id}-${paper.summary && paper.summary.id}`
+    // );
 
-    if (editorStateItem) {
-      let editorState = Value.fromJSON(JSON.parse(editorStateItem));
-      this.setState({
-        editorState,
-      });
-    }
+    // if (editorStateItem) {
+    //   let editorState = Value.fromJSON(JSON.parse(editorStateItem));
+    //   this.setState({
+    //     editorState,
+    //   });
+    // }
   };
 
   editAbstract = () => {
@@ -223,10 +214,16 @@ class SummaryTab extends React.Component {
     const { paper } = this.props;
     if (paper.summary) {
       if (paper.summary.summary) {
+        if (isQuillDelta(paper.summary.summary)) {
+          return this.setState({
+            editorState: paper.summary.summary,
+            finishedLoading: true,
+          });
+        }
         let summaryJSON = paper.summary.summary;
         let editorState = Value.fromJSON(summaryJSON);
         this.setState({
-          editorState,
+          editorState: editorState ? editorState : "",
           finishedLoading: true,
         });
       }
@@ -447,14 +444,14 @@ class SummaryTab extends React.Component {
                         {this.renderTabs()}
                       </div>
                       <div className={css(styles.summaryActions)}>
-                        <Link
+                        {/* <Link
                           href={"/paper/[paperId]/[tabName]/edits"}
                           as={`/paper/${paper.id}/summary/edits`}
                         >
                           <Ripples className={css(styles.action)}>
                             View Edit History
                           </Ripples>
-                        </Link>
+                        </Link> */}
                         <PermissionNotificationWrapper
                           modalMessage="propose summary edits"
                           onClick={this.edit}
@@ -508,16 +505,17 @@ class SummaryTab extends React.Component {
                     onCancel={this.cancel}
                     onSubmit={this.submitEdit}
                     onChange={this.onEditorStateChange}
-                    smallToolBar={true}
-                    hideButton={true}
+                    // smallToolBar={true}
+                    // hideButton={true}
                     commentStyles={
                       this.state.readOnly
                         ? styles.commentReadStyles
                         : styles.commentStyles
                     }
+                    editing={this.state.editing}
                   />
                 )}
-                {!this.state.readOnly && (
+                {/* {!this.state.readOnly && (
                   <div className={css(styles.buttonRow)}>
                     <Ripples
                       className={css(styles.cancelButton)}
@@ -532,7 +530,7 @@ class SummaryTab extends React.Component {
                       Submit
                     </Ripples>
                   </div>
-                )}
+                )} */}
               </div>
             ) : (
               <div
@@ -567,8 +565,8 @@ class SummaryTab extends React.Component {
                       onCancel={this.cancel}
                       onSubmit={this.submitEdit}
                       onChange={this.onEditorStateChange}
-                      smallToolBar={true}
-                      hideButton={true}
+                      // smallToolBar={true}
+                      // hideButton={true}
                       placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
                       
 Hypothesis: What question does this paper attempt to answer?
@@ -578,8 +576,9 @@ Conclusion: What conclusion did the paper reach?
 Significance: What does this paper make possible in the world, and what should be tried from here?
                       `}
                       commentStyles={styles.commentStyles}
+                      editing={this.state.editing}
                     />
-                    <div className={css(styles.buttonRow)}>
+                    {/* <div className={css(styles.buttonRow)}>
                       <Ripples
                         className={css(styles.cancelButton)}
                         onClick={this.cancel}
@@ -592,7 +591,7 @@ Significance: What does this paper make possible in the world, and what should b
                       >
                         Submit
                       </Ripples>
-                    </div>
+                    </div> */}
                   </div>
                 ) : (
                   <Fragment>
@@ -614,11 +613,7 @@ Significance: What does this paper make possible in the world, and what should b
                         to this paper.
                       </div>
                       <PermissionNotificationWrapper
-                        onClick={
-                          isAndroid || isAndroidJS
-                            ? this.showDesktopMsg
-                            : this.addSummary
-                        }
+                        onClick={this.addSummary}
                         modalMessage="propose a summary"
                         permissionKey="ProposeSummaryEdit"
                         loginRequired={true}
@@ -805,7 +800,8 @@ var styles = StyleSheet.create({
     width: 250,
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
+    justifyContent: "flex-end",
     paddingBottom: 0,
     "@media only screen and (max-width: 767px)": {
       marginTop: 8,

@@ -36,7 +36,11 @@ import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { convertToEditorValue } from "~/config/utils";
+import {
+  convertToEditorValue,
+  convertDeltaToText,
+  isQuillDelta,
+} from "~/config/utils/";
 
 const Paper = (props) => {
   const dispatch = useDispatch();
@@ -320,14 +324,20 @@ const Paper = (props) => {
     if (paper) {
       if (paper.summary) {
         if (paper.summary.summary) {
-          let summary = convertToEditorValue(paper.summary.summary).document
-            .text;
-          return summary;
+          if (paper.summary.summary_plain_text) {
+            return paper.summary.summary_plain_text;
+          }
+          if (isQuillDelta(paper.summary.summary)) {
+            return convertDeltaToText(paper.summary.summary);
+          }
+          return convertToEditorValue(paper.summary.summary).document.text;
         }
       } else if (paper.abstract) {
         return paper.abstract;
       } else if (paper.tagline) {
         return paper.tagline;
+      } else {
+        return "";
       }
     }
   }

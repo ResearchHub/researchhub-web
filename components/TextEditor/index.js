@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // NPM Components
 import PropTypes from "prop-types";
@@ -11,12 +11,14 @@ if (process.browser) {
   isAndroidJS = ua && ua.indexOf("android") > -1;
 }
 // Components
-import RichTextEditor from "./RichTextEditor";
-import AndroidTextEditor from "./AndroidTextEditor";
+import QuillTextEditor from "./QuillTextEditor";
 
+// Redux
 import { ModalActions } from "../../redux/modals";
+import { MessageActions } from "~/redux/message";
 
-import { convertToEditorValue } from "~/config/utils";
+// Config
+import { convertToEditorToHTML } from "~/config/utils";
 
 const TextEditor = (props) => {
   const {
@@ -44,51 +46,46 @@ const TextEditor = (props) => {
     loading,
     commentEditorStyles,
     removeStickyToolbar,
+    editing,
+    focusEditor,
   } = props;
 
-  const [value, setValue] = useState(convertToEditorValue(initialValue));
+  const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
+  const [uid, setUid] = useState(createUid());
 
   function handleChange(value) {
-    setValue(value);
     onChange && onChange(value);
   }
 
   function cancel() {
     onCancel && onCancel();
   }
-
-  function resetValue() {
-    setValue(convertToEditorValue(""));
+  /**
+   * Used to check if editor is empty upon submission
+   * @param { Object } content -- quill's node blocks
+   */
+  function isQuillEmpty(content) {
+    if (JSON.stringify(content) == '{"ops":[{"insert":"\\n"}]}') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  async function submit(text, plain_text, callback) {
-    if (
-      (value.document.text === "" || value.document.text === " ") &&
-      (!isAndroid || !isAndroidJS)
-    ) {
-      return;
-    }
-
+  async function submit(content, plain_text, callback) {
     let success = false;
     if (!isLoggedIn) {
       openLoginModal(true, "Please login with Google to continue.");
     } else {
-      if (isAndroid || isAndroidJS) {
-        onSubmit && onSubmit(text, plain_text);
-        return callback();
+      if (isQuillEmpty(content)) {
+        props.setMessage("Content cannot be empty.");
+        return props.showMessage({ error: true, show: true, clickoff: true });
       }
 
-      onSubmit &&
-        (success = await onSubmit(
-          value.toJSON({ preserveKeys: true }),
-          Plain.serialize(value)
-        ));
-      if (success && clearOnSubmit !== false) {
-        editorRef.clear();
-      }
-      if (clearOnSubmit !== false) {
-        resetValue();
+      onSubmit && (success = await onSubmit(content, plain_text));
+      if (success && clearOnSubmit) {
+        callback();
       }
     }
   }
@@ -97,44 +94,45 @@ const TextEditor = (props) => {
     props.setRef && props.setRef(editor);
   }
 
-  if ((isAndroid || isAndroidJS) && !readOnly) {
+  function createUid() {
     return (
-      <AndroidTextEditor
-        initialValue={passedValue ? passedValue : value}
-        onCancel={cancel}
-        onSubmit={submit}
-      />
-    );
-  } else {
-    return (
-      <RichTextEditor
-        setRef={setInternalRef}
-        ref={setEditorRef}
-        readOnly={readOnly || false}
-        onChange={handleChange}
-        initialValue={passedValue ? passedValue : value}
-        canCancel={canCancel}
-        canSubmit={canSubmit}
-        containerStyles={containerStyles}
-        cancel={cancel}
-        submit={submit}
-        commentEditor={commentEditor}
-        value={passedValue ? passedValue : value}
-        hideButton={hideButton}
-        showDiff={showDiff}
-        previousVersion={previousVersion}
-        classNames={classNames}
-        placeholder={placeholder && placeholder}
-        autoFocus={true}
-        hideCancelButton={hideCancelButton && hideCancelButton}
-        commentStyles={commentStyles && commentStyles}
-        smallToolBar={smallToolBar && smallToolBar}
-        loading={loading && loading}
-        commentEditorStyles={commentEditorStyles && commentEditorStyles}
-        removeStickyToolbar={removeStickyToolbar && removeStickyToolbar}
-      />
+      "_" +
+      Math.random()
+        .toString(36)
+        .substr(2, 9)
     );
   }
+
+  return (
+    <QuillTextEditor
+      value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
+      uid={uid}
+      key={`textEditor-${uid}`}
+      setRef={setInternalRef}
+      ref={setEditorRef}
+      readOnly={readOnly || false}
+      onChange={handleChange}
+      canCancel={canCancel}
+      canSubmit={canSubmit}
+      clearOnSubmit={clearOnSubmit}
+      containerStyles={containerStyles}
+      cancel={cancel}
+      submit={submit}
+      commentEditor={commentEditor}
+      hideButton={hideButton}
+      showDiff={showDiff}
+      previousVersion={previousVersion}
+      classNames={classNames}
+      placeholder={placeholder && placeholder}
+      hideCancelButton={hideCancelButton && hideCancelButton}
+      commentStyles={commentStyles && commentStyles}
+      smallToolBar={smallToolBar && smallToolBar}
+      loading={loading && loading}
+      commentEditorStyles={commentEditorStyles && commentEditorStyles}
+      editing={editing}
+      focusEditor={focusEditor && focusEditor}
+    />
+  );
 };
 
 TextEditor.propTypes = {
@@ -152,6 +150,7 @@ TextEditor.propTypes = {
   readOnly: PropTypes.bool,
   hideButton: PropTypes.bool,
   loading: PropTypes.bool,
+  focusEditor: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => ({
@@ -160,6 +159,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
