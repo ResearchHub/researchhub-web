@@ -42,6 +42,7 @@
 
 .ql-syntax {
   background-color: #f7f7f7 !important;
+  border: 1px solid #d5d5d5;
   color: rgb(0, 0, 0) !important;
 }
 
@@ -74,6 +75,11 @@
   display: flex;
   max-width: 100%;
   max-height: 600px;
+}
+
+.ql-editor > blockquote {
+  color: #aaaaaa;
+  font-style: italic;
 }
 
 .ql-video {
