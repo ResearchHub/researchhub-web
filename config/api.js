@@ -573,6 +573,7 @@ const routes = (BASE_URL) => {
       let url = BASE_URL + `purchase/${userId}/user_transactions/`;
       return url;
     },
+    SAVE_IMAGE: BASE_URL + "paper/discussion/file/",
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

@@ -1,0 +1,124 @@
+.ql-container {
+  border: none !important;
+}
+.ql-editor.ql-blank::before {
+  content: none;
+}
+
+.ql-editor.ql-blank::after {
+  color: rgba(0, 0, 0, 0.6);
+  content: attr(data-placeholder);
+  font-style: italic;
+  pointer-events: none;
+  display: block;
+  margin-top: -1.42rem;
+}
+
+.ql-blank {
+  min-height: 5em;
+}
+
+.ql-editor {
+  /* cursor: text; */
+  padding: 0;
+  font-family: "Roboto";
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+.toolbar {
+  background: #ffffff;
+}
+
+.ql-disabled {
+  cursor: "default";
+}
+
+.ql-toolbar {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.ql-syntax {
+  background-color: #f7f7f7 !important;
+  border: 1px solid #d5d5d5;
+  color: rgb(0, 0, 0) !important;
+}
+
+.ql-clipboard {
+  position: relative;
+}
+
+.ql-tooltip {
+  top: -15px !important;
+  left: unset !important;
+  right: -15px !important;
+  transform: unset !important;
+}
+.ql-editor > p {
+  font-size: inherit;
+  color: inherit;
+}
+
+.ql-editor > p > img {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  max-width: 100%;
+  max-height: 600px;
+  /* box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); */
+}
+
+.ql-editor > p > video {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  max-width: 100%;
+  max-height: 600px;
+}
+
+.ql-editor > blockquote {
+  color: #aaaaaa;
+  font-style: italic;
+}
+
+.ql-video {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  height: 300px;
+  width: 600px;
+  max-width: 100%;
+}
+
+@media only screen and (max-width: 767px) {
+  .ql-editor {
+    font-size: 14px;
+  }
+  .ql-video {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    height: 200px;
+    width: 400px;
+  }
+}
+
+@media only screen and (max-width: 415px) {
+  .ql-editor {
+    font-size: 12px;
+  }
+  .ql-video {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    height: 150px;
+    width: 300px;
+  }
+}
+
+/* .video-stream {
+  height: 250px;
+  width: 400px;
+} */

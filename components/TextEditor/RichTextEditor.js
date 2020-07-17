@@ -23,6 +23,7 @@ import "./stylesheets/iFrame.css";
 import summaryScaffold from "./summaryScaffold.json";
 import colors from "../../config/themes/colors";
 import Diff from "diff";
+import { convertEditorValueToHtml } from "~/config/utils";
 
 const getUrlParameter = (name, url) => {
   name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -106,6 +107,10 @@ class RichTextEditor extends React.Component {
       link: "",
       image: "",
     };
+  }
+
+  componentDidMount() {
+    convertEditorValueToHtml(this.state.value);
   }
 
   setEditorState = (value) => {
