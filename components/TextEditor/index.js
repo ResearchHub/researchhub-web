@@ -18,7 +18,7 @@ import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import { convertToEditorValue, convertEditorValueToHtml } from "~/config/utils";
+import { convertToEditorValue, convertToEditorToHTML } from "~/config/utils";
 
 const TextEditor = (props) => {
   const {
@@ -50,7 +50,7 @@ const TextEditor = (props) => {
     focusEditor,
   } = props;
 
-  const [value, setValue] = useState(convertToEditorValue(initialValue)); // need this only to initialize value, not to keep state
+  const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
   const [uid, setUid] = useState(createUid());
 
@@ -105,7 +105,7 @@ const TextEditor = (props) => {
 
   return (
     <QuillTextEditor
-      value={passedValue ? convertToEditorValue(passedValue) : value} // update this formula to detect if value is delta or previous data
+      value={passedValue ? convertToEditorToHTML(passedValue) : value} // update this formula to detect if value is delta or previous data
       uid={uid}
       key={`textEditor-${uid}`}
       setRef={setInternalRef}

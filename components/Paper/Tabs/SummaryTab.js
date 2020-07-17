@@ -24,6 +24,7 @@ import { AuthActions } from "~/redux/auth";
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
+import { isQuillDelta } from "~/config/utils/";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -213,7 +214,7 @@ class SummaryTab extends React.Component {
     const { paper } = this.props;
     if (paper.summary) {
       if (paper.summary.summary) {
-        if (paper.summary.summary.hasOwnProperty("ops")) {
+        if (isQuillDelta(paper.summary.summary)) {
           return this.setState({
             editorState: paper.summary.summary,
             finishedLoading: true,
