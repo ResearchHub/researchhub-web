@@ -135,6 +135,8 @@ export function convertEditorValueToHtml(value) {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      marginLeft: "auto",
+      marginRight: "auto",
     },
     imageOverlay: {
       position: "absolute",
@@ -292,11 +294,7 @@ export function convertEditorValueToHtml(value) {
         let isUrl = mark.data.get("isUrl");
         if (isUrl) {
           return (
-            <a
-              {...attributes}
-              href={this.formatURL(children.props.text)}
-              target={"_blank"}
-            >
+            <a {...attributes} href={children} target={"_blank"}>
               {children}
             </a>
           );
