@@ -17,7 +17,11 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
-import { convertToEditorValue } from "~/config/utils/serializers";
+import {
+  convertToEditorValue,
+  convertDeltaToText,
+  isQuillDelta,
+} from "~/config/utils/serializers";
 import { createUsername } from "../config/utils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
@@ -213,17 +217,15 @@ const Title = (props) => {
 
 const Body = (props) => {
   let { overrideStyle } = props;
-  let text =
-    convertToEditorValue(props.text) &&
-    convertToEditorValue(props.text).document.text;
-  // let wordCount = text.split(" ").length;
-  // if (wordCount > 15) {
-  //   text =
-  //     text
-  //       .split(" ")
-  //       .slice(0, 15)
-  //       .join(" ") + "...";
-  // }
+  let text;
+  if (typeof text === "string") {
+    text = props.text;
+  } else if (isQuillDelta(props.text)) {
+    text = convertDeltaToText(text);
+  } else {
+    text = convertToEditorValue(props.text).document.text;
+  }
+
   return <div className={css(styles.body, overrideStyle)}>{text}</div>;
 };
 
