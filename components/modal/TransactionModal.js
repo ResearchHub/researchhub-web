@@ -254,7 +254,8 @@ class TransactionModal extends React.Component {
             {this.renderRow(
               {
                 text: "Recipient ETH Address",
-                tooltip: "The address of your ETH Account (ex. 0x0000...)",
+                tooltip:
+                  "The address of your Rinkeby ETH Account (ex. 0x0000...)",
                 onClick: "",
               },
               {
@@ -269,10 +270,10 @@ class TransactionModal extends React.Component {
                   active={this.state.buttonEnabled}
                   isSquare={true}
                   label={
-                    <span>
+                    <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>
                       I agree to the ResearchHub{" "}
                       <a href={"/about/tos"} target="_blank">
-                        Terms of Service
+                        Terms of Service.
                       </a>
                     </span>
                   }
@@ -303,7 +304,7 @@ class TransactionModal extends React.Component {
     return (
       <div className={css(styles.row)}>
         <div className={css(styles.left, styles.spacedContent)}>
-          <div>
+          <div className={css(styles.textLabel)}>
             {left.text}
             <span className={css(styles.infoIcon)} data-tip={left.tooltip}>
               {icons["info-circle"]}
@@ -491,7 +492,6 @@ class TransactionModal extends React.Component {
   };
 
   renderToggleContainer = (className) => {
-    console.log(this.state.offChain);
     return (
       <div className={className}>
         {this.renderMetaMaskButton()}
@@ -561,6 +561,7 @@ class TransactionModal extends React.Component {
       <div
         className={css(
           styles.toggle,
+          styles.toggleRight,
           this.state.walletLinkVisible && styles.activeToggle
         )}
         onClick={async () => {
@@ -650,6 +651,8 @@ class TransactionModal extends React.Component {
   };
 
   renderContent = () => {
+    let { connectedWalletLink, connectedMetaMask } = this.state;
+
     return (
       <div
         className={css(
@@ -657,12 +660,15 @@ class TransactionModal extends React.Component {
           this.state.networkVersion === RINKEBY_CHAIN_ID && styles.main
         )}
       >
-        <div className={css(styles.header, styles.text)}>
-          Withdraw ResearchCoin
-        </div>
-        {this.renderToggleContainer(css(styles.toggleContainer))}
+        <div className={css(styles.header)}>Withdraw ResearchCoin</div>
+        {this.renderToggleContainer(
+          css(
+            styles.toggleContainer,
+            (connectedMetaMask || connectedWalletLink) && styles.marginBottom
+          )
+        )}
         <div className={css(styles.testnetBanner)}>
-          Currently on Rinkeby Testnet
+          *Currently on Rinkeby Testnet
         </div>
         <img
           src={"/static/icons/close.png"}
@@ -670,6 +676,14 @@ class TransactionModal extends React.Component {
           onClick={this.closeModal}
           draggable={false}
         />
+        {!this.state.connectedMetaMask &&
+          !this.state.connectedMetaMask &&
+          this.state.ethAccountIsValid && (
+            <div className={css(styles.connectStatus)}>
+              <div className={css(styles.dot, styles.connected)} />
+              Connected to Wallet
+            </div>
+          )}
         {this.state.connectedWalletLink && (
           <div className={css(styles.connectStatus)}>
             <div
@@ -678,7 +692,7 @@ class TransactionModal extends React.Component {
                 this.state.connectedWalletLink && styles.connected
               )}
             />
-            Connected to WalletLink
+            *Connected to WalletLink
           </div>
         )}
         {this.state.connectedMetaMask && (
@@ -810,6 +824,9 @@ const styles = StyleSheet.create({
     height: 60,
     fontFamily: "Roboto",
   },
+  textLabel: {
+    color: colors.BLACK(),
+  },
   right: {
     display: "flex",
     flexDirection: "column",
@@ -865,7 +882,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   buttons: {
-    marginTop: 40,
+    marginTop: 20,
   },
   successIcon: {
     color: "#7ae9b1",
@@ -885,6 +902,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     fontSize: 14,
+    marginTop: 15,
     marginBottom: 10,
   },
   dot: {
@@ -902,6 +920,11 @@ const styles = StyleSheet.create({
   connected: {
     backgroundColor: "#d5f3d7",
     border: "2px solid #7ae9b1",
+  },
+  pendingConnection: {
+    backgroundColor: "#FDF2DE",
+    border: `2px solid ${colors.YELLOW()}`,
+    // #FDF2DE
   },
   confirmation: {
     color: "#000",
@@ -922,7 +945,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   testnetBanner: {
-    color: colors.BLUE(0.5),
     fontSize: 12,
     position: "absolute",
     right: 20,
@@ -931,10 +953,11 @@ const styles = StyleSheet.create({
   toggleContainer: {
     width: "100%",
     display: "flex",
-    // justifyContent: "flex-end",
     justifyContent: "center",
-    marginBottom: 15,
     marginTop: 15,
+  },
+  marginBottom: {
+    marginBottom: 20,
   },
   toggleContainerOnChain: {
     marginTop: 0,
@@ -944,8 +967,11 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     padding: "2px 8px",
     fontSize: 14,
+    border: "1px solid #FFF",
     ":hover": {
       color: colors.BLUE(),
+      background: "rgb(234, 235, 254)",
+      borderRadius: 4,
     },
   },
   toggleRight: {
@@ -955,6 +981,9 @@ const styles = StyleSheet.create({
     background: "#eaebfe",
     borderRadius: 4,
     color: colors.BLUE(),
+    ":hover": {
+      border: `1px solid ${colors.BLUE()}`,
+    },
   },
 });
 

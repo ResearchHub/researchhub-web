@@ -706,14 +706,14 @@ class PaperTransactionModal extends React.Component {
                 </div>
               )}
               <div onClick={this.closeModal}>
-                You can view your promotions on your
+                You can view your boosts on your
                 <Link
                   href={"/user/[authorId]/[tabName]"}
-                  as={`/user/${user.author_profile.id}/promotions`}
+                  as={`/user/${user.author_profile.id}/boosts`}
                 >
                   <a
                     href={"/user/[authorId]/[tabName]"}
-                    as={`/user/${user.author_profile.id}/promotions`}
+                    as={`/user/${user.author_profile.id}/boosts`}
                     className={css(
                       styles.transactionHashLink,
                       styles.marginLeft
@@ -765,7 +765,7 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Amount</div>
               <div className={css(styles.subtitle)}>
-                {this.state.value} RSC = {this.state.value} Day of Promotion
+                {this.state.value} RSC = {this.state.value} Day of Boost
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -869,7 +869,7 @@ class PaperTransactionModal extends React.Component {
                 <div className={css(styles.column, styles.left)}>
                   <div className={css(styles.title)}>Amount</div>
                   <div className={css(styles.subtitle)}>
-                    {this.state.value} RSC = {this.state.value} Day of Promotion
+                    {this.state.value} RSC = {this.state.value} Day of Boost
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
@@ -902,7 +902,7 @@ class PaperTransactionModal extends React.Component {
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
-        title={"Promote Paper"} // this needs to
+        title={"Boost Paper"} // this needs to
       >
         {this.renderContent()}
       </BaseModal>
