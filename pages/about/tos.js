@@ -11,18 +11,18 @@ class TOS extends React.Component {
       <div className={css(styles.page)}>
         <ComponentWrapper>
           <h1>ResearchHub User Agreement</h1>
-          <p>
+          <p className={css(styles.paragraph)}>
             <strong>
               ResearchHub powers hundreds of thousands of distinct online
               communities.
             </strong>
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <strong>
               This User Agreement and your conduct make that possible.
             </strong>
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             This ResearchHub User Agreement (the "<strong>Terms</strong>")
             applies to your access to and use of the websites, mobile apps,
             widgets, and other online products and services (collectively, the "
@@ -41,7 +41,7 @@ class TOS extends React.Component {
             <strong>ResearchHub Program Requirements</strong>”), each of which
             are incorporated into and made part of these Terms.{" "}
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             By accessing or using our Services, you agree to be bound by these
             Terms. If you do not agree to these Terms, you may not access or use
             our Services. If you are accessing and using the Services on behalf
@@ -50,12 +50,12 @@ class TOS extends React.Component {
             company or other legal entity to these Terms. In that case, “you”
             and “your” will refer to that company or other legal entity.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             Please take a look at ResearchHub’s Privacy Policy too—it explains
             how we collect, use, and share information about you when you access
             or use our Services.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <strong>
               IMPORTANT NOTICE REGARDING ARBITRATION: WHEN YOU AGREE TO THESE
               TERMS YOU ARE AGREEING (WITH LIMITED EXCEPTION) TO RESOLVE ANY
@@ -65,10 +65,10 @@ class TOS extends React.Component {
               PROCEDURE TO OPT OUT OF ARBITRATION).
             </strong>
           </p>
-          <p>
+          <h2>
             <strong>1. Access to the Services</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph, styles.indent)}>
             1.1 Eligibility. You may access and use the Services only if you are
             a legal entity or individual 18 years or older and capable of
             forming a binding contract and are not barred from participating
@@ -88,7 +88,7 @@ class TOS extends React.Component {
             are a person with whom transactions are prohibited under applicable
             economic or trade sanctions.
           </p>
-          <p>
+          <p className={css(styles.paragraph, styles.indent)}>
             1.2 Registration and Accounts. In order to access and use certain of
             the Services, you will have to register and create an account (your
             “<strong>Account</strong>”). Upon registration you will receive a
@@ -108,7 +108,7 @@ class TOS extends React.Component {
             not license, sell, or transfer your Account without our prior
             written approval.
           </p>
-          <p>
+          <p className={css(styles.paragraph, styles.indent)}>
             1.3 Accuracy of Account Information. You represent and warrant that
             the information you provide for your account is accurate, complete,
             and up-to-date. You agree to update such information to keep it
@@ -117,10 +117,10 @@ class TOS extends React.Component {
             complete, and up-to-date may result in suspension or termination of
             your Account.
           </p>
-          <p>
+          <h2>
             <strong>2. The Services</strong>
-          </p>
-          <p>2.1 ResearchCoins</p>
+          </h2>
+          <p className={css(styles.paragraph)}>2.1 ResearchCoins</p>
           <p>
             ResearchCoins are a virtual item controlled by you and maintained on
             the Ethereum blockchain. ResearchCoin totals and transactions are
@@ -132,7 +132,7 @@ class TOS extends React.Component {
             blockchain. You have six months after distribution to claim your
             ResearchCoins before the claim expires.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             ResearchCoins have no monetary value (i.e., are not a cash account
             or equivalent), cannot be sold to other users, and cannot be
             exchanged for cash or for any other goods and services outside of
@@ -143,7 +143,7 @@ class TOS extends React.Component {
             particular length of time, or that they will have or retain any
             value.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             The Services will allocate ResearchCoin to your account based in
             part on a reputation score determined in accordance with the
             algorithm described in the ResearchHub Program Requirements. Your
@@ -152,7 +152,7 @@ class TOS extends React.Component {
             right to change the algorithm for calculating reputation scores at
             any time.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             YOU ACKNOWLEDGE AND AGREE THAT YOU MAY NOT RECEIVE ANY ResearchCoin
             REWARDS FROM RESEARCH HUB OR OTHERWISE IN CONNECTION WITH YOUR
             PARTRICIPARTION IN OR USE OF THE SERVICES. RESEARCHHUB DOES NOT
@@ -162,8 +162,8 @@ class TOS extends React.Component {
             RESEARCHUB SERVICES AND POSTING YOUR CONTENT IS DONE AT YOUR SOLE
             DISCRETION.{" "}
           </p>
-          <p>2.2 Transactions</p>
-          <p>
+          <p className={css(styles.paragraph)}>2.2 Transactions</p>
+          <p className={css(styles.paragraph)}>
             You control your ResearchCoins and you can transfer them to other
             ResearchHub accounts or any Ethereum blockchain address. We have no
             control over the Ethereum blockchain and cannot ensure any
@@ -174,45 +174,45 @@ class TOS extends React.Component {
             encourage you to review your transaction details carefully before
             submitting them.
           </p>
-          <p>2.3 Fees</p>
-          <p>
+          <p className={css(styles.paragraph)}>2.3 Fees</p>
+          <p className={css(styles.paragraph)}>
             We do not currently charge fees for ResearchCoin transactions, but
             we reserve the right to do so in the future. Other Ethereum wallets
             may charge for Ethereum network costs associated with ResearchCoins
             transactions.
           </p>
-          <p>
+          <h2>
             <strong>3. Your Use of the Services</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             ResearchHub grants you a personal, non-transferable, non-exclusive,
             revocable, limited license to use and access the Services solely as
             permitted by these Terms. We reserve all rights not expressly
             granted to you by these Terms.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             Except as permitted through the Services or as otherwise permitted
             by us in writing, your license does not include the right to:
           </p>
-          <ul>
+          <ul className={css(styles.paragraph)}>
             <li>
               license, sell, transfer, assign, distribute, host, or otherwise
               commercially exploit the Services or Content (as defined below);
             </li>
           </ul>
-          <ul>
+          <ul className={css(styles.paragraph)}>
             <li>
               modify, prepare derivative works of, disassemble, decompile, or
               reverse engineer any part of the Services or Content; or
             </li>
           </ul>
-          <ul>
+          <ul className={css(styles.paragraph)}>
             <li>
               access the Services or Content in order to build a similar or
               competitive website, product, or service.
             </li>
           </ul>
-          <p>
+          <p className={css(styles.paragraph)}>
             We reserve the right to modify, suspend, or discontinue the Services
             (in whole or in part) at any time, with or without notice to you.
             Any future release, update, or other addition to functionality of
@@ -221,10 +221,10 @@ class TOS extends React.Component {
             any third party for any modification, suspension, or discontinuation
             of the Services or any part thereof.
           </p>
-          <p>
+          <h2>
             <strong>4. Your Content</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             The Services may contain information, text, links, graphics, photos,
             videos, or other materials (“<strong>Content</strong>”), including
             Content created with or submitted to the Services by you or through
@@ -232,7 +232,7 @@ class TOS extends React.Component {
             responsibility for and we do not expressly or implicitly endorse any
             of Your Content or Content posted by other users of the Services.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             By submitting Your Content to the Services, you represent and
             warrant that you have all rights, power, and authority necessary to
             grant the rights to Your Content contained within these Terms.
@@ -240,7 +240,7 @@ class TOS extends React.Component {
             yourself to liability if you post or share Content without all
             necessary rights.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             You retain any ownership rights you have in Your Content, but you
             agree that all Content that you upload or post to the Services will
             be licensed by you to all users of the Services under the terms and
@@ -251,12 +251,12 @@ class TOS extends React.Component {
             attribution. You agree to include in Your Content an express notice
             that Your Content is licensed under the CC BY 4.0 license.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             In addition to the rights granted under the CC BY 4.0 license, you
             grant to ResearchHub the following license with respect to Your
             Content:
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             When Your Content is created with or submitted to the Services, you
             grant us a worldwide, royalty-free, perpetual, irrevocable,
             non-exclusive, transferable, and sublicensable license to use, copy,
@@ -271,13 +271,13 @@ class TOS extends React.Component {
             you irrevocably waive any claims and assertions of moral rights or
             attribution with respect to Your Content.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             Any ideas, suggestions, and feedback about ResearchHub or our
             Services that you provide to us are entirely voluntary, and you
             agree that ResearchHub may use such ideas, suggestions, and feedback
             without compensation or obligation to you.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             Although we have no obligation to screen, edit, or monitor Your
             Content, we may, in our sole discretion, delete or remove Your
             Content at any time and for any reason, including for a violation of
@@ -285,12 +285,12 @@ class TOS extends React.Component {
             be amended from time to time (the “Content Policy”), or if you
             otherwise create liability for us.{" "}
           </p>
-          <p>
+          <h2>
             <strong>
               5. Third-Party Content, Advertisements and Promotions
             </strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             The Services may contain links to third-party websites, content,
             products, or services, which may be posted by advertisers, our
             affiliates, our partners, or other users (“
@@ -301,14 +301,14 @@ class TOS extends React.Component {
             proceeding with any transaction in connection with such Third-Party
             Content.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             The Services may also contain sponsored Third-Party Content or
             advertisements. The type, degree, and targeting of advertisements
             are subject to change, and you acknowledge and agree that we may
             place advertisements in connection with the display of any Content
             or information on the Services, including Your Content.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             If you choose to use the Services to conduct a promotion, including
             a contest or sweepstakes, you alone are responsible for conducting
             the promotion in compliance with all applicable laws and
@@ -318,10 +318,10 @@ class TOS extends React.Component {
             entrant or participant to release ResearchHub from any liability
             related to the promotion.
           </p>
-          <p>
+          <h2>
             <strong>6. Things You Cannot Do</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             When accessing or using the Services, you must respect others and
             their rights, including by following these Terms and the Content
             Policy, so that we all may continue to use and enjoy the Services.
@@ -332,7 +332,9 @@ class TOS extends React.Component {
             </a>
             .
           </p>
-          <p>When accessing or using our Services, you will not:</p>
+          <p className={css(styles.paragraph)}>
+            When accessing or using our Services, you will not:
+          </p>
           <ul>
             <li>
               Create or submit Content that violates our Content Policy or
@@ -392,10 +394,10 @@ class TOS extends React.Component {
               our robots.txt file.
             </li>
           </ul>
-          <p>
+          <h2>
             <strong>7. Moderators</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             Moderating a Hub is an unofficial, voluntary position that may be
             available to users of the Services. We are not responsible for
             actions taken by the moderators. We recognize that moderation can
@@ -405,7 +407,9 @@ class TOS extends React.Component {
             at any time and for any reason or no reason, including for a breach
             of these Terms.
           </p>
-          <p>If you choose to moderate a Hub:</p>
+          <p className={css(styles.paragraph)}>
+            If you choose to moderate a Hub:
+          </p>
           <ul>
             <li>
               You agree that when you receive reports related to your community,
@@ -440,16 +444,16 @@ class TOS extends React.Component {
             </li>
           </ul>
 
-          <p>
+          <p className={css(styles.paragraph)}>
             ResearchHub reserves the right, but has no obligation, to overturn
             any action or decision of a moderator if ResearchHub believes that
             such action or decision is not in the interest of ResearchHub or the
             ResearchHub community.
           </p>
-          <p>
+          <h2>
             <strong>8. Copyright, the DMCA &amp; Takedowns</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             ResearchHub respects the intellectual property of others and
             requires that users of our Services do the same. We have a policy
             that includes the removal of any infringing materials from the
@@ -459,18 +463,18 @@ class TOS extends React.Component {
             control, you may notify ResearchHub’s Designated Agent by filling
             out our DMCA Report Form or by contacting:
           </p>
-          <p>Copyright Agent</p>
-          <p>
+          <p className={css(styles.paragraph)}>Copyright Agent</p>
+          <p className={css(styles.paragraph)}>
             <a href="mailto:hello@researchhub.com" target="_blank">
               hello@researchhub.com
             </a>
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             Also, please note that if you knowingly misrepresent that any
             activity or material on our Service is infringing, you may be liable
             to ResearchHub for certain costs and damages.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             If we remove Your Content in response to a copyright or trademark
             notice, we will notify you.. If you believe Your Content was wrongly
             removed due to a mistake or misidentification, you can send a
@@ -478,10 +482,10 @@ class TOS extends React.Component {
             provided above). Please see 17 U.S.C. §512(g)(3) for the
             requirements of a proper counter notification.
           </p>
-          <p>
+          <h2>
             <strong>9. Indemnity</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             Except to the extent prohibited by law, you agree to defend,
             indemnify, and hold us, our licensors, our third party service
             providers and our officers, employees, licensors, and agents (the “
@@ -493,10 +497,10 @@ class TOS extends React.Component {
             the defense of any matter for which you are required to indemnify
             us, and you agree to cooperate with our defense of these claims.
           </p>
-          <p>
+          <h2>
             <strong>10. Disclaimers</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT
             WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT
             NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
@@ -510,7 +514,7 @@ class TOS extends React.Component {
             SAFE, WE DO NOT REPRESENT OR WARRANT THAT OUR SERVICES OR SERVERS
             ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             YOU ARE SOLELY RESPONSIBLE FOR THE PROPER CREATION, STORAGE, BACKUP,
             TRANSFER AND OTHER USE OF YOUR RESEARCHCOIN WALLET AND ANY OTHER
             WALLETS OR ACCOUNTS YOU MAY HAVE OR ESTABLISH ON THE ETHEREUM
@@ -527,10 +531,10 @@ class TOS extends React.Component {
             NETWORK OR ResearchCoinS, OR (IV) HACKS OR CYBERSECURITY BREACHES BY
             A THIRD PARTY.
           </p>
-          <p>
+          <h2>
             <strong>11. Limitation of Liability</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             IN NO EVENT AND UNDER NO THEORY OF LIABILITY, INCLUDING CONTRACT,
             TORT, NEGLIGENCE, STRICT LIABILITY, WARRANTY, OR OTHERWISE, WILL THE
             RESEARCHHUB ENTITIES BE LIABLE TO YOU FOR ANY INDIRECT,
@@ -553,10 +557,10 @@ class TOS extends React.Component {
             LIMITATION OF LIABILITY WILL APPLY TO THE FULLEST EXTENT PERMITTED
             BY LAW IN THE APPLICABLE JURISDICTION.
           </p>
-          <p>
+          <h2>
             <strong>12. Governing Law and Venue; Dispute Resolution</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             We want you to enjoy ResearchHub, so if you have an issue or
             dispute, you agree to raise it and try to resolve it with us
             informally. You can contact us with feedback and concerns here or by
@@ -566,7 +570,7 @@ class TOS extends React.Component {
             </a>
             .
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             Except for the government entities listed below: any claims arising
             out of or relating to these Terms or the Services will be governed
             by the laws of California, other than its conflict of laws rules.
@@ -575,10 +579,10 @@ class TOS extends React.Component {
             federal or state courts located in San Francisco, California; and
             you consent to personal jurisdiction in these courts.
           </p>
-          <p>
+          <h3 className={css(styles.paragraph)}>
             <strong>Dispute Resolution:</strong>
-          </p>
-          <p>
+          </h3>
+          <p className={css(styles.paragraph, styles.indent)}>
             (a) Mandatory Arbitration of Disputes. We each agree that any
             dispute, claim or controversy arising out of or relating to these
             Terms or the breach, termination, enforcement, interpretation or
@@ -592,7 +596,7 @@ class TOS extends React.Component {
             class action. This arbitration provision shall survive termination
             of these Terms.{" "}
           </p>
-          <p>
+          <p className={css(styles.paragraph, styles.indent)}>
             (b) Exceptions and Opt-out. As limited exceptions to the above: (i)
             you may seek to resolve a Dispute in small claims court if it
             qualifies; and (ii) we each retain the right to seek injunctive or
@@ -607,7 +611,7 @@ class TOS extends React.Component {
             or by regular mail at [postal address] within thirty (30) days
             following the date you first agree to these Terms.
           </p>
-          <p>
+          <p className={css(styles.paragraph, styles.indent)}>
             (c) Conducting Arbitration and Arbitration Rules. The arbitration
             will be conducted by the American Arbitration Association (“
             <strong>AAA</strong>”) under its Consumer Arbitration Rules (the
@@ -625,7 +629,7 @@ class TOS extends React.Component {
             </a>
             .{" "}
           </p>
-          <p>
+          <p className={css(styles.paragraph, styles.indent)}>
             If your claim is for U.S. $10,000 or less, you may choose whether
             the arbitration will be conducted solely on the basis of documents
             submitted to the arbitrator, through a telephonic or
@@ -638,7 +642,7 @@ class TOS extends React.Component {
             relating to the interpretation, applicability, enforceability and
             scope of this arbitration agreement.
           </p>
-          <p>
+          <p className={css(styles.paragraph, styles.indent)}>
             (d) Arbitration Costs. Payment of all filing, administration and
             arbitrator fees will be governed by the AAA Rules. We’ll pay for all
             filing, administration and arbitrator fees and expenses if your
@@ -649,7 +653,7 @@ class TOS extends React.Component {
             attorneys’ fees and expenses to the extent provided under applicable
             law.
           </p>
-          <p>
+          <p className={css(styles.paragraph, styles.indent)}>
             (e) Class Action Waiver. YOU AND WE AGREE THAT EACH MAY BRING CLAIMS
             AGAINST THE OTHER ONLY IN YOUR OR ITS INDIVIDUAL CAPACITY, AND NOT
             AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR
@@ -660,7 +664,7 @@ class TOS extends React.Component {
             this specific provision is found to be unenforceable, then the
             entirety of this Dispute Resolution section shall be null and void.
           </p>
-          <p>
+          <p className={css(styles.paragraph, styles.indent)}>
             (f) Effect of Changes on Arbitration. Notwithstanding the provisions
             of Section 14 (Changes to Terms), if we change any of the terms of
             this Section 13 (Dispute Resolution) after the date you first
@@ -678,21 +682,21 @@ class TOS extends React.Component {
             Resolution) as of the date you first accepted these Terms (or
             accepted any subsequent changes to these Terms).
           </p>
-          <p>
+          <p className={css(styles.paragraph, styles.indent)}>
             (g) Severability. With the exception of any of the provisions in
             sub-section (e) (Class Action Waiver), if an arbitrator or court of
             competent jurisdiction decides that any part of these Terms is
             invalid or unenforceable, the other parts of these Terms will still
             apply.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             <strong>Government Entities</strong>
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             If you are a U.S. city, county, or state government entity, then
             this Section 13 does not apply to you.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             If you are a U.S. federal government entity: any claims arising out
             of or relating to these Terms or the Services will be governed by
             the laws of the United States of America without reference to
@@ -702,10 +706,10 @@ class TOS extends React.Component {
             Terms or the Services will be brought solely in the federal or state
             courts located in San Francisco, California.
           </p>
-          <p>
+          <h2>
             <strong>13. Changes to these Terms</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             We may make changes to these Terms from time to time. If we make
             changes, we will post the amended Terms to our Services and update
             the Effective Date above. If the changes, in our sole discretion,
@@ -718,49 +722,49 @@ class TOS extends React.Component {
             must stop accessing and using our Services before the changes become
             effective.
           </p>
-          <p>
+          <h2>
             <strong>14. Additional Terms</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             Because we offer a variety of Services, you may be asked to agree to
             additional terms before using a specific product or service offered
             by ResearchHub (“<strong>Additional Terms</strong>”). To the extent
             any Additional Terms conflict with these Terms, the Additional Terms
             govern with respect to your use of the corresponding Service.
           </p>
-          <p>
+          <h2>
             <strong>15. Termination</strong>
-          </p>
-          <p>
+          </h2>
+          <p className={css(styles.paragraph)}>
             You may terminate these Terms at any time and for any reason by
             deleting your Account and discontinuing your use of all Services. If
             you stop using the Services without deactivating your Accounts, your
             Accounts may be deactivated due to prolonged inactivity.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             We may suspend or terminate your Accounts, status as a moderator, or
             ability to access or use the Services at any time for any or no
             reason, including for a violation of these Terms or our Content
             Policy.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             As stated in these Terms and our Content Policy, you must follow and
             comply with the rules of the ResearchHub platform. Failure to do so
             may result in a temporary or permanent ban from ResearchHub or the
             removal of your posts and comments. In such instances, you might
             lose the benefits of your ResearchCoins. There are no refunds.
           </p>
-          <p>
+          <p className={css(styles.paragraph)}>
             The following sections will survive any termination of these Terms
-            or of your Accounts: 4 (Your Content), 6 (Things You Cannot Do), 10
-            (Indemnity), 11 (Disclaimers), 12 (Limitation of Liability), 13
-            (Governing Law and Venue; Dispute Resolution), 16 (Termination), and
-            17 (Miscellaneous).
+            or of your Accounts: 4 (Your Content), 6 (Things You Cannot Do), 9
+            (Indemnity), 10 (Disclaimers), 11 (Limitation of Liability), 12
+            (Governing Law and Venue; Dispute Resolution), 15 (Termination), and
+            16 (Miscellaneous).
           </p>
-          <p>
-            <strong>17. Miscellaneous</strong>
-          </p>
-          <p>
+          <h2>
+            <strong>16. Miscellaneous</strong>
+          </h2>
+          <p className={css(styles.paragraph)}>
             These Terms, together with any Additional Terms, our Privacy Policy,
             and our Content Policy, constitute the entire agreement between you
             and us regarding your access to and use of the Services. Our failure
@@ -771,10 +775,10 @@ class TOS extends React.Component {
             not assign or transfer any of your rights or obligations under these
             Terms without our consent. We may freely assign these Terms.
           </p>
-          <p>
+          <h3 className={css(styles.paragraph)}>
             <strong>Contact Information</strong>
-          </p>
-          <p>
+          </h3>
+          <p className={css(styles.paragraph)}>
             <a href="mailto:hello@researchhub.com" target="_blank">
               hello@researchhub.com
             </a>
@@ -791,10 +795,15 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     maxWidth: "100vw",
     overflow: "hidden",
+    lineHeight: 1.6,
   },
   paragraph: {
     marginTop: 7,
     marginBottom: 7,
+    fontWeight: 400,
+  },
+  indent: {
+    textIndent: 50,
   },
 });
 
