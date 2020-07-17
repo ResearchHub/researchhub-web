@@ -20,6 +20,26 @@ export function convertToEditorValue(text) {
   }
 
   if (Value.isValue(text)) {
+    return text;
+  }
+
+  if (typeof text === "string") {
+    return Plain.deserialize(text);
+  }
+
+  try {
+    return Value.fromJSON(text);
+  } catch {
+    return undefined;
+  }
+}
+
+export function convertToEditorToHTML(text) {
+  if (isQuillDelta(text)) {
+    return text;
+  }
+
+  if (Value.isValue(text)) {
     return convertEditorValueToHtml(text);
   }
 

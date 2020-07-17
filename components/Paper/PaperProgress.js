@@ -83,14 +83,16 @@ class PaperProgress extends React.Component {
   }
 
   getSummaryText(summary) {
-    if (summary.summary && isQuillDelta(summary.summary)) {
+    if (summary.summary) {
       if (summary.summary_plain_text) {
         return summary.summary_plain_text;
-      } else {
+      }
+      if (isQuillDelta(summary.summary)) {
         return convertDeltaToText(summary.summary);
       }
-    } else {
       return convertToEditorValue(summary.summary).document.text;
+    } else {
+      return "";
     }
   }
 
