@@ -569,7 +569,10 @@ const routes = (BASE_URL) => {
       return url;
     },
     PROMOTION_PURCHASE: BASE_URL + "purchase/",
-    PROMOTION_TRANSACTIONS: BASE_URL + "purchase/user_transactions_by_item/",
+    PROMOTION_TRANSACTIONS: ({ userId }) => {
+      let url = BASE_URL + `purchase/${userId}/user_transactions/`;
+      return url;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
