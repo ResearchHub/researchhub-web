@@ -130,7 +130,7 @@ const AuthorPage = (props) => {
 
   async function fetchUserPromotions() {
     setFetchingPromotions(true);
-    fetch(API.PROMOTION_TRANSACTIONS, API.GET_CONFIG())
+    fetch(API.PROMOTION_TRANSACTIONS({ userId: author.user }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then(async (res) => {
