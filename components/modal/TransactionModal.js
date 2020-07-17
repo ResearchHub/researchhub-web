@@ -304,7 +304,7 @@ class TransactionModal extends React.Component {
     return (
       <div className={css(styles.row)}>
         <div className={css(styles.left, styles.spacedContent)}>
-          <div className={css(styles.textLabel)}>
+          <div>
             {left.text}
             <span className={css(styles.infoIcon)} data-tip={left.tooltip}>
               {icons["info-circle"]}
@@ -963,7 +963,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   toggle: {
-    color: "rgba(36, 31, 58, 0.6)",
+    color: "rgba(36, 31, 58, 0.8)",
     cursor: "pointer",
     padding: "2px 8px",
     fontSize: 14,
