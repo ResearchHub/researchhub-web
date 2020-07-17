@@ -661,7 +661,7 @@ class PaperPageCard extends React.Component {
                               css(styles.promotionIcon) + " far fa-chart-line"
                             }
                           />
-                          Promote
+                          Boost
                         </div>
                       </PermissionNotificationWrapper>
                     </div>
@@ -691,7 +691,7 @@ class PaperPageCard extends React.Component {
                 <i
                   className={css(styles.promotionIcon) + " far fa-chart-line"}
                 />
-                Promote
+                Boost
               </div>
             </PermissionNotificationWrapper>
           </div>
