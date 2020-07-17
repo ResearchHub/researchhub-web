@@ -18,7 +18,7 @@ import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import { convertToEditorValue, convertToEditorToHTML } from "~/config/utils";
+import { convertToEditorToHTML } from "~/config/utils";
 
 const TextEditor = (props) => {
   const {

@@ -1,23 +1,14 @@
 import React from "react";
-import { StyleSheet, css } from "aphrodite";
-import { isAndroid, isMobile } from "react-device-detect";
-import Plain from "slate-plain-serializer";
+import { StyleSheet } from "aphrodite";
 
 // Component
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import TextEditor from "../../components/TextEditor";
-import FormTextArea from "../../components/Form/FormTextArea";
-import Button from "../../components/Form/Button";
 
 // Config
 import colors from "~/config/themes/colors";
 import { convertToEditorValue } from "~/config/utils";
 
-var isAndroidJS = false;
-if (process.browser) {
-  const ua = navigator.userAgent.toLowerCase();
-  isAndroidJS = ua && ua.indexOf("android") > -1;
-}
 class ThreadTextEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -54,17 +45,9 @@ class ThreadTextEditor extends React.Component {
     this.props.onCancel && this.props.onCancel(e);
   };
 
-  // onChange = (value) => {
-  //   this.setState(
-  //     {
-  //       newEditorState: value,
-  //       editorState: value,
-  //     },
-  //     () => {
-  //       this.props.onChange && this.props.onChange(value);
-  //     }
-  //   );
-  // };
+  onChange = (value) => {
+    this.props.onChange && this.props.onChange();
+  };
 
   onEditSubmit = (content, plain_text) => {
     this.setState({ loading: true }, () => {
