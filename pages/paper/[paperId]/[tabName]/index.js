@@ -146,7 +146,9 @@ const Paper = (props) => {
     setLoadingPaper(true);
     await dispatch(PaperActions.getPaper(paperId));
     const fetchedPaper = store.getState().paper;
-    await dispatch(PaperActions.getThreads({ paperId, paper: fetchedPaper }));
+    await dispatch(
+      PaperActions.getThreads({ paperId, paper: fetchedPaper, twitter: false })
+    );
     const refetchedPaper = store.getState().paper;
 
     setLoadingPaper(false);
@@ -299,8 +301,6 @@ const Paper = (props) => {
   }
 
   function calculateCommentCount() {
-    let commentCount = paper.discussion_count;
-
     var count = 0;
     var threads = paper && paper.discussion ? paper.discussion.threads : [];
 
@@ -317,7 +317,7 @@ const Paper = (props) => {
         }
       });
 
-    return Math.max(count, commentCount);
+    return count;
   }
 
   function formatDescription() {
@@ -439,7 +439,7 @@ const Paper = (props) => {
               setSticky={setSticky}
               scrollView={scrollView}
               tabName={tabName}
-              discussionCount={discussionCount}
+              discussionCount={paper.discussion_count}
               paper={paper}
               figureCount={figureCount}
               activeTabs={tabs}
@@ -477,7 +477,8 @@ const Paper = (props) => {
                   hostname={hostname}
                   paperId={paperId}
                   threads={discussionThreads}
-                  discussionCount={discussionCount}
+                  calculatedCount={discussionCount}
+                  discussionCount={paper.discussion_count}
                   setCount={setCount}
                   discussionRef={discussionRef}
                 />
