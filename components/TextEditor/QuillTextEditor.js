@@ -492,9 +492,6 @@ const styles = StyleSheet.create({
     background: "#FBFBFD",
     border: "1px solid rgb(232, 232, 242)",
     color: "#000",
-    ":hover": {
-      borderColor: "rgb(179, 179, 179)",
-    },
   },
   editable: {},
   focus: {
