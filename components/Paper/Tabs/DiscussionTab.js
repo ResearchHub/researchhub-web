@@ -710,11 +710,6 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 20,
   },
-  discussionTextEditor: {
-    width: 600,
-    border: "1px solid #E8E8F2",
-    backgroundColor: "#FBFBFD",
-  },
   label: {
     fontFamily: "Roboto",
     fontWeight: 500,
@@ -954,7 +949,7 @@ const stylesEditor = StyleSheet.create({
   },
   discussionTextEditor: {
     width: "100%",
-    border: "1px solid #E8E8F2",
+    // border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
   },
   label: {
