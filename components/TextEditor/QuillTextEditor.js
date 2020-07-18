@@ -490,16 +490,13 @@ const styles = StyleSheet.create({
   },
   commentEditor: {
     background: "#FBFBFD",
-    border: "1px solid rgb(232, 232, 242)",
+    border: "2px solid rgb(232, 232, 242)",
     color: "#000",
+    borderRadius: 4,
   },
   editable: {},
   focus: {
-    borderColor: "rgb(63, 133, 247)",
-    ":hover": {
-      borderColor: "rgb(63, 133, 247)",
-      boxShadow: "rgb(63, 133, 247) 0px 0px 1px 1px",
-    },
+    // borderColor: "rgb(63, 133, 247)",
   },
   editSection: {
     padding: 16,
