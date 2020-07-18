@@ -702,7 +702,7 @@ class PaperUploadInfo extends React.Component {
                       inputStyle={styles.smallInput}
                       value={form.published.year}
                       id={"published.year"}
-                      options={Options.range(1960, 2019)}
+                      options={Options.range(1960, new Date().getFullYear())}
                       onChange={this.handleInputChange}
                       error={error.year}
                       labelStyle={styles.labelStyle}
