@@ -388,6 +388,11 @@ const DiscussionTab = (props) => {
     );
   };
 
+  console.log(
+    "store.getState().paper.discussion.next",
+    store.getState().paper.discussion.next
+  );
+
   return (
     <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
       <AddDiscussionModal
@@ -420,10 +425,7 @@ const DiscussionTab = (props) => {
                 ) : showTwitterComments ? (
                   store.getState().paper.discussion.count
                 ) : (
-                  Math.max(
-                    discussionCount,
-                    store.getState().paper.discussion.count
-                  )
+                  props.discussionCount
                 )}
               </span>
               <div className={css(styles.tabRow)}>
