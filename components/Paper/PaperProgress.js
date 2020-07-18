@@ -84,7 +84,9 @@ class PaperProgress extends React.Component {
       if (isQuillDelta(summary.summary)) {
         return convertDeltaToText(summary.summary);
       }
-      return convertToEditorValue(summary.summary).document.text;
+      return convertToEditorValue(summary.summary).document.text
+        ? convertToEditorValue(summary.summary).document.text
+        : "";
     } else {
       return "";
     }
@@ -302,18 +304,20 @@ class PaperProgress extends React.Component {
       let section = sections[0];
       let paper = this.props.paper;
       let summary = paper.summary && this.getSummaryText(paper.summary);
-      if (section.label === "Summary" && summary.length > 0) {
-        return (
-          <Fragment>
-            to the{" "}
-            <span
-              className={css(styles.sectionLink)}
-              onClick={() => this.openPaperFeatureModal(section)}
-            >
-              {`${section.label}.`}
-            </span>
-          </Fragment>
-        );
+      if (section.label === "Summary" && summary) {
+        if (summary.length > 0) {
+          return (
+            <Fragment>
+              to the{" "}
+              <span
+                className={css(styles.sectionLink)}
+                onClick={() => this.openPaperFeatureModal(section)}
+              >
+                {`${section.label}.`}
+              </span>
+            </Fragment>
+          );
+        }
       }
       return (
         <span
