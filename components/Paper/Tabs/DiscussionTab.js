@@ -388,11 +388,6 @@ const DiscussionTab = (props) => {
     );
   };
 
-  console.log(
-    "store.getState().paper.discussion.next",
-    store.getState().paper.discussion.next
-  );
-
   return (
     <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
       <AddDiscussionModal
