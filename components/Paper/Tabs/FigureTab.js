@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  figures: state.paper.figures,
+  // figures: state.paper.figures,
 });
 
 const mapDispatchToProps = {

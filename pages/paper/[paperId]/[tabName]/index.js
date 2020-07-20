@@ -66,6 +66,7 @@ const Paper = (props) => {
     getVoteType(paper.userVote.voteType)
   );
   const [figureCount, setFigureCount] = useState();
+  const [figures, setFigures] = useState([]);
   const [limitCount, setLimitCount] = useState(
     store.getState().limitations.limits.length
   );
@@ -123,9 +124,10 @@ const Paper = (props) => {
     return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((res) => {
+      .then(async (res) => {
         setFigureCount(res.data.length);
-        dispatch(PaperActions.updatePaperState("figures", res.data));
+        setFigures(res.data);
+        await dispatch(PaperActions.updatePaperState("figures", res.data));
       });
   };
 
@@ -491,6 +493,7 @@ const Paper = (props) => {
                     paperId={paperId}
                     paper={paper}
                     setFigureCount={setFigureCount}
+                    figures={figures}
                   />
                 </div>
               </a>
