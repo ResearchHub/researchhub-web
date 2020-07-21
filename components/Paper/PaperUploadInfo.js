@@ -488,13 +488,17 @@ class PaperUploadInfo extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        let hubs = resp.results.map((hub, index) => {
-          return {
-            ...hub,
-            value: hub.id,
-            label: hub.name.charAt(0).toUpperCase() + hub.name.slice(1),
-          };
-        });
+        let hubs = resp.results
+          .map((hub, index) => {
+            return {
+              ...hub,
+              value: hub.id,
+              label: hub.name.charAt(0).toUpperCase() + hub.name.slice(1),
+            };
+          })
+          .sort((a, b) => {
+            return a.label.localeCompare(b.label);
+          });
         this.setState({
           suggestedHubs: hubs,
         });
