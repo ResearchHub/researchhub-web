@@ -319,6 +319,12 @@ class PaperUploadInfo extends React.Component {
     if (keys.length < 2) {
       if (keys[0] === "tagline") {
         form[keys[0]] = value.slice(0, 255);
+      } else if (keys[0] === "title") {
+        if (value) {
+          form[keys[0]] = value[0].toUpperCase() + value.slice(1);
+        } else {
+          form[keys[0]] = value;
+        }
       } else {
         form[keys[0]] = value;
       }
@@ -731,7 +737,7 @@ class PaperUploadInfo extends React.Component {
                 <div className={css(styles.row)}>
                   <span className={css(styles.doi)}>
                     <FormInput
-                      label={"DOI"}
+                      label={"DOI (optional)"}
                       placeholder="Enter DOI of paper"
                       id={"doi"}
                       value={form.doi}
@@ -761,7 +767,7 @@ class PaperUploadInfo extends React.Component {
               />
               <span className={css(styles.mobileDoi)}>
                 <FormInput
-                  label={"DOI"}
+                  label={"DOI (optional)"}
                   placeholder="Enter DOI of paper"
                   id={"doi"}
                   value={form.doi}
