@@ -229,7 +229,12 @@ const routes = (BASE_URL) => {
       }
 
       if (twitter !== undefined && twitter !== null) {
-        url += `&source=${twitter ? "twitter" : "researchhub"}`;
+        if (!(progress || typeof page === "number")) {
+          url += "?";
+        } else {
+          url += "&";
+        }
+        url += `source=${twitter ? "twitter" : "researchhub"}`;
       }
 
       return url;
