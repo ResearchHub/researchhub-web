@@ -93,7 +93,7 @@ class NewDND extends React.Component {
           () => {
             if (this.state.searchResults.length < 1) {
               let title = uploadedPaper.name;
-              this.searchTitle(title);
+              // this.searchTitle(title);
             }
           }
         );
@@ -109,7 +109,7 @@ class NewDND extends React.Component {
           () => {
             if (this.state.searchResults.length < 1) {
               let title = uploadedPaperMeta.csl_item.name;
-              this.searchTitle(title);
+              // this.searchTitle(title);
             }
           }
         );
@@ -147,7 +147,7 @@ class NewDND extends React.Component {
           },
           () => {
             // when metadata returns, search existing papers using the title
-            this.searchTitle(csl_item.title);
+            // this.searchTitle(csl_item.title);
             this.props.onValidUrl && this.props.onValidUrl();
           }
         );
@@ -267,7 +267,7 @@ class NewDND extends React.Component {
           fileDropped: true,
           fileIsPdf: true,
         });
-        this.searchTitle(paperMetaData.csl_item.name);
+        // this.searchTitle(paperMetaData.csl_item.name);
       }, 400);
     });
   };

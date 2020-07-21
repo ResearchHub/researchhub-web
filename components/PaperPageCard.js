@@ -32,8 +32,7 @@ import "./stylesheets/Carousel.css";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { formatPublishedDate } from "~/config/utils";
-import { openExternalLink } from "~/config/utils";
+import { formatPublishedDate, openExternalLink } from "~/config/utils";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -75,6 +74,25 @@ class PaperPageCard extends React.Component {
         }, 400);
       });
     }, timeout);
+  };
+
+  formatDoiUrl = (url) => {
+    let http = "http://dx.doi.org/";
+
+    let https = "https://dx.doi.org/";
+
+    if (!url) {
+      return;
+    }
+    if (url.startsWith(http)) {
+      return url;
+    }
+
+    if (!url.startsWith(https)) {
+      url = https + url;
+    }
+
+    return url;
   };
 
   fetchFigures = () => {
@@ -640,7 +658,13 @@ class PaperPageCard extends React.Component {
                       <span className={css(styles.label, styles.doi)}>
                         DOI:
                       </span>
-                      {paper.doi}
+                      <a
+                        href={this.formatDoiUrl(paper.doi)}
+                        target="_blank"
+                        className={css(styles.link)}
+                      >
+                        {paper.doi}
+                      </a>
                     </div>
                   )}
                   <div className={css(styles.uploadedByContainer)}>
@@ -1136,6 +1160,14 @@ const styles = StyleSheet.create({
   },
   promotionIcon: {
     marginRight: 8,
+  },
+  link: {
+    cursor: "pointer",
+    color: colors.BLACK(),
+    textDecoration: "unset",
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
 });
 
