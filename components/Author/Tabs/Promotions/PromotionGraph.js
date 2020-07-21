@@ -45,9 +45,65 @@ class PromotionGraph extends React.Component {
       ]);
       options.legend = { position: "top", alignment: "center" };
       options.series = { 0: { color: "rgb(78, 83, 255)" } };
+      options.hAxis = {
+        gridlines: {
+          color: "transparent",
+          count: 0,
+        },
+        minorGridlines: {
+          color: "transparent",
+          count: 0,
+        },
+        baselineColor: "transparent",
+        textStyle: {
+          fontSize: 8,
+        },
+      };
+      options.vAxis = {
+        gridlines: {
+          color: "transparent",
+          count: 0,
+        },
+        minorGridlines: {
+          color: "transparent",
+          count: 0,
+        },
+        baselineColor: "transparent",
+        textStyle: {
+          color: "#ffffff",
+        },
+      };
     } else if (data.length === 2) {
       options.legend = { position: "top", alignment: "center" };
       options.series = { 0: { color: "rgb(78, 83, 255)" } };
+      options.hAxis = {
+        gridlines: {
+          color: "transparent",
+          count: 0,
+        },
+        minorGridlines: {
+          color: "transparent",
+          count: 0,
+        },
+        baselineColor: "transparent",
+        textStyle: {
+          fontSize: 8,
+        },
+      };
+      options.vAxis = {
+        gridlines: {
+          color: "transparent",
+          count: 0,
+        },
+        minorGridlines: {
+          color: "transparent",
+          count: 0,
+        },
+        baselineColor: "transparent",
+        textStyle: {
+          color: "#ffffff",
+        },
+      };
     } else {
       let customOptions = {
         legend: {
