@@ -98,6 +98,22 @@ export function toTitleCase(str) {
   );
 }
 
+export function formatURL(url) {
+  let http = "http://";
+  let https = "https://";
+  if (!url) {
+    return;
+  }
+  if (url.startsWith(http)) {
+    return url;
+  }
+
+  if (!url.startsWith(https)) {
+    url = https + url;
+  }
+  return url;
+}
+
 export function convertEditorValueToHtml(value) {
   if (typeof value === "object" && value.hasOwnProperty("ops")) {
     return value;
@@ -309,22 +325,6 @@ export function convertEditorValueToHtml(value) {
       default:
         return;
     }
-  };
-
-  const formatURL = (url) => {
-    let http = "http://";
-    let https = "https://";
-    if (!url) {
-      return;
-    }
-    if (url.startsWith(http)) {
-      return url;
-    }
-
-    if (!url.startsWith(https)) {
-      url = https + url;
-    }
-    return url;
   };
 
   const getUrlParameter = (name, url) => {
