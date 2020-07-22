@@ -317,7 +317,7 @@ const DiscussionTab = (props) => {
           !fetching && threads.length < 1 && styles.emptyStateBox
         )}
       >
-        {thread.length < 1 && (
+        {threads.length < 1 && (
           <span className={css(styles.box, styles.emptyStateBox)}>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
