@@ -1,1 +1,3 @@
-Disallow: /
+Sitemap: https://researchhub-paper-prod.s3-us-west-2.amazonaws.com/sitemap/sitemap-prod.xml
+User-agent: *
+Allow: /
