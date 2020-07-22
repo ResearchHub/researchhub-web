@@ -49,7 +49,7 @@ class LoginModal extends React.Component {
     });
 
     if (this.props.auth.loginFailed) {
-      this.props.setMessage("Login failed");
+      this.props.setMessage("Sign in failed");
       this.props.showMessage({ show: true, error: true });
     }
   };
@@ -60,11 +60,11 @@ class LoginModal extends React.Component {
       <BaseModal
         isOpen={modals.openLoginModal}
         closeModal={this.closeModal}
-        title={"Login to your account"}
+        title={"Sign in to your account"}
         subtitle={
           modals.loginModal.flavorText
             ? modals.loginModal.flavorText
-            : "Login with your Google account"
+            : "Sign in with your Google account"
         }
         backgroundImage={true}
       >
@@ -82,7 +82,7 @@ class LoginModal extends React.Component {
                 customButtonStyle={styles.button}
                 icon={"/static/icons/google.png"}
                 customIconStyle={styles.iconStyle}
-                label={"Login with Google"}
+                label={"Sign in with Google"}
               />
             )}
           />

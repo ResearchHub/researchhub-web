@@ -105,7 +105,7 @@ const GoogleLoginButton = (props) => {
                 rippleClass={props.rippleClass}
                 customLabelStyle={props.customLabelStyle}
                 customIconStyle={[styles.iconStyle, props.iconStyle]}
-                label={customLabel ? customLabel : "Login with Google"}
+                label={customLabel ? customLabel : "Sign In with Google"}
               />
             </div>
           );
