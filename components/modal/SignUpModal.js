@@ -71,7 +71,7 @@ const SignUpModal = (props) => {
         </div>
 
         <div className={css(styles.googleButton)}>
-          <GoogleLoginButton customLabel={"Sign up with Google"} />
+          <GoogleLoginButton customLabel={"Sign in with Google"} />
         </div>
         {renderDivider()}
         <div className={css(styles.loginContainer)}>

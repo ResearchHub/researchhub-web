@@ -569,7 +569,7 @@ class LiveFeedNotification extends React.Component {
     let isLoggedIn = auth.isLoggedIn;
 
     if (!isLoggedIn) {
-      openLoginModal(true, "Please login with Google to continue.");
+      openLoginModal(true, "Please Sign in with Google to continue.");
     } else {
       return alert.show({
         text: `Are you sure you want to ${

@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   bulletPoints: {
     boxSizing: "border-box",
     opacity: 1,
-    transition: "all ease-in-out 0.3s",
+    transition: "all ease-in-out 0.1s",
   },
   bulletForm: {
     width: "100%",

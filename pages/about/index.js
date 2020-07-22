@@ -539,8 +539,8 @@ class Index extends React.Component {
                 trigger="- How can I help?"
               >
                 <p className={css(styles.subtext, styles.wideText)}>
-                  {`The easiest way to help the community grow is to sign up and start contributing content.\n\n`}
-                  <b>1. Sign up</b>
+                  {`The easiest way to help the community grow is to sign in and start contributing content.\n\n`}
+                  <b>1. Sign in</b>
                   {"\n"}Create your account in just a few clicks, using Google
                   Sign In.{"\n\n"}
                   <b>2. Upload a paper</b>

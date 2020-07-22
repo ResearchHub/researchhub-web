@@ -441,7 +441,7 @@ const Paper = (props) => {
               setSticky={setSticky}
               scrollView={scrollView}
               tabName={tabName}
-              discussionCount={paper.discussion_count}
+              discussionCount={discussionCount}
               paper={paper}
               figureCount={figureCount}
               activeTabs={tabs}
