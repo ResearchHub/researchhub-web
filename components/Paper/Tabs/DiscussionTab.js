@@ -3,15 +3,8 @@ import { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
-import Plain from "slate-plain-serializer";
 import Ripples from "react-ripples";
-import { isAndroid, isMobile } from "react-device-detect";
 import ReactPlaceholder from "react-placeholder";
-var isAndroidJS = false;
-if (process.browser) {
-  const ua = navigator.userAgent.toLowerCase();
-  isAndroidJS = ua && ua.indexOf("android") > -1;
-}
 
 // Components
 import ComponentWrapper from "../../ComponentWrapper";
@@ -47,10 +40,10 @@ const DiscussionTab = (props) => {
   let {
     hostname,
     paper,
-    discussionCount,
     calculatedCount,
     setCount,
     discussionRef,
+    setFetchedDiscussions,
   } = props;
   if (doesNotExist(props.threads)) {
     props.threads = [];
@@ -289,10 +282,6 @@ const DiscussionTab = (props) => {
     let newDiscussion = { ...discussion };
     newDiscussion.question = editorState;
     setDiscussion(newDiscussion);
-  };
-
-  const openAddDiscussionModal = () => {
-    props.openAddDiscussionModal(true);
   };
 
   const fetchDiscussionThreads = async () => {
