@@ -13,6 +13,7 @@ import "~/components/Paper/CitationCard.css";
 import VoteWidget from "../VoteWidget";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import HubTag from "./HubTag";
+import HubDropDown from "./HubDropDown";
 
 // Utility
 import {
@@ -362,7 +363,8 @@ const PaperEntryCard = ({
         <div className={css(styles.tags)}>
           {hubs.map(
             (tag, index) =>
-              tag && (
+              tag &&
+              index < 3 && (
                 <HubTag
                   key={`hub_${index}`}
                   tag={tag}
@@ -372,6 +374,13 @@ const PaperEntryCard = ({
                   labelStyle={styles.hubLabel}
                 />
               )
+          )}
+          {hubs.length > 3 && (
+            <HubDropDown
+              hubs={hubs.slice(3)}
+              hubName={hubName}
+              labelStyle={styles.hubLabel}
+            />
           )}
         </div>
       );
