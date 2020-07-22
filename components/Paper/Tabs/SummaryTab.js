@@ -218,17 +218,22 @@ class SummaryTab extends React.Component {
           return this.setState({
             editorState: paper.summary.summary,
             finishedLoading: true,
+            abstract: paper.abstract,
+            showAbstract: false,
+          });
+        } else {
+          let summaryJSON = paper.summary.summary;
+          let editorState = Value.fromJSON(summaryJSON);
+          return this.setState({
+            editorState: editorState ? editorState : "",
+            finishedLoading: true,
+            abstract: paper.abstract,
+            showAbstract: false,
           });
         }
-        let summaryJSON = paper.summary.summary;
-        let editorState = Value.fromJSON(summaryJSON);
-        this.setState({
-          editorState: editorState ? editorState : "",
-          finishedLoading: true,
-        });
       }
       if (paper.abstract) {
-        this.setState({ abstract: paper.abstract, showAbstract: false });
+        this.setState({ abstract: paper.abstract, showAbstract: true });
       }
     } else {
       if (paper.abstract) {

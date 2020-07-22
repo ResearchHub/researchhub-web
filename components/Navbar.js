@@ -308,7 +308,7 @@ const Navbar = (props) => {
           styles={[styles.loginMobile]}
           iconStyle={styles.googleIcon}
           rippleClass={styles.rippleClass}
-          customLabel="Login"
+          customLabel="Sign In"
           customLabelStyle={[styles.googleLabelMobile]}
           isLoggedIn
         />
