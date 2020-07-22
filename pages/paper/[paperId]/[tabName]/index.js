@@ -70,8 +70,9 @@ const Paper = (props) => {
   const [limitCount, setLimitCount] = useState(
     store.getState().limitations.limits.length
   );
-  const [tabs, setTabs] = useState(getActiveTabs());
-
+  const [discussionCount, setCount] = useState(calculateCommentCount());
+  const [fetchedFigures, setFetchedFigures] = useState(false);
+  const [fetchedDiscussions, setFetchedDiscussions] = useState(false);
   const [steps, setSteps] = useState([
     {
       target: ".first-step",
@@ -88,13 +89,12 @@ const Paper = (props) => {
       disableBeacon: true,
     },
   ]);
-  const [discussionCount, setCount] = useState(calculateCommentCount());
+  const [tabs, setTabs] = useState(getActiveTabs());
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
   const shareUrl = hostname + "/paper/" + paperId;
 
-  const paperTitle = getNestedValue(paper, ["title"], "");
   const paperCardRef = useRef(null);
   const paperTabsRef = useRef(null);
   const keyTakeawayRef = useRef(null);
@@ -128,6 +128,7 @@ const Paper = (props) => {
         setFigureCount(res.data.length);
         setFigures(res.data);
         await dispatch(PaperActions.updatePaperState("figures", res.data));
+        setFetchedFigures(true);
       });
   };
 
@@ -195,7 +196,9 @@ const Paper = (props) => {
   }, [scrollListener]);
 
   useEffect(() => {
+    setFetchedDiscussions(false);
     setCount(calculateCommentCount());
+    setFetchedDiscussions(true);
   }, [paper.discussion]);
 
   function getDiscussionThreads(paper) {
@@ -446,6 +449,10 @@ const Paper = (props) => {
               figureCount={figureCount}
               activeTabs={tabs}
               showAllSections={showAllSections}
+              fetchedFigures={fetchedFigures}
+              fetchedDiscussions={fetchedDiscussions}
+              referencedByCount={referencedByCount}
+              loadingReferencedBy={loadingReferencedBy}
             />
           </div>
           <div className={css(styles.contentContainer)}>
@@ -483,6 +490,7 @@ const Paper = (props) => {
                   discussionCount={paper.discussion_count}
                   setCount={setCount}
                   discussionRef={discussionRef}
+                  setFetchedDiscussions={setFetchedDiscussions}
                 />
               </div>
             </a>
