@@ -100,7 +100,7 @@ class OrcidLoginPage extends React.Component {
               <React.Fragment>
                 <h1 className={css(styles.header)}>We're almost done!</h1>
                 <p className={css(styles.description)}>
-                  Confirm your email address to complete login with Orcid.
+                  Confirm your email address to complete Sign in with Orcid.
                 </p>
               </React.Fragment>
             </div>

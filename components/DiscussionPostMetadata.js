@@ -68,10 +68,7 @@ const DiscussionPostMetadata = (props) => {
   const promptFlagConfirmation = () => {
     if (!isLoggedIn) {
       dispatch(
-        ModalActions.openLoginModal(
-          true,
-          "Please login with Google to continue."
-        )
+        ModalActions.openLoginModal(true, "Please sign in Google to continue.")
       );
     } else {
       return alert.show({
