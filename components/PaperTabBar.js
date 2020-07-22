@@ -5,6 +5,7 @@ import { paperTabFont } from "~/config/themes/fonts";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
+import Loader from "~/components/Loader/Loader";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -187,24 +188,32 @@ const PaperTabBar = (props) => {
   }
 
   function renderCount(label, selected) {
-    var count;
-
+    var count, loading;
     switch (label) {
       case "comments":
         count = props.discussionCount && props.discussionCount;
+        loading = !props.fetchedDiscussions;
         break;
       case "figures":
         count = props.figureCount && props.figureCount;
+        loading = !props.fetchedFigures;
         break;
       case "cited-by":
-        count = 0;
+        count = props.referencedByCount && props.referencedByCount;
+        loading = props.loadingReferencedBy;
         break;
       default:
         break;
     }
 
     if (count) {
-      return <Count amount={count} isSelected={selected === label} />;
+      return (
+        <Count
+          amount={count}
+          isSelected={selected === label}
+          loading={loading}
+        />
+      );
     }
   }
 
@@ -245,25 +254,39 @@ const PaperTabBar = (props) => {
 };
 
 const Count = (props) => {
-  const { amount, isSelected } = props;
+  const { amount, isSelected, loading } = props;
   if (amount < 1) {
     return <span id="discussion_count"></span>;
   }
   return (
-    <UIStyling isSelected={isSelected}>
+    <UIStyling isSelected={isSelected} loading={loading}>
       <span id="discussion_count" className={css(styles.count)}>
-        {amount}
+        {loading ? (
+          <Loader
+            key={"discussionLoader"}
+            loading={true}
+            size={2}
+            color={paperTabColors.FONT}
+            containerStyle={styles.customLoader}
+          />
+        ) : (
+          amount
+        )}
       </span>
     </UIStyling>
   );
 };
 
 const UIStyling = (props) => {
-  const { isSelected, label } = props;
+  const { isSelected, label, loading } = props;
   return (
     <span
       id={"count_border"}
-      className={css(styles.ui, isSelected && styles.selectedUi)}
+      className={css(
+        styles.ui,
+        loading && styles.loading,
+        isSelected && styles.selectedUi
+      )}
     >
       {props.children}
     </span>
@@ -341,6 +364,13 @@ const styles = StyleSheet.create({
     border: "1px solid #AAA7B9",
     borderRadius: 3,
   },
+  loading: {
+    padding: 0,
+    width: "unset",
+  },
+  customLoader: {
+    display: "unset",
+  },
   selectedUi: {
     borderColor: colors.PURPLE(1),
   },
@@ -352,6 +382,8 @@ const styles = StyleSheet.create({
   tag: {
     color: "unset",
     textDecoration: "unset",
+    display: "flex",
+    justifyContent: "center",
   },
 });
 
