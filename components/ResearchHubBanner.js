@@ -110,7 +110,7 @@ class ResearchHubBanner extends React.Component {
                 styles={styles.googleLoginButton}
                 googleLogin={this.props.googleLogin}
                 getUser={this.props.getUser}
-                customLabel={"Sign up with Google"}
+                customLabel={"Sign in with Google"}
               />
             )}
           </span>

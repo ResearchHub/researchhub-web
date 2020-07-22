@@ -76,7 +76,7 @@ const TextEditor = (props) => {
   async function submit(content, plain_text, callback) {
     let success = false;
     if (!isLoggedIn) {
-      openLoginModal(true, "Please login with Google to continue.");
+      openLoginModal(true, "Please Sign in with Google to continue.");
     } else {
       if (isQuillEmpty(content)) {
         props.setMessage("Content cannot be empty.");

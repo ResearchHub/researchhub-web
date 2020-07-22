@@ -44,8 +44,14 @@ const DiscussionTab = (props) => {
     question: discussionScaffoldInitialValue,
   };
 
-  let { hostname, paper, discussionCount, setCount, discussionRef } = props;
-
+  let {
+    hostname,
+    paper,
+    discussionCount,
+    calculatedCount,
+    setCount,
+    discussionRef,
+  } = props;
   if (doesNotExist(props.threads)) {
     props.threads = [];
   }
@@ -86,7 +92,6 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
-
   useEffect(resetThreadsEffect, [props.threads]);
 
   function resetThreadsEffect() {
@@ -167,7 +172,7 @@ const DiscussionTab = (props) => {
                     newCard={transition && i === 0} //conditions when a new card is made
                     mobileView={mobileView}
                     index={i}
-                    discussionCount={store.getState().paper.discussion.count}
+                    discussionCount={props.calculatedCount}
                     setCount={setCount}
                   />
                 );
@@ -184,7 +189,7 @@ const DiscussionTab = (props) => {
                     newCard={transition && i === 0} //conditions when a new card is made
                     mobileView={mobileView}
                     index={i}
-                    discussionCount={store.getState().paper.discussion.count}
+                    discussionCount={props.calculatedCount}
                     setCount={setCount}
                   />
                 );
@@ -250,7 +255,7 @@ const DiscussionTab = (props) => {
           props.showMessage({ show: false });
           props.setMessage("Successfully Saved!");
           props.showMessage({ show: true });
-          props.setCount(props.discussionCount + 1);
+          props.setCount(props.calculatedCount + 1);
           cancel();
           props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
           props.getUser();
@@ -323,7 +328,7 @@ const DiscussionTab = (props) => {
           !fetching && threads.length < 1 && styles.emptyStateBox
         )}
       >
-        {discussionCount < 1 && (
+        {thread.length < 1 && (
           <span className={css(styles.box, styles.emptyStateBox)}>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
@@ -349,7 +354,7 @@ const DiscussionTab = (props) => {
           <button
             className={css(
               styles.addDiscussionButton,
-              discussionCount > 0 && styles.plainButton
+              threads.length > 0 && styles.plainButton
             )}
           >
             Add Comment
@@ -397,7 +402,7 @@ const DiscussionTab = (props) => {
         cancel={cancel}
         save={save}
       />
-      {discussionCount > 0 ? (
+      {calculatedCount > 0 ? (
         <div
           className={css(
             styles.threadsContainer,
@@ -420,7 +425,7 @@ const DiscussionTab = (props) => {
                 ) : showTwitterComments ? (
                   store.getState().paper.discussion.count
                 ) : (
-                  props.discussionCount
+                  props.calculatedCount
                 )}
               </span>
               <div className={css(styles.tabRow)}>
@@ -504,9 +509,49 @@ const DiscussionTab = (props) => {
           ref={discussionRef}
         >
           <div className={css(styles.header)}>
-            <div className={css(styles.discussionTitle)}>Comments</div>
+            <div className={css(styles.discussionTitle)}>
+              Comments
+              <span className={css(styles.discussionCount)}>
+                {fetching ? (
+                  <Loader
+                    key={"discussionLoader"}
+                    loading={true}
+                    size={2}
+                    color={"rgba(36, 31, 58, 0.5)"}
+                    type="beat"
+                  />
+                ) : showTwitterComments ? (
+                  store.getState().paper.discussion.count
+                ) : (
+                  props.calculatedCount
+                )}
+              </span>
+              <div className={css(styles.tabRow)}>
+                <div
+                  className={css(
+                    styles.tab,
+                    !showTwitterComments && styles.activeTab
+                  )}
+                  onClick={() => toggleTwitterComments(false)}
+                >
+                  Comments
+                </div>
+                <div
+                  className={css(
+                    styles.tab,
+                    showTwitterComments && styles.activeTab
+                  )}
+                  onClick={() => toggleTwitterComments(true)}
+                >
+                  Tweets
+                </div>
+              </div>
+            </div>
           </div>
-          {showEditor ? renderDiscussionTextEditor() : renderAddDiscussion()}
+          {showEditor
+            ? !showTwitterComments && renderDiscussionTextEditor()
+            : !showTwitterComments && renderAddDiscussion()}
+          {renderThreads(formattedThreads, hostname)}
         </div>
       )}
     </ComponentWrapper>
