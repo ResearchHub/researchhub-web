@@ -509,8 +509,6 @@ const DiscussionTab = (props) => {
                     color={"rgba(36, 31, 58, 0.5)"}
                     type="beat"
                   />
-                ) : showTwitterComments ? (
-                  store.getState().paper.discussion.count
                 ) : (
                   props.calculatedCount
                 )}

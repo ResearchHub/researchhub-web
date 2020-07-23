@@ -8,7 +8,8 @@ import Router from "next/router";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 import { withAlert } from "react-alert";
-import { isMobile } from "react-device-detect";
+// import { isMobile } from "react-device-detect";
+const isMobile = true;
 
 // Component
 import AuthorAvatar from "../AuthorAvatar";
