@@ -152,12 +152,13 @@ const Paper = (props) => {
       PaperActions.getThreads({ paperId, paper: fetchedPaper, twitter: false })
     );
     const refetchedPaper = store.getState().paper;
-
-    setLoadingPaper(false);
+    setScore(refetchedPaper.score);
     setPaper(refetchedPaper);
     setSelectedVoteType(getVoteType(refetchedPaper.userVote));
     setDiscussionThreads(getDiscussionThreads(refetchedPaper));
     setFlag(refetchedPaper.user_flag !== null);
+
+    setLoadingPaper(false);
 
     // window.scroll({ top: 0, behavior: "auto" });
     showMessage({ show: false });
