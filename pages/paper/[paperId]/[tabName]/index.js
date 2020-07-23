@@ -196,7 +196,6 @@ const Paper = (props) => {
   }, [scrollListener]);
 
   useEffect(() => {
-    console.log("called paper.discussion.source:", paper.discussion.source);
     setCount(calculateCommentCount());
   }, [paper.discussion.source]);
 

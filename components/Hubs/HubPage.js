@@ -104,6 +104,10 @@ const scopeOptions = [
     value: "year",
     label: "This Year",
   },
+  {
+    value: "all-time",
+    label: "All Time",
+  },
 ];
 
 const defaultFilter = filterOptions[0];
@@ -376,6 +380,12 @@ class HubPage extends React.Component {
       scope.start = month.unix();
     } else if (scopeId === "year") {
       scope.start = year.unix();
+    } else if (scopeId === "all-time") {
+      let start = "2019-10-26 09:04:49.671639+00"; // moment of first paper added
+      let diff = now.diff(start, "days") + 1;
+
+      let alltime = now.startOf("day").subtract(diff, "days");
+      scope.start = alltime.unix();
     }
 
     return scope;
