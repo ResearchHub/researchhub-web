@@ -192,7 +192,7 @@ const PaperTabBar = (props) => {
     switch (label) {
       case "comments":
         count = props.discussionCount && props.discussionCount;
-        loading = !props.fetchedDiscussions;
+        loading = false;
         break;
       case "figures":
         count = props.figureCount && props.figureCount;
@@ -265,9 +265,10 @@ const Count = (props) => {
           <Loader
             key={"discussionLoader"}
             loading={true}
-            size={2}
+            size={4}
             color={paperTabColors.FONT}
             containerStyle={styles.customLoader}
+            // type={'beat'}
           />
         ) : (
           amount

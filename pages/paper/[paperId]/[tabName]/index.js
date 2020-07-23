@@ -72,7 +72,6 @@ const Paper = (props) => {
   );
   const [discussionCount, setCount] = useState(calculateCommentCount());
   const [fetchedFigures, setFetchedFigures] = useState(false);
-  const [fetchedDiscussions, setFetchedDiscussions] = useState(false);
   const [steps, setSteps] = useState([
     {
       target: ".first-step",
@@ -196,10 +195,9 @@ const Paper = (props) => {
   }, [scrollListener]);
 
   useEffect(() => {
-    setFetchedDiscussions(false);
+    console.log("called paper.discussion.source:", paper.discussion.source);
     setCount(calculateCommentCount());
-    setFetchedDiscussions(true);
-  }, [paper.discussion]);
+  }, [paper.discussion.source]);
 
   function getDiscussionThreads(paper) {
     return paper.discussion ? paper.discussion.threads : [];
@@ -306,23 +304,8 @@ const Paper = (props) => {
   }
 
   function calculateCommentCount() {
-    var count = 0;
-    var threads = paper && paper.discussion ? paper.discussion.threads : [];
-
-    count += paper.discussion.count; // 4
-    threads &&
-      threads.forEach((thread) => {
-        count += thread.commentCount;
-        if (thread.commentCount > 0) {
-          var comments = thread.comments;
-          comments &&
-            comments.forEach((comment) => {
-              count += comment.replyCount;
-            });
-        }
-      });
-
-    return count;
+    let { paper } = props;
+    return paper.discussion_count;
   }
 
   function formatDescription() {
@@ -450,7 +433,6 @@ const Paper = (props) => {
               activeTabs={tabs}
               showAllSections={showAllSections}
               fetchedFigures={fetchedFigures}
-              fetchedDiscussions={fetchedDiscussions}
               referencedByCount={referencedByCount}
               loadingReferencedBy={loadingReferencedBy}
             />
@@ -490,7 +472,6 @@ const Paper = (props) => {
                   discussionCount={paper.discussion_count}
                   setCount={setCount}
                   discussionRef={discussionRef}
-                  setFetchedDiscussions={setFetchedDiscussions}
                 />
               </div>
             </a>
