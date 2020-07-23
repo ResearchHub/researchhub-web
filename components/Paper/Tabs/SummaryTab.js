@@ -296,6 +296,7 @@ class SummaryTab extends React.Component {
 
   renderAbstract = () => {
     let { paper } = this.props;
+    let externalSource = paper.retrieved_from_external_source;
     if (this.state.showAbstract) {
       if (this.state.editAbstract) {
         return (
@@ -366,7 +367,12 @@ class SummaryTab extends React.Component {
               </div>
               {this.state.readOnly && !this.state.editAbstract && (
                 <Fragment>
-                  <div className={css(styles.abstractContainer)}>
+                  <div
+                    className={css(
+                      styles.abstractContainer,
+                      !externalSource && styles.whiteSpace
+                    )}
+                  >
                     {this.state.abstract}
                   </div>
                 </Fragment>
@@ -419,7 +425,6 @@ class SummaryTab extends React.Component {
   render() {
     let { paper } = this.props;
     let { transition } = this.state;
-
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
         <a name="takeaways" id={"takeaway"}>
@@ -691,11 +696,14 @@ var styles = StyleSheet.create({
   abstractContainer: {
     width: "100%",
     lineHeight: 2,
-    whiteSpace: "pre-wrap",
+    // whiteSpace: "pre-wrap",
     display: "flex",
     justifyContent: "flex-start",
     minHeight: 173,
     paddingTop: 7,
+  },
+  whiteSpace: {
+    whiteSpace: "pre-wrap",
   },
   abstractText: {
     lineHeight: 1.6,
