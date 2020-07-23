@@ -22,7 +22,7 @@ export const paper = (paper) => {
       source:
         paper.discussion && paper.discussion.source
           ? paper.discussion.source
-          : null,
+          : "researchhub",
     },
     metatagImage: paper.metatag_image,
     userVote: transformVote(paper.user_vote),

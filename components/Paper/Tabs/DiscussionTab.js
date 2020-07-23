@@ -37,14 +37,7 @@ const DiscussionTab = (props) => {
     question: discussionScaffoldInitialValue,
   };
 
-  let {
-    hostname,
-    paper,
-    calculatedCount,
-    setCount,
-    discussionRef,
-    setFetchedDiscussions,
-  } = props;
+  let { hostname, paper, calculatedCount, setCount, discussionRef } = props;
   if (doesNotExist(props.threads)) {
     props.threads = [];
   }
@@ -272,6 +265,24 @@ const DiscussionTab = (props) => {
     return discussionObject;
   };
 
+  const calculateCount = () => {
+    var count = 0;
+    var threads = paper && paper.discussion ? paper.discussion.threads : [];
+    count += paper.discussion.count; // 4
+    threads &&
+      threads.forEach((thread) => {
+        count += thread.commentCount;
+        if (thread.commentCount > 0) {
+          var comments = thread.comments;
+          comments &&
+            comments.forEach((comment) => {
+              count += comment.replyCount;
+            });
+        }
+      });
+    return count;
+  };
+
   const handleInput = (id, value) => {
     let newDiscussion = { ...discussion };
     newDiscussion[id] = value;
@@ -412,7 +423,7 @@ const DiscussionTab = (props) => {
                     type="beat"
                   />
                 ) : showTwitterComments ? (
-                  store.getState().paper.discussion.count
+                  calculateCount()
                 ) : (
                   props.calculatedCount
                 )}
