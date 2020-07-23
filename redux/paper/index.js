@@ -84,14 +84,7 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: ({
-    paperId,
-    paper,
-    filter = null,
-    page,
-    twitter,
-    loadMore = false,
-  }) => {
+  getThreads: ({ paperId, paper, filter, page, twitter, loadMore = false }) => {
     if (paper === null || paper === undefined) {
       return;
     }
@@ -114,7 +107,7 @@ export const PaperActions = {
             discussion.filter !== filter ||
             page === 1
           ) {
-            discussion.filter = filter; // set filter
+            discussion.filter = filter ? filter : "-score"; // set filter
             discussion.count = res.count; // set count
             discussion.threads = [...res.results]; // set threads
             discussion.next = res.next;
