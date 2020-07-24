@@ -381,7 +381,7 @@ class HubPage extends React.Component {
     } else if (scopeId === "year") {
       scope.start = year.unix();
     } else if (scopeId === "all-time") {
-      let start = "2019-10-26 09:04:49.671639+00"; // moment of first paper added
+      let start = "2019-01-01";
       let diff = now.diff(start, "days") + 1;
 
       let alltime = now.startOf("day").subtract(diff, "days");
