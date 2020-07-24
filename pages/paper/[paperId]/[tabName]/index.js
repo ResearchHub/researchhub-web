@@ -43,6 +43,9 @@ import {
 } from "~/config/utils/";
 
 const Paper = (props) => {
+  if (props.error || props.paper.status === 404) {
+    return <Error statusCode={404} />;
+  }
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
@@ -378,218 +381,211 @@ const Paper = (props) => {
     socialImageUrl =
       props.paper.first_preview && props.paper.first_preview.file;
   }
-
   return (
     <div className={css(styles.container)}>
-      {paper.status === 404 ? (
-        <Error statusCode={paper.status} />
-      ) : (
-        <Fragment>
-          <Head
-            title={paper.title}
-            description={formatDescription()}
-            socialImageUrl={
-              props.paper.metatagImage ||
-              (props.paper.first_preview && props.paper.first_preview.file)
-            }
-          />
-          <div className={css(styles.paperPageContainer)}>
-            <ComponentWrapper overrideStyle={styles.componentWrapper}>
-              <PaperPageCard
-                paper={paper}
-                score={score}
-                upvote={upvote}
-                downvote={downvote}
-                selectedVoteType={selectedVoteType}
-                shareUrl={shareUrl}
-                isModerator={isModerator}
-                flagged={flagged}
-                doneFetchingPaper={!loadingPaper}
-                setFlag={setFlag}
-                sticky={sticky}
-                scrollView={scrollView}
-                setSticky={setSticky}
-              />
-            </ComponentWrapper>
-          </div>
-          <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
-            <PaperTabBar
-              baseUrl={paperId}
-              selectedTab={tabName}
-              paperCardRef={paperCardRef}
-              keyTakeawayRef={keyTakeawayRef}
-              descriptionRef={descriptionRef}
-              discussionRef={discussionRef}
-              paperPdfRef={paperPdfRef}
-              citationRef={citationRef}
-              paperTabsRef={paperTabsRef}
+      <Fragment>
+        <Head
+          title={paper.title}
+          description={formatDescription()}
+          socialImageUrl={
+            props.paper.metatagImage ||
+            (props.paper.first_preview && props.paper.first_preview.file)
+          }
+        />
+        <div className={css(styles.paperPageContainer)}>
+          <ComponentWrapper overrideStyle={styles.componentWrapper}>
+            <PaperPageCard
+              paper={paper}
+              score={score}
+              upvote={upvote}
+              downvote={downvote}
+              selectedVoteType={selectedVoteType}
+              shareUrl={shareUrl}
+              isModerator={isModerator}
+              flagged={flagged}
+              doneFetchingPaper={!loadingPaper}
+              setFlag={setFlag}
               sticky={sticky}
-              setSticky={setSticky}
               scrollView={scrollView}
-              tabName={tabName}
-              discussionCount={discussionCount}
-              paper={paper}
-              figureCount={figureCount}
-              activeTabs={tabs}
-              showAllSections={showAllSections}
-              fetchedFigures={fetchedFigures}
-              referencedByCount={referencedByCount}
-              loadingReferencedBy={loadingReferencedBy}
+              setSticky={setSticky}
             />
-          </div>
-          <div className={css(styles.contentContainer)}>
-            <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-              <div className={css(styles.paperProgress)}>
-                <PaperProgress
-                  setFigureCount={setFigureCount}
-                  figureCount={figureCount}
-                  setLimitCount={setLimitCount}
-                  commentCount={discussionCount}
-                  setCount={setCount}
-                  // comments threads
-                  threads={discussionThreads}
-                  setDiscussionThreads={setDiscussionThreads}
-                  // toggle sections
-                  showAllSections={showAllSections}
-                  toggleShowAllSections={toggleShowAllSections}
-                />
-              </div>
-            </ComponentWrapper>
-            <SummaryTab
-              paperId={paperId}
-              paper={paper}
-              keyTakeawayRef={keyTakeawayRef}
-              descriptionRef={descriptionRef}
-            />
-            <a name="comments" id="comments">
-              <div className={css(styles.space)} />
-              <div id="comments-tab">
-                <DiscussionTab
-                  hostname={hostname}
-                  paperId={paperId}
-                  threads={discussionThreads}
-                  calculatedCount={discussionCount}
-                  discussionCount={paper.discussion_count}
-                  setCount={setCount}
-                  discussionRef={discussionRef}
-                />
-              </div>
-            </a>
-            {figureCount > 0 || showAllSections ? (
-              <a name="figures">
-                <div className={css(styles.figuresContainer)}>
-                  <FigureTab
-                    paperId={paperId}
-                    paper={paper}
-                    setFigureCount={setFigureCount}
-                    figures={figures}
-                  />
-                </div>
-              </a>
-            ) : null}
-            <a name="paper">
-              <div id="paper-tab" className={css(styles.paperTabContainer)}>
-                <PaperTab
+          </ComponentWrapper>
+        </div>
+        <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
+          <PaperTabBar
+            baseUrl={paperId}
+            selectedTab={tabName}
+            paperCardRef={paperCardRef}
+            keyTakeawayRef={keyTakeawayRef}
+            descriptionRef={descriptionRef}
+            discussionRef={discussionRef}
+            paperPdfRef={paperPdfRef}
+            citationRef={citationRef}
+            paperTabsRef={paperTabsRef}
+            sticky={sticky}
+            setSticky={setSticky}
+            scrollView={scrollView}
+            tabName={tabName}
+            discussionCount={discussionCount}
+            paper={paper}
+            figureCount={figureCount}
+            activeTabs={tabs}
+            showAllSections={showAllSections}
+            fetchedFigures={fetchedFigures}
+            referencedByCount={referencedByCount}
+            loadingReferencedBy={loadingReferencedBy}
+          />
+        </div>
+        <div className={css(styles.contentContainer)}>
+          <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+            <div className={css(styles.paperProgress)}>
+              <PaperProgress
+                setFigureCount={setFigureCount}
+                figureCount={figureCount}
+                setLimitCount={setLimitCount}
+                commentCount={discussionCount}
+                setCount={setCount}
+                // comments threads
+                threads={discussionThreads}
+                setDiscussionThreads={setDiscussionThreads}
+                // toggle sections
+                showAllSections={showAllSections}
+                toggleShowAllSections={toggleShowAllSections}
+              />
+            </div>
+          </ComponentWrapper>
+          <SummaryTab
+            paperId={paperId}
+            paper={paper}
+            keyTakeawayRef={keyTakeawayRef}
+            descriptionRef={descriptionRef}
+          />
+          <a name="comments" id="comments">
+            <div className={css(styles.space)} />
+            <div id="comments-tab">
+              <DiscussionTab
+                hostname={hostname}
+                paperId={paperId}
+                threads={discussionThreads}
+                calculatedCount={discussionCount}
+                discussionCount={paper.discussion_count}
+                setCount={setCount}
+                discussionRef={discussionRef}
+              />
+            </div>
+          </a>
+          {figureCount > 0 || showAllSections ? (
+            <a name="figures">
+              <div className={css(styles.figuresContainer)}>
+                <FigureTab
                   paperId={paperId}
                   paper={paper}
-                  paperPdfRef={paperPdfRef}
-                  isModerator={isModerator}
-                  setLoadingFile={setLoadingFile}
+                  setFigureCount={setFigureCount}
+                  figures={figures}
                 />
               </div>
             </a>
-            {referencedByCount > 0 || showAllSections ? (
-              <a name="citations">
-                <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                  <ReactPlaceholder
-                    ready={!loadingReferencedBy}
-                    showLoadingAnimation
-                    customPlaceholder={
-                      <CitationPreviewPlaceholder color="#efefef" />
-                    }
-                  >
-                    <div
-                      className={css(styles.citationContainer)}
-                      ref={citationRef}
-                      id="citedby-tab"
-                    >
-                      <div className={css(styles.header)}>
-                        <div className={css(styles.citationTitle)}>
-                          Cited By
-                        </div>
-                        <span className={css(styles.citationCount)}>
-                          {referencedByCount > 0 && referencedByCount}
-                        </span>
-                      </div>
-                      <div className={css(styles.citations)}>
-                        {referencedBy.length > 0 ? (
-                          referencedBy.map((reference, id) => {
-                            return (
-                              <CitationCard
-                                key={`citation-${reference.id}-${id}`}
-                                citation={reference}
-                              />
-                            );
-                          })
-                        ) : (
-                          <div className={css(styles.citationEmpty)}>
-                            <div className={css(styles.icon)}>
-                              <i className="fad fa-file-alt" />
-                            </div>
-                            This paper has not been cited yet
-                            <div className={css(styles.citationEmptySubtext)}>
-                              No citations have been found in RH papers
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </ReactPlaceholder>
-                </ComponentWrapper>
-              </a>
-            ) : null}
-            {limitCount || showAllSections ? (
-              <a name="limitations">
-                <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+          ) : null}
+          <a name="paper">
+            <div id="paper-tab" className={css(styles.paperTabContainer)}>
+              <PaperTab
+                paperId={paperId}
+                paper={paper}
+                paperPdfRef={paperPdfRef}
+                isModerator={isModerator}
+                setLoadingFile={setLoadingFile}
+              />
+            </div>
+          </a>
+          {referencedByCount > 0 || showAllSections ? (
+            <a name="citations">
+              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+                <ReactPlaceholder
+                  ready={!loadingReferencedBy}
+                  showLoadingAnimation
+                  customPlaceholder={
+                    <CitationPreviewPlaceholder color="#efefef" />
+                  }
+                >
                   <div
-                    className={css(
-                      styles.bulletsContainer,
-                      styles.limitsContainer
-                    )}
-                    id="limitations-tab"
+                    className={css(styles.citationContainer)}
+                    ref={citationRef}
+                    id="citedby-tab"
                   >
-                    <LimitationTab
-                      paperId={paperId}
-                      setLimitCount={setLimitCount}
-                    />
+                    <div className={css(styles.header)}>
+                      <div className={css(styles.citationTitle)}>Cited By</div>
+                      <span className={css(styles.citationCount)}>
+                        {referencedByCount > 0 && referencedByCount}
+                      </span>
+                    </div>
+                    <div className={css(styles.citations)}>
+                      {referencedBy.length > 0 ? (
+                        referencedBy.map((reference, id) => {
+                          return (
+                            <CitationCard
+                              key={`citation-${reference.id}-${id}`}
+                              citation={reference}
+                            />
+                          );
+                        })
+                      ) : (
+                        <div className={css(styles.citationEmpty)}>
+                          <div className={css(styles.icon)}>
+                            <i className="fad fa-file-alt" />
+                          </div>
+                          This paper has not been cited yet
+                          <div className={css(styles.citationEmptySubtext)}>
+                            No citations have been found in RH papers
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </ComponentWrapper>
-              </a>
-            ) : null}
-          </div>
-          <Joyride
-            steps={steps}
-            continuous={true}
-            locale={{ last: "Done" }}
-            styles={{
-              options: {
-                primaryColor: colors.BLUE(1),
-              },
-            }}
-            callback={onJoyrideComplete}
-            run={
-              props.auth.uploadingPaper &&
-              props.auth.isLoggedIn &&
-              !props.auth.user.upload_tutorial_complete
-            }
-          />
-        </Fragment>
-      )}
+                </ReactPlaceholder>
+              </ComponentWrapper>
+            </a>
+          ) : null}
+          {limitCount || showAllSections ? (
+            <a name="limitations">
+              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+                <div
+                  className={css(
+                    styles.bulletsContainer,
+                    styles.limitsContainer
+                  )}
+                  id="limitations-tab"
+                >
+                  <LimitationTab
+                    paperId={paperId}
+                    setLimitCount={setLimitCount}
+                  />
+                </div>
+              </ComponentWrapper>
+            </a>
+          ) : null}
+        </div>
+        <Joyride
+          steps={steps}
+          continuous={true}
+          locale={{ last: "Done" }}
+          styles={{
+            options: {
+              primaryColor: colors.BLUE(1),
+            },
+          }}
+          callback={onJoyrideComplete}
+          run={
+            props.auth.uploadingPaper &&
+            props.auth.isLoggedIn &&
+            !props.auth.user.upload_tutorial_complete
+          }
+        />
+      </Fragment>
     </div>
   );
 };
 
-Paper.getInitialProps = async ({ isServer, req, store, query }) => {
+Paper.getInitialProps = async ({ isServer, req, store, query, res }) => {
   const { host } = absoluteUrl(req);
   const hostname = host;
   var fetchedPaper;
@@ -597,15 +593,20 @@ Paper.getInitialProps = async ({ isServer, req, store, query }) => {
     store.getState().paper.id !== query.paperId ||
     (!store.getState().paper.doneFetchingPaper && !store.getState().paper.id)
   ) {
-    await store.dispatch(PaperActions.getPaper(query.paperId));
-    fetchedPaper = store.getState().paper;
-    await store.dispatch(
-      PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
-    );
-    await store.dispatch(LimitationsActions.getLimitations(query.paperId));
-    await store.dispatch(BulletActions.getBullets(query.paperId));
+    try {
+      await store.dispatch(PaperActions.getPaper(query.paperId));
+      fetchedPaper = store.getState().paper;
+      await store.dispatch(
+        PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
+      );
+      await store.dispatch(LimitationsActions.getLimitations(query.paperId));
+      await store.dispatch(BulletActions.getBullets(query.paperId));
+      return { isServer, hostname, paper: fetchedPaper };
+    } catch {
+      res.statusCode = 404;
+      return { error: true };
+    }
   }
-  return { isServer, hostname, paper: fetchedPaper };
 };
 
 const styles = StyleSheet.create({
