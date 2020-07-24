@@ -1,5 +1,5 @@
 // NPM
-import React, { useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Component
@@ -10,8 +10,31 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const HubDropDown = (props) => {
-  let { hubs, hubName, labelStyle } = props;
-  const [isOpen, setIsOpen] = useState(false);
+  let { hubs, hubName, isOpen, setIsOpen, labelStyle } = props;
+  let dropdown; // holds ref for dropdown
+
+  /**
+   * When we click anywhere outside of the dropdown, close it
+   * @param { Event } e -- javascript event
+   */
+  const handleOutsideClick = (e) => {
+    if (dropdown && (dropdown.contains(e.target) || dropdown === e.target)) {
+      e.stopPropagation();
+      return;
+    }
+
+    if (dropdown && !dropdown.contains(e.target)) {
+      e.stopPropagation();
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  });
 
   const toggleDropdown = (e) => {
     e.stopPropagation();
@@ -19,7 +42,11 @@ const HubDropDown = (props) => {
   };
 
   return (
-    <div className={css(styles.container)} onClick={toggleDropdown}>
+    <div
+      className={css(styles.container)}
+      onClick={toggleDropdown}
+      ref={(ref) => (dropdown = ref)}
+    >
       <div className={css(styles.icon, isOpen && styles.active)}>
         {icons.ellipsisH}
       </div>
@@ -47,12 +74,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    padding: "5px 0",
   },
   dropdown: {
     minWidth: 250,
     zIndex: 3,
-    bottom: 25,
-    right: 0,
+    top: 20,
+    right: -5,
     boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
     background: "#FFF",
     border: "1px solid rgb(238, 238, 238)",

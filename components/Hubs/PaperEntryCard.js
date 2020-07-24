@@ -68,13 +68,13 @@ const PaperEntryCard = ({
   let vote_type = 0;
   const [lightbox, toggleLightbox] = useState(false);
   const [slideIndex, setSlideIndex] = useState(1);
+  const [isOpen, setIsOpen] = useState(false); // Hub dropdown
   const [previews] = useState(
     configurePreview([
       first_preview && first_preview,
       first_figure && first_figure,
     ])
   );
-
   const [figures, setFigures] = useState(
     previews.map((preview, index) => preview && preview.file)
   );
@@ -377,9 +377,12 @@ const PaperEntryCard = ({
           )}
           {hubs.length > 3 && (
             <HubDropDown
-              hubs={hubs.slice(3)}
+              // hubs={hubs.slice(3)}
+              hubs={hubs}
               hubName={hubName}
               labelStyle={styles.hubLabel}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
             />
           )}
         </div>
@@ -415,7 +418,11 @@ const PaperEntryCard = ({
 
   return (
     <Ripples
-      className={css(styles.papercard, style && style)}
+      className={css(
+        styles.papercard,
+        style && style,
+        isOpen && styles.overflow
+      )}
       key={`${id}-${index}-${title}`}
       onClick={navigateToPage}
     >
@@ -538,9 +545,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     borderRadius: 3,
+    overflow: "hidden",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
+  },
+  overflow: {
+    overflow: "visible",
   },
   container: {
     display: "flex",
