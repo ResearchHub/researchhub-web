@@ -13,6 +13,7 @@ import "~/components/Paper/CitationCard.css";
 import VoteWidget from "../VoteWidget";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import HubTag from "./HubTag";
+import HubDropDown from "./HubDropDown";
 
 // Utility
 import {
@@ -67,13 +68,13 @@ const PaperEntryCard = ({
   let vote_type = 0;
   const [lightbox, toggleLightbox] = useState(false);
   const [slideIndex, setSlideIndex] = useState(1);
+  const [isOpen, setIsOpen] = useState(false); // Hub dropdown
   const [previews] = useState(
     configurePreview([
       first_preview && first_preview,
       first_figure && first_figure,
     ])
   );
-
   const [figures, setFigures] = useState(
     previews.map((preview, index) => preview && preview.file)
   );
@@ -362,7 +363,8 @@ const PaperEntryCard = ({
         <div className={css(styles.tags)}>
           {hubs.map(
             (tag, index) =>
-              tag && (
+              tag &&
+              index < 3 && (
                 <HubTag
                   key={`hub_${index}`}
                   tag={tag}
@@ -372,6 +374,15 @@ const PaperEntryCard = ({
                   labelStyle={styles.hubLabel}
                 />
               )
+          )}
+          {hubs.length > 3 && (
+            <HubDropDown
+              hubs={hubs}
+              hubName={hubName}
+              labelStyle={styles.hubLabel}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+            />
           )}
         </div>
       );
@@ -406,7 +417,11 @@ const PaperEntryCard = ({
 
   return (
     <Ripples
-      className={css(styles.papercard, style && style)}
+      className={css(
+        styles.papercard,
+        style && style,
+        isOpen && styles.overflow
+      )}
       key={`${id}-${index}-${title}`}
       onClick={navigateToPage}
     >
@@ -529,9 +544,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     borderRadius: 3,
+    overflow: "hidden",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
+  },
+  overflow: {
+    overflow: "visible",
   },
   container: {
     display: "flex",
@@ -830,6 +849,15 @@ const carousel = StyleSheet.create({
     objectFit: "contain",
     maxHeight: 90,
     height: 90,
+  },
+  icon: {
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  active: {
+    color: colors.BLUE(),
   },
 });
 

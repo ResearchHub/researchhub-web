@@ -376,12 +376,7 @@ class PaperUploadInfo extends React.Component {
     let form = JSON.parse(JSON.stringify(this.state.form));
     let error = { ...this.state.error };
     value = value || [];
-    if (value.length > 3) {
-      let mostRecent = [...value].pop();
-      form.hubs[2] = mostRecent;
-    } else {
-      form.hubs = [...value];
-    }
+    form.hubs = [...value];
     if (error.hubs) {
       error.hubs = form.hubs.length > 0 ? false : true;
     }
@@ -750,7 +745,7 @@ class PaperUploadInfo extends React.Component {
               </div>
               <FormSelect
                 label={"Hubs"}
-                placeholder="Select up to 3 hubs"
+                placeholder="Search Hubs"
                 required={true}
                 containerStyle={styles.container}
                 inputStyle={

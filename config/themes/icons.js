@@ -3,7 +3,6 @@ import { StyleSheet, css } from "aphrodite";
 
 const icons = {
   chat: <i className="fas fa-comment"></i>,
-  chevronRight: <i className="far fa-chevron-right"></i>,
   externalLink: <i className="fas fa-external-link-alt"></i>,
   longArrowLeft: <i className="fal fa-long-arrow-left"></i>,
   share: <i className="fas fa-share"></i>,
@@ -29,7 +28,10 @@ const icons = {
   plusCircle: <i className="fal fa-plus-circle" />,
   play: <i className="fas fa-play" />,
   stop: <i className="fas fa-stop" />,
+  chevronLeft: <i className="far fa-chevron-left"></i>,
+  chevronRight: <i className="far fa-chevron-right"></i>,
   chevronDown: <i className="far fa-chevron-down" />,
+  chevronUp: <i className="far fa-chevron-up" />,
   bell: <i className="fas fa-bell" />,
   pencil: <i className="fas fa-pencil" />,
   trophy: <i className={"fad fa-trophy"} />,
