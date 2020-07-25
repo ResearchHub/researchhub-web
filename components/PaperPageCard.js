@@ -31,6 +31,7 @@ import "./stylesheets/Carousel.css";
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
+import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate, openExternalLink } from "~/config/utils";
 
@@ -45,6 +46,7 @@ class PaperPageCard extends React.Component {
       fetching: false,
       loading: true,
       slideIndex: 1,
+      showAllHubs: false, // only needed when > 3 hubs
     };
     this.containerRef = React.createRef();
     this.metaContainerRef = React.createRef();
@@ -128,6 +130,10 @@ class PaperPageCard extends React.Component {
           this.revealPage();
         });
     });
+  };
+
+  toggleShowHubs = () => {
+    this.setState({ showAllHubs: !this.state.showAllHubs });
   };
 
   navigateToEditPaperInfo = (e) => {
@@ -459,15 +465,29 @@ class PaperPageCard extends React.Component {
       return (
         <div className={css(styles.hubTags)}>
           {paper.hubs.map((hub, index) => {
-            return (
-              <HubTag
-                tag={hub}
-                gray={false}
-                key={`hub_tag_index_${index}`}
-                last={index === paper.hubs.length - 1}
-              />
-            );
+            if (this.state.showAllHubs || index < 3) {
+              let last = index === paper.hubs.length - 1;
+              return (
+                <HubTag
+                  tag={hub}
+                  gray={false}
+                  key={`hub_tag_index_${index}`}
+                  overrideStyle={this.state.showAllHubs && styles.tagStyle}
+                />
+              );
+            }
           })}
+          {paper.hubs.length > 3 && (
+            <div
+              className={css(
+                styles.icon,
+                this.state.showAllHubs && styles.active
+              )}
+              onClick={this.toggleShowHubs}
+            >
+              {this.state.showAllHubs ? icons.chevronUp : icons.ellipsisH}
+            </div>
+          )}
         </div>
       );
     }
@@ -543,7 +563,10 @@ class PaperPageCard extends React.Component {
 
     return (
       <div
-        className={css(styles.container)}
+        className={css(
+          styles.container,
+          this.state.dropdown && styles.overflow
+        )}
         ref={this.containerRef}
         onMouseEnter={this.setHover}
         onMouseLeave={this.unsetHover}
@@ -739,11 +762,14 @@ const styles = StyleSheet.create({
     display: "flex",
     padding: "50px 0 30px 0",
     position: "relative",
-
+    overflow: "visible",
     "@media only screen and (max-width: 767px)": {
       paddingTop: 20,
       paddingBottom: 0,
     },
+  },
+  overflow: {
+    overflow: "visible",
   },
   previewContainer: {
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
@@ -1167,6 +1193,31 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
     ":hover": {
       color: colors.BLUE(),
+    },
+  },
+  tagStyle: {
+    marginBottom: 5,
+  },
+  icon: {
+    padding: "0px 4px",
+    cursor: "pointer",
+    border: "1px solid #FFF",
+    height: 21,
+    ":hover": {
+      color: colors.BLUE(),
+      backgroundColor: "#edeefe",
+      borderRadius: 3,
+    },
+  },
+  active: {
+    fontSize: 14,
+    padding: "0px 4px",
+    marginBottom: 5,
+    ":hover": {
+      fontSize: 14,
+      color: colors.BLUE(),
+      backgroundColor: "#edeefe",
+      borderRadius: 3,
     },
   },
 });
