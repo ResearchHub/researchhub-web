@@ -59,6 +59,7 @@ const HubDropDown = (props) => {
               hubName={hubName}
               gray={false}
               labelStyle={labelStyle}
+              overrideStyle={i !== hubs.length - 1 && styles.tagStyle}
               last={i === hubs.length - 1}
             />
           );
@@ -96,6 +97,9 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     alignItems: "center",
     padding: "10px 15px",
+  },
+  tagStyle: {
+    marginBottom: 5,
   },
   open: {
     opacity: 1,

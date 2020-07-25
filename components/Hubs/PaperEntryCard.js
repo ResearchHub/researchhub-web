@@ -377,7 +377,6 @@ const PaperEntryCard = ({
           )}
           {hubs.length > 3 && (
             <HubDropDown
-              // hubs={hubs.slice(3)}
               hubs={hubs}
               hubName={hubName}
               labelStyle={styles.hubLabel}
@@ -850,6 +849,15 @@ const carousel = StyleSheet.create({
     objectFit: "contain",
     maxHeight: 90,
     height: 90,
+  },
+  icon: {
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  active: {
+    color: colors.BLUE(),
   },
 });
 
