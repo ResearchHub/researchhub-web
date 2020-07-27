@@ -36,6 +36,7 @@ const icons = {
   pencil: <i className="fas fa-pencil" />,
   trophy: <i className={"fad fa-trophy"} />,
   checkCircle: <i className="fal fa-check-circle" />,
+  bolt: <i className="fas fa-bolt" />,
 };
 
 export const voteWidgetIcons = {
@@ -68,6 +69,23 @@ export const RHLogo = ({ iconStyle, white }) => {
   );
 };
 
+export const BoltSvg = ({ height, width, color, opacity }) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={width ? width : "9"}
+      height={height ? height : "13"}
+      fill="none"
+      viewBox="0 0 9 13"
+    >
+      <path
+        fill={color ? color : "#241F3A"}
+        d="M5.063 5.318H9L3.937 13V7.682H0L5.063 0v5.318z"
+        opacity={opacity ? opacity : "0.5"}
+      />
+    </svg>
+  );
+};
 const styles = StyleSheet.create({
   logo: {
     height: 40,

@@ -10,7 +10,7 @@ import { AuthActions } from "../redux/auth";
 
 import { doesNotExist } from "~/config/utils";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { voteWidgetIcons } from "~/config/themes/icons";
+import icons, { voteWidgetIcons, BoltSvg } from "~/config/themes/icons";
 import {
   UPVOTE,
   DOWNVOTE,
@@ -125,7 +125,6 @@ const VoteWidget = (props) => {
             selected={upvoteSelected}
             disabled={upvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={promoted !== false && type === "Paper"}
           />
         </PermissionNotificationWrapper>
         <ReactTooltip
@@ -150,7 +149,6 @@ const VoteWidget = (props) => {
             selected={downvoteSelected}
             disabled={downvoteDisabled || searchResult}
             horizontalView={horizontalView && horizontalView}
-            promoted={promoted !== false && type === "Paper"}
           />
         </PermissionNotificationWrapper>
         {promoted !== false && type === "Paper" && (
@@ -197,12 +195,7 @@ const ScorePill = (props) => {
 
   return (
     <div
-      className={css(
-        styles.pillContainer,
-        props.promoted !== false &&
-          props.type === "Paper" &&
-          styles.promotedPillContainer
-      )}
+      className={css(styles.pillContainer)}
       // data-tip={"This paper has been promoted."}
       onClick={(e) =>
         props.promoted !== false &&
@@ -213,7 +206,7 @@ const ScorePill = (props) => {
       <div className={css(small && styles.small)}>{score}</div>
       {props.promoted !== false && props.type === "Paper" && (
         <span className={css(styles.promotionIcon)}>
-          <i className="fal fa-long-arrow-up"></i>
+          <BoltSvg color={colors.GREEN()} opacity={1} />
         </span>
       )}
     </div>
@@ -221,21 +214,12 @@ const ScorePill = (props) => {
 };
 
 const VoteButton = (props) => {
-  const {
-    onClick,
-    selected,
-    disabled,
-    horizontalView,
-    right,
-    promoted,
-  } = props;
+  const { onClick, selected, disabled, horizontalView, right } = props;
 
   let style = [styles.icon];
-  if (promoted && styles) {
-    style.push(styles.iconBlue);
-  }
+
   if (selected) {
-    style.push(styles.selected, promoted && styles.selectedBlue);
+    style.push(styles.selected);
   }
   if (disabled) {
     style = [styles.iconDisabled];
@@ -326,7 +310,8 @@ const styles = StyleSheet.create({
     },
   },
   promotionIcon: {
-    marginLeft: 2,
+    fontSize: 11,
+    marginLeft: 3,
   },
   icon: {
     cursor: "pointer",
