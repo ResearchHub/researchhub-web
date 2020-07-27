@@ -10,12 +10,9 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
-import { AuthActions } from "~/redux/auth";
-import { PaperActions } from "~/redux/paper";
 
 // Config
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { convertToEditorValue } from "~/config/utils";
 
 const PromotionInfoModal = (props) => {
   const store = useStore();
@@ -53,6 +50,7 @@ const PromotionInfoModal = (props) => {
       <div className={css(styles.card)}>
         <div className={css(styles.scoreContainer)}>
           <div className={css(styles.promotedScore)}>
+            <div className={css(styles.scoreLabel)}>Boosted Score:</div>
             <ScorePill
               small={true}
               paper={store.getState().modals.openPromotionInfoModal.props}
@@ -64,8 +62,11 @@ const PromotionInfoModal = (props) => {
             />
           </div>
           <div className={css(styles.divider)} />
-          <div className={css(styles.score)}>
-            {store.getState().modals.openPromotionInfoModal.props.score}
+          <div className={css(styles.originalScore)}>
+            <div className={css(styles.scoreLabel)}>Original Score:</div>
+            <div className={css(styles.score)}>
+              {store.getState().modals.openPromotionInfoModal.props.score}
+            </div>
           </div>
         </div>
         <div className={css(styles.display, styles.title)}>
@@ -97,12 +98,13 @@ const styles = StyleSheet.create({
   },
   card: {
     border: "1px solid #E8E8F2",
-    padding: "20px 15px",
+    padding: "20px 25px",
     borderRadius: 4,
     marginTop: 25,
     marginBottom: 30,
     maxWidth: 500,
     display: "flex",
+    flexDirection: "column",
     alignItems: "flex-start",
     "@media only screen and (max-width: 767px)": {
       maxWidth: 400,
@@ -113,9 +115,8 @@ const styles = StyleSheet.create({
   },
   scoreContainer: {
     display: "flex",
-    flexDirection: "column",
     alignItems: "center",
-    marginRight: 15,
+    marginBottom: 15,
   },
   description: {
     fontSize: 16,
@@ -132,18 +133,24 @@ const styles = StyleSheet.create({
       textDecoration: "underline",
     },
   },
-  divider: {
-    background: "rgba(36, 31, 58, 0.1)",
-    height: 1,
-    width: "80%",
-    margin: "10px 0",
+  promotedScore: {
+    display: "flex",
+    alignItems: "center",
+  },
+  originalScore: {
+    display: "flex",
+    alignItems: "center",
+  },
+  scoreLabel: {
+    fontSize: 12,
+    marginRight: 10,
   },
   score: {
     background: voteWidgetColors.BACKGROUND,
     color: colors.GREEN(),
     fontWeight: "bold",
     borderRadius: 24,
-    padding: ".1em .4em",
+    padding: ".2em .5em",
     minWidth: 20,
     display: "flex",
     justifyContent: "center",
@@ -194,6 +201,13 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
+  },
+  divider: {
+    margin: "0px 15px",
+    backgroundColor: colors.BLACK(),
+    height: 20,
+    minWidth: 1,
+    width: 1,
   },
 });
 
