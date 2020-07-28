@@ -3,6 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 
 import SearchEntry from "./SearchEntry";
+import HubSearchResult from "./HubSearchResult";
 
 // Config
 import { thread } from "~/redux/discussion/shims";
@@ -20,6 +21,8 @@ export default class Search extends Component {
     finished: true,
     results: [],
     query: "",
+    next: null,
+    count: null,
   };
 
   componentDidMount() {
@@ -83,8 +86,12 @@ export default class Search extends Component {
 
   renderSearchResults = () => {
     let universityCount = 0;
+    let prevType;
     const results = this.state.results.map((result, index) => {
       result.meta.index === "university" && universityCount++;
+      let firstOfItsType = prevType !== result.meta.index;
+      prevType = result.meta.index;
+
       return (
         <div
           key={index}
@@ -99,7 +106,7 @@ export default class Search extends Component {
             );
           }}
         >
-          {this.getResultComponent(result)}
+          {this.getResultComponent(result, index, firstOfItsType)}
         </div>
       );
     });
@@ -118,18 +125,18 @@ export default class Search extends Component {
     return results;
   };
 
-  getResultComponent = (result) => {
+  getResultComponent = (result, index, firstOfItsType) => {
     const indexName = result.meta.index;
 
     switch (indexName) {
-      case "author":
-        return (
-          <SearchEntry
-            indexName={indexName}
-            result={result}
-            clearSearch={this.clearQuery}
-          />
-        );
+      // case "author":
+      //   return (
+      //     <SearchEntry
+      //       indexName={indexName}
+      //       result={result}
+      //       clearSearch={this.clearQuery}
+      //     />
+      //   );
       case "crossref_paper":
       case "paper":
         return (
@@ -137,23 +144,32 @@ export default class Search extends Component {
             indexName={"paper"}
             result={result}
             clearSearch={this.clearQuery}
+            // index={index}
+            firstOfItsType={firstOfItsType}
           />
         );
-      case "discussion_thread":
-        let data = thread(result);
-        if (data.isPublic) {
-          data = this.populateThreadData(data, result);
-          data.meta = result.meta;
-          return (
-            <SearchEntry
-              indexName={indexName}
-              result={data}
-              clearSearch={this.clearQuery}
-            />
-          );
-        }
+      // case "discussion_thread":
+      //   let data = thread(result);
+      //   if (data.isPublic) {
+      //     data = this.populateThreadData(data, result);
+      //     data.meta = result.meta;
+      //     return (
+      //       <SearchEntry
+      //         indexName={indexName}
+      //         result={data}
+      //         clearSearch={this.clearQuery}
+      //       />
+      //     );
+      //   }
       case "hub":
-      // return <HubSearchResult result={result} />;
+        return (
+          <HubSearchResult
+            indexName={"hub"}
+            result={result}
+            index={index}
+            clearSearch={this.clearQuery}
+          />
+        );
       case "university":
         // return <UniversitySearchResult result={result} />;
         return null;
