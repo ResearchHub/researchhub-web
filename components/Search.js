@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
+import InfiniteScroll from "react-infinite-scroller";
 
 import SearchEntry from "./SearchEntry";
 import HubSearchResult from "./HubSearchResult";
+import Loader from "~/components/Loader/Loader";
 
 // Config
 import { thread } from "~/redux/discussion/shims";
 import { RHLogo } from "~/config/themes/icons";
+import colors from "../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
@@ -15,7 +18,7 @@ export default class Search extends Component {
   searchTimeout = -1;
   dropdownTimeout = -1;
   ref = React.createRef();
-
+  scrollParent;
   state = {
     showDropdown: this.props.showDropdown,
     finished: true,
@@ -23,6 +26,7 @@ export default class Search extends Component {
     query: "",
     next: null,
     count: null,
+    loading: false,
   };
 
   componentDidMount() {
@@ -79,9 +83,29 @@ export default class Search extends Component {
           this.setState({
             results: resp.results,
             finished: true,
+            next: resp.next,
           });
         });
-    }, 1500);
+    }, 200);
+  };
+
+  fetchNextPage = () => {
+    if (!this.state.loading && this.state.next) {
+      this.setState({ loading: true }, () => {
+        fetch(this.state.next, API.GET_CONFIG())
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((res) => {
+            setTimeout(() => {
+              this.setState({
+                results: [...this.state.results, ...res.results],
+                loading: false,
+                next: res.next,
+              });
+            }, 200);
+          });
+      });
+    }
   };
 
   renderSearchResults = () => {
@@ -221,16 +245,37 @@ export default class Search extends Component {
           }
         ></i>
         {this.state.showDropdown && (
-          <div className={css(styles.searchDropdown, this.props.dropdownClass)}>
-            <ReactPlaceholder
-              ready={this.state.finished}
-              showLoadingAnimation
-              type="media"
-              rows={4}
-              color="#efefef"
+          <div
+            className={css(styles.searchDropdown, this.props.dropdownClass)}
+            ref={(ref) => (this.scrollParent = ref)}
+          >
+            <InfiniteScroll
+              hasMore={this.state.next}
+              loadMore={this.fetchNextPage}
+              loader={
+                <ReactPlaceholder
+                  ready={false}
+                  showLoadingAnimation
+                  type="media"
+                  rows={4}
+                  color="#efefef"
+                />
+              }
+              useWindow={false}
+              getScrollParent={() => this.scrollParent}
+              initialLoad={false}
+              threshold={20}
             >
-              {this.renderSearchResults()}
-            </ReactPlaceholder>
+              <ReactPlaceholder
+                ready={this.state.finished}
+                showLoadingAnimation
+                type="media"
+                rows={4}
+                color="#efefef"
+              >
+                {this.renderSearchResults()}
+              </ReactPlaceholder>
+            </InfiniteScroll>
           </div>
         )}
       </div>
