@@ -222,7 +222,7 @@ class PaperTransactionModal extends React.Component {
   };
 
   handleInput = (e) => {
-    let value = e.target.value;
+    let value = e.target.value > 0 ? value : 0;
     this.setState({
       value,
       error: this.handleError(value),
@@ -764,7 +764,10 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Amount</div>
               <div className={css(styles.subtitle)}>
-                {this.state.value} RSC = {this.state.value} Day of Boost
+                {this.state.value} RSC = {this.state.value} Day
+                {this.state.value === 0 || this.state.value > 1 ? "s" : ""} of
+                Boost + {this.state.value} Upvote
+                {this.state.value === 0 || this.state.value > 1 ? "s" : ""}
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -1016,6 +1019,8 @@ const styles = StyleSheet.create({
     height: 50,
     width: 80,
     fontSize: 16,
+    padding: "0 10px",
+    boxSizing: "border-box",
     borderRadius: 4,
   },
   error: {
