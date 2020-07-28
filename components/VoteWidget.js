@@ -182,7 +182,7 @@ VoteWidget.propTypes = {
 
 const ScorePill = (props) => {
   const dispatch = useDispatch();
-  const { score, paper, small, showPromotion } = props;
+  const { score, paper, small, promoted, showPromotion } = props;
 
   const openPromotionInfoModal = (e) => {
     e && e.stopPropagation();
@@ -195,7 +195,10 @@ const ScorePill = (props) => {
 
   return (
     <div
-      className={css(styles.pillContainer)}
+      className={css(
+        styles.pillContainer,
+        promoted !== false && styles.promotedPillContainer
+      )}
       // data-tip={"This paper has been promoted."}
       onClick={(e) =>
         props.promoted !== false &&
@@ -295,13 +298,7 @@ const styles = StyleSheet.create({
     },
   },
   promotedPillContainer: {
-    justifyContent: "center",
-    color: colors.BLUE(),
-    background: "#eaebfe",
     cursor: "help",
-    ":hover": {
-      background: colors.BLUE(0.2),
-    },
   },
   small: {
     fontSize: 14,
