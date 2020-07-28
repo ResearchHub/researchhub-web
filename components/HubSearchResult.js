@@ -7,7 +7,6 @@ import colors from "../config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const HubSearchResult = ({ result, index, clearSearch }) => {
-  console.log("result", result);
   let { id, meta, name, paper_count } = result;
   let { highlight } = meta;
 
