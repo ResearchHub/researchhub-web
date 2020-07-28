@@ -2,15 +2,13 @@ import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Router from "next/router";
-import { Value } from "slate";
-import Plain from "slate-plain-serializer";
+
 // Redux
 import { MessageActions } from "~/redux/message";
 
 // Components
 import University from "./University";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import TextEditor from "./TextEditor/index";
 
 // Config
 import colors from "../config/themes/colors";
@@ -76,53 +74,53 @@ class SearchEntry extends React.Component {
     });
   };
 
-  parseHighlightField = (highlight, key) => {
-    let { indexName, result } = this.props;
-    let textArr = highlight[key][0].split(" ");
-    let highlightedIndex = {};
+  // parseHighlightField = (highlight, key) => {
+  //   let { indexName, result } = this.props;
+  //   let textArr = highlight[key][0].split(" ");
+  //   let highlightedIndex = {};
 
-    textArr.forEach((text, i, arr) => {
-      if (text[0] === "<") {
-        if (text.split("</em>").length > 1) {
-          let splitArr = text
-            .slice(4)
-            .split("</em>")
-            .filter((el) => el !== "");
-          let highlighted = splitArr[0];
-          arr[i] = highlighted;
+  //   textArr.forEach((text, i, arr) => {
+  //     if (text[0] === "<") {
+  //       if (text.split("</em>").length > 1) {
+  //         let splitArr = text
+  //           .slice(4)
+  //           .split("</em>")
+  //           .filter((el) => el !== "");
+  //         let highlighted = splitArr[0];
+  //         arr[i] = highlighted;
 
-          if (splitArr.length > 1) {
-            let normal = splitArr[1].slice(4);
-            textArr.splice(i + 1, 0, normal);
-            highlightedIndex[i + 1] = true;
-          }
-        } else {
-          arr[i] = text.slice(4, text.length - 5);
-        }
-        highlightedIndex[i] = true;
-      }
-    });
+  //         if (splitArr.length > 1) {
+  //           let normal = splitArr[1].slice(4);
+  //           textArr.splice(i + 1, 0, normal);
+  //           highlightedIndex[i + 1] = true;
+  //         }
+  //       } else {
+  //         arr[i] = text.slice(4, text.length - 5);
+  //       }
+  //       highlightedIndex[i] = true;
+  //     }
+  //   });
 
-    let transformedText = textArr.map((text, i) => {
-      if (highlightedIndex[i]) {
-        return (
-          <span className={css(styles.highlight)}>
-            {highlightedIndex[i - 1] ? " " : ""}
-            {text}
-          </span>
-        );
-      } else {
-        return `${highlightedIndex[i - 1] ? " " : ""}${text}${
-          i !== textArr.length - 1 ? " " : ""
-        }`;
-      }
-    });
+  //   let transformedText = textArr.map((text, i) => {
+  //     if (highlightedIndex[i]) {
+  //       return (
+  //         <span className={css(styles.highlight)}>
+  //           {highlightedIndex[i - 1] ? " " : ""}
+  //           {text}
+  //         </span>
+  //       );
+  //     } else {
+  //       return `${highlightedIndex[i - 1] ? " " : ""}${text}${
+  //         i !== textArr.length - 1 ? " " : ""
+  //       }`;
+  //     }
+  //   });
 
-    if (key === "tagline") {
-      transformedText.push("...");
-    }
-    return transformedText;
-  };
+  //   if (key === "tagline") {
+  //     transformedText.push("...");
+  //   }
+  //   return transformedText;
+  // };
 
   convertDate = (date) => {
     return formatDateStandard(transformDate(date));
@@ -135,7 +133,7 @@ class SearchEntry extends React.Component {
       return (
         <div className={css(styles.authors)}>
           {"by "}
-          {this.parseHighlightField(result.meta.highlight, "authors")}
+          {this.parseTitleHighlight(result.meta.highlight, "authors")}
         </div>
       );
     } else {
@@ -200,7 +198,7 @@ class SearchEntry extends React.Component {
       return (
         <span className={css(styles.discTitle)}>
           {highlight && highlight.title
-            ? this.parseHighlightField(highlight, "title")
+            ? this.parseTitleHighlight(highlight, "title")
             : title}
           {paperTitle && (
             <div className={css(styles.publishDate, styles.paddedContainer)}>
@@ -233,7 +231,7 @@ class SearchEntry extends React.Component {
         return (
           <div className={css(styles.tagline)}>
             {highlight && highlight.tagline
-              ? this.parseHighlightField(highlight, "tagline")
+              ? this.parseTitleHighlight(highlight, "tagline")
               : tagline}
           </div>
         );
@@ -244,7 +242,7 @@ class SearchEntry extends React.Component {
       return (
         <div className={css(styles.discText)}>
           {highlight && highlight.plain_text
-            ? this.parseHighlightField(highlight, "plain_text")
+            ? this.parseTitleHighlight(highlight, "plain_text")
             : plainText}
         </div>
       );
@@ -274,11 +272,7 @@ class SearchEntry extends React.Component {
                 <span className={css(styles.count)}>
                   {result.discussion_count}{" "}
                 </span>
-                {count > 1
-                  ? "discussions"
-                  : count === 0
-                  ? "discussions"
-                  : "discussion"}
+                {count > 1 ? "comments" : count === 0 ? "comments" : "comment"}
               </Fragment>
             ) : (
               <Fragment>
@@ -355,88 +349,96 @@ class SearchEntry extends React.Component {
     }
   };
 
+  renderHeader = () => {
+    return <div className={css(styles.section)}>Papers</div>;
+  };
+
   render() {
-    let { indexName, result, hideBullets } = this.props;
+    let { indexName, result, hideBullets, firstOfItsType } = this.props;
     let { score, tagline, plainText } = result;
     let isPaper = indexName === "paper";
     let isDisc = indexName === "discussion_thread";
+
     return (
-      <div
-        key={`${indexName}-${result.id}`}
-        className={css(
-          styles.searchEntryCard,
-          hideBullets && styles.customStyles
-        )}
-        onClick={this.handleClick}
-      >
+      <Fragment>
+        {firstOfItsType && this.renderHeader()}
         <div
+          key={`${indexName}-${result.id}`}
           className={css(
-            styles.column,
-            styles.left,
-            indexName === "author" && styles.isAuthor
+            styles.searchEntryCard,
+            hideBullets && styles.customStyles
           )}
+          onClick={this.handleClick}
         >
-          {indexName === "author" ? (
-            <div className={css(styles.avatarDisplay)}>
-              {result.profile_image ? (
-                <img
-                  src={result.profile_image}
-                  className={css(styles.avatar)}
-                />
-              ) : (
-                <i
-                  className={
-                    css(styles.avatar, styles.defaultAvatar) +
-                    " fas fa-user-circle"
-                  }
-                />
-              )}
+          <div
+            className={css(
+              styles.column,
+              styles.left,
+              indexName === "author" && styles.isAuthor
+            )}
+          >
+            {indexName === "author" ? (
+              <div className={css(styles.avatarDisplay)}>
+                {result.profile_image ? (
+                  <img
+                    src={result.profile_image}
+                    className={css(styles.avatar)}
+                  />
+                ) : (
+                  <i
+                    className={
+                      css(styles.avatar, styles.defaultAvatar) +
+                      " fas fa-user-circle"
+                    }
+                  />
+                )}
+              </div>
+            ) : (
+              <div
+                className={css(
+                  styles.voteDisplay,
+                  hideBullets && styles.smallVoteDisplay
+                )}
+              >
+                {(score && score) || 0}
+              </div>
+            )}
+          </div>
+          <div
+            className={css(
+              styles.column,
+              styles.mid,
+              isPaper && tagline
+                ? tagline.length >= 100
+                  ? styles.mobilePadding
+                  : styles.spaced
+                : null,
+              isDisc && plainText
+                ? plainText.length >= 100
+                  ? styles.mobilePadding
+                  : styles.spaced
+                : null,
+              hideBullets && styles.fullWidth
+            )}
+          >
+            <div className={css(styles.mainText)}>{this.renderMainText()}</div>
+            <div className={css(styles.metaDataOne)}>
+              {this.renderMetaDataOne()}
             </div>
-          ) : (
-            <div
-              className={css(
-                styles.voteDisplay,
-                hideBullets && styles.smallVoteDisplay
-              )}
-            >
-              {(score && score) || 0}
+            <div className={css(styles.metaDataTwo)}>
+              {this.renderMetaDataTwo()}
+            </div>
+          </div>
+          {/* <div className={css(styles.indexTag)}>
+            {indexName === "discussion_thread" ? "disc." : indexName}
+          </div> */}
+          {!hideBullets && (
+            <div className={css(styles.column, styles.right)}>
+              {this.renderBulletPoints()}
             </div>
           )}
         </div>
-        <div
-          className={css(
-            styles.column,
-            styles.mid,
-            isPaper && tagline
-              ? tagline.length >= 100
-                ? styles.mobilePadding
-                : styles.spaced
-              : null,
-            isDisc && plainText
-              ? plainText.length >= 100
-                ? styles.mobilePadding
-                : styles.spaced
-              : null,
-            hideBullets && styles.fullWidth
-          )}
-        >
-          <div className={css(styles.mainText)}>{this.renderMainText()}</div>
-          <div className={css(styles.metaDataOne)}>
-            {this.renderMetaDataOne()}
-          </div>
-          <div className={css(styles.metaDataTwo)}>
-            {this.renderMetaDataTwo()}
-          </div>
-        </div>
-        <div className={css(styles.indexTag)}>
-          {indexName === "discussion_thread" ? "disc." : indexName}
-        </div>
-        {!hideBullets && (
-          <div className={css(styles.column, styles.right)}>
-            {this.renderBulletPoints()}
-          </div>
-        )}
-      </div>
+      </Fragment>
     );
   }
 }
@@ -464,7 +466,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-start",
-    // height: "calc(100% - 30px)",
   },
   left: {
     marginRight: 20,
@@ -638,6 +639,16 @@ const styles = StyleSheet.create({
   count: {
     color: colors.BLACK(1),
     fontWeight: "bold",
+  },
+  section: {
+    width: "100%",
+    textTransform: "uppercase",
+    fontSize: 13,
+    fontWeight: 500,
+    letterSpacing: 1.2,
+    borderBottom: "1px solid #DAE0E6",
+    padding: "10px 0",
+    // color: 'rgb(167, 166, 176)'
   },
 });
 
