@@ -456,9 +456,7 @@ class PaperPageCard extends React.Component {
 
   renderAuthors = () => {
     let { paper } = this.props;
-    let uploadedBy = paper.uploaded_by
-      ? paper.uploaded_by.author_profile.id
-      : null;
+
     let authorsObj = this.getAuthors();
     let length = Object.keys(authorsObj).length;
     let index = 0;
@@ -476,25 +474,18 @@ class PaperPageCard extends React.Component {
               href={`/user/${author.id}/contributions`}
               className={css(styles.atag)}
             >
-              <div
-                className={css(styles.authorContainer)}
-                key={`author_${author.id}`}
-              >
-                <span className={css(styles.authorName)}>
-                  {`${key}${index < length - 1 ? "," : ""}`}
-                </span>
-              </div>
+              <span className={css(styles.authorName)}>
+                {`${key}${index < length - 1 ? "," : ""}`}
+              </span>
             </a>
           </Link>
         );
         index++;
       } else {
         authors.push(
-          <div className={css(styles.authorContainer)} key={`author_${author}`}>
-            <span className={css(styles.rawAuthor)}>
-              {`${key}${index < length - 1 ? "," : ""}`}
-            </span>
-          </div>
+          <span className={css(styles.rawAuthor)}>
+            {`${key}${index < length - 1 ? "," : ""}`}
+          </span>
         );
         index++;
       }
@@ -962,14 +953,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
-  authorContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
+  authorName: {
     marginRight: 8,
     cursor: "pointer",
-  },
-  authorName: {
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
@@ -979,6 +965,7 @@ const styles = StyleSheet.create({
     },
   },
   rawAuthor: {
+    marginRight: 8,
     cursor: "default",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -997,7 +984,7 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     marginBottom: 5,
-    alignItems: "center",
+    alignItems: "flex-start",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
@@ -1005,6 +992,7 @@ const styles = StyleSheet.create({
   labelText: {
     display: "flex",
     alignItems: "center",
+    flexWrap: "wrap",
     opacity: 0.7,
   },
   label: {

@@ -414,7 +414,7 @@ const PaperEntryCard = ({
           <div className={css(styles.publishDate)}>
             {raw_authors.length < 2 ? "Author: " : "Authors: "}
           </div>
-          {formatAuthors(raw_authors)}
+          <span className={"clamp1"}>{formatAuthors(raw_authors)}</span>
         </div>
       );
     }
