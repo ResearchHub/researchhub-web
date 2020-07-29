@@ -27,6 +27,13 @@ const HubSearchResult = ({ result, index, clearSearch }) => {
     return `${paper_count} Papers`;
   };
 
+  const formatSlug = (name) => {
+    return name
+      .split(" ")
+      .join("-")
+      .toLowerCase();
+  };
+
   const renderHeader = () => {
     return <div className={css(styles.section)}>Hubs</div>;
   };
@@ -34,7 +41,7 @@ const HubSearchResult = ({ result, index, clearSearch }) => {
   return (
     <Fragment>
       {index === 0 && renderHeader()}
-      <Link href={"/hubs/[slug]"} as={`/hubs/${name}`}>
+      <Link href={"/hubs/[slug]"} as={`/hubs/${formatSlug(name)}`}>
         <a className={css(styles.card)} onClick={() => clearSearch()}>
           <div className={css(styles.hubIcon)}>{icons.hub}</div>
           <div className={css(styles.column)}>
