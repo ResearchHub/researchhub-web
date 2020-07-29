@@ -10,12 +10,9 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
-import { AuthActions } from "~/redux/auth";
-import { PaperActions } from "~/redux/paper";
 
 // Config
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { convertToEditorValue } from "~/config/utils";
 
 const PromotionInfoModal = (props) => {
   const store = useStore();
@@ -132,26 +129,29 @@ const styles = StyleSheet.create({
       textDecoration: "underline",
     },
   },
-  divider: {
-    background: "rgba(36, 31, 58, 0.1)",
-    height: 1,
-    width: "80%",
-    margin: "10px 0",
+  promotedScore: {
+    display: "flex",
+    alignItems: "center",
+  },
+  originalScore: {
+    display: "flex",
+    alignItems: "center",
+  },
+  scoreLabel: {
+    fontSize: 12,
+    marginRight: 10,
   },
   score: {
-    background: voteWidgetColors.BACKGROUND,
-    color: colors.GREEN(),
+    background: "#EEECEF",
+    color: "#93919E",
     fontWeight: "bold",
     borderRadius: 24,
-    padding: ".1em .4em",
+    padding: ".2em .5em",
     minWidth: 20,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     fontSize: 14,
-    ":hover": {
-      background: "rgba(30, 207, 49, 0.2)",
-    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
@@ -194,6 +194,13 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
+  },
+  divider: {
+    margin: "15px 0",
+    backgroundColor: colors.BLACK(),
+    height: 2,
+    width: "100%",
+    width: 20,
   },
 });
 
