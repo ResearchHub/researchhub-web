@@ -41,14 +41,19 @@ const UserPromotions = (props) => {
         </Fragment>
       );
     }
-    return (
-      author.promotions &&
-      author.promotions.results.map((promotion, i) => {
-        const { source } = promotion;
 
-        return <PromotionCard paper={source} promotion={promotion} index={i} />;
-      })
-    );
+    let promotions =
+      author.promotions && author.promotions.results
+        ? author.promotions.results
+        : [];
+    // author.promotions &&
+    //   author.promotions.results.
+    console.log("author", author);
+    return promotions.map((promotion, i) => {
+      const { source } = promotion;
+      console.log("promotion", promotion);
+      return <PromotionCard paper={source} promotion={promotion} index={i} />;
+    });
   };
 
   const loadMore = () => {
