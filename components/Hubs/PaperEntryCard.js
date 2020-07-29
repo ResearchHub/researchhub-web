@@ -277,10 +277,7 @@ const PaperEntryCard = ({
     if (bullet_points && bullet_points.length > 0) {
       return (
         <div className={css(styles.summary, styles.text)}>
-          <ul
-            className={css(styles.bulletpoints)}
-            id={mobileView ? "clamp1" : "clamp2"}
-          >
+          <ul className={css(styles.bulletpoints) + " clamp1"}>
             {bullet_points.map((bullet, i) => {
               if (i < 2) {
                 return (
@@ -288,10 +285,7 @@ const PaperEntryCard = ({
                     key={`bullet-${bullet.paper}-${i}`}
                     className={css(styles.bullet)}
                   >
-                    <div
-                      style={{ overflow: "hidden" }}
-                      id={mobileView ? "clamp1" : "clamp2"}
-                    >
+                    <div style={{ overflow: "hidden" }} className={"clamp1"}>
                       {bullet.plain_text}
                     </div>
                   </li>
@@ -303,10 +297,8 @@ const PaperEntryCard = ({
       );
     } else if (abstract) {
       return (
-        <div className={css(styles.summary, styles.text)} id={"clamp2"}>
-          <div className={css(styles.bullet)} id={"clamp2"}>
-            {abstract}
-          </div>
+        <div className={css(styles.summary, styles.text) + " clamp2"}>
+          <div className={css(styles.bullet) + " clamp2"}>{abstract}</div>
         </div>
       );
     }
@@ -393,23 +385,36 @@ const PaperEntryCard = ({
     const formatAuthors = (authors) => {
       let { first_name, last_name } = authors[0];
 
-      if (authors.length === 1) {
-        return `${last_name}, ${first_name[0]}`;
-      } else if (authors.length === 2) {
-        let secondAuthor = authors[1];
-        return `${last_name}, ${first_name}, and ${secondAuthor.first_name} ${secondAuthor.last_name}`;
-      } else if (authors.length >= 3) {
-        return `${last_name}, ${first_name}, et al`;
-      }
+      // Proper Notation
+      // if (authors.length === 1) {
+      //   return `${last_name}, ${first_name[0]}`;
+      // } else if (authors.length === 2) {
+      //   let secondAuthor = authors[1];
+      //   return `${last_name}, ${first_name}, and ${secondAuthor.first_name} ${secondAuthor.last_name}`;
+      // } else if (authors.length >= 3) {
+      //   return `${last_name}, ${first_name}, et al`;
+      // }
+
+      return authors
+        .map((author) => {
+          return `${author.first_name} ${author.last_name}`;
+        })
+        .join(", ");
     };
 
     if (raw_authors && raw_authors.length) {
       return (
-        <div className={css(styles.publishContainer, styles.publishDate)}>
+        <div
+          className={css(
+            styles.publishContainer,
+            styles.publishDate,
+            styles.authorContainer
+          )}
+        >
           <div className={css(styles.publishDate)}>
             {raw_authors.length < 2 ? "Author: " : "Authors: "}
           </div>
-          {formatAuthors(raw_authors)}
+          <span className={"clamp1"}>{formatAuthors(raw_authors)}</span>
         </div>
       );
     }
@@ -474,8 +479,9 @@ const PaperEntryCard = ({
                   {title && title}
                   {paper_title && title !== paper_title && (
                     <div
-                      className={css(styles.paperTitle, styles.text)}
-                      id={"clamp1"}
+                      className={
+                        css(styles.paperTitle, styles.text) + " clamp1"
+                      }
                     >
                       From Paper: {paper_title && paper_title}
                     </div>
@@ -483,9 +489,7 @@ const PaperEntryCard = ({
                 </div>
               </a>
             </Link>
-            {renderUploadedBy()}
-            {/* {renderRawAuthors()} */}
-            {renderBullet()}
+            {renderRawAuthors()}
             <div
               className={css(
                 styles.publishContainer,
@@ -518,6 +522,8 @@ const PaperEntryCard = ({
                   ))}
               </span>
             </div>
+            {renderBullet()}
+            {renderUploadedBy()}
             {mobileView && renderHubTags()}
           </div>
           {!mobileView && renderPreview()}
@@ -630,10 +636,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     color: "#918F9B",
-    marginRight: 15,
+    marginRight: 5,
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
     },
+  },
+  authorContainer: {
+    paddingBottom: 5,
   },
   summary: {
     minWidth: "100%",
