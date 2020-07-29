@@ -422,42 +422,84 @@ class PaperPageCard extends React.Component {
     }
   };
 
+  getAuthors = () => {
+    let { paper } = this.props;
+
+    let authors = {};
+
+    if (paper.raw_authors) {
+      paper.raw_authors.forEach((author) => {
+        if (author.first_name && !author.last_name) {
+          authors[author.first_name] = true;
+        } else if (author.last_name && !author.first_name) {
+          authors[author.last_name] = true;
+        } else {
+          authors[`${author.first_name} ${author.last_name}`] = true;
+        }
+      });
+    }
+
+    if (paper.authors) {
+      paper.authors.map((author) => {
+        if (author.first_name && !author.last_name) {
+          authors[author.first_name] = author;
+        } else if (author.last_name && !author.first_name) {
+          authors[author.last_name] = author;
+        } else {
+          authors[`${author.first_name} ${author.last_name}`] = author;
+        }
+      });
+    }
+
+    return authors;
+  };
+
   renderAuthors = () => {
     let { paper } = this.props;
     let uploadedBy = paper.uploaded_by
       ? paper.uploaded_by.author_profile.id
       : null;
-    let authors =
-      paper &&
-      paper.authors.map((author, index) => {
-        return (
-          <Fragment>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${author.id}/contributions`}
+    let authorsObj = this.getAuthors();
+    let length = Object.keys(authorsObj).length;
+    let index = 0;
+    let authors = [];
+
+    for (var key in authorsObj) {
+      let author = authorsObj[key];
+      if (typeof author === "object") {
+        authors.push(
+          <Link
+            href={"/user/[authorId]/[tabName]"}
+            as={`/user/${author.id}/contributions`}
+          >
+            <a
+              href={`/user/${author.id}/contributions`}
+              className={css(styles.atag)}
             >
-              <a
-                href={`/user/${author.id}/contributions`}
-                className={css(styles.atag)}
+              <div
+                className={css(styles.authorContainer)}
+                key={`author_${author.id}`}
               >
-                <div
-                  className={css(styles.authorContainer)}
-                  key={`author_${index}`}
-                >
-                  <span className={css(styles.authorName)}>
-                    {`${author.first_name} ${author.last_name}`}
-                  </span>
-                  {author.id !== uploadedBy && (
-                    <span className={css(styles.authorAvatar)}>
-                      <AuthorAvatar author={author} size={25} />
-                    </span>
-                  )}
-                </div>
-              </a>
-            </Link>
-          </Fragment>
+                <span className={css(styles.authorName)}>
+                  {`${key}${index < length - 1 ? "," : ""}`}
+                </span>
+              </div>
+            </a>
+          </Link>
         );
-      });
+        index++;
+      } else {
+        authors.push(
+          <div className={css(styles.authorContainer)} key={`author_${author}`}>
+            <span className={css(styles.rawAuthor)}>
+              {`${key}${index < length - 1 ? "," : ""}`}
+            </span>
+          </div>
+        );
+        index++;
+      }
+    }
+
     return authors;
   };
 
@@ -668,29 +710,36 @@ class PaperPageCard extends React.Component {
                       </a>
                     </div>
                   )}
-                  {paper && paper.authors && paper.authors.length > 0 && (
-                    <div
-                      className={css(
-                        styles.labelContainer,
-                        !paper.paper_publish_date && styles.marginTop
-                      )}
-                    >
-                      {paper.paper_publish_date && (
-                        <span
-                          className={css(
-                            styles.label,
-                            styles.authorLabel,
-                            paper.authors.length > 1 && styles.padding
-                          )}
-                        >
-                          {`Author${paper.authors.length > 1 ? "s" : ""}:`}
-                        </span>
-                      )}
-                      <div className={css(styles.labelText)}>
-                        {this.renderAuthors()}
+                  {paper &&
+                    ((paper.authors && paper.authors.length) ||
+                      (paper.raw_authors && paper.raw_authors.length)) && (
+                      <div
+                        className={css(
+                          styles.labelContainer,
+                          !paper.paper_publish_date && styles.marginTop
+                        )}
+                      >
+                        {paper.paper_publish_date && (
+                          <span
+                            className={css(
+                              styles.label,
+                              styles.authorLabel,
+                              paper.authors.length > 1 && styles.padding
+                            )}
+                          >
+                            {`Author${
+                              paper.authors.length > 1 ||
+                              paper.raw_authors.length > 1
+                                ? "s"
+                                : ""
+                            }:`}
+                          </span>
+                        )}
+                        <div className={css(styles.labelText)}>
+                          {this.renderAuthors()}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   {paper && paper.paper_publish_date && (
                     <div className={css(styles.labelContainer)}>
                       <span className={css(styles.label)}>Published:</span>
@@ -921,14 +970,18 @@ const styles = StyleSheet.create({
     cursor: "pointer",
   },
   authorName: {
-    marginRight: 8,
-    // opacity: 0.7,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
     ":hover": {
       color: colors.BLUE(),
       opacity: 1,
+    },
+  },
+  rawAuthor: {
+    cursor: "default",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
     },
   },
   authors: {
@@ -942,6 +995,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#241F3A",
     display: "flex",
+    width: "100%",
     marginBottom: 5,
     alignItems: "center",
     "@media only screen and (max-width: 415px)": {
@@ -949,6 +1003,8 @@ const styles = StyleSheet.create({
     },
   },
   labelText: {
+    display: "flex",
+    alignItems: "center",
     opacity: 0.7,
   },
   label: {
