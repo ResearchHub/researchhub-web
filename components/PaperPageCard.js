@@ -922,7 +922,7 @@ const styles = StyleSheet.create({
   },
   authorName: {
     marginRight: 8,
-    opacity: 0.7,
+    // opacity: 0.7,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
@@ -964,7 +964,7 @@ const styles = StyleSheet.create({
     },
   },
   authorLabel: {
-    marginRight: 53,
+    marginRight: 30,
     opacity: 0.7,
   },
   padding: {
@@ -1223,6 +1223,7 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
     ":hover": {
       color: colors.BLUE(),
+      textDecoration: "underline",
     },
   },
   tagStyle: {
