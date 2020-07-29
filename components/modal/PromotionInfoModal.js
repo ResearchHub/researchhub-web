@@ -50,7 +50,6 @@ const PromotionInfoModal = (props) => {
       <div className={css(styles.card)}>
         <div className={css(styles.scoreContainer)}>
           <div className={css(styles.promotedScore)}>
-            <div className={css(styles.scoreLabel)}>Boosted Score:</div>
             <ScorePill
               small={true}
               paper={store.getState().modals.openPromotionInfoModal.props}
@@ -62,11 +61,8 @@ const PromotionInfoModal = (props) => {
             />
           </div>
           <div className={css(styles.divider)} />
-          <div className={css(styles.originalScore)}>
-            <div className={css(styles.scoreLabel)}>Original Score:</div>
-            <div className={css(styles.score)}>
-              {store.getState().modals.openPromotionInfoModal.props.score}
-            </div>
+          <div className={css(styles.score)}>
+            {store.getState().modals.openPromotionInfoModal.props.score}
           </div>
         </div>
         <div className={css(styles.display, styles.title)}>
@@ -98,13 +94,12 @@ const styles = StyleSheet.create({
   },
   card: {
     border: "1px solid #E8E8F2",
-    padding: "20px 25px",
+    padding: "20px 15px",
     borderRadius: 4,
     marginTop: 25,
     marginBottom: 30,
     maxWidth: 500,
     display: "flex",
-    flexDirection: "column",
     alignItems: "flex-start",
     "@media only screen and (max-width: 767px)": {
       maxWidth: 400,
@@ -115,8 +110,9 @@ const styles = StyleSheet.create({
   },
   scoreContainer: {
     display: "flex",
+    flexDirection: "column",
     alignItems: "center",
-    marginBottom: 15,
+    marginRight: 15,
   },
   description: {
     fontSize: 16,
@@ -146,8 +142,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   score: {
-    background: voteWidgetColors.BACKGROUND,
-    color: colors.GREEN(),
+    background: "#EEECEF",
+    color: "#93919E",
     fontWeight: "bold",
     borderRadius: 24,
     padding: ".2em .5em",
@@ -156,9 +152,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     fontSize: 14,
-    ":hover": {
-      background: "rgba(30, 207, 49, 0.2)",
-    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
@@ -203,11 +196,11 @@ const styles = StyleSheet.create({
     },
   },
   divider: {
-    margin: "0px 15px",
+    margin: "15px 0",
     backgroundColor: colors.BLACK(),
-    height: 20,
-    minWidth: 1,
-    width: 1,
+    height: 2,
+    width: "100%",
+    width: 20,
   },
 });
 
