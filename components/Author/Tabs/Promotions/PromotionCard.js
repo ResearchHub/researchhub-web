@@ -133,6 +133,7 @@ class PromotionCard extends React.Component {
      * add pagination
      */
     let { promotion, paper } = this.props;
+
     return (
       <div className={css(styles.card)}>
         <div className={css(styles.metadata)}>
