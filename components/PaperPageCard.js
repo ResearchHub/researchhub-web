@@ -176,11 +176,13 @@ class PaperPageCard extends React.Component {
       let { author_profile } = uploaded_by;
       return (
         <div
-          className={css(styles.uploadedBy)}
           onClick={this.navigateToSubmitter}
+          className={css(styles.labelContainer)}
         >
-          Submitted by{" "}
-          {`${author_profile.first_name} ${author_profile.last_name}`}
+          <span className={css(styles.label)}>Submitted By:</span>
+          <span className={css(styles.labelText)}>
+            {`${author_profile.first_name} ${author_profile.last_name}`}
+          </span>
           <div className={css(styles.avatar)}>
             <AuthorAvatar author={author_profile} size={25} />
           </div>
@@ -188,14 +190,19 @@ class PaperPageCard extends React.Component {
       );
     } else if (external_source) {
       return (
-        <div className={css(styles.uploadedBy)}>
-          Retreived from{" "}
-          <span className={css(styles.capitalize)}>{external_source}</span>
+        <div className={css(styles.labelContainer)}>
+          <span className={css(styles.label)}>Retrieved From:</span>
+          <span className={css(styles.capitalize, styles.labelText)}>
+            {external_source}
+          </span>
         </div>
       );
     } else {
       return (
-        <div className={css(styles.uploadedBy)}>Submitted by ResearchHub</div>
+        <div className={css(styles.labelContainer)}>
+          <span className={css(styles.label)}>Submitted By:</span>
+          <span className={css(styles.labelText)}>ResearchHub</span>
+        </div>
       );
     }
   };
@@ -643,10 +650,22 @@ class PaperPageCard extends React.Component {
                   )}
                 </div>
                 <div className={css(styles.column)}>
+                  {paper && paper.doi && (
+                    <div className={css(styles.labelContainer)}>
+                      <span className={css(styles.label)}>DOI:</span>
+                      <a
+                        href={this.formatDoiUrl(paper.doi)}
+                        target="_blank"
+                        className={css(styles.link, styles.labelText)}
+                      >
+                        {paper.doi}
+                      </a>
+                    </div>
+                  )}
                   {paper && paper.authors && paper.authors.length > 0 && (
                     <div
                       className={css(
-                        styles.authors,
+                        styles.labelContainer,
                         !paper.paper_publish_date && styles.marginTop
                       )}
                     >
@@ -661,37 +680,21 @@ class PaperPageCard extends React.Component {
                           {`Author${paper.authors.length > 1 ? "s" : ""}:`}
                         </span>
                       )}
-                      <div className={css(styles.authors)}>
+                      <div className={css(styles.labelText)}>
                         {this.renderAuthors()}
                       </div>
                     </div>
                   )}
-                  {paper && (paper.paper_publish_date || paper.authors) && (
-                    <div className={css(styles.dateAuthorContainer)}>
-                      {paper && paper.paper_publish_date && (
-                        <div className={css(styles.publishDate)}>
-                          <span className={css(styles.label)}>Published:</span>
-                          {this.renderPublishDate()}
-                        </div>
-                      )}
+                  {paper && paper.paper_publish_date && (
+                    <div className={css(styles.labelContainer)}>
+                      <span className={css(styles.label)}>Published:</span>
+                      <div className={css(styles.labelText)}>
+                        {this.renderPublishDate()}
+                      </div>
                     </div>
                   )}
-                  {paper && paper.doi && (
-                    <div className={css(styles.doiDate)}>
-                      <span className={css(styles.label, styles.doi)}>
-                        DOI:
-                      </span>
-                      <a
-                        href={this.formatDoiUrl(paper.doi)}
-                        target="_blank"
-                        className={css(styles.link)}
-                      >
-                        {paper.doi}
-                      </a>
-                    </div>
-                  )}
+                  {this.renderUploadedBy()}
                   <div className={css(styles.uploadedByContainer)}>
-                    {this.renderUploadedBy()}
                     <div className={css(styles.mobile)}>
                       <PermissionNotificationWrapper
                         modalMessage="promote paper"
@@ -874,7 +877,6 @@ const styles = StyleSheet.create({
   publishDate: {
     fontSize: 16,
     color: "#241F3A",
-    opacity: 0.7,
     display: "flex",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -910,21 +912,26 @@ const styles = StyleSheet.create({
   marginTop: {
     marginTop: 5,
   },
-  doiDate: {
+  labelContainer: {
     fontSize: 16,
     color: "#241F3A",
-    opacity: 0.7,
     display: "flex",
     marginBottom: 5,
+    alignItems: "center",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
+  },
+  labelText: {
+    opacity: 0.7,
   },
   label: {
     fontSize: 16,
     fontWeight: 500,
     color: "#241F3A",
     marginRight: 30,
+    width: 120,
+    opacity: 0.7,
 
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -936,9 +943,6 @@ const styles = StyleSheet.create({
   },
   padding: {
     marginRight: 46,
-  },
-  doi: {
-    marginRight: 74,
   },
   voting: {
     position: "absolute",
@@ -1189,7 +1193,7 @@ const styles = StyleSheet.create({
   },
   link: {
     cursor: "pointer",
-    color: colors.BLACK(),
+    color: colors.BLUE(),
     textDecoration: "unset",
     ":hover": {
       color: colors.BLUE(),
