@@ -715,12 +715,16 @@ class PaperPageCard extends React.Component {
                             className={css(
                               styles.label,
                               styles.authorLabel,
-                              paper.authors.length > 1 && styles.padding
+                              paper.authors.length > 1 && styles.padding,
+                              paper.raw_authors &&
+                                paper.raw_authors.length &&
+                                styles.padding
                             )}
                           >
                             {`Author${
-                              paper.authors.length > 1 ||
-                              paper.raw_authors.length > 1
+                              (paper.authors && paper.authors.length > 1) ||
+                              (paper.raw_authors &&
+                                paper.raw_authors.length > 1)
                                 ? "s"
                                 : ""
                             }:`}
