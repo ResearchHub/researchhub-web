@@ -685,14 +685,12 @@ class PaperPageCard extends React.Component {
                       </div>
                     </div>
                   )}
-                  {paper && (paper.paper_publish_date || paper.authors) && (
+                  {paper && paper.paper_publish_date && (
                     <div className={css(styles.labelContainer)}>
-                      {paper && paper.paper_publish_date && (
-                        <div className={css(styles.labelText)}>
-                          <span className={css(styles.label)}>Published:</span>
-                          {this.renderPublishDate()}
-                        </div>
-                      )}
+                      <span className={css(styles.label)}>Published:</span>
+                      <div className={css(styles.labelText)}>
+                        {this.renderPublishDate()}
+                      </div>
                     </div>
                   )}
                   {this.renderUploadedBy()}
