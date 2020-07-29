@@ -21,6 +21,7 @@ import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
+import { BoltSvg } from "~/config/themes/icons";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -46,7 +47,8 @@ class PaperPageCard extends React.Component {
       fetching: false,
       loading: true,
       slideIndex: 1,
-      showAllHubs: false, // only needed when > 3 hubs
+      showAllHubs: false, // only needed when > 3 hubs,
+      boostHover: false,
     };
     this.containerRef = React.createRef();
     this.metaContainerRef = React.createRef();
@@ -159,6 +161,10 @@ class PaperPageCard extends React.Component {
 
   toggleLightbox = () => {
     this.setState({ toggleLightbox: !this.state.toggleLightbox });
+  };
+
+  toggleBoostHover = (state) => {
+    state !== this.state.boostHover && this.setState({ boostHover: state });
   };
 
   navigateToSubmitter = () => {
@@ -704,12 +710,21 @@ class PaperPageCard extends React.Component {
                         loginRequired={true}
                         hideRipples={false}
                       >
-                        <div className={css(styles.promotionButton)}>
-                          <i
-                            className={
-                              css(styles.promotionIcon) + " far fa-chart-line"
-                            }
-                          />
+                        <div
+                          className={css(styles.promotionButton)}
+                          onMouseEnter={() => this.toggleBoostHover(true)}
+                          onMouseLeave={() => this.toggleBoostHover(false)}
+                        >
+                          <span className={css(styles.boostIcon)}>
+                            <BoltSvg
+                              color={
+                                this.state.boostHover
+                                  ? "rgb(255, 255, 255)"
+                                  : colors.BLUE()
+                              }
+                              opacity={1}
+                            />
+                          </span>
                           Boost
                         </div>
                       </PermissionNotificationWrapper>
@@ -736,10 +751,21 @@ class PaperPageCard extends React.Component {
               loginRequired={true}
               hideRipples={false}
             >
-              <div className={css(styles.promotionButton)}>
-                <i
-                  className={css(styles.promotionIcon) + " far fa-chart-line"}
-                />
+              <div
+                className={css(styles.promotionButton)}
+                onMouseEnter={() => this.toggleBoostHover(true)}
+                onMouseLeave={() => this.toggleBoostHover(false)}
+              >
+                <span className={css(styles.boostIcon)}>
+                  <BoltSvg
+                    color={
+                      this.state.boostHover
+                        ? "rgb(255, 255, 255)"
+                        : colors.BLUE()
+                    }
+                    opacity={1}
+                  />
+                </span>
                 Boost
               </div>
             </PermissionNotificationWrapper>
@@ -1188,7 +1214,7 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  promotionIcon: {
+  boostIcon: {
     marginRight: 8,
   },
   link: {
