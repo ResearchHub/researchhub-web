@@ -221,7 +221,7 @@ const Body = (props) => {
   if (typeof text === "string") {
     text = props.text;
   } else if (isQuillDelta(props.text)) {
-    text = convertDeltaToText(text);
+    text = convertDeltaToText(props.text);
   } else {
     text = convertToEditorValue(props.text).document.text;
   }
