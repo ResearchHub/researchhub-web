@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState, Fragment } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
-import ReactTooltip from "react-tooltip";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
