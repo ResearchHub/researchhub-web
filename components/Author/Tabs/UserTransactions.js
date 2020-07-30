@@ -26,24 +26,28 @@ class UserTransaction extends React.Component {
   }
 
   loadMore = () => {
-    fetch(this.props.transactions.next, API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let newState = { ...this.props.transactions };
-        newState.next = res.next;
-        newState.withdrawals = [
-          ...this.props.transactions.withdrawals,
-          ...res.results,
-        ];
-        this.props.updateState(newState);
-      });
+    this.setState({ loading: true }, () => {
+      fetch(this.props.transactions.next, API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          let newState = { ...this.props.transactions };
+          newState.next = res.next;
+          newState.withdrawals = [
+            ...this.props.transactions.withdrawals,
+            ...res.results,
+          ];
+          this.props.updateState(newState);
+          this.setState({ loading: false });
+        });
+    });
   };
 
   renderLoadMoreButton = () => {
     if (this.props.transactions && this.props.transactions.withdrawals) {
+      let { loading } = this.state;
       let { next } = this.props.transactions;
-      if (next !== null) {
+      if (next) {
         return (
           <div className={css(styles.buttonContainer)}>
             {!loading ? (
@@ -76,14 +80,26 @@ class UserTransaction extends React.Component {
           showLoadingAnimation
           customPlaceholder={<PaperPlaceholder color="#efefef" />}
         >
-          {transactions.withdrawals.map((transaction, i) => {
-            return (
-              <TransactionCard
-                key={`transactionCard-${i}`}
-                transaction={transaction}
-              />
-            );
-          })}
+          {transactions && transactions.withdrawals.length ? (
+            transactions.withdrawals.map((transaction, i) => {
+              return (
+                <TransactionCard
+                  key={`transactionCard-${i}`}
+                  transaction={transaction}
+                />
+              );
+            })
+          ) : (
+            <div className={css(styles.box)}>
+              <div className={css(styles.icon)}>
+                <i className="fad fa-receipt" />
+              </div>
+              <h2 className={css(styles.noContent)}>
+                User has not created any transactions
+              </h2>
+            </div>
+          )}
+          {this.renderLoadMoreButton()}
         </ReactPlaceholder>
       </ComponentWrapper>
     );
