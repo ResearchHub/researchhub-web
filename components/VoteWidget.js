@@ -290,6 +290,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    minWidth: 30,
     ":hover": {
       background: "rgba(30, 207, 49, 0.2)",
     },

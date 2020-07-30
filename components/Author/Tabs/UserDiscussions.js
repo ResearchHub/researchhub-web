@@ -6,17 +6,82 @@ import ReactPlaceholder from "react-placeholder";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
+import Loader from "~/components/Loader/Loader";
+import Ripples from "react-ripples";
+
+import { AuthorActions } from "~/redux/author";
 
 // Config
 import colors from "~/config/themes/colors";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import { thread } from "../../../redux/discussion/shims";
 
 class UserDiscussionsTab extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      fetching: false,
+    };
   }
+
+  loadMore = () => {
+    let { author, updateAuthorByKey } = this.props;
+    let { userDiscussions } = author;
+
+    this.setState({ fetching: true }, () => {
+      fetch(userDiscussions.next, API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          let newState = { ...userDiscussions };
+          let newThreads = res.results.map((result) => thread(result));
+          newState.discussions = [...newState.discussions, ...newThreads];
+          newState.next = res.next;
+          updateAuthorByKey({
+            key: "userDiscussions",
+            value: newState,
+            prevState: {},
+          });
+          this.setState({ fetching: false });
+        });
+    });
+  };
+
+  renderLoadMoreButton = () => {
+    let { author } = this.props;
+    let { fetching } = this.state;
+
+    if (author && author.userDiscussions) {
+      let { next } = author.userDiscussions;
+
+      if (next !== null) {
+        return (
+          <div className={css(styles.buttonContainer)}>
+            {!fetching ? (
+              <Ripples
+                className={css(styles.loadMoreButton)}
+                onClick={this.loadMore}
+              >
+                Load More
+              </Ripples>
+            ) : (
+              <Loader
+                key={"discussionLoader"}
+                loading={true}
+                size={25}
+                color={colors.BLUE()}
+              />
+            )}
+          </div>
+        );
+      }
+    }
+  };
 
   render() {
     let { author, hostname } = this.props;
+
     let discussions = author.userDiscussions.discussions.map(
       (discussion, index) => {
         let path = `/paper/${discussion.paper}/discussions/${discussion.id}`;
@@ -26,6 +91,7 @@ class UserDiscussionsTab extends React.Component {
               data={discussion}
               hostname={hostname}
               path={path}
+              key={`discThread-${discussion.id}-${index}`}
             />
           </div>
         );
@@ -39,7 +105,10 @@ class UserDiscussionsTab extends React.Component {
           customPlaceholder={<PaperPlaceholder color="#efefef" />}
         >
           {discussions.length > 0 ? (
-            <div className={css(styles.container)}>{discussions}</div>
+            <React.Fragment>
+              <div className={css(styles.container)}>{discussions}</div>
+              {this.renderLoadMoreButton()}
+            </React.Fragment>
           ) : (
             <div className={css(styles.box)}>
               <div className={css(styles.icon)}>
@@ -89,10 +158,47 @@ var styles = StyleSheet.create({
     height: 50,
     marginBottom: 10,
   },
+  buttonContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 25,
+    height: 45,
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 15,
+      marginBottom: 15,
+    },
+  },
+  loadMoreButton: {
+    fontSize: 14,
+    border: `1px solid ${colors.BLUE()}`,
+    boxSizing: "border-box",
+    borderRadius: 4,
+    height: 45,
+    width: 155,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: colors.BLUE(),
+    cursor: "pointer",
+    userSelect: "none",
+    ":hover": {
+      color: "#FFF",
+      backgroundColor: colors.BLUE(),
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-export default connect(mapStateToProps)(UserDiscussionsTab);
+const mapDispatchToProps = {
+  updateAuthorByKey: AuthorActions.updateAuthorByKey,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserDiscussionsTab);

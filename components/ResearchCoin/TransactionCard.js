@@ -10,6 +10,7 @@ import { transformDate } from "~/redux/utils";
 
 const TransactionCard = (props) => {
   let { transaction } = props;
+  console.log("trans", transaction);
   function renderStatus(status) {
     switch (status) {
       case "FAILED":
@@ -45,20 +46,29 @@ const TransactionCard = (props) => {
   return (
     <div className={css(styles.transactionCard)} onClick={openTransactionHash}>
       <div className={css(styles.row)}>
-        <div className={css(styles.timestamp)}>
-          <span className={css(styles.clockIcon)}>
-            <i className={"fad fa-clock"} />
-          </span>
-          {formatTransactionDate(transformDate(transaction.created_date))}
-        </div>
-        {renderStatus(transaction.paid_status)}
-      </div>
-      <div className={css(styles.row, styles.bottomRow)}>
         <div className={css(styles.column)}>
-          <div className={css(styles.sent)}>Withdrew RSC</div>
-          <div className={css(styles.row, styles.addressContainer)}>
-            <span className={css(styles.black)}>to</span>
-            <div className={css(styles.address)}>
+          <div className={css(styles.maintext)}>Withdrawal</div>
+          <div className={css(styles.metatext)}>
+            Created:{" "}
+            {formatTransactionDate(transformDate(transaction.created_date))}
+          </div>
+          <div className={css(styles.metatext)}>
+            Last Update:{" "}
+            {formatTransactionDate(transformDate(transaction.updated_date))}
+          </div>
+          {transaction.transaction_hash && (
+            <div
+              className={css(styles.row, styles.metatext, styles.colorBlack)}
+            >
+              Transaction Details:
+              <span className={css(styles.address)}>
+                {transaction.to_address}
+              </span>
+            </div>
+          )}
+          <div className={css(styles.row, styles.metatext, styles.colorBlack)}>
+            Wallet Address:
+            <span className={css(styles.address)}>
               {transaction.to_address}
               <span
                 className={css(styles.infoIcon)}
@@ -67,7 +77,7 @@ const TransactionCard = (props) => {
                 {icons["info-circle"]}
                 <ReactTooltip />
               </span>
-            </div>
+            </span>
           </div>
         </div>
         <div className={css(styles.amountContainer)}>
@@ -111,13 +121,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
+    boxSizing: "border-box",
   },
   column: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    height: 45,
   },
   timestamp: {
     fontSize: 14,
@@ -125,8 +135,20 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
   },
-  bottomRow: {
-    marginTop: 30,
+  metatext: {
+    fontSize: 14,
+    color: "rgba(36, 31, 58, 0.5)",
+    marginBottom: 5,
+    width: "100%",
+    "@media only screen and (max-width: 620px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  colorBlack: {
+    color: colors.BLACK(),
   },
   status: {
     display: "flex",
@@ -170,15 +192,17 @@ const styles = StyleSheet.create({
       borderColor: colors.RED(),
     },
   },
-  sent: {
+  maintext: {
     fontWeight: 500,
+    marginBottom: 10,
     "@media only screen and (max-width: 620px)": {
-      fontSize: 13,
+      fontSize: 16,
     },
   },
   address: {
     marginLeft: 5,
     color: colors.BLUE(1),
+    cursor: "pointer",
     display: "flex",
     justifyContent: "flex-start",
     ":hover": {
@@ -199,22 +223,20 @@ const styles = StyleSheet.create({
     },
   },
   amountContainer: {
-    height: "100%",
     display: "flex",
-    alignItems: "flex-end",
-    fontWeight: "bold",
+    alignItems: "center",
+    fontWeight: 500,
+    fontSize: 15,
     "@media only screen and (max-width: 620px)": {
       position: "absolute",
-      bottom: 40,
-      right: 15,
-      height: "unset",
+      top: 27,
+      right: 20,
       fontSize: 13,
     },
   },
   coin: {
-    height: 25,
-    width: 25,
-    marginTop: 1,
+    height: 20,
+    width: 20,
     marginLeft: 5,
   },
   clockIcon: {
@@ -226,7 +248,7 @@ const styles = StyleSheet.create({
   },
   infoIcon: {
     marginLeft: 5,
-    color: "rgb(190, 190, 190)",
+    color: colors.BLACK(0.4),
     fontSize: 14,
   },
 });
