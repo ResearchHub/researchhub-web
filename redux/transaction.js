@@ -32,12 +32,14 @@ export const TransactionActions = {
     };
   },
   updateState: (newState) => {
-    return dispatch({
-      type: TransactionConstants.UPDATE_STATE,
-      payload: {
-        newState,
-      },
-    });
+    return (dispatch) => {
+      return dispatch({
+        type: TransactionConstants.UPDATE_STATE,
+        payload: {
+          ...newState,
+        },
+      });
+    };
   },
 };
 
@@ -49,6 +51,7 @@ const defaultTransactionState = {
   userBalance: null,
   withdrawals: [],
   count: null,
+  next: null,
   grabbedPages: {},
 };
 
