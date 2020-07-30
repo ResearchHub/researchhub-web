@@ -60,7 +60,6 @@ const UserPromotions = (props) => {
       .then((res) => {
         let obj = { ...res };
         obj.results = [...results, ...res.results];
-        obj.count = obj.results.length;
         props.dispatch(
           AuthorActions.updateAuthorByKey({
             key: "promotions",
