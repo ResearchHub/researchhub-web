@@ -161,23 +161,25 @@ class PromotionCard extends React.Component {
             <div className={css(styles.metatext)}>
               Start Date:{" "}
               {formatTransactionDate(transformDate(promotion.created_date))}
-              {promotion.end_date
+              {promotion.stats.end_date
                 ? this.renderStatus(
-                    moment() < moment(promotion.end_date)
+                    moment() < moment(promotion.stats.end_date)
                       ? "active"
                       : "completed"
                   )
                 : this.renderStatus(promotion.paid_status)}
             </div>
-            {promotion.end_date && (
+            {promotion.stats.end_date && (
               <div className={css(styles.metatext)}>
                 End Date:{" "}
-                {formatTransactionDate(transformDate(promotion.end_date))}
+                {formatTransactionDate(transformDate(promotion.stats.end_date))}
               </div>
             )}
             <div className={css(styles.amountContainer, styles.metatext)}>
               {"Promoted Amount: "}
-              <div className={css(styles.amount)}>{promotion.amount}</div>
+              <div className={css(styles.amount)}>
+                {promotion.stats.total_amount}
+              </div>
               <img
                 className={css(styles.coin)}
                 src={"/static/icons/coin-filled.png"}
