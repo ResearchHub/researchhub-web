@@ -14,16 +14,11 @@ const ReputationTooltip = (props) => {
           delayShow={500}
         >
           <div className={css(styles.comingSoon)}>
-            Mainnet Coming Soon
+            Withdraw RSC
             <img
               className={css(styles.icon)}
               src={"/static/icons/coin-filled.png"}
             />
-          </div>
-          <div
-            className={css(styles.paragraph, styles.description, styles.center)}
-          >
-            Withdrawals will resume again on Sept 1st.
           </div>
           <div className={css(styles.paragraph, styles.description)}>
             Earn research coins by participating in discussion, uploading
