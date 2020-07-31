@@ -14,11 +14,16 @@ const ReputationTooltip = (props) => {
           delayShow={500}
         >
           <div className={css(styles.comingSoon)}>
-            Currently on Testnet
+            Mainnet Coming Soon
             <img
               className={css(styles.icon)}
               src={"/static/icons/coin-filled.png"}
             />
+          </div>
+          <div
+            className={css(styles.paragraph, styles.description, styles.center)}
+          >
+            Withdrawals will resume again on Sept 1st.
           </div>
           <div className={css(styles.paragraph, styles.description)}>
             Earn research coins by participating in discussion, uploading
@@ -50,6 +55,9 @@ const styles = StyleSheet.create({
   description: {
     opacity: 1,
     lineHeight: 1.6,
+  },
+  center: {
+    textAlign: "center",
   },
   comingSoon: {
     fontSize: 15,
