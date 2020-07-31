@@ -174,7 +174,11 @@ export const PaperActions = {
         API.POST_FILE_CONFIG(shims.paperPost(body))
       ).catch(utils.handleCatch);
 
-      let action = actions.setPostPaperFailure();
+      let errorBody = null;
+      if (response.status === 400) {
+        errorBody = await response.json();
+      }
+      let action = actions.setPostPaperFailure("POST", errorBody);
       if (response.ok) {
         const body = await response.json();
         const paper = shims.paper(body);

@@ -19,7 +19,7 @@ export function setPostPaperPending(request = "POST") {
     payload: { donePosting: false },
   };
 }
-export function setPostPaperFailure(request = "POST") {
+export function setPostPaperFailure(request = "POST", errorBody) {
   let type = function(request) {
     switch (request) {
       case "PATCH":
@@ -35,7 +35,7 @@ export function setPostPaperFailure(request = "POST") {
 
   return {
     type: type(request),
-    payload: { donePosting: true, success: false },
+    payload: { donePosting: true, success: false, errorBody },
   };
 }
 export function setPostPaperSuccess(postedPaper, request = "POST") {

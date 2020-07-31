@@ -372,7 +372,6 @@ class PaperUploadInfo extends React.Component {
   };
 
   handleHubSelection = (id, value) => {
-    debugger;
     let form = JSON.parse(JSON.stringify(this.state.form));
     let error = { ...this.state.error };
     value = value || [];
@@ -644,7 +643,7 @@ class PaperUploadInfo extends React.Component {
               )}
             </div>
             <div className={css(styles.section, styles.padding)}>
-              <FormInput
+              {/* <FormInput
                 label={"Paper Title"}
                 placeholder="Enter title of paper"
                 required={true}
@@ -653,7 +652,7 @@ class PaperUploadInfo extends React.Component {
                 value={form.paper_title}
                 id={"paper_title"}
                 onChange={this.handleInputChange}
-              />
+              /> */}
               <FormInput
                 label={"Editorialized Title (optional)"}
                 placeholder="Jargon free version of the title that the average person would understand"
@@ -728,21 +727,23 @@ class PaperUploadInfo extends React.Component {
                   </div>
                 </Fragment>
               )}
-              <div className={css(styles.section)}>
-                <div className={css(styles.row)}>
-                  <span className={css(styles.doi)}>
-                    <FormInput
-                      label={"DOI (optional)"}
-                      placeholder="Enter DOI of paper"
-                      id={"doi"}
-                      value={form.doi}
-                      containerStyle={styles.doiInput}
-                      labelStyle={styles.labelStyle}
-                      onChange={this.handleInputChange}
-                    />
-                  </span>
+              {editMode && (
+                <div className={css(styles.section)}>
+                  <div className={css(styles.row)}>
+                    <span className={css(styles.doi)}>
+                      <FormInput
+                        label={"DOI"}
+                        placeholder="Enter DOI of paper"
+                        id={"doi"}
+                        value={form.doi}
+                        containerStyle={styles.doiInput}
+                        labelStyle={styles.labelStyle}
+                        onChange={this.handleInputChange}
+                      />
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
               <FormSelect
                 label={"Hubs"}
                 placeholder="Search Hubs"
@@ -762,7 +763,7 @@ class PaperUploadInfo extends React.Component {
               />
               <span className={css(styles.mobileDoi)}>
                 <FormInput
-                  label={"DOI (optional)"}
+                  label={"DOI"}
                   placeholder="Enter DOI of paper"
                   id={"doi"}
                   value={form.doi}
@@ -771,17 +772,19 @@ class PaperUploadInfo extends React.Component {
                   onChange={this.handleInputChange}
                 />
               </span>
-              <span className={css(styles.tagline)}>
-                <FormTextArea
-                  label={"Abstract"}
-                  placeholder="Enter the paper"
-                  containerStyle={styles.taglineContainer}
-                  labelStyle={styles.labelStyle}
-                  value={form.abstract}
-                  id={"abstract"}
-                  onChange={this.handleInputChange}
-                />
-              </span>
+              {editMode && (
+                <span className={css(styles.tagline)}>
+                  <FormTextArea
+                    label={"Abstract"}
+                    placeholder="Enter the paper"
+                    containerStyle={styles.taglineContainer}
+                    labelStyle={styles.labelStyle}
+                    value={form.abstract}
+                    id={"abstract"}
+                    onChange={this.handleInputChange}
+                  />
+                </span>
+              )}
             </div>
             <div className={css(styles.section)}></div>
           </span>
@@ -949,9 +952,11 @@ class PaperUploadInfo extends React.Component {
       let paperId =
         this.props.paper.postedPaper && this.props.paper.postedPaper.id;
 
-      request === "POST"
-        ? await this.props.paperActions.postPaper(body)
-        : await this.props.paperActions.patchPaper(paperId, body);
+      let resp =
+        request === "POST"
+          ? await this.props.paperActions.postPaper(body)
+          : await this.props.paperActions.patchPaper(paperId, body);
+
       if (this.props.paper.success) {
         this.props.messageActions.setMessage(
           `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
@@ -964,46 +969,14 @@ class PaperUploadInfo extends React.Component {
         this.props.authActions.getUser();
         this.navigateToSummary();
       } else {
-        paperActions.patchPaper(paperId, body).then((resp) => {
-          if (paper.success) {
-            messageActions.setMessage(
-              `Paper successfully ${
-                request === "POST" ? "uploaded" : "updated"
-              }`
-            );
-            authActions.setUploadingPaper(true);
-            messageActions.showMessage({ show: true });
-            let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-            authActions.checkUserFirstTime(firstTime);
-
-            // What is this getuser doing here?
-            authActions.getUser();
-            this.navigateToSummary();
-          } else {
-            messageActions.setMessage("Hmm something went wrong");
-            messageActions.showMessage({ show: true, error: true });
-            setTimeout(() => messageActions.showMessage({ show: false }), 400);
-          }
-        });
+        messageActions.setMessage(
+          resp.payload.errorBody.error
+            ? resp.payload.errorBody.error
+            : "Hmm something went wrong"
+        );
+        messageActions.showMessage({ show: true, error: true });
+        setTimeout(() => messageActions.showMessage({ show: false }), 2000);
       }
-    } else if (this.state.editMode) {
-      paperActions.patchPaper(this.props.paperId, body).then((resp) => {
-        if (resp.payload.success) {
-          messageActions.setMessage(`Paper successfully updated`);
-          messageActions.showMessage({ show: true });
-          authActions.getUser();
-          setTimeout(() => {
-            this.navigateToSummary();
-            setTimeout(() => {
-              messageActions.showMessage({ show: false });
-            }, 400);
-          }, 800);
-        } else {
-          messageActions.setMessage("Hmm something went wrong");
-          messageActions.showMessage({ show: true, error: true });
-          setTimeout(() => messageActions.showMessage({ show: false }), 400);
-        }
-      });
     }
   };
 
@@ -1064,9 +1037,9 @@ class PaperUploadInfo extends React.Component {
           isOpen={modals.openAddAuthorModal}
           addNewUser={this.addNewUser}
         />
-        <div className={css(styles.mobileProgressBar)}>
+        {/* <div className={css(styles.mobileProgressBar)}>
           <Progress completed={progress} />
-        </div>
+        </div> */}
         <form
           className={css(styles.form)}
           onSubmit={(e) => {
@@ -1078,9 +1051,9 @@ class PaperUploadInfo extends React.Component {
           autoComplete={"off"}
         >
           <div className={css(styles.pageContent)}>
-            <div className={css(styles.progressBar)}>
+            {/* <div className={css(styles.progressBar)}>
               <Progress completed={progress} />
-            </div>
+            </div> */}
             {this.renderContent()}
           </div>
           {this.renderButtons()}
@@ -1099,6 +1072,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     scrollBehavior: "smooth",
     position: "relative",
+    minHeight: "100vh",
   },
   text: {
     fontFamily: "Roboto",
@@ -1137,17 +1111,19 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   pageContent: {
-    minHeight: 500,
     position: "relative",
     backgroundColor: "#FFF",
-    boxShadow: "0 1px 8px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);",
+    border: "1px solid #ddd",
+    borderRadius: 4,
+    // boxShadow: "0 1px 8px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);",
     padding: "30px 60px",
-    marginTop: 10,
-    borderTop: "4px solid #dedee5",
+    marginTop: 40,
+    // borderTop: "4px solid #dedee5",
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
       width: 600,
       padding: 40,
+      marginTop: 16,
     },
     "@media only screen and (max-width: 665px)": {
       width: "calc(100% - 16px)",
