@@ -385,15 +385,9 @@ const PaperEntryCard = ({
     const formatAuthors = (authors) => {
       let { first_name, last_name } = authors[0];
 
-      // Proper Notation
-      // if (authors.length === 1) {
-      //   return `${last_name}, ${first_name[0]}`;
-      // } else if (authors.length === 2) {
-      //   let secondAuthor = authors[1];
-      //   return `${last_name}, ${first_name}, and ${secondAuthor.first_name} ${secondAuthor.last_name}`;
-      // } else if (authors.length >= 3) {
-      //   return `${last_name}, ${first_name}, et al`;
-      // }
+      if (authors.length >= 6) {
+        return `${last_name}, ${first_name}, et al`;
+      }
 
       return authors
         .map((author) => {
