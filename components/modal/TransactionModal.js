@@ -284,11 +284,10 @@ class TransactionModal extends React.Component {
             )}
             <div className={css(styles.buttons)}>
               <Button
-                // disabled={!this.state.buttonEnabled || !ethAccount}
+                disabled={!this.state.buttonEnabled || !ethAccount}
                 disabled={true}
                 label={"Confirm"}
-                // onClick={this.sendWithdrawalRequest}
-                onClick={null}
+                onClick={this.sendWithdrawalRequest}
                 customButtonStyle={styles.button}
               />
             </div>
@@ -680,8 +679,7 @@ class TransactionModal extends React.Component {
       <div
         className={css(
           styles.modalContent,
-          this.state.networkVersion === MAINNET_CHAIN_ID && styles.main,
-          styles.disabled // comment out when ready
+          this.state.networkVersion === MAINNET_CHAIN_ID && styles.main
         )}
       >
         <div className={css(styles.header)}>Withdraw ResearchCoin</div>
@@ -744,7 +742,7 @@ class TransactionModal extends React.Component {
         removeDefault={true}
       >
         {this.renderContent()}
-        {this.renderOverlay()}
+        {/* {this.renderOverlay()} */}
       </BaseModal>
     );
   }
