@@ -26,6 +26,7 @@ import { useMetaMask, useWalletLink } from "../connectEthereum";
 import CheckBox from "../Form/CheckBox";
 
 const RINKEBY_CHAIN_ID = "4";
+const MAINNET_CHAIN_ID = "1";
 
 class TransactionModal extends React.Component {
   constructor(props) {
@@ -105,14 +106,14 @@ class TransactionModal extends React.Component {
     if (chainId !== this.state.networkVersion) {
       let transition = false;
       if (
-        this.state.networkVersion !== RINKEBY_CHAIN_ID &&
-        chainId === RINKEBY_CHAIN_ID
+        this.state.networkVersion !== MAINNET_CHAIN_ID &&
+        chainId === MAINNET_CHAIN_ID
       ) {
         transition = true;
       }
       if (
-        this.state.networkVersion === RINKEBY_CHAIN_ID &&
-        chainId !== RINKEBY_CHAIN_ID
+        this.state.networkVersion === MAINNET_CHAIN_ID &&
+        chainId !== MAINNET_CHAIN_ID
       ) {
         transition = true;
       }
@@ -174,13 +175,13 @@ class TransactionModal extends React.Component {
             </div>
             <div className={css(styles.subtitle)}>
               Simply open MetaMask and switch over to the
-              <b>{" Rinkeby Test Network"}</b>
+              <b>{" Main Ethereum Network"}</b>
             </div>
-            {/* <img
+            <img
               src={"/static/background/metamask.png"}
               className={css(styles.image)}
               draggable={false}
-            /> */}
+            />
           </Fragment>
         )}
       </div>
@@ -283,9 +284,11 @@ class TransactionModal extends React.Component {
             )}
             <div className={css(styles.buttons)}>
               <Button
-                disabled={!this.state.buttonEnabled || !ethAccount}
+                // disabled={!this.state.buttonEnabled || !ethAccount}
+                disabled={true}
                 label={"Confirm"}
-                onClick={this.sendWithdrawalRequest}
+                // onClick={this.sendWithdrawalRequest}
+                onClick={null}
                 customButtonStyle={styles.button}
               />
             </div>
@@ -650,14 +653,35 @@ class TransactionModal extends React.Component {
     return false;
   };
 
+  renderOverlay = () => {
+    return (
+      <div className={css(styles.overlay)} onClick={this.closeModal}>
+        <div className={css(styles.bannerContainer)}>
+          <div className={css(styles.overlayButtonContainer)}>
+            <i
+              className={
+                css(styles.closeButton, styles.overlayButton) + " fal fa-times"
+              }
+              onClick={this.closeModal}
+              draggable={false}
+            />
+          </div>
+          <p className={css(styles.banner)}>
+            Withdrawals will resume again on Sept. 1st.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   renderContent = () => {
     let { connectedWalletLink, connectedMetaMask } = this.state;
-
     return (
       <div
         className={css(
           styles.modalContent,
-          this.state.networkVersion === RINKEBY_CHAIN_ID && styles.main
+          this.state.networkVersion === MAINNET_CHAIN_ID && styles.main,
+          styles.disabled // comment out when ready
         )}
       >
         <div className={css(styles.header)}>Withdraw ResearchCoin</div>
@@ -667,9 +691,6 @@ class TransactionModal extends React.Component {
             (connectedMetaMask || connectedWalletLink) && styles.marginBottom
           )
         )}
-        <div className={css(styles.testnetBanner)}>
-          *Currently on Rinkeby Testnet
-        </div>
         <img
           src={"/static/icons/close.png"}
           className={css(styles.closeButton)}
@@ -692,7 +713,7 @@ class TransactionModal extends React.Component {
                 this.state.connectedWalletLink && styles.connected
               )}
             />
-            *Connected to WalletLink
+            Connected to WalletLink
           </div>
         )}
         {this.state.connectedMetaMask && (
@@ -707,7 +728,7 @@ class TransactionModal extends React.Component {
           </div>
         )}
         {this.state.connectedMetaMask &&
-        this.state.networkVersion !== RINKEBY_CHAIN_ID
+        this.state.networkVersion !== MAINNET_CHAIN_ID
           ? this.renderSwitchNetworkMsg()
           : this.renderTransactionScreen()}
       </div>
@@ -723,6 +744,7 @@ class TransactionModal extends React.Component {
         removeDefault={true}
       >
         {this.renderContent()}
+        {this.renderOverlay()}
       </BaseModal>
     );
   }
@@ -734,6 +756,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
+  },
+  disabled: {
+    pointerEvents: "none",
+    userSelect: "none",
   },
   main: {
     paddingLeft: 30,
@@ -852,7 +878,6 @@ const styles = StyleSheet.create({
     width: 90,
     border: "1px solid #82817d",
     borderRadius: ".5rem",
-    // fontSize: '1.8rem'
   },
   checkBoxContainer: {
     marginTop: 40,
@@ -944,12 +969,6 @@ const styles = StyleSheet.create({
   confirmationButtons: {
     marginTop: 10,
   },
-  testnetBanner: {
-    fontSize: 12,
-    position: "absolute",
-    right: 20,
-    bottom: 25,
-  },
   toggleContainer: {
     width: "100%",
     display: "flex",
@@ -984,6 +1003,53 @@ const styles = StyleSheet.create({
     ":hover": {
       border: `1px solid ${colors.BLUE()}`,
     },
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: "100%",
+    width: "100%",
+    overflow: "hidden",
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    zIndex: 3,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  bannerContainer: {
+    background: "#FFF",
+    padding: "25px 30px",
+    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
+    borderRadius: 4,
+    position: "relative",
+  },
+  banner: {
+    fontSize: 18,
+  },
+  overlayButtonContainer: {
+    background: "#FFF",
+    borderRadius: "50%",
+    height: 30,
+    width: 30,
+    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    cursor: "pointer",
+    top: -50,
+    right: -2,
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  overlayButton: {
+    position: "unset",
+    top: "unset",
+    right: "unset",
+    height: "unset",
+    width: "unset",
   },
 });
 
