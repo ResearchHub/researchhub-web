@@ -462,6 +462,14 @@ class PaperPageCard extends React.Component {
     let index = 0;
     let authors = [];
 
+    if (length >= 6) {
+      let author = Object.keys(authorsObj)[0];
+
+      return (
+        <span className={css(styles.rawAuthor)}>{`${author}, et al`}</span>
+      );
+    }
+
     for (var key in authorsObj) {
       let author = authorsObj[key];
       if (typeof author === "object") {
