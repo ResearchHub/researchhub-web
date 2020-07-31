@@ -887,8 +887,9 @@ class PaperUploadInfo extends React.Component {
     }
     this.props.messageActions.showMessage({ load: true, show: true });
     if (
-      this.props.paper.postedPaper &&
-      Object.keys(this.props.paper.postedPaper).length > 0
+      (this.props.paper.postedPaper &&
+        Object.keys(this.props.paper.postedPaper).length > 0) ||
+      this.state.editMode
     ) {
       await this.postPaper("PATCH");
     } else {
@@ -949,34 +950,38 @@ class PaperUploadInfo extends React.Component {
       body.file = this.props.paper.uploadedPaper.url
         ? this.props.paper.uploadedPaper.url
         : this.props.paper.uploadedPaper; // if url, then file is a url. else file is a file object
-      let paperId =
-        this.props.paper.postedPaper && this.props.paper.postedPaper.id;
+    }
+    let paperId =
+      this.props.paper.postedPaper && this.props.paper.postedPaper.id;
 
-      let resp =
-        request === "POST"
-          ? await this.props.paperActions.postPaper(body)
-          : await this.props.paperActions.patchPaper(paperId, body);
+    if (this.state.editMode) {
+      paperId = this.props.paperId;
+    }
 
-      if (this.props.paper.success) {
-        this.props.messageActions.setMessage(
-          `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
-        );
-        this.props.authActions.setUploadingPaper(true);
-        this.props.messageActions.showMessage({ show: true });
-        let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-        this.props.authActions.checkUserFirstTime(firstTime);
+    let resp =
+      request === "POST"
+        ? await paperActions.postPaper(body)
+        : await paperActions.patchPaper(paperId, body);
 
-        this.props.authActions.getUser();
-        this.navigateToSummary();
-      } else {
-        messageActions.setMessage(
-          resp.payload.errorBody.error
-            ? resp.payload.errorBody.error
-            : "Hmm something went wrong"
-        );
-        messageActions.showMessage({ show: true, error: true });
-        setTimeout(() => messageActions.showMessage({ show: false }), 2000);
-      }
+    if (resp.payload.success) {
+      messageActions.setMessage(
+        `Paper successfully ${request === "POST" ? "uploaded" : "updated"}`
+      );
+      authActions.setUploadingPaper(true);
+      messageActions.showMessage({ show: true });
+      let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
+      authActions.checkUserFirstTime(firstTime);
+
+      authActions.getUser();
+      this.navigateToSummary();
+    } else {
+      messageActions.setMessage(
+        resp.payload.errorBody.error
+          ? resp.payload.errorBody.error
+          : "Hmm something went wrong"
+      );
+      messageActions.showMessage({ show: true, error: true });
+      setTimeout(() => messageActions.showMessage({ show: false }), 2000);
     }
   };
 
