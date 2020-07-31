@@ -222,7 +222,8 @@ class PaperTransactionModal extends React.Component {
   };
 
   handleInput = (e) => {
-    let value = e.target.value > 0 ? value : 0;
+    let value = parseInt(e.target.value, 10);
+    value = value > 0 ? value : 0;
     this.setState({
       value,
       error: this.handleError(value),
@@ -606,7 +607,7 @@ class PaperTransactionModal extends React.Component {
           ethAccountIsValid: valid,
         },
         () => {
-          valid && this.updateBalance(provider);
+          valid && this.updateContractBalance(provider);
         }
       );
     } else {
@@ -618,7 +619,7 @@ class PaperTransactionModal extends React.Component {
     }
   };
 
-  updateBalance = async (provider) => {
+  updateContractBalance = async (provider) => {
     const contract = await this.createContract(provider);
     this.checkBalance(contract);
   };
@@ -657,7 +658,7 @@ class PaperTransactionModal extends React.Component {
         >
           In-App
         </div>
-        {this.renderMetaMaskButton()}
+        {/* {this.renderMetaMaskButton()} */}
         {/* {this.renderWalletLinkButton()} */}
       </div>
     );
