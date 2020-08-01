@@ -215,7 +215,6 @@ const styles = StyleSheet.create({
       flexDirection: "column",
     },
     "@media only screen and (max-width: 620px)": {
-      // height: 110,
       position: "relative",
     },
   },
