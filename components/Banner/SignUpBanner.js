@@ -2,7 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { GoogleLogin } from "react-google-login";
 
-import { AuthActions } from "../redux/auth";
+import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { BannerActions } from "~/redux/banner";
