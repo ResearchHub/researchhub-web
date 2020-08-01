@@ -31,9 +31,9 @@ import { useMetaMask, useWalletLink } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 
 // Constants
-const RinkebyRSCContractAddress = "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be";
+const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
-  "0x486a754f4E5286d8797d92750F1a56DFd384b106";
+  "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
 
 class PaperTransactionModal extends React.Component {
   constructor(props) {

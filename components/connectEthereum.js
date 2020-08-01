@@ -21,7 +21,7 @@ export async function useMetaMask() {
   return { connected: false, provider: null, signer: null, account: "" };
 }
 
-export async function useWalletLink(testnet = true) {
+export async function useWalletLink(testnet = false) {
   const walletLink = new WalletLink({
     appName: APP_NAME,
     appLogoUrl: APP_LOGO_URL,
