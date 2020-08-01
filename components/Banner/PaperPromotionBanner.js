@@ -122,9 +122,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
     boxShadow: "rgba(0, 0, 0, 0.16) 0px 4px 41px -24px",
     borderBottom: "rgb(151,151,151, .2) 1px solid",
-    "@media only screen and (max-width: 760px)": {
-      fontSize: 14,
-    },
     "@media only screen and (max-width: 415px)": {
       flexDirection: "column",
       height: 70,
@@ -142,10 +139,16 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     textAlign: "center",
+    "@media only screen and (max-width: 760px)": {
+      fontSize: 14,
+    },
   },
   title: {
     fontWeight: 500,
     fontSize: 17,
+    "@media only screen and (max-width: 760px)": {
+      fontSize: 15,
+    },
   },
   link: {
     color: colors.BLUE(),
