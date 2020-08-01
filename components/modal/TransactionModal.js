@@ -285,7 +285,6 @@ class TransactionModal extends React.Component {
             <div className={css(styles.buttons)}>
               <Button
                 disabled={!this.state.buttonEnabled || !ethAccount}
-                disabled={true}
                 label={"Confirm"}
                 onClick={this.sendWithdrawalRequest}
                 customButtonStyle={styles.button}
@@ -380,6 +379,12 @@ class TransactionModal extends React.Component {
   };
 
   sendWithdrawalRequest = (e) => {
+    if (!this.state.buttonEnabled) {
+      showMessage({ show: false });
+      setMessage("Please agree to the ResearchHub ToS.");
+      showMessage({ show: true, error: true });
+      return;
+    }
     e.stopPropagation();
     let { ethAccount } = this.state;
     let { showMessage, setMessage } = this.props;
@@ -400,13 +405,13 @@ class TransactionModal extends React.Component {
               setMessage(
                 "Your transaction request has failed. \n Please try again later."
               );
-              showMessage({ show: true, error: true, clickoff: true });
+              showMessage({ show: true, error: true });
             }, 400);
           } else {
             setTimeout(() => {
               showMessage({ show: false });
               setMessage("Your transaction request has been made.");
-              showMessage({ show: true, clickoff: true });
+              showMessage({ show: true });
               this.setState({ transactionHash: true }, () => {
                 this.getBalance();
               });
@@ -418,13 +423,13 @@ class TransactionModal extends React.Component {
           setTimeout(() => {
             showMessage({ show: false });
             setMessage(err.toString());
-            showMessage({ show: true, error: true, clickoff: true });
+            showMessage({ show: true, error: true });
           }, 400);
         });
     } else {
       showMessage({ show: false });
       setMessage("Please enter a valid address.");
-      showMessage({ show: true, error: true, clickoff: true });
+      showMessage({ show: true, error: true });
     }
   };
 
