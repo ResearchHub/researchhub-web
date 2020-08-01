@@ -15,7 +15,6 @@ class PaperPromotionBanner extends React.Component {
     this.state = {
       showBanner: false,
       transition: false,
-      hovered: false,
     };
   }
 
@@ -32,20 +31,17 @@ class PaperPromotionBanner extends React.Component {
   }
 
   showBanner = () => {
-    let onHome =
+    let blackList =
       this.props.route === "/paper/[paperId]/[tabName]" ||
       this.props.route === "/live" ||
-      this.props.route === "/about";
+      this.props.route === "/about" ||
+      this.props.route === "/paper/upload/info";
 
-    if (!onHome) {
+    if (!blackList) {
       !this.state.showBanner && this.setState({ showBanner: true });
     } else {
       this.state.showBanner && this.setState({ showBanner: false });
     }
-  };
-
-  setHover = (state) => {
-    state !== this.state.hovered && this.setState({ hovered: state });
   };
 
   render() {
@@ -53,11 +49,7 @@ class PaperPromotionBanner extends React.Component {
 
     return (
       <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/819434/summary`}>
-        <a
-          className={css(styles.removeFormat)}
-          onMouseEnter={() => this.setHover(true)}
-          onMouseLeave={() => this.setHover(false)}
-        >
+        <a className={css(styles.removeFormat)}>
           <div
             className={css(
               styles.bannerContainer,
@@ -78,11 +70,8 @@ class PaperPromotionBanner extends React.Component {
                   Less Perceived Learning.
                 </div>
                 <span
-                  className={css(
-                    styles.paragraph,
-                    styles.link,
-                    hovered && styles.hovered
-                  )}
+                  id={"promotionLink"}
+                  className={css(styles.paragraph, styles.link)}
                 >
                   Click here to ask a question!
                 </span>
@@ -118,10 +107,15 @@ const styles = StyleSheet.create({
     position: "relative",
     whiteSpace: "pre-wrap",
     cursor: "pointer",
-    transition: "all ease-in-out 0.2s",
     zIndex: 2,
     boxShadow: "rgba(0, 0, 0, 0.16) 0px 4px 41px -24px",
     borderBottom: "rgb(151,151,151, .2) 1px solid",
+    ":hover": {
+      backgroundColor: "#FAFAFA",
+    },
+    ":hover #promotionLink": {
+      textDecoration: "underline",
+    },
     "@media only screen and (max-width: 415px)": {
       flexDirection: "column",
       height: 70,
