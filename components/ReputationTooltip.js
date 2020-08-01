@@ -14,7 +14,7 @@ const ReputationTooltip = (props) => {
           delayShow={500}
         >
           <div className={css(styles.comingSoon)}>
-            Currently on Testnet
+            Withdraw RSC
             <img
               className={css(styles.icon)}
               src={"/static/icons/coin-filled.png"}
@@ -50,6 +50,9 @@ const styles = StyleSheet.create({
   description: {
     opacity: 1,
     lineHeight: 1.6,
+  },
+  center: {
+    textAlign: "center",
   },
   comingSoon: {
     fontSize: 15,
