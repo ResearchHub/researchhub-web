@@ -28,7 +28,7 @@ class PromotionGraph extends React.Component {
     data.push(["x", `${value[0].toUpperCase()}${value.slice(1)}`]);
 
     interactions.forEach((interaction) => {
-      var date = formatDate(transformDate(interaction.created_date));
+      var date = formatDate(transformDate(interaction.date));
       var amount = interaction[value] ? interaction[value] : 0;
       data.push([date, amount]);
     });
