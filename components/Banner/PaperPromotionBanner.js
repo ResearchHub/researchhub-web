@@ -45,7 +45,7 @@ class PaperPromotionBanner extends React.Component {
   };
 
   render() {
-    const { showBanner, transition, hovered } = this.state;
+    const { showBanner, transition } = this.state;
 
     return (
       <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/819434/summary`}>
