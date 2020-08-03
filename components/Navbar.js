@@ -27,11 +27,12 @@ import Search from "./Search";
 import TransactionModal from "../components/modal/TransactionModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
 import Notification from "./Notifications/Notification";
-import SignUpBanner from "./SignUpBanner";
 import DndModal from "../components/modal/DndModal";
 import PaperFeatureModal from "~/components/modal/PaperFeatureModal";
 import PaperTransactionModal from "~/components/modal/PaperTransactionModal";
 import PromotionInfoModal from "~/components/modal/PromotionInfoModal";
+import SignUpBanner from "./Banner/SignUpBanner";
+import PaperPromotionBanner from "./Banner/PaperPromotionBanner";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -527,6 +528,7 @@ const Navbar = (props) => {
           {icons.burgerMenu}
         </div>
       </div>
+      <PaperPromotionBanner route={router.route} />
       <SignUpBanner route={router.route} />
     </Fragment>
   );
