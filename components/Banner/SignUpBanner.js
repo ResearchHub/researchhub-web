@@ -44,15 +44,16 @@ class SignUpBanner extends React.Component {
   }
 
   showBanner = () => {
-    let onHome =
-      this.props.route === "/" ||
-      this.props.route === "/hubs/[slug]" ||
-      this.props.route === "/live";
-    if (!onHome || localStorage.getItem("researchhub.banner.pref") !== "true") {
-      this.setState({ showBanner: true });
-    } else {
-      this.setState({ showBanner: false });
-    }
+    this.state.showBanner && this.setState({ showBanner: false });
+    // let onHome =
+    //   this.props.route === "/" ||
+    //   this.props.route === "/hubs/[slug]" ||
+    //   this.props.route === "/live";
+    // if (!onHome || localStorage.getItem("researchhub.banner.pref") !== "true") {
+    //   this.setState({ showBanner: true });
+    // } else {
+    //   this.setState({ showBanner: false });
+    // }
   };
 
   closeBanner = (e) => {
