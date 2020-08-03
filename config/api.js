@@ -578,6 +578,8 @@ const routes = (BASE_URL) => {
       let url = BASE_URL + `purchase/${userId}/user_transactions/`;
       return url;
     },
+    AGGREGATE_USER_PROMOTIONS: ({ userId }) =>
+      BASE_URL + `purchase/${userId}/aggregate_user_promotions/`,
     SAVE_IMAGE: BASE_URL + "paper/discussion/file/",
   };
 
