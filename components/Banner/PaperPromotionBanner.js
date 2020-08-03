@@ -44,12 +44,29 @@ class PaperPromotionBanner extends React.Component {
     }
   };
 
+  sendGAEvent = () => {
+    let payload = {
+      category: "Paper Promotion Banner",
+      action: "Click",
+      label: `Click`,
+      value: 1,
+      utc: new Date(),
+    };
+
+    // send first event
+    fetch(API.GOOGLE_ANALYTICS({ manual: true }), API.POST_CONFIG(payload))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {})
+      .catch((err) => {});
+  };
+
   render() {
     const { showBanner, transition } = this.state;
 
     return (
       <Link href={"/paper/[paperId]/[tabName]"} as={`/paper/819434/summary`}>
-        <a className={css(styles.removeFormat)}>
+        <a className={css(styles.removeFormat)} onClick={this.sendGAEvent}>
           <div
             className={css(
               styles.bannerContainer,
