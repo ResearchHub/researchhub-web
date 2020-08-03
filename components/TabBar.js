@@ -16,7 +16,7 @@ const TabBar = (props) => {
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
           {tabs.map((tab) => {
-            if (tab.label === "transactions" || tab.label === "promotions") {
+            if (tab.label === "transactions" || tab.label === "boosts") {
               let { user, author } = props;
               if (author.user !== user.id) {
                 return null;

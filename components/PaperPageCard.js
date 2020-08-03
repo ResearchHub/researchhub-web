@@ -722,11 +722,11 @@ class PaperPageCard extends React.Component {
                           <span
                             className={css(
                               styles.label,
-                              styles.authorLabel,
-                              paper.authors.length > 1 && styles.padding,
-                              paper.raw_authors &&
-                                paper.raw_authors.length &&
-                                styles.padding
+                              styles.authorLabel
+                              // paper.authors.length > 1 && styles.padding,
+                              // paper.raw_authors &&
+                              //   paper.raw_authors.length &&
+                              //   styles.padding
                             )}
                           >
                             {`Author${
@@ -738,7 +738,12 @@ class PaperPageCard extends React.Component {
                             }:`}
                           </span>
                         )}
-                        <div className={css(styles.labelText)}>
+                        <div
+                          className={css(
+                            styles.labelText,
+                            styles.authorsContainer
+                          )}
+                        >
                           {this.renderAuthors()}
                         </div>
                       </div>
@@ -1020,11 +1025,13 @@ const styles = StyleSheet.create({
     },
   },
   authorLabel: {
-    marginRight: 30,
+    marginRight: 0,
     opacity: 0.7,
+    width: "unset",
   },
-  padding: {
-    marginRight: 46,
+  authorsContainer: {
+    width: "100%",
+    marginLeft: 89,
   },
   voting: {
     position: "absolute",
