@@ -30,7 +30,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 const AuthorPage = (props) => {
-  let { author, hostname, user, transactions } = props;
+  let { auth, author, hostname, user, transactions } = props;
   let router = useRouter();
   let { tabName } = router.query;
   const dispatch = useDispatch();
@@ -122,14 +122,15 @@ const AuthorPage = (props) => {
   }
 
   function fetchUserTransactions() {
+    if (!auth.isLoggedIn) return;
     dispatch(
       TransactionActions.getWithdrawals(1, store.getState().transactions)
     );
   }
 
   async function fetchUserPromotions() {
+    if (!auth.isLoggedIn) return;
     setFetchingPromotions(true);
-    // fetch(API.PROMOTION_TRANSACTIONS({ userId: author.user }), API.GET_CONFIG())
     fetch(
       API.AGGREGATE_USER_PROMOTIONS({ userId: author.user }),
       API.GET_CONFIG()
@@ -137,7 +138,6 @@ const AuthorPage = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then(async (res) => {
-        console.log("res", res);
         await dispatch(
           AuthorActions.updateAuthorByKey({
             key: "promotions",
@@ -1058,6 +1058,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  auth: state.auth,
   author: state.author,
   user: state.auth.user,
   transactions: state.transactions,
