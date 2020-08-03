@@ -150,11 +150,7 @@ class PromotionCard extends React.Component {
               href={"/paper/[paperId]/[tabName]"}
               as={`/paper/${paper.id}/summary`}
             >
-              <a
-                href={"/paper/[paperId]/[tabName]"}
-                as={`/paper/${paper.id}/summary`}
-                className={css(styles.link)}
-              >
+              <a className={css(styles.link)}>
                 <div className={css(styles.title)}>{paper.title}</div>
               </a>
             </Link>
@@ -222,7 +218,6 @@ const styles = StyleSheet.create({
       flexDirection: "column",
     },
     "@media only screen and (max-width: 620px)": {
-      // height: 110,
       position: "relative",
     },
   },

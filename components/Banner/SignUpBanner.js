@@ -2,7 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { GoogleLogin } from "react-google-login";
 
-import { AuthActions } from "../redux/auth";
+import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { BannerActions } from "~/redux/banner";
@@ -44,15 +44,16 @@ class SignUpBanner extends React.Component {
   }
 
   showBanner = () => {
-    let onHome =
-      this.props.route === "/" ||
-      this.props.route === "/hubs/[slug]" ||
-      this.props.route === "/live";
-    if (!onHome || localStorage.getItem("researchhub.banner.pref") !== "true") {
-      this.setState({ showBanner: true });
-    } else {
-      this.setState({ showBanner: false });
-    }
+    this.state.showBanner && this.setState({ showBanner: false });
+    // let onHome =
+    //   this.props.route === "/" ||
+    //   this.props.route === "/hubs/[slug]" ||
+    //   this.props.route === "/live";
+    // if (!onHome || localStorage.getItem("researchhub.banner.pref") !== "true") {
+    //   this.setState({ showBanner: true });
+    // } else {
+    //   this.setState({ showBanner: false });
+    // }
   };
 
   closeBanner = (e) => {
