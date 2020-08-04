@@ -26,8 +26,8 @@ const ReputationTooltip = (props) => {
             papers.
           </div>
           <div className={css(styles.description)}>
-            With the research coins, you can put them towards funding areas of
-            research or pull them out to an exchange as needed.
+            With ResearchCoins, you can support your favorite scientific papers
+            or put them towards funding areas of research.
           </div>
         </ReactTooltip>
       )}
