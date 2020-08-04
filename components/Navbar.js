@@ -33,6 +33,7 @@ import PaperTransactionModal from "~/components/modal/PaperTransactionModal";
 import PromotionInfoModal from "~/components/modal/PromotionInfoModal";
 import SignUpBanner from "./Banner/SignUpBanner";
 import PaperPromotionBanner from "./Banner/PaperPromotionBanner";
+import ReCaptchaPrompt from "./modal/ReCaptchaPrompt";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -427,6 +428,7 @@ const Navbar = (props) => {
         <PaperFeatureModal />
         <PaperTransactionModal />
         <PromotionInfoModal />
+        <ReCaptchaPrompt />
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />
