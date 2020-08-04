@@ -24,17 +24,10 @@ const SummaryBulletPoint = (props) => {
   let userId = store.getState().auth.user.id;
   const [text, setText] = useState(plain_text ? plain_text : "");
   const [hovered, toggleHover] = useState(false);
-  const [editable, setEditable] = useState(userId === created_by.id);
+  const [editable, setEditable] = useState(true);
   const [editView, setEditView] = useState(false);
   const [editText, setEditText] = useState(plain_text ? plain_text : "");
   const [pending, togglePending] = useState(false);
-
-  let authorProfile = created_by && created_by.author_profile;
-
-  useEffect(() => {
-    let userId = store.getState().auth.user.id;
-    setEditable(userId === created_by.id);
-  }, [store.getState().auth.user]);
 
   const setHover = (state) => {
     if (hovered !== state) {
