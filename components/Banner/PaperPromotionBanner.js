@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       flexDirection: "column",
-      height: 70,
     },
   },
   contentContainer: {
@@ -155,12 +154,18 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 760px)": {
       fontSize: 14,
     },
+    "@media only screen and (max-width: 320px)": {
+      fontSize: 12,
+    },
   },
   title: {
     fontWeight: 500,
     fontSize: 17,
     "@media only screen and (max-width: 760px)": {
       fontSize: 15,
+    },
+    "@media only screen and (max-width: 320px)": {
+      fontSize: 13,
     },
   },
   link: {
