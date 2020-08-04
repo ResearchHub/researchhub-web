@@ -44,7 +44,8 @@ class ManageBulletPointsModal extends React.Component {
       if (this.props.type === "key_takeaway") {
         if (
           JSON.stringify(this.props.bulletsRedux.bullets) !==
-          JSON.stringify(this.state.cards)
+            JSON.stringify(this.state.cards) &&
+          !this.state.cards.length
         ) {
           this.setState({
             cards: this.props.bulletsRedux.bullets,
