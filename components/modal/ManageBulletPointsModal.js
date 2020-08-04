@@ -42,7 +42,11 @@ class ManageBulletPointsModal extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       if (this.props.type === "key_takeaway") {
-        if (this.props.bulletsRedux.bullets !== this.state.cards) {
+        if (
+          JSON.stringify(this.props.bulletsRedux.bullets) !==
+            JSON.stringify(this.state.cards) &&
+          !this.state.cards.length
+        ) {
           this.setState({
             cards: this.props.bulletsRedux.bullets,
           });
@@ -89,9 +93,10 @@ class ManageBulletPointsModal extends React.Component {
     let paperId = this.props.paperId;
     this.setState({ pendingSubmission: true });
     if (type === "key_takeaway") {
+      let newOrder = [...this.state.cards];
       await bulletActions.reorderBullets({
         paperId,
-        bullets: [...this.state.cards],
+        bullets: newOrder,
       });
       if (!bulletsRedux.pending && bulletsRedux.success) {
         this.setState({
