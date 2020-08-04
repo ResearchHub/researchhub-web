@@ -50,3 +50,5 @@ export function nameToUrl(name) {
 export const WEB3_INFURA_PROJECT_ID = "a7ccde5d021c48e1a0525dfd6e58490f";
 export const MAINNET_CHAIN_ID = "1";
 export const RINKEBY_CHAIN_ID = "4";
+
+export const RECAPTCHA_CLIENT_KEY = "6LdxeboZAAAAAEgn_Oa0VnohS724vZhI3_ezLbVD";
