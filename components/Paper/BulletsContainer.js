@@ -186,7 +186,7 @@ class BulletsContainer extends React.Component {
       return bullets.map((bullet, index) => {
         return (
           <SummaryBulletPoint
-            key={`summaryBulletPoint-${index}`}
+            key={`summaryBulletPoint-${bullet.id}`}
             data={bullet}
             onEditCallback={this.onEditCallback}
             type={"KEY_TAKEAWAY"}
