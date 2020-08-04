@@ -84,7 +84,14 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: ({ paperId, paper, filter, page, twitter, loadMore = false }) => {
+  getThreads: ({
+    paperId,
+    paper,
+    filter = "-score",
+    page,
+    twitter,
+    loadMore = false,
+  }) => {
     if (paper === null || paper === undefined) {
       return;
     }
