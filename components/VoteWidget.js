@@ -207,11 +207,11 @@ const ScorePill = (props) => {
       }
     >
       <div className={css(small && styles.small)}>{score}</div>
-      {props.promoted !== false && props.type === "Paper" && (
+      {/* {props.promoted !== false && props.type === "Paper" && (
         <span className={css(styles.promotionIcon)}>
           <BoltSvg color={colors.GREEN()} opacity={1} />
         </span>
-      )}
+      )} */}
     </div>
   );
 };
