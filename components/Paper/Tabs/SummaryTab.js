@@ -969,7 +969,7 @@ var styles = StyleSheet.create({
     userSelect: "none",
     backgroundColor: colors.BLUE(),
     ":hover": {
-      color: "#3971FF",
+      backgroundColor: "#3971FF",
     },
   },
   commentStyles: {
