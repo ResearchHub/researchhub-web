@@ -52,7 +52,10 @@ class ManageBulletPointsModal extends React.Component {
           });
         }
       } else if (this.props.type === "limitations") {
-        if (this.props.limitations.limits !== this.state.cards) {
+        if (
+          this.props.limitations.limits !== this.state.cards &&
+          !this.state.cards.length
+        ) {
           this.setState({
             cards: this.props.limitations.limits,
           });
@@ -129,6 +132,7 @@ class ManageBulletPointsModal extends React.Component {
    */
   closeModal = () => {
     let { modalActions } = this.props;
+    this.setState({ ...this.initialState });
     modalActions.openManageBulletPointsModal(false, null);
   };
 
