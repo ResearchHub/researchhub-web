@@ -84,6 +84,21 @@ class ManageBulletPointsModal extends React.Component {
     }
   };
 
+  onEditCallback = (card, index) => {
+    let cards = [...this.state.cards];
+    cards[index] = card;
+    this.setState({ cards }, () => {
+      if (this.props.type === "limitations") {
+        this.props.limitationActions.updateStateByKey(
+          "limits",
+          this.state.cards
+        );
+      } else if (this.props.type === "key_takeaway") {
+        this.props.bulletActions.updateStateByKey("bullets", this.state.cards);
+      }
+    });
+  };
+
   saveReorder = async () => {
     let {
       bulletActions,
@@ -160,6 +175,7 @@ class ManageBulletPointsModal extends React.Component {
           text={card.plain_text}
           data={card}
           moveCard={this.moveCard}
+          onEditCallback={this.onEditCallback}
         />
       );
     });
