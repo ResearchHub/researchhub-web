@@ -15,6 +15,7 @@ export const LimitationsConstants = {
   REORDER_LIMITATIONS: "@@LIMITATIONS/REORDER_LIMITATIONS",
   REORDER_SUCCESS: "@@LIMITATIONS/REORDER_SUCCESS",
   REORDER_FAILURE: "@@LIMITATIONS/REORDER_FAILURE",
+  UPDATE_STATE_BY_KEY: "@@LIMITATIONS/UPDATE_STATE_BY_KEY",
 };
 
 const BULLET_COUNT = 5;
@@ -135,6 +136,16 @@ export const LimitationsActions = {
         });
     };
   },
+  updateStateByKey: (key, newState) => {
+    return (dispatch) => {
+      return dispatch({
+        type: LimitationsConstants.UPDATE_STATE_BY_KEY,
+        payload: {
+          [key]: newState,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -157,6 +168,7 @@ const LimitationsReducer = (state = defaultLimitationsState, action) => {
     case LimitationsConstants.REORDER_LIMITATIONS:
     case LimitationsConstants.REORDER_SUCCESS:
     case LimitationsConstants.REORDER_FAILURE:
+    case LimitationsConstants.UPDATE_STATE_BY_KEY:
       return {
         ...state,
         ...action.payload,
