@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     width: "100%",
     paddingTop: 4,
+    lineHeight: 1.6,
     boxSizing: "border-box",
     "@media only screen and (max-width: 767px)": {
       fontSize: 14,
