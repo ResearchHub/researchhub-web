@@ -15,6 +15,7 @@ export const BulletsConstants = {
   REORDER_BULLETS: "@@BULLETS/REORDER_BULLETS",
   REORDER_SUCCESS: "@@BULLETS/REORDER_SUCCESS",
   REORDER_FAILURE: "@@BULLETS/REORDER_FAILURE",
+  UPDATE_STATE_BY_KEY: "@@BULLETS/UPDATE_STATE_BY_KEY",
 };
 
 const BULLET_COUNT = 5;
@@ -133,6 +134,16 @@ export const BulletActions = {
         });
     };
   },
+  updateStateByKey: (key, newState) => {
+    return (dispatch) => {
+      return dispatch({
+        type: BulletsConstants.UPDATE_STATE_BY_KEY,
+        payload: {
+          [key]: newState,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -156,6 +167,7 @@ const BulletsReducer = (state = defaultBulletsState, action) => {
     case BulletsConstants.REORDER_BULLETS:
     case BulletsConstants.REORDER_SUCCESS:
     case BulletsConstants.REORDER_FAILURE:
+    case BulletsConstants.UPDATE_STATE_BY_KEY:
       return {
         ...state,
         ...action.payload,
