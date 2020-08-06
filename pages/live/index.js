@@ -10,7 +10,7 @@ import ResearchHubBanner from "~/components/ResearchHubBanner";
 // Config
 import API from "~/config/api";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 
 const filterOptions = [
   {

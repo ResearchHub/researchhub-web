@@ -15,7 +15,7 @@ import colors from "~/config/themes/colors";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 import { createUsername } from "../../config/utils";
 
 // Redux

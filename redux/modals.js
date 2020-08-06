@@ -1,4 +1,4 @@
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 
 /**********************************

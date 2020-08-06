@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router, { withRouter } from "next/router";
 import { connect } from "react-redux";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 
 import BaseModal from "./BaseModal";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
