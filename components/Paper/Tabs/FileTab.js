@@ -23,7 +23,7 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import { openExternalLink } from "~/config/utils";
 

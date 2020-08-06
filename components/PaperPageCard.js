@@ -33,7 +33,7 @@ import "./stylesheets/Carousel.css";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate, openExternalLink } from "~/config/utils";
 
 class PaperPageCard extends React.Component {

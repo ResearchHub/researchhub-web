@@ -28,7 +28,7 @@ import { formatPublishedDate } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 
 const PaperEntryCard = ({
   paper,

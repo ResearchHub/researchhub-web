@@ -13,7 +13,7 @@ import Head from "~/components/Head";
 // Config
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";

@@ -15,7 +15,7 @@ import { TransactionActions } from "~/redux/transaction";
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 
 class UserTransaction extends React.Component {
   constructor(props) {

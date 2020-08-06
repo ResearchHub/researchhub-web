@@ -14,7 +14,7 @@ import { RHLogo } from "~/config/themes/icons";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 
 // Redux
 import { MessageActions } from "~/redux/message";
