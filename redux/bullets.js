@@ -144,6 +144,7 @@ export const BulletActions = {
             payload: {
               pending: false,
               success: false,
+              status: err.response.status,
             },
           });
         });

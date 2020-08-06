@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     fontWeight: 400,
     fontSize: 18,
+    color: colors.BLACK(),
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
@@ -140,6 +141,7 @@ const styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     fontWeight: 400,
     fontSize: 14,
+    color: colors.BLACK(),
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
