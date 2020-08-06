@@ -7,7 +7,7 @@
  **********************************/
 
 import API from "../config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "../config/constants";
 import { useDispatch } from "react-redux";
 import { ModalActions } from "./modals";

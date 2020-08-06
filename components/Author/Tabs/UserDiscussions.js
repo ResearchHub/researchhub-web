@@ -14,7 +14,7 @@ import { AuthorActions } from "~/redux/author";
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 import { thread } from "../../../redux/discussion/shims";
 
 class UserDiscussionsTab extends React.Component {
@@ -31,7 +31,7 @@ class UserDiscussionsTab extends React.Component {
 
     this.setState({ fetching: true }, () => {
       fetch(userDiscussions.next, API.GET_CONFIG())
-        .then(Helpers.checkStatus)
+        .then((res) => Helpers.checkStatus(res, this.props.dispatch))
         .then(Helpers.parseJSON)
         .then((res) => {
           let newState = { ...userDiscussions };
@@ -194,9 +194,10 @@ const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-const mapDispatchToProps = {
-  updateAuthorByKey: AuthorActions.updateAuthorByKey,
-};
+const mapDispatchToProps = (dispatch) => ({
+  updateAuthorByKey: () => dispatch(AuthorActions.updateAuthorByKey),
+  dispatch,
+});
 
 export default connect(
   mapStateToProps,

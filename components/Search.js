@@ -10,7 +10,7 @@ import Loader from "~/components/Loader/Loader";
 // Config
 import { RHLogo } from "~/config/themes/icons";
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 
 export default class Search extends Component {
   searchTimeout = -1;

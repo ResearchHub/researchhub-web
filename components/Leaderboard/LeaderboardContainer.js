@@ -3,7 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 import ReactPlaceholder from "react-placeholder/lib";
 import LeaderboardPlaceholder from "../Placeholders/LeaderboardPlaceholder";
 import LeaderboardUser from "./LeaderboardUser";

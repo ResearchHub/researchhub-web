@@ -26,7 +26,7 @@ import { PaperActions } from "~/redux/paper";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 import { useMetaMask, useWalletLink } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 

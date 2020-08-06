@@ -1,5 +1,5 @@
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 import * as shims from "./shims";
 import * as types from "./types";
 import * as actions from "./actions";

@@ -27,7 +27,7 @@ import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import API from "~/config/api";
-import { Helpers } from "~/config/helpers";
+import { Helpers } from "@quantfive/js-web-config";
 
 const AuthorPage = (props) => {
   let { auth, author, hostname, user, transactions } = props;
