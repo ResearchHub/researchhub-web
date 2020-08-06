@@ -125,7 +125,13 @@ class BulletsContainer extends React.Component {
     return newBullet;
   };
 
-  onEditCallback = (bullet, index) => {};
+  onEditCallback = (bullet, index) => {
+    let bullets = [...this.state.bullets];
+    bullets[index] = bullet;
+    this.setState({ bullets }, () => {
+      this.props.updateStateByKey("bullets", bullets);
+    });
+  };
 
   submitBulletPoint = async () => {
     let { bulletsRedux, postBullet, showMessage, setMessage } = this.props;
@@ -186,7 +192,7 @@ class BulletsContainer extends React.Component {
       return bullets.map((bullet, index) => {
         return (
           <SummaryBulletPoint
-            key={`summaryBulletPoint-${index}`}
+            key={`summaryBulletPoint-${bullet.id}`}
             data={bullet}
             onEditCallback={this.onEditCallback}
             type={"KEY_TAKEAWAY"}
@@ -560,6 +566,7 @@ const mapDispatchToProps = {
   postBullet: BulletActions.postBullet,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  updateStateByKey: BulletActions.updateStateByKey,
 };
 
 export default connect(

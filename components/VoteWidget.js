@@ -151,22 +151,6 @@ const VoteWidget = (props) => {
             horizontalView={horizontalView && horizontalView}
           />
         </PermissionNotificationWrapper>
-        {promoted !== false && type === "Paper" && (
-          <div
-            className={css(
-              styles.promotionContainer,
-              horizontalView && styles.marginLeft
-            )}
-          >
-            {/* <div className={css(styles.divider)} /> */}
-            <div
-              className={css(styles.scoreContainer)}
-              onClick={openPromotionInfoModal}
-            >
-              <i className="fas fa-question"></i>
-            </div>
-          </div>
-        )}
       </div>
     </Fragment>
   );

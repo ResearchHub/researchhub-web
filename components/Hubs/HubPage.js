@@ -6,6 +6,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Ripples from "react-ripples";
 import * as Sentry from "@sentry/browser";
+import Router from "next/router";
 
 // Component
 import HubsList from "~/components/Hubs/HubsList";
@@ -553,6 +554,10 @@ class HubPage extends React.Component {
     });
   };
 
+  navigateToPaperUploadPage = () => {
+    Router.push(`/paper/upload/info`, `/paper/upload/info`);
+  };
+
   renderLoadMoreButton = () => {
     const { next, loadingMore } = this.state;
     if (next !== null) {
@@ -710,7 +715,7 @@ class HubPage extends React.Component {
                       Click ‘Upload paper’ button to upload a PDF
                     </div>
                     <PermissionNotificationWrapper
-                      onClick={() => this.props.openUploadPaperModal(true)}
+                      onClick={this.navigateToPaperUploadPage}
                       modalMessage="upload a paper"
                       loginRequired={true}
                       permissionKey="CreatePaper"
