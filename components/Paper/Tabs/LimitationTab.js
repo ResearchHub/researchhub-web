@@ -138,6 +138,14 @@ class LimitationTab extends React.Component {
     return newBullet;
   };
 
+  onEditCallback = (limit, index) => {
+    let limits = [...this.state.limits];
+    limits[index] = limit;
+    this.setState({ limits }, () => {
+      this.props.updateStateByKey("limits", limits);
+    });
+  };
+
   submitLimitation = async () => {
     let { limitations, postLimitation, showMessage, setMessage } = this.props;
     this.props.showMessage({ load: true, show: true });
@@ -199,7 +207,7 @@ class LimitationTab extends React.Component {
           <SummaryBulletPoint
             key={`limitation-${index}`}
             data={bullet}
-            // onEditCallback={this.onEditCallback}
+            onEditCallback={this.onEditCallback}
             type={"LIMITATION"}
             index={index}
           />

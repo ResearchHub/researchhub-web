@@ -137,7 +137,7 @@ const PaperEntryCard = ({
     } else if (external_source) {
       return (
         <div className={css(styles.uploadedBy)}>
-          Retreived from{" "}
+          Retrieved from{" "}
           <span className={css(styles.capitalize)}>{external_source}</span>
         </div>
       );
