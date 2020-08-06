@@ -22,7 +22,7 @@ import { PaperActions } from "~/redux/paper";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import colors from "~/config/themes/colors";
 import { thread } from "~/redux/discussion/shims";
 import { isQuillDelta } from "~/config/utils/";
@@ -225,6 +225,10 @@ class PaperFeatureModal extends React.Component {
       this.setState({ pendingSubmission: false });
       this.closeModal();
     } else {
+      if (this.props.bulletsRedux.status === 429) {
+        this.closeModal();
+        return showMessage({ show: false });
+      }
       showMessage({ show: false });
       setMessage("Something went wrong.");
       showMessage({ show: true, error: true });
@@ -257,6 +261,10 @@ class PaperFeatureModal extends React.Component {
       );
       this.closeModal();
     } else {
+      if (this.props.limitations.status === 429) {
+        this.closeModal();
+        return showMessage({ show: false });
+      }
       showMessage({ show: false });
       setMessage("Something went wrong.");
       showMessage({ show: true, error: true });
@@ -321,10 +329,15 @@ class PaperFeatureModal extends React.Component {
         showMessage({ show: true });
         this.closeModal();
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err.response.status === 429) {
+          showMessage({ show: false });
+          this.closeModal();
+          return this.props.openRecaptchaPrompt(true);
+        }
         showMessage({ show: false });
         setMessage("Something went wrong");
-        showMessage({ show: true, load: true });
+        showMessage({ show: true, error: true });
       });
   };
 
@@ -367,6 +380,11 @@ class PaperFeatureModal extends React.Component {
         }, 800);
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          showMessage({ show: false });
+          this.closeModal();
+          return this.props.openRecaptchaPrompt(true);
+        }
         setTimeout(() => {
           showMessage({ show: false });
           setMessage("Something went wrong");
@@ -834,6 +852,8 @@ const mapDispatchToProps = {
   clearPostedPaper: PaperActions.clearPostedPaper,
   removePaperFromState: PaperActions.removePaperFromState,
   patchPaper: PaperActions.patchPaper,
+  // CAPTCHA
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
 export default connect(

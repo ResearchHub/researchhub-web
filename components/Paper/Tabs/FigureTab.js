@@ -20,7 +20,7 @@ import { PaperActions } from "~/redux/paper";
 
 // Config
 import API from "../../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
@@ -163,6 +163,14 @@ class FigureTab extends React.Component {
         );
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          showMessage({ show: false });
+          callback();
+          this.props.openRecaptchaPrompt(true);
+          return this.setState({
+            pendingSubmission: false,
+          });
+        }
         showMessage({ show: false });
         setMessage("Something went wrong");
         showMessage({ show: true, error: true });
@@ -198,6 +206,10 @@ class FigureTab extends React.Component {
         showMessage({ show: true });
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          showMessage({ show: false });
+          return this.props.openRecaptchaPrompt(true);
+        }
         showMessage({ show: false });
         setMessage("Something went wrong.");
         showMessage({ show: true, error: true });
@@ -556,6 +568,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   openDndModal: ModalActions.openDndModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   updatePaperState: PaperActions.updatePaperState,
 };
 

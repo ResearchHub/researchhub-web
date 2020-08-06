@@ -14,7 +14,7 @@ import { PaperActions } from "~/redux/paper";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import {
@@ -249,6 +249,11 @@ class PaperProgress extends React.Component {
         callback();
       })
       .catch((err) => {
+        if (err.response.status == 429) {
+          showMessage({ show: false });
+          callback();
+          return this.props.openRecaptchaPrompt(true);
+        }
         showMessage({ show: false });
         setMessage("Something went wrong");
         showMessage({ show: true, error: true });
@@ -626,6 +631,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   openPaperFeatureModal: ModalActions.openPaperFeatureModal,
   openDndModal: ModalActions.openDndModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   updatePaperState: PaperActions.updatePaperState,

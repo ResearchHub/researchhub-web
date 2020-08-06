@@ -20,7 +20,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { timeAgo } from "~/config/utils";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
 
@@ -101,6 +101,10 @@ const DiscussionPostMetadata = (props) => {
         setFlagged(!isFlagged);
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          dispatch(MessageActions.showMessage({ show: false }));
+          return dispatch(ModalActions.openRecaptchaPrompt(true));
+        }
         dispatch(MessageActions.showMessage({ show: false }));
         dispatch(MessageActions.setMessage("Something went wrong"));
         dispatch(MessageActions.showMessage({ show: true, error: true }));

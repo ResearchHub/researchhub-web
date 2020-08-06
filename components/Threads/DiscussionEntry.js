@@ -13,7 +13,7 @@ import ThreadTextEditor from "./ThreadTextEditor";
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 
@@ -210,6 +210,8 @@ class DiscussionEntry extends React.Component {
           callback && callback();
         }
       );
+    } else {
+      callback && callback();
     }
   };
 
