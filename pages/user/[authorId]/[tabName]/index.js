@@ -834,6 +834,8 @@ const styles = StyleSheet.create({
   },
   shareLink: {
     background: colors.BLUE(),
+    minWidth: 35,
+    minHeight: 35,
   },
   link: {
     textDecoration: "None",

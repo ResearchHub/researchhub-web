@@ -42,13 +42,20 @@ class ManageBulletPointsModal extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       if (this.props.type === "key_takeaway") {
-        if (this.props.bulletsRedux.bullets !== this.state.cards) {
+        if (
+          JSON.stringify(this.props.bulletsRedux.bullets) !==
+            JSON.stringify(this.state.cards) &&
+          !this.state.cards.length
+        ) {
           this.setState({
             cards: this.props.bulletsRedux.bullets,
           });
         }
       } else if (this.props.type === "limitations") {
-        if (this.props.limitations.limits !== this.state.cards) {
+        if (
+          this.props.limitations.limits !== this.state.cards &&
+          !this.state.cards.length
+        ) {
           this.setState({
             cards: this.props.limitations.limits,
           });
@@ -77,6 +84,21 @@ class ManageBulletPointsModal extends React.Component {
     }
   };
 
+  onEditCallback = (card, index) => {
+    let cards = [...this.state.cards];
+    cards[index] = card;
+    this.setState({ cards }, () => {
+      if (this.props.type === "limitations") {
+        this.props.limitationActions.updateStateByKey(
+          "limits",
+          this.state.cards
+        );
+      } else if (this.props.type === "key_takeaway") {
+        this.props.bulletActions.updateStateByKey("bullets", this.state.cards);
+      }
+    });
+  };
+
   saveReorder = async () => {
     let {
       bulletActions,
@@ -89,9 +111,10 @@ class ManageBulletPointsModal extends React.Component {
     let paperId = this.props.paperId;
     this.setState({ pendingSubmission: true });
     if (type === "key_takeaway") {
+      let newOrder = [...this.state.cards];
       await bulletActions.reorderBullets({
         paperId,
-        bullets: [...this.state.cards],
+        bullets: newOrder,
       });
       if (!bulletsRedux.pending && bulletsRedux.success) {
         this.setState({
@@ -124,6 +147,7 @@ class ManageBulletPointsModal extends React.Component {
    */
   closeModal = () => {
     let { modalActions } = this.props;
+    this.setState({ ...this.initialState });
     modalActions.openManageBulletPointsModal(false, null);
   };
 
@@ -151,6 +175,7 @@ class ManageBulletPointsModal extends React.Component {
           text={card.plain_text}
           data={card}
           moveCard={this.moveCard}
+          onEditCallback={this.onEditCallback}
         />
       );
     });

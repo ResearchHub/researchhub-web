@@ -8,7 +8,7 @@ const style = {
   cursor: "move",
 };
 
-const DraggableCard = ({ id, text, index, moveCard, data }) => {
+const DraggableCard = ({ id, text, index, moveCard, data, onEditCallback }) => {
   const ref = useRef(null);
   const [, drop] = useDrop({
     accept: "bullet_point",
@@ -62,7 +62,12 @@ const DraggableCard = ({ id, text, index, moveCard, data }) => {
 
   return (
     <div ref={ref} style={{ opacity }}>
-      <SummaryBulletPoint manage={true} data={data} />
+      <SummaryBulletPoint
+        manage={true}
+        data={data}
+        index={index}
+        onEditCallback={onEditCallback}
+      />
     </div>
   );
 };
