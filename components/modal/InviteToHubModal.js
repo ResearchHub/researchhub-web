@@ -17,7 +17,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 
 class InviteToHubModal extends React.Component {
   constructor(props) {
@@ -120,6 +120,12 @@ class InviteToHubModal extends React.Component {
         } else {
           setMessage("Invites Failed to Send!");
           showMessage({ show: true, error: true });
+        }
+      })
+      .catch((err) => {
+        if (err.response.status === 429) {
+          this.closeModal();
+          this.props.openRecaptchaPrompt(true);
         }
       });
   };
@@ -412,6 +418,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   openInviteToHubModal: ModalActions.openInviteToHubModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   getUser: AuthActions.getUser,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,

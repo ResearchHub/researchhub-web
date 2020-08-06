@@ -5,7 +5,6 @@ import Confetti from "react-confetti";
 
 // Component
 import BaseModal from "./BaseModal";
-import Loader from "../Loader/Loader";
 import Button from "../Form/Button";
 
 // Redux
@@ -14,8 +13,7 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import icons from "~/config/themes/icons";
+import { Helpers } from "~/config/helpers";
 import colors from "~/config/themes/colors";
 
 const FirstVoteModal = (props) => {

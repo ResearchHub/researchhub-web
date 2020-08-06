@@ -14,7 +14,7 @@ import { AuthorActions } from "~/redux/author";
 
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 
 const UserPromotions = (props) => {
   const [loading, setLoading] = useState(false);

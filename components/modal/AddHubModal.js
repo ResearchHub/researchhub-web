@@ -4,16 +4,16 @@ import { StyleSheet, css } from "aphrodite";
 
 // Components
 import BaseModal from "./BaseModal";
-import { ModalActions } from "../../redux/modals";
 import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import colors from "../../config/themes/colors";
 
 class AddHubModal extends React.Component {
@@ -57,6 +57,11 @@ class AddHubModal extends React.Component {
           }, 400);
         })
         .catch((err) => {
+          if (err.response.status === 429) {
+            this.props.showMessage({ show: false });
+            this.closeModal();
+            return this.props.openRecaptchaPrompt(true);
+          }
           setTimeout(() => {
             this.props.showMessage({ show: false });
             this.props.setMessage("Hmm something went wrong.");
@@ -177,6 +182,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   openAddHubModal: ModalActions.openAddHubModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
 };

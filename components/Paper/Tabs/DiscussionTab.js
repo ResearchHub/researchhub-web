@@ -26,7 +26,7 @@ import { PaperActions } from "~/redux/paper";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import colors from "~/config/themes/colors";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { doesNotExist, endsWithSlash } from "~/config/utils";
@@ -248,6 +248,10 @@ const DiscussionTab = (props) => {
         }, 800);
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          props.showMessage({ show: false });
+          return props.openRecaptchaPrompt(true);
+        }
         setTimeout(() => {
           props.showMessage({ show: false });
           props.setMessage("Something went wrong");
@@ -1015,6 +1019,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   openAddDiscussionModal: ModalActions.openAddDiscussionModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
 };

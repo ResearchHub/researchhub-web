@@ -1,5 +1,5 @@
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import * as shims from "./shims";
 import * as types from "./types";
 import * as actions from "./actions";
@@ -26,7 +26,7 @@ export const PaperActions = {
         })
         .catch((err) => {
           utils.logFetchError(err);
-          utils.handleCatch(err);
+          utils.handleCatch(err, dispatch);
           let action = actions.setUserVoteFailure(isUpvote);
           return dispatch(action);
         });
@@ -46,7 +46,7 @@ export const PaperActions = {
           return dispatch(action);
         })
         .catch((err) => {
-          utils.handleCatch(err);
+          utils.handleCatch(err, dispatch);
           let action = actions.setUserVoteFailure(isUpvote);
           return dispatch(action);
         });
@@ -175,10 +175,21 @@ export const PaperActions = {
       ).catch(utils.handleCatch);
 
       let errorBody = null;
-      if (response.status === 400) {
+      if (response.status === 400 || response.status === 500) {
         errorBody = await response.json();
+        errorBody.status = response.status;
       }
+
+      if (response.status === 429) {
+        let err = { response: {} };
+        err.response.status = 429;
+        utils.handleCatch(err, dispatch);
+        errorBody = await response.json();
+        errorBody.status = 429;
+      }
+
       let action = actions.setPostPaperFailure("POST", errorBody);
+
       if (response.ok) {
         const body = await response.json();
         const paper = shims.paper(body);
@@ -211,6 +222,13 @@ export const PaperActions = {
 
       let action = actions.setPostPaperSummaryFailure();
 
+      if (response.status === 429) {
+        let err = { response: {} };
+        err.response.status = 429;
+        utils.handleCatch(err, dispatch);
+        return dispatch(action);
+      }
+
       if (response.ok) {
         action = actions.setPostPaperSummarySuccess();
       } else {
@@ -227,7 +245,22 @@ export const PaperActions = {
         API.PATCH_FILE_CONFIG(shims.paperPost(body))
       ).catch(utils.handleCatch);
 
-      let action = actions.setPostPaperFailure("PATCH");
+      let errorBody = null;
+      if (response.status === 400 || response.status === 500) {
+        errorBody = await response.json();
+        errorBody.status = response.status;
+      }
+
+      if (response.status === 429) {
+        let err = { response: {} };
+        err.response.status = 429;
+        utils.handleCatch(err, dispatch);
+        errorBody = await response.json();
+        errorBody.status = 429;
+      }
+
+      let action = actions.setPostPaperFailure("PATCH", errorBody);
+
       if (response.ok) {
         const body = await response.json();
         const paper = shims.paper(body);
@@ -245,7 +278,21 @@ export const PaperActions = {
         API.PUT_FILE_CONFIG(shims.paperPost(body))
       ).catch(utils.handleCatch);
 
-      let action = actions.setPostPaperFailure("PUT");
+      let errorBody = null;
+
+      if (response.status === 400 || response.status === 500) {
+        errorBody = await response.json();
+      }
+
+      if (response.status === 429) {
+        let err = { response: {} };
+        err.response.status = 429;
+        utils.handleCatch(err, dispatch);
+        errorBody = await response.json();
+      }
+
+      let action = actions.setPostPaperFailure("PUT", errorBody);
+
       if (response.ok) {
         const body = await response.json();
         const paper = shims.paper(body);

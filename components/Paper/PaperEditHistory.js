@@ -1,8 +1,6 @@
-import Link from "next/link";
-import Router, { withRouter } from "next/router";
+import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import dynamic from "next/dynamic";
 import moment from "moment";
 
 // Components
@@ -10,10 +8,6 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
-
-// Config
-import API from "../../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 class PaperEditHistory extends React.Component {
   constructor(props) {

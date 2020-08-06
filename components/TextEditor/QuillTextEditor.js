@@ -9,11 +9,12 @@ import FormButton from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 
 import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -138,6 +139,11 @@ class Editor extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         return res;
+      })
+      .catch((err) => {
+        if (err.response.status === 429) {
+          this.props.openRecaptchaPrompt(true);
+        }
       });
   };
 
@@ -764,6 +770,7 @@ const toolbarStyles = StyleSheet.create({
 const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
 export default connect(

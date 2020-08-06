@@ -26,7 +26,7 @@ import { PaperActions } from "~/redux/paper";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import { useMetaMask, useWalletLink } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 
@@ -311,6 +311,11 @@ class PaperTransactionModal extends React.Component {
         }
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          showMessage({ show: false });
+          this.closeModal();
+          return this.props.openRecaptchaPrompt(true);
+        }
         showMessage({ show: false });
         setMessage("Something went wrong.");
         showMessage({ show: true, error: true });
@@ -1212,6 +1217,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   updateUser: AuthActions.updateUser,
   updatePaperState: PaperActions.updatePaperState,
 };

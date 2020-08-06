@@ -19,7 +19,7 @@ import { AuthActions } from "~/redux/auth";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { useMetaMask, useWalletLink } from "../connectEthereum";
@@ -419,6 +419,11 @@ class TransactionModal extends React.Component {
           }
         })
         .catch((err) => {
+          if (err.response.status === 429) {
+            showMessage({ show: false });
+            this.closeModal();
+            return this.props.openRecaptchaPrompt(true);
+          }
           err.name = "";
           setTimeout(() => {
             showMessage({ show: false });
@@ -1064,6 +1069,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   openTransactionModal: ModalActions.openTransactionModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   getUser: AuthActions.getUser,
