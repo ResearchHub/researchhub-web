@@ -86,17 +86,7 @@ export const BulletActions = {
           });
         })
         .catch((err) => {
-          if (err.response.status === 429) {
-            handleCatch(err, dispatch);
-            return dispatch({
-              type: BulletsConstants.POST_FAILURE,
-              payload: {
-                pending: false,
-                success: false,
-                status: 429,
-              },
-            });
-          }
+          handleCatch(err, dispatch);
           return dispatch({
             type: BulletsConstants.POST_FAILURE,
             payload: {
@@ -136,9 +126,7 @@ export const BulletActions = {
           });
         })
         .catch((err) => {
-          if (err.response.status === 429) {
-            handleCatch(err, dispatch);
-          }
+          handleCatch(err, dispatch);
           return dispatch({
             type: BulletsConstants.REORDER_FAILURE,
             payload: {

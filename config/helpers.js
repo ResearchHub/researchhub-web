@@ -5,11 +5,7 @@ import { useDispatch } from "react-redux";
 export const Helpers = {
   ...helpers,
   checkStatus: async function checkStatus(response) {
-    if (
-      response.status >= 200 &&
-      response.status < 300 &&
-      response.status !== 429
-    ) {
+    if (response.status >= 200 && response.status < 300) {
       return response;
     }
 
