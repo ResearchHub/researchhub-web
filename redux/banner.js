@@ -25,9 +25,7 @@ const reportBanner = (params) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .catch((err) => {
-      if (err.response.status === 429) {
-        handleCatch(err, params.dispatch);
-      }
+      handleCatch(err, params.dispatch);
     });
 };
 

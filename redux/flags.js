@@ -61,9 +61,7 @@ export const FlagActions = {
           });
         })
         .catch((err) => {
-          if (err.response.status === 429) {
-            handleCatch(err, dispatch);
-          }
+          handleCatch(err, dispatch);
           return dispatch({
             type: FlagConstants.POST_FLAG_FAILURE,
             payload: {
@@ -102,9 +100,7 @@ export const FlagActions = {
           });
         })
         .catch((err) => {
-          if (err.response.status === 429) {
-            handleCatch(err, dispatch);
-          }
+          handleCatch(err, dispatch);
           return dispatch({
             type: FlagConstants.REMOVE_FLAG_FAILURE,
             payload: {
