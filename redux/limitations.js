@@ -86,17 +86,7 @@ export const LimitationsActions = {
           });
         })
         .catch((err) => {
-          if (err.response.status === 429) {
-            handleCatch(err, dispatch);
-            return dispatch({
-              type: LimitationsConstants.POST_FAILURE,
-              payload: {
-                pending: false,
-                success: false,
-                status: 429,
-              },
-            });
-          }
+          handleCatch(err, dispatch);
           return dispatch({
             type: LimitationsConstants.POST_FAILURE,
             payload: {
@@ -138,9 +128,7 @@ export const LimitationsActions = {
           });
         })
         .catch((err) => {
-          if (err.response.status === 429) {
-            handleCatch(err, dispatch);
-          }
+          handleCatch(err, dispatch);
           return dispatch({
             type: LimitationsConstants.REORDER_FAILURE,
             payload: {
