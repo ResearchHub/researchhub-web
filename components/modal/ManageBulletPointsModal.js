@@ -87,7 +87,6 @@ class ManageBulletPointsModal extends React.Component {
         bullets: [...this.state.cards],
       });
       if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
-        console.log("bulletsRedux", bulletsRedux);
         this.setState({
           pendingSubmission: false,
         });

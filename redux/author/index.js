@@ -157,9 +157,7 @@ export const AuthorActions = {
           });
         })
         .catch((err) => {
-          if (err.response.status == 429) {
-            utils.handleCatch(err, dispatch);
-          }
+          utils.handleCatch(err, dispatch);
         });
     };
   },
