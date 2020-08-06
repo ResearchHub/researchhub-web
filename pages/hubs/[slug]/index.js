@@ -8,7 +8,7 @@ import LockedHubPage from "~/components/Hubs/LockedHubPage";
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import { toTitleCase } from "~/config/utils";
 
 class Index extends React.Component {

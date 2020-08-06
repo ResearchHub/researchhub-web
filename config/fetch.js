@@ -1,5 +1,5 @@
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import { emailPreference } from "./shims";
 
 export const fetchEmailPreference = async () => {

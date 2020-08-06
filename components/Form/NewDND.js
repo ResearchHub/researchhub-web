@@ -14,7 +14,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 
 // Component
 import FormInput from "./FormInput";
@@ -153,6 +153,9 @@ class NewDND extends React.Component {
         );
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          this.props.modalActions.openRecaptchaPrompt(true);
+        }
         this.setState({
           fetching: false,
           urlIsValid: false,

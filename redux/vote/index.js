@@ -15,6 +15,13 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
 
     let action = actions.setPostVoteFailure(isUpvote);
 
+    if (response.status === 429) {
+      let err = { response: {} };
+      err.response.status = 429;
+      utils.handleCatch(err, dispatch);
+      return dispatch(action);
+    }
+
     if (response.ok) {
       const body = await response.json();
       const vote = shims.vote(body);
@@ -37,6 +44,13 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
     ).catch(utils.handleCatch);
 
     let action = actions.setPostVoteFailure(isUpvote);
+
+    if (response.status === 429) {
+      let err = { response: {} };
+      err.response.status = 429;
+      utils.handleCatch(err, dispatch);
+      return dispatch(action);
+    }
 
     if (response.ok) {
       const body = await response.json();

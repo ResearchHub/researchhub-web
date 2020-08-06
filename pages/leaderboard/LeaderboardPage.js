@@ -17,7 +17,7 @@ const timeAgo = new TimeAgo("en-US");
 
 // Config
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 
 // Components
 import ContentPage from "../../components/ContentPage/ContentPage";

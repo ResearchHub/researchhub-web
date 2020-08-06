@@ -1,6 +1,7 @@
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import { AuthConstants } from "./auth";
+import { handleCatch } from "~/redux/utils";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -22,7 +23,12 @@ const uuidv4 = () => {
 const reportBanner = (params) => {
   return fetch(API.ANALYTICS_WEBSITEVIEWS({}), API.POST_CONFIG(params))
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+    .then(Helpers.parseJSON)
+    .catch((err) => {
+      if (err.response.status === 429) {
+        handleCatch(err, params.dispatch);
+      }
+    });
 };
 
 export const BannerActions = {
@@ -59,7 +65,7 @@ export const BannerActions = {
         });
       } else if (pref === null || pref === undefined) {
         localStorage.setItem("researchhub.signup.banner", coinFlip);
-        reportBanner({ uuid, saw_signup_banner: coinFlip });
+        reportBanner({ uuid, saw_signup_banner: coinFlip, dispatch });
         return dispatch({
           type: BannerConstants.DETERMINE_BANNER,
           payload: {

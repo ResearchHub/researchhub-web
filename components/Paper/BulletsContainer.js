@@ -145,6 +145,12 @@ class BulletsContainer extends React.Component {
         showForm: false,
       });
     } else {
+      if (this.props.bulletsRedux.status === 429) {
+        showMessage({ show: false });
+        return this.setState({
+          pendingSubmission: false,
+        });
+      }
       showMessage({ show: false });
       setMessage("Something went wrong.");
       showMessage({ show: true, error: true });

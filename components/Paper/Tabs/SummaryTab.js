@@ -1,10 +1,8 @@
 import { Fragment } from "react";
 import Router from "next/link";
-import Link from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
-import Plain from "slate-plain-serializer";
 import Ripples from "react-ripples";
 
 // Components
@@ -19,10 +17,11 @@ import FormTextArea from "~/components/Form/FormTextArea";
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "../../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
 
@@ -131,6 +130,11 @@ class SummaryTab extends React.Component {
           readOnly: true,
           finishedLoading: true,
         });
+      })
+      .catch((err) => {
+        if (err.response.status === 429) {
+          this.props.openRecaptchaPrompt(true);
+        }
       });
   };
 
@@ -190,12 +194,24 @@ class SummaryTab extends React.Component {
     this.props
       .patchPaper(paper.id, body)
       .then((res) => {
+        if (res.payload && res.payload.errorBody) {
+          if (
+            res.payload.errorBody.status &&
+            res.payload.errorBody.status === 429
+          ) {
+            return showMessage({ show: false });
+          }
+        }
         showMessage({ show: false });
         setMessage("Abstract successfully edited.");
         showMessage({ show: true });
         this.setState({ editAbstract: false });
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          showMessage({ show: false });
+          return this.props.openRecaptchaPrompt(true);
+        }
         showMessage({ show: false });
         setMessage("Something went wrong.");
         showMessage({ show: true, error: true });
@@ -699,7 +715,6 @@ var styles = StyleSheet.create({
     // whiteSpace: "pre-wrap",
     display: "flex",
     justifyContent: "flex-start",
-    minHeight: 173,
     paddingTop: 7,
   },
   whiteSpace: {
@@ -1050,6 +1065,7 @@ const mapDispatchToProps = {
   getEditHistory: PaperActions.getEditHistory,
   patchPaper: PaperActions.patchPaper,
   updatePaperState: PaperActions.updatePaperState,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
 export default connect(

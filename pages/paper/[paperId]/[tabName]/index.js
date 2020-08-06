@@ -35,7 +35,7 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import {
   convertToEditorValue,
   convertDeltaToText,

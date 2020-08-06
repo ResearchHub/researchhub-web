@@ -1,5 +1,5 @@
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 //import * as shims from "./shims";
 import * as types from "./types";
 import * as actions from "./actions";
@@ -155,6 +155,11 @@ export const AuthorActions = {
               doneFetching: true,
             },
           });
+        })
+        .catch((err) => {
+          if (err.response.status == 429) {
+            utils.handleCatch(err, dispatch);
+          }
         });
     };
   },

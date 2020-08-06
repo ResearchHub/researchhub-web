@@ -1,4 +1,4 @@
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import API from "~/config/api";
 
 /**********************************
@@ -23,6 +23,7 @@ export const ModalConstants = {
   PAPER_FEATURE_MODAL_TOGGLE: "@@modal/PAPER_FEATURE_MODAL_TOGGLE",
   PAPER_TRANSACTION_MODAL_TOGGLE: "@@modal/PAPER_TRANSACTION_MODAL_TOGGLE",
   PROMOTION_INFO_MODAL_TOGGLE: "@@modal/PROMOTION_INFO_MODAL_TOGGLE",
+  RECAPTCHA_PROMPT_TOGGLE: "@@modal/RECAPTCHA_PROMPT_TOGGLE",
 };
 
 export const ModalActions = {
@@ -225,6 +226,16 @@ export const ModalActions = {
       });
     };
   },
+  openRecaptchaPrompt: (openPrompt) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.RECAPTCHA_PROMPT_TOGGLE,
+        payload: {
+          openRecaptchaPrompt: openPrompt,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -264,6 +275,7 @@ const defaultModalState = {
     isOpen: false,
     props: {},
   },
+  openRecaptchaPrompt: false,
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -284,6 +296,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.PAPER_FEATURE_MODAL_TOGGLE:
     case ModalConstants.PAPER_TRANSACTION_MODAL_TOGGLE:
     case ModalConstants.PROMOTION_INFO_MODAL_TOGGLE:
+    case ModalConstants.RECAPTCHA_PROMPT_TOGGLE:
       return {
         ...state,
         ...action.payload,

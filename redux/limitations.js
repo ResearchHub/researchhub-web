@@ -1,6 +1,8 @@
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import { doesNotExist } from "~/config/utils";
+import { handleCatch } from "~/redux/utils";
+
 /**********************************
  *        ACTIONS SECTION         *
  **********************************/
@@ -84,12 +86,23 @@ export const LimitationsActions = {
           });
         })
         .catch((err) => {
-          console.log("err", err);
+          if (err.response.status === 429) {
+            handleCatch(err, dispatch);
+            return dispatch({
+              type: LimitationsConstants.POST_FAILURE,
+              payload: {
+                pending: false,
+                success: false,
+                status: 429,
+              },
+            });
+          }
           return dispatch({
             type: LimitationsConstants.POST_FAILURE,
             payload: {
               pending: false,
               success: false,
+              status: err.response.status,
             },
           });
         });
@@ -125,6 +138,9 @@ export const LimitationsActions = {
           });
         })
         .catch((err) => {
+          if (err.response.status === 429) {
+            handleCatch(err, dispatch);
+          }
           return dispatch({
             type: LimitationsConstants.REORDER_FAILURE,
             payload: {

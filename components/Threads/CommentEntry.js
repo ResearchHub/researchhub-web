@@ -15,7 +15,7 @@ import colors from "~/config/themes/colors";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import { Helpers } from "~/config/helpers";
 import { createUsername } from "../../config/utils";
 
 // Redux
@@ -329,6 +329,8 @@ class CommentEntry extends React.Component {
           callback && callback();
         }
       );
+    } else {
+      callback && callback();
     }
   };
 
