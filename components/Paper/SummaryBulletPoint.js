@@ -9,11 +9,11 @@ import Button from "../Form/Button";
 import Loader from "~/components/Loader/Loader";
 
 import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const SummaryBulletPoint = (props) => {
@@ -67,6 +67,10 @@ const SummaryBulletPoint = (props) => {
         dispatch(MessageActions.showMessage({ show: true }));
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          togglePending(false);
+          return dispatch(ModalActions.openRecaptchaPrompt(true));
+        }
         togglePending(false);
         dispatch(MessageActions.setMessage("Something went wrong"));
         dispatch(MessageActions.showMessage({ show: true, error: true }));

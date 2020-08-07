@@ -127,7 +127,12 @@ class BaseModal extends React.Component {
           styles.modal,
           this.props.modalStyle && this.props.modalStyle
         )}
-        shouldCloseOnOverlayClick={true}
+        shouldCloseOnOverlayClick={
+          this.props.closeOnOverlayClick !== undefined ||
+          this.props.closeOnOverlayClick !== null
+            ? this.props.closeOnOverlayClick
+            : true
+        }
         style={this.getOverlayStyle()}
         onAfterOpen={this.disableParentScroll}
         ariaHideApp={false}

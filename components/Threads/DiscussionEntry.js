@@ -210,6 +210,8 @@ class DiscussionEntry extends React.Component {
           callback && callback();
         }
       );
+    } else {
+      callback && callback();
     }
   };
 

@@ -535,6 +535,11 @@ class HubPage extends React.Component {
               subscribe: !this.state.subscribe,
               subscribeClicked: false,
             });
+          })
+          .catch((err) => {
+            if (err.response.status === 429) {
+              this.props.openRecaptchaPrompt(true);
+            }
           });
       } else {
         return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
@@ -549,6 +554,11 @@ class HubPage extends React.Component {
               subscribe: !this.state.subscribe,
               subscribeClicked: true,
             });
+          })
+          .catch((err) => {
+            if (err.response.status === 429) {
+              this.props.openRecaptchaPrompt(true);
+            }
           });
       }
     });
@@ -1318,6 +1328,7 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   setUserBannerPreference: AuthActions.setUserBannerPreference,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   updateHub: HubActions.updateHub,

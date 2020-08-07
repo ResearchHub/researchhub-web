@@ -606,6 +606,10 @@ class LiveFeedNotification extends React.Component {
         this.setState({ userFlag: !this.state.userFlag });
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          showMessage({ show: false });
+          returnthis.props.openRecaptchaPrompt(true);
+        }
         showMessage({ show: false });
         setMessage("Something went wrong");
         showMessage({ show: true, error: true });
@@ -1020,6 +1024,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   openLoginModal: ModalActions.openLoginModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
 export default connect(
