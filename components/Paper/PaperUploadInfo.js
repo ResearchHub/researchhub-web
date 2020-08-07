@@ -643,6 +643,7 @@ class PaperUploadInfo extends React.Component {
                     onValidUrl={this.checkFormProgress}
                     onRemove={this.checkFormProgress}
                     onSearch={this.checkPaperSuggestions}
+                    onDuplicate={() => this.setState({ disabled: true })}
                   />
                 </div>
               )}
@@ -798,7 +799,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   renderButtons = () => {
-    let { activeStep, editMode } = this.state;
+    let { activeStep, editMode, disabled } = this.state;
     switch (activeStep) {
       case 1:
         return (
@@ -814,6 +815,7 @@ class PaperUploadInfo extends React.Component {
             <Button
               label={editMode ? "Save" : "Upload"}
               customButtonStyle={styles.button}
+              disabled={disabled}
               type={"submit"}
             />
           </div>
@@ -1011,6 +1013,7 @@ class PaperUploadInfo extends React.Component {
 
     this.setState({
       progress: count * 33.33,
+      disabled: false,
     });
   };
 
