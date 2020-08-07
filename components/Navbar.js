@@ -528,7 +528,6 @@ const Navbar = (props) => {
           {icons.burgerMenu}
         </div>
       </div>
-      <PaperPromotionBanner route={router.route} />
       <SignUpBanner route={router.route} />
     </Fragment>
   );
