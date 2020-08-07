@@ -101,6 +101,10 @@ const DiscussionPostMetadata = (props) => {
         setFlagged(!isFlagged);
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          dispatch(MessageActions.showMessage({ show: false }));
+          return dispatch(ModalActions.openRecaptchaPrompt(true));
+        }
         dispatch(MessageActions.showMessage({ show: false }));
         dispatch(MessageActions.setMessage("Something went wrong"));
         dispatch(MessageActions.showMessage({ show: true, error: true }));

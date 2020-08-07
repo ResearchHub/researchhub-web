@@ -155,6 +155,9 @@ export const AuthorActions = {
               doneFetching: true,
             },
           });
+        })
+        .catch((err) => {
+          utils.handleCatch(err, dispatch);
         });
     };
   },

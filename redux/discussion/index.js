@@ -80,6 +80,13 @@ export function postComment(paperId, threadId, text, plain_text) {
 
     let action = actions.setPostCommentFailure();
 
+    if (response.status === 429) {
+      let err = { response: {} };
+      err.response.status = 429;
+      utils.handleCatch(err, dispatch);
+      return dispatch(action);
+    }
+
     if (response.ok) {
       const body = await response.json();
       const comment = shims.comment(body);
@@ -100,6 +107,13 @@ export function updateComment(paperId, threadId, commentId, text, plain_text) {
     ).catch(utils.handleCatch);
 
     let action = actions.setUpdateCommentFailure();
+
+    if (response.status === 429) {
+      let err = { response: {} };
+      err.response.status = 429;
+      utils.handleCatch(err, dispatch);
+      return dispatch(action);
+    }
 
     if (response.ok) {
       const body = await response.json();
@@ -148,6 +162,13 @@ export function postReply(paperId, threadId, commentId, text, plain_text) {
 
     let action = actions.setPostReplyFailure();
 
+    if (response.status === 429) {
+      let err = { response: {} };
+      err.response.status = 429;
+      utils.handleCatch(err, dispatch);
+      return dispatch(action);
+    }
+
     if (response.ok) {
       const body = await response.json();
       const reply = shims.reply(body);
@@ -176,6 +197,13 @@ export function updateReply(
 
     let action = actions.setUpdateReplyFailure();
 
+    if (response.status === 429) {
+      let err = { response: {} };
+      err.response.status = 429;
+      utils.handleCatch(err, dispatch);
+      return dispatch(action);
+    }
+
     if (response.ok) {
       const body = await response.json();
       const reply = shims.reply(body);
@@ -199,6 +227,13 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
 
     let action = actions.setPostVoteFailure(isUpvote);
 
+    if (response.status === 429) {
+      let err = { response: {} };
+      err.response.status = 429;
+      utils.handleCatch(err, dispatch);
+      return dispatch(action);
+    }
+
     if (response.ok) {
       const body = await response.json();
       const vote = shims.vote(body);
@@ -221,6 +256,13 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
     ).catch(utils.handleCatch);
 
     let action = actions.setPostVoteFailure(isUpvote);
+
+    if (response.status === 429) {
+      let err = { response: {} };
+      err.response.status = 429;
+      utils.handleCatch(err, dispatch);
+      return dispatch(action);
+    }
 
     if (response.ok) {
       const body = await response.json();

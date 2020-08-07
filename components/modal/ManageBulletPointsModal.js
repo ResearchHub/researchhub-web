@@ -100,14 +100,7 @@ class ManageBulletPointsModal extends React.Component {
   };
 
   saveReorder = async () => {
-    let {
-      bulletActions,
-      bulletsRedux,
-      messageActions,
-      type,
-      limitations,
-      limitationActions,
-    } = this.props;
+    let { bulletActions, messageActions, type, limitationActions } = this.props;
     let paperId = this.props.paperId;
     this.setState({ pendingSubmission: true });
     if (type === "key_takeaway") {
@@ -116,7 +109,7 @@ class ManageBulletPointsModal extends React.Component {
         paperId,
         bullets: newOrder,
       });
-      if (!bulletsRedux.pending && bulletsRedux.success) {
+      if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
         this.setState({
           pendingSubmission: false,
         });
@@ -124,20 +117,26 @@ class ManageBulletPointsModal extends React.Component {
         messageActions.showMessage({ show: true });
         this.closeModal();
       } else {
-        //handle error
+        if (this.props.bulletsRedux.status === 429) {
+          return this.closeModal();
+        }
       }
     } else if (type === "limitations") {
       await limitationActions.reorderLimitations({
         paperId,
         limits: [...this.state.cards],
       });
-      if (!limitations.pending && limitations.success) {
+      if (!this.props.limitations.pending && this.props.limitations.success) {
         this.setState({
           pendingSubmission: false,
         });
         messageActions.setMessage("Order Saved!");
         messageActions.showMessage({ show: true });
         this.closeModal();
+      } else {
+        if (this.props.limitations.status === 429) {
+          return this.closeModal();
+        }
       }
     }
   };

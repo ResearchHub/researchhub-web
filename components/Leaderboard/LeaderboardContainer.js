@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 
-import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import ReactPlaceholder from "react-placeholder/lib";

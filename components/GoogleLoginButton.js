@@ -1,7 +1,6 @@
 import { GoogleLogin } from "react-google-login";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import { Helpers } from "@quantfive/js-web-config";
 import { useRouter } from "next/router";
 
 import Button from "~/components/Form/Button";
