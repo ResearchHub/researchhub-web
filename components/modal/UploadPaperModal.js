@@ -17,6 +17,7 @@ import { MessageActions } from "../../redux/message";
 import BaseModal from "../modal/BaseModal";
 import SearchEntry from "../SearchEntry";
 import PaperMetaData from "../SearchSuggestion/PaperMetaData";
+import PaperEntryCard from "../Hubs/PaperEntryCard";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -103,12 +104,20 @@ class UploadPaperModal extends React.Component {
       return (
         <Fragment>
           {results.length > 1 && <div className={css(styles.divider)} />}
-          <Ripple className={css(styles.searchEntryContainer)}>
-            <SearchEntry
+          <Ripple
+            className={css(styles.searchEntryContainer)}
+            onClick={this.closeModal}
+          >
+            {/* <SearchEntry
               indexName="paper"
               result={paper}
               hideBullets={true}
               onClickCallBack={this.closeModal}
+            /> */}
+            <PaperEntryCard
+              paper={paper}
+              style={styles.paper}
+              onClick={() => setTimeout(this.closeModal, 400)}
             />
           </Ripple>
           {/** separate div needed to prevent ripple behavior which leaks to padding/margin */}
@@ -116,6 +125,17 @@ class UploadPaperModal extends React.Component {
         </Fragment>
       );
     });
+  };
+
+  renderText = () => {
+    let results = this.props.modals.uploadPaperModal.suggestedPapers;
+
+    if (results.length > 1) {
+      return `${results.length} similar papers already on ResearchHub`;
+    }
+    if (results.length === 1) {
+      return "This paper is already on ResearchHub";
+    }
   };
 
   render() {
@@ -134,13 +154,8 @@ class UploadPaperModal extends React.Component {
             className={css(styles.closeButton)}
             onClick={this.closeModal}
           />
-          <div className={css(styles.header)}>Search Results for:</div>
-          <div className={css(styles.paperSummary)}>
-            <PaperMetaData metaData={this.props.uploadedPaperMeta} />
-          </div>
-          <div className={css(styles.searchCount)}>
-            {`${count} similar papers already on ResearchHub`}
-          </div>
+          <div className={css(styles.header)}>Search Results:</div>
+          <div className={css(styles.searchCount)}>{this.renderText()}</div>
           <div className={css(styles.searchResults)}>
             {this.renderSearchResults()}
           </div>
@@ -206,7 +221,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     width: "100%",
     textAlign: "left",
-    marginBottom: 10,
+    marginBottom: 25,
   },
   searchCount: {
     width: "100%",
@@ -214,7 +229,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 14,
     color: "#4f4d5f",
-    paddingBottom: 15,
+    marginBottom: 25,
     textShadow: "1px 1px 2px #FAFAFA",
   },
   title: {
@@ -419,12 +434,15 @@ const styles = StyleSheet.create({
   },
   searchEntryContainer: {
     width: "100%",
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
   },
   divider: {
     width: "100%",
     height: 5,
     background: "#F7F7FB",
+  },
+  paper: {
+    width: "100%",
   },
 });
 

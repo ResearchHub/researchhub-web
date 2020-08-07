@@ -43,6 +43,7 @@ const PaperEntryCard = ({
   postDownvote,
   reduxPaper,
   promotionSummary,
+  onClick,
 }) => {
   let {
     id,
@@ -111,6 +112,7 @@ const PaperEntryCard = ({
       "/user/[authorId]/[tabName]",
       `/user/${authorId}/contributions`
     );
+    onClick && onClick();
   }
 
   function renderPromoter() {
@@ -245,6 +247,7 @@ const PaperEntryCard = ({
       postEvent();
       Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
     }
+    onClick && onClick();
   }
 
   function formatDiscussionCount() {
