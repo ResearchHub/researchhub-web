@@ -17,8 +17,6 @@ import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import EmptySummarySection from "./Summary/EmptySummary";
@@ -164,6 +162,12 @@ class LimitationTab extends React.Component {
         showForm: false,
       });
     } else {
+      if (this.props.limitations.status === 429) {
+        showMessage({ show: false });
+        return this.setState({
+          pendingSubmission: false,
+        });
+      }
       showMessage({ show: false });
       setMessage("Something went wrong.");
       showMessage({ show: true, error: true });

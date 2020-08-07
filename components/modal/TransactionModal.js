@@ -419,6 +419,11 @@ class TransactionModal extends React.Component {
           }
         })
         .catch((err) => {
+          if (err.response.status === 429) {
+            showMessage({ show: false });
+            this.closeModal();
+            return this.props.openRecaptchaPrompt(true);
+          }
           err.name = "";
           setTimeout(() => {
             showMessage({ show: false });
@@ -1064,6 +1069,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   openTransactionModal: ModalActions.openTransactionModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   getUser: AuthActions.getUser,

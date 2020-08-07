@@ -329,6 +329,8 @@ class CommentEntry extends React.Component {
           callback && callback();
         }
       );
+    } else {
+      callback && callback();
     }
   };
 

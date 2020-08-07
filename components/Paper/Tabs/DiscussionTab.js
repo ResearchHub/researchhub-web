@@ -248,6 +248,10 @@ const DiscussionTab = (props) => {
         }, 800);
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          props.showMessage({ show: false });
+          return props.openRecaptchaPrompt(true);
+        }
         setTimeout(() => {
           props.showMessage({ show: false });
           props.setMessage("Something went wrong");
@@ -1015,6 +1019,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   openAddDiscussionModal: ModalActions.openAddDiscussionModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
 };

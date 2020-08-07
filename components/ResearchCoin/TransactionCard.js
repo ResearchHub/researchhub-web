@@ -10,7 +10,6 @@ import { transformDate } from "~/redux/utils";
 
 const TransactionCard = (props) => {
   let { transaction } = props;
-  console.log("trans", transaction);
   function renderStatus(status) {
     switch (status) {
       case "FAILED":

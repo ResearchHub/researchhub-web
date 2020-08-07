@@ -1,5 +1,6 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { handleCatch } from "~/redux/utils";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -60,6 +61,7 @@ export const FlagActions = {
           });
         })
         .catch((err) => {
+          handleCatch(err, dispatch);
           return dispatch({
             type: FlagConstants.POST_FLAG_FAILURE,
             payload: {
@@ -98,6 +100,7 @@ export const FlagActions = {
           });
         })
         .catch((err) => {
+          handleCatch(err, dispatch);
           return dispatch({
             type: FlagConstants.REMOVE_FLAG_FAILURE,
             payload: {

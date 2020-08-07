@@ -559,6 +559,11 @@ class PaperUploadInfo extends React.Component {
         this.setState({
           selectedAuthors,
         });
+      })
+      .catch((err) => {
+        if (err.response.status === 429) {
+          this.props.modalActions.openRecaptchaPrompt(true);
+        }
       });
   };
 
@@ -975,6 +980,10 @@ class PaperUploadInfo extends React.Component {
       authActions.getUser();
       this.navigateToSummary();
     } else {
+      if (resp.payload.errorBody.status === 429) {
+        messageActions.showMessage({ show: false });
+        return;
+      }
       messageActions.setMessage(
         resp.payload.errorBody.error
           ? resp.payload.errorBody.error

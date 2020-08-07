@@ -311,6 +311,11 @@ class PaperTransactionModal extends React.Component {
         }
       })
       .catch((err) => {
+        if (err.response.status === 429) {
+          showMessage({ show: false });
+          this.closeModal();
+          return this.props.openRecaptchaPrompt(true);
+        }
         showMessage({ show: false });
         setMessage("Something went wrong.");
         showMessage({ show: true, error: true });
@@ -1212,6 +1217,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   updateUser: AuthActions.updateUser,
   updatePaperState: PaperActions.updatePaperState,
 };
