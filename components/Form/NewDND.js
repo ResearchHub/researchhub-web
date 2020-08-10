@@ -161,7 +161,7 @@ class NewDND extends React.Component {
           let { results, key } = err.message;
           this.setState(
             {
-              searchResults: [results],
+              searchResults: key === "title" ? [...results] : [results],
               isDuplicate: key === "doi" || key === "url" ? true : false,
             },
             () => {
