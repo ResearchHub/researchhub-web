@@ -1016,7 +1016,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
     color: "#241F3A",
-    marginRight: 30,
     width: 120,
     opacity: 0.7,
 
@@ -1027,11 +1026,12 @@ const styles = StyleSheet.create({
   authorLabel: {
     marginRight: 0,
     opacity: 0.7,
-    width: "unset",
+    minWidth: 61,
+    width: 61,
   },
   authorsContainer: {
     width: "100%",
-    marginLeft: 89,
+    marginLeft: 59,
   },
   voting: {
     position: "absolute",

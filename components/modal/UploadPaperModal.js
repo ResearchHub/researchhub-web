@@ -108,16 +108,11 @@ class UploadPaperModal extends React.Component {
             className={css(styles.searchEntryContainer)}
             onClick={this.closeModal}
           >
-            {/* <SearchEntry
-              indexName="paper"
-              result={paper}
-              hideBullets={true}
-              onClickCallBack={this.closeModal}
-            /> */}
             <PaperEntryCard
               paper={paper}
               style={styles.paper}
               onClick={() => setTimeout(this.closeModal, 400)}
+              mobileView={this.state.mobileView}
             />
           </Ripple>
           {/** separate div needed to prevent ripple behavior which leaks to padding/margin */}
@@ -140,6 +135,7 @@ class UploadPaperModal extends React.Component {
 
   render() {
     let { modals } = this.props;
+
     let count = this.props.modals.uploadPaperModal.suggestedPapers.length;
     return (
       <BaseModal
