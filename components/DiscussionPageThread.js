@@ -103,20 +103,36 @@ const Thread = (props) => {
         !readOnly && styles.cardContainerEdit
       )}
     >
+      <BackButton />
       <div className={css(styles.column, styles.left)}>
         <VoteWidget
           selected={selectedVoteType}
           styles={styles.voteWidget}
           score={score}
-          fontSize={"16px"}
-          width={"58px"}
           onUpvote={upvote}
           onDownvote={downvote}
           type={"discussion"}
         />
       </div>
       <div className={css(styles.column, styles.right)}>
-        <BackButton />
+        <div className={css(styles.postMetaDataContainer)}>
+          <div className={css(styles.mobileVoteWidget)}>
+            <VoteWidget
+              selected={selectedVoteType}
+              styles={styles.voteWidget}
+              score={score}
+              horizontalView={true}
+              onUpvote={upvote}
+              onDownvote={downvote}
+              type={"discussion"}
+            />
+          </div>
+          <DiscussionPostMetadata
+            authorProfile={createdBy.authorProfile}
+            username={username}
+            date={date}
+          />
+        </div>
         <div className={css(styles.titleBar)}>
           <div
             className={css(
@@ -127,30 +143,16 @@ const Thread = (props) => {
             {/* {title} */}
             <ThreadEditor
               readOnly={readOnly}
-              styling={[styles.body]}
+              styling={readOnly ? [styles.body] : [styles.bodyEdit]}
               text={body}
               setReadOnly={setReadOnly}
               commentStyles={
                 readOnly ? styles.commentStyles : styles.commentStylesEdit
               }
+              onCancel={() => setReadOnly(true)}
             />
           </div>
-          <div className={css(styles.actionbar)}>
-            <div className={css(styles.mobileVoteWidget)}>
-              <VoteWidget
-                selected={selectedVoteType}
-                styles={styles.voteWidget}
-                score={score}
-                fontSize={"16px"}
-                width={"58px"}
-                horizontalView={true}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                type={"discussion"}
-              />
-            </div>
-            {renderActionBar()}
-          </div>
+          <div className={css(styles.actionbar)}>{renderActionBar()}</div>
         </div>
         {/* <div
           className={css(
@@ -168,13 +170,6 @@ const Thread = (props) => {
             }
           />
         </div> */}
-        {readOnly && (
-          <DiscussionPostMetadata
-            authorProfile={createdBy.authorProfile}
-            username={username}
-            date={date}
-          />
-        )}
       </div>
     </div>
   );
@@ -211,7 +206,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
     padding: "30px 0 30px 0",
-    position: "sticky",
+    position: "relative",
     top: 0,
   },
   cardContainerEdit: {
@@ -223,7 +218,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   left: {
-    paddingTop: 40,
+    marginTop: 40,
     "@media only screen and (max-width: 761px)": {
       display: "none",
     },
@@ -232,19 +227,15 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 761px)": {
       display: "flex",
-      paddingLeft: 15,
     },
   },
   actionbar: {
     display: "flex",
     justifyContent: "flex-end",
     width: "100%",
-    "@media only screen and (max-width: 761px)": {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginTop: 15,
-    },
+    position: "absolute",
+    top: 30,
+    right: 0,
   },
   actions: {
     display: "flex",
@@ -254,6 +245,13 @@ const styles = StyleSheet.create({
   },
   columnEdit: {
     backgroundColor: colors.LIGHT_YELLOW(1),
+  },
+  postMetaDataContainer: {
+    marginTop: 55,
+    marginBottom: 25,
+    "@media only screen and (max-width: 761px)": {
+      display: "flex",
+    },
   },
   titleBar: {
     width: "100%",
@@ -266,7 +264,11 @@ const styles = StyleSheet.create({
     },
   },
   backButtonContainer: {
-    paddingBottom: 30,
+    position: "absolute",
+    top: 30,
+    left: 0,
+    zIndex: 2,
+    cursor: "pointer",
     "@media only screen and (max-width: 761px)": {
       paddingBottom: 20,
       fontSize: 14,
@@ -278,6 +280,7 @@ const styles = StyleSheet.create({
   commentStylesEdit: {
     padding: 16,
     lineHeight: 1.6,
+    background: "#FAFAFD",
   },
   backButton: {
     color: colors.BLACK(0.5),
@@ -293,7 +296,11 @@ const styles = StyleSheet.create({
     },
   },
   voteWidget: {
+    margin: 0,
     marginRight: 18,
+    "@media only screen and (max-width: 415px)": {
+      width: 35,
+    },
   },
   threadInfo: {
     margin: "20px 0 20px 0",
@@ -331,6 +338,8 @@ const styles = StyleSheet.create({
     width: "calc(100% - 76px)",
     minWidth: "calc(100% - 76px)",
     maxWidth: "calc(100% - 76px)",
+    border: "1px solid rgb(232, 232, 242)",
+    borderRadius: 4,
   },
   body: {
     marginBottom: 28,
@@ -338,6 +347,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: "24px",
   },
+  bodyEdit: {},
   reply: {
     cursor: "pointer",
   },

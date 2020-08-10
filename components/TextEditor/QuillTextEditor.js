@@ -492,9 +492,7 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     lineHeight: 1.2,
   },
-  summaryEditorBox: {
-    minHeight: 180,
-  },
+  summaryEditorBox: {},
   commentEditor: {
     background: "#FBFBFD",
     border: "2px solid rgb(232, 232, 242)",
@@ -502,19 +500,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   editable: {},
-  focus: {
-    // borderColor: "rgb(63, 133, 247)",
-  },
+  focus: {},
   editSection: {
     padding: 16,
-    minHeight: 122,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
-    // ":focus": {
-    //   border: `1px solid 'rgb(63, 133, 247)`,
-    //   boxShadow: 'rgb(63, 133, 247) 0px 0px 1px 1px'
-    // },
   },
   comment: {
     whiteSpace: "pre-wrap",

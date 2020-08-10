@@ -9,7 +9,7 @@ import DiscussionActions from "~/redux/discussion";
 import { doesNotExist } from "../config/utils";
 
 const ThreadEditor = (props) => {
-  const { readOnly, setReadOnly, commentStyles } = props;
+  const { readOnly, setReadOnly, commentStyles, onCancel } = props;
 
   const dispatch = useDispatch();
   const store = useStore();
@@ -45,9 +45,9 @@ const ThreadEditor = (props) => {
     <TextEditor
       readOnly={readOnly}
       onSubmit={updateThread}
+      onCancel={onCancel}
       initialValue={value}
       clearOnSubmit={false}
-      hideCancelButton={true}
       commentStyles={commentStyles && commentStyles}
       smallToolBar={true}
     />
