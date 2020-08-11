@@ -188,8 +188,8 @@ class BaseModal extends React.Component {
               </div>
             </Fragment>
           )}
+          {this.props.children}
         </div>
-        {this.props.children}
       </Modal>
     );
   }
