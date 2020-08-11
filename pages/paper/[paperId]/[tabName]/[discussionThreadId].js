@@ -161,7 +161,11 @@ const DiscussionThreadPage = (props) => {
       </div>
       <div className={css(styles.divider)} />
       <div className={css(styles.contentContainer)}>
-        <CommentEditor onSubmit={addSubmittedComment} active={active} />
+        <CommentEditor
+          onSubmit={addSubmittedComment}
+          active={active}
+          commentEditor={true}
+        />
         <div
           id="all_comments_container"
           className={css(styles.allCommentsContainer)}

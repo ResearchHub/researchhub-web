@@ -81,15 +81,15 @@ const ActionButton = (props) => {
 
 const styles = StyleSheet.create({
   actionButton: {
-    width: 46,
-    height: 46,
+    width: 35,
+    height: 35,
     borderRadius: "100%",
     background: colors.LIGHT_GREY(1),
     color: colors.GREY(1),
     cursor: "pointer",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: 18,
+    fontSize: 16,
     marginLeft: 5,
     marginRight: 5,
     display: "flex",
