@@ -162,7 +162,7 @@ class NewDND extends React.Component {
           this.setState(
             {
               searchResults: key === "title" ? [...results] : [results],
-              isDuplicate: key === "doi" || key === "url" ? true : false,
+              isDuplicate: true,
             },
             () => {
               this.toggleSearchModal();
