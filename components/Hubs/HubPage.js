@@ -1327,7 +1327,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   setUserBannerPreference: AuthActions.setUserBannerPreference,
-  openUploadPaperModal: ModalActions.openUploadPaperModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
