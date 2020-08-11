@@ -12,14 +12,11 @@ import stripHtml from "string-strip-html";
 import CheckBox from "../Form/CheckBox";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
-import DragNDrop from "../Form/DragNDrop";
 import Button from "../Form/Button";
 import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import { Event } from "~/components/GAnalytics/EventTracker";
 import Message from "../Loader/Message";
-
-//Testing
 import NewDND from "../Form/NewDND";
 
 // Modal
@@ -643,6 +640,7 @@ class PaperUploadInfo extends React.Component {
                     onValidUrl={this.checkFormProgress}
                     onRemove={this.checkFormProgress}
                     onSearch={this.checkPaperSuggestions}
+                    onDuplicate={() => this.setState({ disabled: true })}
                   />
                 </div>
               )}
@@ -798,7 +796,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   renderButtons = () => {
-    let { activeStep, editMode } = this.state;
+    let { activeStep, editMode, disabled } = this.state;
     switch (activeStep) {
       case 1:
         return (
@@ -814,6 +812,7 @@ class PaperUploadInfo extends React.Component {
             <Button
               label={editMode ? "Save" : "Upload"}
               customButtonStyle={styles.button}
+              disabled={disabled}
               type={"submit"}
             />
           </div>
@@ -1011,6 +1010,7 @@ class PaperUploadInfo extends React.Component {
 
     this.setState({
       progress: count * 33.33,
+      disabled: false,
     });
   };
 
@@ -1129,10 +1129,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     border: "1px solid #ddd",
     borderRadius: 4,
-    // boxShadow: "0 1px 8px rgba(0, 0, 0, 0.1), 0 1px 10px rgba(0, 0, 0, 0.1);",
     padding: "30px 60px",
     marginTop: 40,
-    // borderTop: "4px solid #dedee5",
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
       width: 600,
@@ -1438,15 +1436,6 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 10,
     marginBottom: 0,
-    // "@media only screen and (max-width: 665px)": {
-    //   width: 380,
-    // },
-    // "@media only screen and (max-width: 415px)": {
-    //   width: 338,
-    // },
-    // "@media only screen and (max-width: 321px)": {
-    //   width: 270,
-    // },
   },
   doi: {
     width: "100%",

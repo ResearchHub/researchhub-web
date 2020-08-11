@@ -45,6 +45,7 @@ class NewDND extends React.Component {
       // Searching
       searching: false,
       searchResults: [],
+      isDuplicate: false,
     };
     this.inputRef = React.createRef();
   }
@@ -155,6 +156,19 @@ class NewDND extends React.Component {
       .catch((err) => {
         if (err.response.status === 429) {
           this.props.modalActions.openRecaptchaPrompt(true);
+        }
+        if (err.response.status === 403) {
+          let { results, key } = err.message;
+          this.setState(
+            {
+              searchResults: key === "title" ? [...results] : [results],
+              isDuplicate: true,
+            },
+            () => {
+              this.toggleSearchModal();
+              this.props.onDuplicate && this.props.onDuplicate();
+            }
+          );
         }
         this.setState({
           fetching: false,
@@ -428,6 +442,30 @@ class NewDND extends React.Component {
     }
   };
 
+  renderSearchResult = () => {
+    let { searchResults, isDuplicate } = this.state;
+    if (searchResults.length) {
+      const renderText = () => {
+        if (isDuplicate) {
+          return "This paper is already on ResearchHub";
+        }
+        if (searchResults.length > 1) {
+          return `Found ${searchResults.length} similar papers already on ResearchHub`;
+        }
+        return `Found a similar paper already on ResearchHub`;
+      };
+
+      return (
+        <Ripples
+          className={css(styles.suggestions)}
+          onClick={this.toggleSearchModal}
+        >
+          {renderText()}
+        </Ripples>
+      );
+    }
+  };
+
   render() {
     return (
       <div className={css(styles.componentContainer)}>
@@ -438,14 +476,7 @@ class NewDND extends React.Component {
           {this.state.urlView ? "Upload a PDF" : "Paste a Link"}
         </Ripples>
         {this.renderContent()}
-        {this.state.searchResults.length > 0 && (
-          <Ripples
-            className={css(styles.suggestions)}
-            onClick={this.toggleSearchModal}
-          >
-            {`Found ${this.state.searchResults.length} similar papers`}
-          </Ripples>
-        )}
+        {this.renderSearchResult()}
       </div>
     );
   }
