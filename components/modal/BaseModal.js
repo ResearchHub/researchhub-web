@@ -1,5 +1,5 @@
 // NPM Modules
-import React, { Fragment } from "react";
+import React, { Fragment, Children } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -116,6 +116,10 @@ class BaseModal extends React.Component {
     };
   };
 
+  isMobileView = () => {
+    return this.state.mobileView;
+  };
+
   render() {
     let { enableScroll } = this.props;
     return (
@@ -184,8 +188,8 @@ class BaseModal extends React.Component {
               </div>
             </Fragment>
           )}
-          {this.props.children}
         </div>
+        {this.props.children}
       </Modal>
     );
   }
