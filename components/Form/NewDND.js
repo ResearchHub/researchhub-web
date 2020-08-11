@@ -145,6 +145,8 @@ class NewDND extends React.Component {
             fetching: false,
             urlIsValid: csl_item ? true : false,
             inputDisabled: false,
+            searchResults: [],
+            isDuplicate: false,
           },
           () => {
             // when metadata returns, search existing papers using the title
@@ -230,6 +232,7 @@ class NewDND extends React.Component {
         fileLoading: false,
         fileDropped: false,
         fileIsPdf: false,
+        isDuplicate: false,
       },
       () => {
         this.props.onRemove && this.props.onRemove();
@@ -246,6 +249,7 @@ class NewDND extends React.Component {
         fetching: false,
         inputDisabled: false,
         searchResults: [],
+        isDuplicate: false,
       },
       () => {
         this.inputRef.current.focus();
