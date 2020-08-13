@@ -264,7 +264,7 @@ class PaperTransactionModal extends React.Component {
       });
     }
     return this.props.alert.show({
-      text: `Use ${value} RSC to promote this paper?`,
+      text: `Use ${value} RSC to support this paper?`,
       buttonText: "Yes",
       onClick: () => {
         this.sendTransaction();
@@ -711,7 +711,7 @@ class PaperTransactionModal extends React.Component {
                 </div>
               )}
               <div onClick={this.closeModal}>
-                You can view your boosts on your
+                You can view the papers you support on your
                 <Link
                   href={"/user/[authorId]/[tabName]"}
                   as={`/user/${user.author_profile.id}/boosts`}
@@ -772,7 +772,7 @@ class PaperTransactionModal extends React.Component {
               <div className={css(styles.subtitle)}>
                 {this.state.value} RSC = {this.state.value} Day
                 {this.state.value === 0 || this.state.value > 1 ? "s" : ""} of
-                Boost + {this.state.value} Upvote
+                Support + {this.state.value} Upvote
                 {this.state.value === 0 || this.state.value > 1 ? "s" : ""}
               </div>
             </div>
@@ -877,7 +877,7 @@ class PaperTransactionModal extends React.Component {
                 <div className={css(styles.column, styles.left)}>
                   <div className={css(styles.title)}>Amount</div>
                   <div className={css(styles.subtitle)}>
-                    {this.state.value} RSC = {this.state.value} Day of Boost
+                    {this.state.value} RSC = {this.state.value} Day of Support
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
@@ -910,7 +910,7 @@ class PaperTransactionModal extends React.Component {
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
-        title={"Boost Paper"} // this needs to
+        title={"Support Paper"} // this needs to
       >
         {this.renderContent()}
       </BaseModal>
