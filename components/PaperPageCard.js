@@ -783,7 +783,7 @@ class PaperPageCard extends React.Component {
                               opacity={1}
                             />
                           </span>
-                          Boost
+                          Support
                         </div>
                       </PermissionNotificationWrapper>
                     </div>
@@ -824,7 +824,7 @@ class PaperPageCard extends React.Component {
                     opacity={1}
                   />
                 </span>
-                Boost
+                Support
               </div>
             </PermissionNotificationWrapper>
           </div>
