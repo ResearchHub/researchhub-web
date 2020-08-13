@@ -715,6 +715,7 @@ class PaperPageCard extends React.Component {
                       <div
                         className={css(
                           styles.labelContainer,
+                          styles.authorLabelContainer,
                           !paper.paper_publish_date && styles.marginTop
                         )}
                       >
@@ -995,13 +996,16 @@ const styles = StyleSheet.create({
   marginTop: {
     marginTop: 5,
   },
+  authorLabelContainer: {
+    alignItems: "flex-start",
+  },
   labelContainer: {
     fontSize: 16,
     color: "#241F3A",
     display: "flex",
     width: "100%",
     marginBottom: 5,
-    alignItems: "flex-start",
+    alignItems: "center",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
