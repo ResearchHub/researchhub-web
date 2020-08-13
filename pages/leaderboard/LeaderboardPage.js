@@ -72,7 +72,7 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
 
-    let byOptions = [{ label: "ResearchHub", value: 0 }];
+    let byOptions = [{ label: "All Hubs", value: 0 }];
     let defaultBy = byOptions[0];
 
     if (this.props.hub) {
@@ -480,9 +480,9 @@ class Index extends React.Component {
                 options={this.state.byOptions}
                 value={this.state.by}
                 containerStyle={mainFeedStyles.dropDownLeft}
-                singleValue={{
-                  color: colors.PURPLE(),
-                }}
+                // singleValue={{
+                //   color: colors.PURPLE(),
+                // }}
                 indicatorSeparator={{
                   display: "none",
                 }}
