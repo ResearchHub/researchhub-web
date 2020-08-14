@@ -1,29 +1,31 @@
 import Router from "next/router";
-import { redirect } from "~/config/utils";
-import { formatPaperSlug } from "~/config/utils";
+import Error from "next/error";
+import { redirect, formatPaperSlug } from "~/config/utils";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
 
 function Paper(props) {
   // TODO: Does this need to be a dynamic route or hard refresh?
+  if (props.error || props.paper.status === 404) {
+    return <Error statusCode={404} />;
+  }
   Router.push(props.redirectPath);
 }
 
 Paper.getInitialProps = async (ctx) => {
-  let { store, query } = ctx;
-  let redirectPath = "summary"; // default slug
-
+  let { store, res, query } = ctx;
   await store.dispatch(PaperActions.getPaper(query.paperId));
   let paper = store.getState().paper;
-  if (paper && (paper.title || paper.paper_title)) {
-    redirectPath = formatPaperSlug(
-      paper.paper_title ? paper.paper_title : paper.title
-    );
+  if (paper.status === 404) {
+    res.statusCode = 404;
+    return { error: true, paper: store.getState().paper };
   }
-
+  let redirectPath = formatPaperSlug(
+    paper.paper_title ? paper.paper_title : paper.title
+  );
   redirect(ctx, "paperId", redirectPath);
-  return { redirectPath };
+  return { redirectPath, paper };
 };
 
 export default Paper;
