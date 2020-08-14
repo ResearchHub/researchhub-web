@@ -352,3 +352,15 @@ export function convertEditorValueToHtml(value) {
 
   return value && html.serialize(value); // hmtl
 }
+
+export function formatPaperSlug(paperTitle) {
+  if (paperTitle.length && typeof paperTitle === "string") {
+    let slug = paperTitle.replace(/[^a-zA-Z ]/g, ""); // remove special characters regex
+    slug = slug
+      .split(" ")
+      .join("-")
+      .toLowerCase();
+    return slug ? slug : "";
+  }
+  return "";
+}

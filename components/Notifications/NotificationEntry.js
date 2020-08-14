@@ -3,8 +3,6 @@ import { useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import Link from "next/link";
-import InfiniteScroll from "react-infinite-scroller";
-import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 
 // Component
@@ -15,7 +13,12 @@ import { NotificationActions } from "~/redux/notification";
 
 // Config
 import colors from "../../config/themes/colors";
-import { doesNotExist, getNestedValue, timeAgo } from "~/config/utils";
+import {
+  doesNotExist,
+  getNestedValue,
+  timeAgo,
+  formatPaperSlug,
+} from "~/config/utils";
 
 const NotificationEntry = (props) => {
   let { notification, data } = props;
@@ -62,10 +65,15 @@ const NotificationEntry = (props) => {
     let threadId = thread_id;
     let href;
     let route;
+    let title = formatPaperSlug(
+      notification.paper_official_title
+        ? notification.paper_official_title
+        : notification.paper_title
+    );
 
     if (type === "paper" || type === "summary") {
-      href = "/paper/[paperId]/[tabName]";
-      route = `/paper/${paperId}/summary`;
+      href = "/paper/[paperId]/[paperName]";
+      route = `/paper/${paperId}/${title}`;
     } else if (
       type === "thread" ||
       type === "comment" ||
@@ -74,8 +82,11 @@ const NotificationEntry = (props) => {
       type === "vote_reply" ||
       type === "vote_comment"
     ) {
-      href = "/paper/[paperId]/[tabName]/[discussionThreadId]";
-      route = `/paper/${paperId}/discussion/${threadId}`;
+      href = "/paper/[paperId]/[paperName]";
+      route = `/paper/${paperId}/${title}#comments`;
+    } else if (type === "bullet_point") {
+      href = "/paper/[paperId]/[paperName]";
+      route = `/paper/${paperId}/${title}#takeaways`;
     }
 
     isRead && props.closeMenu();
@@ -87,13 +98,22 @@ const NotificationEntry = (props) => {
 
   const renderString = (contentType) => {
     const notification = props.notification;
-    let { created_date, created_by, content_type } = notification;
+    let {
+      created_date,
+      created_by,
+      content_type,
+      paper_title,
+      paper_official_title,
+    } = notification;
     let notificationType = content_type;
     const timestamp = formatTimestamp(created_date);
     const username = formatUsername(
       getNestedValue(created_by, ["author_profile"])
     );
     const authorId = getNestedValue(created_by, ["author_profile", "id"]);
+    let title = formatPaperSlug(
+      paper_official_title ? paper_official_title : paper_title
+    );
     let paperTip = notification.paper_title
       ? notification.paper_title
       : notification.paper_official_title;
@@ -123,8 +143,8 @@ const NotificationEntry = (props) => {
             </Link>
             {" added a key takeaway to "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}#takeaways`}
             >
               <a
                 onClick={(e) => {
@@ -163,8 +183,8 @@ const NotificationEntry = (props) => {
             edited a <span>summary </span>
             for{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}#summary`}
             >
               <a
                 onClick={(e) => {
@@ -205,8 +225,8 @@ const NotificationEntry = (props) => {
             </Link>{" "}
             uploaded a new paper{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 onClick={(e) => {
@@ -244,8 +264,8 @@ const NotificationEntry = (props) => {
             </Link>{" "}
             created a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
             >
               <a
                 onClick={(e) => {
@@ -259,8 +279,8 @@ const NotificationEntry = (props) => {
             </Link>
             {"in "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 onClick={(e) => {
@@ -299,8 +319,8 @@ const NotificationEntry = (props) => {
             </Link>{" "}
             left a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}#comments`}
             >
               <a
                 onClick={(e) => {
@@ -315,8 +335,8 @@ const NotificationEntry = (props) => {
             </Link>
             {"in your thread: "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/discussion`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}#comments`}
             >
               <a
                 onClick={(e) => {
@@ -355,8 +375,8 @@ const NotificationEntry = (props) => {
             </Link>{" "}
             left a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}#comments`}
             >
               <a
                 onClick={(e) => {
@@ -371,8 +391,8 @@ const NotificationEntry = (props) => {
             </Link>
             {"to your comment in "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/discussion`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}#comments`}
             >
               <a
                 onClick={(e) => {
@@ -410,8 +430,8 @@ const NotificationEntry = (props) => {
             </Link>{" "}
             voted on{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 onClick={(e) => {
@@ -449,8 +469,8 @@ const NotificationEntry = (props) => {
             </Link>{" "}
             voted on a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
             >
               <a
                 onClick={(e) => {
@@ -464,8 +484,8 @@ const NotificationEntry = (props) => {
             </Link>
             in{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 onClick={(e) => {
@@ -503,8 +523,8 @@ const NotificationEntry = (props) => {
             </Link>{" "}
             voted on a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
             >
               <a
                 onClick={(e) => {
@@ -518,8 +538,8 @@ const NotificationEntry = (props) => {
             </Link>
             in{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 onClick={(e) => {
@@ -557,8 +577,8 @@ const NotificationEntry = (props) => {
             </Link>{" "}
             voted on a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
             >
               <a
                 onClick={(e) => {
@@ -572,8 +592,8 @@ const NotificationEntry = (props) => {
             </Link>
             in{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 onClick={(e) => {

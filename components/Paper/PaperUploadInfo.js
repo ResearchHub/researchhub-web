@@ -33,6 +33,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "../../config/utils/options";
 import discussionScaffold from "./discussionScaffold.json";
 import FormTextArea from "../Form/FormTextArea";
+import { formatPaperSlug } from "~/config/utils";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -908,9 +909,13 @@ class PaperUploadInfo extends React.Component {
     let paperId = this.state.editMode
       ? this.props.paperId
       : this.props.paper.postedPaper.id;
+    let paperTitle = paper.paper_title ? paper.paper_title : paper.title;
     this.props.paperActions.clearPostedPaper();
     this.props.paperActions.removePaperFromState();
-    Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
+    Router.push(
+      "/paper/[paperId]/[paperName]",
+      `/paper/${paperId}/${formatPaperSlug(paperTitle)}`
+    );
   };
 
   cancel = () => {
@@ -918,7 +923,11 @@ class PaperUploadInfo extends React.Component {
       this.setState({ ...this.initialState });
       this.props.paperActions.removePaperFromState();
       let { paperId, paper } = this.props;
-      Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
+      let paperTitle = paper.paper_title ? paper.paper_title : paper.title;
+      Router.push(
+        "/paper/[paperId]/[paperName]",
+        `/paper/${paperId}/${formatPaperSlug(paperTitle)}`
+      );
     } else {
       this.setState({ ...this.initialState });
       this.props.paperActions.removePaperFromState();

@@ -10,7 +10,7 @@ import PromotionGraph from "./PromotionGraph";
 
 // Config
 import colors from "~/config/themes/colors";
-import { formatTransactionDate } from "~/config/utils";
+import { formatTransactionDate, formatPaperSlug } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 
 class PromotionCard extends React.Component {
@@ -147,8 +147,8 @@ class PromotionCard extends React.Component {
           </div>
           <div className={css(styles.column)}>
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paper.id}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paper.id}/${formatPaperSlug(paper.title)}`}
             >
               <a className={css(styles.link)}>
                 <div className={css(styles.title)}>{paper.title}</div>

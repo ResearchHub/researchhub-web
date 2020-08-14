@@ -46,6 +46,8 @@ class SearchEntry extends React.Component {
   handleClick = () => {
     let { indexName, result, clearSearch, onClickCallBack } = this.props;
     let { id } = result;
+    console.log("result", result);
+    console.log("this.props", this.props);
     clearSearch && clearSearch();
     if (indexName === "author") {
       Router.push("/user/[authorId]/[tabName]", `/user/${id}/contributions`);

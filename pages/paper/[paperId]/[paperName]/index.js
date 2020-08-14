@@ -391,6 +391,7 @@ const Paper = (props) => {
             props.paper.metatagImage ||
             (props.paper.first_preview && props.paper.first_preview.file)
           }
+          canonical={`https://www.researchhub.com/paper/${paper.id}`}
         />
         <div className={css(styles.paperPageContainer)}>
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
