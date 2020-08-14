@@ -427,14 +427,16 @@ class PaperPageCard extends React.Component {
     let { paper } = this.props;
 
     let authors = {};
-
     try {
       if (paper.raw_authors) {
-        // TODO: make sure raw_authors is always in the same format
-        if (!Array.isArray(paper.raw_authors)) {
-          paper.raw_authors = [JSON.parse(paper.raw_authors)];
+        let rawAuthors = paper.raw_authors;
+        if (typeof paper.raw_authors === "string") {
+          rawAuthors = JSON.parse(paper.raw_authors);
+          if (!Array.isArray(rawAuthors)) {
+            rawAuthors = [rawAuthors];
+          }
         }
-        paper.raw_authors.forEach((author) => {
+        rawAuthors.forEach((author) => {
           if (author.first_name && !author.last_name) {
             authors[author.first_name] = true;
           } else if (author.last_name && !author.first_name) {
