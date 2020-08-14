@@ -718,7 +718,7 @@ var styles = StyleSheet.create({
     paddingTop: 7,
   },
   whiteSpace: {
-    whiteSpace: "pre-wrap",
+    // whiteSpace: "pre-wrap",
   },
   abstractText: {
     lineHeight: 1.6,
