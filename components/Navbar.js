@@ -415,7 +415,8 @@ const Navbar = (props) => {
       <div
         className={css(
           styles.navbarContainer,
-          router.route === "/paper/[paperId]/[tabName]" && styles.unstickyNavbar
+          router.route === "/paper/[paperId]/[paperName]" &&
+            styles.unstickyNavbar
         )}
       >
         <UploadPaperModal />
