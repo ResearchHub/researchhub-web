@@ -239,7 +239,7 @@ const AuthorPage = (props) => {
     },
     {
       href: "boosts",
-      label: "boosts",
+      label: "supported papers",
       showCount: true,
       count: author.promotions && author.promotions.count,
     },
