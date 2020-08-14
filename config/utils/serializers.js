@@ -358,6 +358,7 @@ export function formatPaperSlug(paperTitle) {
     let slug = paperTitle.replace(/[^a-zA-Z ]/g, ""); // remove special characters regex
     slug = slug
       .split(" ")
+      .filter((el) => el !== "")
       .join("-")
       .toLowerCase();
     return slug ? slug : "";
