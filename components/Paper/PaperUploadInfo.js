@@ -56,11 +56,8 @@ class PaperUploadInfo extends React.Component {
         author: {
           self_author: false,
         },
-        type: {
-          journal: false,
-          conference: false,
-          other: false,
-        },
+        raw_authors: [],
+        type: "",
         hubs: [],
       },
       error: {
@@ -135,8 +132,7 @@ class PaperUploadInfo extends React.Component {
   prefillPaperInfo = () => {
     let { uploadedPaper } = this.props.paper;
     let form = { ...this.state.form };
-    let { DOI, url, title, abstract, issued } = uploadedPaper;
-
+    let { DOI, url, title, abstract, issued, type, author } = uploadedPaper;
     if (title || this.props.paperTitle) {
       form.paper_title = this.props.paperTitle
         ? this.props.paperTitle
@@ -157,6 +153,18 @@ class PaperUploadInfo extends React.Component {
       form.published.month = this.handleFormMonth(date);
       form.published.day = this.handleFormDay(date);
     }
+    if (author && author.length) {
+      form.raw_authors = author.map((a, i) => {
+        return {
+          first_name: a.given ? a.given : "",
+          lasat_name: a.family ? a.family : "",
+        };
+      });
+    }
+    if (type) {
+      form.type = type;
+    }
+
     this.setState({ form: form }, () => {
       this.props.messageActions.showMessage({ show: false });
       this.checkFormProgress();

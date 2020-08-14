@@ -41,11 +41,17 @@ export const paperPost = ({
   tagline,
   abstract,
   paper_title,
+  raw_authors,
 }) => {
   let formData = new FormData();
   authors &&
     authors.forEach((author) => {
-      return formData.append("authors", author);
+      return formData.append("authors", JSON.stringify(author));
+    });
+
+  raw_authors &&
+    raw_authors.forEach((author) => {
+      return formData.append("raw_authors", JSON.stringify(author));
     });
   hubs &&
     hubs.forEach((hub) => {
