@@ -24,7 +24,12 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { doesNotExist, getNestedValue, timeAgo } from "~/config/utils";
+import {
+  doesNotExist,
+  getNestedValue,
+  timeAgo,
+  formatPaperSlug,
+} from "~/config/utils";
 
 class LiveFeedNotification extends React.Component {
   constructor(props) {
@@ -79,18 +84,21 @@ class LiveFeedNotification extends React.Component {
     let threadId = thread_id;
     let href;
     let route;
+    let title = formatPaperSlug(
+      notification.paper_official_title
+        ? notification.paper_official_title
+        : notification.paper_title
+    );
 
     if (type === "paper" || type === "summary") {
-      href = "/paper/[paperId]/[tabName]";
-      route = `/paper/${paperId}/summary`;
+      href = "/paper/[paperId]/[paperName]";
+      route = `/paper/${paperId}/${title}`;
     } else if (type === "thread" || type === "comment" || type === "reply") {
-      // href = "/paper/[paperId]/[tabName]/[discussionThreadId]";
-      // route = `/paper/${paperId}/discussion/${threadId}`;
-      href = "/paper/[paperId]/[tabName]";
-      route = `/paper/${paperId}/summary#comments`;
+      href = "/paper/[paperId]/[paperName]";
+      route = `/paper/${paperId}/${title}#comments`;
     } else if (type === "bullet_point") {
-      href = "/paper/[paperId]/[tabName]";
-      route = `/paper/${paperId}/summary`;
+      href = "/paper/[paperId]/[paperName]";
+      route = `/paper/${paperId}/${title}#takeaways`;
     }
 
     href && route && Router.push(href, route);
@@ -100,13 +108,22 @@ class LiveFeedNotification extends React.Component {
 
   renderNotification = () => {
     const { notification } = this.props;
-    let { created_date, created_by, content_type } = notification;
+    let {
+      created_date,
+      created_by,
+      content_type,
+      paper_title,
+      paper_official_title,
+    } = notification;
     let notificationType = content_type;
     const timestamp = this.formatTimestamp(created_date);
     const username = this.formatUsername(
       getNestedValue(created_by, ["author_profile"])
     );
     const authorId = getNestedValue(created_by, ["author_profile", "id"]);
+    let title = formatPaperSlug(
+      paper_official_title ? paper_official_title : paper_title
+    );
     let paperTip = notification.paper_title
       ? notification.paper_title
       : notification.paper_official_title;
@@ -133,8 +150,8 @@ class LiveFeedNotification extends React.Component {
             </Link>
             {" added a key takeaway to "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}#takeaways`}
             >
               <a
                 className={css(styles.paper)}
@@ -167,8 +184,8 @@ class LiveFeedNotification extends React.Component {
             edited a <span>summary </span>
             for{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}#summary`}
             >
               <a
                 className={css(styles.paper)}
@@ -203,8 +220,8 @@ class LiveFeedNotification extends React.Component {
             </Link>{" "}
             uploaded a new paper{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 className={css(styles.paper)}
@@ -236,10 +253,8 @@ class LiveFeedNotification extends React.Component {
             </Link>{" "}
             created a{" "}
             <Link
-              href="/paper/[paperId]/[tabName]"
-              as={`/paper/${paperId}/summary#comments`}
-              // href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              // as={`/paper/${paperId}/discussion/${threadId}`}
+              href="/paper/[paperId]/[paperName]"
+              as={`/paper/${paperId}/${title}#comments`}
             >
               <a
                 className={css(styles.link)}
@@ -250,8 +265,8 @@ class LiveFeedNotification extends React.Component {
             </Link>
             {"in "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 className={css(styles.paper)}
@@ -284,8 +299,8 @@ class LiveFeedNotification extends React.Component {
             </Link>{" "}
             left a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
             >
               <a
                 className={css(styles.link)}
@@ -297,8 +312,8 @@ class LiveFeedNotification extends React.Component {
             </Link>
             {"in "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/discussion`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 className={css(styles.paper)}
@@ -331,8 +346,8 @@ class LiveFeedNotification extends React.Component {
             </Link>{" "}
             left a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
             >
               <a
                 className={css(styles.link)}
@@ -344,8 +359,8 @@ class LiveFeedNotification extends React.Component {
             </Link>
             {"in "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paperId}/discussion`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 className={css(styles.paper)}
@@ -384,7 +399,7 @@ class LiveFeedNotification extends React.Component {
             </Link>{" "}
             voted on{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
+              href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/summary`}
             >
               <a
@@ -417,8 +432,8 @@ class LiveFeedNotification extends React.Component {
             </Link>{" "}
             voted on a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
             >
               <a
                 className={css(styles.link)}
@@ -429,7 +444,7 @@ class LiveFeedNotification extends React.Component {
             </Link>
             in{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
+              href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/summary`}
             >
               <a
@@ -462,8 +477,8 @@ class LiveFeedNotification extends React.Component {
             </Link>{" "}
             voted on a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
             >
               <a
                 className={css(styles.link)}
@@ -474,7 +489,7 @@ class LiveFeedNotification extends React.Component {
             </Link>
             in{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
+              href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/summary`}
             >
               <a
@@ -507,8 +522,8 @@ class LiveFeedNotification extends React.Component {
             </Link>{" "}
             voted on a{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/discussion/${threadId}`}
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
             >
               <a
                 className={css(styles.link)}
@@ -519,7 +534,7 @@ class LiveFeedNotification extends React.Component {
             </Link>
             in{" "}
             <Link
-              href={"/paper/[paperId]/[tabName]"}
+              href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/summary`}
             >
               <a

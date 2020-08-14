@@ -24,7 +24,7 @@ import {
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { formatPublishedDate } from "~/config/utils";
+import { formatPublishedDate, formatPaperSlug } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
@@ -78,6 +78,9 @@ const PaperEntryCard = ({
   );
   const [figures, setFigures] = useState(
     previews.map((preview, index) => preview && preview.file)
+  );
+  const [paperSlug, setPaperSlug] = useState(
+    formatPaperSlug(paper_title ? paper_title : title)
   );
   const store = useStore();
 
@@ -242,10 +245,10 @@ const PaperEntryCard = ({
     e.stopPropagation();
 
     if (e.metaKey || e.ctrlKey) {
-      window.open(`/paper/${id}/summary`, "_blank");
+      window.open(`/paper/${id}/${paperSlug}`, "_blank");
     } else {
       postEvent();
-      Router.push("/paper/[paperId]/[tabName]", `/paper/${id}/summary`);
+      Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
     }
     onClick && onClick();
   }
@@ -259,8 +262,8 @@ const PaperEntryCard = ({
   const renderDiscussionCount = () => {
     return (
       <Link
-        href={"/paper/[paperId]/[tabName]"}
-        as={`/paper/${id}/summary#comments`}
+        href={"/paper/[paperId]/[paperName]"}
+        as={`/paper/${id}/${paperSlug}#comments`}
       >
         <a className={css(styles.link)}>
           <div className={css(styles.discussion)}>
@@ -472,8 +475,8 @@ const PaperEntryCard = ({
             )}
           >
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${id}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${id}/${paperSlug}`}
             >
               <a className={css(styles.link)}>
                 <div className={css(styles.title, styles.text)}>
