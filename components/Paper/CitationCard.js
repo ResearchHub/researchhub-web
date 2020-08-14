@@ -53,7 +53,7 @@ class CitationCard extends React.Component {
   getHref = () => {
     let { citation } = this.props;
     let paperId = citation.id;
-    let title = citiaton.paper_title ? citation.paper_title : citation.title;
+    let title = citation.paper_title ? citation.paper_title : citation.title;
     return `/paper/${paperId}/${formatPaperSlug(title)}`;
   };
 

@@ -354,7 +354,7 @@ export function convertEditorValueToHtml(value) {
 }
 
 export function formatPaperSlug(paperTitle) {
-  if (paperTitle.length && typeof paperTitle === "string") {
+  if (paperTitle && typeof paperTitle === "string") {
     let slug = paperTitle.replace(/[^a-zA-Z ]/g, ""); // remove special characters regex
     slug = slug
       .split(" ")
