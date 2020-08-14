@@ -719,26 +719,14 @@ class PaperPageCard extends React.Component {
                           !paper.paper_publish_date && styles.marginTop
                         )}
                       >
-                        {paper.paper_publish_date && (
-                          <span
-                            className={css(
-                              styles.label,
-                              styles.authorLabel
-                              // paper.authors.length > 1 && styles.padding,
-                              // paper.raw_authors &&
-                              //   paper.raw_authors.length &&
-                              //   styles.padding
-                            )}
-                          >
-                            {`Author${
-                              (paper.authors && paper.authors.length > 1) ||
-                              (paper.raw_authors &&
-                                paper.raw_authors.length > 1)
-                                ? "s"
-                                : ""
-                            }:`}
-                          </span>
-                        )}
+                        <span className={css(styles.label, styles.authorLabel)}>
+                          {`Author${
+                            (paper.authors && paper.authors.length > 1) ||
+                            (paper.raw_authors && paper.raw_authors.length > 1)
+                              ? "s"
+                              : ""
+                          }:`}
+                        </span>
                         <div
                           className={css(
                             styles.labelText,
