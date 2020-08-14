@@ -46,6 +46,7 @@ export default (props) => {
       <title>{title}</title>
       {/* {props.parentPaths && props.parentPaths.length > 0 && formatBreadCrumb()} */}
       <meta key="description" name="description" content={description} />
+      {props.canonical && <link rel="canonical" href={props.canonical} />}
       {/* Social meta tags */}
       <meta
         property="og:description"
