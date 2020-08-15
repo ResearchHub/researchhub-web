@@ -157,7 +157,7 @@ class PaperUploadInfo extends React.Component {
       form.raw_authors = author.map((a, i) => {
         return {
           first_name: a.given ? a.given : "",
-          lasat_name: a.family ? a.family : "",
+          last_name: a.family ? a.family : "",
         };
       });
     }
