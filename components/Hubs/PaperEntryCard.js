@@ -399,7 +399,11 @@ const PaperEntryCard = ({
         .join(", ");
     };
 
+    // TODO: make sure raw_authors is in the right format
     if (raw_authors && raw_authors.length) {
+      if (!Array.isArray(raw_authors)) {
+        raw_authors = [JSON.parse(raw_authors)];
+      }
       return (
         <div
           className={css(
