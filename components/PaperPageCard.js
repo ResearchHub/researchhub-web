@@ -10,6 +10,7 @@ import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
+import * as Sentry from "@sentry/browser";
 
 // Components
 import HubTag from "~/components/Hubs/HubTag";
@@ -427,16 +428,25 @@ class PaperPageCard extends React.Component {
 
     let authors = {};
 
-    if (paper.raw_authors) {
-      paper.raw_authors.forEach((author) => {
-        if (author.first_name && !author.last_name) {
-          authors[author.first_name] = true;
-        } else if (author.last_name && !author.first_name) {
-          authors[author.last_name] = true;
-        } else {
-          authors[`${author.first_name} ${author.last_name}`] = true;
+    try {
+      if (paper.raw_authors) {
+        // TODO: make sure raw_authors is always in the same format
+        if (!Array.isArray(paper.raw_authors)) {
+          paper.raw_authors = [JSON.parse(paper.raw_authors)];
         }
-      });
+        paper.raw_authors.forEach((author) => {
+          if (author.first_name && !author.last_name) {
+            authors[author.first_name] = true;
+          } else if (author.last_name && !author.first_name) {
+            authors[author.last_name] = true;
+          } else {
+            authors[`${author.first_name} ${author.last_name}`] = true;
+          }
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      Sentry.captureException(e);
     }
 
     if (paper.authors) {
