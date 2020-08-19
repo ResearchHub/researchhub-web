@@ -158,8 +158,9 @@ class NewDND extends React.Component {
       .catch((err) => {
         if (err.response.status === 429) {
           this.props.modalActions.openRecaptchaPrompt(true);
-        }
-        if (err.response.status === 403) {
+        } else if (err.response.status === 401) {
+          this.props.modalActions.openLoginModal(true);
+        } else if (err.response.status === 403) {
           let { results, key } = err.message;
           this.setState(
             {
