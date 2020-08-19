@@ -45,14 +45,20 @@ export const paperPost = ({
 }) => {
   let formData = new FormData();
   authors &&
+    authors.length &&
     authors.forEach((author) => {
       return formData.append("authors", JSON.stringify(author));
     });
 
-  raw_authors &&
-    raw_authors.forEach((author) => {
-      return formData.append("raw_authors", JSON.stringify(author));
-    });
+  if (raw_authors) {
+    if (raw_authors.length) {
+      raw_authors.forEach((raw_author, i) => {
+        return formData.append(`raw_authors[${i}]`, JSON.stringify(raw_author));
+      });
+      formData.append("raw_authors_length", raw_authors.length);
+    }
+  }
+
   hubs &&
     hubs.forEach((hub) => {
       return formData.append("hubs", hub);
@@ -255,5 +261,3 @@ export function transformReply(reply) {
     userFlag: reply.user_flag,
   };
 }
-
-// export function
