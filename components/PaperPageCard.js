@@ -700,11 +700,11 @@ class PaperPageCard extends React.Component {
                   <div className={css(styles.title)}>
                     {paper && paper.title}
                   </div>
-                  {paper.paper_title && paper.paper_title !== paper.title && (
+                  {paper.paper_title && paper.paper_title !== paper.title ? (
                     <div className={css(styles.subtitle)}>
                       {`From Paper: ${paper.paper_title}`}
                     </div>
-                  )}
+                  ) : null}
                 </div>
                 <div className={css(styles.column)}>
                   {paper && paper.doi && (
@@ -720,41 +720,41 @@ class PaperPageCard extends React.Component {
                     </div>
                   )}
                   {paper &&
-                    ((paper.authors && paper.authors.length) ||
-                      (paper.raw_authors && paper.raw_authors.length)) && (
+                  ((paper.authors && paper.authors.length) ||
+                    (paper.raw_authors && paper.raw_authors.length)) ? (
+                    <div
+                      className={css(
+                        styles.labelContainer,
+                        styles.authorLabelContainer,
+                        !paper.paper_publish_date && styles.marginTop
+                      )}
+                    >
+                      <span className={css(styles.label, styles.authorLabel)}>
+                        {`Author${
+                          (paper.authors && paper.authors.length > 1) ||
+                          (paper.raw_authors && paper.raw_authors.length > 1)
+                            ? "s"
+                            : ""
+                        }:`}
+                      </span>
                       <div
                         className={css(
-                          styles.labelContainer,
-                          styles.authorLabelContainer,
-                          !paper.paper_publish_date && styles.marginTop
+                          styles.labelText,
+                          styles.authorsContainer
                         )}
                       >
-                        <span className={css(styles.label, styles.authorLabel)}>
-                          {`Author${
-                            (paper.authors && paper.authors.length > 1) ||
-                            (paper.raw_authors && paper.raw_authors.length > 1)
-                              ? "s"
-                              : ""
-                          }:`}
-                        </span>
-                        <div
-                          className={css(
-                            styles.labelText,
-                            styles.authorsContainer
-                          )}
-                        >
-                          {this.renderAuthors()}
-                        </div>
+                        {this.renderAuthors()}
                       </div>
-                    )}
-                  {paper && paper.paper_publish_date && (
+                    </div>
+                  ) : null}
+                  {paper && paper.paper_publish_date ? (
                     <div className={css(styles.labelContainer)}>
                       <span className={css(styles.label)}>Published:</span>
                       <div className={css(styles.labelText)}>
                         {this.renderPublishDate()}
                       </div>
                     </div>
-                  )}
+                  ) : null}
                   {this.renderUploadedBy()}
                   <div className={css(styles.uploadedByContainer)}>
                     <div className={css(styles.mobile)}>
