@@ -15,6 +15,7 @@ import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import Message from "../Loader/Message";
 import NewDND from "../Form/NewDND";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Modal
 import AddAuthorModal from "../modal/AddAuthorModal";
