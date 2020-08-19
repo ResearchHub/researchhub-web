@@ -1,12 +1,10 @@
 import React, { Fragment } from "react";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import Progress from "react-progressbar";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Value } from "slate";
 import { withAlert } from "react-alert";
-import stripHtml from "string-strip-html";
 
 // Component
 import CheckBox from "../Form/CheckBox";
@@ -15,7 +13,6 @@ import FormSelect from "../Form/FormSelect";
 import Button from "../Form/Button";
 import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
-import { Event } from "~/components/GAnalytics/EventTracker";
 import Message from "../Loader/Message";
 import NewDND from "../Form/NewDND";
 
@@ -35,7 +32,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "../../config/utils/options";
 import discussionScaffold from "./discussionScaffold.json";
 import FormTextArea from "../Form/FormTextArea";
-import { parseTwoDigitYear } from "moment";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -69,7 +65,6 @@ class PaperUploadInfo extends React.Component {
         tagline: false,
       },
       showAuthorList: false,
-      progress: 0,
       activeStep: 1,
       searchAuthor: "",
       suggestedAuthors: [], // TODO: Rename this to inididcate authors from search result
@@ -81,6 +76,7 @@ class PaperUploadInfo extends React.Component {
       edited: false,
       suggestedPapers: false,
       urlView: true,
+      showTitle: false,
     };
 
     this.state = {
@@ -152,6 +148,13 @@ class PaperUploadInfo extends React.Component {
       form.published.year = this.handleFormYear(date);
       form.published.month = this.handleFormMonth(date);
       form.published.day = this.handleFormDay(date);
+      form.publishDate = `${form.published.year && form.published.year}-${
+        form.published.month >= 10
+          ? form.published.month
+          : "0" + form.published.month
+      }-${
+        form.published.day >= 10 ? form.published.day : "0" + form.published.day
+      }`;
     }
     if (author && author.length) {
       form.raw_authors = author.map((a, i) => {
@@ -165,10 +168,15 @@ class PaperUploadInfo extends React.Component {
       form.type = type;
     }
 
-    this.setState({ form: form }, () => {
-      this.props.messageActions.showMessage({ show: false });
-      this.checkFormProgress();
-    });
+    this.setState(
+      {
+        form: form,
+        showTitle: Object.keys(uploadedPaper).length && !form.paper_title,
+      },
+      () => {
+        this.props.messageActions.showMessage({ show: false });
+      }
+    );
   };
 
   fetchAndPrefillPaperInfo = (paperId) => {
@@ -242,7 +250,7 @@ class PaperUploadInfo extends React.Component {
         this.setState({
           selectedAuthors: [...authors],
           form,
-          progress: 100,
+          showTitle: Object.keys(uploadedPaper).length && !form.paper_title,
         });
         setTimeout(
           () =>
@@ -337,9 +345,7 @@ class PaperUploadInfo extends React.Component {
       form[keys[0]][keys[1]] = value;
       keys[0] === "published" ? (error[keys[1]] = false) : null; // removes red border on select fields
     }
-    this.setState({ form, error, edited: true }, () => {
-      this.checkFormProgress();
-    });
+    this.setState({ form, error, edited: true });
   };
 
   handleSelfAuthorToggle = (id, value) => {
@@ -384,9 +390,7 @@ class PaperUploadInfo extends React.Component {
     if (error.hubs) {
       error.hubs = form.hubs.length > 0 ? false : true;
     }
-    this.setState({ form, error, edited: true }, () => {
-      this.checkFormProgress();
-    });
+    this.setState({ form, error, edited: true });
   };
 
   /**
@@ -400,16 +404,11 @@ class PaperUploadInfo extends React.Component {
 
     paperActions.uploadPaperToState(uploadedFile, metaData);
     error.dnd = false;
-    this.setState(
-      {
-        uploadingPaper: false,
-        error,
-        edited: true,
-      },
-      () => {
-        this.checkFormProgress();
-      }
-    );
+    this.setState({
+      uploadingPaper: false,
+      error,
+      edited: true,
+    });
   };
 
   uploadUrl = (urlData) => {
@@ -420,25 +419,18 @@ class PaperUploadInfo extends React.Component {
       metaData.name = metaData.title;
       paperActions.uploadPaperToState(metaData);
       error.dnd = false;
-      this.setState(
-        {
-          uploadingPaper: false,
-          error,
-          edited: true,
-        },
-        () => {
-          this.checkFormProgress();
-        }
-      );
+      this.setState({
+        uploadingPaper: false,
+        error,
+        edited: true,
+      });
     });
   };
 
   removePaper = () => {
     let { paperActions, modalActions } = this.props;
     paperActions.removePaperFromState();
-    this.setState({ edited: true }, () => {
-      this.checkFormProgress();
-    });
+    this.setState({ edited: true });
   };
 
   checkPaperSuggestions = (suggestedPapers) => {
@@ -519,42 +511,6 @@ class PaperUploadInfo extends React.Component {
    * RENDERING FUNCTION
    */
 
-  renderTitle = () => {
-    let { activeStep, editMode } = this.state;
-    let title = editMode ? "Edit Paper Information" : "Paper Upload";
-
-    switch (activeStep) {
-      case 1:
-        return (
-          <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title, styles.text)}>{title}</div>
-            <div className={css(styles.subtitle, styles.text)}>
-              Step 1: Main Information
-            </div>
-          </div>
-        );
-      case 2:
-        return (
-          <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title, styles.text)}>{title}</div>
-            <div className={css(styles.subtitle, styles.text)}>
-              Step 2: Add a summary that concisely highlights the main aspects
-              of the paper
-            </div>
-          </div>
-        );
-      case 3:
-        return (
-          <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title, styles.text)}>{title}</div>
-            <div className={css(styles.subtitle, styles.text)}>
-              Step 3: Start a discussion on the paper
-            </div>
-          </div>
-        );
-    }
-  };
-
   addNewUser = (params) => {
     fetch(API.AUTHOR({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
@@ -612,272 +568,212 @@ class PaperUploadInfo extends React.Component {
   renderContent = () => {
     let {
       form,
-      discussion,
       showAuthorList,
       loading,
-      activeStep,
-      uploadingPaper,
       error,
       searchAuthor,
       suggestedAuthors,
       editMode,
+      showTitle,
+      urlView,
     } = this.state;
     // let mobile = this.getWindowWidth();
 
-    switch (activeStep) {
-      case 1:
-        return (
-          <span>
-            {!editMode &&
-              this.renderHeader("Add Paper", "Up to 15MB (.pdf)", false)}
-            <div className={css(styles.section)}>
-              {!editMode && (
-                <div className={css(styles.paper)}>
-                  <div className={css(styles.label, styles.labelStyle)}>
-                    {this.state.urlView ? "Link to Paper" : "Paper PDF"}
-                    <span className={css(styles.asterick)}>*</span>
-                  </div>
-                  <NewDND
-                    handleDrop={this.uploadPaper}
-                    onDrop={null}
-                    toggleFormatState={() => {
-                      this.setState({
-                        urlView: !this.state.urlView,
-                      });
-                    }}
-                    onValidUrl={this.checkFormProgress}
-                    onRemove={this.checkFormProgress}
-                    onSearch={this.checkPaperSuggestions}
-                    onDuplicate={() => this.setState({ disabled: true })}
-                  />
-                </div>
-              )}
+    return (
+      <span>
+        {!editMode &&
+          this.renderHeader("Add Paper", "Up to 15MB (.pdf)", false)}
+        <div className={css(styles.section)}>
+          {!editMode && (
+            <div className={css(styles.paper)}>
+              <div className={css(styles.label, styles.labelStyle)}>
+                {this.state.urlView ? "Link to Paper" : "Paper PDF"}
+                <span className={css(styles.asterick)}>*</span>
+              </div>
+              <NewDND
+                handleDrop={this.uploadPaper}
+                onDrop={null}
+                toggleFormatState={() => {
+                  this.setState({
+                    urlView: !this.state.urlView,
+                  });
+                }}
+                onSearch={this.checkPaperSuggestions}
+                onDuplicate={() => this.setState({ disabled: true })}
+              />
             </div>
-            <div className={css(styles.section, styles.padding)}>
-              {/* <FormInput
-                label={"Paper Title"}
-                placeholder="Enter title of paper"
-                required={true}
-                containerStyle={styles.container}
-                labelStyle={styles.labelStyle}
-                value={form.paper_title}
-                id={"paper_title"}
-                onChange={this.handleInputChange}
-              /> */}
-              <FormInput
-                label={"Editorialized Title (optional)"}
-                placeholder="Jargon free version of the title that the average person would understand"
-                containerStyle={styles.container}
-                labelStyle={styles.labelStyle}
-                value={form.title}
-                id={"title"}
-                onChange={this.handleInputChange}
-              />
-              {editMode && (
-                <Fragment>
-                  <span className={css(styles.container)}>
-                    <AuthorInput
-                      tags={this.state.selectedAuthors}
-                      onChange={this.handleAuthorChange}
-                      onChangeInput={this.searchAuthors}
-                      inputValue={searchAuthor}
-                      label={"Authors"}
-                      // required={true}
-                      error={error.author}
-                      labelStyle={styles.labelStyle}
-                    />
-                  </span>
-                  <span className={css(styles.container)}>
-                    <AuthorCardList
-                      show={showAuthorList}
-                      authors={suggestedAuthors}
-                      loading={loading}
-                      addAuthor={this.openAddAuthorModal}
-                      onAuthorClick={this.handleAuthorSelect}
-                    />
-                  </span>
-                  <div
-                    className={css(styles.row, styles.authorCheckboxContainer)}
-                  >
-                    <CheckBox
-                      isSquare={true}
-                      active={form.author.self_author}
-                      label={"I am an author of this paper"}
-                      id={"author.self_author"}
-                      onChange={this.handleSelfAuthorToggle}
-                      labelStyle={styles.labelStyle}
-                    />
-                  </div>
-                  <div className={css(styles.row)}>
-                    <FormSelect
-                      label={"Year of Publication"}
-                      placeholder="yyyy"
-                      required={false}
-                      containerStyle={styles.smallContainer}
-                      inputStyle={styles.smallInput}
-                      value={form.published.year}
-                      id={"published.year"}
-                      options={Options.range(1960, new Date().getFullYear())}
-                      onChange={this.handleInputChange}
-                      error={error.year}
-                      labelStyle={styles.labelStyle}
-                    />
-                    <FormSelect
-                      label={"Month of Publication"}
-                      placeholder="month"
-                      required={false}
-                      containerStyle={styles.smallContainer}
-                      inputStyle={styles.smallInput}
-                      value={form.published.month}
-                      id={"published.month"}
-                      options={Options.months}
-                      onChange={this.handleInputChange}
-                      error={error.month}
-                      labelStyle={styles.labelStyle}
-                    />
-                  </div>
-                </Fragment>
-              )}
-              {editMode && (
-                <div className={css(styles.section)}>
-                  <div className={css(styles.row)}>
-                    <span className={css(styles.doi)}>
-                      <FormInput
-                        label={"DOI"}
-                        placeholder="Enter DOI of paper"
-                        id={"doi"}
-                        value={form.doi}
-                        containerStyle={styles.doiInput}
-                        labelStyle={styles.labelStyle}
-                        onChange={this.handleInputChange}
-                      />
-                    </span>
-                  </div>
-                </div>
-              )}
-              <FormSelect
-                label={"Hubs"}
-                placeholder="Search Hubs"
-                required={true}
-                containerStyle={styles.container}
-                inputStyle={
-                  (customStyles.input,
-                  form.hubs.length > 0 && customStyles.capitalize)
-                }
-                labelStyle={styles.labelStyle}
-                isMulti={true}
-                value={form.hubs}
-                id={"hubs"}
-                options={this.state.suggestedHubs}
-                onChange={this.handleHubSelection}
-                error={error.hubs}
-              />
-              <span className={css(styles.mobileDoi)}>
-                <FormInput
-                  label={"DOI"}
-                  placeholder="Enter DOI of paper"
-                  id={"doi"}
-                  value={form.doi}
-                  containerStyle={styles.doiInput}
+          )}
+        </div>
+        <div className={css(styles.section, styles.padding)}>
+          {(showTitle || !urlView) && (
+            <FormInput
+              label={"Paper Title"}
+              placeholder="Enter title of paper"
+              required={true}
+              containerStyle={styles.container}
+              labelStyle={styles.labelStyle}
+              value={form.paper_title}
+              id={"paper_title"}
+              onChange={this.handleInputChange}
+            />
+          )}
+          <FormInput
+            label={"Editorialized Title (optional)"}
+            placeholder="Jargon free version of the title that the average person would understand"
+            containerStyle={styles.container}
+            labelStyle={styles.labelStyle}
+            value={form.title}
+            id={"title"}
+            onChange={this.handleInputChange}
+          />
+          {editMode && (
+            <Fragment>
+              <span className={css(styles.container)}>
+                <AuthorInput
+                  tags={this.state.selectedAuthors}
+                  onChange={this.handleAuthorChange}
+                  onChangeInput={this.searchAuthors}
+                  inputValue={searchAuthor}
+                  label={"Authors"}
+                  // required={true}
+                  error={error.author}
                   labelStyle={styles.labelStyle}
-                  onChange={this.handleInputChange}
                 />
               </span>
-              {editMode && (
-                <span className={css(styles.tagline)}>
-                  <FormTextArea
-                    label={"Abstract"}
-                    placeholder="Enter the paper"
-                    containerStyle={styles.taglineContainer}
+              <span className={css(styles.container)}>
+                <AuthorCardList
+                  show={showAuthorList}
+                  authors={suggestedAuthors}
+                  loading={loading}
+                  addAuthor={this.openAddAuthorModal}
+                  onAuthorClick={this.handleAuthorSelect}
+                />
+              </span>
+              <div className={css(styles.row, styles.authorCheckboxContainer)}>
+                <CheckBox
+                  isSquare={true}
+                  active={form.author.self_author}
+                  label={"I am an author of this paper"}
+                  id={"author.self_author"}
+                  onChange={this.handleSelfAuthorToggle}
+                  labelStyle={styles.labelStyle}
+                />
+              </div>
+              <div className={css(styles.row)}>
+                <FormSelect
+                  label={"Year of Publication"}
+                  placeholder="yyyy"
+                  required={false}
+                  containerStyle={styles.smallContainer}
+                  inputStyle={styles.smallInput}
+                  value={form.published.year}
+                  id={"published.year"}
+                  options={Options.range(1960, new Date().getFullYear())}
+                  onChange={this.handleInputChange}
+                  error={error.year}
+                  labelStyle={styles.labelStyle}
+                />
+                <FormSelect
+                  label={"Month of Publication"}
+                  placeholder="month"
+                  required={false}
+                  containerStyle={styles.smallContainer}
+                  inputStyle={styles.smallInput}
+                  value={form.published.month}
+                  id={"published.month"}
+                  options={Options.months}
+                  onChange={this.handleInputChange}
+                  error={error.month}
+                  labelStyle={styles.labelStyle}
+                />
+              </div>
+            </Fragment>
+          )}
+          {editMode && (
+            <div className={css(styles.section)}>
+              <div className={css(styles.row)}>
+                <span className={css(styles.doi)}>
+                  <FormInput
+                    label={"DOI"}
+                    placeholder="Enter DOI of paper"
+                    id={"doi"}
+                    value={form.doi}
+                    containerStyle={styles.doiInput}
                     labelStyle={styles.labelStyle}
-                    value={form.abstract}
-                    id={"abstract"}
                     onChange={this.handleInputChange}
                   />
                 </span>
-              )}
+              </div>
             </div>
-            <div className={css(styles.section)}></div>
-          </span>
-        );
-    }
+          )}
+          <FormSelect
+            label={"Hubs"}
+            placeholder="Search Hubs"
+            required={true}
+            containerStyle={styles.container}
+            inputStyle={
+              (customStyles.input,
+              form.hubs.length > 0 && customStyles.capitalize)
+            }
+            labelStyle={styles.labelStyle}
+            isMulti={true}
+            value={form.hubs}
+            id={"hubs"}
+            options={this.state.suggestedHubs}
+            onChange={this.handleHubSelection}
+            error={error.hubs}
+          />
+          {editMode && (
+            <span className={css(styles.mobileDoi)}>
+              <FormInput
+                label={"DOI"}
+                placeholder="Enter DOI of paper"
+                id={"doi"}
+                value={form.doi}
+                containerStyle={styles.doiInput}
+                labelStyle={styles.labelStyle}
+                onChange={this.handleInputChange}
+              />
+            </span>
+          )}
+          {editMode && (
+            <span className={css(styles.tagline)}>
+              <FormTextArea
+                label={"Abstract"}
+                placeholder="Enter the paper"
+                containerStyle={styles.taglineContainer}
+                labelStyle={styles.labelStyle}
+                value={form.abstract}
+                id={"abstract"}
+                onChange={this.handleInputChange}
+              />
+            </span>
+          )}
+        </div>
+        <div className={css(styles.section)}></div>
+      </span>
+    );
   };
 
   renderButtons = () => {
-    let { activeStep, editMode, disabled } = this.state;
-    switch (activeStep) {
-      case 1:
-        return (
-          <div className={css(styles.buttonRow, styles.buttons)}>
-            <div
-              className={css(styles.button, styles.buttonLeft)}
-              onClick={this.cancel}
-            >
-              <span className={css(styles.buttonLabel, styles.text)}>
-                Cancel
-              </span>
-            </div>
-            <Button
-              label={editMode ? "Save" : "Upload"}
-              customButtonStyle={styles.button}
-              disabled={disabled}
-              type={"submit"}
-            />
-          </div>
-        );
-      case 2:
-        return (
-          <div className={css(styles.buttonRow, styles.buttons)}>
-            <div className={css(styles.backButton)} onClick={this.prevStep}>
-              <img
-                src={"/static/icons/back-arrow-blue.png"}
-                className={css(styles.backButtonIcon)}
-              />
-              Back to previous step
-            </div>
-            <div className={css(styles.button, styles.buttonLeft)}>
-              <Button
-                label={"Skip for now"}
-                customButtonStyle={styles.button}
-                isWhite={true}
-                onClick={this.nextStep}
-              />
-            </div>
-            <div className={css(styles.button)}>
-              <Button
-                label={"Continue"}
-                customButtonStyle={styles.button}
-                onClick={this.saveSummary}
-              />
-            </div>
-          </div>
-        );
-      case 3:
-        return (
-          <div className={css(styles.buttonRow, styles.buttons)}>
-            <div className={css(styles.backButton)} onClick={this.prevStep}>
-              <img
-                src={"/static/icons/back-arrow-blue.png"}
-                className={css(styles.backButtonIcon)}
-              />
-              Back to previous step
-            </div>
-            <div className={css(styles.button, styles.buttonLeft)}>
-              <Button
-                label={"Skip for now"}
-                customButtonStyle={styles.button}
-                isWhite={true}
-                onClick={this.navigateToSummary}
-              />
-            </div>
-            <Button
-              label={"Continue"}
-              customButtonStyle={styles.button}
-              onClick={this.saveDiscussion}
-            />
-          </div>
-        );
-    }
+    let { editMode, disabled } = this.state;
+
+    return (
+      <div className={css(styles.buttonRow, styles.buttons)}>
+        <div
+          className={css(styles.button, styles.buttonLeft)}
+          onClick={this.cancel}
+        >
+          <span className={css(styles.buttonLabel, styles.text)}>Cancel</span>
+        </div>
+        <Button
+          label={editMode ? "Save" : "Upload"}
+          customButtonStyle={styles.button}
+          disabled={disabled}
+          type={"submit"}
+        />
+      </div>
+    );
   };
 
   handleSubmitLogic = () => {
@@ -1001,34 +897,15 @@ class PaperUploadInfo extends React.Component {
     }
   };
 
-  checkFormProgress = () => {
-    var count = 0;
-    let { paper_title, tagline, hubs } = this.state.form;
-    let uploadedPaper = this.props.paper.uploadedPaper;
-    if (paper_title && paper_title.trim() !== "") {
-      count++;
-    }
-
-    if (hubs && hubs.length > 0) {
-      count++;
-    }
-    if (Object.keys(uploadedPaper).length > 0) {
-      count++;
-    }
-
-    this.setState({
-      progress: count * 33.33,
-      disabled: false,
-    });
-  };
-
   navigateToSummary = () => {
     this.props.messageActions.showMessage({ show: true, load: true });
     this.setState({ ...this.initialState });
+    let paper = this.state.editMode
+      ? this.props.paper
+      : this.props.paper.postedPaper;
     let paperId = this.state.editMode
       ? this.props.paperId
       : this.props.paper.postedPaper.id;
-
     this.props.paperActions.clearPostedPaper();
     this.props.paperActions.removePaperFromState();
     Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
@@ -1038,8 +915,7 @@ class PaperUploadInfo extends React.Component {
     if (this.state.editMode) {
       this.setState({ ...this.initialState });
       this.props.paperActions.removePaperFromState();
-
-      let { paperId } = this.props;
+      let { paperId, paper } = this.props;
       Router.push("/paper/[paperId]/[tabName]", `/paper/${paperId}/summary`);
     } else {
       this.setState({ ...this.initialState });
@@ -1050,7 +926,7 @@ class PaperUploadInfo extends React.Component {
   };
 
   render() {
-    let { progress, activeStep } = this.state;
+    let { activeStep } = this.state;
     let { modals } = this.props;
     return (
       <div className={css(styles.background)} ref={this.titleRef}>
@@ -1059,25 +935,15 @@ class PaperUploadInfo extends React.Component {
           isOpen={modals.openAddAuthorModal}
           addNewUser={this.addNewUser}
         />
-        {/* <div className={css(styles.mobileProgressBar)}>
-          <Progress completed={progress} />
-        </div> */}
         <form
           className={css(styles.form)}
           onSubmit={(e) => {
             e.preventDefault();
-            if (activeStep === 1) {
-              this.handleSubmitLogic();
-            }
+            this.handleSubmitLogic();
           }}
           autoComplete={"off"}
         >
-          <div className={css(styles.pageContent)}>
-            {/* <div className={css(styles.progressBar)}>
-              <Progress completed={progress} />
-            </div> */}
-            {this.renderContent()}
-          </div>
+          <div className={css(styles.pageContent)}>{this.renderContent()}</div>
           {this.renderButtons()}
         </form>
       </div>
@@ -1151,27 +1017,6 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       borderTop: "unset",
-    },
-  },
-  progressBar: {
-    position: "absolute",
-    width: "100%",
-    backgroundColor: "#dedee4",
-    top: -4,
-    left: 0,
-    "@media only screen and (max-width: 415px)": {
-      display: "none",
-    },
-  },
-  mobileProgressBar: {
-    display: "none",
-    "@media only screen and (max-width: 415px)": {
-      backgroundColor: "#dedee4",
-      display: "unset",
-      position: "sticky",
-      top: 0,
-      zIndex: 2,
-      width: "100%",
     },
   },
   header: {
