@@ -248,10 +248,11 @@ class PaperUploadInfo extends React.Component {
         }
         form.author.self_author =
           authors.filter((author) => author.id === userAuthorId).length > 0;
+
         this.setState({
           selectedAuthors: [...authors],
           form,
-          showTitle: Object.keys(uploadedPaper).length && !form.paper_title,
+          showTitle: !form.paper_title && !form.title,
         });
         setTimeout(
           () =>
