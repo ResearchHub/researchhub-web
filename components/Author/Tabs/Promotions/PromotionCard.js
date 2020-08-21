@@ -10,7 +10,7 @@ import PromotionGraph from "./PromotionGraph";
 
 // Config
 import colors from "~/config/themes/colors";
-import { formatTransactionDate, formatPaperSlug } from "~/config/utils";
+import { formatTransactionDate } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 
 class PromotionCard extends React.Component {

@@ -13,7 +13,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 // Config
 import colors from "../config/themes/colors";
 import icons from "~/config/themes/icons";
-import { formatDateStandard } from "~/config/utils";
+import { formatDateStandard, formatPaperSlug } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 
 const search_fields = [
@@ -45,20 +45,18 @@ class SearchEntry extends React.Component {
    */
   handleClick = () => {
     let { indexName, result, clearSearch, onClickCallBack } = this.props;
-    let { id } = result;
+    let { id, slug } = result;
+    let paperSlug = slug ? slug : formatPaperSlug(result.title);
     clearSearch && clearSearch();
     if (indexName === "author") {
       Router.push("/user/[authorId]/[tabName]", `/user/${id}/contributions`);
     } else if (indexName === "paper") {
-      Router.push(
-        "/paper/[paperId]/[paperName]",
-        `/paper/${id}/${result.slug}`
-      );
+      Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
     } else if (indexName === "discussion_thread") {
       let { paper } = result;
       Router.push(
         "/paper/[paperId]/[paperName]/[discussionThreadId]",
-        `/paper/${paper}/${result.slug}/${id}`
+        `/paper/${paper}/${paperSlug}/${id}`
       );
     }
     setTimeout(() => onClickCallBack && onClickCallBack(), 400);
