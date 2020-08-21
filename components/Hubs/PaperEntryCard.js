@@ -505,23 +505,7 @@ const PaperEntryCard = ({
                   styles.avatars,
                   authors && authors.length < 1 && styles.hide
                 )}
-              >
-                {authors &&
-                  authors.length > 0 &&
-                  authors.map((author) => (
-                    <div
-                      key={`author_${author.id}_${id}`}
-                      className={css(styles.avatar)}
-                    >
-                      <AuthorAvatar
-                        key={`author_${author.id}_${id}`}
-                        size={25}
-                        textSizeRatio={2.5}
-                        author={author}
-                      />
-                    </div>
-                  ))}
-              </span>
+              ></span>
             </div>
             {renderBullet()}
             {renderUploadedBy()}
