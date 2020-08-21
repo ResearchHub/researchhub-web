@@ -52,9 +52,7 @@ const Paper = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   if (props.redirectPath && typeof window !== "undefined") {
-    console.log("called");
-    // router.push('/paper/[paperId]/[paperName]', props.redirectPath, {});
-    router.push("/home");
+    router.push("/paper/[paperId]/[paperName]", props.redirectPath, {});
   }
   const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
@@ -627,7 +625,9 @@ Paper.getInitialProps = async (ctx) => {
       await store.dispatch(BulletActions.getBullets(query.paperId));
       return { isServer, hostname, paper: fetchedPaper, redirectPath };
     } catch (err) {
-      res.statusCode = 404;
+      if (res) {
+        res.statusCode = 404;
+      }
       return { error: true, errorBody: err };
     }
   }
