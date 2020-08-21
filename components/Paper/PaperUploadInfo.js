@@ -909,12 +909,14 @@ class PaperUploadInfo extends React.Component {
     let paperId = this.state.editMode
       ? this.props.paperId
       : this.props.paper.postedPaper.id;
-    let paperTitle = paper.paper_title ? paper.paper_title : paper.title;
+    let paperName = paper.slug
+      ? paper.slug
+      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
     this.props.paperActions.clearPostedPaper();
     this.props.paperActions.removePaperFromState();
     Router.push(
       "/paper/[paperId]/[paperName]",
-      `/paper/${paperId}/${formatPaperSlug(paperTitle)}`
+      `/paper/${paperId}/${paperName}`
     );
   };
 
@@ -923,10 +925,12 @@ class PaperUploadInfo extends React.Component {
       this.setState({ ...this.initialState });
       this.props.paperActions.removePaperFromState();
       let { paperId, paper } = this.props;
-      let paperTitle = paper.paper_title ? paper.paper_title : paper.title;
+      let paperName = paper.slug
+        ? paper.slug
+        : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
       Router.push(
         "/paper/[paperId]/[paperName]",
-        `/paper/${paperId}/${formatPaperSlug(paperTitle)}`
+        `/paper/${paperId}/${paperName}`
       );
     } else {
       this.setState({ ...this.initialState });

@@ -63,8 +63,8 @@ const PaperEntryCard = ({
     external_source,
     promoted,
     raw_authors,
+    slug,
   } = paper || null;
-
   let selected = null;
   let vote_type = 0;
   const [lightbox, toggleLightbox] = useState(false);
@@ -80,7 +80,7 @@ const PaperEntryCard = ({
     previews.map((preview, index) => preview && preview.file)
   );
   const [paperSlug, setPaperSlug] = useState(
-    formatPaperSlug(paper_title ? paper_title : title)
+    slug ? slug : formatPaperSlug(paper_title ? paper_title : title)
   );
   const store = useStore();
 

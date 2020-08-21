@@ -21,9 +21,9 @@ Paper.getInitialProps = async (ctx) => {
     res.statusCode = 404;
     return { error: true, paper: store.getState().paper };
   }
-  let redirectPath = formatPaperSlug(
-    paper.paper_title ? paper.paper_title : paper.title
-  );
+  let redirectPath = paper.slug
+    ? paper.slug
+    : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
   redirect(ctx, "paperId", redirectPath);
   return { redirectPath, paper };
 };
