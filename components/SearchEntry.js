@@ -46,20 +46,19 @@ class SearchEntry extends React.Component {
   handleClick = () => {
     let { indexName, result, clearSearch, onClickCallBack } = this.props;
     let { id } = result;
-
     clearSearch && clearSearch();
     if (indexName === "author") {
       Router.push("/user/[authorId]/[tabName]", `/user/${id}/contributions`);
     } else if (indexName === "paper") {
       Router.push(
         "/paper/[paperId]/[paperName]",
-        `/paper/${id}/${result.title}`
+        `/paper/${id}/${result.slug}`
       );
     } else if (indexName === "discussion_thread") {
       let { paper } = result;
       Router.push(
         "/paper/[paperId]/[paperName]/[discussionThreadId]",
-        `/paper/${paper}/${result.title}/${id}`
+        `/paper/${paper}/${result.slug}/${id}`
       );
     }
     setTimeout(() => onClickCallBack && onClickCallBack(), 400);
