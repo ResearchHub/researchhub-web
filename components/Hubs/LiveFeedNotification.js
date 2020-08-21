@@ -84,21 +84,23 @@ class LiveFeedNotification extends React.Component {
     let threadId = thread_id;
     let href;
     let route;
-    let title = formatPaperSlug(
-      notification.paper_official_title
-        ? notification.paper_official_title
-        : notification.paper_title
-    );
+    let slug = notification.slug
+      ? notification.slug
+      : formatPaperSlug(
+          notification.paper_official_title
+            ? notification.paper_official_title
+            : notification.paper_title
+        );
 
     if (type === "paper" || type === "summary") {
       href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}`;
+      route = `/paper/${paperId}/${slug}`;
     } else if (type === "thread" || type === "comment" || type === "reply") {
       href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}#comments`;
+      route = `/paper/${paperId}/${slug}#comments`;
     } else if (type === "bullet_point") {
       href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}#takeaways`;
+      route = `/paper/${paperId}/${slug}#takeaways`;
     }
 
     href && route && Router.push(href, route);
@@ -114,6 +116,7 @@ class LiveFeedNotification extends React.Component {
       content_type,
       paper_title,
       paper_official_title,
+      slug,
     } = notification;
     let notificationType = content_type;
     const timestamp = this.formatTimestamp(created_date);
@@ -121,9 +124,11 @@ class LiveFeedNotification extends React.Component {
       getNestedValue(created_by, ["author_profile"])
     );
     const authorId = getNestedValue(created_by, ["author_profile", "id"]);
-    let title = formatPaperSlug(
-      paper_official_title ? paper_official_title : paper_title
-    );
+    let title = slug
+      ? slug
+      : formatPaperSlug(
+          paper_official_title ? paper_official_title : paper_title
+        );
     let paperTip = notification.paper_title
       ? notification.paper_title
       : notification.paper_official_title;
@@ -535,7 +540,7 @@ class LiveFeedNotification extends React.Component {
             in{" "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/summary`}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 className={css(styles.paper)}

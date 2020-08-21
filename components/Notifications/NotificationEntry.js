@@ -25,7 +25,6 @@ const NotificationEntry = (props) => {
   const [isRead, toggleRead] = useState(data.read);
   const dispatch = useDispatch();
   const store = useStore();
-
   const markAsRead = async (data) => {
     if (isRead) {
       return;
@@ -59,17 +58,19 @@ const NotificationEntry = (props) => {
   const handleNavigation = (e) => {
     e && e.stopPropagation();
     let { notification } = props;
-    let { content_type, paper_id, thread_id } = notification;
+    let { content_type, paper_id, thread_id, slug } = notification;
     let type = content_type;
     let paperId = paper_id;
     let threadId = thread_id;
     let href;
     let route;
-    let title = formatPaperSlug(
-      notification.paper_official_title
-        ? notification.paper_official_title
-        : notification.paper_title
-    );
+    let title = slug
+      ? slug
+      : formatPaperSlug(
+          notification.paper_official_title
+            ? notification.paper_official_title
+            : notification.paper_title
+        );
 
     if (type === "paper" || type === "summary") {
       href = "/paper/[paperId]/[paperName]";
@@ -104,6 +105,7 @@ const NotificationEntry = (props) => {
       content_type,
       paper_title,
       paper_official_title,
+      slug,
     } = notification;
     let notificationType = content_type;
     const timestamp = formatTimestamp(created_date);
@@ -111,9 +113,11 @@ const NotificationEntry = (props) => {
       getNestedValue(created_by, ["author_profile"])
     );
     const authorId = getNestedValue(created_by, ["author_profile", "id"]);
-    let title = formatPaperSlug(
-      paper_official_title ? paper_official_title : paper_title
-    );
+    let title = slug
+      ? slug
+      : formatPaperSlug(
+          paper_official_title ? paper_official_title : paper_title
+        );
     let paperTip = notification.paper_title
       ? notification.paper_title
       : notification.paper_official_title;
@@ -135,6 +139,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -150,6 +155,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={paperTip}
@@ -174,6 +180,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -190,6 +197,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={paperTip}
@@ -217,6 +225,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -232,6 +241,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={paperTitle}
@@ -256,6 +266,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -271,6 +282,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.link)}
               >
@@ -286,6 +298,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={paperTip}
@@ -311,6 +324,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -326,6 +340,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.link)}
                 data-tip={commentTip}
@@ -342,6 +357,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={threadTip}
@@ -367,6 +383,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -382,6 +399,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.link)}
                 data-tip={replyTip}
@@ -398,6 +416,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={threadTip}
@@ -422,6 +441,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -437,6 +457,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={paperTip}
@@ -461,6 +482,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -476,6 +498,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.link)}
               >
@@ -491,6 +514,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={paperTip}
@@ -515,6 +539,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -530,6 +555,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.link)}
               >
@@ -545,6 +571,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={paperTip}
@@ -569,6 +596,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.username)}
               >
@@ -584,6 +612,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.link)}
               >
@@ -599,6 +628,7 @@ const NotificationEntry = (props) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   markAsRead(data);
+                  props.closeMenu();
                 }}
                 className={css(styles.paper)}
                 data-tip={paperTip}
