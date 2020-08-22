@@ -62,10 +62,10 @@ const writeFile = () => {
     writeStream.write(footer);
   };
 
-  const writePaperUrl = (paperId) => {
+  const writePaperUrl = (paperId, paperSlug) => {
     let path = `
     <url>
-      <loc>https://www.researchhub.com/paper/${paperId}/summary</loc>
+      <loc>https://www.researchhub.com/paper/${paperId}/${paperSlug}</loc>
       <lastmod>${formatDate(new Date())}</lastmod>
     </url>`;
     writeStream.write(path);
@@ -108,17 +108,16 @@ const writeFile = () => {
           console.log("Writing Papers", next);
 
           let papers = res.data.results;
-
           papers.forEach((paper) => {
             if (paperOnPage < limit) {
-              writePaperUrl(paper.id);
+              writePaperUrl(paper.id, paper.slug);
               paperOnPage++;
               paperCount++;
             } else {
               writeStream.write(footer);
               configureState();
               fileCount++;
-              writePaperUrl(paper.id);
+              writePaperUrl(paper.id, paper.slug);
               paperCount++;
               paperOnPage = 0;
             }
@@ -163,6 +162,7 @@ const writeFile = () => {
               hubCount++;
               hubsWritten++;
             } else {
+              writeStream.write(footer);
               configureState();
               writeHubUrl(hub);
               hubCount++;
@@ -171,7 +171,7 @@ const writeFile = () => {
           });
 
           if (next) {
-            return fetchPapers();
+            return fetchHubs();
           } else {
             return;
           }
