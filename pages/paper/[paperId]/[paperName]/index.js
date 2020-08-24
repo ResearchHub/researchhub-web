@@ -52,7 +52,9 @@ const Paper = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   if (props.redirectPath && typeof window !== "undefined") {
-    router.push("/paper/[paperId]/[paperName]", props.redirectPath, {});
+    router.push("/paper/[paperId]/[paperName]", props.redirectPath, {
+      shallow: true,
+    });
   }
   const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
@@ -604,6 +606,12 @@ Paper.getInitialProps = async (ctx) => {
     try {
       await store.dispatch(PaperActions.getPaper(query.paperId));
       fetchedPaper = store.getState().paper;
+
+      await store.dispatch(
+        PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
+      );
+      await store.dispatch(LimitationsActions.getLimitations(query.paperId));
+      await store.dispatch(BulletActions.getBullets(query.paperId));
       if (fetchedPaper.slug !== query.paperName) {
         // redirect paper if paperName does not match slug
         let paperName = fetchedPaper.slug
@@ -618,17 +626,12 @@ Paper.getInitialProps = async (ctx) => {
         res.end();
         return { isServer, hostname, paper: fetchedPaper, redirectPath };
       }
-      await store.dispatch(
-        PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
-      );
-      await store.dispatch(LimitationsActions.getLimitations(query.paperId));
-      await store.dispatch(BulletActions.getBullets(query.paperId));
       return { isServer, hostname, paper: fetchedPaper, redirectPath };
     } catch (err) {
       if (res) {
         res.statusCode = 404;
       }
-      return { error: true, errorBody: err };
+      return { error: true, errorBody: err, fetchedPaper };
     }
   }
 };
