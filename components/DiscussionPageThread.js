@@ -154,22 +154,6 @@ const Thread = (props) => {
           </div>
           <div className={css(styles.actionbar)}>{renderActionBar()}</div>
         </div>
-        {/* <div
-          className={css(
-            styles.threadInfo,
-            !readOnly && styles.threadInfoEditView
-          )}
-        >
-          <ThreadEditor
-            readOnly={readOnly}
-            styling={[styles.body]}
-            text={body}
-            setReadOnly={setReadOnly}
-            commentStyles={
-              readOnly ? styles.commentStyles : styles.commentStylesEdit
-            }
-          />
-        </div> */}
       </div>
     </div>
   );
@@ -189,7 +173,7 @@ const BackButton = () => {
 
   return (
     <div className={css(styles.backButtonContainer)}>
-      <Link href={"/paper/[paperId]/[tabName]"} as={url}>
+      <Link href={"/paper/[paperId]/[paperName]"} as={url}>
         <a className={css(styles.backButton)}>
           {icons.longArrowLeft}
           <span className={css(styles.backButtonLabel)}>{message}</span>

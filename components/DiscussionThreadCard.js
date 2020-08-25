@@ -24,7 +24,7 @@ import {
 } from "~/config/utils/serializers";
 import { createUsername } from "../config/utils";
 
-const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
+const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();

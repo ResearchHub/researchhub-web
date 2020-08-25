@@ -14,6 +14,7 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+import { formatPaperSlug } from "~/config/utils";
 
 class CitationCard extends React.Component {
   constructor(props) {
@@ -52,7 +53,8 @@ class CitationCard extends React.Component {
   getHref = () => {
     let { citation } = this.props;
     let paperId = citation.id;
-    return `/paper/${paperId}/summary`;
+    let title = citation.paper_title ? citation.paper_title : citation.title;
+    return `/paper/${paperId}/${formatPaperSlug(title)}`;
   };
 
   renderPreview = () => {
@@ -177,7 +179,7 @@ class CitationCard extends React.Component {
         onMouseEnter={this.setHover}
         onMouseLeave={this.unsetHover}
       >
-        <Link href={"/paper/[paperId]/[tabName]"} as={this.getHref()}>
+        <Link href={"/paper/[paperId]/[paperName]"} as={this.getHref()}>
           <a className={css(styles.link)}>
             {figureUrls.length > 0 && (
               <span onClick={(e) => e.stopPropagation()}>

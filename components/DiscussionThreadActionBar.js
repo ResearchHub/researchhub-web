@@ -8,7 +8,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { doesNotExist } from "~/config/utils";
 
-const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
+const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 const DiscussionThreadActionBar = (props) => {
   const { hostname, threadPath, title, comment } = props;

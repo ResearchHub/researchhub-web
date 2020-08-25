@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
+
 import { connect, useDispatch, useStore } from "react-redux";
 import Joyride from "react-joyride";
 import Error from "next/error";
@@ -41,14 +42,20 @@ import {
   convertDeltaToText,
   isQuillDelta,
 } from "~/config/utils/";
+import { redirect, formatPaperSlug } from "~/config/utils";
 
 const Paper = (props) => {
   if (props.error || props.paper.status === 404) {
     return <Error statusCode={404} />;
   }
+  const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
-  const router = useRouter();
+  if (props.redirectPath && typeof window !== "undefined") {
+    router.push("/paper/[paperId]/[paperName]", props.redirectPath, {
+      shallow: true,
+    });
+  }
   const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
   const [showAllSections, toggleShowAllSections] = useState(false);
@@ -391,6 +398,7 @@ const Paper = (props) => {
             props.paper.metatagImage ||
             (props.paper.first_preview && props.paper.first_preview.file)
           }
+          canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
         />
         <div className={css(styles.paperPageContainer)}>
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
@@ -585,10 +593,12 @@ const Paper = (props) => {
   );
 };
 
-Paper.getInitialProps = async ({ isServer, req, store, query, res }) => {
+Paper.getInitialProps = async (ctx) => {
+  const { isServer, req, store, query, res } = ctx;
   const { host } = absoluteUrl(req);
   const hostname = host;
   var fetchedPaper;
+  var redirectPath;
   if (
     store.getState().paper.id !== query.paperId ||
     (!store.getState().paper.doneFetchingPaper && !store.getState().paper.id)
@@ -596,15 +606,32 @@ Paper.getInitialProps = async ({ isServer, req, store, query, res }) => {
     try {
       await store.dispatch(PaperActions.getPaper(query.paperId));
       fetchedPaper = store.getState().paper;
+
       await store.dispatch(
         PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
       );
       await store.dispatch(LimitationsActions.getLimitations(query.paperId));
       await store.dispatch(BulletActions.getBullets(query.paperId));
-      return { isServer, hostname, paper: fetchedPaper };
-    } catch {
-      res.statusCode = 404;
-      return { error: true };
+      if (fetchedPaper.slug !== query.paperName) {
+        // redirect paper if paperName does not match slug
+        let paperName = fetchedPaper.slug
+          ? fetchedPaper.slug
+          : formatPaperSlug(
+              fetchedPaper.paper_title
+                ? fetchedPaper.paper_title
+                : fetchedPaper.title
+            );
+        redirectPath = `/paper/${fetchedPaper.id}/${paperName}`;
+        res.writeHead(301, { Location: redirectPath });
+        res.end();
+        return { isServer, hostname, paper: fetchedPaper, redirectPath };
+      }
+      return { isServer, hostname, paper: fetchedPaper, redirectPath };
+    } catch (err) {
+      if (res) {
+        res.statusCode = 404;
+      }
+      return { error: true, errorBody: err, fetchedPaper };
     }
   }
 };

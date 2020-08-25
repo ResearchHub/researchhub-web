@@ -23,7 +23,7 @@ import { MessageActions } from "~/redux/message";
 import { transformComments } from "~/redux/paper/shims";
 import { createUsername } from "../../config/utils";
 
-const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
+const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 class DiscussionEntry extends React.Component {
   constructor(props) {
