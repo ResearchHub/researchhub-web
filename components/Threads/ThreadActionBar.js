@@ -1,15 +1,12 @@
 import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
 
-import ShareAction from "~/components/ShareAction";
-import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import ThreadTextEditor from "./ThreadTextEditor";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { doesNotExist } from "~/config/utils";
 
-const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
+const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 class ThreadActionBar extends React.Component {
   constructor(props) {
