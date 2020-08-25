@@ -22,7 +22,7 @@ import { timeAgo } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-const DYNAMIC_HREF = "/paper/[paperId]/[tabName]/[discussionThreadId]";
+const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 const DiscussionPostMetadata = (props) => {
   const {

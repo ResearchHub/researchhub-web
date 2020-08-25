@@ -52,7 +52,7 @@ export const paperPost = ({
 
   if (raw_authors) {
     if (raw_authors.length) {
-      raw_authors.forEach((raw_author, i) => {
+      raw_authors.forEach((raw_author) => {
         return formData.append(`raw_authors`, JSON.stringify(raw_author));
       });
     }

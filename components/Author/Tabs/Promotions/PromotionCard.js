@@ -147,8 +147,8 @@ class PromotionCard extends React.Component {
           </div>
           <div className={css(styles.column)}>
             <Link
-              href={"/paper/[paperId]/[tabName]"}
-              as={`/paper/${paper.id}/summary`}
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paper.id}/${paper.slug}`}
             >
               <a className={css(styles.link)}>
                 <div className={css(styles.title)}>{paper.title}</div>
