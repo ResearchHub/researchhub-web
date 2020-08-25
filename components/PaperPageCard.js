@@ -538,6 +538,7 @@ class PaperPageCard extends React.Component {
                   gray={false}
                   key={`hub_tag_index_${index}`}
                   overrideStyle={this.state.showAllHubs && styles.tagStyle}
+                  last={last}
                 />
               );
             }
