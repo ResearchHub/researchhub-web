@@ -1,1 +1,1 @@
-{"paperCount":778910,"fileCount":78,"hubCount":135,"prevTimestamp":"2020-05-22T18:24:31.526Z","timestamp":"2020-08-19T20:18:09.311Z"}
+{"paperCount":778933,"fileCount":78,"hubCount":136,"prevTimestamp":null,"timestamp":"2020-08-25T01:19:33.452Z"}
