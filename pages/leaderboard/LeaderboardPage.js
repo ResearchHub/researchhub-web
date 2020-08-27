@@ -268,7 +268,6 @@ class Index extends React.Component {
       filterOptions.filter((filter) => {
         return filter.value === scope.split("-").join("_");
       })[0];
-
     this.setState(
       {
         type,
@@ -307,9 +306,11 @@ class Index extends React.Component {
         break;
       case "authors":
         type = "Authors";
+        break;
       default:
         return null;
     }
+
     return `Top ${type} ${this.state.by.value === 0 ? "on" : "in"} ${
       this.state.by.label
     } ${this.state.filterBy.label}`;
