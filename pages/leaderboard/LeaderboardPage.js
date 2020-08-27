@@ -101,6 +101,7 @@ class Index extends React.Component {
 
     this.items = [
       { name: "Users", id: "users", type: "users" },
+      { name: "Authors", id: "authors", type: "authors" },
       { name: "Papers", id: "papers", type: "papers" },
     ];
   }
@@ -304,6 +305,8 @@ class Index extends React.Component {
       case "papers":
         type = "Papers";
         break;
+      case "authors":
+        type = "Authors";
       default:
         return null;
     }
@@ -359,30 +362,54 @@ class Index extends React.Component {
     });
   };
 
-  renderLeaderboardUsers = () => {
+  renderLeaderboardUsers = (type = "users") => {
     return this.state.items.map((user, index) => {
-      return (
-        <LeaderboardUser
-          user={user}
-          key={`user_${index}_${user.id}`}
-          userClass={styles.user}
-          name={
-            user.author_profile.first_name + " " + user.author_profile.last_name
-          }
-          authorProfile={user.author_profile}
-          reputation={
-            this.state.by.value !== 0 ? user.hub_rep : user.reputation
-          }
-          repClass={styles.repClass}
-          authorId={user.author_profile.id}
-          extraInfo={
-            <span className={css(styles.createdAt)}>
-              <span className={css(styles.bullet)}>•</span>
-              <span>{timeAgo.format(new Date(user.created_date))}</span>
-            </span>
-          }
-        />
-      );
+      if (type === "authors") {
+        return (
+          <LeaderboardUser
+            key={`user_${index}_${user.id}`}
+            userClass={styles.user}
+            name={user.first_name + " " + user.last_name}
+            authorProfile={user}
+            reputation={
+              this.state.by.value !== 0 ? user.hub_rep : user.reputation
+            }
+            repClass={styles.repClass}
+            authorId={user.id}
+            extraInfo={
+              <span className={css(styles.createdAt)}>
+                <span className={css(styles.bullet)}>•</span>
+                <span>{timeAgo.format(new Date(user.created_date))}</span>
+              </span>
+            }
+          />
+        );
+      } else {
+        return (
+          <LeaderboardUser
+            user={user}
+            key={`user_${index}_${user.id}`}
+            userClass={styles.user}
+            name={
+              user.author_profile.first_name +
+              " " +
+              user.author_profile.last_name
+            }
+            authorProfile={user.author_profile}
+            reputation={
+              this.state.by.value !== 0 ? user.hub_rep : user.reputation
+            }
+            repClass={styles.repClass}
+            authorId={user.author_profile.id}
+            extraInfo={
+              <span className={css(styles.createdAt)}>
+                <span className={css(styles.bullet)}>•</span>
+                <span>{timeAgo.format(new Date(user.created_date))}</span>
+              </span>
+            }
+          />
+        );
+      }
     });
   };
 
@@ -400,6 +427,18 @@ class Index extends React.Component {
             </div>
             <div className={css(styles.leaderboardSection)}>
               {this.renderLeaderboardUsers()}
+            </div>
+          </Fragment>
+        );
+      case "authors":
+        return (
+          <Fragment>
+            <div className={css(styles.leaderboardNav)}>
+              <div className={css(styles.navItem, styles.userNav)}>Author</div>
+              <div className={css(styles.navItem, styles.rep)}>Popularity</div>
+            </div>
+            <div className={css(styles.leaderboardSection)}>
+              {this.renderLeaderboardUsers("authors")}
             </div>
           </Fragment>
         );
