@@ -349,6 +349,13 @@ class Index extends React.Component {
   };
 
   renderLeaderboardPapers = () => {
+    if (!this.state.items.length) {
+      return (
+        <div className={css(styles.emptyStateContainer)}>
+          {`No papers found in this scope.`}
+        </div>
+      );
+    }
     return this.state.items.map((paper, index) => {
       return (
         <div className={css(styles.paperEntryContainer)}>
@@ -363,6 +370,14 @@ class Index extends React.Component {
   };
 
   renderLeaderboardUsers = (type = "users") => {
+    if (!this.state.items.length) {
+      return (
+        <div className={css(styles.emptyStateContainer)}>
+          {`No ${type} found in this scope.`}
+        </div>
+      );
+    }
+
     return this.state.items.map((user, index) => {
       if (type === "authors") {
         return (
@@ -382,7 +397,7 @@ class Index extends React.Component {
             }
           />
         );
-      } else {
+      } else if (type === "users") {
         return (
           <LeaderboardUser
             user={user}
@@ -722,6 +737,12 @@ const styles = StyleSheet.create({
   bullet: {
     padding: "0px 16px",
     fontSize: 20,
+  },
+  emptyStateContainer: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    padding: "20px 0",
   },
 });
 
@@ -1077,6 +1098,7 @@ const mainFeedStyles = StyleSheet.create({
       flexWrap: "wrap",
     },
   },
+
   /**
    * INFINITE SCROLL
    */
