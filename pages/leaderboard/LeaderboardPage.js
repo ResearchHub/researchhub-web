@@ -371,9 +371,7 @@ class Index extends React.Component {
             userClass={styles.user}
             name={user.first_name + " " + user.last_name}
             authorProfile={user}
-            reputation={
-              this.state.by.value !== 0 ? user.hub_rep : user.reputation
-            }
+            reputation={user.total_score ? user.total_score : 0}
             repClass={styles.repClass}
             authorId={user.id}
             extraInfo={
