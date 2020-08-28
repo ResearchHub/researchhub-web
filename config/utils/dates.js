@@ -1,6 +1,6 @@
 import TimeAgo from "javascript-time-ago";
-
 import en from "javascript-time-ago/locale/en";
+import moment from "moment";
 
 TimeAgo.addLocale(en);
 
@@ -24,4 +24,13 @@ export function formatPublishedDate(momentDate, removeText) {
   } else {
     return `Published: ${formatDateStandard(momentDate)}`;
   }
+}
+
+export function getInitialScope() {
+  return {
+    start: moment()
+      .startOf("day")
+      .unix(),
+    end: moment().unix(),
+  };
 }
