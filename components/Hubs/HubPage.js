@@ -35,56 +35,20 @@ const filterOptions = [
   {
     value: "hot",
     label: "Trending",
-    // label: (
-    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
-    //     <i
-    //       className="fad fa-chart-line"
-    //       style={{ width: 15, padding: 10, color: colors.GREEN(),}}
-    //     />
-    //     {"Trending"}
-    //   </span>
-    // ),
     disableScope: true,
   },
   {
     value: "top_rated",
     label: "Top Rated",
-    // label: (
-    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
-    //     <i
-    //       className="fad fa-flame"
-    //       style={{ width: 15, padding: 10, color: colors.RED(),}}
-    //     />
-    //     {"Top Rated"}
-    //   </span>
-    // ),
   },
   {
     value: "newest",
     label: "Newest",
-    // label: (
-    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
-    //     <i
-    //       className="fad fa-sparkles"
-    //       style={{ width: 15, padding: 10, color: colors.YELLOW(),}}
-    //     />
-    //     {"Newest"}
-    //   </span>
-    // ),
     disableScope: true,
   },
   {
     value: "most_discussed",
     label: "Most Discussed",
-    // label: (
-    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
-    //     <i
-    //       className="fad fa-comments-alt"
-    //       style={{ width: 15, padding: 10, color: colors.BLUE(),}}
-    //     />
-    //     {"Most Discussed"}
-    //   </span>
-    // ),
   },
 ];
 
@@ -181,7 +145,10 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    this.fetchPapers({ hub: this.props.hub });
+    if (this.props.initialFeed) {
+      console.log("props", this.props);
+      this.setPapersFromInitialProps(this.props.initialFeed);
+    }
     this.setState({
       subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
     });
@@ -250,6 +217,20 @@ class HubPage extends React.Component {
           .then((res) => {})
           .catch((err) => {});
       }
+    });
+  };
+
+  setPapersFromInitialProps = (res) => {
+    let { count, results, next } = res;
+    this.detectPromoted([...results.data]);
+    this.setState({
+      count: count,
+      papers: results.data,
+      next,
+      page: 1,
+      papersLoading: false,
+      doneFetching: true,
+      noResults: results.no_results,
     });
   };
 
