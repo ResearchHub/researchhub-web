@@ -28,13 +28,9 @@ class HubsList extends React.Component {
   }
 
   componentDidMount() {
+    console.log("HUBLIST MOUNT", this.props);
     if (this.props.hubs) {
-      this.setState({ hubs: this.props.hubs }, () => {
-        // this.revealTimeout = setTimeout(
-        //   () => this.setState({ reveal: true }),
-        //   400
-        // );
-      });
+      this.setState({ hubs: this.props.hubs });
     } else {
       this.fetchHubs();
     }
@@ -42,26 +38,13 @@ class HubsList extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.current !== this.props.current) {
-      this.setState(
-        {
-          // reveal: false,
-          hubs: this.props.hubs,
-        }
-        // () => {
-        //   this.revealTimeout = setTimeout(
-        //     () => this.setState({ reveal: true }),
-        //     400
-        //   );
-        // }
-      );
+      this.setState({
+        // reveal: false,
+        hubs: this.props.hubs,
+      });
     }
     if (prevProps.hubs !== this.props.hubs) {
-      this.setState({ hubs: this.props.hubs }, () => {
-        // this.revealTimeout = setTimeout(
-        //   () => this.setState({ reveal: true }),
-        //   400
-        // );
-      });
+      this.setState({ hubs: this.props.hubs });
     }
   }
 

@@ -92,7 +92,7 @@ class HubPage extends React.Component {
       mobileBanner: false,
       papersLoading: false,
       next: null,
-      doneFetching: false,
+      doneFetching: true,
       unsubscribeHover: false,
       subscribeClicked: false,
       titleBoxShadow: false,
@@ -146,8 +146,10 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     if (this.props.initialFeed) {
-      console.log("props", this.props);
+      // if initialprops
       this.setPapersFromInitialProps(this.props.initialFeed);
+    } else {
+      this.fetchPapers({ hub: this.props.hub });
     }
     this.setState({
       subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
@@ -236,6 +238,7 @@ class HubPage extends React.Component {
 
   fetchPapers = ({ hub }) => {
     let { showMessage } = this.props;
+    this.setState({ doneFetching: false });
     if (this.state.papersLoading) {
       return null;
     }
@@ -747,7 +750,10 @@ class HubPage extends React.Component {
             className={css(styles.leaderboard)}
             style={{ marginTop: this.state.leaderboardTop }}
           >
-            <LeaderboardContainer hub={this.props.hub && this.props.hub.id} />
+            <LeaderboardContainer
+              hub={this.props.hub && this.props.hub.id}
+              initialUsers={this.props.leaderboardFeed}
+            />
           </div>
         </div>
       </div>
