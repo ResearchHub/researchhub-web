@@ -101,6 +101,7 @@ class Index extends React.Component {
 
     this.items = [
       { name: "Users", id: "users", type: "users" },
+      { name: "Authors", id: "authors", type: "authors" },
       { name: "Papers", id: "papers", type: "papers" },
     ];
   }
@@ -267,7 +268,6 @@ class Index extends React.Component {
       filterOptions.filter((filter) => {
         return filter.value === scope.split("-").join("_");
       })[0];
-
     this.setState(
       {
         type,
@@ -304,9 +304,13 @@ class Index extends React.Component {
       case "papers":
         type = "Papers";
         break;
+      case "authors":
+        type = "Authors";
+        break;
       default:
         return null;
     }
+
     return `Top ${type} ${this.state.by.value === 0 ? "on" : "in"} ${
       this.state.by.label
     } ${this.state.filterBy.label}`;
@@ -346,6 +350,13 @@ class Index extends React.Component {
   };
 
   renderLeaderboardPapers = () => {
+    if (!this.state.items.length) {
+      return (
+        <div className={css(styles.emptyStateContainer)}>
+          {`No papers found in this scope.`}
+        </div>
+      );
+    }
     return this.state.items.map((paper, index) => {
       return (
         <div className={css(styles.paperEntryContainer)}>
@@ -359,30 +370,60 @@ class Index extends React.Component {
     });
   };
 
-  renderLeaderboardUsers = () => {
-    return this.state.items.map((user, index) => {
+  renderLeaderboardUsers = (type = "users") => {
+    if (!this.state.items.length) {
       return (
-        <LeaderboardUser
-          user={user}
-          key={`user_${index}_${user.id}`}
-          userClass={styles.user}
-          name={
-            user.author_profile.first_name + " " + user.author_profile.last_name
-          }
-          authorProfile={user.author_profile}
-          reputation={
-            this.state.by.value !== 0 ? user.hub_rep : user.reputation
-          }
-          repClass={styles.repClass}
-          authorId={user.author_profile.id}
-          extraInfo={
-            <span className={css(styles.createdAt)}>
-              <span className={css(styles.bullet)}>•</span>
-              <span>{timeAgo.format(new Date(user.created_date))}</span>
-            </span>
-          }
-        />
+        <div className={css(styles.emptyStateContainer)}>
+          {`No ${type} found in this scope.`}
+        </div>
       );
+    }
+
+    return this.state.items.map((user, index) => {
+      if (type === "authors") {
+        return (
+          <LeaderboardUser
+            key={`user_${index}_${user.id}`}
+            userClass={styles.user}
+            name={user.first_name + " " + user.last_name}
+            authorProfile={user}
+            reputation={user.total_score ? user.total_score : 0}
+            repClass={styles.repClass}
+            authorId={user.id}
+            extraInfo={
+              <span className={css(styles.createdAt)}>
+                <span className={css(styles.bullet)}>•</span>
+                <span>{timeAgo.format(new Date(user.created_date))}</span>
+              </span>
+            }
+          />
+        );
+      } else if (type === "users") {
+        return (
+          <LeaderboardUser
+            user={user}
+            key={`user_${index}_${user.id}`}
+            userClass={styles.user}
+            name={
+              user.author_profile.first_name +
+              " " +
+              user.author_profile.last_name
+            }
+            authorProfile={user.author_profile}
+            reputation={
+              this.state.by.value !== 0 ? user.hub_rep : user.reputation
+            }
+            repClass={styles.repClass}
+            authorId={user.author_profile.id}
+            extraInfo={
+              <span className={css(styles.createdAt)}>
+                <span className={css(styles.bullet)}>•</span>
+                <span>{timeAgo.format(new Date(user.created_date))}</span>
+              </span>
+            }
+          />
+        );
+      }
     });
   };
 
@@ -400,6 +441,18 @@ class Index extends React.Component {
             </div>
             <div className={css(styles.leaderboardSection)}>
               {this.renderLeaderboardUsers()}
+            </div>
+          </Fragment>
+        );
+      case "authors":
+        return (
+          <Fragment>
+            <div className={css(styles.leaderboardNav)}>
+              <div className={css(styles.navItem, styles.userNav)}>Author</div>
+              <div className={css(styles.navItem, styles.rep)}>Popularity</div>
+            </div>
+            <div className={css(styles.leaderboardSection)}>
+              {this.renderLeaderboardUsers("authors")}
             </div>
           </Fragment>
         );
@@ -685,6 +738,12 @@ const styles = StyleSheet.create({
   bullet: {
     padding: "0px 16px",
     fontSize: 20,
+  },
+  emptyStateContainer: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    padding: "20px 0",
   },
 });
 
@@ -1040,6 +1099,7 @@ const mainFeedStyles = StyleSheet.create({
       flexWrap: "wrap",
     },
   },
+
   /**
    * INFINITE SCROLL
    */
