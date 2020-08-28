@@ -1,35 +1,44 @@
 import { connect } from "react-redux";
 import { StyleSheet } from "aphrodite";
 import API from "~/config/api";
-import moment from "moment";
 
 import HubPage from "../components/Hubs/HubPage";
 
+import { getInitialScope } from "~/config/utils/dates";
+
 class Index extends React.Component {
   static async getInitialProps(ctx) {
-    let scope = {
-      start: moment()
-        .startOf("day")
-        .unix(),
-      end: moment().unix(),
-    };
+    try {
+      // Grab initial home feed as props
+      const [initialFeed, leaderboardFeed] = await Promise.all([
+        fetch(
+          API.GET_HUB_PAPERS({
+            hubId: 0,
+            ordering: "hot",
+            timePeriod: getInitialScope(),
+          }),
+          API.GET_CONFIG()
+        ).then((res) => res.json()),
+        fetch(
+          API.LEADERBOARD({ limit: 10, page: 1, hubId: 0 }),
+          API.GET_CONFIG()
+        ).then((res) => res.json()),
+      ]);
 
-    let res = await fetch(
-      API.GET_HUB_PAPERS({
-        hubId: 0,
-        ordering: "hot",
-        timePeriod: scope,
-      }),
-      API.GET_CONFIG()
-    );
-
-    let json = await res.json();
-
-    return { papers: { ...json } };
+      return { initialFeed, leaderboardFeed };
+    } catch {
+      return { initialFeed: null, leaderboardFeed: null };
+    }
   }
 
   render() {
-    return <HubPage home={true} initialFeed={this.props.papers} />;
+    return (
+      <HubPage
+        home={true}
+        initialFeed={this.props.initialFeed}
+        leaderboardFeed={this.props.leaderboardFeed}
+      />
+    );
   }
 }
 
