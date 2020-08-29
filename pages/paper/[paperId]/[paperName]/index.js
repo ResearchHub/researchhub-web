@@ -621,6 +621,10 @@ Paper.getInitialProps = async (ctx) => {
                 ? fetchedPaper.paper_title
                 : fetchedPaper.title
             );
+        if (paperName === query.paperName) {
+          // catch multiple redirect when slug does not exist
+          return { isServer, hostname, paper: fetchedPaper, redirectPath };
+        }
         redirectPath = `/paper/${fetchedPaper.id}/${paperName}`;
         res.writeHead(301, { Location: redirectPath });
         res.end();
