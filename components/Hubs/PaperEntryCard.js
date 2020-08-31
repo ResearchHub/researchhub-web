@@ -241,9 +241,6 @@ const PaperEntryCard = ({
   }
 
   function navigateToPage(e) {
-    e.preventDefault();
-    e.stopPropagation();
-
     if (e.metaKey || e.ctrlKey) {
       window.open(`/paper/${id}/${paperSlug}`, "_blank");
     } else {
@@ -265,7 +262,12 @@ const PaperEntryCard = ({
         href={"/paper/[paperId]/[paperName]"}
         as={`/paper/${id}/${paperSlug}#comments`}
       >
-        <a className={css(styles.link)}>
+        <a
+          className={css(styles.link)}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
           <div className={css(styles.discussion)}>
             <span className={css(styles.icon)} id={"discIcon"}>
               {icons.chat}
@@ -478,7 +480,12 @@ const PaperEntryCard = ({
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${id}/${paperSlug}`}
             >
-              <a className={css(styles.link)}>
+              <a
+                className={css(styles.link)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 <div className={css(styles.title, styles.text)}>
                   {title && title}
                   {paper_title && title !== paper_title && (
