@@ -297,9 +297,9 @@ const Paper = (props) => {
       tabs.push({ href: "summary", label: "description" });
     }
     tabs.push({ href: "comments", label: "comments" });
-    if (figureCount || showAllSections) {
-      tabs.push({ href: "figures", label: "figures" });
-    }
+    // if (figureCount || showAllSections) {
+    //   tabs.push({ href: "figures", label: "figures" });
+    // }
     if (paper.file || paper.url || showAllSections) {
       tabs.push({ href: "paper", label: "Paper PDF" });
     }
@@ -482,7 +482,7 @@ const Paper = (props) => {
               />
             </div>
           </a>
-          {figureCount > 0 || showAllSections ? (
+          {false && (figureCount > 0 || showAllSections) ? (
             <a name="figures">
               <div className={css(styles.figuresContainer)}>
                 <FigureTab
