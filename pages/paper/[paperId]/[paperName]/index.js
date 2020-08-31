@@ -107,7 +107,6 @@ const Paper = (props) => {
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
-  const shareUrl = hostname + "/paper/" + paperId;
 
   const paperCardRef = useRef(null);
   const paperTabsRef = useRef(null);
@@ -413,7 +412,7 @@ const Paper = (props) => {
               upvote={upvote}
               downvote={downvote}
               selectedVoteType={selectedVoteType}
-              shareUrl={shareUrl}
+              shareUrl={hostname + `/paper/${paper.id}/${paper.slug}`}
               isModerator={isModerator}
               flagged={flagged}
               doneFetchingPaper={!loadingPaper}
