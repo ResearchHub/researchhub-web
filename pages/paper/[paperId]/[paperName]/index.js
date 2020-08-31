@@ -51,11 +51,16 @@ const Paper = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
+
+  console.log(props);
+  // TODO: why is this redirect path here?
   if (props.redirectPath && typeof window !== "undefined") {
+    debugger;
     router.push("/paper/[paperId]/[paperName]", props.redirectPath, {
       shallow: true,
     });
   }
+
   const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
   const [showAllSections, toggleShowAllSections] = useState(false);
@@ -612,7 +617,7 @@ Paper.getInitialProps = async (ctx) => {
       );
       await store.dispatch(LimitationsActions.getLimitations(query.paperId));
       await store.dispatch(BulletActions.getBullets(query.paperId));
-      if (fetchedPaper.slug !== query.paperName) {
+      if (fetchedPaper.slug && fetchedPaper.slug !== query.paperName) {
         // redirect paper if paperName does not match slug
         let paperName = fetchedPaper.slug
           ? fetchedPaper.slug
