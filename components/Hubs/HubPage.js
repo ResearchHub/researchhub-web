@@ -92,7 +92,7 @@ class HubPage extends React.Component {
       mobileBanner: false,
       papersLoading: false,
       next: null,
-      doneFetching: true,
+      doneFetching: false,
       unsubscribeHover: false,
       subscribeClicked: false,
       titleBoxShadow: false,
