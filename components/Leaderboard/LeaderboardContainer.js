@@ -11,14 +11,14 @@ import Link from "next/link";
 
 const LeaderboardContainer = (props) => {
   const [users, setUsers] = useState([]);
-  const [fetchingUsers, setFetchingUsers] = useState(false);
+  const [fetchingUsers, setFetchingUsers] = useState(true);
 
   // componentDidMount
   useEffect(() => {
     if (props.initialUsers) {
-      // if initialprops
       const { results } = props.initialUsers;
       setUsers([...results]);
+      setFetchingUsers(false);
     } else {
       fetchLeaderboard();
     }
