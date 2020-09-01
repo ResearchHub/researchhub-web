@@ -28,7 +28,6 @@ class HubsList extends React.Component {
   }
 
   componentDidMount() {
-    console.log("HUBLIST MOUNT", this.props);
     if (this.props.hubs) {
       this.setState({ hubs: this.props.hubs });
     } else {
