@@ -82,17 +82,30 @@ class HubPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 0,
-      count: 0,
-      papers: [],
+      page: this.props.initialFeed ? 1 : 0,
+      count:
+        this.props.initialFeed && this.props.initialFeed.count
+          ? this.props.initialFeed.count
+          : 0,
+      papers:
+        this.props.initialFeed && this.props.initialFeed.results.data
+          ? this.props.initialFeed.results.data
+          : [],
+      noResults:
+        this.props.initialFeed && this.props.initialFeed.results.no_results
+          ? this.props.initialFeed.results.no_results
+          : false,
       filterBy: defaultFilter,
       scope: defaultScope,
       disableScope: true,
       mobileView: false,
       mobileBanner: false,
       papersLoading: false,
-      next: null,
-      doneFetching: false,
+      next:
+        this.props.initialFeed && this.props.initialFeed.next
+          ? this.props.initialFeed.next
+          : null,
+      doneFetching: this.props.initialFeed ? true : false,
       unsubscribeHover: false,
       subscribeClicked: false,
       titleBoxShadow: false,
@@ -145,10 +158,7 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    if (this.props.initialFeed) {
-      // if initialprops
-      this.setPapersFromInitialProps(this.props.initialFeed);
-    } else {
+    if (!this.props.initialFeed) {
       this.fetchPapers({ hub: this.props.hub });
     }
     this.setState({
