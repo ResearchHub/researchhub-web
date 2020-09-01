@@ -45,15 +45,11 @@ import {
 import { redirect, formatPaperSlug } from "~/config/utils";
 
 const Paper = (props) => {
+  const router = useRouter();
   if (props.error || props.paper.status === 404) {
     return <Error statusCode={404} />;
   }
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const store = useStore();
 
-  console.log(props);
-  // TODO: why is this redirect path here?
   if (props.redirectPath && typeof window !== "undefined") {
     debugger;
     router.push("/paper/[paperId]/[paperName]", props.redirectPath, {
@@ -61,6 +57,8 @@ const Paper = (props) => {
     });
   }
 
+  const dispatch = useDispatch();
+  const store = useStore();
   const isModerator = store.getState().auth.user.moderator;
   const [paper, setPaper] = useState(props.paper);
   const [showAllSections, toggleShowAllSections] = useState(false);

@@ -642,7 +642,6 @@ const styles = StyleSheet.create({
   summary: {
     minWidth: "100%",
     maxWidth: "100%",
-    whiteSpace: "pre-wrap",
     color: "#4e4c5f",
     fontSize: 14,
     paddingBottom: 8,
