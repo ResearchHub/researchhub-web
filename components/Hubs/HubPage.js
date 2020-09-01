@@ -600,7 +600,10 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
-            <HubsList current={this.props.home ? null : this.props.hub} />
+            <HubsList
+              current={this.props.home ? null : this.props.hub}
+              initialHubList={this.props.initialHubList}
+            />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
             <div
@@ -753,6 +756,7 @@ class HubPage extends React.Component {
               <HubsList
                 current={this.props.home ? null : this.props.hub}
                 overrideStyle={styles.mobileList}
+                initialHubList={this.props.initialHubList}
               />
             </div>
           </div>
