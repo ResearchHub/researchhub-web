@@ -51,7 +51,6 @@ const Paper = (props) => {
   }
 
   if (props.redirectPath && typeof window !== "undefined") {
-    debugger;
     router.push("/paper/[paperId]/[paperName]", props.redirectPath, {
       shallow: true,
     });
