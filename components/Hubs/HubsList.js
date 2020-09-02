@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   hubs: state.hubs.topHubs,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
