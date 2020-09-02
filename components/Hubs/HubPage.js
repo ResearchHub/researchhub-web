@@ -158,7 +158,10 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    if (!this.props.initialFeed) {
+    if (this.props.initialFeed) {
+      this.detectPromoted(this.state.papers);
+      this.checkUserVotes(this.state.papers);
+    } else {
       this.fetchPapers({ hub: this.props.hub });
     }
     this.setState({
@@ -185,6 +188,7 @@ class HubPage extends React.Component {
     }
 
     if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
+      this.checkUserVotes(this.state.papers);
       if (this.props.hub && this.props.hub.id) {
         fetch(API.HUB({ slug: this.props.slug }), API.GET_CONFIG())
           .then(Helpers.checkStatus)
@@ -213,6 +217,38 @@ class HubPage extends React.Component {
     window.removeEventListener("resize", this.updateDimensions);
     window.removeEventListener("scroll", this.scrollListener);
   }
+
+  checkUserVotes = (papers) => {
+    let { isLoggedIn, auth } = this.props;
+    if (isLoggedIn) {
+      let paperIds = papers.map((paper) => paper.id);
+      let params = {
+        paperIds,
+        user: auth.user.id,
+      };
+      fetch(API.CHECK_USER_VOTE, API.POST_CONFIG(params))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          let updates = { ...res };
+          let updatedPapers = papers.map((paper) => {
+            if (updates[paper.id]) {
+              paper.user_vote = updates[paper.id];
+            }
+            return paper;
+          });
+
+          this.setState(
+            {
+              papers: [],
+            },
+            () => {
+              this.setState({ papers: updatedPapers });
+            }
+          );
+        });
+    }
+  };
 
   detectPromoted = (papers) => {
     papers.forEach((paper) => {
