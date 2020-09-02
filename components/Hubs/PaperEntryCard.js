@@ -67,7 +67,7 @@ const PaperEntryCard = (props) => {
     slug,
   } = paper || null;
   let vote_type = 0;
-  const [selected, setSelected] = useState(setVoteSelected(paper.user_vote));
+  let selected = setVoteSelected(paper.user_vote);
   const [lightbox, toggleLightbox] = useState(false);
   const [slideIndex, setSlideIndex] = useState(1);
   const [isOpen, setIsOpen] = useState(false); // Hub dropdown
@@ -90,7 +90,7 @@ const PaperEntryCard = (props) => {
   }
 
   useEffect(() => {
-    setSelected(setVoteSelected(props.paper.user_vote));
+    selected = setVoteSelected(props.paper.user_vote);
   }, [props.paper]);
 
   function setVoteSelected(userVote) {
