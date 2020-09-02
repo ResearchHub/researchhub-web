@@ -51,6 +51,7 @@ const Paper = (props) => {
   }
 
   if (props.redirectPath && typeof window !== "undefined") {
+    // updates the [paperName] without refetching data
     router.push("/paper/[paperId]/[paperName]", props.redirectPath, {
       shallow: true,
     });
@@ -171,7 +172,6 @@ const Paper = (props) => {
 
     setLoadingPaper(false);
 
-    // window.scroll({ top: 0, behavior: "auto" });
     showMessage({ show: false });
     if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
       props.setUploadingPaper(false);
@@ -197,6 +197,7 @@ const Paper = (props) => {
         script.textContext = formatStructuredData();
         document.head.appendChild(script);
       }
+      // window.scroll({ top: 0, behavior: "auto" });
     }
   }, [paperId]);
 
