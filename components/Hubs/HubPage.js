@@ -35,56 +35,20 @@ const filterOptions = [
   {
     value: "hot",
     label: "Trending",
-    // label: (
-    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
-    //     <i
-    //       className="fad fa-chart-line"
-    //       style={{ width: 15, padding: 10, color: colors.GREEN(),}}
-    //     />
-    //     {"Trending"}
-    //   </span>
-    // ),
     disableScope: true,
   },
   {
     value: "top_rated",
     label: "Top Rated",
-    // label: (
-    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
-    //     <i
-    //       className="fad fa-flame"
-    //       style={{ width: 15, padding: 10, color: colors.RED(),}}
-    //     />
-    //     {"Top Rated"}
-    //   </span>
-    // ),
   },
   {
     value: "newest",
     label: "Newest",
-    // label: (
-    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
-    //     <i
-    //       className="fad fa-sparkles"
-    //       style={{ width: 15, padding: 10, color: colors.YELLOW(),}}
-    //     />
-    //     {"Newest"}
-    //   </span>
-    // ),
     disableScope: true,
   },
   {
     value: "most_discussed",
     label: "Most Discussed",
-    // label: (
-    //   <span style={{ display: 'flex', justifyContent: 'flex-start', width: '100%', alignItems: 'center'}}>
-    //     <i
-    //       className="fad fa-comments-alt"
-    //       style={{ width: 15, padding: 10, color: colors.BLUE(),}}
-    //     />
-    //     {"Most Discussed"}
-    //   </span>
-    // ),
   },
 ];
 
@@ -118,17 +82,30 @@ class HubPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 0,
-      count: 0,
-      papers: [],
+      page: this.props.initialFeed ? 1 : 0,
+      count:
+        this.props.initialFeed && this.props.initialFeed.count
+          ? this.props.initialFeed.count
+          : 0,
+      papers:
+        this.props.initialFeed && this.props.initialFeed.results.data
+          ? this.props.initialFeed.results.data
+          : [],
+      noResults:
+        this.props.initialFeed && this.props.initialFeed.results.no_results
+          ? this.props.initialFeed.results.no_results
+          : false,
+      next:
+        this.props.initialFeed && this.props.initialFeed.next
+          ? this.props.initialFeed.next
+          : null,
+      doneFetching: this.props.initialFeed ? true : false,
       filterBy: defaultFilter,
       scope: defaultScope,
       disableScope: true,
       mobileView: false,
       mobileBanner: false,
       papersLoading: false,
-      next: null,
-      doneFetching: false,
       unsubscribeHover: false,
       subscribeClicked: false,
       titleBoxShadow: false,
@@ -181,7 +158,9 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    this.fetchPapers({ hub: this.props.hub });
+    if (!this.props.initialFeed) {
+      this.fetchPapers({ hub: this.props.hub });
+    }
     this.setState({
       subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
     });
@@ -190,7 +169,7 @@ class HubPage extends React.Component {
     window.addEventListener("scroll", this.scrollListener);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate = async (prevProps, prevState) => {
     if (
       prevProps.hub &&
       this.props.hub &&
@@ -207,7 +186,15 @@ class HubPage extends React.Component {
 
     if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
       if (this.props.hub && this.props.hub.id) {
-        this.fetchPapers({ hub: this.props.hub });
+        fetch(API.HUB({ slug: this.props.slug }), API.GET_CONFIG())
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((res) => {
+            this.setState({
+              subscribe: res.results[0].user_is_subscribed,
+            });
+          });
+
         this.setState({
           subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
         });
@@ -220,7 +207,7 @@ class HubPage extends React.Component {
     ) {
       this.fetchPapers({ hub: this.props.hub });
     }
-  }
+  };
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
@@ -255,6 +242,7 @@ class HubPage extends React.Component {
 
   fetchPapers = ({ hub }) => {
     let { showMessage } = this.props;
+    this.setState({ doneFetching: false });
     if (this.state.papersLoading) {
       return null;
     }
@@ -606,7 +594,10 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.sidebar, styles.column)}>
-            <HubsList current={this.props.home ? null : this.props.hub} />
+            <HubsList
+              current={this.props.home ? null : this.props.hub}
+              initialHubList={this.props.initialHubList}
+            />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
             <div
@@ -759,6 +750,7 @@ class HubPage extends React.Component {
               <HubsList
                 current={this.props.home ? null : this.props.hub}
                 overrideStyle={styles.mobileList}
+                initialHubList={this.props.initialHubList}
               />
             </div>
           </div>
@@ -766,7 +758,10 @@ class HubPage extends React.Component {
             className={css(styles.leaderboard)}
             style={{ marginTop: this.state.leaderboardTop }}
           >
-            <LeaderboardContainer hub={this.props.hub && this.props.hub.id} />
+            <LeaderboardContainer
+              hub={this.props.hub && this.props.hub.id}
+              initialUsers={this.props.leaderboardFeed}
+            />
           </div>
         </div>
       </div>
@@ -1331,6 +1326,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   updateHub: HubActions.updateHub,
+  getTopHubs: HubActions.getTopHubs,
 };
 
 export default connect(

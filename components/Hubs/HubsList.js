@@ -21,20 +21,17 @@ class HubsList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hubs: [],
-      // reveal: false,
+      hubs:
+        this.props.initialHubList && this.props.initialHubList.results
+          ? this.props.initialHubList.results
+          : [],
       reveal: true,
     };
   }
 
   componentDidMount() {
-    if (this.props.hubs) {
-      this.setState({ hubs: this.props.hubs }, () => {
-        // this.revealTimeout = setTimeout(
-        //   () => this.setState({ reveal: true }),
-        //   400
-        // );
-      });
+    if (this.props.hubs && !this.props.initialHubList) {
+      this.setState({ hubs: this.props.hubs });
     } else {
       this.fetchHubs();
     }
@@ -42,26 +39,12 @@ class HubsList extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.current !== this.props.current) {
-      this.setState(
-        {
-          // reveal: false,
-          hubs: this.props.hubs,
-        }
-        // () => {
-        //   this.revealTimeout = setTimeout(
-        //     () => this.setState({ reveal: true }),
-        //     400
-        //   );
-        // }
-      );
+      this.setState({
+        hubs: this.props.hubs,
+      });
     }
     if (prevProps.hubs !== this.props.hubs) {
-      this.setState({ hubs: this.props.hubs }, () => {
-        // this.revealTimeout = setTimeout(
-        //   () => this.setState({ reveal: true }),
-        //   400
-        // );
-      });
+      this.setState({ hubs: this.props.hubs });
     }
   }
 
@@ -288,6 +271,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   hubs: state.hubs.topHubs,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {

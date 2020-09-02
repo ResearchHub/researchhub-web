@@ -10,12 +10,20 @@ import LeaderboardUser from "./LeaderboardUser";
 import Link from "next/link";
 
 const LeaderboardContainer = (props) => {
-  const [users, setUsers] = useState([]);
-  const [fetchingUsers, setFetchingUsers] = useState(true);
+  const [users, setUsers] = useState(
+    props.initialUsers && props.initialUsers.results
+      ? props.initialUsers.results
+      : []
+  );
+  const [fetchingUsers, setFetchingUsers] = useState(
+    props.initialUsers ? false : true
+  );
 
   // componentDidMount
   useEffect(() => {
-    fetchLeaderboard();
+    if (!props.initialUsers) {
+      fetchLeaderboard();
+    }
   }, []);
 
   const fetchLeaderboard = () => {
