@@ -160,7 +160,6 @@ class HubPage extends React.Component {
   componentDidMount() {
     if (this.props.initialFeed) {
       this.detectPromoted(this.state.papers);
-      this.checkUserVotes(this.state.papers);
     } else {
       this.fetchPapers({ hub: this.props.hub });
     }
