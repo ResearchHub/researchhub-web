@@ -95,17 +95,17 @@ class HubPage extends React.Component {
         this.props.initialFeed && this.props.initialFeed.results.no_results
           ? this.props.initialFeed.results.no_results
           : false,
+      next:
+        this.props.initialFeed && this.props.initialFeed.next
+          ? this.props.initialFeed.next
+          : null,
+      doneFetching: this.props.initialFeed ? true : false,
       filterBy: defaultFilter,
       scope: defaultScope,
       disableScope: true,
       mobileView: false,
       mobileBanner: false,
       papersLoading: false,
-      next:
-        this.props.initialFeed && this.props.initialFeed.next
-          ? this.props.initialFeed.next
-          : null,
-      doneFetching: this.props.initialFeed ? true : false,
       unsubscribeHover: false,
       subscribeClicked: false,
       titleBoxShadow: false,
@@ -169,7 +169,7 @@ class HubPage extends React.Component {
     window.addEventListener("scroll", this.scrollListener);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate = async (prevProps, prevState) => {
     if (
       prevProps.hub &&
       this.props.hub &&
@@ -186,7 +186,15 @@ class HubPage extends React.Component {
 
     if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
       if (this.props.hub && this.props.hub.id) {
-        this.fetchPapers({ hub: this.props.hub });
+        fetch(API.HUB({ slug: this.props.slug }), API.GET_CONFIG())
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((res) => {
+            this.setState({
+              subscribe: res.results[0].user_is_subscribed,
+            });
+          });
+
         this.setState({
           subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
         });
@@ -199,7 +207,7 @@ class HubPage extends React.Component {
     ) {
       this.fetchPapers({ hub: this.props.hub });
     }
-  }
+  };
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateDimensions);
@@ -229,20 +237,6 @@ class HubPage extends React.Component {
           .then((res) => {})
           .catch((err) => {});
       }
-    });
-  };
-
-  setPapersFromInitialProps = (res) => {
-    let { count, results, next } = res;
-    this.detectPromoted([...results.data]);
-    this.setState({
-      count: count,
-      papers: results.data,
-      next,
-      page: 1,
-      papersLoading: false,
-      doneFetching: true,
-      noResults: results.no_results,
     });
   };
 
@@ -1332,6 +1326,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   updateHub: HubActions.updateHub,
+  getTopHubs: HubActions.getTopHubs,
 };
 
 export default connect(
