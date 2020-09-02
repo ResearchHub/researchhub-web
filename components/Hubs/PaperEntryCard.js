@@ -67,17 +67,6 @@ const PaperEntryCard = (props) => {
     slug,
   } = paper || null;
   let vote_type = 0;
-  function setVoteSelected(userVote) {
-    if (userVote) {
-      vote_type = userVote.vote_type;
-      if (vote_type === UPVOTE_ENUM) {
-        return UPVOTE;
-      } else if (vote_type === DOWNVOTE_ENUM) {
-        return DOWNVOTE;
-      }
-    }
-  }
-
   const [selected, setSelected] = useState(setVoteSelected(paper.user_vote));
   const [lightbox, toggleLightbox] = useState(false);
   const [slideIndex, setSlideIndex] = useState(1);
@@ -102,7 +91,18 @@ const PaperEntryCard = (props) => {
 
   useEffect(() => {
     setSelected(setVoteSelected(props.paper.user_vote));
-  }, [props.paper.user_vote]);
+  }, [props.paper]);
+
+  function setVoteSelected(userVote) {
+    if (userVote) {
+      vote_type = userVote.vote_type;
+      if (vote_type === UPVOTE_ENUM) {
+        return UPVOTE;
+      } else if (vote_type === DOWNVOTE_ENUM) {
+        return DOWNVOTE;
+      }
+    }
+  }
 
   function configurePreview(arr, setFigures) {
     return arr.filter((el) => {
