@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import { connect, useStore } from "react-redux";
@@ -30,21 +30,22 @@ import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-const PaperEntryCard = ({
-  paper,
-  index,
-  hubName,
-  discussionCount,
-  mobileView,
-  style,
-  searchResult,
-  voteCallback,
-  postUpvote,
-  postDownvote,
-  reduxPaper,
-  promotionSummary,
-  onClick,
-}) => {
+const PaperEntryCard = (props) => {
+  let {
+    paper,
+    index,
+    hubName,
+    discussionCount,
+    mobileView,
+    style,
+    searchResult,
+    voteCallback,
+    postUpvote,
+    postDownvote,
+    reduxPaper,
+    promotionSummary,
+    onClick,
+  } = props;
   let {
     id,
     authors,
@@ -65,8 +66,8 @@ const PaperEntryCard = ({
     raw_authors,
     slug,
   } = paper || null;
-  let selected = null;
   let vote_type = 0;
+  let selected = setVoteSelected(paper.user_vote);
   const [lightbox, toggleLightbox] = useState(false);
   const [slideIndex, setSlideIndex] = useState(1);
   const [isOpen, setIsOpen] = useState(false); // Hub dropdown
@@ -88,12 +89,18 @@ const PaperEntryCard = ({
     discussion_count = discussionCount;
   }
 
-  if (user_vote) {
-    vote_type = user_vote.vote_type;
-    if (vote_type === UPVOTE_ENUM) {
-      selected = UPVOTE;
-    } else if (vote_type === DOWNVOTE_ENUM) {
-      selected = DOWNVOTE;
+  useEffect(() => {
+    selected = setVoteSelected(props.paper.user_vote);
+  }, [props.paper]);
+
+  function setVoteSelected(userVote) {
+    if (userVote) {
+      vote_type = userVote.vote_type;
+      if (vote_type === UPVOTE_ENUM) {
+        return UPVOTE;
+      } else if (vote_type === DOWNVOTE_ENUM) {
+        return DOWNVOTE;
+      }
     }
   }
 
