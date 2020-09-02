@@ -582,6 +582,7 @@ const routes = (BASE_URL) => {
       BASE_URL + `purchase/${userId}/aggregate_user_promotions/`,
     SAVE_IMAGE: BASE_URL + "paper/discussion/file/",
     CAPTCHA_VERIFY: BASE_URL + "auth/captcha_verify/",
+    CHECK_USER_VOTE: BASE_URL + "paper/check_user_vote/",
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
