@@ -84,26 +84,34 @@ export const AuthorActions = {
     commentOffset = 0,
     replyOffset = 0,
     paperUploadOffset = 0,
+    next = null,
   }) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
       dispatch({
         contributionsDoneFetching: false,
         type: types.GET_USER_CONTRIBUTIONS_PENDING,
       });
-      const response = await fetch(
-        API.USER_CONTRIBUTION({
-          authorId,
-          commentOffset,
-          replyOffset,
-          paperUploadOffset,
-        }),
-        API.GET_CONFIG()
-      ).catch(utils.handleCatch);
+
+      let ENDPOINT = next
+        ? next
+        : API.USER_CONTRIBUTION({
+            authorId,
+            commentOffset,
+            replyOffset,
+            paperUploadOffset,
+          });
+
+      const response = await fetch(ENDPOINT, API.GET_CONFIG()).catch(
+        utils.handleCatch
+      );
 
       let action = actions.getUserContributionsFailure();
       if (response.ok) {
         const body = await response.json();
-        let contributions = [];
+
+        let contributions = next
+          ? [...getState().author.userContributions.contributions]
+          : [];
         for (let i = 0; i < body.results.length; i++) {
           let contribution = body.results[i];
           if (contribution.type === "reply") {
@@ -132,6 +140,15 @@ export const AuthorActions = {
         utils.logFetchError(response);
       }
       return dispatch(action);
+    };
+  },
+
+  getNextUserContributions: ({ authorId }) => {
+    return async (dispatch) => {
+      dispatch({
+        contributionsDoneFetching: false,
+        type: types.GET_USER_CONTRIBUTIONS_PENDING,
+      });
     };
   },
 
