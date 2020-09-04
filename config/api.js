@@ -183,15 +183,8 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    USER_CONTRIBUTION: ({
-      authorId,
-      commentOffset,
-      replyOffset,
-      paperUploadOffset,
-    }) => {
-      let url =
-        BASE_URL +
-        `author/${authorId}/get_user_contributions/?commentOffset=${commentOffset}&replyOffset=${replyOffset}&paperUploadOffset=${paperUploadOffset}`;
+    USER_CONTRIBUTION: ({ authorId }) => {
+      let url = BASE_URL + `author/${authorId}/get_user_contributions/`;
       return url;
     },
 

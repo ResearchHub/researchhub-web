@@ -79,13 +79,7 @@ export const AuthorActions = {
     };
   },
 
-  getUserContributions: ({
-    authorId,
-    commentOffset = 0,
-    replyOffset = 0,
-    paperUploadOffset = 0,
-    next = null,
-  }) => {
+  getUserContributions: ({ authorId, next = null }) => {
     return async (dispatch, getState) => {
       dispatch({
         contributionsDoneFetching: false,
@@ -96,9 +90,6 @@ export const AuthorActions = {
         ? next
         : API.USER_CONTRIBUTION({
             authorId,
-            commentOffset,
-            replyOffset,
-            paperUploadOffset,
           });
 
       const response = await fetch(ENDPOINT, API.GET_CONFIG()).catch(
@@ -116,15 +107,19 @@ export const AuthorActions = {
           let contribution = body.results[i];
           if (contribution.type === "reply") {
             let formatted = discussionShim.transformReply(body.results[i]);
-            formatted.type = contribution.type;
+            // formatted.type = contribution.type;
             contributions.push(formatted);
           } else if (contribution.type === "comment") {
             let formatted = discussionShim.transformComment(body.results[i]);
-            formatted.type = contribution.type;
+            // formatted.type = contribution.type;
             contributions.push(formatted);
           } else if (contribution.type === "paper") {
             let formatted = paperShim.paper(body.results[i]);
-            formatted.type = contribution.type;
+            // formatted.type = contribution.type;
+            contributions.push(formatted);
+          } else {
+            let formatted = paperShim.paper(body.results[i]);
+            // formatted.type = contribution.type;
             contributions.push(formatted);
           }
         }

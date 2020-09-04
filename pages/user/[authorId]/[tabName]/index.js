@@ -107,17 +107,9 @@ const AuthorPage = (props) => {
     if (!author.user) {
       return;
     }
-    let {
-      commentOffset,
-      replyOffset,
-      paperUploadOffset,
-    } = props.author.userContributions;
     await dispatch(
       AuthorActions.getUserContributions({
         authorId: router.query.authorId,
-        commentOffset,
-        replyOffset,
-        paperUploadOffset,
       })
     );
     setFetching(false);
@@ -152,6 +144,7 @@ const AuthorPage = (props) => {
   }
 
   useEffect(() => {
+    setFetching(true);
     async function refetchAuthor() {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
@@ -256,28 +249,28 @@ const AuthorPage = (props) => {
             tabName === "contributions" ? styles.reveal : styles.hidden
           )}
         >
-          <UserContributionsTab />
+          <UserContributionsTab fetching={fetching} />
         </span>
         <span
           className={css(
             tabName === "authored-papers" ? styles.reveal : styles.hidden
           )}
         >
-          <AuthoredPapersTab />
+          <AuthoredPapersTab fetching={fetching} />
         </span>
         <span
           className={css(
             tabName === "discussions" ? styles.reveal : styles.hidden
           )}
         >
-          <UserDiscussionsTab hostname={hostname} />
+          <UserDiscussionsTab hostname={hostname} fetching={fetching} />
         </span>
         <span
           className={css(
             tabName === "transactions" ? styles.reveal : styles.hidden
           )}
         >
-          <UserTransactionsTab />
+          <UserTransactionsTab fetching={fetching} />
         </span>
         <span
           className={css(tabName === "boosts" ? styles.reveal : styles.hidden)}
