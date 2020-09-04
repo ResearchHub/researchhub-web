@@ -267,7 +267,7 @@ function PaperTab(props) {
       <div className={css(styles.container)} ref={containerRef}>
         <div className={css(styles.headerContainer)} ref={paperPdfRef}>
           <div className={css(styles.titleContainer)}>
-            <div className={css(styles.title)}>Paper PDF</div>
+            <h3 className={css(styles.title)}>Paper PDF</h3>
             {file && renderDownloadPdf()}
           </div>
           {file && isModerator && (

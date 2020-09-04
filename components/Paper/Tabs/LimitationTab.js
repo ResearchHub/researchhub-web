@@ -255,7 +255,7 @@ class LimitationTab extends React.Component {
     return (
       <div className={css(dropdownStyles.bulletContainer)}>
         <div className={css(styles.bulletHeaderContainer)}>
-          <div className={css(styles.bulletTitle)}>Limitations</div>
+          <h3 className={css(styles.bulletTitle)}>Limitations</h3>
           <div className={css(dropdownStyles.dropdownContainer)}>
             {this.renderDropdown()}
           </div>

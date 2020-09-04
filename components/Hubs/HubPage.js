@@ -644,14 +644,14 @@ class HubPage extends React.Component {
               )}
               id={"topbar"}
             >
-              <div className={css(styles.text, styles.feedTitle)}>
+              <h1 className={css(styles.text, styles.feedTitle)}>
                 <span className={css(styles.fullWidth)}>
                   {this.getTitle()}
                   <span className={css(styles.hubName)}>
                     {this.props.home ? "ResearchHub" : this.props.hub.name}
                   </span>
                 </span>
-              </div>
+              </h1>
               <div
                 className={css(
                   styles.inputContainer,
