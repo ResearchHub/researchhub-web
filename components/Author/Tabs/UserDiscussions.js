@@ -31,7 +31,7 @@ class UserDiscussionsTab extends React.Component {
 
     this.setState({ fetching: true }, () => {
       fetch(userDiscussions.next, API.GET_CONFIG())
-        .then((res) => Helpers.checkStatus(res, this.props.dispatch))
+        .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
           let newState = { ...userDiscussions };
@@ -194,10 +194,9 @@ const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  updateAuthorByKey: () => dispatch(AuthorActions.updateAuthorByKey),
-  dispatch,
-});
+const mapDispatchToProps = {
+  updateAuthorByKey: AuthorActions.updateAuthorByKey,
+};
 
 export default connect(
   mapStateToProps,
