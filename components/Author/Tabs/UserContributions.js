@@ -6,7 +6,7 @@ import Ripples from "react-ripples";
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
-import { Reply } from "~/components/DiscussionComment";
+import Loader from "~/components/Loader/Loader";
 
 // Redux
 import { AuthorActions } from "~/redux/author";
@@ -53,13 +53,15 @@ class UserContributionsTab extends React.Component {
   };
 
   loadMore = () => {
-    const next = this.props.author.userContributions.next;
-    this.props.getUserContributions({ next });
+    this.setState({ fetching: true }, async () => {
+      const next = this.props.author.userContributions.next;
+      await this.props.getUserContributions({ next });
+      setTimeout(() => this.setState({ fetching: false }), 400);
+    });
   };
 
   renderLoadMoreButton = () => {
     let { author } = this.props;
-    let { fetching } = this.state;
 
     if (author && author.userContributions) {
       let { next } = author.userContributions;
@@ -67,7 +69,7 @@ class UserContributionsTab extends React.Component {
       if (next !== null) {
         return (
           <div className={css(styles.buttonContainer)}>
-            {!fetching ? (
+            {!this.state.fetching ? (
               <Ripples
                 className={css(styles.loadMoreButton)}
                 onClick={this.loadMore}
@@ -92,36 +94,21 @@ class UserContributionsTab extends React.Component {
     let contributions = this.state.contributions.map((contribution, index) => {
       return (
         <div className={css(styles.contributionContainer)}>
-          {contribution.type === "paper" ? (
-            <PaperEntryCard
-              key={`userContribution-${contribution.id}-${index}`}
-              paper={contribution}
-              index={index}
-              voteCallback={this.voteCallback}
-            />
-          ) : contribution.type === "comment" ? (
-            <div className={css(styles.contributionContainer)}>
-              <Reply
-                data={contribution}
-                key={`userContribution-${contribution.id}-${index}`}
-              />
-            </div>
-          ) : (
-            <div className={css(styles.contributionContainer)}>
-              <Reply
-                data={contribution}
-                commentId={contribution.comment}
-                key={`userContribution-${contribution.id}-${index}`}
-              />
-            </div>
-          )}
+          <PaperEntryCard
+            key={`userContribution-${contribution.id}-${index}`}
+            paper={contribution}
+            index={index}
+            voteCallback={this.voteCallback}
+          />
         </div>
       );
     });
     return (
       <ComponentWrapper>
         <ReactPlaceholder
-          ready={this.props.author.contributionsDoneFetching}
+          ready={
+            this.props.author.contributionsDoneFetching && !this.props.fetching
+          }
           showLoadingAnimation
           customPlaceholder={<PaperPlaceholder color="#efefef" />}
         >

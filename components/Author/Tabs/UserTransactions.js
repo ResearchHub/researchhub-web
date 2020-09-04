@@ -76,7 +76,7 @@ class UserTransaction extends React.Component {
     return (
       <ComponentWrapper>
         <ReactPlaceholder
-          ready={transactions}
+          ready={transactions && !this.props.fetching}
           showLoadingAnimation
           customPlaceholder={<PaperPlaceholder color="#efefef" />}
         >
