@@ -699,13 +699,13 @@ class PaperPageCard extends React.Component {
               >
                 <div className={css(styles.metaContainer)}>
                   <div className={css(styles.titleHeader)}>
-                    <div className={css(styles.title)}>
+                    <h1 className={css(styles.title)}>
                       {paper && paper.title}
-                    </div>
+                    </h1>
                     {paper.paper_title && paper.paper_title !== paper.title ? (
-                      <div className={css(styles.subtitle)}>
+                      <h2 className={css(styles.subtitle)}>
                         {`From Paper: ${paper.paper_title}`}
-                      </div>
+                      </h2>
                     ) : null}
                   </div>
                   <div className={css(styles.column)}>
@@ -933,6 +933,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     position: "relative",
     wordBreak: "break-word",
+    fontWeight: "unset",
+    padding: 0,
+    margin: 0,
     "@media only screen and (max-width: 760px)": {
       fontSize: 28,
     },
@@ -951,6 +954,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     fontSize: 16,
     marginTop: 10,
+    fontWeight: "unset",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },

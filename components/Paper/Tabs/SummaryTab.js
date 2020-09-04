@@ -465,10 +465,10 @@ class SummaryTab extends React.Component {
                 {this.state.readOnly ? (
                   <Fragment>
                     <div className={css(styles.sectionHeader)}>
-                      <div className={css(styles.sectionTitle)}>
+                      <h3 className={css(styles.sectionTitle)}>
                         Description
                         {this.renderTabs()}
-                      </div>
+                      </h3>
                       <div className={css(styles.summaryActions)}>
                         {/* <Link
                           href={"/paper/[paperId]/[tabName]/edits"}
