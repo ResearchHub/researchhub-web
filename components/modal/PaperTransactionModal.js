@@ -223,7 +223,7 @@ class PaperTransactionModal extends React.Component {
 
   handleInput = (e) => {
     let value = parseInt(e.target.value, 10);
-    value = value > 0 ? value : 0;
+    value = value ? (value > 0 ? value : 0) : null;
     this.setState({
       value,
       error: this.handleError(value),
@@ -641,6 +641,14 @@ class PaperTransactionModal extends React.Component {
     });
   };
 
+  parseValue = () => {
+    let value = this.state.value;
+    if (value !== null) {
+      return value;
+    } else {
+      return 0;
+    }
+  };
   renderToggleContainer = (className) => {
     return (
       <div className={className}>
@@ -770,10 +778,10 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Amount</div>
               <div className={css(styles.subtitle)}>
-                {this.state.value} RSC = {this.state.value} Day
-                {this.state.value === 0 || this.state.value > 1 ? "s" : ""} of
-                Support + {this.state.value} Upvote
-                {this.state.value === 0 || this.state.value > 1 ? "s" : ""}
+                {this.parseValue()} RSC = {this.parseValue()} Day
+                {this.parseValue() === 0 || this.parseValue() > 1 ? "s" : ""} of
+                Support + {this.parseValue()} Upvote
+                {this.parseValue() === 0 || this.parseValue() > 1 ? "s" : ""}
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
