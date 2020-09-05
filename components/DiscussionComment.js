@@ -58,7 +58,11 @@ class DiscussionComment extends React.Component {
   }
 
   createdByCurrentUser = () => {
-    return this.state.createdBy.id === this.props.currentUser.id;
+    if (this.state.createdBy) {
+      if (this.props.currentUser) {
+        return this.state.createdBy.id === this.props.currentUser.id;
+      }
+    }
   };
 
   setReadOnly = (readOnly) => {

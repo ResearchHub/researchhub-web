@@ -1,11 +1,15 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
+import Ripples from "react-ripples";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
-import { Reply, Comment } from "~/components/DiscussionComment";
+import Loader from "~/components/Loader/Loader";
+
+// Redux
+import { AuthorActions } from "~/redux/author";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -15,14 +19,19 @@ class UserContributionsTab extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      contributions: [],
+      contributions:
+        this.props.author.userContributions &&
+        this.props.author.userContributions.contributions
+          ? this.props.author.userContributions.contributions
+          : [],
+      fetching: false,
     };
   }
 
   componentDidMount() {
     let { author } = this.props;
     this.setState({
-      contributions: author.userContributions.contributions,
+      // contributions: author.userContributions.contributions,
     });
   }
 
@@ -40,42 +49,74 @@ class UserContributionsTab extends React.Component {
     let contributions = [...this.state.contributions];
     contributions[index] = paper;
 
-    this.setState({
-      contributions,
+    this.setState({ contributions });
+  };
+
+  loadMore = () => {
+    this.setState({ fetching: true }, async () => {
+      const next = this.props.author.userContributions.next;
+      await this.props.getUserContributions({ next });
+      setTimeout(() => this.setState({ fetching: false }), 400);
     });
+  };
+
+  renderLoadMoreButton = () => {
+    let { author } = this.props;
+
+    if (author && author.userContributions) {
+      let { next } = author.userContributions;
+
+      if (next !== null) {
+        return (
+          <div className={css(styles.buttonContainer)}>
+            {!this.state.fetching ? (
+              <Ripples
+                className={css(styles.loadMoreButton)}
+                onClick={this.loadMore}
+              >
+                Load More
+              </Ripples>
+            ) : (
+              <Loader
+                key={"userContributionLoader"}
+                loading={true}
+                size={25}
+                color={colors.BLUE()}
+              />
+            )}
+          </div>
+        );
+      }
+    }
   };
 
   render() {
     let contributions = this.state.contributions.map((contribution, index) => {
       return (
         <div className={css(styles.contributionContainer)}>
-          {contribution.type === "paper" ? (
-            <PaperEntryCard
-              paper={contribution}
-              index={index}
-              voteCallback={this.voteCallback}
-            />
-          ) : contribution.type === "comment" ? (
-            <div className={css(styles.contributionContainer)}>
-              <Reply data={contribution} />
-            </div>
-          ) : (
-            <div className={css(styles.contributionContainer)}>
-              <Reply data={contribution} commentId={contribution.comment} />
-            </div>
-          )}
+          <PaperEntryCard
+            key={`userContribution-${contribution.id}-${index}`}
+            paper={contribution}
+            index={index}
+            voteCallback={this.voteCallback}
+          />
         </div>
       );
     });
     return (
       <ComponentWrapper>
         <ReactPlaceholder
-          ready={this.props.author.contributionsDoneFetching}
+          ready={
+            this.props.author.contributionsDoneFetching && !this.props.fetching
+          }
           showLoadingAnimation
           customPlaceholder={<PaperPlaceholder color="#efefef" />}
         >
           {contributions.length > 0 ? (
-            <div className={css(styles.container)}>{contributions}</div>
+            <div className={css(styles.container)}>
+              {contributions}
+              {this.renderLoadMoreButton()}
+            </div>
           ) : (
             <div className={css(styles.box)}>
               <div className={css(styles.icon)}>
@@ -125,10 +166,47 @@ var styles = StyleSheet.create({
     height: 50,
     marginBottom: 10,
   },
+  buttonContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 25,
+    height: 45,
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 15,
+      marginBottom: 15,
+    },
+  },
+  loadMoreButton: {
+    fontSize: 14,
+    border: `1px solid ${colors.BLUE()}`,
+    boxSizing: "border-box",
+    borderRadius: 4,
+    height: 45,
+    width: 155,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: colors.BLUE(),
+    cursor: "pointer",
+    userSelect: "none",
+    ":hover": {
+      color: "#FFF",
+      backgroundColor: colors.BLUE(),
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-export default connect(mapStateToProps)(UserContributionsTab);
+const mapDispatchToProps = {
+  getUserContributions: AuthorActions.getUserContributions,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserContributionsTab);
