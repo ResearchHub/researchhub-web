@@ -35,6 +35,7 @@ const AuthorPage = (props) => {
   let { tabName } = router.query;
   const dispatch = useDispatch();
   const store = useStore();
+  const [fetching, setFetching] = useState(true);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [hoverName, setHoverName] = useState(false);
   const [hoverDescription, setHoverDescription] = useState(false);
@@ -106,19 +107,12 @@ const AuthorPage = (props) => {
     if (!author.user) {
       return;
     }
-    let {
-      commentOffset,
-      replyOffset,
-      paperUploadOffset,
-    } = props.author.userContributions;
     await dispatch(
       AuthorActions.getUserContributions({
         authorId: router.query.authorId,
-        commentOffset,
-        replyOffset,
-        paperUploadOffset,
       })
     );
+    setFetching(false);
   }
 
   function fetchUserTransactions() {
@@ -150,6 +144,7 @@ const AuthorPage = (props) => {
   }
 
   useEffect(() => {
+    setFetching(true);
     async function refetchAuthor() {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
@@ -246,20 +241,44 @@ const AuthorPage = (props) => {
   ];
 
   let renderTabContent = () => {
-    switch (tabName) {
-      case "contributions":
-        return <UserContributionsTab />;
-      case "authored-papers":
-        return <AuthoredPapersTab />;
-      case "discussions":
-        return <UserDiscussionsTab hostname={hostname} />;
-      case "citations":
-        return null;
-      case "transactions":
-        return <UserTransactionsTab />;
-      case "boosts":
-        return <UserPromotionsTab fetching={fetchingPromotions} />;
-    }
+    return (
+      // render all tab content on the dom, but only show if selected
+      <div>
+        <span
+          className={css(
+            tabName === "contributions" ? styles.reveal : styles.hidden
+          )}
+        >
+          <UserContributionsTab fetching={fetching} />
+        </span>
+        <span
+          className={css(
+            tabName === "authored-papers" ? styles.reveal : styles.hidden
+          )}
+        >
+          <AuthoredPapersTab fetching={fetching} />
+        </span>
+        <span
+          className={css(
+            tabName === "discussions" ? styles.reveal : styles.hidden
+          )}
+        >
+          <UserDiscussionsTab hostname={hostname} fetching={fetching} />
+        </span>
+        <span
+          className={css(
+            tabName === "transactions" ? styles.reveal : styles.hidden
+          )}
+        >
+          <UserTransactionsTab fetching={fetching} />
+        </span>
+        <span
+          className={css(tabName === "boosts" ? styles.reveal : styles.hidden)}
+        >
+          <UserPromotionsTab fetching={fetchingPromotions} />
+        </span>
+      </div>
+    );
   };
 
   let renderEditButton = (action) => {
@@ -703,6 +722,7 @@ const AuthorPage = (props) => {
         dynamic_href={"/user/[authorId]/[tabName]"}
         author={author}
         user={user}
+        fetching={fetching}
       />
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
       <ShareModal
@@ -1029,8 +1049,6 @@ const styles = StyleSheet.create({
     background: "rgba(0, 0, 0, .3)",
     color: "#fff",
     bottom: 0,
-    // left: '-50%',
-    // transform: "translateX(-50%)",
   },
   reputation: {
     display: "flex",
@@ -1056,6 +1074,14 @@ const styles = StyleSheet.create({
     objectFit: "contain",
     marginLeft: 5,
     marginRight: 5,
+  },
+  hidden: {
+    display: "none",
+    zIndex: -10,
+  },
+  reveal: {
+    display: "flex",
+    zIndex: 1,
   },
 });
 
