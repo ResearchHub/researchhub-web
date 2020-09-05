@@ -968,6 +968,8 @@ var styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     width: "100%",
     textAlign: "center",
+    padding: 0,
+    margin: 0,
     "@media only screen and (min-width: 800px)": {
       textAlign: "left",
       paddingRight: 16,
