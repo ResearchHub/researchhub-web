@@ -2,13 +2,14 @@ import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors, { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
+import Loader from "~/components/Loader/Loader";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
 
 const TabBar = (props) => {
   const selectedTab = props.selectedTab;
-  const { dynamic_href } = props;
+  const { dynamic_href, fetching } = props;
   const tabs = props.tabs.map(formatTabs);
 
   return (
@@ -22,7 +23,7 @@ const TabBar = (props) => {
                 return null;
               }
             }
-            return renderTab(tab, selectedTab, dynamic_href);
+            return renderTab(tab, selectedTab, dynamic_href, props.fetching);
           })}
         </div>
       </ComponentWrapper>
@@ -38,7 +39,8 @@ function formatTabs(tab) {
 function renderTab(
   { key, href, label, showCount, count },
   selected,
-  dynamic_href
+  dynamic_href,
+  fetching
 ) {
   let isSelected = false;
   let classNames = [styles.tab];
@@ -52,7 +54,9 @@ function renderTab(
       <div className={css(classNames)}>
         <div className={css(styles.link)}>
           {label}{" "}
-          {showCount && <Count isSelected={isSelected} amount={count} />}
+          {showCount && (
+            <Count isSelected={isSelected} amount={count} fetching={fetching} />
+          )}
         </div>
       </div>
     </Link>
@@ -60,14 +64,29 @@ function renderTab(
 }
 
 const Count = (props) => {
-  const { amount, isSelected } = props;
+  const { amount, isSelected, fetching } = props;
   // if (amount < 1) {
   //   return <span id="discussion_count"></span>;
   // }
+
   return (
     <UIStyling isSelected={isSelected}>
-      <span id="discussion_count" className={css(styles.count)}>
-        {amount > 0 ? amount : 0}
+      <span
+        id="discussion_count"
+        className={css(styles.count, fetching & styles.loaderContainer)}
+      >
+        {fetching ? (
+          <Loader
+            size={4}
+            loading={true}
+            containerStyle={styles.loaderStyle}
+            color={paperTabColors.FONT}
+          />
+        ) : amount > 0 ? (
+          amount
+        ) : (
+          0
+        )}
       </span>
     </UIStyling>
   );
@@ -133,6 +152,13 @@ const styles = StyleSheet.create({
     color: colors.PURPLE(1),
     borderBottom: "solid 3px",
     borderColor: colors.PURPLE(1),
+  },
+  loaderContainer: {
+    padding: 0,
+    width: "unset",
+  },
+  loaderStyle: {
+    display: "unset",
   },
 });
 

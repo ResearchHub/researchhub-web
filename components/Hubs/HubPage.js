@@ -644,14 +644,14 @@ class HubPage extends React.Component {
               )}
               id={"topbar"}
             >
-              <div className={css(styles.text, styles.feedTitle)}>
+              <h1 className={css(styles.text, styles.feedTitle)}>
                 <span className={css(styles.fullWidth)}>
                   {this.getTitle()}
                   <span className={css(styles.hubName)}>
                     {this.props.home ? "ResearchHub" : this.props.hub.name}
                   </span>
                 </span>
-              </div>
+              </h1>
               <div
                 className={css(
                   styles.inputContainer,
@@ -968,6 +968,8 @@ var styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     width: "100%",
     textAlign: "center",
+    padding: 0,
+    margin: 0,
     "@media only screen and (min-width: 800px)": {
       textAlign: "left",
       paddingRight: 16,

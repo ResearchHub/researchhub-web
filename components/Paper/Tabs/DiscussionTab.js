@@ -415,7 +415,7 @@ const DiscussionTab = (props) => {
           ref={discussionRef}
         >
           <div className={css(styles.header)}>
-            <div className={css(styles.discussionTitle)}>
+            <h3 className={css(styles.discussionTitle)}>
               Comments
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
@@ -452,7 +452,7 @@ const DiscussionTab = (props) => {
                   Tweets
                 </div>
               </div>
-            </div>
+            </h3>
             {!showEditor && !showTwitterComments && renderAddDiscussion()}
           </div>
           <div className={css(styles.box, !addView && styles.right)}>

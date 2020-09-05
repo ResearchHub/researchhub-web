@@ -11,7 +11,6 @@ import "~/components/Paper/CitationCard.css";
 
 // Components
 import VoteWidget from "../VoteWidget";
-import AuthorAvatar from "~/components/AuthorAvatar";
 import HubTag from "./HubTag";
 import HubDropDown from "./HubDropDown";
 

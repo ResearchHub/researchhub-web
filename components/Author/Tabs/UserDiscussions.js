@@ -100,7 +100,9 @@ class UserDiscussionsTab extends React.Component {
     return (
       <ComponentWrapper>
         <ReactPlaceholder
-          ready={this.props.author.discussionsDoneFetching}
+          ready={
+            this.props.author.discussionsDoneFetching && !this.props.fetching
+          }
           showLoadingAnimation
           customPlaceholder={<PaperPlaceholder color="#efefef" />}
         >
