@@ -100,9 +100,12 @@ class HubPage extends React.Component {
           ? this.props.initialFeed.next
           : null,
       doneFetching: this.props.initialFeed ? true : false,
-      filterBy: defaultFilter,
-      scope: defaultScope,
-      disableScope: true,
+      filterBy: this.props.filter ? this.props.filter : defaultFilter,
+      scope: this.props.scope ? this.props.scope : defaultScope,
+      disableScope: this.props.filter
+        ? this.props.filter.value === "hot" ||
+          this.props.filter.value === "newest"
+        : true,
       mobileView: false,
       mobileBanner: false,
       papersLoading: false,
@@ -361,12 +364,27 @@ class HubPage extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         this.detectPromoted([...res.results.data]);
-        this.setState({
-          papers: [...this.state.papers, ...res.results.data],
-          next: res.next,
-          page: this.state.page + 1,
-          loadingMore: false,
-        });
+        this.setState(
+          {
+            papers: [...this.state.papers, ...res.results.data],
+            next: res.next,
+            page: this.state.page + 1,
+            loadingMore: false,
+          },
+          () => {
+            let filter = this.state.filterBy.label
+              .split(" ")
+              .join("-")
+              .toLowerCase();
+            Router.push(
+              this.state.disableScope ? "/" : "/[filter]/[scope]",
+              this.state.disableScope
+                ? `/${filter}?page=${this.state.page}`
+                : `${filter}/${this.state.scope.value}?page=${this.state.page}`,
+              { shallow: true }
+            );
+          }
+        );
       })
       .then(
         setTimeout(() => {
@@ -446,9 +464,27 @@ class HubPage extends React.Component {
     let param = {};
     param[type] = option;
     showMessage({ show: true, load: true });
-    this.setState({
-      ...param,
-    });
+    this.setState(
+      {
+        ...param,
+      },
+      () => {
+        let filter = this.state.filterBy.label
+          .split(" ")
+          .join("-")
+          .toLowerCase();
+        if (this.state.filterBy.disableScope) {
+          Router.push("/[filter]", `/${filter}`, {
+            shallow: true,
+          });
+        } else {
+          let scope = this.state.scope.value;
+          Router.push("/[filter]/[scope]", `/${filter}/${scope}`, {
+            shallow: true,
+          });
+        }
+      }
+    );
   };
 
   voteCallback = (index, paper) => {

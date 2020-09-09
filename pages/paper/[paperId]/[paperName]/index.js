@@ -52,7 +52,7 @@ const Paper = (props) => {
 
   if (props.redirectPath && typeof window !== "undefined") {
     // updates the [paperName] without refetching data
-    router.push("/paper/[paperId]/[paperName]", props.redirectPath, {
+    router.replace("/paper/[paperId]/[paperName]", props.redirectPath, {
       shallow: true,
     });
   }
