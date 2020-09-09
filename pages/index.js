@@ -1,9 +1,10 @@
 import { connect } from "react-redux";
 import { StyleSheet } from "aphrodite";
-import API from "~/config/api";
+import { useRouter } from "next/router";
 
 import HubPage from "../components/Hubs/HubPage";
 
+import API from "~/config/api";
 import { getInitialScope } from "~/config/utils/dates";
 
 class Index extends React.Component {
@@ -14,15 +15,16 @@ class Index extends React.Component {
       leaderboardFeed: null,
       initialHubList: null,
     };
+    let page = query.page ? query.page : 1;
 
     try {
       const [initialFeed, leaderboardFeed] = await Promise.all([
         fetch(
           API.GET_HUB_PAPERS({
-            // Initial Feed
             hubId: 0,
             ordering: "hot",
             timePeriod: getInitialScope(),
+            page,
           }),
           API.GET_CONFIG()
         ).then((res) => res.json()),
@@ -44,13 +46,4 @@ class Index extends React.Component {
   }
 }
 
-var styles = StyleSheet.create({});
-
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export default Index;
