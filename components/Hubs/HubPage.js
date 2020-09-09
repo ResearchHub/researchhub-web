@@ -372,17 +372,7 @@ class HubPage extends React.Component {
             loadingMore: false,
           },
           () => {
-            let filter = this.state.filterBy.label
-              .split(" ")
-              .join("-")
-              .toLowerCase();
-            Router.push(
-              this.state.disableScope ? "/" : "/[filter]/[scope]",
-              this.state.disableScope
-                ? `/${filter}?page=${this.state.page}`
-                : `${filter}/${this.state.scope.value}?page=${this.state.page}`,
-              { shallow: true }
-            );
+            this.updateSlugs();
           }
         );
       })
@@ -391,6 +381,40 @@ class HubPage extends React.Component {
           showMessage({ show: false });
         }, 200)
       );
+  };
+
+  updateSlugs = () => {
+    let { filterBy, scope, page, disableScope } = this.state;
+
+    let filter = filterBy.label
+      .split(" ")
+      .join("-")
+      .toLowerCase();
+
+    let href, as;
+
+    if (disableScope) {
+      // if filter, but no scope
+      if (this.props.home) {
+        href = "/[filter]";
+        as = `/${filter}?page=${page}`;
+      } else {
+        // Hub Page
+        href = "/hubs/[slug]/[filter]";
+        as = `/hubs/${this.props.slug}/${filter}`;
+      }
+    } else {
+      // filter & scope
+      if (this.props.home) {
+        href = "/[filter]/[scope]";
+        as = `${filter}/${scope.value}?page=${page}`;
+      } else {
+        href = "/hubs/[slug]/[filter]/[scope]";
+        as = `/hubs/${this.props.slug}/${filter}/${scope.value}`;
+      }
+    }
+
+    Router.push(href, as, { shallow: true });
   };
 
   calculateScope = () => {
@@ -469,20 +493,7 @@ class HubPage extends React.Component {
         ...param,
       },
       () => {
-        let filter = this.state.filterBy.label
-          .split(" ")
-          .join("-")
-          .toLowerCase();
-        if (this.state.filterBy.disableScope) {
-          Router.push("/[filter]", `/${filter}`, {
-            shallow: true,
-          });
-        } else {
-          let scope = this.state.scope.value;
-          Router.push("/[filter]/[scope]", `/${filter}/${scope}`, {
-            shallow: true,
-          });
-        }
+        this.updateSlugs();
       }
     );
   };
