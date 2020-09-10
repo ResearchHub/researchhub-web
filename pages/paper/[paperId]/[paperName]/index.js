@@ -172,9 +172,6 @@ const Paper = (props) => {
 
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
-      // refetchPaper();
-      fetchDiscussions();
-      fetchBullets();
       // fetchReferences();
       // fetchFigures();
       if (document.getElementById("structuredData")) {
