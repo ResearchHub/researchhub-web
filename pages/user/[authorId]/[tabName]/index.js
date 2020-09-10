@@ -15,7 +15,6 @@ import AvatarUpload from "~/components/AvatarUpload";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
-import Reputation from "~/components/Reputation";
 import ShareModal from "~/components/ShareModal";
 import TabBar from "~/components/TabBar";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
@@ -482,10 +481,32 @@ const AuthorPage = (props) => {
             <OrcidConnectButton
               hostname={hostname}
               refreshProfileOnSuccess={true}
-              customLabel={"Connect your ORCiD Profile"}
+              customLabel={"Connect ORCiD"}
               styles={styles.orcidButton}
             />
           );
+    }
+  };
+
+  const renderRSCBalance = () => {
+    if (author.user && user) {
+      if (author.user === user.id) {
+        return (
+          <div className={css(styles.rscBalance)}>
+            <span className={css(styles.icon)}>
+              <img
+                src={"/static/icons/coin-filled.png"}
+                className={css(styles.rscIcon)}
+                alt={"researchhub-coin-icon"}
+              />
+            </span>
+            <div className={css(styles.reputationTitle)}>
+              Current RSC Balance:
+            </div>
+            <div className={css(styles.amount)}>{props.user.balance}</div>
+          </div>
+        );
+      }
     }
   };
 
@@ -498,12 +519,13 @@ const AuthorPage = (props) => {
       <ComponentWrapper>
         <div className={css(styles.profileContainer)}>
           <div
-            className={css(allowEdit && styles.avatarContainer)}
+            className={css(styles.avatarContainer)}
             onClick={(allowEdit && openAvatarModal) || undefined}
             onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
             onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
+            draggable={false}
           >
-            <AuthorAvatar author={author} disableLink={true} size={80} />
+            <AuthorAvatar author={author} disableLink={true} size={120} />
             {allowEdit && hoverProfilePicture && (
               <div className={css(styles.profilePictureHover)}>Update</div>
             )}
@@ -511,7 +533,7 @@ const AuthorPage = (props) => {
           <div className={css(styles.profileInfo)}>
             <div className={css(styles.nameLine)}>
               {!editName ? (
-                <div
+                <h1
                   className={css(styles.authorName, styles.editButtonContainer)}
                   onMouseEnter={() => onMouseEnter(SECTIONS.name)}
                   onMouseLeave={() => onMouseLeave(SECTIONS.name)}
@@ -523,7 +545,7 @@ const AuthorPage = (props) => {
                       setHoverName(false);
                       onEditToggle(SECTIONS.name);
                     })}
-                </div>
+                </h1>
               ) : (
                 allowEdit && (
                   <div className={css(styles.editDescriptionContainer)}>
@@ -539,20 +561,25 @@ const AuthorPage = (props) => {
                   </div>
                 )
               )}
-              <div
-                className={css(
-                  styles.connectOrcid,
-                  author.orcid_id && styles.orcidAvailable
-                )}
-              >
-                {renderOrcid()}
-              </div>
             </div>
-            <div className={css(styles.reputation)}>
-              <div className={css(styles.reputationTitle)}>
-                Lifetime Reputation:
+
+            <div className={css(styles.reputationContainer)}>
+              <div className={css(styles.reputation)}>
+                <span className={css(styles.icon)}>
+                  <img
+                    src={"/static/ResearchHubIcon.png"}
+                    className={css(styles.rhIcon)}
+                    alt={"reserachhub-icon"}
+                  />
+                </span>
+                <div className={css(styles.reputationTitle)}>
+                  Lifetime Reputation:
+                </div>
+                <div className={css(styles.amount)}>
+                  {props.author.reputation}
+                </div>
               </div>
-              <Reputation reputation={author.reputation} />
+              {renderRSCBalance()}
             </div>
             {!editDescription ? (
               <div
@@ -604,114 +631,124 @@ const AuthorPage = (props) => {
               )}
             </div>
           </div>
-          <div className={css(styles.socialLinks)}>
-            {author.orcid_id && (
-              <a
-                className={css(styles.link)}
-                target="_blank"
-                href={`https://orcid.org/${author.orcid_id}`}
-              >
-                <img
-                  src="/static/icons/orcid.png"
-                  className={css(styles.orcidLogo)}
-                />
-              </a>
-            )}
-            {!allowEdit ? (
-              author.linkedin && (
+          <div className={css(styles.column)}>
+            <div className={css(styles.socialLinks)}>
+              {author.orcid_id && (
                 <a
                   className={css(styles.link)}
-                  href={author.linkedin}
                   target="_blank"
+                  href={`https://orcid.org/${author.orcid_id}`}
                 >
-                  <div className={css(styles.socialMedia, styles.linkedin)}>
+                  <img
+                    src="/static/icons/orcid.png"
+                    className={css(styles.orcidLogo)}
+                  />
+                </a>
+              )}
+              {!allowEdit ? (
+                author.linkedin && (
+                  <a
+                    className={css(styles.link)}
+                    href={author.linkedin}
+                    target="_blank"
+                  >
+                    <div className={css(styles.socialMedia, styles.linkedin)}>
+                      <i className="fab fa-linkedin-in"></i>
+                    </div>
+                  </a>
+                )
+              ) : (
+                <div
+                  className={css(
+                    styles.editSocial,
+                    !author.linkedin && styles.noSocial,
+                    editLinkedin && styles.fullOpacity
+                  )}
+                  ref={(ref) => (linkedinRef = ref)}
+                >
+                  <div
+                    className={css(styles.socialMedia, styles.linkedin)}
+                    onClick={() => setEditLinkedin(true)}
+                  >
                     <i className="fab fa-linkedin-in"></i>
                   </div>
-                </a>
-              )
-            ) : (
-              <div
-                className={css(
-                  styles.editSocial,
-                  !author.linkedin && styles.noSocial,
-                  editLinkedin && styles.fullOpacity
-                )}
-                ref={(ref) => (linkedinRef = ref)}
-              >
-                <div
-                  className={css(styles.socialMedia, styles.linkedin)}
-                  onClick={() => setEditLinkedin(true)}
-                >
-                  <i className="fab fa-linkedin-in"></i>
+                  {editLinkedin && renderSocialEdit(SECTIONS.linkedin)}
                 </div>
-                {editLinkedin && renderSocialEdit(SECTIONS.linkedin)}
-              </div>
-            )}
-            {!allowEdit ? (
-              author.twitter && (
-                <a
-                  className={css(styles.link)}
-                  href={author.twitter}
-                  target="_blank"
+              )}
+              {!allowEdit ? (
+                author.twitter && (
+                  <a
+                    className={css(styles.link)}
+                    href={author.twitter}
+                    target="_blank"
+                  >
+                    <div className={css(styles.socialMedia, styles.twitter)}>
+                      <i className="fab fa-twitter"></i>
+                    </div>
+                  </a>
+                )
+              ) : (
+                <div
+                  className={css(
+                    styles.editSocial,
+                    !author.twitter && styles.noSocial,
+                    editTwitter && styles.fullOpacity
+                  )}
+                  ref={(ref) => (twitterRef = ref)}
                 >
-                  <div className={css(styles.socialMedia, styles.twitter)}>
+                  <div
+                    className={css(styles.socialMedia, styles.twitter)}
+                    onClick={() => setEditTwitter(true)}
+                  >
                     <i className="fab fa-twitter"></i>
                   </div>
-                </a>
-              )
-            ) : (
-              <div
-                className={css(
-                  styles.editSocial,
-                  !author.twitter && styles.noSocial,
-                  editTwitter && styles.fullOpacity
-                )}
-                ref={(ref) => (twitterRef = ref)}
-              >
-                <div
-                  className={css(styles.socialMedia, styles.twitter)}
-                  onClick={() => setEditTwitter(true)}
-                >
-                  <i className="fab fa-twitter"></i>
+                  {editTwitter && renderSocialEdit(SECTIONS.twitter)}
                 </div>
-                {editTwitter && renderSocialEdit(SECTIONS.twitter)}
-              </div>
-            )}
-            {!allowEdit ? (
-              author.facebook && (
-                <a
-                  className={css(styles.link)}
-                  href={author.facebook}
-                  target="_blank"
+              )}
+              {!allowEdit ? (
+                author.facebook && (
+                  <a
+                    className={css(styles.link)}
+                    href={author.facebook}
+                    target="_blank"
+                  >
+                    <div className={css(styles.socialMedia, styles.facebook)}>
+                      <i className="fab fa-facebook-f"></i>
+                    </div>
+                  </a>
+                )
+              ) : (
+                <div
+                  className={css(
+                    styles.editSocial,
+                    !author.facebook && styles.noSocial,
+                    editFacebook && styles.fullOpacity
+                  )}
+                  ref={(ref) => (facebookRef = ref)}
                 >
-                  <div className={css(styles.socialMedia, styles.facebook)}>
+                  <div
+                    className={css(styles.socialMedia, styles.facebook)}
+                    onClick={() => setEditFacebook(true)}
+                  >
                     <i className="fab fa-facebook-f"></i>
                   </div>
-                </a>
-              )
-            ) : (
-              <div
-                className={css(
-                  styles.editSocial,
-                  !author.facebook && styles.noSocial,
-                  editFacebook && styles.fullOpacity
-                )}
-                ref={(ref) => (facebookRef = ref)}
-              >
-                <div
-                  className={css(styles.socialMedia, styles.facebook)}
-                  onClick={() => setEditFacebook(true)}
-                >
-                  <i className="fab fa-facebook-f"></i>
+                  {editFacebook && renderSocialEdit(SECTIONS.facebook)}
                 </div>
-                {editFacebook && renderSocialEdit(SECTIONS.facebook)}
+              )}
+              <div
+                className={css(styles.socialMedia, styles.shareLink)}
+                onClick={() => setOpenShareModal(true)}
+              >
+                <i className="far fa-share"></i>
               </div>
-            )}
+            </div>
             <div
-              className={css(styles.socialMedia, styles.shareLink)}
-              onClick={() => setOpenShareModal(true)}
+              className={css(
+                styles.connectOrcid,
+                author.orcid_id && styles.orcidAvailable
+              )}
             >
-              <i className="far fa-share"></i>
+              {renderOrcid()}
             </div>
           </div>
         </div>
@@ -772,8 +809,7 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   connectOrcid: {
-    marginBottom: 16,
-    marginLeft: 5,
+    marginTop: 16,
   },
   socialLinks: {
     display: "flex",
@@ -784,10 +820,11 @@ const styles = StyleSheet.create({
   },
   authorName: {
     fontWeight: 500,
-    fontSize: 33,
+    fontSize: 30,
     textTransform: "capitalize",
+    padding: 0,
+    margin: 0,
     marginBottom: 10,
-
     "@media only screen and (max-width: 767px)": {
       paddingRight: 0,
       justifyContent: "center",
@@ -829,6 +866,14 @@ const styles = StyleSheet.create({
   description: {
     marginBottom: 16,
     justifyContent: "center",
+    width: "100%",
+    color: "#241F3A",
+    lineHeight: 1.5,
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
   },
   socialMedia: {
     width: 35,
@@ -865,14 +910,14 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "fit-content",
     paddingRight: 20,
-    marginRight: 3,
+    // marginRight: 3,
     "@media only screen and (max-width: 767px)": {
       width: "unset",
       paddingRight: 0,
     },
   },
   editButton: {
-    marginLeft: 10,
+    marginLeft: 15,
     opacity: 0.2,
     fontWeight: 400,
     fontSize: 14,
@@ -967,7 +1012,8 @@ const styles = StyleSheet.create({
   },
   socialTitle: {
     textTransform: "capitalize",
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: 400,
     marginBottom: 5,
   },
   socialInput: {
@@ -988,16 +1034,16 @@ const styles = StyleSheet.create({
     boxShadow: "0 5px 10px 0 #ddd",
     padding: 10,
     borderRadius: 8,
+    zIndex: 2,
   },
   editSocial: {
     position: "relative",
   },
   socialInputContainer: {
     display: "flex",
-    width: 300,
+    width: "fit-content",
     height: 30,
     overflow: "hidden",
-
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
     ":focus": {
@@ -1032,14 +1078,16 @@ const styles = StyleSheet.create({
     },
   },
   avatarContainer: {
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 120,
     cursor: "pointer",
     position: "relative",
+    border: "2px solid #F1F1F1",
+    borderRadius: "50%",
   },
   profilePictureHover: {
-    width: 80,
-    height: 40,
+    width: 120,
+    height: 60,
     borderRadius: "0 0 100px 100px",
     display: "flex",
     justifyContent: "center",
@@ -1050,11 +1098,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     bottom: 0,
   },
+  reputationContainer: {
+    marginBottom: 16,
+  },
   reputation: {
     display: "flex",
     alignItems: "center",
-    marginBottom: 16,
-
+    fontWeight: 500,
+    color: "#241F3A",
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
     },
@@ -1062,7 +1113,37 @@ const styles = StyleSheet.create({
   reputationTitle: {
     marginRight: 10,
   },
-  orcidButton: {},
+  rscBalance: {
+    display: "flex",
+    alignItems: "center",
+    fontWeight: 500,
+    color: "#241F3A",
+    marginTop: 10,
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "center",
+    },
+  },
+  amount: {
+    color: "rgba(36, 31, 58, 0.7)",
+    fontWeight: 400,
+  },
+  icon: {
+    width: 20,
+    marginRight: 5,
+    display: "flex",
+    alignItems: "center",
+  },
+  rhIcon: {
+    width: 13,
+    paddingLeft: 1.5,
+  },
+  rscIcon: {
+    width: 16,
+  },
+  orcidButton: {
+    width: 180,
+    fontSize: 14,
+  },
   orcidSection: {
     display: "flex",
     alignItems: "center",
