@@ -312,7 +312,7 @@ const PaperEntryCard = (props) => {
     } else if (abstract) {
       return (
         <div className={css(styles.summary, styles.text) + " clamp2"}>
-          <div className={css(styles.bullet) + " clamp2"}>{abstract}</div>
+          <div className={"clamp2"}>{abstract}</div>
         </div>
       );
     }
