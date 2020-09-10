@@ -179,7 +179,7 @@ const PaperTabBar = (props) => {
     let ampPayload = {
       event_type: "paper_tab",
       user_id: user ? user.id : null,
-      time: googlePayload.utc,
+      time: +new Date(),
       event_properties: {
         interaction,
         tab_name: label,
