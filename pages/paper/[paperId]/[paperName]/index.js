@@ -76,7 +76,7 @@ const Paper = (props) => {
     getDiscussionThreads(paper)
   );
   const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(paper.userVote.voteType)
+    getVoteType(paper.userVote)
   );
   const [figureCount, setFigureCount] = useState();
   const [figures, setFigures] = useState([]);
@@ -166,6 +166,27 @@ const Paper = (props) => {
     setTabs(getActiveTabs());
   }, [store.getState().limitations.limits.length]);
 
+
+  function checkUserVote() {
+    if (props.auth.isLoggedIn && props.auth.user) {
+      let params = {
+        paperIds: [paper.id],
+        user: props.auth.user.id,
+      };
+      return fetch(API.CHECK_USER_VOTE, API.POST_CONFIG(params))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          if (res[paper.id]) {
+            let updatedPaper = { ...paper };
+            updatedPaper.userVote = res[paper.id];
+            setPaper(updatedPaper);
+            setSelectedVoteType(updatedPaper.userVote.vote_type);
+          }
+        });
+    }
+  }
+
   useEffect(() => {
     store.getState().paper.id && setLoadingPaper(false);
   }, [store.getState().paper]);
@@ -174,6 +195,7 @@ const Paper = (props) => {
     if (store.getState().paper.id !== paperId) {
       // fetchReferences();
       // fetchFigures();
+      checkUserVote();
       if (document.getElementById("structuredData")) {
         let script = document.getElementById("structuredData");
         script.textContext = formatStructuredData();
@@ -187,6 +209,10 @@ const Paper = (props) => {
       // window.scroll({ top: 0, behavior: "auto" });
     }
   }, [paperId]);
+
+  useEffect(() => {
+    checkUserVote();
+  }, [props.auth.isLoggedIn, props.auth.user]);
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
