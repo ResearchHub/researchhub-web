@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import colors, { paperTabColors } from "~/config/themes/colors";
-import { paperTabFont } from "~/config/themes/fonts";
+import { useDispatch, useStore } from "react-redux";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
 import Loader from "~/components/Loader/Loader";
 
+// Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import colors, { paperTabColors } from "~/config/themes/colors";
+import { paperTabFont } from "~/config/themes/fonts";
 
 const VIEW_TIMER = 3000; // 3 seconds
 
 const PaperTabBar = (props) => {
+  const store = useStore();
   const [selectedTab, setSelectedTab] = useState("main");
   const [tabs, setTabs] = useState(props.activeTabs.map(formatTabs));
   const { scrollView } = props;
@@ -157,8 +160,13 @@ const PaperTabBar = (props) => {
   }
 
   function trackEvent(interaction, label) {
+    let auth = store.getState().auth;
+    let user;
+    if (auth.isLoggedIn) {
+      user = auth.user;
+    }
     let paperId = props.paper.id;
-    let payload = {
+    let googlePayload = {
       paper: paperId,
       interaction,
       item: {
@@ -167,10 +175,27 @@ const PaperTabBar = (props) => {
       },
       utc: new Date(),
     };
-    return fetch(
+
+    let ampPayload = {
+      event_type: "paper_tab",
+      user_id: user ? user.id : null,
+      time: googlePayload.utc,
+      event_properties: {
+        interaction,
+        tab_name: label,
+        paper: paperId,
+      },
+    };
+
+    fetch(
       API.GOOGLE_ANALYTICS({ ignorePaper: true, ignoreUser: true }),
-      API.POST_CONFIG(payload)
+      API.POST_CONFIG(googlePayload)
     )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {});
+
+    fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {});
