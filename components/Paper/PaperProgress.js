@@ -170,7 +170,7 @@ class PaperProgress extends React.Component {
     let ampPayload = {
       event_type: "paper_progress",
       user_id: user ? user.id : null,
-      time: payload.utc,
+      time: +new Date(),
       event_properties: {
         interaction,
         value,
