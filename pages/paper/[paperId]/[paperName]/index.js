@@ -114,21 +114,21 @@ const Paper = (props) => {
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
 
-  const fetchReferences = () => {
-    let params = {
-      paperId: paperId,
-      route: "referenced_by",
-    };
-    return fetch(API.PAPER(params), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setLoadingReferencedBy(false);
-        let newReferencedBy = [...res.results];
-        setReferencedBy(newReferencedBy);
-        setReferencedByCount(res.count);
-      });
-  };
+  // const fetchReferences = () => {
+  //   let params = {
+  //     paperId: paperId,
+  //     route: "referenced_by",
+  //   };
+  //   return fetch(API.PAPER(params), API.GET_CONFIG())
+  //     .then(Helpers.checkStatus)
+  //     .then(Helpers.parseJSON)
+  //     .then((res) => {
+  //       setLoadingReferencedBy(false);
+  //       let newReferencedBy = [...res.results];
+  //       setReferencedBy(newReferencedBy);
+  //       setReferencedByCount(res.count);
+  //     });
+  // };
 
   const fetchFigures = () => {
     let paperId = paper.id;
@@ -184,9 +184,9 @@ const Paper = (props) => {
 
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
-      refetchPaper();
-      fetchReferences();
-      fetchFigures();
+      // refetchPaper();
+      // fetchReferences();
+      // fetchFigures();
       if (document.getElementById("structuredData")) {
         let script = document.getElementById("structuredData");
         script.textContext = formatStructuredData();
@@ -507,7 +507,7 @@ const Paper = (props) => {
               />
             </div>
           </a>
-          {referencedByCount > 0 || showAllSections ? (
+          {(false && referencedByCount > 0) || showAllSections ? (
             <a name="citations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <ReactPlaceholder
@@ -555,7 +555,7 @@ const Paper = (props) => {
               </ComponentWrapper>
             </a>
           ) : null}
-          {limitCount || showAllSections ? (
+          {(false && limitCount) || showAllSections ? (
             <a name="limitations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <div
