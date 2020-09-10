@@ -52,9 +52,6 @@ const AvatarUpload = (props) => {
           {saveButton(section, { picture: preview })}
         </div>
       )}
-      <div className={css(styles.icon)}>
-        <ResearchHubIcon />
-      </div>
     </BaseModal>
   );
 };
@@ -72,6 +69,7 @@ const styles = StyleSheet.create({
     fontSize: 33,
   },
   icon: {
+    width: 200,
     marginTop: 16,
   },
   modalContainer: {
@@ -81,12 +79,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
+    paddingTop: 30,
   },
   actions: {
     width: "100%",
     display: "flex",
     justifyContent: "center",
-    marginTop: 16,
+    marginTop: 20,
   },
   disable: {
     opacity: 0.5,
