@@ -488,6 +488,28 @@ const AuthorPage = (props) => {
     }
   };
 
+  const renderRSCBalance = () => {
+    if (author.user && user) {
+      if (author.user === user.id) {
+        return (
+          <div className={css(styles.rscBalance)}>
+            <span className={css(styles.icon)}>
+              <img
+                src={"/static/icons/coin-filled.png"}
+                className={css(styles.rscIcon)}
+                alt={"researchhub-coin-icon"}
+              />
+            </span>
+            <div className={css(styles.reputationTitle)}>
+              Current RSC Balance:
+            </div>
+            <div className={css(styles.amount)}>{props.user.balance}</div>
+          </div>
+        );
+      }
+    }
+  };
+
   return (
     <div className={css(styles.container)}>
       <Head
@@ -497,10 +519,11 @@ const AuthorPage = (props) => {
       <ComponentWrapper>
         <div className={css(styles.profileContainer)}>
           <div
-            className={css(allowEdit && styles.avatarContainer)}
+            className={css(styles.avatarContainer)}
             onClick={(allowEdit && openAvatarModal) || undefined}
             onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
             onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
+            draggable={false}
           >
             <AuthorAvatar author={author} disableLink={true} size={120} />
             {allowEdit && hoverProfilePicture && (
@@ -556,19 +579,7 @@ const AuthorPage = (props) => {
                   {props.author.reputation}
                 </div>
               </div>
-              <div className={css(styles.rscBalance)}>
-                <span className={css(styles.icon)}>
-                  <img
-                    src={"/static/icons/coin-filled.png"}
-                    className={css(styles.rscIcon)}
-                    alt={"researchhub-coin-icon"}
-                  />
-                </span>
-                <div className={css(styles.reputationTitle)}>
-                  Current RSC Balance:
-                </div>
-                <div className={css(styles.amount)}>{props.user.balance}</div>
-              </div>
+              {renderRSCBalance()}
             </div>
             {!editDescription ? (
               <div
