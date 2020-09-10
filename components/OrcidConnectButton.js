@@ -83,8 +83,8 @@ const OrcidConnectButton = (props) => {
 
 const styles = StyleSheet.create({
   iconStyle: {
-    height: 33,
-    width: 33,
+    height: 30,
+    width: 30,
   },
   button: {
     height: 55,
