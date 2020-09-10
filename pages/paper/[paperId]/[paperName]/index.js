@@ -130,17 +130,27 @@ const Paper = (props) => {
   //     });
   // };
 
-  const fetchFigures = () => {
-    let paperId = paper.id;
-    return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(async (res) => {
-        setFigureCount(res.data.length);
-        setFigures(res.data);
-        await dispatch(PaperActions.updatePaperState("figures", res.data));
-        setFetchedFigures(true);
-      });
+  // const fetchFigures = () => {
+  //   let paperId = paper.id;
+  //   return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
+  //     .then(Helpers.checkStatus)
+  //     .then(Helpers.parseJSON)
+  //     .then(async (res) => {
+  //       setFigureCount(res.data.length);
+  //       setFigures(res.data);
+  //       await dispatch(PaperActions.updatePaperState("figures", res.data));
+  //       setFetchedFigures(true);
+  //     });
+  // };
+
+  const fetchBullets = () => {
+    let { getBullets, paper } = props;
+    getBullets(paper.id);
+  };
+
+  const fetchDiscussions = () => {
+    let { getThreads, paper } = props;
+    getThreads({ paperId: paper.id, paper, twitter: false });
   };
 
   useEffect(() => {
@@ -156,28 +166,6 @@ const Paper = (props) => {
     setTabs(getActiveTabs());
   }, [store.getState().limitations.limits.length]);
 
-  async function refetchPaper() {
-    setLoadingPaper(true);
-    await dispatch(PaperActions.getPaper(paperId));
-    const fetchedPaper = store.getState().paper;
-    await dispatch(
-      PaperActions.getThreads({ paperId, paper: fetchedPaper, twitter: false })
-    );
-    const refetchedPaper = store.getState().paper;
-    setScore(refetchedPaper.score);
-    setPaper(refetchedPaper);
-    setSelectedVoteType(getVoteType(refetchedPaper.userVote));
-    setDiscussionThreads(getDiscussionThreads(refetchedPaper));
-    setFlag(refetchedPaper.user_flag !== null);
-
-    setLoadingPaper(false);
-
-    showMessage({ show: false });
-    if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
-      props.setUploadingPaper(false);
-    }
-  }
-
   useEffect(() => {
     store.getState().paper.id && setLoadingPaper(false);
   }, [store.getState().paper]);
@@ -185,6 +173,8 @@ const Paper = (props) => {
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
       // refetchPaper();
+      fetchDiscussions();
+      fetchBullets();
       // fetchReferences();
       // fetchFigures();
       if (document.getElementById("structuredData")) {
@@ -608,12 +598,6 @@ Paper.getInitialProps = async (ctx) => {
     try {
       await store.dispatch(PaperActions.getPaper(query.paperId));
       fetchedPaper = store.getState().paper;
-
-      await store.dispatch(
-        PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
-      );
-      await store.dispatch(LimitationsActions.getLimitations(query.paperId));
-      await store.dispatch(BulletActions.getBullets(query.paperId));
       if (fetchedPaper.slug && fetchedPaper.slug !== query.paperName) {
         // redirect paper if paperName does not match slug
         let paperName = fetchedPaper.slug
@@ -939,6 +923,8 @@ const mapDispatchToProps = {
   setUploadingPaper: AuthActions.setUploadingPaper,
   getLimitations: LimitationsActions.getLimitations,
   updatePaperState: PaperActions.updatePaperState,
+  getThreads: PaperActions.getThreads,
+  getBullets: BulletActions.getBullets,
 };
 
 export default connect(
