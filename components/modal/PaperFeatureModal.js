@@ -157,23 +157,6 @@ class PaperFeatureModal extends React.Component {
     }
   };
 
-  trackEvent = (interaction, label) => {
-    let paperId = props.paper.id;
-    let payload = {
-      paper: paperId,
-      interaction,
-      item: {
-        name: "Paper Progress",
-        value: label,
-      },
-      utc: new Date(),
-    };
-    return fetch(API.GOOGLE_ANALYTICS({}), API.POST_CONFIG(payload))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {});
-  };
-
   formatNewBullet = () => {
     let ordinal = this.props.bulletsRedux.bullets.length + 1;
 
