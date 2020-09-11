@@ -39,7 +39,7 @@ class Base extends React.Component {
 
     await getUser();
     getHubs();
-    getTopHubs();
+    getTopHubs(auth);
     getUniversities();
     if (auth.isLoggedIn) {
       getWithdrawals();

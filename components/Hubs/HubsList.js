@@ -31,9 +31,7 @@ class HubsList extends React.Component {
 
   componentDidMount() {
     if (this.props.hubs.length) {
-      this.setState({ hubs: this.props.hubs });
-    } else {
-      this.fetchHubs();
+      this.setState({ hubs: [...this.props.hubs] });
     }
   }
 
@@ -44,7 +42,7 @@ class HubsList extends React.Component {
       });
     }
     if (prevProps.hubs !== this.props.hubs) {
-      this.setState({ hubs: this.props.hubs });
+      this.setState({ hubs: [...this.props.hubs] });
     }
     if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
       this.updateTopHubs();
@@ -74,7 +72,7 @@ class HubsList extends React.Component {
     }
   }
 
-  updateTopHubs = () => {
+  updateTopHubs = (state) => {
     if (this.props.auth.isLoggedIn) {
       let subscribedHubs = {};
 
@@ -93,6 +91,13 @@ class HubsList extends React.Component {
       });
 
       this.props.updateTopHubs(updatedTopHubs);
+    } else {
+      let updatedTopHubs = this.props.hubs.map((hub) => {
+        hub.user_is_subscribed = false;
+        return hub;
+      });
+
+      this.props.updateTopHubs(updatedTopHubs);
     }
   };
 
@@ -104,7 +109,6 @@ class HubsList extends React.Component {
     let selectedHubs = this.state.hubs;
     return selectedHubs.map((hub, i) => {
       let { name, id, user_is_subscribed } = hub;
-      // console.log(hub.name, hub.user_is_subscribed)
       return (
         <Ripples
           className={css(
