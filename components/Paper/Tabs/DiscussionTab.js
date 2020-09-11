@@ -30,6 +30,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { doesNotExist, endsWithSlash } from "~/config/utils";
+import { sendAmpEvent } from "~/config/fetch";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
@@ -232,11 +233,24 @@ const DiscussionTab = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        // update state & redux
         let newDiscussion = { ...resp };
         newDiscussion = thread(newDiscussion);
         setThreads([newDiscussion, ...threads]);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         setFormattedThreads([formattedDiscussion, ...formattedThreads]);
+
+        // amp events
+        let payload = {
+          event_type: "create_thread",
+          time: +new Date(),
+          event_properties: {
+            interaction: "Post Thread",
+            paper: paperId,
+          },
+        };
+        sendAmpEvent(payload);
+
         setTimeout(() => {
           props.showMessage({ show: false });
           props.setMessage("Successfully Saved!");

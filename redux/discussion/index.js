@@ -2,6 +2,7 @@ import * as actions from "./actions";
 import * as shims from "./shims";
 import API from "~/config/api";
 import * as utils from "../utils";
+import { sendAmpEvent } from "~/config/fetch";
 
 export function fetchThread(paperId, threadId) {
   return async (dispatch) => {
@@ -88,6 +89,16 @@ export function postComment(paperId, threadId, text, plain_text) {
     }
 
     if (response.ok) {
+      let payload = {
+        event_type: "create_comment",
+        time: +new Date(),
+        event_properties: {
+          interaction: "Post Comment",
+          paper: paperId,
+          thread: threadId,
+        },
+      };
+      sendAmpEvent(payload);
       const body = await response.json();
       const comment = shims.comment(body);
       action = actions.setPostCommentSuccess(comment);
@@ -170,6 +181,17 @@ export function postReply(paperId, threadId, commentId, text, plain_text) {
     }
 
     if (response.ok) {
+      let payload = {
+        event_type: "create_reply",
+        time: +new Date(),
+        event_properties: {
+          interaction: "Post Reply",
+          paper: paperId,
+          thread: threadId,
+          comment: commentId,
+        },
+      };
+      sendAmpEvent(payload);
       const body = await response.json();
       const reply = shims.reply(body);
       action = actions.setPostReplySuccess(reply);
@@ -235,6 +257,16 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
     }
 
     if (response.ok) {
+      let payload = {
+        event_type: "create_discussion_vote",
+        time: +new Date(),
+        event_properties: {
+          interaction: "Discussion Upvote",
+          paper: paperId,
+          d,
+        },
+      };
+      sendAmpEvent(payload);
       const body = await response.json();
       const vote = shims.vote(body);
       action = actions.setPostVoteSuccess(vote);
@@ -265,6 +297,16 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
     }
 
     if (response.ok) {
+      let payload = {
+        event_type: "create_discussion_vote",
+        time: +new Date(),
+        event_properties: {
+          interaction: "Discussion Downvote",
+          paper: paperId,
+          d,
+        },
+      };
+      sendAmpEvent(payload);
       const body = await response.json();
       const vote = shims.vote(body);
       action = actions.setPostVoteSuccess(vote);

@@ -34,3 +34,10 @@ export const unsubscribeFromHub = async (hubId) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const sendAmpEvent = async (payload, cb) => {
+  return fetch(API.AMP_ANALYTICS, API.POST_CONFIG(payload))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => cb && cb(res));
+};
