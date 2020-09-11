@@ -406,7 +406,7 @@ class PaperPageCard extends React.Component {
                     src={preview.file}
                     className={css(styles.image)}
                     key={`preview-${preview.id}-${i}`}
-                    property="thumbnailUrl"
+                    property="image"
                     style={{
                       minHeight: height,
                       maxHeight: height,
@@ -728,11 +728,11 @@ class PaperPageCard extends React.Component {
               >
                 <div className={css(styles.metaContainer)}>
                   <div className={css(styles.titleHeader)}>
-                    <h1 className={css(styles.title)} property="name">
+                    <h1 className={css(styles.title)} property={"headline"}>
                       {paper && paper.title}
                     </h1>
                     {paper.paper_title && paper.paper_title !== paper.title ? (
-                      <h2 className={css(styles.subtitle)}>
+                      <h2 className={css(styles.subtitle)} property={"name"}>
                         {`From Paper: ${paper.paper_title}`}
                       </h2>
                     ) : null}
