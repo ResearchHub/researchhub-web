@@ -30,7 +30,7 @@ class HubsList extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.hubs && !this.props.initialHubList) {
+    if (this.props.hubs.length) {
       this.setState({ hubs: this.props.hubs });
     } else {
       this.fetchHubs();
@@ -46,6 +46,12 @@ class HubsList extends React.Component {
     if (prevProps.hubs !== this.props.hubs) {
       this.setState({ hubs: this.props.hubs });
     }
+    if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
+      this.updateTopHubs();
+    }
+    if (prevProps.auth.user !== this.props.auth.user) {
+      this.updateTopHubs();
+    }
   }
 
   componentWillUnmount() {
@@ -55,7 +61,7 @@ class HubsList extends React.Component {
 
   fetchHubs = async () => {
     if (!this.props.hubs.length > 0) {
-      await this.props.getTopHubs();
+      await this.props.getTopHubs(this.props.auth);
     }
     this.setState({ hubs: this.props.hubs }, () => {
       this.revealTransition();
@@ -68,6 +74,28 @@ class HubsList extends React.Component {
     }
   }
 
+  updateTopHubs = () => {
+    if (this.props.auth.isLoggedIn) {
+      let subscribedHubs = {};
+
+      let subscribed = this.props.auth.user.subscribed
+        ? this.props.auth.user.subscribed
+        : [];
+      subscribed.forEach((hub) => {
+        subscribedHubs[hub.id] = true;
+      });
+
+      let updatedTopHubs = this.props.hubs.map((hub) => {
+        if (subscribedHubs[hub.id]) {
+          hub.user_is_subscribed = true;
+        }
+        return hub;
+      });
+
+      this.props.updateTopHubs(updatedTopHubs);
+    }
+  };
+
   revealTransition = () => {
     setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
   };
@@ -76,7 +104,7 @@ class HubsList extends React.Component {
     let selectedHubs = this.state.hubs;
     return selectedHubs.map((hub, i) => {
       let { name, id, user_is_subscribed } = hub;
-
+      // console.log(hub.name, hub.user_is_subscribed)
       return (
         <Ripples
           className={css(
@@ -277,6 +305,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   updateCurrentHubPage: HubActions.updateCurrentHubPage,
   getTopHubs: HubActions.getTopHubs,
+  updateTopHubs: HubActions.updateTopHubs,
 };
 
 export default connect(
