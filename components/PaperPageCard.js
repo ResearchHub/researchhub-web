@@ -578,7 +578,7 @@ class PaperPageCard extends React.Component {
                 score={score}
                 onUpvote={upvote}
                 onDownvote={downvote}
-                selected={selectedVoteType}
+                selected={this.props.selectedVoteType}
                 isPaper={true}
                 horizontalView={true}
                 type={"Paper"}
@@ -643,7 +643,7 @@ class PaperPageCard extends React.Component {
               score={score}
               onUpvote={upvote}
               onDownvote={downvote}
-              selected={selectedVoteType}
+              selected={this.props.selectedVoteType}
               isPaper={true}
               type={"Paper"}
               paperPage={true}

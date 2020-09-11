@@ -76,7 +76,7 @@ const Paper = (props) => {
     getDiscussionThreads(paper)
   );
   const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(paper.userVote.voteType)
+    getVoteType(paper.userVote)
   );
   const [figureCount, setFigureCount] = useState();
   const [figures, setFigures] = useState([]);
@@ -114,33 +114,43 @@ const Paper = (props) => {
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
 
-  const fetchReferences = () => {
-    let params = {
-      paperId: paperId,
-      route: "referenced_by",
-    };
-    return fetch(API.PAPER(params), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setLoadingReferencedBy(false);
-        let newReferencedBy = [...res.results];
-        setReferencedBy(newReferencedBy);
-        setReferencedByCount(res.count);
-      });
+  // const fetchReferences = () => {
+  //   let params = {
+  //     paperId: paperId,
+  //     route: "referenced_by",
+  //   };
+  //   return fetch(API.PAPER(params), API.GET_CONFIG())
+  //     .then(Helpers.checkStatus)
+  //     .then(Helpers.parseJSON)
+  //     .then((res) => {
+  //       setLoadingReferencedBy(false);
+  //       let newReferencedBy = [...res.results];
+  //       setReferencedBy(newReferencedBy);
+  //       setReferencedByCount(res.count);
+  //     });
+  // };
+
+  // const fetchFigures = () => {
+  //   let paperId = paper.id;
+  //   return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
+  //     .then(Helpers.checkStatus)
+  //     .then(Helpers.parseJSON)
+  //     .then(async (res) => {
+  //       setFigureCount(res.data.length);
+  //       setFigures(res.data);
+  //       await dispatch(PaperActions.updatePaperState("figures", res.data));
+  //       setFetchedFigures(true);
+  //     });
+  // };
+
+  const fetchBullets = () => {
+    let { getBullets, paper } = props;
+    getBullets(paper.id);
   };
 
-  const fetchFigures = () => {
-    let paperId = paper.id;
-    return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(async (res) => {
-        setFigureCount(res.data.length);
-        setFigures(res.data);
-        await dispatch(PaperActions.updatePaperState("figures", res.data));
-        setFetchedFigures(true);
-      });
+  const fetchDiscussions = () => {
+    let { getThreads, paper } = props;
+    getThreads({ paperId: paper.id, paper, twitter: false });
   };
 
   useEffect(() => {
@@ -156,25 +166,24 @@ const Paper = (props) => {
     setTabs(getActiveTabs());
   }, [store.getState().limitations.limits.length]);
 
-  async function refetchPaper() {
-    setLoadingPaper(true);
-    await dispatch(PaperActions.getPaper(paperId));
-    const fetchedPaper = store.getState().paper;
-    await dispatch(
-      PaperActions.getThreads({ paperId, paper: fetchedPaper, twitter: false })
-    );
-    const refetchedPaper = store.getState().paper;
-    setScore(refetchedPaper.score);
-    setPaper(refetchedPaper);
-    setSelectedVoteType(getVoteType(refetchedPaper.userVote));
-    setDiscussionThreads(getDiscussionThreads(refetchedPaper));
-    setFlag(refetchedPaper.user_flag !== null);
 
-    setLoadingPaper(false);
-
-    showMessage({ show: false });
-    if (props.auth.isLoggedIn && props.auth.user.upload_tutorial_complete) {
-      props.setUploadingPaper(false);
+  function checkUserVote() {
+    if (props.auth.isLoggedIn && props.auth.user) {
+      let params = {
+        paperIds: [paper.id],
+        user: props.auth.user.id,
+      };
+      return fetch(API.CHECK_USER_VOTE, API.POST_CONFIG(params))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          if (res[paper.id]) {
+            let updatedPaper = { ...paper };
+            updatedPaper.userVote = res[paper.id];
+            setPaper(updatedPaper);
+            setSelectedVoteType(updatedPaper.userVote.vote_type);
+          }
+        });
     }
   }
 
@@ -184,9 +193,9 @@ const Paper = (props) => {
 
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
-      refetchPaper();
-      fetchReferences();
-      fetchFigures();
+      // fetchReferences();
+      // fetchFigures();
+      checkUserVote();
       if (document.getElementById("structuredData")) {
         let script = document.getElementById("structuredData");
         script.textContext = formatStructuredData();
@@ -200,6 +209,10 @@ const Paper = (props) => {
       // window.scroll({ top: 0, behavior: "auto" });
     }
   }, [paperId]);
+
+  useEffect(() => {
+    checkUserVote();
+  }, [props.auth.isLoggedIn, props.auth.user]);
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
@@ -507,7 +520,7 @@ const Paper = (props) => {
               />
             </div>
           </a>
-          {referencedByCount > 0 || showAllSections ? (
+          {(false && referencedByCount > 0) || showAllSections ? (
             <a name="citations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <ReactPlaceholder
@@ -555,7 +568,7 @@ const Paper = (props) => {
               </ComponentWrapper>
             </a>
           ) : null}
-          {limitCount || showAllSections ? (
+          {(false && limitCount) || showAllSections ? (
             <a name="limitations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <div
@@ -608,12 +621,6 @@ Paper.getInitialProps = async (ctx) => {
     try {
       await store.dispatch(PaperActions.getPaper(query.paperId));
       fetchedPaper = store.getState().paper;
-
-      await store.dispatch(
-        PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
-      );
-      await store.dispatch(LimitationsActions.getLimitations(query.paperId));
-      await store.dispatch(BulletActions.getBullets(query.paperId));
       if (fetchedPaper.slug && fetchedPaper.slug !== query.paperName) {
         // redirect paper if paperName does not match slug
         let paperName = fetchedPaper.slug
@@ -939,6 +946,8 @@ const mapDispatchToProps = {
   setUploadingPaper: AuthActions.setUploadingPaper,
   getLimitations: LimitationsActions.getLimitations,
   updatePaperState: PaperActions.updatePaperState,
+  getThreads: PaperActions.getThreads,
+  getBullets: BulletActions.getBullets,
 };
 
 export default connect(
