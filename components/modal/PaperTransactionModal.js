@@ -29,6 +29,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { useMetaMask, useWalletLink } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
+import { sendAmpEvent } from "~/config/fetch";
 
 // Constants
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
@@ -176,6 +177,17 @@ class PaperTransactionModal extends React.Component {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          // AMP On-Chain
+          let payload = {
+            event_type: "create_purchase",
+            time: +new Date(),
+            event_properties: {
+              interaction: "On-chain Purchase",
+              paper: this.props.paper.id,
+            },
+          };
+          sendAmpEvent(payload);
+
           showMessage({ show: false });
           setMessage("Transaction Successful!");
           showMessage({ show: true });
@@ -298,6 +310,17 @@ class PaperTransactionModal extends React.Component {
           let item = { ...res };
           this.signTransaction(item);
         } else {
+          // Send AMP Event
+          let payload = {
+            event_type: "create_purchase",
+            time: +new Date(),
+            event_properties: {
+              interaction: "Off-chain Purchase",
+              paper: paperId,
+            },
+          };
+          sendAmpEvent(payload);
+
           showMessage({ show: false });
           setMessage("Transaction Successful!");
           showMessage({ show: true });
