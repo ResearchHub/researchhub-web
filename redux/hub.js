@@ -67,14 +67,16 @@ export const HubActions = {
         .then(Helpers.parseJSON)
         .then((resp) => {
           let topHubs = [...resp.results];
-          if (auth && auth.isLoggedIn) {
-            console.log("auth", auth);
+          if (!auth || !auth.isLoggedIn) {
+            topHubs = topHubs.map((hub) => {
+              hub.user_is_subscribed = false;
+              return hub;
+            });
           }
-
           return dispatch({
             type: HubConstants.GET_TOP_HUBS_SUCCESS,
             payload: {
-              topHubs: [...resp.results],
+              topHubs: topHubs,
             },
           });
         });
