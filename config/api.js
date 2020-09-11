@@ -575,7 +575,21 @@ const routes = (BASE_URL) => {
       BASE_URL + `purchase/${userId}/aggregate_user_promotions/`,
     SAVE_IMAGE: BASE_URL + "paper/discussion/file/",
     CAPTCHA_VERIFY: BASE_URL + "auth/captcha_verify/",
-    CHECK_USER_VOTE: BASE_URL + "paper/check_user_vote/",
+    CHECK_USER_VOTE: ({ paperIds = null }) => {
+      let url = BASE_URL + "paper/check_user_vote";
+      let query;
+      if (paperIds && paperIds.length) {
+        query = `?paper_ids=`;
+
+        paperIds.forEach((id, i) => {
+          query += id;
+          if (i < paperIds.length - 1) {
+            query += ",";
+          }
+        });
+      }
+      return url + query;
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
