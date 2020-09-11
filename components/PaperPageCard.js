@@ -400,6 +400,24 @@ class PaperPageCard extends React.Component {
             enableKeyboardControls={true}
           >
             {this.state.previews.map((preview, i) => {
+              if (i === 0) {
+                return (
+                  <img
+                    src={preview.file}
+                    className={css(styles.image)}
+                    key={`preview-${preview.id}-${i}`}
+                    property="thumbnailUrl"
+                    style={{
+                      minHeight: height,
+                      maxHeight: height,
+                      height,
+                      width,
+                      minWidth: width,
+                      maxWidth: width,
+                    }}
+                  />
+                );
+              }
               return (
                 <img
                   src={preview.file}
@@ -476,12 +494,14 @@ class PaperPageCard extends React.Component {
       let author = Object.keys(authorsObj)[0];
 
       return (
-        <span className={css(styles.rawAuthor)}>{`${author}, et al`}</span>
+        <>
+          <span className={css(styles.rawAuthor)}>{`${author}, et al`}</span>
+          <meta property="author" content={author} />
+        </>
       );
     }
 
-    for (var key in authorsObj) {
-      let author = authorsObj[key];
+    for (var author in authorsObj) {
       if (typeof author === "object") {
         authors.push(
           <Link
@@ -492,9 +512,10 @@ class PaperPageCard extends React.Component {
               href={`/user/${author.id}/contributions`}
               className={css(styles.atag)}
             >
-              <span className={css(styles.authorName)}>
-                {`${key}${index < length - 1 ? "," : ""}`}
+              <span className={css(styles.authorName)} property="name">
+                {`${author}${index < length - 1 ? "," : ""}`}
               </span>
+              <meta property="author" content={author} />
             </a>
           </Link>
         );
@@ -502,7 +523,8 @@ class PaperPageCard extends React.Component {
       } else {
         authors.push(
           <span className={css(styles.rawAuthor)}>
-            {`${key}${index < length - 1 ? "," : ""}`}
+            {`${author}${index < length - 1 ? "," : ""}`}
+            <meta property="author" content={author} />
           </span>
         );
         index++;
@@ -532,13 +554,16 @@ class PaperPageCard extends React.Component {
             if (this.state.showAllHubs || index < 3) {
               let last = index === paper.hubs.length - 1;
               return (
-                <HubTag
-                  tag={hub}
-                  gray={false}
-                  key={`hub_tag_index_${index}`}
-                  overrideStyle={this.state.showAllHubs && styles.tagStyle}
-                  last={last}
-                />
+                <>
+                  <HubTag
+                    tag={hub}
+                    gray={false}
+                    key={`hub_tag_index_${index}`}
+                    overrideStyle={this.state.showAllHubs && styles.tagStyle}
+                    last={last}
+                  />
+                  <meta property="about" content={hub.name} />
+                </>
               );
             }
           })}
@@ -636,8 +661,12 @@ class PaperPageCard extends React.Component {
           ref={this.containerRef}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
+          vocab="https://schema.org/"
+          typeof="ScholarlyArticle"
         >
           <ReactTooltip />
+          <meta property="description" content={paper.abstract} />
+          <meta property="commentCount" content={paper.discussion_count} />
           <div className={css(styles.voting)}>
             <VoteWidget
               score={score}
@@ -699,7 +728,7 @@ class PaperPageCard extends React.Component {
               >
                 <div className={css(styles.metaContainer)}>
                   <div className={css(styles.titleHeader)}>
-                    <h1 className={css(styles.title)}>
+                    <h1 className={css(styles.title)} property="name">
                       {paper && paper.title}
                     </h1>
                     {paper.paper_title && paper.paper_title !== paper.title ? (
@@ -713,6 +742,7 @@ class PaperPageCard extends React.Component {
                       <div className={css(styles.labelContainer)}>
                         <span className={css(styles.label)}>DOI:</span>
                         <a
+                          property="sameAs"
                           href={this.formatDoiUrl(paper.doi)}
                           target="_blank"
                           className={css(styles.link, styles.labelText)}
@@ -752,7 +782,11 @@ class PaperPageCard extends React.Component {
                     {paper && paper.paper_publish_date ? (
                       <div className={css(styles.labelContainer)}>
                         <span className={css(styles.label)}>Published:</span>
-                        <div className={css(styles.labelText)}>
+                        <div
+                          className={css(styles.labelText)}
+                          property="datePublished"
+                          datetime={paper.paper_publish_date}
+                        >
                           {this.renderPublishDate()}
                         </div>
                       </div>
