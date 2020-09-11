@@ -166,14 +166,12 @@ const Paper = (props) => {
     setTabs(getActiveTabs());
   }, [store.getState().limitations.limits.length]);
 
-
   function checkUserVote() {
     if (props.auth.isLoggedIn && props.auth.user) {
       let params = {
         paperIds: [paper.id],
-        user: props.auth.user.id,
       };
-      return fetch(API.CHECK_USER_VOTE, API.POST_CONFIG(params))
+      return fetch(API.CHECK_USER_VOTE(params), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {

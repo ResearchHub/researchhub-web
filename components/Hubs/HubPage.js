@@ -221,11 +221,7 @@ class HubPage extends React.Component {
     let { isLoggedIn, auth } = this.props;
     if (isLoggedIn) {
       let paperIds = papers.map((paper) => paper.id);
-      let params = {
-        paperIds,
-        user: auth.user.id,
-      };
-      fetch(API.CHECK_USER_VOTE, API.POST_CONFIG(params))
+      fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
