@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { useDispatch, useStore } from "react-redux";
+import { useStore } from "react-redux";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
@@ -195,7 +195,7 @@ const PaperTabBar = (props) => {
       .then(Helpers.parseJSON)
       .then((res) => {});
 
-    fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload))
+    fetch(API.AMP_ANALYTICS, API.GET_CONFIG_WITH_BODY(ampPayload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {});
