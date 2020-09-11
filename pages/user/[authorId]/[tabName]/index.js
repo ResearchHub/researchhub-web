@@ -511,7 +511,11 @@ const AuthorPage = (props) => {
   };
 
   return (
-    <div className={css(styles.container)}>
+    <div
+      className={css(styles.container)}
+      vocab="https://schema.org/"
+      typeof="Person"
+    >
       <Head
         title={`${authorName} on ResearchHub`}
         description={`View contributions by ${authorName} on ResearchHub`}
@@ -526,6 +530,12 @@ const AuthorPage = (props) => {
             draggable={false}
           >
             <AuthorAvatar author={author} disableLink={true} size={120} />
+            <meta
+              property="image"
+              content={
+                author.profile_image ? author.profile_image : "author avatar"
+              }
+            />
             {allowEdit && hoverProfilePicture && (
               <div className={css(styles.profilePictureHover)}>Update</div>
             )}
@@ -537,6 +547,7 @@ const AuthorPage = (props) => {
                   className={css(styles.authorName, styles.editButtonContainer)}
                   onMouseEnter={() => onMouseEnter(SECTIONS.name)}
                   onMouseLeave={() => onMouseLeave(SECTIONS.name)}
+                  property="name"
                 >
                   {author.first_name} {author.last_name}
                   {hoverName &&
@@ -595,7 +606,7 @@ const AuthorPage = (props) => {
                     Add description
                   </span>
                 )}
-                {author.description}
+                <span property="description">{author.description}</span>
                 {hoverDescription &&
                   author.description &&
                   allowEdit &&
