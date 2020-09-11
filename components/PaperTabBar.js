@@ -195,7 +195,7 @@ const PaperTabBar = (props) => {
       .then(Helpers.parseJSON)
       .then((res) => {});
 
-    fetch(API.AMP_ANALYTICS, API.GET_CONFIG_WITH_BODY(ampPayload))
+    fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {});
