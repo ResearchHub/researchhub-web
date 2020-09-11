@@ -5,7 +5,7 @@ import * as types from "./types";
 import * as actions from "./actions";
 import * as utils from "../utils";
 import * as Sentry from "@sentry/browser";
-
+import { sendAmpEvent } from "~/config/fetch";
 /**********************************
  *        ACTIONS SECTION         *
  **********************************/
@@ -19,6 +19,15 @@ export const PaperActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          let payload = {
+            event_type: "create_paper_vote",
+            time: +new Date(),
+            event_properties: {
+              interaction: "Paper Upvote",
+            },
+          };
+          sendAmpEvent(payload);
+
           const vote = shims.vote(res);
           let action = actions.setUserVoteSuccess(vote);
 
@@ -41,6 +50,15 @@ export const PaperActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          let payload = {
+            event_type: "create_paper_vote",
+            time: +new Date(),
+            event_properties: {
+              interaction: "Paper Downvote",
+            },
+          };
+          sendAmpEvent(payload);
+
           const vote = shims.vote(res);
           let action = actions.setUserVoteSuccess(vote);
           return dispatch(action);
@@ -191,6 +209,15 @@ export const PaperActions = {
       let action = actions.setPostPaperFailure("POST", errorBody);
 
       if (response.ok) {
+        let payload = {
+          event_type: "create_paper",
+          time: +new Date(),
+          event_properties: {
+            interaction: "Create Paper",
+          },
+        };
+        sendAmpEvent(payload);
+
         const body = await response.json();
         const paper = shims.paper(body);
         action = actions.setPostPaperSuccess(paper);
@@ -230,6 +257,16 @@ export const PaperActions = {
       }
 
       if (response.ok) {
+        let payload = {
+          event_type: "create_summary",
+          time: +new Date(),
+          event_properties: {
+            paper: body.paperId,
+            interaction: "Paper Summary",
+          },
+        };
+        sendAmpEvent(payload);
+
         action = actions.setPostPaperSummarySuccess();
       } else {
         utils.logFetchError(response);
