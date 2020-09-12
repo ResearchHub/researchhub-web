@@ -103,9 +103,6 @@ const AuthorPage = (props) => {
   }
 
   async function fetchUserContributions() {
-    if (!author.user) {
-      return;
-    }
     await dispatch(
       AuthorActions.getUserContributions({
         authorId: router.query.authorId,
@@ -523,7 +520,10 @@ const AuthorPage = (props) => {
       <ComponentWrapper>
         <div className={css(styles.profileContainer)}>
           <div
-            className={css(styles.avatarContainer)}
+            className={css(
+              styles.avatarContainer,
+              author.profile_image && styles.border
+            )}
             onClick={(allowEdit && openAvatarModal) || undefined}
             onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
             onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
@@ -1093,8 +1093,10 @@ const styles = StyleSheet.create({
     height: 120,
     cursor: "pointer",
     position: "relative",
-    border: "2px solid #F1F1F1",
     borderRadius: "50%",
+  },
+  border: {
+    border: "2px solid #F1F1F1",
   },
   profilePictureHover: {
     width: 120,
