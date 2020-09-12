@@ -14,7 +14,7 @@ export const PaperActions = {
   postUpvote: (paperId) => {
     const isUpvote = true;
 
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
       await fetch(API.UPVOTE(paperId), API.POST_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -22,6 +22,9 @@ export const PaperActions = {
           let payload = {
             event_type: "create_paper_vote",
             time: +new Date(),
+            user_id: getState().auth.user
+              ? getState().auth.user.id && getState().auth.user.id
+              : null,
             event_properties: {
               interaction: "Paper Upvote",
             },
@@ -45,7 +48,7 @@ export const PaperActions = {
   postDownvote: (paperId) => {
     const isUpvote = false;
 
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
       await fetch(API.DOWNVOTE(paperId), API.POST_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -53,6 +56,9 @@ export const PaperActions = {
           let payload = {
             event_type: "create_paper_vote",
             time: +new Date(),
+            user_id: getState().auth.user
+              ? getState().auth.user.id && getState().auth.user.id
+              : null,
             event_properties: {
               interaction: "Paper Downvote",
             },
@@ -186,7 +192,7 @@ export const PaperActions = {
   },
 
   postPaper: (body) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
       const response = await fetch(
         API.POST_PAPER(),
         API.POST_FILE_CONFIG(shims.paperPost(body))
@@ -212,6 +218,9 @@ export const PaperActions = {
         let payload = {
           event_type: "create_paper",
           time: +new Date(),
+          user_id: getState().auth.user
+            ? getState().auth.user.id && getState().auth.user.id
+            : null,
           event_properties: {
             interaction: "Create Paper",
           },
@@ -241,7 +250,7 @@ export const PaperActions = {
   },
 
   postPaperSummary: (body) => {
-    return async (dispatch) => {
+    return async (dispatch, getState) => {
       const response = await fetch(
         API.PAPER(),
         API.POST_CONFIG(shims.paperSummaryPost(body))
@@ -260,6 +269,9 @@ export const PaperActions = {
         let payload = {
           event_type: "create_summary",
           time: +new Date(),
+          user_id: getState().auth.user
+            ? getState().auth.user.id && getState().auth.user.id
+            : null,
           event_properties: {
             paper: body.paperId,
             interaction: "Paper Summary",
