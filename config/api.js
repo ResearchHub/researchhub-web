@@ -576,7 +576,7 @@ const routes = (BASE_URL) => {
     SAVE_IMAGE: BASE_URL + "paper/discussion/file/",
     CAPTCHA_VERIFY: BASE_URL + "auth/captcha_verify/",
     CHECK_USER_VOTE: ({ paperIds = null }) => {
-      let url = BASE_URL + "paper/check_user_vote";
+      let url = BASE_URL + "paper/check_user_vote/";
       let query;
       if (paperIds && paperIds.length) {
         query = `?paper_ids=`;
