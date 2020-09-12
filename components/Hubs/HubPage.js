@@ -185,31 +185,28 @@ class HubPage extends React.Component {
   }
 
   checkUserVotes = (papers) => {
-    let { isLoggedIn, auth } = this.props;
-    if (isLoggedIn) {
-      let paperIds = papers.map((paper) => paper.id);
-      fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          let updates = { ...res };
-          let updatedPapers = papers.map((paper) => {
-            if (updates[paper.id]) {
-              paper.user_vote = updates[paper.id];
-            }
-            return paper;
-          });
-
-          this.setState(
-            {
-              papers: [],
-            },
-            () => {
-              this.setState({ papers: updatedPapers });
-            }
-          );
+    let paperIds = papers.map((paper) => paper.id);
+    return fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        let updates = { ...res };
+        let updatedPapers = papers.map((paper) => {
+          if (updates[paper.id]) {
+            paper.user_vote = updates[paper.id];
+          }
+          return paper;
         });
-    }
+
+        this.setState(
+          {
+            papers: [],
+          },
+          () => {
+            this.setState({ papers: updatedPapers });
+          }
+        );
+      });
   };
 
   detectPromoted = (papers) => {
