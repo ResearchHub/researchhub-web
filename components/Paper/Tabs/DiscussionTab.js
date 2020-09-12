@@ -244,6 +244,9 @@ const DiscussionTab = (props) => {
         let payload = {
           event_type: "create_thread",
           time: +new Date(),
+          user_id: props.auth.user
+            ? props.auth.user.id && props.auth.user.id
+            : null,
           event_properties: {
             interaction: "Post Thread",
             paper: paperId,

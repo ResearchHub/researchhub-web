@@ -69,7 +69,7 @@ export function fetchComments(paperId, threadId, page) {
 }
 
 export function postComment(paperId, threadId, text, plain_text) {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const response = await fetch(
       API.THREAD_COMMENT(paperId, threadId),
       API.POST_CONFIG({
@@ -92,6 +92,9 @@ export function postComment(paperId, threadId, text, plain_text) {
       let payload = {
         event_type: "create_comment",
         time: +new Date(),
+        user_id: getState().auth.user
+          ? getState().auth.user.id && getState().auth.user.id
+          : null,
         event_properties: {
           interaction: "Post Comment",
           paper: paperId,
@@ -161,7 +164,7 @@ export function fetchReplies(paperId, threadId, commentId, page) {
 }
 
 export function postReply(paperId, threadId, commentId, text, plain_text) {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const response = await fetch(
       API.THREAD_COMMENT_REPLY(paperId, threadId, commentId),
       API.POST_CONFIG({
@@ -184,6 +187,9 @@ export function postReply(paperId, threadId, commentId, text, plain_text) {
       let payload = {
         event_type: "create_reply",
         time: +new Date(),
+        user_id: getState().auth.user
+          ? getState().auth.user.id && getState().auth.user.id
+          : null,
         event_properties: {
           interaction: "Post Reply",
           paper: paperId,
@@ -241,7 +247,7 @@ export function updateReply(
 export function postUpvote(paperId, threadId, commentId, replyId) {
   const isUpvote = true;
 
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const response = await fetch(
       API.UPVOTE(paperId, threadId, commentId, replyId),
       API.POST_CONFIG()
@@ -260,6 +266,9 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
       let payload = {
         event_type: "create_discussion_vote",
         time: +new Date(),
+        user_id: getState().auth.user
+          ? getState().auth.user.id && getState().auth.user.id
+          : null,
         event_properties: {
           interaction: "Discussion Upvote",
           paper: paperId,
@@ -281,7 +290,7 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
 export function postDownvote(paperId, threadId, commentId, replyId) {
   const isUpvote = false;
 
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const response = await fetch(
       API.DOWNVOTE(paperId, threadId, commentId, replyId),
       API.POST_CONFIG()
@@ -300,6 +309,9 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
       let payload = {
         event_type: "create_discussion_vote",
         time: +new Date(),
+        user_id: getState().auth.user
+          ? getState().auth.user.id && getState().auth.user.id
+          : null,
         event_properties: {
           interaction: "Discussion Downvote",
           paper: paperId,

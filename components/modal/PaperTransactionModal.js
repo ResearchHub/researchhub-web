@@ -181,6 +181,9 @@ class PaperTransactionModal extends React.Component {
           let payload = {
             event_type: "create_purchase",
             time: +new Date(),
+            user_id: this.props.auth.user
+              ? this.props.auth.user.id && this.props.auth.user.id
+              : null,
             event_properties: {
               interaction: "On-chain Purchase",
               paper: this.props.paper.id,
@@ -314,6 +317,9 @@ class PaperTransactionModal extends React.Component {
           let payload = {
             event_type: "create_purchase",
             time: +new Date(),
+            user_id: this.props.auth.user
+              ? this.props.auth.user.id && this.props.auth.user.id
+              : null,
             event_properties: {
               interaction: "Off-chain Purchase",
               paper: paperId,
