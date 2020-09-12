@@ -12,6 +12,7 @@ export const HubConstants = {
   UPDATE_HUB: "@@hub/UPDATE_HUB",
   GET_TOP_HUBS_SUCCESS: "@@hub/GET_TOP_HUBS_SUCCESS",
   UPDATE_SUBSCRIBED_HUBS: "@@hub/UPDATE_SUBSCRIBED_HUBS",
+  UPDATE_TOP_HUBS: "@@hub/UPDATE_TOP_HUBS",
 };
 
 export const HubActions = {
@@ -58,17 +59,24 @@ export const HubActions = {
         });
     };
   },
-  getTopHubs: () => {
+  getTopHubs: (auth) => {
     // call is defaulted to return 10
     return (dispatch) => {
       return fetch(API.SORTED_HUB({}), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
+          let topHubs = [...resp.results];
+          if (!auth || !auth.isLoggedIn) {
+            topHubs = topHubs.map((hub) => {
+              hub.user_is_subscribed = false;
+              return hub;
+            });
+          }
           return dispatch({
             type: HubConstants.GET_TOP_HUBS_SUCCESS,
             payload: {
-              topHubs: [...resp.results],
+              topHubs: topHubs,
             },
           });
         });
@@ -123,6 +131,16 @@ export const HubActions = {
       });
     };
   },
+  updateTopHubs: (updatedTopHubs) => {
+    return (dispatch) => {
+      return dispatch({
+        type: HubConstants.UPDATE_TOP_HUBS,
+        payload: {
+          topHubs: updatedTopHubs,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -146,6 +164,7 @@ const HubReducer = (state = defaultHubState, action) => {
     case HubConstants.UPDATE_HUB:
     case HubConstants.GET_TOP_HUBS_SUCCESS:
     case HubConstants.UPDATE_SUBSCRIBED_HUBS:
+    case HubConstants.UPDATE_TOP_HUBS:
       return {
         ...state,
         ...action.payload,
