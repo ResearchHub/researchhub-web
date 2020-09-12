@@ -363,7 +363,9 @@ class UserSettings extends Component {
   };
 
   renderHubSelect() {
-    const subscribedHubIds = this.props.subscribedHubs.map((hub) => hub.id);
+    const subscribedHubIds = this.props.user.subscribed
+      ? this.props.user.subscribed
+      : this.props.subscribedHubs.map((hub) => hub.id);
     const availableHubs = this.props.hubs.filter((hub) => {
       return !subscribedHubIds.includes(hub.id);
     });
