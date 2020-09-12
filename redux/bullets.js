@@ -62,7 +62,7 @@ export const BulletActions = {
     };
   },
   postBullet: ({ paperId, bullet, prevState, progress }) => {
-    return (dispatch) => {
+    return (dispatch, getState) => {
       dispatch({
         type: BulletsConstants.POST_BULLET,
         payload: { pending: true, success: false },
@@ -80,6 +80,9 @@ export const BulletActions = {
           let payload = {
             event_type: "create_bulletpoints",
             time: +new Date(),
+            user_id: getState().auth.user
+              ? getState().auth.user.id && getState().auth.user.id
+              : null,
             event_properties: {
               interaction: "Post Key-Takeaway",
               paper: paperId,
