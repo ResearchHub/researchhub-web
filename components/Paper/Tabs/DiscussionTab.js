@@ -245,7 +245,7 @@ const DiscussionTab = (props) => {
           cancel();
           props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
           props.getUser();
-        }, 800);
+        }, 200);
       })
       .catch((err) => {
         if (err.response.status === 429) {
