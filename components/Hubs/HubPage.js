@@ -18,6 +18,7 @@ import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ResearchHubBanner from "../ResearchHubBanner";
 import Head from "~/components/Head";
+import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -29,51 +30,8 @@ import { HubActions } from "~/redux/hub";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
-
-const filterOptions = [
-  {
-    value: "hot",
-    label: "Trending",
-    disableScope: true,
-  },
-  {
-    value: "top_rated",
-    label: "Top Rated",
-  },
-  {
-    value: "newest",
-    label: "Newest",
-    disableScope: true,
-  },
-  {
-    value: "most_discussed",
-    label: "Most Discussed",
-  },
-];
-
-const scopeOptions = [
-  {
-    value: "day",
-    label: "Today",
-  },
-  {
-    value: "week",
-    label: "This Week",
-  },
-  {
-    value: "month",
-    label: "This Month",
-  },
-  {
-    value: "year",
-    label: "This Year",
-  },
-  {
-    value: "all-time",
-    label: "All Time",
-  },
-];
+import { getFragmentParameterByName } from "~/config/utils";
+import { filterOptions, scopeOptions } from "~/config/utils/options";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -100,9 +58,12 @@ class HubPage extends React.Component {
           ? this.props.initialFeed.next
           : null,
       doneFetching: this.props.initialFeed ? true : false,
-      filterBy: defaultFilter,
-      scope: defaultScope,
-      disableScope: true,
+      filterBy: this.props.filter ? this.props.filter : defaultFilter,
+      scope: this.props.scope ? this.props.scope : defaultScope,
+      disableScope: this.props.filter
+        ? this.props.filter.value === "hot" ||
+          this.props.filter.value === "newest"
+        : true,
       mobileView: false,
       mobileBanner: false,
       papersLoading: false,
@@ -357,18 +318,77 @@ class HubPage extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         this.detectPromoted([...res.results.data]);
-        this.setState({
-          papers: [...this.state.papers, ...res.results.data],
-          next: res.next,
-          page: this.state.page + 1,
-          loadingMore: false,
-        });
+        this.setState(
+          {
+            papers: [...this.state.papers, ...res.results.data],
+            next: res.next,
+            prev: !res.next ? res.previous : null,
+            page: this.state.page + 1,
+            loadingMore: false,
+          },
+          () => {
+            let page = getFragmentParameterByName(
+              "page",
+              this.state.next ? this.state.next : this.state.prev
+            ); // grab page from backend response
+            let offset = this.state.next ? -1 : 1;
+            page = Number(page) + offset;
+
+            this.updateSlugs(page);
+          }
+        );
       })
       .then(
         setTimeout(() => {
           showMessage({ show: false });
         }, 200)
       );
+  };
+
+  updateSlugs = (page) => {
+    let { filterBy, scope, disableScope } = this.state;
+
+    let filter = filterBy.label
+      .split(" ")
+      .join("-")
+      .toLowerCase();
+
+    let href, as;
+
+    if (disableScope) {
+      // if filter, but no scope
+      if (this.props.home) {
+        href = "/[filter]";
+        as = `/${filter}`;
+      } else {
+        // Hub Page
+        href = "/hubs/[slug]/[filter]";
+        as = `/hubs/${this.props.slug}/${filter}`;
+      }
+    } else {
+      // filter & scope
+      if (this.props.home) {
+        href = "/[filter]/[scope]";
+        as = `/${filter}/${scope.value}`;
+      } else {
+        href = "/hubs/[slug]/[filter]/[scope]";
+        as = `/hubs/${this.props.slug}/${filter}/${scope.value}`;
+      }
+    }
+
+    if (this.props.home && filter === "trending") {
+      href = "/";
+      as = "/";
+    } else if (!this.props.home && filter === "trending") {
+      href = "/hubs/[slug]";
+      as = `/hubs/${this.props.slug}`;
+    }
+
+    if (page) {
+      as += `?page=${page}`;
+    }
+
+    Router.push(href, as, { shallow: true });
   };
 
   calculateScope = () => {
@@ -442,9 +462,14 @@ class HubPage extends React.Component {
     let param = {};
     param[type] = option;
     showMessage({ show: true, load: true });
-    this.setState({
-      ...param,
-    });
+    this.setState(
+      {
+        ...param,
+      },
+      () => {
+        this.updateSlugs();
+      }
+    );
   };
 
   voteCallback = (index, paper) => {

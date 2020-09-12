@@ -69,4 +69,56 @@ const cslFields = [
   { label: "ISSN", key: "ISSN" },
 ];
 
-export { months, range, convertNumToMonth, convertMonthToNum, cslFields };
+const filterOptions = [
+  {
+    value: "hot",
+    label: "Trending",
+    disableScope: true,
+  },
+  {
+    value: "top_rated",
+    label: "Top Rated",
+  },
+  {
+    value: "newest",
+    label: "Newest",
+    disableScope: true,
+  },
+  {
+    value: "most_discussed",
+    label: "Most Discussed",
+  },
+];
+
+const scopeOptions = [
+  {
+    value: "day",
+    label: "Today",
+  },
+  {
+    value: "week",
+    label: "This Week",
+  },
+  {
+    value: "month",
+    label: "This Month",
+  },
+  {
+    value: "year",
+    label: "This Year",
+  },
+  {
+    value: "all-time",
+    label: "All Time",
+  },
+];
+
+export {
+  months,
+  range,
+  convertNumToMonth,
+  convertMonthToNum,
+  cslFields,
+  filterOptions,
+  scopeOptions,
+};
