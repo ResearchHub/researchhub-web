@@ -30,8 +30,13 @@ class HubsList extends React.Component {
   }
 
   componentDidMount() {
+    let { auth } = this.props;
     if (this.props.hubs.length) {
       this.setState({ hubs: [...this.props.hubs] });
+    }
+
+    if (auth.isLoggedIn) {
+      this.updateTopHubs();
     }
   }
 
