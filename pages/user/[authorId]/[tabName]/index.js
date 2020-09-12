@@ -575,6 +575,16 @@ const AuthorPage = (props) => {
             </div>
 
             <div className={css(styles.reputationContainer)}>
+              <div className={css(styles.extraInfoContainer)}>
+                {author.university && author.university.name && (
+                  <div className={css(styles.extraInfo)}>
+                    <i
+                      className={css(styles.icon) + " fas fa-graduation-cap"}
+                    ></i>
+                    {author.university.name}
+                  </div>
+                )}
+              </div>
               <div className={css(styles.reputation)}>
                 <span className={css(styles.icon)}>
                   <img
@@ -594,7 +604,11 @@ const AuthorPage = (props) => {
             </div>
             {!editDescription ? (
               <div
-                className={css(styles.description, styles.editButtonContainer)}
+                className={css(
+                  styles.description,
+                  styles.editButtonContainer,
+                  !author.description && styles.hidden
+                )}
                 onMouseEnter={() => onMouseEnter(SECTIONS.description)}
                 onMouseLeave={() => onMouseLeave(SECTIONS.description)}
               >
@@ -631,16 +645,6 @@ const AuthorPage = (props) => {
                 </div>
               )
             )}
-            <div className={css(styles.extraInfoContainer)}>
-              {author.university && author.university.name && (
-                <div className={css(styles.extraInfo)}>
-                  <i
-                    className={css(styles.icon) + " fas fa-graduation-cap"}
-                  ></i>
-                  {author.university.name}
-                </div>
-              )}
-            </div>
           </div>
           <div className={css(styles.column)}>
             <div className={css(styles.socialLinks)}>
@@ -865,11 +869,20 @@ const styles = StyleSheet.create({
   },
   extraInfoContainer: {
     display: "flex",
+    marginBottom: 10,
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "center",
+      alignItems: "center",
+      marginBottom: 15,
+    },
   },
   extraInfo: {
     color: "#241F3A",
     opacity: 0.5,
-    fontSize: 14,
+    fontSize: 15,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   icon: {
     marginRight: 5,
