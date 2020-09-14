@@ -150,6 +150,11 @@ class PaperProgress extends React.Component {
   };
 
   trackEvent = (interaction, label) => {
+    let user;
+    if (this.props.auth.isLoggedIn) {
+      user = this.props.auth.user;
+    }
+
     let value = label.toLowerCase();
     let paperId = this.props.paper.id;
     let payload = {
@@ -161,7 +166,24 @@ class PaperProgress extends React.Component {
       },
       utc: new Date(),
     };
-    return fetch(API.GOOGLE_ANALYTICS({}), API.POST_CONFIG(payload))
+
+    let ampPayload = {
+      event_type: "paper_progress",
+      user_id: user ? user.id : null,
+      time: +new Date(),
+      event_properties: {
+        interaction,
+        value,
+        paper: paperId,
+      },
+    };
+
+    fetch(API.GOOGLE_ANALYTICS({}), API.POST_CONFIG(payload))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {});
+
+    fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {});
@@ -626,6 +648,7 @@ const mapStateToProps = (state) => ({
   paper: state.paper,
   figures: state.paper.figures,
   paperId: state.paper.id,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
