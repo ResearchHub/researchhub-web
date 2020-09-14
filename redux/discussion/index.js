@@ -272,7 +272,6 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
         event_properties: {
           interaction: "Discussion Upvote",
           paper: paperId,
-          d,
         },
       };
       sendAmpEvent(payload);
@@ -315,7 +314,6 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
         event_properties: {
           interaction: "Discussion Downvote",
           paper: paperId,
-          d,
         },
       };
       sendAmpEvent(payload);

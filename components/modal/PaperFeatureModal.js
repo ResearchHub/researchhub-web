@@ -304,6 +304,7 @@ class PaperFeatureModal extends React.Component {
         if (!res.approved) {
           setMessage("Edits Submitted for Approval!");
         } else {
+          this.ampEvent("summary");
           updatePaperState("summary", { ...res });
           setMessage("Edits Made!");
           let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
@@ -354,6 +355,7 @@ class PaperFeatureModal extends React.Component {
         newDiscussion = thread(newDiscussion);
         props.setDiscussionThreads([newDiscussion, ...props.threads]);
         props.setCount(props.commentCount + 1);
+        this.ampEvent("comment");
         setTimeout(() => {
           showMessage({ show: false });
           setMessage("Successfully Saved!");
@@ -379,6 +381,39 @@ class PaperFeatureModal extends React.Component {
   paperPdfCancel = () => {
     this.props.removePaperFromState();
     this.closeModal();
+  };
+
+  ampEvent = (type) => {
+    let payload;
+
+    if (type === "summary") {
+      payload = {
+        event_type: "create_summary",
+        time: +new Date(),
+        user_id: this.props.auth.user
+          ? this.props.auth.user.id && this.props.auth.user.id
+          : null,
+        event_properties: {
+          paper: this.props.paper.id,
+          interaction: "Paper Summary",
+        },
+      };
+    } else if (type === "comment") {
+      // amp events
+      payload = {
+        event_type: "create_thread",
+        time: +new Date(),
+        user_id: this.props.auth.user
+          ? this.props.auth.user.id && this.props.auth.user.id
+          : null,
+        event_properties: {
+          interaction: "Post Thread",
+          paper: this.props.paper.id,
+        },
+      };
+    }
+
+    sendAmpEvent(payload);
   };
 
   /**
