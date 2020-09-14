@@ -158,7 +158,30 @@ class Index extends React.Component {
         >
           <a className={css(styles.slugLink)}>
             <div key={hub.id} className={css(styles.hubEntry)}>
-              {hub.name}
+              <img
+                className={css(styles.roundedImage)}
+                src={hub.hub_image}
+                alt="Hub Background Image"
+                width={450}
+                height={155}
+              ></img>
+              <div className={css(styles.hubInfo)}>
+                <div className={css(styles.hlist)}>
+                  <span className={css(styles.title)}>{hub.name}</span>
+                  <Button
+                    isWhite={false}
+                    label={"Subscribe"}
+                    buttonStyle={styles.button}
+                    hideRipples={true}
+                  />
+                </div>
+                {hub.description}
+              </div>
+              <div className={css(styles.hlist)}>
+                <span>X Papers</span>
+                <span>Y Discussions</span>
+                <span>Z Subscribers</span>
+              </div>
             </div>
           </a>
         </Link>
@@ -249,6 +272,7 @@ const styles = StyleSheet.create({
   },
   slugLink: {
     textDecoration: "none",
+    filter: "drop-shadow(0 4px 15px rgba(93, 83, 254, 0.18))",
   },
   title: {
     fontSize: 33,
@@ -289,8 +313,9 @@ const styles = StyleSheet.create({
   },
   hubEntry: {
     fontSize: 18,
+    borderRadius: "15px",
     color: "#241F3A",
-    padding: "10px 0 10px 0",
+    padding: "0 0 10px 0",
     textTransform: "capitalize",
     cursor: "pointer",
     ":hover": {
@@ -300,12 +325,25 @@ const styles = StyleSheet.create({
       fontSize: 16,
     },
   },
+  roundedImage: {
+    borderRadius: "15px 15px 0 0",
+  },
   list: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: "100%",
+  },
+  hlist: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    width: "100%",
+  },
+  hubInfo: {
+    paddingBottom: "15px",
   },
   button: {
     height: 45,
