@@ -26,6 +26,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { thread } from "~/redux/discussion/shims";
 import { isQuillDelta } from "~/config/utils/";
+import { sendAmpEvent } from "~/config/fetch";
 
 const BULLET_COUNT = 5;
 const LIMITATIONS_COUNT = 5;
@@ -314,6 +315,7 @@ class PaperFeatureModal extends React.Component {
         this.closeModal();
       })
       .catch((err) => {
+        console.log("err", err);
         if (err.response.status === 429) {
           showMessage({ show: false });
           this.closeModal();
