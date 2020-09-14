@@ -45,7 +45,7 @@ const PaperTabBar = (props) => {
 
       tabs.push({ href: "summary", label: "description" });
       tabs.push({ href: "comments", label: "comments" });
-      tabs.push({ href: "figures", label: "figures" });
+      // tabs.push({ href: "figures", label: "figures" });
       tabs.push({ href: "paper", label: "Paper PDF" });
       tabs.push({ href: "citations", label: "cited by" });
       tabs.push({ href: "limitations", label: "limitations" });
@@ -135,11 +135,13 @@ const PaperTabBar = (props) => {
           behavior: "smooth",
         });
       }
-    } else if (
-      window.scrollY <= calculateOffset("figures-tab", -navbarHeight)
-    ) {
-      setSelectedTab("figures");
-    } else if (window.scrollY <= calculateOffset("paper-tab", -navbarHeight)) {
+    }
+    // else if (
+    //   window.scrollY <= calculateOffset("figures-tab", -navbarHeight)
+    // ) {
+    //   setSelectedTab("figures");
+    // }
+    else if (window.scrollY <= calculateOffset("paper-tab", -navbarHeight)) {
       setSelectedTab("Paper PDF");
     } else if (
       window.scrollY <= calculateOffset("citedby-tab", -navbarHeight)
