@@ -365,3 +365,5 @@ export function formatPaperSlug(paperTitle) {
   }
   return "";
 }
+
+// export function formatAmplitudeEvent()

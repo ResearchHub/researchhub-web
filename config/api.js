@@ -553,6 +553,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    AMP_ANALYTICS: BASE_URL + "events/amplitude/forward_event/",
     PROMOTION_STATS: ({ paperId, interaction }) => {
       let url = BASE_URL + "events/paper/";
 

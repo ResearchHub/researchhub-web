@@ -2,6 +2,7 @@ import * as actions from "./actions";
 import * as shims from "./shims";
 import API from "~/config/api";
 import * as utils from "../utils";
+import { sendAmpEvent } from "~/config/fetch";
 
 export function fetchThread(paperId, threadId) {
   return async (dispatch) => {
@@ -68,7 +69,7 @@ export function fetchComments(paperId, threadId, page) {
 }
 
 export function postComment(paperId, threadId, text, plain_text) {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const response = await fetch(
       API.THREAD_COMMENT(paperId, threadId),
       API.POST_CONFIG({
@@ -88,6 +89,19 @@ export function postComment(paperId, threadId, text, plain_text) {
     }
 
     if (response.ok) {
+      let payload = {
+        event_type: "create_comment",
+        time: +new Date(),
+        user_id: getState().auth.user
+          ? getState().auth.user.id && getState().auth.user.id
+          : null,
+        event_properties: {
+          interaction: "Post Comment",
+          paper: paperId,
+          thread: threadId,
+        },
+      };
+      sendAmpEvent(payload);
       const body = await response.json();
       const comment = shims.comment(body);
       action = actions.setPostCommentSuccess(comment);
@@ -150,7 +164,7 @@ export function fetchReplies(paperId, threadId, commentId, page) {
 }
 
 export function postReply(paperId, threadId, commentId, text, plain_text) {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const response = await fetch(
       API.THREAD_COMMENT_REPLY(paperId, threadId, commentId),
       API.POST_CONFIG({
@@ -170,6 +184,20 @@ export function postReply(paperId, threadId, commentId, text, plain_text) {
     }
 
     if (response.ok) {
+      let payload = {
+        event_type: "create_reply",
+        time: +new Date(),
+        user_id: getState().auth.user
+          ? getState().auth.user.id && getState().auth.user.id
+          : null,
+        event_properties: {
+          interaction: "Post Reply",
+          paper: paperId,
+          thread: threadId,
+          comment: commentId,
+        },
+      };
+      sendAmpEvent(payload);
       const body = await response.json();
       const reply = shims.reply(body);
       action = actions.setPostReplySuccess(reply);
@@ -219,7 +247,7 @@ export function updateReply(
 export function postUpvote(paperId, threadId, commentId, replyId) {
   const isUpvote = true;
 
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const response = await fetch(
       API.UPVOTE(paperId, threadId, commentId, replyId),
       API.POST_CONFIG()
@@ -235,6 +263,18 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
     }
 
     if (response.ok) {
+      let payload = {
+        event_type: "create_discussion_vote",
+        time: +new Date(),
+        user_id: getState().auth.user
+          ? getState().auth.user.id && getState().auth.user.id
+          : null,
+        event_properties: {
+          interaction: "Discussion Upvote",
+          paper: paperId,
+        },
+      };
+      sendAmpEvent(payload);
       const body = await response.json();
       const vote = shims.vote(body);
       action = actions.setPostVoteSuccess(vote);
@@ -249,7 +289,7 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
 export function postDownvote(paperId, threadId, commentId, replyId) {
   const isUpvote = false;
 
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     const response = await fetch(
       API.DOWNVOTE(paperId, threadId, commentId, replyId),
       API.POST_CONFIG()
@@ -265,6 +305,18 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
     }
 
     if (response.ok) {
+      let payload = {
+        event_type: "create_discussion_vote",
+        time: +new Date(),
+        user_id: getState().auth.user
+          ? getState().auth.user.id && getState().auth.user.id
+          : null,
+        event_properties: {
+          interaction: "Discussion Downvote",
+          paper: paperId,
+        },
+      };
+      sendAmpEvent(payload);
       const body = await response.json();
       const vote = shims.vote(body);
       action = actions.setPostVoteSuccess(vote);
