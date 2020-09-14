@@ -2,6 +2,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist } from "~/config/utils";
 import { handleCatch } from "~/redux/utils";
+import { sendAmpEvent } from "~/config/fetch";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -61,7 +62,7 @@ export const BulletActions = {
     };
   },
   postBullet: ({ paperId, bullet, prevState, progress }) => {
-    return (dispatch) => {
+    return (dispatch, getState) => {
       dispatch({
         type: BulletsConstants.POST_BULLET,
         payload: { pending: true, success: false },
@@ -75,6 +76,19 @@ export const BulletActions = {
         .then((res) => {
           let newBullet = res;
           let bullets = [...prevState.bullets, res];
+
+          let payload = {
+            event_type: "create_bulletpoints",
+            time: +new Date(),
+            user_id: getState().auth.user
+              ? getState().auth.user.id && getState().auth.user.id
+              : null,
+            event_properties: {
+              interaction: "Post Key-Takeaway",
+              paper: paperId,
+            },
+          };
+          sendAmpEvent(payload);
 
           return dispatch({
             type: BulletsConstants.POST_SUCCESS,

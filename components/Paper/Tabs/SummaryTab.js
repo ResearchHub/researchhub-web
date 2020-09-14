@@ -24,6 +24,7 @@ import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
+import { sendAmpEvent } from "~/config/fetch";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -116,6 +117,18 @@ class SummaryTab extends React.Component {
           this.initializeSummary();
           setMessage("Edits Submitted for Approval!");
         } else {
+          let payload = {
+            event_type: "create_summary",
+            time: +new Date(),
+            user_id: this.props.auth.user
+              ? this.props.auth.user.id && this.props.auth.user.id
+              : null,
+            event_properties: {
+              paper: this.props.paperId,
+              interaction: "Paper Summary",
+            },
+          };
+          sendAmpEvent(payload);
           setMessage("Edits Made!");
           let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
           checkUserFirstTime(firstTime);
