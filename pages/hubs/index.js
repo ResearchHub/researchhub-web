@@ -9,9 +9,11 @@ import AddHubModal from "../../components/modal/AddHubModal";
 import Message from "../../components/Loader/Message";
 import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
+import HubCard from "../../components/Hubs/HubCard";
 
 // Config
 import colors from "../../config/themes/colors";
+import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -147,52 +149,12 @@ class Index extends React.Component {
     });
   };
   // TODO:
-  // * Change this into a component
-  // * Embed paper/discussion/subscribers icons
   // * Structure into Category - Hub
-  // *
-  // * UI things (subscribe button, enlarge on hover)
+  // * subscribe button
   renderList = (key) => {
     const { hubsByAlpha } = this.state;
     return hubsByAlpha[key].map((hub) => {
-      return (
-        <Link
-          href="/hubs/[slug]"
-          as={`/hubs/${encodeURIComponent(hub.slug)}`}
-          key={`hub_${hub.id}`}
-        >
-          <a className={css(styles.slugLink)}>
-            <div className={css(styles.hubCard)}>
-              <img
-                className={css(styles.roundedImage)}
-                src={hub.hub_image}
-                alt="Hub Background Image"
-                width={450}
-                height={155}
-              ></img>
-              <div key={hub.id} className={css(styles.hubInfo)}>
-                <div className={css(styles.hubTitle)}>
-                  <div className={css(styles.title)}>{hub.name}</div>
-                  <Button
-                    isWhite={false}
-                    label={"Subscribe"}
-                    customButtonStyle={styles.subscribeButton}
-                    hideRipples={true}
-                  />
-                </div>
-                <div className={css(styles.hubDescription)}>
-                  {hub.description}
-                </div>
-                <div className={css(styles.hubStats)}>
-                  <div>{1} Papers</div>
-                  <div>{1} Discussions</div>
-                  <div>{1} Subscribers</div>
-                </div>
-              </div>
-            </div>
-          </a>
-        </Link>
-      );
+      return <HubCard hub={hub} />;
     });
   };
 
@@ -336,17 +298,9 @@ const styles = StyleSheet.create({
     boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
   },
   roundedImage: {
-    borderRadius: "15px 15px 0 0",
-  },
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    width: "100%",
-  },
-  hubInfo: {
-    paddingBottom: "15px",
+    borderRadius: "9px 8px 0 0",
+    width: "430px",
+    height: "155px",
   },
   button: {
     height: 45,
@@ -358,7 +312,6 @@ const styles = StyleSheet.create({
     width: 95,
     border: `${colors.BLUE()} 1px solid`,
     position: "relative",
-    top: "50%",
     marginTop: "3px",
   },
   title: {
@@ -368,7 +321,7 @@ const styles = StyleSheet.create({
   },
   hubInfo: {
     boxSizing: "border-box",
-    width: "450px",
+    width: "430px",
     padding: "0 15px",
   },
   hubCard: {
@@ -376,6 +329,12 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     cursor: "pointer",
     boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
+    transition: "transform 0.1s",
+    fontSize: "16px",
+    ":hover": {
+      transition: "transform 0.1s",
+      transform: "scale(1.05)",
+    },
   },
   hubStats: {
     display: "flex",
@@ -383,6 +342,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     padding: "10px 0 10px 0",
     color: "#C1C1CF",
+    fontSize: "14px",
   },
   hubTitle: {
     display: "flex",
@@ -395,6 +355,9 @@ const styles = StyleSheet.create({
     padding: "10px 0 0 0",
     // Might want to use span to apply opacity only to text
     opacity: "0.8",
+  },
+  statIcon: {
+    marginRight: "5px",
   },
 });
 
