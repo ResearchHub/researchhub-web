@@ -7,6 +7,8 @@ import { Helpers } from "@quantfive/js-web-config";
 
 export const HubConstants = {
   UPDATE_CURRENT_HUB_PAGE: "@@hub/UPDATE_CURRENT_HUB_PAGE",
+  GET_HUB_CATEGORIES_SUCCESS: "@@hub/GET_HUB_CATEGORIES_SUCCESS",
+  GET_HUB_CATEGORIES_FAILURE: "@@hub/GET_HUB_CATEGORIES_FAILURE",
   GET_HUBS_SUCCESS: "@@hub/GET_HUBS_SUCCESS",
   GET_HUBS_FAILURE: "@@hub/GET_HUBS_FAILURE",
   UPDATE_HUB: "@@hub/UPDATE_HUB",
@@ -28,6 +30,31 @@ export const HubActions = {
           currentHub: hub,
         },
       });
+    };
+  },
+  getCategories: () => {
+    return (dispatch) => {
+      return fetch(API.GET_HUB_CATEGORIES(), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          let categories = [...resp];
+          return dispatch({
+            type: HubConstants.GET_HUB_CATEGORIES_SUCCESS,
+            payload: {
+              categories,
+            },
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+          return dispatch({
+            type: HubConstants.GET_HUB_CATEGORIES_FAILURE,
+            payload: {
+              categories: [],
+            },
+          });
+        });
     };
   },
   getHubs: () => {
@@ -149,6 +176,7 @@ export const HubActions = {
 
 const defaultHubState = {
   currentHub: {},
+  categories: [],
   hubs: [],
   topHubs: [],
   hubsByAlpha: {},
@@ -159,6 +187,7 @@ const defaultHubState = {
 const HubReducer = (state = defaultHubState, action) => {
   switch (action.type) {
     case HubConstants.UPDATE_CURRENT_HUB_PAGE:
+    case HubConstants.GET_HUB_CATEGORIES_SUCCESS:
     case HubConstants.GET_HUBS_SUCCESS:
     case HubConstants.GET_HUBS_FAILURE:
     case HubConstants.UPDATE_HUB:
