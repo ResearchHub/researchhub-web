@@ -146,7 +146,12 @@ class Index extends React.Component {
       );
     });
   };
-
+  // TODO:
+  // * Change this into a component
+  // * Embed paper/discussion/subscribers icons
+  // * Structure into Category - Hub
+  // *
+  // * UI things (subscribe button, enlarge on hover)
   renderList = (key) => {
     const { hubsByAlpha } = this.state;
     return hubsByAlpha[key].map((hub) => {
@@ -157,7 +162,7 @@ class Index extends React.Component {
           key={`hub_${hub.id}`}
         >
           <a className={css(styles.slugLink)}>
-            <div key={hub.id} className={css(styles.hubEntry)}>
+            <div className={css(styles.hubCard)}>
               <img
                 className={css(styles.roundedImage)}
                 src={hub.hub_image}
@@ -165,22 +170,24 @@ class Index extends React.Component {
                 width={450}
                 height={155}
               ></img>
-              <div className={css(styles.hubInfo)}>
-                <div className={css(styles.hlist)}>
-                  <span className={css(styles.title)}>{hub.name}</span>
+              <div key={hub.id} className={css(styles.hubInfo)}>
+                <div className={css(styles.hubTitle)}>
+                  <div className={css(styles.title)}>{hub.name}</div>
                   <Button
                     isWhite={false}
                     label={"Subscribe"}
-                    buttonStyle={styles.button}
+                    customButtonStyle={styles.subscribeButton}
                     hideRipples={true}
                   />
                 </div>
-                {hub.description}
-              </div>
-              <div className={css(styles.hlist)}>
-                <span>X Papers</span>
-                <span>Y Discussions</span>
-                <span>Z Subscribers</span>
+                <div className={css(styles.hubDescription)}>
+                  {hub.description}
+                </div>
+                <div className={css(styles.hubStats)}>
+                  <div>{1} Papers</div>
+                  <div>{1} Discussions</div>
+                  <div>{1} Subscribers</div>
+                </div>
               </div>
             </div>
           </a>
@@ -211,7 +218,7 @@ class Index extends React.Component {
               <Button
                 isWhite={true}
                 label={"Suggest a Hub"}
-                buttonStyle={styles.button}
+                buttonStyle={styles.Button}
                 hideRipples={true}
               />
             </PermissionNotificationWrapper>
@@ -311,6 +318,8 @@ const styles = StyleSheet.create({
     cursor: "default",
     userSelect: "none",
   },
+  // TODO:
+  // left for reference in the future
   hubEntry: {
     fontSize: 18,
     borderRadius: "15px",
@@ -324,6 +333,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 775px)": {
       fontSize: 16,
     },
+    boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
   },
   roundedImage: {
     borderRadius: "15px 15px 0 0",
@@ -335,13 +345,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
   },
-  hlist: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    width: "100%",
-  },
   hubInfo: {
     paddingBottom: "15px",
   },
@@ -349,6 +352,49 @@ const styles = StyleSheet.create({
     height: 45,
     width: 140,
     border: `${colors.BLUE()} 1px solid`,
+  },
+  subscribeButton: {
+    height: 23,
+    width: 95,
+    border: `${colors.BLUE()} 1px solid`,
+    position: "relative",
+    top: "50%",
+    marginTop: "3px",
+  },
+  title: {
+    fontSize: "25px",
+    textTransform: "capitalize",
+    fontWeight: 500,
+  },
+  hubInfo: {
+    boxSizing: "border-box",
+    width: "450px",
+    padding: "0 15px",
+  },
+  hubCard: {
+    borderRadius: "8px",
+    color: "#241F3A",
+    cursor: "pointer",
+    boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
+  },
+  hubStats: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: "10px 0 10px 0",
+    color: "#C1C1CF",
+  },
+  hubTitle: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: "10px 0 0 0",
+  },
+  hubDescription: {
+    height: "90px",
+    padding: "10px 0 0 0",
+    // Might want to use span to apply opacity only to text
+    opacity: "0.8",
   },
 });
 
