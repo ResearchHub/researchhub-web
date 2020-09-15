@@ -9,8 +9,10 @@ import AddHubModal from "../../components/modal/AddHubModal";
 import Message from "../../components/Loader/Message";
 import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
+import CategoryList from "~/components/Hubs/CategoryList";
 
 // Config
+import API from "~/config/api";
 import colors from "../../config/themes/colors";
 
 // Redux
@@ -24,6 +26,7 @@ class Index extends React.Component {
     super(props);
     this.initialState = {
       width: null,
+      categories: {},
       hubsByAlpha: {},
       finishedLoading: false,
     };
@@ -33,14 +36,24 @@ class Index extends React.Component {
   }
 
   componentDidMount = async () => {
-    const { getHubs, showMessage, hubs } = this.props;
+    const {
+      getHubs,
+      showMessage,
+      hubs,
+      getCategories,
+      categories,
+    } = this.props;
     window.addEventListener("resize", this.calculateWindowWidth);
     showMessage({ show: true, load: true });
+    //getCategories();
+    //console.log("hey");
+    //console.log(categories);
     if (!hubs.fetchedHubs) {
       await getHubs();
     } else {
       setTimeout(() => {
         this.setState({
+          //categories: JSON.parse(JSON.stringify(categories)),
           hubsByAlpha: JSON.parse(JSON.stringify(hubs.hubsByAlpha)),
           finishedLoading: true,
         });
@@ -120,8 +133,10 @@ class Index extends React.Component {
   };
 
   renderColumn = (width) => {
+    const { categories } = this.state;
     const { hubsByAlpha } = this.state;
     const letters = Object.keys(hubsByAlpha).sort();
+    console.log(JSON.parse(JSON.stringify(letters)));
     let numOfColumns = letters.length > 3 ? 4 : letters.length;
     if (width === 600) {
       numOfColumns = 2;
@@ -129,6 +144,7 @@ class Index extends React.Component {
     if (width <= 360) {
       numOfColumns = 1;
     }
+
     return letters.map((letter, i) => {
       return (
         <div
@@ -193,31 +209,43 @@ class Index extends React.Component {
     let { finishedLoading } = this.state;
 
     return (
-      <div className={css(styles.background)}>
-        <AddHubModal addHub={this.addNewHubToState} />
-        <Message />
-        <Head
-          title={"Hubs on Researchhub"}
-          description={"View all of the communities on Researchhub"}
-        />
-        <div className={css(styles.container)}>
-          <div className={css(styles.titleContainer)}>
-            <span className={css(styles.title)}>Hubs</span>
-            <PermissionNotificationWrapper
-              modalMessage="suggest a hub"
-              loginRequired={true}
-              onClick={this.openAddHubModal}
-            >
-              <Button
-                isWhite={true}
-                label={"Suggest a Hub"}
-                buttonStyle={styles.button}
-                hideRipples={true}
-              />
-            </PermissionNotificationWrapper>
+      <div className={css(styles.content, styles.column)}>
+        <div className={css(styles.row, styles.body)}>
+          <div className={css(styles.sidebar, styles.column)}>
+            <CategoryList
+              current={this.props.home ? null : this.props.hub}
+              initialHubList={this.props.initialHubList}
+            />
           </div>
-          <div className={css(styles.body, finishedLoading && styles.reveal)}>
-            {this.renderColumn(this.state.width)}
+          <div className={css(styles.mainFeed, styles.column)}>
+            <AddHubModal addHub={this.addNewHubToState} />
+            <Message />
+            <Head
+              title={"Hubs on Researchhub"}
+              description={"View all of the communities on Researchhub"}
+            />
+            <div className={css(styles.container)}>
+              <div className={css(styles.titleContainer)}>
+                <span className={css(styles.title)}>Hubs</span>
+                <PermissionNotificationWrapper
+                  modalMessage="suggest a hub"
+                  loginRequired={true}
+                  onClick={this.openAddHubModal}
+                >
+                  <Button
+                    isWhite={true}
+                    label={"Suggest a Hub"}
+                    buttonStyle={styles.button}
+                    hideRipples={true}
+                  />
+                </PermissionNotificationWrapper>
+              </div>
+              <div
+                className={css(styles.body, finishedLoading && styles.reveal)}
+              >
+                {this.renderColumn(this.state.width)}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -240,7 +268,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     margin: "auto",
-    width: 950,
+    paddingLeft: 50,
     "@media only screen and (max-width: 1000px)": {
       width: 760,
     },
@@ -283,15 +311,33 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   body: {
+    backgroundColor: "#FCFCFC",
     width: "100%",
-    display: "flex",
-    justifyContent: "flex-start",
     alignItems: "flex-start",
-    flexWrap: "wrap",
-    opacity: 0,
-    transition: "all ease-in-out 0.3s",
-    "@media only screen and (max-width: 421px)": {
-      justifyContent: "center",
+  },
+  sidebar: {
+    width: "18%",
+    minHeight: "100vh",
+    minWidth: 220,
+    position: "relative",
+    position: "sticky",
+    top: 80,
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 769px)": {
+      display: "none",
+    },
+  },
+  mainFeed: {
+    height: "100%",
+    width: "82%",
+    backgroundColor: "#FCFCFC",
+    borderLeft: "1px solid #ededed",
+    backgroundColor: "#FFF",
+    "@media only screen and (min-width: 900px)": {
+      width: "82%",
+    },
+    "@media only screen and (max-width: 768px)": {
+      width: "100%",
     },
   },
   reveal: {
@@ -301,7 +347,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
+    alignItems: "center",
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   label: {
     fontSize: 33,
@@ -357,6 +409,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
+  getCategories: HubActions.getCategories,
   getHubs: HubActions.getHubs,
   openAddHubModal: ModalActions.openAddHubModal,
   showMessage: MessageActions.showMessage,
