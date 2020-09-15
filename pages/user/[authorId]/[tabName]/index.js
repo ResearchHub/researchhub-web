@@ -223,8 +223,8 @@ const AuthorPage = (props) => {
     }
   }
 
-  const checkUserVotes = (papers, type) => {
-    if (!store.getState().auth.isLoggedIn) {
+  const checkUserVotes = (papers = [], type) => {
+    if (!store.getState().auth.isLoggedIn && papers.length) {
       let authoredPapers = { ...store.getState().author.authoredPapers };
 
       authoredPapers.papers = authoredPapers.papers.map((paper) => {
@@ -258,6 +258,8 @@ const AuthorPage = (props) => {
       return paper.id;
     });
 
+    if (paperIds.length === 0) return;
+
     fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -270,22 +272,40 @@ const AuthorPage = (props) => {
           return paper;
         });
 
-        if (type === "contributions") {
-          let newState = { ...store.getState().author.authoredPapers };
-          newState.papers = updatedPapers;
+        if (type === "authored") {
+          let newAuthored = { ...store.getState().author.authoredPapers };
+          let oldState = { ...store.getState().author.authoredPapers };
+          oldState.papers = [];
+          newAuthored.papers = updatedPapers;
           dispatch(
             AuthorActions.updateAuthorByKey({
               key: "authoredPapers",
-              value: newState,
+              value: oldState,
             })
           );
-        } else if (type === "authored") {
-          let newState = { ...store.getState().author.userContributions };
-          newState.contributions = updatedPapers;
+          dispatch(
+            AuthorActions.updateAuthorByKey({
+              key: "authoredPapers",
+              value: newAuthored,
+            })
+          );
+        } else if (type === "contributions") {
+          let newContributions = {
+            ...store.getState().author.userContributions,
+          };
+          let oldState = { ...store.getState().author.userContributions };
+          oldState.contributions = [];
+          newContributions.contributions = updatedPapers;
           dispatch(
             AuthorActions.updateAuthorByKey({
               key: "userContributions",
-              value: newState,
+              value: oldState,
+            })
+          );
+          dispatch(
+            AuthorActions.updateAuthorByKey({
+              key: "userContributions",
+              value: newContributions,
             })
           );
         }
