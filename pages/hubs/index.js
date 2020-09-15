@@ -10,10 +10,12 @@ import Message from "../../components/Loader/Message";
 import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
 import CategoryList from "~/components/Hubs/CategoryList";
+import HubCard from "../../components/Hubs/HubCard";
 
 // Config
 import API from "~/config/api";
 import colors from "../../config/themes/colors";
+import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -162,46 +164,13 @@ class Index extends React.Component {
       );
     });
   };
-
+  // TODO:
+  // * Structure into Category - Hub
+  // * subscribe button
   renderList = (key) => {
     const { hubsByAlpha } = this.state;
     return hubsByAlpha[key].map((hub) => {
-      return (
-        <Link
-          href="/hubs/[slug]"
-          as={`/hubs/${encodeURIComponent(hub.slug)}`}
-          key={`hub_${hub.id}`}
-        >
-          <a className={css(styles.slugLink)}>
-            <div key={hub.id} className={css(styles.hubEntry)}>
-              <img
-                className={css(styles.roundedImage)}
-                src={hub.hub_image}
-                alt="Hub Background Image"
-                width={450}
-                height={155}
-              ></img>
-              <div className={css(styles.hubInfo)}>
-                <div className={css(styles.hlist)}>
-                  <span className={css(styles.title)}>{hub.name}</span>
-                  <Button
-                    isWhite={false}
-                    label={"Subscribe"}
-                    buttonStyle={styles.button}
-                    hideRipples={true}
-                  />
-                </div>
-                {hub.description}
-              </div>
-              <div className={css(styles.hlist)}>
-                <span>X Papers</span>
-                <span>Y Discussions</span>
-                <span>Z Subscribers</span>
-              </div>
-            </div>
-          </a>
-        </Link>
-      );
+      return <HubCard hub={hub} />;
     });
   };
 
@@ -363,6 +332,8 @@ const styles = StyleSheet.create({
     cursor: "default",
     userSelect: "none",
   },
+  // TODO:
+  // left for reference in the future
   hubEntry: {
     fontSize: 18,
     borderRadius: "15px",
@@ -376,31 +347,69 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 775px)": {
       fontSize: 16,
     },
+    boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
   },
   roundedImage: {
-    borderRadius: "15px 15px 0 0",
-  },
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    width: "100%",
-  },
-  hlist: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    width: "100%",
-  },
-  hubInfo: {
-    paddingBottom: "15px",
+    borderRadius: "9px 8px 0 0",
+    width: "430px",
+    height: "155px",
   },
   button: {
     height: 45,
     width: 140,
     border: `${colors.BLUE()} 1px solid`,
+  },
+  subscribeButton: {
+    height: 23,
+    width: 95,
+    border: `${colors.BLUE()} 1px solid`,
+    position: "relative",
+    marginTop: "3px",
+  },
+  title: {
+    fontSize: "25px",
+    textTransform: "capitalize",
+    fontWeight: 500,
+  },
+  hubInfo: {
+    boxSizing: "border-box",
+    width: "430px",
+    padding: "0 15px",
+  },
+  hubCard: {
+    borderRadius: "8px",
+    color: "#241F3A",
+    cursor: "pointer",
+    boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
+    transition: "transform 0.1s",
+    fontSize: "16px",
+    ":hover": {
+      transition: "transform 0.1s",
+      transform: "scale(1.05)",
+    },
+  },
+  hubStats: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: "10px 0 10px 0",
+    color: "#C1C1CF",
+    fontSize: "14px",
+  },
+  hubTitle: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: "10px 0 0 0",
+  },
+  hubDescription: {
+    height: "90px",
+    padding: "10px 0 0 0",
+    // Might want to use span to apply opacity only to text
+    opacity: "0.8",
+  },
+  statIcon: {
+    marginRight: "5px",
   },
 });
 
