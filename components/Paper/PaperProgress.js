@@ -185,7 +185,6 @@ class PaperProgress extends React.Component {
 
     fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
       .then((res) => {});
   };
 
