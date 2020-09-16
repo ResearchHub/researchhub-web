@@ -155,11 +155,7 @@ const Paper = (props) => {
 
   useEffect(() => {
     setTabs(getActiveTabs());
-  }, [store.getState().paper.summary]);
-
-  useEffect(() => {
-    setTabs(getActiveTabs());
-  }, [figureCount]);
+  }, [store.getState().paper.summary, figureCount]);
 
   useEffect(() => {
     setLimitCount(store.getState().limitations.limits.length);
@@ -495,7 +491,7 @@ const Paper = (props) => {
               />
             </div>
           </a>
-          {false && (figureCount > 0 || showAllSections) ? (
+          {false && (figureCount > 0 && showAllSections) ? (
             <a name="figures">
               <div className={css(styles.figuresContainer)}>
                 <FigureTab
@@ -518,7 +514,7 @@ const Paper = (props) => {
               />
             </div>
           </a>
-          {(false && referencedByCount > 0) || showAllSections ? (
+          {false && referencedByCount > 0 && showAllSections ? (
             <a name="citations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <ReactPlaceholder
@@ -566,7 +562,7 @@ const Paper = (props) => {
               </ComponentWrapper>
             </a>
           ) : null}
-          {(false && limitCount) || showAllSections ? (
+          {false && limitCount && showAllSections ? (
             <a name="limitations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <div
@@ -622,7 +618,7 @@ Paper.getInitialProps = async (ctx) => {
       await store.dispatch(
         PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
       );
-      if (fetchedPaper.slug && fetchedPaper.slug !== query.paperName) {
+      if (fetchedPaper.slug !== query.paperName) {
         // redirect paper if paperName does not match slug
         let paperName = fetchedPaper.slug
           ? fetchedPaper.slug
@@ -635,13 +631,21 @@ Paper.getInitialProps = async (ctx) => {
           // catch multiple redirect when slug does not exist
           return { isServer, hostname, paper: fetchedPaper, redirectPath };
         }
+
         redirectPath = `/paper/${fetchedPaper.id}/${paperName}`;
         res.writeHead(301, { Location: redirectPath });
         res.end();
-        return { isServer, hostname, paper: fetchedPaper, redirectPath };
+        return {
+          isServer,
+          hostname,
+          paper: fetchedPaper,
+          redirectPath,
+          paperName,
+        };
       }
-      return { isServer, hostname, paper: fetchedPaper, redirectPath };
+      return { isServer, hostname, paper: fetchedPaper };
     } catch (err) {
+      // if paper doesnot exist
       if (res) {
         res.statusCode = 404;
       }
