@@ -191,8 +191,9 @@ const Paper = (props) => {
 
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
-      // fetchReferences();
-      // fetchFigures();
+      setPaper(props.paper);
+      setDiscussionThreads(getDiscussionThreads(props.paper));
+      setCount(calculateCommentCount());
       checkUserVote();
       if (document.getElementById("structuredData")) {
         let script = document.getElementById("structuredData");
@@ -204,7 +205,6 @@ const Paper = (props) => {
         script.textContext = formatStructuredData();
         document.head.appendChild(script);
       }
-      // window.scroll({ top: 0, behavior: "auto" });
     }
   }, [paperId]);
 
@@ -619,6 +619,9 @@ Paper.getInitialProps = async (ctx) => {
     try {
       await store.dispatch(PaperActions.getPaper(query.paperId));
       fetchedPaper = store.getState().paper;
+      await store.dispatch(
+        PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
+      );
       if (fetchedPaper.slug && fetchedPaper.slug !== query.paperName) {
         // redirect paper if paperName does not match slug
         let paperName = fetchedPaper.slug
