@@ -18,6 +18,7 @@ import icons from "~/config/themes/icons";
 
 function HubCard(props) {
   let { hub } = props;
+  console.log(hub);
   return (
     <Link
       href="/hubs/[slug]"
@@ -34,12 +35,16 @@ function HubCard(props) {
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
               <div className={css(styles.title)}>{hub.name}</div>
-              <Button
-                isWhite={false}
-                label={"Subscribe"}
-                customButtonStyle={styles.subscribeButton}
-                hideRipples={true}
-              />
+              {hub.user_is_subscribed ? (
+                <Button
+                  isWhite={false}
+                  label={"Subscribe"}
+                  customButtonStyle={styles.subscribeButton}
+                  hideRipples={true}
+                />
+              ) : (
+                <div className={css(styles.subscribed)}>Subscribed</div>
+              )}
             </div>
             <div className={css(styles.hubDescription)}>{hub.description}</div>
             <div className={css(styles.hubStats)}>
@@ -53,7 +58,7 @@ function HubCard(props) {
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.user}</span>
-                {1} Subscribers
+                {hub.subscriber_count} Subscribers
               </div>
             </div>
           </div>
@@ -155,6 +160,16 @@ const styles = StyleSheet.create({
   },
   statIcon: {
     marginRight: "5px",
+  },
+  subscribed: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 23,
+    width: 95,
+    border: `${colors.BLUE()} 1px solid`,
+    borderRadius: "4px",
+    color: `${colors.BLUE()}`,
   },
 });
 
