@@ -6,6 +6,7 @@ import { StyleSheet, css } from "aphrodite";
 import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
+import NewDND from "../../components/Form/NewDND";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -34,11 +35,13 @@ class AddHubModal extends React.Component {
 
   createHub = async () => {
     this.props.showMessage({ show: true, load: true });
-    let userSubmission = this.state.hubName.toLowerCase();
-    let isUnique = await this.isHubNameUnique(userSubmission);
+    const hubName = this.state.hubName.toLowerCase();
+    const hubDescription = this.state.hubDescription;
+    const isUnique = await this.isHubNameUnique(hubName);
     if (isUnique) {
-      let param = {
-        name: userSubmission,
+      const param = {
+        name: hubName,
+        description: hubDescription,
       };
       return fetch(API.HUB({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
@@ -127,7 +130,17 @@ class AddHubModal extends React.Component {
             inputStyle={this.state.error && styles.error}
             required={true}
           />
-          <div className={css(styles.button)}>
+          <FormInput
+            label={"Hub Description"}
+            placeholder={"Enter a short description for the hub"}
+            id={"hubDescription"}
+            onChange={this.handleInputChange}
+            containerStyle={styles.containerStyle}
+            labelStyle={styles.labelStyle}
+            inputStyle={this.state.error && styles.error}
+            required={true}
+          />
+          <div classname={css(styles.button)}>
             <Button
               label={"Create New Hub"}
               type={"submit"}
@@ -173,6 +186,10 @@ const styles = StyleSheet.create({
   },
   error: {
     border: `1px solid ${colors.RED(1)}`,
+  },
+  dndContainer: {
+    marginTop: 20,
+    marginBottom: 20,
   },
 });
 

@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     borderRadius: "8px 8px 0 0",
     width: "430px",
     height: "155px",
+    objectFit: "cover",
   },
   button: {
     height: 45,
