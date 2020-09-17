@@ -39,8 +39,6 @@ class Base extends React.Component {
     } = this.props;
 
     await getUser();
-    getCategories();
-    getHubs();
     getTopHubs(auth);
     getUniversities();
     if (auth.isLoggedIn) {
