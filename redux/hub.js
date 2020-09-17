@@ -38,7 +38,7 @@ export const HubActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
-          let categories = [...resp];
+          let categories = [...resp.results];
           return dispatch({
             type: HubConstants.GET_HUB_CATEGORIES_SUCCESS,
             payload: {
@@ -65,11 +65,13 @@ export const HubActions = {
         .then(Helpers.parseJSON)
         .then((resp) => {
           let hubs = [...resp.results];
+          let hubsByCategory = shims.categorizeHubs([...hubs]);
           let hubsByAlpha = shims.sortHubs([...hubs]);
           return dispatch({
             type: HubConstants.GET_HUBS_SUCCESS,
             payload: {
               hubs,
+              hubsByCategory,
               hubsByAlpha,
               fetchedHubs: true,
             },
@@ -179,6 +181,7 @@ const defaultHubState = {
   categories: [],
   hubs: [],
   topHubs: [],
+  hubsByCategory: {},
   hubsByAlpha: {},
   fetchedHubs: false,
   subscribedHubs: [],
@@ -208,6 +211,18 @@ const shims = {
     return hubs.filter((hub) => {
       return hub.user_is_subscribed;
     });
+  },
+  categorizeHubs: (allHubs) => {
+    let categorizedHubs = {};
+    allHubs.forEach((hub) => {
+      let category_id = hub.category_id;
+      if (categorizedHubs[category_id]) {
+        categorizedHubs[category_id].push(hub);
+      } else {
+        categorizedHubs[category_id] = [hub];
+      }
+    });
+    return categorizedHubs;
   },
   sortHubs: (allHubs) => {
     let sortedHubs = {};
