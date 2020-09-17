@@ -28,8 +28,8 @@ class Index extends React.Component {
     super(props);
     this.initialState = {
       width: null,
-      categories: {},
-      hubsByAlpha: {},
+      categories: [],
+      hubsByCategory: {},
       finishedLoading: false,
     };
     this.state = {
@@ -38,25 +38,21 @@ class Index extends React.Component {
   }
 
   componentDidMount = async () => {
-    const {
-      getHubs,
-      showMessage,
-      hubs,
-      getCategories,
-      categories,
-    } = this.props;
+    const { getCategories, getHubs, showMessage, hubs } = this.props;
     window.addEventListener("resize", this.calculateWindowWidth);
     showMessage({ show: true, load: true });
-    //getCategories();
-    //console.log("hey");
-    //console.log(categories);
     if (!hubs.fetchedHubs) {
-      await getHubs();
+      getCategories().then((payload) => {
+        this.setState({ categories: payload.payload.categories });
+      });
+      getHubs().then((action) => {
+        this.setState({ hubsByCategory: action.payload.hubsByCategory });
+      });
     } else {
       setTimeout(() => {
         this.setState({
-          //categories: JSON.parse(JSON.stringify(categories)),
-          hubsByAlpha: JSON.parse(JSON.stringify(hubs.hubsByAlpha)),
+          categories: JSON.parse(JSON.stringify(hubs.categories)),
+          hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
           finishedLoading: true,
         });
         showMessage({ show: false });
@@ -70,13 +66,13 @@ class Index extends React.Component {
 
   componentDidUpdate(prevProps) {
     this.calculateWindowWidth();
-    if (prevProps.hubs.hubsByAlpha !== this.props.hubs.hubsByAlpha) {
+    if (prevProps.hubs.hubsByCategory !== this.props.hubs.hubsByCategory) {
       const { showMessage, hubs } = this.props;
       showMessage({ show: true, load: true });
       setTimeout(() => {
         this.setState(
           {
-            hubsByAlpha: JSON.parse(JSON.stringify(hubs.hubsByAlpha)),
+            hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
             finishedLoading: true,
           },
           () => {
@@ -92,15 +88,15 @@ class Index extends React.Component {
   };
 
   addNewHubToState = (newHub) => {
-    let hubsByAlpha = { ...this.state.hubsByAlpha };
-    let key = newHub.name[0];
-    if (hubsByAlpha[key]) {
-      hubsByAlpha[key].push(newHub);
-      hubsByAlpha[key].sort((a, b) => a.name - b.name);
-    } else {
-      hubsByAlpha[key] = [newHub];
-    }
-    this.setState({ hubsByAlpha });
+    //let hubsByAlpha = { ...this.state.hubsByAlpha };
+    //let key = newHub.name[0];
+    //if (hubsByAlpha[key]) {
+    //  hubsByAlpha[key].push(newHub);
+    //  hubsByAlpha[key].sort((a, b) => a.name - b.name);
+    //} else {
+    //  hubsByAlpha[key] = [newHub];
+    //}
+    //this.setState({ hubsByAlpha });
   };
 
   calculateWindowWidth = () => {
@@ -135,31 +131,31 @@ class Index extends React.Component {
   };
 
   renderColumn = (width) => {
-    const { categories } = this.state;
-    const { hubsByAlpha } = this.state;
-    const letters = Object.keys(hubsByAlpha).sort();
-    console.log(JSON.parse(JSON.stringify(letters)));
-    let numOfColumns = letters.length > 3 ? 4 : letters.length;
-    if (width === 600) {
-      numOfColumns = 2;
-    }
-    if (width <= 360) {
-      numOfColumns = 1;
-    }
+    const { categories, hubsByCategory } = this.state;
 
-    return letters.map((letter, i) => {
+    //const letters = Object.keys(hubsByAlpha).sort();
+    //let numOfColumns = letters.length > 3 ? 4 : letters.length;
+    //if (width === 600) {
+    //  numOfColumns = 2;
+    //}
+    //if (width <= 360) {
+    //  numOfColumns = 1;
+    //}
+    let numOfColumns = 1;
+
+    return categories.map((category, i) => {
+      let categoryID = category.id;
+      let categoryName = category.category_name;
       return (
         <div
-          key={`${letter}_${i}`}
+          key={`${categoryName}_${i}`}
           className={css(
             styles.column,
             this.calculateColumnWidth(i, numOfColumns, width)
           )}
         >
-          <div className={css(styles.label)}>
-            {`${letter.toUpperCase()}${letter}`}
-          </div>
-          <div className={css(styles.list)}>{this.renderList(letter)}</div>
+          <div className={css(styles.label)}>{`${categoryName}`}</div>
+          <div className={css(styles.list)}>{this.renderList(categoryID)}</div>
         </div>
       );
     });
@@ -168,10 +164,15 @@ class Index extends React.Component {
   // * Structure into Category - Hub
   // * subscribe button
   renderList = (key) => {
-    const { hubsByAlpha } = this.state;
-    return hubsByAlpha[key].map((hub) => {
-      return <HubCard hub={hub} />;
-    });
+    const { hubsByCategory } = this.state;
+
+    if (!hubsByCategory[key]) {
+      return null;
+    } else {
+      return hubsByCategory[key].map((hub) => {
+        return <HubCard hub={hub} />;
+      });
+    }
   };
 
   render() {
