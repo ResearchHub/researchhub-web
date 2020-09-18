@@ -209,13 +209,10 @@ const styles = StyleSheet.create({
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
     width: "90%",
-    paddingLeft: 35,
+    paddingLeft: 25,
     boxSizing: "border-box",
     ":hover": {
       color: colors.BLACK(),
-    },
-    "@media only screen and (max-width: 1303px)": {
-      paddingLeft: 25,
     },
   },
   topIcon: {
@@ -265,10 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    padding: "0px 30px",
-    "@media only screen and (max-width: 1303px)": {
-      padding: "0px 20px",
-    },
+    padding: "0px 20px",
   },
   reveal: {
     opacity: 1,
