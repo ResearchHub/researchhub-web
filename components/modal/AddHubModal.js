@@ -6,11 +6,12 @@ import { StyleSheet, css } from "aphrodite";
 import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
-import NewDND from "../../components/Form/NewDND";
+import FormSelect from "../Form/FormSelect";
 
 // Redux
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
+import { HubActions } from "~/redux/hub";
 
 // Config
 import API from "~/config/api";
@@ -23,11 +24,18 @@ class AddHubModal extends React.Component {
     this.initialState = {
       hubName: "",
       error: false,
+      categories: [],
     };
     this.state = {
       ...this.initialState,
     };
   }
+
+  // componentDidMount() {
+  //   this.props.getCategories().then((payload) => {
+  //     this.setState({ categories: payload.payload.categories });
+  //   });
+  // }
 
   handleInputChange = (id, value) => {
     this.setState({ [id]: value });
@@ -35,15 +43,14 @@ class AddHubModal extends React.Component {
 
   createHub = async () => {
     this.props.showMessage({ show: true, load: true });
-    const hubName = this.state.hubName.toLowerCase();
-    const hubDescription = this.state.hubDescription;
+    const { hubName, hubDescription, hubImage, hubCategory } = this.state;
     const isUnique = await this.isHubNameUnique(hubName);
     if (isUnique) {
-      const param = {
-        name: hubName,
-        description: hubDescription,
-      };
-      return fetch(API.HUB({}), API.POST_CONFIG(param))
+      const data = new FormData();
+      data.append("name", hubName.toLowerCase());
+      data.append("description", hubDescription);
+      data.append("hub_image", hubImage);
+      return fetch(API.HUB({}), API.POST_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
@@ -114,6 +121,7 @@ class AddHubModal extends React.Component {
         subtitle={"All newly created hubs will be locked."}
       >
         <form
+          enctype="multipart/form-data"
           className={css(styles.form)}
           onSubmit={(e) => {
             e.preventDefault();
@@ -140,7 +148,33 @@ class AddHubModal extends React.Component {
             inputStyle={this.state.error && styles.error}
             required={true}
           />
-          <div classname={css(styles.button)}>
+          {/* <FormSelect
+            label={"Category"}
+            placeholder="Search Hub Categories"
+            required={true}
+            containerStyle={styles.container}
+            inputStyle={
+              styles.input
+            }
+            labelStyle={styles.labelStyle}
+            isMulti={true}
+            value={this.state.categories}
+            id={"hubs"}
+            options={this.state.categories}
+            onChange={this.handleHubCategorySelection}
+          /> */}
+          <FormInput
+            label={"Hub Image (Optional)"}
+            type="file"
+            accept="image/*"
+            id={"hubImage"}
+            onChange={this.handleInputChange}
+            containerStyle={styles.containerStyle}
+            labelStyle={styles.labelStyle}
+            inputStyle={this.state.error && styles.error}
+            required={false}
+          />
+          <div className={css(styles.button)}>
             <Button
               label={"Create New Hub"}
               type={"submit"}
@@ -195,9 +229,11 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
+  categories: state.hubs.categories,
 });
 
 const mapDispatchToProps = {
+  getCategories: HubActions.getCategories,
   openAddHubModal: ModalActions.openAddHubModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
