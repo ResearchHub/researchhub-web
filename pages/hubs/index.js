@@ -82,7 +82,7 @@ class Index extends React.Component {
 
   addNewHubToState = (newHub) => {
     let hubsByCategory = { ...this.state.hubsByCategory };
-    let key = newHub.category_id;
+    let key = newHub.category;
     if (hubsByCategory[key]) {
       hubsByCategory[key].push(newHub);
       hubsByCategory[key].sort((a, b) => a.name - b.name);
@@ -99,7 +99,7 @@ class Index extends React.Component {
       let categoryID = category.id;
       let categoryName = category.category_name;
       return (
-        <div>
+        <>
           <div
             name={categoryName}
             className={css(styles.label)}
@@ -107,7 +107,7 @@ class Index extends React.Component {
           <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
             {this.renderList(categoryID)}
           </div>
-        </div>
+        </>
       );
     });
   };
