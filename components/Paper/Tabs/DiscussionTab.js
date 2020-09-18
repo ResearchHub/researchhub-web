@@ -253,16 +253,13 @@ const DiscussionTab = (props) => {
           },
         };
         sendAmpEvent(payload);
-
-        setTimeout(() => {
-          props.showMessage({ show: false });
-          props.setMessage("Successfully Saved!");
-          props.showMessage({ show: true });
-          props.setCount(props.calculatedCount + 1);
-          cancel();
-          props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
-          props.getUser();
-        }, 200);
+        cancel();
+        props.showMessage({ show: false });
+        props.setMessage("Successfully Saved!");
+        props.showMessage({ show: true });
+        props.setCount(props.calculatedCount + 1);
+        props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
+        props.getUser();
       })
       .catch((err) => {
         if (err.response.status === 429) {
