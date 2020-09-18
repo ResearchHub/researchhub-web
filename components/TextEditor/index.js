@@ -48,6 +48,7 @@ const TextEditor = (props) => {
     removeStickyToolbar,
     editing,
     focusEditor,
+    hasHeader,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
@@ -83,7 +84,7 @@ const TextEditor = (props) => {
         return props.showMessage({ error: true, show: true, clickoff: true });
       }
 
-      onSubmit && (success = await onSubmit(content, plain_text));
+      onSubmit && (success = await onSubmit(content, plain_text, callback));
       if (success && clearOnSubmit) {
         callback();
       }
@@ -131,6 +132,7 @@ const TextEditor = (props) => {
       commentEditorStyles={commentEditorStyles && commentEditorStyles}
       editing={editing}
       focusEditor={focusEditor && focusEditor}
+      hasHeader={hasHeader && hasHeader}
     />
   );
 };

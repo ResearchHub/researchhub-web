@@ -39,14 +39,13 @@ class ThreadTextEditor extends React.Component {
     }
   }
 
-  onSubmit = (content, plain_text) => {
+  onSubmit = (content, plain_text, clearContent) => {
     this.setState({ loading: true }, () => {
       this.props.onSubmit &&
         this.props.onSubmit(content, plain_text, () => {
           this.setState({ loading: false });
-          setTimeout(() => {
-            this.onCancel();
-          }, 400);
+          this.onCancel();
+          clearContent && clearContent();
         });
     });
   };
@@ -97,6 +96,7 @@ class ThreadTextEditor extends React.Component {
             editing={this.props.editing}
             focusEditor={this.props.focusEditor}
             initialValue={this.state.editorState}
+            hasHeader={this.props.hasHeader}
           />
         </PermissionNotificationWrapper>
       );

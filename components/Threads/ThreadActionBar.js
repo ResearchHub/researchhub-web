@@ -51,6 +51,7 @@ class ThreadActionBar extends React.Component {
           }
           editing={this.state.showReplyBox}
           initialValue={this.props.initialValue}
+          hasHeader={this.props.hasHeader}
         />
       </div>
     );
