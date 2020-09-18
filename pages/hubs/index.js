@@ -38,7 +38,6 @@ class Index extends React.Component {
 
   componentDidMount = async () => {
     const { getCategories, getHubs, showMessage, hubs } = this.props;
-    window.addEventListener("resize", this.calculateWindowWidth);
     showMessage({ show: true, load: true });
     if (!hubs.fetchedHubs) {
       getCategories().then((payload) => {
@@ -59,12 +58,7 @@ class Index extends React.Component {
     }
   };
 
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.calculateWindowWidth);
-  }
-
   componentDidUpdate(prevProps) {
-    this.calculateWindowWidth();
     if (prevProps.hubs.hubsByCategory !== this.props.hubs.hubsByCategory) {
       const { showMessage, hubs } = this.props;
       showMessage({ show: true, load: true });
@@ -98,48 +92,8 @@ class Index extends React.Component {
     this.setState({ hubsByCategory });
   };
 
-  calculateWindowWidth = () => {
-    if (window.innerWidth < 950 && window.innerWidth > 775) {
-      return this.state.width !== 760 && this.setState({ width: 760 });
-    }
-    if (window.innerWidth <= 775 && window.innerWidth > 421) {
-      return this.state.width !== 600 && this.setState({ width: 600 });
-    }
-    if (window.innerWidth <= 421 && window.innerWidth > 321) {
-      return this.state.width !== 360 && this.setState({ width: 360 });
-    }
-    if (window.innerWidth <= 321) {
-      return this.state.width !== 285 && this.setState({ width: 285 });
-    } else {
-      return this.state.width !== 950 && this.setState({ width: 950 });
-    }
-  };
-
-  calculateColumnWidth = (i, numOfColumns, size) => {
-    let noMargin = (i + 1) % numOfColumns === 0;
-    let offset = (30 * numOfColumns - 1) / numOfColumns;
-    let width = size / numOfColumns - offset;
-    let styles = StyleSheet.create({
-      customWidth: {
-        width: `${size}px`,
-        margin: noMargin ? "0 0 30px 0" : "0 30px 30px 0",
-      },
-    });
-
-    return styles.customWidth;
-  };
-
   renderColumn = (width) => {
     const { categories } = this.state;
-
-    //const letters = Object.keys(hubsByAlpha).sort();
-    let numOfColumns = categories.length;
-    if (width === 600) {
-      numOfColumns = 2;
-    }
-    if (width <= 360) {
-      numOfColumns = 1;
-    }
 
     return categories.map((category, i) => {
       let categoryID = category.id;
@@ -150,13 +104,7 @@ class Index extends React.Component {
             name={categoryName}
             className={css(styles.label)}
           >{`${categoryName}`}</div>
-          <div
-            key={`${categoryName}_${i}`}
-            className={css(
-              styles.list
-              //this.calculateColumnWidth(i, numOfColumns, width)
-            )}
-          >
+          <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
             {this.renderList(categoryID)}
           </div>
         </div>
@@ -180,43 +128,44 @@ class Index extends React.Component {
     let { finishedLoading, categories } = this.state;
 
     return (
-      <div className={css(styles.content, styles.column)}>
-        <div className={css(styles.row, styles.body)}>
-          <div className={css(styles.sidebar, styles.column)}>
-            <CategoryList
-              current={this.props.home ? null : this.props.hub}
-              initialHubList={this.props.initialHubList}
-              categories={categories}
-            />
-          </div>
-          <div className={css(styles.mainFeed, styles.column)}>
-            <AddHubModal addHub={this.addNewHubToState} />
-            <Message />
-            <Head
-              title={"Hubs on Researchhub"}
-              description={"View all of the communities on Researchhub"}
-            />
-            <div className={css(styles.container)}>
-              <div className={css(styles.titleContainer)}>
-                <span className={css(styles.title)}>Hubs</span>
-                <PermissionNotificationWrapper
-                  modalMessage="suggest a hub"
-                  loginRequired={true}
-                  onClick={this.openAddHubModal}
-                >
-                  <Button
-                    isWhite={true}
-                    label={"Suggest a Hub"}
-                    buttonStyle={styles.button}
-                    hideRipples={true}
-                  />
-                </PermissionNotificationWrapper>
-              </div>
-              <div
-                className={css(styles.body, finishedLoading && styles.reveal)}
+      <div className={css(styles.row, styles.body)}>
+        <div className={css(styles.sidebar)}>
+          <CategoryList
+            current={this.props.home ? null : this.props.hub}
+            initialHubList={this.props.initialHubList}
+            categories={categories}
+          />
+        </div>
+        <div className={css(styles.content)}>
+          <AddHubModal addHub={this.addNewHubToState} />
+          <Message />
+          <Head
+            title={"Hubs on Researchhub"}
+            description={"View all of the communities on Researchhub"}
+          />
+          <div className={css(styles.container)}>
+            <div className={css(styles.titleContainer)}>
+              <span className={css(styles.title)}>Hubs</span>
+              <PermissionNotificationWrapper
+                modalMessage="suggest a hub"
+                loginRequired={true}
+                onClick={this.openAddHubModal}
               >
-                {this.renderColumn(this.state.width)}
-              </div>
+                <Button
+                  isWhite={true}
+                  label={"Suggest a Hub"}
+                  buttonStyle={styles.button}
+                  hideRipples={true}
+                />
+              </PermissionNotificationWrapper>
+            </div>
+            <div
+              className={css(
+                styles.hubsContainer,
+                finishedLoading && styles.reveal
+              )}
+            >
+              {this.renderColumn(this.state.width)}
             </div>
           </div>
         </div>
@@ -226,52 +175,27 @@ class Index extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    background: "#FCFCFC",
-    minHeight: "100vh",
-    width: "100vw",
+  body: {
+    backgroundColor: "#FCFCFC",
+    alignItems: "flex-start",
   },
   container: {
-    backgroundColor: "#FCFCFC",
-    width: "91%",
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    width: "90%",
     margin: "auto",
-    "@media only screen and (max-width: 1000px)": {
-      width: 760,
-    },
-    "@media only screen and (max-width: 775px)": {
-      width: 600,
-    },
-    "@media only screen and (max-width: 421px)": {
-      width: "100%",
-    },
   },
   titleContainer: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    width: "100%",
     paddingTop: 40,
     paddingBottom: 40,
-    "@media only screen and (max-width: 768px)": {
-      justifyContent: "space-between",
-      backgroundColor: "#FFF",
-      marginBottom: 10,
-      zIndex: 2,
-      position: "sticky",
-      top: 0,
-    },
-    "@media only screen and (max-width: 421px)": {
-      justifyContent: "center",
-    },
   },
-  slugLink: {
-    textDecoration: "none",
-    filter: "drop-shadow(0 4px 15px rgba(93, 83, 254, 0.18))",
+  hubsContainer: {
+    opacity: 0,
+    transition: "all ease-in-out 0.3s",
+  },
+  reveal: {
+    opacity: 1,
   },
   title: {
     fontSize: 33,
@@ -281,42 +205,17 @@ const styles = StyleSheet.create({
     cursor: "default",
     userSelect: "none",
   },
-  body: {
-    backgroundColor: "#FCFCFC",
-    width: "100%",
-    alignItems: "flex-start",
-  },
   sidebar: {
-    width: "18%",
-    minHeight: "100vh",
     minWidth: 220,
-    position: "relative",
-    position: "sticky",
-    borderRight: "1px solid #ededed",
-    backgroundColor: "#FCFCFC",
     "@media only screen and (max-width: 769px)": {
       display: "none",
     },
   },
-  mainFeed: {
-    height: "100%",
-    width: "82%",
-    backgroundColor: "#FCFCFC",
+  content: {
+    borderLeft: "1px solid #ededed",
     "@media only screen and (min-width: 900px)": {
-      width: "82%",
+      width: "90%",
     },
-    "@media only screen and (max-width: 768px)": {
-      width: "100%",
-    },
-  },
-  reveal: {
-    opacity: 1,
-  },
-  column: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "left",
   },
   row: {
     display: "flex",
@@ -325,20 +224,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   label: {
-    fontSize: 26,
+    borderBottom: "1px solid #ededed",
+    fontSize: 22,
     fontWeight: 500,
     color: "#241F3A",
     paddingBottom: 10,
-    marginBottom: 50,
+    marginBottom: 15,
     cursor: "default",
     userSelect: "none",
-    borderBottom: "1px solid #ededed",
   },
-  list: {
+  grid: {
     display: "flex",
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "left",
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginBottom: 40,
   },
 });
 
