@@ -219,7 +219,7 @@ class ThreadActionBar extends React.Component {
                 Respond
               </div>
             )}
-            {this.renderCommentCount()}
+            {!this.props.hideCount && this.renderCommentCount()}
             {this.props.toggleEdit && this.renderEditButton()}
           </div>
           {!this.props.hideReply && (
