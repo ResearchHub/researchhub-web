@@ -240,6 +240,9 @@ class Editor extends React.Component {
   };
 
   clearEditorContent = () => {
+    if (this.props.hasHeader) {
+      return this.quillRef.setContents(this.props.value);
+    }
     this.quillRef.setContents([]);
   };
 

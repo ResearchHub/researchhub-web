@@ -423,7 +423,8 @@ class CommentEntry extends React.Component {
   };
 
   onReplySubmitCallback = () => {
-    let newReply = { ...this.props.discussion.postedReply };
+    let { comment, setCount, discussion, discussionCount } = this.props;
+    let newReply = { ...discussion.postedReply };
     newReply.highlight = true;
     let replies = [...this.state.replies, newReply];
     comment.replies = replies;
