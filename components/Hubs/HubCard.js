@@ -33,7 +33,7 @@ function HubCard(props) {
           ></img>
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
-              <div className={css(styles.title)}>{hub.name}</div>
+              <div className={css(styles.hubName)}>{hub.name}</div>
               <Button
                 isWhite={false}
                 label={"Subscribe"}
@@ -111,8 +111,8 @@ const styles = StyleSheet.create({
     position: "relative",
     marginTop: "3px",
   },
-  title: {
-    fontSize: "25px",
+  hubName: {
+    fontSize: 22,
     textTransform: "capitalize",
     fontWeight: 500,
   },
@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
     padding: "10px 0 0 0",
   },
   hubDescription: {
+    fontSize: 16,
     height: "90px",
     padding: "10px 0 0 0",
     // Might want to use span to apply opacity only to text

@@ -21,6 +21,10 @@ class CategoryList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      categories:
+        this.props.categories && this.props.categories.results
+          ? this.props.categories.results
+          : [],
       hubs:
         this.props.initialHubList && this.props.initialHubList.results
           ? this.props.initialHubList.results
@@ -31,6 +35,10 @@ class CategoryList extends React.Component {
 
   componentDidMount() {
     let { auth } = this.props;
+    if (this.props.categories) {
+      this.setState({ categories: [...this.props.categories] });
+    }
+
     if (this.props.hubs.length) {
       this.setState({ hubs: [...this.props.hubs] });
     }
@@ -43,8 +51,12 @@ class CategoryList extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.current !== this.props.current) {
       this.setState({
+        categories: this.props.categories,
         hubs: this.props.hubs,
       });
+    }
+    if (prevProps.categories !== this.props.categories) {
+      this.setState({ categories: [...this.props.categories] });
     }
     if (prevProps.hubs !== this.props.hubs) {
       this.setState({ hubs: [...this.props.hubs] });
@@ -111,36 +123,18 @@ class CategoryList extends React.Component {
   };
 
   renderHubEntry = () => {
-    let selectedHubs = this.state.hubs;
-    return selectedHubs.map((hub, i) => {
-      let { name, id, user_is_subscribed } = hub;
+    let categories = this.state.categories;
+    return categories.map((category, i) => {
+      let { category_name } = category;
       return (
-        <Ripples
-          className={css(
-            styles.hubEntry,
-            this.isCurrentHub(this.props.current, id) && styles.current
-          )}
-          key={`${id}-${i}`}
-        >
+        <Ripples className={css(styles.hubEntry)} key={`${category_name}-${i}`}>
           <Link
             href={{
-              pathname: "/hubs/[slug]",
-              query: {
-                name: `${hub.name}`,
-
-                slug: `${encodeURIComponent(hub.slug)}`,
-              },
+              pathname: "/hubs#${encodeURIComponent(category_name)}",
             }}
-            as={`/hubs/${encodeURIComponent(hub.slug)}`}
+            as={`/hubs#${encodeURIComponent(category_name)}`}
           >
-            <a className={css(styles.hubLink)}>
-              {name}
-              {user_is_subscribed && (
-                <span className={css(styles.subscribedIcon)}>
-                  <i className="fas fa-star" />
-                </span>
-              )}
-            </a>
+            <a className={css(styles.hubLink)}>{category_name}</a>
           </Link>
         </Ripples>
       );
@@ -149,7 +143,6 @@ class CategoryList extends React.Component {
 
   render() {
     let { overrideStyle } = this.props;
-
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
@@ -159,7 +152,7 @@ class CategoryList extends React.Component {
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
-            {this.state.hubs.length > 0 ? (
+            {this.state.categories.length > 0 ? (
               this.renderHubEntry()
             ) : (
               <Fragment>
@@ -304,6 +297,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  categories: state.hubs.categories,
   hubs: state.hubs.topHubs,
   auth: state.auth,
 });
