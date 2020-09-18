@@ -17,9 +17,13 @@ class FormInput extends React.Component {
   };
 
   handleChange = (e) => {
-    let id = e.target.id;
-    let value = e.target.value;
-    this.props.onChange && this.props.onChange(id, value);
+    const id = e.target.id;
+    if (e.target.files) {
+      this.props.onChange && this.props.onChange(id, e.target.files[0]);
+    } else {
+      const value = e.target.value;
+      this.props.onChange && this.props.onChange(id, value);
+    }
   };
 
   render() {
