@@ -13,7 +13,6 @@ import CategoryList from "~/components/Hubs/CategoryList";
 import HubCard from "../../components/Hubs/HubCard";
 
 // Config
-import API from "~/config/api";
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
 
@@ -88,15 +87,15 @@ class Index extends React.Component {
   };
 
   addNewHubToState = (newHub) => {
-    //let hubsByAlpha = { ...this.state.hubsByAlpha };
-    //let key = newHub.name[0];
-    //if (hubsByAlpha[key]) {
-    //  hubsByAlpha[key].push(newHub);
-    //  hubsByAlpha[key].sort((a, b) => a.name - b.name);
-    //} else {
-    //  hubsByAlpha[key] = [newHub];
-    //}
-    //this.setState({ hubsByAlpha });
+    let hubsByCategory = { ...this.state.hubsByCategory };
+    let key = newHub.category_id;
+    if (hubsByCategory[key]) {
+      hubsByCategory[key].push(newHub);
+      hubsByCategory[key].sort((a, b) => a.name - b.name);
+    } else {
+      hubsByCategory[key] = [newHub];
+    }
+    this.setState({ hubsByCategory });
   };
 
   calculateWindowWidth = () => {
@@ -131,7 +130,7 @@ class Index extends React.Component {
   };
 
   renderColumn = (width) => {
-    const { categories, hubsByCategory } = this.state;
+    const { categories } = this.state;
 
     //const letters = Object.keys(hubsByAlpha).sort();
     //let numOfColumns = letters.length > 3 ? 4 : letters.length;
@@ -141,7 +140,7 @@ class Index extends React.Component {
     //if (width <= 360) {
     //  numOfColumns = 1;
     //}
-    let numOfColumns = 1;
+    let numOfColumns = 2;
 
     return categories.map((category, i) => {
       let categoryID = category.id;
@@ -154,7 +153,10 @@ class Index extends React.Component {
             this.calculateColumnWidth(i, numOfColumns, width)
           )}
         >
-          <div className={css(styles.label)}>{`${categoryName}`}</div>
+          <div
+            name={categoryName}
+            className={css(styles.label)}
+          >{`${categoryName}`}</div>
           <div className={css(styles.list)}>{this.renderList(categoryID)}</div>
         </div>
       );
@@ -176,7 +178,7 @@ class Index extends React.Component {
   };
 
   render() {
-    let { finishedLoading } = this.state;
+    let { finishedLoading, categories } = this.state;
 
     return (
       <div className={css(styles.content, styles.column)}>
@@ -185,6 +187,7 @@ class Index extends React.Component {
             <CategoryList
               current={this.props.home ? null : this.props.hub}
               initialHubList={this.props.initialHubList}
+              categories={categories}
             />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
@@ -276,7 +279,7 @@ const styles = StyleSheet.create({
     fontSize: 33,
     fontWeight: 500,
     marginRight: 30,
-    color: "#232038",
+    color: "#241F3A",
     cursor: "default",
     userSelect: "none",
   },
@@ -317,7 +320,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "center",
+    alignItems: "left",
   },
   row: {
     display: "flex",
@@ -326,9 +329,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   label: {
-    fontSize: 33,
-    fontWeight: 400,
-    color: "#CCCBD0",
+    fontSize: 26,
+    fontWeight: 500,
+    color: "#241F3A",
     marginBottom: 10,
     cursor: "default",
     userSelect: "none",
@@ -366,11 +369,6 @@ const styles = StyleSheet.create({
     border: `${colors.BLUE()} 1px solid`,
     position: "relative",
     marginTop: "3px",
-  },
-  title: {
-    fontSize: "25px",
-    textTransform: "capitalize",
-    fontWeight: 500,
   },
   hubInfo: {
     boxSizing: "border-box",
