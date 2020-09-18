@@ -31,11 +31,14 @@ class AddHubModal extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  //   this.props.getCategories().then((payload) => {
-  //     this.setState({ categories: payload.payload.categories });
-  //   });
-  // }
+  componentDidMount() {
+    this.props.getCategories().then((payload) => {
+      const categories = payload.payload.categories.map((elem) => {
+        return { value: elem.category_name, label: elem.category_name };
+      });
+      this.setState({ categories: categories });
+    });
+  }
 
   handleInputChange = (id, value) => {
     this.setState({ [id]: value });
@@ -50,6 +53,7 @@ class AddHubModal extends React.Component {
       data.append("name", hubName.toLowerCase());
       data.append("description", hubDescription);
       data.append("hub_image", hubImage);
+      data.append("category", hubCategory);
       return fetch(API.HUB({}), API.POST_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -113,6 +117,7 @@ class AddHubModal extends React.Component {
 
   render() {
     const { modals, openAddHubModal } = this.props;
+    console.log(this.state.categories);
     return (
       <BaseModal
         isOpen={modals.openAddHubModal}
@@ -148,21 +153,18 @@ class AddHubModal extends React.Component {
             inputStyle={this.state.error && styles.error}
             required={true}
           />
-          {/* <FormSelect
+          <FormSelect
             label={"Category"}
             placeholder="Search Hub Categories"
             required={true}
             containerStyle={styles.container}
-            inputStyle={
-              styles.input
-            }
+            inputStyle={styles.input}
             labelStyle={styles.labelStyle}
             isMulti={true}
-            value={this.state.categories}
             id={"hubs"}
             options={this.state.categories}
             onChange={this.handleHubCategorySelection}
-          /> */}
+          />
           <FormInput
             label={"Hub Image (Optional)"}
             type="file"
