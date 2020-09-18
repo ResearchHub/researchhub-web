@@ -215,7 +215,7 @@ const shims = {
   categorizeHubs: (allHubs) => {
     let categorizedHubs = {};
     allHubs.forEach((hub) => {
-      let category_id = hub.category_id;
+      const category_id = hub.category;
       if (categorizedHubs[category_id]) {
         categorizedHubs[category_id].push(hub);
       } else {

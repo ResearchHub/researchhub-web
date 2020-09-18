@@ -34,7 +34,7 @@ class AddHubModal extends React.Component {
   componentDidMount() {
     this.props.getCategories().then((payload) => {
       const categories = payload.payload.categories.map((elem) => {
-        return { value: elem.category_name, label: elem.category_name };
+        return { value: elem.id, label: elem.category_name };
       });
       this.setState({ categories: categories });
     });
@@ -52,8 +52,10 @@ class AddHubModal extends React.Component {
       const data = new FormData();
       data.append("name", hubName.toLowerCase());
       data.append("description", hubDescription);
-      data.append("hub_image", hubImage);
-      data.append("category", hubCategory);
+      if (hubImage) {
+        data.append("hub_image", hubImage);
+      }
+      data.append("category", parseInt(hubCategory.value));
       return fetch(API.HUB({}), API.POST_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -117,7 +119,6 @@ class AddHubModal extends React.Component {
 
   render() {
     const { modals, openAddHubModal } = this.props;
-    console.log(this.state.categories);
     return (
       <BaseModal
         isOpen={modals.openAddHubModal}
@@ -126,7 +127,7 @@ class AddHubModal extends React.Component {
         subtitle={"All newly created hubs will be locked."}
       >
         <form
-          enctype="multipart/form-data"
+          encType="multipart/form-data"
           className={css(styles.form)}
           onSubmit={(e) => {
             e.preventDefault();
@@ -160,10 +161,10 @@ class AddHubModal extends React.Component {
             containerStyle={styles.container}
             inputStyle={styles.input}
             labelStyle={styles.labelStyle}
-            isMulti={true}
-            id={"hubs"}
+            isMulti={false}
+            id={"hubCategory"}
             options={this.state.categories}
-            onChange={this.handleHubCategorySelection}
+            onChange={this.handleInputChange}
           />
           <FormInput
             label={"Hub Image (Optional)"}
