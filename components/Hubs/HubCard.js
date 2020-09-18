@@ -18,7 +18,6 @@ import icons from "~/config/themes/icons";
 
 function HubCard(props) {
   let { hub } = props;
-  console.log(hub);
   return (
     <Link
       href="/hubs/[slug]"
@@ -54,7 +53,8 @@ function HubCard(props) {
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.user}</span>
-                {hub.subscriber_count} Subscribers
+                {hub.subscriber_count} Subscriber
+                {hub.subscriber_count != 1 ? "s" : ""}
               </div>
             </div>
           </div>
@@ -65,40 +65,44 @@ function HubCard(props) {
 }
 
 const styles = StyleSheet.create({
-  // TODO:
-  // left for reference in the future
-  hubEntry: {
-    fontSize: 18,
-    borderRadius: "15px",
-    color: "#241F3A",
-    padding: "0 0 10px 0",
-    textTransform: "capitalize",
-    cursor: "pointer",
-    ":hover": {
-      color: colors.BLUE(1),
-    },
-    "@media only screen and (max-width: 775px)": {
-      fontSize: 16,
-    },
-    boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
-  },
   slugLink: {
     textDecoration: "none",
-    filter: "drop-shadow(0 4px 15px rgba(93, 83, 254, 0.18))",
+    width: "451px",
+    height: "327px",
+    margin: 25,
+    transition: "transform 0.1s",
+    ":hover": {
+      transition: "transform 0.1s",
+      transform: "scale(1.05)",
+    },
   },
-  title: {
-    fontSize: 33,
-    fontWeight: 500,
-    marginRight: 30,
-    color: "#232038",
-    cursor: "default",
-    userSelect: "none",
+  hubCard: {
+    fontSize: "16px",
+    color: "#241F3A",
+    borderRadius: "8px",
+    boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
+    marginBottom: 50,
   },
   roundedImage: {
     borderRadius: "8px 8px 0 0",
-    width: "430px",
-    height: "155px",
+    width: "451px",
+    height: "156px",
     objectFit: "cover",
+  },
+  hubInfo: {
+    boxSizing: "border-box",
+    padding: "0 15px",
+  },
+  hubTitle: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: "10px 2px 0 2px",
+  },
+  hubName: {
+    fontSize: 22,
+    textTransform: "capitalize",
+    fontWeight: 500,
   },
   button: {
     height: 45,
@@ -112,48 +116,20 @@ const styles = StyleSheet.create({
     position: "relative",
     marginTop: "3px",
   },
-  hubName: {
-    fontSize: 22,
-    textTransform: "capitalize",
-    fontWeight: 500,
-  },
-  hubInfo: {
-    boxSizing: "border-box",
-    width: "430px",
-    padding: "0 15px",
-  },
-  hubCard: {
-    borderRadius: "8px",
-    color: "#241F3A",
-    cursor: "pointer",
-    boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
-    transition: "transform 0.1s",
-    fontSize: "16px",
-    ":hover": {
-      transition: "transform 0.1s",
-      transform: "scale(1.05)",
-    },
+  hubDescription: {
+    fontSize: 16,
+    height: "90px",
+    padding: "10px 2px 0 2px",
+    // Might want to use span to apply opacity only to text
+    opacity: "0.8",
   },
   hubStats: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
-    padding: "10px 0 10px 0",
+    padding: "0 0 10px 0",
     color: "#C1C1CF",
     fontSize: "14px",
-  },
-  hubTitle: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: "10px 0 0 0",
-  },
-  hubDescription: {
-    fontSize: 16,
-    height: "90px",
-    padding: "10px 0 0 0",
-    // Might want to use span to apply opacity only to text
-    opacity: "0.8",
   },
   statIcon: {
     marginRight: "5px",
