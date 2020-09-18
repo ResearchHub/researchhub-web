@@ -416,6 +416,7 @@ class ReplyEntry extends React.Component {
                     onSubmit={this.submitReply}
                     initialValue={this.formatQuoteBlock()}
                     hasHeader={true}
+                    hideCount={true}
                   />
                 </div>
               </Fragment>
