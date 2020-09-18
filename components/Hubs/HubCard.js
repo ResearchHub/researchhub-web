@@ -18,6 +18,7 @@ import icons from "~/config/themes/icons";
 
 function HubCard(props) {
   let { hub } = props;
+  console.log(hub);
   return (
     <Link
       href="/hubs/[slug]"
@@ -35,8 +36,8 @@ function HubCard(props) {
             <div className={css(styles.hubTitle)}>
               <div className={css(styles.hubName)}>{hub.name}</div>
               <Button
-                isWhite={false}
-                label={"Subscribe"}
+                isWhite={hub.user_is_subscribed}
+                label={hub.user_is_subscribed ? "Subscribed" : "Subscribe"}
                 customButtonStyle={styles.subscribeButton}
                 hideRipples={true}
               />
@@ -53,7 +54,7 @@ function HubCard(props) {
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.user}</span>
-                {1} Subscribers
+                {hub.subscriber_count} Subscribers
               </div>
             </div>
           </div>
