@@ -268,9 +268,18 @@ class ReplyEntry extends React.Component {
     return this.props.reply.text;
   };
 
-  createQuoteText = () => {
-    let parentDelta = this.props.reply.text,
-      quoteText = "",
+  checkForExistingQuote = (delta) => {
+    let quoteBlock = delta.ops[1];
+    return (
+      quoteBlock &&
+      quoteBlock.insert === "\n" &&
+      quoteBlock.attributes &&
+      quoteBlock.attributes.blockquote
+    );
+  };
+
+  createQuoteText = (parentDelta) => {
+    let quoteText = "",
       maxLength = 255;
 
     for (var i = 0; i < parentDelta.ops.length; i++) {
@@ -294,27 +303,31 @@ class ReplyEntry extends React.Component {
   };
 
   formatQuoteBlock = () => {
-    let header = JSON.parse(JSON.stringify(this.props.reply.text));
+    let delta = JSON.parse(JSON.stringify(this.props.reply.text));
+    console.log("delta", delta);
+    if (delta.ops) {
+      if (this.checkForExistingQuote(delta)) {
+        delta.ops = delta.ops.slice(2); // remove existing quote (for extra nested replies)
+      }
 
-    if (header.ops) {
-      header.ops = [
+      delta.ops = [
         {
-          insert: this.createQuoteText(),
+          insert: this.createQuoteText(delta),
         },
       ];
 
-      header.ops.push({
+      delta.ops.push({
         insert: "\n",
         attributes: {
           blockquote: true,
         },
       });
-      header.ops.push({
+      delta.ops.push({
         insert: "\n",
       });
     }
 
-    return header;
+    return delta;
   };
 
   render() {
