@@ -24,10 +24,10 @@ class AddHubModal extends React.Component {
     this.initialState = {
       hubName: "",
       error: false,
-      categories: [],
     };
     this.state = {
       ...this.initialState,
+      categories: [],
     };
   }
 
@@ -55,7 +55,7 @@ class AddHubModal extends React.Component {
       if (hubImage) {
         data.append("hub_image", hubImage);
       }
-      data.append("category", parseInt(hubCategory.value));
+      data.append("category", hubCategory.value);
       return fetch(API.HUB({}), API.POST_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -119,6 +119,7 @@ class AddHubModal extends React.Component {
 
   render() {
     const { modals, openAddHubModal } = this.props;
+    console.log(this.state.categories);
     return (
       <BaseModal
         isOpen={modals.openAddHubModal}
