@@ -38,6 +38,7 @@ function HubCard(props) {
                 isWhite={hub.user_is_subscribed}
                 label={hub.user_is_subscribed ? "Subscribed" : "Subscribe"}
                 customButtonStyle={styles.subscribeButton}
+                customLabelStyle={styles.subscribeButtonLabel}
                 hideRipples={true}
               />
             </div>
@@ -67,9 +68,12 @@ function HubCard(props) {
 const styles = StyleSheet.create({
   slugLink: {
     textDecoration: "none",
-    width: "451px",
-    height: "327px",
-    margin: 25,
+    width: "364px",
+    height: "264px",
+    marginTop: 25,
+    marginBottom: 25,
+    marginLeft: 21,
+    marginRight: 21,
     transition: "transform 0.1s",
     ":hover": {
       transition: "transform 0.1s",
@@ -85,8 +89,8 @@ const styles = StyleSheet.create({
   },
   roundedImage: {
     borderRadius: "8px 8px 0 0",
-    width: "451px",
-    height: "156px",
+    width: "364px",
+    height: "128px",
     objectFit: "cover",
   },
   hubInfo: {
@@ -97,29 +101,25 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: "10px 2px 0 2px",
+    padding: "10px 0 0 0",
   },
   hubName: {
-    fontSize: 22,
+    fontSize: 18,
     textTransform: "capitalize",
     fontWeight: 500,
   },
-  button: {
-    height: 45,
-    width: 140,
+  subscribeButton: {
+    height: 20,
+    width: 75,
     border: `${colors.BLUE()} 1px solid`,
   },
-  subscribeButton: {
-    height: 23,
-    width: 95,
-    border: `${colors.BLUE()} 1px solid`,
-    position: "relative",
-    marginTop: "3px",
+  subscribeButtonLabel: {
+    fontSize: 12,
   },
   hubDescription: {
-    fontSize: 16,
-    height: "90px",
-    padding: "10px 2px 0 2px",
+    fontSize: 13,
+    height: "70px",
+    padding: "10px 0 0 0",
     // Might want to use span to apply opacity only to text
     opacity: "0.8",
   },
@@ -127,9 +127,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
-    padding: "0 0 10px 0",
+    padding: "0 0 15px 0",
     color: "#C1C1CF",
-    fontSize: "14px",
+    fontSize: "12px",
   },
   statIcon: {
     marginRight: "5px",
