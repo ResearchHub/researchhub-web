@@ -208,12 +208,15 @@ class ReplyEntry extends React.Component {
       comment,
       postReply,
       postReplyPending,
+      setMessage,
+      showMessage,
       discussionCount,
       setCount,
     } = this.props;
     let paperId = data.paper;
     let discussionThreadId = data.id;
     let commentId = comment.id;
+
     postReplyPending();
     await postReply(paperId, discussionThreadId, commentId, text, plain_text);
     if (this.props.discussion.donePosting && this.props.discussion.success) {
@@ -407,13 +410,12 @@ class ReplyEntry extends React.Component {
                     comment={true}
                     small={true}
                     calculateThreadHeight={this.calculateThreadHeight}
-                    // hideReply={true}
-                    onSubmit={this.submitReply}
                     isRemoved={this.state.removed}
                     editing={this.state.editing}
                     toggleEdit={this.state.canEdit && this.toggleEdit}
+                    onSubmit={this.submitReply}
                     initialValue={this.formatQuoteBlock()}
-                    // initialValue={body}
+                    hasHeader={true}
                   />
                 </div>
               </Fragment>
