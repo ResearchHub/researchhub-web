@@ -226,6 +226,8 @@ class Editor extends React.Component {
 
   focusEditor = () => {
     this.quillRef.focus();
+    const range = this.quillRef.getLength(); // place cursor at the end of the text
+    this.quillRef.setSelection(range + 1);
     this.setState({ focus: true });
   };
 
@@ -409,12 +411,7 @@ class Editor extends React.Component {
             {!this.props.readOnly && this.renderButtons(this.props)}
           </div>
         ) : (
-          <div
-            className={css(
-              styles.summaryEditor
-              // this.state.focus && styles.focus
-            )}
-          >
+          <div className={css(styles.summaryEditor)}>
             {ReactQuill && this.renderToolbar(this.props.uid)}
             {ReactQuill && (
               <ReactQuill
@@ -495,7 +492,7 @@ const styles = StyleSheet.create({
   summaryEditorBox: {},
   commentEditor: {
     background: "#FBFBFD",
-    border: "2px solid rgb(232, 232, 242)",
+    border: "1px solid rgb(232, 232, 242)",
     color: "#000",
     borderRadius: 4,
   },

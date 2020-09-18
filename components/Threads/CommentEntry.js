@@ -315,20 +315,16 @@ class CommentEntry extends React.Component {
     postReplyPending();
     await postReply(paperId, discussionThreadId, commentId, text, plain_text);
     if (this.props.discussion.donePosting && this.props.discussion.success) {
+      callback && callback();
       let newReply = { ...this.props.discussion.postedReply };
       newReply.highlight = true;
       let replies = [...this.state.replies, newReply];
       comment.replies = replies;
       setCount(discussionCount + 1);
-      this.setState(
-        {
-          revealReply: true,
-          replies,
-        },
-        () => {
-          callback && callback();
-        }
-      );
+      this.setState({
+        revealReply: true,
+        replies,
+      });
     } else {
       callback && callback();
     }
@@ -426,6 +422,18 @@ class CommentEntry extends React.Component {
     );
   };
 
+  onReplySubmitCallback = () => {
+    let newReply = { ...this.props.discussion.postedReply };
+    newReply.highlight = true;
+    let replies = [...this.state.replies, newReply];
+    comment.replies = replies;
+    setCount(discussionCount + 1);
+    this.setState({
+      revealReply: true,
+      replies,
+    });
+  };
+
   renderReplies = () => {
     let { data, hostname, path, discussion, comment } = this.props;
     let replies =
@@ -443,6 +451,7 @@ class CommentEntry extends React.Component {
           comment={comment}
           reply={reply}
           mobileView={this.props.mobileView}
+          onReplySubmitCallback={this.onReplySubmitCallback}
         />
       );
     });

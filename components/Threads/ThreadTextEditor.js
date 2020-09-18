@@ -23,10 +23,20 @@ class ThreadTextEditor extends React.Component {
   componentDidMount() {
     let editorState =
       this.props.initialValue && convertToEditorValue(this.props.initialValue);
-
     this.setState({
       editorState: editorState,
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.initialValue !== this.props.initialValue) {
+      let editorState =
+        this.props.initialValue &&
+        convertToEditorValue(this.props.initialValue);
+      this.setState({
+        editorState: editorState,
+      });
+    }
   }
 
   onSubmit = (content, plain_text) => {
@@ -86,6 +96,7 @@ class ThreadTextEditor extends React.Component {
             loading={this.state.loading}
             editing={this.props.editing}
             focusEditor={this.props.focusEditor}
+            initialValue={this.state.editorState}
           />
         </PermissionNotificationWrapper>
       );

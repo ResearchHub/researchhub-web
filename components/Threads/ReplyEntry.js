@@ -32,6 +32,8 @@ class ReplyEntry extends React.Component {
       // Edit
       canEdit: false,
       editing: false,
+      // Response
+      isResponse: false,
     };
     this.replyRef = null;
   }
@@ -200,6 +202,28 @@ class ReplyEntry extends React.Component {
     }
   };
 
+  submitReply = async (text, plain_text, callback) => {
+    let {
+      data,
+      comment,
+      postReply,
+      postReplyPending,
+      discussionCount,
+      setCount,
+    } = this.props;
+    let paperId = data.paper;
+    let discussionThreadId = data.id;
+    let commentId = comment.id;
+    postReplyPending();
+    await postReply(paperId, discussionThreadId, commentId, text, plain_text);
+    if (this.props.discussion.donePosting && this.props.discussion.success) {
+      callback && callback();
+      this.props.onReplySubmitCallback();
+    } else {
+      callback && callback();
+    }
+  };
+
   saveEditsReply = async (text, plain_text, callback) => {
     let {
       data,
@@ -237,13 +261,64 @@ class ReplyEntry extends React.Component {
     }
   };
 
+  formatBody = () => {
+    return this.props.reply.text;
+  };
+
+  createQuoteText = () => {
+    let parentDelta = this.props.reply.text,
+      quoteText = "",
+      maxLength = 255;
+
+    for (var i = 0; i < parentDelta.ops.length; i++) {
+      if (typeof parentDelta.ops[i].insert === "string") {
+        quoteText += parentDelta.ops[i].insert;
+      }
+    }
+
+    let trimmedText = quoteText.replace(/\n/g, " ");
+
+    if (maxLength < trimmedText.length) {
+      trimmedText = trimmedText.substr(0, maxLength + 1);
+      trimmedText =
+        trimmedText.substr(
+          0,
+          Math.min(trimmedText.length, trimmedText.lastIndexOf(" "))
+        ) + "...";
+    }
+
+    return trimmedText;
+  };
+
+  formatQuoteBlock = () => {
+    let header = JSON.parse(JSON.stringify(this.props.reply.text));
+
+    if (header.ops) {
+      header.ops = [
+        {
+          insert: this.createQuoteText(),
+        },
+      ];
+
+      header.ops.push({
+        insert: "\n",
+        attributes: {
+          blockquote: true,
+        },
+      });
+      header.ops.push({
+        insert: "\n",
+      });
+    }
+
+    return header;
+  };
+
   render() {
-    const { data, hostname, hoverEvents, path, mobileView, reply } = this.props;
-    let threadId = reply.id;
+    const { hostname, mobileView, reply } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.createdDate;
-    // let title = reply.title;
-    let body = reply.text;
+    let body = this.formatBody();
     let username = createUsername(reply);
     let metaIds = this.formatMetaData();
     const flexStyle = StyleSheet.create({
@@ -332,18 +407,23 @@ class ReplyEntry extends React.Component {
                     comment={true}
                     small={true}
                     calculateThreadHeight={this.calculateThreadHeight}
-                    hideReply={true}
+                    // hideReply={true}
+                    onSubmit={this.submitReply}
                     isRemoved={this.state.removed}
                     editing={this.state.editing}
                     toggleEdit={this.state.canEdit && this.toggleEdit}
+                    initialValue={this.formatQuoteBlock()}
+                    // initialValue={body}
                   />
                 </div>
               </Fragment>
             ) : (
               <div className={css(styles.content)}>
-                <div className={css(styles.removedText)}>
-                  Comment Removed By Moderator
-                </div>
+                {this.state.removed && (
+                  <div className={css(styles.removedText)}>
+                    Comment Removed By Moderator
+                  </div>
+                )}
               </div>
             )}
           </span>
