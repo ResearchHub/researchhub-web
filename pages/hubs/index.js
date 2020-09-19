@@ -92,7 +92,7 @@ class Index extends React.Component {
     this.setState({ hubsByCategory });
   };
 
-  renderColumn = (width) => {
+  renderCategories = (_width) => {
     const { categories } = this.state;
 
     return categories.map((category, i) => {
@@ -105,14 +105,14 @@ class Index extends React.Component {
             className={css(styles.label)}
           >{`${categoryName}`}</div>
           <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
-            {this.renderList(categoryID)}
+            {this.renderHubs(categoryID)}
           </div>
         </>
       );
     });
   };
 
-  renderList = (key) => {
+  renderHubs = (key) => {
     const { hubsByCategory } = this.state;
 
     if (!hubsByCategory[key]) {
@@ -165,7 +165,7 @@ class Index extends React.Component {
                 finishedLoading && styles.reveal
               )}
             >
-              {this.renderColumn(this.state.width)}
+              {this.renderCategories(this.state.width)}
             </div>
           </div>
         </div>
