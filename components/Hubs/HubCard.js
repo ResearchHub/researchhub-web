@@ -47,11 +47,13 @@ function HubCard(props) {
             <div className={css(styles.hubStats)}>
               <div>
                 <span className={css(styles.statIcon)}>{icons.paper}</span>
-                {1} Papers
+                {hub.paper_count} Paper
+                {hub.paper_count != 1 ? "s" : ""}
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.chat}</span>
-                {1} Discussions
+                {hub.discussion_count} Discussion
+                {hub.discussion_count != 1 ? "s" : ""}
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.user}</span>

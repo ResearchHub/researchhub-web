@@ -37,6 +37,7 @@ class Index extends React.Component {
   }
 
   componentDidMount = async () => {
+    console.log(this.props);
     const { getCategories, getHubs, showMessage, hubs } = this.props;
     showMessage({ show: true, load: true });
     if (!hubs.fetchedHubs) {
