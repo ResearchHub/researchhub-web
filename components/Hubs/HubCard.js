@@ -27,6 +27,7 @@ function HubCard(props) {
       <a className={css(styles.slugLink)}>
         <div className={css(styles.hubCard)}>
           <img
+            loading="lazy"
             className={css(styles.roundedImage)}
             src={hub.hub_image}
             alt="Hub Background Image"
