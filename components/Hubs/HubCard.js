@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     width: "364px",
     height: "128px",
     objectFit: "cover",
+    pointerEvents: "none",
   },
   hubInfo: {
     boxSizing: "border-box",

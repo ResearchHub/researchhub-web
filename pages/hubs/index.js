@@ -102,8 +102,8 @@ class Index extends React.Component {
       return (
         <>
           <div
-            name={categoryName}
-            className={css(styles.label)}
+            name={`${encodeURIComponent(categoryName)}`}
+            className={css(styles.categoryLabel)}
           >{`${categoryName}`}</div>
           <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
             {this.renderHubs(categoryID)}
@@ -155,7 +155,6 @@ class Index extends React.Component {
                 <Button
                   isWhite={true}
                   label={"Suggest a Hub"}
-                  buttonStyle={styles.button}
                   hideRipples={true}
                 />
               </PermissionNotificationWrapper>
@@ -224,7 +223,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  label: {
+  categoryLabel: {
     borderBottom: "1px solid #ededed",
     fontSize: 22,
     fontWeight: 500,
@@ -233,6 +232,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     cursor: "default",
     userSelect: "none",
+    paddingTop: 90,
+    marginTop: -90,
   },
   grid: {
     display: "flex",
