@@ -304,7 +304,6 @@ class ReplyEntry extends React.Component {
 
   formatQuoteBlock = () => {
     let delta = JSON.parse(JSON.stringify(this.props.reply.text));
-    console.log("delta", delta);
     if (delta.ops) {
       if (this.checkForExistingQuote(delta)) {
         delta.ops = delta.ops.slice(2); // remove existing quote (for extra nested replies)
