@@ -23,7 +23,10 @@ class AddHubModal extends React.Component {
     super(props);
     this.initialState = {
       hubName: "",
-      error: false,
+      error: {
+        upload: false,
+        category: null,
+      },
     };
     this.state = {
       ...this.initialState,
@@ -44,7 +47,27 @@ class AddHubModal extends React.Component {
     this.setState({ [id]: value });
   };
 
+  handleCategoryChange = (id, value) => {
+    console.log(value);
+    const error = { ...this.state.error };
+    if (value) {
+      error.category = false;
+    }
+    this.setState({ [id]: value });
+    this.setState({ error: error });
+  };
+
   createHub = async () => {
+    if (!this.state.error.categories) {
+      this.props.setMessage("Required fields must be filled.");
+      this.props.showMessage({
+        load: false,
+        show: true,
+        error: true,
+      });
+
+      return;
+    }
     this.props.showMessage({ show: true, load: true });
     const { hubName, hubDescription, hubImage, hubCategory } = this.state;
     const isUnique = await this.isHubNameUnique(hubName);
@@ -92,7 +115,9 @@ class AddHubModal extends React.Component {
         this.props.showMessage({ show: false });
         this.props.setMessage("This hub name is already taken.");
         this.props.showMessage({ show: true, error: true });
-        this.setState({ error: true });
+        const error = { ...this.state.error };
+        error.upload = true;
+        this.setState({ error: error });
         setTimeout(() => {
           this.props.showMessage({ show: false });
         }, 1200);
@@ -119,7 +144,6 @@ class AddHubModal extends React.Component {
 
   render() {
     const { modals, openAddHubModal } = this.props;
-    console.log(this.state.categories);
     return (
       <BaseModal
         isOpen={modals.openAddHubModal}
@@ -142,7 +166,7 @@ class AddHubModal extends React.Component {
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
-            inputStyle={this.state.error && styles.error}
+            inputStyle={this.state.error.upload && styles.error.upload}
             required={true}
           />
           <FormInput
@@ -152,7 +176,7 @@ class AddHubModal extends React.Component {
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
-            inputStyle={this.state.error && styles.error}
+            inputStyle={this.state.error.upload && styles.error.upload}
             required={true}
           />
           <FormSelect
@@ -165,7 +189,8 @@ class AddHubModal extends React.Component {
             isMulti={false}
             id={"hubCategory"}
             options={this.state.categories}
-            onChange={this.handleInputChange}
+            onChange={this.handleCategoryChange}
+            error={this.state.error.category}
           />
           <FormInput
             label={"Hub Image (Optional)"}
@@ -175,7 +200,7 @@ class AddHubModal extends React.Component {
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
-            inputStyle={this.state.error && styles.error}
+            inputStyle={this.state.error.upload && styles.error}
             required={false}
           />
           <div className={css(styles.button)}>
