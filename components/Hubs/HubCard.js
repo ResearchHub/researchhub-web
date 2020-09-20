@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -22,6 +22,7 @@ import icons from "~/config/themes/icons";
 class HubCard extends React.Component {
   constructor(props) {
     super(props);
+    this.linkRef = React.createRef();
     this.state = {
       transition: false,
       ...this.props.hub,
@@ -65,61 +66,68 @@ class HubCard extends React.Component {
       slug,
       discussion_count,
     } = this.state;
-
+    console.log(this.state);
     return (
-      <Link
-        href="/hubs/[slug]"
-        as={`/hubs/${encodeURIComponent(slug)}`}
-        key={`hub_${id}`}
+      <div
+        className={css(styles.slugLink)}
+        onClick={() => {
+          this.linkRef.current.click();
+        }}
       >
-        <a className={css(styles.slugLink)}>
-          <div className={css(styles.hubCard)}>
-            <img
-              loading="lazy"
-              className={css(styles.roundedImage)}
-              src={hub_image}
-              alt="Hub Background Image"
-            ></img>
-            <div key={id} className={css(styles.hubInfo)}>
-              <div className={css(styles.hubTitle)}>
-                <div className={css(styles.hubName)}>{name}</div>
-                {user_is_subscribed ? (
-                  <div className={css(styles.subscribed)}>Subscribed</div>
-                ) : (
-                  <Button
-                    isWhite={false}
-                    label={"Subscribe"}
-                    customButtonStyle={styles.subscribeButton}
-                    customLabelStyle={styles.subscribeButtonLabel}
-                    hideRipples={true}
-                    onClick={(e) => {
-                      this.subscribeToHub();
-                    }}
-                  />
-                )}
+        <div className={css(styles.hubCard)}>
+          <img
+            loading="lazy"
+            className={css(styles.roundedImage)}
+            src={hub_image}
+            alt="Hub Background Image"
+          ></img>
+          <div key={id} className={css(styles.hubInfo)}>
+            <div className={css(styles.hubTitle)}>
+              <div className={css(styles.hubName)}>{name}</div>
+              {user_is_subscribed ? (
+                <div className={css(styles.subscribed)}>Subscribed</div>
+              ) : (
+                <Button
+                  isWhite={false}
+                  label={"Subscribe"}
+                  customButtonStyle={styles.subscribeButton}
+                  customLabelStyle={styles.subscribeButtonLabel}
+                  hideRipples={true}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    this.subscribeToHub();
+                  }}
+                />
+              )}
+            </div>
+            <div className={css(styles.hubDescription)}>{description}</div>
+            <div className={css(styles.hubStats)}>
+              <div>
+                <span className={css(styles.statIcon)}>{icons.paper}</span>
+                {paper_count} Paper
+                {paper_count != 1 ? "s" : ""}
               </div>
-              <div className={css(styles.hubDescription)}>{description}</div>
-              <div className={css(styles.hubStats)}>
-                <div>
-                  <span className={css(styles.statIcon)}>{icons.paper}</span>
-                  {paper_count} Paper
-                  {paper_count != 1 ? "s" : ""}
-                </div>
-                <div>
-                  <span className={css(styles.statIcon)}>{icons.chat}</span>
-                  {discussion_count} Discussion
-                  {discussion_count != 1 ? "s" : ""}
-                </div>
-                <div>
-                  <span className={css(styles.statIcon)}>{icons.user}</span>
-                  {subscriber_count} Subscriber
-                  {subscriber_count != 1 ? "s" : ""}
-                </div>
+              <div>
+                <span className={css(styles.statIcon)}>{icons.chat}</span>
+                {discussion_count} Discussion
+                {discussion_count != 1 ? "s" : ""}
+              </div>
+              <div>
+                <span className={css(styles.statIcon)}>{icons.user}</span>
+                {subscriber_count} Subscriber
+                {subscriber_count != 1 ? "s" : ""}
               </div>
             </div>
           </div>
-        </a>
-      </Link>
+        </div>
+        <Link
+          href="/hubs/[slug]"
+          as={`/hubs/${encodeURIComponent(slug)}`}
+          key={`hub_${id}`}
+        >
+          <a ref={this.linkRef}></a>
+        </Link>
+      </div>
     );
   }
 }
@@ -138,6 +146,7 @@ const styles = StyleSheet.create({
       transition: "transform 0.1s",
       transform: "scale(1.05)",
     },
+    cursor: "pointer",
   },
   hubCard: {
     fontSize: "16px",
