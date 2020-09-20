@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -13,59 +14,114 @@ import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
 
 // Config
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-function HubCard(props) {
-  let { hub } = props;
-  return (
-    <Link
-      href="/hubs/[slug]"
-      as={`/hubs/${encodeURIComponent(hub.slug)}`}
-      key={`hub_${hub.id}`}
-    >
-      <a className={css(styles.slugLink)}>
-        <div className={css(styles.hubCard)}>
-          <img
-            loading="lazy"
-            className={css(styles.roundedImage)}
-            src={hub.hub_image}
-            alt="Hub Background Image"
-          ></img>
-          <div key={hub.id} className={css(styles.hubInfo)}>
-            <div className={css(styles.hubTitle)}>
-              <div className={css(styles.hubName)}>{hub.name}</div>
-              <Button
-                isWhite={hub.user_is_subscribed}
-                label={hub.user_is_subscribed ? "Subscribed" : "Subscribe"}
-                customButtonStyle={styles.subscribeButton}
-                customLabelStyle={styles.subscribeButtonLabel}
-                hideRipples={true}
-              />
-            </div>
-            <div className={css(styles.hubDescription)}>{hub.description}</div>
-            <div className={css(styles.hubStats)}>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.paper}</span>
-                {hub.paper_count} Paper
-                {hub.paper_count != 1 ? "s" : ""}
+class HubCard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      transition: false,
+      ...this.props.hub,
+    };
+  }
+
+  subscribeToHub = () => {
+    const { showMessage, setMessage, updateHub, hubState } = this.props;
+    showMessage({ show: false });
+    this.setState({ transition: true }, () => {
+      let config = API.POST_CONFIG();
+      return fetch(API.HUB_SUBSCRIBE({ hubId: this.state.id }), config)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          updateHub(hubState, { ...res });
+          setMessage("Subscribed!");
+          showMessage({ show: true });
+          this.setState({
+            transition: false,
+            user_is_subscribed: true,
+          });
+        })
+        .catch((err) => {
+          if (err.response.status === 429) {
+            this.props.openRecaptchaPrompt(true);
+          }
+        });
+    });
+  };
+
+  render() {
+    const {
+      description,
+      id,
+      hub_image,
+      user_is_subscribed,
+      name,
+      paper_count,
+      subscriber_count,
+      slug,
+      discussion_count,
+    } = this.state;
+
+    return (
+      <Link
+        href="/hubs/[slug]"
+        as={`/hubs/${encodeURIComponent(slug)}`}
+        key={`hub_${id}`}
+      >
+        <a className={css(styles.slugLink)}>
+          <div className={css(styles.hubCard)}>
+            <img
+              loading="lazy"
+              className={css(styles.roundedImage)}
+              src={hub_image}
+              alt="Hub Background Image"
+            ></img>
+            <div key={id} className={css(styles.hubInfo)}>
+              <div className={css(styles.hubTitle)}>
+                <div className={css(styles.hubName)}>{name}</div>
+                {user_is_subscribed ? (
+                  <div className={css(styles.subscribed)}>Subscribed</div>
+                ) : (
+                  <Button
+                    isWhite={false}
+                    label={"Subscribe"}
+                    customButtonStyle={styles.subscribeButton}
+                    customLabelStyle={styles.subscribeButtonLabel}
+                    hideRipples={true}
+                    onClick={(e) => {
+                      this.subscribeToHub();
+                    }}
+                  />
+                )}
               </div>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.chat}</span>
-                {hub.discussion_count} Discussion
-                {hub.discussion_count != 1 ? "s" : ""}
-              </div>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.user}</span>
-                {hub.subscriber_count} Subscriber
-                {hub.subscriber_count != 1 ? "s" : ""}
+              <div className={css(styles.hubDescription)}>{description}</div>
+              <div className={css(styles.hubStats)}>
+                <div>
+                  <span className={css(styles.statIcon)}>{icons.paper}</span>
+                  {paper_count} Paper
+                  {paper_count != 1 ? "s" : ""}
+                </div>
+                <div>
+                  <span className={css(styles.statIcon)}>{icons.chat}</span>
+                  {discussion_count} Discussion
+                  {discussion_count != 1 ? "s" : ""}
+                </div>
+                <div>
+                  <span className={css(styles.statIcon)}>{icons.user}</span>
+                  {subscriber_count} Subscriber
+                  {subscriber_count != 1 ? "s" : ""}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </a>
-    </Link>
-  );
+        </a>
+      </Link>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -117,6 +173,18 @@ const styles = StyleSheet.create({
     width: 75,
     border: `${colors.BLUE()} 1px solid`,
   },
+  subscribed: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 16,
+    width: 61,
+    padding: "1px 6px 1px 6px",
+    border: `${colors.BLUE()} 1px solid`,
+    color: `${colors.BLUE()}`,
+    fontSize: 13,
+    borderRadius: 5,
+  },
   subscribeButtonLabel: {
     fontSize: 12,
   },
@@ -124,7 +192,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     height: "70px",
     padding: "10px 0 0 0",
-    // Might want to use span to apply opacity only to text
     opacity: "0.8",
   },
   hubStats: {
@@ -140,4 +207,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HubCard;
+const mapStateToProps = (state) => ({
+  hubState: state.hubs,
+});
+
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+  updateHub: HubActions.updateHub,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HubCard);

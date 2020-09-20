@@ -65,7 +65,6 @@ export const HubActions = {
         .then(Helpers.parseJSON)
         .then((resp) => {
           let hubs = [...resp.results];
-          console.log(hubs);
           let hubsByCategory = shims.categorizeHubs([...hubs]);
           let hubsByAlpha = shims.sortHubs([...hubs]);
           return dispatch({
