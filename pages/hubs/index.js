@@ -39,13 +39,11 @@ class Index extends React.Component {
     if (!hubs.fetchedHubs) {
       await getHubs();
     } else {
-      setTimeout(() => {
-        this.setState({
-          hubsByAlpha: JSON.parse(JSON.stringify(hubs.hubsByAlpha)),
-          finishedLoading: true,
-        });
-        showMessage({ show: false });
-      }, 400);
+      this.setState({
+        hubsByAlpha: JSON.parse(JSON.stringify(hubs.hubsByAlpha)),
+        finishedLoading: true,
+      });
+      showMessage({ show: false });
     }
   };
 
@@ -58,17 +56,15 @@ class Index extends React.Component {
     if (prevProps.hubs.hubsByAlpha !== this.props.hubs.hubsByAlpha) {
       const { showMessage, hubs } = this.props;
       showMessage({ show: true, load: true });
-      setTimeout(() => {
-        this.setState(
-          {
-            hubsByAlpha: JSON.parse(JSON.stringify(hubs.hubsByAlpha)),
-            finishedLoading: true,
-          },
-          () => {
-            showMessage({ show: false });
-          }
-        );
-      }, 400);
+      this.setState(
+        {
+          hubsByAlpha: JSON.parse(JSON.stringify(hubs.hubsByAlpha)),
+          finishedLoading: true,
+        },
+        () => {
+          showMessage({ show: false });
+        }
+      );
     }
   }
 

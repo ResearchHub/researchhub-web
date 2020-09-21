@@ -156,6 +156,13 @@ class NewDND extends React.Component {
         );
       })
       .catch((err) => {
+        let { messageActions } = this.props;
+        if (!err.response) {
+          messageActions.setMessage(
+            "We can't find the paper from your link. Upload the PDF or use another link."
+          );
+          messageActions.showMessage({ show: true, error: true });
+        }
         if (err.response.status === 429) {
           this.props.modalActions.openRecaptchaPrompt(true);
         } else if (err.response.status === 401) {
@@ -272,25 +279,19 @@ class NewDND extends React.Component {
     }
   };
 
-  handleFileDrop = (acceptedFiles) => {
+  handleFileDrop = async (acceptedFiles) => {
     if (acceptedFiles.length < 1) {
       return this.setState({
         fileIsPdf: false,
         fileDropped: true,
       });
     }
-    this.setState({ fileLoading: true }, () => {
-      setTimeout(() => {
-        let paperMetaData = this.formatFileToPaperObj(acceptedFiles[0]);
-        this.props.handleDrop &&
-          this.props.handleDrop(acceptedFiles, paperMetaData);
-        this.setState({
-          fileLoading: false,
-          fileDropped: true,
-          fileIsPdf: true,
-        });
-        // this.searchTitle(paperMetaData.csl_item.name);
-      }, 400);
+    let paperMetaData = this.formatFileToPaperObj(acceptedFiles[0]);
+    this.props.handleDrop &&
+      this.props.handleDrop(acceptedFiles, paperMetaData);
+    this.setState({
+      fileDropped: true,
+      fileIsPdf: true,
     });
   };
 

@@ -45,16 +45,11 @@ class AddHubModal extends React.Component {
         .then(Helpers.parseJSON)
         .then((res) => {
           let newHub = res;
-          setTimeout(() => {
-            this.props.addHub && this.props.addHub(newHub);
-            this.props.showMessage({ show: false });
-            this.props.setMessage("Hub successfully added!");
-            this.props.showMessage({ show: true });
-            this.closeModal();
-            setTimeout(() => {
-              this.props.showMessage({ show: false });
-            }, 1200);
-          }, 400);
+          this.props.addHub && this.props.addHub(newHub);
+          this.props.showMessage({ show: false });
+          this.props.setMessage("Hub successfully added!");
+          this.props.showMessage({ show: true });
+          this.closeModal();
         })
         .catch((err) => {
           if (err.response.status === 429) {
@@ -62,25 +57,15 @@ class AddHubModal extends React.Component {
             this.closeModal();
             return this.props.openRecaptchaPrompt(true);
           }
-          setTimeout(() => {
-            this.props.showMessage({ show: false });
-            this.props.setMessage("Hmm something went wrong.");
-            this.props.showMessage({ show: true, error: true });
-            setTimeout(() => {
-              this.props.showMessage({ show: false });
-            }, 1200);
-          }, 400);
+          this.props.showMessage({ show: false });
+          this.props.setMessage("Hmm something went wrong.");
+          this.props.showMessage({ show: true, error: true });
         });
     } else {
-      setTimeout(() => {
-        this.props.showMessage({ show: false });
-        this.props.setMessage("This hub name is already taken.");
-        this.props.showMessage({ show: true, error: true });
-        this.setState({ error: true });
-        setTimeout(() => {
-          this.props.showMessage({ show: false });
-        }, 1200);
-      }, 400);
+      this.props.showMessage({ show: false });
+      this.props.setMessage("This hub name is already taken.");
+      this.props.showMessage({ show: true, error: true });
+      this.setState({ error: true });
     }
   };
 

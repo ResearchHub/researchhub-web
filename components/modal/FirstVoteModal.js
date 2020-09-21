@@ -31,13 +31,9 @@ const FirstVoteModal = (props) => {
       dispatch(AuthActions.getUser());
       let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
       firstTime && userHasFirstSeen();
-      setTimeout(() => {
-        toggleReveal(true);
-        setTimeout(() => {
-          toggleButton(true);
-          recycle && setRecycle(false);
-        }, 1500);
-      }, 1500);
+      toggleReveal(true);
+      toggleButton(true);
+      recycle && setRecycle(false);
     }
   }, [store.getState().modals.openFirstVoteModal]);
 
@@ -116,7 +112,7 @@ const FirstVoteModal = (props) => {
           <div className={css(styles.hyperlink)} onClick={openLinkInTab}>
             Click here to learn more about RSC.
           </div>
-          <div className={css(styles.button, showButton && styles.showButton)}>
+          <div className={css(styles.button, styles.showButton)}>
             <Button label={"Close"} onClick={closeModal} />
           </div>
         </div>
