@@ -299,7 +299,7 @@ const DiscussionTab = (props) => {
     setDiscussion(newDiscussion);
   };
 
-  const fetchDiscussionThreads = async () => {
+  const fetchDiscussionThreads = async (loadMore = false) => {
     if (
       loading ||
       formattedThreads.length >= store.getState().paper.threadCount
@@ -312,7 +312,7 @@ const DiscussionTab = (props) => {
       paperId: props.paper.id,
       paper: currentPaper,
       filter,
-      page: 1,
+      loadMore,
       twitter: showTwitterComments,
     });
     const threads = payload.payload.threads;
@@ -485,7 +485,7 @@ const DiscussionTab = (props) => {
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-          {store.getState().paper.discussion.next && !fetching && (
+          {paper.nextDiscussion && !fetching && (
             <div className={css(styles.buttonContainer)}>
               {loading ? (
                 <Loader
@@ -497,7 +497,7 @@ const DiscussionTab = (props) => {
               ) : (
                 <Ripples
                   className={css(styles.loadMoreButton)}
-                  onClick={fetchDiscussionThreads}
+                  onClick={() => fetchDiscussionThreads(true)}
                 >
                   Load More
                 </Ripples>

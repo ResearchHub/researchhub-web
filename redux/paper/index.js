@@ -108,22 +108,40 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: ({ paperId, paper, filter, page, twitter, loadMore = false }) => {
+  getThreads: ({ paperId, paper, filter, twitter, page, loadMore = false }) => {
     if (paper === null || paper === undefined) {
       return;
     }
 
-    return (dispatch) => {
+    return (dispatch, getState) => {
       let endpoint = loadMore
-        ? paper.discussion.next
-        : API.DISCUSSION({ paperId, filter, page, progress: false, twitter });
+        ? paper.nextDiscussion
+        : API.DISCUSSION({
+            paperId,
+            filter,
+            page: 1,
+            progress: false,
+            twitter,
+          });
       return fetch(endpoint, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          console.log(res);
+          const currPaper = getState().paper;
+          let discussion = { ...currPaper.discussion };
+          let source = twitter ? "twitter" : "researchhub";
+
+          let threads = shims.transformThreads(res.results);
+          discussion.source = source;
+          if (loadMore) {
+            threads = [
+              ...currPaper.threads,
+              ...shims.transformThreads(res.results),
+            ];
+          }
           // const updatedPaper = { ...paper };
           // let { discussion } = updatedPaper;
-          // let source = twitter ? "twitter" : "researchhub";
 
           // // reset the list from page 1 when filter is changed; initial set state
           // if (
@@ -148,8 +166,9 @@ export const PaperActions = {
           return dispatch({
             type: types.GET_THREADS,
             payload: {
-              threads: shims.transformThreads(res.results),
+              threads: threads,
               threadCount: res.count,
+              nextDiscussion: res.next,
             },
           });
         });
