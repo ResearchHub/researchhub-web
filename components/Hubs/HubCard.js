@@ -66,7 +66,6 @@ class HubCard extends React.Component {
       slug,
       discussion_count,
     } = this.state;
-    console.log(this.state);
     return (
       <div
         className={css(styles.slugLink)}
