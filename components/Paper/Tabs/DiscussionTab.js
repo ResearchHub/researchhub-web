@@ -46,9 +46,6 @@ const DiscussionTab = (props) => {
     discussionRef,
     getThreads,
   } = props;
-  if (doesNotExist(props.threads)) {
-    props.threads = [];
-  }
 
   // TODO: move to config
   const filterOptions = [
@@ -78,7 +75,7 @@ const DiscussionTab = (props) => {
   const [editorDormant, setEditorDormant] = useState(false);
   const [discussion, setDiscussion] = useState(initialDiscussionState);
   const [mobileView, setMobileView] = useState(false);
-  const [threads, setThreads] = useState(props.threads);
+  const [threads, setThreads] = useState([]);
   const [filter, setFilter] = useState("-score");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
