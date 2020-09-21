@@ -38,7 +38,14 @@ const DiscussionTab = (props) => {
     question: discussionScaffoldInitialValue,
   };
 
-  let { hostname, paper, calculatedCount, setCount, discussionRef } = props;
+  let {
+    hostname,
+    paper,
+    calculatedCount,
+    setCount,
+    discussionRef,
+    getThreads,
+  } = props;
   if (doesNotExist(props.threads)) {
     props.threads = [];
   }
@@ -60,11 +67,10 @@ const DiscussionTab = (props) => {
   ];
 
   const router = useRouter();
-  const dispatch = useDispatch();
   const store = useStore();
   const basePath = formatBasePath(router.asPath);
   const [formattedThreads, setFormattedThreads] = useState(
-    formatThreads(paper.discussion.threads, basePath)
+    formatThreads(paper.threads, basePath)
   );
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
@@ -79,45 +85,28 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
-  useEffect(resetThreadsEffect, [props.threads]);
+  // useEffect(resetThreadsEffect, [props.threads]);
 
-  function resetThreadsEffect() {
-    setThreads(props.threads);
-    setFormattedThreads(formatThreads(props.threads, basePath));
+  // function resetThreadsEffect() {
+  //   setThreads(props.threads);
+  //   setFormattedThreads(formatThreads(props.threads, basePath));
+  // }
+
+  function handleWindowResize() {
+    if (window.innerWidth < 436) {
+      if (!mobileView) {
+        setMobileView(true);
+      }
+    } else {
+      if (mobileView) {
+        setMobileView(false);
+      }
+    }
   }
 
   useEffect(() => {
     setFetching(true);
-    async function getThreadsByFilter() {
-      const currentPaper = store.getState().paper;
-      await dispatch(
-        PaperActions.getThreads({
-          paperId: props.paper.id,
-          paper: currentPaper,
-          filter,
-          page: 1,
-          twitter: showTwitterComments,
-        })
-      );
-      const sortedThreads = store.getState().paper.discussion.threads;
-      setThreads(sortedThreads);
-      setFormattedThreads(formatThreads(sortedThreads, basePath));
-      setFetching(false);
-    }
-    if (filter !== null) {
-      getThreadsByFilter();
-    }
-    function handleWindowResize() {
-      if (window.innerWidth < 436) {
-        if (!mobileView) {
-          setMobileView(true);
-        }
-      } else {
-        if (mobileView) {
-          setMobileView(false);
-        }
-      }
-    }
+    fetchDiscussionThreads();
     handleWindowResize();
     window.addEventListener("resize", handleWindowResize);
     return () => {
@@ -216,29 +205,32 @@ const DiscussionTab = (props) => {
     props.openAddDiscussionModal(false);
   };
 
-  const save = async (text, plain_text) => {
+  const save = (text, plain_text) => {
     let { paperId } = router.query;
     props.showMessage({ load: true, show: true });
 
     let param = {
-      // title: discussion.title,
       text: text,
       paper: paperId,
       plain_text: plain_text,
     };
 
-    let config = await API.POST_CONFIG(param);
+    let config = API.POST_CONFIG(param);
 
     return fetch(API.DISCUSSION({ paperId, twitter: null }), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        props.showMessage({ show: false });
+        props.setMessage("Successfully Saved!");
+        props.showMessage({ show: true });
         // update state & redux
         let newDiscussion = { ...resp };
         newDiscussion = thread(newDiscussion);
         setThreads([newDiscussion, ...threads]);
-        let formattedDiscussion = createFormattedDiscussion(newDiscussion);
-        setFormattedThreads([formattedDiscussion, ...formattedThreads]);
+        // let formattedDiscussion = createFormattedDiscussion(newDiscussion);
+        // setFormattedThreads([formattedDiscussion, ...formattedThreads]);
+        cancel();
 
         // amp events
         let payload = {
@@ -252,14 +244,10 @@ const DiscussionTab = (props) => {
             paper: paperId,
           },
         };
-        sendAmpEvent(payload);
-        cancel();
-        props.showMessage({ show: false });
-        props.setMessage("Successfully Saved!");
-        props.showMessage({ show: true });
         props.setCount(props.calculatedCount + 1);
         props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
-        props.getUser();
+        // props.getUser();
+        sendAmpEvent(payload);
       })
       .catch((err) => {
         if (err.response.status === 429) {
@@ -282,20 +270,20 @@ const DiscussionTab = (props) => {
   };
 
   const calculateCount = () => {
-    var count = 0;
-    var threads = paper && paper.discussion ? paper.discussion.threads : [];
-    count += paper.discussion.count; // 4
-    threads &&
-      threads.forEach((thread) => {
-        count += thread.commentCount;
-        if (thread.commentCount > 0) {
-          var comments = thread.comments;
-          comments &&
-            comments.forEach((comment) => {
-              count += comment.replyCount;
-            });
-        }
-      });
+    let count = paper.threadCount;
+    // let threads = paper && paper.threads ? paper.threads : [];
+    // count += paper.discussion.count; // 4
+    // threads &&
+    //   threads.forEach((thread) => {
+    //     count += thread.commentCount;
+    //     if (thread.commentCount > 0) {
+    //       let comments = thread.comments;
+    //       comments &&
+    //         comments.forEach((comment) => {
+    //           count += comment.replyCount;
+    //         });
+    //     }
+    //   });
     return count;
   };
 
@@ -314,25 +302,24 @@ const DiscussionTab = (props) => {
   const fetchDiscussionThreads = async () => {
     if (
       loading ||
-      formattedThreads.length >= store.getState().paper.discussion.count
+      formattedThreads.length >= store.getState().paper.threadCount
     ) {
       return;
     }
     setLoading(true);
     const currentPaper = store.getState().paper;
-    await dispatch(
-      PaperActions.getThreads({
-        paperId: props.paper.id,
-        paper: currentPaper,
-        filter,
-        twitter: showTwitterComments,
-        loadMore: true,
-      })
-    );
-    const sortedThreads = store.getState().paper.discussion.threads;
-
-    setThreads(sortedThreads);
-    setFormattedThreads(formatThreads(sortedThreads, basePath));
+    const payload = await getThreads({
+      paperId: props.paper.id,
+      paper: currentPaper,
+      filter,
+      page: 1,
+      twitter: showTwitterComments,
+    });
+    const threads = payload.payload.threads;
+    setFetching(false);
+    setLoading(false);
+    setThreads(threads);
+    setFormattedThreads(formatThreads(threads, basePath));
     setLoading(false);
   };
 
@@ -393,7 +380,6 @@ const DiscussionTab = (props) => {
               canEdit={true}
               readOnly={false}
               onChange={handleDiscussionTextEditor}
-              // hideButton={editorDormant}
               placeholder={"Leave a question or a comment"}
               initialValue={discussion.question}
               commentEditor={true}
@@ -1034,6 +1020,7 @@ const mapDispatchToProps = {
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
+  getThreads: PaperActions.getThreads,
 };
 
 export default connect(
