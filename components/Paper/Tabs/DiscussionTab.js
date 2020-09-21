@@ -228,8 +228,8 @@ const DiscussionTab = (props) => {
         let newDiscussion = { ...resp };
         newDiscussion = thread(newDiscussion);
         setThreads([newDiscussion, ...threads]);
-        // let formattedDiscussion = createFormattedDiscussion(newDiscussion);
-        // setFormattedThreads([formattedDiscussion, ...formattedThreads]);
+        let formattedDiscussion = createFormattedDiscussion(newDiscussion);
+        setFormattedThreads([formattedDiscussion, ...formattedThreads]);
         cancel();
 
         // amp events
@@ -246,7 +246,7 @@ const DiscussionTab = (props) => {
         };
         props.setCount(props.calculatedCount + 1);
         props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
-        // props.getUser();
+        props.getUser();
         sendAmpEvent(payload);
       })
       .catch((err) => {
