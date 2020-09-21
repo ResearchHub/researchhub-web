@@ -483,7 +483,6 @@ const Paper = (props) => {
               <DiscussionTab
                 hostname={hostname}
                 paperId={paperId}
-                threads={discussionThreads}
                 calculatedCount={discussionCount}
                 discussionCount={paper.discussion_count}
                 setCount={setCount}
