@@ -37,12 +37,10 @@ class UniversityInput extends React.Component {
           .then(Helpers.parseJSON)
           .then((res) => {
             let universities = [...res.results];
-            setTimeout(() => {
-              this.setState({
-                universities,
-                searching: false,
-              });
-            }, 400);
+            this.setState({
+              universities,
+              searching: false,
+            });
           });
       }
     );

@@ -111,7 +111,7 @@ class UploadPaperModal extends React.Component {
             <PaperEntryCard
               paper={paper}
               style={styles.paper}
-              onClick={() => setTimeout(this.closeModal, 400)}
+              onClick={this.closeModal}
               mobileView={this.state.mobileView}
             />
           </Ripple>

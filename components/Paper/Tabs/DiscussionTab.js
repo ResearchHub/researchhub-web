@@ -266,11 +266,9 @@ const DiscussionTab = (props) => {
           props.showMessage({ show: false });
           return props.openRecaptchaPrompt(true);
         }
-        setTimeout(() => {
-          props.showMessage({ show: false });
-          props.setMessage("Something went wrong");
-          props.showMessage({ show: true, error: true });
-        }, 800);
+        props.showMessage({ show: false });
+        props.setMessage("Something went wrong");
+        props.showMessage({ show: true, error: true });
       });
   };
 
