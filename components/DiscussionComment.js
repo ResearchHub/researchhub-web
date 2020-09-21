@@ -279,7 +279,6 @@ class CommentClass extends DiscussionComment {
   };
 
   addSubmittedReply = (reply) => {
-    // if (!doesNotExist(reply)) {
     this.props.dispatch(MessageActions.showMessage({ show: true, load: true }));
     this.setState({ highlight: true }, () => {
       this.props.dispatch(MessageActions.showMessage({ show: false }));
@@ -299,12 +298,9 @@ class CommentClass extends DiscussionComment {
         }
       );
       setTimeout(() => {
-        setTimeout(() => {
-          this.setState({ highlight: false });
-        }, 2000);
-      }, 400);
+        this.setState({ highlight: false });
+      }, 2000);
     });
-    // }
   };
 
   toggleReplies = () => {
