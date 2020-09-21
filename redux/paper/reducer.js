@@ -5,6 +5,8 @@ const defaultPaperState = {
   uploadedPaper: {},
   uploadedPaperMeta: {},
   hubs: [],
+  threads: [],
+  threadCount: 0,
   editHistory: [],
   doneFetchingPaper: false,
 };
