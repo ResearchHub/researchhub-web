@@ -25,7 +25,8 @@ class AddHubModal extends React.Component {
       hubName: "",
       error: {
         upload: false,
-        category: null,
+        category: true,
+        changed: false,
       },
     };
     this.state = {
@@ -48,7 +49,6 @@ class AddHubModal extends React.Component {
   };
 
   handleCategoryChange = (id, value) => {
-    console.log(value);
     const error = { ...this.state.error };
     if (value) {
       error.category = false;
@@ -58,13 +58,17 @@ class AddHubModal extends React.Component {
   };
 
   createHub = async () => {
-    if (!this.state.error.categories) {
+    if (this.state.error.category) {
       this.props.setMessage("Required fields must be filled.");
       this.props.showMessage({
         load: false,
         show: true,
         error: true,
       });
+      const error = { ...this.state.error };
+      error.category = true;
+      error.changed = true;
+      this.setState({ error: error });
 
       return;
     }
@@ -190,7 +194,7 @@ class AddHubModal extends React.Component {
             id={"hubCategory"}
             options={this.state.categories}
             onChange={this.handleCategoryChange}
-            error={this.state.error.category}
+            error={this.state.error.category && this.state.error.changed}
           />
           <FormInput
             label={"Hub Image (Optional)"}
