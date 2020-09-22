@@ -84,7 +84,7 @@ class CommentEntry extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.calculateThreadHeight();
+    // this.calculateThreadHeight();
     this.handleVoteTypeUpdate(prevProps);
     if (prevProps.auth !== this.props.auth) {
       let { data, comment } = this.props;
@@ -444,7 +444,7 @@ class CommentEntry extends React.Component {
           data={data}
           hostname={hostname}
           path={path}
-          key={`disc${reply.id}-${i}`}
+          key={`disc${reply.id}`}
           calculateThreadHeight={this.calculateThreadHeight}
           comment={comment}
           reply={reply}
