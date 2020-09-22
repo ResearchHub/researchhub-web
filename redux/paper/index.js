@@ -127,45 +127,31 @@ export const PaperActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          console.log(res);
-          const currPaper = getState().paper;
-          let discussion = { ...currPaper.discussion };
+          const currPaper = { ...getState().paper };
+          let { discussion } = currPaper;
           let source = twitter ? "twitter" : "researchhub";
 
-          let threads = shims.transformThreads(res.results);
-          discussion.source = source;
-          if (loadMore) {
-            threads = [
-              ...currPaper.threads,
-              ...shims.transformThreads(res.results),
-            ];
-          }
-          // const updatedPaper = { ...paper };
-          // let { discussion } = updatedPaper;
+          let threads;
 
-          // // reset the list from page 1 when filter is changed; initial set state
-          // if (
-          //   discussion.source !== source ||
-          //   discussion.filter !== filter ||
-          //   page === 1
-          // ) {
-          //   discussion.filter = filter ? filter : "-score"; // set filter
-          //   discussion.count = res.count; // set count
-          //   discussion.threads = [...res.results]; // set threads
-          //   discussion.next = res.next;
-          //   discussion.source = source;
-          // } else {
-          //   // additional pages are appended to list
-          //   discussion.threads = [
-          //     ...discussion.threads,
-          //     ...shims.transformThreads(res.results),
-          //   ];
-          //   discussion.next = res.next;
-          // }
+          if (
+            discussion.source !== source ||
+            discussion.filter !== filter ||
+            page === 1
+          ) {
+            discussion.filter = filter ? filter : "-score";
+            discussion.count = res.count;
+            discussion.next = res.next;
+            discussion.source = source;
+            threads = res.results;
+          } else {
+            threads = [...currPaper.threads, ...res.results];
+            discussion.next = res.next;
+          }
 
           return dispatch({
             type: types.GET_THREADS,
             payload: {
+              discussion: currPaper.discussion,
               threads: threads,
               threadCount: res.count,
               nextDiscussion: res.next,

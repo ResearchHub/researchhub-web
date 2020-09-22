@@ -82,12 +82,6 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
-  // useEffect(resetThreadsEffect, [props.threads]);
-
-  // function resetThreadsEffect() {
-  //   setThreads(props.threads);
-  //   setFormattedThreads(formatThreads(props.threads, basePath));
-  // }
 
   function handleWindowResize() {
     if (window.innerWidth < 436) {
@@ -102,16 +96,18 @@ const DiscussionTab = (props) => {
   }
 
   useEffect(() => {
-    setFetching(true);
-    fetchDiscussionThreads();
     handleWindowResize();
     window.addEventListener("resize", handleWindowResize);
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
+  });
+
+  useEffect(() => {
+    fetchDiscussionThreads(false, true);
   }, [filter, showTwitterComments]);
 
-  function renderThreads(threads) {
+  function renderThreads(threads = []) {
     if (!Array.isArray(threads)) {
       threads = [];
     }
@@ -223,7 +219,6 @@ const DiscussionTab = (props) => {
         props.showMessage({ show: true });
         // update state & redux
         let newDiscussion = { ...resp };
-        newDiscussion = thread(newDiscussion);
         setThreads([newDiscussion, ...threads]);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         setFormattedThreads([formattedDiscussion, ...formattedThreads]);
@@ -258,6 +253,7 @@ const DiscussionTab = (props) => {
   };
 
   const createFormattedDiscussion = (newDiscussion) => {
+    if (newDiscussion.key) return;
     let discussionObject = {
       data: newDiscussion,
       key: newDiscussion.id,
@@ -296,15 +292,15 @@ const DiscussionTab = (props) => {
     setDiscussion(newDiscussion);
   };
 
-  const fetchDiscussionThreads = async (loadMore = false) => {
-    if (
-      loading ||
-      formattedThreads.length >= store.getState().paper.threadCount
-    ) {
+  const fetchDiscussionThreads = async (loadMore = false, isFilter = false) => {
+    if (loading) {
       return;
     }
+    if (isFilter) {
+      setFetching(true);
+    }
     setLoading(true);
-    const currentPaper = store.getState().paper;
+    const currentPaper = props.paper;
     const payload = await getThreads({
       paperId: props.paper.id,
       paper: currentPaper,
@@ -317,7 +313,6 @@ const DiscussionTab = (props) => {
     setLoading(false);
     setThreads(threads);
     setFormattedThreads(formatThreads(threads, basePath));
-    setLoading(false);
   };
 
   const renderAddDiscussion = () => {
