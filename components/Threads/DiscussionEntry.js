@@ -86,7 +86,7 @@ class DiscussionEntry extends React.Component {
             : false,
       });
     }
-    this.calculateThreadHeight();
+    // this.calculateThreadHeight();
   };
 
   handleVoteTypeUpdate = (prevProps) => {
@@ -242,21 +242,6 @@ class DiscussionEntry extends React.Component {
     }
   };
 
-  formatComment = (comment) => {
-    return comment;
-    let newComment = {};
-    newComment.id = comment.id;
-    newComment.text = { ...comment.text };
-    newComment.thread = comment.thread;
-    newComment.created_by = { ...comment.createdBy };
-    newComment.created_date = comment.createdDate;
-    newComment.score = comment.score;
-    newComment.user_vote = comment.userVote;
-    newComment.replies = [...comment.replies];
-    newComment.reply_count = comment.replyCount;
-    return newComment;
-  };
-
   toggleCommentView = (e) => {
     e && e.stopPropagation();
     this.setState(
@@ -304,7 +289,7 @@ class DiscussionEntry extends React.Component {
             data={data}
             hostname={hostname}
             path={path}
-            key={`disc${comment.id}-${i}`}
+            key={`disc${comment.id}`}
             calculateThreadHeight={this.calculateThreadHeight}
             comment={comment}
             index={i}

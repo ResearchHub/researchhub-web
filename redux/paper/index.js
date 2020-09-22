@@ -127,25 +127,15 @@ export const PaperActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          const currPaper = { ...getState().paper };
-          let { discussion } = currPaper;
+          console.log(res);
+          const currPaper = getState().paper;
+          let discussion = { ...currPaper.discussion };
           let source = twitter ? "twitter" : "researchhub";
 
-          let threads;
-
-          if (
-            discussion.source !== source ||
-            discussion.filter !== filter ||
-            page === 1
-          ) {
-            discussion.filter = filter ? filter : "-score";
-            discussion.count = res.count;
-            discussion.next = res.next;
-            discussion.source = source;
-            threads = res.results;
-          } else {
+          let threads = [...res.results];
+          discussion.source = source;
+          if (loadMore) {
             threads = [...currPaper.threads, ...res.results];
-            discussion.next = res.next;
           }
 
           return dispatch({
