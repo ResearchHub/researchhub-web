@@ -36,7 +36,6 @@ class HubCard extends React.Component {
 
   componentDidUpdate = (prevProps, prevState) => {
     if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
-      console.log(2);
       fetch(API.HUB({ slug: this.props.slug }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -74,11 +73,8 @@ class HubCard extends React.Component {
   };
 
   renderSubscribe = () => {
-    console.log(3);
     const { hub } = this.props;
     if (!this.props.isLoggedIn) return;
-    // console.log(this.state);
-    // console.log(this.props)
     if (this.state.subscribed) {
       return <div className={css(styles.subscribed)}>Subscribed</div>;
     } else {
@@ -111,7 +107,11 @@ class HubCard extends React.Component {
           <img
             loading="lazy"
             className={css(styles.roundedImage)}
-            src={hub.hub_image}
+            src={
+              hub.hub_image
+                ? hub.hub_image
+                : "/static/background/facebook-og.jpg"
+            }
             alt="Hub Background Image"
           ></img>
           <div key={hub.id} className={css(styles.hubInfo)}>
