@@ -22,19 +22,40 @@ import icons from "~/config/themes/icons";
 class HubCard extends React.Component {
   constructor(props) {
     super(props);
+    console.log(1);
+    console.log(props);
     this.linkRef = React.createRef();
     this.state = {
       transition: false,
-      ...this.props.hub,
     };
   }
 
+  componentDidMount = () => {
+    this.setState({
+      subscribed: this.props.hub.user_is_subscribed,
+    });
+  };
+
+  componentDidUpdate = (prevProps, prevState) => {
+    if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
+      console.log(2);
+      fetch(API.HUB({ slug: this.props.slug }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          this.setState({
+            subscribed: res.results[0].user_is_subscribed,
+          });
+        });
+    }
+  };
+
   subscribeToHub = () => {
-    const { showMessage, setMessage, updateHub, hubState } = this.props;
+    const { hub, showMessage, setMessage, updateHub, hubState } = this.props;
     showMessage({ show: false });
     this.setState({ transition: true }, () => {
       let config = API.POST_CONFIG();
-      return fetch(API.HUB_SUBSCRIBE({ hubId: this.state.id }), config)
+      return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
@@ -43,7 +64,7 @@ class HubCard extends React.Component {
           showMessage({ show: true });
           this.setState({
             transition: false,
-            user_is_subscribed: true,
+            subscribed: true,
           });
         })
         .catch((err) => {
@@ -54,19 +75,33 @@ class HubCard extends React.Component {
     });
   };
 
+  renderSubscribe = () => {
+    console.log(3);
+    const { hub } = this.props;
+    if (!this.props.isLoggedIn) return;
+    // console.log(this.state);
+    // console.log(this.props)
+    if (this.state.subscribed) {
+      return <div className={css(styles.subscribed)}>Subscribed</div>;
+    } else {
+      return (
+        <Button
+          isWhite={false}
+          label={"Subscribe"}
+          customButtonStyle={styles.subscribeButton}
+          customLabelStyle={styles.subscribeButtonLabel}
+          hideRipples={true}
+          onClick={(e) => {
+            e.stopPropagation();
+            this.subscribeToHub();
+          }}
+        />
+      );
+    }
+  };
+
   render() {
-    const {
-      description,
-      id,
-      hub_image,
-      user_is_subscribed,
-      name,
-      paper_count,
-      subscriber_count,
-      slug,
-      discussion_count,
-    } = this.state;
-    console.log(this.state);
+    const { hub } = this.props;
     return (
       <div
         className={css(styles.slugLink)}
@@ -78,52 +113,38 @@ class HubCard extends React.Component {
           <img
             loading="lazy"
             className={css(styles.roundedImage)}
-            src={hub_image}
+            src={hub.hub_image}
             alt="Hub Background Image"
           ></img>
-          <div key={id} className={css(styles.hubInfo)}>
+          <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
-              <div className={css(styles.hubName)}>{name}</div>
-              {user_is_subscribed ? (
-                <div className={css(styles.subscribed)}>Subscribed</div>
-              ) : (
-                <Button
-                  isWhite={false}
-                  label={"Subscribe"}
-                  customButtonStyle={styles.subscribeButton}
-                  customLabelStyle={styles.subscribeButtonLabel}
-                  hideRipples={true}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    this.subscribeToHub();
-                  }}
-                />
-              )}
+              <div className={css(styles.hubName)}>{hub.name}</div>
+              {this.renderSubscribe()}
             </div>
-            <div className={css(styles.hubDescription)}>{description}</div>
+            <div className={css(styles.hubDescription)}>{hub.description}</div>
             <div className={css(styles.hubStats)}>
               <div>
                 <span className={css(styles.statIcon)}>{icons.paper}</span>
-                {paper_count} Paper
-                {paper_count != 1 ? "s" : ""}
+                {hub.paper_count} Paper
+                {hub.paper_count != 1 ? "s" : ""}
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.chat}</span>
-                {discussion_count} Discussion
-                {discussion_count != 1 ? "s" : ""}
+                {hub.discussion_count} Discussion
+                {hub.discussion_count != 1 ? "s" : ""}
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.user}</span>
-                {subscriber_count} Subscriber
-                {subscriber_count != 1 ? "s" : ""}
+                {hub.subscriber_count} Subscriber
+                {hub.subscriber_count != 1 ? "s" : ""}
               </div>
             </div>
           </div>
         </div>
         <Link
           href="/hubs/[slug]"
-          as={`/hubs/${encodeURIComponent(slug)}`}
-          key={`hub_${id}`}
+          as={`/hubs/${encodeURIComponent(hub.slug)}`}
+          key={`hub_${hub.id}`}
         >
           <a ref={this.linkRef}></a>
         </Link>
@@ -217,6 +238,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  isLoggedIn: state.auth.isLoggedIn,
   hubState: state.hubs,
 });
 
