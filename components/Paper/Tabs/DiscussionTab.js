@@ -101,7 +101,7 @@ const DiscussionTab = (props) => {
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
-  });
+  }, []);
 
   useEffect(() => {
     fetchDiscussionThreads(false, true);
@@ -126,27 +126,21 @@ const DiscussionTab = (props) => {
       );
     } else {
       if (threads.length > 0) {
-        return (
-          threads &&
-          threads.map((t, i) => {
-            if (!showTwitterComments) {
-              return (
-                <DiscussionEntry
-                  key={`${t.key}-disc`}
-                  data={t.data}
-                  hostname={hostname}
-                  hoverEvents={true}
-                  path={t.path}
-                  newCard={transition && i === 0} //conditions when a new card is made
-                  mobileView={mobileView}
-                  index={i}
-                  discussionCount={paper.threadCount}
-                  setCount={setCount}
-                />
-              );
-            }
-          })
-        );
+        return threads.map((t, i) => {
+          return (
+            <DiscussionEntry
+              key={`thread-${t.data.id}`}
+              data={t.data}
+              hostname={hostname}
+              hoverEvents={true}
+              path={t.path}
+              newCard={transition && i === 0} //conditions when a new card is made
+              mobileView={mobileView}
+              discussionCount={paper.threadCount}
+              setCount={setCount}
+            />
+          );
+        });
       } else {
         if (showTwitterComments) {
           return (
@@ -377,7 +371,6 @@ const DiscussionTab = (props) => {
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
-                    key={"discussionLoader"}
                     loading={true}
                     size={2}
                     color={"rgba(36, 31, 58, 0.5)"}
@@ -447,12 +440,7 @@ const DiscussionTab = (props) => {
           {paper.nextDiscussion && !fetching && (
             <div className={css(styles.buttonContainer)}>
               {loading ? (
-                <Loader
-                  loading={true}
-                  key={`thread-loader`}
-                  size={10}
-                  type="beat"
-                />
+                <Loader loading={true} size={10} type="beat" />
               ) : (
                 <Ripples
                   className={css(styles.loadMoreButton)}
@@ -472,7 +460,6 @@ const DiscussionTab = (props) => {
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
-                    key={"discussionLoader"}
                     loading={true}
                     size={2}
                     color={"rgba(36, 31, 58, 0.5)"}

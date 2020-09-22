@@ -127,7 +127,6 @@ export const PaperActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          console.log(res);
           const currPaper = getState().paper;
           let discussion = { ...currPaper.discussion };
           let source = twitter ? "twitter" : "researchhub";

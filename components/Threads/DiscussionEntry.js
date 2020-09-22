@@ -289,7 +289,7 @@ class DiscussionEntry extends React.Component {
             data={data}
             hostname={hostname}
             path={path}
-            key={`disc${comment.id}`}
+            key={`comment_${comment.id}`}
             calculateThreadHeight={this.calculateThreadHeight}
             comment={comment}
             index={i}
