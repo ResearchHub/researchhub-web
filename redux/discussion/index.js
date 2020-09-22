@@ -15,7 +15,7 @@ export function fetchThread(paperId, threadId) {
 
     if (response.ok) {
       const body = await response.json();
-      const thread = shims.thread(body);
+      const thread = body;
       action = actions.setThread(thread);
     } else {
       utils.logFetchError(response);
@@ -57,7 +57,7 @@ export function fetchComments(paperId, threadId, page) {
 
     if (response.ok) {
       const body = await response.json();
-      const comments = shims.comments(body);
+      const comments = body;
       comments.page = page;
       action = actions.setComments(comments);
     } else {
@@ -103,7 +103,7 @@ export function postComment(paperId, threadId, text, plain_text) {
       };
       sendAmpEvent(payload);
       const body = await response.json();
-      const comment = shims.comment(body);
+      const comment = body;
       action = actions.setPostCommentSuccess(comment);
     } else {
       utils.logFetchError(response);
@@ -131,7 +131,7 @@ export function updateComment(paperId, threadId, commentId, text, plain_text) {
 
     if (response.ok) {
       const body = await response.json();
-      const comment = shims.comment(body);
+      const comment = body;
       action = actions.setUpdateComment(comment);
     } else {
       utils.logFetchError(response);
@@ -152,7 +152,7 @@ export function fetchReplies(paperId, threadId, commentId, page) {
 
     if (response.ok) {
       const body = await response.json();
-      const replies = shims.replies(body);
+      const replies = body;
       replies.page = page;
       action = actions.setReplies(replie);
     } else {
@@ -199,7 +199,7 @@ export function postReply(paperId, threadId, commentId, text, plain_text) {
       };
       sendAmpEvent(payload);
       const body = await response.json();
-      const reply = shims.reply(body);
+      const reply = body;
       action = actions.setPostReplySuccess(reply);
     } else {
       utils.logFetchError(response);
@@ -234,7 +234,7 @@ export function updateReply(
 
     if (response.ok) {
       const body = await response.json();
-      const reply = shims.reply(body);
+      const reply = body;
       action = actions.setUpdateReply(reply);
     } else {
       utils.logFetchError(response);

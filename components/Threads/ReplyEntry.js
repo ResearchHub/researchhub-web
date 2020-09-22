@@ -45,16 +45,15 @@ class ReplyEntry extends React.Component {
       "voteType",
     ]);
     const score = this.props.reply.score;
-
     this.setState(
       {
         score,
         selectedVoteType,
         highlight: this.props.reply.highlight && true,
-        removed: this.props.reply.isRemoved,
+        removed: this.props.reply.is_removed,
         canEdit:
           this.props.auth &&
-          this.props.auth.user.id === this.props.reply.createdBy.id,
+          this.props.auth.user.id === this.props.reply.created_by.id,
       },
       () => {
         setTimeout(() => this.calculateThreadHeight(), 400);
@@ -70,7 +69,6 @@ class ReplyEntry extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.calculateThreadHeight();
     if (prevProps.auth !== this.props.auth) {
       let { auth, reply } = this.props;
       this.setState({
@@ -332,7 +330,7 @@ class ReplyEntry extends React.Component {
   render() {
     const { hostname, mobileView, reply } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
-    let date = reply.createdDate;
+    let date = reply.created_date;
     let body = this.formatBody();
     let username = createUsername(reply);
     let metaIds = this.formatMetaData();
@@ -386,8 +384,8 @@ class ReplyEntry extends React.Component {
               <div className={css(styles.row, styles.topbar)}>
                 <DiscussionPostMetadata
                   authorProfile={getNestedValue(reply, [
-                    "createdBy",
-                    "authorProfile",
+                    "created_by",
+                    "author_profile",
                   ])}
                   username={username}
                   date={date}
