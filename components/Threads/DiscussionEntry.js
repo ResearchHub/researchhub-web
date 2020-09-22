@@ -400,7 +400,7 @@ class DiscussionEntry extends React.Component {
     let date = data.created_date;
     let title = data.title;
     let body = data.source === "twitter" ? data.plain_text : data.text;
-    let username = data.createdBy ? createUsername(data) : "";
+    let username = data.created_by ? createUsername(data) : "";
     let metaData = {
       threadId: data.id,
       paperId: data.paper,
