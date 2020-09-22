@@ -130,39 +130,20 @@ const DiscussionTab = (props) => {
           threads &&
           threads.map((t, i) => {
             if (!showTwitterComments) {
-              if (t.data.source !== "twitter") {
-                return (
-                  <DiscussionEntry
-                    key={`${t.key}-disc${i}`}
-                    data={t.data}
-                    hostname={hostname}
-                    hoverEvents={true}
-                    path={t.path}
-                    newCard={transition && i === 0} //conditions when a new card is made
-                    mobileView={mobileView}
-                    index={i}
-                    discussionCount={props.calculatedCount}
-                    setCount={setCount}
-                  />
-                );
-              }
-            } else {
-              if (t.data.source === "twitter") {
-                return (
-                  <DiscussionEntry
-                    key={`${t.key}-disc${i}`}
-                    data={t.data}
-                    hostname={hostname}
-                    hoverEvents={true}
-                    path={t.path}
-                    newCard={transition && i === 0} //conditions when a new card is made
-                    mobileView={mobileView}
-                    index={i}
-                    discussionCount={props.calculatedCount}
-                    setCount={setCount}
-                  />
-                );
-              }
+              return (
+                <DiscussionEntry
+                  key={`${t.key}-disc`}
+                  data={t.data}
+                  hostname={hostname}
+                  hoverEvents={true}
+                  path={t.path}
+                  newCard={transition && i === 0} //conditions when a new card is made
+                  mobileView={mobileView}
+                  index={i}
+                  discussionCount={paper.threadCount}
+                  setCount={setCount}
+                />
+              );
             }
           })
         );
@@ -264,19 +245,6 @@ const DiscussionTab = (props) => {
 
   const calculateCount = () => {
     let count = paper.threadCount;
-    // let threads = paper && paper.threads ? paper.threads : [];
-    // count += paper.discussion.count; // 4
-    // threads &&
-    //   threads.forEach((thread) => {
-    //     count += thread.commentCount;
-    //     if (thread.commentCount > 0) {
-    //       let comments = thread.comments;
-    //       comments &&
-    //         comments.forEach((comment) => {
-    //           count += comment.replyCount;
-    //         });
-    //     }
-    //   });
     return count;
   };
 
@@ -402,7 +370,6 @@ const DiscussionTab = (props) => {
             styles.threadsContainer,
             styles.discussionThreadContainer
           )}
-          ref={discussionRef}
         >
           <div className={css(styles.header)}>
             <h3 className={css(styles.discussionTitle)}>
@@ -498,10 +465,7 @@ const DiscussionTab = (props) => {
           )}
         </div>
       ) : (
-        <div
-          className={css(styles.addDiscussionContainer, styles.emptyState)}
-          ref={discussionRef}
-        >
+        <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
           <div className={css(styles.header)}>
             <div className={css(styles.discussionTitle)}>
               Comments
