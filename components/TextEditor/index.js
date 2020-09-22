@@ -74,8 +74,7 @@ const TextEditor = (props) => {
     }
   }
 
-  async function submit(content, plain_text, callback) {
-    let success = false;
+  function submit(content, plain_text, callback) {
     if (!isLoggedIn) {
       openLoginModal(true, "Please Sign in with Google to continue.");
     } else {
@@ -84,8 +83,8 @@ const TextEditor = (props) => {
         return props.showMessage({ error: true, show: true, clickoff: true });
       }
 
-      onSubmit && (success = await onSubmit(content, plain_text, callback));
-      if (success && clearOnSubmit) {
+      onSubmit && onSubmit(content, plain_text, callback);
+      if (clearOnSubmit) {
         callback();
       }
     }

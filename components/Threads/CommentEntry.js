@@ -68,7 +68,7 @@ class CommentEntry extends React.Component {
           this.props.comment.source === "twitter"
             ? false
             : this.props.auth &&
-              this.props.auth.user.id === this.props.comment.createdBy.id,
+              this.props.auth.user.id === this.props.comment.created_by.id,
       },
       () => {
         setTimeout(() => this.calculateThreadHeight(), 400);
@@ -84,7 +84,7 @@ class CommentEntry extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.calculateThreadHeight();
+    // this.calculateThreadHeight();
     this.handleVoteTypeUpdate(prevProps);
     if (prevProps.auth !== this.props.auth) {
       let { data, comment } = this.props;
@@ -92,7 +92,7 @@ class CommentEntry extends React.Component {
         canEdit:
           this.props.comment.source === "twitter"
             ? false
-            : this.props.auth.user.id === comment.createdBy.id,
+            : this.props.auth.user.id === comment.created_by.id,
       });
     }
   }
@@ -192,10 +192,7 @@ class CommentEntry extends React.Component {
           .then(Helpers.parseJSON)
           .then((res) => {
             this.setState({
-              replies: [
-                ...this.state.replies,
-                ...transformReplies(res.results),
-              ],
+              replies: [...this.state.replies, ...res.results],
               page: this.state.page + 1,
               fetching: false,
             });
@@ -370,7 +367,7 @@ class CommentEntry extends React.Component {
       threadId: data.id,
       commentId: comment.id,
       paperId: data.paper,
-      comment: comment.userFlag,
+      comment: comment.user_flag,
     };
   };
 
@@ -447,7 +444,7 @@ class CommentEntry extends React.Component {
           data={data}
           hostname={hostname}
           path={path}
-          key={`disc${reply.id}-${i}`}
+          key={`disc${reply.id}`}
           calculateThreadHeight={this.calculateThreadHeight}
           comment={comment}
           reply={reply}
@@ -469,11 +466,11 @@ class CommentEntry extends React.Component {
     } = this.props;
     let threadId = comment.id;
     let commentCount =
-      this.state.replies.length > comment.replyCount
+      this.state.replies.length > comment.reply_count
         ? this.state.replies.length
-        : comment.replyCount;
-    let date = comment.createdDate;
-    let body = comment.source === "twitter" ? comment.plainText : comment.text;
+        : comment.reply_count;
+    let date = comment.created_date;
+    let body = comment.source === "twitter" ? comment.plain_text : comment.text;
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
 
@@ -519,8 +516,8 @@ class CommentEntry extends React.Component {
               <div className={css(styles.row, styles.topbar)}>
                 <DiscussionPostMetadata
                   authorProfile={getNestedValue(comment, [
-                    "createdBy",
-                    "authorProfile",
+                    "created_by",
+                    "author_profile",
                   ])}
                   username={username}
                   date={date}

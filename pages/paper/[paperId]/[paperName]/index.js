@@ -206,7 +206,7 @@ const Paper = (props) => {
 
   useEffect(() => {
     checkUserVote();
-  }, [props.auth.isLoggedIn, props.auth.user]);
+  }, [props.auth.isLoggedIn]);
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
@@ -483,7 +483,6 @@ const Paper = (props) => {
               <DiscussionTab
                 hostname={hostname}
                 paperId={paperId}
-                threads={discussionThreads}
                 calculatedCount={discussionCount}
                 discussionCount={paper.discussion_count}
                 setCount={setCount}
