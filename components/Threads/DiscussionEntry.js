@@ -20,7 +20,6 @@ import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
-import { transformComments } from "~/redux/paper/shims";
 import { createUsername } from "../../config/utils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
@@ -59,10 +58,10 @@ class DiscussionEntry extends React.Component {
         selectedVoteType,
         revealComment: comments.length > 0 && comments.length < 6,
         highlight: newCard,
-        removed: this.props.data.isRemoved,
+        removed: this.props.data.is_removed,
         canEdit:
           data.source !== "twitter"
-            ? this.props.auth.user.id === data.createdBy.id
+            ? this.props.auth.user.id === data.created_by.id
             : false,
       },
       () => {
@@ -83,7 +82,7 @@ class DiscussionEntry extends React.Component {
       this.setState({
         canEdit:
           data.source !== "twitter"
-            ? this.props.auth.user.id === data.createdBy.id
+            ? this.props.auth.user.id === data.created_by.id
             : false,
       });
     }
@@ -150,10 +149,7 @@ class DiscussionEntry extends React.Component {
           .then(Helpers.parseJSON)
           .then((res) => {
             this.setState({
-              comments: [
-                ...this.state.comments,
-                ...transformComments(res.results),
-              ],
+              comments: [...this.state.comments, ...res.results],
               page: this.state.page + 1,
               fetching: false,
             });
@@ -247,6 +243,7 @@ class DiscussionEntry extends React.Component {
   };
 
   formatComment = (comment) => {
+    return comment;
     let newComment = {};
     newComment.id = comment.id;
     newComment.text = { ...comment.text };
@@ -412,17 +409,17 @@ class DiscussionEntry extends React.Component {
   render() {
     const { data, hostname, path, mobileView } = this.props;
     let commentCount =
-      this.state.comments.length > data.commentCount
+      this.state.comments.length > data.comment_count
         ? this.state.comments.length
-        : data.commentCount;
-    let date = data.createdDate;
+        : data.comment_count;
+    let date = data.created_date;
     let title = data.title;
-    let body = data.source === "twitter" ? data.plainText : data.text;
+    let body = data.source === "twitter" ? data.plain_text : data.text;
     let username = data.createdBy ? createUsername(data) : "";
     let metaData = {
       threadId: data.id,
       paperId: data.paper,
-      userFlag: data.userFlag,
+      userFlag: data.user_flag,
     };
 
     return (
@@ -470,7 +467,11 @@ class DiscussionEntry extends React.Component {
                   <DiscussionPostMetadata
                     authorProfile={
                       data &&
-                      getNestedValue(data, ["createdBy", "authorProfile"], null)
+                      getNestedValue(
+                        data,
+                        ["created_by", "author_profile"],
+                        null
+                      )
                     }
                     username={username}
                     date={date}

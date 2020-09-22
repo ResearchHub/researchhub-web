@@ -206,7 +206,7 @@ const Paper = (props) => {
 
   useEffect(() => {
     checkUserVote();
-  }, [props.auth.isLoggedIn, props.auth.user]);
+  }, [props.auth.isLoggedIn]);
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
