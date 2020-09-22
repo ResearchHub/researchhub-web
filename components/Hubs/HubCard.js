@@ -22,8 +22,6 @@ import icons from "~/config/themes/icons";
 class HubCard extends React.Component {
   constructor(props) {
     super(props);
-    console.log(1);
-    console.log(props);
     this.linkRef = React.createRef();
     this.state = {
       transition: false,
