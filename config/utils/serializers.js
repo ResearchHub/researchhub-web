@@ -6,9 +6,9 @@ import ModalImage from "react-modal-image";
 import QuillToPlaintext from "quill-to-plaintext";
 import { css, StyleSheet } from "aphrodite";
 
-export function createUsername({ createdBy }) {
-  if (createdBy) {
-    const { first_name, last_name } = createdBy.authorProfile;
+export function createUsername({ created_by }) {
+  if (created_by) {
+    const { first_name, last_name } = created_by.author_profile;
     return `${first_name} ${last_name}`;
   }
   return null;
@@ -35,6 +35,9 @@ export function convertToEditorValue(text) {
 }
 
 export function convertToEditorToHTML(text) {
+  if (!text) {
+    return null;
+  }
   if (isQuillDelta(text)) {
     return text;
   }
