@@ -45,7 +45,6 @@ class ReplyEntry extends React.Component {
       "voteType",
     ]);
     const score = this.props.reply.score;
-    console.log("propsREPLIES", this.props);
     this.setState(
       {
         score,
@@ -70,7 +69,6 @@ class ReplyEntry extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.calculateThreadHeight();
     if (prevProps.auth !== this.props.auth) {
       let { auth, reply } = this.props;
       this.setState({

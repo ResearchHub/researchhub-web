@@ -35,6 +35,9 @@ export function convertToEditorValue(text) {
 }
 
 export function convertToEditorToHTML(text) {
+  if (!text) {
+    return null;
+  }
   if (isQuillDelta(text)) {
     return text;
   }
