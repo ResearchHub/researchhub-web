@@ -47,14 +47,12 @@ class Index extends React.Component {
         this.setState({ hubsByCategory: action.payload.hubsByCategory });
       });
     } else {
-      setTimeout(() => {
-        this.setState({
-          categories: JSON.parse(JSON.stringify(hubs.categories)),
-          hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
-          finishedLoading: true,
-        });
-        showMessage({ show: false });
-      }, 400);
+      this.setState({
+        categories: JSON.parse(JSON.stringify(hubs.categories)),
+        hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
+        finishedLoading: true,
+      });
+      showMessage({ show: false });
     }
   };
 
@@ -62,17 +60,15 @@ class Index extends React.Component {
     if (prevProps.hubs.hubsByCategory !== this.props.hubs.hubsByCategory) {
       const { showMessage, hubs } = this.props;
       showMessage({ show: true, load: true });
-      setTimeout(() => {
-        this.setState(
-          {
-            hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
-            finishedLoading: true,
-          },
-          () => {
-            showMessage({ show: false });
-          }
-        );
-      }, 400);
+      this.setState(
+        {
+          hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
+          finishedLoading: true,
+        },
+        () => {
+          showMessage({ show: false });
+        }
+      );
     }
   }
 
