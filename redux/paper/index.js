@@ -108,47 +108,42 @@ export const PaperActions = {
         });
     };
   },
-  getThreads: ({ paperId, paper, filter, page, twitter, loadMore = false }) => {
+  getThreads: ({ paperId, paper, filter, twitter, page, loadMore = false }) => {
     if (paper === null || paper === undefined) {
       return;
     }
 
-    return (dispatch) => {
+    return (dispatch, getState) => {
       let endpoint = loadMore
-        ? paper.discussion.next
-        : API.DISCUSSION({ paperId, filter, page, progress: false, twitter });
+        ? paper.nextDiscussion
+        : API.DISCUSSION({
+            paperId,
+            filter,
+            page: 1,
+            progress: false,
+            twitter,
+          });
       return fetch(endpoint, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          const updatedPaper = { ...paper };
-          let { discussion } = updatedPaper;
+          const currPaper = getState().paper;
+          let discussion = { ...currPaper.discussion };
           let source = twitter ? "twitter" : "researchhub";
 
-          // reset the list from page 1 when filter is changed; initial set state
-          if (
-            discussion.source !== source ||
-            discussion.filter !== filter ||
-            page === 1
-          ) {
-            discussion.filter = filter ? filter : "-score"; // set filter
-            discussion.count = res.count; // set count
-            discussion.threads = [...res.results]; // set threads
-            discussion.next = res.next;
-            discussion.source = source;
-          } else {
-            // additional pages are appended to list
-            discussion.threads = [
-              ...discussion.threads,
-              ...shims.transformThreads(res.results),
-            ];
-            discussion.next = res.next;
+          let threads = [...res.results];
+          discussion.source = source;
+          if (loadMore) {
+            threads = [...currPaper.threads, ...res.results];
           }
 
           return dispatch({
             type: types.GET_THREADS,
             payload: {
-              ...shims.paper(updatedPaper),
+              discussion: currPaper.discussion,
+              threads: threads,
+              threadCount: res.count,
+              nextDiscussion: res.next,
             },
           });
         });
