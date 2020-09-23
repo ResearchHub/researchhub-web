@@ -25,10 +25,6 @@ class CategoryList extends React.Component {
         this.props.categories && this.props.categories.results
           ? this.props.categories.results
           : [],
-      hubs:
-        this.props.initialHubList && this.props.initialHubList.results
-          ? this.props.initialHubList.results
-          : [],
       reveal: true,
     };
   }
@@ -38,34 +34,11 @@ class CategoryList extends React.Component {
     if (this.props.categories) {
       this.setState({ categories: [...this.props.categories] });
     }
-
-    if (this.props.hubs.length) {
-      this.setState({ hubs: [...this.props.hubs] });
-    }
-
-    if (auth.isLoggedIn) {
-      this.updateTopHubs();
-    }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.current !== this.props.current) {
-      this.setState({
-        categories: this.props.categories,
-        hubs: this.props.hubs,
-      });
-    }
     if (prevProps.categories !== this.props.categories) {
       this.setState({ categories: [...this.props.categories] });
-    }
-    if (prevProps.hubs !== this.props.hubs) {
-      this.setState({ hubs: [...this.props.hubs] });
-    }
-    if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
-      this.updateTopHubs();
-    }
-    if (prevProps.auth.user !== this.props.auth.user) {
-      this.updateTopHubs();
     }
   }
 
@@ -74,67 +47,27 @@ class CategoryList extends React.Component {
     this.setState({ reveal: false });
   }
 
-  fetchHubs = async () => {
-    if (!this.props.hubs.length > 0) {
-      await this.props.getTopHubs(this.props.auth);
-    }
-    this.setState({ hubs: this.props.hubs }, () => {
-      this.revealTransition();
-    });
-  };
-
-  isCurrentHub(current, hubId) {
-    if (current && current.id) {
-      return hubId === current.id;
-    }
-  }
-
-  updateTopHubs = (state) => {
-    if (this.props.auth.isLoggedIn) {
-      let subscribedHubs = {};
-
-      let subscribed = this.props.auth.user.subscribed
-        ? this.props.auth.user.subscribed
-        : [];
-      subscribed.forEach((hub) => {
-        subscribedHubs[hub.id] = true;
-      });
-
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        if (subscribedHubs[hub.id]) {
-          hub.user_is_subscribed = true;
-        }
-        return hub;
-      });
-
-      this.props.updateTopHubs(updatedTopHubs);
-    } else {
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        hub.user_is_subscribed = false;
-        return hub;
-      });
-
-      this.props.updateTopHubs(updatedTopHubs);
-    }
-  };
-
   revealTransition = () => {
     setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
   };
 
-  renderHubEntry = () => {
+  renderCategoryEntry = () => {
     let categories = this.state.categories;
     return categories.map((category, i) => {
       let { category_name } = category;
+      let slug = category_name.toLowerCase().replace(/\s/g, "-");
       return (
-        <Ripples className={css(styles.hubEntry)} key={`${category_name}-${i}`}>
+        <Ripples
+          className={css(styles.categoryEntry)}
+          key={`${category_name}-${i}`}
+        >
           <Link
             href={{
-              pathname: "/hubs#${encodeURIComponent(category_name)}",
+              pathname: "/hubs#${slug}",
             }}
-            as={`/hubs#${encodeURIComponent(category_name)}`}
+            as={`/hubs#${slug}`}
           >
-            <a className={css(styles.hubLink)}>{category_name}</a>
+            <a className={css(styles.categoryLink)}>{category_name}</a>
           </Link>
         </Ripples>
       );
@@ -145,15 +78,18 @@ class CategoryList extends React.Component {
     let { overrideStyle } = this.props;
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
-        <div className={css(styles.hubsListContainer)}>
-          <div className={css(styles.listLabel)} id={"hubListTitle"}>
+        <div className={css(styles.categoryListContainer)}>
+          <div className={css(styles.listLabel)} id={"categoryListTitle"}>
             Categories
           </div>
           <div
-            className={css(styles.hubsList, this.state.reveal && styles.reveal)}
+            className={css(
+              styles.categoryList,
+              this.state.reveal && styles.reveal
+            )}
           >
             {this.state.categories.length > 0 ? (
-              this.renderHubEntry()
+              this.renderCategoryEntry()
             ) : (
               <Fragment>
                 <ReactPlaceholder
@@ -175,7 +111,7 @@ class CategoryList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     // width: "calc(100% * .625)",
-    width: "100%",
+    position: "fixed",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -183,7 +119,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 30,
   },
-  hubsListContainer: {
+  categoryListContainer: {
     height: "100%",
     width: "100%",
     display: "flex",
@@ -192,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "left",
     cursor: "default",
-    ":hover #hubListTitle": {
+    ":hover #categoryListTitle": {
       color: colors.BLACK(),
     },
   },
@@ -220,7 +156,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     fontSize: 13,
   },
-  hubEntry: {
+  categoryEntry: {
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
@@ -238,7 +174,7 @@ const styles = StyleSheet.create({
       backgroundColor: "#FAFAFA",
     },
   },
-  hubLink: {
+  categoryLink: {
     textDecoration: "none",
     color: "#111",
     width: "100%",
@@ -254,15 +190,14 @@ const styles = StyleSheet.create({
       backgroundColor: "#EAEAEA",
     },
   },
-  hubsList: {
+  categoryList: {
     opacity: 0,
-    width: "90%",
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    padding: "0px 20px",
+    padding: "0px 30px",
   },
   reveal: {
     opacity: 1,
@@ -271,38 +206,11 @@ const styles = StyleSheet.create({
   space: {
     height: 10,
   },
-  subscribedIcon: {
-    marginLeft: "auto",
-    color: colors.DARK_YELLOW(),
-    fontSize: 11,
-  },
-  link: {
-    textDecoration: "none",
-    color: "rgba(78, 83, 255)",
-    fontWeight: 300,
-    textTransform: "capitalize",
-    fontSize: 16,
-    padding: "3px 5px",
-    ":hover": {
-      color: "rgba(78, 83, 255, .5)",
-      textDecoration: "underline",
-    },
-  },
 });
 
 const mapStateToProps = (state) => ({
   categories: state.hubs.categories,
-  hubs: state.hubs.topHubs,
   auth: state.auth,
 });
 
-const mapDispatchToProps = {
-  updateCurrentHubPage: HubActions.updateCurrentHubPage,
-  getTopHubs: HubActions.getTopHubs,
-  updateTopHubs: HubActions.updateTopHubs,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CategoryList);
+export default connect(mapStateToProps)(CategoryList);

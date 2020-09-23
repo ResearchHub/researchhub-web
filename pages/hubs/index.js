@@ -98,10 +98,11 @@ class Index extends React.Component {
     return categories.map((category, i) => {
       let categoryID = category.id;
       let categoryName = category.category_name;
+      let slug = categoryName.toLowerCase().replace(/\s/g, "-");
       return (
         <>
           <div
-            name={`${encodeURIComponent(categoryName)}`}
+            name={`${slug}`}
             className={css(styles.categoryLabel)}
           >{`${categoryName}`}</div>
           <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
