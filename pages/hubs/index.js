@@ -243,6 +243,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     marginBottom: 40,
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "center",
+    },
   },
 });
 
