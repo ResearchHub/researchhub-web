@@ -6,6 +6,7 @@ import Link from "next/link";
 // Component
 import Loader from "~/components/Loader/Loader";
 import Button from "../Form/Button";
+import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -18,6 +19,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import EditHubModal from "../modal/EditHubModal";
 
 class HubCard extends React.Component {
   constructor(props) {
@@ -94,59 +96,76 @@ class HubCard extends React.Component {
     }
   };
 
+  openEditHubModal = () => {
+    console.log(this.props.hub);
+    this.props.openEditHubModal(true, this.props.hub);
+  };
+
   render() {
     const { hub } = this.props;
     return (
-      <div
-        className={css(styles.slugLink)}
-        onClick={() => {
-          this.linkRef.current.click();
-        }}
-      >
-        <div className={css(styles.hubCard)}>
-          <img
-            loading="lazy"
-            className={css(styles.roundedImage)}
-            src={
-              hub.hub_image
-                ? hub.hub_image
-                : "/static/background/facebook-og.jpg"
-            }
-            alt="Hub Background Image"
-          ></img>
-          <div key={hub.id} className={css(styles.hubInfo)}>
-            <div className={css(styles.hubTitle)}>
-              <div className={css(styles.hubName)}>{hub.name}</div>
-              {this.renderSubscribe()}
-            </div>
-            <div className={css(styles.hubDescription)}>{hub.description}</div>
-            <div className={css(styles.hubStats)}>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.paper}</span>
-                {hub.paper_count} Paper
-                {hub.paper_count != 1 ? "s" : ""}
+      <>
+        <EditHubModal />
+        <PermissionNotificationWrapper
+          modalMessage="Edit the Hub"
+          loginRequired={true}
+          onClick={this.openEditHubModal}
+        >
+          <Button isWhite={true} label={"Edit the Hub"} hideRipples={true} />
+        </PermissionNotificationWrapper>
+        <div
+          className={css(styles.slugLink)}
+          onClick={() => {
+            this.linkRef.current.click();
+          }}
+        >
+          <div className={css(styles.hubCard)}>
+            <img
+              loading="lazy"
+              className={css(styles.roundedImage)}
+              src={
+                hub.hub_image
+                  ? hub.hub_image
+                  : "/static/background/facebook-og.jpg"
+              }
+              alt="Hub Background Image"
+            ></img>
+            <div key={hub.id} className={css(styles.hubInfo)}>
+              <div className={css(styles.hubTitle)}>
+                <div className={css(styles.hubName)}>{hub.name}</div>
+                {this.renderSubscribe()}
               </div>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.chat}</span>
-                {hub.discussion_count} Discussion
-                {hub.discussion_count != 1 ? "s" : ""}
+              <div className={css(styles.hubDescription)}>
+                {hub.description}
               </div>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.user}</span>
-                {hub.subscriber_count} Subscriber
-                {hub.subscriber_count != 1 ? "s" : ""}
+              <div className={css(styles.hubStats)}>
+                <div>
+                  <span className={css(styles.statIcon)}>{icons.paper}</span>
+                  {hub.paper_count} Paper
+                  {hub.paper_count != 1 ? "s" : ""}
+                </div>
+                <div>
+                  <span className={css(styles.statIcon)}>{icons.chat}</span>
+                  {hub.discussion_count} Discussion
+                  {hub.discussion_count != 1 ? "s" : ""}
+                </div>
+                <div>
+                  <span className={css(styles.statIcon)}>{icons.user}</span>
+                  {hub.subscriber_count} Subscriber
+                  {hub.subscriber_count != 1 ? "s" : ""}
+                </div>
               </div>
             </div>
           </div>
+          <Link
+            href="/hubs/[slug]"
+            as={`/hubs/${encodeURIComponent(hub.slug)}`}
+            key={`hub_${hub.id}`}
+          >
+            <a ref={this.linkRef}></a>
+          </Link>
         </div>
-        <Link
-          href="/hubs/[slug]"
-          as={`/hubs/${encodeURIComponent(hub.slug)}`}
-          key={`hub_${hub.id}`}
-        >
-          <a ref={this.linkRef}></a>
-        </Link>
-      </div>
+      </>
     );
   }
 }
@@ -244,6 +263,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   updateHub: HubActions.updateHub,
+  openEditHubModal: ModalActions.openEditHubModal,
 };
 
 export default connect(
