@@ -128,9 +128,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "left",
     cursor: "default",
-    ":hover #categoryListTitle": {
-      color: colors.BLACK(),
-    },
   },
   text: {
     fontFamily: "Roboto",
@@ -147,9 +144,6 @@ const styles = StyleSheet.create({
     width: "90%",
     paddingLeft: 25,
     boxSizing: "border-box",
-    ":hover": {
-      color: colors.BLACK(),
-    },
   },
   topIcon: {
     color: colors.RED(),
