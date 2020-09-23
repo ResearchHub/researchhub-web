@@ -40,9 +40,7 @@ const ActionButton = (props) => {
   }
 
   const paperPageDeleteCallback = () => {
-    setTimeout(() => {
-      Router.back();
-    }, 2000);
+    Router.back();
   };
 
   if (isModerator) {

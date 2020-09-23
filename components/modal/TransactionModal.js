@@ -402,22 +402,18 @@ class TransactionModal extends React.Component {
         .then((res) => {
           let { id, paid_status, transaction_hash } = res;
           if (paid_status === "failed") {
-            setTimeout(() => {
-              showMessage({ show: false });
-              setMessage(
-                "Your transaction request has failed. \n Please try again later."
-              );
-              showMessage({ show: true, error: true });
-            }, 400);
+            showMessage({ show: false });
+            setMessage(
+              "Your transaction request has failed. \n Please try again later."
+            );
+            showMessage({ show: true, error: true });
           } else {
-            setTimeout(() => {
-              showMessage({ show: false });
-              setMessage("Your transaction request has been made.");
-              showMessage({ show: true });
-              this.setState({ transactionHash: true }, () => {
-                this.getBalance();
-              });
-            }, 400);
+            showMessage({ show: false });
+            setMessage("Your transaction request has been made.");
+            showMessage({ show: true });
+            this.setState({ transactionHash: true }, () => {
+              this.getBalance();
+            });
           }
         })
         .catch((err) => {
@@ -427,11 +423,9 @@ class TransactionModal extends React.Component {
             return this.props.openRecaptchaPrompt(true);
           }
           err.name = "";
-          setTimeout(() => {
-            showMessage({ show: false });
-            setMessage(err.toString());
-            showMessage({ show: true, error: true });
-          }, 400);
+          showMessage({ show: false });
+          setMessage(err.toString());
+          showMessage({ show: true, error: true });
         });
     } else {
       showMessage({ show: false });
