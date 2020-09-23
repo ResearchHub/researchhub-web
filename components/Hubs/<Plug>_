@@ -62,7 +62,7 @@ class HubCard extends React.Component {
             showMessage({ show: true });
             this.setState({
               transition: false,
-              subscribed: false,
+              subscribed: true,
             });
           })
           .catch((err) => {
@@ -80,7 +80,7 @@ class HubCard extends React.Component {
             showMessage({ show: true });
             this.setState({
               transition: false,
-              subscribed: true,
+              subscribed: false,
             });
           })
           .catch((err) => {
@@ -92,44 +92,26 @@ class HubCard extends React.Component {
     });
   };
 
-  onMouseEnterSubscribe = () => {
-    this.setState({
-      subscribeHover: true,
-    });
-  };
-
-  onMouseExitSubscribe = () => {
-    this.setState({
-      subscribeHover: false,
-    });
-  };
-
   renderSubscribe = () => {
     const { hub } = this.props;
     if (!this.props.isLoggedIn) return;
-    let buttonStyle, buttonLabel;
     if (this.state.subscribed) {
-      buttonStyle = this.state.subscribeHover
-        ? styles.unsubscribeButton
-        : styles.subscribed;
-      buttonLabel = this.state.subscribeHover ? "Unsubscribe" : "Subscribed";
+      return <div className={css(styles.subscribed)}>Subscribed</div>;
     } else {
-      buttonStyle = styles.subscribeButton;
-      buttonLabel = "Subscribe";
+      return (
+        <Button
+          isWhite={false}
+          label={"Subscribe"}
+          customButtonStyle={styles.subscribeButton}
+          customLabelStyle={styles.subscribeButtonLabel}
+          hideRipples={true}
+          onClick={(e) => {
+            e.stopPropagation();
+            this.subscribeToHub();
+          }}
+        />
+      );
     }
-    return (
-      <button
-        className={css(buttonStyle)}
-        onMouseEnter={this.onMouseEnterSubscribe}
-        onMouseLeave={this.onMouseExitSubscribe}
-        onClick={(e) => {
-          e.stopPropagation();
-          this.subscribeToHub();
-        }}
-      >
-        {buttonLabel}
-      </button>
-    );
   };
 
   render() {
@@ -166,7 +148,7 @@ class HubCard extends React.Component {
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.chat}</span>
-                {hub.discussion_count} Comment
+                {hub.discussion_count} Discussion
                 {hub.discussion_count != 1 ? "s" : ""}
               </div>
               <div>
@@ -236,57 +218,20 @@ const styles = StyleSheet.create({
   },
   subscribeButton: {
     height: 20,
-    width: 80,
+    width: 75,
     border: `${colors.BLUE()} 1px solid`,
-    backgroundColor: colors.BLUE(),
-    color: "#fff",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "1px 6px 1px 6px",
-    fontSize: 13,
-    borderRadius: 5,
-    ":hover": {
-      backgroundColor: "#3e43e8",
-    },
-    cursor: "pointer",
-    highlight: "none",
-    outline: "none",
-    userSelect: "none",
-  },
-  unsubscribeButton: {
-    height: 20,
-    width: 80,
-    color: "#fff",
-    backgroundColor: colors.RED(1),
-    border: `${colors.RED(1)} 1px solid`,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "1px 6px 1px 6px",
-    fontSize: 13,
-    borderRadius: 5,
-    cursor: "pointer",
-    highlight: "none",
-    outline: "none",
-    userSelect: "none",
   },
   subscribed: {
-    height: 20,
-    width: 80,
-    border: `${colors.BLUE()} 1px solid`,
-    color: colors.BLUE(),
-    backgroundColor: "#fff",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    height: 16,
+    width: 61,
     padding: "1px 6px 1px 6px",
+    border: `${colors.BLUE()} 1px solid`,
+    color: `${colors.BLUE()}`,
     fontSize: 13,
     borderRadius: 5,
-    cursor: "pointer",
-    highlight: "none",
-    outline: "none",
-    userSelect: "none",
   },
   subscribeButtonLabel: {
     fontSize: 12,
