@@ -105,17 +105,12 @@ class AddHubModal extends React.Component {
           this.props.showMessage({ show: true, error: true });
         });
     } else {
-      setTimeout(() => {
-        this.props.showMessage({ show: false });
-        this.props.setMessage("This hub name is already taken.");
-        this.props.showMessage({ show: true, error: true });
-        const error = { ...this.state.error };
-        error.upload = true;
-        this.setState({ error: error });
-        setTimeout(() => {
-          this.props.showMessage({ show: false });
-        }, 1200);
-      }, 400);
+      this.props.showMessage({ show: false });
+      this.props.setMessage("This hub name is already taken.");
+      this.props.showMessage({ show: true, error: true });
+      const error = { ...this.state.error };
+      error.upload = true;
+      this.setState({ error: error });
     }
   };
 
