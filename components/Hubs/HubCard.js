@@ -148,7 +148,7 @@ class HubCard extends React.Component {
             src={
               hub.hub_image
                 ? hub.hub_image
-                : "/static/background/facebook-og.jpg"
+                : "/static/background/twitter-banner.jpg"
             }
             alt="Hub Background Image"
           ></img>
