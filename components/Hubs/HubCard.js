@@ -191,6 +191,8 @@ class HubCard extends React.Component {
 
 const styles = StyleSheet.create({
   slugLink: {
+    zIndex: 1,
+    cursor: "pointer",
     textDecoration: "none",
     width: "364px",
     height: "264px",
@@ -203,7 +205,6 @@ const styles = StyleSheet.create({
       transition: "transform 0.1s",
       transform: "scale(1.05)",
     },
-    cursor: "pointer",
   },
   hubCard: {
     fontSize: "16px",
