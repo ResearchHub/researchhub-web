@@ -25,12 +25,10 @@ class CategoryList extends React.Component {
         this.props.categories && this.props.categories.results
           ? this.props.categories.results
           : [],
-      reveal: true,
     };
   }
 
   componentDidMount() {
-    let { auth } = this.props;
     if (this.props.categories) {
       this.setState({ categories: [...this.props.categories] });
     }
@@ -41,15 +39,6 @@ class CategoryList extends React.Component {
       this.setState({ categories: [...this.props.categories] });
     }
   }
-
-  componentWillUnmount() {
-    clearTimeout(this.revealTimeout);
-    this.setState({ reveal: false });
-  }
-
-  revealTransition = () => {
-    setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
-  };
 
   renderCategoryEntry = () => {
     let categories = this.state.categories;
@@ -82,12 +71,7 @@ class CategoryList extends React.Component {
           <div className={css(styles.listLabel)} id={"categoryListTitle"}>
             Categories
           </div>
-          <div
-            className={css(
-              styles.categoryList,
-              this.state.reveal && styles.reveal
-            )}
-          >
+          <div className={css(styles.categoryList)}>
             {this.state.categories.length > 0 ? (
               this.renderCategoryEntry()
             ) : (
@@ -110,7 +94,6 @@ class CategoryList extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    // width: "calc(100% * .625)",
     position: "fixed",
     display: "flex",
     flexDirection: "column",
@@ -129,9 +112,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     cursor: "default",
   },
-  text: {
-    fontFamily: "Roboto",
-  },
   listLabel: {
     textTransform: "uppercase",
     fontWeight: 500,
@@ -144,11 +124,6 @@ const styles = StyleSheet.create({
     width: "90%",
     paddingLeft: 25,
     boxSizing: "border-box",
-  },
-  topIcon: {
-    color: colors.RED(),
-    marginLeft: 6,
-    fontSize: 13,
   },
   categoryEntry: {
     fontSize: 16,
@@ -176,29 +151,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: "8px",
   },
-  current: {
-    borderColor: "rgb(237, 237, 237)",
-    backgroundColor: "#FAFAFA",
-    ":hover": {
-      borderColor: "rgb(227, 227, 227)",
-      backgroundColor: "#EAEAEA",
-    },
-  },
   categoryList: {
-    opacity: 0,
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
     padding: "0px 30px",
-  },
-  reveal: {
-    opacity: 1,
-    transition: "all ease-in-out 0.2s",
-  },
-  space: {
-    height: 10,
   },
 });
 
