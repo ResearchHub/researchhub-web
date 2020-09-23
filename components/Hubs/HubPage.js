@@ -236,7 +236,6 @@ class HubPage extends React.Component {
   };
 
   fetchPapers = ({ hub }) => {
-    let { showMessage } = this.props;
     this.setState({ doneFetching: false });
     if (this.state.papersLoading) {
       return null;
@@ -279,11 +278,6 @@ class HubPage extends React.Component {
           noResults: res.results.no_results,
         });
       })
-      .then(
-        setTimeout(() => {
-          showMessage({ show: false });
-        }, 200)
-      )
       .catch((error) => {
         // If we get a 401 error it means the token is expired.
         if (error.response.status === 401) {
@@ -301,7 +295,6 @@ class HubPage extends React.Component {
   };
 
   loadMore = () => {
-    let { showMessage } = this.props;
     let { hub } = this.props;
     let hubId = 0;
     if (hub) {
@@ -340,12 +333,7 @@ class HubPage extends React.Component {
             this.updateSlugs(page);
           }
         );
-      })
-      .then(
-        setTimeout(() => {
-          showMessage({ show: false });
-        }, 200)
-      );
+      });
   };
 
   updateSlugs = (page) => {
