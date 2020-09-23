@@ -614,9 +614,7 @@ Paper.getInitialProps = async (ctx) => {
     try {
       await store.dispatch(PaperActions.getPaper(query.paperId));
       fetchedPaper = store.getState().paper;
-      await store.dispatch(
-        PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
-      );
+
       if (fetchedPaper.slug !== query.paperName) {
         // redirect paper if paperName does not match slug
         let paperName = fetchedPaper.slug
