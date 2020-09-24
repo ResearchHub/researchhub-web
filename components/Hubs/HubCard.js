@@ -35,15 +35,43 @@ class HubCard extends React.Component {
   };
 
   componentDidUpdate = (prevProps, prevState) => {
-    if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
-      fetch(API.HUB({ slug: this.props.slug }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          this.setState({
-            subscribed: res.results[0].user_is_subscribed,
-          });
-        });
+    if (
+      prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn ||
+      prevProps.auth.user !== this.props.auth.user
+    ) {
+      this.updateSubscribedHubs();
+    }
+  };
+
+  updateSubscribedHubs = () => {
+    let auth = this.props.auth;
+    let hubs = this.props.hubState.hubs;
+    if (auth.isLoggedIn) {
+      let subscribedHubs = {};
+
+      let subscribed = auth.user.subscribed || [];
+      subscribed.forEach((hub) => {
+        subscribedHubs[hub.id] = true;
+      });
+
+      let updatedSubscribedHubs = hubs.map((hub) => {
+        if (subscribed[hub.id]) {
+          hub.user_is_subscribed = true;
+        }
+      });
+
+      this.props.updateSubscribedHubs(updatedSubscribedHubs);
+
+      if (this.props.hub.id in subscribedHubs) {
+        this.setState({ subscribed: true });
+      }
+    } else {
+      let updatedSubscribedHubs = hubs.map((hub) => {
+        hub.user_is_subscribed = false;
+        return hub;
+      });
+
+      this.props.updateSubscribedHubs(updatedSubscribedHubs);
     }
   };
 
@@ -106,7 +134,7 @@ class HubCard extends React.Component {
 
   renderSubscribe = () => {
     const { hub } = this.props;
-    if (!this.props.isLoggedIn) return;
+    if (!this.props.auth.isLoggedIn) return;
     let buttonStyle, buttonLabel;
     if (this.state.subscribed) {
       buttonStyle = this.state.subscribeHover
@@ -311,7 +339,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  isLoggedIn: state.auth.isLoggedIn,
+  auth: state.auth,
   hubState: state.hubs,
 });
 
@@ -320,6 +348,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   updateHub: HubActions.updateHub,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
+  updateSubscribedHubs: HubActions.updateSubscribedHubs,
 };
 
 export default connect(
