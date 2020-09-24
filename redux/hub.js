@@ -47,7 +47,6 @@ export const HubActions = {
           });
         })
         .catch((err) => {
-          console.error(err);
           return dispatch({
             type: HubConstants.GET_HUB_CATEGORIES_FAILURE,
             payload: {
