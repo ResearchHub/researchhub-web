@@ -17,17 +17,17 @@ class ThreadActionBar extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.setState({ prevParentHeight: this.props.threadHeight });
-  }
+  // componentDidMount() {
+  //   this.setState({ prevParentHeight: this.props.threadHeight });
+  // }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.threadHeight !== this.props.threadHeight) {
-      if (this.props.threadHeight !== 0 && !this.state.showReplyBox) {
-        this.setState({ prevParentHeight: this.props.threadHeight });
-      }
-    }
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.threadHeight !== this.props.threadHeight) {
+  //     if (this.props.threadHeight !== 0 && !this.state.showReplyBox) {
+  //       this.setState({ prevParentHeight: this.props.threadHeight });
+  //     }
+  //   }
+  // }
 
   renderReplyBox = () => {
     /**
@@ -35,13 +35,12 @@ class ThreadActionBar extends React.Component {
      * Allow the user to be able to upload comment or a reply
      * Will need to look at the IDs of paper, thread, comments (universal comment reply)
      * */
+
+    if (!this.state.showReplyBox) {
+      return null;
+    }
     return (
-      <div
-        className={css(
-          styles.textEditorContainer,
-          this.state.showReplyBox && styles.revealTextEditor
-        )}
-      >
+      <div className={css(styles.textEditorContainer, styles.revealTextEditor)}>
         <ThreadTextEditor
           onCancel={this.toggleReplyBox}
           onSubmit={this.props.onSubmit && this.props.onSubmit}
@@ -50,6 +49,8 @@ class ThreadActionBar extends React.Component {
             this.props.calculateThreadHeight()
           }
           editing={this.state.showReplyBox}
+          initialValue={this.props.initialValue}
+          hasHeader={this.props.hasHeader}
         />
       </div>
     );
@@ -217,7 +218,7 @@ class ThreadActionBar extends React.Component {
                 Respond
               </div>
             )}
-            {this.renderCommentCount()}
+            {!this.props.hideCount && this.renderCommentCount()}
             {this.props.toggleEdit && this.renderEditButton()}
           </div>
           {!this.props.hideReply && (

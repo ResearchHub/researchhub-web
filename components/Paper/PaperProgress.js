@@ -114,17 +114,17 @@ class PaperProgress extends React.Component {
         label: "Paper PDF",
         active: paper.file ? paper.file : paper.pdf_url ? paper.pdf_url : false,
       },
-      {
-        label: "Figures",
-        active: figureCount > 0,
-        optional: true,
-      },
-      {
-        label: "Limitations",
-        active:
-          limitations && limitations.limits && limitations.limits.length > 0,
-        optional: true,
-      },
+      // {
+      //   label: "Figures",
+      //   active: figureCount > 0,
+      //   optional: true,
+      // },
+      // {
+      //   label: "Limitations",
+      //   active:
+      //     limitations && limitations.limits && limitations.limits.length > 0,
+      //   optional: true,
+      // },
     ];
 
     let progress = this.calculateProgress(sections);
@@ -185,7 +185,6 @@ class PaperProgress extends React.Component {
 
     fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
       .then((res) => {});
   };
 
@@ -449,12 +448,12 @@ class PaperProgress extends React.Component {
           </div>
           <div className={css(styles.row)}>
             <div className={css(styles.sectionColumn)}>
-              {this.renderItems(0, 3)}
+              {this.renderItems(0, 2)}
             </div>
             <div
               className={css(styles.sectionColumn, styles.sectionColumnRight)}
             >
-              {this.renderItems(3)}
+              {this.renderItems(2)}
             </div>
           </div>
         </div>

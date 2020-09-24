@@ -45,10 +45,10 @@ const PaperTabBar = (props) => {
 
       tabs.push({ href: "summary", label: "description" });
       tabs.push({ href: "comments", label: "comments" });
-      tabs.push({ href: "figures", label: "figures" });
+      // tabs.push({ href: "figures", label: "figures" });
       tabs.push({ href: "paper", label: "Paper PDF" });
-      tabs.push({ href: "citations", label: "cited by" });
-      tabs.push({ href: "limitations", label: "limitations" });
+      // // tabs.push({ href: "citations", label: "cited by" });
+      // tabs.push({ href: "limitations", label: "limitations" });
       return tabs;
     }
     if (props.showAllSections) {
@@ -135,21 +135,26 @@ const PaperTabBar = (props) => {
           behavior: "smooth",
         });
       }
-    } else if (
-      window.scrollY <= calculateOffset("figures-tab", -navbarHeight)
-    ) {
-      setSelectedTab("figures");
-    } else if (window.scrollY <= calculateOffset("paper-tab", -navbarHeight)) {
+    }
+    // else if (
+    //   window.scrollY <= calculateOffset("figures-tab", -navbarHeight)
+    // ) {
+    //   setSelectedTab("figures");
+    // }
+    else if (window.scrollY <= calculateOffset("paper-tab", -navbarHeight)) {
       setSelectedTab("Paper PDF");
-    } else if (
-      window.scrollY <= calculateOffset("citedby-tab", -navbarHeight)
-    ) {
-      setSelectedTab("citations");
-    } else if (
-      window.scrollY <= calculateOffset("limitations-tab", -navbarHeight)
-    ) {
-      setSelectedTab("limitations");
-    } else {
+    }
+    // else if (
+    //   window.scrollY <= calculateOffset("citedby-tab", -navbarHeight)
+    // ) {
+    //   setSelectedTab("citations");
+    // }
+    // else if (
+    //   window.scrollY <= calculateOffset("limitations-tab", -navbarHeight)
+    // ) {
+    //   setSelectedTab("limitations");
+    // }
+    else {
       // setSelectedTab("key takeaways");
     }
   }
@@ -197,7 +202,6 @@ const PaperTabBar = (props) => {
 
     fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
       .then((res) => {});
   }
 

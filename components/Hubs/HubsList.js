@@ -221,9 +221,6 @@ const styles = StyleSheet.create({
     width: "90%",
     paddingLeft: 35,
     boxSizing: "border-box",
-    ":hover": {
-      color: colors.BLACK(),
-    },
     "@media only screen and (max-width: 1303px)": {
       paddingLeft: 25,
     },
