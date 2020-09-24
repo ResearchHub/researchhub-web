@@ -42,6 +42,7 @@ class FormSelect extends React.Component {
       indicatorSeparator,
       singleValue,
       defaultValue,
+      maxMenuHeight,
     } = this.props;
 
     const formatStyle = (styleObject) => {
@@ -146,6 +147,7 @@ class FormSelect extends React.Component {
           isSearchable={isSearchable === null ? true : isSearchable}
           isDisabled={isDisabled}
           isClearable={isClearable}
+          maxMenuHeight={maxMenuHeight && maxMenuHeight}
         />
       </div>
     );
