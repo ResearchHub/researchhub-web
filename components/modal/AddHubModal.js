@@ -23,6 +23,10 @@ class AddHubModal extends React.Component {
     super(props);
     this.initialState = {
       hubName: "",
+      categories:
+        this.props.categories && this.props.categories.results
+          ? this.props.categories.results
+          : [],
       error: {
         upload: false,
         category: true,
@@ -31,17 +35,16 @@ class AddHubModal extends React.Component {
     };
     this.state = {
       ...this.initialState,
-      categories: [],
     };
   }
 
-  componentDidMount() {
-    this.props.getCategories().then((payload) => {
-      const categories = payload.payload.categories.map((elem) => {
+  componentDidUpdate(prevProps) {
+    if (prevProps.categories !== this.props.categories) {
+      const categories = this.props.categories.map((elem) => {
         return { value: elem.id, label: elem.category_name };
       });
       this.setState({ categories: categories });
-    });
+    }
   }
 
   handleInputChange = (id, value) => {
@@ -125,9 +128,6 @@ class AddHubModal extends React.Component {
 
   closeModal = () => {
     this.props.openAddHubModal(false);
-    this.setState({
-      ...this.initialState,
-    });
     document.body.style.overflow = "scroll";
   };
 
@@ -251,7 +251,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  getCategories: HubActions.getCategories,
   openAddHubModal: ModalActions.openAddHubModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
