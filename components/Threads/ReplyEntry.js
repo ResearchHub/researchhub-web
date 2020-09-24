@@ -32,6 +32,8 @@ class ReplyEntry extends React.Component {
       // Edit
       canEdit: false,
       editing: false,
+      // Response
+      isResponse: false,
     };
     this.replyRef = null;
   }
@@ -43,16 +45,15 @@ class ReplyEntry extends React.Component {
       "voteType",
     ]);
     const score = this.props.reply.score;
-
     this.setState(
       {
         score,
         selectedVoteType,
         highlight: this.props.reply.highlight && true,
-        removed: this.props.reply.isRemoved,
+        removed: this.props.reply.is_removed,
         canEdit:
           this.props.auth &&
-          this.props.auth.user.id === this.props.reply.createdBy.id,
+          this.props.auth.user.id === this.props.reply.created_by.id,
       },
       () => {
         setTimeout(() => this.calculateThreadHeight(), 400);
@@ -68,7 +69,6 @@ class ReplyEntry extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    this.calculateThreadHeight();
     if (prevProps.auth !== this.props.auth) {
       let { auth, reply } = this.props;
       this.setState({
@@ -200,6 +200,31 @@ class ReplyEntry extends React.Component {
     }
   };
 
+  submitReply = async (text, plain_text, callback) => {
+    let {
+      data,
+      comment,
+      postReply,
+      postReplyPending,
+      setMessage,
+      showMessage,
+      discussionCount,
+      setCount,
+    } = this.props;
+    let paperId = data.paper;
+    let discussionThreadId = data.id;
+    let commentId = comment.id;
+
+    postReplyPending();
+    await postReply(paperId, discussionThreadId, commentId, text, plain_text);
+    if (this.props.discussion.donePosting && this.props.discussion.success) {
+      callback && callback();
+      this.props.onReplySubmitCallback();
+    } else {
+      callback && callback();
+    }
+  };
+
   saveEditsReply = async (text, plain_text, callback) => {
     let {
       data,
@@ -237,13 +262,76 @@ class ReplyEntry extends React.Component {
     }
   };
 
+  formatBody = () => {
+    return this.props.reply.text;
+  };
+
+  checkForExistingQuote = (delta) => {
+    let quoteBlock = delta.ops[1];
+    return (
+      quoteBlock &&
+      quoteBlock.insert === "\n" &&
+      quoteBlock.attributes &&
+      quoteBlock.attributes.blockquote
+    );
+  };
+
+  createQuoteText = (parentDelta) => {
+    let quoteText = "",
+      maxLength = 255;
+
+    for (var i = 0; i < parentDelta.ops.length; i++) {
+      if (typeof parentDelta.ops[i].insert === "string") {
+        quoteText += parentDelta.ops[i].insert;
+      }
+    }
+
+    let trimmedText = quoteText.replace(/\n/g, " ");
+
+    if (maxLength < trimmedText.length) {
+      trimmedText = trimmedText.substr(0, maxLength + 1);
+      trimmedText =
+        trimmedText.substr(
+          0,
+          Math.min(trimmedText.length, trimmedText.lastIndexOf(" "))
+        ) + "...";
+    }
+
+    return trimmedText;
+  };
+
+  formatQuoteBlock = () => {
+    let delta = JSON.parse(JSON.stringify(this.props.reply.text));
+    if (delta.ops) {
+      if (this.checkForExistingQuote(delta)) {
+        delta.ops = delta.ops.slice(2); // remove existing quote (for extra nested replies)
+      }
+
+      delta.ops = [
+        {
+          insert: this.createQuoteText(delta),
+        },
+      ];
+
+      delta.ops.push({
+        insert: "\n",
+        attributes: {
+          blockquote: true,
+        },
+      });
+      delta.ops.push({
+        insert: "\n",
+      });
+    }
+
+    return delta;
+  };
+
   render() {
-    const { data, hostname, hoverEvents, path, mobileView, reply } = this.props;
-    let threadId = reply.id;
+    const { hostname, mobileView, reply } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
-    let date = reply.createdDate;
-    // let title = reply.title;
-    let body = reply.text;
+    let date = reply.created_date;
+    let body = this.formatBody();
     let username = createUsername(reply);
     let metaIds = this.formatMetaData();
     const flexStyle = StyleSheet.create({
@@ -296,8 +384,8 @@ class ReplyEntry extends React.Component {
               <div className={css(styles.row, styles.topbar)}>
                 <DiscussionPostMetadata
                   authorProfile={getNestedValue(reply, [
-                    "createdBy",
-                    "authorProfile",
+                    "created_by",
+                    "author_profile",
                   ])}
                   username={username}
                   date={date}
@@ -332,18 +420,23 @@ class ReplyEntry extends React.Component {
                     comment={true}
                     small={true}
                     calculateThreadHeight={this.calculateThreadHeight}
-                    hideReply={true}
                     isRemoved={this.state.removed}
                     editing={this.state.editing}
                     toggleEdit={this.state.canEdit && this.toggleEdit}
+                    onSubmit={this.submitReply}
+                    initialValue={this.formatQuoteBlock()}
+                    hasHeader={true}
+                    hideCount={true}
                   />
                 </div>
               </Fragment>
             ) : (
               <div className={css(styles.content)}>
-                <div className={css(styles.removedText)}>
-                  Comment Removed By Moderator
-                </div>
+                {this.state.removed && (
+                  <div className={css(styles.removedText)}>
+                    Comment Removed By Moderator
+                  </div>
+                )}
               </div>
             )}
           </span>

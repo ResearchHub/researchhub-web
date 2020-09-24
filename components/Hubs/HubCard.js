@@ -176,7 +176,7 @@ class HubCard extends React.Component {
             src={
               hub.hub_image
                 ? hub.hub_image
-                : "/static/background/facebook-og.jpg"
+                : "/static/background/twitter-banner.jpg"
             }
             alt="Hub Background Image"
           ></img>
@@ -219,6 +219,8 @@ class HubCard extends React.Component {
 
 const styles = StyleSheet.create({
   slugLink: {
+    zIndex: 1,
+    cursor: "pointer",
     textDecoration: "none",
     width: "364px",
     height: "264px",
@@ -231,7 +233,6 @@ const styles = StyleSheet.create({
       transition: "transform 0.1s",
       transform: "scale(1.05)",
     },
-    cursor: "pointer",
   },
   hubCard: {
     fontSize: "16px",
@@ -271,16 +272,15 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "1px 6px 1px 6px",
-    fontSize: 13,
+    fontSize: 12,
     borderRadius: 5,
-    ":hover": {
-      backgroundColor: "#3e43e8",
-    },
     cursor: "pointer",
     highlight: "none",
     outline: "none",
     userSelect: "none",
+    ":hover": {
+      backgroundColor: "#3E43E8",
+    },
   },
   unsubscribeButton: {
     height: 20,
@@ -291,8 +291,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "1px 6px 1px 6px",
-    fontSize: 13,
+    fontSize: 12,
     borderRadius: 5,
     cursor: "pointer",
     highlight: "none",
@@ -308,16 +307,12 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "1px 6px 1px 6px",
-    fontSize: 13,
+    fontSize: 12,
     borderRadius: 5,
     cursor: "pointer",
     highlight: "none",
     outline: "none",
     userSelect: "none",
-  },
-  subscribeButtonLabel: {
-    fontSize: 12,
   },
   hubDescription: {
     fontSize: 13,
