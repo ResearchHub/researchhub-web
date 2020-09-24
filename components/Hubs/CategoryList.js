@@ -12,11 +12,6 @@ import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 // Config
 import colors from "../../config/themes/colors";
 
-// Redux
-import { HubActions } from "~/redux/hub";
-
-const DEFAULT_TRANSITION_TIME = 400;
-
 class CategoryList extends React.Component {
   constructor(props) {
     super(props);
@@ -162,8 +157,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  categories: state.hubs.categories,
   auth: state.auth,
+  categories: state.hubs.categories,
 });
 
 export default connect(mapStateToProps)(CategoryList);
