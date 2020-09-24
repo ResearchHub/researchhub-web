@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, useRef } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 
 // Redux
@@ -34,6 +34,8 @@ const AuthorPage = (props) => {
   let { tabName } = router.query;
   const dispatch = useDispatch();
   const store = useStore();
+  const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
+
   const [fetching, setFetching] = useState(true);
   const [openShareModal, setOpenShareModal] = useState(false);
   const [hoverName, setHoverName] = useState(false);
@@ -88,12 +90,15 @@ const AuthorPage = (props) => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   });
+
   const authorName = `${author.first_name} ${author.last_name}`;
 
   async function fetchAuthoredPapers() {
     await dispatch(
       AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
     );
+    let papers = store.getState().author.authoredPapers.papers;
+    checkUserVotes(papers, "authored");
   }
 
   async function fetchUserDiscussions() {
@@ -108,6 +113,8 @@ const AuthorPage = (props) => {
         authorId: router.query.authorId,
       })
     );
+    let contributions = store.getState().author.userContributions.contributions;
+    checkUserVotes(contributions, "contributions");
     setFetching(false);
   }
 
@@ -175,7 +182,20 @@ const AuthorPage = (props) => {
     }
   }, [author, user]);
 
-  let onMouseEnter = (section) => {
+  useEffect(() => {
+    if (prevProps && !auth.isLoggedIn) {
+      checkUserVotes(); // clears the state
+    } else if (!prevProps && auth.isLoggedIn) {
+      let papers = store.getState().author.authoredPapers.papers;
+      checkUserVotes(papers, "authored");
+      let contributions = store.getState().author.userContributions
+        .contributions;
+      checkUserVotes(contributions, "contributions");
+    }
+    setPrevProps(auth.isLoggedIn);
+  }, [auth.isLoggedIn]);
+
+  const onMouseEnter = (section) => {
     if (section === SECTIONS.name) {
       setHoverName(true);
     } else if (section === SECTIONS.description) {
@@ -185,7 +205,7 @@ const AuthorPage = (props) => {
     }
   };
 
-  let onMouseLeave = (section) => {
+  const onMouseLeave = (section) => {
     if (section === SECTIONS.name) {
       setHoverName(false);
     } else if (section === SECTIONS.description) {
@@ -203,7 +223,96 @@ const AuthorPage = (props) => {
     }
   }
 
-  let tabs = [
+  const checkUserVotes = (papers = [], type) => {
+    if (!store.getState().auth.isLoggedIn && papers.length) {
+      let authoredPapers = { ...store.getState().author.authoredPapers };
+
+      authoredPapers.papers = authoredPapers.papers.map((paper) => {
+        paper.user_vote = null;
+        return paper;
+      });
+
+      dispatch(
+        AuthorActions.updateAuthorByKey({
+          key: "authoredPapers",
+          value: authoredPapers,
+        })
+      );
+
+      let contributions = { ...store.getState().author.userContributions };
+
+      contributions.contributions = contributions.contributions.map((paper) => {
+        paper.user_vote = null;
+        return paper;
+      });
+
+      return dispatch(
+        AuthorActions.updateAuthorByKey({
+          key: "contributions",
+          value: contributions,
+        })
+      );
+    }
+
+    let paperIds = papers.map((paper) => {
+      return paper.id;
+    });
+
+    if (paperIds.length === 0) return;
+
+    fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        let updates = { ...res };
+        let updatedPapers = papers.map((paper) => {
+          if (updates[paper.id]) {
+            paper.user_vote = updates[paper.id];
+          }
+          return paper;
+        });
+
+        if (type === "authored") {
+          let newAuthored = { ...store.getState().author.authoredPapers };
+          let oldState = { ...store.getState().author.authoredPapers };
+          oldState.papers = [];
+          newAuthored.papers = updatedPapers;
+          dispatch(
+            AuthorActions.updateAuthorByKey({
+              key: "authoredPapers",
+              value: oldState,
+            })
+          );
+          dispatch(
+            AuthorActions.updateAuthorByKey({
+              key: "authoredPapers",
+              value: newAuthored,
+            })
+          );
+        } else if (type === "contributions") {
+          let newContributions = {
+            ...store.getState().author.userContributions,
+          };
+          let oldState = { ...store.getState().author.userContributions };
+          oldState.contributions = [];
+          newContributions.contributions = updatedPapers;
+          dispatch(
+            AuthorActions.updateAuthorByKey({
+              key: "userContributions",
+              value: oldState,
+            })
+          );
+          dispatch(
+            AuthorActions.updateAuthorByKey({
+              key: "userContributions",
+              value: newContributions,
+            })
+          );
+        }
+      });
+  };
+
+  const tabs = [
     {
       href: "contributions",
       label: "contributions",
@@ -236,7 +345,7 @@ const AuthorPage = (props) => {
     },
   ];
 
-  let renderTabContent = () => {
+  const renderTabContent = () => {
     return (
       // render all tab content on the dom, but only show if selected
       <div>
@@ -277,7 +386,7 @@ const AuthorPage = (props) => {
     );
   };
 
-  let renderEditButton = (action) => {
+  const renderEditButton = (action) => {
     return (
       <div className={css(styles.editButton)} onClick={action}>
         <i className="fas fa-edit"></i>
@@ -285,15 +394,15 @@ const AuthorPage = (props) => {
     );
   };
 
-  let onDescriptionChange = (e) => {
+  const onDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
 
-  let onNameChange = (e) => {
+  const onNameChange = (e) => {
     setName(e.target.value);
   };
 
-  let renderCancelButton = (section) => {
+  const renderCancelButton = (section) => {
     let action = null;
 
     if (section === SECTIONS.name) {
@@ -312,7 +421,7 @@ const AuthorPage = (props) => {
     );
   };
 
-  let renderSaveButton = (section, { picture }) => {
+  const renderSaveButton = (section, { picture }) => {
     let action = null;
 
     if (section === SECTIONS.name) {
@@ -341,7 +450,7 @@ const AuthorPage = (props) => {
     );
   };
 
-  let saveSocial = async (section) => {
+  const saveSocial = async (section) => {
     let changes = {};
     let change = socialLinks[section];
     let http = "http://";
@@ -372,7 +481,7 @@ const AuthorPage = (props) => {
     );
   };
 
-  let saveName = async () => {
+  const saveName = async () => {
     let splitName = name.split(" ");
     let first_name = null;
     let last_name = null;
@@ -393,7 +502,7 @@ const AuthorPage = (props) => {
     );
   };
 
-  let saveDescription = async () => {
+  const saveDescription = async () => {
     let changes = {
       description,
     };
@@ -403,14 +512,14 @@ const AuthorPage = (props) => {
     );
   };
 
-  let onSocialLinkChange = (e, social) => {
+  const onSocialLinkChange = (e, social) => {
     let newSocialLinks = { ...socialLinks };
     newSocialLinks[social] = e.target.value;
 
     setSocialLinks(newSocialLinks);
   };
 
-  let saveProfilePicture = async (picture) => {
+  const saveProfilePicture = async (picture) => {
     let changes = new FormData();
     let byteCharacters;
 
@@ -441,7 +550,7 @@ const AuthorPage = (props) => {
     closeAvatarModal();
   };
 
-  let renderSocialEdit = (social) => {
+  const renderSocialEdit = (social) => {
     return (
       <div className={css(styles.socialEditContainer)}>
         <div className={css(styles.socialTitle)}>{`${social} Link`}</div>
@@ -462,15 +571,15 @@ const AuthorPage = (props) => {
     );
   };
 
-  let openAvatarModal = () => {
+  const openAvatarModal = () => {
     setAvatarUploadIsOpen(true);
   };
 
-  let closeAvatarModal = () => {
+  const closeAvatarModal = () => {
     setAvatarUploadIsOpen(false);
   };
 
-  let renderOrcid = () => {
+  const renderOrcid = () => {
     if (allowEdit) {
       return author.orcid_id
         ? null

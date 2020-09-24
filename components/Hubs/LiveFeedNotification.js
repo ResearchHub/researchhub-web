@@ -80,6 +80,7 @@ class LiveFeedNotification extends React.Component {
     let { notification } = this.props;
     let { content_type, paper_id, thread_id } = notification;
     let type = content_type;
+
     let paperId = paper_id;
     let threadId = thread_id;
     let href;
