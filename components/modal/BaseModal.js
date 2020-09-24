@@ -110,7 +110,7 @@ class BaseModal extends React.Component {
         right: 0,
         bottom: 0,
         backgroundColor: "rgba(0,0,0,0.2)",
-        zIndex: "11",
+        zIndex: this.props.zIndex ? this.props.zIndex : "11",
         borderRadius: 5,
       },
     };
@@ -170,16 +170,22 @@ class BaseModal extends React.Component {
               <div
                 className={css(
                   styles.titleContainer,
-                  this.props.backgroundImage && styles.zIndex
+                  this.props.backgroundImage && styles.zIndex,
+                  this.props.textAlign === "left" && styles.left
                 )}
               >
-                <div className={css(styles.title, styles.text)}>
+                <div
+                  className={css(
+                    styles.title,
+                    this.props.titleStyle && this.props.titleStyle
+                  )}
+                >
                   {this.props.title && typeof this.props.title === "function"
                     ? this.props.title()
                     : this.props.title}
                 </div>
                 {this.props.subtitle && (
-                  <div className={css(styles.subtitle, styles.text)}>
+                  <div className={css(styles.subtitle)}>
                     {typeof this.props.subtitle === "function"
                       ? this.props.subtitle()
                       : this.props.subtitle}
@@ -271,6 +277,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     boxSizing: "border-box",
   },
+  left: {
+    textAlign: "left",
+    alignItems: "left",
+    width: "100%",
+  },
   title: {
     fontWeight: "500",
     height: 30,
@@ -307,9 +318,6 @@ const styles = StyleSheet.create({
       fontSize: 14,
       width: 300,
     },
-  },
-  text: {
-    fontFamily: "Roboto",
   },
   zIndex: {
     zIndex: 12,

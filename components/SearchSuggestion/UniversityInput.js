@@ -13,16 +13,43 @@ import { Helpers } from "@quantfive/js-web-config";
 class UniversityInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.initialState = {
       search: "",
       searching: false,
       showDropDown: false,
       universities: [],
       userUniversity: {},
     };
+    this.state = {
+      ...this.initialState,
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.value) {
+      this.setState({ search: this.props.value.name });
+    } else {
+      this.setState({ ...this.initialState });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.value !== this.props.value) {
+      if (this.props.value && this.props.value.name) {
+        this.setState({ search: this.props.value.name });
+      } else {
+        this.setState({ ...this.initialState });
+      }
+    }
   }
 
   handleUniversitySearch = (id, value) => {
+    if (!value) {
+      return (
+        this.props.handleUserClick &&
+        this.props.handleUserClick(null, this.props.index)
+      );
+    }
     let { searching, universities, showDropDown } = this.state;
     this.setState(
       {
@@ -46,17 +73,18 @@ class UniversityInput extends React.Component {
     );
   };
 
-  handleClick = (e, university) => {
+  handleClick = (e, index, university) => {
     e.stopPropagation();
     this.setState({
       search: university.name,
       showDropDown: false,
       searching: false,
     });
-    this.props.handleUserClick && this.props.handleUserClick(university);
+    this.props.handleUserClick && this.props.handleUserClick(university, index);
   };
 
   renderOptions = () => {
+    let { index } = this.props;
     let { searching, universities, showDropDown } = this.state;
     if (universities.length) {
       return universities.map((university, i) => {
@@ -65,7 +93,7 @@ class UniversityInput extends React.Component {
           <div
             key={`uni-${i}`}
             className={css(styles.universityCard)}
-            onClick={(e) => this.handleClick(e, university)}
+            onClick={(e) => this.handleClick(e, index, university)}
           >
             <div className={css(styles.uniName)}>{name}</div>
             <div className={css(styles.uniMeta)}>
@@ -104,20 +132,25 @@ class UniversityInput extends React.Component {
       labelStyle,
       label,
       required,
+      index,
+      onClick,
+      onSearch,
     } = this.props;
     let { searching, universities, showDropDown } = this.state;
     return (
       <div className={css(styles.container, containerStyle && containerStyle)}>
-        <div
-          className={css(
-            styles.inputLabel,
-            labelStyle && labelStyle,
-            styles.text
-          )}
-        >
-          {label && label}
-          {required && <div className={css(styles.asterick)}>*</div>}
-        </div>
+        {label && (
+          <div
+            className={css(
+              styles.inputLabel,
+              labelStyle && labelStyle,
+              styles.text
+            )}
+          >
+            {label && label}
+            {required && <div className={css(styles.asterick)}>*</div>}
+          </div>
+        )}
         <span className={css(styles.inputWrapper)}>
           <FormInput
             id={"search"}
@@ -128,6 +161,7 @@ class UniversityInput extends React.Component {
             containerStyle={styles.removeMargin}
             type="search"
             autocomplete="off"
+            onClick={onClick && onClick}
           />
           <div
             className={css(
@@ -175,22 +209,25 @@ const styles = StyleSheet.create({
     flexDirection: "center",
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
   },
   show: {
     opacity: 1,
     zIndex: 2,
   },
   removeMargin: {
+    width: "100%",
     margin: 0,
-    "@media only screen and (max-width: 665px)": {
-      width: 360,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: 338,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 270,
-    },
+    minHeight: "unset",
+    // "@media only screen and (max-width: 665px)": {
+    //   width: 360,
+    // },
+    // "@media only screen and (max-width: 415px)": {
+    //   width: 338,
+    // },
+    // "@media only screen and (max-width: 321px)": {
+    //   width: 270,
+    // },
   },
   text: {
     fontFamily: "Roboto",
@@ -204,7 +241,7 @@ const styles = StyleSheet.create({
     background: "#FFF",
     border: "#E8E8F2 1px solid",
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
-    bottom: -235,
+    top: 55,
     width: "100%",
     display: "flex",
     flexDirection: "column",
@@ -223,13 +260,11 @@ const styles = StyleSheet.create({
     minHeight: 90,
     maxHeight: 90,
     height: 90,
-    bottom: -70,
   },
   midHeight: {
     minHeight: 180,
     maxHeight: 180,
     height: 180,
-    bottom: -160,
   },
   universityCard: {
     display: "flex",

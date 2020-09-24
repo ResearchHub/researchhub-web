@@ -7,6 +7,7 @@ import { connect, useStore, useDispatch } from "react-redux";
 import { AuthActions } from "~/redux/auth";
 import { AuthorActions } from "~/redux/author";
 import { TransactionActions } from "~/redux/transaction";
+import { ModalActions } from "../../../../redux/modals";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -575,6 +576,10 @@ const AuthorPage = (props) => {
     setAvatarUploadIsOpen(true);
   };
 
+  const openUserInfoModal = () => {
+    props.openUserInfoModal(true);
+  };
+
   const closeAvatarModal = () => {
     setAvatarUploadIsOpen(false);
   };
@@ -633,7 +638,7 @@ const AuthorPage = (props) => {
               styles.avatarContainer,
               author.profile_image && styles.border
             )}
-            onClick={(allowEdit && openAvatarModal) || undefined}
+            onClick={(allowEdit && openUserInfoModal) || undefined}
             onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
             onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
             draggable={false}
@@ -1310,6 +1315,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
+  openUserInfoModal: ModalActions.openUserInfoModal,
 };
 
 export default connect(

@@ -11,6 +11,7 @@ class FormInput extends React.Component {
 
   focusOnClick = (e) => {
     e.stopPropagation();
+    this.props.onClick && this.props.onClick();
     return this.props.getRef
       ? this.props.getRef.current.focus()
       : this.formInputRef.current && this.formInputRef.current.focus();
@@ -42,6 +43,8 @@ class FormInput extends React.Component {
       disabled,
       message,
       autocomplete,
+      subtitle,
+      onSearch,
     } = this.props;
 
     return (
@@ -65,6 +68,18 @@ class FormInput extends React.Component {
             {required && <div className={css(styles.asterick)}>*</div>}
           </div>
         )}
+        {subtitle && (
+          <div
+            className={css(
+              styles.inputLabel,
+              styles.text,
+              styles.subtitle,
+              !subtitle && styles.hide
+            )}
+          >
+            {subtitle && subtitle}
+          </div>
+        )}
         <input
           id={id && id}
           type={type ? type : "text"}
@@ -82,6 +97,7 @@ class FormInput extends React.Component {
           onChange={this.handleChange}
           onClick={this.focusOnClick}
           autocomplete={autocomplete && autocomplete}
+          onSearch={onSearch && onSearch}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && <p className={css(styles.message)}>{message}</p>}
@@ -128,8 +144,12 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
   },
+  subtitle: {
+    fontSize: 14,
+    color: colors.BLACK(0.5),
+    fontWeight: 400,
+  },
   input: {
-    // height: 50,
     display: "flex",
     alignItems: "center",
     border: "1px solid #E8E8F2",
