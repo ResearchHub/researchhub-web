@@ -171,6 +171,11 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    AUTHOR: ({ authorId }) => {
+      let url = BASE_URL + `author/${authorId}`;
+      return url;
+    },
+
     AUTHORED_PAPER: ({ authorId, page }) => {
       let url =
         BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;
