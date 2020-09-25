@@ -84,18 +84,6 @@ const DiscussionTab = (props) => {
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
 
-  function handleWindowResize() {
-    if (window.innerWidth < 436) {
-      if (!mobileView) {
-        setMobileView(true);
-      }
-    } else {
-      if (mobileView) {
-        setMobileView(false);
-      }
-    }
-  }
-
   useEffect(() => {
     handleWindowResize();
     window.addEventListener("resize", handleWindowResize);
@@ -107,6 +95,18 @@ const DiscussionTab = (props) => {
   useEffect(() => {
     fetchDiscussionThreads(false, true);
   }, [filter, showTwitterComments]);
+
+  function handleWindowResize() {
+    if (window.innerWidth < 436) {
+      if (!mobileView) {
+        setMobileView(true);
+      }
+    } else {
+      if (mobileView) {
+        setMobileView(false);
+      }
+    }
+  }
 
   function renderThreads(threads = []) {
     if (!Array.isArray(threads)) {
