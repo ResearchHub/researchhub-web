@@ -94,6 +94,7 @@ export default class MyDocument extends Document {
             dangerouslySetInnerHTML={{ __html: this.props.css.content }}
           />
           <script
+            key={"fontawesome-url"}
             src="https://kit.fontawesome.com/f57f706c59.js"
             crossOrigin="anonymous"
           ></script>
