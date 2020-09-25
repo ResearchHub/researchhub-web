@@ -642,6 +642,7 @@ Paper.getInitialProps = async (ctx) => {
 
   let fetchedPaper = true;
 
+  let redirectPath = `/paper/${paper.id}/${paperName}`;
   if (paper.slug !== query.paperName) {
     // redirect paper if paperName does not match slug
     let paperName = paper.slug
@@ -653,7 +654,6 @@ Paper.getInitialProps = async (ctx) => {
       return props;
     }
 
-    redirectPath = `/paper/${paper.id}/${paperName}`;
     res.writeHead(301, { Location: redirectPath });
     res.end();
     props = {

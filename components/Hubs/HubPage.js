@@ -275,7 +275,9 @@ class HubPage extends React.Component {
           doneFetching: true,
           noResults: res.results.no_results,
         });
-        this.checkUserVotes(res.results.data);
+        if (res.results.data.length > 0) {
+          this.checkUserVotes(res.results.data);
+        }
       })
       .catch((error) => {
         // If we get a 401 error it means the token is expired.
@@ -456,7 +458,9 @@ class HubPage extends React.Component {
       return;
     }
     let { showMessage } = this.props;
-    let param = {};
+    let param = {
+      page: 1,
+    };
     param[type] = option;
     showMessage({ show: true, load: true });
     this.setState(
