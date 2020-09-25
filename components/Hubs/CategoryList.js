@@ -23,20 +23,8 @@ class CategoryList extends React.Component {
     };
   }
 
-  componentDidMount() {
-    if (this.props.categories) {
-      this.setState({ categories: [...this.props.categories] });
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.categories !== this.props.categories) {
-      this.setState({ categories: [...this.props.categories] });
-    }
-  }
-
   renderCategoryEntry = () => {
-    let categories = this.state.categories;
+    let categories = this.props.categories;
     return categories.map((category, i) => {
       let { category_name } = category;
       let slug = category_name.toLowerCase().replace(/\s/g, "-");
@@ -67,7 +55,7 @@ class CategoryList extends React.Component {
             Categories
           </div>
           <div className={css(styles.categoryList)}>
-            {this.state.categories.length > 0 ? (
+            {this.props.categories.length > 0 ? (
               this.renderCategoryEntry()
             ) : (
               <Fragment>
