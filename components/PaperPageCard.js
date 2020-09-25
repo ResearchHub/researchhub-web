@@ -54,6 +54,10 @@ class PaperPageCard extends React.Component {
     this.metaContainerRef = React.createRef();
   }
 
+  componentDidMount = () => {
+    this.fetchFigures();
+  };
+
   componentWillUnmount() {
     document.body.style.overflow = "scroll";
   }

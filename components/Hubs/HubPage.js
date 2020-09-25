@@ -127,10 +127,6 @@ class HubPage extends React.Component {
       this.fetchPapers({ hub: this.props.hub });
     }
 
-    if (isLoggedIn) {
-      this.checkUserVotes(this.state.papers);
-    }
-
     this.setState({
       subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
     });
@@ -279,6 +275,7 @@ class HubPage extends React.Component {
           doneFetching: true,
           noResults: res.results.no_results,
         });
+        this.checkUserVotes(res.results.data);
       })
       .catch((error) => {
         // If we get a 401 error it means the token is expired.
