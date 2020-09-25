@@ -84,7 +84,9 @@ const Paper = (props) => {
   const [limitCount, setLimitCount] = useState(
     store.getState().limitations.limits.length
   );
-  const [discussionCount, setCount] = useState(calculateCommentCount());
+  const [discussionCount, setCount] = useState(
+    calculateCommentCount(props.paper)
+  );
   const [steps, setSteps] = useState([
     {
       target: ".first-step",
@@ -164,7 +166,7 @@ const Paper = (props) => {
         setScore(getNestedValue(currPaper, ["score"], 0));
         setFlag(currPaper.user_flag);
         setSelectedVoteType(getVoteType(currPaper.userVote));
-        setCount(calculateCommentCount());
+        setCount(calculateCommentCount(currPaper));
         setPaper(currPaper);
         return currPaper;
       })
@@ -236,7 +238,7 @@ const Paper = (props) => {
   }, [scrollListener]);
 
   useEffect(() => {
-    setCount(calculateCommentCount());
+    setCount(calculateCommentCount(paper));
   }, [paper.discussionSource]);
 
   async function upvote() {
@@ -339,9 +341,12 @@ const Paper = (props) => {
     return tabs;
   }
 
-  function calculateCommentCount() {
-    let { paper } = props;
-    return paper ? paper.discussion_count : 0;
+  function calculateCommentCount(paper) {
+    let discussionCount = 0;
+    if (paper) {
+      discussionCount = paper.discussion_count;
+    }
+    return discussionCount;
   }
 
   function formatDescription() {
@@ -499,7 +504,6 @@ const Paper = (props) => {
                 hostname={hostname}
                 paperId={paperId}
                 calculatedCount={discussionCount}
-                discussionCount={paper.discussion_count}
                 setCount={setCount}
                 discussionRef={discussionRef}
               />
@@ -642,12 +646,13 @@ Paper.getInitialProps = async (ctx) => {
 
   let fetchedPaper = true;
 
-  let redirectPath = `/paper/${paper.id}/${paperName}`;
   if (paper.slug !== query.paperName) {
     // redirect paper if paperName does not match slug
     let paperName = paper.slug
       ? paper.slug
       : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
+
+    let redirectPath = `/paper/${paper.id}/${paperName}`;
     if (paperName === query.paperName) {
       // catch multiple redirect when slug does not exist
       props = { hostname, paper, redirectPath, paperId: query.paperId };
