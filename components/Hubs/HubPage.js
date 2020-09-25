@@ -120,7 +120,7 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     let { isLoggedIn, initialFeed } = this.props;
-    if (this.props.initialFeed) {
+    if (initialFeed) {
       this.detectPromoted(this.state.papers);
     } else {
       this.fetchPapers({ hub: this.props.hub });

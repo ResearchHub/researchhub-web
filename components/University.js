@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 
-export default (props) => {
+const University = (props) => {
   const { university } = props || {};
   return (
     <div className={css(styles.extraInfo)}>
@@ -34,3 +34,5 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
 });
+
+export default University;
