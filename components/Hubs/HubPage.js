@@ -57,6 +57,7 @@ class HubPage extends React.Component {
         this.props.initialFeed && this.props.initialFeed.next
           ? this.props.initialFeed.next
           : null,
+      page: this.props.page,
       doneFetching: this.props.initialFeed ? true : false,
       filterBy: this.props.filter ? this.props.filter : defaultFilter,
       scope: this.props.scope ? this.props.scope : defaultScope,
@@ -261,6 +262,7 @@ class HubPage extends React.Component {
         timePeriod: scope,
         hubId: hubId,
         ordering: this.state.filterBy.value,
+        page: this.state.page,
       }),
       API.GET_CONFIG()
     )
@@ -309,7 +311,14 @@ class HubPage extends React.Component {
       loadingMore: true,
     });
 
-    return fetch(this.state.next, API.GET_CONFIG())
+    let url = API.GET_HUB_PAPERS({
+      timePeriod: scope,
+      hubId: hubId,
+      page: this.state.page,
+      ordering: this.state.filterBy.value,
+    });
+
+    return fetch(url, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {

@@ -33,6 +33,8 @@ class MyApp extends App {
   constructor(props) {
     super(props);
 
+    this.previousPath = props.router.route;
+
     ReactGA.initialize("UA-106669204-1", {
       testMode: process.env.NODE_ENV !== "production",
     });
@@ -44,12 +46,16 @@ class MyApp extends App {
       );
     });
 
-    Router.events.on("routeChangeComplete", () => {
-      window.scroll({
-        top: 0,
-        left: 0,
-        behavior: "auto",
-      });
+    Router.events.on("routeChangeComplete", (url) => {
+      if (this.previousPath !== url.split("?")[0]) {
+        window.scroll({
+          top: 0,
+          left: 0,
+          behavior: "auto",
+        });
+      }
+
+      this.previousPath = props.router.route;
       ReactGA.pageview(props.router.asPath);
       props.store.dispatch(MessageActions.showMessage({ show: false }));
     });
