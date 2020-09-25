@@ -2,7 +2,7 @@ import * as types from "./types";
 
 export const initialState = {};
 
-export default function(state = initialState, action) {
+const DiscussionReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.FETCH_THREAD_PENDING:
     case types.FETCH_THREAD_FAILURE:
@@ -68,4 +68,6 @@ export default function(state = initialState, action) {
     default:
       return state;
   }
-}
+};
+
+export default DiscussionReducer;
