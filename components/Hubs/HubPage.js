@@ -57,7 +57,7 @@ class HubPage extends React.Component {
         this.props.initialFeed && this.props.initialFeed.next
           ? this.props.initialFeed.next
           : null,
-      page: this.props.page,
+      page: this.props.page || 1,
       doneFetching: this.props.initialFeed ? true : false,
       filterBy: this.props.filter ? this.props.filter : defaultFilter,
       scope: this.props.scope ? this.props.scope : defaultScope,
