@@ -223,7 +223,6 @@ class UserInfoModal extends React.Component {
       <div
         className={css(styles.formInputContainer, styles.educationContainer)}
         onMouseEnter={this.onMouseEnterEducation}
-        // onMouseLeave={this.onMouseLeaveEducation}
       >
         {this.state.education.map((education, index) => {
           return (

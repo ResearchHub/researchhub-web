@@ -27,7 +27,6 @@ const EducationModal = (props) => {
   const [options, setOptions] = useState(formatOptions());
 
   useEffect(() => {
-    console.log("update", props);
     mapPropsToState();
   }, [props.education]);
 

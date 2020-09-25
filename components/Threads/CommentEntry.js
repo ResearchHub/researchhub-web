@@ -433,7 +433,7 @@ class CommentEntry extends React.Component {
   };
 
   renderReplies = () => {
-    let { data, hostname, path, discussion, comment } = this.props;
+    let { data, hostname, path, comment, paper } = this.props;
     let replies =
       this.state.replies.length < 1
         ? this.props.comment.replies
@@ -448,6 +448,7 @@ class CommentEntry extends React.Component {
           calculateThreadHeight={this.calculateThreadHeight}
           comment={comment}
           reply={reply}
+          paper={paper}
           mobileView={this.props.mobileView}
           onReplySubmitCallback={this.onReplySubmitCallback}
         />
@@ -456,14 +457,7 @@ class CommentEntry extends React.Component {
   };
 
   render() {
-    const {
-      data,
-      hostname,
-      hoverEvents,
-      path,
-      comment,
-      mobileView,
-    } = this.props;
+    const { data, hostname, comment, mobileView, paper } = this.props;
     let threadId = comment.id;
     let commentCount =
       this.state.replies.length > comment.reply_count
@@ -521,6 +515,7 @@ class CommentEntry extends React.Component {
                   ])}
                   username={username}
                   date={date}
+                  paper={paper}
                   smaller={true}
                   onHideClick={!mobileView && this.toggleCollapsed}
                   hideState={this.state.collapsed}
