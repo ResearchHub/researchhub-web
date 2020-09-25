@@ -1,31 +1,23 @@
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import { useDispatch } from "react-redux";
 
 // Component
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 
-// Redux
-import { MessageActions } from "~/redux/message";
-
 // Config
 import colors from "~/config/themes/colors";
-import { hidden } from "ansi-colors";
 
 const ActionButton = (props) => {
   let {
     icon,
     iconNode,
     action,
-    size,
     addRipples,
     active,
     isModerator,
     paperId,
-    style,
   } = props;
-  const dispatch = useDispatch();
 
   function renderIcon() {
     if (icon) {
@@ -92,7 +84,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     display: "flex",
     flexShrink: 0,
-    overflow: hidden,
+    overflow: "hidden",
     transition: "all ease-in-out 0.1s",
     ":hover": {
       background: colors.GREY(1),
