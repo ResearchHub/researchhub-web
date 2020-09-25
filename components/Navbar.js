@@ -426,8 +426,6 @@ const Navbar = (props) => {
         <FirstVoteModal />
         <OrcidConnectModal />
         <DndModal />
-        <PaperFeatureModal />
-        <PaperTransactionModal />
         <PromotionInfoModal />
         <ReCaptchaPrompt />
         <Link href={"/"} as={`/`}>

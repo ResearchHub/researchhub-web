@@ -45,6 +45,8 @@ import {
 } from "~/config/utils/";
 import { redirect, formatPaperSlug } from "~/config/utils";
 import * as shims from "~/redux/paper/shims";
+import PaperTransactionModal from "../../../../components/modal/PaperTransactionModal";
+import PaperFeatureModal from "../../../../components/modal/PaperFeatureModal";
 
 const isServer = () => typeof window === "undefined";
 
@@ -423,6 +425,8 @@ const Paper = (props) => {
 
   return (
     <div className={css(styles.container)}>
+      <PaperTransactionModal paper={paper} />
+      <PaperFeatureModal paper={paper} />
       <Fragment>
         <Head
           title={paper.title}
