@@ -1,4 +1,4 @@
-import Document, { Head, Main, NextScript } from "next/document";
+import Document, { Html, Head, Main, NextScript } from "next/document";
 import { StyleSheetServer } from "aphrodite";
 import * as Sentry from "@sentry/browser";
 import CustomHead from "../components/Head";
@@ -38,7 +38,7 @@ export default class MyDocument extends Document {
     the client goes to render styles. If you don't you'll get a second
     <style> tag */
     return (
-      <html>
+      <Html>
         <Head>
           <script
             dangerouslySetInnerHTML={{
@@ -107,7 +107,7 @@ export default class MyDocument extends Document {
           <Main />
           <NextScript />
         </body>
-      </html>
+      </Html>
     );
   }
 }

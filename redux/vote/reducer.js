@@ -2,7 +2,7 @@ import * as types from "./types";
 
 export const initialState = {};
 
-export default function(state = initialState, action) {
+const VoteReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.POST_VOTE_PENDING:
     case types.POST_VOTE_FAILURE:
@@ -19,4 +19,6 @@ export default function(state = initialState, action) {
     default:
       return state;
   }
-}
+};
+
+export default VoteReducer;

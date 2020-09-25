@@ -8,6 +8,7 @@ import Error from "next/error";
 import "./styles/anchor.css";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
+import * as Sentry from "@sentry/browser";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -43,10 +44,13 @@ import {
   isQuillDelta,
 } from "~/config/utils/";
 import { redirect, formatPaperSlug } from "~/config/utils";
+import * as shims from "~/redux/paper/shims";
+
+const isServer = () => typeof window === "undefined";
 
 const Paper = (props) => {
   const router = useRouter();
-  if (props.error || props.paper.status === 404) {
+  if (props.error) {
     return <Error statusCode={404} />;
   }
 
@@ -60,31 +64,27 @@ const Paper = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const isModerator = store.getState().auth.user.moderator;
-  const [paper, setPaper] = useState(props.paper);
+  const [paper, setPaper] = useState(
+    (props.paper && shims.paper(props.paper)) || {}
+  );
   const [showAllSections, toggleShowAllSections] = useState(false);
   const [referencedBy, setReferencedBy] = useState([]);
   const [referencedByCount, setReferencedByCount] = useState(0);
   const [loadingReferencedBy, setLoadingReferencedBy] = useState(true);
-  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
-  const [loadingPaper, setLoadingPaper] = useState(true);
+  const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
+  const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
   const [loadingFile, setLoadingFile] = useState(true);
-  const [flagged, setFlag] = useState(paper.user_flag !== null);
+  const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
   const [sticky, setSticky] = useState(false);
   const [scrollView, setScrollView] = useState(false);
-
-  const [discussionThreads, setDiscussionThreads] = useState(
-    getDiscussionThreads(paper)
-  );
   const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(paper.userVote)
+    getVoteType(props.paper && props.paper.userVote)
   );
   const [figureCount, setFigureCount] = useState();
-  const [figures, setFigures] = useState([]);
   const [limitCount, setLimitCount] = useState(
     store.getState().limitations.limits.length
   );
   const [discussionCount, setCount] = useState(calculateCommentCount());
-  const [fetchedFigures, setFetchedFigures] = useState(false);
   const [steps, setSteps] = useState([
     {
       target: ".first-step",
@@ -144,18 +144,39 @@ const Paper = (props) => {
   // };
 
   const fetchBullets = () => {
-    let { getBullets, paper } = props;
-    getBullets(paper.id);
+    let { getBullets } = props;
+    getBullets(paperId);
   };
 
   const fetchDiscussions = () => {
     let { getThreads, paper } = props;
-    getThreads({ paperId: paper.id, paper, twitter: false });
+    getThreads({ paperId: paperId, paper, twitter: false });
+  };
+
+  const fetchPaper = ({ paperId }) => {
+    setLoadingPaper(true);
+    return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        setLoadingPaper(false);
+        let currPaper = shims.paper(resp);
+        setScore(getNestedValue(currPaper, ["score"], 0));
+        setFlag(currPaper.user_flag);
+        setSelectedVoteType(getVoteType(currPaper.userVote));
+        setCount(calculateCommentCount());
+        setPaper(currPaper);
+        return currPaper;
+      })
+      .catch((error) => {
+        console.log(error);
+        Sentry.captureException(error);
+      });
   };
 
   useEffect(() => {
     setTabs(getActiveTabs());
-  }, [store.getState().paper.summary, figureCount]);
+  }, [paper.summary, figureCount]);
 
   useEffect(() => {
     setLimitCount(store.getState().limitations.limits.length);
@@ -165,15 +186,15 @@ const Paper = (props) => {
   function checkUserVote() {
     if (props.auth.isLoggedIn && props.auth.user) {
       let params = {
-        paperIds: [paper.id],
+        paperIds: [paperId],
       };
       return fetch(API.CHECK_USER_VOTE(params), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          if (res[paper.id]) {
+          if (res[paperId]) {
             let updatedPaper = { ...paper };
-            updatedPaper.userVote = res[paper.id];
+            updatedPaper.userVote = res[paperId];
             setPaper(updatedPaper);
             setSelectedVoteType(updatedPaper.userVote.vote_type);
           }
@@ -181,15 +202,15 @@ const Paper = (props) => {
     }
   }
 
-  useEffect(() => {
-    store.getState().paper.id && setLoadingPaper(false);
-  }, [store.getState().paper]);
+  // useEffect(() => {
+  //   store.getState().paper.id && setLoadingPaper(false);
+  // }, [store.getState().paper]);
 
   useEffect(() => {
-    if (store.getState().paper.id !== paperId) {
-      setPaper(props.paper);
-      setDiscussionThreads(getDiscussionThreads(props.paper));
-      setCount(calculateCommentCount());
+    if (paper.id !== paperId) {
+      if (!props.fetchedPaper) {
+        fetchPaper({ paperId });
+      }
       checkUserVote();
       if (document.getElementById("structuredData")) {
         let script = document.getElementById("structuredData");
@@ -216,11 +237,7 @@ const Paper = (props) => {
 
   useEffect(() => {
     setCount(calculateCommentCount());
-  }, [paper.discussion.source]);
-
-  function getDiscussionThreads(paper) {
-    return paper.discussion ? paper.discussion.threads : [];
-  }
+  }, [paper.discussionSource]);
 
   async function upvote() {
     dispatch(VoteActions.postUpvotePending());
@@ -247,8 +264,8 @@ const Paper = (props) => {
           props.updatePaperState(
             "promoted",
             selectedVoteType === DOWNVOTE
-              ? store.getState().paper.promoted + 2
-              : store.getState().paper.promoted + 1
+              ? paper.promoted + 2
+              : paper.promoted + 1
           );
         }
         setSelectedVoteType(UPVOTE);
@@ -258,8 +275,8 @@ const Paper = (props) => {
           props.updatePaperState(
             "promoted",
             selectedVoteType === UPVOTE
-              ? store.getState().paper.promoted - 2
-              : store.getState().paper.promoted - 1
+              ? paper.promoted - 2
+              : paper.promoted - 1
           );
         }
         setSelectedVoteType(DOWNVOTE);
@@ -324,7 +341,7 @@ const Paper = (props) => {
 
   function calculateCommentCount() {
     let { paper } = props;
-    return paper.discussion_count;
+    return paper ? paper.discussion_count : 0;
   }
 
   function formatDescription() {
@@ -391,33 +408,31 @@ const Paper = (props) => {
     return data;
   }
 
-  let socialImageUrl = props.paper.metatagImage;
+  let socialImageUrl = paper.metatagImage;
 
   if (!socialImageUrl) {
-    socialImageUrl =
-      props.paper.first_preview && props.paper.first_preview.file;
+    socialImageUrl = paper.first_preview && paper.first_preview.file;
   }
+
   return (
     <div className={css(styles.container)}>
       <Fragment>
         <Head
           title={paper.title}
           description={formatDescription()}
-          socialImageUrl={
-            props.paper.metatagImage ||
-            (props.paper.first_preview && props.paper.first_preview.file)
-          }
+          socialImageUrl={socialImageUrl}
           canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
         />
         <div className={css(styles.paperPageContainer)}>
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
             <PaperPageCard
               paper={paper}
+              paperId={paperId}
               score={score}
               upvote={upvote}
               downvote={downvote}
               selectedVoteType={selectedVoteType}
-              shareUrl={hostname + `/paper/${paper.id}/${paper.slug}`}
+              shareUrl={hostname + `/paper/${paperId}/${paper.slug}`}
               isModerator={isModerator}
               flagged={flagged}
               doneFetchingPaper={!loadingPaper}
@@ -448,7 +463,6 @@ const Paper = (props) => {
             figureCount={figureCount}
             activeTabs={tabs}
             showAllSections={showAllSections}
-            fetchedFigures={fetchedFigures}
             referencedByCount={referencedByCount}
             loadingReferencedBy={loadingReferencedBy}
           />
@@ -463,8 +477,8 @@ const Paper = (props) => {
                 commentCount={discussionCount}
                 setCount={setCount}
                 // comments threads
-                threads={discussionThreads}
-                setDiscussionThreads={setDiscussionThreads}
+                threads={paper.discussion && paper.discussion.threads}
+                // setDiscussionThreads={setDiscussionThreads}
                 // toggle sections
                 showAllSections={showAllSections}
                 toggleShowAllSections={toggleShowAllSections}
@@ -490,18 +504,6 @@ const Paper = (props) => {
               />
             </div>
           </a>
-          {false && (figureCount > 0 && showAllSections) ? (
-            <a name="figures">
-              <div className={css(styles.figuresContainer)}>
-                <FigureTab
-                  paperId={paperId}
-                  paper={paper}
-                  setFigureCount={setFigureCount}
-                  figures={figures}
-                />
-              </div>
-            </a>
-          ) : null}
           <a name="paper">
             <div id="paper-tab" className={css(styles.paperTabContainer)}>
               <PaperTab
@@ -601,54 +603,68 @@ const Paper = (props) => {
   );
 };
 
+const fetchPaper = ({ paperId }) => {
+  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((resp) => {
+      return resp;
+    })
+    .catch((error) => {
+      console.log(error);
+      Sentry.captureException(error);
+    });
+};
+
 Paper.getInitialProps = async (ctx) => {
-  const { isServer, req, store, query, res } = ctx;
+  const { req, store, query, res } = ctx;
   const { host } = absoluteUrl(req);
   const hostname = host;
-  var fetchedPaper;
-  var redirectPath;
-  if (
-    store.getState().paper.id !== query.paperId ||
-    (!store.getState().paper.doneFetchingPaper && !store.getState().paper.id)
-  ) {
-    try {
-      await store.dispatch(PaperActions.getPaper(query.paperId));
-      fetchedPaper = store.getState().paper;
 
-      if (fetchedPaper.slug !== query.paperName) {
-        // redirect paper if paperName does not match slug
-        let paperName = fetchedPaper.slug
-          ? fetchedPaper.slug
-          : formatPaperSlug(
-              fetchedPaper.paper_title
-                ? fetchedPaper.paper_title
-                : fetchedPaper.title
-            );
-        if (paperName === query.paperName) {
-          // catch multiple redirect when slug does not exist
-          return { isServer, hostname, paper: fetchedPaper, redirectPath };
-        }
-
-        redirectPath = `/paper/${fetchedPaper.id}/${paperName}`;
-        res.writeHead(301, { Location: redirectPath });
-        res.end();
-        return {
-          isServer,
-          hostname,
-          paper: fetchedPaper,
-          redirectPath,
-          paperName,
-        };
-      }
-      return { isServer, hostname, paper: fetchedPaper };
-    } catch (err) {
-      // if paper doesnot exist
-      if (res) {
-        res.statusCode = 404;
-      }
-      return { error: true, errorBody: err, fetchedPaper };
-    }
+  if (!isServer()) {
+    return {};
   }
+
+  // Fetch data from external API
+  let props = {};
+  let paper;
+  try {
+    paper = await fetchPaper({ paperId: query.paperId });
+  } catch (err) {
+    console.log(err);
+    // if paper doesnot exist
+    if (res) {
+      res.statusCode = 404;
+    }
+    return { error: true };
+  }
+
+  let fetchedPaper = true;
+
+  if (paper.slug !== query.paperName) {
+    // redirect paper if paperName does not match slug
+    let paperName = paper.slug
+      ? paper.slug
+      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
+    if (paperName === query.paperName) {
+      // catch multiple redirect when slug does not exist
+      props = { hostname, paper, redirectPath, paperId: query.paperId };
+      return props;
+    }
+
+    redirectPath = `/paper/${paper.id}/${paperName}`;
+    res.writeHead(301, { Location: redirectPath });
+    res.end();
+    props = {
+      hostname,
+      paper,
+      redirectPath,
+      paperName,
+    };
+    return props;
+  }
+  props = { hostname, paper, fetchedPaper };
+  return props;
 };
 
 const styles = StyleSheet.create({
@@ -937,7 +953,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  paper: state.paper,
   vote: state.vote,
   auth: state.auth,
 });

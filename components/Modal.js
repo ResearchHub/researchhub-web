@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import { RHLogo } from "~/config/themes/icons";
 import { modalStyles as styles } from "~/config/themes/styles";
 
-export default (props) => {
+const ModalComponent = (props) => {
   const { isOpen, close, shouldCloseOnOverlayClick, title } = props;
 
   return (
@@ -34,3 +34,5 @@ export default (props) => {
     </Modal>
   );
 };
+
+export default ModalComponent;
