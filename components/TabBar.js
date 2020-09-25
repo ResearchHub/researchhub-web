@@ -23,7 +23,13 @@ const TabBar = (props) => {
                 return null;
               }
             }
-            return renderTab(tab, selectedTab, dynamic_href, props.fetching);
+            return renderTab(
+              tab,
+              selectedTab,
+              dynamic_href,
+              props.fetching,
+              props.author.id
+            );
           })}
         </div>
       </ComponentWrapper>
@@ -40,7 +46,8 @@ function renderTab(
   { key, href, label, showCount, count },
   selected,
   dynamic_href,
-  fetching
+  fetching,
+  userId
 ) {
   let isSelected = false;
   let classNames = [styles.tab];
@@ -49,8 +56,9 @@ function renderTab(
     isSelected = true;
     classNames.push(styles.selected);
   }
+
   return (
-    <Link key={key} href={dynamic_href} as={href}>
+    <Link key={key} href={dynamic_href} as={`/user/${userId}/${href}`}>
       <div className={css(classNames)}>
         <div className={css(styles.link)}>
           {label}{" "}
