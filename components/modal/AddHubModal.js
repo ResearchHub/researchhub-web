@@ -38,15 +38,6 @@ class AddHubModal extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.categories !== this.props.categories) {
-      const categories = this.props.categories.map((elem) => {
-        return { value: elem.id, label: elem.category_name };
-      });
-      this.setState({ categories: categories });
-    }
-  }
-
   handleInputChange = (id, value) => {
     this.setState({ [id]: value });
   };
@@ -133,6 +124,9 @@ class AddHubModal extends React.Component {
 
   render() {
     const { modals, openAddHubModal } = this.props;
+    const categories = this.props.categories.map((elem) => {
+      return { value: elem.id, label: elem.category_name };
+    });
     return (
       <BaseModal
         isOpen={modals.openAddHubModal}
@@ -177,7 +171,7 @@ class AddHubModal extends React.Component {
             labelStyle={styles.labelStyle}
             isMulti={false}
             id={"hubCategory"}
-            options={this.state.categories}
+            options={categories}
             onChange={this.handleCategoryChange}
             error={this.state.error.category && this.state.error.changed}
           />
