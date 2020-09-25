@@ -476,6 +476,7 @@ const Paper = (props) => {
                 setLimitCount={setLimitCount}
                 commentCount={discussionCount}
                 setCount={setCount}
+                paper={paper}
                 // comments threads
                 threads={paper.discussion && paper.discussion.threads}
                 // setDiscussionThreads={setDiscussionThreads}
