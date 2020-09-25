@@ -168,6 +168,7 @@ const Paper = (props) => {
         setSelectedVoteType(getVoteType(currPaper.userVote));
         setCount(calculateCommentCount(currPaper));
         setPaper(currPaper);
+        // checkUserVote();
         return currPaper;
       })
       .catch((error) => {
@@ -212,8 +213,9 @@ const Paper = (props) => {
     if (paper.id !== paperId) {
       if (!props.fetchedPaper) {
         fetchPaper({ paperId });
+      } else {
+        checkUserVote();
       }
-      checkUserVote();
       if (document.getElementById("structuredData")) {
         let script = document.getElementById("structuredData");
         script.textContext = formatStructuredData();
