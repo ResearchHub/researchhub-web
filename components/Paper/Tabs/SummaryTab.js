@@ -1066,7 +1066,6 @@ var styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  paper: state.paper,
   auth: state.auth,
 });
 
