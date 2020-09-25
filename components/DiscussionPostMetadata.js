@@ -224,7 +224,8 @@ function openTwitter(url) {
 const User = (props) => {
   const { name, paper, authorProfile, smaller, twitterUrl } = props;
   let isPoster = false;
-  if (paper && paper.uploaded_by.author_profile.id !== authorProfile.id) {
+
+  if (paper && paper.uploaded_by.author_profile.id === authorProfile.id) {
     isPoster = true;
   }
 
@@ -428,7 +429,7 @@ const styles = StyleSheet.create({
   },
   smallerHeadline: {
     marginTop: 2,
-    fontSize: 12,
+    fontSize: 11,
   },
   timestampDivider: {
     fontSize: 18,

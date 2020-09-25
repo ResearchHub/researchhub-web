@@ -83,10 +83,12 @@ class UserInfoModal extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate = async (prevProps) => {
     if (!prevProps.auth.isLoggedIn && this.props.auth.isLoggedIn) {
       if (!this.props.author && this.props.user) {
-        this.props.getAuthor({ authorId: this.props.user.author_profile.id });
+        await this.props.getAuthor({
+          authorId: this.props.user.author_profile.id,
+        });
         this.props.author && this.setState({ ...this.initialState });
       }
     }
@@ -96,7 +98,7 @@ class UserInfoModal extends React.Component {
     ) {
       this.props.author && this.setState({ ...this.initialState });
     }
-  }
+  };
 
   closeModal = () => {
     this.props.openUserInfoModal(false);
@@ -233,16 +235,18 @@ class UserInfoModal extends React.Component {
                 value={education.name}
                 onClick={() => this.openEducationModal(index)}
               />
-              <div
-                className={css(
-                  styles.trashIcon,
-                  index === 0 && styles.indexZero
-                )}
-                onClick={() => this.removeEducation(index)}
-                onMouseEnter={this.onMouseEnterEducation}
-              >
-                {icons.trash}
-              </div>
+              {
+                <div
+                  className={css(
+                    styles.trashIcon,
+                    index === 0 && styles.indexZero
+                  )}
+                  onClick={() => this.removeEducation(index)}
+                  onMouseEnter={this.onMouseEnterEducation}
+                >
+                  {icons.trash}
+                </div>
+              }
             </div>
           );
         })}
