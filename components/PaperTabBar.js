@@ -258,12 +258,12 @@ const PaperTabBar = (props) => {
       classNames.push(styles.lastTab);
     }
     return (
-      <a href={`#${href}`} className={css(styles.tag)}>
-        <div
-          className={css(classNames)}
-          onClick={() => scrollToPage(label)}
-          key={`paper_tab_bar_${index}`}
-        >
+      <a
+        href={`#${href}`}
+        className={css(styles.tag)}
+        key={`paper_tab_bar_${index}`}
+      >
+        <div className={css(classNames)} onClick={() => scrollToPage(label)}>
           {label} {ui && ui(isSelected)}
           {renderCount(label, selected)}
         </div>
