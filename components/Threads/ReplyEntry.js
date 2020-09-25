@@ -389,6 +389,7 @@ class ReplyEntry extends React.Component {
                   ])}
                   username={username}
                   date={date}
+                  paper={paper}
                   smaller={true}
                   onHideClick={!mobileView && this.toggleCollapsed}
                   hideState={this.state.collapsed}
