@@ -54,6 +54,7 @@ Index.getInitialProps = async (ctx) => {
       query,
       filter: filterObj,
       scope: scopeObj,
+      page,
     };
   } catch {
     let defaultProps = {
