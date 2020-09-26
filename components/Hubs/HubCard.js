@@ -94,8 +94,8 @@ class HubCard extends React.Component {
               subscribed: false,
             });
           })
-          .catch((err) => {
-            if (err.response.status === 429) {
+          .catch((error) => {
+            if (error.response.status === 429) {
               this.props.openRecaptchaPrompt(true);
             } else {
               Sentry.captureException(error);
@@ -114,9 +114,11 @@ class HubCard extends React.Component {
               subscribed: true,
             });
           })
-          .catch((err) => {
-            if (err.response.status === 429) {
+          .catch((error) => {
+            if (error.response.status === 429) {
               this.props.openRecaptchaPrompt(true);
+            } else {
+              Sentry.captureException(error);
             }
           });
       }
