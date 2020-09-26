@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import * as Sentry from "@sentry/browser";
 
 // Component
 import Loader from "~/components/Loader/Loader";
@@ -96,6 +97,8 @@ class HubCard extends React.Component {
           .catch((err) => {
             if (err.response.status === 429) {
               this.props.openRecaptchaPrompt(true);
+            } else {
+              Sentry.captureException(error);
             }
           });
       } else {
@@ -232,6 +235,15 @@ const styles = StyleSheet.create({
     ":hover": {
       transition: "transform 0.1s",
       transform: "scale(1.05)",
+    },
+    "@media only screen and (max-width: 415px)": {
+      zoom: 0.9,
+    },
+    "@media only screen and (max-width: 376px)": {
+      zoom: 0.8,
+    },
+    "@media only screen and (max-width: 321px)": {
+      zoom: 0.7,
     },
   },
   hubCard: {
