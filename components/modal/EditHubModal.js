@@ -61,6 +61,7 @@ class EditHubModal extends React.Component {
     }
     if (isUnique) {
       const data = new FormData();
+      data.append("id", id);
       if (hubName) {
         data.append("name", hubName.toLowerCase());
       }
@@ -73,8 +74,7 @@ class EditHubModal extends React.Component {
       if (hubCategory) {
         data.append("category", hubCategory.value);
       }
-      data.append("id", id);
-      return fetch(API.HUB({}), API.POST_FILE_CONFIG(data))
+      return fetch(API.HUB({ hubId: id }), API.PUT_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((_res) => {
