@@ -23,6 +23,10 @@ class AddHubModal extends React.Component {
     super(props);
     this.initialState = {
       hubName: "",
+      categories:
+        this.props.categories && this.props.categories.results
+          ? this.props.categories.results
+          : [],
       error: {
         upload: false,
         category: true,
@@ -31,17 +35,7 @@ class AddHubModal extends React.Component {
     };
     this.state = {
       ...this.initialState,
-      categories: [],
     };
-  }
-
-  componentDidMount() {
-    this.props.getCategories().then((payload) => {
-      const categories = payload.payload.categories.map((elem) => {
-        return { value: elem.id, label: elem.category_name };
-      });
-      this.setState({ categories: categories });
-    });
   }
 
   handleInputChange = (id, value) => {
@@ -88,16 +82,11 @@ class AddHubModal extends React.Component {
         .then(Helpers.parseJSON)
         .then((res) => {
           let newHub = res;
-          setTimeout(() => {
-            this.props.addHub && this.props.addHub(newHub);
-            this.props.showMessage({ show: false });
-            this.props.setMessage("Hub successfully added!");
-            this.props.showMessage({ show: true });
-            this.closeModal();
-            setTimeout(() => {
-              this.props.showMessage({ show: false });
-            }, 1200);
-          }, 400);
+          this.props.addHub && this.props.addHub(newHub);
+          this.props.showMessage({ show: false });
+          this.props.setMessage("Hub successfully added!");
+          this.props.showMessage({ show: true });
+          this.closeModal();
         })
         .catch((err) => {
           if (err.response.status === 429) {
@@ -105,27 +94,17 @@ class AddHubModal extends React.Component {
             this.closeModal();
             return this.props.openRecaptchaPrompt(true);
           }
-          setTimeout(() => {
-            this.props.showMessage({ show: false });
-            this.props.setMessage("Hmm something went wrong.");
-            this.props.showMessage({ show: true, error: true });
-            setTimeout(() => {
-              this.props.showMessage({ show: false });
-            }, 1200);
-          }, 400);
+          this.props.showMessage({ show: false });
+          this.props.setMessage("Hmm something went wrong.");
+          this.props.showMessage({ show: true, error: true });
         });
     } else {
-      setTimeout(() => {
-        this.props.showMessage({ show: false });
-        this.props.setMessage("This hub name is already taken.");
-        this.props.showMessage({ show: true, error: true });
-        const error = { ...this.state.error };
-        error.upload = true;
-        this.setState({ error: error });
-        setTimeout(() => {
-          this.props.showMessage({ show: false });
-        }, 1200);
-      }, 400);
+      this.props.showMessage({ show: false });
+      this.props.setMessage("This hub name is already taken.");
+      this.props.showMessage({ show: true, error: true });
+      const error = { ...this.state.error };
+      error.upload = true;
+      this.setState({ error: error });
     }
   };
 
@@ -140,14 +119,14 @@ class AddHubModal extends React.Component {
 
   closeModal = () => {
     this.props.openAddHubModal(false);
-    this.setState({
-      ...this.initialState,
-    });
     document.body.style.overflow = "scroll";
   };
 
   render() {
     const { modals, openAddHubModal } = this.props;
+    const categories = this.props.categories.map((elem) => {
+      return { value: elem.id, label: elem.category_name };
+    });
     return (
       <BaseModal
         isOpen={modals.openAddHubModal}
@@ -192,7 +171,7 @@ class AddHubModal extends React.Component {
             labelStyle={styles.labelStyle}
             isMulti={false}
             id={"hubCategory"}
-            options={this.state.categories}
+            options={categories}
             onChange={this.handleCategoryChange}
             error={this.state.error.category && this.state.error.changed}
           />
@@ -266,7 +245,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  getCategories: HubActions.getCategories,
   openAddHubModal: ModalActions.openAddHubModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,

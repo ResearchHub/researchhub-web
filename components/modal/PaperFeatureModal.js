@@ -372,11 +372,9 @@ class PaperFeatureModal extends React.Component {
           this.closeModal();
           return this.props.openRecaptchaPrompt(true);
         }
-        setTimeout(() => {
-          showMessage({ show: false });
-          setMessage("Something went wrong");
-          showMessage({ show: true, error: true });
-        }, 800);
+        showMessage({ show: false });
+        setMessage("Something went wrong");
+        showMessage({ show: true, error: true });
       });
   };
 

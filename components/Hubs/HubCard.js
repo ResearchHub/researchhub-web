@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import * as Sentry from "@sentry/browser";
 
 // Component
 import Loader from "~/components/Loader/Loader";
@@ -37,15 +38,43 @@ class HubCard extends React.Component {
   };
 
   componentDidUpdate = (prevProps, prevState) => {
-    if (!prevProps.isLoggedIn && this.props.isLoggedIn) {
-      fetch(API.HUB({ slug: this.props.slug }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          this.setState({
-            subscribed: res.results[0].user_is_subscribed,
-          });
-        });
+    if (
+      prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn ||
+      prevProps.auth.user !== this.props.auth.user
+    ) {
+      this.updateSubscribedHubs();
+    }
+  };
+
+  updateSubscribedHubs = () => {
+    let auth = this.props.auth;
+    let hubs = this.props.hubState.hubs;
+    if (auth.isLoggedIn) {
+      let subscribedHubs = {};
+
+      let subscribed = auth.user.subscribed || [];
+      subscribed.forEach((hub) => {
+        subscribedHubs[hub.id] = true;
+      });
+
+      let updatedSubscribedHubs = hubs.map((hub) => {
+        if (subscribed[hub.id]) {
+          hub.user_is_subscribed = true;
+        }
+      });
+
+      this.props.updateSubscribedHubs(updatedSubscribedHubs);
+
+      if (this.props.hub.id in subscribedHubs) {
+        this.setState({ subscribed: true });
+      }
+    } else {
+      let updatedSubscribedHubs = hubs.map((hub) => {
+        hub.user_is_subscribed = false;
+        return hub;
+      });
+
+      this.props.updateSubscribedHubs(updatedSubscribedHubs);
     }
   };
 
@@ -54,46 +83,88 @@ class HubCard extends React.Component {
     showMessage({ show: false });
     this.setState({ transition: true }, () => {
       let config = API.POST_CONFIG();
-      return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          updateHub(hubState, { ...res });
-          setMessage("Subscribed!");
-          showMessage({ show: true });
-          this.setState({
-            transition: false,
-            subscribed: true,
+      if (this.state.subscribed) {
+        return fetch(API.HUB_UNSUBSCRIBE({ hubId: hub.id }), config)
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((res) => {
+            updateHub(hubState, { ...res });
+            setMessage("Unsubscribed!");
+            showMessage({ show: true });
+            this.setState({
+              transition: false,
+              subscribed: false,
+            });
+          })
+          .catch((error) => {
+            if (error.response.status === 429) {
+              this.props.openRecaptchaPrompt(true);
+            } else {
+              Sentry.captureException(error);
+            }
           });
-        })
-        .catch((err) => {
-          if (err.response.status === 429) {
-            this.props.openRecaptchaPrompt(true);
-          }
-        });
+      } else {
+        return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((res) => {
+            updateHub(hubState, { ...res });
+            setMessage("Subscribed!");
+            showMessage({ show: true });
+            this.setState({
+              transition: false,
+              subscribed: true,
+            });
+          })
+          .catch((error) => {
+            if (error.response.status === 429) {
+              this.props.openRecaptchaPrompt(true);
+            } else {
+              Sentry.captureException(error);
+            }
+          });
+      }
+    });
+  };
+
+  onMouseEnterSubscribe = () => {
+    this.setState({
+      subscribeHover: true,
+    });
+  };
+
+  onMouseExitSubscribe = () => {
+    this.setState({
+      subscribeHover: false,
     });
   };
 
   renderSubscribe = () => {
     const { hub } = this.props;
-    if (!this.props.isLoggedIn) return;
+    if (!this.props.auth.isLoggedIn) return;
+    let buttonStyle, buttonLabel;
     if (this.state.subscribed) {
-      return <div className={css(styles.subscribed)}>Subscribed</div>;
+      buttonStyle = this.state.subscribeHover
+        ? styles.unsubscribeButton
+        : styles.subscribed;
+      buttonLabel = this.state.subscribeHover ? "Unsubscribe" : "Subscribed";
     } else {
-      return (
-        <Button
-          isWhite={false}
-          label={"Subscribe"}
-          customButtonStyle={styles.subscribeButton}
-          customLabelStyle={styles.subscribeButtonLabel}
-          hideRipples={true}
-          onClick={(e) => {
-            e.stopPropagation();
-            this.subscribeToHub();
-          }}
-        />
-      );
+      buttonStyle = styles.subscribeButton;
+      buttonLabel = "Subscribe";
     }
+    return (
+      <button
+        className={css(buttonStyle)}
+        onMouseEnter={this.onMouseEnterSubscribe}
+        onMouseLeave={this.onMouseExitSubscribe}
+        onClick={(e) => {
+          e.stopPropagation();
+          this.subscribeToHub();
+        }}
+      >
+        {buttonLabel}
+      </button>
+    );
   };
 
   openEditHubModal = () => {
@@ -126,7 +197,7 @@ class HubCard extends React.Component {
               src={
                 hub.hub_image
                   ? hub.hub_image
-                  : "/static/background/facebook-og.jpg"
+                  : "/static/background/twitter-banner.jpg"
               }
               alt="Hub Background Image"
             ></img>
@@ -146,24 +217,36 @@ class HubCard extends React.Component {
                 </div>
                 <div>
                   <span className={css(styles.statIcon)}>{icons.chat}</span>
-                  {hub.discussion_count} Discussion
+                  {hub.discussion_count} Comment
                   {hub.discussion_count != 1 ? "s" : ""}
                 </div>
-                <div>
-                  <span className={css(styles.statIcon)}>{icons.user}</span>
-                  {hub.subscriber_count} Subscriber
-                  {hub.subscriber_count != 1 ? "s" : ""}
+                <div className={css(styles.hubStats)}>
+                  <div>
+                    <span className={css(styles.statIcon)}>{icons.paper}</span>
+                    {hub.paper_count} Paper
+                    {hub.paper_count != 1 ? "s" : ""}
+                  </div>
+                  <div>
+                    <span className={css(styles.statIcon)}>{icons.chat}</span>
+                    {hub.discussion_count} Discussion
+                    {hub.discussion_count != 1 ? "s" : ""}
+                  </div>
+                  <div>
+                    <span className={css(styles.statIcon)}>{icons.user}</span>
+                    {hub.subscriber_count} Subscriber
+                    {hub.subscriber_count != 1 ? "s" : ""}
+                  </div>
                 </div>
               </div>
             </div>
+            <Link
+              href="/hubs/[slug]"
+              as={`/hubs/${encodeURIComponent(hub.slug)}`}
+              key={`hub_${hub.id}`}
+            >
+              <a ref={this.linkRef}></a>
+            </Link>
           </div>
-          <Link
-            href="/hubs/[slug]"
-            as={`/hubs/${encodeURIComponent(hub.slug)}`}
-            key={`hub_${hub.id}`}
-          >
-            <a ref={this.linkRef}></a>
-          </Link>
         </div>
       </>
     );
@@ -172,6 +255,8 @@ class HubCard extends React.Component {
 
 const styles = StyleSheet.create({
   slugLink: {
+    zIndex: 1,
+    cursor: "pointer",
     textDecoration: "none",
     width: "364px",
     height: "264px",
@@ -184,7 +269,15 @@ const styles = StyleSheet.create({
       transition: "transform 0.1s",
       transform: "scale(1.05)",
     },
-    cursor: "pointer",
+    "@media only screen and (max-width: 415px)": {
+      zoom: 0.9,
+    },
+    "@media only screen and (max-width: 376px)": {
+      zoom: 0.8,
+    },
+    "@media only screen and (max-width: 321px)": {
+      zoom: 0.7,
+    },
   },
   hubCard: {
     fontSize: "16px",
@@ -217,23 +310,54 @@ const styles = StyleSheet.create({
   },
   subscribeButton: {
     height: 20,
-    width: 75,
+    width: 80,
     border: `${colors.BLUE()} 1px solid`,
-  },
-  subscribed: {
+    backgroundColor: colors.BLUE(),
+    color: "#fff",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: 16,
-    width: 61,
-    padding: "1px 6px 1px 6px",
-    border: `${colors.BLUE()} 1px solid`,
-    color: `${colors.BLUE()}`,
-    fontSize: 13,
-    borderRadius: 5,
-  },
-  subscribeButtonLabel: {
     fontSize: 12,
+    borderRadius: 5,
+    cursor: "pointer",
+    highlight: "none",
+    outline: "none",
+    userSelect: "none",
+    ":hover": {
+      backgroundColor: "#3E43E8",
+    },
+  },
+  unsubscribeButton: {
+    height: 20,
+    width: 80,
+    color: "#fff",
+    backgroundColor: colors.RED(1),
+    border: `${colors.RED(1)} 1px solid`,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 12,
+    borderRadius: 5,
+    cursor: "pointer",
+    highlight: "none",
+    outline: "none",
+    userSelect: "none",
+  },
+  subscribed: {
+    height: 20,
+    width: 80,
+    border: `${colors.BLUE()} 1px solid`,
+    color: colors.BLUE(),
+    backgroundColor: "#fff",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 12,
+    borderRadius: 5,
+    cursor: "pointer",
+    highlight: "none",
+    outline: "none",
+    userSelect: "none",
   },
   hubDescription: {
     fontSize: 13,
@@ -255,7 +379,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  isLoggedIn: state.auth.isLoggedIn,
+  auth: state.auth,
   hubState: state.hubs,
 });
 
@@ -264,6 +388,8 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   updateHub: HubActions.updateHub,
   openEditHubModal: ModalActions.openEditHubModal,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
+  updateSubscribedHubs: HubActions.updateSubscribedHubs,
 };
 
 export default connect(

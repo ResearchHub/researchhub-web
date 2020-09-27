@@ -268,6 +268,7 @@ class Index extends React.Component {
       filterOptions.filter((filter) => {
         return filter.value === scope.split("-").join("_");
       })[0];
+
     this.setState(
       {
         type,
@@ -287,6 +288,41 @@ class Index extends React.Component {
 
     if (prevState.type !== this.state.type) {
       this.fetchLeaderboard(this.state.type);
+    }
+
+    if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
+      if (this.props.auth.isLoggedIn) {
+        this.checkUserVote();
+      }
+    }
+  };
+
+  checkUserVote = () => {
+    if (this.state.type !== "papers") return;
+
+    if (this.props.auth.isLoggedIn) {
+      let paperIds = this.state.items.map((paper) => paper.id);
+      return fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          let updates = { ...res };
+          let updatedPapers = this.state.items.map((paper) => {
+            if (updates[paper.id]) {
+              paper.user_vote = updates[paper.id];
+            }
+            return paper;
+          });
+          this.setState({ items: [] });
+          this.setState({ items: updatedPapers });
+        });
+    } else {
+      let updatedPapers = this.state.items.map((paper) => {
+        paper.user_vote = null;
+        return paper;
+      });
+      this.setState({ items: [] });
+      this.setState({ items: updatedPapers });
     }
   };
 
@@ -1329,6 +1365,7 @@ const mainFeedStyles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   hubs: state.hubs,
+  auth: state.auth,
 });
 
 export default connect(
