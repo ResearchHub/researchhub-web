@@ -5,7 +5,6 @@ import Link from "next/link";
 import * as Sentry from "@sentry/browser";
 
 // Component
-import Loader from "~/components/Loader/Loader";
 import Button from "../Form/Button";
 import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 
@@ -167,88 +166,77 @@ class HubCard extends React.Component {
     );
   };
 
-  openEditHubModal = () => {
-    console.log(this.props.hub);
+  openEditHubModal = (e) => {
+    e.stopPropagation();
     this.props.openEditHubModal(true, this.props.hub);
   };
 
   render() {
     const { hub } = this.props;
     return (
-      <>
-        <EditHubModal />
-        <PermissionNotificationWrapper
-          modalMessage="Edit the Hub"
-          loginRequired={true}
-          onClick={this.openEditHubModal}
-        >
-          <Button isWhite={true} label={"Edit the Hub"} hideRipples={true} />
-        </PermissionNotificationWrapper>
-        <div
-          className={css(styles.slugLink)}
-          onClick={() => {
-            this.linkRef.current.click();
-          }}
-        >
-          <div className={css(styles.hubCard)}>
-            <img
-              loading="lazy"
-              className={css(styles.roundedImage)}
-              src={
-                hub.hub_image
-                  ? hub.hub_image
-                  : "/static/background/twitter-banner.jpg"
-              }
-              alt="Hub Background Image"
-            ></img>
-            <div key={hub.id} className={css(styles.hubInfo)}>
-              <div className={css(styles.hubTitle)}>
-                <div className={css(styles.hubName)}>{hub.name}</div>
-                {this.renderSubscribe()}
+      <div
+        className={css(styles.slugLink)}
+        onClick={() => {
+          this.linkRef.current.click();
+        }}
+      >
+        <div className={css(styles.hubCard)}>
+          <img
+            loading="lazy"
+            className={css(styles.roundedImage)}
+            src={
+              hub.hub_image
+                ? hub.hub_image
+                : "/static/background/twitter-banner.jpg"
+            }
+            alt="Hub Background Image"
+          ></img>
+          <EditHubModal />
+          {/* <PermissionNotificationWrapper
+              modalMessage="Edit the Hub"
+              loginRequired={true}
+              permissionKey="EditHub"
+            > */}
+          <div
+            className={css(styles.editButton)}
+            onClick={this.openEditHubModal}
+          >
+            {icons.pencil}
+          </div>
+          {/* </PermissionNotificationWrapper> */}
+          <div key={hub.id} className={css(styles.hubInfo)}>
+            <div className={css(styles.hubTitle)}>
+              <div className={css(styles.hubName)}>{hub.name}</div>
+              {this.renderSubscribe()}
+            </div>
+            <div className={css(styles.hubDescription)}>{hub.description}</div>
+            <div className={css(styles.hubStats)}>
+              <div>
+                <span className={css(styles.statIcon)}>{icons.paper}</span>
+                {hub.paper_count} Paper
+                {hub.paper_count != 1 ? "s" : ""}
               </div>
-              <div className={css(styles.hubDescription)}>
-                {hub.description}
+              <div>
+                <span className={css(styles.statIcon)}>{icons.chat}</span>
+                {hub.discussion_count} Comment
+                {hub.discussion_count != 1 ? "s" : ""}
               </div>
-              <div className={css(styles.hubStats)}>
-                <div>
-                  <span className={css(styles.statIcon)}>{icons.paper}</span>
-                  {hub.paper_count} Paper
-                  {hub.paper_count != 1 ? "s" : ""}
-                </div>
-                <div>
-                  <span className={css(styles.statIcon)}>{icons.chat}</span>
-                  {hub.discussion_count} Comment
-                  {hub.discussion_count != 1 ? "s" : ""}
-                </div>
-                <div className={css(styles.hubStats)}>
-                  <div>
-                    <span className={css(styles.statIcon)}>{icons.paper}</span>
-                    {hub.paper_count} Paper
-                    {hub.paper_count != 1 ? "s" : ""}
-                  </div>
-                  <div>
-                    <span className={css(styles.statIcon)}>{icons.chat}</span>
-                    {hub.discussion_count} Discussion
-                    {hub.discussion_count != 1 ? "s" : ""}
-                  </div>
-                  <div>
-                    <span className={css(styles.statIcon)}>{icons.user}</span>
-                    {hub.subscriber_count} Subscriber
-                    {hub.subscriber_count != 1 ? "s" : ""}
-                  </div>
-                </div>
+              <div>
+                <span className={css(styles.statIcon)}>{icons.user}</span>
+                {hub.subscriber_count} Subscriber
+                {hub.subscriber_count != 1 ? "s" : ""}
               </div>
             </div>
-            <Link
-              href="/hubs/[slug]"
-              as={`/hubs/${encodeURIComponent(hub.slug)}`}
-              key={`hub_${hub.id}`}
-            >
-              <a ref={this.linkRef}></a>
-            </Link>
           </div>
+          <Link
+            href="/hubs/[slug]"
+            as={`/hubs/${encodeURIComponent(hub.slug)}`}
+            key={`hub_${hub.id}`}
+          >
+            <a ref={this.linkRef}></a>
+          </Link>
         </div>
-      </>
+      </div>
     );
   }
 }
@@ -375,6 +363,14 @@ const styles = StyleSheet.create({
   },
   statIcon: {
     marginRight: "5px",
+  },
+  editButton: {
+    position: "absolute",
+    cursor: "pointer",
+    fontSize: 30,
+    top: 6,
+    right: 8,
+    color: "black",
   },
 });
 
