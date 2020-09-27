@@ -121,14 +121,12 @@ const DiscussionThreadPage = (props) => {
     setTransition(true);
     setComments(newComments);
     setActive(false);
+    props.showMessage({ show: false });
+    props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
+    props.getUser();
     setTimeout(() => {
-      props.showMessage({ show: false });
-      props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
-      props.getUser();
-      setTimeout(() => {
-        setTransition(false);
-      }, 3000);
-    }, 400);
+      setTransition(false);
+    }, 3000);
   }
 
   const getNextPage = async (paperId, discussionThreadId, page) => {

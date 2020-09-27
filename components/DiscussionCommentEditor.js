@@ -50,9 +50,7 @@ const DiscussionCommentEditor = (props) => {
       text,
       plain_text
     );
-    setTimeout(() => {
-      setIsActive(false);
-    }, 400);
+    setIsActive(false);
   };
 
   function onClick() {

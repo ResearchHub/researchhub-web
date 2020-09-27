@@ -47,14 +47,12 @@ class Index extends React.Component {
         this.setState({ hubsByCategory: action.payload.hubsByCategory });
       });
     } else {
-      setTimeout(() => {
-        this.setState({
-          categories: JSON.parse(JSON.stringify(hubs.categories)),
-          hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
-          finishedLoading: true,
-        });
-        showMessage({ show: false });
-      }, 400);
+      this.setState({
+        categories: JSON.parse(JSON.stringify(hubs.categories)),
+        hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
+        finishedLoading: true,
+      });
+      showMessage({ show: false });
     }
   };
 
@@ -62,17 +60,15 @@ class Index extends React.Component {
     if (prevProps.hubs.hubsByCategory !== this.props.hubs.hubsByCategory) {
       const { showMessage, hubs } = this.props;
       showMessage({ show: true, load: true });
-      setTimeout(() => {
-        this.setState(
-          {
-            hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
-            finishedLoading: true,
-          },
-          () => {
-            showMessage({ show: false });
-          }
-        );
-      }, 400);
+      this.setState(
+        {
+          hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
+          finishedLoading: true,
+        },
+        () => {
+          showMessage({ show: false });
+        }
+      );
     }
   }
 
@@ -98,10 +94,11 @@ class Index extends React.Component {
     return categories.map((category, i) => {
       let categoryID = category.id;
       let categoryName = category.category_name;
+      let slug = categoryName.toLowerCase().replace(/\s/g, "-");
       return (
         <>
           <div
-            name={`${encodeURIComponent(categoryName)}`}
+            name={`${slug}`}
             className={css(styles.categoryLabel)}
           >{`${categoryName}`}</div>
           <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
@@ -242,6 +239,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     marginBottom: 40,
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "center",
+    },
   },
 });
 

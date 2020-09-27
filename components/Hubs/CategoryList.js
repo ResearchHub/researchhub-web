@@ -12,11 +12,6 @@ import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 // Config
 import colors from "../../config/themes/colors";
 
-// Redux
-import { HubActions } from "~/redux/hub";
-
-const DEFAULT_TRANSITION_TIME = 400;
-
 class CategoryList extends React.Component {
   constructor(props) {
     super(props);
@@ -25,116 +20,26 @@ class CategoryList extends React.Component {
         this.props.categories && this.props.categories.results
           ? this.props.categories.results
           : [],
-      hubs:
-        this.props.initialHubList && this.props.initialHubList.results
-          ? this.props.initialHubList.results
-          : [],
-      reveal: true,
     };
   }
 
-  componentDidMount() {
-    let { auth } = this.props;
-    if (this.props.categories) {
-      this.setState({ categories: [...this.props.categories] });
-    }
-
-    if (this.props.hubs.length) {
-      this.setState({ hubs: [...this.props.hubs] });
-    }
-
-    if (auth.isLoggedIn) {
-      this.updateTopHubs();
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.current !== this.props.current) {
-      this.setState({
-        categories: this.props.categories,
-        hubs: this.props.hubs,
-      });
-    }
-    if (prevProps.categories !== this.props.categories) {
-      this.setState({ categories: [...this.props.categories] });
-    }
-    if (prevProps.hubs !== this.props.hubs) {
-      this.setState({ hubs: [...this.props.hubs] });
-    }
-    if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
-      this.updateTopHubs();
-    }
-    if (prevProps.auth.user !== this.props.auth.user) {
-      this.updateTopHubs();
-    }
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.revealTimeout);
-    this.setState({ reveal: false });
-  }
-
-  fetchHubs = async () => {
-    if (!this.props.hubs.length > 0) {
-      await this.props.getTopHubs(this.props.auth);
-    }
-    this.setState({ hubs: this.props.hubs }, () => {
-      this.revealTransition();
-    });
-  };
-
-  isCurrentHub(current, hubId) {
-    if (current && current.id) {
-      return hubId === current.id;
-    }
-  }
-
-  updateTopHubs = (state) => {
-    if (this.props.auth.isLoggedIn) {
-      let subscribedHubs = {};
-
-      let subscribed = this.props.auth.user.subscribed
-        ? this.props.auth.user.subscribed
-        : [];
-      subscribed.forEach((hub) => {
-        subscribedHubs[hub.id] = true;
-      });
-
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        if (subscribedHubs[hub.id]) {
-          hub.user_is_subscribed = true;
-        }
-        return hub;
-      });
-
-      this.props.updateTopHubs(updatedTopHubs);
-    } else {
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        hub.user_is_subscribed = false;
-        return hub;
-      });
-
-      this.props.updateTopHubs(updatedTopHubs);
-    }
-  };
-
-  revealTransition = () => {
-    setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
-  };
-
-  renderHubEntry = () => {
-    let categories = this.state.categories;
+  renderCategoryEntry = () => {
+    let categories = this.props.categories;
     return categories.map((category, i) => {
       let { category_name } = category;
+      let slug = category_name.toLowerCase().replace(/\s/g, "-");
       return (
-        <Ripples className={css(styles.hubEntry)} key={`${category_name}-${i}`}>
+        <Ripples
+          className={css(styles.categoryEntry)}
+          key={`${category_name}-${i}`}
+        >
           <Link
             href={{
-              pathname: "/hubs#${encodeURIComponent(category_name)}",
+              pathname: "/hubs#${slug}",
             }}
-            as={`/hubs#${encodeURIComponent(category_name)}`}
+            as={`/hubs#${slug}`}
           >
-            <a className={css(styles.hubLink)}>{category_name}</a>
+            <a className={css(styles.categoryLink)}>{category_name}</a>
           </Link>
         </Ripples>
       );
@@ -145,15 +50,13 @@ class CategoryList extends React.Component {
     let { overrideStyle } = this.props;
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
-        <div className={css(styles.hubsListContainer)}>
-          <div className={css(styles.listLabel)} id={"hubListTitle"}>
+        <div className={css(styles.categoryListContainer)}>
+          <div className={css(styles.listLabel)} id={"categoryListTitle"}>
             Categories
           </div>
-          <div
-            className={css(styles.hubsList, this.state.reveal && styles.reveal)}
-          >
-            {this.state.categories.length > 0 ? (
-              this.renderHubEntry()
+          <div className={css(styles.categoryList)}>
+            {this.props.categories.length > 0 ? (
+              this.renderCategoryEntry()
             ) : (
               <Fragment>
                 <ReactPlaceholder
@@ -174,16 +77,17 @@ class CategoryList extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    // width: "calc(100% * .625)",
-    width: "100%",
+    position: "fixed",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: 60,
-    paddingBottom: 30,
+    paddingTop: 50,
+    "@media only screen and (max-height: 800px)": {
+      display: "none",
+    },
   },
-  hubsListContainer: {
+  categoryListContainer: {
     height: "100%",
     width: "100%",
     display: "flex",
@@ -192,12 +96,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "left",
     cursor: "default",
-    ":hover #hubListTitle": {
-      color: colors.BLACK(),
-    },
-  },
-  text: {
-    fontFamily: "Roboto",
   },
   listLabel: {
     textTransform: "uppercase",
@@ -211,24 +109,13 @@ const styles = StyleSheet.create({
     width: "90%",
     paddingLeft: 25,
     boxSizing: "border-box",
-    ":hover": {
-      color: colors.BLACK(),
-    },
   },
-  topIcon: {
-    color: colors.RED(),
-    marginLeft: 6,
-    fontSize: 13,
-  },
-  hubEntry: {
+  categoryEntry: {
+    width: "100%",
+    maxWidth: 175,
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
-    textTransform: "capitalize",
-    display: "flex",
-    alignItems: "center",
-    boxSizing: "content-box",
-    width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
     border: "1px solid #fff",
@@ -238,71 +125,27 @@ const styles = StyleSheet.create({
       backgroundColor: "#FAFAFA",
     },
   },
-  hubLink: {
+  categoryLink: {
+    width: "100%",
     textDecoration: "none",
     color: "#111",
-    width: "100%",
     display: "flex",
     alignItems: "center",
     padding: "8px",
   },
-  current: {
-    borderColor: "rgb(237, 237, 237)",
-    backgroundColor: "#FAFAFA",
-    ":hover": {
-      borderColor: "rgb(227, 227, 227)",
-      backgroundColor: "#EAEAEA",
-    },
-  },
-  hubsList: {
-    opacity: 0,
-    width: "90%",
+  categoryList: {
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    padding: "0px 20px",
-  },
-  reveal: {
-    opacity: 1,
-    transition: "all ease-in-out 0.2s",
-  },
-  space: {
-    height: 10,
-  },
-  subscribedIcon: {
-    marginLeft: "auto",
-    color: colors.DARK_YELLOW(),
-    fontSize: 11,
-  },
-  link: {
-    textDecoration: "none",
-    color: "rgba(78, 83, 255)",
-    fontWeight: 300,
-    textTransform: "capitalize",
-    fontSize: 16,
-    padding: "3px 5px",
-    ":hover": {
-      color: "rgba(78, 83, 255, .5)",
-      textDecoration: "underline",
-    },
+    padding: "0px 30px",
   },
 });
 
 const mapStateToProps = (state) => ({
-  categories: state.hubs.categories,
-  hubs: state.hubs.topHubs,
   auth: state.auth,
+  categories: state.hubs.categories,
 });
 
-const mapDispatchToProps = {
-  updateCurrentHubPage: HubActions.updateCurrentHubPage,
-  getTopHubs: HubActions.getTopHubs,
-  updateTopHubs: HubActions.updateTopHubs,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CategoryList);
+export default connect(mapStateToProps)(CategoryList);

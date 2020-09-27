@@ -8,9 +8,9 @@ export const paper = (paper) => {
     tagline: paper.tagline,
     discussion: {
       count: paper.discussion ? paper.discussion.count : null,
-      threads: paper.discussion
-        ? transformThreads(paper.discussion.threads)
-        : [],
+      // threads: paper.discussion
+      //   ? paper.discussion.threads
+      //   : [],
       filter:
         paper.discussion && paper.discussion.filter
           ? paper.discussion.filter
