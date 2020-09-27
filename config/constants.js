@@ -52,3 +52,6 @@ export const MAINNET_CHAIN_ID = "1";
 export const RINKEBY_CHAIN_ID = "4";
 
 export const RECAPTCHA_CLIENT_KEY = "6LdxeboZAAAAAEgn_Oa0VnohS724vZhI3_ezLbVD";
+
+export const SIFT_BEACON_KEY =
+  process.env.NODE_ENV === "production" ? "b27b7ee421" : "891d8fb796";

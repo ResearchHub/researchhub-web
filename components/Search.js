@@ -94,13 +94,11 @@ export default class Search extends Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            setTimeout(() => {
-              this.setState({
-                results: [...this.state.results, ...res.results],
-                loading: false,
-                next: res.next,
-              });
-            }, 200);
+            this.setState({
+              results: [...this.state.results, ...res.results],
+              loading: false,
+              next: res.next,
+            });
           });
       });
     }

@@ -155,11 +155,7 @@ const Paper = (props) => {
 
   useEffect(() => {
     setTabs(getActiveTabs());
-  }, [store.getState().paper.summary]);
-
-  useEffect(() => {
-    setTabs(getActiveTabs());
-  }, [figureCount]);
+  }, [store.getState().paper.summary, figureCount]);
 
   useEffect(() => {
     setLimitCount(store.getState().limitations.limits.length);
@@ -191,8 +187,9 @@ const Paper = (props) => {
 
   useEffect(() => {
     if (store.getState().paper.id !== paperId) {
-      // fetchReferences();
-      // fetchFigures();
+      setPaper(props.paper);
+      setDiscussionThreads(getDiscussionThreads(props.paper));
+      setCount(calculateCommentCount());
       checkUserVote();
       if (document.getElementById("structuredData")) {
         let script = document.getElementById("structuredData");
@@ -204,13 +201,12 @@ const Paper = (props) => {
         script.textContext = formatStructuredData();
         document.head.appendChild(script);
       }
-      // window.scroll({ top: 0, behavior: "auto" });
     }
   }, [paperId]);
 
   useEffect(() => {
     checkUserVote();
-  }, [props.auth.isLoggedIn, props.auth.user]);
+  }, [props.auth.isLoggedIn]);
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
@@ -487,7 +483,6 @@ const Paper = (props) => {
               <DiscussionTab
                 hostname={hostname}
                 paperId={paperId}
-                threads={discussionThreads}
                 calculatedCount={discussionCount}
                 discussionCount={paper.discussion_count}
                 setCount={setCount}
@@ -495,7 +490,7 @@ const Paper = (props) => {
               />
             </div>
           </a>
-          {false && (figureCount > 0 || showAllSections) ? (
+          {false && (figureCount > 0 && showAllSections) ? (
             <a name="figures">
               <div className={css(styles.figuresContainer)}>
                 <FigureTab
@@ -518,7 +513,7 @@ const Paper = (props) => {
               />
             </div>
           </a>
-          {(false && referencedByCount > 0) || showAllSections ? (
+          {false && referencedByCount > 0 && showAllSections ? (
             <a name="citations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <ReactPlaceholder
@@ -566,7 +561,7 @@ const Paper = (props) => {
               </ComponentWrapper>
             </a>
           ) : null}
-          {(false && limitCount) || showAllSections ? (
+          {false && limitCount && showAllSections ? (
             <a name="limitations">
               <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
                 <div
@@ -619,7 +614,10 @@ Paper.getInitialProps = async (ctx) => {
     try {
       await store.dispatch(PaperActions.getPaper(query.paperId));
       fetchedPaper = store.getState().paper;
-      if (fetchedPaper.slug && fetchedPaper.slug !== query.paperName) {
+      await store.dispatch(
+        PaperActions.getThreads({ paperId: query.paperId, paper: fetchedPaper })
+      );
+      if (fetchedPaper.slug !== query.paperName) {
         // redirect paper if paperName does not match slug
         let paperName = fetchedPaper.slug
           ? fetchedPaper.slug
@@ -632,13 +630,21 @@ Paper.getInitialProps = async (ctx) => {
           // catch multiple redirect when slug does not exist
           return { isServer, hostname, paper: fetchedPaper, redirectPath };
         }
+
         redirectPath = `/paper/${fetchedPaper.id}/${paperName}`;
         res.writeHead(301, { Location: redirectPath });
         res.end();
-        return { isServer, hostname, paper: fetchedPaper, redirectPath };
+        return {
+          isServer,
+          hostname,
+          paper: fetchedPaper,
+          redirectPath,
+          paperName,
+        };
       }
-      return { isServer, hostname, paper: fetchedPaper, redirectPath };
+      return { isServer, hostname, paper: fetchedPaper };
     } catch (err) {
+      // if paper doesnot exist
       if (res) {
         res.statusCode = 404;
       }
