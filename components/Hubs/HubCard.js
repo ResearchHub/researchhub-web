@@ -191,25 +191,31 @@ class HubCard extends React.Component {
             }
             alt="Hub Background Image"
           ></img>
-          <EditHubModal />
-          {/* <PermissionNotificationWrapper
-              modalMessage="Edit the Hub"
-              loginRequired={true}
-              permissionKey="EditHub"
-            > */}
-          <div
-            className={css(styles.editButton)}
-            onClick={this.openEditHubModal}
-          >
-            {icons.pencil}
-          </div>
-          {/* </PermissionNotificationWrapper> */}
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
               <div className={css(styles.hubName)}>{hub.name}</div>
               {this.renderSubscribe()}
             </div>
-            <div className={css(styles.hubDescription)}>{hub.description}</div>
+            <div className={css(styles.midContainer)}>
+              <div className={css(styles.hubDescription)}>
+                {hub.description}
+              </div>
+              <div className={css(styles.editHubWrapper)}>
+                <EditHubModal />
+                <PermissionNotificationWrapper
+                  modalMessage="Edit the Hub"
+                  loginRequired={true}
+                  permissionKey="EditHub"
+                >
+                  <button
+                    className={css(styles.editButton)}
+                    onClick={this.openEditHubModal}
+                  >
+                    Edit Hub
+                  </button>
+                </PermissionNotificationWrapper>
+              </div>
+            </div>
             <div className={css(styles.hubStats)}>
               <div>
                 <span className={css(styles.statIcon)}>{icons.paper}</span>
@@ -347,6 +353,29 @@ const styles = StyleSheet.create({
     outline: "none",
     userSelect: "none",
   },
+  editButton: {
+    height: 20,
+    width: 80,
+    border: `${colors.ORANGE()} 1px solid`,
+    backgroundColor: colors.DARK_YELLOW(),
+    color: "#fff",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 12,
+    borderRadius: 5,
+    cursor: "pointer",
+    highlight: "none",
+    outline: "none",
+    userSelect: "none",
+    ":hover": {
+      backgroundColor: "#d35400",
+    },
+  },
+  midContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
   hubDescription: {
     fontSize: 13,
     height: "70px",
@@ -363,14 +392,6 @@ const styles = StyleSheet.create({
   },
   statIcon: {
     marginRight: "5px",
-  },
-  editButton: {
-    position: "absolute",
-    cursor: "pointer",
-    fontSize: 30,
-    top: 6,
-    right: 8,
-    color: "black",
   },
 });
 
