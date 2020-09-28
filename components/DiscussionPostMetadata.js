@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
     },
   },
   smallerUserContainer: {
-    fontSize: 12,
+    fontSize: 13,
   },
   timestampContainer: {
     display: "flex",
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
   },
   smallerHeadline: {
     marginTop: 2,
-    fontSize: 11,
+    fontSize: 12,
   },
   timestampDivider: {
     fontSize: 18,
