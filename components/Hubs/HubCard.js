@@ -27,6 +27,7 @@ class HubCard extends React.Component {
     this.linkRef = React.createRef();
     this.state = {
       transition: false,
+      inEditHub: false,
     };
   }
 
@@ -167,7 +168,12 @@ class HubCard extends React.Component {
   };
 
   openEditHubModal = () => {
+    this.setState({ inEditHub: true });
     this.props.openEditHubModal(true, this.props.hub);
+  };
+
+  closeEditHubModal = () => {
+    this.setState({ inEditHub: false });
   };
 
   render() {
@@ -176,7 +182,9 @@ class HubCard extends React.Component {
       <div
         className={css(styles.slugLink)}
         onClick={() => {
-          this.linkRef.current.click();
+          if (!this.state.inEditHub) {
+            this.linkRef.current.click();
+          }
         }}
       >
         <div className={css(styles.hubCard)}>
@@ -200,7 +208,7 @@ class HubCard extends React.Component {
                 {hub.description}
               </div>
               <div className={css(styles.editHubWrapper)}>
-                <EditHubModal />
+                <EditHubModal closeModal={this.closeEditHubModal} />
                 <PermissionNotificationWrapper
                   modalMessage="Edit the Hub"
                   loginRequired={true}
