@@ -166,8 +166,7 @@ class HubCard extends React.Component {
     );
   };
 
-  openEditHubModal = (e) => {
-    e.stopPropagation();
+  openEditHubModal = () => {
     this.props.openEditHubModal(true, this.props.hub);
   };
 
@@ -209,7 +208,10 @@ class HubCard extends React.Component {
                 >
                   <button
                     className={css(styles.editButton)}
-                    onClick={this.openEditHubModal}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      this.openEditHubModal();
+                    }}
                   >
                     Edit Hub
                   </button>
