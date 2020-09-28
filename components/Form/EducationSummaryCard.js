@@ -23,18 +23,19 @@ const EducationSummaryCard = (props) => {
         value={value.summary}
         onClick={onClick}
       />
-      {
-        <div
-          className={css(
-            styles.trashIcon,
-            index === 0 && styles.indexZero,
-            hover && styles.reveal
-          )}
-          onClick={onRemove}
-        >
-          {icons.trash}
-        </div>
-      }
+      {(index === 0 && value.summary) ||
+        (index !== 0 && (
+          <div
+            className={css(
+              styles.trashIcon,
+              index === 0 && styles.indexZero,
+              hover && styles.reveal
+            )}
+            onClick={onRemove}
+          >
+            {icons.trash}
+          </div>
+        ))}
     </div>
   );
 };
