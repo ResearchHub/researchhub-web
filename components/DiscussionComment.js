@@ -350,7 +350,7 @@ class CommentClass extends DiscussionComment {
         );
       });
 
-    if (replies.length > 0) {
+    if (replies && replies.length > 0) {
       return (
         <Fragment>
           <div className={css(styles.showReplyContainer)}>

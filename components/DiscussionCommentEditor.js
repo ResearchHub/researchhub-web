@@ -80,6 +80,7 @@ const DiscussionCommentEditor = (props) => {
         canEdit={true}
         canSubmit={true}
         onSubmit={post}
+        clearOnSubmit={true}
         readOnly={!isActive}
         commentEditor={true}
         onCancel={onCancel}
