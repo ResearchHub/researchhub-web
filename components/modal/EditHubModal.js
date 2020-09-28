@@ -183,14 +183,14 @@ class EditHubModal extends React.Component {
             onChange={this.handleInputChange}
             error={this.state.error && this.state.error}
           />
-          <div>
-            <h2>Existing Image:</h2>
-            <img
-              src={hub ? hub.hub_image : null}
-              alt={"Existing Hub Image"}
-              width={100}
-            ></img>
+          <div className={css(styles.imageContainer)}>
+            <p>Existing Image:</p>
           </div>
+          <img
+            className={css(styles.image)}
+            src={hub ? hub.hub_image : null}
+            alt={"Existing Hub Image"}
+          ></img>
           <FormInput
             label={"Upload New Hub Image"}
             type="file"
@@ -249,9 +249,19 @@ const styles = StyleSheet.create({
   error: {
     border: `1px solid ${colors.RED(1)}`,
   },
-  dndContainer: {
-    marginTop: 20,
-    marginBottom: 20,
+  imageContainer: {
+    textAlign: "left",
+    width: "100%",
+    fontWeight: "500",
+    marginBottom: 10,
+    color: "#232038",
+  },
+  image: {
+    borderRadius: "8px 8px 8px 8px",
+    width: "364px",
+    height: "200px",
+    objectFit: "cover",
+    pointerEvents: "none",
   },
 });
 
