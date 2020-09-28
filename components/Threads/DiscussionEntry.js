@@ -681,7 +681,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   discussion: state.discussion,
-  paper: state.paper,
+  // paper: state.paper,
   vote: state.vote,
   auth: state.auth,
 });

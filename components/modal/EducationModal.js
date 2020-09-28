@@ -14,30 +14,20 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import { degrees } from "~/config/utils/options";
+import * as Options from "../../config/utils/options";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 const EducationModal = (props) => {
   // set initial props;
 
   const [school, setSchool] = useState();
   const [degree, setDegree] = useState();
-  const [options, setOptions] = useState(formatOptions());
+  const [year, setYear] = useState();
 
   useEffect(() => {
     mapPropsToState();
   }, [props.education]);
-
-  function formatOptions() {
-    return degrees.map((degree) => {
-      return {
-        label: degree,
-        value: degree,
-      };
-    });
-  }
 
   function mapPropsToState() {
     const { education } = props;
@@ -70,8 +60,15 @@ const EducationModal = (props) => {
     setDegree(value);
   }
 
+  function handleYearSelect(id, value) {
+    setYear(value);
+  }
+
+  function formatEducationSummary() {}
+
   function saveEducation() {
-    props.onSave && props.onSave(school, degree);
+    // format summary object here
+    props.onSave && props.onSave({ school, degree, year, summary });
     closeModal();
   }
 
@@ -101,11 +98,21 @@ const EducationModal = (props) => {
           id={"degree"}
           label={"Degree"}
           placeholder={"Ex: Bachelor's"}
-          options={options}
+          options={degree}
           maxMenuHeight={175}
           onChange={handleDegreeSelect}
-          required={true}
+          // required={true}
           value={degree}
+        />
+        <FormSelect
+          label={"Year of Graduation"}
+          placeholder="yyyy"
+          required={false}
+          value={year}
+          id={"year"}
+          options={Options.range(1980, 2040)}
+          maxMenuHeight={120}
+          onChange={handleYearSelect}
         />
       </div>
       <div className={css(styles.buttonContainer)}>

@@ -65,7 +65,6 @@ const DiscussionTab = (props) => {
   ];
 
   const router = useRouter();
-  const store = useStore();
   const basePath = formatBasePath(router.asPath);
   const [formattedThreads, setFormattedThreads] = useState(
     formatThreads(paper.threads, basePath)
@@ -83,6 +82,10 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
+
+  useEffect(() => {
+    console.log("props.paper", props);
+  }, [props.propPaper]);
 
   useEffect(() => {
     handleWindowResize();
@@ -139,8 +142,9 @@ const DiscussionTab = (props) => {
               path={t.path}
               newCard={transition && i === 0} //conditions when a new card is made
               mobileView={mobileView}
-              discussionCount={paper.threadCount}
+              discussionCount={props.paper.threadCount}
               setCount={setCount}
+              paper={props.paperState}
             />
           );
         });
@@ -440,7 +444,7 @@ const DiscussionTab = (props) => {
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-          {paper.nextDiscussion && !fetching && (
+          {props.paper.nextDiscussion && !fetching && (
             <div className={css(styles.buttonContainer)}>
               {loading ? (
                 <Loader loading={true} size={10} type="beat" />
