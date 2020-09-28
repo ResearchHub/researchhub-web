@@ -164,6 +164,7 @@ class AddHubModal extends React.Component {
           />
           <FormSelect
             label={"Category"}
+            maxMenuHeight={200}
             placeholder="Search Hub Categories"
             required={true}
             containerStyle={styles.container}
