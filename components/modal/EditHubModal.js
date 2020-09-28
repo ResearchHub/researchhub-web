@@ -131,6 +131,7 @@ class EditHubModal extends React.Component {
       ...this.initialState,
     });
     document.body.style.overflow = "scroll";
+    this.props.closeModal();
   };
 
   render() {
