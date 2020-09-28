@@ -18,6 +18,7 @@
     "sitemap-index": "node scripts/createSitemapIndex.js"
   },
   "dependencies": {
+    "@elastic/apm-rum": "^5.6.0",
     "@quantfive/js-web-config": "latest",
     "@quantfive/react-burger-menu": "^2.6.19",
     "@quantfive/react-image-upload-grid": "1.1.3",
