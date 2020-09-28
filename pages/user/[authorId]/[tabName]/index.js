@@ -22,17 +22,19 @@ import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
+import UserInfoModal from "~/components/modal/UserInfoModal";
 
 // Config
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
+import { createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 const AuthorPage = (props) => {
-  let { auth, author, hostname, user, transactions } = props;
-  let router = useRouter();
-  let { tabName } = router.query;
+  const { auth, author, hostname, user, transactions } = props;
+  const router = useRouter();
+  const { tabName } = router.query;
   const dispatch = useDispatch();
   const store = useStore();
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
@@ -48,13 +50,16 @@ const AuthorPage = (props) => {
   const [editTwitter, setEditTwitter] = useState(false);
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
-
+  const [eduSummary, setEduSummary] = useState(
+    author && createUserSummary(author)
+  );
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
 
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
+  // const authorName = `${author.first_name} ${author.last_name}`;
 
   let facebookRef;
   let linkedinRef;
@@ -69,11 +74,68 @@ const AuthorPage = (props) => {
     picture: "picture",
   };
 
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  });
+
+  useEffect(() => {
+    setFetching(true);
+    async function refetchAuthor() {
+      await dispatch(
+        AuthorActions.getAuthor({ authorId: router.query.authorId })
+      );
+    }
+    fetchAuthoredPapers();
+    fetchUserDiscussions();
+    fetchUserContributions();
+    fetchUserPromotions();
+    fetchUserTransactions();
+    refetchAuthor();
+  }, [props.isServer, router.query.authorId]);
+
+  useEffect(() => {
+    setDescription(author.description);
+    setName(`${author.first_name} ${author.last_name}`);
+    setEduSummary(createUserSummary(author));
+
+    let social = {
+      facebook: author.facebook,
+      linkedin: author.linkedin,
+      twitter: author.twitter,
+    };
+
+    setSocialLinks(social);
+  }, [author]);
+
+  useEffect(() => {
+    if (author.user && user) {
+      if (author.user === user.id) {
+        setAllowEdit(true);
+      }
+    }
+  }, [author, user]);
+
+  useEffect(() => {
+    if (prevProps && !auth.isLoggedIn) {
+      checkUserVotes(); // clears the state
+    } else if (!prevProps && auth.isLoggedIn) {
+      let papers = store.getState().author.authoredPapers.papers;
+      checkUserVotes(papers, "authored");
+      let contributions = store.getState().author.userContributions
+        .contributions;
+      checkUserVotes(contributions, "contributions");
+    }
+    setPrevProps(auth.isLoggedIn);
+  }, [auth.isLoggedIn]);
+
   /**
    * When we click anywhere outside of the dropdown, close it
    * @param { Event } e -- javascript event
    */
-  const handleOutsideClick = (e) => {
+  function handleOutsideClick(e) {
     if (facebookRef && !facebookRef.contains(e.target)) {
       setEditFacebook(false);
     }
@@ -83,16 +145,7 @@ const AuthorPage = (props) => {
     if (linkedinRef && !linkedinRef.contains(e.target)) {
       setEditLinkedin(false);
     }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  });
-
-  const authorName = `${author.first_name} ${author.last_name}`;
+  }
 
   async function fetchAuthoredPapers() {
     await dispatch(
@@ -146,55 +199,6 @@ const AuthorPage = (props) => {
         setFetchingPromotions(false);
       });
   }
-
-  useEffect(() => {
-    setFetching(true);
-    async function refetchAuthor() {
-      await dispatch(
-        AuthorActions.getAuthor({ authorId: router.query.authorId })
-      );
-    }
-    fetchAuthoredPapers();
-    fetchUserDiscussions();
-    fetchUserContributions();
-    fetchUserPromotions();
-    fetchUserTransactions();
-    refetchAuthor();
-  }, [props.isServer, router.query.authorId]);
-
-  useEffect(() => {
-    setDescription(author.description);
-    setName(`${author.first_name} ${author.last_name}`);
-
-    let social = {
-      facebook: author.facebook,
-      linkedin: author.linkedin,
-      twitter: author.twitter,
-    };
-
-    setSocialLinks(social);
-  }, [author]);
-
-  useEffect(() => {
-    if (author.user && user) {
-      if (author.user === user.id) {
-        setAllowEdit(true);
-      }
-    }
-  }, [author, user]);
-
-  useEffect(() => {
-    if (prevProps && !auth.isLoggedIn) {
-      checkUserVotes(); // clears the state
-    } else if (!prevProps && auth.isLoggedIn) {
-      let papers = store.getState().author.authoredPapers.papers;
-      checkUserVotes(papers, "authored");
-      let contributions = store.getState().author.userContributions
-        .contributions;
-      checkUserVotes(contributions, "contributions");
-    }
-    setPrevProps(auth.isLoggedIn);
-  }, [auth.isLoggedIn]);
 
   const onMouseEnter = (section) => {
     if (section === SECTIONS.name) {
@@ -628,10 +632,11 @@ const AuthorPage = (props) => {
       typeof="Person"
     >
       <Head
-        title={`${authorName} on ResearchHub`}
-        description={`View contributions by ${authorName} on ResearchHub`}
+        title={`${name} on ResearchHub`}
+        description={`View contributions by ${name} on ResearchHub`}
       />
       <ComponentWrapper>
+        <UserInfoModal />
         <div className={css(styles.profileContainer)}>
           <div
             className={css(
@@ -690,12 +695,12 @@ const AuthorPage = (props) => {
 
             <div className={css(styles.reputationContainer)}>
               <div className={css(styles.extraInfoContainer)}>
-                {author.university && author.university.name && (
+                {(author.headline || author.education) && (
                   <div className={css(styles.extraInfo)}>
                     <i
                       className={css(styles.icon) + " fas fa-graduation-cap"}
                     ></i>
-                    {author.university.name}
+                    {eduSummary}
                   </div>
                 )}
               </div>
@@ -996,10 +1001,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
-  },
-  icon: {
-    marginRight: 5,
+    alignItems: "flex-start",
   },
   description: {
     marginBottom: 16,
@@ -1270,6 +1272,7 @@ const styles = StyleSheet.create({
   icon: {
     width: 20,
     marginRight: 5,
+    paddingTop: 2,
     display: "flex",
     alignItems: "center",
   },

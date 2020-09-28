@@ -44,12 +44,12 @@ class UniversityInput extends React.Component {
   }
 
   handleUniversitySearch = (id, value) => {
-    if (!value) {
-      return (
-        this.props.handleUserClick &&
-        this.props.handleUserClick(null, this.props.index)
-      );
-    }
+    // if (!value) {
+    //   return (
+    //     this.props.handleUserClick &&
+    //     this.props.handleUserClick(null, this.props.index)
+    //   );
+    // }
     let { searching, universities, showDropDown } = this.state;
     this.setState(
       {

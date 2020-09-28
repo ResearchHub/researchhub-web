@@ -10,13 +10,16 @@ import FormInput from "~/components/Form/FormInput";
 import AvatarUpload from "~/components/AvatarUpload";
 import FormTextArea from "~/components/Form/FormTextArea";
 import Button from "~/components/Form/Button";
-import UniversityInput from "../SearchSuggestion/UniversityInput";
 import EducationModal from "./EducationModal";
+import EducationSummaryCard from "~/components/Form/EducationSummaryCard";
+import Toggle from "react-toggle";
+import "~/components/TextEditor/stylesheets/ReactToggle.css";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
 import { AuthorActions } from "~/redux/author";
 import { ModalActions } from "~/redux/modals";
+import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -28,7 +31,54 @@ class UserInfoModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.initialState = {
+    this.initialState = this.mapStateFromProps();
+    this.state = {
+      ...this.initialState,
+      hoverAvatar: false,
+      hoverEducation: false,
+      allowEdit: true,
+      avatarUploadIsOpen: false,
+      activeIndex:
+        this.props.author &&
+        this.props.author.education &&
+        this.props.author.education.length - 1,
+    };
+  }
+
+  componentDidMount = async () => {
+    if (this.props.auth.isLoggedIn) {
+      if (!this.props.author) {
+        await this.props.getAuthor({
+          authorId: this.props.user.author_profile.id,
+        });
+        this.props.author && this.setState({ ...this.mapStateFromProps() });
+      } else {
+        this.setState({ ...this.mapStateFromProps() });
+      }
+    }
+  };
+
+  componentDidUpdate = async (prevProps) => {
+    if (prevProps.author.id !== this.props.author.id) {
+      this.setState({ ...this.mapStateFromProps() });
+    }
+    if (
+      !prevProps.modals.openUserInfoModal &&
+      this.props.modals.openUserInfoModal
+    ) {
+      // console.log('this.props.modals.openUserInfoModal', thsi.props.user.author_profile)
+      this.props.author
+        ? this.setState({ ...this.mapStateFromProps() })
+        : this.props.getAuthor({ authorId: this.props.user.author_profile.id });
+    }
+  };
+
+  closeModal = () => {
+    this.props.openUserInfoModal(false);
+  };
+
+  mapStateFromProps = () => {
+    return {
       first_name:
         this.props.author && this.props.author.first_name
           ? this.props.author.first_name
@@ -60,84 +110,8 @@ class UserInfoModal extends React.Component {
       headline:
         this.props.author && this.props.author.headline
           ? this.props.author.headline
-          : "",
+          : { title: "", isPublic: true },
     };
-    this.state = {
-      ...this.initialState,
-      hoverAvatar: false,
-      hoverEducation: false,
-      allowEdit: true,
-      avatarUploadIsOpen: false,
-      activeIndex:
-        this.props.author &&
-        this.props.author.education &&
-        this.props.author.education.length - 1,
-    };
-  }
-
-  componentDidMount = async () => {
-    if (this.props.auth.isLoggedIn) {
-      console.log("MOUNT this.props.author", this.props.author);
-
-      if (!this.props.author) {
-        this.props.getAuthor({ authorId: this.props.user.author_profile.id });
-        this.props.author && this.setState({ ...this.initialState });
-      } else {
-        this.setState({ ...this.initialState });
-      }
-    }
-  };
-
-  componentDidUpdate = async (prevProps) => {
-    if (prevProps.author.id !== this.props.author.id) {
-      this.setState({
-        first_name:
-          this.props.author && this.props.author.first_name
-            ? this.props.author.first_name
-            : "",
-        last_name:
-          this.props.author && this.props.author.last_name
-            ? this.props.author.last_name
-            : "",
-        description:
-          this.props.author && this.props.author.description
-            ? this.props.author.description
-            : "",
-        facebook:
-          this.props.author && this.props.author.facebook
-            ? this.props.author.facebook
-            : "",
-        linkedin:
-          this.props.author && this.props.author.linkedin
-            ? this.props.author.linkedin
-            : "",
-        twitter:
-          this.props.author && this.props.author.twitter
-            ? this.props.author.twitter
-            : "",
-        education:
-          this.props.author && this.props.author.education
-            ? this.props.author.education
-            : [],
-        headline:
-          this.props.author && this.props.author.headline
-            ? this.props.author.headline
-            : "",
-      });
-    }
-    if (
-      !prevProps.modals.openUserInfoModal &&
-      this.props.modals.openUserInfoModal
-    ) {
-      console.log("MODAL this.props.author", this.props.author);
-      this.props.author
-        ? this.setState({ ...this.initialState })
-        : this.props.getAuthor({ authorId: this.props.user.author_profile.id });
-    }
-  };
-
-  closeModal = () => {
-    this.props.openUserInfoModal(false);
   };
 
   onMouseEnterAvatar = () => {
@@ -148,17 +122,18 @@ class UserInfoModal extends React.Component {
     this.state.hoverAvatar && this.setState({ hoverAvatar: false });
   };
 
-  onMouseEnterEducation = () => {
-    !this.state.hoverEducation && this.setState({ hoverEducation: true });
-  };
-
-  onMouseLeaveEducation = () => {
-    this.state.hoverEducation && this.setState({ hoverEducation: false });
-  };
-
   openEducationModal = (activeIndex) => {
     this.setState({ activeIndex });
     this.props.openEducationModal(true);
+  };
+
+  onEducationModalSave = (educationSummary) => {
+    let education = [...this.state.education];
+    education[this.state.activeIndex] = {
+      ...educationSummary,
+      is_public: false,
+    };
+    this.setState({ education });
   };
 
   addEducation = (activeIndex) => {
@@ -180,17 +155,21 @@ class UserInfoModal extends React.Component {
     this.setState({ education });
   };
 
-  onEducationModalSave = (educationSummary) => {
-    const { school, degree, year } = educationSummary;
-    //TODO: create summary string here.
-
-    let education = [...this.state.education];
-    education[this.state.activeIndex] = { ...school, degree, is_public: false };
-    this.setState({ education });
-  };
-
   handleFormChange = (id, value) => {
     this.setState({ [id]: value });
+  };
+
+  handleHeadlineChange = (id, value) => {
+    let headline = { ...this.state.headline };
+    headline.title = value;
+    this.setState({ headline });
+  };
+
+  handleIsPublic = (e) => {
+    e && e.stopPropagation();
+    let headline = { ...this.state.headline };
+    headline.isPublic = e.target.checked;
+    this.setState({ headline });
   };
 
   toggleAvatarModal = (state) => {
@@ -198,14 +177,13 @@ class UserInfoModal extends React.Component {
   };
 
   saveAuthorChanges = (e) => {
+    const { setMessage, showMessage } = this.props;
     e.preventDefault();
+    showMessage({ show: true, load: true });
 
-    let education = this.state.education.map((education) => {
-      education.degree = education.degree.value;
-      return education;
-    });
+    const education = this.state.education.filter((el) => el.summary);
 
-    let params = {
+    const params = {
       first_name: this.state.first_name,
       last_name: this.state.last_name,
       description: this.state.description,
@@ -220,8 +198,16 @@ class UserInfoModal extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let { updateUser, user } = this.props;
-        updateUser({ ...user, author_profile: res });
+        showMessage({ show: false });
+        setMessage("Updates made successfully");
+        showMessage({ show: true });
+        const { updateUser, updateAuthor, user } = this.props;
+        const updatedAuthorProfile = { ...res };
+
+        updateUser({ ...user, author_profile: updatedAuthorProfile });
+        updateAuthor(updatedAuthorProfile);
+        // this.props.onSaveCallback && this.props.onSaveCallback(updatedAuthorProfile);
+        this.closeModal();
       });
   };
 
@@ -260,35 +246,26 @@ class UserInfoModal extends React.Component {
       education.push({});
       this.setState({ education });
     }
+
     return (
       <div
         className={css(styles.formInputContainer, styles.educationContainer)}
         onMouseEnter={this.onMouseEnterEducation}
       >
-        {this.state.education.map((education, index) => {
-          return (
-            <div className={css(styles.educationRow)}>
-              <FormInput
+        {this.state.education &&
+          this.state.education.length &&
+          this.state.education.map((education, index) => {
+            return (
+              <EducationSummaryCard
+                key={`eduSummaryCard-${education.id}`}
+                index={index}
                 label={index === 0 && "Education"}
-                containerStyle={styles.formEducationInput}
-                value={education.name}
+                value={education}
                 onClick={() => this.openEducationModal(index)}
+                onRemove={() => this.removeEducation(index)}
               />
-              {
-                <div
-                  className={css(
-                    styles.trashIcon,
-                    index === 0 && styles.indexZero
-                  )}
-                  onClick={() => this.removeEducation(index)}
-                  onMouseEnter={this.onMouseEnterEducation}
-                >
-                  {icons.trash}
-                </div>
-              }
-            </div>
-          );
-        })}
+            );
+          })}
         <div
           className={css(styles.addmoreButton)}
           onClick={() => this.addEducation(this.state.education.length)}
@@ -299,14 +276,12 @@ class UserInfoModal extends React.Component {
     );
   };
 
-  renderFormInput = ({ label, subtitle, required, value }) => {
+  renderFormInput = ({ id, label, subtitle, required, value }) => {
     let classNames = [styles.formInputContainer];
-    let id =
-      typeof label === "string" &&
-      label
-        .split(" ")
-        .join("_")
-        .toLowerCase();
+
+    if (label === "Headline") {
+      classNames.push(styles.marginBottom);
+    }
 
     if (label === "About") {
       return (
@@ -316,6 +291,7 @@ class UserInfoModal extends React.Component {
           containerStyle={styles.formTextAreaContainer}
           inputStyle={styles.formTextArea}
           value={value}
+          onChange={this.handleFormChange}
         />
       );
     }
@@ -325,12 +301,35 @@ class UserInfoModal extends React.Component {
         <FormInput
           label={label}
           subtitle={subtitle}
-          id={id ? id : "tagline"}
+          id={id}
           required={required}
-          onChange={this.handleFormChange}
+          onChange={
+            label === "Headline"
+              ? this.handleHeadlineChange
+              : this.handleFormChange
+          }
           containerStyle={styles.formInput}
-          value={value}
+          value={label === "Headline" ? value.title : value}
         />
+        {label === "Headline" && (
+          <div className={css(styles.isPublicContainer)}>
+            <h3
+              className={css(
+                styles.isPublicLabel,
+                value.isPublic && styles.activeLabel
+              )}
+            >
+              {value.isPublic ? "Public" : "Private"}
+            </h3>
+            <Toggle
+              className={"react-toggle"}
+              height={15}
+              value={value.isPublic}
+              checked={value.isPublic}
+              onChange={this.handleIsPublic}
+            />
+          </div>
+        )}
       </div>
     );
   };
@@ -382,11 +381,13 @@ class UserInfoModal extends React.Component {
             <div className={css(styles.column)}>
               {this.renderFormInput({
                 label: "First Name",
+                id: "first_name",
                 required: true,
                 value: this.state.first_name,
               })}
               {this.renderFormInput({
                 label: "Last Name",
+                id: "last_name",
                 required: true,
                 value: this.state.last_name,
               })}
@@ -394,6 +395,7 @@ class UserInfoModal extends React.Component {
           </div>
           {this.renderFormInput({
             label: "Headline",
+            id: "headline",
             subtitle:
               "This information will be displayed in comments below your name",
             value: this.state.headline,
@@ -401,6 +403,7 @@ class UserInfoModal extends React.Component {
           {this.renderEducationList()}
           {this.renderFormInput({
             label: "About",
+            id: "description",
             value: this.state.description,
           })}
           <AvatarUpload
@@ -476,6 +479,7 @@ const styles = StyleSheet.create({
     marginLeft: 30,
   },
   formInputContainer: {
+    position: "relative",
     width: "100%",
     marginBottom: 15,
   },
@@ -485,18 +489,15 @@ const styles = StyleSheet.create({
 
     width: "100%",
   },
-  formEducationInput: {
-    padding: 0,
-    margin: 0,
-    marginBottom: 10,
-    width: "100%",
-    minHeight: "unset",
-  },
+
   formTextAreaContainer: {
     marginTop: 10,
   },
   formTextArea: {
     minHeight: 100,
+  },
+  marginBottom: {
+    marginBottom: 40,
   },
   buttonContainer: {
     display: "flex",
@@ -530,31 +531,31 @@ const styles = StyleSheet.create({
       textDecoration: "underline",
     },
   },
-  trashIcon: {
-    position: "absolute",
-    cursor: "pointer",
-    color: colors.BLACK(0.3),
-    top: 15,
-    right: -20,
-    ":hover": {
-      color: colors.BLACK(0.7),
-    },
-  },
-  indexZero: {
-    top: 45,
-  },
-  educationRow: {
-    position: "relative",
-    display: "flex",
-    alignItems: "center",
-    width: "100%",
-  },
-
   universityContainer: {
     padding: 0,
     margin: 0,
     marginBottom: 10,
     width: "100%",
+  },
+  isPublicContainer: {
+    position: "absolute",
+    right: 0,
+    // top: 0,
+    bottom: -40,
+    display: "flex",
+    alignItems: "center",
+  },
+  isPublicLabel: {
+    color: colors.BLACK(0.5),
+    fontSize: 14,
+    marginRight: 8,
+    fontWeight: 400,
+  },
+  activeLabel: {
+    color: colors.BLUE(),
+  },
+  lockIcon: {
+    color: "#dedde0",
   },
 });
 
@@ -568,9 +569,12 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getAuthor: AuthorActions.getAuthor,
   saveAuthorChanges: AuthorActions.saveAuthorChanges,
+  updateAuthor: AuthorActions.updateAuthor,
   updateUser: AuthActions.updateUser,
   openUserInfoModal: ModalActions.openUserInfoModal,
   openEducationModal: ModalActions.openEducationModal,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(

@@ -6,8 +6,21 @@ import ModalImage from "react-modal-image";
 import QuillToPlaintext from "quill-to-plaintext";
 import { css, StyleSheet } from "aphrodite";
 
-export function createHeadline() {
-  // combine headline, education
+export function createUserSummary(author = {}) {
+  const { headline, education } = author;
+  const space = " | ";
+
+  let userSummary = "";
+
+  if (education && education.length) {
+    userSummary += education[0].summary;
+  }
+
+  if (headline && headline.isPublic) {
+    userSummary += `${userSummary.length ? space : ""}` + headline.title;
+  }
+
+  return userSummary;
 }
 
 export function createUsername({ created_by }) {
