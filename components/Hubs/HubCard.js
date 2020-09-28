@@ -32,6 +32,7 @@ class HubCard extends React.Component {
   componentDidMount = () => {
     this.setState({
       subscribed: this.props.hub.user_is_subscribed,
+      sub_count: this.props.hub.subscriber_count,
     });
   };
 
@@ -54,13 +55,12 @@ class HubCard extends React.Component {
       subscribed.forEach((hub) => {
         subscribedHubs[hub.id] = true;
       });
-
       let updatedSubscribedHubs = hubs.map((hub) => {
         if (subscribed[hub.id]) {
           hub.user_is_subscribed = true;
         }
+        return hub;
       });
-
       this.props.updateSubscribedHubs(updatedSubscribedHubs);
 
       if (this.props.hub.id in subscribedHubs) {
@@ -89,9 +89,12 @@ class HubCard extends React.Component {
             updateHub(hubState, { ...res });
             setMessage("Unsubscribed!");
             showMessage({ show: true });
-            this.setState({
-              transition: false,
-              subscribed: false,
+            this.setState((state, props) => {
+              return {
+                transition: false,
+                subscribed: false,
+                sub_count: state.sub_count - 1,
+              };
             });
           })
           .catch((error) => {
@@ -109,9 +112,12 @@ class HubCard extends React.Component {
             updateHub(hubState, { ...res });
             setMessage("Subscribed!");
             showMessage({ show: true });
-            this.setState({
-              transition: false,
-              subscribed: true,
+            this.setState((state, props) => {
+              return {
+                transition: false,
+                subscribed: true,
+                sub_count: state.sub_count + 1,
+              };
             });
           })
           .catch((error) => {
@@ -204,8 +210,8 @@ class HubCard extends React.Component {
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.user}</span>
-                {hub.subscriber_count} Subscriber
-                {hub.subscriber_count != 1 ? "s" : ""}
+                {this.state.sub_count} Subscriber
+                {this.state.sub_count != 1 ? "s" : ""}
               </div>
             </div>
           </div>
@@ -276,6 +282,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textTransform: "capitalize",
     fontWeight: 500,
+    width: "250px",
+  },
+  hubName1: {
+    fontSize: 14,
+    textTransform: "capitalize",
+    fontWeight: 500,
   },
   subscribeButton: {
     height: 20,
@@ -330,9 +342,35 @@ const styles = StyleSheet.create({
   },
   hubDescription: {
     fontSize: 13,
-    height: "70px",
     padding: "10px 0 0 0",
+    marginBottom: "10px",
     opacity: "0.8",
+    overflow: "hidden",
+    position: "relative",
+    width: 334,
+    // height: "60px",
+    height: "70px",
+    textOverflow: "ellipsis",
+  },
+  hubDescription1: {
+    fontSize: 13,
+    padding: "10px 0 0 0",
+    marginBottom: "10px",
+    opacity: "0.8",
+    overflow: "hidden",
+    position: "relative",
+    width: 334,
+    height: "39px",
+    textOverflow: "ellipsis",
+  },
+  fade: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    margin: 0,
+    padding: "15px 0",
+    backgroundImage: "linear-gradient(to bottom, transparent, white)",
   },
   hubStats: {
     display: "flex",
