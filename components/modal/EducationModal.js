@@ -5,7 +5,8 @@ import { connect } from "react-redux";
 // Component
 import BaseModal from "./BaseModal";
 import FormSelect from "~/components/Form/FormSelect";
-
+import Toggle from "react-toggle";
+import "~/components/TextEditor/stylesheets/ReactToggle.css";
 import Button from "~/components/Form/Button";
 import UniversityInput from "../SearchSuggestion/UniversityInput";
 
@@ -21,25 +22,26 @@ import icons from "~/config/themes/icons";
 const EducationModal = (props) => {
   // set initial props;
 
-  const [school, setSchool] = useState();
-  const [degree, setDegree] = useState();
-  const [year, setYear] = useState();
+  const [school, setSchool] = useState(); // object
+  const [degree, setDegree] = useState(); // select option object
+  const [year, setYear] = useState(); // select option object
+
+  useEffect(() => {
+    // console.log('education', props.education)
+  });
 
   useEffect(() => {
     mapPropsToState();
   }, [props.education]);
+
+  useEffect(() => {}, [degree]);
 
   function mapPropsToState() {
     const { education } = props;
 
     if (education) {
       if (education.degree) {
-        // we need to convert the degree string into select option
-        let degreeOption = {
-          label: education.degree,
-          value: education.degree,
-        };
-        setDegree(degreeOption);
+        setDegree(education.degree);
       } else {
         setDegree(null);
       }
@@ -48,6 +50,12 @@ const EducationModal = (props) => {
         setSchool(education);
       } else {
         setSchool(null);
+      }
+
+      if (education.year) {
+        setYear(education.year);
+      } else {
+        setYear(null);
       }
     }
   }
@@ -64,11 +72,30 @@ const EducationModal = (props) => {
     setYear(value);
   }
 
-  function formatEducationSummary() {}
+  function formatEducationSummary() {
+    let education = { ...school };
+    let summary = "";
 
-  function saveEducation() {
+    if (degree) {
+      education.degree = degree;
+      summary += " " + degree.value;
+    }
+    if (year) {
+      education.year = year;
+      let formattedYear = " '" + year.value.slice(2) + ", ";
+      summary += formattedYear;
+    }
+    summary += school.name;
+
+    education.summary = summary;
+    return education;
+  }
+
+  function saveEducation(e) {
+    e && e.preventDefault();
+    let education = formatEducationSummary();
     // format summary object here
-    props.onSave && props.onSave({ school, degree, year, summary });
+    props.onSave && props.onSave(education);
     closeModal();
   }
 
@@ -86,38 +113,50 @@ const EducationModal = (props) => {
       modalStyle={styles.modalStyle}
       titleStyle={styles.titleStyle}
     >
-      <div className={css(styles.formInputContainer)}>
-        <UniversityInput
-          label={"School"}
-          inputStyle={styles.formInput}
-          containerStyle={styles.universityContainer}
-          handleUserClick={handleEducationInput}
-          value={school}
-        />
-        <FormSelect
-          id={"degree"}
-          label={"Degree"}
-          placeholder={"Ex: Bachelor's"}
-          options={degree}
-          maxMenuHeight={175}
-          onChange={handleDegreeSelect}
-          // required={true}
-          value={degree}
-        />
-        <FormSelect
-          label={"Year of Graduation"}
-          placeholder="yyyy"
-          required={false}
-          value={year}
-          id={"year"}
-          options={Options.range(1980, 2040)}
-          maxMenuHeight={120}
-          onChange={handleYearSelect}
-        />
-      </div>
-      <div className={css(styles.buttonContainer)}>
-        <Button label={"Save"} onClick={saveEducation} />
-      </div>
+      <form onSubmit={saveEducation} className={css(styles.form)}>
+        <div className={css(styles.formInputContainer)}>
+          <UniversityInput
+            label={"School"}
+            inputStyle={styles.formInput}
+            containerStyle={styles.universityContainer}
+            handleUserClick={handleEducationInput}
+            value={school}
+            required={true}
+          />
+          {/* <FormSelect
+            id={"major"}
+            label={"Major"}
+            placeholder={"Ex: Physics"}
+            maxMenuHeight={175}
+            onChange={handleDegreeSelect}
+            // required={true}
+            value={degree}
+          /> */}
+          <FormSelect
+            id={"degree"}
+            label={"Degree"}
+            placeholder={"Ex: Bachelor's"}
+            options={degrees}
+            maxMenuHeight={175}
+            onChange={handleDegreeSelect}
+            required={true}
+            value={degree}
+          />
+          <FormSelect
+            label={"Year of Graduation"}
+            placeholder="Type year"
+            required={false}
+            value={year}
+            id={"year"}
+            options={Options.range(1980, 2040)}
+            maxMenuHeight={120}
+            onChange={handleYearSelect}
+          />
+        </div>
+        <div className={css(styles.buttonContainer)}>
+          <Button label={"Save"} type={"submit"} />
+        </div>
+      </form>
     </BaseModal>
   );
 };
@@ -134,6 +173,9 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     fontWeight: 400,
+  },
+  form: {
+    width: "100%",
   },
   formInputContainer: {
     width: "100%",

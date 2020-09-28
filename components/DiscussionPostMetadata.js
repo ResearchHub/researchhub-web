@@ -18,7 +18,7 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { timeAgo } from "~/config/utils";
+import { timeAgo, createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
@@ -199,11 +199,11 @@ const DiscussionPostMetadata = (props) => {
             </div>
           )}
         </div>
-        {authorProfile.headline && (
+        {(authorProfile.headline || authorProfile.education) && (
           <div
             className={css(styles.headline, smaller && styles.smallerHeadline)}
           >
-            {authorProfile.headline}
+            {createUserSummary(authorProfile)}
           </div>
         )}
       </div>
@@ -225,7 +225,6 @@ const User = (props) => {
   const { name, paper, authorProfile, smaller, twitterUrl } = props;
   let isPoster = false;
 
-  console.log("paper", paper);
   if (
     paper &&
     paper.uploaded_by &&
