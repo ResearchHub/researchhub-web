@@ -75,28 +75,64 @@ class UserInfoModal extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     if (this.props.auth.isLoggedIn) {
-      if (!this.props.author && this.props.user) {
+      console.log("MOUNT this.props.author", this.props.author);
+
+      if (!this.props.author) {
         this.props.getAuthor({ authorId: this.props.user.author_profile.id });
+        this.props.author && this.setState({ ...this.initialState });
+      } else {
+        this.setState({ ...this.initialState });
       }
     }
-  }
+  };
 
   componentDidUpdate = async (prevProps) => {
-    if (!prevProps.auth.isLoggedIn && this.props.auth.isLoggedIn) {
-      if (!this.props.author && this.props.user) {
-        await this.props.getAuthor({
-          authorId: this.props.user.author_profile.id,
-        });
-        this.props.author && this.setState({ ...this.initialState });
-      }
+    if (prevProps.author.id !== this.props.author.id) {
+      this.setState({
+        first_name:
+          this.props.author && this.props.author.first_name
+            ? this.props.author.first_name
+            : "",
+        last_name:
+          this.props.author && this.props.author.last_name
+            ? this.props.author.last_name
+            : "",
+        description:
+          this.props.author && this.props.author.description
+            ? this.props.author.description
+            : "",
+        facebook:
+          this.props.author && this.props.author.facebook
+            ? this.props.author.facebook
+            : "",
+        linkedin:
+          this.props.author && this.props.author.linkedin
+            ? this.props.author.linkedin
+            : "",
+        twitter:
+          this.props.author && this.props.author.twitter
+            ? this.props.author.twitter
+            : "",
+        education:
+          this.props.author && this.props.author.education
+            ? this.props.author.education
+            : [],
+        headline:
+          this.props.author && this.props.author.headline
+            ? this.props.author.headline
+            : "",
+      });
     }
     if (
       !prevProps.modals.openUserInfoModal &&
       this.props.modals.openUserInfoModal
     ) {
-      this.props.author && this.setState({ ...this.initialState });
+      console.log("MODAL this.props.author", this.props.author);
+      this.props.author
+        ? this.setState({ ...this.initialState })
+        : this.props.getAuthor({ authorId: this.props.user.author_profile.id });
     }
   };
 
@@ -144,7 +180,10 @@ class UserInfoModal extends React.Component {
     this.setState({ education });
   };
 
-  handleEducationAndDegree = (school, degree) => {
+  onEducationModalSave = (educationSummary) => {
+    const { school, degree, year } = educationSummary;
+    //TODO: create summary string here.
+
     let education = [...this.state.education];
     education[this.state.activeIndex] = { ...school, degree, is_public: false };
     this.setState({ education });
@@ -321,7 +360,7 @@ class UserInfoModal extends React.Component {
       >
         <EducationModal
           education={this.state.education[this.state.activeIndex]}
-          onSave={this.handleEducationAndDegree}
+          onSave={this.onEducationModalSave}
         />
         <form className={css(styles.form)} onSubmit={this.saveAuthorChanges}>
           <div className={css(styles.titleHeader)}>
@@ -353,13 +392,13 @@ class UserInfoModal extends React.Component {
               })}
             </div>
           </div>
-          {this.renderEducationList()}
           {this.renderFormInput({
             label: "Headline",
             subtitle:
               "This information will be displayed in comments below your name",
             value: this.state.headline,
           })}
+          {this.renderEducationList()}
           {this.renderFormInput({
             label: "About",
             value: this.state.description,

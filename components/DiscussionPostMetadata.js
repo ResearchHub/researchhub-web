@@ -225,7 +225,12 @@ const User = (props) => {
   const { name, paper, authorProfile, smaller, twitterUrl } = props;
   let isPoster = false;
 
-  if (paper && paper.uploaded_by.author_profile.id === authorProfile.id) {
+  console.log("paper", paper);
+  if (
+    paper &&
+    paper.uploaded_by &&
+    paper.uploaded_by.author_profile.id === authorProfile.id
+  ) {
     isPoster = true;
   }
 

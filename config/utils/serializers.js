@@ -6,6 +6,10 @@ import ModalImage from "react-modal-image";
 import QuillToPlaintext from "quill-to-plaintext";
 import { css, StyleSheet } from "aphrodite";
 
+export function createHeadline() {
+  // combine headline, education
+}
+
 export function createUsername({ created_by }) {
   if (created_by) {
     const { first_name, last_name } = created_by.author_profile;
@@ -368,5 +372,3 @@ export function formatPaperSlug(paperTitle) {
   }
   return "";
 }
-
-// export function formatAmplitudeEvent()
