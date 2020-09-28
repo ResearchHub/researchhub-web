@@ -310,6 +310,8 @@ class HubPage extends React.Component {
       loadingMore: true,
     });
 
+    let scope = this.calculateScope();
+
     let url = API.GET_HUB_PAPERS({
       timePeriod: scope,
       hubId: hubId,
