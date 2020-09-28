@@ -34,7 +34,6 @@ import PromotionInfoModal from "~/components/modal/PromotionInfoModal";
 import SignUpBanner from "./Banner/SignUpBanner";
 import PaperPromotionBanner from "./Banner/PaperPromotionBanner";
 import ReCaptchaPrompt from "./modal/ReCaptchaPrompt";
-import UserInfoModal from "./modal/UserInfoModal";
 import EducationModal from "./modal/EducationModal";
 
 // Styles
@@ -430,8 +429,6 @@ const Navbar = (props) => {
         <DndModal />
         <PromotionInfoModal />
         <ReCaptchaPrompt />
-        <UserInfoModal />
-        {/* <EducationModal /> */}
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />
