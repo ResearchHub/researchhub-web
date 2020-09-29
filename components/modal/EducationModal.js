@@ -65,7 +65,7 @@ const EducationModal = (props) => {
       if (education.hasOwnProperty("is_public")) {
         setIsPublic(education.is_public);
       } else {
-        setIsPublic(true);
+        setIsPublic(false);
       }
     }
   }
@@ -92,20 +92,21 @@ const EducationModal = (props) => {
 
     if (major) {
       education.major = major;
-      summary += major;
+      summary += major + " ";
     }
 
     if (degree) {
       education.degree = degree;
-      summary += " " + degree.value;
+      summary += degree.value + `${year ? "" : ","}`;
     }
+
     if (year) {
       education.year = year;
-      let formattedYear = " '" + year.value.slice(2) + ", ";
+      let formattedYear = " '" + year.value.slice(2) + ",";
       summary += formattedYear;
     }
 
-    summary += school.name;
+    summary += " " + school.name;
 
     education.summary = summary;
     education.is_public = isPublic;
@@ -115,6 +116,7 @@ const EducationModal = (props) => {
   function handleIsPublic(e) {
     e && e.stopPropagation();
     setIsPublic(e.target.checked);
+    props.onActive && props.onActive(props.currentIndex);
   }
 
   function saveEducation(e) {
@@ -184,7 +186,7 @@ const EducationModal = (props) => {
                 isPublic && styles.activeLabel
               )}
             >
-              {isPublic ? "Public" : "Private"}
+              Set as Main
             </h3>
             <Toggle
               className={"react-toggle"}
@@ -224,9 +226,8 @@ const styles = StyleSheet.create({
   },
   formInputContainer: {
     width: "100%",
-    // height: 300,
     marginTop: 30,
-    marginBottom: 15,
+    marginBottom: 40,
   },
   formInput: {
     padding: 0,
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     width: "100%",
-    marginTop: 40,
+    paddingTop: 25,
   },
   isPublicContainer: {
     display: "flex",
@@ -247,6 +248,7 @@ const styles = StyleSheet.create({
   isPublicLabel: {
     color: colors.BLACK(0.5),
     fontSize: 14,
+    margin: 0,
     marginRight: 8,
     fontWeight: 400,
   },

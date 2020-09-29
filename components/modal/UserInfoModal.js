@@ -42,6 +42,7 @@ class UserInfoModal extends React.Component {
         this.props.author &&
         this.props.author.education &&
         this.props.author.education.length - 1,
+      mainIndex: 0,
     };
   }
 
@@ -170,6 +171,18 @@ class UserInfoModal extends React.Component {
     this.setState({ headline });
   };
 
+  setEducationActive = (index) => {
+    let education = this.state.education.map((school, i) => {
+      if (index !== i) {
+        school.is_public = false;
+      } else {
+        school.is_public = true;
+      }
+      return school;
+    });
+    this.setState({ education });
+  };
+
   toggleAvatarModal = (state) => {
     this.setState({ avatarUploadIsOpen: state });
   };
@@ -245,6 +258,8 @@ class UserInfoModal extends React.Component {
       this.setState({ education });
     }
 
+    let activeIndex = null;
+
     return (
       <div
         className={css(styles.formInputContainer, styles.educationContainer)}
@@ -253,14 +268,20 @@ class UserInfoModal extends React.Component {
         {this.state.education &&
           this.state.education.length &&
           this.state.education.map((education, index) => {
+            if (education.is_public && activeIndex === null) {
+              activeIndex = index;
+            }
+
             return (
               <EducationSummaryCard
                 key={`eduSummaryCard-${education.id}`}
                 index={index}
                 label={index === 0 && "Education"}
+                activeIndex={true}
                 value={education}
                 onClick={() => this.openEducationModal(index)}
                 onRemove={() => this.removeEducation(index)}
+                onActive={this.setEducationActive}
               />
             );
           })}
@@ -357,7 +378,9 @@ class UserInfoModal extends React.Component {
       >
         <EducationModal
           education={this.state.education[this.state.activeIndex]}
+          currentIndex={this.state.activeIndex}
           onSave={this.onEducationModalSave}
+          onActive={this.setEducationActive}
         />
         <form className={css(styles.form)} onSubmit={this.saveAuthorChanges}>
           <div className={css(styles.titleHeader)}>
