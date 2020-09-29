@@ -10,6 +10,7 @@ import Head from "~/components/Head";
 import { Comment } from "~/components/DiscussionComment";
 import { CommentEditor } from "~/components/DiscussionCommentEditor";
 import Thread from "~/components/DiscussionPageThread";
+import TextEditor from "~/components/TextEditor";
 
 // components
 import Loader from "~/components/Loader/Loader";
@@ -50,17 +51,17 @@ const DiscussionThreadPage = (props) => {
   if (thread.success) {
     title = thread.title;
     body = thread.text;
-    createdBy = thread.createdBy;
-    createdDate = thread.createdDate;
+    createdBy = thread.created_by;
+    createdDate = thread.created_date;
     score = thread.score;
   }
 
   useEffect(() => {
     if (thread.success) {
-      const currentComments = thread.commentPage.comments;
+      const currentComments = thread.comments;
       setComments(currentComments);
     }
-  }, [discussion.success]);
+  }, [thread.success]);
 
   useEffect(() => {
     async function refetchDiscussion() {
@@ -72,12 +73,6 @@ const DiscussionThreadPage = (props) => {
       await dispatch(
         DiscussionActions.fetchComments(paperId, discussionThreadId, pageNumber)
       );
-
-      const refetchedDiscussion = store.getState().discussion;
-
-      setThread(refetchedDiscussion);
-      setComments(refetchedDiscussion.commentPage.comments);
-      setUserVote(refetchedDiscussion.userVote);
     }
 
     refetchDiscussion();
@@ -87,6 +82,15 @@ const DiscussionThreadPage = (props) => {
     let commentComponents =
       comments &&
       comments.map((c, i) => {
+        if (!c.createdBy) {
+          c.createdBy = c.created_by;
+        }
+
+        if (!c.createdDate) {
+          c.createdDate = c.created_date;
+        }
+        c.userVote = {};
+
         let highlight = false;
         let divider = <div className={css(styles.divider)} />;
         if (i === 0) {
@@ -117,16 +121,14 @@ const DiscussionThreadPage = (props) => {
   function addSubmittedComment(comment) {
     let newComments = [comment];
     props.showMessage({ load: true, show: true });
-    newComments = newComments.concat(comments);
+    newComments = newComments.concat(props.discussion.comments);
     setTransition(true);
     setComments(newComments);
     setActive(false);
     props.showMessage({ show: false });
     props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
     props.getUser();
-    setTimeout(() => {
-      setTransition(false);
-    }, 3000);
+    setTransition(false);
   }
 
   const getNextPage = async (paperId, discussionThreadId, page) => {
