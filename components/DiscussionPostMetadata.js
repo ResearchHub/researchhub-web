@@ -203,7 +203,10 @@ const DiscussionPostMetadata = (props) => {
         </div>
         {(authorProfile.headline || authorProfile.education) && (
           <div
-            className={css(styles.headline, smaller && styles.smallerHeadline)}
+            className={
+              css(styles.headline, smaller && styles.smallerHeadline) +
+              " clamp1"
+            }
           >
             {createUserSummary(authorProfile)}
           </div>
@@ -255,9 +258,9 @@ const User = (props) => {
         {name}
       </div>
       {isPoster && !isAuthor && (
-        <div className={css(styles.status) + " clamp1"}>Poster</div>
+        <div className={css(styles.status)}>Poster</div>
       )}
-      {isAuthor && <div className={css(styles.status) + " clamp1"}>Author</div>}
+      {isAuthor && <div className={css(styles.status)}>Author</div>}
     </div>
   );
 };
