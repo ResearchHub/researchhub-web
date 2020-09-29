@@ -15,6 +15,7 @@ export const ModalConstants = {
   INVITE_TO_HUB_MODAL_TOGGLE: "@@MODAL/INVITE_TO_HUB_MODAL_TOGGLE",
   ADD_DISCUSSION_MODAL_TOGGLE: "@@MODAL/ADD_DISCUSSION_MODAL_TOGGLE",
   ADD_HUB_MODAL_TOGGLE: "@@MODAL/ADD_HUB_MODAL_TOGGLE",
+  EDIT_HUB_MODAL_TOGGLE: "@@MODAL/EDIT_HUB_MODAL_TOGGLE",
   TRANSACTION_MODAL_TOGGLE: "@@MODAL/TRANSACTION_MODAL_TOGGLE",
   FIRST_VOTE_MODAL_TOGGLE: "@@MODAL/FIRST_VOTE_MODAL_TOGGLE",
   ORCID_CONNECT_MODAL_TOGGLE: "@@modal/ORCID_CONNECT_MODAL_TOGGLE",
@@ -119,6 +120,19 @@ export const ModalActions = {
         type: ModalConstants.ADD_HUB_MODAL_TOGGLE,
         payload: {
           openAddHubModal: openModal,
+        },
+      });
+    };
+  },
+  openEditHubModal: (openModal, hub) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.EDIT_HUB_MODAL_TOGGLE,
+        payload: {
+          openEditHubModal: openModal,
+          editHubModal: {
+            hub,
+          },
         },
       });
     };
@@ -263,6 +277,8 @@ const defaultModalState = {
   openInviteToHubModal: false,
   openAddDiscussionModal: false,
   openAddHubModal: false,
+  openEditHubModal: false,
+  editHubModal: {},
   openTransactionModal: false,
   openFirstVoteModal: false,
   openOrcidConnectModal: false,
@@ -300,6 +316,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.INVITE_TO_HUB_MODAL_TOGGLE:
     case ModalConstants.ADD_DISCUSSION_MODAL_TOGGLE:
     case ModalConstants.ADD_HUB_MODAL_TOGGLE:
+    case ModalConstants.EDIT_HUB_MODAL_TOGGLE:
     case ModalConstants.TRANSACTION_MODAL_TOGGLE:
     case ModalConstants.FIRST_VOTE_MODAL_TOGGLE:
     case ModalConstants.ORCID_CONNECT_MODAL_TOGGLE:
