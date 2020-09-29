@@ -198,34 +198,30 @@ class HubCard extends React.Component {
             }
             alt="Hub Background Image"
           ></img>
+          <EditHubModal closeModal={this.closeEditHubModal} />
+          <PermissionNotificationWrapper
+            modalMessage="Edit the Hub"
+            loginRequired={true}
+            permissionKey="EditHub"
+            hideRipples={true}
+            styling={styles.permissionWrapper}
+          >
+            <button
+              className={css(styles.editButton)}
+              onClick={(e) => {
+                e.stopPropagation();
+                this.openEditHubModal();
+              }}
+            >
+              <i className="fad fa-pencil"></i>
+            </button>
+          </PermissionNotificationWrapper>
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
               <div className={css(styles.hubName)}>{hub.name}</div>
               {this.renderSubscribe()}
             </div>
-            <div className={css(styles.midContainer)}>
-              <div className={css(styles.hubDescription)}>
-                {hub.description}
-              </div>
-              <div className={css(styles.editHubWrapper)}>
-                <EditHubModal closeModal={this.closeEditHubModal} />
-                <PermissionNotificationWrapper
-                  modalMessage="Edit the Hub"
-                  loginRequired={true}
-                  permissionKey="EditHub"
-                >
-                  <button
-                    className={css(styles.editButton)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      this.openEditHubModal();
-                    }}
-                  >
-                    Edit Hub
-                  </button>
-                </PermissionNotificationWrapper>
-              </div>
-            </div>
+            <div className={css(styles.hubDescription)}>{hub.description}</div>
             <div className={css(styles.hubStats)}>
               <div>
                 <span className={css(styles.statIcon)}>{icons.paper}</span>
@@ -363,28 +359,29 @@ const styles = StyleSheet.create({
     outline: "none",
     userSelect: "none",
   },
-  editButton: {
-    height: 20,
-    width: 80,
-    border: `${colors.ORANGE()} 1px solid`,
-    backgroundColor: colors.DARK_YELLOW(),
-    color: "#fff",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 12,
-    borderRadius: 5,
-    cursor: "pointer",
-    highlight: "none",
-    outline: "none",
-    userSelect: "none",
-    ":hover": {
-      backgroundColor: "#d35400",
-    },
+  permissionWrapper: {
+    position: "none",
   },
-  midContainer: {
-    display: "flex",
-    justifyContent: "space-between",
+  editButton: {
+    height: 50,
+    width: 50,
+    borderRadius: "50%",
+    border: `${colors.BLACK()} 1px solid`,
+    background: colors.BLACK(),
+    color: "#fff",
+    marginLeft: 15,
+    opacity: 0.5,
+    fontWeight: 400,
+    fontSize: 14,
+    cursor: "pointer",
+    position: "absolute",
+    right: 0,
+    top: 0,
+    margin: 5,
+
+    ":hover": {
+      opacity: 1,
+    },
   },
   hubDescription: {
     fontSize: 13,
