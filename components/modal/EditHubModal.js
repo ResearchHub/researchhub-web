@@ -24,6 +24,7 @@ class EditHubModal extends React.Component {
     this.initialState = {
       hubName: "",
       error: false,
+      changed: false,
     };
     this.state = {
       ...this.initialState,
@@ -50,9 +51,10 @@ class EditHubModal extends React.Component {
 
   handleInputChange = (id, value) => {
     this.setState({ [id]: value });
+    this.setState({ changed: true });
   };
 
-  UpdateHub = async (id) => {
+  UpdateHub = async (hub) => {
     this.props.showMessage({ show: true, load: true });
     const { hubName, hubDescription, hubImage, hubCategory } = this.state;
     let isUnique = true;
@@ -61,10 +63,8 @@ class EditHubModal extends React.Component {
     }
     if (isUnique) {
       const data = new FormData();
-      data.append("id", id);
-      if (hubName) {
-        data.append("name", hubName.toLowerCase());
-      }
+      data.append("id", hub.id);
+      data.append("name", hubName ? hubName.toLowerCase() : hub.name);
       if (hubDescription) {
         data.append("description", hubDescription);
       }
@@ -74,7 +74,7 @@ class EditHubModal extends React.Component {
       if (hubCategory) {
         data.append("category", hubCategory.value);
       }
-      return fetch(API.HUB({ hubId: id }), API.PUT_FILE_CONFIG(data))
+      return fetch(API.HUB({ hubId: hub.id }), API.PUT_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((_res) => {
@@ -137,6 +137,28 @@ class EditHubModal extends React.Component {
   render() {
     const { modals } = this.props;
     const hub = modals.editHubModal.hub;
+    let image;
+    let name;
+    let description;
+    if (hub) {
+      image = hub.hub_image
+        ? hub.hub_image
+        : "/static/background/twitter-banner.jpg";
+    } else {
+      image = null;
+    }
+    if (this.state.changed) {
+      if (this.state.hubName) {
+        name = this.state.hubName;
+      }
+      if (this.state.hubDescription) {
+        description = this.state.hubDescription;
+      }
+    } else {
+      name = hub ? hub.name : null;
+      description = hub ? hub.description : null;
+    }
+
     return (
       <BaseModal
         isOpen={modals.openEditHubModal}
@@ -148,12 +170,12 @@ class EditHubModal extends React.Component {
           className={css(styles.form)}
           onSubmit={(e) => {
             e.preventDefault();
-            this.UpdateHub(hub.id);
+            this.UpdateHub(hub);
           }}
         >
           <FormInput
             label={"Hub Name"}
-            placeholder={hub ? hub.name : null}
+            value={name}
             id={"hubName"}
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
@@ -163,7 +185,7 @@ class EditHubModal extends React.Component {
           />
           <FormInput
             label={"Hub Description"}
-            placeholder={hub ? hub.description : null}
+            value={description}
             id={"hubDescription"}
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
@@ -189,7 +211,7 @@ class EditHubModal extends React.Component {
           </div>
           <img
             className={css(styles.image)}
-            src={hub ? hub.hub_image : null}
+            src={image}
             alt={"Existing Hub Image"}
           ></img>
           <FormInput
