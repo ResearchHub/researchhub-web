@@ -13,10 +13,13 @@ export function createUserSummary(author = {}) {
   let userSummary = "";
 
   if (education && education.length) {
-    userSummary += education[0].summary;
+    let school = education.filter((school) => school.is_public);
+    if (school.length) {
+      userSummary += school[0].summary;
+    }
   }
 
-  if (headline && headline.isPublic) {
+  if (headline && headline.isPublic & headline.length) {
     userSummary += `${userSummary.length ? space : ""}` + headline.title;
   }
 
@@ -29,6 +32,10 @@ export function createUsername({ created_by }) {
     return `${first_name} ${last_name}`;
   }
   return null;
+}
+
+export function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 export function convertToEditorValue(text) {

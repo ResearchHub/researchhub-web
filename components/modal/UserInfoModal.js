@@ -66,7 +66,6 @@ class UserInfoModal extends React.Component {
       !prevProps.modals.openUserInfoModal &&
       this.props.modals.openUserInfoModal
     ) {
-      // console.log('this.props.modals.openUserInfoModal', thsi.props.user.author_profile)
       this.props.author
         ? this.setState({ ...this.mapStateFromProps() })
         : this.props.getAuthor({ authorId: this.props.user.author_profile.id });
@@ -131,7 +130,6 @@ class UserInfoModal extends React.Component {
     let education = [...this.state.education];
     education[this.state.activeIndex] = {
       ...educationSummary,
-      is_public: false,
     };
     this.setState({ education });
   };
@@ -553,9 +551,6 @@ const styles = StyleSheet.create({
   },
   activeLabel: {
     color: colors.BLUE(),
-  },
-  lockIcon: {
-    color: "#dedde0",
   },
 });
 

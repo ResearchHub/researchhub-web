@@ -9,97 +9,107 @@ import Loader from "../Loader/Loader";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { capitalize } from "~/config/utils";
 
-class UniversityInput extends React.Component {
+class MajorsInput extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
       search: "",
       searching: false,
       showDropDown: false,
-      universities: [],
+      majors: [],
       userUniversity: {},
     };
     this.state = {
       ...this.initialState,
     };
+    this.dropdownRef;
   }
 
   componentDidMount() {
     if (this.props.value) {
-      this.setState({ search: this.props.value.name });
+      this.setState({ search: this.props.value });
     } else {
       this.setState({ ...this.initialState });
     }
+
+    window.addEventListener("click", this.handleOutsideClick);
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.value !== this.props.value) {
-      if (this.props.value && this.props.value.name) {
-        this.setState({ search: this.props.value.name });
+      if (this.props.value) {
+        this.setState({ search: this.props.value });
       } else {
         this.setState({ ...this.initialState });
       }
     }
   }
 
-  handleUniversitySearch = (id, value) => {
-    // if (!value) {
-    //   return (
-    //     this.props.handleUserClick &&
-    //     this.props.handleUserClick(null, this.props.index)
-    //   );
-    // }
-    let { searching, universities, showDropDown } = this.state;
+  componentWillUnmount() {
+    window.removeEventListener("click", this.handleOutsideClick);
+  }
+
+  handleOutsideClick = (e) => {
+    if (this.dropdownRef && !this.dropdownRef.contains(e.target)) {
+      e.stopPropagation();
+      this.setState({ showDropDown: false });
+    }
+  };
+
+  handleSearch = (id, value) => {
+    this.props.onChange && this.props.onChange(value);
     this.setState(
       {
         [id]: value,
-        showDropDown: value !== "",
+        showDropDown: this.state.majors.length ? true : false,
         searching: this.state.search === "",
       },
       async () => {
         if (value === "") return;
-        await fetch(API.UNIVERSITY({ search: value }), API.GET_CONFIG())
+        await fetch(API.MAJOR({ search: value }), API.GET_CONFIG())
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            let universities = [...res.results];
+            let majors = [...res.results];
             this.setState({
-              universities,
+              majors,
               searching: false,
+              showDropDown: majors.length ? true : false,
             });
           });
       }
     );
   };
 
-  handleClick = (e, index, university) => {
+  handleClick = (e, index, majorObj) => {
     e.stopPropagation();
+    let search = majorObj.major
+      .split(" ")
+      .map((el) => capitalize(el.toLowerCase()))
+      .join(" ");
     this.setState({
-      search: university.name,
+      search,
       showDropDown: false,
       searching: false,
     });
-    this.props.handleUserClick && this.props.handleUserClick(university, index);
+    this.props.handleUserClick && this.props.handleUserClick(search, index);
   };
 
   renderOptions = () => {
     let { index } = this.props;
-    let { searching, universities, showDropDown } = this.state;
-    if (universities.length) {
-      return universities.map((university, i) => {
-        let { name, city, state, country } = university;
+    let { majors } = this.state;
+    if (majors.length) {
+      return majors.map((entry, i) => {
+        let { major, id } = entry;
         return (
           <div
             key={`uni-${i}`}
-            className={css(styles.universityCard)}
-            onClick={(e) => this.handleClick(e, index, university)}
+            className={css(styles.card)}
+            onClick={(e) => this.handleClick(e, index, entry)}
           >
-            <div className={css(styles.uniName)}>{name}</div>
-            <div className={css(styles.uniMeta)}>
-              {`${city && city + ", "}${state && state + ", "}${country &&
-                country}`}
-            </div>
+            <div className={css(styles.uniName)}>{major.toLowerCase()}</div>
           </div>
         );
       });
@@ -113,8 +123,8 @@ class UniversityInput extends React.Component {
   };
 
   calcHeight = () => {
-    let { universities } = this.state;
-    switch (universities.length) {
+    let { majors } = this.state;
+    switch (majors.length) {
       case 0:
       case 1:
         return styles.smallHeight;
@@ -135,8 +145,9 @@ class UniversityInput extends React.Component {
       index,
       onClick,
       onSearch,
+      value,
     } = this.props;
-    let { searching, universities, showDropDown } = this.state;
+    let { searching, majors, showDropDown } = this.state;
     return (
       <div className={css(styles.container, containerStyle && containerStyle)}>
         {label && (
@@ -153,13 +164,12 @@ class UniversityInput extends React.Component {
         )}
         <span className={css(styles.inputWrapper)}>
           <FormInput
-            id={"search"}
+            id={"majorSearch"}
             value={this.state.search}
-            onChange={this.handleUniversitySearch}
+            onChange={this.handleSearch}
             required={required}
-            placeholder={"Search university"}
+            placeholder={"Search major"}
             containerStyle={styles.removeMargin}
-            type="search"
             autocomplete="off"
             onClick={onClick && onClick}
           />
@@ -169,6 +179,7 @@ class UniversityInput extends React.Component {
               showDropDown && styles.show,
               this.calcHeight()
             )}
+            ref={(ref) => (this.dropdownRef = ref)}
           >
             {searching ? (
               <div className={css(styles.emptyMessage)}>
@@ -257,15 +268,15 @@ const styles = StyleSheet.create({
     maxHeight: 180,
     height: 180,
   },
-  universityCard: {
+  card: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "flex-start",
     width: "calc(95% - 40px)",
     padding: "10px 20px",
-    minHeight: 55,
-    maxHeight: 55,
+    minHeight: 35,
+    maxHeight: 35,
     border: "1px solid #FAFAFA",
     backgroundColor: "#f7f7fb",
     cursor: "pointer",
@@ -275,7 +286,8 @@ const styles = StyleSheet.create({
     },
   },
   uniName: {
-    fontSize: 18,
+    textTransform: "capitalize",
+    fontSize: 16,
     "@media only screen and (max-width: 665px)": {
       fontSize: 16,
     },
@@ -302,4 +314,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UniversityInput;
+export default MajorsInput;
