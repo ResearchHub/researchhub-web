@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState, useRef } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
+import "~/components/Paper/CitationCard.css";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -696,7 +697,7 @@ const AuthorPage = (props) => {
             <div className={css(styles.reputationContainer)}>
               <div className={css(styles.extraInfoContainer)}>
                 {(author.headline || author.education) && (
-                  <div className={css(styles.extraInfo)}>
+                  <div className={css(styles.extraInfo) + " clamp2"}>
                     <i
                       className={css(styles.icon) + " fas fa-graduation-cap"}
                     ></i>

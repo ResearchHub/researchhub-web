@@ -84,10 +84,6 @@ const DiscussionTab = (props) => {
   const [focus, setFocus] = useState(false);
 
   useEffect(() => {
-    console.log("props.paper", props);
-  }, [props.propPaper]);
-
-  useEffect(() => {
     handleWindowResize();
     window.addEventListener("resize", handleWindowResize);
     return () => {

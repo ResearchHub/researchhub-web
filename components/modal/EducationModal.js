@@ -9,6 +9,7 @@ import Toggle from "react-toggle";
 import "~/components/TextEditor/stylesheets/ReactToggle.css";
 import Button from "~/components/Form/Button";
 import UniversityInput from "../SearchSuggestion/UniversityInput";
+import MajorsInput from "../SearchSuggestion/MajorsInput";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -25,10 +26,8 @@ const EducationModal = (props) => {
   const [school, setSchool] = useState(); // object
   const [degree, setDegree] = useState(); // select option object
   const [year, setYear] = useState(); // select option object
-
-  useEffect(() => {
-    // console.log('education', props.education)
-  });
+  const [major, setMajor] = useState();
+  const [isPublic, setIsPublic] = useState();
 
   useEffect(() => {
     mapPropsToState();
@@ -38,7 +37,6 @@ const EducationModal = (props) => {
 
   function mapPropsToState() {
     const { education } = props;
-
     if (education) {
       if (education.degree) {
         setDegree(education.degree);
@@ -57,11 +55,27 @@ const EducationModal = (props) => {
       } else {
         setYear(null);
       }
+
+      if (education.major) {
+        setMajor(education.major);
+      } else {
+        setMajor(null);
+      }
+
+      if (education.hasOwnProperty("is_public")) {
+        setIsPublic(education.is_public);
+      } else {
+        setIsPublic(true);
+      }
     }
   }
 
   function handleEducationInput(value, index) {
     setSchool(value);
+  }
+
+  function handleMajorInput(value) {
+    setMajor(value);
   }
 
   function handleDegreeSelect(id, value) {
@@ -76,6 +90,11 @@ const EducationModal = (props) => {
     let education = { ...school };
     let summary = "";
 
+    if (major) {
+      education.major = major;
+      summary += major;
+    }
+
     if (degree) {
       education.degree = degree;
       summary += " " + degree.value;
@@ -85,10 +104,17 @@ const EducationModal = (props) => {
       let formattedYear = " '" + year.value.slice(2) + ", ";
       summary += formattedYear;
     }
+
     summary += school.name;
 
     education.summary = summary;
+    education.is_public = isPublic;
     return education;
+  }
+
+  function handleIsPublic(e) {
+    e && e.stopPropagation();
+    setIsPublic(e.target.checked);
   }
 
   function saveEducation(e) {
@@ -118,20 +144,18 @@ const EducationModal = (props) => {
           <UniversityInput
             label={"School"}
             inputStyle={styles.formInput}
-            containerStyle={styles.universityContainer}
             handleUserClick={handleEducationInput}
             value={school}
             required={true}
           />
-          {/* <FormSelect
-            id={"major"}
-            label={"Major"}
-            placeholder={"Ex: Physics"}
-            maxMenuHeight={175}
-            onChange={handleDegreeSelect}
-            // required={true}
-            value={degree}
-          /> */}
+          <MajorsInput
+            label="Major"
+            inputStyle={styles.formInput}
+            containerStyle={styles.majorContainer}
+            handleUserClick={handleMajorInput}
+            onChange={handleMajorInput}
+            value={major}
+          />
           <FormSelect
             id={"degree"}
             label={"Degree"}
@@ -152,6 +176,23 @@ const EducationModal = (props) => {
             maxMenuHeight={120}
             onChange={handleYearSelect}
           />
+          <div className={css(styles.isPublicContainer)}>
+            <h3
+              className={css(
+                styles.isPublicLabel,
+                isPublic && styles.activeLabel
+              )}
+            >
+              {isPublic ? "Public" : "Private"}
+            </h3>
+            <Toggle
+              className={"react-toggle"}
+              height={15}
+              value={isPublic}
+              checked={isPublic}
+              onChange={handleIsPublic}
+            />
+          </div>
         </div>
         <div className={css(styles.buttonContainer)}>
           <Button label={"Save"} type={"submit"} />
@@ -177,9 +218,12 @@ const styles = StyleSheet.create({
   form: {
     width: "100%",
   },
+  majorContainer: {
+    marginTop: 20,
+  },
   formInputContainer: {
     width: "100%",
-    height: 300,
+    // height: 300,
     marginTop: 30,
     marginBottom: 15,
   },
@@ -192,7 +236,21 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     width: "100%",
-    marginTop: 20,
+    marginTop: 40,
+  },
+  isPublicContainer: {
+    display: "flex",
+    alignItems: "center",
+    float: "right",
+  },
+  isPublicLabel: {
+    color: colors.BLACK(0.5),
+    fontSize: 14,
+    marginRight: 8,
+    fontWeight: 400,
+  },
+  activeLabel: {
+    color: colors.BLUE(),
   },
 });
 
