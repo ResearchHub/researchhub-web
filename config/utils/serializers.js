@@ -19,8 +19,11 @@ export function createUserSummary(author = {}) {
     }
   }
 
-  if (headline && headline.isPublic & headline.length) {
-    userSummary += `${userSummary.length ? space : ""}` + headline.title;
+  if (headline && headline.isPublic) {
+    let title = headline.title.trim();
+    if (title.length) {
+      userSummary += `${userSummary.length ? space : ""}` + headline.title;
+    }
   }
 
   return userSummary;
