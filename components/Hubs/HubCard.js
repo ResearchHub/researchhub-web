@@ -5,8 +5,8 @@ import Link from "next/link";
 import * as Sentry from "@sentry/browser";
 
 // Component
-import Loader from "~/components/Loader/Loader";
 import Button from "../Form/Button";
+import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -19,6 +19,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import EditHubModal from "../modal/EditHubModal";
 
 class HubCard extends React.Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class HubCard extends React.Component {
     this.linkRef = React.createRef();
     this.state = {
       transition: false,
+      inEditHub: false,
     };
   }
 
@@ -171,13 +173,20 @@ class HubCard extends React.Component {
     );
   };
 
+  openEditHubModal = () => {
+    this.setState({ inEditHub: true });
+    this.props.openEditHubModal(true, this.props.hub);
+  };
+
   render() {
     const { hub } = this.props;
     return (
       <div
         className={css(styles.slugLink)}
         onClick={() => {
-          this.linkRef.current.click();
+          if (!this.state.inEditHub) {
+            this.linkRef.current.click();
+          }
         }}
       >
         <div className={css(styles.hubCard)}>
@@ -191,6 +200,23 @@ class HubCard extends React.Component {
             }
             alt="Hub Background Image"
           ></img>
+          <PermissionNotificationWrapper
+            modalMessage="Edit the Hub"
+            loginRequired={true}
+            permissionKey="EditHub"
+            hideRipples={true}
+            styling={styles.permissionWrapper}
+          >
+            <button
+              className={css(styles.editButton)}
+              onClick={(e) => {
+                e.stopPropagation();
+                this.openEditHubModal();
+              }}
+            >
+              <i className="fad fa-pencil"></i>
+            </button>
+          </PermissionNotificationWrapper>
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
               <div className={css(styles.hubName)}>{hub.name}</div>
@@ -215,14 +241,14 @@ class HubCard extends React.Component {
               </div>
             </div>
           </div>
+          <Link
+            href="/hubs/[slug]"
+            as={`/hubs/${encodeURIComponent(hub.slug)}`}
+            key={`hub_${hub.id}`}
+          >
+            <a ref={this.linkRef}></a>
+          </Link>
         </div>
-        <Link
-          href="/hubs/[slug]"
-          as={`/hubs/${encodeURIComponent(hub.slug)}`}
-          key={`hub_${hub.id}`}
-        >
-          <a ref={this.linkRef}></a>
-        </Link>
       </div>
     );
   }
@@ -340,6 +366,30 @@ const styles = StyleSheet.create({
     outline: "none",
     userSelect: "none",
   },
+  permissionWrapper: {
+    position: "none",
+  },
+  editButton: {
+    height: 50,
+    width: 50,
+    borderRadius: "50%",
+    border: `${colors.BLACK()} 1px solid`,
+    background: colors.BLACK(),
+    color: "#fff",
+    marginLeft: 15,
+    opacity: 0.5,
+    fontWeight: 400,
+    fontSize: 14,
+    cursor: "pointer",
+    position: "absolute",
+    right: 0,
+    top: 0,
+    margin: 5,
+
+    ":hover": {
+      opacity: 1,
+    },
+  },
   hubDescription: {
     fontSize: 13,
     padding: "10px 0 0 0",
@@ -394,6 +444,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   updateHub: HubActions.updateHub,
+  openEditHubModal: ModalActions.openEditHubModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   updateSubscribedHubs: HubActions.updateSubscribedHubs,
 };

@@ -6,6 +6,7 @@ import Link from "next/link";
 // Component
 import Button from "../../components/Form/Button";
 import AddHubModal from "../../components/modal/AddHubModal";
+import EditHubModal from "../../components/modal/EditHubModal";
 import Message from "../../components/Loader/Message";
 import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
@@ -76,6 +77,10 @@ class Index extends React.Component {
     this.props.openAddHubModal(true);
   };
 
+  closeEditHubModal = () => {
+    this.setState({ inEditHub: false });
+  };
+
   addNewHubToState = (newHub) => {
     let hubsByCategory = { ...this.state.hubsByCategory };
     let key = newHub.category;
@@ -135,6 +140,7 @@ class Index extends React.Component {
         </div>
         <div className={css(styles.content)}>
           <AddHubModal addHub={this.addNewHubToState} />
+          <EditHubModal closeModal={this.closeEditHubModal} />
           <Message />
           <Head
             title={"Hubs on Researchhub"}
