@@ -228,16 +228,7 @@ function openTwitter(url) {
 
 const User = (props) => {
   const { name, paper, authorProfile, smaller, twitterUrl } = props;
-  let isPoster;
   let isAuthor;
-
-  if (
-    paper &&
-    paper.uploaded_by &&
-    paper.uploaded_by.author_profile.id === authorProfile.id
-  ) {
-    isPoster = true;
-  }
 
   if (paper && paper.authors && paper.authors.length) {
     paper.authors.forEach((author) => {
@@ -257,9 +248,6 @@ const User = (props) => {
       <div className={css(styles.name, isAuthor && styles.authorName)}>
         {name}
       </div>
-      {isPoster && !isAuthor && (
-        <div className={css(styles.status)}>Poster</div>
-      )}
       {isAuthor && <div className={css(styles.status)}>Author</div>}
     </div>
   );
