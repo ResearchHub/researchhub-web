@@ -8,7 +8,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const EducationSummaryCard = (props) => {
-  const { index, label, value, onClick, onRemove } = props;
+  const { index, label, value, onClick, onRemove, onActive } = props;
   const [hover, setHover] = useState(false);
 
   return (
@@ -35,6 +35,18 @@ const EducationSummaryCard = (props) => {
           {icons.trash}
         </div>
       )}
+
+      <div
+        className={css(
+          styles.checkboxContainer,
+          index === 0 && styles.indexZero
+        )}
+        onClick={() => onActive && onActive(index)}
+      >
+        {value.is_public && (
+          <i className={css(styles.checkIcon) + " far fa-check"} />
+        )}
+      </div>
     </div>
   );
 };
@@ -52,6 +64,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: "100%",
     minHeight: "unset",
+  },
+  checkboxContainer: {
+    position: "absolute",
+    cursor: "pointer",
+    background: "rgb(251, 251, 253)",
+    border: "1px solid rgb(232, 232, 242)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    top: 15,
+    right: -30,
+    height: 20,
+    width: 20,
+    borderRadius: "50%",
+    ":hover": {
+      borderColor: "rgb(179, 179, 179)",
+    },
+  },
+  checkIcon: {
+    fontSize: 13,
+    color: colors.BLUE(),
   },
   trashIcon: {
     position: "absolute",

@@ -670,8 +670,7 @@ const AuthorPage = (props) => {
                   property="name"
                 >
                   {author.first_name} {author.last_name}
-                  {hoverName &&
-                    allowEdit &&
+                  {allowEdit &&
                     renderEditButton(() => {
                       setHoverName(false);
                       openUserInfoModal();
@@ -743,13 +742,6 @@ const AuthorPage = (props) => {
                   </span>
                 )}
                 <span property="description">{author.description}</span>
-                {hoverDescription &&
-                  author.description &&
-                  allowEdit &&
-                  renderEditButton(() => {
-                    setHoverDescription(false);
-                    openUserInfoModal();
-                  })}
               </div>
             ) : (
               allowEdit && (
