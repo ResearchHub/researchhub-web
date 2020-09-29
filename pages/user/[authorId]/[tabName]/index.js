@@ -674,7 +674,7 @@ const AuthorPage = (props) => {
                     allowEdit &&
                     renderEditButton(() => {
                       setHoverName(false);
-                      onEditToggle(SECTIONS.name);
+                      openUserInfoModal();
                     })}
                 </h1>
               ) : (
@@ -695,16 +695,18 @@ const AuthorPage = (props) => {
             </div>
 
             <div className={css(styles.reputationContainer)}>
-              <div className={css(styles.extraInfoContainer)}>
-                {(author.headline || author.education) && (
-                  <div className={css(styles.extraInfo) + " clamp2"}>
-                    <i
-                      className={css(styles.icon) + " fas fa-graduation-cap"}
-                    ></i>
-                    {eduSummary}
-                  </div>
-                )}
-              </div>
+              {eduSummary && (
+                <div className={css(styles.extraInfoContainer) + " clamp2"}>
+                  {(author.headline || author.education) && (
+                    <div className={css(styles.extraInfo) + " clamp2"}>
+                      <i
+                        className={css(styles.icon) + " fas fa-graduation-cap"}
+                      ></i>
+                      {eduSummary}
+                    </div>
+                  )}
+                </div>
+              )}
               <div className={css(styles.reputation)}>
                 <span className={css(styles.icon)}>
                   <img
@@ -735,7 +737,7 @@ const AuthorPage = (props) => {
                 {!author.description && allowEdit && (
                   <span
                     className={css(styles.addDescriptionText)}
-                    onClick={() => onEditToggle(SECTIONS.description)}
+                    onClick={() => openUserInfoModal()}
                   >
                     Add description
                   </span>
@@ -746,7 +748,7 @@ const AuthorPage = (props) => {
                   allowEdit &&
                   renderEditButton(() => {
                     setHoverDescription(false);
-                    onEditToggle(SECTIONS.description);
+                    openUserInfoModal();
                   })}
               </div>
             ) : (
