@@ -172,10 +172,6 @@ class HubCard extends React.Component {
     this.props.openEditHubModal(true, this.props.hub);
   };
 
-  closeEditHubModal = () => {
-    this.setState({ inEditHub: false });
-  };
-
   render() {
     const { hub } = this.props;
     return (
@@ -198,7 +194,6 @@ class HubCard extends React.Component {
             }
             alt="Hub Background Image"
           ></img>
-          <EditHubModal closeModal={this.closeEditHubModal} />
           <PermissionNotificationWrapper
             modalMessage="Edit the Hub"
             loginRequired={true}
