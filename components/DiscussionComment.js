@@ -322,8 +322,6 @@ class CommentClass extends DiscussionComment {
   };
 
   renderMessage = () => {
-    console.log("props", this.props);
-    console.log("state", this.state);
     if (this.state.toggleReplies) {
       return `Hide ${this.state.replyCount === 1 ? "reply" : "replies"}`;
     } else {
