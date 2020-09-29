@@ -399,6 +399,15 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    MAJOR: ({ search }) => {
+      let url = BASE_URL + `major/`;
+
+      if (search) {
+        url += `?search=${search}`;
+      }
+
+      return url;
+    },
     EMAIL_PREFERENCE: ({ update_or_create, emailRecipientId }) => {
       let url = BASE_URL + "email_recipient/";
 

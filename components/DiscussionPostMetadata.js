@@ -4,6 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import Ripples from "react-ripples";
 import { useAlert } from "react-alert";
+import "~/components/Paper/CitationCard.css";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -21,6 +22,7 @@ import colors, { voteWidgetColors } from "~/config/themes/colors";
 import { timeAgo, createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { paperSummaryPost } from "../redux/paper/shims";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -223,7 +225,8 @@ function openTwitter(url) {
 
 const User = (props) => {
   const { name, paper, authorProfile, smaller, twitterUrl } = props;
-  let isPoster = false;
+  let isPoster;
+  let isAuthor;
 
   if (
     paper &&
@@ -233,6 +236,14 @@ const User = (props) => {
     isPoster = true;
   }
 
+  if (paper && paper.authors && paper.authors.length) {
+    paper.authors.forEach((author) => {
+      if (author.id === authorProfile.id) {
+        isAuthor = true;
+      }
+    });
+  }
+
   return (
     <div
       className={css(
@@ -240,8 +251,13 @@ const User = (props) => {
         smaller && styles.smallerUserContainer
       )}
     >
-      <div className={css(styles.name)}>{name}</div>
-      {isPoster && <div className={css(styles.status)}>Poster</div>}
+      <div className={css(styles.name, isAuthor && styles.authorName)}>
+        {name}
+      </div>
+      {isPoster && !isAuthor && (
+        <div className={css(styles.status) + " clamp1"}>Poster</div>
+      )}
+      {isAuthor && <div className={css(styles.status) + " clamp1"}>Author</div>}
     </div>
   );
 };
@@ -351,7 +367,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    // alignItems: 'flex-start',
     position: "relative",
   },
   column: {
@@ -404,12 +419,16 @@ const styles = StyleSheet.create({
   name: {
     marginLeft: 8,
     color: colors.BLACK(1),
+    fontSize: 15,
     "@media only screen and (max-width: 767px)": {
       fontSize: 14,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  authorName: {
+    fontWeight: 500,
   },
   status: {
     marginLeft: 10,

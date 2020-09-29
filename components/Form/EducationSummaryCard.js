@@ -23,19 +23,18 @@ const EducationSummaryCard = (props) => {
         value={value.summary}
         onClick={onClick}
       />
-      {(index === 0 && value.summary) ||
-        (index !== 0 && (
-          <div
-            className={css(
-              styles.trashIcon,
-              index === 0 && styles.indexZero,
-              hover && styles.reveal
-            )}
-            onClick={onRemove}
-          >
-            {icons.trash}
-          </div>
-        ))}
+      {((index === 0 && value.summary) || index !== 0) && (
+        <div
+          className={css(
+            styles.trashIcon,
+            index === 0 && styles.indexZero,
+            hover && styles.reveal
+          )}
+          onClick={onRemove}
+        >
+          {icons.trash}
+        </div>
+      )}
     </div>
   );
 };
@@ -57,13 +56,13 @@ const styles = StyleSheet.create({
   trashIcon: {
     position: "absolute",
     cursor: "pointer",
-    color: colors.BLACK(0.3),
-    paddingLeft: 20,
+    background: "#fafafd",
+    color: colors.BLACK(0.7),
     top: 15,
     right: 10,
     opacity: 0,
     ":hover": {
-      color: colors.BLACK(0.7),
+      color: colors.BLACK(0.9),
     },
   },
   indexZero: {

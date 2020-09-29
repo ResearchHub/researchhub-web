@@ -119,7 +119,7 @@ const degrees = [
     label: "Highschool Diploma",
   },
   {
-    value: "Associate's Degree",
+    value: "AA",
     label: "Associate's Degree",
   },
   {
@@ -135,7 +135,7 @@ const degrees = [
     label: "Associate of Arts and Science",
   },
   {
-    value: "Bachelor's Degree",
+    value: "BA",
     label: "Bachelor's Degree",
   },
   {
