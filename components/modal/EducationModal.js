@@ -127,6 +127,7 @@ const EducationModal = (props) => {
 
   function closeModal() {
     props.openEducationModal(false);
+    document.body.style.overflow = "scroll";
   }
 
   return (
