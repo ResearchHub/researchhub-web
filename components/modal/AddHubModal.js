@@ -70,7 +70,6 @@ class AddHubModal extends React.Component {
   };
 
   createHub = async () => {
-    console.log(this.state);
     if (this.state.error.category) {
       this.props.setMessage("Required fields must be filled.");
       this.props.showMessage({
@@ -83,10 +82,6 @@ class AddHubModal extends React.Component {
       error.changed = true;
       this.setState({ error: error });
 
-      return;
-    }
-
-    if (this.hubNameFits() || this.hubDescriptionFits()) {
       return;
     }
 

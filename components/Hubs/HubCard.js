@@ -26,7 +26,6 @@ class HubCard extends React.Component {
     this.linkRef = React.createRef();
     this.state = {
       transition: false,
-      inEditHub: false,
     };
   }
 
@@ -172,8 +171,23 @@ class HubCard extends React.Component {
     );
   };
 
+  renderEdit = () => {
+    if (this.props.auth.isLoggedIn) {
+      return (
+        <button
+          className={css(styles.editButton)}
+          onClick={(e) => {
+            e.stopPropagation();
+            this.openEditHubModal();
+          }}
+        >
+          <span className={css(styles.editIcon)}>{icons.editHub}</span>
+        </button>
+      );
+    }
+  };
+
   openEditHubModal = () => {
-    this.setState({ inEditHub: true });
     this.props.openEditHubModal(true, this.props.hub);
   };
 
@@ -183,9 +197,7 @@ class HubCard extends React.Component {
       <div
         className={css(styles.slugLink)}
         onClick={() => {
-          if (!this.state.inEditHub) {
-            this.linkRef.current.click();
-          }
+          this.linkRef.current.click();
         }}
       >
         <div className={css(styles.hubCard)}>
@@ -199,23 +211,7 @@ class HubCard extends React.Component {
             }
             alt="Hub Background Image"
           ></img>
-          <PermissionNotificationWrapper
-            modalMessage="Edit the Hub"
-            loginRequired={true}
-            permissionKey="EditHub"
-            hideRipples={true}
-            styling={styles.permissionWrapper}
-          >
-            <button
-              className={css(styles.editButton)}
-              onClick={(e) => {
-                e.stopPropagation();
-                this.openEditHubModal();
-              }}
-            >
-              <span className={css(styles.editIcon)}>{icons.editHub}</span>
-            </button>
-          </PermissionNotificationWrapper>
+          {this.renderEdit()}
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
               <div className={css(styles.hubName)}>{hub.name}</div>
@@ -309,11 +305,6 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     width: "250px",
   },
-  hubName1: {
-    fontSize: 14,
-    textTransform: "capitalize",
-    fontWeight: 500,
-  },
   subscribeButton: {
     height: 20,
     width: 80,
@@ -397,20 +388,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     position: "relative",
     width: 334,
-    // height: "60px",
-    height: "70px",
-    textOverflow: "ellipsis",
-  },
-  hubDescription1: {
-    fontSize: 13,
-    padding: "10px 0 0 0",
-    marginBottom: "10px",
-    opacity: "0.8",
-    overflow: "hidden",
-    position: "relative",
-    width: 334,
-    height: "39px",
-    textOverflow: "ellipsis",
+    height: "60px",
   },
   fade: {
     position: "absolute",
