@@ -25,15 +25,37 @@ class EditHubModal extends React.Component {
       return { value: elem.id, label: elem.category_name };
     });
     this.initialState = {
+      hubDescription: "",
       hubName: "",
       error: false,
-      changed: false,
       categories: categories,
     };
     this.state = {
       ...this.initialState,
     };
+    this.descriptionLimit = 125;
+    this.nameLimit = 25;
   }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    let prevHub = prevProps.modals.editHubModal.hub;
+    let currHub = this.props.modals.editHubModal.hub;
+    if (prevHub !== currHub) {
+      let hub = this.props.modals.editHubModal.hub;
+      this.setState({
+        hubName: hub ? this.toTitleCase(hub.name) : "",
+        hubDescription: hub ? hub.description : "",
+      });
+    }
+  };
+
+  hubNameFits = (text) => {
+    return text.length <= this.nameLimit;
+  };
+
+  hubDescriptionFits = (text) => {
+    return text.length <= this.descriptionLimit;
+  };
 
   getMatchingCategory = (id) => {
     for (const category of this.state.categories) {
@@ -44,8 +66,13 @@ class EditHubModal extends React.Component {
   };
 
   handleInputChange = (id, value) => {
-    this.setState({ [id]: value });
-    this.setState({ changed: true });
+    if (
+      (id === "hubDescription" && !this.hubDescriptionFits(value)) ||
+      (id === "hubName" && !this.hubNameFits(value))
+    ) {
+      return;
+    }
+    this.setState({ [id]: id === "hubName" ? this.toTitleCase(value) : value });
   };
 
   UpdateHub = async (hub) => {
@@ -148,17 +175,6 @@ class EditHubModal extends React.Component {
     } else {
       image = null;
     }
-    if (this.state.changed) {
-      if (this.state.hubName) {
-        name = this.toTitleCase(this.state.hubName);
-      }
-      if (this.state.hubDescription) {
-        description = this.state.hubDescription;
-      }
-    } else {
-      name = hub ? this.toTitleCase(hub.name) : null;
-      description = hub ? hub.description : null;
-    }
 
     return (
       <BaseModal
@@ -176,7 +192,7 @@ class EditHubModal extends React.Component {
         >
           <FormInput
             label={"Hub Name"}
-            value={name}
+            value={this.state.hubName}
             id={"hubName"}
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
@@ -186,7 +202,7 @@ class EditHubModal extends React.Component {
           />
           <FormInput
             label={"Hub Description"}
-            value={description}
+            value={this.state.hubDescription}
             id={"hubDescription"}
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
