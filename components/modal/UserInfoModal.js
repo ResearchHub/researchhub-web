@@ -500,14 +500,16 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    position: "relative",
+    // position: "relative",
     backgroundColor: "#fff",
     padding: 50,
     borderRadius: 5,
-    overflowY: "scroll",
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
+    overflow: "hidden",
+
+    overflowY: "scroll",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
@@ -517,6 +519,7 @@ const styles = StyleSheet.create({
   },
   form: {
     width: "100%",
+    position: "relative",
   },
   avatarContainer: {
     width: 120,
@@ -580,12 +583,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    width: "105%",
-    padding: "20px 0 10px",
+    width: "calc(100% + 100px)",
+    padding: "20px 0 20px",
     position: "sticky",
-    bottom: 0,
+    bottom: -50,
     background: "#FFF",
     zIndex: 2,
+  },
+  buttonCustomStyle: {
+    marginRight: 60,
   },
   button: {
     width: 126,
