@@ -43,6 +43,7 @@ class EditHubModal extends React.Component {
     if (prevHub !== currHub) {
       let hub = this.props.modals.editHubModal.hub;
       this.setState({
+        originalHubName: hub ? this.toTitleCase(hub.name) : "",
         hubName: hub ? this.toTitleCase(hub.name) : "",
         hubDescription: hub ? hub.description : "",
       });
@@ -78,11 +79,13 @@ class EditHubModal extends React.Component {
   UpdateHub = async (hub) => {
     this.props.showMessage({ show: true, load: true });
     const { hubName, hubDescription, hubImage, hubCategory } = this.state;
-    let isUnique = true;
+    let isUniqueOrCurrent = true;
     if (hubName) {
-      isUnique = await this.isHubNameUnique(hubName);
+      isUniqueOrCurrent =
+        hubName == this.state.originalHubName ||
+        (await this.isHubNameUnique(hubName));
     }
-    if (isUnique) {
+    if (isUniqueOrCurrent) {
       const data = new FormData();
       data.append("id", hub.id);
       data.append("name", hubName ? hubName.toLowerCase() : hub.name);
