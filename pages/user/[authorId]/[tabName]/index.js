@@ -1220,7 +1220,7 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
   },
   border: {
-    border: "2px solid #F1F1F1",
+    border: "1px solid #F1F1F1",
   },
   profilePictureHover: {
     width: 120,
