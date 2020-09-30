@@ -19,7 +19,6 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import EditHubModal from "../modal/EditHubModal";
 
 class HubCard extends React.Component {
   constructor(props) {
@@ -214,7 +213,7 @@ class HubCard extends React.Component {
                 this.openEditHubModal();
               }}
             >
-              <i className="fad fa-pencil"></i>
+              <span className={css(styles.editIcon)}>{icons.editHub}</span>
             </button>
           </PermissionNotificationWrapper>
           <div key={hub.id} className={css(styles.hubInfo)}>
@@ -370,25 +369,25 @@ const styles = StyleSheet.create({
     position: "none",
   },
   editButton: {
-    height: 50,
-    width: 50,
+    height: 30,
+    width: 30,
     borderRadius: "50%",
-    border: `${colors.BLACK()} 1px solid`,
-    background: colors.BLACK(),
-    color: "#fff",
-    marginLeft: 15,
-    opacity: 0.5,
+    border: "#fff 1px solid",
+    background: "#fff",
+    color: "#241F3A",
+    opacity: 0.3,
     fontWeight: 400,
-    fontSize: 14,
+    fontSize: 16,
     cursor: "pointer",
     position: "absolute",
-    right: 0,
-    top: 0,
-    margin: 5,
-
+    right: 10,
+    top: 10,
     ":hover": {
       opacity: 1,
     },
+  },
+  editIcon: {
+    marginLeft: 1,
   },
   hubDescription: {
     fontSize: 13,
