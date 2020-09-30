@@ -39,6 +39,9 @@ export const HubActions = {
         .then(Helpers.parseJSON)
         .then((resp) => {
           let categories = [...resp.results];
+          categories.sort(function(a, b) {
+            return a.category_name.localeCompare(b.category_name);
+          });
           return dispatch({
             type: HubConstants.GET_HUB_CATEGORIES_SUCCESS,
             payload: {

@@ -31,8 +31,13 @@ class HubCard extends React.Component {
   }
 
   componentDidMount = () => {
+    const { auth, user } = this.props;
+    let subscribed_hubs = [];
+    if (auth.isLoggedIn) {
+      subscribed_hubs = user.subscribed.map((hub) => hub.name);
+    }
     this.setState({
-      subscribed: this.props.hub.user_is_subscribed,
+      subscribed: subscribed_hubs.includes(this.props.hub.name),
       sub_count: this.props.hub.subscriber_count,
     });
   };
@@ -375,7 +380,7 @@ const styles = StyleSheet.create({
     border: "#fff 1px solid",
     background: "#fff",
     color: "#241F3A",
-    opacity: 0.3,
+    opacity: 0.5,
     fontWeight: 400,
     fontSize: 16,
     cursor: "pointer",
@@ -436,6 +441,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  user: state.auth.user,
   hubState: state.hubs,
 });
 
