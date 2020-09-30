@@ -39,6 +39,7 @@ const icons = {
   bolt: <i className="fas fa-bolt" />,
   user: <i className="fa fa-user" />,
   paper: <i className="fa fa-file" />,
+  editHub: <i className="fas fa-edit" />,
 };
 
 export const voteWidgetIcons = {
