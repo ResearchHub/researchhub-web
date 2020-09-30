@@ -120,6 +120,9 @@ class Index extends React.Component {
     if (!hubsByCategory[key]) {
       return null;
     } else {
+      hubsByCategory[key].sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+      });
       return hubsByCategory[key].map((hub) => {
         return <HubCard hub={hub} />;
       });
