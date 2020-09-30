@@ -22,6 +22,7 @@ class AddHubModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
+      hubDescription: "",
       hubName: "",
       categories:
         this.props.categories && this.props.categories.results
@@ -36,9 +37,26 @@ class AddHubModal extends React.Component {
     this.state = {
       ...this.initialState,
     };
+    // rough estimates
+    this.descriptionLimit = 125;
+    this.nameLimit = 25;
   }
 
+  hubNameFits = (text) => {
+    return text.length <= this.nameLimit;
+  };
+
+  hubDescriptionFits = (text) => {
+    return text.length <= this.descriptionLimit;
+  };
+
   handleInputChange = (id, value) => {
+    if (
+      (id === "hubDescription" && !this.hubDescriptionFits(value)) ||
+      (id === "hubName" && !this.hubNameFits(value))
+    ) {
+      return;
+    }
     this.setState({ [id]: value });
   };
 
@@ -52,6 +70,7 @@ class AddHubModal extends React.Component {
   };
 
   createHub = async () => {
+    console.log(this.state);
     if (this.state.error.category) {
       this.props.setMessage("Required fields must be filled.");
       this.props.showMessage({
@@ -66,6 +85,11 @@ class AddHubModal extends React.Component {
 
       return;
     }
+
+    if (this.hubNameFits() || this.hubDescriptionFits()) {
+      return;
+    }
+
     this.props.showMessage({ show: true, load: true });
     const { hubName, hubDescription, hubImage, hubCategory } = this.state;
     const isUnique = await this.isHubNameUnique(hubName);
@@ -151,6 +175,7 @@ class AddHubModal extends React.Component {
             labelStyle={styles.labelStyle}
             inputStyle={this.state.error.upload && styles.error.upload}
             required={true}
+            value={this.state.hubName}
           />
           <FormInput
             label={"Hub Description"}
@@ -161,6 +186,7 @@ class AddHubModal extends React.Component {
             labelStyle={styles.labelStyle}
             inputStyle={this.state.error.upload && styles.error.upload}
             required={true}
+            value={this.state.hubDescription}
           />
           <FormSelect
             label={"Category"}
