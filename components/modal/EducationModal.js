@@ -65,7 +65,7 @@ const EducationModal = (props) => {
       if (education.hasOwnProperty("is_public")) {
         setIsPublic(education.is_public);
       } else {
-        setIsPublic(false);
+        setIsPublic(props.currentIndex === 0 ? true : false);
       }
     }
   }
@@ -166,7 +166,6 @@ const EducationModal = (props) => {
             options={degrees}
             maxMenuHeight={175}
             onChange={handleDegreeSelect}
-            required={true}
             value={degree}
           />
           <FormSelect
