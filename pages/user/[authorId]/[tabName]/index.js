@@ -1219,11 +1219,9 @@ const styles = StyleSheet.create({
     position: "relative",
     borderRadius: "50%",
   },
-  border: {
-    border: "1px solid #F1F1F1",
-  },
+  border: {},
   profilePictureHover: {
-    width: 120,
+    width: 115,
     height: 60,
     borderRadius: "0 0 100px 100px",
     display: "flex",

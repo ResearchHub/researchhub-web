@@ -75,6 +75,7 @@ class UserInfoModal extends React.Component {
 
   closeModal = () => {
     this.props.openUserInfoModal(false);
+    document.body.style.overflow = "scroll";
   };
 
   saveAndCloseModal = () => {
@@ -503,7 +504,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 50,
     borderRadius: 5,
-    overflow: "hidden",
+    overflowY: "scroll",
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
@@ -582,7 +583,7 @@ const styles = StyleSheet.create({
     width: "105%",
     padding: "20px 0 10px",
     position: "sticky",
-    bottom: -50,
+    bottom: 0,
     background: "#FFF",
     zIndex: 2,
   },
