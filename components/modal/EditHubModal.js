@@ -21,24 +21,18 @@ import colors from "../../config/themes/colors";
 class EditHubModal extends React.Component {
   constructor(props) {
     super(props);
+    const categories = this.props.categories.map((elem) => {
+      return { value: elem.id, label: elem.category_name };
+    });
     this.initialState = {
       hubName: "",
       error: false,
       changed: false,
+      categories: categories,
     };
     this.state = {
       ...this.initialState,
-      categories: [],
     };
-  }
-
-  componentDidMount() {
-    this.props.getCategories().then((payload) => {
-      const categories = payload.payload.categories.map((elem) => {
-        return { value: elem.id, label: elem.category_name };
-      });
-      this.setState({ categories: categories });
-    });
   }
 
   getMatchingCategory = (id) => {
@@ -134,6 +128,13 @@ class EditHubModal extends React.Component {
     this.props.closeModal();
   };
 
+  // Thank you stackoverflow :)
+  toTitleCase = (str) => {
+    return str.replace(/\w\S*/g, function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  };
+
   render() {
     const { modals } = this.props;
     const hub = modals.editHubModal.hub;
@@ -149,13 +150,13 @@ class EditHubModal extends React.Component {
     }
     if (this.state.changed) {
       if (this.state.hubName) {
-        name = this.state.hubName;
+        name = this.toTitleCase(this.state.hubName);
       }
       if (this.state.hubDescription) {
         description = this.state.hubDescription;
       }
     } else {
-      name = hub ? hub.name : null;
+      name = hub ? this.toTitleCase(hub.name) : null;
       description = hub ? hub.description : null;
     }
 
