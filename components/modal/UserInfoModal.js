@@ -77,6 +77,11 @@ class UserInfoModal extends React.Component {
     this.props.openUserInfoModal(false);
   };
 
+  saveAndCloseModal = () => {
+    this.props.openUserInfoModal(false);
+    this.saveAuthorChanges(null, true);
+  };
+
   mapStateFromProps = () => {
     return {
       first_name:
@@ -133,6 +138,7 @@ class UserInfoModal extends React.Component {
       ...educationSummary,
     };
     this.setState({ education });
+    this.saveAuthorEducationChanges(education);
   };
 
   addEducation = (activeIndex) => {
@@ -187,10 +193,10 @@ class UserInfoModal extends React.Component {
     this.setState({ avatarUploadIsOpen: state });
   };
 
-  saveAuthorChanges = (e) => {
+  saveAuthorChanges = (e, silent = false) => {
     const { setMessage, showMessage } = this.props;
-    e.preventDefault();
-    showMessage({ show: true, load: true });
+    e && e.preventDefault();
+    !silent && showMessage({ show: true, load: true });
 
     const education = this.state.education.filter((el) => el.summary);
 
@@ -209,16 +215,32 @@ class UserInfoModal extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        showMessage({ show: false });
-        setMessage("Updates made successfully");
-        showMessage({ show: true });
+        if (!silent) {
+          showMessage({ show: false });
+          setMessage("Updates made successfully");
+          showMessage({ show: true });
+        }
         const { updateUser, updateAuthor, user } = this.props;
         const updatedAuthorProfile = { ...res };
 
         updateUser({ ...user, author_profile: updatedAuthorProfile });
         updateAuthor(updatedAuthorProfile);
-        // this.props.onSaveCallback && this.props.onSaveCallback(updatedAuthorProfile);
-        this.closeModal();
+        !silent && this.closeModal();
+      });
+  };
+
+  saveAuthorEducationChanges = (education) => {
+    fetch(
+      API.AUTHOR({ authorId: this.props.author.id }),
+      API.PATCH_CONFIG({ education })
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        const { updateUser, updateAuthor, user } = this.props;
+        const updatedAuthorProfile = { ...res };
+        updateUser({ ...user, author_profile: updatedAuthorProfile });
+        updateAuthor(updatedAuthorProfile);
       });
   };
 
@@ -371,76 +393,90 @@ class UserInfoModal extends React.Component {
     return (
       <BaseModal
         isOpen={modals.openUserInfoModal}
-        closeModal={this.closeModal}
+        closeModal={this.saveAndCloseModal}
         modalStyle={styles.modalStyle}
         title={"Edit your personal information"}
         textAlign={"left"}
+        removeDefault={true}
       >
-        <EducationModal
-          education={this.state.education[this.state.activeIndex]}
-          currentIndex={this.state.activeIndex}
-          onSave={this.onEducationModalSave}
-          onActive={this.setEducationActive}
-        />
-        <form className={css(styles.form)} onSubmit={this.saveAuthorChanges}>
-          <div className={css(styles.titleHeader)}>
-            <div
-              className={css(
-                styles.avatarContainer,
-                author.profile_image && styles.border
-              )}
-              onClick={() => this.toggleAvatarModal(true)}
-              onMouseEnter={this.onMouseEnterAvatar}
-              onMouseLeave={this.onMouseLeaveAvatar}
-              draggable={false}
-            >
-              <AuthorAvatar author={author} disableLink={true} size={120} />
-              {allowEdit && hoverAvatar && (
-                <div className={css(styles.profilePictureHover)}>Update</div>
-              )}
-            </div>
-            <div className={css(styles.column)}>
-              {this.renderFormInput({
-                label: "First Name",
-                id: "first_name",
-                required: true,
-                value: this.state.first_name,
-              })}
-              {this.renderFormInput({
-                label: "Last Name",
-                id: "last_name",
-                required: true,
-                value: this.state.last_name,
-              })}
-            </div>
-          </div>
-          {this.renderFormInput({
-            label: "Headline",
-            id: "headline",
-            subtitle:
-              "This information will be displayed in comments below your name",
-            value: this.state.headline,
-          })}
-          {this.renderEducationList()}
-          {this.renderFormInput({
-            label: "About",
-            id: "description",
-            value: this.state.description,
-          })}
-          <AvatarUpload
-            isOpen={avatarUploadIsOpen}
-            closeModal={() => this.toggleAvatarModal(false)}
-            saveButton={this.renderSaveButton}
-            section={"pictures"}
+        <div className={css(styles.rootContainer)}>
+          <EducationModal
+            education={this.state.education[this.state.activeIndex]}
+            currentIndex={this.state.activeIndex}
+            onSave={this.onEducationModalSave}
+            onActive={this.setEducationActive}
           />
-          <div className={css(styles.buttonContainer)}>
-            <Button
-              label={"Save Changes"}
-              customButtonStyle={styles.buttonCustomStyle}
-              type={"submit"}
-            />
+          <img
+            src={"/static/icons/close.png"}
+            className={css(styles.closeButton)}
+            onClick={this.closeModal}
+            draggable={false}
+          />
+          <div className={css(styles.titleContainer, styles.left)}>
+            <div className={css(styles.title)}>
+              {"Edit your personal information"}
+            </div>
           </div>
-        </form>
+          <form className={css(styles.form)} onSubmit={this.saveAuthorChanges}>
+            <div className={css(styles.titleHeader)}>
+              <div
+                className={css(
+                  styles.avatarContainer,
+                  author.profile_image && styles.border
+                )}
+                onClick={() => this.toggleAvatarModal(true)}
+                onMouseEnter={this.onMouseEnterAvatar}
+                onMouseLeave={this.onMouseLeaveAvatar}
+                draggable={false}
+              >
+                <AuthorAvatar author={author} disableLink={true} size={120} />
+                {allowEdit && hoverAvatar && (
+                  <div className={css(styles.profilePictureHover)}>Update</div>
+                )}
+              </div>
+              <div className={css(styles.column)}>
+                {this.renderFormInput({
+                  label: "First Name",
+                  id: "first_name",
+                  required: true,
+                  value: this.state.first_name,
+                })}
+                {this.renderFormInput({
+                  label: "Last Name",
+                  id: "last_name",
+                  required: true,
+                  value: this.state.last_name,
+                })}
+              </div>
+            </div>
+            {this.renderFormInput({
+              label: "Headline",
+              id: "headline",
+              subtitle:
+                "This information will be displayed in comments below your name",
+              value: this.state.headline,
+            })}
+            {this.renderEducationList()}
+            {this.renderFormInput({
+              label: "About",
+              id: "description",
+              value: this.state.description,
+            })}
+            <AvatarUpload
+              isOpen={avatarUploadIsOpen}
+              closeModal={() => this.toggleAvatarModal(false)}
+              saveButton={this.renderSaveButton}
+              section={"pictures"}
+            />
+            <div className={css(styles.buttonContainer)}>
+              <Button
+                label={"Save Changes"}
+                customButtonStyle={styles.buttonCustomStyle}
+                type={"submit"}
+              />
+            </div>
+          </form>
+        </div>
       </BaseModal>
     );
   }
@@ -456,6 +492,26 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       width: 350,
+    },
+  },
+  rootContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    position: "relative",
+    backgroundColor: "#fff",
+    padding: 50,
+    borderRadius: 5,
+    overflow: "hidden",
+    transition: "all ease-in-out 0.4s",
+    boxSizing: "border-box",
+    width: "100%",
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: "50px 0px 0px 0px",
     },
   },
   form: {
@@ -523,8 +579,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    width: "100%",
-    marginTop: 20,
+    width: "105%",
+    padding: "20px 0 10px",
+    position: "sticky",
+    bottom: -50,
+    background: "#FFF",
+    zIndex: 2,
   },
   button: {
     width: 126,
@@ -574,6 +634,50 @@ const styles = StyleSheet.create({
   },
   activeLabel: {
     color: colors.BLUE(),
+  },
+  closeButton: {
+    height: 12,
+    width: 12,
+    position: "absolute",
+    top: 20,
+    right: 20,
+    cursor: "pointer",
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    textAlign: "center",
+    boxSizing: "border-box",
+  },
+  left: {
+    textAlign: "left",
+    alignItems: "left",
+    width: "100%",
+  },
+  title: {
+    fontWeight: "500",
+    height: 30,
+    width: "100%",
+    fontSize: 26,
+    color: "#232038",
+    "@media only screen and (max-width: 557px)": {
+      fontSize: 24,
+    },
+    "@media only screen and (max-width: 725px)": {
+      width: 450,
+    },
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 300,
+      fontSize: 22,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
 });
 
