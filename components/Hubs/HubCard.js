@@ -30,56 +30,31 @@ class HubCard extends React.Component {
   }
 
   componentDidMount = () => {
-    const { auth, user } = this.props;
-    let subscribed_hubs = [];
-    if (auth.isLoggedIn) {
-      subscribed_hubs = user.subscribed.map((hub) => hub.name);
-    }
+    const { auth, user, hub } = this.props;
+    let subscribed = user.subscribed ? user.subscribed : [];
+    let subscribedHubs = {};
+    subscribed.forEach((hub) => {
+      subscribedHubs[hub.id] = true;
+    });
     this.setState({
-      subscribed: subscribed_hubs.includes(this.props.hub.name),
-      sub_count: this.props.hub.subscriber_count,
+      subscribed: subscribedHubs[hub.id],
+      subCount: this.props.hub.subscriber_count,
     });
   };
 
-  componentDidUpdate = (prevProps, prevState) => {
-    if (
-      prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn ||
-      prevProps.auth.user !== this.props.auth.user
-    ) {
-      this.updateSubscribedHubs();
-    }
-  };
-
-  updateSubscribedHubs = () => {
-    let auth = this.props.auth;
-    let hubs = this.props.hubState.hubs;
-    if (auth.isLoggedIn) {
+  componentDidUpdate(prevProps) {
+    const { auth, user, hub } = this.props;
+    if (prevProps.auth.user !== user) {
+      let subscribed = user.subscribed ? user.subscribed : [];
       let subscribedHubs = {};
-
-      let subscribed = auth.user.subscribed || [];
       subscribed.forEach((hub) => {
         subscribedHubs[hub.id] = true;
       });
-      let updatedSubscribedHubs = hubs.map((hub) => {
-        if (subscribed[hub.id]) {
-          hub.user_is_subscribed = true;
-        }
-        return hub;
+      this.setState({
+        subscribed: subscribedHubs[hub.id],
       });
-      this.props.updateSubscribedHubs(updatedSubscribedHubs);
-
-      if (this.props.hub.id in subscribedHubs) {
-        this.setState({ subscribed: true });
-      }
-    } else {
-      let updatedSubscribedHubs = hubs.map((hub) => {
-        hub.user_is_subscribed = false;
-        return hub;
-      });
-
-      this.props.updateSubscribedHubs(updatedSubscribedHubs);
     }
-  };
+  }
 
   subscribeToHub = () => {
     const { hub, showMessage, setMessage, updateHub, hubState } = this.props;
@@ -98,7 +73,7 @@ class HubCard extends React.Component {
               return {
                 transition: false,
                 subscribed: false,
-                sub_count: state.sub_count - 1,
+                subCount: state.subCount - 1,
               };
             });
           })
@@ -121,7 +96,7 @@ class HubCard extends React.Component {
               return {
                 transition: false,
                 subscribed: true,
-                sub_count: state.sub_count + 1,
+                subCount: state.subCount + 1,
               };
             });
           })
@@ -236,8 +211,8 @@ class HubCard extends React.Component {
               </div>
               <div>
                 <span className={css(styles.statIcon)}>{icons.user}</span>
-                {this.state.sub_count} Subscriber
-                {this.state.sub_count != 1 ? "s" : ""}
+                {this.state.subCount} Subscriber
+                {this.state.subCount != 1 ? "s" : ""}
               </div>
             </div>
           </div>
