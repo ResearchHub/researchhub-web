@@ -4,6 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import Ripples from "react-ripples";
 import { useAlert } from "react-alert";
+import "~/components/Paper/CitationCard.css";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -17,10 +18,11 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
-import { timeAgo } from "~/config/utils";
+import colors, { voteWidgetColors } from "~/config/themes/colors";
+import { timeAgo, createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { paperSummaryPost } from "../redux/paper/shims";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -28,6 +30,7 @@ const DiscussionPostMetadata = (props) => {
   const {
     username,
     date,
+    paper,
     authorProfile,
     onHideClick,
     threadPath,
@@ -37,7 +40,9 @@ const DiscussionPostMetadata = (props) => {
     toggleEdit,
     twitter,
     twitterUrl,
+    smaller,
   } = props;
+
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
@@ -147,45 +152,66 @@ const DiscussionPostMetadata = (props) => {
 
   return (
     <div className={css(styles.container)}>
-      <User name={username} authorProfile={authorProfile} {...props} />
-      <Timestamp date={date} {...props} />
-      {onHideClick && <HideButton {...props} />}
-      {dropDownEnabled && (
-        <div className={css(styles.dropdownContainer)}>
-          <div
-            className={css(styles.dropdownIcon)}
-            ref={(ref) => (ellipsis = ref)}
-            onClick={toggleDropDown}
-          >
-            {icons.ellipsisH}
-          </div>
-          {showDropDown && (
-            <div
-              className={css(styles.dropdown)}
-              ref={(ref) => (dropdown = ref)}
-            >
-              {threadPath && <ExpandButton {...props} />}
-              {threadPath && renderShareButton()}
-              <FlagButton
-                {...props}
-                onClick={promptFlagConfirmation}
-                isFlagged={isFlagged}
-              />
-              {isModerator && (
-                <ModeratorDeleteButton
-                  containerStyle={styles.dropdownItem}
-                  labelStyle={[styles.text, styles.removeText]}
-                  iconStyle={styles.expandIcon}
-                  label={"Remove"}
-                  actionType={"post"}
-                  metaData={metaData}
-                  onRemove={onRemove}
-                />
+      <AuthorAvatar
+        author={authorProfile}
+        name={username}
+        disableLink={false}
+        size={smaller ? 25 : 30}
+        twitterUrl={twitterUrl}
+      />
+      <div className={css(styles.column)}>
+        <div className={css(styles.firstRow)}>
+          <User name={username} authorProfile={authorProfile} {...props} />
+          <Timestamp date={date} {...props} />
+          {/* {onHideClick && <HideButton {...props} />} */}
+          {dropDownEnabled && (
+            <div className={css(styles.dropdownContainer)}>
+              <div
+                className={css(styles.dropdownIcon)}
+                ref={(ref) => (ellipsis = ref)}
+                onClick={toggleDropDown}
+              >
+                {icons.ellipsisH}
+              </div>
+              {showDropDown && (
+                <div
+                  className={css(styles.dropdown)}
+                  ref={(ref) => (dropdown = ref)}
+                >
+                  {threadPath && <ExpandButton {...props} />}
+                  {threadPath && renderShareButton()}
+                  <FlagButton
+                    {...props}
+                    onClick={promptFlagConfirmation}
+                    isFlagged={isFlagged}
+                  />
+                  {isModerator && (
+                    <ModeratorDeleteButton
+                      containerStyle={styles.dropdownItem}
+                      labelStyle={[styles.text, styles.removeText]}
+                      iconStyle={styles.expandIcon}
+                      label={"Remove"}
+                      actionType={"post"}
+                      metaData={metaData}
+                      onRemove={onRemove}
+                    />
+                  )}
+                </div>
               )}
             </div>
           )}
         </div>
-      )}
+        {(authorProfile.headline || authorProfile.education) && (
+          <div
+            className={
+              css(styles.headline, smaller && styles.smallerHeadline) +
+              " clamp1"
+            }
+          >
+            {createUserSummary(authorProfile)}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -201,7 +227,17 @@ function openTwitter(url) {
 }
 
 const User = (props) => {
-  const { name, authorProfile, smaller, twitterUrl } = props;
+  const { name, paper, authorProfile, smaller, twitterUrl } = props;
+  let isAuthor;
+
+  if (paper && paper.authors && paper.authors.length) {
+    paper.authors.forEach((author) => {
+      if (author.id === authorProfile.id) {
+        isAuthor = true;
+      }
+    });
+  }
+
   return (
     <div
       className={css(
@@ -209,14 +245,10 @@ const User = (props) => {
         smaller && styles.smallerUserContainer
       )}
     >
-      <AuthorAvatar
-        author={authorProfile}
-        name={name}
-        disableLink={false}
-        size={smaller && 25}
-        twitterUrl={twitterUrl}
-      />
-      <div className={css(styles.name)}>{name}</div>
+      <div className={css(styles.name, isAuthor && styles.authorName)}>
+        {name}
+      </div>
+      {isAuthor && <div className={css(styles.status)}>Author</div>}
     </div>
   );
 };
@@ -328,6 +360,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  firstRow: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+  },
+
   userContainer: {
     display: "flex",
     flexDirection: "row",
@@ -338,15 +382,15 @@ const styles = StyleSheet.create({
     },
   },
   smallerUserContainer: {
-    fontSize: 12,
+    fontSize: 13,
   },
   timestampContainer: {
     display: "flex",
     alignItems: "center",
     fontWeight: "normal",
     color: "#918f9b",
-    fontSize: 14,
-    fontFamily: "Roboto",
+    fontSize: 13,
+    fontWeight: 300,
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
     },
@@ -366,12 +410,40 @@ const styles = StyleSheet.create({
   name: {
     marginLeft: 8,
     color: colors.BLACK(1),
+    fontSize: 15,
     "@media only screen and (max-width: 767px)": {
       fontSize: 14,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  authorName: {
+    fontWeight: 500,
+  },
+  status: {
+    marginLeft: 10,
+    borderRadius: 10,
+    fontSize: 12,
+    fontWeight: 500,
+    backgroundColor: voteWidgetColors.BACKGROUND,
+    color: "#056d4e",
+    padding: "2px 10px",
+  },
+  headline: {
+    marginTop: 3,
+    marginLeft: 8,
+    color: colors.BLACK(0.5),
+    fontWeight: 300,
+    fontSize: 13,
+
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
+  },
+  smallerHeadline: {
+    marginTop: 2,
+    fontSize: 12,
   },
   timestampDivider: {
     fontSize: 18,

@@ -6,12 +6,39 @@ import ModalImage from "react-modal-image";
 import QuillToPlaintext from "quill-to-plaintext";
 import { css, StyleSheet } from "aphrodite";
 
+export function createUserSummary(author = {}) {
+  const { headline, education } = author;
+  const space = " | ";
+
+  let userSummary = "";
+
+  if (education && education.length) {
+    let school = education.filter((school) => school.is_public);
+    if (school.length) {
+      userSummary += school[0].summary;
+    }
+  }
+
+  if (headline && headline.isPublic) {
+    let title = headline.title.trim();
+    if (title.length) {
+      userSummary += `${userSummary.length ? space : ""}` + headline.title;
+    }
+  }
+
+  return userSummary;
+}
+
 export function createUsername({ created_by }) {
   if (created_by) {
     const { first_name, last_name } = created_by.author_profile;
     return `${first_name} ${last_name}`;
   }
   return null;
+}
+
+export function capitalize(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 export function convertToEditorValue(text) {
@@ -368,5 +395,3 @@ export function formatPaperSlug(paperTitle) {
   }
   return "";
 }
-
-// export function formatAmplitudeEvent()

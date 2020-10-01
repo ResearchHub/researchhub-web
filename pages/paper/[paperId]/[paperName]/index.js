@@ -212,6 +212,10 @@ const Paper = (props) => {
   // }, [store.getState().paper]);
 
   useEffect(() => {
+    setPaper((props.paper && shims.paper(props.paper)) || {});
+  }, [props.paper]);
+
+  useEffect(() => {
     if (paper.id !== paperId) {
       if (!props.fetchedPaper) {
         fetchPaper({ paperId });
@@ -509,6 +513,7 @@ const Paper = (props) => {
               <DiscussionTab
                 hostname={hostname}
                 paperId={paperId}
+                paperState={paper}
                 calculatedCount={discussionCount}
                 setCount={setCount}
                 discussionRef={discussionRef}

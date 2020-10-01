@@ -173,7 +173,7 @@ export const AuthorActions = {
         });
     };
   },
-  updateAuthorByKey: ({ key, value, prevState }) => {
+  updateAuthorByKey: ({ key, value }) => {
     return (dispatch, getState) => {
       let updatedState = { ...getState().author };
       updatedState[key] = value;
@@ -181,6 +181,16 @@ export const AuthorActions = {
         type: types.UPDATE_AUTHOR_BY_KEY,
         payload: {
           ...updatedState,
+        },
+      });
+    };
+  },
+  updateAuthor: (newState) => {
+    return (dispatch) => {
+      return dispatch({
+        type: types.UPDATE_AUTHOR,
+        payload: {
+          ...newState,
         },
       });
     };
