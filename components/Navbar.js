@@ -529,7 +529,7 @@ const Navbar = (props) => {
           {icons.burgerMenu}
         </div>
       </div>
-      <SignUpBanner route={router.route} />
+      {/* <SignUpBanner route={router.route} /> */}
     </Fragment>
   );
 };
