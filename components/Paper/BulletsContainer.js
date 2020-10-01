@@ -174,7 +174,9 @@ class BulletsContainer extends React.Component {
           ready={false}
           showLoadingAnimation
           customPlaceholder={<BulletPlaceholder color="#efefef" />}
-        />
+        >
+          <div></div>
+        </ReactPlaceholder>
       );
     } else if (bullets.length === 0 && !showForm) {
       return (

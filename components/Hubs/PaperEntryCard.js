@@ -346,7 +346,11 @@ const PaperEntryCard = (props) => {
               {previews.map((preview, i) => {
                 if (preview && i == 0) {
                   return (
-                    <img src={preview.file} className={css(carousel.image)} />
+                    <img
+                      src={preview.file}
+                      className={css(carousel.image)}
+                      key={`preview_${preview.file}`}
+                    />
                   );
                 }
               })}

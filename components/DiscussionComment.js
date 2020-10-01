@@ -29,11 +29,13 @@ import {
 class DiscussionComment extends React.Component {
   state = {
     id: this.props.data.id,
-    date: this.props.data.createdDate,
+    date: this.props.data.created_date,
     text: this.props.data.text,
-    selectedVoteType: this.props.data.userVote.voteType,
+    selectedVoteType: this.props.data.user_vote
+      ? this.props.data.user_vote.voteType
+      : {},
     score: this.props.data.score,
-    createdBy: this.props.data.createdBy,
+    createdBy: this.props.data.created_by,
     username: createUsername(this.props.data),
     readOnly: true,
     paperId: Router.query.paperId
@@ -174,7 +176,7 @@ class DiscussionComment extends React.Component {
           </span>
           <DiscussionPostMetadata
             username={this.state.username}
-            authorProfile={this.props.data.createdBy.authorProfile}
+            authorProfile={this.props.data.created_by.author_profile}
             date={this.state.date}
           />
         </div>
@@ -219,7 +221,7 @@ class CommentClass extends DiscussionComment {
     super(props);
     this.state.showReplyBox = false;
     this.state.replies = this.props.data.replies;
-    this.state.replyCount = this.props.data.replyCount;
+    this.state.replyCount = this.props.data.reply_count;
     this.state.toggleReplies = false;
     this.state.transition = false;
     this.state.loaded = false;
@@ -321,7 +323,7 @@ class CommentClass extends DiscussionComment {
 
   renderMessage = () => {
     if (this.state.toggleReplies) {
-      return `Hide ${this.state.replyCount.length === 1 ? "reply" : "replies"}`;
+      return `Hide ${this.state.replyCount === 1 ? "reply" : "replies"}`;
     } else {
       return `View ${
         this.state.replyCount === 1
@@ -350,7 +352,7 @@ class CommentClass extends DiscussionComment {
         );
       });
 
-    if (replies.length > 0) {
+    if (replies && replies.length > 0) {
       return (
         <Fragment>
           <div className={css(styles.showReplyContainer)}>

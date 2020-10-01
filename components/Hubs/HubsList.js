@@ -202,9 +202,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "left",
     cursor: "default",
-    ":hover #hubListTitle": {
-      color: colors.BLACK(),
-    },
   },
   text: {
     fontFamily: "Roboto",
