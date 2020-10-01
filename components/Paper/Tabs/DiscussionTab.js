@@ -65,7 +65,6 @@ const DiscussionTab = (props) => {
   ];
 
   const router = useRouter();
-  const store = useStore();
   const basePath = formatBasePath(router.asPath);
   const [formattedThreads, setFormattedThreads] = useState(
     formatThreads(paper.threads, basePath)
@@ -84,18 +83,6 @@ const DiscussionTab = (props) => {
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
 
-  function handleWindowResize() {
-    if (window.innerWidth < 436) {
-      if (!mobileView) {
-        setMobileView(true);
-      }
-    } else {
-      if (mobileView) {
-        setMobileView(false);
-      }
-    }
-  }
-
   useEffect(() => {
     handleWindowResize();
     window.addEventListener("resize", handleWindowResize);
@@ -107,6 +94,18 @@ const DiscussionTab = (props) => {
   useEffect(() => {
     fetchDiscussionThreads(false, true);
   }, [filter, showTwitterComments]);
+
+  function handleWindowResize() {
+    if (window.innerWidth < 436) {
+      if (!mobileView) {
+        setMobileView(true);
+      }
+    } else {
+      if (mobileView) {
+        setMobileView(false);
+      }
+    }
+  }
 
   function renderThreads(threads = []) {
     if (!Array.isArray(threads)) {
@@ -139,8 +138,9 @@ const DiscussionTab = (props) => {
               path={t.path}
               newCard={transition && i === 0} //conditions when a new card is made
               mobileView={mobileView}
-              discussionCount={paper.threadCount}
+              discussionCount={props.paper.discussion_count}
               setCount={setCount}
+              paper={props.paperState}
             />
           );
         });
@@ -440,7 +440,7 @@ const DiscussionTab = (props) => {
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-          {paper.nextDiscussion && !fetching && (
+          {props.paper.nextDiscussion && !fetching && (
             <div className={css(styles.buttonContainer)}>
               {loading ? (
                 <Loader loading={true} size={10} type="beat" />

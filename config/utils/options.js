@@ -113,7 +113,187 @@ const scopeOptions = [
   },
 ];
 
+const degrees = [
+  {
+    value: "HSD",
+    label: "Highschool Diploma",
+  },
+  {
+    value: "AA",
+    label: "Associate's Degree",
+  },
+  {
+    value: "AA",
+    label: "Associate of Arts",
+  },
+  {
+    value: "AS",
+    label: "Asscoiate of Science",
+  },
+  {
+    value: "AAS",
+    label: "Associate of Arts and Science",
+  },
+  {
+    value: "BA",
+    label: "Bachelor's Degree",
+  },
+  {
+    value: "Engineer's Degree",
+    label: "Engineer's Degree",
+  },
+  {
+    value: "Foundation Degree",
+    label: "Foundation Degree",
+  },
+  {
+    value: "Licentiate Degree",
+    label: "Licentiate Degree",
+  },
+  {
+    value: "Master's Degree",
+    label: "Master's Degree",
+  },
+  {
+    value: "BASc",
+    label: "Bachelor of Applied Science",
+  },
+  {
+    value: "BArch",
+    label: "Bachelor of Architecture",
+  },
+  {
+    value: "BA",
+    label: "Bachelor of Arts",
+  },
+  {
+    value: "BBA",
+    label: "Bachelor of Business Administration",
+  },
+  {
+    value: "BCom",
+    label: "Bachelor of Commerce",
+  },
+  {
+    value: "BEd",
+    label: "Bachelor of Education",
+  },
+  {
+    value: "BE",
+    label: "Bachelor of Engineering",
+  },
+  {
+    value: "BFA",
+    label: "Bachelor of Fine Arts",
+  },
+  {
+    value: "LLB",
+    label: "Bachelor of Laws",
+  },
+  {
+    value: "MBBS",
+    label: "Bachelor of Medicine, Bachelor of Surgery",
+  },
+  {
+    value: "BPharm",
+    label: "Bachelor of Pharmacy",
+  },
+  {
+    value: "BS",
+    label: "Bachelor of Science",
+  },
+  {
+    value: "BTech",
+    label: "Bachelor of Technology - BTech",
+  },
+  {
+    value: "MArch",
+    label: "Master of Architecture",
+  },
+  {
+    value: "MA",
+    label: "Master of Arts",
+  },
+  {
+    value: "MBA",
+    label: "Master of Business Administration",
+  },
+  {
+    value: "MCA",
+    label: "Master of Computer Applications",
+  },
+  {
+    value: "MDiv",
+    label: "Master of Divinity",
+  },
+  {
+    value: "MEd",
+    label: "Master of Education",
+  },
+  {
+    value: "MEng",
+    label: "Master of Engineering",
+  },
+  {
+    value: "MFA",
+    label: "Master of Fine Arts",
+  },
+  {
+    value: "LLM",
+    label: "Master of Laws",
+  },
+  {
+    value: "MLIS",
+    label: "Master of Library & Information Science",
+  },
+  {
+    value: "MPhil",
+    label: "Master of Philosophy",
+  },
+  {
+    value: "MPA",
+    label: "Master of Public Administration",
+  },
+  {
+    value: "MPH",
+    label: "Master of Public Health",
+  },
+  {
+    value: "MS",
+    label: "Master of Science",
+  },
+  {
+    value: "MSW",
+    label: "Master of Social Work",
+  },
+  {
+    value: "MTech",
+    label: "Master of Technology",
+  },
+  {
+    value: "EdD",
+    label: "Doctor of Education",
+  },
+  {
+    value: "JD",
+    label: "Doctor of Law",
+  },
+  {
+    value: "MD",
+    label: "Doctor of Medicine",
+  },
+  {
+    value: "PharmD",
+    label: "Doctor of Pharmacy",
+  },
+  {
+    value: "PhD",
+    label: "Doctor of Philosophy",
+  },
+];
+
 export {
+  degrees,
   months,
   range,
   convertNumToMonth,

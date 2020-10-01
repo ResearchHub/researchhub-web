@@ -37,6 +37,7 @@ const icons = {
   trophy: <i className={"fad fa-trophy"} />,
   checkCircle: <i className="fal fa-check-circle" />,
   bolt: <i className="fas fa-bolt" />,
+  trash: <i className="fal fa-trash-alt"></i>,
 };
 
 export const voteWidgetIcons = {
