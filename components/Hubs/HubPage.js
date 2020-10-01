@@ -119,7 +119,7 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    let { isLoggedIn, initialFeed } = this.props;
+    let { user, isLoggedIn, initialFeed } = this.props;
     if (this.props.initialFeed) {
       this.detectPromoted(this.state.papers);
     } else {
@@ -130,8 +130,14 @@ class HubPage extends React.Component {
       this.checkUserVotes(this.state.papers);
     }
 
+    let subscribed = user.subscribed ? user.subscribed : [];
+    let subscribedHubs = {};
+    subscribed.forEach((hub) => {
+      subscribedHubs[hub.id] = true;
+    });
+
     this.setState({
-      subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+      subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
@@ -139,6 +145,13 @@ class HubPage extends React.Component {
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
+    const { auth, user } = this.props;
+    let subscribed = user.subscribed ? user.subscribed : [];
+    let subscribedHubs = {};
+    subscribed.forEach((hub) => {
+      subscribedHubs[hub.id] = true;
+    });
+
     if (
       prevProps.hub &&
       this.props.hub &&
@@ -148,7 +161,7 @@ class HubPage extends React.Component {
       if (this.props.hub.id) {
         this.fetchPapers({ hub: this.props.hub });
         this.setState({
-          subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+          subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
         });
       }
     }
@@ -161,12 +174,12 @@ class HubPage extends React.Component {
           .then(Helpers.parseJSON)
           .then((res) => {
             this.setState({
-              subscribe: res.results[0].user_is_subscribed,
+              subscribe: subscribedHubs[this.props.hub.id],
             });
           });
 
         this.setState({
-          subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+          subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
         });
       }
     }
@@ -1362,6 +1375,7 @@ var styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   modals: state.modals,
   auth: state.auth,
+  user: state.auth.user,
   isLoggedIn: state.auth.isLoggedIn,
   hubState: state.hubs,
   allHubs: state.hubs.hubs,
