@@ -45,6 +45,7 @@ const DiscussionTab = (props) => {
     setCount,
     discussionRef,
     getThreads,
+    paperId,
   } = props;
 
   // TODO: move to config
@@ -120,7 +121,9 @@ const DiscussionTab = (props) => {
               ready={false}
               showLoadingAnimation
               customPlaceholder={<PaperPlaceholder color="#efefef" />}
-            />
+            >
+              <div></div>
+            </ReactPlaceholder>
           </div>
         </div>
       );
@@ -264,7 +267,7 @@ const DiscussionTab = (props) => {
     setLoading(true);
     const currentPaper = props.paper;
     const payload = await getThreads({
-      paperId: props.paper.id,
+      paperId: paperId,
       paper: currentPaper,
       filter,
       loadMore,

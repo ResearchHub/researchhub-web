@@ -46,7 +46,6 @@ class PaperPageCard extends React.Component {
       hovered: false,
       toggleLightbox: true,
       fetching: false,
-      loading: true,
       slideIndex: 1,
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
@@ -55,16 +54,9 @@ class PaperPageCard extends React.Component {
     this.metaContainerRef = React.createRef();
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     this.fetchFigures();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.paper.id !== this.props.paper.id) {
-      this.setState({ loading: true });
-      this.fetchFigures();
-    }
-  }
+  };
 
   componentWillUnmount() {
     document.body.style.overflow = "scroll";
@@ -101,8 +93,8 @@ class PaperPageCard extends React.Component {
 
   fetchFigures = () => {
     this.setState({ fetching: true }, () => {
-      let { paper } = this.props;
-      fetch(API.GET_PAPER_FIGURES({ paperId: paper.id }), API.GET_CONFIG())
+      let { paper, paperId } = this.props;
+      fetch(API.GET_PAPER_FIGURES({ paperId }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
@@ -140,7 +132,7 @@ class PaperPageCard extends React.Component {
 
   navigateToEditPaperInfo = (e) => {
     e && e.stopPropagation();
-    let paperId = this.props.paper.id;
+    let paperId = this.props.paperId;
     let href = "/paper/upload/info/[paperId]";
     let as = `/paper/upload/info/${paperId}`;
     Router.push(href, as);
@@ -652,7 +644,7 @@ class PaperPageCard extends React.Component {
     }
 
     return (
-      <>
+      <Fragment>
         <div
           className={css(
             styles.container,
@@ -826,7 +818,7 @@ class PaperPageCard extends React.Component {
                     </div>
                   </div>
                   <div className={css(styles.mobile)}>
-                    {this.renderPreview()}
+                    {process.browser && this.renderPreview()}
                   </div>
                   <div className={css(styles.mobile)}>{this.renderHubs()}</div>
                 </div>
@@ -843,7 +835,7 @@ class PaperPageCard extends React.Component {
               className={css(styles.absolutePreview)}
               // style={{ right: -1 * (this.state.width + 20) }}
             >
-              {this.renderPreview()}
+              {process.browser && this.renderPreview()}
             </div>
           )}
         </div>
@@ -881,7 +873,7 @@ class PaperPageCard extends React.Component {
             {this.renderHubs()}
           </div>
         </div>
-      </>
+      </Fragment>
     );
   }
 }
@@ -1427,15 +1419,11 @@ const carousel = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  paper: state.paper,
-});
-
 const mapDispatchToProps = {
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
 };
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(PaperPageCard);

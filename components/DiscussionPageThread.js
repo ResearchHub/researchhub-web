@@ -24,13 +24,14 @@ import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
 
 const Thread = (props) => {
   const { hostname, title, body, createdBy, date, vote } = props;
+  let created_by = createdBy;
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
 
   const currentUser = getCurrentUser(store.getState());
   const canEdit = createdBy.id === currentUser.id;
-  const username = createUsername({ createdBy });
+  const username = createUsername({ created_by });
 
   const currentUrl = hostname + router.asPath;
   const { paperId, discussionThreadId } = router.query;

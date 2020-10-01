@@ -644,7 +644,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   limitations: state.limitations,
   bullets: state.bullets,
-  paper: state.paper,
   figures: state.paper.figures,
   paperId: state.paper.id,
   auth: state.auth,

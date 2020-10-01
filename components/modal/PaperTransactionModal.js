@@ -1248,7 +1248,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   user: state.auth.user,
   modals: state.modals,
-  paper: state.paper,
   auth: state.auth,
 });
 

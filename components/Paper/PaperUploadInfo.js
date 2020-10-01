@@ -182,10 +182,13 @@ class PaperUploadInfo extends React.Component {
   };
 
   fetchAndPrefillPaperInfo = (paperId) => {
-    fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+    return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        this.setState({
+          paper: res,
+        });
         let userAuthorId =
           this.props.auth.user.author_profile &&
           this.props.auth.user.author_profile.id;
@@ -904,10 +907,10 @@ class PaperUploadInfo extends React.Component {
     this.props.messageActions.showMessage({ show: true, load: true });
     this.setState({ ...this.initialState });
     let paper = this.state.editMode
-      ? this.props.paper
+      ? this.state.paper
       : this.props.paper.postedPaper;
     let paperId = this.state.editMode
-      ? this.props.paperId
+      ? this.state.paper.id
       : this.props.paper.postedPaper.id;
     let paperName = paper.slug
       ? paper.slug
@@ -924,7 +927,8 @@ class PaperUploadInfo extends React.Component {
     if (this.state.editMode) {
       this.setState({ ...this.initialState });
       this.props.paperActions.removePaperFromState();
-      let { paperId, paper } = this.props;
+      let paper = this.state.paper;
+      let paperId = paper.id;
       let paperName = paper.slug
         ? paper.slug
         : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
