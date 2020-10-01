@@ -848,7 +848,6 @@ const mapStateToProps = (state) => ({
   modals: state.modals,
   limitations: state.limitations,
   paperId: state.paper.id,
-  paper: state.paper,
   auth: state.auth,
 });
 

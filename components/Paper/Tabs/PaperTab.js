@@ -47,6 +47,8 @@ function PaperTab(props) {
   const [showDnd, toggleDnd] = useState(false); // drag and drop state toggle
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
   const [loading, toggleLoading] = useState(false);
+  const [paperFile, setPaperFile] = useState({});
+  const [paperMetaData, setPaperMetadata] = useState({});
   const containerRef = useRef();
 
   function onLoadSuccess({ numPages }) {
@@ -55,9 +57,9 @@ function PaperTab(props) {
   }
 
   useEffect(() => {
-    setFile(store.getState().paper.file || store.getState().paper.pdf_url);
-    setPaperUrl(store.getState().paper.url);
-  }, [store.getState().paper.file]);
+    setFile(paper.file || paper.pdf_url);
+    setPaperUrl(paper.url);
+  }, [paper.id]);
 
   /**
    * @param {Array} acceptedFiles - a list containing the file that the user has uploaded
@@ -66,6 +68,8 @@ function PaperTab(props) {
   function handleFileDrop(acceptedFiles, paperMetaData) {
     let paperFile = acceptedFiles[0];
     dispatch(PaperActions.uploadPaperToState(paperFile, paperMetaData));
+    setPaperFile(paperFile);
+    setPaperMetadata(paperMetaData);
   }
 
   function resetState() {
@@ -87,7 +91,7 @@ function PaperTab(props) {
    * Shows a confirmation to the user if there are 1 or more "similar papers" found in search
    */
   function confirmSave() {
-    let paperInReduxState = store.getState().paper.uploadedPaper;
+    let paperInReduxState = paperFile;
     if (!Object.keys(paperInReduxState).length) {
       dispatch(MessageActions.setMessage("Add a PDF to upload"));
       return dispatch(
@@ -100,47 +104,41 @@ function PaperTab(props) {
         text: "Are you sure this is the PDF for the paper?",
         buttonText: "Yes",
         onClick: () => {
-          savePdf();
+          savePdf(paperInReduxState);
         },
       });
     } else {
-      return savePdf();
+      return savePdf(paperInReduxState);
     }
   }
 
   /**
    * Makes a call to save the pdf, then removes the paper from redux state
    */
-  async function savePdf() {
+  const savePdf = async (paperFileState) => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
-    let paperInReduxState = store.getState().paper.uploadedPaper;
+    let paperInReduxState = paperFileState;
+
     let body = {
       file: paperInReduxState.url ? paperInReduxState.url : paperInReduxState,
     };
-    await dispatch(PaperActions.patchPaper(paperId, body));
-    let paperState = store.getState().paper;
+    let paperState = await dispatch(PaperActions.patchPaper(paperId, body));
 
-    if (paperState.success) {
-      dispatch(MessageActions.showMessage({ show: false }));
-      dispatch(MessageActions.setMessage("PDF successfully uploaded!"));
-      dispatch(MessageActions.showMessage({ show: true, clickOff: true }));
-      checkUserFirstTime();
-      let postedPaper = paperState.postedPaper;
-      let paperFile = postedPaper.file ? postedPaper.file : postedPaper.url;
-      setFile(paperFile);
-      dispatch(PaperActions.clearPostedPaper());
-      dispatch(PaperActions.removePaperFromState());
-    } else {
-      dispatch(MessageActions.showMessage({ show: false }));
-      dispatch(MessageActions.setMessage("Something went wrong."));
-      dispatch(
-        MessageActions.showMessage({ show: true, clickOff: true, error: true })
-      );
-    }
-  }
+    dispatch(MessageActions.showMessage({ show: false }));
+    dispatch(MessageActions.setMessage("PDF successfully uploaded!"));
+    dispatch(MessageActions.showMessage({ show: true, clickOff: true }));
+    checkUserFirstTime();
+    let postedPaper = paperState.payload.postedPaper;
+    let paperFile = postedPaper.file ? postedPaper.file : postedPaper.url;
+    setFile(paperFile);
+    dispatch(PaperActions.clearPostedPaper());
+    dispatch(PaperActions.removePaperFromState());
+    setPaperFile({});
+    setPaperMetadata({});
+  };
 
   function checkUserFirstTime() {
-    let auth = store.getState().auth;
+    let { auth } = props;
     dispatch(AuthActions.setUploadingPaper(true));
     let firstTime = !auth.user.has_seen_first_coin_modal;
     dispatch(AuthActions.checkUserFirstTime(firstTime));
@@ -521,8 +519,8 @@ var styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  paperUrl: state.paper.file,
+const mapStateToProps = ({ auth }) => ({
+  auth,
 });
 
 export default withRouter(connect(mapStateToProps)(PaperTab));

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import { COMPANY_NAME, METATAG_DEFAULT_IMAGE_URL } from "../config/constants";
 
-export default (props) => {
+const HeadComponent = (props) => {
   const router = useRouter();
   const title = props.title || `${COMPANY_NAME} | Open Science Community`;
   // TODO: What url can we use when rendered server side?
@@ -112,3 +112,5 @@ export default (props) => {
     </Head>
   );
 };
+
+export default HeadComponent;
