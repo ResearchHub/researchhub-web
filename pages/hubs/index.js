@@ -93,6 +93,22 @@ class Index extends React.Component {
     this.setState({ hubsByCategory });
   };
 
+  editHub = (editedHub, oldCategory) => {
+    const hubsByCategory = { ...this.state.hubsByCategory };
+    const hubCategory = editedHub.category;
+
+    hubsByCategory[oldCategory] = hubsByCategory[oldCategory].filter(
+      (item) => item.id !== editedHub.id
+    );
+    if (hubsByCategory[hubCategory]) {
+      hubsByCategory[hubCategory].push(editedHub);
+      hubsByCategory[hubCategory].sort((a, b) => a.name - b.name);
+    } else {
+      hubsByCategory[hubCategory] = [editedHub];
+    }
+    this.setState({ hubsByCategory });
+  };
+
   renderCategories = (_width) => {
     const { categories } = this.state;
 
@@ -143,7 +159,7 @@ class Index extends React.Component {
         </div>
         <div className={css(styles.content)}>
           <AddHubModal addHub={this.addNewHubToState} />
-          <EditHubModal closeModal={this.closeEditHubModal} />
+          <EditHubModal editHub={this.editHub} />
           <Message />
           <Head
             title={"Hubs on Researchhub"}
