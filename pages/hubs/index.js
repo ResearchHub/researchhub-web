@@ -145,7 +145,9 @@ class Index extends React.Component {
         subscribedHubs[hub.id] = true;
       });
       return hubsByCategory[key].map((hub) => {
-        return <HubCard hub={hub} subscribed={subscribedHubs[hub.id]} />;
+        return (
+          <HubCard key={hub.id} hub={hub} subscribed={subscribedHubs[hub.id]} />
+        );
       });
     }
   };
