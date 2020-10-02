@@ -116,7 +116,7 @@ class Index extends React.Component {
       let categoryName = category.category_name;
       let slug = categoryName.toLowerCase().replace(/\s/g, "-");
       return (
-        <>
+        <React.Fragment key={categoryID}>
           <div
             name={`${slug}`}
             className={css(styles.categoryLabel)}
@@ -124,7 +124,7 @@ class Index extends React.Component {
           <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
             {this.renderHubs(categoryID)}
           </div>
-        </>
+        </React.Fragment>
       );
     });
   };
@@ -145,9 +145,7 @@ class Index extends React.Component {
         subscribedHubs[hub.id] = true;
       });
       return hubsByCategory[key].map((hub) => {
-        return (
-          <HubCard key={hub.id} hub={hub} subscribed={subscribedHubs[hub.id]} />
-        );
+        return <HubCard key={hub.id} hub={hub} />;
       });
     }
   };
