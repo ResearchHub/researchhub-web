@@ -33,7 +33,7 @@ import { openExternalLink } from "~/config/utils";
 import "./stylesheets/ReactPdf.css";
 
 function PaperTab(props) {
-  const { paper, paperId, paperPdfRef, isModerator } = props;
+  const { paper, paperId, paperPdfRef, isModerator, updatePaperState } = props;
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
@@ -216,7 +216,9 @@ function PaperTab(props) {
   }
 
   function onPdfRemove() {
-    dispatch(PaperActions.updatePaperState("file", null));
+    let updatedPaper = { ...paper };
+    updatedPaper.file = null;
+    updatePaperState && updatePaperState(updatedPaper);
     setFile(null);
   }
 
