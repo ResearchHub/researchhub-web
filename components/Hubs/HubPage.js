@@ -281,7 +281,7 @@ class HubPage extends React.Component {
       })
       .catch((error) => {
         // If we get a 401 error it means the token is expired.
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           this.setState(
             {
               papersLoading: false,
