@@ -462,7 +462,10 @@ class SummaryTab extends React.Component {
             ref={this.props.keyTakeawayRef}
             id="takeaways-tab"
           >
-            <BulletsContainer paperId={this.props.paperId} />
+            <BulletsContainer
+              paperId={this.props.paperId}
+              afterFetchBullets={this.props.afterFetchBullets}
+            />
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
