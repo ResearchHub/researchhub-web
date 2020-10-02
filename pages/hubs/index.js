@@ -102,7 +102,6 @@ class Index extends React.Component {
     );
     if (hubsByCategory[hubCategory]) {
       hubsByCategory[hubCategory].push(editedHub);
-      hubsByCategory[hubCategory].sort((a, b) => a.name - b.name);
     } else {
       hubsByCategory[hubCategory] = [editedHub];
     }
@@ -131,16 +130,22 @@ class Index extends React.Component {
   };
 
   renderHubs = (key) => {
+    const { auth, user } = this.props;
     const { hubsByCategory } = this.state;
 
-    if (!hubsByCategory[key]) {
+    if (!hubsByCategory[key] || !user.subscribed) {
       return null;
     } else {
       hubsByCategory[key].sort(function(a, b) {
         return a.name.localeCompare(b.name);
       });
+      let subscribed = user.subscribed ? user.subscribed : [];
+      let subscribedHubs = {};
+      subscribed.forEach((hub) => {
+        subscribedHubs[hub.id] = true;
+      });
       return hubsByCategory[key].map((hub) => {
-        return <HubCard hub={hub} />;
+        return <HubCard hub={hub} subscribed={subscribedHubs[hub.id]} />;
       });
     }
   };
@@ -271,6 +276,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  auth: state.auth,
+  user: state.auth.user,
   hubs: state.hubs,
 });
 
