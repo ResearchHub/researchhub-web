@@ -40,7 +40,6 @@ class HubPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: this.props.initialFeed ? 1 : 0,
       count:
         this.props.initialFeed && this.props.initialFeed.count
           ? this.props.initialFeed.count
