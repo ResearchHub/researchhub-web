@@ -116,7 +116,6 @@ class PaperProgress extends React.Component {
 
     let progress = this.calculateProgress(sections);
 
-    console.log(progress);
     this.setState(
       {
         sections,
@@ -392,6 +391,9 @@ class PaperProgress extends React.Component {
   };
 
   render() {
+    if (this.state.loading) {
+      return null;
+    }
     return (
       <div
         className={css(
