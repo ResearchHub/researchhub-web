@@ -21,14 +21,18 @@ import colors from "../../config/themes/colors";
 class EditHubModal extends React.Component {
   constructor(props) {
     super(props);
-    const categories = this.props.categories.map((elem) => {
-      return { value: elem.id, label: elem.category_name };
-    });
     this.initialState = {
       hubDescription: "",
       hubName: "",
       error: false,
-      categories: categories,
+      categories:
+        this.props.categories && this.props.categories.results
+          ? this.props.categories.results
+          : [],
+      hubsByCategory:
+        this.props.hubsByCategory && this.props.hubsByCategory.results
+          ? this.props.hubsByCategory.results
+          : [],
     };
     this.state = {
       ...this.initialState,
@@ -59,7 +63,10 @@ class EditHubModal extends React.Component {
   };
 
   getMatchingCategory = (id) => {
-    for (const category of this.state.categories) {
+    const categories = this.props.categories.map((elem) => {
+      return { value: elem.id, label: elem.category_name };
+    });
+    for (const category of categories) {
       if (category.value === id) {
         return category.label;
       }
@@ -101,8 +108,9 @@ class EditHubModal extends React.Component {
       return fetch(API.HUB({ hubId: hub.id }), API.PUT_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
-        .then((_res) => {
+        .then((res) => {
           setTimeout(() => {
+            this.props.editHub && this.props.editHub(res, hub.category);
             this.props.showMessage({ show: false });
             this.props.setMessage("Hub successfully updated!");
             this.props.showMessage({ show: true });
@@ -155,7 +163,6 @@ class EditHubModal extends React.Component {
       ...this.initialState,
     });
     document.body.style.overflow = "scroll";
-    this.props.closeModal();
   };
 
   // Thank you stackoverflow :)
@@ -167,6 +174,9 @@ class EditHubModal extends React.Component {
 
   render() {
     const { modals } = this.props;
+    const categories = this.props.categories.map((elem) => {
+      return { value: elem.id, label: elem.category_name };
+    });
     const hub = modals.editHubModal.hub;
     let image;
     let name;
@@ -183,7 +193,7 @@ class EditHubModal extends React.Component {
       <BaseModal
         isOpen={modals.openEditHubModal}
         closeModal={this.closeModal}
-        title={"Edit the Hub"}
+        title={"Editing Hub"}
       >
         <form
           encType="multipart/form-data"
@@ -201,7 +211,7 @@ class EditHubModal extends React.Component {
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
             inputStyle={this.state.error && styles.error}
-            required={false}
+            required={true}
           />
           <FormInput
             label={"Hub Description"}
@@ -211,18 +221,18 @@ class EditHubModal extends React.Component {
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
             inputStyle={this.state.error && styles.error}
-            required={false}
+            required={true}
           />
           <FormSelect
             label={"Category"}
             placeholder={hub ? this.getMatchingCategory(hub.category) : null}
-            required={false}
+            required={true}
             containerStyle={styles.container}
             inputStyle={styles.input}
             labelStyle={styles.labelStyle}
             isMulti={false}
             id={"hubCategory"}
-            options={this.state.categories}
+            options={categories}
             onChange={this.handleInputChange}
             error={this.state.error && this.state.error}
           />
@@ -300,7 +310,7 @@ const styles = StyleSheet.create({
     color: "#232038",
   },
   image: {
-    borderRadius: "8px 8px 8px 8px",
+    borderRadius: "8px",
     width: "364px",
     height: "200px",
     objectFit: "cover",
@@ -311,10 +321,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   modals: state.modals,
   categories: state.hubs.categories,
+  hubsByCategory: state.hubs.hubsByCategory,
 });
 
 const mapDispatchToProps = {
-  getCategories: HubActions.getCategories,
   openEditHubModal: ModalActions.openEditHubModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
