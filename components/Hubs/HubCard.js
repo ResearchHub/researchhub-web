@@ -26,42 +26,57 @@ class HubCard extends React.Component {
     this.linkRef = React.createRef();
     this.state = {
       transition: false,
+      subscribed: this.props.subscribed,
     };
   }
 
   componentDidMount = () => {
-    const { auth, user, hub } = this.props;
-    let subscribed = user.subscribed ? user.subscribed : [];
-    let subscribedHubs = {};
-    subscribed.forEach((hub) => {
-      subscribedHubs[hub.id] = true;
-    });
+    //const { auth, user, hub } = this.props;
+    //let subscribed = user.subscribed ? user.subscribed : [];
+    //let subscribedHubs = {};
+    //subscribed.forEach((hub) => {
+    //  subscribedHubs[hub.id] = true;
+    //});
+    //console.log("mounting " + hub.id + " " + subscribedHubs[hub.id]);
     this.setState({
-      subscribed: subscribedHubs[hub.id],
+      //subscribed: subscribedHubs[hub.id],
+      subscribed: this.props.subscribed,
       subCount: this.props.hub.subscriber_count,
     });
   };
 
   componentDidUpdate(prevProps) {
-    const { auth, user, hub } = this.props;
-    if (prevProps.auth.user !== user) {
-      let subscribed = user.subscribed ? user.subscribed : [];
-      let subscribedHubs = {};
-      subscribed.forEach((hub) => {
-        subscribedHubs[hub.id] = true;
-      });
-      this.setState({
-        subscribed: subscribedHubs[hub.id],
-      });
-    }
+    //const { auth, user, hub } = this.props;
+    //if (prevProps.auth.user !== user) {
+    //  let subscribed = user.subscribed ? user.subscribed : [];
+    //  let subscribedHubs = {};
+    //  subscribed.forEach((hub) => {
+    //    subscribedHubs[hub.id] = true;
+    //  });
+    //  this.setState({
+    //    subscribed: subscribedHubs[hub.id],
+    //  });
+    //}
   }
 
+  //componentWillUnmount = () => {
+  //  const { auth, user, hub } = this.props;
+  //  console.log("unmounting " + hub.id);
+  //};
+
   subscribeToHub = () => {
-    const { hub, showMessage, setMessage, updateHub, hubState } = this.props;
+    const {
+      hub,
+      showMessage,
+      setMessage,
+      updateHub,
+      hubState,
+      subscribed,
+    } = this.props;
     showMessage({ show: false });
     this.setState({ transition: true }, () => {
       let config = API.POST_CONFIG();
-      if (this.state.subscribed) {
+      if (subscribed) {
         return fetch(API.HUB_UNSUBSCRIBE({ hubId: hub.id }), config)
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
@@ -124,10 +139,11 @@ class HubCard extends React.Component {
   };
 
   renderSubscribe = () => {
-    const { hub } = this.props;
+    const { hub, subscribed } = this.props;
+    //debugger
     if (!this.props.auth.isLoggedIn) return;
     let buttonStyle, buttonLabel;
-    if (this.state.subscribed) {
+    if (subscribed) {
       buttonStyle = this.state.subscribeHover
         ? styles.unsubscribeButton
         : styles.subscribed;

@@ -29,10 +29,6 @@ class EditHubModal extends React.Component {
         this.props.categories && this.props.categories.results
           ? this.props.categories.results
           : [],
-      hubsByCategory:
-        this.props.hubsByCategory && this.props.hubsByCategory.results
-          ? this.props.hubsByCategory.results
-          : [],
     };
     this.state = {
       ...this.initialState,
@@ -327,7 +323,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   modals: state.modals,
   categories: state.hubs.categories,
-  hubsByCategory: state.hubs.hubsByCategory,
 });
 
 const mapDispatchToProps = {
