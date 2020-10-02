@@ -692,7 +692,6 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    transition: "all ease-in-out 0.3s",
     marginTop: 30,
     backgroundColor: "#fff",
     padding: 50,
