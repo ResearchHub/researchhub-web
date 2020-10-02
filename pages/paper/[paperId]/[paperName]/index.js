@@ -428,10 +428,17 @@ const Paper = (props) => {
     socialImageUrl = paper.first_preview && paper.first_preview.file;
   }
 
+  function updatePaperState(newState) {
+    setPaper(newState);
+  }
+
   return (
     <div className={css(styles.container)}>
-      <PaperTransactionModal paper={paper} />
-      <PaperFeatureModal paper={paper} />
+      <PaperTransactionModal
+        paper={paper}
+        updatePaperState={updatePaperState}
+      />
+      <PaperFeatureModal paper={paper} updatePaperState={updatePaperState} />
       <Fragment>
         <Head
           title={paper.title}
@@ -481,6 +488,7 @@ const Paper = (props) => {
             showAllSections={showAllSections}
             referencedByCount={referencedByCount}
             loadingReferencedBy={loadingReferencedBy}
+            updatePaperState={updatePaperState}
           />
         </div>
         <div className={css(styles.contentContainer)}>
@@ -510,6 +518,7 @@ const Paper = (props) => {
             keyTakeawayRef={keyTakeawayRef}
             descriptionRef={descriptionRef}
             afterFetchBullets={() => setFetchBullets(true)}
+            updatePaperState={updatePaperState}
           />
           <a name="comments" id="comments">
             <div className={css(styles.space)} />

@@ -133,7 +133,10 @@ class SummaryTab extends React.Component {
           let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
           checkUserFirstTime(firstTime);
           getUser();
-          updatePaperState("summary", resp);
+
+          let updatedPaper = { ...paper };
+          updatedPaper.summary = resp;
+          updatePaperState && updatePaperState(updatedPaper);
           this.setState({
             summaryExists: true,
           });
@@ -1078,7 +1081,6 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getEditHistory: PaperActions.getEditHistory,
   patchPaper: PaperActions.patchPaper,
-  updatePaperState: PaperActions.updatePaperState,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 

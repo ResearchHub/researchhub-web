@@ -196,7 +196,9 @@ class PaperTransactionModal extends React.Component {
           showMessage({ show: true });
           this.setState({ transactionHash: hash.hash }, () => {
             let promoted = paper.promoted ? paper.promoted : 0;
-            updatePaperState("promoted", promoted + Number(this.state.value));
+            let updatedPaper = { ...papers };
+            updatedPaper.promoted = promoted + Number(this.state.value);
+            updatePaperState && updatePaperState(updatedPaper);
             this.setState({ finish: true });
           });
         })
@@ -336,7 +338,9 @@ class PaperTransactionModal extends React.Component {
               finish: true,
             });
             let promoted = res.source.promoted && res.source.promoted;
-            promoted && updatePaperState("promoted", promoted);
+            let updatedPaper = { ...paper };
+            updatedPaper.promoted = promoted;
+            updatePaperState && updatePaperState(updatedPaper);
             this.updateBalance();
           });
         }
@@ -1257,7 +1261,6 @@ const mapDispatchToProps = {
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   updateUser: AuthActions.updateUser,
-  updatePaperState: PaperActions.updatePaperState,
 };
 
 export default connect(
