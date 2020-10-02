@@ -55,10 +55,16 @@ class EditHubModal extends React.Component {
   };
 
   hubNameFits = (text) => {
+    if (text.length < this.props.modals.editHubModal.hub.name.length) {
+      return true;
+    }
     return text.length <= this.nameLimit;
   };
 
   hubDescriptionFits = (text) => {
+    if (text.length < this.props.modals.editHubModal.hub.description.length) {
+      return true;
+    }
     return text.length <= this.descriptionLimit;
   };
 
