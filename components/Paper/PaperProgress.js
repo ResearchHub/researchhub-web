@@ -38,9 +38,7 @@ class PaperProgress extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ loading: true }, () => {
-      this.formatSections();
-    });
+    this.formatSections();
   }
 
   componentDidUpdate(prevProps) {
@@ -114,21 +112,11 @@ class PaperProgress extends React.Component {
         label: "Paper PDF",
         active: paper.file ? paper.file : paper.pdf_url ? paper.pdf_url : false,
       },
-      // {
-      //   label: "Figures",
-      //   active: figureCount > 0,
-      //   optional: true,
-      // },
-      // {
-      //   label: "Limitations",
-      //   active:
-      //     limitations && limitations.limits && limitations.limits.length > 0,
-      //   optional: true,
-      // },
     ];
 
     let progress = this.calculateProgress(sections);
 
+    console.log(progress);
     this.setState(
       {
         sections,
@@ -141,10 +129,9 @@ class PaperProgress extends React.Component {
         } else if (!this.state.complete && this.props.showAllSections) {
           this.props.toggleShowAllSections(false);
         }
-        this.state.loading &&
-          setTimeout(() => {
-            this.setState({ loading: false });
-          }, 400);
+        if (this.props.fetchBullets) {
+          this.setState({ loading: false });
+        }
       }
     );
   };
