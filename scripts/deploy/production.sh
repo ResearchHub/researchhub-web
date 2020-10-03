@@ -16,7 +16,6 @@ echo Step 3/3: Creating elastic beanstalk environment;
     git reset;
     mv Dockerfile.prod.off Dockerfile;
     mv Dockerrun.aws.json Dockerrun.aws.json.production;
-    SENTRY_RELEASE=production-$(git rev-parse --short HEAD) yarn run sentry;
 else
     echo Please commit your changes first.;
 fi
