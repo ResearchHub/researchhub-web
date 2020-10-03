@@ -133,7 +133,7 @@ class Index extends React.Component {
     const { auth, user } = this.props;
     const { hubsByCategory } = this.state;
 
-    if (!hubsByCategory[key] || !user.subscribed) {
+    if (!hubsByCategory[key]) {
       return null;
     } else {
       hubsByCategory[key].sort(function(a, b) {
