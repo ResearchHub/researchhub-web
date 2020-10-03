@@ -26,6 +26,8 @@ export const ModalConstants = {
   PAPER_TRANSACTION_MODAL_TOGGLE: "@@modal/PAPER_TRANSACTION_MODAL_TOGGLE",
   PROMOTION_INFO_MODAL_TOGGLE: "@@modal/PROMOTION_INFO_MODAL_TOGGLE",
   RECAPTCHA_PROMPT_TOGGLE: "@@modal/RECAPTCHA_PROMPT_TOGGLE",
+  USER_INFO_MODAL_TOGGLE: "@@modal/USER_INFO_MODAL_TOGGLE",
+  OPEN_EDUCATION_MODAL_TOGGLE: "@@modal/OPEN_EDUCATION_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -263,6 +265,26 @@ export const ModalActions = {
       });
     };
   },
+  openUserInfoModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.USER_INFO_MODAL_TOGGLE,
+        payload: {
+          openUserInfoModal: openModal,
+        },
+      });
+    };
+  },
+  openEducationModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.OPEN_EDUCATION_MODAL_TOGGLE,
+        payload: {
+          openEducationModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -305,6 +327,8 @@ const defaultModalState = {
     props: {},
   },
   openRecaptchaPrompt: false,
+  openUserInfoModal: false,
+  openEducationModal: false,
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -327,6 +351,8 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.PAPER_TRANSACTION_MODAL_TOGGLE:
     case ModalConstants.PROMOTION_INFO_MODAL_TOGGLE:
     case ModalConstants.RECAPTCHA_PROMPT_TOGGLE:
+    case ModalConstants.USER_INFO_MODAL_TOGGLE:
+    case ModalConstants.OPEN_EDUCATION_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,

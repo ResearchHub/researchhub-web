@@ -106,6 +106,7 @@ const Paper = (props) => {
     },
   ]);
   const [tabs, setTabs] = useState(getActiveTabs());
+  const [fetchBullets, setFetchBullets] = useState(false);
 
   const { hostname, showMessage } = props;
   const { paperId, tabName } = router.query;
@@ -147,10 +148,10 @@ const Paper = (props) => {
   //     });
   // };
 
-  const fetchBullets = () => {
-    let { getBullets } = props;
-    getBullets(paperId);
-  };
+  // const fetchBullets = () => {
+  //   let { getBullets } = props;
+  //   getBullets(paperId);
+  // };
 
   const fetchDiscussions = () => {
     let { getThreads, paper } = props;
@@ -210,6 +211,10 @@ const Paper = (props) => {
   // useEffect(() => {
   //   store.getState().paper.id && setLoadingPaper(false);
   // }, [store.getState().paper]);
+
+  useEffect(() => {
+    setPaper((props.paper && shims.paper(props.paper)) || {});
+  }, [props.paper]);
 
   useEffect(() => {
     if (paper.id !== paperId) {
@@ -423,10 +428,17 @@ const Paper = (props) => {
     socialImageUrl = paper.first_preview && paper.first_preview.file;
   }
 
+  function updatePaperState(newState) {
+    setPaper(newState);
+  }
+
   return (
     <div className={css(styles.container)}>
-      <PaperTransactionModal paper={paper} />
-      <PaperFeatureModal paper={paper} />
+      <PaperTransactionModal
+        paper={paper}
+        updatePaperState={updatePaperState}
+      />
+      <PaperFeatureModal paper={paper} updatePaperState={updatePaperState} />
       <Fragment>
         <Head
           title={paper.title}
@@ -476,6 +488,7 @@ const Paper = (props) => {
             showAllSections={showAllSections}
             referencedByCount={referencedByCount}
             loadingReferencedBy={loadingReferencedBy}
+            updatePaperState={updatePaperState}
           />
         </div>
         <div className={css(styles.contentContainer)}>
@@ -488,6 +501,8 @@ const Paper = (props) => {
                 commentCount={discussionCount}
                 setCount={setCount}
                 paper={paper}
+                fetchBullets={fetchBullets}
+                loadingPaper={loadingPaper}
                 // comments threads
                 threads={paper.discussion && paper.discussion.threads}
                 // setDiscussionThreads={setDiscussionThreads}
@@ -502,6 +517,8 @@ const Paper = (props) => {
             paper={paper}
             keyTakeawayRef={keyTakeawayRef}
             descriptionRef={descriptionRef}
+            afterFetchBullets={() => setFetchBullets(true)}
+            updatePaperState={updatePaperState}
           />
           <a name="comments" id="comments">
             <div className={css(styles.space)} />
@@ -509,6 +526,7 @@ const Paper = (props) => {
               <DiscussionTab
                 hostname={hostname}
                 paperId={paperId}
+                paperState={paper}
                 calculatedCount={discussionCount}
                 setCount={setCount}
                 discussionRef={discussionRef}

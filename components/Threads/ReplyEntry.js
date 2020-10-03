@@ -328,7 +328,7 @@ class ReplyEntry extends React.Component {
   };
 
   render() {
-    const { hostname, mobileView, reply } = this.props;
+    const { hostname, mobileView, reply, paper } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;
     let body = this.formatBody();
@@ -389,6 +389,7 @@ class ReplyEntry extends React.Component {
                   ])}
                   username={username}
                   date={date}
+                  paper={paper}
                   smaller={true}
                   onHideClick={!mobileView && this.toggleCollapsed}
                   hideState={this.state.collapsed}
