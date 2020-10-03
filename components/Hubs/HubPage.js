@@ -40,7 +40,6 @@ class HubPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: this.props.initialFeed ? 1 : 0,
       count:
         this.props.initialFeed && this.props.initialFeed.count
           ? this.props.initialFeed.count
@@ -298,7 +297,7 @@ class HubPage extends React.Component {
       })
       .catch((error) => {
         // If we get a 401 error it means the token is expired.
-        if (error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
           this.setState(
             {
               papersLoading: false,

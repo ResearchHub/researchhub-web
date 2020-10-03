@@ -272,14 +272,7 @@ class DiscussionEntry extends React.Component {
   };
 
   renderComments = () => {
-    let {
-      data,
-      hostname,
-      path,
-      discussion,
-      discussionCount,
-      setCount,
-    } = this.props;
+    let { data, hostname, path, discussionCount, setCount, paper } = this.props;
     let comments = this.state.comments;
 
     if (comments.length > 0) {
@@ -292,6 +285,7 @@ class DiscussionEntry extends React.Component {
             key={`comment_${comment.id}`}
             calculateThreadHeight={this.calculateThreadHeight}
             comment={comment}
+            paper={paper}
             index={i}
             mobileView={this.props.mobileView}
             discussionCount={discussionCount}
@@ -392,7 +386,7 @@ class DiscussionEntry extends React.Component {
   };
 
   render() {
-    const { data, hostname, path, mobileView } = this.props;
+    const { data, paper, hostname, path, mobileView } = this.props;
     let commentCount =
       this.state.comments.length > data.comment_count
         ? this.state.comments.length
@@ -460,6 +454,7 @@ class DiscussionEntry extends React.Component {
                     }
                     username={username}
                     date={date}
+                    paper={paper}
                     threadPath={path}
                     hostname={hostname}
                     dropDownEnabled={true}
@@ -571,7 +566,7 @@ const styles = StyleSheet.create({
   },
   topbar: {
     width: "100%",
-    margin: "20px 0px 5px 0",
+    margin: "10px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
     "@media only screen and (max-width: 415px)": {
@@ -686,6 +681,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   discussion: state.discussion,
+  // paper: state.paper,
   vote: state.vote,
   auth: state.auth,
 });

@@ -63,6 +63,7 @@ class BulletsContainer extends React.Component {
     this.setState({ loading: true });
     await this.props.getBullets(this.props.paperId);
     this.setState({ loading: false });
+    this.props.afterFetchBullets && this.props.afterFetchBullets();
   };
 
   componentWillUnmount() {

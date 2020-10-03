@@ -282,7 +282,7 @@ class PaperPageCard extends React.Component {
   };
 
   renderPreview = () => {
-    let { hovered, fetching, previews } = this.state;
+    let { hovered, loading, fetching, previews } = this.state;
     let height =
       this.metaContainerRef.current &&
       this.metaContainerRef.current.clientHeight;
@@ -299,7 +299,7 @@ class PaperPageCard extends React.Component {
       height = 130;
       width = 101;
     }
-    if (!fetching) {
+    if (!fetching && !loading) {
       width !== this.state.width && this.setState({ width });
     }
 

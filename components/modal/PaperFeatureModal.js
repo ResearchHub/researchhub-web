@@ -281,10 +281,9 @@ class PaperFeatureModal extends React.Component {
     showMessage({ show: true, load: true });
     let summary = raw;
     let summary_plain_text = plain_text;
-
     let param = {
       summary,
-      paper: this.props.paperId,
+      paper: this.props.paper.id,
       previousSummaryId: this.props.paper.summary
         ? this.props.paper.summary.id
         : null,
@@ -306,7 +305,9 @@ class PaperFeatureModal extends React.Component {
           setMessage("Edits Submitted for Approval!");
         } else {
           this.ampEvent("summary");
-          updatePaperState("summary", { ...res });
+          let updatedPaper = { ...paper };
+          updatedPaper.summary = { ...res };
+          updatePaperState && updatePaperState(updatedPaper);
           setMessage("Edits Made!");
           let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
           checkUserFirstTime(firstTime);
@@ -481,9 +482,11 @@ class PaperFeatureModal extends React.Component {
       let paperFile = postedPaper.file ? postedPaper.file : postedPaper.url;
       // setFile(paperFile);
       if (postedPaper.file) {
-        updatePaperState("file", paperFile);
+        postedPaper.file = paperFile;
+        updatePaperState && updatePaperState(postedPaper);
       } else if (postedPaper.url) {
-        updatePaperState("url", paperFile);
+        postedPaper.url = paperFile;
+        updatePaperState && updatePaperState(postedPaper);
       }
       clearPostedPaper();
       removePaperFromState();
@@ -863,7 +866,6 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   //SUMMARY
   checkUserFirstTime: AuthActions.checkUserFirstTime,
-  updatePaperState: PaperActions.updatePaperState,
   //PAPER PDF
   uploadPaperToState: PaperActions.uploadPaperToState,
   clearPostedPaper: PaperActions.clearPostedPaper,
