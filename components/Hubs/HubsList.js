@@ -78,12 +78,10 @@ class HubsList extends React.Component {
   }
 
   updateTopHubs = (state) => {
+    let hubState = this.props.hubState;
     if (this.props.auth.isLoggedIn) {
+      let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
       let subscribedHubs = {};
-
-      let subscribed = this.props.auth.user.subscribed
-        ? this.props.auth.user.subscribed
-        : [];
       subscribed.forEach((hub) => {
         subscribedHubs[hub.id] = true;
       });
@@ -301,6 +299,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  hubState: state.hubs,
   hubs: state.hubs.topHubs,
   auth: state.auth,
 });
