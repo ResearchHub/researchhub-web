@@ -30,8 +30,8 @@ class HubCard extends React.Component {
   }
 
   componentDidMount = () => {
-    const { auth, user, hub } = this.props;
-    let subscribed = user.subscribed ? user.subscribed : [];
+    const { hub, hubState } = this.props;
+    let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
     let subscribedHubs = {};
     subscribed.forEach((hub) => {
       subscribedHubs[hub.id] = true;
@@ -43,9 +43,9 @@ class HubCard extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { auth, user, hub } = this.props;
+    const { user, hub, hubState } = this.props;
     if (prevProps.auth.user !== user) {
-      let subscribed = user.subscribed ? user.subscribed : [];
+      let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
       let subscribedHubs = {};
       subscribed.forEach((hub) => {
         subscribedHubs[hub.id] = true;
@@ -56,8 +56,22 @@ class HubCard extends React.Component {
     }
   }
 
+  updateSubscription = (subscribing) => {
+    const { hub, hubState, updateSubscribedHubs } = this.props;
+    let subscribedHubs = [];
+    if (subscribing) {
+      subscribedHubs = JSON.parse(JSON.stringify(hubState.subscribedHubs));
+      subscribedHubs.push(hub);
+    } else {
+      subscribedHubs = hubState.subscribedHubs.filter(
+        (item) => item.id !== hub.id
+      );
+    }
+    updateSubscribedHubs(subscribedHubs);
+  };
+
   subscribeToHub = () => {
-    const { hub, showMessage, setMessage, updateHub, hubState } = this.props;
+    const { hub, showMessage, setMessage, hubState } = this.props;
     const subscribed = this.state.subscribed;
     showMessage({ show: false });
     this.setState({ transition: true }, () => {
@@ -67,7 +81,7 @@ class HubCard extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            updateHub(hubState, { ...res });
+            this.updateSubscription(false);
             setMessage("Unsubscribed!");
             showMessage({ show: true });
             this.setState((state, props) => {
@@ -90,7 +104,7 @@ class HubCard extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            updateHub(hubState, { ...res });
+            this.updateSubscription(true);
             setMessage("Subscribed!");
             showMessage({ show: true });
             this.setState((state, props) => {
@@ -109,6 +123,7 @@ class HubCard extends React.Component {
             }
           });
       }
+      debugger;
     });
   };
 
@@ -403,10 +418,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
-  updateHub: HubActions.updateHub,
+  updateSubscribedHubs: HubActions.updateSubscribedHubs,
   openEditHubModal: ModalActions.openEditHubModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
-  updateSubscribedHubs: HubActions.updateSubscribedHubs,
 };
 
 export default connect(
