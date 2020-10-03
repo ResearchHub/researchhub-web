@@ -123,7 +123,6 @@ class HubCard extends React.Component {
             }
           });
       }
-      debugger;
     });
   };
 
@@ -300,7 +299,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textTransform: "capitalize",
     fontWeight: 500,
-    width: "250px",
+    width: "240px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   subscribeButton: {
     height: 20,
@@ -386,6 +387,7 @@ const styles = StyleSheet.create({
     position: "relative",
     width: 334,
     height: "60px",
+    overflowWrap: "break-word",
   },
   fade: {
     position: "absolute",
