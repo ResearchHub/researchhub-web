@@ -63,7 +63,11 @@ function renderTab(
         <div className={css(styles.link)}>
           {label}{" "}
           {showCount && (
-            <Count isSelected={isSelected} amount={count} fetching={fetching} />
+            <Count
+              isSelected={isSelected}
+              amount={count()}
+              fetching={fetching}
+            />
           )}
         </div>
       </div>

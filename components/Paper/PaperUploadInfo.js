@@ -372,6 +372,7 @@ class PaperUploadInfo extends React.Component {
         searchAuthor: "",
         form,
         error,
+        edited: true,
       });
     } else {
       let selectedAuthors = this.state.selectedAuthors.filter(
