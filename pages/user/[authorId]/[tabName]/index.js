@@ -190,7 +190,7 @@ const AuthorPage = (props) => {
   }
 
   function fetchUserPromotions() {
-    if (!author.user) return;
+    if (!author.user || !auth.isLoggedIn) return;
     setFetchingPromotions(true);
     return fetch(
       API.AGGREGATE_USER_PROMOTIONS({ userId: author.user }),
