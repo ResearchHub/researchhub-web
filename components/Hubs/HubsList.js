@@ -110,6 +110,13 @@ class HubsList extends React.Component {
 
   renderHubEntry = () => {
     let selectedHubs = this.state.hubs;
+    let subscribed = this.props.hubState.subscribedHubs
+      ? this.props.hubState.subscribedHubs
+      : [];
+    let subscribedHubs = {};
+    subscribed.forEach((hub) => {
+      subscribedHubs[hub.id] = true;
+    });
     return selectedHubs.map((hub, i) => {
       let { name, id, user_is_subscribed } = hub;
       return (
@@ -133,7 +140,7 @@ class HubsList extends React.Component {
           >
             <a className={css(styles.hubLink)}>
               {name}
-              {user_is_subscribed && (
+              {subscribedHubs[hub.id] && (
                 <span className={css(styles.subscribedIcon)}>
                   <i className="fas fa-star" />
                 </span>
