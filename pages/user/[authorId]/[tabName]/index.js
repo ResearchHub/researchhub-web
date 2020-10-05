@@ -105,7 +105,7 @@ const AuthorPage = (props) => {
     ]).then((_) => {
       setFetching(false);
     });
-  }, [props.isServer, router.query.authorId]);
+  }, [router.query.authorId]);
 
   useEffect(() => {
     setDescription(author.description);
