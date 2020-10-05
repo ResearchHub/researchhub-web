@@ -39,7 +39,7 @@ const GoogleLoginButton = (props) => {
 
     await googleYoloLogin(data).then((action) => {
       if (action.loginFailed) {
-        showLoginFailureMessage();
+        showLoginFailureMessage(action);
       } else {
         getUser().then((userAction) => {
           props.loginCallback && props.loginCallback();

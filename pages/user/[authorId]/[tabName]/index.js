@@ -89,12 +89,22 @@ const AuthorPage = (props) => {
         AuthorActions.getAuthor({ authorId: router.query.authorId })
       );
     }
-    fetchAuthoredPapers();
-    fetchUserDiscussions();
-    fetchUserContributions();
-    fetchUserPromotions();
-    fetchUserTransactions();
-    refetchAuthor();
+    let authored = fetchAuthoredPapers();
+    let discussions = fetchUserDiscussions();
+    let contributions = fetchUserContributions();
+    let promotions = fetchUserPromotions();
+    let transactions = fetchUserTransactions();
+    let refetch = refetchAuthor();
+    Promise.all([
+      authored,
+      discussions,
+      contributions,
+      promotions,
+      transactions,
+      refetch,
+    ]).then((_) => {
+      setFetching(false);
+    });
   }, [props.isServer, router.query.authorId]);
 
   useEffect(() => {
@@ -153,11 +163,11 @@ const AuthorPage = (props) => {
       AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
     );
     let papers = store.getState().author.authoredPapers.papers;
-    checkUserVotes(papers, "authored");
+    return checkUserVotes(papers, "authored");
   }
 
-  async function fetchUserDiscussions() {
-    await dispatch(
+  function fetchUserDiscussions() {
+    return dispatch(
       AuthorActions.getUserDiscussions({ authorId: router.query.authorId })
     );
   }
@@ -169,21 +179,20 @@ const AuthorPage = (props) => {
       })
     );
     let contributions = store.getState().author.userContributions.contributions;
-    checkUserVotes(contributions, "contributions");
-    setFetching(false);
+    return checkUserVotes(contributions, "contributions");
   }
 
   function fetchUserTransactions() {
     if (!auth.isLoggedIn) return;
-    dispatch(
+    return dispatch(
       TransactionActions.getWithdrawals(1, store.getState().transactions)
     );
   }
 
-  async function fetchUserPromotions() {
+  function fetchUserPromotions() {
     if (!auth.isLoggedIn) return;
     setFetchingPromotions(true);
-    fetch(
+    return fetch(
       API.AGGREGATE_USER_PROMOTIONS({ userId: author.user }),
       API.GET_CONFIG()
     )
@@ -323,31 +332,31 @@ const AuthorPage = (props) => {
       href: "contributions",
       label: "contributions",
       showCount: true,
-      count: author.userContributions.count,
+      count: () => author.userContributions.count,
     },
     {
       href: "authored-papers",
       label: "authored papers",
       showCount: true,
-      count: author.authoredPapers.count,
+      count: () => author.authoredPapers.count,
     },
     {
       href: "discussions",
       label: "discussions",
       showCount: true,
-      count: author.userDiscussions.count,
+      count: () => author.userDiscussions.count,
     },
     {
       href: "transactions",
       label: "transactions",
       showCount: true,
-      count: transactions.count,
+      count: () => transactions.count,
     },
     {
       href: "boosts",
       label: "supported papers",
       showCount: true,
-      count: author.promotions && author.promotions.count,
+      count: () => author.promotions && author.promotions.count,
     },
   ];
 
