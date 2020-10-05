@@ -70,8 +70,6 @@ class MyApp extends App {
     });
 
     Router.events.on("routeChangeComplete", (url) => {
-      console.log(this.previousPath);
-      console.log(url.split("?")[0]);
       if (this.previousPath !== url.split("?")[0]) {
         window.scroll({
           top: 0,
