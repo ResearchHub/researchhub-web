@@ -29,9 +29,12 @@ export function createUserSummary(author = {}) {
   return userSummary;
 }
 
-export function createUsername({ created_by }) {
+export function createUsername({ created_by, createdBy }) {
   if (created_by) {
     const { first_name, last_name } = created_by.author_profile;
+    return `${first_name} ${last_name}`;
+  } else if (createdBy) {
+    const { first_name, last_name } = createdBy.authorProfile;
     return `${first_name} ${last_name}`;
   }
   return null;

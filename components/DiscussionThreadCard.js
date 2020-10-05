@@ -52,6 +52,7 @@ const DiscussionThreadCard = (props) => {
     body = data.text;
     username = createUsername(data);
     vote = data.userVote;
+    console.log(username);
   }
 
   const [selectedVoteType, setSelectedVoteType] = useState(
