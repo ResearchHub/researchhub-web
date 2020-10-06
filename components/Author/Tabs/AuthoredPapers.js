@@ -13,14 +13,44 @@ import colors from "~/config/themes/colors";
 class AuthoredPapersTab extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      papers:
+        this.props.author.authoredPapers &&
+        this.props.author.authoredPapers.papers
+          ? this.props.author.authoredPapers.papers
+          : [],
+    };
+  }
+
+  voteCallback = (index, paper) => {
+    let papers = [...this.state.papers];
+    papers[index] = paper;
+
+    this.setState({ papers });
+  };
+
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.author.authoredPapers.papers !==
+      prevProps.author.authoredPapers.papers
+    ) {
+      this.setState({
+        papers: this.props.author.authoredPapers.papers,
+      });
+    }
   }
 
   render() {
-    let { author } = this.props;
-    let papers = author.authoredPapers.papers.map((paper, index) => {
+    let { papers } = this.state;
+    let authoredPapers = papers.map((paper, index) => {
       return (
         <div className={css(styles.paperContainer)}>
-          <PaperEntryCard paper={paper} index={index} />
+          <PaperEntryCard
+            paper={paper}
+            index={index}
+            voteCallback={this.voteCallback}
+          />
         </div>
       );
     });
@@ -31,8 +61,8 @@ class AuthoredPapersTab extends React.Component {
           showLoadingAnimation
           customPlaceholder={<PaperPlaceholder color="#efefef" />}
         >
-          {papers.length > 0 ? (
-            <div className={css(styles.container)}>{papers}</div>
+          {authoredPapers.length > 0 ? (
+            <div className={css(styles.container)}>{authoredPapers}</div>
           ) : (
             <div className={css(styles.box)}>
               <div className={css(styles.icon)}>
