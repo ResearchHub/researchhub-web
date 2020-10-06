@@ -64,6 +64,7 @@ const PaperEntryCard = (props) => {
     promoted,
     raw_authors,
     slug,
+    paper_type,
   } = paper || null;
   let vote_type = 0;
   let selected = setVoteSelected(paper.user_vote);
@@ -534,7 +535,27 @@ const PaperEntryCard = (props) => {
           {!mobileView && renderPreview()}
         </div>
         <div className={css(styles.bottomBar)}>
-          <div className={css(styles.row)}>{renderDiscussionCount()}</div>
+          <div className={css(styles.row)}>
+            {renderDiscussionCount()}
+            {!mobileView && paper_type === "REGISTRATION" && (
+              <div className={css(styles.preRegContainer)}>
+                <img
+                  src="/static/icons/wip.png"
+                  className={css(styles.wipIcon)}
+                />
+                Preregistration
+              </div>
+            )}
+          </div>
+          {mobileView && paper_type === "REGISTRATION" && (
+            <div className={css(styles.preRegContainer)}>
+              <img
+                src="/static/icons/wip.png"
+                className={css(styles.wipIcon)}
+              />
+              Preregistration
+            </div>
+          )}
           {!mobileView && renderHubTags()}
         </div>
       </div>
@@ -804,17 +825,25 @@ const styles = StyleSheet.create({
   promotion: {
     fontSize: 12,
     fontWeight: 400,
-    // textTransform: 'uppercase',
-    // fontWeight: 'bold',
-    // letterSpacing: 1,
     color: "rgb(145, 143, 155)",
     marginLeft: 15,
-    // color: '#FFF',
-    // backgroundColor: colors.BLUE(),
-    // padding: '3px 10px'
+  },
+  preRegContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    fontSize: 14,
+    width: "max-content",
+    color: "#918f9b",
+    marginLeft: 10,
     "@media only screen and (max-width: 767px)": {
-      // fontSize: 12,
+      fontSize: 12,
+      marginLeft: 0,
     },
+  },
+  wipIcon: {
+    marginRight: 5,
+    height: 15,
   },
 });
 
