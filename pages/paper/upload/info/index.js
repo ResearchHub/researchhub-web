@@ -7,11 +7,11 @@ import PaperUploadInfo from "~/components/Paper/PaperUploadInfo";
 
 const Index = () => {
   const router = useRouter();
-  const { uploadPaperTitle } = router.query;
+  const { uploadPaperTitle, type } = router.query;
   return (
     <Fragment>
       <Head title={`Upload Paper`} description="Upload paper to ResearchHub" />
-      <PaperUploadInfo paperTitle={uploadPaperTitle} />
+      <PaperUploadInfo paperTitle={uploadPaperTitle} type={type} />
     </Fragment>
   );
 };

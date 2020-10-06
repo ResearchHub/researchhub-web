@@ -499,6 +499,21 @@ const Navbar = (props) => {
                         Settings
                       </div>
                     </Link>
+                    <Link
+                      href={{
+                        pathname: "/paper/upload/info",
+                        query: { type: "pre_registration" },
+                      }}
+                    >
+                      <div className={css(styles.option)}>
+                        <i
+                          className={
+                            css(styles.profileIcon) + " fas fa-layer-plus"
+                          }
+                        ></i>
+                        Register WIP
+                      </div>
+                    </Link>
                     <div
                       className={css(styles.option, styles.lastOption)}
                       onClick={() => {
@@ -791,7 +806,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -170,
+    bottom: -220,
     right: 0,
     width: 200,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
