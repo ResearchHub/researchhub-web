@@ -166,8 +166,11 @@ class PaperUploadInfo extends React.Component {
         };
       });
     }
-    if (type) {
-      form.type = type;
+    // if (type) {
+    //   form.type = type;
+    // }
+    if (Router.router.query && Router.router.query.type) {
+      form.paper_type = Router.router.query.type.toUpperCase();
     }
 
     this.setState(
@@ -202,12 +205,14 @@ class PaperUploadInfo extends React.Component {
           tagline,
           abstract,
           paper_title,
+          paper_type,
         } = res;
         let form = JSON.parse(JSON.stringify(this.state.form));
         form.doi = doi;
         form.title = title;
         form.paper_title = paper_title;
         form.abstract = abstract;
+        form.paper_type = paper_type;
         form.hubs = hubs.map((hub) => {
           return {
             id: hub.id,
