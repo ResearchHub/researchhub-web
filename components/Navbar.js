@@ -480,7 +480,7 @@ const Navbar = (props) => {
                   >
                     <Link
                       href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${11}/contributions`}
+                      as={`/user/${user.author_profile.id}/contributions`}
                     >
                       <div className={css(styles.option)}>
                         <i
