@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    maxHeight: "60vh",
+    maxHeight: "70vh",
     overflowY: "auto",
     paddingRight: 15,
   },
