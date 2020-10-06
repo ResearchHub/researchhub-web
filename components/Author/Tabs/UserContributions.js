@@ -56,7 +56,7 @@ class UserContributionsTab extends React.Component {
     this.setState({ fetching: true }, async () => {
       const next = this.props.author.userContributions.next;
       await this.props.getUserContributions({ next });
-      setTimeout(() => this.setState({ fetching: false }), 400);
+      this.setState({ fetching: false });
     });
   };
 

@@ -193,7 +193,7 @@ class PaperFeatureModal extends React.Component {
   submitBulletPoint = async () => {
     let { bulletsRedux, postBullet, showMessage, setMessage } = this.props;
     this.props.showMessage({ load: true, show: true });
-    let paperId = this.props.paperId;
+    let paperId = this.props.paper.id;
     let bullet = this.formatNewBullet();
     this.setState({ pendingSubmission: true });
     await postBullet({
@@ -850,7 +850,6 @@ const mapStateToProps = (state) => ({
   bulletsRedux: state.bullets,
   modals: state.modals,
   limitations: state.limitations,
-  paperId: state.paper.id,
   auth: state.auth,
 });
 
