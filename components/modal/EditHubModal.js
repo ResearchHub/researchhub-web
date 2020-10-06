@@ -46,6 +46,8 @@ class EditHubModal extends React.Component {
         originalHubName: hub ? this.toTitleCase(hub.name) : "",
         hubName: hub ? this.toTitleCase(hub.name) : "",
         hubDescription: hub ? hub.description : "",
+        hubImage: undefined,
+        hubCategory: undefined,
       });
     }
   };
