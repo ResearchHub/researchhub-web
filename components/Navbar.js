@@ -485,7 +485,8 @@ const Navbar = (props) => {
                       <div className={css(styles.option)}>
                         <i
                           className={
-                            css(styles.profileIcon) + " fas fa-id-card"
+                            css(styles.profileIcon, styles.portraitIcon) +
+                            " fas fa-portrait"
                           }
                         ></i>
                         Profile
@@ -511,7 +512,7 @@ const Navbar = (props) => {
                             css(styles.profileIcon) + " fas fa-layer-plus"
                           }
                         ></i>
-                        Preregistrations
+                        Add Preregistration
                       </div>
                     </Link>
                     <div
@@ -809,7 +810,7 @@ const styles = StyleSheet.create({
     bottom: -220,
     right: 0,
     width: 225,
-    boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
+    boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
     boxSizing: "border-box",
     background: "#fff",
     border: "1px solid #eee",
@@ -849,11 +850,15 @@ const styles = StyleSheet.create({
     borderBottom: 0,
   },
   profileIcon: {
-    position: "absolute",
-    left: 16,
-    top: "50%",
-    transform: "translateY(-50%)",
-    color: "#25252",
+    // position: "absolute",
+    // left: 16,
+    // top: "50%",
+    // transform: "translateY(-50%)",
+    color: "#888A8C",
+    marginRight: 16,
+  },
+  portraitIcon: {
+    fontSize: "1.2em",
   },
   option: {
     width: "100%",
@@ -862,10 +867,13 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #eee",
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
     cursor: "pointer",
     position: "relative",
     letterSpacing: 0.7,
+    color: "rgba(28, 28, 28, .8)",
+    fontWeight: 500,
+    fontSize: 15,
 
     ":hover": {
       background: "#eee",
