@@ -437,6 +437,15 @@ const PaperEntryCard = (props) => {
     }
   };
 
+  const renderPreregistrationTag = () => {
+    return (
+      <div className={css(styles.preRegContainer)}>
+        <img src="/static/icons/wip.png" className={css(styles.wipIcon)} />
+        Preregistration
+      </div>
+    );
+  };
+
   return (
     <Ripples
       className={css(
@@ -537,25 +546,13 @@ const PaperEntryCard = (props) => {
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.row)}>
             {renderDiscussionCount()}
-            {!mobileView && paper_type === "REGISTRATION" && (
-              <div className={css(styles.preRegContainer)}>
-                <img
-                  src="/static/icons/wip.png"
-                  className={css(styles.wipIcon)}
-                />
-                Preregistration
-              </div>
-            )}
+            {!mobileView &&
+              paper_type === "REGISTRATION" &&
+              renderPreregistrationTag()}
           </div>
-          {mobileView && paper_type === "REGISTRATION" && (
-            <div className={css(styles.preRegContainer)}>
-              <img
-                src="/static/icons/wip.png"
-                className={css(styles.wipIcon)}
-              />
-              Preregistration
-            </div>
-          )}
+          {mobileView &&
+            paper_type === "REGISTRATION" &&
+            renderPreregistrationTag()}
           {!mobileView && renderHubTags()}
         </div>
       </div>
