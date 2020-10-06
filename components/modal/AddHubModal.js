@@ -227,6 +227,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
+    maxHeight: "60vh",
+    overflowY: "auto",
+    paddingRight: 15,
   },
   button: {
     marginTop: 20,
