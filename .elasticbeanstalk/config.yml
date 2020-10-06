@@ -6,6 +6,8 @@ branch-defaults:
     environment: staging-web
   master:
     environment: production2
+  support-author:
+    environment: staging-web
 global:
   application_name: researchhub-web
   branch: null
