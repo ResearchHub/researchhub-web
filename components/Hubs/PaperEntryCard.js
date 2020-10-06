@@ -189,7 +189,7 @@ const PaperEntryCard = (props) => {
       };
       selected = UPVOTE;
 
-      voteCallback(index, curPaper);
+      voteCallback && voteCallback(index, curPaper);
     }
   }
 
