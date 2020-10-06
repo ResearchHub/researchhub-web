@@ -24,50 +24,71 @@ import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-
 const AuthorSupportModal = (props) => {
   const alert = useAlert();
 
-  const [page, setPage] = useState(1)
-  const [activePayment, setActivePayment] = useState()
-  const [paymentOptions, setPaymentOptions] = useState(
-    formatOptions() || []
-  );
+  const [page, setPage] = useState(1);
+  const [activePayment, setActivePayment] = useState();
+  const [paymentOptions, setPaymentOptions] = useState(formatOptions() || []);
   const [amount, setAmount] = useState(0);
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
-  useEffect(() => {
-
-  }, [props.modals]);
+  useEffect(() => {}, [props.modals]);
 
   function formatOptions() {
     return [
       {
         label: (
           <div className={css(iconStyles.row)}>
-            <img className={css(iconStyles.rsc)} src={'/static/icons/coin-filled.png'} />
-            <img className={css(iconStyles.rscBanner)} src={'/static/ResearchHubText.png'} />
+            <img
+              className={css(iconStyles.rsc)}
+              src={"/static/icons/coin-filled.png"}
+            />
+            <img
+              className={css(iconStyles.rscBanner)}
+              src={"/static/ResearchHubText.png"}
+            />
           </div>
-        )
+        ),
+        id: "RSC_OFF_CHAIN",
       },
       {
-        label: <img className={css(iconStyles.apple)} src={'/static/icons/apple-pay.png'} />
+        label: (
+          <img
+            className={css(iconStyles.apple)}
+            src={"/static/icons/apple-pay.png"}
+          />
+        ),
       },
       {
-        label: <img className={css(iconStyles.mastercard)} src={'/static/icons/mastercard.png'} />,
+        label: (
+          <img
+            className={css(iconStyles.mastercard)}
+            src={"/static/icons/mastercard.png"}
+          />
+        ),
       },
       {
-        label: <img className={css(iconStyles.paypal)} src={'/static/icons/paypal.png'} />,
+        label: (
+          <img
+            className={css(iconStyles.paypal)}
+            src={"/static/icons/paypal.png"}
+          />
+        ),
+        id: "PAYPAL",
       },
       {
-        label: <img className={css(iconStyles.visa)} src={'/static/icons/visa.png'} />,
-      }
-    ]
+        label: (
+          <img
+            className={css(iconStyles.visa)}
+            src={"/static/icons/visa.png"}
+          />
+        ),
+      },
+    ];
   }
 
-  function formatPaymentType() {
-
-  }
+  function formatPaymentType() {}
 
   function closeModal() {
     document.body.style.overflow = "scroll";
@@ -85,16 +106,16 @@ const AuthorSupportModal = (props) => {
         clickoff: true,
         error: true,
       });
-  }
+    }
 
-  if (amount == 0) {
-    props.setMessage("Must spend at least 1 RSC");
-    return props.showMessage({
-      show: true,
-      clickoff: true,
-      error: true,
-    });
-  }
+    if (amount == 0) {
+      props.setMessage("Must spend at least 1 RSC");
+      return props.showMessage({
+        show: true,
+        clickoff: true,
+        error: true,
+      });
+    }
 
     alert.show({
       text: `Use ${amount} RSC to support this paper?`,
@@ -106,22 +127,21 @@ const AuthorSupportModal = (props) => {
   }
 
   function sendTransaction() {
-
     let payload = {
       user_id: props.user.id,
       recipient_id: props.author.id,
       amount,
-      payment_option: 'SINGLE', // {'SINGLE', 'MONTHLY'},
-      payment_type: 'RSC_OFF_CHAIN' //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
-    }
+      payment_option: "SINGLE", // {'SINGLE', 'MONTHLY'},
+      payment_type: "RSC_OFF_CHAIN", //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
+    };
 
     return fetch(API.SUPPORT, API.POST_CONFIG(payload))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then(res => {
-      setPage(3);
-      updateUser({...res.user});
-    })
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setPage(3);
+        updateUser({ ...res.user });
+      });
   }
 
   function handlePaymentClick(index) {
@@ -133,7 +153,7 @@ const AuthorSupportModal = (props) => {
     let value = parseInt(e.target.value, 10);
     value = value ? (value > 0 ? value : 0) : null;
     setAmount(value);
-    setError(handleError(value))
+    setError(handleError(value));
   }
 
   function handleError(value) {
@@ -146,31 +166,29 @@ const AuthorSupportModal = (props) => {
   function formatTitle() {
     const { first_name, last_name } = props.author;
 
-    return `Complete your support to ${first_name} ${last_name}`
+    return `Complete your support to ${first_name} ${last_name}`;
   }
 
   function renderScreen() {
-    switch(page) {
-      case(1):
+    switch (page) {
+      case 1:
         return renderPaymentScreen();
-      case(2):
+      case 2:
         return renderAmountScreen();
-      case(3):
-        return renderReceiptScreen()
+      case 3:
+        return renderReceiptScreen();
     }
   }
 
   function renderPaymentScreen() {
     return (
       <div className={css(styles.root)}>
-        <h3 className={css(styles.label)}>
-          Payment Details
-        </h3>
+        <h3 className={css(styles.label)}>Payment Details</h3>
         <div className={css(styles.paymentList)}>
           {paymentOptions.map((payment, i) => {
             return (
               <div className={css(styles.paymentOption)}>
-                <OptionCard 
+                <OptionCard
                   label={payment.label}
                   active={activePayment === i}
                   payment={activePayment}
@@ -178,11 +196,11 @@ const AuthorSupportModal = (props) => {
                   onClick={handlePaymentClick}
                 />
               </div>
-            )
+            );
           })}
         </div>
       </div>
-    )
+    );
   }
 
   function renderAmountScreen() {
@@ -230,7 +248,7 @@ const AuthorSupportModal = (props) => {
           <Button label="Confirm" onClick={confirmTransaction} />
         </div>
       </div>
-    )
+    );
   }
 
   function renderReceiptScreen() {
@@ -238,7 +256,7 @@ const AuthorSupportModal = (props) => {
       <Fragment>
         <div className={css(styles.row)}>
           <div className={css(styles.column)}>
-          <div className={css(styles.redirect)} onClick={closeModal}>
+            <div className={css(styles.redirect)} onClick={closeModal}>
               <Link
                 href={"/user/[authorId]/[tabName]"}
                 as={`/user/${props.author.id}/contributions`}
@@ -246,12 +264,10 @@ const AuthorSupportModal = (props) => {
                 <a
                   href={"/user/[authorId]/[tabName]"}
                   as={`/user/${props.author.id}/contributions`}
-                  className={css(
-                    styles.transactionHashLink,
-                    styles.marginLeft
-                  )}
+                  className={css(styles.transactionHashLink, styles.marginLeft)}
                 >
-                  Click to go back to {`${props.author.first_name} ${props.author.last_name}'s page`}
+                  Click to go back to{" "}
+                  {`${props.author.first_name} ${props.author.last_name}'s page`}
                 </a>
               </Link>
             </div>
@@ -281,62 +297,60 @@ const AuthorSupportModal = (props) => {
           />
         </div>
       </Fragment>
-    )
+    );
   }
 
-
-
   return (
-    <BaseModal 
-      title={page !== 3 
-        ? formatTitle() 
-        : (
+    <BaseModal
+      title={
+        page !== 3 ? (
+          formatTitle()
+        ) : (
           <div className={css(styles.mainHeader)}>
             Transaction Successful
             <span className={css(styles.icon)}>
               <i className="fal fa-check-circle" />
             </span>
           </div>
-      )}
+        )
+      }
       isOpen={props.modals.openAuthorSupportModal}
       closeModal={closeModal}
       titleStyle={page !== 3 && styles.titleStyle}
     >
-
       {renderScreen()}
     </BaseModal>
-
-  )
+  );
 };
 
-const styles =  StyleSheet.create({
+const styles = StyleSheet.create({
   root: {
-    width: '100%'
+    width: "100%",
   },
   label: {
     fontSize: 18,
-    color: colors.BLACK()
+    color: colors.BLACK(),
   },
   titleStyle: {
     marginTop: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   paymentList: {
     width: 800,
-    display: 'flex',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    height: 'max-content',
+    display: "flex",
+    justifyContent: "flex-start",
+    flexWrap: "wrap",
+    height: "max-content",
     "@media only screen and (max-width: 767px)": {
-      width: '100%',
-      justifyContent: 'center'
+      width: "100%",
+      justifyContent: "center",
     },
   },
   paymentOption: {
     width: 246,
     minWidth: 246,
     maxWidth: 246,
-    margin: '0 20px 20px 0'
+    margin: "0 20px 20px 0",
   },
   content: {
     width: 420,
@@ -367,7 +381,7 @@ const styles =  StyleSheet.create({
     },
   },
   redirect: {
-    margin: '10px 0'
+    margin: "10px 0",
   },
   column: {
     display: "flex",
@@ -412,7 +426,7 @@ const styles =  StyleSheet.create({
     paddingTop: 0,
   },
   numbers: {
-    display: 'flex',
+    display: "flex",
     alignItems: "flex-end",
   },
   input: {
@@ -454,12 +468,12 @@ const styles =  StyleSheet.create({
     marginLeft: 5,
   },
   backButton: {
-    position: 'absolute',
+    position: "absolute",
     top: -118,
     left: -30,
     color: colors.BLACK(0.5),
     textDecoration: "none",
-    cursor: 'pointer',
+    cursor: "pointer",
     ":hover": {
       color: colors.BLACK(1),
     },
@@ -490,43 +504,46 @@ const styles =  StyleSheet.create({
 const iconStyles = StyleSheet.create({
   apple: {
     height: 22,
-    width: 55
+    width: 55,
   },
   mastercard: {
     height: 27,
-    width: 148
+    width: 148,
   },
   paypal: {
     height: 23,
-    width: 87
+    width: 87,
   },
   visa: {
     height: 19,
-    width: 62
+    width: 62,
   },
   rsc: {
-    height: 25
+    height: 25,
   },
   rscBanner: {
     height: 18,
-    marginLeft: 5
+    marginLeft: 5,
   },
   row: {
-    display: 'flex',
-    alignItems: 'center'
-  }
+    display: "flex",
+    alignItems: "center",
+  },
 });
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   modals: state.modals,
   user: state.auth.user,
-  author: state.author
+  author: state.author,
 });
 
 const mapDispatchToProps = {
   openAuthorSupportModal: ModalActions.openAuthorSupportModal,
   updateUser: AuthActions.updateUser,
   setMessage: MessageActions.setMessage,
-  showMessage: MessageActions.showMessage
-}
-export default connect(mapStateToProps, mapDispatchToProps)(AuthorSupportModal);
+  showMessage: MessageActions.showMessage,
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AuthorSupportModal);
