@@ -33,8 +33,8 @@ class EditHubModal extends React.Component {
     this.state = {
       ...this.initialState,
     };
-    this.descriptionLimit = 125;
-    this.nameLimit = 25;
+    this.descriptionLimit = 150;
+    this.nameLimit = 50;
   }
 
   componentDidUpdate = (prevProps, prevState) => {

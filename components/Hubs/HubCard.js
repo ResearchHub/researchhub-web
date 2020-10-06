@@ -304,6 +304,7 @@ const styles = StyleSheet.create({
     width: "240px",
     overflow: "hidden",
     textOverflow: "ellipsis",
+    whiteSpace: "pre",
   },
   subscribeButton: {
     height: 20,
