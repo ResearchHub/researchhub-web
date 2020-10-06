@@ -186,6 +186,7 @@ const Navbar = (props) => {
 
   function navigateToRoute(route) {
     let { href, as } = route;
+    debugger;
     if (href) {
       if (href === "/user/[authorId]/[tabName]") {
         Router.push(href, `/user/${user.author_profile.id}/contributions`);

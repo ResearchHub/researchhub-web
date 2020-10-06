@@ -119,7 +119,8 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     overflow: "auto",
-    background: paperTabColors.BACKGROUND,
+    borderBottom: "1px solid #F0F0F0",
+    // background: paperTabColors.BACKGROUND,
   },
   tabContainer: {
     display: "flex",
@@ -131,8 +132,8 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
   },
   tab: {
-    color: paperTabColors.FONT,
-    fontFamily: paperTabFont,
+    color: "rgba(36, 31, 58, .6)",
+    fontWeight: 500,
     padding: "1rem",
 
     "@media only screen and (min-width: 768px)": {
