@@ -166,7 +166,7 @@ class EditHubModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    document.body.style.overflow = "scroll";
+    document.body.style.overflow = "auto";
   };
 
   // Thank you stackoverflow :)
@@ -279,11 +279,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     maxHeight: "70vh",
-    overflowY: "auto",
-    paddingRight: 15,
   },
   button: {
-    marginTop: 20,
+    marginTop: 16,
+    marginBottom: 16,
   },
   buttonStyle: {
     height: 45,
