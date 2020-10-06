@@ -18,8 +18,8 @@ const colors = {
 
 export const formColors = {
   MESSAGE: colors.BLACK(0.65),
-  BACKGROUND: "#D7D7E3",
-  BORDER: "#F0F0F0",
+  BACKGROUND: "#F0F0F0",
+  BORDER: "#D7D7E3",
   SELECT: "#FAFAFA",
 };
 

@@ -24,6 +24,8 @@ import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserInfoModal from "~/components/modal/UserInfoModal";
+import Button from "~/components/Form/Button";
+
 
 // Config
 import colors from "~/config/themes/colors";
@@ -891,6 +893,14 @@ const AuthorPage = (props) => {
           </div>
         </div>
       </ComponentWrapper>
+      <ComponentWrapper>
+        <div className={css(styles.supportButton)}>
+          <Button
+            label="Support Author"
+            onClick={() => props.openAuthorSupportModal(true)}
+          />
+        </div>
+      </ComponentWrapper>
       <TabBar
         tabs={tabs}
         selectedTab={router.query.tabName}
@@ -1309,6 +1319,9 @@ const styles = StyleSheet.create({
     display: "flex",
     zIndex: 1,
   },
+  supportButton: {
+    marginBottom: 20
+  }
 });
 
 const mapStateToProps = (state) => ({
@@ -1321,6 +1334,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
   openUserInfoModal: ModalActions.openUserInfoModal,
+  openAuthorSupportModal: ModalActions.openAuthorSupportModal,
 };
 
 export default connect(
