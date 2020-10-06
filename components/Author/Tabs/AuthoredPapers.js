@@ -4,7 +4,6 @@ import ReactPlaceholder from "react-placeholder";
 import Ripples from "react-ripples";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
@@ -102,29 +101,27 @@ class AuthoredPapersTab extends React.Component {
       );
     });
     return (
-      <ComponentWrapper>
-        <ReactPlaceholder
-          ready={this.props.author.authorDoneFetching}
-          showLoadingAnimation
-          customPlaceholder={<PaperPlaceholder color="#efefef" />}
-        >
-          {authoredPapers.length > 0 ? (
-            <div className={css(styles.container)}>
-              {authoredPapers}
-              {this.renderLoadMoreButton()}
+      <ReactPlaceholder
+        ready={this.props.author.authorDoneFetching}
+        showLoadingAnimation
+        customPlaceholder={<PaperPlaceholder color="#efefef" />}
+      >
+        {authoredPapers.length > 0 ? (
+          <div className={css(styles.container)}>
+            {authoredPapers}
+            {this.renderLoadMoreButton()}
+          </div>
+        ) : (
+          <div className={css(styles.box)}>
+            <div className={css(styles.icon)}>
+              <i className="fad fa-file-alt" />
             </div>
-          ) : (
-            <div className={css(styles.box)}>
-              <div className={css(styles.icon)}>
-                <i className="fad fa-file-alt" />
-              </div>
-              <h2 className={css(styles.noContent)}>
-                User has not authored any papers.
-              </h2>
-            </div>
-          )}
-        </ReactPlaceholder>
-      </ComponentWrapper>
+            <h2 className={css(styles.noContent)}>
+              User has not authored any papers.
+            </h2>
+          </div>
+        )}
+      </ReactPlaceholder>
     );
   }
 }
