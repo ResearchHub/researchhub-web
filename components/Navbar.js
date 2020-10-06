@@ -480,7 +480,7 @@ const Navbar = (props) => {
                   >
                     <Link
                       href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${user.author_profile.id}/contributions`}
+                      as={`/user/${11}/contributions`}
                     >
                       <div className={css(styles.option)}>
                         <i
@@ -511,7 +511,7 @@ const Navbar = (props) => {
                             css(styles.profileIcon) + " fas fa-layer-plus"
                           }
                         ></i>
-                        Register WIP
+                        Preregistrations
                       </div>
                     </Link>
                     <div
@@ -808,7 +808,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: -220,
     right: 0,
-    width: 200,
+    width: 225,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
     boxSizing: "border-box",
     background: "#fff",
