@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     padding: "27px 15px",
     paddingLeft: 80,
     background: "#fff",
+    width: "100%",
   },
   textRow: {
     marginBottom: 16,

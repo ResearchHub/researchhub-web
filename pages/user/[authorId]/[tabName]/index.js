@@ -331,7 +331,7 @@ const AuthorPage = (props) => {
   const tabs = [
     {
       href: "contributions",
-      label: "contributions",
+      label: "paper submissions",
       showCount: true,
       count: () => author.userContributions.count,
     },
@@ -361,44 +361,57 @@ const AuthorPage = (props) => {
     },
   ];
 
+  const renderTabTitle = () => {
+    for (let i = 0; i < tabs.length; i++) {
+      if (tabs[i].href === tabName) {
+        return tabs[i].label;
+      }
+    }
+  };
+
   const renderTabContent = () => {
     return (
       // render all tab content on the dom, but only show if selected
-      <div>
-        <span
-          className={css(
-            tabName === "contributions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserContributionsTab fetching={fetching} />
-        </span>
-        <span
-          className={css(
-            tabName === "authored-papers" ? styles.reveal : styles.hidden
-          )}
-        >
-          <AuthoredPapersTab fetching={fetching} />
-        </span>
-        <span
-          className={css(
-            tabName === "discussions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserDiscussionsTab hostname={hostname} fetching={fetching} />
-        </span>
-        <span
-          className={css(
-            tabName === "transactions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserTransactionsTab fetching={fetching} />
-        </span>
-        <span
-          className={css(tabName === "boosts" ? styles.reveal : styles.hidden)}
-        >
-          <UserPromotionsTab fetching={fetchingPromotions} />
-        </span>
-      </div>
+      <ComponentWrapper>
+        <div className={css(styles.tabMeta)}>
+          <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+          <div
+            className={css(
+              tabName === "contributions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserContributionsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "authored-papers" ? styles.reveal : styles.hidden
+            )}
+          >
+            <AuthoredPapersTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "discussions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "transactions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserTransactionsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "boosts" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserPromotionsTab fetching={fetchingPromotions} />
+          </div>
+        </div>
+      </ComponentWrapper>
     );
   };
 
@@ -940,6 +953,8 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
+    background: "#FAFAFA",
+    minHeight: "55vh",
   },
   profileContainer: {
     display: "flex",
@@ -1144,6 +1159,26 @@ const styles = StyleSheet.create({
       backgroundColor: "#3E43E8",
     },
   },
+  tabMeta: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+    background: "#fff",
+    border: "1.5px solid #F0F0F0",
+
+    "@media only screen and (min-width: 768px)": {
+      padding: 50,
+      paddingTop: 24,
+    },
+  },
+  title: {
+    fontWeight: 500,
+    textTransform: "capitalize",
+    marginTop: 0,
+    marginBottom: 16,
+    // fontSize: 32,
+  },
   nameInput: {
     fontSize: 32,
     width: 300,
@@ -1320,6 +1355,8 @@ const styles = StyleSheet.create({
   reveal: {
     display: "flex",
     zIndex: 1,
+    width: "100%",
+    justifyContent: "center",
   },
   supportButton: {
     marginBottom: 20,
