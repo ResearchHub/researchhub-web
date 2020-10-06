@@ -900,18 +900,6 @@ const AuthorPage = (props) => {
               onClick={() => props.openAuthorSupportModal(true)}
             />
           </div>
-          <div className={css(styles.supportButton)}>
-            <Button
-              label="Register WIP"
-              isWhite={true}
-              onClick={() =>
-                router.push({
-                  pathname: `/paper/upload/info`,
-                  query: { type: "pre_registration" },
-                })
-              }
-            />
-          </div>
         </div>
       </ComponentWrapper>
       <TabBar
