@@ -95,6 +95,10 @@ class AuthoredPapersTab extends React.Component {
           <PaperEntryCard
             paper={paper}
             index={index}
+            style={[
+              styles.paperEntryCard,
+              index === papers.length - 1 && styles.noBorder,
+            ]}
             voteCallback={this.voteCallback}
           />
         </div>
@@ -153,6 +157,14 @@ var styles = StyleSheet.create({
       fontSize: 16,
     },
   },
+  paperEntryCard: {
+    border: 0,
+    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
+    marginBottom: 0,
+    marginTop: 0,
+    paddingTop: 24,
+    paddingBottom: 24,
+  },
   icon: {
     fontSize: 50,
     color: colors.BLUE(1),
@@ -170,6 +182,9 @@ var styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 15,
     },
+  },
+  noBorder: {
+    border: 0,
   },
   loadMoreButton: {
     fontSize: 14,

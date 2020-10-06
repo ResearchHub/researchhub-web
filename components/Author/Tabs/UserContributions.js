@@ -98,7 +98,10 @@ class UserContributionsTab extends React.Component {
             key={`userContribution-${contribution.id}-${index}`}
             paper={contribution}
             index={index}
-            style={styles.paperEntryCard}
+            style={[
+              styles.paperEntryCard,
+              index === this.state.contributions.length - 1 && styles.noBorder,
+            ]}
             voteCallback={this.voteCallback}
           />
         </div>
@@ -181,6 +184,9 @@ var styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 15,
     },
+  },
+  noBorder: {
+    border: "none",
   },
   loadMoreButton: {
     fontSize: 14,
