@@ -26,7 +26,6 @@ import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserInfoModal from "~/components/modal/UserInfoModal";
 import Button from "~/components/Form/Button";
 
-
 // Config
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
@@ -894,11 +893,25 @@ const AuthorPage = (props) => {
         </div>
       </ComponentWrapper>
       <ComponentWrapper>
-        <div className={css(styles.supportButton)}>
-          <Button
-            label="Support Author"
-            onClick={() => props.openAuthorSupportModal(true)}
-          />
+        <div className={css(styles.row)}>
+          <div className={css(styles.supportButton)}>
+            <Button
+              label="Support Author"
+              onClick={() => props.openAuthorSupportModal(true)}
+            />
+          </div>
+          <div className={css(styles.supportButton)}>
+            <Button
+              label="Register WIP"
+              isWhite={true}
+              onClick={() =>
+                router.push({
+                  pathname: `/paper/upload/info`,
+                  query: { type: "pre_registration" },
+                })
+              }
+            />
+          </div>
         </div>
       </ComponentWrapper>
       <TabBar
@@ -1320,8 +1333,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   supportButton: {
-    marginBottom: 20
-  }
+    marginBottom: 20,
+    marginRight: 10,
+  },
+  row: {
+    display: "flex",
+  },
 });
 
 const mapStateToProps = (state) => ({
