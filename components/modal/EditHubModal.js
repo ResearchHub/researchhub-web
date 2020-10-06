@@ -229,7 +229,7 @@ class EditHubModal extends React.Component {
             label={"Category"}
             placeholder={hub ? this.getMatchingCategory(hub.category) : null}
             required={true}
-            containerStyle={styles.container}
+            containerStyle={styles.containerStyle}
             inputStyle={styles.input}
             labelStyle={styles.labelStyle}
             isMulti={false}
@@ -276,6 +276,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
+    maxHeight: "60vh",
+    overflowY: "auto",
+    paddingRight: 15,
   },
   button: {
     marginTop: 20,
