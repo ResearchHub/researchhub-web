@@ -1029,6 +1029,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
+    marginLeft: "auto",
   },
   socialMedia: {
     width: 35,

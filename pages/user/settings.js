@@ -396,6 +396,9 @@ class UserSettings extends Component {
           hub.name
             .split(" ")
             .map((el) => {
+              if (!el[0]) {
+                return "";
+              }
               return el[0].toUpperCase() + el.slice(1);
             })
             .join(" ");
