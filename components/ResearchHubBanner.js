@@ -95,15 +95,6 @@ class ResearchHubBanner extends React.Component {
               <a className={css(styles.readMore)}>Read more</a>
             </Link>
           </div>
-          {this.props.banners.showSignupBanner && (
-            <div className={css(styles.subtext, styles.promo, styles.text)}>
-              Join today for 25 RSC
-              <img
-                className={css(styles.coinIcon)}
-                src={"/static/icons/coin-filled.png"}
-              />
-            </div>
-          )}
           <span className={css(styles.googleLogin)}>
             {!auth.isLoggedIn && (
               <GoogleLoginButton
