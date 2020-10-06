@@ -85,7 +85,13 @@ class UserDiscussionsTab extends React.Component {
       (discussion, index) => {
         let path = `/paper/${discussion.paper}/discussions/${discussion.id}`;
         return (
-          <div className={css(styles.discussionContainer)}>
+          <div
+            className={css(
+              styles.discussionContainer,
+              index === author.userDiscussions.discussions.length - 1 &&
+                styles.noBorder
+            )}
+          >
             <DiscussionThreadCard
               data={discussion}
               hostname={hostname}
@@ -169,6 +175,9 @@ var styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 15,
     },
+  },
+  noBorder: {
+    border: "none",
   },
   loadMoreButton: {
     fontSize: 14,
