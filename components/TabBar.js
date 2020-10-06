@@ -106,11 +106,7 @@ const Count = (props) => {
 
 const UIStyling = (props) => {
   const { isSelected, label } = props;
-  return (
-    <span className={css(styles.ui, isSelected && styles.selectedUi)}>
-      {props.children}
-    </span>
-  );
+  return <span className={css(styles.ui)}>{props.children}</span>;
 };
 
 const styles = StyleSheet.create({
@@ -150,8 +146,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   ui: {
-    border: "1px solid #AAA7B9",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+    background: "rgba(36, 31, 58, 0.03)",
+    color: "#241F3A",
     borderRadius: 3,
+    marginLeft: 5,
   },
   selectedUi: {
     borderColor: colors.PURPLE(1),
