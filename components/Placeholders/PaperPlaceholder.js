@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     paddingLeft: 80,
     background: "#fff",
     width: "100%",
+    boxSizing: "border-box",
   },
   textRow: {
     marginBottom: 16,
