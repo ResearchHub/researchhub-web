@@ -1,43 +1,81 @@
-import React, { Fragment, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import Ripples from "react-ripples";
 
 // Component
 
-// Redux
-import { AuthActions } from "~/redux/auth";
-import { AuthorActions } from "~/redux/author";
-import { ModalActions } from "~/redux/modals";
-import { MessageActions } from "~/redux/message";
-
 // Config
 import colors, { formColors } from "~/config/themes/colors";
+import { column, row } from "~/config/themes/styles";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 const OptionCard = (props) => {
-  const { active, onClick, label, sublabel, index } = props;
+  const { active, onClick, label, payment, sublabel, index } = props;
+  const [selected, setSelected] = useState(active);
 
-  function handleClick() {}
+  useEffect(() => {
+    setSelected(active)
+  }, [props.active])
+
+  function handleClick(e) {
+    onClick && onClick(index);
+  }
 
   return (
-    <div className={css(styles.root)} onClick={handleClick}>
-      <div className={css(styles.selectInput)}></div>
-      <div className={css(styles.label)}></div>
-      <div className={css(styles.sublabel)}></div>
-    </div>
+    <Ripples className={css(styles.root, selected && styles.activeRoot)} onClick={handleClick}>
+      <div className={css(styles.selectInput, selected && styles.activeSelectInput)}></div>
+      <div>
+        <div className={css(styles.label)}>
+          {label && label}
+        </div>
+        <div className={css(styles.sublabel)}>
+          {sublabel && sublabel}</div>
+      </div>
+    </Ripples>
   );
 };
 
 const styles = StyleSheet.create({
   root: {
+    ...row({ justifyContent: 'flex-start' }),
+    width: '100%',
     backgroundColor: formColors.BACKGROUND,
-    border: "1px solid",
+    border: "2px solid",
     borderColor: formColors.BORDER,
+    cursor: 'pointer',
+    height: 78,
+    borderRadius: 4,
+    userSelect: 'none',
     ":hover": {
-      borderColor: colors.BLUE(),
+      borderColor: '#3971FF',
     },
   },
-  selectInput: {},
+  selectInput: {
+    minHeight: 26,
+    height: 26,
+    width: 26,
+    borderRadius: '50%',
+    border: '1px solid',
+    borderColor: formColors.BORDER,
+    background: '#FFF',
+    margin: '0px 15px',
+    // ':hover': {
+    //   marginRight: 17,
+    //   boxSizing: 'border-box',
+    //   border: `6px solid #3971FF`
+    // }
+  },
+  activeRoot: {
+    borderColor: '#3971FF',
+  },
+  activeSelectInput: {
+    marginRight: 17,
+    boxSizing: 'border-box',
+    border: `6px solid #3971FF`
+  }
 });
+
+export default OptionCard;
