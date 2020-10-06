@@ -547,11 +547,11 @@ const PaperEntryCard = (props) => {
           <div className={css(styles.row)}>
             {renderDiscussionCount()}
             {!mobileView &&
-              paper_type === "REGISTRATION" &&
+              paper_type === "PRE_REGISTRATION" &&
               renderPreregistrationTag()}
           </div>
           {mobileView &&
-            paper_type === "REGISTRATION" &&
+            paper_type === "PRE_REGISTRATION" &&
             renderPreregistrationTag()}
           {!mobileView && renderHubTags()}
         </div>
