@@ -38,8 +38,8 @@ class AddHubModal extends React.Component {
       ...this.initialState,
     };
     // rough estimates
-    this.descriptionLimit = 125;
-    this.nameLimit = 25;
+    this.descriptionLimit = 150;
+    this.nameLimit = 50;
   }
 
   hubNameFits = (text) => {
