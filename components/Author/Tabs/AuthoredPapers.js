@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
+import Ripples from "react-ripples";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -9,12 +10,15 @@ import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 // Config
 import colors from "~/config/themes/colors";
+import Loader from "../../Loader/Loader";
+import { AuthorActions } from "../../../redux/author";
 
 class AuthoredPapersTab extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      page: 2,
       papers:
         this.props.author.authoredPapers &&
         this.props.author.authoredPapers.papers
@@ -41,6 +45,49 @@ class AuthoredPapersTab extends React.Component {
     }
   }
 
+  loadMore = () => {
+    this.setState({ fetching: true }, async () => {
+      let { getAuthoredPapers } = this.props;
+      let { page } = this.state;
+      const next = this.props.author.authoredPapers.next;
+      await getAuthoredPapers({ page });
+      this.setState({
+        page: this.state.page + 1,
+      });
+      this.setState({ fetching: false });
+    });
+  };
+
+  renderLoadMoreButton = () => {
+    let { author } = this.props;
+
+    if (author && author.authoredPapers) {
+      let { next } = author.authoredPapers;
+
+      if (next !== null) {
+        return (
+          <div className={css(styles.buttonContainer)}>
+            {!this.state.fetching ? (
+              <Ripples
+                className={css(styles.loadMoreButton)}
+                onClick={this.loadMore}
+              >
+                Load More
+              </Ripples>
+            ) : (
+              <Loader
+                key={"authored-loader"}
+                loading={true}
+                size={25}
+                color={colors.BLUE()}
+              />
+            )}
+          </div>
+        );
+      }
+    }
+  };
+
   render() {
     let { papers } = this.state;
     let authoredPapers = papers.map((paper, index) => {
@@ -62,7 +109,10 @@ class AuthoredPapersTab extends React.Component {
           customPlaceholder={<PaperPlaceholder color="#efefef" />}
         >
           {authoredPapers.length > 0 ? (
-            <div className={css(styles.container)}>{authoredPapers}</div>
+            <div className={css(styles.container)}>
+              {authoredPapers}
+              {this.renderLoadMoreButton()}
+            </div>
           ) : (
             <div className={css(styles.box)}>
               <div className={css(styles.icon)}>
@@ -112,10 +162,47 @@ var styles = StyleSheet.create({
     height: 50,
     marginBottom: 10,
   },
+  buttonContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 25,
+    height: 45,
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 15,
+      marginBottom: 15,
+    },
+  },
+  loadMoreButton: {
+    fontSize: 14,
+    border: `1px solid ${colors.BLUE()}`,
+    boxSizing: "border-box",
+    borderRadius: 4,
+    height: 45,
+    width: 155,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: colors.BLUE(),
+    cursor: "pointer",
+    userSelect: "none",
+    ":hover": {
+      color: "#FFF",
+      backgroundColor: colors.BLUE(),
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-export default connect(mapStateToProps)(AuthoredPapersTab);
+const mapDispatchToProps = {
+  getAuthoredPapers: AuthorActions.getAuthoredPapers,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AuthoredPapersTab);
