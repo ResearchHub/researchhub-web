@@ -246,6 +246,18 @@ const PaperTabBar = (props) => {
     }
   }
 
+  function renderPreregistrationTag() {
+    if (props.paper && props.paper.paper_type === "PRE_REGISTRATION") {
+      return (
+        <div className={css(styles.preRegContainer)}>
+          <img src="/static/icons/wip.png" className={css(styles.preRegIcon)} />
+          Preregistration
+        </div>
+      );
+    }
+    return null;
+  }
+
   function renderTab({ key, href, label, ui }, selected, index) {
     let isSelected = false;
     let classNames = [styles.tab];
@@ -273,10 +285,11 @@ const PaperTabBar = (props) => {
 
   return (
     <div className={css(styles.container)} id="paper-navigation">
-      <ComponentWrapper>
+      <ComponentWrapper overrideStyle={styles.componentWrapper}>
         <div className={css(styles.tabContainer)}>
           {tabs.map((tab, index) => renderTab(tab, selectedTab, index))}
         </div>
+        {renderPreregistrationTag()}
       </ComponentWrapper>
     </div>
   );
@@ -414,6 +427,29 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
     display: "flex",
     justifyContent: "center",
+  },
+  componentWrapper: {
+    position: "relative",
+  },
+  preRegContainer: {
+    display: "flex",
+    alignItems: "center",
+    position: "absolute",
+    right: 0,
+    bottom: 4,
+    paddingBottom: "1rem",
+    color: "rgba(36, 31, 58, 0.5)",
+    fontSize: 16,
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  preRegIcon: {
+    height: 15,
+    marginRight: 8,
+    "@media only screen and (max-width: 415px)": {
+      height: 15,
+    },
   },
 });
 
