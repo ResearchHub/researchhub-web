@@ -544,16 +544,9 @@ const PaperEntryCard = (props) => {
           {!mobileView && renderPreview()}
         </div>
         <div className={css(styles.bottomBar)}>
-          <div className={css(styles.row)}>
-            {renderDiscussionCount()}
-            {!mobileView &&
-              paper_type === "PRE_REGISTRATION" &&
-              renderPreregistrationTag()}
-          </div>
-          {mobileView &&
-            paper_type === "PRE_REGISTRATION" &&
-            renderPreregistrationTag()}
+          <div className={css(styles.row)}>{renderDiscussionCount()}</div>
           {!mobileView && renderHubTags()}
+          {paper_type === "PRE_REGISTRATION" && renderPreregistrationTag()}
         </div>
       </div>
     </Ripples>
@@ -731,6 +724,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     flexWrap: "wrap",
+    marginLeft: "auto",
     "@media only screen and (max-width: 970px)": {
       marginBottom: 15,
       justifyContent: "flex-start",
