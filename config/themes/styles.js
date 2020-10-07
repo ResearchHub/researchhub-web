@@ -265,3 +265,24 @@ export const defaultStyles = StyleSheet.create({
     },
   },
 });
+
+export const column = (params = {}) => {
+  const { justifyContent, alignItems } = params;
+
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent : justifyContent ? justifyContent : 'center',
+    alignItems: alignItems ? alignItems : 'center'
+  }
+}
+
+export const row = (params = {}) => {
+  const { justifyContent, alignItems } = params
+
+  return {
+    display: 'flex',
+    justifyContent : justifyContent ? justifyContent : 'center',
+    alignItems: alignItems ? alignItems : 'center'
+  }
+}

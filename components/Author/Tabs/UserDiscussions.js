@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 import Loader from "~/components/Loader/Loader";
@@ -86,7 +85,13 @@ class UserDiscussionsTab extends React.Component {
       (discussion, index) => {
         let path = `/paper/${discussion.paper}/discussions/${discussion.id}`;
         return (
-          <div className={css(styles.discussionContainer)}>
+          <div
+            className={css(
+              styles.discussionContainer,
+              index === author.userDiscussions.discussions.length - 1 &&
+                styles.noBorder
+            )}
+          >
             <DiscussionThreadCard
               data={discussion}
               hostname={hostname}
@@ -98,31 +103,29 @@ class UserDiscussionsTab extends React.Component {
       }
     );
     return (
-      <ComponentWrapper>
-        <ReactPlaceholder
-          ready={
-            this.props.author.discussionsDoneFetching && !this.props.fetching
-          }
-          showLoadingAnimation
-          customPlaceholder={<PaperPlaceholder color="#efefef" />}
-        >
-          {discussions.length > 0 ? (
-            <React.Fragment>
-              <div className={css(styles.container)}>{discussions}</div>
-              {this.renderLoadMoreButton()}
-            </React.Fragment>
-          ) : (
-            <div className={css(styles.box)}>
-              <div className={css(styles.icon)}>
-                <i className="fad fa-comments" />
-              </div>
-              <h2 className={css(styles.noContent)}>
-                User has not created any discussions
-              </h2>
+      <ReactPlaceholder
+        ready={
+          this.props.author.discussionsDoneFetching && !this.props.fetching
+        }
+        showLoadingAnimation
+        customPlaceholder={<PaperPlaceholder color="#efefef" />}
+      >
+        {discussions.length > 0 ? (
+          <React.Fragment>
+            <div className={css(styles.container)}>{discussions}</div>
+            {this.renderLoadMoreButton()}
+          </React.Fragment>
+        ) : (
+          <div className={css(styles.box)}>
+            <div className={css(styles.icon)}>
+              <i className="fad fa-comments" />
             </div>
-          )}
-        </ReactPlaceholder>
-      </ComponentWrapper>
+            <h2 className={css(styles.noContent)}>
+              User has not created any discussions
+            </h2>
+          </div>
+        )}
+      </ReactPlaceholder>
     );
   }
 }
@@ -137,6 +140,7 @@ var styles = StyleSheet.create({
   },
   discussionContainer: {
     width: "100%",
+    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
   },
   box: {
     display: "flex",
@@ -171,6 +175,9 @@ var styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 15,
     },
+  },
+  noBorder: {
+    border: "none",
   },
   loadMoreButton: {
     fontSize: 14,
