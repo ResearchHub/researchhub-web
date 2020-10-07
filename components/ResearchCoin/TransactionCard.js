@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
   transactionCard: {
     width: "100%",
     padding: "27px 20px",
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
