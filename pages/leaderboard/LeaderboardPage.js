@@ -28,6 +28,7 @@ import colors from "../../config/themes/colors";
 import LeaderboardUser from "../../components/Leaderboard/LeaderboardUser";
 import Loader from "~/components/Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
+import Head from "~/components/Head";
 
 const filterOptions = [
   {
@@ -685,16 +686,22 @@ class Index extends React.Component {
   render() {
     let mainFeed = this.renderMainFeed();
     return (
-      <ContentPage
-        mainFeed={mainFeed}
-        sidebar={
-          <SidebarList
-            sidebarItems={this.items}
-            renderSidebarEntry={this.renderSidebarEntry}
-            sidebarName={"Leaderboard"}
-          />
-        }
-      />
+      <Fragment>
+        <Head
+          title={"Leaderboard on Researchhub"}
+          description={"View the top categories on Researchhub"}
+        />
+        <ContentPage
+          mainFeed={mainFeed}
+          sidebar={
+            <SidebarList
+              sidebarItems={this.items}
+              renderSidebarEntry={this.renderSidebarEntry}
+              sidebarName={"Leaderboard"}
+            />
+          }
+        />
+      </Fragment>
     );
   }
 }
