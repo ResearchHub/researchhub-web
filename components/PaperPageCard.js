@@ -303,7 +303,7 @@ class PaperPageCard extends React.Component {
       width = 101;
     }
     if (!fetching && !loading) {
-      width !== this.state.width && this.setState({ width });
+      // width !== this.state.width && this.setState({ width });
     }
 
     if (fetching) {
@@ -863,7 +863,11 @@ class PaperPageCard extends React.Component {
             </div>
             <PermissionNotificationWrapper
               modalMessage="promote paper"
-              onClick={() => this.props.openPaperTransactionModal(true)}
+              onClick={() =>
+                this.props.openAuthorSupportModal(true, {
+                  paper: this.props.paper,
+                })
+              }
               loginRequired={true}
               hideRipples={false}
             >
@@ -882,17 +886,17 @@ class PaperPageCard extends React.Component {
                     opacity={1}
                   />
                 </span>
-                Support
+                Support Project
               </div>
             </PermissionNotificationWrapper>
-            <Button
+            {/* <Button
               label="Support Author"
               onClick={() =>
                 this.props.openAuthorSupportModal(true, {
                   paper: this.props.paper,
                 })
               }
-            />
+            /> */}
           </div>
           <div className={css(styles.bottomRow, styles.hubsRow)}>
             {this.renderHubs()}

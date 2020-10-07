@@ -25,7 +25,7 @@ import { Helpers } from "@quantfive/js-web-config";
 const AuthorSupportModal = (props) => {
   const alert = useAlert();
 
-  const [page, setPage] = useState(1); // 1
+  const [page, setPage] = useState(2); // 1
   const [activePayment, setActivePayment] = useState();
   const [paymentOptions, setPaymentOptions] = useState(formatOptions() || []);
   const [amount, setAmount] = useState(0);
@@ -89,7 +89,7 @@ const AuthorSupportModal = (props) => {
   function closeModal() {
     document.body.style.overflow = "scroll";
     props.openAuthorSupportModal(false);
-    setPage(1); //1
+    setPage(2); //1
     setActivePayment(null);
     setAmount(0);
   }
@@ -122,13 +122,22 @@ const AuthorSupportModal = (props) => {
     });
   }
 
+  function getAuthorId() {
+    const { paper } = props.modals.openAuthorSupportModal.props;
+
+    if (paper && paper.uploaded_by.author_profile) {
+      let author = paper.uploaded_by.author_profile;
+      return author.id;
+    }
+  }
+
   function sendTransaction() {
     const { paper } = props.modals.openAuthorSupportModal.props;
     props.showMessage({ load: true, show: true });
 
     let payload = {
       user_id: props.user.id,
-      recipient_id: props.author.id,
+      recipient_id: getAuthorId(),
       content_type: "paper", // 'paper', 'author'
       object_id: paper.id, // id of paper or author
       amount,
@@ -175,8 +184,10 @@ const AuthorSupportModal = (props) => {
 
   function formatAuthorName() {
     const { paper } = props.modals.openAuthorSupportModal.props;
-    const { first_name, last_name } = paper.uploaded_by.author_profile;
-    return `${first_name} ${last_name}`;
+    if (paper) {
+      const { first_name, last_name } = paper.uploaded_by.author_profile;
+      return `${first_name} ${last_name}`;
+    }
   }
 
   function formatTitle() {
@@ -279,12 +290,22 @@ const AuthorSupportModal = (props) => {
 
               <div className={css(styles.sectionRow)}>
                 <div className={css(styles.label)}>Support Amount:</div>
-                {amount} RSC
+                <div className={css(styles.amountRow)}>
+                  {amount}
+                  <img
+                    className={css(styles.amountRSC)}
+                    src={"/static/icons/coin-filled.png"}
+                  />
+                </div>
               </div>
-              <div className={css(styles.sectionRow)}>
-                <span className={css(styles.label)}>Project Title:</span>
-                {paper && paper.title}
-              </div>
+              {paper && (
+                <PaperEntryCard
+                  promotionSummary={true}
+                  paper={paper && paper}
+                  mobileView={true}
+                  style={styles.paper}
+                />
+              )}
             </div>
             {/* <Link
                 href={"/user/[authorId]/[tabName]"}
@@ -357,6 +378,7 @@ const styles = StyleSheet.create({
   },
 
   titleStyle: {
+    fontSize: 24,
     marginTop: 20,
     paddingBottom: 40,
     "@media only screen and (max-width: 767px)": {
@@ -419,20 +441,33 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+    minWidth: 400,
+    "@media only screen and (max-width: 415px)": {
+      padding: "0 20px",
+      minWidth: "unset",
+    },
   },
   sectionRow: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    fontSize: 18,
+    fontSize: 16,
     color: colors.BLACK(0.6),
     marginBottom: 10,
   },
   label: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 500,
     color: colors.BLACK(),
+  },
+  amountRow: {
+    display: "flex",
+    alignItems: "center",
+  },
+  amountRSC: {
+    height: 20,
+    marginLeft: 5,
   },
   redirect: {
     margin: "10px 0",
@@ -563,6 +598,12 @@ const styles = StyleSheet.create({
   marginLeft: {
     marginLeft: 5,
     textDecoration: "unset",
+  },
+  paper: {
+    // border: "none",
+    // padding: 0,
+    margin: 0,
+    width: "100%",
   },
 });
 

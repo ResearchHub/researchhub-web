@@ -905,20 +905,20 @@ const AuthorPage = (props) => {
           </div>
         </div>
       </ComponentWrapper>
-      <ComponentWrapper>
+      {/* <ComponentWrapper>
         <div className={css(styles.row)}>
           <div className={css(styles.supportButton)}>
             <Button
               label="Support Author"
               onClick={() =>
                 props.openAuthorSupportModal(true, {
-                  paper: { id: 411 },
+                  paper: ,
                 })
               }
             />
           </div>
         </div>
-      </ComponentWrapper>
+      </ComponentWrapper> */}
       <TabBar
         tabs={tabs}
         selectedTab={router.query.tabName}
