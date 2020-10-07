@@ -864,9 +864,11 @@ class PaperPageCard extends React.Component {
             <PermissionNotificationWrapper
               modalMessage="promote paper"
               onClick={() =>
-                this.props.openAuthorSupportModal(true, {
-                  paper: this.props.paper,
-                })
+                this.props.paper.paper_type === "PRE_REGISTRATION"
+                  ? this.props.openAuthorSupportModal(true, {
+                      paper: this.props.paper,
+                    })
+                  : this.props.openPaperTransactionModal(true)
               }
               loginRequired={true}
               hideRipples={false}
@@ -886,7 +888,10 @@ class PaperPageCard extends React.Component {
                     opacity={1}
                   />
                 </span>
-                Support Project
+                {this.props.paper &&
+                this.props.paper.paper_type === "PRE_REGISTRATION"
+                  ? "Support Project"
+                  : "Support"}
               </div>
             </PermissionNotificationWrapper>
             {/* <Button
