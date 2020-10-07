@@ -98,7 +98,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 25,
     marginBottom: 30,
-    maxWidth: 500,
+    width: "100%",
+    // maxWidth: 500,
     display: "flex",
     alignItems: "flex-start",
     "@media only screen and (max-width: 767px)": {
@@ -184,6 +185,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     pointerEvents: "none",
+    width: "100%",
   },
   promotionButton: {
     padding: "6px 20px",

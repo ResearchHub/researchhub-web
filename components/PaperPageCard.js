@@ -23,6 +23,7 @@ import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import { BoltSvg } from "~/config/themes/icons";
+import Button from "~/components/Form/Button";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -302,7 +303,7 @@ class PaperPageCard extends React.Component {
       width = 101;
     }
     if (!fetching && !loading) {
-      width !== this.state.width && this.setState({ width });
+      // width !== this.state.width && this.setState({ width });
     }
 
     if (fetching) {
@@ -862,7 +863,13 @@ class PaperPageCard extends React.Component {
             </div>
             <PermissionNotificationWrapper
               modalMessage="promote paper"
-              onClick={() => this.props.openPaperTransactionModal(true)}
+              onClick={() =>
+                this.props.paper.paper_type === "PRE_REGISTRATION"
+                  ? this.props.openAuthorSupportModal(true, {
+                      paper: this.props.paper,
+                    })
+                  : this.props.openPaperTransactionModal(true)
+              }
               loginRequired={true}
               hideRipples={false}
             >
@@ -881,9 +888,20 @@ class PaperPageCard extends React.Component {
                     opacity={1}
                   />
                 </span>
-                Support
+                {this.props.paper &&
+                this.props.paper.paper_type === "PRE_REGISTRATION"
+                  ? "Support Project"
+                  : "Support"}
               </div>
             </PermissionNotificationWrapper>
+            {/* <Button
+              label="Support Author"
+              onClick={() =>
+                this.props.openAuthorSupportModal(true, {
+                  paper: this.props.paper,
+                })
+              }
+            /> */}
           </div>
           <div className={css(styles.bottomRow, styles.hubsRow)}>
             {this.renderHubs()}
@@ -1467,6 +1485,7 @@ const carousel = StyleSheet.create({
 
 const mapDispatchToProps = {
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
+  openAuthorSupportModal: ModalActions.openAuthorSupportModal,
 };
 
 export default connect(
