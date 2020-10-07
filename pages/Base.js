@@ -27,6 +27,7 @@ class Base extends React.Component {
     const {
       fetchPermissions,
       fetchPermissionsPending,
+      getCategories,
       getHubs,
       getUser,
       getUniversities,
@@ -39,7 +40,6 @@ class Base extends React.Component {
     } = this.props;
 
     await getUser();
-    getHubs();
     getTopHubs(auth);
     getUniversities();
     if (auth.isLoggedIn) {
@@ -150,6 +150,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
+  getCategories: HubActions.getCategories,
   getHubs: HubActions.getHubs,
   getTopHubs: HubActions.getTopHubs,
   getUniversities: UniversityActions.getUniversities,

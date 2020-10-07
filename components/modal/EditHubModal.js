@@ -18,36 +18,63 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
 
-class AddHubModal extends React.Component {
+class EditHubModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
       hubDescription: "",
       hubName: "",
+      error: false,
       categories:
         this.props.categories && this.props.categories.results
           ? this.props.categories.results
           : [],
-      error: {
-        upload: false,
-        category: true,
-        changed: false,
-      },
     };
     this.state = {
       ...this.initialState,
     };
-    // rough estimates
     this.descriptionLimit = 150;
     this.nameLimit = 50;
   }
 
+  componentDidUpdate = (prevProps, prevState) => {
+    let prevHub = prevProps.modals.editHubModal.hub;
+    let currHub = this.props.modals.editHubModal.hub;
+    if (prevHub !== currHub) {
+      let hub = this.props.modals.editHubModal.hub;
+      this.setState({
+        originalHubName: hub ? this.toTitleCase(hub.name) : "",
+        hubName: hub ? this.toTitleCase(hub.name) : "",
+        hubDescription: hub ? hub.description : "",
+        hubImage: undefined,
+        hubCategory: undefined,
+      });
+    }
+  };
+
   hubNameFits = (text) => {
+    if (text.length < this.props.modals.editHubModal.hub.name.length) {
+      return true;
+    }
     return text.length <= this.nameLimit;
   };
 
   hubDescriptionFits = (text) => {
+    if (text.length < this.props.modals.editHubModal.hub.description.length) {
+      return true;
+    }
     return text.length <= this.descriptionLimit;
+  };
+
+  getMatchingCategory = (id) => {
+    const categories = this.props.categories.map((elem) => {
+      return { value: elem.id, label: elem.category_name };
+    });
+    for (const category of categories) {
+      if (category.value === id) {
+        return category.label;
+      }
+    }
   };
 
   handleInputChange = (id, value) => {
@@ -57,55 +84,45 @@ class AddHubModal extends React.Component {
     ) {
       return;
     }
-    this.setState({ [id]: value });
+    this.setState({ [id]: id === "hubName" ? this.toTitleCase(value) : value });
   };
 
-  handleCategoryChange = (id, value) => {
-    const error = { ...this.state.error };
-    if (value) {
-      error.category = false;
-    }
-    this.setState({ [id]: value });
-    this.setState({ error: error });
-  };
-
-  createHub = async () => {
-    if (this.state.error.category) {
-      this.props.setMessage("Required fields must be filled.");
-      this.props.showMessage({
-        load: false,
-        show: true,
-        error: true,
-      });
-      const error = { ...this.state.error };
-      error.category = true;
-      error.changed = true;
-      this.setState({ error: error });
-
-      return;
-    }
-
+  UpdateHub = async (hub) => {
     this.props.showMessage({ show: true, load: true });
     const { hubName, hubDescription, hubImage, hubCategory } = this.state;
-    const isUnique = await this.isHubNameUnique(hubName);
-    if (isUnique) {
+    let isUniqueOrCurrent = true;
+    if (hubName) {
+      isUniqueOrCurrent =
+        hubName == this.state.originalHubName ||
+        (await this.isHubNameUnique(hubName));
+    }
+    if (isUniqueOrCurrent) {
       const data = new FormData();
-      data.append("name", hubName.toLowerCase());
-      data.append("description", hubDescription);
+      data.append("id", hub.id);
+      data.append("name", hubName ? hubName.toLowerCase() : hub.name);
+      if (hubDescription) {
+        data.append("description", hubDescription);
+      }
       if (hubImage) {
         data.append("hub_image", hubImage);
       }
-      data.append("category", hubCategory.value);
-      return fetch(API.HUB({}), API.POST_FILE_CONFIG(data))
+      if (hubCategory) {
+        data.append("category", hubCategory.value);
+      }
+      return fetch(API.HUB({ hubId: hub.id }), API.PUT_FILE_CONFIG(data))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let newHub = res;
-          this.props.addHub && this.props.addHub(newHub);
-          this.props.showMessage({ show: false });
-          this.props.setMessage("Hub successfully added!");
-          this.props.showMessage({ show: true });
-          this.closeModal();
+          setTimeout(() => {
+            this.props.editHub && this.props.editHub(res, hub.category);
+            this.props.showMessage({ show: false });
+            this.props.setMessage("Hub successfully updated!");
+            this.props.showMessage({ show: true });
+            this.closeModal();
+            setTimeout(() => {
+              this.props.showMessage({ show: false });
+            }, 1200);
+          }, 400);
         })
         .catch((err) => {
           if (err.response.status === 429) {
@@ -113,17 +130,25 @@ class AddHubModal extends React.Component {
             this.closeModal();
             return this.props.openRecaptchaPrompt(true);
           }
-          this.props.showMessage({ show: false });
-          this.props.setMessage("Hmm something went wrong.");
-          this.props.showMessage({ show: true, error: true });
+          setTimeout(() => {
+            this.props.showMessage({ show: false });
+            this.props.setMessage("Hmm something went wrong.");
+            this.props.showMessage({ show: true, error: true });
+            setTimeout(() => {
+              this.props.showMessage({ show: false });
+            }, 1200);
+          }, 400);
         });
     } else {
-      this.props.showMessage({ show: false });
-      this.props.setMessage("This hub name is already taken.");
-      this.props.showMessage({ show: true, error: true });
-      const error = { ...this.state.error };
-      error.upload = true;
-      this.setState({ error: error });
+      setTimeout(() => {
+        this.props.showMessage({ show: false });
+        this.props.setMessage("This hub name is already taken.");
+        this.props.showMessage({ show: true, error: true });
+        this.setState({ error: true });
+        setTimeout(() => {
+          this.props.showMessage({ show: false });
+        }, 1200);
+      }, 400);
     }
   };
 
@@ -137,80 +162,106 @@ class AddHubModal extends React.Component {
   };
 
   closeModal = () => {
-    this.props.openAddHubModal(false);
-    document.body.style.overflow = "scroll";
+    this.props.openEditHubModal(false);
+    this.setState({
+      ...this.initialState,
+    });
+    document.body.style.overflow = "auto";
+  };
+
+  // Thank you stackoverflow :)
+  toTitleCase = (str) => {
+    return str.replace(/\w\S*/g, function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
   };
 
   render() {
-    const { modals, openAddHubModal } = this.props;
+    const { modals } = this.props;
     const categories = this.props.categories.map((elem) => {
       return { value: elem.id, label: elem.category_name };
     });
+    const hub = modals.editHubModal.hub;
+    let image;
+    let name;
+    let description;
+    if (hub) {
+      image = hub.hub_image
+        ? hub.hub_image
+        : "/static/background/twitter-banner.jpg";
+    } else {
+      image = null;
+    }
+
     return (
       <BaseModal
-        isOpen={modals.openAddHubModal}
+        isOpen={modals.openEditHubModal}
         closeModal={this.closeModal}
-        title={"Create a New Hub"}
-        subtitle={"All newly created hubs will be locked."}
+        title={"Editing Hub"}
       >
         <form
           encType="multipart/form-data"
           className={css(styles.form)}
           onSubmit={(e) => {
             e.preventDefault();
-            this.createHub();
+            this.UpdateHub(hub);
           }}
         >
           <FormInput
             label={"Hub Name"}
-            placeholder={"Enter the name of hub"}
+            value={this.state.hubName}
             id={"hubName"}
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
-            inputStyle={this.state.error.upload && styles.error.upload}
+            inputStyle={this.state.error && styles.error}
             required={true}
-            value={this.state.hubName}
           />
           <FormInput
             label={"Hub Description"}
-            placeholder={"Enter a short description for the hub"}
+            value={this.state.hubDescription}
             id={"hubDescription"}
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
-            inputStyle={this.state.error.upload && styles.error.upload}
+            inputStyle={this.state.error && styles.error}
             required={true}
-            value={this.state.hubDescription}
           />
           <FormSelect
             label={"Category"}
-            maxMenuHeight={200}
-            placeholder="Search Hub Categories"
+            placeholder={hub ? this.getMatchingCategory(hub.category) : null}
             required={true}
-            containerStyle={styles.container}
+            containerStyle={styles.containerStyle}
             inputStyle={styles.input}
             labelStyle={styles.labelStyle}
             isMulti={false}
             id={"hubCategory"}
             options={categories}
-            onChange={this.handleCategoryChange}
-            error={this.state.error.category && this.state.error.changed}
+            onChange={this.handleInputChange}
+            error={this.state.error && this.state.error}
           />
+          <div className={css(styles.imageContainer)}>
+            <p>Existing Image:</p>
+          </div>
+          <img
+            className={css(styles.image)}
+            src={image}
+            alt={"Existing Hub Image"}
+          ></img>
           <FormInput
-            label={"Hub Image (Optional)"}
+            label={"Upload New Hub Image"}
             type="file"
             accept="image/*"
             id={"hubImage"}
             onChange={this.handleInputChange}
             containerStyle={styles.containerStyle}
             labelStyle={styles.labelStyle}
-            inputStyle={this.state.error.upload && styles.error}
+            inputStyle={this.state.error && styles.error}
             required={false}
           />
           <div className={css(styles.button)}>
             <Button
-              label={"Create New Hub"}
+              label={"Update Hub"}
               type={"submit"}
               customButtonStyle={styles.buttonStyle}
             />
@@ -228,11 +279,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     maxHeight: "70vh",
-    overflowY: "auto",
-    paddingRight: 15,
   },
   button: {
-    marginTop: 20,
+    marginTop: 16,
+    marginBottom: 16,
   },
   buttonStyle: {
     height: 45,
@@ -258,9 +308,19 @@ const styles = StyleSheet.create({
   error: {
     border: `1px solid ${colors.RED(1)}`,
   },
-  dndContainer: {
-    marginTop: 20,
-    marginBottom: 20,
+  imageContainer: {
+    textAlign: "left",
+    width: "100%",
+    fontWeight: "500",
+    marginBottom: 10,
+    color: "#232038",
+  },
+  image: {
+    borderRadius: "8px",
+    width: "364px",
+    height: "200px",
+    objectFit: "cover",
+    pointerEvents: "none",
   },
 });
 
@@ -270,7 +330,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openAddHubModal: ModalActions.openAddHubModal,
+  openEditHubModal: ModalActions.openEditHubModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
@@ -279,4 +339,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddHubModal);
+)(EditHubModal);

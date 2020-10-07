@@ -7,6 +7,8 @@ import { Helpers } from "@quantfive/js-web-config";
 
 export const HubConstants = {
   UPDATE_CURRENT_HUB_PAGE: "@@hub/UPDATE_CURRENT_HUB_PAGE",
+  GET_HUB_CATEGORIES_SUCCESS: "@@hub/GET_HUB_CATEGORIES_SUCCESS",
+  GET_HUB_CATEGORIES_FAILURE: "@@hub/GET_HUB_CATEGORIES_FAILURE",
   GET_HUBS_SUCCESS: "@@hub/GET_HUBS_SUCCESS",
   GET_HUBS_FAILURE: "@@hub/GET_HUBS_FAILURE",
   UPDATE_HUB: "@@hub/UPDATE_HUB",
@@ -30,6 +32,33 @@ export const HubActions = {
       });
     };
   },
+  getCategories: () => {
+    return (dispatch) => {
+      return fetch(API.GET_HUB_CATEGORIES(), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          let categories = [...resp.results];
+          categories.sort(function(a, b) {
+            return a.category_name.localeCompare(b.category_name);
+          });
+          return dispatch({
+            type: HubConstants.GET_HUB_CATEGORIES_SUCCESS,
+            payload: {
+              categories,
+            },
+          });
+        })
+        .catch((err) => {
+          return dispatch({
+            type: HubConstants.GET_HUB_CATEGORIES_FAILURE,
+            payload: {
+              categories: [],
+            },
+          });
+        });
+    };
+  },
   getHubs: () => {
     // Passing large page limit to return all hubs for hubs page
     return (dispatch) => {
@@ -38,11 +67,13 @@ export const HubActions = {
         .then(Helpers.parseJSON)
         .then((resp) => {
           let hubs = [...resp.results];
+          let hubsByCategory = shims.categorizeHubs([...hubs]);
           let hubsByAlpha = shims.sortHubs([...hubs]);
           return dispatch({
             type: HubConstants.GET_HUBS_SUCCESS,
             payload: {
               hubs,
+              hubsByCategory,
               hubsByAlpha,
               fetchedHubs: true,
             },
@@ -149,8 +180,10 @@ export const HubActions = {
 
 const defaultHubState = {
   currentHub: {},
+  categories: [],
   hubs: [],
   topHubs: [],
+  hubsByCategory: {},
   hubsByAlpha: {},
   fetchedHubs: false,
   subscribedHubs: [],
@@ -159,6 +192,7 @@ const defaultHubState = {
 const HubReducer = (state = defaultHubState, action) => {
   switch (action.type) {
     case HubConstants.UPDATE_CURRENT_HUB_PAGE:
+    case HubConstants.GET_HUB_CATEGORIES_SUCCESS:
     case HubConstants.GET_HUBS_SUCCESS:
     case HubConstants.GET_HUBS_FAILURE:
     case HubConstants.UPDATE_HUB:
@@ -179,6 +213,18 @@ const shims = {
     return hubs.filter((hub) => {
       return hub.user_is_subscribed;
     });
+  },
+  categorizeHubs: (allHubs) => {
+    let categorizedHubs = {};
+    allHubs.forEach((hub) => {
+      const category_id = hub.category;
+      if (categorizedHubs[category_id]) {
+        categorizedHubs[category_id].push(hub);
+      } else {
+        categorizedHubs[category_id] = [hub];
+      }
+    });
+    return categorizedHubs;
   },
   sortHubs: (allHubs) => {
     let sortedHubs = {};
