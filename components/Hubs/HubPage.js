@@ -119,15 +119,25 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    let { isLoggedIn, initialFeed } = this.props;
+    let { isLoggedIn, initialFeed, hubState } = this.props;
     if (initialFeed) {
       this.detectPromoted(this.state.papers);
     } else {
       this.fetchPapers({ hub: this.props.hub });
     }
 
+    if (isLoggedIn) {
+      this.checkUserVotes(this.state.papers);
+    }
+
+    let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
+    let subscribedHubs = {};
+    subscribed.forEach((hub) => {
+      subscribedHubs[hub.id] = true;
+    });
+
     this.setState({
-      subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+      subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
@@ -135,6 +145,13 @@ class HubPage extends React.Component {
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
+    const { auth, user, hubState } = this.props;
+    let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
+    let subscribedHubs = {};
+    subscribed.forEach((hub) => {
+      subscribedHubs[hub.id] = true;
+    });
+
     if (
       prevProps.hub &&
       this.props.hub &&
@@ -144,7 +161,7 @@ class HubPage extends React.Component {
       if (this.props.hub.id) {
         this.fetchPapers({ hub: this.props.hub });
         this.setState({
-          subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+          subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
         });
       }
     }
@@ -157,12 +174,12 @@ class HubPage extends React.Component {
           .then(Helpers.parseJSON)
           .then((res) => {
             this.setState({
-              subscribe: res.results[0].user_is_subscribed,
+              subscribe: subscribedHubs[this.props.hub.id],
             });
           });
 
         this.setState({
-          subscribe: this.props.hub ? this.props.hub.user_is_subscribed : null,
+          subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
         });
       }
     }
@@ -482,6 +499,20 @@ class HubPage extends React.Component {
     });
   };
 
+  updateSubscription = (subscribing) => {
+    const { hub, hubState, updateSubscribedHubs } = this.props;
+    let subscribedHubs = [];
+    if (subscribing) {
+      subscribedHubs = JSON.parse(JSON.stringify(hubState.subscribedHubs));
+      subscribedHubs.push(hub);
+    } else {
+      subscribedHubs = hubState.subscribedHubs.filter(
+        (item) => item.id !== hub.id
+      );
+    }
+    updateSubscribedHubs(subscribedHubs);
+  };
+
   onMouseEnterSubscribe = () => {
     this.setState({
       unsubscribeHover: true,
@@ -564,7 +595,7 @@ class HubPage extends React.Component {
   };
 
   subscribeToHub = () => {
-    let { hub, showMessage, setMessage, updateHub, hubState } = this.props;
+    let { hub, showMessage, setMessage, hubState } = this.props;
     showMessage({ show: false });
     this.setState({ transition: true }, () => {
       let config = API.POST_CONFIG();
@@ -573,7 +604,7 @@ class HubPage extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            updateHub(hubState, { ...res });
+            this.updateSubscription(false);
             setMessage("Unsubscribed!");
             showMessage({ show: true });
             this.setState({
@@ -592,7 +623,7 @@ class HubPage extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            updateHub(hubState, { ...res });
+            this.updateSubscription(true);
             setMessage("Subscribed!");
             showMessage({ show: true });
             this.setState({
@@ -1373,6 +1404,7 @@ var styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   modals: state.modals,
   auth: state.auth,
+  user: state.auth.user,
   isLoggedIn: state.auth.isLoggedIn,
   hubState: state.hubs,
   allHubs: state.hubs.hubs,
@@ -1385,7 +1417,7 @@ const mapDispatchToProps = {
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
-  updateHub: HubActions.updateHub,
+  updateSubscribedHubs: HubActions.updateSubscribedHubs,
   getTopHubs: HubActions.getTopHubs,
 };
 
