@@ -687,6 +687,10 @@ class HubPage extends React.Component {
               current={this.props.home ? null : this.props.hub}
               initialHubList={this.props.initialHubList}
             />
+            <LeaderboardContainer
+              hub={this.props.hub && this.props.hub.id}
+              initialUsers={this.props.leaderboardFeed}
+            />
           </div>
           <div className={css(styles.mainFeed, styles.column)}>
             <div
@@ -843,15 +847,6 @@ class HubPage extends React.Component {
               />
             </div>
           </div>
-          <div
-            className={css(styles.leaderboard)}
-            style={{ marginTop: this.state.leaderboardTop }}
-          >
-            <LeaderboardContainer
-              hub={this.props.hub && this.props.hub.id}
-              initialUsers={this.props.leaderboardFeed}
-            />
-          </div>
         </div>
       </div>
     );
@@ -939,7 +934,7 @@ var styles = StyleSheet.create({
     width: "18%",
     minHeight: "100vh",
     minWidth: 220,
-    position: "relative",
+    // position: "relative",
     position: "sticky",
     top: 80,
     backgroundColor: "#FFF",
@@ -1005,7 +1000,7 @@ var styles = StyleSheet.create({
     borderLeft: "1px solid #ededed",
     backgroundColor: "#FFF",
     "@media only screen and (min-width: 900px)": {
-      width: "67%",
+      width: "82%",
     },
     "@media only screen and (max-width: 768px)": {
       width: "100%",

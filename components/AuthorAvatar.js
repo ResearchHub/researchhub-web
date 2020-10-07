@@ -39,6 +39,7 @@ const AuthorAvatar = (props) => {
                 height: finalSize,
                 objectFit: "cover",
                 borderRadius: "50%",
+                border: "3px solid #F1F1F1",
               }}
               onError={(e) => {
                 setError(true);

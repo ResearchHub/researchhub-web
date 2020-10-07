@@ -70,11 +70,13 @@ const LeaderboardContainer = (props) => {
         ready={!fetchingUsers}
         customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
       >
-        {renderLeaderboardUsers(users)}
-        <div className={css(styles.linkContainer)}>
-          <Link href={"/leaderboard/[type]"} as={"/leaderboard/users"}>
-            <a className={css(styles.link)}>View Leaderboard</a>
-          </Link>
+        <div className={css(styles.leaderboardUsers)}>
+          {renderLeaderboardUsers(users)}
+          <div className={css(styles.linkContainer)}>
+            <Link href={"/leaderboard/[type]"} as={"/leaderboard/users"}>
+              <a className={css(styles.link)}>View Leaderboard</a>
+            </Link>
+          </div>
         </div>
       </ReactPlaceholder>
     </div>
@@ -87,20 +89,44 @@ LeaderboardContainer.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    border: "1px solid #eee",
+    // border: "1px solid #eee",
     background: "#fff",
-    padding: 16,
+    // padding: 16,
     borderRadius: 4,
+    width: "100%",
   },
   reputable: {
-    borderBottom: "1px solid #eee",
-    marginTop: 0,
-    fontWeight: 400,
-    paddingBottom: 8,
-    textAlign: "center",
+    textTransform: "uppercase",
+    fontWeight: 500,
+    fontSize: 13,
+    letterSpacing: 1.2,
+    marginBottom: 15,
+    textAlign: "left",
+    color: "#a7a6b0",
+    transition: "all ease-out 0.1s",
+    width: "90%",
+    paddingLeft: 35,
+    boxSizing: "border-box",
+    "@media only screen and (max-width: 1303px)": {
+      paddingLeft: 25,
+    },
+  },
+  leaderboardUsers: {
+    // opacity: 0,
+    boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    padding: "0px 30px",
+    paddingLeft: 35,
+    "@media only screen and (max-width: 1303px)": {
+      padding: "0px 20px",
+    },
   },
   user: {
     marginBottom: 16,
+    width: "100%",
   },
   link: {
     textDecoration: "none",
@@ -117,6 +143,7 @@ const styles = StyleSheet.create({
   linkContainer: {
     marginTop: 16,
     textAlign: "center",
+    paddingBottom: 30,
   },
 });
 
