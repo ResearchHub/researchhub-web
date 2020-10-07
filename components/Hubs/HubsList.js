@@ -78,12 +78,10 @@ class HubsList extends React.Component {
   }
 
   updateTopHubs = (state) => {
+    let hubState = this.props.hubState;
     if (this.props.auth.isLoggedIn) {
+      let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
       let subscribedHubs = {};
-
-      let subscribed = this.props.auth.user.subscribed
-        ? this.props.auth.user.subscribed
-        : [];
       subscribed.forEach((hub) => {
         subscribedHubs[hub.id] = true;
       });
@@ -112,6 +110,13 @@ class HubsList extends React.Component {
 
   renderHubEntry = () => {
     let selectedHubs = this.state.hubs;
+    let subscribed = this.props.hubState.subscribedHubs
+      ? this.props.hubState.subscribedHubs
+      : [];
+    let subscribedHubs = {};
+    subscribed.forEach((hub) => {
+      subscribedHubs[hub.id] = true;
+    });
     return selectedHubs.map((hub, i) => {
       let { name, id, user_is_subscribed } = hub;
       return (
@@ -135,7 +140,7 @@ class HubsList extends React.Component {
           >
             <a className={css(styles.hubLink)}>
               {name}
-              {user_is_subscribed && (
+              {subscribedHubs[hub.id] && (
                 <span className={css(styles.subscribedIcon)}>
                   <i className="fas fa-star" />
                 </span>
@@ -301,6 +306,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  hubState: state.hubs,
   hubs: state.hubs.topHubs,
   auth: state.auth,
 });

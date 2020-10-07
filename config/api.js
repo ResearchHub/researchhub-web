@@ -351,6 +351,9 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    GET_HUB_CATEGORIES: () => {
+      return BASE_URL + `hub_category/`;
+    },
     GET_HUB_PAPERS: ({ hubId, timePeriod, ordering, page = 1 }) => {
       let url = BASE_URL + `paper/get_hub_papers/`;
       let params = {

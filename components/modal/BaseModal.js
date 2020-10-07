@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     padding: 50,
-    overflow: "scroll",
+    overflow: "auto",
     opacity: 0,
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",

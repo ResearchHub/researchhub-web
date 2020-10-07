@@ -37,6 +37,9 @@ const icons = {
   trophy: <i className={"fad fa-trophy"} />,
   checkCircle: <i className="fal fa-check-circle" />,
   bolt: <i className="fas fa-bolt" />,
+  subscribers: <i className="fa fa-user" />,
+  paper: <i className="fa fa-file" />,
+  editHub: <i className="fas fa-edit" />,
   trash: <i className="fal fa-trash-alt"></i>,
 };
 
