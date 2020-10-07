@@ -129,7 +129,7 @@ const Thread = (props) => {
             />
           </div>
           <DiscussionPostMetadata
-            authorProfile={createdBy.authorProfile}
+            authorProfile={createdBy.author_profile}
             username={username}
             date={date}
           />
