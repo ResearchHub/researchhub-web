@@ -5,13 +5,11 @@ import { useAlert } from "react-alert";
 import Link from "next/link";
 
 // Component
-import AuthorAvatar from "~/components/AuthorAvatar";
 import BaseModal from "./BaseModal";
-import FormInput from "~/components/Form/FormInput";
-import AvatarUpload from "~/components/AvatarUpload";
-import FormTextArea from "~/components/Form/FormTextArea";
 import Button from "~/components/Form/Button";
 import OptionCard from "~/components/Payment/OptionCard";
+import { ScorePill } from "~/components/VoteWidget";
+import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -27,7 +25,7 @@ import { Helpers } from "@quantfive/js-web-config";
 const AuthorSupportModal = (props) => {
   const alert = useAlert();
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1); // 1
   const [activePayment, setActivePayment] = useState();
   const [paymentOptions, setPaymentOptions] = useState(formatOptions() || []);
   const [amount, setAmount] = useState(0);
@@ -91,7 +89,7 @@ const AuthorSupportModal = (props) => {
   function closeModal() {
     document.body.style.overflow = "scroll";
     props.openAuthorSupportModal(false);
-    setPage(1);
+    setPage(1); //1
     setActivePayment(null);
     setAmount(0);
   }
@@ -175,10 +173,14 @@ const AuthorSupportModal = (props) => {
     return false;
   }
 
-  function formatTitle() {
-    const { first_name, last_name } = props.author;
+  function formatAuthorName() {
+    const { paper } = props.modals.openAuthorSupportModal.props;
+    const { first_name, last_name } = paper.uploaded_by.author_profile;
+    return `${first_name} ${last_name}`;
+  }
 
-    return `Support ${first_name} ${last_name}'s Project`;
+  function formatTitle() {
+    return `Support ${formatAuthorName()}'s Project`;
   }
 
   function renderScreen() {
@@ -264,15 +266,27 @@ const AuthorSupportModal = (props) => {
   }
 
   function renderReceiptScreen() {
+    const { paper } = props.modals.openAuthorSupportModal.props;
     return (
       <Fragment>
         <div className={css(styles.row)}>
           <div className={css(styles.column)}>
-            <div className={css(styles.redirect)} onClick={closeModal}>
-              {/* <div className={css(styles.receiptContainer)}>
+            <div className={css(styles.receiptContainer)}>
+              <div className={css(styles.sectionRow)}>
+                <div className={css(styles.label)}>Recipient:</div>
+                {formatAuthorName()}
+              </div>
 
-              </div> */}
-              <Link
+              <div className={css(styles.sectionRow)}>
+                <div className={css(styles.label)}>Support Amount:</div>
+                {amount} RSC
+              </div>
+              <div className={css(styles.sectionRow)}>
+                <span className={css(styles.label)}>Project Title:</span>
+                {paper && paper.title}
+              </div>
+            </div>
+            {/* <Link
                 href={"/user/[authorId]/[tabName]"}
                 as={`/user/${props.author.id}/contributions`}
               >
@@ -284,9 +298,9 @@ const AuthorSupportModal = (props) => {
                   Click to go back to{" "}
                   {`${props.author.first_name} ${props.author.last_name}'s page`}
                 </a>
-              </Link>
-            </div>
-            {/* {!offChain && (
+              </Link> */}
+          </div>
+          {/* {!offChain && (
               <div className={css(styles.confirmation)}>
                 Click{" "}
                 <span
@@ -302,7 +316,6 @@ const AuthorSupportModal = (props) => {
                 to view the transaction confirmation.
               </div>
             )} */}
-          </div>
         </div>
         <div className={css(styles.buttons, styles.confirmationButtons)}>
           <Button
@@ -342,10 +355,7 @@ const styles = StyleSheet.create({
   root: {
     width: "100%",
   },
-  label: {
-    fontSize: 18,
-    color: colors.BLACK(),
-  },
+
   titleStyle: {
     marginTop: 20,
     paddingBottom: 40,
@@ -403,6 +413,27 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
+  receiptContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+  },
+  sectionRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    fontSize: 18,
+    color: colors.BLACK(0.6),
+    marginBottom: 10,
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: 500,
+    color: colors.BLACK(),
+  },
   redirect: {
     margin: "10px 0",
   },
@@ -419,7 +450,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     boxSizing: "border-box",
+    marginTop: 10,
     padding: "20px 0",
+    width: "100%",
   },
   left: {
     width: "80%",
