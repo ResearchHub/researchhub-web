@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: 60,
+    paddingTop: 30,
     paddingBottom: 30,
   },
   hubsListContainer: {
@@ -257,6 +257,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     padding: "8px",
+    // paddingLeft: 0,
+    // marginLeft: -8
   },
   current: {
     borderColor: "rgb(237, 237, 237)",
@@ -298,6 +300,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontSize: 16,
     padding: "3px 5px",
+    paddingLeft: 0,
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",
