@@ -173,16 +173,18 @@ class PaperPageCard extends React.Component {
     if (uploaded_by) {
       let { author_profile } = uploaded_by;
       return (
-        <div
-          onClick={this.navigateToSubmitter}
-          className={css(styles.labelContainer)}
-        >
+        <div className={css(styles.labelContainer)}>
           <span className={css(styles.label)}>Submitted By:</span>
-          <span className={css(styles.labelText)}>
-            {`${author_profile.first_name} ${author_profile.last_name}`}
-          </span>
-          <div className={css(styles.avatar)}>
-            <AuthorAvatar author={author_profile} size={25} />
+          <div
+            onClick={this.navigateToSubmitter}
+            className={css(styles.authorSection)}
+          >
+            <div className={css(styles.avatar)}>
+              <AuthorAvatar author={author_profile} size={25} />
+            </div>
+            <span className={css(styles.labelText)}>
+              {`${author_profile.first_name} ${author_profile.last_name}`}
+            </span>
           </div>
         </div>
       );
@@ -1310,7 +1312,15 @@ const styles = StyleSheet.create({
     },
   },
   avatar: {
-    marginLeft: 8,
+    marginRight: 4,
+  },
+  authorSection: {
+    display: "flex",
+    cursor: "pointer",
+
+    ":hover": {
+      color: colors.PURPLE(1),
+    },
   },
   capitalize: {
     textTransform: "capitalize",
