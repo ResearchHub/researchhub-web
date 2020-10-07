@@ -23,6 +23,7 @@ import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import { BoltSvg } from "~/config/themes/icons";
+import Button from "~/components/Form/Button";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -884,6 +885,14 @@ class PaperPageCard extends React.Component {
                 Support
               </div>
             </PermissionNotificationWrapper>
+            <Button
+              label="Support Author"
+              onClick={() =>
+                this.props.openAuthorSupportModal(true, {
+                  paper: this.props.paper,
+                })
+              }
+            />
           </div>
           <div className={css(styles.bottomRow, styles.hubsRow)}>
             {this.renderHubs()}
@@ -1467,6 +1476,7 @@ const carousel = StyleSheet.create({
 
 const mapDispatchToProps = {
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
+  openAuthorSupportModal: ModalActions.openAuthorSupportModal,
 };
 
 export default connect(
