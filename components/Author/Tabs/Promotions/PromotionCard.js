@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     cursor: "pointer",
-    border: "1px solid #EDEDED",
+    borderBottom: "1px solid #EDEDED",
     marginBottom: 10,
     borderRadius: 3,
     position: "relative",
