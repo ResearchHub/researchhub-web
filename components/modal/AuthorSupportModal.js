@@ -52,43 +52,41 @@ const AuthorSupportModal = (props) => {
         ),
         id: "RSC_OFF_CHAIN",
       },
-      {
-        label: (
-          <img
-            className={css(iconStyles.apple)}
-            src={"/static/icons/apple-pay.png"}
-          />
-        ),
-      },
-      {
-        label: (
-          <img
-            className={css(iconStyles.mastercard)}
-            src={"/static/icons/mastercard.png"}
-          />
-        ),
-      },
-      {
-        label: (
-          <img
-            className={css(iconStyles.paypal)}
-            src={"/static/icons/paypal.png"}
-          />
-        ),
-        id: "PAYPAL",
-      },
-      {
-        label: (
-          <img
-            className={css(iconStyles.visa)}
-            src={"/static/icons/visa.png"}
-          />
-        ),
-      },
+      // {
+      //   label: (
+      //     <img
+      //       className={css(iconStyles.apple)}
+      //       src={"/static/icons/apple-pay.png"}
+      //     />
+      //   ),
+      // },
+      // {
+      //   label: (
+      //     <img
+      //       className={css(iconStyles.mastercard)}
+      //       src={"/static/icons/mastercard.png"}
+      //     />
+      //   ),
+      // },
+      // {
+      //   label: (
+      //     <img
+      //       className={css(iconStyles.paypal)}
+      //       src={"/static/icons/paypal.png"}
+      //     />
+      //   ),
+      //   id: "PAYPAL",
+      // },
+      // {
+      //   label: (
+      //     <img
+      //       className={css(iconStyles.visa)}
+      //       src={"/static/icons/visa.png"}
+      //     />
+      //   ),
+      // },
     ];
   }
-
-  function formatPaymentType() {}
 
   function closeModal() {
     document.body.style.overflow = "scroll";
@@ -127,9 +125,14 @@ const AuthorSupportModal = (props) => {
   }
 
   function sendTransaction() {
+    const { paper } = props.modals.openAuthorSupportModal.props;
+    props.showMessage({ load: true, show: true });
+
     let payload = {
       user_id: props.user.id,
       recipient_id: props.author.id,
+      content_type: "paper", // 'paper', 'author'
+      object_id: paper.id, // id of paper or author
       amount,
       payment_option: "SINGLE", // {'SINGLE', 'MONTHLY'},
       payment_type: "RSC_OFF_CHAIN", //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
@@ -139,8 +142,17 @@ const AuthorSupportModal = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        props.showMessage({ show: false });
+        props.setMessage("Project supported!");
+        props.showMessage({ show: true });
+
         setPage(3);
-        updateUser({ ...res.user });
+        props.updateUser({ ...res.user });
+      })
+      .catch((err) => {
+        props.showMessage({ show: false });
+        props.setMessage("Something went wrong.");
+        props.showMessage({ show: true, error: true });
       });
   }
 
@@ -166,7 +178,7 @@ const AuthorSupportModal = (props) => {
   function formatTitle() {
     const { first_name, last_name } = props.author;
 
-    return `Complete your support to ${first_name} ${last_name}`;
+    return `Support ${first_name} ${last_name}'s Project`;
   }
 
   function renderScreen() {
@@ -183,7 +195,7 @@ const AuthorSupportModal = (props) => {
   function renderPaymentScreen() {
     return (
       <div className={css(styles.root)}>
-        <h3 className={css(styles.label)}>Payment Details</h3>
+        <h3 className={css(styles.title)}>Payment Details</h3>
         <div className={css(styles.paymentList)}>
           {paymentOptions.map((payment, i) => {
             return (
@@ -257,6 +269,9 @@ const AuthorSupportModal = (props) => {
         <div className={css(styles.row)}>
           <div className={css(styles.column)}>
             <div className={css(styles.redirect)} onClick={closeModal}>
+              {/* <div className={css(styles.receiptContainer)}>
+
+              </div> */}
               <Link
                 href={"/user/[authorId]/[tabName]"}
                 as={`/user/${props.author.id}/contributions`}
@@ -314,7 +329,7 @@ const AuthorSupportModal = (props) => {
           </div>
         )
       }
-      isOpen={props.modals.openAuthorSupportModal}
+      isOpen={props.modals.openAuthorSupportModal.isOpen}
       closeModal={closeModal}
       titleStyle={page !== 3 && styles.titleStyle}
     >
@@ -334,11 +349,19 @@ const styles = StyleSheet.create({
   titleStyle: {
     marginTop: 20,
     paddingBottom: 40,
+    "@media only screen and (max-width: 767px)": {
+      paddingTop: 20,
+    },
+    "@media only screen and (max-width: 415px)": {
+      paddingBottom: 10,
+      paddingTop: 0,
+    },
   },
   paymentList: {
-    width: 800,
+    // width: 800,
     display: "flex",
-    justifyContent: "flex-start",
+    // justifyContent: "flex-start",
+    justifyContent: "center",
     flexWrap: "wrap",
     height: "max-content",
     "@media only screen and (max-width: 767px)": {
@@ -436,6 +459,7 @@ const styles = StyleSheet.create({
     padding: "0 10px",
     boxSizing: "border-box",
     borderRadius: 4,
+    borderColor: colors.BLACK(0.4),
   },
   error: {
     borderColor: "red",
@@ -469,13 +493,21 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: "absolute",
-    top: -118,
-    left: -30,
+    top: -120,
+    left: -20,
     color: colors.BLACK(0.5),
     textDecoration: "none",
     cursor: "pointer",
     ":hover": {
       color: colors.BLACK(1),
+    },
+    "@media only screen and (max-width: 767px)": {
+      top: -118,
+      left: 0,
+    },
+    "@media only screen and (max-width: 415px)": {
+      top: -90,
+      left: 20,
     },
   },
   backButtonLabel: {
