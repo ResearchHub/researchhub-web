@@ -539,7 +539,7 @@ const PaperEntryCard = (props) => {
             </div>
             {renderBullet()}
             {renderUploadedBy()}
-            {mobileView && renderHubTags()}
+            {mobileView && !promotionSummary && renderHubTags()}
           </div>
           {!mobileView && renderPreview()}
         </div>

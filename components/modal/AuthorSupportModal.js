@@ -114,7 +114,7 @@ const AuthorSupportModal = (props) => {
     }
 
     alert.show({
-      text: `Use ${amount} RSC to support this paper?`,
+      text: `Use ${amount} RSC to support this project?`,
       buttonText: "Yes",
       onClick: () => {
         sendTransaction();
@@ -299,12 +299,14 @@ const AuthorSupportModal = (props) => {
                 </div>
               </div>
               {paper && (
-                <PaperEntryCard
-                  promotionSummary={true}
-                  paper={paper && paper}
-                  mobileView={true}
-                  style={styles.paper}
-                />
+                <div className={css(styles.paperContainer)}>
+                  <PaperEntryCard
+                    promotionSummary={true}
+                    paper={paper && paper}
+                    mobileView={true}
+                    style={styles.paper}
+                  />
+                </div>
               )}
             </div>
             {/* <Link
@@ -598,6 +600,10 @@ const styles = StyleSheet.create({
   marginLeft: {
     marginLeft: 5,
     textDecoration: "unset",
+  },
+  paperContainer: {
+    width: "100%",
+    margin: "20px 0",
   },
   paper: {
     // border: "none",
