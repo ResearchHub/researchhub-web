@@ -605,6 +605,7 @@ const routes = (BASE_URL) => {
       }
       return url + query;
     },
+    SUPPORT: BASE_URL + 'support/'
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

@@ -106,11 +106,7 @@ const Count = (props) => {
 
 const UIStyling = (props) => {
   const { isSelected, label } = props;
-  return (
-    <span className={css(styles.ui, isSelected && styles.selectedUi)}>
-      {props.children}
-    </span>
-  );
+  return <span className={css(styles.ui)}>{props.children}</span>;
 };
 
 const styles = StyleSheet.create({
@@ -119,7 +115,8 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     overflow: "auto",
-    background: paperTabColors.BACKGROUND,
+    borderBottom: "1px solid #F0F0F0",
+    // background: paperTabColors.BACKGROUND,
   },
   tabContainer: {
     display: "flex",
@@ -131,8 +128,8 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
   },
   tab: {
-    color: paperTabColors.FONT,
-    fontFamily: paperTabFont,
+    color: "rgba(36, 31, 58, .6)",
+    fontWeight: 500,
     padding: "1rem",
 
     "@media only screen and (min-width: 768px)": {
@@ -149,8 +146,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   ui: {
-    border: "1px solid #AAA7B9",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+    background: "rgba(36, 31, 58, 0.03)",
+    color: "#241F3A",
     borderRadius: 3,
+    marginLeft: 5,
   },
   selectedUi: {
     borderColor: colors.PURPLE(1),

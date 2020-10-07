@@ -98,48 +98,47 @@ class UserContributionsTab extends React.Component {
             key={`userContribution-${contribution.id}-${index}`}
             paper={contribution}
             index={index}
+            style={[
+              styles.paperEntryCard,
+              index === this.state.contributions.length - 1 && styles.noBorder,
+            ]}
             voteCallback={this.voteCallback}
           />
         </div>
       );
     });
     return (
-      <ComponentWrapper>
-        <ReactPlaceholder
-          ready={
-            this.props.author.contributionsDoneFetching && !this.props.fetching
-          }
-          showLoadingAnimation
-          customPlaceholder={<PaperPlaceholder color="#efefef" />}
-        >
-          {contributions.length > 0 ? (
-            <div className={css(styles.container)}>
-              {contributions}
-              {this.renderLoadMoreButton()}
+      <ReactPlaceholder
+        ready={
+          this.props.author.contributionsDoneFetching && !this.props.fetching
+        }
+        showLoadingAnimation
+        customPlaceholder={<PaperPlaceholder color="#efefef" />}
+      >
+        {contributions.length > 0 ? (
+          <div className={css(styles.container)}>
+            {contributions}
+            {this.renderLoadMoreButton()}
+          </div>
+        ) : (
+          <div className={css(styles.box)}>
+            <div className={css(styles.icon)}>
+              <i className="fad fa-comment-alt-edit"></i>
             </div>
-          ) : (
-            <div className={css(styles.box)}>
-              <div className={css(styles.icon)}>
-                <i className="fad fa-comment-alt-edit"></i>
-              </div>
-              <h2 className={css(styles.noContent)}>
-                User has no contributions.
-              </h2>
-            </div>
-          )}
-        </ReactPlaceholder>
-      </ComponentWrapper>
+            <h2 className={css(styles.noContent)}>
+              User has not submitted a paper.
+            </h2>
+          </div>
+        )}
+      </ReactPlaceholder>
     );
   }
 }
 
 var styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-end",
-    boxSizing: "border-box",
+  container: {},
+  title: {
+    fontWeight: 500,
   },
   contributionContainer: {
     width: "100%",
@@ -160,6 +159,14 @@ var styles = StyleSheet.create({
       fontSize: 16,
     },
   },
+  paperEntryCard: {
+    border: 0,
+    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
+    marginBottom: 0,
+    marginTop: 0,
+    paddingTop: 24,
+    paddingBottom: 24,
+  },
   icon: {
     fontSize: 50,
     color: colors.BLUE(1),
@@ -177,6 +184,9 @@ var styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 15,
     },
+  },
+  noBorder: {
+    border: "none",
   },
   loadMoreButton: {
     fontSize: 14,
