@@ -224,7 +224,10 @@ class LiveFeedNotification extends React.Component {
                 {username}
               </a>
             </Link>{" "}
-            uploaded a new paper{" "}
+            uploaded a new{" "}
+            {notification.paper_type === "PRE_REGISTRATION"
+              ? "preregistration"
+              : "paper"}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}`}
