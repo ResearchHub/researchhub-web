@@ -539,7 +539,7 @@ const PaperEntryCard = (props) => {
             </div>
             {renderBullet()}
             {renderUploadedBy()}
-            {mobileView && renderHubTags()}
+            {mobileView && !promotionSummary && renderHubTags()}
           </div>
           {!mobileView && renderPreview()}
         </div>
@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    paddingRight: 15,
+    // paddingRight: 15,
     justifyContent: "space-between",
   },
   metaDataPreview: {},
