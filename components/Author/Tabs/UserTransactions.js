@@ -74,39 +74,40 @@ class UserTransaction extends React.Component {
   render() {
     let { transactions } = this.props;
     return (
-      <ComponentWrapper>
-        <ReactPlaceholder
-          ready={transactions && !this.props.fetching}
-          showLoadingAnimation
-          customPlaceholder={<PaperPlaceholder color="#efefef" />}
-        >
-          {transactions && transactions.withdrawals.length ? (
-            transactions.withdrawals.map((transaction, i) => {
-              return (
-                <TransactionCard
-                  key={`transactionCard-${i}`}
-                  transaction={transaction}
-                />
-              );
-            })
-          ) : (
-            <div className={css(styles.box)}>
-              <div className={css(styles.icon)}>
-                <i className="fad fa-receipt" />
-              </div>
-              <h2 className={css(styles.noContent)}>
-                User has not created any transactions
-              </h2>
+      <ReactPlaceholder
+        ready={transactions && !this.props.fetching}
+        showLoadingAnimation
+        customPlaceholder={<PaperPlaceholder color="#efefef" />}
+      >
+        {transactions && transactions.withdrawals.length ? (
+          transactions.withdrawals.map((transaction, i) => {
+            return (
+              <TransactionCard
+                key={`transactionCard-${i}`}
+                transaction={transaction}
+              />
+            );
+          })
+        ) : (
+          <div className={css(styles.box)}>
+            <div className={css(styles.icon)}>
+              <i className="fad fa-receipt" />
             </div>
-          )}
-          {this.renderLoadMoreButton()}
-        </ReactPlaceholder>
-      </ComponentWrapper>
+            <h2 className={css(styles.noContent)}>
+              User has not created any transactions
+            </h2>
+          </div>
+        )}
+        {this.renderLoadMoreButton()}
+      </ReactPlaceholder>
     );
   }
 }
 
 var styles = StyleSheet.create({
+  root: {
+    paddinRight: 30,
+  },
   container: {
     width: "100%",
     display: "flex",
