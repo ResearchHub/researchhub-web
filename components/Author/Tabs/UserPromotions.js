@@ -102,12 +102,10 @@ const UserPromotions = (props) => {
   };
 
   return (
-    <ComponentWrapper>
-      <div className={css(styles.feed)}>
-        {renderPromotions()}
-        {renderLoadMoreButton()}
-      </div>
-    </ComponentWrapper>
+    <div className={css(styles.feed)}>
+      {renderPromotions()}
+      {renderLoadMoreButton()}
+    </div>
   );
 };
 
