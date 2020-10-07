@@ -51,10 +51,12 @@ const LeaderboardPlaceholder = ({ color }) => (
 const styles = StyleSheet.create({
   placeholderContainer: {
     borderRadius: 3,
-    border: "1px solid rgb(237, 237, 237)",
+    // border: "1px solid rgb(237, 237, 237)",
     padding: 8,
     background: "#fff",
     marginBottom: 16,
+    width: "80%",
+    margin: "0 auto",
   },
   round: {
     height: 30,
