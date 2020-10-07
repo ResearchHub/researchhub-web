@@ -18,6 +18,9 @@ const colors = {
 
 export const formColors = {
   MESSAGE: colors.BLACK(0.65),
+  BACKGROUND: "#F0F0F0",
+  BORDER: "#D7D7E3",
+  SELECT: "#FAFAFA",
 };
 
 export const paperTabColors = {

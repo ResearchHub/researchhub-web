@@ -64,6 +64,7 @@ const PaperEntryCard = (props) => {
     promoted,
     raw_authors,
     slug,
+    paper_type,
   } = paper || null;
   let vote_type = 0;
   let selected = setVoteSelected(paper.user_vote);
@@ -436,6 +437,15 @@ const PaperEntryCard = (props) => {
     }
   };
 
+  const renderPreregistrationTag = () => {
+    return (
+      <div className={css(styles.preRegContainer)}>
+        <img src="/static/icons/wip.png" className={css(styles.wipIcon)} />
+        Preregistration
+      </div>
+    );
+  };
+
   return (
     <Ripples
       className={css(
@@ -536,6 +546,7 @@ const PaperEntryCard = (props) => {
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.row)}>{renderDiscussionCount()}</div>
           {!mobileView && renderHubTags()}
+          {paper_type === "PRE_REGISTRATION" && renderPreregistrationTag()}
         </div>
       </div>
     </Ripples>
@@ -713,6 +724,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     flexWrap: "wrap",
+    marginLeft: "auto",
     "@media only screen and (max-width: 970px)": {
       marginBottom: 15,
       justifyContent: "flex-start",
@@ -804,17 +816,25 @@ const styles = StyleSheet.create({
   promotion: {
     fontSize: 12,
     fontWeight: 400,
-    // textTransform: 'uppercase',
-    // fontWeight: 'bold',
-    // letterSpacing: 1,
     color: "rgb(145, 143, 155)",
     marginLeft: 15,
-    // color: '#FFF',
-    // backgroundColor: colors.BLUE(),
-    // padding: '3px 10px'
+  },
+  preRegContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    fontSize: 14,
+    width: "max-content",
+    color: "#918f9b",
+    marginLeft: 10,
     "@media only screen and (max-width: 767px)": {
-      // fontSize: 12,
+      fontSize: 12,
+      marginLeft: 0,
     },
+  },
+  wipIcon: {
+    marginRight: 5,
+    height: 15,
   },
 });
 

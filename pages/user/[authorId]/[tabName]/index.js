@@ -24,6 +24,7 @@ import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserInfoModal from "~/components/modal/UserInfoModal";
+import Button from "~/components/Form/Button";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -330,7 +331,7 @@ const AuthorPage = (props) => {
   const tabs = [
     {
       href: "contributions",
-      label: "contributions",
+      label: "paper submissions",
       showCount: true,
       count: () => author.userContributions.count,
     },
@@ -360,44 +361,57 @@ const AuthorPage = (props) => {
     },
   ];
 
+  const renderTabTitle = () => {
+    for (let i = 0; i < tabs.length; i++) {
+      if (tabs[i].href === tabName) {
+        return tabs[i].label;
+      }
+    }
+  };
+
   const renderTabContent = () => {
     return (
       // render all tab content on the dom, but only show if selected
-      <div>
-        <span
-          className={css(
-            tabName === "contributions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserContributionsTab fetching={fetching} />
-        </span>
-        <span
-          className={css(
-            tabName === "authored-papers" ? styles.reveal : styles.hidden
-          )}
-        >
-          <AuthoredPapersTab fetching={fetching} />
-        </span>
-        <span
-          className={css(
-            tabName === "discussions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserDiscussionsTab hostname={hostname} fetching={fetching} />
-        </span>
-        <span
-          className={css(
-            tabName === "transactions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserTransactionsTab fetching={fetching} />
-        </span>
-        <span
-          className={css(tabName === "boosts" ? styles.reveal : styles.hidden)}
-        >
-          <UserPromotionsTab fetching={fetchingPromotions} />
-        </span>
-      </div>
+      <ComponentWrapper>
+        <div className={css(styles.tabMeta)}>
+          <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+          <div
+            className={css(
+              tabName === "contributions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserContributionsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "authored-papers" ? styles.reveal : styles.hidden
+            )}
+          >
+            <AuthoredPapersTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "discussions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "transactions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserTransactionsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "boosts" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserPromotionsTab fetching={fetchingPromotions} />
+          </div>
+        </div>
+      </ComponentWrapper>
     );
   };
 
@@ -891,6 +905,16 @@ const AuthorPage = (props) => {
           </div>
         </div>
       </ComponentWrapper>
+      <ComponentWrapper>
+        {/* <div className={css(styles.row)}>
+          <div className={css(styles.supportButton)}>
+            <Button
+              label="Support Author"
+              onClick={() => props.openAuthorSupportModal(true)}
+            />
+          </div>
+        </div> */}
+      </ComponentWrapper>
       <TabBar
         tabs={tabs}
         selectedTab={router.query.tabName}
@@ -929,6 +953,8 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
+    background: "#FAFAFA",
+    minHeight: "55vh",
   },
   profileContainer: {
     display: "flex",
@@ -1018,6 +1044,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
+    marginLeft: "auto",
   },
   socialMedia: {
     width: 35,
@@ -1131,6 +1158,27 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
+  },
+  tabMeta: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+    background: "#fff",
+    border: "1.5px solid #F0F0F0",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+
+    "@media only screen and (min-width: 768px)": {
+      padding: 50,
+      paddingTop: 24,
+    },
+  },
+  title: {
+    fontWeight: 500,
+    textTransform: "capitalize",
+    marginTop: 0,
+    marginBottom: 16,
+    // fontSize: 32,
   },
   nameInput: {
     fontSize: 32,
@@ -1308,6 +1356,16 @@ const styles = StyleSheet.create({
   reveal: {
     display: "flex",
     zIndex: 1,
+    width: "100%",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  supportButton: {
+    marginBottom: 20,
+    marginRight: 10,
+  },
+  row: {
+    display: "flex",
   },
 });
 
@@ -1321,6 +1379,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
   openUserInfoModal: ModalActions.openUserInfoModal,
+  openAuthorSupportModal: ModalActions.openAuthorSupportModal,
 };
 
 export default connect(

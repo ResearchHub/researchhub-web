@@ -117,6 +117,11 @@ class PaperUploadInfo extends React.Component {
       document.documentElement.scrollTop = 0;
       this.prefillPaperInfo();
     }
+    if (prevProps.type !== this.props.type) {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0;
+      this.prefillPaperInfo();
+    }
   }
 
   componentWillUnMount() {
@@ -166,8 +171,10 @@ class PaperUploadInfo extends React.Component {
         };
       });
     }
-    if (type) {
-      form.type = type;
+    if (this.props.type === "pre_registration") {
+      form.paper_type = this.props.type.toUpperCase();
+    } else {
+      form.paper_type = "REGULAR";
     }
 
     this.setState(
@@ -202,12 +209,14 @@ class PaperUploadInfo extends React.Component {
           tagline,
           abstract,
           paper_title,
+          paper_type,
         } = res;
         let form = JSON.parse(JSON.stringify(this.state.form));
         form.doi = doi;
         form.title = title;
         form.paper_title = paper_title;
         form.abstract = abstract;
+        form.paper_type = paper_type;
         form.hubs = hubs.map((hub) => {
           return {
             id: hub.id,
@@ -589,12 +598,22 @@ class PaperUploadInfo extends React.Component {
     return (
       <span>
         {!editMode &&
-          this.renderHeader("Add Paper", "Up to 15MB (.pdf)", false)}
+          this.renderHeader(
+            form.paper_type === "PRE_REGISTRATION"
+              ? "Add Preregistration"
+              : "Add Paper",
+            "Up to 15MB (.pdf)",
+            false
+          )}
         <div className={css(styles.section)}>
           {!editMode && (
             <div className={css(styles.paper)}>
               <div className={css(styles.label, styles.labelStyle)}>
-                {this.state.urlView ? "Link to Paper" : "Paper PDF"}
+                {form.paper_type === "PRE_REGISTRATION"
+                  ? "Link to Preregistration"
+                  : this.state.urlView
+                  ? `Link to Paper`
+                  : "Paper PDF"}
                 <span className={css(styles.asterick)}>*</span>
               </div>
               <NewDND
@@ -614,7 +633,11 @@ class PaperUploadInfo extends React.Component {
         <div className={css(styles.section, styles.padding)}>
           {(showTitle || !urlView) && (
             <FormInput
-              label={"Paper Title"}
+              label={
+                form.paper_type === "PRE_REGISTRATION"
+                  ? "Preregistration Title"
+                  : "Paper Title"
+              }
               placeholder="Enter title of paper"
               required={true}
               containerStyle={styles.container}

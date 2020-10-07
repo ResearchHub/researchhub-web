@@ -27,6 +27,7 @@ export const ModalConstants = {
   RECAPTCHA_PROMPT_TOGGLE: "@@modal/RECAPTCHA_PROMPT_TOGGLE",
   USER_INFO_MODAL_TOGGLE: "@@modal/USER_INFO_MODAL_TOGGLE",
   OPEN_EDUCATION_MODAL_TOGGLE: "@@modal/OPEN_EDUCATION_MODAL_TOGGLE",
+  AUTHOR_SUPPORT_MODAL_TOGGLE: "@@modal/AUTHOR_SUPPORT_MODAL_TOGGLE"
 };
 
 export const ModalActions = {
@@ -271,6 +272,16 @@ export const ModalActions = {
       });
     };
   },
+  openAuthorSupportModal: (openModal) => {
+    return dispatch => {
+      return dispatch({
+        type: ModalConstants.AUTHOR_SUPPORT_MODAL_TOGGLE,
+        payload: {
+          openAuthorSupportModal: openModal
+        } 
+      })
+    }
+  }
 };
 
 /**********************************
@@ -313,6 +324,7 @@ const defaultModalState = {
   openRecaptchaPrompt: false,
   openUserInfoModal: false,
   openEducationModal: false,
+  openAuthorSupportModal: false
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -336,6 +348,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.RECAPTCHA_PROMPT_TOGGLE:
     case ModalConstants.USER_INFO_MODAL_TOGGLE:
     case ModalConstants.OPEN_EDUCATION_MODAL_TOGGLE:
+    case ModalConstants.AUTHOR_SUPPORT_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,

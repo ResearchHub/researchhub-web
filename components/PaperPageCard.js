@@ -575,6 +575,15 @@ class PaperPageCard extends React.Component {
     }
   };
 
+  renderPreregistrationTag = () => {
+    return (
+      <div className={css(styles.preRegContainer)}>
+        <img src="/static/icons/wip.png" className={css(styles.preRegIcon)} />
+        Preregistration
+      </div>
+    );
+  };
+
   renderTopRow = () => {
     let {
       paper,
@@ -820,7 +829,12 @@ class PaperPageCard extends React.Component {
                   <div className={css(styles.mobile)}>
                     {process.browser && this.renderPreview()}
                   </div>
-                  <div className={css(styles.mobile)}>{this.renderHubs()}</div>
+                  <div className={css(styles.mobile, styles.preregMobile)}>
+                    {paper &&
+                      paper.paper_type === "PRE_REGISTRATION" &&
+                      this.renderPreregistrationTag()}
+                    {this.renderHubs()}
+                  </div>
                 </div>
               </div>
               <div className={css(styles.rightColumn, styles.mobile)}>
@@ -1191,7 +1205,7 @@ const styles = StyleSheet.create({
   rightColumn: {
     display: "flex",
     flexDirection: "column",
-    justifiyContent: "flex-start",
+    justifyContent: "flex-start",
     alignItems: "flex-end",
     marginLeft: 20,
     "@media only screen and (max-width: 768px)": {
@@ -1366,6 +1380,28 @@ const styles = StyleSheet.create({
       color: colors.BLUE(),
       backgroundColor: "#edeefe",
       borderRadius: 3,
+    },
+  },
+  preregMobile: {
+    alignItems: "flex-start",
+  },
+  preRegContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "flex-end",
+    color: "rgba(36, 31, 58, 0.7)",
+    marginTop: 15,
+    fontSize: 16,
+    fontWeight: 500,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+  },
+  preRegIcon: {
+    height: 20,
+    marginRight: 8,
+    "@media only screen and (max-width: 415px)": {
+      height: 15,
     },
   },
 });
