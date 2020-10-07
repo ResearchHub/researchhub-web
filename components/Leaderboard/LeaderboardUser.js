@@ -27,6 +27,7 @@ const LeaderboardUser = (props) => {
               author={authorProfile}
               name={name}
               disableLink={false}
+              size={35}
             />
             <div className={css(styles.name)}>{name}</div>
             {props.extraInfo}
@@ -55,12 +56,13 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   name: {
-    marginLeft: 16,
+    marginLeft: 6,
     fontWeight: 500,
   },
   rep: {
     marginLeft: "auto",
     color: colors.PURPLE(1),
+    fontWeight: 500,
   },
 });
 
