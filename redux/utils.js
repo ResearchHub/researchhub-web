@@ -13,7 +13,7 @@ export function handleCatch(err, dispatch) {
   if (err.response && err.response.status === 429) {
     dispatch(ModalActions.openRecaptchaPrompt(true));
   } else {
-    Sentry.captureException(error);
+    Sentry.captureException(err);
   }
   return err;
 }
