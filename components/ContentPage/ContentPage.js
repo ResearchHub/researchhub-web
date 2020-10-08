@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     top: 80,
     borderRight: "1px solid #ededed",
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 769px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
