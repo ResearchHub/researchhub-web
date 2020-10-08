@@ -233,14 +233,19 @@ const styles = StyleSheet.create({
   },
   sidebar: {
     minWidth: 220,
-    "@media only screen and (max-width: 769px)": {
+    width: "18%",
+    position: "sticky",
+    top: 79,
+    background: "#fff",
+    minHeight: "100vh",
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
   content: {
     borderLeft: "1px solid #ededed",
     "@media only screen and (min-width: 900px)": {
-      width: "90%",
+      width: "82%",
     },
   },
   row: {
