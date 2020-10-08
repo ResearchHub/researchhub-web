@@ -199,6 +199,9 @@ class HubPage extends React.Component {
 
   checkUserVotes = (papers) => {
     let paperIds = papers.map((paper) => paper.id);
+    if (!paperIds || !paperIds.length) {
+      return null;
+    }
     return fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
