@@ -47,28 +47,25 @@ class CategoryList extends React.Component {
   };
 
   render() {
-    let { overrideStyle } = this.props;
     return (
-      <div className={css(styles.container, overrideStyle && overrideStyle)}>
-        <div className={css(styles.categoryListContainer)}>
-          <div className={css(styles.listLabel)} id={"categoryListTitle"}>
-            Categories
-          </div>
-          <div className={css(styles.categoryList)}>
-            {this.props.categories.length > 0 ? (
-              this.renderCategoryEntry()
-            ) : (
-              <Fragment>
-                <ReactPlaceholder
-                  showLoadingAnimation
-                  ready={false}
-                  customPlaceholder={
-                    <HubEntryPlaceholder color="#efefef" rows={9} />
-                  }
-                />
-              </Fragment>
-            )}
-          </div>
+      <div className={css(styles.categoryListContainer)}>
+        <div className={css(styles.listLabel)} id={"categoryListTitle"}>
+          Categories
+        </div>
+        <div className={css(styles.categoryList)}>
+          {this.props.categories.length > 0 ? (
+            this.renderCategoryEntry()
+          ) : (
+            <Fragment>
+              <ReactPlaceholder
+                showLoadingAnimation
+                ready={false}
+                customPlaceholder={
+                  <HubEntryPlaceholder color="#efefef" rows={9} />
+                }
+              />
+            </Fragment>
+          )}
         </div>
       </div>
     );
@@ -76,26 +73,16 @@ class CategoryList extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    position: "fixed",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingTop: 50,
-    "@media only screen and (max-height: 800px)": {
-      display: "none",
-    },
-  },
   categoryListContainer: {
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
+    position: "fixed",
+    maxWidth: 225,
+    paddingTop: 50,
     alignItems: "center",
     textAlign: "left",
     cursor: "default",
+    "@media only screen and (max-height: 450px)": {
+      display: "none",
+    },
   },
   listLabel: {
     textTransform: "uppercase",
@@ -107,18 +94,17 @@ const styles = StyleSheet.create({
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
     width: "90%",
-    paddingLeft: 25,
+    paddingLeft: 35,
     boxSizing: "border-box",
   },
   categoryEntry: {
-    width: "100%",
-    maxWidth: 175,
+    width: "99%",
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
-    border: "1px solid #fff",
+    border: "1px solid #fcfcfc",
     marginBottom: 8,
     ":hover": {
       borderColor: "rgb(237, 237, 237)",
@@ -126,7 +112,6 @@ const styles = StyleSheet.create({
     },
   },
   categoryLink: {
-    width: "100%",
     textDecoration: "none",
     color: "#111",
     display: "flex",
@@ -134,12 +119,20 @@ const styles = StyleSheet.create({
     padding: "8px",
   },
   categoryList: {
-    boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
     padding: "0px 30px",
+    overflowY: "scroll",
+    "@media only screen and (max-height: 800px)": {
+      maxHeight: "53vh",
+    },
+    "@media only screen and (max-height: 700px)": {
+      maxHeight: "45vh",
+    },
+    "@media only screen and (max-height: 600px)": {
+      maxHeight: "35vh",
+    },
+    "@media only screen and (max-height: 500px)": {
+      maxHeight: "28vh",
+    },
   },
 });
 

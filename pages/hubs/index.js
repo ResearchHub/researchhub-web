@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   sidebar: {
-    minWidth: 220,
+    minWidth: 225,
     "@media only screen and (max-width: 769px)": {
       display: "none",
     },
