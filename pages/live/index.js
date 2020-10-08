@@ -121,7 +121,7 @@ var styles = StyleSheet.create({
     position: "sticky",
     top: 80,
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 769px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },

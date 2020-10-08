@@ -74,9 +74,7 @@ class CategoryList extends React.Component {
 
 const styles = StyleSheet.create({
   categoryListContainer: {
-    position: "fixed",
-    maxWidth: 225,
-    paddingTop: 50,
+    paddingTop: 30,
     alignItems: "center",
     textAlign: "left",
     cursor: "default",
@@ -120,19 +118,6 @@ const styles = StyleSheet.create({
   },
   categoryList: {
     padding: "0px 30px",
-    overflowY: "scroll",
-    "@media only screen and (max-height: 800px)": {
-      maxHeight: "53vh",
-    },
-    "@media only screen and (max-height: 700px)": {
-      maxHeight: "45vh",
-    },
-    "@media only screen and (max-height: 600px)": {
-      maxHeight: "35vh",
-    },
-    "@media only screen and (max-height: 500px)": {
-      maxHeight: "28vh",
-    },
   },
 });
 
