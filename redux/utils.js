@@ -1,4 +1,5 @@
 import moment from "moment";
+import * as Sentry from "@sentry/browser";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { doesNotExist, getNestedValue } from "~/config/utils";
@@ -9,8 +10,10 @@ import { ModalActions } from "~/redux/modals";
 const FETCH_ERROR_MESSAGE = "Fetch error caught in promise";
 
 export function handleCatch(err, dispatch) {
-  if (err.response.status === 429) {
+  if (err.response && err.response.status === 429) {
     dispatch(ModalActions.openRecaptchaPrompt(true));
+  } else {
+    Sentry.captureException(error);
   }
   return err;
 }
