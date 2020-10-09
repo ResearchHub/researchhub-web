@@ -115,24 +115,27 @@ class PaperProgress extends React.Component {
     ];
 
     let progress = this.calculateProgress(sections);
+    console.log(progress);
 
-    this.setState(
-      {
-        sections,
-        progress,
-        complete: progress >= 50,
-      },
-      () => {
-        if (this.state.complete && !this.props.showAllSections) {
-          this.props.toggleShowAllSections(true);
-        } else if (!this.state.complete && this.props.showAllSections) {
-          this.props.toggleShowAllSections(false);
+    if (!this.state.complete) {
+      this.setState(
+        {
+          sections,
+          progress,
+          complete: progress >= 50,
+        },
+        () => {
+          if (this.state.complete && !this.props.showAllSections) {
+            this.props.toggleShowAllSections(true);
+          } else if (!this.state.complete && this.props.showAllSections) {
+            this.props.toggleShowAllSections(false);
+          }
+          if (this.props.fetchBullets) {
+            this.setState({ loading: false });
+          }
         }
-        if (this.props.fetchBullets) {
-          this.setState({ loading: false });
-        }
-      }
-    );
+      );
+    }
   };
 
   trackEvent = (interaction, label) => {
