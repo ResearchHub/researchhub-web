@@ -148,6 +148,7 @@ const routes = (BASE_URL) => {
       highlights,
       route,
       progress,
+      query = {},
     }) => {
       let url = BASE_URL + `paper/`;
 
@@ -156,6 +157,7 @@ const routes = (BASE_URL) => {
         querystring: {
           search,
           page,
+          ...query,
         },
         rest: {
           route: route,
@@ -219,29 +221,6 @@ const routes = (BASE_URL) => {
     },
 
     DISCUSSION: ({ paperId, filter, page, progress, twitter, isRemoved }) => {
-      // let url = `${BASE_URL}paper/${paperId}/discussion/`;
-
-      // if (progress) {
-      //   url += "?created_location=progress";
-      // }
-
-      // if (typeof page === "number") {
-      //   url += `?page=${page}`;
-      // }
-
-      // if (twitter !== undefined && twitter !== null) {
-      //   if (!(progress || typeof page === "number")) {
-      //     url += "?";
-      //   } else {
-      //     url += "&";
-      //   }
-      //   url += `source=${twitter ? "twitter" : "researchhub"}`;
-      // }
-
-      // if (isRemoved) {
-      //   url += "&is_removed=False";
-      // }
-
       let url = BASE_URL + `paper/${paperId}/discussion/`;
       let params = {
         querystring: {

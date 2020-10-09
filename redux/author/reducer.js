@@ -14,6 +14,9 @@ const defaultAuthorState = {
     paperUploadOffset: 0,
     contributions: [],
   },
+  userProjects: {
+    projects: [],
+  },
 };
 
 const AuthorReducer = (state = defaultAuthorState, action) => {
@@ -29,6 +32,7 @@ const AuthorReducer = (state = defaultAuthorState, action) => {
     case types.GET_USER_CONTRIBUTIONS_PENDING:
     case types.GET_USER_CONTRIBUTIONS_FAILURE:
     case types.GET_USER_CONTRIBUTIONS_SUCCESS:
+    case types.GET_USER_PROJECTS:
     case types.UPDATE_AUTHOR_BY_KEY:
     case types.UPDATE_AUTHOR:
       return {

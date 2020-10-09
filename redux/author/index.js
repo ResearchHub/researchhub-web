@@ -147,6 +147,40 @@ export const AuthorActions = {
     };
   },
 
+  getUserProjects: ({ userId, loadMore }) => {
+    return async (dispatch, getState) => {
+      let query = {
+        user: userId,
+        paper_type: "PRE_REGISTRATION",
+      };
+
+      return fetch(API.PAPER({ query }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          let projects = [...res.results];
+
+          if (loadMore) {
+            projects = [
+              ...getState().author.userProjects.projects,
+              ...projects,
+            ];
+          }
+
+          dispatch({
+            payload: {
+              userProjects: {
+                projects,
+                count: res.count,
+                next: res.next,
+              },
+            },
+            type: types.GET_USER_PROJECTS,
+          });
+        });
+    };
+  },
+
   saveAuthorChanges: ({ changes, authorId, file }) => {
     return (dispatch) => {
       let config = API.PATCH_CONFIG(changes);
