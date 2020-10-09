@@ -399,6 +399,7 @@ class UserInfoModal extends React.Component {
         title={"Edit your personal information"}
         textAlign={"left"}
         removeDefault={true}
+        modalContentStyle={styles.modalContentStyles}
       >
         <div className={css(styles.rootContainer)}>
           <EducationModal
@@ -546,12 +547,19 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingTop: 30,
     paddingBottom: 10,
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      alignItems: "center",
+    },
   },
   column: {
     display: "flex",
     flexDirection: "column",
     width: "100%",
     marginLeft: 30,
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: 0,
+    },
   },
   formInputContainer: {
     position: "relative",
@@ -682,6 +690,13 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 321px)": {
       width: 280,
+    },
+  },
+  modalContentStyles: {
+    padding: 25,
+    overflowX: "hidden",
+    "@media only screen and (max-width: 415px)": {
+      padding: 25,
     },
   },
 });

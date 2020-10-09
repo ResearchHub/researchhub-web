@@ -612,7 +612,7 @@ const AuthorPage = (props) => {
     setAvatarUploadIsOpen(false);
   };
 
-  const renderOrcid = () => {
+  const renderOrcid = (mobile = false) => {
     if (allowEdit) {
       return author.orcid_id
         ? null
@@ -622,6 +622,7 @@ const AuthorPage = (props) => {
               refreshProfileOnSuccess={true}
               customLabel={"Connect ORCiD"}
               styles={styles.orcidButton}
+              iconButton={mobile}
             />
           );
     }
@@ -892,6 +893,18 @@ const AuthorPage = (props) => {
                   {editFacebook && renderSocialEdit(SECTIONS.facebook)}
                 </div>
               )}
+
+              <div
+                className={css(
+                  styles.socialMedia,
+                  styles.facebook,
+                  styles.mobileConnectOrcid,
+                  author.orcid_id && styles.orcidAvailable
+                )}
+              >
+                {renderOrcid(true)}
+              </div>
+
               <div
                 className={css(styles.socialMedia, styles.shareLink)}
                 onClick={() => setOpenShareModal(true)}
@@ -907,17 +920,18 @@ const AuthorPage = (props) => {
             >
               {renderOrcid()}
             </div>
+            {allowEdit && (
+              <div className={css(styles.mobileEditButton)}>
+                <Button
+                  label={"Edit Profile"}
+                  onClick={openUserInfoModal}
+                  customButtonStyle={styles.editButtonCustom}
+                  rippleClass={styles.rippleClass}
+                  isWhite={true}
+                />
+              </div>
+            )}
           </div>
-          {allowEdit && (
-            <div className={css(styles.mobileEditButton)}>
-              <Button
-                label={"Edit Profile"}
-                onClick={openUserInfoModal}
-                customButtonStyle={styles.editButtonCustom}
-                rippleClass={styles.rippleClass}
-              />
-            </div>
-          )}
         </div>
       </ComponentWrapper>
       <TabBar
@@ -979,10 +993,14 @@ const styles = StyleSheet.create({
   },
   connectOrcid: {
     marginTop: 16,
-
     "@media only screen and (max-width: 767px)": {
-      width: "100%",
-      marginTop: 0,
+      display: "none",
+    },
+  },
+  mobileConnectOrcid: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
     },
   },
   socialLinks: {
@@ -991,10 +1009,9 @@ const styles = StyleSheet.create({
     position: "relative",
     justifyContent: "flex-end",
     width: "30%",
-
     "@media only screen and (max-width: 767px)": {
-      width: "unset",
-      margin: "16px 0px",
+      margin: 0,
+      width: "max-content",
     },
   },
   authorName: {
@@ -1010,23 +1027,6 @@ const styles = StyleSheet.create({
       marginTop: 16,
       textAlign: "center",
     },
-  },
-  mobileEditButton: {
-    marginBottom: 16,
-    width: "100%",
-    "@media only screen and (min-width: 768px)": {
-      display: "none",
-    },
-  },
-  editButtonCustom: {
-    padding: 16,
-    width: "100%",
-    "@media only screen and (max-width: 415px)": {
-      width: "100%",
-    },
-  },
-  rippleClass: {
-    width: "100%",
   },
   nameLine: {
     display: "flex",
@@ -1064,6 +1064,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-start",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
   },
   description: {
     marginBottom: 16,
@@ -1078,8 +1081,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     marginLeft: "auto",
     "@media only screen and (max-width: 767px)": {
-      marginLeft: "unset",
-      flexDirection: "column-reverse",
+      marginLeft: 0,
+      width: "70%",
+      alignItems: "center",
+      // alignItems: 'flex-start'
     },
   },
   socialMedia: {
@@ -1117,13 +1122,13 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "fit-content",
     paddingRight: 20,
+    // marginRight: 3,
     "@media only screen and (max-width: 767px)": {
       width: "unset",
       paddingRight: 0,
     },
   },
   editButton: {
-    marginLeft: 15,
     opacity: 0.2,
     fontWeight: 400,
     fontSize: 14,
@@ -1137,7 +1142,7 @@ const styles = StyleSheet.create({
       opacity: 1,
     },
     "@media only screen and (max-width: 767px)": {
-      display: "none",
+      right: -20,
     },
   },
   descriptionTextarea: {
@@ -1316,7 +1321,7 @@ const styles = StyleSheet.create({
   },
   border: {},
   profilePictureHover: {
-    width: "100%",
+    width: 115,
     height: 60,
     borderRadius: "0 0 100px 100px",
     display: "flex",
@@ -1330,6 +1335,11 @@ const styles = StyleSheet.create({
   },
   reputationContainer: {
     marginBottom: 16,
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
   },
   reputation: {
     display: "flex",
@@ -1342,6 +1352,9 @@ const styles = StyleSheet.create({
   },
   reputationTitle: {
     marginRight: 10,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
   },
   rscBalance: {
     display: "flex",
@@ -1352,10 +1365,16 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
     },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
   },
   amount: {
     color: "rgba(36, 31, 58, 0.7)",
     fontWeight: 400,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   icon: {
     width: 20,
@@ -1374,7 +1393,9 @@ const styles = StyleSheet.create({
   orcidButton: {
     width: 180,
     fontSize: 14,
-    height: 45,
+    "@media only screen and (max-width: 415px)": {
+      height: 50,
+    },
   },
   orcidSection: {
     display: "flex",
@@ -1405,6 +1426,12 @@ const styles = StyleSheet.create({
   },
   row: {
     display: "flex",
+  },
+  mobileEditButton: {
+    marginTop: 10,
+  },
+  editButtonCustom: {
+    height: 40,
   },
 });
 
