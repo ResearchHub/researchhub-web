@@ -71,7 +71,6 @@ const ProjectCard = (props) => {
     slug,
     paper_type,
   } = paper || null;
-
   let vote_type = 0;
   let selected = setVoteSelected(paper.user_vote);
   const [lightbox, toggleLightbox] = useState(false);
