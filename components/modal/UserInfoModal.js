@@ -643,8 +643,9 @@ const styles = StyleSheet.create({
     height: 12,
     width: 12,
     position: "absolute",
-    top: 20,
-    right: 20,
+    top: 6,
+    right: 0,
+    padding: 16,
     cursor: "pointer",
   },
   titleContainer: {
