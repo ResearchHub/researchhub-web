@@ -23,8 +23,8 @@ import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
+import UserProjectsTab from "~/components/Author/Tabs/UserProjects";
 import UserInfoModal from "~/components/modal/UserInfoModal";
-import Button from "~/components/Form/Button";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -97,13 +97,16 @@ const AuthorPage = (props) => {
     let contributions = fetchUserContributions();
     let promotions = fetchUserPromotions();
     let transactions = fetchUserTransactions();
+    let projects = fetchUserProjects();
     let refetch = refetchAuthor();
+
     Promise.all([
       authored,
       discussions,
       contributions,
       promotions,
       transactions,
+      projects,
       refetch,
     ]).then((_) => {
       setFetching(false);
@@ -174,6 +177,14 @@ const AuthorPage = (props) => {
     );
     let papers = store.getState().author.authoredPapers.papers;
     return checkUserVotes(papers, "authored");
+  }
+
+  async function fetchUserProjects() {
+    await dispatch(
+      AuthorActions.getUserProjects({ userId: router.query.authorId })
+    );
+    // let papers = store.getState().author.userProjects.projects;
+    // return checkUserVotes(papers, "authored");
   }
 
   function fetchUserDiscussions() {
@@ -349,6 +360,12 @@ const AuthorPage = (props) => {
       count: () => author.userDiscussions.count,
     },
     {
+      href: "projects",
+      label: "projects",
+      showCount: true,
+      count: () => author.userProjects.count,
+    },
+    {
       href: "transactions",
       label: "transactions",
       showCount: true,
@@ -408,6 +425,13 @@ const AuthorPage = (props) => {
           >
             <UserProjectsTab fetching={fetching} mobileView={mobileView} />
           </div> */}
+          <div
+            className={css(
+              tabName === "projects" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserProjectsTab fetching={fetching} />
+          </div>
           <div
             className={css(
               tabName === "transactions" ? styles.reveal : styles.hidden
@@ -1110,7 +1134,6 @@ const styles = StyleSheet.create({
       marginLeft: 0,
       width: "70%",
       alignItems: "center",
-      // alignItems: 'flex-start'
     },
   },
   socialMedia: {

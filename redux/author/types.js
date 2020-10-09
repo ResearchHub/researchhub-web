@@ -2,6 +2,7 @@ export const GET_AUTHOR = "@@author/GET_AUTHOR";
 export const SAVE_AUTHOR_CHANGES = "@@author/SAVE_AUTHOR_CHANGES";
 export const GET_AUTHORED_PAPERS_PENDING =
   "@@author/GET_AUTHORED_PAPERS_PENDING";
+export const GET_USER_PROJECTS = "@@author/GET_USER_PROJECTS";
 export const GET_AUTHORED_PAPERS_FAILURE =
   "@@author/GET_AUTHORED_PAPERS_FAILURE";
 export const GET_AUTHORED_PAPERS_SUCCESS =

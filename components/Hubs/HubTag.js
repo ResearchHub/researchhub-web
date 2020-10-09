@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontSize: 10,
     color: colors.BLUE(1),
-    height: 12,
+    // height: 12,
     textTransform: "uppercase",
     fontWeight: "bold",
     letterSpacing: 1,

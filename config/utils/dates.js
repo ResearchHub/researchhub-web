@@ -18,6 +18,10 @@ export function formatDate(momentDate) {
   return momentDate.format("MMM Do");
 }
 
+export function formatDateYMD(momentDate) {
+  return momentDate.format("MMM Do, YYYY");
+}
+
 export function formatPublishedDate(momentDate, removeText) {
   if (removeText) {
     return formatDateStandard(momentDate);

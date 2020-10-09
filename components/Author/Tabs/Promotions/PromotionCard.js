@@ -402,7 +402,7 @@ const styles = StyleSheet.create({
   dataContainer: {
     display: "flex",
     justifyContent: "space-between",
-    paddingRight: 30,
+    // paddingRight: 30,
     width: "45%",
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
