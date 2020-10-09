@@ -392,9 +392,7 @@ const styles = StyleSheet.create({
     },
   },
   paymentList: {
-    // width: 800,
     display: "flex",
-    // justifyContent: "flex-start",
     justifyContent: "center",
     flexWrap: "wrap",
     height: "max-content",
@@ -412,7 +410,6 @@ const styles = StyleSheet.create({
   content: {
     width: 420,
     opacity: 1,
-    // transition: "all ease-in-out 0.2s",
     position: "relative",
     "@media only screen and (max-width: 557px)": {
       padding: 25,

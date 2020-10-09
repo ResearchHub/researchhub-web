@@ -1,8 +1,8 @@
 /**
  * Connects an ORCID account to an existing Google account.
  */
-
-import { StyleSheet } from "aphrodite";
+import { Fragment } from "react";
+import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
 import OrcidLogin from "~/components/OrcidLogin";
@@ -32,6 +32,7 @@ const OrcidConnectButton = (props) => {
     customLabelStyle,
     iconStyle,
     refreshProfileOnSuccess,
+    iconButton,
   } = props;
 
   const router = useRouter();
@@ -66,18 +67,33 @@ const OrcidConnectButton = (props) => {
       onSuccess={showSuccessMessage}
       onFailure={showLoginFailureMessage}
       cookiePolicy={"single_host_origin"}
-      render={(renderProps) => (
-        <Button
-          disabled={renderProps.disabled}
-          onClick={renderProps.onClick}
-          rippleClass={styles.rippleClass}
-          customButtonStyle={[styles.button, props.styles]}
-          icon={"/static/icons/orcid.png"}
-          customLabelStyle={customLabelStyle}
-          customIconStyle={[styles.iconStyle, iconStyle]}
-          label={customLabel ? customLabel : "Sign in ORCID"}
-        />
-      )}
+      render={(renderProps) => {
+        return (
+          <Fragment>
+            {iconButton ? (
+              <img
+                src={"/static/icons/orcid.png"}
+                onClick={renderProps.onClick}
+                className={css(
+                  styles.iconButton,
+                  renderProps.disabled && styles.disabled
+                )}
+              />
+            ) : (
+              <Button
+                disabled={renderProps.disabled}
+                onClick={renderProps.onClick}
+                rippleClass={styles.rippleClass}
+                customButtonStyle={[styles.button, props.styles]}
+                icon={"/static/icons/orcid.png"}
+                customLabelStyle={customLabelStyle}
+                customIconStyle={[styles.iconStyle, iconStyle]}
+                label={customLabel ? customLabel : "Sign in ORCID"}
+              />
+            )}
+          </Fragment>
+        );
+      }}
     />
   );
 };
@@ -105,6 +121,11 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
+  },
+  iconButton: {
+    height: 35,
+    width: 35,
+    background: "none",
   },
 });
 
