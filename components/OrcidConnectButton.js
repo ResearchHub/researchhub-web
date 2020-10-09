@@ -70,6 +70,7 @@ const OrcidConnectButton = (props) => {
         <Button
           disabled={renderProps.disabled}
           onClick={renderProps.onClick}
+          rippleClass={styles.rippleClass}
           customButtonStyle={[styles.button, props.styles]}
           icon={"/static/icons/orcid.png"}
           customLabelStyle={customLabelStyle}
@@ -87,10 +88,23 @@ const styles = StyleSheet.create({
     width: 30,
   },
   button: {
-    height: 55,
+    height: 45,
     padding: "0px 16px",
     marginBottom: 0,
     width: "unset",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+      height: 45,
+    },
+
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
+  },
+  rippleClass: {
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
 });
 

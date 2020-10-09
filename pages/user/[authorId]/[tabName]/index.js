@@ -979,6 +979,11 @@ const styles = StyleSheet.create({
   },
   connectOrcid: {
     marginTop: 16,
+
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      marginTop: 0,
+    },
   },
   socialLinks: {
     display: "flex",
@@ -989,6 +994,7 @@ const styles = StyleSheet.create({
 
     "@media only screen and (max-width: 767px)": {
       width: "unset",
+      margin: "16px 0px",
     },
   },
   authorName: {
@@ -1073,6 +1079,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     "@media only screen and (max-width: 767px)": {
       marginLeft: "unset",
+      flexDirection: "column-reverse",
     },
   },
   socialMedia: {
@@ -1367,6 +1374,7 @@ const styles = StyleSheet.create({
   orcidButton: {
     width: 180,
     fontSize: 14,
+    height: 45,
   },
   orcidSection: {
     display: "flex",
