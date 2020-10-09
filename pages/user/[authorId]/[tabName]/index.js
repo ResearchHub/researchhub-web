@@ -1210,10 +1210,10 @@ const styles = StyleSheet.create({
     background: "#fff",
     border: "1.5px solid #F0F0F0",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-
-    "@media only screen and (min-width: 768px)": {
-      padding: 50,
-      paddingTop: 24,
+    padding: 50,
+    paddingTop: 24,
+    "@media only screen and (max-width: 767px)": {
+      padding: 20,
     },
   },
   title: {
