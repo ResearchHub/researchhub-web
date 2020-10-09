@@ -141,6 +141,7 @@ const EducationModal = (props) => {
       zIndex={15}
       modalStyle={styles.modalStyle}
       titleStyle={styles.titleStyle}
+      modalContentStyle={styles.modalContentStyle}
     >
       <form onSubmit={saveEducation} className={css(styles.form)}>
         <div className={css(styles.formInputContainer)}>
@@ -197,7 +198,12 @@ const EducationModal = (props) => {
           </div>
         </div>
         <div className={css(styles.buttonContainer)}>
-          <Button label={"Save"} type={"submit"} />
+          <Button
+            label={"Save"}
+            type={"submit"}
+            customButtonStyle={styles.editButtonCustom}
+            rippleClass={styles.rippleClass}
+          />
         </div>
       </form>
     </BaseModal>
@@ -205,14 +211,26 @@ const EducationModal = (props) => {
 };
 
 const styles = StyleSheet.create({
+  modalContentStyle: {
+    "@media only screen and (max-width: 415px)": {
+      padding: 16,
+    },
+  },
   modalStyle: {
     width: 500,
     "@media only screen and (max-width: 767px)": {
-      width: 450,
+      width: "100%",
     },
+  },
+  editButtonCustom: {
     "@media only screen and (max-width: 415px)": {
-      width: 350,
+      width: "100%",
+      padding: 12,
     },
+    width: "100%",
+  },
+  rippleClass: {
+    width: "100%",
   },
   titleStyle: {
     fontWeight: 400,

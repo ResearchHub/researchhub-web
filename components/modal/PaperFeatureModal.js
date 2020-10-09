@@ -805,9 +805,6 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  customButtonStyle: {
-    // width: 'unset'
-  },
   commentContainer: {
     border: "1px solid #E7E7E7",
     width: "100%",

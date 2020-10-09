@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Fragment } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import "~/components/Paper/CitationCard.css";
 
@@ -686,19 +686,24 @@ const AuthorPage = (props) => {
           <div className={css(styles.profileInfo)}>
             <div className={css(styles.nameLine)}>
               {!editName ? (
-                <h1
-                  className={css(styles.authorName, styles.editButtonContainer)}
-                  onMouseEnter={() => onMouseEnter(SECTIONS.name)}
-                  onMouseLeave={() => onMouseLeave(SECTIONS.name)}
-                  property="name"
-                >
-                  {author.first_name} {author.last_name}
-                  {allowEdit &&
-                    renderEditButton(() => {
-                      setHoverName(false);
-                      openUserInfoModal();
-                    })}
-                </h1>
+                <Fragment>
+                  <h1
+                    className={css(
+                      styles.authorName,
+                      styles.editButtonContainer
+                    )}
+                    onMouseEnter={() => onMouseEnter(SECTIONS.name)}
+                    onMouseLeave={() => onMouseLeave(SECTIONS.name)}
+                    property="name"
+                  >
+                    {author.first_name} {author.last_name}
+                    {allowEdit &&
+                      renderEditButton(() => {
+                        setHoverName(false);
+                        openUserInfoModal();
+                      })}
+                  </h1>
+                </Fragment>
               ) : (
                 allowEdit && (
                   <div className={css(styles.editDescriptionContainer)}>
@@ -903,6 +908,16 @@ const AuthorPage = (props) => {
               {renderOrcid()}
             </div>
           </div>
+          {allowEdit && (
+            <div className={css(styles.mobileEditButton)}>
+              <Button
+                label={"Edit Profile"}
+                onClick={openUserInfoModal}
+                customButtonStyle={styles.editButtonCustom}
+                rippleClass={styles.rippleClass}
+              />
+            </div>
+          )}
         </div>
       </ComponentWrapper>
       <TabBar
@@ -971,6 +986,10 @@ const styles = StyleSheet.create({
     position: "relative",
     justifyContent: "flex-end",
     width: "30%",
+
+    "@media only screen and (max-width: 767px)": {
+      width: "unset",
+    },
   },
   authorName: {
     fontWeight: 500,
@@ -985,6 +1004,23 @@ const styles = StyleSheet.create({
       marginTop: 16,
       textAlign: "center",
     },
+  },
+  mobileEditButton: {
+    marginBottom: 16,
+    width: "100%",
+    "@media only screen and (min-width: 768px)": {
+      display: "none",
+    },
+  },
+  editButtonCustom: {
+    padding: 16,
+    width: "100%",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+    },
+  },
+  rippleClass: {
+    width: "100%",
   },
   nameLine: {
     display: "flex",
@@ -1035,6 +1071,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-end",
     marginLeft: "auto",
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: "unset",
+    },
   },
   socialMedia: {
     width: 35,
@@ -1071,7 +1110,6 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "fit-content",
     paddingRight: 20,
-    // marginRight: 3,
     "@media only screen and (max-width: 767px)": {
       width: "unset",
       paddingRight: 0,
@@ -1090,6 +1128,9 @@ const styles = StyleSheet.create({
 
     ":hover": {
       opacity: 1,
+    },
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
     },
   },
   descriptionTextarea: {
@@ -1268,7 +1309,7 @@ const styles = StyleSheet.create({
   },
   border: {},
   profilePictureHover: {
-    width: 115,
+    width: "100%",
     height: 60,
     borderRadius: "0 0 100px 100px",
     display: "flex",

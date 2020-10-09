@@ -353,7 +353,7 @@ class UserInfoModal extends React.Component {
           containerStyle={styles.formInput}
           value={label === "Headline" ? value.title : value}
         />
-        {label === "Headline" && (
+        {/* {label === "Headline" && (
           <div className={css(styles.isPublicContainer)}>
             <h3
               className={css(
@@ -371,7 +371,7 @@ class UserInfoModal extends React.Component {
               onChange={this.handleIsPublic}
             />
           </div>
-        )}
+        )} */}
       </div>
     );
   };
@@ -473,6 +473,7 @@ class UserInfoModal extends React.Component {
               <Button
                 label={"Save Changes"}
                 customButtonStyle={styles.buttonCustomStyle}
+                rippleClass={styles.rippleClass}
                 type={"submit"}
               />
             </div>
@@ -489,10 +490,7 @@ const styles = StyleSheet.create({
     overflowY: "scroll",
     width: 600,
     "@media only screen and (max-width: 767px)": {
-      width: 550,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: 350,
+      width: "100%",
     },
   },
   rootContainer: {
@@ -500,21 +498,17 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    // position: "relative",
     backgroundColor: "#fff",
-    padding: 50,
+    padding: 30,
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
-    overflow: "hidden",
-
-    overflowY: "scroll",
-    "@media only screen and (max-width: 767px)": {
-      padding: 25,
+    "@media only screen and (min-width: 768px)": {
+      overflowY: "auto",
     },
-    "@media only screen and (max-width: 415px)": {
-      padding: "50px 0px 0px 0px",
+    "@media only screen and (max-width: 767px)": {
+      padding: 16,
     },
   },
   form: {
@@ -578,20 +572,23 @@ const styles = StyleSheet.create({
     minHeight: 100,
   },
   marginBottom: {
-    marginBottom: 40,
+    marginBottom: 24,
   },
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    width: "calc(100% + 100px)",
-    padding: "20px 0 20px",
-    position: "sticky",
-    bottom: -50,
     background: "#FFF",
     zIndex: 2,
   },
   buttonCustomStyle: {
-    marginRight: 60,
+    padding: 16,
+    width: "100%",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+    },
+  },
+  rippleClass: {
+    width: "100%",
   },
   button: {
     width: 126,
