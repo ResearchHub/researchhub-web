@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
   pillContainer: {
     background: voteWidgetColors.BACKGROUND,
     color: colors.GREEN(),
+    boxSizing: "border-box",
     fontWeight: "bold",
     borderRadius: 24,
     padding: ".2em .5em",

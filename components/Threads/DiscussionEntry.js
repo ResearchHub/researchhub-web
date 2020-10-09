@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     "@media only screen and (max-width: 415px)": {
-      marginTop: 18,
+      marginTop: 12,
     },
   },
   content: {

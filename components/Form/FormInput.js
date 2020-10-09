@@ -141,7 +141,6 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   inputLabel: {
-    height: 19,
     fontWeight: "500",
     marginBottom: 10,
     color: "#232038",
