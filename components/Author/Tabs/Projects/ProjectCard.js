@@ -13,7 +13,7 @@ import "~/components/Paper/CitationCard.css";
 import VoteWidget from "~/components//VoteWidget";
 import HubTag from "~/components/Hubs/HubTag";
 import HubDropDown from "~/components/Hubs/HubDropDown";
-import Button from "~/components/Form/Button";
+import SupportList from "./SupportList";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -71,11 +71,13 @@ const ProjectCard = (props) => {
     slug,
     paper_type,
   } = paper || null;
+
   let vote_type = 0;
   let selected = setVoteSelected(paper.user_vote);
   const [lightbox, toggleLightbox] = useState(false);
   const [slideIndex, setSlideIndex] = useState(1);
   const [isOpen, setIsOpen] = useState(false); // Hub dropdown
+  const [supporters, setSupporters] = useState([]);
   const [previews] = useState(
     configurePreview([
       first_preview && first_preview,
@@ -93,13 +95,11 @@ const ProjectCard = (props) => {
   useEffect(() => {
     let endpoint = API.SUPPORT_USERS({ paperId: id && id });
 
-    console.log("endpoint", endpoint);
-
     fetch(endpoint, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        console.log("res", res);
+        setSupporters(res);
       });
   }, []);
 
@@ -491,10 +491,14 @@ const ProjectCard = (props) => {
           <span className={css(styles.previewRoot)}>{renderPreview()}</span>
         </div>
         <div className={css(styles.mobileHubtagContainer)}>
+          <SupportList users={supporters} />
           {renderHubTags()}
         </div>
         <div className={css(styles.bottomBar)}>
-          <div className={css(styles.hubtagContainer)}>{renderHubTags()}</div>
+          <div className={css(styles.hubtagContainer)}>
+            <SupportList users={supporters} />
+            {/* {renderHubTags()} */}
+          </div>
           <div className={css(styles.fundProjectContainer)}>
             <span className={css(styles.preregRoot)}>
               {renderPreregistrationTag()}
