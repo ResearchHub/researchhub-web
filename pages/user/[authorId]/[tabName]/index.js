@@ -25,6 +25,7 @@ import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserProjectsTab from "~/components/Author/Tabs/UserProjects";
 import UserInfoModal from "~/components/modal/UserInfoModal";
+import Button from "~/components/Form/Button";
 
 // Config
 import colors from "~/config/themes/colors";
