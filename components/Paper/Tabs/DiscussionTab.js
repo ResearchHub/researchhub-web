@@ -138,7 +138,7 @@ const DiscussionTab = (props) => {
               path={t.path}
               newCard={transition && i === 0} //conditions when a new card is made
               mobileView={mobileView}
-              discussionCount={props.paper.discussion_count}
+              discussionCount={calculatedCount}
               setCount={setCount}
               paper={props.paperState}
             />
