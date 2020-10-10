@@ -72,7 +72,7 @@ class ReplyEntry extends React.Component {
     if (prevProps.auth !== this.props.auth) {
       let { auth, reply } = this.props;
       this.setState({
-        canEdit: auth.user.id === reply.createdBy.id,
+        canEdit: auth.user.id === reply.created_by.id,
       });
     }
   }
