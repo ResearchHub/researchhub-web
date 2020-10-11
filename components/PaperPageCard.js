@@ -439,28 +439,6 @@ class PaperPageCard extends React.Component {
     let { paper } = this.props;
 
     let authors = {};
-    try {
-      if (paper.raw_authors) {
-        let rawAuthors = paper.raw_authors;
-        if (typeof paper.raw_authors === "string") {
-          rawAuthors = JSON.parse(paper.raw_authors);
-          if (!Array.isArray(rawAuthors)) {
-            rawAuthors = [rawAuthors];
-          }
-        }
-        rawAuthors.forEach((author) => {
-          if (author.first_name && !author.last_name) {
-            authors[author.first_name] = true;
-          } else if (author.last_name && !author.first_name) {
-            authors[author.last_name] = true;
-          } else {
-            authors[`${author.first_name} ${author.last_name}`] = true;
-          }
-        });
-      }
-    } catch (e) {
-      Sentry.captureException(e);
-    }
 
     if (paper.authors) {
       paper.authors.map((author) => {
@@ -472,6 +450,29 @@ class PaperPageCard extends React.Component {
           authors[`${author.first_name} ${author.last_name}`] = author;
         }
       });
+    } else {
+      try {
+        if (paper.raw_authors) {
+          let rawAuthors = paper.raw_authors;
+          if (typeof paper.raw_authors === "string") {
+            rawAuthors = JSON.parse(paper.raw_authors);
+            if (!Array.isArray(rawAuthors)) {
+              rawAuthors = [rawAuthors];
+            }
+          }
+          rawAuthors.forEach((author) => {
+            if (author.first_name && !author.last_name) {
+              authors[author.first_name] = true;
+            } else if (author.last_name && !author.first_name) {
+              authors[author.last_name] = true;
+            } else {
+              authors[`${author.first_name} ${author.last_name}`] = true;
+            }
+          });
+        }
+      } catch (e) {
+        Sentry.captureException(e);
+      }
     }
 
     return authors;
@@ -485,7 +486,7 @@ class PaperPageCard extends React.Component {
     let index = 0;
     let authors = [];
 
-    if (length >= 6) {
+    if (length >= 15) {
       let author = Object.keys(authorsObj)[0];
 
       return (
@@ -496,8 +497,8 @@ class PaperPageCard extends React.Component {
       );
     }
 
-    for (var author in authorsObj) {
-      if (typeof author === "object") {
+    for (let author in authorsObj) {
+      if (typeof authorsObj[author] === "object") {
         authors.push(
           <Link
             href={"/user/[authorId]/[tabName]"}
@@ -549,16 +550,15 @@ class PaperPageCard extends React.Component {
             if (this.state.showAllHubs || index < 3) {
               let last = index === paper.hubs.length - 1;
               return (
-                <>
+                <div key={`hub_tag_index_${index}`}>
                   <HubTag
                     tag={hub}
                     gray={false}
-                    key={`hub_tag_index_${index}`}
                     overrideStyle={this.state.showAllHubs && styles.tagStyle}
                     last={last}
                   />
                   <meta property="about" content={hub.name} />
-                </>
+                </div>
               );
             }
           })}
