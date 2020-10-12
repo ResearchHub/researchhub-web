@@ -537,6 +537,7 @@ const PaperEntryCard = (props) => {
                 )}
               ></span>
             </div>
+            {/* {mobileView && renderPreview()} */}
             {renderBullet()}
             {renderUploadedBy()}
             {mobileView && !promotionSummary && renderHubTags()}
@@ -601,6 +602,13 @@ const styles = StyleSheet.create({
   },
   previewColumn: {
     paddingBottom: 10,
+    "@media only screen and (max-width: 767px)": {
+      // display: 'flex',
+      // justifyContent: 'center',
+      // alignItems: 'center',
+      // width: '100%',
+      // margin: '10px 0'
+    },
   },
   preview: {
     height: 90,

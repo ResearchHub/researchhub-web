@@ -65,7 +65,14 @@ const TransactionCard = (props) => {
               </span>
             </div>
           )}
-          <div className={css(styles.row, styles.metatext, styles.colorBlack)}>
+          <div
+            className={css(
+              styles.row,
+              styles.metatext,
+              styles.colorBlack,
+              styles.walletLink
+            )}
+          >
             Wallet Address:
             <span className={css(styles.address)}>
               {transaction.to_address}
@@ -108,11 +115,7 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
-    "@media only screen and (max-width: 767px)": {
-      width: "85%",
-    },
     "@media only screen and (max-width: 620px)": {
-      height: 110,
       position: "relative",
     },
   },
@@ -205,6 +208,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     justifyContent: "flex-start",
+    maxWidth: 300,
+
     ":hover": {
       textDecoration: "underline",
     },
@@ -213,6 +218,10 @@ const styles = StyleSheet.create({
       overflow: "hidden",
       whiteSpace: "nowrap",
       textOverflow: "ellipsis",
+      margin: 0,
+      marginTop: 5,
+    },
+    "@media only screen and (max-width: 415px)": {
       maxWidth: 200,
     },
   },
@@ -250,6 +259,16 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: colors.BLACK(0.4),
     fontSize: 14,
+    "@media only screen and (max-width: 620px)": {
+      // display: 'none'
+    },
+  },
+  walletLink: {
+    "@media only screen and (max-width: 620px)": {
+      display: "block",
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
   },
 });
 

@@ -97,6 +97,7 @@ class UserDiscussionsTab extends React.Component {
               hostname={hostname}
               path={path}
               key={`discThread-${discussion.id}-${index}`}
+              mobileView={this.props.mobileView}
             />
           </div>
         );
@@ -141,6 +142,9 @@ var styles = StyleSheet.create({
   discussionContainer: {
     width: "100%",
     borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
+    "@media only screen and (max-width: 415px)": {
+      borderBottom: "none",
+    },
   },
   box: {
     display: "flex",

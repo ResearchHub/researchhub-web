@@ -61,7 +61,7 @@ const AuthorPage = (props) => {
   const [allowEdit, setAllowEdit] = useState(false);
 
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
-  // const authorName = `${author.first_name} ${author.last_name}`;
+  const [mobileView, setMobileView] = useState(false);
 
   let facebookRef;
   let linkedinRef;
@@ -78,8 +78,10 @@ const AuthorPage = (props) => {
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
+    window.addEventListener("resize", updateDimensions);
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
+      window.removeEventListener("resize", updateDimensions);
     };
   });
 
@@ -143,6 +145,13 @@ const AuthorPage = (props) => {
     setPrevProps(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
 
+  function updateDimensions() {
+    if (window.innerWidth < 968) {
+      setMobileView(true);
+    } else {
+      setMobileView(false);
+    }
+  }
   /**
    * When we click anywhere outside of the dropdown, close it
    * @param { Event } e -- javascript event
@@ -230,14 +239,6 @@ const AuthorPage = (props) => {
       setHoverProfilePicture(false);
     }
   };
-
-  function onEditToggle(section) {
-    if (section === SECTIONS.name) {
-      setEditName(!editName);
-    } else if (section === SECTIONS.description) {
-      setEditDescription(!editDescription);
-    }
-  }
 
   const checkUserVotes = (papers = [], type) => {
     if (!store.getState().auth.isLoggedIn && papers.length) {
@@ -380,35 +381,49 @@ const AuthorPage = (props) => {
               tabName === "contributions" ? styles.reveal : styles.hidden
             )}
           >
-            <UserContributionsTab fetching={fetching} />
+            <UserContributionsTab fetching={fetching} mobileView={mobileView} />
           </div>
           <div
             className={css(
               tabName === "authored-papers" ? styles.reveal : styles.hidden
             )}
           >
-            <AuthoredPapersTab fetching={fetching} />
+            <AuthoredPapersTab fetching={fetching} mobileView={mobileView} />
           </div>
           <div
             className={css(
               tabName === "discussions" ? styles.reveal : styles.hidden
             )}
           >
-            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
+            <UserDiscussionsTab
+              hostname={hostname}
+              fetching={fetching}
+              mobileView={mobileView}
+            />
           </div>
+          {/* <div
+            className={css(
+              tabName === "projects" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserProjectsTab fetching={fetching} mobileView={mobileView} />
+          </div> */}
           <div
             className={css(
               tabName === "transactions" ? styles.reveal : styles.hidden
             )}
           >
-            <UserTransactionsTab fetching={fetching} />
+            <UserTransactionsTab fetching={fetching} mobileView={mobileView} />
           </div>
           <div
             className={css(
               tabName === "boosts" ? styles.reveal : styles.hidden
             )}
           >
-            <UserPromotionsTab fetching={fetchingPromotions} />
+            <UserPromotionsTab
+              fetching={fetchingPromotions}
+              mobileView={mobileView}
+            />
           </div>
         </div>
       </ComponentWrapper>
@@ -921,13 +936,23 @@ const AuthorPage = (props) => {
               {renderOrcid()}
             </div>
             {allowEdit && (
-              <div className={css(styles.mobileEditButton)}>
+              <div className={css(styles.editProfileButton)}>
                 <Button
                   label={"Edit Profile"}
                   onClick={openUserInfoModal}
                   customButtonStyle={styles.editButtonCustom}
                   rippleClass={styles.rippleClass}
                   isWhite={true}
+                />
+              </div>
+            )}
+            {allowEdit && (
+              <div className={css(styles.mobileEditProfileButton)}>
+                <Button
+                  label={"Edit Profile"}
+                  onClick={openUserInfoModal}
+                  customButtonStyle={styles.editButtonCustom}
+                  rippleClass={styles.editButtonCustom}
                 />
               </div>
             )}
@@ -1001,6 +1026,7 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 767px)": {
       display: "flex",
+      background: "#FFF",
     },
   },
   socialLinks: {
@@ -1338,7 +1364,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       flexDirection: "column",
-      alignItems: "flex-start",
+      alignItems: "center",
     },
   },
   reputation: {
@@ -1395,6 +1421,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {
       height: 50,
+      background: "#fff",
     },
   },
   orcidSection: {
@@ -1427,12 +1454,28 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
   },
-  mobileEditButton: {
+  editProfileButton: {
     marginTop: 10,
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  mobileEditProfileButton: {
+    marginTop: 20,
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+      width: "100%",
+    },
   },
   editButtonCustom: {
     height: 40,
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      minWidth: "100%",
+    },
   },
+  mobileEditButtonCustom: {},
 });
 
 const mapStateToProps = (state) => ({
