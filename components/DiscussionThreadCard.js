@@ -109,18 +109,23 @@ const DiscussionThreadCard = (props) => {
           mobileView={true}
           top={
             <div className={css(styles.column)}>
-              <VoteWidget
-                score={score}
-                fontSize={"16px"}
-                width={"44px"}
-                selected={selectedVoteType}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                horizontalView={true}
-                styles={styles.mobileVoteWidget}
-                searchResult={props.searchResult}
-                type={"discussion"}
-              />
+              <div className={css(styles.row, styles.spaceBetween)}>
+                <VoteWidget
+                  score={score}
+                  fontSize={"16px"}
+                  width={"44px"}
+                  selected={selectedVoteType}
+                  onUpvote={upvote}
+                  onDownvote={downvote}
+                  horizontalView={true}
+                  styles={styles.mobileVoteWidget}
+                  searchResult={props.searchResult}
+                  type={"discussion"}
+                />
+                <span className={css(styles.mobileReadButton)}>
+                  <ReadButton threadPath={path} />
+                </span>
+              </div>
               <DiscussionPostMetadata
                 authorProfile={data && data.createdBy.authorProfile}
                 username={username}
@@ -136,9 +141,6 @@ const DiscussionThreadCard = (props) => {
           }
           action={
             <Fragment>
-              <span className={css(styles.mobileReadButton)}>
-                <ReadButton threadPath={path} />
-              </span>
               <DiscussionThreadActionBar
                 hostname={hostname}
                 threadPath={path}
@@ -178,7 +180,9 @@ const DiscussionThreadCard = (props) => {
                 username={username}
                 date={date}
               />
-              <ReadButton threadPath={path} />
+              <div className={css(styles.readbutton)}>
+                <ReadButton threadPath={path} />
+              </div>
             </Fragment>
           }
           info={
@@ -288,7 +292,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     boxSizing: "border-box",
     textDecoration: "none",
-    marginRight: 15,
+
     ":hover": {
       backgroundColor: colors.BLUE(1),
       color: "#FFF",
@@ -344,6 +348,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     marginBottom: 19,
+    width: "100%",
   },
   row: {
     display: "flex",
@@ -351,12 +356,18 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
   },
+  spaceBetween: {
+    justifyContent: "space-between",
+  },
   mobileVoteWidget: {
     paddingLeft: 20,
     marginBottom: 15,
   },
+  readbutton: {
+    marginRight: 15,
+  },
   mobileReadButton: {
-    marginRight: 20,
+    // marginRight: 20,
   },
 });
 

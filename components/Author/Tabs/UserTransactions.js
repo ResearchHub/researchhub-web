@@ -85,6 +85,7 @@ class UserTransaction extends React.Component {
               <TransactionCard
                 key={`transactionCard-${i}`}
                 transaction={transaction}
+                mobileView={this.props.mobileView}
               />
             );
           })

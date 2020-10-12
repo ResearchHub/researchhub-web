@@ -100,6 +100,7 @@ class AuthoredPapersTab extends React.Component {
               index === papers.length - 1 && styles.noBorder,
             ]}
             voteCallback={this.voteCallback}
+            mobileView={this.props.mobileView}
           />
         </div>
       );

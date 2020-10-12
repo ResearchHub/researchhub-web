@@ -259,6 +259,7 @@ class PaperUploadInfo extends React.Component {
             };
           }
         }
+
         form.author.self_author =
           authors.filter((author) => author.id === userAuthorId).length > 0;
 
@@ -329,11 +330,15 @@ class PaperUploadInfo extends React.Component {
         this.props.auth.user.author_profile &&
         this.props.auth.user.author_profile.id;
       let form = { ...this.state.form };
-      if (
-        this.state.selectedAuthors.filter((author) => {
-          author.id === userAuthorId;
-        }).length < 1
-      ) {
+
+      let userIsAuthor = false;
+      for (let i = 0; i < selectedAuthors.length; i++) {
+        if (selectedAuthors[i].id === userAuthorId) {
+          userIsAuthor = true;
+        }
+      }
+
+      if (!userIsAuthor) {
         form.author.self_author = false;
       }
       this.setState({ selectedAuthors, form, edited: true });
