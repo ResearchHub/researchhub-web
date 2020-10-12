@@ -1,20 +1,8 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactPlaceholder from "react-placeholder";
-import Ripples from "react-ripples";
 
 // Components
 import ProjectCard from "./Projects/ProjectCard";
-import Loader from "~/components/Loader/Loader";
-import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
-
-// Redux
-import { TransactionActions } from "~/redux/transaction";
-
-// Config
-import colors from "~/config/themes/colors";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 const UserProjects = (props) => {
   let projects = props.author.userProjects.projects;

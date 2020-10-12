@@ -345,7 +345,7 @@ const ProjectCard = (props) => {
     if (hubs && hubs.length > 0) {
       return (
         <div className={css(styles.tags)}>
-          {hubs.map(
+          {hubs.slice(0, 2).map(
             (tag, index) =>
               tag &&
               index < 3 && (
@@ -491,7 +491,9 @@ const ProjectCard = (props) => {
           <span className={css(styles.previewRoot)}>{renderPreview()}</span>
         </div>
         <div className={css(styles.mobileHubtagContainer)}>
-          <SupportList users={supporters} />
+          <div className={css(styles.supportlist)}>
+            <SupportList users={supporters} />
+          </div>
           {renderHubTags()}
         </div>
         <div className={css(styles.bottomBar)}>
@@ -570,6 +572,8 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       width: "100%",
+      margin: "15px 0 10px",
+      boxSizing: "border-box",
     },
   },
   previewColumn: {
@@ -719,6 +723,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     marginTop: 10,
     width: "max-content",
+    overflow: "hidden",
     "@media only screen and (max-width: 970px)": {
       marginBottom: 15,
       justifyContent: "flex-start",
@@ -728,6 +733,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       marginBottom: 0,
       marginTop: 0,
+      width: "unset",
     },
   },
   hubtagContainer: {
@@ -744,8 +750,8 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 767px)": {
       display: "flex",
-      width: "max-content",
-      justifyContent: "justify-content",
+      width: "100%",
+      justifyContent: "space-between",
       alignItems: "center",
     },
   },
@@ -856,7 +862,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
-    // marginTop: 10,
   },
   fundProjectButton: {
     marginLeft: 30,
@@ -882,9 +887,12 @@ const styles = StyleSheet.create({
       alignItems: "center",
       background: colors.BLUE(),
       color: "#FFF",
-      ":hover": {
-        // background: '#FFF',
-      },
+    },
+  },
+  supportlist: {
+    marginBottom: 8,
+    "@media only screen and (max-width: 767px)": {
+      // marginRight: 10
     },
   },
 });
