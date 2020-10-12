@@ -36,7 +36,15 @@ class AuthorCardList extends React.Component {
 
   renderAuthorCard = (authors) => {
     return authors.map((author, i) => {
-      let { first_name, last_name, email, avatar, onRemove, id } = author;
+      let {
+        first_name,
+        last_name,
+        email,
+        profile_image,
+        onRemove,
+        id,
+      } = author;
+      console.log(author);
       return (
         <div
           className={css(
@@ -48,8 +56,8 @@ class AuthorCardList extends React.Component {
             this.props.onAuthorClick && this.props.onAuthorClick(author)
           }
         >
-          {avatar ? (
-            <img className={css(styles.avatar)} src={uri(avatar)} />
+          {profile_image ? (
+            <img className={css(styles.avatar)} src={profile_image} />
           ) : (
             <div className={css(styles.avatar, styles.default)}>
               <p className={css(styles.initials)}>

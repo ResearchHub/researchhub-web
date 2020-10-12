@@ -103,6 +103,7 @@ class UserContributionsTab extends React.Component {
               index === this.state.contributions.length - 1 && styles.noBorder,
             ]}
             voteCallback={this.voteCallback}
+            mobileView={this.props.mobileView}
           />
         </div>
       );
