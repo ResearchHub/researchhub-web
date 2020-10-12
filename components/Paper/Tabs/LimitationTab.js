@@ -10,6 +10,7 @@ import FormTextArea from "~/components/Form/FormTextArea";
 import Button from "~/components/Form/Button";
 import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // redux
 import { LimitationsActions } from "~/redux/limitations";
@@ -145,7 +146,17 @@ class LimitationTab extends React.Component {
   };
 
   submitLimitation = async () => {
-    let { limitations, postLimitation, showMessage, setMessage } = this.props;
+    let {
+      limitations,
+      postLimitation,
+      showMessage,
+      setMessage,
+      auth,
+      openLoginModal,
+    } = this.props;
+    if (!auth.isLoggedIn) {
+      return openLoginModal(true, "Please login to add a limitation");
+    }
     this.props.showMessage({ load: true, show: true });
     let paperId = this.props.paperId;
     let limitation = this.formatNewLimitation();
@@ -570,6 +581,7 @@ const inputStyles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   limitations: state.limitations,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -578,6 +590,7 @@ const mapDispatchToProps = {
   postLimitation: LimitationsActions.postLimitation,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  openLoginModal: ModalActions.openLoginModal,
 };
 
 export default connect(

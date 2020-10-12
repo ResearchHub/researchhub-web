@@ -135,7 +135,17 @@ class BulletsContainer extends React.Component {
   };
 
   submitBulletPoint = async () => {
-    let { bulletsRedux, postBullet, showMessage, setMessage } = this.props;
+    let {
+      bulletsRedux,
+      postBullet,
+      showMessage,
+      setMessage,
+      auth,
+      openLoginModal,
+    } = this.props;
+    if (!auth.isLoggedIn) {
+      return openLoginModal(true, "Please login to add a key takeaway");
+    }
     this.props.showMessage({ load: true, show: true });
     let paperId = this.props.paperId;
     let bullet = this.formatNewBullet();
@@ -567,6 +577,7 @@ const inputStyles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   bulletsRedux: state.bullets,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -576,6 +587,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   updateStateByKey: BulletActions.updateStateByKey,
+  openLoginModal: ModalActions.openLoginModal,
 };
 
 export default connect(
