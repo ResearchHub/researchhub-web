@@ -361,8 +361,8 @@ class Index extends React.Component {
                   ResearchCoin is also linked to reputation on the
                   platform--with reputation being mesaured as a user's lifetime
                   earnings of ResearchCoin minus erosion due to downvotes.
-                  Reputation is linked to certain privileges in the forum, g as
-                  a mechanism for moderation within the community.{"\n \n"}
+                  Reputation is linked to certain privileges in the app, as well
+                  as a mechanism for moderation within the community.{"\n \n"}
                   Further details about ResearchCoin can also be found on the
                   ResearchHub Notion page.
                 </p>
