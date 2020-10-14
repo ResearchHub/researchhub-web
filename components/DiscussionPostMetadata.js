@@ -231,7 +231,7 @@ const User = (props) => {
   const { name, paper, authorProfile, smaller, twitterUrl } = props;
   let isAuthor;
 
-  if (paper && paper.authors && paper.authors.length) {
+  if (paper && paper.authors && paper.authors.length && authorProfile) {
     paper.authors.forEach((author) => {
       if (author.id === authorProfile.id) {
         isAuthor = true;
