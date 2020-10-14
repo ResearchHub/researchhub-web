@@ -582,6 +582,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     height: "100%",
     width: "100%",
+    boxSizing: "border-box",
     minHeight: 72,
   },
   paperTitle: {

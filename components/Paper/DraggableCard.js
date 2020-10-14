@@ -3,12 +3,21 @@ import { useDrag, useDrop } from "react-dnd";
 import { StyleSheet, css } from "aphrodite";
 
 import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";
+// import DraggableProjectCard from "~/components/Tabs/Projects/DraggableProjectCard";
 
 const style = {
   cursor: "move",
 };
 
-const DraggableCard = ({ id, text, index, moveCard, data, onEditCallback }) => {
+const DraggableCard = ({
+  id,
+  text,
+  project,
+  index,
+  moveCard,
+  data,
+  onEditCallback,
+}) => {
   const ref = useRef(null);
   const [, drop] = useDrop({
     accept: "bullet_point",

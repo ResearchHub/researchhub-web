@@ -20,11 +20,10 @@ import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
 
-class ManageBulletPointsModal extends React.Component {
+class ManageFeaturedWorkModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      mobileView: false,
       cards: [],
       pendingSubmission: false,
     };
@@ -35,119 +34,35 @@ class ManageBulletPointsModal extends React.Component {
   }
 
   componentDidMount() {
-    this.updateDimensions();
-    window.addEventListener("resize", this.updateDimensions);
+    this.setState({
+      cards: this.props.cards || [],
+    });
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      if (this.props.type === "key_takeaway") {
-        if (
-          JSON.stringify(this.props.bulletsRedux.bullets) !==
-            JSON.stringify(this.state.cards) &&
-          !this.state.cards.length
-        ) {
-          this.setState({
-            cards: this.props.bulletsRedux.bullets,
-          });
-        }
-      } else if (this.props.type === "limitations") {
-        if (
-          this.props.limitations.limits !== this.state.cards &&
-          !this.state.cards.length
-        ) {
-          this.setState({
-            cards: this.props.limitations.limits,
-          });
-        }
-      } else {
-        this.setState({
-          cards: [],
-        });
-      }
+    if (JSON.stringify(prevProps.cards) !== JSON.stringify(this.props.cards)) {
+      this.setState({ cards: this.props.cards });
     }
   }
 
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
-  }
-
-  updateDimensions = () => {
-    if (window.innerWidth < 436) {
-      this.setState({
-        mobileView: true,
-      });
-    } else {
-      this.setState({
-        mobileView: false,
-      });
-    }
-  };
-
-  onEditCallback = (card, index) => {
-    let cards = [...this.state.cards];
-    cards[index] = card;
-    this.setState({ cards }, () => {
-      if (this.props.type === "limitations") {
-        this.props.limitationActions.updateStateByKey(
-          "limits",
-          this.state.cards
-        );
-      } else if (this.props.type === "key_takeaway") {
-        this.props.bulletActions.updateStateByKey("bullets", this.state.cards);
-      }
-    });
-  };
-
-  saveReorder = async () => {
-    let { bulletActions, messageActions, type, limitationActions } = this.props;
-    let paperId = this.props.paperId;
-    this.setState({ pendingSubmission: true });
-    if (type === "key_takeaway") {
-      let newOrder = [...this.state.cards];
-      await bulletActions.reorderBullets({
-        paperId,
-        bullets: newOrder,
-      });
-      if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
-        this.setState({
-          pendingSubmission: false,
-        });
-        messageActions.setMessage("Order Saved!");
-        messageActions.showMessage({ show: true });
-        this.closeModal();
-      } else {
-        if (this.props.bulletsRedux.status === 429) {
-          return this.closeModal();
-        }
-      }
-    } else if (type === "limitations") {
-      await limitationActions.reorderLimitations({
-        paperId,
-        limits: [...this.state.cards],
-      });
-      if (!this.props.limitations.pending && this.props.limitations.success) {
-        this.setState({
-          pendingSubmission: false,
-        });
-        messageActions.setMessage("Order Saved!");
-        messageActions.showMessage({ show: true });
-        this.closeModal();
-      } else {
-        if (this.props.limitations.status === 429) {
-          return this.closeModal();
-        }
-      }
-    }
-  };
+  componentWillUnmount() {}
 
   /**
    * closes the modal on button click
    */
   closeModal = () => {
-    let { modalActions } = this.props;
     this.setState({ ...this.initialState });
-    modalActions.openManageBulletPointsModal(false, null);
+    this.props.modalActions.openManageFeaturedWorkModal(false, null);
+  };
+
+  onEditCallback = (card, index) => {
+    let cards = [...this.state.cards];
+    cards[index] = card;
+    this.setState({ cards });
+  };
+
+  saveReorder = async () => {
+    this.setState({ pendingSubmission: true });
   };
 
   updateCards = ({ dragIndex, hoverIndex, dragCard }) => {
@@ -185,22 +100,16 @@ class ManageBulletPointsModal extends React.Component {
     let { mobileView, pendingSubmission, cards } = this.state;
     return (
       <Modal
-        isOpen={modals.openManageBulletPointsModal.isOpen}
+        isOpen={modals.openManageFeaturedWorkModal}
         closeModal={this.closeModal}
         className={css(styles.modal)}
         shouldCloseOnOverlayClick={true}
-        style={mobileView ? mobileOverlayStyles : overlayStyles}
+        style={overlayStyles}
       >
         <div className={css(styles.modalContent)}>
-          <div className={css(styles.title)}>{`Manage ${
-            type === "key_takeaway" ? "Key Takeaways" : "Limitations"
-          }`}</div>
+          <div className={css(styles.title)}>Manage Featured Work</div>
           <div className={css(styles.subtitle)}>
-            {`The selected ${
-              type === "key_takeaway" ? "key takeaways" : "limitations"
-            } will be displayed \non the paper in the ${
-              type === "key_takeaway" ? "key takeaways" : "limitations"
-            } section.`}
+            {`The selected works will be displayed on the paper in the section.`}
           </div>
           <div className={css(styles.bulletPoints)}>
             <DndProvider backend={Backend}>
@@ -384,9 +293,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
-  bulletsRedux: state.bullets,
-  limitations: state.limitations,
-  type: state.modals.openManageBulletPointsModal.type,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -399,4 +305,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ManageBulletPointsModal);
+)(ManageFeaturedWorkModal);
