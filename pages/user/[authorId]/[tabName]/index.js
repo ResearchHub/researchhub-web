@@ -24,6 +24,7 @@ import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserProjectsTab from "~/components/Author/Tabs/UserProjects";
+import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
 import UserInfoModal from "~/components/modal/UserInfoModal";
 import Button from "~/components/Form/Button";
 
@@ -343,6 +344,13 @@ const AuthorPage = (props) => {
 
   const tabs = [
     {
+      href: "overview",
+      label: "overview",
+      showCount: false,
+      // count: () => author.userContributions.count,
+      count: 0,
+    },
+    {
       href: "contributions",
       label: "paper submissions",
       showCount: true,
@@ -383,6 +391,9 @@ const AuthorPage = (props) => {
   const renderTabTitle = () => {
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].href === tabName) {
+        if (tabs[i].label === "overview") {
+          return "Featured Work";
+        }
         return tabs[i].label;
       }
     }
@@ -394,6 +405,13 @@ const AuthorPage = (props) => {
       <ComponentWrapper>
         <div className={css(styles.tabMeta)}>
           <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+          <div
+            className={css(
+              tabName === "overview" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserOverviewTab fetching={fetching} />
+          </div>
           <div
             className={css(
               tabName === "contributions" ? styles.reveal : styles.hidden
