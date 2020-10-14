@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 // Components
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
+import Error from "next/error";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -17,6 +18,8 @@ import { getInitialScope } from "~/config/utils/dates";
 
 class Index extends React.Component {
   static async getInitialProps(ctx) {
+    const { res, slug, name } = ctx.query;
+
     let defaultProps = {
       initialFeed: null,
       leaderboardFeed: null,
@@ -24,10 +27,13 @@ class Index extends React.Component {
     };
 
     try {
-      const { slug, name } = ctx.query;
       const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
         .then((res) => res.json())
         .then((body) => body.results[0]);
+
+      if (!currentHub) {
+        throw 404;
+      }
 
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetch(
@@ -57,11 +63,16 @@ class Index extends React.Component {
         },
       };
     } catch {
+      if (res) {
+        res.statusCode = 404;
+      }
+
       return {
         slug: null,
         name: null,
         currentHub: null,
         initialProps: { ...defaultProps },
+        error: true,
       };
     }
   }
@@ -87,6 +98,7 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
+    console.log("this.props", this.props);
     if (!this.props.initialProps) {
       this.fetchHubInfo(this.state.slug);
     }
@@ -125,6 +137,10 @@ class Index extends React.Component {
 
   render() {
     const { currentHub, slug } = this.state;
+    if (this.props.error) {
+      return <Error statusCode={404} />;
+    }
+
     return (
       <div>
         {process.browser ? (

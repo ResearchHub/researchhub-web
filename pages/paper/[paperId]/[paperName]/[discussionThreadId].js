@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
 import { connect, useDispatch, useStore } from "react-redux";
+import Error from "next/error";
 
 // Components
 import Head from "~/components/Head";
@@ -29,6 +30,10 @@ import colors from "../../../../config/themes/colors";
 const DiscussionThreadPage = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
+
+  if (props.error) {
+    return <Error statusCode={404} />;
+  }
 
   const { discussion, discussionThreadId, hostname, paperId } = props;
 
@@ -188,22 +193,31 @@ const DiscussionThreadPage = (props) => {
   );
 };
 
-DiscussionThreadPage.getInitialProps = async ({ req, store, query }) => {
+DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
   const { host } = absoluteUrl(req);
   const hostname = host;
   let { discussion } = store.getState();
 
   const { paperId, discussionThreadId } = query;
   const page = 1;
-
-  store.dispatch(DiscussionActions.fetchThreadPending());
-  store.dispatch(DiscussionActions.fetchCommentsPending());
-  await store.dispatch(
-    DiscussionActions.fetchThread(paperId, discussionThreadId)
-  );
-  await store.dispatch(
-    DiscussionActions.fetchComments(paperId, discussionThreadId, page)
-  );
+  try {
+    if (typeof paperId !== "number" || typeof discussionThreadId !== "number") {
+      throw 404;
+    }
+    store.dispatch(DiscussionActions.fetchThreadPending());
+    store.dispatch(DiscussionActions.fetchCommentsPending());
+    await store.dispatch(
+      DiscussionActions.fetchThread(paperId, discussionThreadId)
+    );
+    await store.dispatch(
+      DiscussionActions.fetchComments(paperId, discussionThreadId, page)
+    );
+  } catch (err) {
+    if (res) {
+      res.statusCode = 404;
+    }
+    return { error: true };
+  }
 
   discussion = store.getState().discussion;
 

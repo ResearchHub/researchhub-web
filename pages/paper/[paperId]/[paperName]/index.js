@@ -657,8 +657,11 @@ Paper.getInitialProps = async (ctx) => {
   // Fetch data from external API
   let props = {};
   let paper;
+  let paperSlug;
+
   try {
     paper = await fetchPaper({ paperId: query.paperId });
+    paperSlug = paper.slug;
   } catch (err) {
     console.log(err);
     // if paper doesnot exist
@@ -670,10 +673,10 @@ Paper.getInitialProps = async (ctx) => {
 
   let fetchedPaper = true;
 
-  if (paper.slug !== query.paperName) {
+  if (paperSlug !== query.paperName) {
     // redirect paper if paperName does not match slug
-    let paperName = paper.slug
-      ? paper.slug
+    let paperName = paperSlug
+      ? paperSlug
       : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
 
     let redirectPath = `/paper/${paper.id}/${paperName}`;
