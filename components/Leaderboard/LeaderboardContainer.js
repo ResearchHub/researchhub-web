@@ -19,11 +19,8 @@ const LeaderboardContainer = (props) => {
     props.initialUsers ? false : true
   );
 
-  // componentDidMount
   useEffect(() => {
-    if (!props.initialUsers) {
-      fetchLeaderboard();
-    }
+    fetchLeaderboard();
   }, [props.hubId]);
 
   const fetchLeaderboard = () => {
