@@ -7,6 +7,9 @@ import Loader from "~/components/Loader/Loader";
 // Components
 import ComponentWrapper from "./ComponentWrapper";
 
+// Config
+import icons from "~/config/themes/icons";
+
 const TabBar = (props) => {
   const selectedTab = props.selectedTab;
   const { dynamic_href, fetching } = props;
@@ -16,6 +19,9 @@ const TabBar = (props) => {
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
+          <div className={css(styles.navbutton, styles.left)}>
+            {icons.chevronLeft}
+          </div>
           {tabs.map((tab) => {
             if (tab.label === "transactions" || tab.label === "boosts") {
               let { user, author } = props;
@@ -31,6 +37,9 @@ const TabBar = (props) => {
               props.author.id
             );
           })}
+          <div className={css(styles.navbutton, styles.right)}>
+            {icons.chevronRight}
+          </div>
         </div>
       </ComponentWrapper>
     </div>
@@ -123,6 +132,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minWidth: 450,
     justifyContent: "flex-start",
+    overflowX: "scroll",
   },
   firstTab: {
     paddingLeft: 0,
@@ -131,7 +141,7 @@ const styles = StyleSheet.create({
     color: "rgba(36, 31, 58, .6)",
     fontWeight: 500,
     padding: "1rem",
-
+    minWidth: "max-content",
     "@media only screen and (min-width: 768px)": {
       marginRight: 28,
     },

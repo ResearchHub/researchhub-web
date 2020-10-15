@@ -19,6 +19,10 @@ import { MessageActions } from "~/redux/message";
 import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
+import BaseModal from "./BaseModal";
+
+// Config
+import colors from "~/config/themes/colors";
 
 class ManageFeaturedWorkModal extends React.Component {
   constructor(props) {
@@ -26,11 +30,25 @@ class ManageFeaturedWorkModal extends React.Component {
     this.initialState = {
       cards: [],
       pendingSubmission: false,
+      featured: [],
+      activePaperIds: {},
+      activeTab: 0,
     };
-
     this.state = {
       ...this.initialState,
     };
+
+    this.tabs = [
+      {
+        label: "featured works",
+      },
+      {
+        label: "authored papers",
+      },
+      {
+        label: "projects",
+      },
+    ];
   }
 
   componentDidMount() {
@@ -41,7 +59,14 @@ class ManageFeaturedWorkModal extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (JSON.stringify(prevProps.cards) !== JSON.stringify(this.props.cards)) {
-      this.setState({ cards: this.props.cards });
+      return this.setState({ cards: this.props.cards });
+    }
+
+    if (
+      !prevProps.modals.openManageFeaturedWorkModal &&
+      this.props.modals.openManageFeaturedWorkModal
+    ) {
+      return this.setState({ cards: this.props.cards });
     }
   }
 
@@ -52,7 +77,7 @@ class ManageFeaturedWorkModal extends React.Component {
    */
   closeModal = () => {
     this.setState({ ...this.initialState });
-    this.props.modalActions.openManageFeaturedWorkModal(false, null);
+    this.props.modalActions.openManageFeaturedWorkModal(false);
   };
 
   onEditCallback = (card, index) => {
@@ -63,6 +88,7 @@ class ManageFeaturedWorkModal extends React.Component {
 
   saveReorder = async () => {
     this.setState({ pendingSubmission: true });
+    //TODO
   };
 
   updateCards = ({ dragIndex, hoverIndex, dragCard }) => {
@@ -79,7 +105,40 @@ class ManageFeaturedWorkModal extends React.Component {
     this.updateCards({ dragIndex, hoverIndex, dragCard });
   };
 
-  renderCards = (cards) => {
+  setActiveTab = (activeTab) => {
+    this.setState({ activeTab });
+  };
+
+  handleCardClick = (paperId, index) => {
+    let activePaperIds = { ...this.state.activePaperIds };
+
+    if (activePaperIds[paperId]) {
+      delete activePaperIds[paperId];
+    } else {
+      activePaperIds[paperId] = true;
+    }
+
+    this.setState({ activePaperIds });
+  };
+
+  renderTabs = () => {
+    const { activeTab } = this.state;
+
+    return this.tabs.map((tab, i) => {
+      return (
+        <div
+          className={css(styles.tab, i === activeTab && styles.activeTab)}
+          onClick={() => this.setActiveTab(i)}
+        >
+          {tab.label}
+        </div>
+      );
+    });
+  };
+
+  renderCards = () => {
+    const { activePaperIds, activeTab, cards } = this.state;
+
     return cards.map((card, index) => {
       return (
         <DraggableCard
@@ -90,6 +149,10 @@ class ManageFeaturedWorkModal extends React.Component {
           data={card}
           moveCard={this.moveCard}
           onEditCallback={this.onEditCallback}
+          onClick={this.handleCardClick}
+          featuredWorks={true}
+          manage={activeTab === 0}
+          active={activePaperIds[card.id]}
         />
       );
     });
@@ -97,7 +160,8 @@ class ManageFeaturedWorkModal extends React.Component {
 
   render() {
     let { modals, type } = this.props;
-    let { mobileView, pendingSubmission, cards } = this.state;
+    const { pendingSubmission } = this.state;
+
     return (
       <Modal
         isOpen={modals.openManageFeaturedWorkModal}
@@ -107,14 +171,10 @@ class ManageFeaturedWorkModal extends React.Component {
         style={overlayStyles}
       >
         <div className={css(styles.modalContent)}>
-          <div className={css(styles.title)}>Manage Featured Work</div>
-          <div className={css(styles.subtitle)}>
-            {`The selected works will be displayed on the paper in the section.`}
-          </div>
-          <div className={css(styles.bulletPoints)}>
-            <DndProvider backend={Backend}>
-              {this.renderCards(cards)}
-            </DndProvider>
+          <div className={css(styles.title)}>Select featured papers</div>
+          <div className={css(styles.tabBar)}>{this.renderTabs()}</div>
+          <div className={css(styles.cardList)}>
+            <DndProvider backend={Backend}>{this.renderCards()}</DndProvider>
           </div>
           <div className={css(styles.buttonRow)}>
             <Ripples
@@ -202,8 +262,10 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     padding: 50,
-    overflow: "scroll",
+    overflowX: "visible",
     borderRadius: 5,
+    minHeight: "50vh",
+    maxHeight: "60vh",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
@@ -211,11 +273,10 @@ const styles = StyleSheet.create({
       padding: "50px 0px 0px 0px",
     },
   },
-  bulletPoints: {
+  cardList: {
     width: "100%",
-    marginBottom: 20,
+    padding: 10,
     overflowY: "scroll",
-    overflowX: "hidden",
   },
   title: {
     display: "flex",
@@ -223,7 +284,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     color: "#241F3A",
     fontWeight: 500,
-    fontSize: 28,
+    fontSize: 26,
     flexWrap: "wrap",
     whiteSpace: "pre-wrap",
     marginBottom: 15,
@@ -271,7 +332,7 @@ const styles = StyleSheet.create({
   buttonRow: {
     width: "100%",
     display: "flex",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     marginTop: 15,
   },
   cancelButton: {
@@ -288,6 +349,36 @@ const styles = StyleSheet.create({
     ":hover": {
       color: "#3971FF",
     },
+  },
+  tabBar: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  tab: {
+    color: colors.BLACK(0.6),
+    fontSize: 18,
+    textTransform: "capitalize",
+    padding: "5px 10px 10px",
+    margin: "0px 5px",
+    borderBottom: "3px solid #FFF",
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(),
+      borderColor: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+  },
+  activeTab: {
+    color: colors.BLUE(),
+    borderColor: colors.BLUE(),
   },
 });
 

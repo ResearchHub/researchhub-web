@@ -352,7 +352,6 @@ const ProjectCard = (props) => {
                 <HubTag
                   key={`hub_${index}`}
                   tag={tag}
-                  hubName={hubName}
                   last={index === hubs.length - 1}
                   // gray={true}
                   labelStyle={styles.hubLabel}
@@ -362,7 +361,6 @@ const ProjectCard = (props) => {
           {hubs.length > 3 && (
             <HubDropDown
               hubs={hubs}
-              hubName={hubName}
               labelStyle={styles.hubLabel}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
@@ -397,7 +395,7 @@ const ProjectCard = (props) => {
     return (
       <div className={css(styles.submitDateContainer)}>
         <span className={css(styles.publishDate, styles.text)}>
-          {convertDate(paper.created_date)}
+          Submitted: {convertDate(paper.created_date)}
         </span>
       </div>
     );
