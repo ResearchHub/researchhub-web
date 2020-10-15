@@ -675,7 +675,7 @@ class HubPage extends React.Component {
 
   render() {
     let { auth } = this.props;
-
+    console.log(this.props.hub);
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>

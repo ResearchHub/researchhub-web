@@ -115,7 +115,6 @@ class PaperProgress extends React.Component {
     ];
 
     let progress = this.calculateProgress(sections);
-    console.log(progress);
 
     if (!this.state.complete) {
       this.setState(

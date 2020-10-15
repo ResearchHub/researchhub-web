@@ -24,7 +24,7 @@ const LeaderboardContainer = (props) => {
     if (!props.initialUsers) {
       fetchLeaderboard();
     }
-  }, []);
+  }, [props.hubId]);
 
   const fetchLeaderboard = () => {
     setFetchingUsers(true);
