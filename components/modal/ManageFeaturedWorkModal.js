@@ -17,6 +17,10 @@ import { ModalActions } from "~/redux/modals";
 import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
+import BaseModal from "./BaseModal";
+
+// Config
+import colors from "~/config/themes/colors";
 
 // Config
 import colors, { cardColors, formColors } from "~/config/themes/colors";
