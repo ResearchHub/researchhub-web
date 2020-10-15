@@ -3,7 +3,7 @@ import { useDrag, useDrop } from "react-dnd";
 import { StyleSheet, css } from "aphrodite";
 
 import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";
-// import DraggableProjectCard from "~/components/Tabs/Projects/DraggableProjectCard";
+import DraggableProjectCard from "~/components/Author/Tabs/Projects/DraggableProjectCard";
 
 const style = {
   cursor: "move",
@@ -17,12 +17,18 @@ const DraggableCard = ({
   moveCard,
   data,
   onEditCallback,
+  onClick,
+  featuredWorks,
+  manage,
+  active,
 }) => {
   const ref = useRef(null);
+  const refHolder = useRef(null);
+
   const [, drop] = useDrop({
     accept: "bullet_point",
     hover(item, monitor) {
-      if (!ref.current) {
+      if (!ref.current || !manage) {
         return;
       }
       const dragIndex = item.index;
@@ -69,6 +75,19 @@ const DraggableCard = ({
   const opacity = isDragging ? 0.5 : 1;
   drag(drop(ref));
 
+  if (featuredWorks) {
+    return (
+      <div ref={ref} style={{ opacity }} draggable={manage && manage}>
+        <DraggableProjectCard
+          data={data}
+          index={index}
+          onEditCallback={onEditCallback}
+          onClick={onClick}
+          active={active}
+        />
+      </div>
+    );
+  }
   return (
     <div ref={ref} style={{ opacity }}>
       <SummaryBulletPoint

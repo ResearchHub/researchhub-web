@@ -34,24 +34,23 @@ const UserOverview = (props) => {
   function setInitialState() {
     const { userProjects, authoredPapers } = props.author;
     let seen = {};
-    return [...authoredPapers.papers, ...userProjects.projects].map((paper) => {
-      if (!seen[paper.id]) {
-        seen[paper.id] = true;
-        return paper;
-      }
-    });
+    return [...authoredPapers.papers, ...userProjects.projects]
+      .map((paper) => {
+        if (!seen[paper.id]) {
+          seen[paper.id] = true;
+          return paper;
+        }
+      })
+      .filter((paper) => paper && paper);
   }
 
   function openManageFeaturedWorkModal(e) {
-    console.log("called modal");
-
     props.openManageFeaturedWorkModal(true);
   }
 
   function renderFeaturedWorks() {
     if (featuredWorks && featuredWorks.length) {
       return featuredWorks.map((featuredWork, i) => {
-        console.log("featuredWork", featuredWork);
         let isRegular = featuredWork && featuredWork.paper_type === "REGULAR";
 
         if (isRegular) {
@@ -77,7 +76,7 @@ const UserOverview = (props) => {
 
   return (
     <div className={css(styles.root)}>
-      <ManageFeaturedWorkModal card={featuredWorks} />
+      <ManageFeaturedWorkModal cards={featuredWorks} />
       <div
         className={css(styles.editButton)}
         onClick={openManageFeaturedWorkModal}
