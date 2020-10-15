@@ -498,7 +498,6 @@ class PaperPageCard extends React.Component {
       );
     }
 
-    console.log(authorsObj);
     for (let i = 0; i < authorKeys.length; i++) {
       let authorName = authorKeys[i];
       if (typeof authorsObj[authorName] === "object") {
