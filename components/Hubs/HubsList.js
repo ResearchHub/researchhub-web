@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
-    width: "90%",
+    width: "100%",
     paddingLeft: 35,
     boxSizing: "border-box",
     "@media only screen and (max-width: 1303px)": {
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   },
   hubsList: {
     opacity: 0,
-    width: "90%",
+    width: "100%",
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
