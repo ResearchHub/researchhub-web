@@ -482,12 +482,13 @@ class PaperPageCard extends React.Component {
     let { paper } = this.props;
 
     let authorsObj = this.getAuthors();
-    let length = Object.keys(authorsObj).length;
+    let authorKeys = Object.keys(authorsObj);
+    let length = authorKeys.length;
     let index = 0;
     let authors = [];
 
     if (length >= 15) {
-      let author = Object.keys(authorsObj)[0];
+      let author = authorKeys[0];
 
       return (
         <>
@@ -497,8 +498,11 @@ class PaperPageCard extends React.Component {
       );
     }
 
-    for (let author in authorsObj) {
-      if (typeof authorsObj[author] === "object") {
+    console.log(authorsObj);
+    for (let i = 0; i < authorKeys.length; i++) {
+      let authorName = authorKeys[i];
+      if (typeof authorsObj[authorName] === "object") {
+        let author = authorsObj[authorName];
         authors.push(
           <Link
             href={"/user/[authorId]/[tabName]"}
@@ -509,7 +513,7 @@ class PaperPageCard extends React.Component {
               className={css(styles.atag)}
             >
               <span className={css(styles.authorName)} property="name">
-                {`${author}${index < length - 1 ? "," : ""}`}
+                {`${authorName}${index < length - 1 ? "," : ""}`}
               </span>
               <meta property="author" content={author} />
             </a>
