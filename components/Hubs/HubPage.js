@@ -159,10 +159,17 @@ class HubPage extends React.Component {
     ) {
       this.updateDimensions();
       if (this.props.hub.id) {
-        this.fetchPapers({ hub: this.props.hub });
-        this.setState({
-          subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
-        });
+        this.setState(
+          {
+            subscribe: this.props.hub
+              ? subscribedHubs[this.props.hub.id]
+              : null,
+            page: 1,
+          },
+          () => {
+            this.fetchPapers({ hub: this.props.hub });
+          }
+        );
       }
     }
 
@@ -675,7 +682,6 @@ class HubPage extends React.Component {
 
   render() {
     let { auth } = this.props;
-    console.log(this.props.hub);
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>
@@ -691,7 +697,7 @@ class HubPage extends React.Component {
               initialHubList={this.props.initialHubList}
             />
             <LeaderboardContainer
-              hub={this.props.hub && this.props.hub.id}
+              hubId={this.props.hub && this.props.hub.id}
               initialUsers={this.props.leaderboardFeed}
             />
           </div>
