@@ -98,7 +98,6 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
-    console.log("this.props", this.props);
     if (!this.props.initialProps) {
       this.fetchHubInfo(this.state.slug);
     }

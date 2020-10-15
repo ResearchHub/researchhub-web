@@ -44,7 +44,6 @@ class AuthorCardList extends React.Component {
         onRemove,
         id,
       } = author;
-      console.log(author);
       return (
         <div
           className={css(
