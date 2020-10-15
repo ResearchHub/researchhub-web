@@ -16,6 +16,8 @@ import { Helpers } from "@quantfive/js-web-config";
 import { toTitleCase } from "~/config/utils";
 import { getInitialScope } from "~/config/utils/dates";
 
+const isServer = () => typeof window === "undefined";
+
 class Index extends React.Component {
   static async getInitialProps(ctx) {
     const { res, slug, name } = ctx.query;
@@ -25,6 +27,14 @@ class Index extends React.Component {
       leaderboardFeed: null,
       initialHubList: null,
     };
+
+    if (!isServer()) {
+      return {
+        slug,
+        name,
+        initialProps: {},
+      };
+    }
 
     try {
       const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
@@ -130,7 +140,11 @@ class Index extends React.Component {
     const { currentHub, slug } = this.state;
 
     return (
-      <HubPage hub={currentHub} slug={slug} {...this.props.initialProps} />
+      <HubPage
+        hub={currentHub}
+        slug={this.props.slug}
+        {...this.props.initialProps}
+      />
     );
   };
 
