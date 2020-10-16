@@ -106,9 +106,9 @@ const TabBar = (props) => {
               props.author.id
             );
           })}
-          <div className={css(styles.navbutton, styles.right)}>
+          {/* <div className={css(styles.navbutton, styles.right)}>
             {icons.chevronRight}
-          </div>
+          </div> */}
         </div>
         <div className={css(styles.navbuttonContainer, styles.right)}>
           <div
