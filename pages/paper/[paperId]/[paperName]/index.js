@@ -217,22 +217,20 @@ const Paper = (props) => {
   }, [props.paper]);
 
   useEffect(() => {
-    if (paper.id !== paperId) {
-      if (!props.fetchedPaper) {
-        fetchPaper({ paperId });
-      } else {
-        checkUserVote();
-      }
-      if (document.getElementById("structuredData")) {
-        let script = document.getElementById("structuredData");
-        script.textContext = formatStructuredData();
-      } else {
-        let script = document.createElement("script");
-        script.setAttribute("type", "application/ld+json");
-        script.setAttribute("id", "structuredData");
-        script.textContext = formatStructuredData();
-        document.head.appendChild(script);
-      }
+    if (!props.fetchedPaper) {
+      fetchPaper({ paperId });
+    } else {
+      checkUserVote();
+    }
+    if (document.getElementById("structuredData")) {
+      let script = document.getElementById("structuredData");
+      script.textContext = formatStructuredData();
+    } else {
+      let script = document.createElement("script");
+      script.setAttribute("type", "application/ld+json");
+      script.setAttribute("id", "structuredData");
+      script.textContext = formatStructuredData();
+      document.head.appendChild(script);
     }
   }, [paperId]);
 
@@ -455,7 +453,7 @@ const Paper = (props) => {
               upvote={upvote}
               downvote={downvote}
               selectedVoteType={selectedVoteType}
-              shareUrl={hostname + `/paper/${paperId}/${paper.slug}`}
+              shareUrl={process.browser && window.location.href}
               isModerator={isModerator}
               flagged={flagged}
               doneFetchingPaper={!loadingPaper}
@@ -651,7 +649,9 @@ Paper.getInitialProps = async (ctx) => {
   const hostname = host;
 
   if (!isServer()) {
-    return {};
+    return {
+      hostname,
+    };
   }
 
   // Fetch data from external API
@@ -664,6 +664,7 @@ Paper.getInitialProps = async (ctx) => {
     paperSlug = paper.slug;
   } catch (err) {
     console.log(err);
+    Sentry.captureException(err);
     // if paper doesnot exist
     if (res) {
       res.statusCode = 404;
