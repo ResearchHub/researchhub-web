@@ -14,7 +14,7 @@ import { formatDate } from "../../../../config/utils";
 
 import { formatPublishedDate } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
-import colors from "../../../../config/themes/colors";
+import colors, { cardColors, formColors } from "~/config/themes/colors";
 import icons from "../../../../config/themes/icons";
 import { formatDate } from "../../../../config/utils";
 
