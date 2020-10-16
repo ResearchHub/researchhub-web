@@ -44,4 +44,9 @@ export const modalColors = {
   SUBTITLE: colors.BLACK(0.65),
 };
 
+export const cardColors = {
+  BACKGROUND: "#FAFAFA",
+  BORDER: "#F0F0F0",
+};
+
 export default colors;

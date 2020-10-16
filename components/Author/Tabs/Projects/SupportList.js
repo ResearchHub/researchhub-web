@@ -44,7 +44,7 @@ const SupportList = (props) => {
           <AuthorAvatar
             author={author_profile}
             // disableLink={true}
-            size={28}
+            size={props.size ? props.size : 28}
           />
         </div>
       );

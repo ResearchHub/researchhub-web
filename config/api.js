@@ -608,6 +608,21 @@ const routes = (BASE_URL) => {
       return url + query;
     },
     SUPPORT: BASE_URL + "support/",
+    SUPPORT_USERS: ({ paperId, authorId }) => {
+      let url = BASE_URL + `support/`;
+      if (paperId) {
+        url += `?paper_id=${paperId}`;
+      } else if (authorId) {
+        url += `?author_id=${authorId}`;
+      }
+      return url;
+    },
+    FEATURED_PAPERS: ({ authorId }) => {
+      if (authorId) {
+        return BASE_URL + `paper/featured_papers/${authorId}/`;
+      }
+      return BASE_URL + "paper/featured_papers/";
+    },
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

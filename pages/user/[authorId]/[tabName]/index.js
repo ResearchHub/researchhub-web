@@ -25,6 +25,8 @@ import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserProjectsTab from "~/components/Author/Tabs/UserProjects";
 import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
+import UserSupportTab from "~/components/Author/Tabs/UserSupport";
+
 import UserInfoModal from "~/components/modal/UserInfoModal";
 import Button from "~/components/Form/Button";
 
@@ -45,8 +47,6 @@ const AuthorPage = (props) => {
 
   const [fetching, setFetching] = useState(true);
   const [openShareModal, setOpenShareModal] = useState(false);
-  const [hoverName, setHoverName] = useState(false);
-  const [hoverDescription, setHoverDescription] = useState(false);
   const [editName, setEditName] = useState(false);
   const [editDescription, setEditDescription] = useState(false);
   const [editFacebook, setEditFacebook] = useState(false);
@@ -94,6 +94,7 @@ const AuthorPage = (props) => {
         AuthorActions.getAuthor({ authorId: router.query.authorId })
       );
     }
+    let overview = fetchUserOverview();
     let authored = fetchAuthoredPapers();
     let discussions = fetchUserDiscussions();
     let contributions = fetchUserContributions();
@@ -103,6 +104,7 @@ const AuthorPage = (props) => {
     let refetch = refetchAuthor();
 
     Promise.all([
+      overview,
       authored,
       discussions,
       contributions,
@@ -171,6 +173,12 @@ const AuthorPage = (props) => {
     if (linkedinRef && !linkedinRef.contains(e.target)) {
       setEditLinkedin(false);
     }
+  }
+
+  async function fetchUserOverview() {
+    await dispatch(
+      AuthorActions.getUserOverview({ authorId: router.query.authorId })
+    );
   }
 
   async function fetchAuthoredPapers() {
@@ -346,9 +354,8 @@ const AuthorPage = (props) => {
     {
       href: "overview",
       label: "overview",
-      showCount: false,
-      // count: () => author.userContributions.count,
-      count: 0,
+      showCount: true,
+      count: () => author.userOverview.length,
     },
     {
       href: "contributions",
@@ -369,8 +376,8 @@ const AuthorPage = (props) => {
       count: () => author.userDiscussions.count,
     },
     {
-      href: "projects",
-      label: "projects",
+      href: "preregistration",
+      label: "preregistration",
       showCount: true,
       count: () => author.userProjects.count,
     },
@@ -402,74 +409,80 @@ const AuthorPage = (props) => {
   const renderTabContent = () => {
     return (
       // render all tab content on the dom, but only show if selected
-      <ComponentWrapper>
-        <div className={css(styles.tabMeta)}>
-          <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
-          <div
-            className={css(
-              tabName === "overview" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserOverviewTab fetching={fetching} />
+      <Fragment>
+        <ComponentWrapper>
+          <div className={css(styles.tabMeta)}>
+            <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+            <div
+              className={css(
+                tabName === "overview" ? styles.reveal : styles.hidden
+              )}
+            >
+              <UserOverviewTab fetching={fetching} />
+            </div>
+            <div
+              className={css(
+                tabName === "contributions" ? styles.reveal : styles.hidden
+              )}
+            >
+              <UserContributionsTab fetching={fetching} />
+            </div>
+            <div
+              className={css(
+                tabName === "authored-papers" ? styles.reveal : styles.hidden
+              )}
+            >
+              <AuthoredPapersTab fetching={fetching} />
+            </div>
+            <div
+              className={css(
+                tabName === "discussions" ? styles.reveal : styles.hidden
+              )}
+            >
+              <UserDiscussionsTab hostname={hostname} fetching={fetching} />
+            </div>
+            <div
+              className={css(
+                tabName === "preregistration" ? styles.reveal : styles.hidden
+              )}
+            >
+              <UserProjectsTab fetching={fetching} />
+            </div>
+            <div
+              className={css(
+                tabName === "transactions" ? styles.reveal : styles.hidden
+              )}
+            >
+              <UserTransactionsTab fetching={fetching} />
+            </div>
+            <div
+              className={css(
+                tabName === "boosts" ? styles.reveal : styles.hidden
+              )}
+            >
+              <UserPromotionsTab fetching={fetchingPromotions} />
+            </div>
           </div>
-          <div
-            className={css(
-              tabName === "contributions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserContributionsTab fetching={fetching} mobileView={mobileView} />
-          </div>
-          <div
-            className={css(
-              tabName === "authored-papers" ? styles.reveal : styles.hidden
-            )}
-          >
-            <AuthoredPapersTab fetching={fetching} mobileView={mobileView} />
-          </div>
-          <div
-            className={css(
-              tabName === "discussions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserDiscussionsTab
-              hostname={hostname}
-              fetching={fetching}
-              mobileView={mobileView}
-            />
-          </div>
-          {/* <div
-            className={css(
-              tabName === "projects" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserProjectsTab fetching={fetching} mobileView={mobileView} />
-          </div> */}
-          <div
-            className={css(
-              tabName === "projects" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserProjectsTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "transactions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserTransactionsTab fetching={fetching} mobileView={mobileView} />
-          </div>
-          <div
-            className={css(
-              tabName === "boosts" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserPromotionsTab
-              fetching={fetchingPromotions}
-              mobileView={mobileView}
-            />
-          </div>
-        </div>
-      </ComponentWrapper>
+        </ComponentWrapper>
+        {tabName === "overview" && (
+          <ComponentWrapper>
+            <div className={css(styles.tabMeta, styles.secondary)}>
+              <div
+                className={css(
+                  tabName === "overview" ? styles.reveal : styles.hidden
+                )}
+              >
+                <UserSupportTab
+                  fetching={fetching}
+                  authorName={name}
+                  authorId={router.query.authorId}
+                  {...props}
+                />
+              </div>
+            </div>
+          </ComponentWrapper>
+        )}
+      </Fragment>
     );
   };
 
@@ -1283,6 +1296,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       padding: 20,
     },
+  },
+  secondary: {
+    marginTop: 20,
   },
   title: {
     fontWeight: 500,

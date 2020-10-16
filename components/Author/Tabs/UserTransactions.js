@@ -73,13 +73,16 @@ class UserTransaction extends React.Component {
 
   render() {
     let { transactions } = this.props;
+    const userHasTransactions =
+      transactions &&
+      (transactions.withdrawal && transactions.withdrawals.length);
     return (
       <ReactPlaceholder
         ready={transactions && !this.props.fetching}
         showLoadingAnimation
         customPlaceholder={<PaperPlaceholder color="#efefef" />}
       >
-        {transactions && transactions.withdrawals.length ? (
+        {userHasTransactions ? (
           transactions.withdrawals.map((transaction, i) => {
             return (
               <TransactionCard

@@ -77,7 +77,7 @@ const DraggableCard = ({
 
   if (featuredWorks) {
     return (
-      <div ref={ref} style={{ opacity }} draggable={manage && manage}>
+      <div ref={ref} style={{ opacity }}>
         <DraggableProjectCard
           data={data}
           index={index}
