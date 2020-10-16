@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
 // Redux
-import { AuthActions } from "~/redux/auth";
-import { AuthorActions } from "~/redux/author";
 import { ModalActions } from "~/redux/modals";
 
 // Components
@@ -15,42 +13,17 @@ import ManageFeaturedWorkModal from "~/components/modal/ManageFeaturedWorkModal"
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-// import { formatPublishedDate, formatPaperSlug } from "~/config/utils";
-// import { transformDate } from "~/redux/utils";
-// import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 const UserOverview = (props) => {
-  let projects = props.author.userProjects.projects;
-
-  const [featuredWorks, setFeaturedWorks] = useState(setInitialState() || []);
-
-  // ComponentDidMount // Update
-  useEffect(() => {
-    setFeaturedWorks(setInitialState());
-  }, [props.author.userProjects.projects, props.author.authoredPapers.paper]);
-
-  function setInitialState() {
-    const { userProjects, authoredPapers } = props.author;
-    let seen = {};
-    return [...authoredPapers.papers, ...userProjects.projects]
-      .map((paper) => {
-        if (!seen[paper.id]) {
-          seen[paper.id] = true;
-          return paper;
-        }
-      })
-      .filter((paper) => paper && paper);
-  }
-
   function openManageFeaturedWorkModal(e) {
     props.openManageFeaturedWorkModal(true);
   }
 
   function renderFeaturedWorks() {
-    if (featuredWorks && featuredWorks.length) {
-      return featuredWorks.map((featuredWork, i) => {
+    if (props.author.userOverview && props.author.userOverview.length) {
+      return props.author.userOverview.map((featuredWork, i) => {
         let isRegular = featuredWork && featuredWork.paper_type === "REGULAR";
 
         if (isRegular) {
@@ -75,16 +48,24 @@ const UserOverview = (props) => {
   }
 
   return (
-    <div className={css(styles.root)}>
-      <ManageFeaturedWorkModal cards={featuredWorks} />
-      <div
-        className={css(styles.editButton)}
-        onClick={openManageFeaturedWorkModal}
-      >
-        {icons.pencil}
+    <Fragment>
+      <div className={css(styles.root)}>
+        <ManageFeaturedWorkModal
+          featured={props.author.userOverview || []}
+          authoredPapers={props.author.authoredPapers.papers || []}
+          projects={props.author.userProjects.projects || []}
+        />
+        <div
+          className={css(styles.editButton)}
+          onClick={openManageFeaturedWorkModal}
+        >
+          <i className={css(styles.icon) + " fal fa-tasks-alt"} />
+          Manage Featured Work
+          {/* {icons.pencil} */}
+        </div>
+        {renderFeaturedWorks()}
       </div>
-      {renderFeaturedWorks()}
-    </div>
+    </Fragment>
   );
 };
 
@@ -102,6 +83,14 @@ const styles = StyleSheet.create({
     top: -40,
     right: 0,
     cursor: "pointer",
+    fontSize: 14,
+    color: colors.BLACK(0.6),
+    ":hover": {
+      color: colors.BLACK(),
+    },
+  },
+  icon: {
+    marginRight: 5,
   },
   paperEntryCard: {
     border: 0,
@@ -112,6 +101,27 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     width: "100%",
     minWidth: "100%",
+  },
+  tabMeta: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+    background: "#fff",
+    border: "1.5px solid #F0F0F0",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    padding: 50,
+    paddingTop: 24,
+    "@media only screen and (max-width: 767px)": {
+      padding: 20,
+    },
+  },
+  title: {
+    fontWeight: 500,
+    textTransform: "capitalize",
+    marginTop: 0,
+    marginBottom: 16,
+    // fontSize: 32,
   },
 });
 

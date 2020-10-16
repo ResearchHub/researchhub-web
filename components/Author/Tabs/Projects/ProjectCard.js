@@ -94,11 +94,12 @@ const ProjectCard = (props) => {
 
   useEffect(() => {
     let endpoint = API.SUPPORT_USERS({ paperId: id && id });
-
     fetch(endpoint, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        console.log("res", res);
+
         setSupporters(res);
       });
   }, []);

@@ -17,6 +17,7 @@ const defaultAuthorState = {
   userProjects: {
     projects: [],
   },
+  userOverview: [],
 };
 
 const AuthorReducer = (state = defaultAuthorState, action) => {
@@ -35,6 +36,7 @@ const AuthorReducer = (state = defaultAuthorState, action) => {
     case types.GET_USER_PROJECTS:
     case types.UPDATE_AUTHOR_BY_KEY:
     case types.UPDATE_AUTHOR:
+    case types.GET_USER_OVERVIEW:
       return {
         ...state,
         ...action.payload,

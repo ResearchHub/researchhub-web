@@ -41,7 +41,7 @@ const icons = {
   paper: <i className="fa fa-file" />,
   editHub: <i className="fas fa-edit" />,
   trash: <i className="fal fa-trash-alt"></i>,
-  checkmark: <i className="far fa-check"></i>,
+  checkmark: <i className="fas fa-check"></i>,
 };
 
 export const voteWidgetIcons = {

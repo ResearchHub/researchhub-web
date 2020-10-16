@@ -19,9 +19,9 @@ const TabBar = (props) => {
     <div className={css(styles.container)}>
       <ComponentWrapper>
         <div className={css(styles.tabContainer)}>
-          <div className={css(styles.navbutton, styles.left)}>
+          {/* <div className={css(styles.navbutton, styles.left)}>
             {icons.chevronLeft}
-          </div>
+          </div> */}
           {tabs.map((tab) => {
             if (tab.label === "transactions" || tab.label === "boosts") {
               let { user, author } = props;
@@ -37,9 +37,9 @@ const TabBar = (props) => {
               props.author.id
             );
           })}
-          <div className={css(styles.navbutton, styles.right)}>
+          {/* <div className={css(styles.navbutton, styles.right)}>
             {icons.chevronRight}
-          </div>
+          </div> */}
         </div>
       </ComponentWrapper>
     </div>

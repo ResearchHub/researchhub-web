@@ -180,6 +180,30 @@ export const AuthorActions = {
         });
     };
   },
+  getUserOverview: ({ authorId }) => {
+    return (dispatch) => {
+      return fetch(API.FEATURED_PAPERS({ authorId }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          let userOverview = res.results.map((overview) => {
+            let child = {
+              ...overview.paper,
+              featured_id: overview.id, //id of the overview needed for put/patch requests in ManageFeaatureWorkModal
+            };
+
+            return child;
+          });
+
+          return dispatch({
+            type: types.GET_USER_OVERVIEW,
+            payload: {
+              userOverview,
+            },
+          });
+        });
+    };
+  },
 
   saveAuthorChanges: ({ changes, authorId, file }) => {
     return (dispatch) => {
