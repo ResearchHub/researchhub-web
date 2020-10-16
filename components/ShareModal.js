@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Modal from "react-modal";
 import PropTypes from "prop-types";
 
@@ -10,11 +10,12 @@ import { RHLogo } from "~/config/themes/icons";
 
 const ShareModal = (props) => {
   const { close, isOpen, title, subtitle, url } = props;
-  const [formInputRef, setFormInputRef] = useState();
+  // const [formInputRef, setFormInputRef] = useState();
   const [copySuccessMessage, setCopySuccessMessage] = useState(null);
+  const formInputRef = useRef();
 
   function copyToClipboard() {
-    formInputRef.select();
+    formInputRef.current.select();
     document.execCommand("copy");
     // e.target.focus(); // TODO: Uncomment if we don't want highlighting
     setCopySuccessMessage("Copied!");
@@ -23,7 +24,7 @@ const ShareModal = (props) => {
   return (
     <BaseModal isOpen={isOpen} closeModal={close} title={title}>
       <FormInput
-        getRef={setFormInputRef}
+        getRef={formInputRef}
         inlineNodeRight={<CopyLink onClick={copyToClipboard} />}
         value={url}
         message={copySuccessMessage}
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   inputStyle: {
+    paddingRight: 80,
     "@media only screen and (max-width: 665px)": {
       width: 360,
     },
