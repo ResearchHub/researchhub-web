@@ -261,8 +261,7 @@ class TransactionModal extends React.Component {
             {this.renderRow(
               {
                 text: "Recipient ETH Address",
-                tooltip:
-                  "The address of your Rinkeby ETH Account (ex. 0x0000...)",
+                tooltip: "The address of your ETH Account (ex. 0x0000...)",
                 onClick: "",
               },
               {
