@@ -93,14 +93,15 @@ const ProjectCard = (props) => {
   const store = useStore();
 
   useEffect(() => {
+    console.log("mount");
     let endpoint = API.SUPPORT_USERS({ paperId: id && id });
     fetch(endpoint, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        console.log("res", res);
+        console.log("res-projectCard", res);
 
-        setSupporters(res);
+        setSupporters(res.results);
       });
   }, []);
 
@@ -262,7 +263,6 @@ const ProjectCard = (props) => {
   };
 
   const renderBullet = () => {
-    // console.log('paper', paper);
     if (bullet_points && bullet_points.length > 0) {
       return (
         <div className={css(styles.summary, styles.text)}>
@@ -491,15 +491,18 @@ const ProjectCard = (props) => {
         </div>
         <div className={css(styles.mobileHubtagContainer)}>
           <div className={css(styles.supportlist)}>
-            <SupportList users={supporters} />
+            {/* <SupportList users={supporters} /> */}
+            {renderDiscussionCount()}
           </div>
           {renderHubTags()}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.hubtagContainer)}>
-            <SupportList users={supporters} />
+            {renderDiscussionCount()}
+            {/* <SupportList users={supporters} /> */}
             {/* {renderHubTags()} */}
           </div>
+
           <div className={css(styles.fundProjectContainer)}>
             <span className={css(styles.preregRoot)}>
               {renderPreregistrationTag()}
@@ -741,6 +744,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "unset",
     alignItems: "flex-start",
+    fontSize: 14,
+    width: "max-content",
+    color: "#918f9b",
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -869,12 +875,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     width: "max-content",
     border: `1px solid ${colors.BLUE()}`,
-    color: colors.BLUE(),
+    background: colors.BLUE(),
+    color: "#FFF",
     boxSizing: "border-box",
     minWidth: 90,
     ":hover": {
-      background: colors.BLUE(),
-      color: "#FFF",
+      // background: colors.BLUE(),
+      background: "#3E43E8",
+      // color: "#FFF",
     },
     "@media only screen and (max-width: 767px)": {
       width: "100%",

@@ -123,23 +123,41 @@ const AuthorSupportModal = (props) => {
   }
 
   function getAuthorId() {
-    const { paper } = props.modals.openAuthorSupportModal.props;
+    const { paper, author } = props.modals.openAuthorSupportModal.props;
 
+    if (author) {
+      return author.id;
+    }
     if (paper && paper.uploaded_by.author_profile) {
       let author = paper.uploaded_by.author_profile;
       return author.id;
     }
   }
 
+  function getObjectId() {
+    const { paper, author } = props.modals.openAuthorSupportModal.props;
+    if (author) {
+      return author.id;
+    }
+    if (paper) {
+      return paper.id;
+    }
+  }
+
   function sendTransaction() {
-    const { paper } = props.modals.openAuthorSupportModal.props;
+    const {
+      paper,
+      contentType,
+      author,
+    } = props.modals.openAuthorSupportModal.props;
+
     props.showMessage({ load: true, show: true });
 
     let payload = {
       user_id: props.user.id,
       recipient_id: getAuthorId(),
-      content_type: "paper", // 'paper', 'author'
-      object_id: paper.id, // id of paper or author
+      content_type: contentType ? contentType : "paper", // 'paper', 'author'
+      object_id: getObjectId(), // id of paper or author
       amount,
       payment_option: "SINGLE", // {'SINGLE', 'MONTHLY'},
       payment_type: "RSC_OFF_CHAIN", //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
@@ -183,7 +201,10 @@ const AuthorSupportModal = (props) => {
   }
 
   function formatAuthorName() {
-    const { paper } = props.modals.openAuthorSupportModal.props;
+    const { paper, author } = props.modals.openAuthorSupportModal.props;
+    if (author) {
+      return `${author.first_name} ${author.last_name}`;
+    }
     if (paper) {
       const { first_name, last_name } = paper.uploaded_by.author_profile;
       return `${first_name} ${last_name}`;

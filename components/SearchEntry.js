@@ -49,7 +49,7 @@ class SearchEntry extends React.Component {
     let paperSlug = slug ? slug : formatPaperSlug(result.title);
     clearSearch && clearSearch();
     if (indexName === "author") {
-      Router.push("/user/[authorId]/[tabName]", `/user/${id}/contributions`);
+      Router.push("/user/[authorId]/[tabName]", `/user/${id}/overview`);
     } else if (indexName === "paper") {
       Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
     } else if (indexName === "discussion_thread") {

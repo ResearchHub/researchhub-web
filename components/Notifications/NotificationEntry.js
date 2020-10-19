@@ -133,7 +133,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview}`}
             >
               <a
                 onClick={(e) => {
@@ -174,7 +174,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview}`}
             >
               <a
                 onClick={(e) => {
@@ -219,7 +219,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview}`}
             >
               <a
                 onClick={(e) => {
@@ -260,7 +260,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview}`}
             >
               <a
                 onClick={(e) => {
@@ -318,7 +318,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview}`}
             >
               <a
                 onClick={(e) => {
@@ -377,7 +377,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview}`}
             >
               <a
                 onClick={(e) => {
@@ -435,7 +435,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview}`}
             >
               <a
                 onClick={(e) => {
@@ -476,7 +476,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview`}
             >
               <a
                 onClick={(e) => {
@@ -533,7 +533,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview}`}
             >
               <a
                 onClick={(e) => {
@@ -590,7 +590,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/overview}`}
             >
               <a
                 onClick={(e) => {

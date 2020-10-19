@@ -23,6 +23,8 @@ const UserOverview = (props) => {
 
   function renderFeaturedWorks() {
     if (props.author.userOverview && props.author.userOverview.length) {
+      let isSolo = props.author.userOverview.length === 1;
+
       return props.author.userOverview.map((featuredWork, i) => {
         let isRegular = featuredWork && featuredWork.paper_type === "REGULAR";
 
@@ -31,7 +33,7 @@ const UserOverview = (props) => {
             <PaperEntryCard
               paper={featuredWork}
               key={`userfeaturedWork-${featuredWork.id}`}
-              style={[styles.paperEntryCard]}
+              style={[styles.paperEntryCard, isSolo && styles.solo]}
             />
           );
         }
@@ -39,7 +41,7 @@ const UserOverview = (props) => {
           <ProjectCard
             paper={featuredWork}
             key={`userfeaturedWork-${featuredWork.id}`}
-            style={[styles.paperEntryCard]}
+            style={[styles.paperEntryCard, isSolo && styles.solo]}
           />
         );
       });
@@ -101,6 +103,9 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
     width: "100%",
     minWidth: "100%",
+  },
+  solo: {
+    border: "none",
   },
   tabMeta: {
     width: "100%",

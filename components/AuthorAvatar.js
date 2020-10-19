@@ -88,12 +88,9 @@ const AuthorAvatar = (props) => {
       ) : (
         <Link
           href={"/user/[authorId]/[tabName]"}
-          as={`/user/${authorId}/contributions`}
+          as={`/user/${authorId}/overview`}
         >
-          <a
-            href={`/user/${authorId}/contributions`}
-            className={css(styles.atag)}
-          >
+          <a href={`/user/${authorId}/overview`} className={css(styles.atag)}>
             {renderAvatar()}
           </a>
         </Link>
