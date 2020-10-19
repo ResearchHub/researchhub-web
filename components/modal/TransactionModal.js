@@ -28,6 +28,12 @@ import CheckBox from "../Form/CheckBox";
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";
 
+const CURRENT_CHAIN_ID =
+  process.env.REACT_APP_ENV === "staging" ||
+  !process.env.NODE_ENV === "production"
+    ? RINKEBY_CHAIN_ID
+    : MAINNET_CHAIN_ID;
+
 class TransactionModal extends React.Component {
   constructor(props) {
     super(props);
@@ -106,14 +112,14 @@ class TransactionModal extends React.Component {
     if (chainId !== this.state.networkVersion) {
       let transition = false;
       if (
-        this.state.networkVersion !== MAINNET_CHAIN_ID &&
-        chainId === MAINNET_CHAIN_ID
+        this.state.networkVersion !== CURRENT_CHAIN_ID &&
+        chainId === CURRENT_CHAIN_ID
       ) {
         transition = true;
       }
       if (
-        this.state.networkVersion === MAINNET_CHAIN_ID &&
-        chainId !== MAINNET_CHAIN_ID
+        this.state.networkVersion === CURRENT_CHAIN_ID &&
+        chainId !== CURRENT_CHAIN_ID
       ) {
         transition = true;
       }
@@ -255,8 +261,7 @@ class TransactionModal extends React.Component {
             {this.renderRow(
               {
                 text: "Recipient ETH Address",
-                tooltip:
-                  "The address of your Rinkeby ETH Account (ex. 0x0000...)",
+                tooltip: "The address of your ETH Account (ex. 0x0000...)",
                 onClick: "",
               },
               {
@@ -685,7 +690,7 @@ class TransactionModal extends React.Component {
       <div
         className={css(
           styles.modalContent,
-          this.state.networkVersion === MAINNET_CHAIN_ID && styles.main
+          this.state.networkVersion === CURRENT_CHAIN_ID && styles.main
         )}
       >
         <div className={css(styles.header)}>Withdraw ResearchCoin</div>
@@ -732,7 +737,7 @@ class TransactionModal extends React.Component {
           </div>
         )}
         {this.state.connectedMetaMask &&
-        this.state.networkVersion !== MAINNET_CHAIN_ID
+        this.state.networkVersion !== CURRENT_CHAIN_ID
           ? this.renderSwitchNetworkMsg()
           : this.renderTransactionScreen()}
       </div>
