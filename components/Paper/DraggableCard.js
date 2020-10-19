@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, Fragment, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { StyleSheet, css } from "aphrodite";
 
@@ -23,7 +23,6 @@ const DraggableCard = ({
   active,
 }) => {
   const ref = useRef(null);
-  const refHolder = useRef(null);
 
   const [, drop] = useDrop({
     accept: "bullet_point",

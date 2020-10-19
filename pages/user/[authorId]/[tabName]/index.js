@@ -57,6 +57,7 @@ const AuthorPage = (props) => {
   const [eduSummary, setEduSummary] = useState(
     author && createUserSummary(author)
   );
+  const [hoverName, setHoverName] = useState(false);
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [socialLinks, setSocialLinks] = useState({});
@@ -376,8 +377,8 @@ const AuthorPage = (props) => {
       count: () => author.userDiscussions.count,
     },
     {
-      href: "preregistration",
-      label: "preregistration",
+      href: "preregistrations",
+      label: "preregistrations",
       showCount: true,
       count: () => author.userProjects.count,
     },
@@ -443,7 +444,7 @@ const AuthorPage = (props) => {
             </div>
             <div
               className={css(
-                tabName === "preregistration" ? styles.reveal : styles.hidden
+                tabName === "preregistrations" ? styles.reveal : styles.hidden
               )}
             >
               <UserProjectsTab fetching={fetching} />

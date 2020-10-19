@@ -17,7 +17,6 @@ import { ModalActions } from "~/redux/modals";
 import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
-import BaseModal from "./BaseModal";
 
 // Config
 import colors, { cardColors } from "~/config/themes/colors";
@@ -112,15 +111,17 @@ class ManageFeaturedWorkModal extends React.Component {
     this.setState({ featured });
   };
 
-  saveReorder = async () => {
+  save = async () => {
     this.setState({ pendingSubmission: true });
 
     const payload = {
-      ordering: this.state.featured.map((paper, index) => ({
-        ordinal: index + 1,
-        paper_id: paper.id,
-        featured_id: paper.featured_id,
-      })),
+      ordering: this.state.featured.map((paper, index) => {
+        let featuredWork = {
+          ordinal: index + 1,
+          paper_id: paper.id,
+        };
+        return featuredWork;
+      }),
     };
 
     fetch(API.FEATURED_PAPERS({}), API.POST_CONFIG(payload))
@@ -128,7 +129,14 @@ class ManageFeaturedWorkModal extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         // update master state
-        this.props.updateAuthorByKey("userOverview", [...this.state.featured]);
+        let updatedFeaturedWork = res.map((project) => ({
+          ...project.paper,
+        }));
+
+        this.props.updateAuthorByKey({
+          key: "userOverview",
+          value: updatedFeaturedWork,
+        });
         this.setState({ pendingSubmission: false });
         this.closeModal();
       });
@@ -310,7 +318,7 @@ class ManageFeaturedWorkModal extends React.Component {
                 )
               }
               size={"small"}
-              onClick={this.saveReorder}
+              onClick={this.save}
               disabled={pendingSubmission}
             />
           </div>
@@ -379,8 +387,7 @@ const styles = StyleSheet.create({
     padding: 50,
     overflowX: "visible",
     borderRadius: 5,
-    // minHeight: "50vh",
-    maxHeight: "60vh",
+    maxHeight: "70vh",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
@@ -391,10 +398,11 @@ const styles = StyleSheet.create({
   cardList: {
     width: "100%",
     padding: 10,
+    paddingTop: 20,
     overflowY: "scroll",
     position: "relative",
-    // height: 400,
     boxShadow: "inset 0 1px 3px rgba(0,0,0,0.12)",
+    background: "#F9F9F9",
     ":before": {
       display: "block",
       content: "",
@@ -541,8 +549,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    border: `1px solid ${cardColors.BORDER}`,
-    background: cardColors.BACKGROUND,
+    // border: `1px solid ${cardColors.BORDER}`,
+    // background: cardColors.BACKGROUND,
     padding: 20,
     boxSizing: "border-box",
   },

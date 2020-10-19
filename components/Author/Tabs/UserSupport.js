@@ -1,9 +1,13 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+
+// Component
 import SupportList from "./Projects/SupportList";
 import Button from "~/components/Form/Button";
+import SupportModal from "~/components/modal/SupporterModal";
 
+// Redux
 import { ModalActions } from "~/redux/modals";
 
 // Config
@@ -13,68 +17,129 @@ import { Helpers } from "@quantfive/js-web-config";
 
 const UserSupport = (props) => {
   const [supporters, setSupporters] = useState([]);
+
+  const [isAuthor, setIsAuthor] = useState(false);
   const [isSupporter, setIsSupporter] = useState(false);
 
   useEffect(() => {
     fetchSupporterList();
-  }, []);
+    determineIsAuthor();
+  }, [props.auth.isLoggedIn, props.auth, props.auth.user]);
+
+  function determineIsAuthor() {
+    if (props.auth.isLoggedIn && props.user) {
+      if (Number(props.authorId) == props.user.author_profile.id) {
+        setIsAuthor(true);
+      } else {
+        isAuthor && setIsAuthor(false);
+      }
+    }
+  }
+
+  function determineIsSupporter(list) {
+    if (!list.length) return;
+    if (props.auth.isLoggedIn && props.user) {
+      list.filter((support) => support.id === props.user.id).length
+        ? setIsSupporter(true)
+        : setIsSupporter(false);
+    }
+  }
 
   function fetchSupporterList() {
-    let endpoint = API.SUPPORT_USERS({ authorId: props.authorId });
-    // let endpoint = API.SUPPORT_USERS({ authorId: 4 });
-    fetch(endpoint, API.GET_CONFIG())
+    return fetch(
+      API.SUPPORT_USERS({ authorId: props.authorId }),
+      API.GET_CONFIG()
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setSupporters(res || []);
+        setSupporters([...res.results] || []);
+        determineIsSupporter(res.results || []);
       });
   }
 
   function formatDescription() {
     let count = supporters.length;
+    let prefix = count === 1 ? "person" : "people";
+    let verb = count === 1 ? "has" : "have";
+
+    let link = (
+      <span className={css(styles.link)} onClick={openSupporterModal}>
+        {`${count} ${prefix} `}
+      </span>
+    );
 
     if (!count) {
       return `Be the first to support ${props.authorName}!`;
     }
 
-    if (props.author && props.user) {
-      if (props.author.id === props.user.id) {
-        return `${count} people have supported you!`;
-      }
+    if (isAuthor) {
+      return (
+        <Fragment>
+          {link} {verb} supported you!
+        </Fragment>
+      );
     }
 
-    let description = `${count} people have supported ${props.authorName}.`;
+    let description = (
+      <Fragment>
+        {link} {verb} supported {props.authorName}.
+      </Fragment>
+    );
 
     if (!isSupporter) {
-      return (description += " Join!");
+      return <Fragment>{description} Join!</Fragment>;
     }
 
     return description;
   }
 
   function openAuthorSupportModal() {
-    let authorName = props.authorName.split(" ");
     return props.openAuthorSupportModal(true, {
-      paper: {
-        uploaded_by: {
-          author_profile: {
-            first_name: authorName[0],
-            last_name: authorName[1],
-          },
-        },
-      },
+      contentType: "author",
+      author: props.author,
+      setSupporters: setSupporters,
     });
   }
 
+  function openSupporterModal() {
+    return props.openSupporterModal(true);
+  }
+
+  const renderSupporterList = () => {
+    if (supporters && supporters.length) {
+      let users;
+      let diff;
+
+      if (supporters.length > 6) {
+        users = supporters.slice(6);
+        diff = supporters.length - 6;
+      } else {
+        users = supporters;
+      }
+
+      return (
+        <div className={css(styles.supporterList)}>
+          <SupportList size={70} users={supporters} limit={6} />
+          {diff && (
+            <div
+              className={css(styles.supporterOverflow)}
+              onClick={openSupporterModal}
+            >
+              {diff}+
+            </div>
+          )}
+        </div>
+      );
+    }
+  };
+
   return (
     <div className={css(styles.root)}>
+      <SupportModal supporters={supporters} />
       <div className={css(styles.title)}>Supported by</div>
       <div className={css(styles.subtitle)}>{formatDescription()}</div>
-      {supporters && supporters.length ? (
-        <div className={css(styles.supporterList)}>
-          <SupportList size={70} users={supporters} />
-        </div>
-      ) : null}
+      {renderSupporterList()}
       <div className={css(styles.buttonContainer)}>
         <Button label="Join" onClick={openAuthorSupportModal} />
       </div>
@@ -109,11 +174,35 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 30,
   },
+  supporterOverflow: {
+    height: 73,
+    width: 73,
+    borderRadius: "50%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "#FF9416",
+    color: "#FFF",
+    marginLeft: -9,
+    zIndex: 2,
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
   buttonContainer: {},
+  link: {
+    color: colors.BLUE(),
+    cursor: "pointer",
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
 });
 
 const mapDispatchToProps = {
   openAuthorSupportModal: ModalActions.openAuthorSupportModal,
+  openSupporterModal: ModalActions.openSupporterModal,
 };
 
 export default connect(

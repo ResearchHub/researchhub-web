@@ -31,6 +31,7 @@ export const ModalConstants = {
   AUTHOR_SUPPORT_MODAL_TOGGLE: "@@modal/AUTHOR_SUPPORT_MODAL_TOGGLE",
   MANAGE_FEATURED_WORK_MODAL_TOGGLE:
     "@@modal/MANAGE_FEATURED_WORK_MODAL_TOGGLE",
+  OPEN_SUPPORTER_MODAL_TOGGLE: "@@modal/OPEN_SUPPORTER_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -311,6 +312,16 @@ export const ModalActions = {
       });
     };
   },
+  openSupporterModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.OPEN_SUPPORTER_MODAL_TOGGLE,
+        payload: {
+          openSupporterModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -360,6 +371,7 @@ const defaultModalState = {
     props: {},
   },
   openManageFeaturedWorkModal: false,
+  openSupporterModal: false,
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -386,6 +398,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.OPEN_EDUCATION_MODAL_TOGGLE:
     case ModalConstants.AUTHOR_SUPPORT_MODAL_TOGGLE:
     case ModalConstants.MANAGE_FEATURED_WORK_MODAL_TOGGLE:
+    case ModalConstants.OPEN_SUPPORTER_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,

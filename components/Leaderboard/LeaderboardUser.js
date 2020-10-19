@@ -19,7 +19,7 @@ const LeaderboardUser = (props) => {
     <div className={css(styles.container)}>
       <Link
         href={"/user/[authorId]/[tabName]"}
-        as={`/user/${authorId}/contributions`}
+        as={`/user/${authorId}/overview`}
       >
         <a className={css(styles.link)}>
           <div className={css(styles.nameRow, userClass)}>

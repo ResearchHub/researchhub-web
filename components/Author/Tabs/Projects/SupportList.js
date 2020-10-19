@@ -29,7 +29,9 @@ const SupportList = (props) => {
       }
     }
 
-    return users.length > 2 ? users.slice(0, 3) : users;
+    return users.length > 2
+      ? users.slice(0, props.limit ? props.limit : 3)
+      : users;
   }
 
   function renderList() {

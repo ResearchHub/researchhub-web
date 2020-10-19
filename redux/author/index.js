@@ -189,7 +189,7 @@ export const AuthorActions = {
           let userOverview = res.results.map((overview) => {
             let child = {
               ...overview.paper,
-              featured_id: overview.id, //id of the overview needed for put/patch requests in ManageFeaatureWorkModal
+              // featured_id: overview.id, //id of the overview needed for put/patch requests in ManageFeaatureWorkModal
             };
 
             return child;
