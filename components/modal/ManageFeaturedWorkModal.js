@@ -31,6 +31,7 @@ class ManageFeaturedWorkModal extends React.Component {
       featured: [],
       authoredPapers: [],
       projects: [],
+      searchResults: [],
       search: "",
       pendingSubmission: false,
       activePaperIds: {},
@@ -49,6 +50,9 @@ class ManageFeaturedWorkModal extends React.Component {
       },
       {
         label: "projects",
+      },
+      {
+        label: "search",
       },
     ];
   }
@@ -175,7 +179,9 @@ class ManageFeaturedWorkModal extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        console.log("res", res);
+        this.setState({
+          searchResults: [...res.results],
+        });
       });
   };
 
@@ -196,7 +202,13 @@ class ManageFeaturedWorkModal extends React.Component {
   };
 
   renderTabs = () => {
-    const { activeTab, featured, authoredPapers, projects } = this.state;
+    const {
+      activeTab,
+      featured,
+      authoredPapers,
+      projects,
+      searchResults,
+    } = this.state;
 
     return this.tabs.map((tab, i) => {
       let count = 0;
@@ -207,7 +219,13 @@ class ManageFeaturedWorkModal extends React.Component {
         count = authoredPapers.length;
       } else if (i === 2 && projects) {
         count = projects.length;
+      } else if (i === 3) {
+        count = searchResults.length;
       }
+
+      // if (tab.label === "search") {
+      //   return this.renderSearch()
+      // }
 
       return (
         <div
@@ -221,16 +239,20 @@ class ManageFeaturedWorkModal extends React.Component {
     });
   };
 
-  renderSearch = () => {
-    return (
-      <div className={css(styles.searchContainer)}>
-        <i className={css(styles.searchIcon) + " far fa-search"} />
-        <input
-          onChange={this.handleSearchInput}
-          className={css(styles.searchInput)}
-        />
-      </div>
-    );
+  renderSearchBar = () => {
+    const { activeTab } = this.state;
+
+    if (activeTab === 3) {
+      return (
+        <div className={css(styles.searchContainer)}>
+          <i className={css(styles.searchIcon) + " far fa-search"} />
+          <input
+            onChange={this.handleSearchInput}
+            className={css(styles.searchInput)}
+          />
+        </div>
+      );
+    }
   };
 
   renderEmptyState = () => {
@@ -244,6 +266,8 @@ class ManageFeaturedWorkModal extends React.Component {
         label = "authored papers";
       } else if (activeTab === 2) {
         lable = "projects";
+      } else if (activeTab === 3) {
+        return "Search your papers";
       }
 
       return `User has not created any ${label}`;
@@ -262,6 +286,7 @@ class ManageFeaturedWorkModal extends React.Component {
       featured,
       authoredPapers,
       projects,
+      searchResults,
       activePaperIds,
       activeTab,
     } = this.state;
@@ -278,6 +303,8 @@ class ManageFeaturedWorkModal extends React.Component {
       case 2:
         cards = projects ? [...projects] : [];
         break;
+      case 3:
+        cards = searchResults ? [...searchResults] : [];
       default:
         cards = [];
     }
@@ -307,7 +334,7 @@ class ManageFeaturedWorkModal extends React.Component {
 
   render() {
     const { modals } = this.props;
-    const { pendingSubmission } = this.state;
+    const { pendingSubmission, activeTab } = this.state;
 
     return (
       <Modal
@@ -326,8 +353,15 @@ class ManageFeaturedWorkModal extends React.Component {
             draggable={false}
           />
           <div className={css(styles.title)}>Select featured papers</div>
-          <div className={css(styles.tabBar)}>{this.renderTabs()}</div>
-          {this.renderSearch()}
+          <div
+            className={css(
+              styles.tabBar,
+              activeTab === 3 && styles.paddingBottom
+            )}
+          >
+            {this.renderTabs()}
+            {this.renderSearchBar()}
+          </div>
           <div className={css(styles.cardList)}>
             <DndProvider backend={Backend}>{this.renderCards()}</DndProvider>
           </div>
@@ -535,13 +569,15 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
+    position: "relative",
+    marginBottom: 25,
+    // marginBottom: 10,
   },
   tab: {
     display: "flex",
     alignItems: "center",
     color: colors.BLACK(0.6),
-    fontSize: 16,
+    fontSize: 14,
     textTransform: "capitalize",
     padding: "5px 10px 10px",
     margin: "0px 5px",
@@ -570,6 +606,9 @@ const styles = StyleSheet.create({
     // selectedUi: {
     //   borderColor: colors.PURPLE(1),
     // },
+  },
+  paddingBottom: {
+    marginBottom: 25,
   },
   activeTab: {
     color: colors.BLUE(),
@@ -615,18 +654,35 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    marginBottom: 20,
+    position: "absolute",
+    background: "#FFF",
+    boxShadow: "0px 8px 20px rgba(0,0,0,0.06)",
+    border: "1px solid rgb(240, 240, 240)",
+    borderRadius: 8,
+    height: 40,
+    width: 350,
+    bottom: -45,
+    zIndex: 2,
+    // marginBottom: 20,
   },
   searchIcon: {
-    marginRight: 10,
-    fontSize: 16,
+    // marginRight: 10,
+    paddingLeft: 15,
+    paddingRight: 10,
+    fontSize: 14,
+    color: colors.BLACK(0.6),
   },
   searchInput: {
     highlight: "none",
     outline: "none",
     border: "none",
-    borderBottom: `2px solid ${colors.BLUE()}`,
-    background: "#FFF",
+    height: "100%",
+    width: "calc(100% - 45px)",
+    fontSize: 16,
+    // borderBottom: `2px solid ${colors.BLUE()}`,
+
+    // position: 'absolute',
+    boxSizing: "border-box",
   },
 });
 
