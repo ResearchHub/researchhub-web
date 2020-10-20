@@ -634,6 +634,9 @@ const routes = (BASE_URL) => {
       if (authorId) {
         return BASE_URL + `paper/featured_papers/${authorId}/`;
       }
+      if (search) {
+        return BASE_URL + `paper/featured_papers/?search=${search}`;
+      }
       return BASE_URL + "paper/featured_papers/";
     },
     ONBOARD_STRIPE: BASE_URL + "stripe/onboard_stripe_account/",
