@@ -61,6 +61,9 @@ class ManageFeaturedWorkModal extends React.Component {
       {
         label: "search",
       },
+      {
+        label: "search",
+      },
     ];
   }
 
@@ -652,6 +655,9 @@ const styles = StyleSheet.create({
   },
   paddingBottom: {
     marginBottom: 10,
+  },
+  paddingBottom: {
+    marginBottom: 25,
   },
   activeTab: {
     color: colors.BLUE(),
