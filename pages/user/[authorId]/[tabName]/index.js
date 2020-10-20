@@ -726,6 +726,10 @@ const AuthorPage = (props) => {
     }
   };
 
+  const openStripe = () => {
+    //TODO: Stripe API
+  };
+
   return (
     <div
       className={css(styles.container)}
@@ -999,11 +1003,10 @@ const AuthorPage = (props) => {
             {/* {allowEdit && (
               <div className={css(styles.editProfileButton)}>
                 <Button
-                  label={"Edit Profile"}
-                  onClick={openUserInfoModal}
+                  label={"Connect Stripe"}
+                  onClick={openStripe}
                   customButtonStyle={styles.editButtonCustom}
                   rippleClass={styles.rippleClass}
-                  isWhite={true}
                 />
               </div>
             )} */}
