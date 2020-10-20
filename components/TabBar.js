@@ -1,3 +1,4 @@
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors, { paperTabColors } from "~/config/themes/colors";
@@ -13,15 +14,74 @@ import icons from "~/config/themes/icons";
 const TabBar = (props) => {
   const selectedTab = props.selectedTab;
   const { dynamic_href, fetching } = props;
+  const [position, setPosition] = useState(0);
   const tabs = props.tabs.map(formatTabs);
+  const scrollContainer = useRef();
+
+  useEffect(() => {
+    if (scrollContainer && scrollContainer.current) {
+      scrollContainer.current.addEventListener("scroll", setScrollPosition);
+
+      return () => {
+        scrollContainer.current.removeEventListener(
+          "scroll",
+          setScrollPosition
+        );
+      };
+    }
+  });
+
+  function setScrollPosition(e) {
+    setPosition(e.target.scrollLeft);
+  }
+
+  function navigateLeft() {
+    autoScroll(scrollContainer.current, -300, 300);
+  }
+
+  function navigateRight() {
+    autoScroll(scrollContainer.current, 300, 300);
+  }
+
+  function autoScroll(element, change, duration) {
+    let start = element.scrollLeft,
+      currentTime = 0,
+      increment = 20;
+
+    const _easeInOutQuad = function(t, b, c, d) {
+      t /= d / 2;
+      if (t < 1) return (c / 2) * t * t + b;
+      t--;
+      return (-c / 2) * (t * (t - 2) - 1) + b;
+    };
+
+    const _animateScroll = () => {
+      currentTime += increment;
+      let val = _easeInOutQuad(currentTime, start, change, duration);
+      setPosition(val);
+      element.scrollLeft = val;
+      if (currentTime < duration) {
+        setTimeout(_animateScroll, increment);
+      }
+    };
+
+    _animateScroll();
+  }
 
   return (
     <div className={css(styles.container)}>
-      <ComponentWrapper>
-        <div className={css(styles.tabContainer)}>
-          {/* <div className={css(styles.navbutton, styles.left)}>
-            {icons.chevronLeft}
-          </div> */}
+      <ComponentWrapper overrideStyle={styles.componentWrapper}>
+        <div
+          className={css(
+            styles.navbutton,
+            styles.left,
+            position > 5 && styles.reveal
+          )}
+          onClick={navigateLeft}
+        >
+          <i className="far fa-angle-left" />
+        </div>
+        <div className={css(styles.tabContainer)} ref={scrollContainer}>
           {tabs.map((tab) => {
             if (tab.label === "transactions" || tab.label === "boosts") {
               let { user, author } = props;
@@ -37,9 +97,16 @@ const TabBar = (props) => {
               props.author.id
             );
           })}
-          {/* <div className={css(styles.navbutton, styles.right)}>
-            {icons.chevronRight}
-          </div> */}
+        </div>
+        <div
+          className={css(
+            styles.navbutton,
+            styles.right,
+            position < 506 && styles.reveal
+          )}
+          onClick={navigateRight}
+        >
+          <i className="far fa-angle-right" />
         </div>
       </ComponentWrapper>
     </div>
@@ -125,7 +192,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     overflow: "auto",
     borderBottom: "1px solid #F0F0F0",
-    // background: paperTabColors.BACKGROUND,
+  },
+  componentWrapper: {
+    position: "relative",
+    overflow: "visible",
   },
   tabContainer: {
     display: "flex",
@@ -181,6 +251,43 @@ const styles = StyleSheet.create({
   },
   loaderStyle: {
     display: "unset",
+  },
+  navbutton: {
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 18,
+    fontWeight: 500,
+    height: 28,
+    width: 28,
+    borderRadius: "50%",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+    background: "#FFF",
+    boxShadow: "0 0 4px rgba(0, 0, 0, 0.14)",
+    cursor: "pointer",
+    color: colors.BLUE(),
+    display: "none",
+    ":hover": {
+      boxShadow: "0 0 8px rgba(0, 0, 0, 0.14)",
+    },
+  },
+  left: {
+    position: "absolute",
+    left: -25,
+    top: 10,
+    "@media only screen and (min-width: 768px)": {
+      left: -10,
+    },
+  },
+  right: {
+    position: "absolute",
+    right: -25,
+    top: 10,
+    "@media only screen and (min-width: 768px)": {
+      right: -10,
+    },
+  },
+  reveal: {
+    display: "flex",
   },
 });
 
