@@ -728,6 +728,10 @@ const AuthorPage = (props) => {
     }
   };
 
+  const openStripe = () => {
+    //TODO: Stripe API
+  };
+
   return (
     <div
       className={css(styles.container)}
