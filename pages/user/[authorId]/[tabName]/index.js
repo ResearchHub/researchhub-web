@@ -419,7 +419,10 @@ const AuthorPage = (props) => {
                 tabName === "overview" ? styles.reveal : styles.hidden
               )}
             >
-              <UserOverviewTab fetching={fetching} />
+              <UserOverviewTab
+                fetching={fetching}
+                authorId={router.query.authorId}
+              />
             </div>
             <div
               className={css(
@@ -992,7 +995,7 @@ const AuthorPage = (props) => {
             >
               {renderOrcid()}
             </div>
-            {allowEdit && (
+            {/* {allowEdit && (
               <div className={css(styles.editProfileButton)}>
                 <Button
                   label={"Edit Profile"}
@@ -1002,7 +1005,7 @@ const AuthorPage = (props) => {
                   isWhite={true}
                 />
               </div>
-            )}
+            )} */}
             {allowEdit && (
               <div className={css(styles.mobileEditProfileButton)}>
                 <Button

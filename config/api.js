@@ -148,6 +148,7 @@ const routes = (BASE_URL) => {
       highlights,
       route,
       progress,
+      authorId,
       query = {},
     }) => {
       let url = BASE_URL + `paper/`;
@@ -617,9 +618,12 @@ const routes = (BASE_URL) => {
       }
       return url;
     },
-    FEATURED_PAPERS: ({ authorId }) => {
+    FEATURED_PAPERS: ({ authorId, search }) => {
       if (authorId) {
         return BASE_URL + `paper/featured_papers/${authorId}/`;
+      }
+      if (search) {
+        return BASE_URL + `paper/featured_papers/?search=${search}`;
       }
       return BASE_URL + "paper/featured_papers/";
     },

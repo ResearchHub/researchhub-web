@@ -31,6 +31,7 @@ class ManageFeaturedWorkModal extends React.Component {
       featured: [],
       authoredPapers: [],
       projects: [],
+      search: "",
       pendingSubmission: false,
       activePaperIds: {},
       activeTab: 0,
@@ -44,7 +45,7 @@ class ManageFeaturedWorkModal extends React.Component {
         label: "featured",
       },
       {
-        label: "authored papers",
+        label: "authored",
       },
       {
         label: "projects",
@@ -160,6 +161,24 @@ class ManageFeaturedWorkModal extends React.Component {
     this.setState({ activeTab });
   };
 
+  handleSearchInput = (e) => {
+    this.setState({ search: e.target.value }, () => {
+      this.searchPaper(this.state.search);
+    });
+  };
+
+  searchPaper = (search) => {
+    let filters = [
+      { name: "authors_id", filter: "in", value: this.props.authorId },
+    ];
+    fetch(API.PAPER({ search, filters }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        console.log("res", res);
+      });
+  };
+
   updateFeaturedWorks = (paper, index) => {
     const paperId = paper.id;
     let activePaperIds = { ...this.state.activePaperIds };
@@ -200,6 +219,18 @@ class ManageFeaturedWorkModal extends React.Component {
         </div>
       );
     });
+  };
+
+  renderSearch = () => {
+    return (
+      <div className={css(styles.searchContainer)}>
+        <i className={css(styles.searchIcon) + " far fa-search"} />
+        <input
+          onChange={this.handleSearchInput}
+          className={css(styles.searchInput)}
+        />
+      </div>
+    );
   };
 
   renderEmptyState = () => {
@@ -296,6 +327,7 @@ class ManageFeaturedWorkModal extends React.Component {
           />
           <div className={css(styles.title)}>Select featured papers</div>
           <div className={css(styles.tabBar)}>{this.renderTabs()}</div>
+          {this.renderSearch()}
           <div className={css(styles.cardList)}>
             <DndProvider backend={Backend}>{this.renderCards()}</DndProvider>
           </div>
@@ -387,7 +419,7 @@ const styles = StyleSheet.create({
     padding: 50,
     overflowX: "visible",
     borderRadius: 5,
-    maxHeight: "70vh",
+    maxHeight: "80vh",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
@@ -397,7 +429,7 @@ const styles = StyleSheet.create({
   },
   cardList: {
     width: "100%",
-    padding: 10,
+    padding: "10px 20px",
     paddingTop: 20,
     overflowY: "scroll",
     position: "relative",
@@ -577,6 +609,24 @@ const styles = StyleSheet.create({
     top: 20,
     right: 20,
     cursor: "pointer",
+  },
+  searchContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 20,
+  },
+  searchIcon: {
+    marginRight: 10,
+    fontSize: 16,
+  },
+  searchInput: {
+    highlight: "none",
+    outline: "none",
+    border: "none",
+    borderBottom: `2px solid ${colors.BLUE()}`,
+    background: "#FFF",
   },
 });
 

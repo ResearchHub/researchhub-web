@@ -71,15 +71,17 @@ const TabBar = (props) => {
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
-        <div
-          className={css(
-            styles.navbutton,
-            styles.left,
-            position > 5 && styles.reveal
-          )}
-          onClick={navigateLeft}
-        >
-          <i className="far fa-angle-left" />
+        <div className={css(styles.navbuttonContainer)}>
+          <div
+            className={css(
+              styles.navbutton,
+              styles.left,
+              position > 5 && styles.reveal
+            )}
+            onClick={navigateLeft}
+          >
+            <i className="far fa-angle-left" />
+          </div>
         </div>
         <div className={css(styles.tabContainer)} ref={scrollContainer}>
           {tabs.map((tab) => {
@@ -252,6 +254,10 @@ const styles = StyleSheet.create({
   loaderStyle: {
     display: "unset",
   },
+  navbuttonContainer: {
+    background:
+      "linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 40%, rgb(255, 255, 255) 100%)",
+  },
   navbutton: {
     justifyContent: "center",
     alignItems: "center",
@@ -261,11 +267,12 @@ const styles = StyleSheet.create({
     width: 28,
     borderRadius: "50%",
     border: "1px solid rgba(36, 31, 58, 0.1)",
-    background: "#FFF",
     boxShadow: "0 0 4px rgba(0, 0, 0, 0.14)",
+    background: "#FFF",
     cursor: "pointer",
     color: colors.BLUE(),
     display: "none",
+    zIndex: 2,
     ":hover": {
       boxShadow: "0 0 8px rgba(0, 0, 0, 0.14)",
     },
