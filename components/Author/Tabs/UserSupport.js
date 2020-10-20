@@ -99,6 +99,7 @@ const UserSupport = (props) => {
       contentType: "author",
       author: props.author,
       setSupporters: setSupporters,
+      supporters,
     });
   }
 
