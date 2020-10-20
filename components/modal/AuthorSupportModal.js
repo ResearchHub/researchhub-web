@@ -13,6 +13,7 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
+import { AuthorActions } from "~/redux/author";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 
@@ -149,6 +150,8 @@ const AuthorSupportModal = (props) => {
       paper,
       contentType,
       author,
+      setSupporters,
+      supporters,
     } = props.modals.openAuthorSupportModal.props;
 
     props.showMessage({ load: true, show: true });
@@ -173,6 +176,7 @@ const AuthorSupportModal = (props) => {
 
         setPage(3);
         props.updateUser({ ...res.user });
+        setSupporters([{ ...res.user }, ...supporters]);
       })
       .catch((err) => {
         props.showMessage({ show: false });
@@ -670,6 +674,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   openAuthorSupportModal: ModalActions.openAuthorSupportModal,
   updateUser: AuthActions.updateUser,
+  updateAuthorByKey: AuthorActions.updateAuthorByKey,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };

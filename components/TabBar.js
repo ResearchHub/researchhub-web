@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: -25,
     top: 10,
-    "@media only screen and (min-width: 768px)": {
+    "@media only screen and (max-width: 768px)": {
       left: -10,
     },
   },
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: -25,
     top: 10,
-    "@media only screen and (min-width: 768px)": {
+    "@media only screen and (max-width: 768px)": {
       right: -10,
     },
   },
