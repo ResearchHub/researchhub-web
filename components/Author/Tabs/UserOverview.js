@@ -21,6 +21,22 @@ const UserOverview = (props) => {
     props.openManageFeaturedWorkModal(true);
   }
 
+  function renderManagementButton() {
+    if (props.auth.isLoggedIn) {
+      if (props.auth.user.author_profile.id == props.authorId) {
+        return (
+          <div
+            className={css(styles.editButton)}
+            onClick={openManageFeaturedWorkModal}
+          >
+            <i className={css(styles.icon) + " fal fa-tasks-alt"} />
+            Manage Featured Work
+          </div>
+        );
+      }
+    }
+  }
+
   function renderFeaturedWorks() {
     if (props.author.userOverview && props.author.userOverview.length) {
       let isSolo = props.author.userOverview.length === 1;
@@ -56,15 +72,10 @@ const UserOverview = (props) => {
           featured={props.author.userOverview || []}
           authoredPapers={props.author.authoredPapers.papers || []}
           projects={props.author.userProjects.projects || []}
+          authorId={props.authorId}
         />
-        <div
-          className={css(styles.editButton)}
-          onClick={openManageFeaturedWorkModal}
-        >
-          <i className={css(styles.icon) + " fal fa-tasks-alt"} />
-          Manage Featured Work
-          {/* {icons.pencil} */}
-        </div>
+        {renderManagementButton()}
+
         {renderFeaturedWorks()}
       </div>
     </Fragment>
@@ -131,9 +142,10 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  user: state.user,
+  user: state.auth.user,
   author: state.author,
   modals: state.modals,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
