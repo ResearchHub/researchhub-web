@@ -93,14 +93,11 @@ const ProjectCard = (props) => {
   const store = useStore();
 
   useEffect(() => {
-    console.log("mount");
     let endpoint = API.SUPPORT_USERS({ paperId: id && id });
     fetch(endpoint, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        console.log("res-projectCard", res);
-
         setSupporters(res.results);
       });
   }, []);
