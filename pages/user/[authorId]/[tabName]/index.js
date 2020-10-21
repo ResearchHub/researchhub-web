@@ -729,7 +729,12 @@ const AuthorPage = (props) => {
   };
 
   const openStripe = () => {
-    //TODO: Stripe API
+    return fetch(API.ONBOARD_STRIPE, API.POST_CONFIG({}))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        console.log(res);
+      });
   };
 
   return (
