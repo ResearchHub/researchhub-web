@@ -19,7 +19,7 @@ import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
 
 // Config
-import colors, { cardColors } from "~/config/themes/colors";
+import colors, { cardColors, formColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -57,9 +57,6 @@ class ManageFeaturedWorkModal extends React.Component {
       },
       {
         label: "preregs",
-      },
-      {
-        label: "search",
       },
       {
         label: "search",
@@ -657,7 +654,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   paddingBottom: {
-    marginBottom: 25,
+    marginBottom: 10,
   },
   activeTab: {
     color: colors.BLUE(),

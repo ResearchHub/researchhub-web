@@ -385,13 +385,6 @@ const AuthorPage = (props) => {
       showCount: true,
       count: () => author.userDiscussions.count,
     },
-
-    {
-      href: "preregistrations",
-      label: "preregistrations",
-      showCount: true,
-      count: () => author.userProjects.count,
-    },
     {
       href: "transactions",
       label: "transactions",
