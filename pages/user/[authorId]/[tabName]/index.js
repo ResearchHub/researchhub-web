@@ -29,6 +29,7 @@ import UserSupportTab from "~/components/Author/Tabs/UserSupport";
 
 import UserInfoModal from "~/components/modal/UserInfoModal";
 import Button from "~/components/Form/Button";
+import StripeButton from "~/components/Stripe/StripeButton";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -726,15 +727,6 @@ const AuthorPage = (props) => {
     }
   };
 
-  const openStripe = () => {
-    return fetch(API.ONBOARD_STRIPE, API.POST_CONFIG({}))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        console.log(res);
-      });
-  };
-
   return (
     <div
       className={css(styles.container)}
@@ -1007,9 +999,7 @@ const AuthorPage = (props) => {
             </div>
             {/* {allowEdit && (
               <div className={css(styles.editProfileButton)}>
-                <Button
-                  label={"Connect Stripe"}
-                  onClick={openStripe}
+                <StripeButton
                   customButtonStyle={styles.editButtonCustom}
                   rippleClass={styles.rippleClass}
                 />
