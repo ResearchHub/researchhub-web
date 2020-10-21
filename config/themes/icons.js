@@ -42,6 +42,7 @@ const icons = {
   editHub: <i className="fas fa-edit" />,
   trash: <i className="fal fa-trash-alt"></i>,
   checkmark: <i className="fas fa-check"></i>,
+  fileSearch: <i className="fad fa-file-search" />,
 };
 
 export const voteWidgetIcons = {

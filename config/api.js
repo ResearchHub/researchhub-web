@@ -619,11 +619,14 @@ const routes = (BASE_URL) => {
       return url;
     },
     FEATURED_PAPERS: ({ authorId, search }) => {
+      if (search) {
+        return (
+          BASE_URL +
+          `paper/featured_papers/?authors_id__in=${authorId}&search=${search}`
+        );
+      }
       if (authorId) {
         return BASE_URL + `paper/featured_papers/${authorId}/`;
-      }
-      if (search) {
-        return BASE_URL + `paper/featured_papers/?search=${search}`;
       }
       return BASE_URL + "paper/featured_papers/";
     },

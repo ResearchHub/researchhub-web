@@ -19,7 +19,7 @@ import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
 
 // Config
-import colors, { cardColors } from "~/config/themes/colors";
+import colors, { cardColors, formColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -33,6 +33,7 @@ class ManageFeaturedWorkModal extends React.Component {
       projects: [],
       searchResults: [],
       search: "",
+      searching: false,
       pendingSubmission: false,
       activePaperIds: {},
       activeTab: 0,
@@ -49,7 +50,7 @@ class ManageFeaturedWorkModal extends React.Component {
         label: "authored",
       },
       {
-        label: "projects",
+        label: "preregs",
       },
       {
         label: "search",
@@ -166,23 +167,32 @@ class ManageFeaturedWorkModal extends React.Component {
   };
 
   handleSearchInput = (e) => {
-    this.setState({ search: e.target.value }, () => {
-      this.searchPaper(this.state.search);
+    let search = e.target.value;
+    this.setState({ search }, () => {
+      this.searchPaper(search);
     });
   };
 
   searchPaper = (search) => {
-    let filters = [
-      { name: "authors_id", filter: "in", value: this.props.authorId },
-    ];
-    fetch(API.PAPER({ search, filters }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.setState({
-          searchResults: [...res.results],
+    if (!search) {
+      return this.setState({ searchResults: [] });
+    }
+    this.setState({ searching: true }, () => {
+      fetch(
+        API.FEATURED_PAPERS({ search, authorId: this.props.authorId }),
+        API.GET_CONFIG()
+      )
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          let searchResults = res.results.map((result) => result.paper);
+
+          this.setState({
+            searchResults,
+            searching: false,
+          });
         });
-      });
+    });
   };
 
   updateFeaturedWorks = (paper, index) => {
@@ -239,16 +249,20 @@ class ManageFeaturedWorkModal extends React.Component {
     });
   };
 
-  renderSearchBar = () => {
-    const { activeTab } = this.state;
+  renderSearchBar = (ref) => {
+    const { activeTab, search, searchResults } = this.state;
 
     if (activeTab === 3) {
       return (
-        <div className={css(styles.searchContainer)}>
+        <div
+          className={css(styles.searchContainer, styles.activeSearchContainer)}
+        >
           <i className={css(styles.searchIcon) + " far fa-search"} />
           <input
             onChange={this.handleSearchInput}
             className={css(styles.searchInput)}
+            value={this.state.search}
+            ref={ref}
           />
         </div>
       );
@@ -256,18 +270,25 @@ class ManageFeaturedWorkModal extends React.Component {
   };
 
   renderEmptyState = () => {
-    const { activeTab } = this.state;
+    const { activeTab, search, searching, searchResults } = this.state;
 
-    function formatDescriptions() {
+    function _formatDescriptions() {
       let label;
       if (activeTab === 0) {
         label = "featured work";
       } else if (activeTab === 1) {
         label = "authored papers";
       } else if (activeTab === 2) {
-        lable = "projects";
+        label = "prereg";
       } else if (activeTab === 3) {
-        return "Search your papers";
+        if (searching) {
+          return "Searching...";
+        }
+        if (search && !searching && !searchResults.length) {
+          return "Search returned empty.";
+        }
+
+        return "Search papers";
       }
 
       return `User has not created any ${label}`;
@@ -275,8 +296,12 @@ class ManageFeaturedWorkModal extends React.Component {
 
     return (
       <div className={css(styles.emptyContainer)}>
-        <div className={css(styles.emptyIcon)}>{icons.file}</div>
-        <h2 className={css(styles.emptyDescription)}>{formatDescriptions()}</h2>
+        <div className={css(styles.emptyIcon)}>
+          {activeTab === 3 ? icons.fileSearch : icons.file}
+        </div>
+        <h2 className={css(styles.emptyDescription)}>
+          {_formatDescriptions()}
+        </h2>
       </div>
     );
   };
@@ -305,10 +330,10 @@ class ManageFeaturedWorkModal extends React.Component {
         break;
       case 3:
         cards = searchResults ? [...searchResults] : [];
+        break;
       default:
         cards = [];
     }
-
     if (cards.length) {
       return cards.map((card, index) => {
         return (
@@ -334,7 +359,13 @@ class ManageFeaturedWorkModal extends React.Component {
 
   render() {
     const { modals } = this.props;
-    const { pendingSubmission, activeTab } = this.state;
+    const {
+      pendingSubmission,
+      search,
+      searching,
+      searchResults,
+      activeTab,
+    } = this.state;
 
     return (
       <Modal
@@ -360,8 +391,8 @@ class ManageFeaturedWorkModal extends React.Component {
             )}
           >
             {this.renderTabs()}
-            {this.renderSearchBar()}
           </div>
+          {this.renderSearchBar()}
           <div className={css(styles.cardList)}>
             <DndProvider backend={Backend}>{this.renderCards()}</DndProvider>
           </div>
@@ -430,7 +461,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "50%",
-    maxHeight: "80%",
+    maxHeight: "75%",
     "@media only screen and (max-width: 767px)": {
       width: "90%",
       maxHeight: "100%",
@@ -570,8 +601,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    marginBottom: 25,
-    // marginBottom: 10,
+    marginBottom: 30,
   },
   tab: {
     display: "flex",
@@ -579,7 +609,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.6),
     fontSize: 14,
     textTransform: "capitalize",
-    padding: "5px 10px 10px",
+    padding: "5px 10px 8px",
     margin: "0px 5px",
     borderBottom: "3px solid #FFF",
     cursor: "pointer",
@@ -603,12 +633,9 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     borderRadius: 3,
     marginLeft: 8,
-    // selectedUi: {
-    //   borderColor: colors.PURPLE(1),
-    // },
   },
   paddingBottom: {
-    marginBottom: 25,
+    marginBottom: 10,
   },
   activeTab: {
     color: colors.BLUE(),
@@ -656,17 +683,22 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
     background: "#FFF",
-    boxShadow: "0px 8px 20px rgba(0,0,0,0.06)",
-    border: "1px solid rgb(240, 240, 240)",
+    boxShadow: "0px 8px 20px rgba(0,0,0,0.1)",
+    border: `1px solid ${cardColors.BORDER}`,
     borderRadius: 8,
-    height: 40,
+    marginBottom: 10,
+    height: 35,
     width: 350,
-    bottom: -45,
-    zIndex: 2,
-    // marginBottom: 20,
+    boxSizing: "border-box",
+    bottom: -50,
+    zIndex: 1,
+  },
+  activeSearchContainer: {
+    position: "unset",
+    border: `1px solid ${formColors.BORDER}`,
+    boxShadow: "unset",
   },
   searchIcon: {
-    // marginRight: 10,
     paddingLeft: 15,
     paddingRight: 10,
     fontSize: 14,
@@ -679,9 +711,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "calc(100% - 45px)",
     fontSize: 16,
-    // borderBottom: `2px solid ${colors.BLUE()}`,
-
-    // position: 'absolute',
     boxSizing: "border-box",
   },
 });

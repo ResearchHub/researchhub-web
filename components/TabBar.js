@@ -15,13 +15,14 @@ const TabBar = (props) => {
   const selectedTab = props.selectedTab;
   const { dynamic_href, fetching } = props;
   const [position, setPosition] = useState(0);
+  const [atEnd, toggleAtEnd] = useState(false);
+
   const tabs = props.tabs.map(formatTabs);
   const scrollContainer = useRef();
 
   useEffect(() => {
     if (scrollContainer && scrollContainer.current) {
       scrollContainer.current.addEventListener("scroll", setScrollPosition);
-
       return () => {
         scrollContainer.current.removeEventListener(
           "scroll",
@@ -32,7 +33,17 @@ const TabBar = (props) => {
   });
 
   function setScrollPosition(e) {
-    setPosition(e.target.scrollLeft);
+    let element = e.target;
+    setPosition(element.scrollLeft);
+    isAtEnd(element);
+  }
+
+  function isAtEnd(element) {
+    if (!element) return;
+
+    toggleAtEnd(
+      element.scrollWidth - element.scrollLeft === element.clientWidth
+    );
   }
 
   function navigateLeft() {
@@ -58,7 +69,7 @@ const TabBar = (props) => {
     const _animateScroll = () => {
       currentTime += increment;
       let val = _easeInOutQuad(currentTime, start, change, duration);
-      setPosition(val);
+      // setPosition(val);
       element.scrollLeft = val;
       if (currentTime < duration) {
         setTimeout(_animateScroll, increment);
@@ -104,7 +115,7 @@ const TabBar = (props) => {
           className={css(
             styles.navbutton,
             styles.right,
-            position < 506 && styles.reveal
+            !atEnd && styles.reveal
           )}
           onClick={navigateRight}
         >
