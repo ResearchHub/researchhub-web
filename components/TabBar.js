@@ -111,7 +111,7 @@ const TabBar = (props) => {
           className={css(
             styles.navbutton,
             styles.right,
-            position < 506 && styles.reveal
+            !atEnd && styles.reveal
           )}
           onClick={navigateRight}
         >

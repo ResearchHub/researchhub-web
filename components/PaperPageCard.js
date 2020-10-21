@@ -56,7 +56,6 @@ class PaperPageCard extends React.Component {
   }
 
   componentDidMount = () => {
-    console.log("paper page card", this.props.paper);
     this.fetchFigures();
   };
 
