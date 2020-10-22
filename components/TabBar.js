@@ -82,13 +82,9 @@ const TabBar = (props) => {
   return (
     <div className={css(styles.container)}>
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
-        <div className={css(styles.navbuttonContainer)}>
+        <div className={css(styles.navbuttonContainer, styles.left)}>
           <div
-            className={css(
-              styles.navbutton,
-              styles.left,
-              position > 5 && styles.reveal
-            )}
+            className={css(styles.navbutton, position > 5 && styles.reveal)}
             onClick={navigateLeft}
           >
             <i className="far fa-angle-left" />
@@ -111,15 +107,13 @@ const TabBar = (props) => {
             );
           })}
         </div>
-        <div
-          className={css(
-            styles.navbutton,
-            styles.right,
-            !atEnd && styles.reveal
-          )}
-          onClick={navigateRight}
-        >
-          <i className="far fa-angle-right" />
+        <div className={css(styles.navbuttonContainer, styles.right)}>
+          <div
+            className={css(styles.navbutton, !atEnd && styles.reveal)}
+            onClick={navigateRight}
+          >
+            <i className="far fa-angle-right" />
+          </div>
         </div>
       </ComponentWrapper>
     </div>
@@ -216,6 +210,11 @@ const styles = StyleSheet.create({
     minWidth: 450,
     justifyContent: "flex-start",
     overflowX: "scroll",
+    "::-webkit-scrollbar": {
+      display: "none",
+    },
+    "-ms-overflow-style": "none",
+    scrollbarWidth: "none",
   },
   firstTab: {
     paddingLeft: 0,
@@ -266,16 +265,18 @@ const styles = StyleSheet.create({
     display: "unset",
   },
   navbuttonContainer: {
-    background:
-      "linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 40%, rgb(255, 255, 255) 100%)",
+    // background:
+    //   "linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 40%, rgb(255, 255, 255) 100%)",
+    background: "rgba(255, 255, 255, 0.4)",
+    boxShadow: "0 0 4px rgba(255, 255, 255, 5)",
   },
   navbutton: {
     justifyContent: "center",
     alignItems: "center",
     fontSize: 18,
     fontWeight: 500,
-    height: 28,
-    width: 28,
+    height: 35,
+    width: 35,
     borderRadius: "50%",
     border: "1px solid rgba(36, 31, 58, 0.1)",
     boxShadow: "0 0 4px rgba(0, 0, 0, 0.14)",
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
   left: {
     position: "absolute",
     left: -25,
-    top: 10,
+    top: 8,
     "@media only screen and (max-width: 768px)": {
       left: -10,
     },
@@ -299,7 +300,7 @@ const styles = StyleSheet.create({
   right: {
     position: "absolute",
     right: -25,
-    top: 10,
+    top: 8,
     "@media only screen and (max-width: 768px)": {
       right: -10,
     },

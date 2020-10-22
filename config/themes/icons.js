@@ -43,6 +43,8 @@ const icons = {
   trash: <i className="fal fa-trash-alt"></i>,
   checkmark: <i className="fas fa-check"></i>,
   fileSearch: <i className="fad fa-file-search" />,
+  author: <i className="fas fa-user" />,
+  calendar: <i className="fas fa-calendar-alt" />,
 };
 
 export const voteWidgetIcons = {

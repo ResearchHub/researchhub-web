@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   horizontalViewButton: {
-    fontSize: 25,
+    fontSize: 23,
     "@media only screen and (max-width: 321px)": {
       fontSize: 23,
     },
@@ -297,6 +297,7 @@ const styles = StyleSheet.create({
     marginLeft: 3,
   },
   icon: {
+    fontSize: 18,
     cursor: "pointer",
     color: voteWidgetColors.ARROW,
     ":hover": {

@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     },
 
     "@media only screen and (max-width: 767px)": {
-      marginBottom: 8,
+      height: 15,
     },
   },
   space: {
@@ -84,11 +84,14 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontSize: 10,
     color: colors.BLUE(1),
-    // height: 12,
     textTransform: "uppercase",
     fontWeight: "bold",
     letterSpacing: 1,
     padding: "3px 10px 3px 10px",
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 8,
+      padding: "1px 5px",
+    },
   },
   grayTag: {
     backgroundColor: "rgba(36, 31, 58, 0.03)",
