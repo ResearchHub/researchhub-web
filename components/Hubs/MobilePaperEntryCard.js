@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import { connect, useStore } from "react-redux";
@@ -10,7 +10,6 @@ import "react-placeholder/lib/reactPlaceholder.css";
 import "~/components/Paper/CitationCard.css";
 
 // Components
-import AuthorAvatar from "~/components/AuthorAvatar";
 import VoteWidget from "../VoteWidget";
 import HubTag from "./HubTag";
 import HubDropDown from "./HubDropDown";
@@ -57,7 +56,6 @@ const PaperEntryCard = (props) => {
     abstract,
     user_vote,
     score,
-    summary,
     paper_title,
     first_figure,
     first_preview,
@@ -110,6 +108,10 @@ const PaperEntryCard = (props) => {
     return arr.filter((el) => {
       return el !== null;
     });
+  }
+
+  function convertDate() {
+    return formatPublishedDate(transformDate(paper.paper_publish_date));
   }
 
   function navigateToSubmitter(e) {
@@ -283,10 +285,10 @@ const PaperEntryCard = (props) => {
     );
   };
 
-  const renderBodyPreview = () => {
+  const renderBullet = () => {
     if (bullet_points && bullet_points.length > 0) {
       return (
-        <div className={css(styles.summary)}>
+        <div className={css(styles.summary, styles.text)}>
           <ul className={css(styles.bulletpoints) + " clamp1"}>
             {bullet_points.map((bullet, i) => {
               if (i < 2) {
@@ -307,12 +309,10 @@ const PaperEntryCard = (props) => {
       );
     } else if (abstract) {
       return (
-        <div className={css(styles.summary) + " clamp2"}>
+        <div className={css(styles.summary, styles.text) + " clamp2"}>
           <div className={"clamp2"}>{abstract}</div>
         </div>
       );
-    } else if (summary) {
-      console.log("summary", summary);
     }
   };
 
@@ -398,7 +398,7 @@ const PaperEntryCard = (props) => {
   };
 
   const renderRawAuthors = () => {
-    const _formatAuthors = (authors) => {
+    const formatAuthors = (authors) => {
       let { first_name, last_name } = authors[0];
 
       if (authors.length >= 6) {
@@ -412,19 +412,23 @@ const PaperEntryCard = (props) => {
         .join(", ");
     };
 
+    // TODO: make sure raw_authors is in the right format
     if (raw_authors && raw_authors.length) {
       if (!Array.isArray(raw_authors)) {
         raw_authors = [JSON.parse(raw_authors)];
       }
-
       return (
-        <div className={css(styles.metadataContainer, styles.authorContainer)}>
-          <div className={css(styles.icon)}>{icons.author}</div>
-          <span
-            className={css(styles.clampMetadata, styles.metadata) + " clamp1"}
-          >
-            {_formatAuthors(raw_authors)}
-          </span>
+        <div
+          className={css(
+            styles.publishContainer,
+            styles.publishDate,
+            styles.authorContainer
+          )}
+        >
+          <div className={css(styles.publishDate)}>
+            {raw_authors.length < 2 ? "Author: " : "Authors: "}
+          </div>
+          <span className={"clamp1"}>{formatAuthors(raw_authors)}</span>
         </div>
       );
     }
@@ -434,112 +438,8 @@ const PaperEntryCard = (props) => {
     return (
       <div className={css(styles.preRegContainer)}>
         <img src="/static/icons/wip.png" className={css(styles.wipIcon)} />
-        Funding Request
+        Preregistration
       </div>
-    );
-  };
-
-  const mobileOnly = (children) => {
-    return <div className={css(styles.mobile)}>{children}</div>;
-  };
-
-  const desktopOnly = (children) => {
-    return <div className={css(styles.desktop)}>{children}</div>;
-  };
-
-  const renderMetadata = () => {
-    if (paper_publish_date || (raw_authors && raw_authors.length)) {
-      return (
-        <div className={css(styles.metadataRow)}>
-          {/* {renderPaperTitle()} */}
-          {renderRawAuthors()}
-          {renderPublishDate()}
-        </div>
-      );
-    }
-  };
-
-  const renderPaperTitle = () => {
-    // if (paper_title && title !== paper_title) {
-    //   return (
-    //     <div className={css(styles.metadataContainer)}>
-    //       <span className={css(styles.icon)}>
-    //         {icons.file}
-    //       </span>
-    //       <div
-    //         className={
-    //           css(styles.metadataClamp, styles.metadata) + " clamp1"
-    //         }
-    //       >
-    //         {paper_title}
-    //       </div>
-    //     </div>
-    //   )
-    // }
-  };
-
-  const renderPublishDate = () => {
-    if (paper_publish_date) {
-      function _convertDate() {
-        return formatPublishedDate(
-          transformDate(paper.paper_publish_date),
-          true
-        );
-      }
-
-      return (
-        <div className={css(styles.metadataContainer)}>
-          <span className={css(styles.icon)}>{icons.calendar}</span>
-          <span className={css(styles.metadata)}>{_convertDate()}</span>
-        </div>
-      );
-    }
-  };
-
-  const renderVoteWidget = (mobile = false) => {
-    return (
-      <Fragment>
-        {!promotionSummary && (
-          <div className={css(styles.column)}>
-            <span
-              className={css(styles.voting)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <VoteWidget
-                score={score}
-                onUpvote={onUpvote}
-                onDownvote={onDownvote}
-                selected={selected}
-                searchResult={searchResult}
-                isPaper={true}
-                styles={styles.voteWidget}
-                type={"Paper"}
-                paper={promoted ? paper : null}
-                promoted={promoted}
-                horizontalView={mobile}
-              />
-            </span>
-          </div>
-        )}
-      </Fragment>
-    );
-  };
-
-  const renderMainTitle = () => {
-    return (
-      <Link
-        href={"/paper/[paperId]/[paperName]"}
-        as={`/paper/${id}/${paperSlug}`}
-      >
-        <a
-          className={css(styles.link)}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className={css(styles.title)}>{title && title}</div>
-        </a>
-      </Link>
     );
   };
 
@@ -563,7 +463,27 @@ const PaperEntryCard = (props) => {
           />
         </div>
       )}
-      {desktopOnly(renderVoteWidget())}
+      {!promotionSummary && (
+        <div className={css(styles.column)}>
+          <span
+            className={css(styles.voting)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <VoteWidget
+              score={score}
+              onUpvote={onUpvote}
+              onDownvote={onDownvote}
+              selected={selected}
+              searchResult={searchResult}
+              isPaper={true}
+              styles={styles.voteWidget}
+              type={"Paper"}
+              paper={promoted ? paper : null}
+              promoted={promoted}
+            />
+          </span>
+        </div>
+      )}
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div
@@ -573,31 +493,57 @@ const PaperEntryCard = (props) => {
               previews.length > 0 && styles.metaDataPreview
             )}
           >
-            <div className={css(styles.topRow)}>
-              {mobileOnly(renderVoteWidget(true))}
-              {desktopOnly(renderMainTitle())}
-              {mobileOnly(renderMetadata())}
+            <Link
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${id}/${paperSlug}`}
+            >
+              <a
+                className={css(styles.link)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <div className={css(styles.title, styles.text)}>
+                  {title && title}
+                  {paper_title && title !== paper_title && (
+                    <div
+                      className={
+                        css(styles.paperTitle, styles.text) + " clamp1"
+                      }
+                    >
+                      From Paper: {paper_title && paper_title}
+                    </div>
+                  )}
+                </div>
+              </a>
+            </Link>
+            {renderRawAuthors()}
+            <div
+              className={css(
+                styles.publishContainer,
+                !paper_publish_date && styles.hide
+              )}
+            >
+              <span className={css(styles.publishDate, styles.text)}>
+                {paper_publish_date && convertDate()}
+              </span>
+              <span
+                className={css(
+                  styles.avatars,
+                  authors && authors.length < 1 && styles.hide
+                )}
+              ></span>
             </div>
-            {mobileOnly(renderMainTitle())}
-            {desktopOnly(renderMetadata())}
-
-            {renderBodyPreview()}
+            {renderBullet()}
             {renderUploadedBy()}
-            {/* {mobileView && !promotionSummary && renderHubTags()} */}
+            {mobileView && !promotionSummary && renderHubTags()}
           </div>
-          {desktopOnly(renderPreview())}
+          {!mobileView && renderPreview()}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.row)}>{renderDiscussionCount()}</div>
-          {/* {desktopOnly(
-            <Fragment>
-              {renderHubTags()}
-              {paper_type === "PRE_REGISTRATION" && renderPreregistrationTag()}
-            </Fragment>
-          )} */}
-        </div>
-        <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-          {renderHubTags()}
+          {!mobileView && renderHubTags()}
+          {paper_type === "PRE_REGISTRATION" && renderPreregistrationTag()}
         </div>
       </div>
     </Ripples>
@@ -633,7 +579,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    // minHeight: 72,
+    minHeight: 72,
   },
   paperTitle: {
     color: "rgb(145, 143, 155)",
@@ -644,17 +590,22 @@ const styles = StyleSheet.create({
   },
   title: {
     width: "100%",
-    fontSize: 18,
-    // paddingBottom: 5,
+    fontSize: 19,
     fontWeight: 500,
-    color: colors.BLACK(),
+    paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
       fontSize: 16,
-      paddingBottom: 10,
     },
   },
   previewColumn: {
     paddingBottom: 10,
+    "@media only screen and (max-width: 767px)": {
+      // display: 'flex',
+      // justifyContent: 'center',
+      // alignItems: 'center',
+      // width: '100%',
+      // margin: '10px 0'
+    },
   },
   preview: {
     height: 90,
@@ -696,66 +647,39 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
   },
-  topRow: {
-    display: "flex",
-    alignItems: "center",
-    width: "100%",
-    paddingBottom: 5,
-    "@media only screen and (max-width: 767px)": {
-      paddingBottom: 10,
-    },
-  },
-  metadataRow: {
-    display: "flex",
-    alignItems: "flex-start",
-    width: "100%",
-    paddingTop: 3,
-    paddingBottom: 8,
-    "@media only screen and (max-width: 767px)": {
-      padding: 0,
-    },
-  },
-  metadataContainer: {
+  publishContainer: {
     maxWidth: "100%",
+    paddingBottom: 8,
     display: "flex",
     alignItems: "center",
   },
-  label: {
-    fontSize: 12,
+  publishDate: {
+    fontSize: 14,
     fontWeight: 400,
     color: "#918F9B",
-    color: "#C1C1CF",
     marginRight: 5,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
   authorContainer: {
-    marginRight: 10,
-  },
-  clampMetadata: {
-    maxWidth: 180,
-    color: "#C1C1CF",
-    fontSize: 14,
+    paddingBottom: 5,
   },
   summary: {
     minWidth: "100%",
     maxWidth: "100%",
-    color: colors.BLACK(),
+    color: "#4e4c5f",
     fontSize: 14,
-    paddingBottom: 10,
-    lineHeight: 1.3,
+    paddingBottom: 8,
+  },
+  text: {
+    fontFamily: "Roboto",
   },
   voting: {
-    width: 60,
-    "@media only screen and (max-width: 767px)": {
-      width: "unset",
-    },
+    width: 65,
   },
   voteWidget: {
     marginRight: 15,
-    fontSize: 14,
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 12,
-      // maxWidth: 35
-    },
   },
   bottomBar: {
     display: "flex",
@@ -777,13 +701,7 @@ const styles = StyleSheet.create({
     width: "unset",
   },
   icon: {
-    fontSize: 13,
     color: "#C1C1CF",
-  },
-  metadata: {
-    fontSize: 13,
-    color: "#918f9b",
-    marginLeft: 7,
   },
   discussion: {
     cursor: "pointer",
@@ -810,23 +728,18 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
-    flexWrap: "wrap-reverse",
+    flexWrap: "wrap",
     marginLeft: "auto",
     "@media only screen and (max-width: 970px)": {
       marginBottom: 15,
-      // justifyContent: "flex-start",
+      justifyContent: "flex-start",
       width: "100%",
       flexWrap: "wrap",
-    },
-    "@media only screen and (max-width: 767px)": {
-      margin: 0,
-      padding: 0,
     },
   },
   row: {
     display: "flex",
     alignItems: "center",
-
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       height: "unset",
@@ -880,8 +793,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    fontSize: 13,
-    color: "#918f9b",
+    fontSize: 14,
+    color: "rgb(145, 143, 155)",
     fontWeight: 400,
     marginBottom: 8,
     cursor: "pointer",
@@ -890,14 +803,13 @@ const styles = StyleSheet.create({
       color: colors.BLUE(),
     },
     "@media only screen and (max-width: 767px)": {
-      // fontSize: 12,
+      fontSize: 12,
     },
   },
   uploadedByAvatar: {
     marginLeft: 10,
   },
   capitalize: {
-    marginRight: 8,
     textTransform: "capitalize",
   },
   rhIcon: {
@@ -928,29 +840,6 @@ const styles = StyleSheet.create({
   wipIcon: {
     marginRight: 5,
     height: 15,
-  },
-  calendarIcon: {
-    marginRight: 5,
-  },
-
-  desktop: {
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
-  },
-  mobile: {
-    display: "none",
-    "@media only screen and (max-width: 767px)": {
-      display: "flex",
-    },
-  },
-  mobileHubTags: {
-    display: "none",
-    "@media only screen and (max-width: 767px)": {
-      display: "flex",
-      width: "100%",
-      justifyContent: "flex-end",
-    },
   },
 });
 

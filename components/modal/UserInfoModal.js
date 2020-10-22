@@ -505,6 +505,11 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
+    "::-webkit-scrollbar": {
+      display: "none",
+    },
+    "-ms-overflow-style": "none",
+    scrollbarWidth: "none",
     "@media only screen and (min-width: 768px)": {
       overflowY: "auto",
     },
@@ -587,6 +592,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     background: "#FFF",
     zIndex: 2,
+    position: "sticky",
+    bottom: 10,
   },
   buttonCustomStyle: {
     padding: 16,

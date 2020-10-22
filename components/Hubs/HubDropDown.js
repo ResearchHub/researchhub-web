@@ -111,6 +111,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(),
     },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
   active: {
     color: colors.BLUE(),
