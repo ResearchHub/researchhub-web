@@ -107,15 +107,13 @@ const TabBar = (props) => {
             );
           })}
         </div>
-        <div
-          className={css(
-            styles.navbutton,
-            styles.right,
-            !atEnd && styles.reveal
-          )}
-          onClick={navigateRight}
-        >
-          <i className="far fa-angle-right" />
+        <div className={css(styles.navbuttonContainer, styles.right)}>
+          <div
+            className={css(styles.navbutton, !atEnd && styles.reveal)}
+            onClick={navigateRight}
+          >
+            <i className="far fa-angle-right" />
+          </div>
         </div>
         <div className={css(styles.navbuttonContainer, styles.right)}>
           <div
