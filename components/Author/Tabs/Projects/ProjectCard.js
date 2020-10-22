@@ -384,7 +384,7 @@ const ProjectCard = (props) => {
         className={css(styles.fundProjectButton)}
         onClick={openAuthorSupportModal}
       >
-        Fund Project
+        Fund Preregistration
       </Ripples>
     );
   };
