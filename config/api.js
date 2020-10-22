@@ -61,12 +61,21 @@ const prepURL = (url, params) => {
 
 const routes = (BASE_URL) => {
   return {
-    USER: ({ userId }) => {
+    USER: ({ userId, route, referralCode, invitedBy, page }) => {
       let url = BASE_URL + "user/";
 
-      if (userId) {
-        url += `${userId}/`;
-      }
+      let params = {
+        querystring: {
+          referral_code: referralCode,
+          invited_by: invitedBy,
+          page,
+        },
+        rest: {
+          id: userId,
+          route: route,
+        },
+      };
+      url = prepURL(url, params);
 
       return url;
     },
@@ -608,7 +617,7 @@ const routes = (BASE_URL) => {
       }
       return url + query;
     },
-    SUPPORT: BASE_URL + 'support/'
+    SUPPORT: BASE_URL + "support/",
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {

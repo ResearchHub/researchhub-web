@@ -29,6 +29,7 @@ import LeaderboardUser from "../../components/Leaderboard/LeaderboardUser";
 import Loader from "~/components/Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Head from "~/components/Head";
+import HeadComponent from "../../components/Head";
 
 const filterOptions = [
   {
@@ -679,6 +680,7 @@ class Index extends React.Component {
             overrideStyle={mainFeedStyles.mobileList}
           /> */}
         </div>
+        <HeadComponent title="ResearchHub Leaderboards" />
       </Fragment>
     );
   };
