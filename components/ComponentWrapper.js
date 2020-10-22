@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
       width: 900,
     },
 
-    "@media only screen and (min-width: 1480px)": {
+    "@media only screen and (min-width: 1440px)": {
       width: 1150,
     },
   },
