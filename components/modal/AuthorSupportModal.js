@@ -22,13 +22,14 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { act } from "react-dom/test-utils";
 
 const AuthorSupportModal = (props) => {
   const alert = useAlert();
 
-  const [page, setPage] = useState(2); // 1
-  const [activePayment, setActivePayment] = useState();
-  const [paymentOptions, setPaymentOptions] = useState(formatOptions() || []);
+  const [page, setPage] = useState(1); // 1
+  const [activePayment, setActivePayment] = useState(); // 0 is RSC, 1 is Stripe
+  const [paymentOptions, setPaymentOptions] = useState(formatOptions() || []); // list of payment options
   const [amount, setAmount] = useState(0);
   const [error, setError] = useState(false);
 
@@ -216,7 +217,13 @@ const AuthorSupportModal = (props) => {
   }
 
   function formatTitle() {
-    return `Support ${formatAuthorName()}'s Project`;
+    const { paper, author } = props.modals.openAuthorSupportModal.props;
+    if (author) {
+      return `Support ${formatAuthorName()}`;
+    }
+    if (paper) {
+      return `Support ${formatAuthorName()}'s Preregistration`;
+    }
   }
 
   function renderScreen() {
@@ -254,46 +261,63 @@ const AuthorSupportModal = (props) => {
   }
 
   function renderAmountScreen() {
+    function _renderForm(currency) {
+      switch (currency) {
+        case 0: //RSC
+          return (
+            <Fragment>
+              <div
+                className={css(styles.row, styles.numbers, styles.borderBottom)}
+              >
+                <div className={css(styles.column, styles.left)}>
+                  <div className={css(styles.title)}>Total Balance</div>
+                  <div className={css(styles.subtitle)}>
+                    Your current total balance in ResearchHub
+                  </div>
+                </div>
+                <div className={css(styles.column, styles.right)}>
+                  <div className={css(styles.userBalance)}>
+                    {props.user && props.user.balance}
+                    <img
+                      src={"/static/icons/coin-filled.png"}
+                      draggable={false}
+                      className={css(styles.coinIcon)}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className={css(styles.row, styles.numbers)}>
+                <div className={css(styles.column, styles.left)}>
+                  <div className={css(styles.title)}>Amount</div>
+                  <div className={css(styles.subtitle)}>
+                    Select the amount you want to give
+                  </div>
+                </div>
+                <div className={css(styles.column, styles.right)}>
+                  <input
+                    type="number"
+                    className={css(styles.input, error && styles.error)}
+                    value={amount}
+                    onChange={handleAmountInput}
+                  />
+                </div>
+              </div>
+            </Fragment>
+          );
+        case 1: // Stripe
+          return null;
+        default:
+          break;
+      }
+    }
+
     return (
       <div className={css(styles.content)}>
         <div className={css(styles.backButton)} onClick={() => setPage(1)}>
           {icons.longArrowLeft}
           <span className={css(styles.backButtonLabel)}>Back</span>
         </div>
-        <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
-          <div className={css(styles.column, styles.left)}>
-            <div className={css(styles.title)}>Total Balance</div>
-            <div className={css(styles.subtitle)}>
-              Your current total balance in ResearchHub
-            </div>
-          </div>
-          <div className={css(styles.column, styles.right)}>
-            <div className={css(styles.userBalance)}>
-              {props.user && props.user.balance}
-              <img
-                src={"/static/icons/coin-filled.png"}
-                draggable={false}
-                className={css(styles.coinIcon)}
-              />
-            </div>
-          </div>
-        </div>
-        <div className={css(styles.row, styles.numbers)}>
-          <div className={css(styles.column, styles.left)}>
-            <div className={css(styles.title)}>Amount</div>
-            <div className={css(styles.subtitle)}>
-              Select the amount you want to give
-            </div>
-          </div>
-          <div className={css(styles.column, styles.right)}>
-            <input
-              type="number"
-              className={css(styles.input, error && styles.error)}
-              value={amount}
-              onChange={handleAmountInput}
-            />
-          </div>
-        </div>
+        {_renderForm(activePayment)}
         <div className={css(styles.buttonRow)}>
           <Button label="Confirm" onClick={confirmTransaction} />
         </div>
