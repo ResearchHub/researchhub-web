@@ -852,6 +852,11 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     maxWidth: "100%",
   },
+  metadata: {
+    fontSize: 13,
+    color: "#918f9b",
+    marginLeft: 7,
+  },
   discussion: {
     cursor: "pointer",
     minWidth: 100,
