@@ -997,7 +997,7 @@ const AuthorPage = (props) => {
             >
               {renderOrcid()}
             </div>
-            {/* {allowEdit && (
+            {allowEdit && (
               <div className={css(styles.editProfileButton)}>
                 <StripeButton
                   customButtonStyle={styles.editButtonCustom}
@@ -1005,8 +1005,8 @@ const AuthorPage = (props) => {
                   authorId={router.query.authorId}
                 />
               </div>
-            )} */}
-            {allowEdit && (
+            )}
+            {/* {allowEdit && (
               <div className={css(styles.mobileEditProfileButton)}>
                 <Button
                   label={"Edit Profile"}
@@ -1015,7 +1015,7 @@ const AuthorPage = (props) => {
                   rippleClass={styles.editButtonCustom}
                 />
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </ComponentWrapper>
