@@ -798,7 +798,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.3,
   },
   voting: {
-    width: 60,
+    width: 55,
     "@media only screen and (max-width: 767px)": {
       width: "unset",
     },

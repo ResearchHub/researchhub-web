@@ -51,14 +51,14 @@ const AuthorSupportModal = (props) => {
         ),
         id: "RSC_OFF_CHAIN",
       },
-      // {
-      //   label: (
-      //     <img
-      //       className={css(iconStyles.apple)}
-      //       src={"/static/icons/apple-pay.png"}
-      //     />
-      //   ),
-      // },
+      {
+        label: (
+          <img
+            className={css(iconStyles.stripe)}
+            src={"/static/icons/stripe.png"}
+          />
+        ),
+      },
       // {
       //   label: (
       //     <img
@@ -664,6 +664,9 @@ const iconStyles = StyleSheet.create({
   rscBanner: {
     height: 18,
     marginLeft: 5,
+  },
+  stripe: {
+    height: 40,
   },
   row: {
     display: "flex",
