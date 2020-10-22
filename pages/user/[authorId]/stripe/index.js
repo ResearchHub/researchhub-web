@@ -80,6 +80,7 @@ const StripeVerification = (props) => {
             src={"/static/ResearchHubLogo.png"}
             draggable={false}
           />
+          <i className={css(styles.connectIcon) + " fas fa-link"} />
           <img
             className={css(styles.stripeLogo)}
             src={"/static/icons/stripe.png"}
@@ -94,7 +95,10 @@ const StripeVerification = (props) => {
           </React.Fragment>
           {!fetching && !success && (
             <div className={css(styles.buttonContainer)}>
-              <StripeButton authorId={props.queryId} />
+              <StripeButton
+                authorId={props.queryId}
+                // onOpenCallback={}
+              />
             </div>
           )}
         </div>
@@ -185,6 +189,11 @@ const styles = StyleSheet.create({
     color: colors.RED(),
     fontSize: 14,
     marginRight: 5,
+  },
+  connectIcon: {
+    paddingLeft: 10,
+    paddingRight: 5,
+    color: colors.BLACK(0.6),
   },
   buttonContainer: {
     width: "100%",
