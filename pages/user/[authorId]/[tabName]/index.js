@@ -1002,6 +1002,7 @@ const AuthorPage = (props) => {
                 <StripeButton
                   customButtonStyle={styles.editButtonCustom}
                   rippleClass={styles.rippleClass}
+                  authorId={router.query.authorId}
                 />
               </div>
             )} */}

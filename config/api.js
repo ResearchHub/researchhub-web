@@ -631,6 +631,8 @@ const routes = (BASE_URL) => {
       return BASE_URL + "paper/featured_papers/";
     },
     ONBOARD_STRIPE: BASE_URL + "stripe/onboard_stripe_account/",
+    VERIFY_STRIPE: ({ authorId }) =>
+      BASE_URL + `stripe/${authorId}/verify_stripe_account/`,
   };
 
   function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
