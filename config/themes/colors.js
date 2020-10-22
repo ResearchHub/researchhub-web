@@ -14,6 +14,7 @@ const colors = {
   DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`,
   NAVY: (opacity = 1) => `rgba(31, 40, 125, ${opacity})`,
   GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`,
+  NEW_BLUE: (opacity = 1) => `rgba(57, 113, 255, ${opacity})`,
 };
 
 export const formColors = {
