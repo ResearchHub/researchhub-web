@@ -10,7 +10,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 
 const StripeButton = (props) => {
-  const { customButtonStyle, rippleClass, author, auth } = props;
+  const { customButtonStyle, rippleClass, author, auth, show } = props;
   const [openModal, toggleOpenModal] = useState(false);
   const [loadingStripe, setLoadingStripe] = useState(false);
   const [stripeUrl, setStripeUrl] = useState();
@@ -54,7 +54,7 @@ const StripeButton = (props) => {
   };
 
   return (
-    <div className={css(styles.container, stripeUrl && styles.hidden)}>
+    <div className={css(styles.container, stripeUrl && !show && styles.hidden)}>
       <EmbedModal
         isOpen={openModal}
         stripeUrl={stripeUrl}
