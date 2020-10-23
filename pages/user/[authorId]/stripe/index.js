@@ -15,7 +15,7 @@ import colors from "~/config/themes/colors";
 const redirectPath = "contributions";
 
 const StripeVerification = (props) => {
-  const { auth } = props;
+  const { auth, author } = props;
   const [fetching, setFetching] = useState(true);
   const [success, setSuccess] = useState(false);
   useEffect(() => {
@@ -96,7 +96,11 @@ const StripeVerification = (props) => {
           </React.Fragment>
           {!fetching && !success && (
             <div className={css(styles.buttonContainer)}>
-              <StripeButton authorId={props.queryId} auth={auth} />
+              <StripeButton
+                authorId={props.queryId}
+                auth={auth}
+                author={author}
+              />
             </div>
           )}
         </div>
@@ -203,6 +207,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   auth: state.auth,
   user: state.auth.user,
+  author: state.author,
 });
 
 export default connect(

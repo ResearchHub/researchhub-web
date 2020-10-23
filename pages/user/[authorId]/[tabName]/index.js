@@ -41,6 +41,7 @@ import AuthorSupportModal from "../../../../components/modal/AuthorSupportModal"
 
 const AuthorPage = (props) => {
   const { auth, author, hostname, user, transactions } = props;
+
   const router = useRouter();
   const { tabName } = router.query;
   const dispatch = useDispatch();
@@ -846,6 +847,7 @@ const AuthorPage = (props) => {
                       rippleClass={styles.rippleClass}
                       authorId={router.query.authorId}
                       auth={auth}
+                      author={author}
                     />
                   </div>
                 )}
