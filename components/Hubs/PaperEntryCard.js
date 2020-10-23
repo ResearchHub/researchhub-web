@@ -136,6 +136,9 @@ const PaperEntryCard = (props) => {
       return (
         <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
           Submitted by{" "}
+          {/* <span className={css(styles.icon)}>
+            {icons.fileUpload}
+          </span> */}
           <span
             className={css(styles.capitalize)}
           >{`${first_name} ${last_name}`}</span>
@@ -145,6 +148,9 @@ const PaperEntryCard = (props) => {
       return (
         <div className={css(styles.uploadedBy)}>
           Retrieved from{" "}
+          {/* <span className={css(styles.icon)}>
+            {icons.fileUpload}
+          </span> */}
           <span className={css(styles.capitalize)}>{external_source}</span>
         </div>
       );
@@ -283,7 +289,7 @@ const PaperEntryCard = (props) => {
     );
   };
 
-  const renderBodyPreview = () => {
+  const renderContent = () => {
     if (bullet_points && bullet_points.length > 0) {
       return (
         <div className={css(styles.summary)}>
@@ -431,12 +437,14 @@ const PaperEntryCard = (props) => {
   };
 
   const renderPreregistrationTag = () => {
-    return (
-      <div className={css(styles.preRegContainer)}>
-        <img src="/static/icons/wip.png" className={css(styles.wipIcon)} />
-        Preregistration
-      </div>
-    );
+    if (paper_type === "PRE_REGISTRATION") {
+      return (
+        <div className={css(styles.preRegContainer)}>
+          <img src="/static/icons/wip.png" className={css(styles.wipIcon)} />
+          Preregistration
+        </div>
+      );
+    }
   };
 
   const mobileOnly = (children) => {
@@ -448,12 +456,17 @@ const PaperEntryCard = (props) => {
   };
 
   const renderMetadata = () => {
-    if (paper_publish_date || (raw_authors && raw_authors.length)) {
+    if (
+      paper_publish_date ||
+      (raw_authors && raw_authors.length) ||
+      uploaded_by
+    ) {
       return (
         <div className={css(styles.metadataRow)}>
           {/* {renderPaperTitle()} */}
           {renderRawAuthors()}
           {renderPublishDate()}
+          {renderUploadedBy()}
         </div>
       );
     }
@@ -488,7 +501,7 @@ const PaperEntryCard = (props) => {
       }
 
       return (
-        <div className={css(styles.metadataContainer)}>
+        <div className={css(styles.metadataContainer, styles.publishContainer)}>
           <span className={css(styles.icon)}>{icons.calendar}</span>
           <span className={css(styles.metadata)}>{_convertDate()}</span>
         </div>
@@ -579,22 +592,20 @@ const PaperEntryCard = (props) => {
               {mobileOnly(renderMetadata())}
             </div>
             {mobileOnly(renderMainTitle())}
+            {renderContent()}
             {desktopOnly(renderMetadata())}
 
-            {renderBodyPreview()}
-            {renderUploadedBy()}
-            {/* {mobileView && !promotionSummary && renderHubTags()} */}
+            {/* {renderUploadedBy()} */}
           </div>
           {desktopOnly(renderPreview())}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.row)}>{renderDiscussionCount()}</div>
-          {/* {desktopOnly(
-            <Fragment>
-              {renderHubTags()}
-              {paper_type === "PRE_REGISTRATION" && renderPreregistrationTag()}
-            </Fragment>
-          )} */}
+          <div className={css(styles.row)}>
+            {renderPreregistrationTag()}
+            {desktopOnly(renderHubTags())}
+            {/* {desktopOnly(renderPreregistrationTag())} */}
+          </div>
         </div>
         <div className={css(styles.bottomBar, styles.mobileHubTags)}>
           {renderHubTags()}
@@ -702,6 +713,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
+      justifyContent: "space-between",
       paddingBottom: 10,
     },
   },
@@ -720,12 +732,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
-  label: {
-    fontSize: 12,
-    fontWeight: 400,
-    color: "#918F9B",
-    color: "#C1C1CF",
-    marginRight: 5,
+  publishContainer: {
+    marginRight: 10,
   },
   authorContainer: {
     marginRight: 10,
@@ -740,7 +748,7 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     color: colors.BLACK(),
     fontSize: 14,
-    paddingBottom: 10,
+    padding: "5px 0 10px",
     lineHeight: 1.3,
   },
   voting: {
@@ -752,8 +760,8 @@ const styles = StyleSheet.create({
   voteWidget: {
     marginRight: 15,
     fontSize: 14,
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 12,
+    "@media only screen and (max-width: 415px)": {
+      // fontSize: 12,
       // maxWidth: 35
     },
   },
@@ -779,11 +787,17 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 13,
     color: "#C1C1CF",
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
   metadata: {
     fontSize: 13,
     color: "#918f9b",
     marginLeft: 7,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
   discussion: {
     cursor: "pointer",
@@ -813,7 +827,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap-reverse",
     marginLeft: "auto",
     "@media only screen and (max-width: 970px)": {
-      marginBottom: 15,
+      // marginBottom: 15,
       // justifyContent: "flex-start",
       width: "100%",
       flexWrap: "wrap",
@@ -919,7 +933,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     width: "max-content",
     color: "#918f9b",
-    marginLeft: 10,
+    marginRight: 10,
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
       marginLeft: 0,

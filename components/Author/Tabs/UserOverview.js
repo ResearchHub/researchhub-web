@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -9,6 +11,7 @@ import { ModalActions } from "~/redux/modals";
 import ProjectCard from "./Projects/ProjectCard";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import ManageFeaturedWorkModal from "~/components/modal/ManageFeaturedWorkModal";
+import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -75,8 +78,13 @@ const UserOverview = (props) => {
           authorId={props.authorId}
         />
         {renderManagementButton()}
-
-        {renderFeaturedWorks()}
+        <ReactPlaceholder
+          showLoadingAnimation
+          customPlaceholder={<PaperPlaceholder color="#efefef" />}
+          ready={!props.fetching}
+        >
+          {renderFeaturedWorks()}
+        </ReactPlaceholder>
       </div>
     </Fragment>
   );
@@ -92,12 +100,16 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   editButton: {
-    position: "absolute",
-    top: -40,
-    right: 0,
+    // position: "absolute",
+    // top: -40,
+    // right: 0,
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
     cursor: "pointer",
     fontSize: 14,
     color: colors.BLACK(0.6),
+    marginBottom: 15,
     ":hover": {
       color: colors.BLACK(),
     },
