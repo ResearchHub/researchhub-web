@@ -36,6 +36,7 @@ import PaperPromotionBanner from "./Banner/PaperPromotionBanner";
 import ReCaptchaPrompt from "./modal/ReCaptchaPrompt";
 import EducationModal from "./modal/EducationModal";
 import AuthorSupportModal from "./modal/AuthorSupportModal";
+import StripeOnboardModal from "./modal/StripeOnboardModal";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -439,6 +440,7 @@ const Navbar = (props) => {
         <DndModal />
         <PromotionInfoModal />
         <ReCaptchaPrompt />
+        <StripeOnboardModal />
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />
