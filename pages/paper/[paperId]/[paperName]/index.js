@@ -911,7 +911,7 @@ const styles = StyleSheet.create({
     minWidth: "100%",
     width: "100%",
     boxSizing: "border-box",
-    overflowX: "scroll",
+    overflowX: "auto",
     paddingBottom: 10,
   },
   header: {

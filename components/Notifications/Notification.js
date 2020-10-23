@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   notificationFeed: {
     maxHeight: 500,
-    overflow: "scroll",
+    overflow: "auto",
   },
   menuTitle: {
     width: "100%",

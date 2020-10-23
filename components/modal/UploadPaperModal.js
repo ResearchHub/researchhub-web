@@ -93,7 +93,7 @@ class UploadPaperModal extends React.Component {
   };
 
   enableParentScroll = () => {
-    document.body.style.overflow = "scroll";
+    document.body.style.overflow = "auto";
   };
 
   renderSearchResults = () => {

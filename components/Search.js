@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
     left: "50%",
     transform: "translateX(-50%)",
     background: "#fff",
-    overflow: "scroll",
+    overflow: "auto",
     padding: 16,
     boxSizing: "border-box",
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",

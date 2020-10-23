@@ -894,7 +894,7 @@ const styles = StyleSheet.create({
   },
   pointCardList: {
     justifyContent: "space-between",
-    overflowX: "scroll",
+    overflowX: "auto",
     scrollSnapType: "x mandatory",
     paddingBottom: 20,
     width: "80%",

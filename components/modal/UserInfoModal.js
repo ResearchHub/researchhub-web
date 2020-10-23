@@ -75,7 +75,7 @@ class UserInfoModal extends React.Component {
 
   closeModal = () => {
     this.props.openUserInfoModal(false);
-    document.body.style.overflow = "scroll";
+    document.body.style.overflow = "auto";
   };
 
   saveAndCloseModal = () => {
@@ -488,7 +488,7 @@ class UserInfoModal extends React.Component {
 const styles = StyleSheet.create({
   modalStyle: {
     maxHeight: "95vh",
-    overflowY: "scroll",
+    overflowY: "auto",
     width: 600,
     "@media only screen and (max-width: 767px)": {
       width: "100%",

@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minWidth: 450,
     justifyContent: "flex-start",
-    overflowX: "scroll",
+    overflowX: "auto",
     "::-webkit-scrollbar": {
       display: "none",
     },

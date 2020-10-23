@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: "50px 0px 50px 0px",
     width: 625,
-    overflowY: "scroll",
+    overflowY: "auto",
   },
   closeButton: {
     height: 12,
