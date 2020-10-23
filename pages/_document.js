@@ -59,6 +59,10 @@ export default class MyDocument extends Document {
             href="/static/favicons/apple-touch-icon.png"
             preload
           />
+
+          {/* Stripe */}
+          <script src="https://js.stripe.com/v3/"></script>
+
           {/* <!-- Appzi: Capture Insightful Feedback --> */}
           <script
             async

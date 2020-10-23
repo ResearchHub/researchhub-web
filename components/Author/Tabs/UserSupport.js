@@ -67,9 +67,11 @@ const UserSupport = (props) => {
   }, []);
 
   useEffect(() => {
-    fetchSupporterList();
-    determineIsAuthor();
-  }, [props.auth.isLoggedIn, props.auth, props.auth.user]);
+    if (props.auth.isLoggedIn) {
+      fetchSupporterList();
+      determineIsAuthor();
+    }
+  }, [props.auth.user.id]);
 
   function handleResize(e) {
     let width = e.target.innerWidth;
@@ -102,7 +104,7 @@ const UserSupport = (props) => {
 
   function fetchSupporterList() {
     return fetch(
-      API.SUPPORT_USERS({ authorId: props.authorId }),
+      API.SUPPORT({ authorId: props.authorId, route: "get_supported" }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)

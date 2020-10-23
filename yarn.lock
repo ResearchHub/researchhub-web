@@ -1668,6 +1668,18 @@
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@sheerun/mutationobserver-shim/-/mutationobserver-shim-0.3.2.tgz#8013f2af54a2b7d735f71560ff360d3a8176a87b"
 
+"@stripe/react-stripe-js@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-1.1.2.tgz#a7f5ef5b4d7dc7fa723501b706644414cfe6dcba"
+  integrity sha512-07hu8RJXwWKGbvdvd1yt1cYvGtDB8jFX+q10f7FQuItUt9rlSo0am3WIx845iMHANiYgxyRb1PS201Yle9xxPQ==
+  dependencies:
+    prop-types "^15.7.2"
+
+"@stripe/stripe-js@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-1.10.0.tgz#d93c2431c9253cb676219c8442f705416c374a19"
+  integrity sha512-NMizRRaZNwIP6LIUA13Ow8D63v7m0CeSJrxE5JUdC6A1PGRHRKW5zkS22sMAY3l6n0sqlnoVesZ3xJQC7/rF3w==
+
 "@testing-library/dom@^6.11.0":
   version "6.12.0"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-6.12.0.tgz#0e40efd58d85d92ad9c39ef7667952195e835bbf"

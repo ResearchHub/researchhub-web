@@ -608,14 +608,20 @@ const routes = (BASE_URL) => {
       }
       return url + query;
     },
-    SUPPORT: BASE_URL + "support/",
-    SUPPORT_USERS: ({ paperId, authorId }) => {
+    SUPPORT: ({ paperId, authorId, route }) => {
       let url = BASE_URL + `support/`;
-      if (paperId) {
-        url += `?paper_id=${paperId}`;
-      } else if (authorId) {
-        url += `?author_id=${authorId}`;
-      }
+
+      let params = {
+        querystring: {
+          paper_id: paperId,
+          author_id: authorId,
+        },
+        rest: {
+          route,
+        },
+      };
+      url = prepURL(url, params);
+
       return url;
     },
     FEATURED_PAPERS: ({ authorId, search }) => {

@@ -23,80 +23,89 @@ import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { act } from "react-dom/test-utils";
+import StripeForm from "../Stripe/StripeForm";
+
+const Amount = ({ value, onChange, error, containerStyles, dollar }) => {
+  return (
+    <div className={css(styles.row, styles.numbers, containerStyles)}>
+      <div className={css(styles.column, styles.left)}>
+        <div className={css(styles.title)}>Amount</div>
+        <div className={css(styles.subtitle)}>
+          Select the amount you want to give
+        </div>
+      </div>
+      <div className={css(styles.column, styles.right)}>
+        <div className={css(styles.inputContainer)}>
+          {dollar && (
+            <i className={css(styles.dollarSign) + " fas fa-dollar-sign"}></i>
+          )}
+          <input
+            type="number"
+            className={css(
+              styles.input,
+              error && styles.error,
+              dollar && styles.dollar
+            )}
+            value={value}
+            minValue={1}
+            onChange={onChange}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const AuthorSupportModal = (props) => {
+  const { user } = props;
   const alert = useAlert();
 
   const [page, setPage] = useState(1); // 1
   const [activePayment, setActivePayment] = useState(); // 0 is RSC, 1 is Stripe
-  const [paymentOptions, setPaymentOptions] = useState(formatOptions() || []); // list of payment options
-  const [amount, setAmount] = useState(0);
+  // const [paymentOptions, setPaymentOptions] = useState(formatOptions() || []); // list of payment options
+  const [amount, setAmount] = useState(1);
   const [error, setError] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   useEffect(() => {}, [props.modals]);
 
-  function formatOptions() {
-    return [
-      {
-        label: (
-          <div className={css(iconStyles.row)}>
-            <img
-              className={css(iconStyles.rsc)}
-              src={"/static/icons/coin-filled.png"}
-            />
-            <img
-              className={css(iconStyles.rscBanner)}
-              src={"/static/ResearchHubText.png"}
-            />
-          </div>
-        ),
-        id: "RSC_OFF_CHAIN",
-      },
-      {
-        label: (
+  const paymentOptions = [
+    {
+      label: (
+        <div className={css(iconStyles.row)}>
+          <span className={css(styles.boldResearch)}>ResearchCoin</span>
           <img
-            className={css(iconStyles.stripe)}
-            src={"/static/icons/stripe.png"}
+            className={css(iconStyles.rsc)}
+            src={"/static/icons/coin-filled.png"}
           />
-        ),
-      },
-      // {
-      //   label: (
-      //     <img
-      //       className={css(iconStyles.mastercard)}
-      //       src={"/static/icons/mastercard.png"}
-      //     />
-      //   ),
-      // },
-      // {
-      //   label: (
-      //     <img
-      //       className={css(iconStyles.paypal)}
-      //       src={"/static/icons/paypal.png"}
-      //     />
-      //   ),
-      //   id: "PAYPAL",
-      // },
-      // {
-      //   label: (
-      //     <img
-      //       className={css(iconStyles.visa)}
-      //       src={"/static/icons/visa.png"}
-      //     />
-      //   ),
-      // },
-    ];
-  }
+        </div>
+      ),
+      id: "RSC_OFF_CHAIN",
+    },
+    {
+      label: (
+        <div className={css(iconStyles.row)}>
+          <span className={css(styles.boldResearch)}>Credit Card</span>
+          <i className={css(styles.creditCardIcon) + " fad fa-credit-card"}></i>
+        </div>
+      ),
+    },
+  ];
 
   function closeModal() {
     document.body.style.overflow = "scroll";
     props.openAuthorSupportModal(false);
-    setPage(2); //1
+    setPage(1); //1
     setActivePayment(null);
-    setAmount(0);
+    setAmount(1);
   }
 
-  function confirmTransaction() {
+  /**
+   * Confirming RSC transaction
+   * @param { Event } e -- event from form submission
+   */
+  function confirmTransaction(e) {
+    e.preventDefault();
     if (error) {
       props.setMessage("Not enough coins in balance");
       return props.showMessage({
@@ -167,7 +176,10 @@ const AuthorSupportModal = (props) => {
       payment_type: "RSC_OFF_CHAIN", //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
     };
 
-    return fetch(API.SUPPORT, API.POST_CONFIG(payload))
+    return fetch(
+      API.SUPPORT({ route: "get_supported" }),
+      API.POST_CONFIG(payload)
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -193,9 +205,11 @@ const AuthorSupportModal = (props) => {
 
   function handleAmountInput(e) {
     let value = parseInt(e.target.value, 10);
-    value = value ? (value > 0 ? value : 0) : null;
+    value = value ? (value > 0 ? value : 0) : 0;
+    if (activePayment === 0) {
+      setError(handleError(value));
+    }
     setAmount(value);
-    setError(handleError(value));
   }
 
   function handleError(value) {
@@ -244,7 +258,10 @@ const AuthorSupportModal = (props) => {
         <div className={css(styles.paymentList)}>
           {paymentOptions.map((payment, i) => {
             return (
-              <div className={css(styles.paymentOption)}>
+              <div
+                className={css(styles.paymentOption)}
+                key={`payment_option_${i}`}
+              >
                 <OptionCard
                   label={payment.label}
                   active={activePayment === i}
@@ -260,57 +277,169 @@ const AuthorSupportModal = (props) => {
     );
   }
 
-  function renderAmountScreen() {
-    function _renderForm(currency) {
-      switch (currency) {
-        case 0: //RSC
-          return (
-            <Fragment>
-              <div
-                className={css(styles.row, styles.numbers, styles.borderBottom)}
-              >
-                <div className={css(styles.column, styles.left)}>
-                  <div className={css(styles.title)}>Total Balance</div>
-                  <div className={css(styles.subtitle)}>
-                    Your current total balance in ResearchHub
-                  </div>
-                </div>
-                <div className={css(styles.column, styles.right)}>
-                  <div className={css(styles.userBalance)}>
-                    {props.user && props.user.balance}
-                    <img
-                      src={"/static/icons/coin-filled.png"}
-                      draggable={false}
-                      className={css(styles.coinIcon)}
-                    />
-                  </div>
+  /**
+   * Successful stripe payment
+   */
+  const stripePaymentSuccess = () => {
+    setPaymentLoading(false);
+    setPage(3);
+    const {
+      setSupporters,
+      supporters,
+    } = props.modals.openAuthorSupportModal.props;
+    props.updateUser({ ...user });
+    setSupporters([{ ...user }, ...supporters]);
+  };
+
+  /**
+   * When stripe payment errors, do something
+   */
+  const stripePaymentError = () => {};
+
+  function _renderForm(currency) {
+    let label = setupPaymentLabel(amount);
+
+    switch (currency) {
+      case 0: //RSC
+        return (
+          <form onSubmit={confirmTransaction}>
+            <div
+              className={css(styles.row, styles.numbers, styles.borderBottom)}
+            >
+              <div className={css(styles.column, styles.left)}>
+                <div className={css(styles.title)}>Total Balance</div>
+                <div className={css(styles.subtitle)}>
+                  Your current total balance in ResearchHub
                 </div>
               </div>
-              <div className={css(styles.row, styles.numbers)}>
-                <div className={css(styles.column, styles.left)}>
-                  <div className={css(styles.title)}>Amount</div>
-                  <div className={css(styles.subtitle)}>
-                    Select the amount you want to give
-                  </div>
-                </div>
-                <div className={css(styles.column, styles.right)}>
-                  <input
-                    type="number"
-                    className={css(styles.input, error && styles.error)}
-                    value={amount}
-                    onChange={handleAmountInput}
+              <div className={css(styles.column, styles.right)}>
+                <div className={css(styles.userBalance)}>
+                  {props.user && props.user.balance}
+                  <img
+                    src={"/static/icons/coin-filled.png"}
+                    draggable={false}
+                    className={css(styles.coinIcon)}
                   />
                 </div>
               </div>
-            </Fragment>
-          );
-        case 1: // Stripe
-          return null;
-        default:
-          break;
-      }
+            </div>
+            <Amount value={amount} onChange={handleAmountInput} error={error} />
+            <div className={css(styles.buttonRow)}>
+              <Button
+                rippleClass={styles.rippleClass}
+                customButtonStyle={styles.customButtonStyle}
+                label={label}
+              />
+            </div>
+          </form>
+        );
+      case 1: // Stripe
+        return (
+          <div>
+            <Amount
+              value={amount}
+              onChange={handleAmountInput}
+              containerStyles={styles.page2ContainerStyles}
+              dollar={true}
+            />
+            <StripeForm
+              createStripeIntent={createStripeIntent}
+              paymentCallback={stripePaymentSuccess}
+              paymentError={stripePaymentError}
+              senderName={
+                user.author_profile.first_name +
+                " " +
+                user.author_profile.last_name
+              }
+              button={
+                <div className={css(styles.buttonRow)}>
+                  <Button
+                    rippleClass={styles.rippleClass}
+                    customButtonStyle={styles.customButtonStyle}
+                    label={
+                      paymentLoading ? (
+                        <i className="fas fa-spinner-third fa-spin"></i>
+                      ) : (
+                        label
+                      )
+                    }
+                    type={"submit"}
+                  />
+                </div>
+              }
+            />
+          </div>
+        );
+      default:
+        break;
     }
+  }
 
+  /**
+   * Creating a stripe intent
+   */
+  const createStripeIntent = () => {
+    setPaymentLoading(true);
+    let payload = {
+      user_id: props.user.id,
+      recipient_id: getAuthorId(),
+      content_type: props.supportType,
+      object_id: getObjectId(), // id of paper or author
+      amount,
+      payment_option: "SINGLE", // {'SINGLE', 'MONTHLY'},
+      payment_type: "STRIPE", //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
+    };
+
+    return fetch(API.SUPPORT({}), API.POST_CONFIG(payload))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        return res.client_secret;
+        // props.showMessage({ show: false });
+        // props.setMessage("Project supported!");
+        // props.showMessage({ show: true });
+
+        // setPage(3);
+        // props.updateUser({ ...res.user });
+        // setSupporters([{ ...res.user }, ...supporters]);
+      })
+      .catch((err) => {
+        props.showMessage({ show: false });
+        props.setMessage("We were unable to process your payment.");
+        props.showMessage({ show: true, error: true });
+      });
+  };
+
+  /***
+   * Sends the stripe element to backend
+   */
+  const stripePayment = (e) => {};
+
+  const setupPaymentLabel = (amount) => {
+    switch (activePayment) {
+      case 0:
+        return `Send ${amount} RSC to ${user.author_profile.first_name}`;
+      case 1:
+        return `Send $${amount} to ${user.author_profile.first_name}`;
+    }
+  };
+
+  // Handle form submission.
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    const card = elements.getElement(CardElement);
+    const result = await stripe.createToken(card);
+    if (result.error) {
+      // Inform the user if there was an error.
+      setError(result.error.message);
+    } else {
+      setError(null);
+      // Send the token to your server.
+      stripeTokenHandler(result.token);
+    }
+  };
+
+  function renderAmountScreen() {
     return (
       <div className={css(styles.content)}>
         <div className={css(styles.backButton)} onClick={() => setPage(1)}>
@@ -318,9 +447,6 @@ const AuthorSupportModal = (props) => {
           <span className={css(styles.backButtonLabel)}>Back</span>
         </div>
         {_renderForm(activePayment)}
-        <div className={css(styles.buttonRow)}>
-          <Button label="Confirm" onClick={confirmTransaction} />
-        </div>
       </div>
     );
   }
@@ -340,11 +466,14 @@ const AuthorSupportModal = (props) => {
               <div className={css(styles.sectionRow)}>
                 <div className={css(styles.label)}>Support Amount:</div>
                 <div className={css(styles.amountRow)}>
+                  {activePayment !== 0 && "$"}
                   {amount}
-                  <img
-                    className={css(styles.amountRSC)}
-                    src={"/static/icons/coin-filled.png"}
-                  />
+                  {activePayment === 0 && (
+                    <img
+                      className={css(styles.amountRSC)}
+                      src={"/static/icons/coin-filled.png"}
+                    />
+                  )}
                 </div>
               </div>
               {paper && (
@@ -407,10 +536,10 @@ const AuthorSupportModal = (props) => {
           formatTitle()
         ) : (
           <div className={css(styles.mainHeader)}>
-            Transaction Successful
             <span className={css(styles.icon)}>
-              <i className="fal fa-check-circle" />
+              <i className="far fa-check-circle" />
             </span>
+            Transaction Successful
           </div>
         )
       }
@@ -457,10 +586,8 @@ const styles = StyleSheet.create({
     },
   },
   paymentOption: {
-    width: 246,
-    minWidth: 246,
-    maxWidth: 246,
-    margin: "0 20px 20px 0",
+    width: "100%",
+    marginBottom: 16,
   },
   content: {
     width: 420,
@@ -471,6 +598,10 @@ const styles = StyleSheet.create({
       width: "100%",
       boxSizing: "border-box",
     },
+  },
+  page2ContainerStyles: {
+    marginTop: 0,
+    paddingTop: 0,
   },
   description: {
     marginTop: 20,
@@ -501,6 +632,13 @@ const styles = StyleSheet.create({
       minWidth: "unset",
     },
   },
+  customButtonStyle: {
+    width: "100%",
+    fontSize: 18,
+  },
+  rippleClass: {
+    width: "100%",
+  },
   sectionRow: {
     display: "flex",
     justifyContent: "space-between",
@@ -510,6 +648,12 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.6),
     marginBottom: 10,
   },
+  creditCardIcon: {
+    // color: colors.PURPLE(1),
+    fontSize: 20,
+    marginLeft: "auto",
+    paddingRight: 16,
+  },
   label: {
     fontSize: 16,
     fontWeight: 500,
@@ -518,10 +662,14 @@ const styles = StyleSheet.create({
   amountRow: {
     display: "flex",
     alignItems: "center",
+    color: colors.BLACK(),
   },
   amountRSC: {
     height: 20,
     marginLeft: 5,
+  },
+  boldResearch: {
+    fontWeight: 500,
   },
   redirect: {
     margin: "10px 0",
@@ -542,6 +690,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: "20px 0",
     width: "100%",
+    fontSize: 22,
+    letterSpacing: 0.7,
   },
   left: {
     width: "80%",
@@ -551,6 +701,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     height: "100%",
   },
+  inputContainer: {
+    position: "relative",
+  },
   mainHeader: {
     fontWeight: 500,
     color: colors.BLACK(),
@@ -558,7 +711,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: colors.GREEN(1),
-    marginLeft: 5,
+    marginRight: 8,
   },
   amountContainer: {
     justifyContent: "space-between",
@@ -581,7 +734,21 @@ const styles = StyleSheet.create({
     padding: "0 10px",
     boxSizing: "border-box",
     borderRadius: 4,
-    borderColor: colors.BLACK(0.4),
+    borderWidth: 1,
+    border: "1px solid rgb(232, 232, 242)",
+    backgroundColor: "rgb(251, 251, 253)",
+    // borderColor: colors.BLACK(0.4),
+  },
+  dollarSign: {
+    position: "absolute",
+    left: 12,
+    top: "50%",
+    opacity: 0.7,
+    transform: "translateY(-50%)",
+  },
+  dollar: {
+    paddingLeft: 30,
+    width: 100,
   },
   error: {
     borderColor: "red",
@@ -684,6 +851,8 @@ const iconStyles = StyleSheet.create({
   },
   rsc: {
     height: 25,
+    marginLeft: "auto",
+    paddingRight: 16,
   },
   rscBanner: {
     height: 18,

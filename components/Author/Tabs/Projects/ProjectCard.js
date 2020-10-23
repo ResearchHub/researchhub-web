@@ -92,14 +92,18 @@ const ProjectCard = (props) => {
   );
   const store = useStore();
 
-  useEffect(() => {
-    let endpoint = API.SUPPORT_USERS({ paperId: id && id });
-    fetch(endpoint, API.GET_CONFIG())
+  const fetchSupported = () => {
+    let endpoint = API.SUPPORT({ paperId: id && id, route: "get_supported" });
+    return fetch(endpoint, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
         setSupporters(res.results);
       });
+  };
+
+  useEffect(() => {
+    fetchSupported();
   }, []);
 
   useEffect(() => {

@@ -343,6 +343,7 @@ class ManageFeaturedWorkModal extends React.Component {
             id={card.id}
             text={card.plain_text}
             data={card}
+            key={`carddraggable_${card.id}`}
             moveCard={this.moveCard}
             onEditCallback={this.onEditCallback}
             onClick={this.updateFeaturedWorks}

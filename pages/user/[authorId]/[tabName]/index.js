@@ -37,6 +37,7 @@ import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import AuthorSupportModal from "../../../../components/modal/AuthorSupportModal";
 
 const AuthorPage = (props) => {
   const { auth, author, hostname, user, transactions } = props;
@@ -696,7 +697,7 @@ const AuthorPage = (props) => {
         : !editName && (
             <OrcidConnectButton
               hostname={hostname}
-              refreshProfileOnSuccess={true}
+              refreshProfileOnSuccess={false}
               customLabel={"Connect ORCiD"}
               styles={styles.orcidButton}
               iconButton={mobile}
@@ -738,6 +739,7 @@ const AuthorPage = (props) => {
         description={`View contributions by ${name} on ResearchHub`}
       />
       <ComponentWrapper>
+        <AuthorSupportModal supportType={"author"} />
         <UserInfoModal />
         <div className={css(styles.profileContainer)}>
           <div
@@ -828,6 +830,26 @@ const AuthorPage = (props) => {
                 </div>
               </div>
               {renderRSCBalance()}
+              <div className={css(styles.row, styles.actionRow)}>
+                <div
+                  className={css(
+                    styles.connectOrcid,
+                    author.orcid_id && styles.orcidAvailable
+                  )}
+                >
+                  {renderOrcid()}
+                </div>
+                {allowEdit && (
+                  <div className={css(styles.stripeButton)}>
+                    <StripeButton
+                      customButtonStyle={styles.editButtonCustom}
+                      rippleClass={styles.rippleClass}
+                      authorId={router.query.authorId}
+                      auth={auth}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             {!editDescription ? (
               <div
@@ -989,24 +1011,7 @@ const AuthorPage = (props) => {
                 <i className="far fa-share"></i>
               </div>
             </div>
-            <div
-              className={css(
-                styles.connectOrcid,
-                author.orcid_id && styles.orcidAvailable
-              )}
-            >
-              {renderOrcid()}
-            </div>
             {allowEdit && (
-              <div className={css(styles.editProfileButton)}>
-                <StripeButton
-                  customButtonStyle={styles.editButtonCustom}
-                  rippleClass={styles.rippleClass}
-                  authorId={router.query.authorId}
-                />
-              </div>
-            )}
-            {/* {allowEdit && (
               <div className={css(styles.mobileEditProfileButton)}>
                 <Button
                   label={"Edit Profile"}
@@ -1015,7 +1020,7 @@ const AuthorPage = (props) => {
                   rippleClass={styles.editButtonCustom}
                 />
               </div>
-            )} */}
+            )}
           </div>
         </div>
       </ComponentWrapper>
@@ -1077,10 +1082,12 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   connectOrcid: {
-    marginTop: 16,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
+  },
+  stripeButton: {
+    marginLeft: 24,
   },
   mobileConnectOrcid: {
     display: "none",
@@ -1480,10 +1487,15 @@ const styles = StyleSheet.create({
   },
   orcidButton: {
     width: 180,
+    background: "#AECB54",
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {
       height: 50,
       background: "#fff",
+    },
+
+    ":hover": {
+      background: "#AECB54",
     },
   },
   orcidSection: {
@@ -1515,6 +1527,12 @@ const styles = StyleSheet.create({
   },
   row: {
     display: "flex",
+    alignItems: "center",
+  },
+  actionRow: {
+    "@media only screen and (min-width: 768px)": {
+      marginTop: 16,
+    },
   },
   editProfileButton: {
     marginTop: 10,
