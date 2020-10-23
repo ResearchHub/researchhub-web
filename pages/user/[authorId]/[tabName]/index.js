@@ -1022,7 +1022,7 @@ const AuthorPage = (props) => {
                   isWhite={true}
                 />
               </div>
-            )} */}
+            )}
           </div>
         </div>
       </ComponentWrapper>
