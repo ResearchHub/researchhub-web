@@ -129,22 +129,24 @@ const Index = ({ auth }) => {
             {invitedFriends.length > 0 ? (
               invitedFriends.map((friend) => {
                 return (
-                  <LeaderboardUser
-                    name={
-                      friend.author_profile.first_name +
-                      " " +
-                      friend.author_profile.last_name
-                    }
-                    reputation={
-                      <span className={css(styles.earnedRSC)}>
-                        {friend.has_seen_first_coin_modal
-                          ? "+125 RSC"
-                          : "0 RSC"}
-                      </span>
-                    }
-                    authorProfile={friend.author_profile}
-                    authorId={friend.author_profile.id}
-                  />
+                  <div className={css(styles.user)} key={`user_${friend.id}`}>
+                    <LeaderboardUser
+                      name={
+                        friend.author_profile.first_name +
+                        " " +
+                        friend.author_profile.last_name
+                      }
+                      reputation={
+                        <span className={css(styles.earnedRSC)}>
+                          {friend.has_seen_first_coin_modal
+                            ? "+125 RSC"
+                            : "0 RSC"}
+                        </span>
+                      }
+                      authorProfile={friend.author_profile}
+                      authorId={friend.author_profile.id}
+                    />
+                  </div>
                 );
               })
             ) : (
@@ -222,6 +224,11 @@ const styles = StyleSheet.create({
   },
   rsc: {
     color: colors.NEW_BLUE(1),
+  },
+  user: {
+    paddingTop: 16,
+    paddingBottom: 16,
+    borderBottom: "1px solid #EFEFEF",
   },
   banner: {
     height: 345,
