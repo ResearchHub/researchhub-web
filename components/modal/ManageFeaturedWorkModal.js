@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: "10px 20px",
     paddingTop: 20,
-    overflowY: "scroll",
+    overflowY: "auto",
     position: "relative",
     boxShadow: "inset 0 1px 3px rgba(0,0,0,0.12)",
     background: "#F9F9F9",

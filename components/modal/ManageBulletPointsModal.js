@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     padding: 50,
-    overflow: "scroll",
+    overflow: "auto",
     borderRadius: 5,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
   bulletPoints: {
     width: "100%",
     marginBottom: 20,
-    overflowY: "scroll",
+    overflowY: "auto",
     overflowX: "hidden",
   },
   title: {

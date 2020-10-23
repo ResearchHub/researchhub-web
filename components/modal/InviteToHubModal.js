@@ -95,7 +95,7 @@ class InviteToHubModal extends React.Component {
   };
 
   enableParentScroll = () => {
-    document.body.style.overflow = "scroll";
+    document.body.style.overflow = "auto";
   };
 
   sendInvites = () => {
@@ -153,7 +153,7 @@ class InviteToHubModal extends React.Component {
         shouldCloseOnOverlayClick={true}
         onRequestClose={this.closeModal}
         style={mobileView ? mobileOverlayStyles : overlayStyles}
-        onAfterOpen={this.disableParentScroll}
+        onAfterOpen={this.disableParent}
       >
         <div className={css(styles.modalContent)}>
           <img
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: "50px 50px 50px 50px",
     width: 625,
-    overflowY: "scroll",
+    overflowY: "auto",
     overflowX: "hidden",
     "@media only screen and (max-width: 725px)": {
       width: "calc(100% - 100px)",

@@ -1308,7 +1308,7 @@ const styles = StyleSheet.create({
     height: 800,
     minHeight: 800,
     maxHeight: 800,
-    overflowY: "scroll",
+    overflowY: "auto",
     "::-webkit-scrollbar": {
       marginLeft: 15,
     },

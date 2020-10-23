@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     position: "relative",
     backgroundColor: "#fff",
     padding: 50,
-    overflow: "scroll",
+    overflow: "auto",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },

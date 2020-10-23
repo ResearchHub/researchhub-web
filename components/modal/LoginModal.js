@@ -44,7 +44,7 @@ class LoginModal extends React.Component {
     await googleLogin(response).then((_) => {
       getUser().then((_) => {
         this.closeModal();
-        document.body.style.overflow = "scroll";
+        document.body.style.overflow = "auto";
       });
     });
 
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: "50px 0px 50px 0px",
     width: 625,
-    overflowY: "scroll",
+    overflowY: "auto",
   },
   closeButton: {
     height: 12,

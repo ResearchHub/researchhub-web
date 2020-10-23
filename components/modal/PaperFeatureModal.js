@@ -96,7 +96,7 @@ class PaperFeatureModal extends React.Component {
   closeModal = () => {
     this.props.openPaperFeatureModal(false, {});
     this.setState({ ...this.initialState });
-    document.body.style.overflow = "scroll";
+    document.body.style.overflow = "auto";
   };
 
   handleText = (id, value) => {

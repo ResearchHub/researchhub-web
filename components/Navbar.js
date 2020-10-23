@@ -920,7 +920,7 @@ const styles = StyleSheet.create({
     transform: "translateX(-50%)",
     boxShadow: "0 5px 10px 0 #ddd",
     background: "#fff",
-    overflow: "scroll",
+    overflow: "auto",
     borderRadius: 8,
     padding: 16,
     boxSizing: "border-box",

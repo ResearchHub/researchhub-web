@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 0,
-    overflowY: "scroll",
+    overflowY: "auto",
     overflowX: "hidden",
     transition: `all ease-in-out ${DEFAULT_TRANSITION_TIME}s`,
     marginBottom: 10,

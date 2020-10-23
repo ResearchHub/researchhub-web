@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     minHeight: 255,
     maxHeight: 255,
     height: 255,
-    overflow: "scroll",
+    overflow: "auto",
     transition: "opacity ease-in-out 0.3s",
     opacity: 0,
     paddingTop: 5,
