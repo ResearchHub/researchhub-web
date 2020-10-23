@@ -353,7 +353,7 @@ class TransactionModal extends React.Component {
     if (!this.props.auth.isLoggedIn) {
       return;
     }
-    fetch(API.WITHDRAW_COIN({}), API.GET_CONFIG())
+    return fetch(API.WITHDRAW_COIN({}), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {

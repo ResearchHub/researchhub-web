@@ -26,9 +26,25 @@ const FirstVoteModal = (props) => {
   const [reveal, toggleReveal] = useState(false);
   const [showButton, toggleButton] = useState(false);
 
+  const getBalance = () => {
+    const { auth, updateUser } = props;
+    if (!auth.isLoggedIn) {
+      return;
+    }
+    return fetch(API.WITHDRAW_COIN({}), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        let param = {
+          balance: res.user.balance,
+        };
+        updateUser(param);
+      });
+  };
+
   useEffect(() => {
     if (store.getState().modals.openFirstVoteModal) {
-      dispatch(AuthActions.getUser());
+      getBalance();
       let firstTime = !store.getState().auth.user.has_seen_first_coin_modal;
       firstTime && userHasFirstSeen();
       toggleReveal(true);
