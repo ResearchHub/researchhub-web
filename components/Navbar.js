@@ -438,7 +438,6 @@ const Navbar = (props) => {
         <DndModal />
         <PromotionInfoModal />
         <ReCaptchaPrompt />
-        <AuthorSupportModal />
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />

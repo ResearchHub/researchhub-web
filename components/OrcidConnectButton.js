@@ -38,7 +38,7 @@ const OrcidConnectButton = (props) => {
   const router = useRouter();
 
   async function showSuccessMessage() {
-    if (refreshProfileOnSuccess) {
+    if (refreshProfileOnSuccess && auth.user.author_profile.id) {
       router.push(`/user/${auth.user.author_profile.id}`);
     }
   }

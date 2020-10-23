@@ -47,6 +47,7 @@ import { redirect, formatPaperSlug } from "~/config/utils";
 import * as shims from "~/redux/paper/shims";
 import PaperTransactionModal from "../../../../components/modal/PaperTransactionModal";
 import PaperFeatureModal from "../../../../components/modal/PaperFeatureModal";
+import AuthorSupportModal from "../../../../components/modal/AuthorSupportModal";
 
 const isServer = () => typeof window === "undefined";
 
@@ -434,6 +435,7 @@ const Paper = (props) => {
 
   return (
     <div className={css(styles.container)}>
+      <AuthorSupportModal supportType={"paper"} />
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
