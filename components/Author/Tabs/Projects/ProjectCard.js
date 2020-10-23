@@ -399,6 +399,43 @@ const ProjectCard = (props) => {
     );
   };
 
+  const mobileOnly = (children) => {
+    return <div className={css(styles.mobile)}>{children}</div>;
+  };
+
+  const desktopOnly = (children) => {
+    return <div className={css(styles.desktop)}>{children}</div>;
+  };
+
+  const renderVoteWidget = (mobile = false) => {
+    return (
+      <Fragment>
+        {!promotionSummary && (
+          <div className={css(styles.column)}>
+            <span
+              className={css(styles.voting)}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <VoteWidget
+                score={score}
+                onUpvote={onUpvote}
+                onDownvote={onDownvote}
+                selected={selected}
+                searchResult={searchResult}
+                isPaper={true}
+                styles={styles.voteWidget}
+                type={"Paper"}
+                paper={promoted ? paper : null}
+                promoted={promoted}
+                horizontalView={mobile}
+              />
+            </span>
+          </div>
+        )}
+      </Fragment>
+    );
+  };
+
   return (
     <Ripples
       className={css(
@@ -488,22 +525,19 @@ const ProjectCard = (props) => {
         </div>
         <div className={css(styles.mobileHubtagContainer)}>
           <div className={css(styles.supportlist)}>
-            {/* <SupportList users={supporters} /> */}
             {renderDiscussionCount()}
           </div>
           {renderHubTags()}
         </div>
+        <div className={css(styles.hubtagContainer)}>
+          <span className={css(styles.preregRoot)}>
+            {renderPreregistrationTag()}
+          </span>
+          {renderHubTags()}
+        </div>
         <div className={css(styles.bottomBar)}>
-          <div className={css(styles.hubtagContainer)}>
-            {renderDiscussionCount()}
-            {/* <SupportList users={supporters} /> */}
-            {/* {renderHubTags()} */}
-          </div>
-
+          {desktopOnly(renderDiscussionCount())}
           <div className={css(styles.fundProjectContainer)}>
-            <span className={css(styles.preregRoot)}>
-              {renderPreregistrationTag()}
-            </span>
             {renderFundProject()}
           </div>
         </div>
@@ -673,7 +707,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginTop: 8,
+    marginTop: 15,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "flex-end",
       marginTop: 5,
@@ -720,29 +754,28 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     flexWrap: "wrap",
-    marginTop: 10,
     width: "max-content",
     overflow: "hidden",
-    "@media only screen and (max-width: 970px)": {
-      marginBottom: 15,
-      justifyContent: "flex-start",
-      width: "100%",
-      flexWrap: "wrap",
-    },
-    "@media only screen and (max-width: 767px)": {
-      marginBottom: 0,
-      marginTop: 0,
-      width: "unset",
-    },
+    // "@media only screen and (max-width: 970px)": {
+    //   marginBottom: 15,
+    //   justifyContent: "flex-start",
+    //   width: "100%",
+    //   flexWrap: "wrap",
+    // },
+    // "@media only screen and (max-width: 767px)": {
+    //   marginBottom: 0,
+    //   marginTop: 0,
+    //   width: "unset",
+    // },
   },
   hubtagContainer: {
     display: "flex",
     alignItems: "center",
-    flexDirection: "column",
     height: "unset",
-    alignItems: "flex-start",
+    justifyContent: "flex-end",
     fontSize: 14,
-    width: "max-content",
+    marginTop: 10,
+    width: "100%",
     color: "#918f9b",
     "@media only screen and (max-width: 767px)": {
       display: "none",
@@ -847,7 +880,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     width: "max-content",
     color: "#918f9b",
-    marginLeft: 10,
+    marginRight: 10,
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
       marginLeft: 0,
@@ -897,6 +930,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     "@media only screen and (max-width: 767px)": {
       // marginRight: 10
+    },
+  },
+  desktop: {
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
     },
   },
 });
