@@ -49,7 +49,15 @@ const Navbar = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const { isLoggedIn, user, authChecked, signout, walletLink } = props;
+  const {
+    isLoggedIn,
+    user,
+    authChecked,
+    signout,
+    walletLink,
+    auth,
+    updateUser,
+  } = props;
 
   let dropdown;
   let avatar;
@@ -425,7 +433,7 @@ const Navbar = (props) => {
         <LoginModal />
         <InviteToHubModal />
         <TransactionModal />
-        <FirstVoteModal />
+        <FirstVoteModal auth={auth} updateUser={updateUser} />
         <OrcidConnectModal />
         <DndModal />
         <PromotionInfoModal />
@@ -946,6 +954,7 @@ const mapStateToProps = (state) => ({
   isLoggedIn: state.auth.isLoggedIn,
   authChecked: state.auth.authChecked,
   walletLink: state.auth.walletLink,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -955,6 +964,7 @@ const mapDispatchToProps = {
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   openTransactionModal: ModalActions.openTransactionModal,
   openSignUpModal: ModalActions.openSignUpModal,
+  updateUser: AuthActions.updateUser,
 };
 
 export default connect(
