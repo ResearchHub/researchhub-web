@@ -11,6 +11,8 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
 import GoogleLoginButton from "../../../components/GoogleLoginButton";
 import HowItWorks from "../../../components/Referral/HowItWorks";
+import AuthorAvatar from "../../../components/AuthorAvatar";
+import { Router } from "next/router";
 
 const Index = ({ code, user }) => {
   useEffect(() => {
@@ -18,7 +20,7 @@ const Index = ({ code, user }) => {
   }, []);
 
   const loginCallback = () => {
-    window.location.href = "/";
+    Router.push("/");
   };
 
   return (
