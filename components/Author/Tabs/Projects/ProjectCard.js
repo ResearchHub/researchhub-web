@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import { connect, useStore } from "react-redux";
@@ -456,27 +456,7 @@ const ProjectCard = (props) => {
           />
         </div>
       )}
-      {!promotionSummary && (
-        <div className={css(styles.column)}>
-          <span
-            className={css(styles.voting)}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <VoteWidget
-              score={score}
-              onUpvote={onUpvote}
-              onDownvote={onDownvote}
-              selected={selected}
-              searchResult={searchResult}
-              isPaper={true}
-              styles={styles.voteWidget}
-              type={"Paper"}
-              paper={promoted ? paper : null}
-              promoted={promoted}
-            />
-          </span>
-        </div>
-      )}
+      {desktopOnly(renderVoteWidget())}
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div
@@ -486,6 +466,7 @@ const ProjectCard = (props) => {
               previews.length > 0 && styles.metaDataPreview
             )}
           >
+            {mobileOnly(renderVoteWidget(true))}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${id}/${paperSlug}`}
@@ -529,15 +510,13 @@ const ProjectCard = (props) => {
           </div>
           {renderHubTags()}
         </div>
-        <div className={css(styles.hubtagContainer)}>
-          <span className={css(styles.preregRoot)}>
-            {renderPreregistrationTag()}
-          </span>
-          {renderHubTags()}
-        </div>
+        <div className={css(styles.hubtagContainer)}>{renderHubTags()}</div>
         <div className={css(styles.bottomBar)}>
           {desktopOnly(renderDiscussionCount())}
           <div className={css(styles.fundProjectContainer)}>
+            <span className={css(styles.preregRoot)}>
+              {renderPreregistrationTag()}
+            </span>
             {renderFundProject()}
           </div>
         </div>
@@ -665,6 +644,8 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 767px)": {
       display: "flex",
+      paddingTop: 2,
+      paddingBottom: 8,
     },
   },
   submitDateContainer: {
@@ -697,10 +678,19 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
   },
   voting: {
-    width: 65,
+    width: 60,
+    "@media only screen and (max-width: 767px)": {
+      width: "unset",
+      marginBottom: 10,
+    },
   },
   voteWidget: {
     marginRight: 15,
+    fontSize: 14,
+    "@media only screen and (max-width: 415px)": {
+      // fontSize: 12,
+      // maxWidth: 35
+    },
   },
   bottomBar: {
     display: "flex",
@@ -788,6 +778,7 @@ const styles = StyleSheet.create({
       width: "100%",
       justifyContent: "space-between",
       alignItems: "center",
+      margin: "10px 0",
     },
   },
   avatars: {
@@ -809,7 +800,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    // paddingRight: 15,
     justifyContent: "space-between",
   },
   metaDataPreview: {},
@@ -832,6 +822,9 @@ const styles = StyleSheet.create({
   },
   hubLabel: {
     fontSize: 9,
+    "@media only screen and (max-width: 415px)": {
+      maxWidth: 60,
+    },
   },
   uploadedBy: {
     display: "flex",

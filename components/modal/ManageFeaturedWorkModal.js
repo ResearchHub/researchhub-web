@@ -521,6 +521,9 @@ const styles = StyleSheet.create({
       bottom: 0,
       boxShadow: "inset 0 -12px 12px -12px rgba(0,0,0,0.5)",
     },
+    "@media only screen and (max-width: 415px)": {
+      width: "90%",
+    },
   },
   title: {
     display: "flex",
@@ -602,6 +605,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     marginBottom: 30,
+    flexWrap: "wrap",
   },
   tab: {
     display: "flex",
@@ -633,6 +637,10 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     borderRadius: 3,
     marginLeft: 8,
+    "@media only screen and (max-width: 415px)": {
+      marginLeft: 5,
+      fontSize: 12,
+    },
   },
   paddingBottom: {
     marginBottom: 10,

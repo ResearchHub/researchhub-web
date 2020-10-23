@@ -318,7 +318,7 @@ const PaperEntryCard = (props) => {
         </div>
       );
     } else if (summary) {
-      console.log("summary", summary);
+      // console.log("summary", summary);
     }
   };
 
@@ -363,22 +363,23 @@ const PaperEntryCard = (props) => {
         </div>
       );
     } else {
-      return (
-        <div className={css(styles.column, styles.previewColumn)}>
-          <div className={css(styles.preview, styles.previewEmpty)} />
-        </div>
-      );
+      return null;
+      <div className={css(styles.column, styles.previewColumn)}>
+        <div className={css(styles.preview, styles.previewEmpty)} />
+      </div>;
     }
   };
 
-  const renderHubTags = () => {
+  const renderHubTags = (mobile = false) => {
     if (hubs && hubs.length > 0) {
+      let hinge = mobile ? 2 : 3;
+
       return (
         <div className={css(styles.tags)}>
           {hubs.map(
             (tag, index) =>
               tag &&
-              index < 3 && (
+              index < hinge && (
                 <HubTag
                   key={`hub_${index}`}
                   tag={tag}
@@ -389,7 +390,7 @@ const PaperEntryCard = (props) => {
                 />
               )
           )}
-          {hubs.length > 3 && (
+          {hubs.length > hinge && (
             <HubDropDown
               hubs={hubs}
               hubName={hubName}
@@ -403,7 +404,7 @@ const PaperEntryCard = (props) => {
     }
   };
 
-  const renderRawAuthors = () => {
+  const renderRawAuthors = (mobile) => {
     const _formatAuthors = (authors) => {
       let { first_name, last_name } = authors[0];
 
@@ -423,16 +424,35 @@ const PaperEntryCard = (props) => {
         raw_authors = [JSON.parse(raw_authors)];
       }
 
-      return (
-        <div className={css(styles.metadataContainer, styles.authorContainer)}>
-          <div className={css(styles.icon)}>{icons.author}</div>
-          <span
-            className={css(styles.clampMetadata, styles.metadata) + " clamp1"}
+      if (mobile) {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.authorContainer)}
           >
-            {_formatAuthors(raw_authors)}
-          </span>
-        </div>
-      );
+            <div className={css(styles.icon)}>{icons.author}</div>
+            <span
+              className={css(styles.clampMetadata, styles.metadata) + " clamp1"}
+            >
+              {_formatAuthors(raw_authors)}
+            </span>
+          </div>
+        );
+      } else {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.authorContainer)}
+          >
+            <span
+              className={
+                css(styles.clampMetadata, styles.metadata, styles.authors) +
+                " clamp1"
+              }
+            >
+              Authors: {_formatAuthors(raw_authors)}
+            </span>
+          </div>
+        );
+      }
     }
   };
 
@@ -445,15 +465,20 @@ const PaperEntryCard = (props) => {
     );
   };
 
-  const mobileOnly = (children) => {
-    return <div className={css(styles.mobile)}>{children}</div>;
+  const mobileOnly = (children, options = {}) => {
+    const { fullWidth } = options;
+    return (
+      <div className={css(styles.mobile, fullWidth && styles.fullWidth)}>
+        {children}
+      </div>
+    );
   };
 
   const desktopOnly = (children) => {
     return <div className={css(styles.desktop)}>{children}</div>;
   };
 
-  const renderMetadata = () => {
+  const renderMetadata = (mobile = false) => {
     if (
       paper_publish_date ||
       (raw_authors && raw_authors.length) ||
@@ -462,9 +487,8 @@ const PaperEntryCard = (props) => {
       return (
         <div className={css(styles.metadataRow)}>
           {/* {renderPaperTitle()} */}
-          {renderRawAuthors()}
-          {renderPublishDate()}
-          {renderUploadedBy()}
+          {renderRawAuthors(mobile)}
+          {renderPublishDate(mobile)}
         </div>
       );
     }
@@ -489,21 +513,35 @@ const PaperEntryCard = (props) => {
     // }
   };
 
-  const renderPublishDate = () => {
+  const renderPublishDate = (mobile) => {
     if (paper_publish_date) {
       function _convertDate() {
         return formatPublishedDate(
           transformDate(paper.paper_publish_date),
-          true
+          mobile
         );
       }
 
-      return (
-        <div className={css(styles.metadataContainer, styles.publishContainer)}>
-          <span className={css(styles.icon)}>{icons.calendar}</span>
-          <span className={css(styles.metadata)}>{_convertDate()}</span>
-        </div>
-      );
+      if (!mobile) {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.publishContainer)}
+          >
+            <span className={css(styles.metadata, styles.removeMargin)}>
+              {_convertDate(mobile)}
+            </span>
+          </div>
+        );
+      } else {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.publishContainer)}
+          >
+            <span className={css(styles.icon)}>{icons.calendar}</span>
+            <span className={css(styles.metadata)}>{_convertDate(mobile)}</span>
+          </div>
+        );
+      }
     }
   };
 
@@ -586,28 +624,34 @@ const PaperEntryCard = (props) => {
           >
             <div className={css(styles.topRow)}>
               {mobileOnly(renderVoteWidget(true))}
+              {mobileOnly(renderPreregistrationTag())}
               {desktopOnly(renderMainTitle())}
-              {mobileOnly(renderMetadata())}
             </div>
             {mobileOnly(renderMainTitle())}
-            {renderContent()}
             {desktopOnly(renderMetadata())}
+            {mobileOnly(renderMetadata(true))}
+            {mobileOnly(renderPreview(), { fullWidth: true })}
+            {renderContent()}
+            {/* {desktopOnly(renderMetadata())} */}
 
-            {/* {renderUploadedBy()} */}
+            {renderUploadedBy()}
           </div>
           {desktopOnly(renderPreview())}
         </div>
         <div className={css(styles.bottomBar)}>
-          <div className={css(styles.row)}>{renderDiscussionCount()}</div>
+          <div className={css(styles.rowContainer)}>
+            {renderDiscussionCount()}
+            {mobileOnly(renderHubTags(true))}
+          </div>
           <div className={css(styles.row)}>
-            {renderPreregistrationTag()}
+            {desktopOnly(renderPreregistrationTag())}
             {desktopOnly(renderHubTags())}
             {/* {desktopOnly(renderPreregistrationTag())} */}
           </div>
         </div>
-        <div className={css(styles.bottomBar, styles.mobileHubTags)}>
+        {/* <div className={css(styles.bottomBar, styles.mobileHubTags)}>
           {renderHubTags()}
-        </div>
+        </div> */}
       </div>
     </Ripples>
   );
@@ -642,7 +686,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    // minHeight: 72,
   },
   paperTitle: {
     color: "rgb(145, 143, 155)",
@@ -654,7 +697,6 @@ const styles = StyleSheet.create({
   title: {
     width: "100%",
     fontSize: 18,
-    // paddingBottom: 5,
     fontWeight: 500,
     color: colors.BLACK(),
     "@media only screen and (max-width: 767px)": {
@@ -664,6 +706,11 @@ const styles = StyleSheet.create({
   },
   previewColumn: {
     paddingBottom: 10,
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+    },
   },
   preview: {
     height: 90,
@@ -720,9 +767,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
     paddingTop: 3,
-    paddingBottom: 8,
+    paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
-      padding: 0,
+      paddingTop: 0,
+      paddingBottom: 5,
     },
   },
   metadataContainer: {
@@ -759,7 +807,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {
-      // fontSize: 12,
+      fonSize: 18,
       // maxWidth: 35
     },
   },
@@ -797,6 +845,13 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
+  removeMargin: {
+    marginLeft: 0,
+  },
+  authors: {
+    marginLeft: 0,
+    maxWidth: "100%",
+  },
   discussion: {
     cursor: "pointer",
     minWidth: 100,
@@ -824,15 +879,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexWrap: "wrap-reverse",
     marginLeft: "auto",
+    width: "max-content",
     "@media only screen and (max-width: 970px)": {
-      // marginBottom: 15,
-      // justifyContent: "flex-start",
-      width: "100%",
+      // width: "100%",
       flexWrap: "wrap",
     },
     "@media only screen and (max-width: 767px)": {
       margin: 0,
       padding: 0,
+      width: "max-content",
     },
   },
   row: {
@@ -864,7 +919,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    // paddingRight: 15,
     justifyContent: "space-between",
   },
   metaDataPreview: {},
@@ -881,12 +935,12 @@ const styles = StyleSheet.create({
     padding: 0,
     fontSize: 14,
     display: "list-item",
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 12,
-    },
   },
   hubLabel: {
     fontSize: 9,
+    "@media only screen and (max-width: 415px)": {
+      maxWidth: 60,
+    },
   },
   uploadedBy: {
     display: "flex",
@@ -963,6 +1017,9 @@ const styles = StyleSheet.create({
       width: "100%",
       justifyContent: "flex-end",
     },
+  },
+  fullWidth: {
+    width: "100%",
   },
 });
 

@@ -288,13 +288,16 @@ const styles = StyleSheet.create({
     ":hover": {
       boxShadow: "0 0 8px rgba(0, 0, 0, 0.14)",
     },
+    "@media only screen and (max-width: 415px)": {
+      display: "none",
+    },
   },
   left: {
     position: "absolute",
     left: -25,
     top: 8,
     "@media only screen and (max-width: 768px)": {
-      left: -10,
+      left: 0,
     },
   },
   right: {
@@ -302,7 +305,7 @@ const styles = StyleSheet.create({
     right: -25,
     top: 8,
     "@media only screen and (max-width: 768px)": {
-      right: -10,
+      right: 0,
     },
   },
   reveal: {

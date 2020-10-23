@@ -429,6 +429,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       height: 200,
     },
+    "@media only screen and (max-width: 415px)": {
+      // width: 320,
+      overflow: "hidden",
+    },
   },
   mobileGraph: {
     display: "none",

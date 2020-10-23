@@ -1442,7 +1442,7 @@ const styles = StyleSheet.create({
   reputationTitle: {
     marginRight: 10,
     "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
+      fontSize: 14,
     },
   },
   rscBalance: {
