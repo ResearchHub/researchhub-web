@@ -11,7 +11,7 @@ const SupportList = (props) => {
 
   useEffect(() => {
     setSupporters(formatList(props.users));
-  }, [props.users]);
+  }, [props.users, props.size, props.limit]);
 
   /**
    *
