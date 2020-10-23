@@ -68,7 +68,7 @@ const UserOverview = (props) => {
     return (
       <div className={css(styles.box)}>
         <div className={css(styles.emptyIcon)}>
-          <i className="fad fa-comment-alt-edit"></i>
+          {<i className="fad fa-comment-alt-edit"></i>}
         </div>
         <h2 className={css(styles.noContent)}>
           User has not featured a paper.
