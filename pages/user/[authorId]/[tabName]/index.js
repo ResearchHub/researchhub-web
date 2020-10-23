@@ -1018,6 +1018,7 @@ const AuthorPage = (props) => {
                   onClick={openUserInfoModal}
                   customButtonStyle={styles.editButtonCustom}
                   rippleClass={styles.editButtonCustom}
+                  isWhite={true}
                 />
               </div>
             )}
@@ -1416,8 +1417,10 @@ const styles = StyleSheet.create({
   },
   border: {},
   profilePictureHover: {
-    width: 115,
+    width: 114,
+    marginBottom: 2,
     height: 60,
+    marginLeft: 2,
     borderRadius: "0 0 100px 100px",
     display: "flex",
     justifyContent: "center",
