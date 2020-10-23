@@ -48,7 +48,7 @@ class FormInput extends React.Component {
       inlineNodeStyles,
       disabled,
       message,
-      autocomplete,
+      autoComplete,
       subtitle,
       onSearch,
     } = this.props;
@@ -102,7 +102,7 @@ class FormInput extends React.Component {
           )}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
-          autocomplete={autocomplete && autocomplete}
+          autoComplete={autoComplete}
           onSearch={onSearch && onSearch}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
