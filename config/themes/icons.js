@@ -43,7 +43,7 @@ const icons = {
   trash: <i className="fal fa-trash-alt"></i>,
   checkmark: <i className="fas fa-check"></i>,
   fileSearch: <i className="fad fa-file-search" />,
-  author: <i className="fas fa-user-edit" />,
+  author: <i className="fas fa-user" />,
   calendar: <i className="fas fa-calendar" />,
   fileUpload: <i className="fas fa-upload"></i>,
 };

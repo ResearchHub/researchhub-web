@@ -65,7 +65,16 @@ const UserOverview = (props) => {
         );
       });
     }
-    return null;
+    return (
+      <div className={css(styles.box)}>
+        <div className={css(styles.emptyIcon)}>
+          <i className="fad fa-comment-alt-edit"></i>
+        </div>
+        <h2 className={css(styles.noContent)}>
+          User has not featured a paper.
+        </h2>
+      </div>
+    );
   }
 
   return (
@@ -100,9 +109,9 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   editButton: {
-    // position: "absolute",
-    // top: -40,
-    // right: 0,
+    position: "absolute",
+    top: -40,
+    right: 0,
     width: "100%",
     display: "flex",
     justifyContent: "flex-end",
@@ -112,6 +121,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     ":hover": {
       color: colors.BLACK(),
+    },
+    "@media only screen and (max-width: 767px)": {
+      position: "unset",
     },
   },
   icon: {
@@ -150,6 +162,28 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 16,
     // fontSize: 32,
+  },
+  box: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  noContent: {
+    color: colors.BLACK(1),
+    fontSize: 20,
+    fontWeight: 500,
+    textAlign: "center",
+    "@media only screen and (max-width: 415px)": {
+      width: 280,
+      fontSize: 16,
+    },
+  },
+  emptyIcon: {
+    fontSize: 50,
+    color: colors.BLUE(1),
+    height: 50,
+    marginBottom: 10,
   },
 });
 

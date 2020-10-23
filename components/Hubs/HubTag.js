@@ -4,6 +4,7 @@ import Link from "next/link";
 import colors from "~/config/themes/colors";
 import Ripples from "react-ripples";
 import { nameToUrl } from "~/config/constants";
+import "~/components/Paper/CitationCard.css";
 
 const HubTag = ({
   tag,
@@ -40,11 +41,13 @@ const HubTag = ({
                 )}
               >
                 <span
-                  className={css(
-                    styles.label,
-                    gray && styles.grayLabel,
-                    labelStyle && labelStyle
-                  )}
+                  className={
+                    css(
+                      styles.label,
+                      gray && styles.grayLabel,
+                      labelStyle && labelStyle
+                    ) + " clamp1"
+                  }
                 >
                   {name && name}
                 </span>

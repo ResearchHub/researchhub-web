@@ -16,11 +16,13 @@ class PromotionGraph extends React.Component {
       options: {},
       loading: true,
     };
+    this.chartWrapper;
   }
 
   componentDidMount() {
     this.formatData("clicks", this.props.clicks);
     this.formatData("views", this.props.views);
+    this.chartWrapper && this.chartWrapper.draw();
   }
 
   formatData = (value, interactions = []) => {
@@ -166,12 +168,15 @@ class PromotionGraph extends React.Component {
       return (
         <Chart
           chartType="LineChart"
-          width="100%"
+          width={"100%"}
           height="100%"
           data={this.props.showViews ? this.state.views : this.state.clicks}
           options={this.state.options}
           loader={<div>Loading Chart</div>}
           rootProps={{ "data-testid": "1" }}
+          getChartWrapper={(chartWrapper) => {
+            this.chartWrapper = chartWrapper.draw();
+          }}
         />
       );
     }

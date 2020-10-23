@@ -402,6 +402,9 @@ const AuthorSupportModal = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: "100%",
+    "@media only screen and (max-width: 415px)": {
+      width: "90%",
+    },
   },
 
   titleStyle: {
@@ -424,6 +427,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
       justifyContent: "center",
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
     },
   },
   paymentOption: {
