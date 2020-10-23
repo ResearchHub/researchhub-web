@@ -99,6 +99,12 @@ const CheckoutForm = ({
         <div className={css(styles.error)} role="alert">
           {error}
         </div>
+        <div className={css(styles.stripePoweredContainer)}>
+          <img
+            src={"/static/icons/stripe-powered.png"}
+            className={css(styles.stripePowered)}
+          />
+        </div>
         {button}
       </div>
     </form>
@@ -142,6 +148,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     opacity: 0.8,
     color: "#eb1c26",
+  },
+  stripePoweredContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    paddingTop: 10,
+  },
+  stripePowered: {
+    width: 90,
   },
 });
 

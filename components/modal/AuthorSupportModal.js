@@ -155,6 +155,17 @@ const AuthorSupportModal = (props) => {
     }
   }
 
+  function getPaymentId() {
+    switch (activePayment) {
+      case 0:
+        return "RSC_OFF_CHAIN";
+      case 1:
+        return "STRIPE";
+      default:
+        break;
+    }
+  }
+
   function sendTransaction() {
     const {
       paper,
@@ -173,7 +184,7 @@ const AuthorSupportModal = (props) => {
       object_id: getObjectId(), // id of paper or author
       amount,
       payment_option: "SINGLE", // {'SINGLE', 'MONTHLY'},
-      payment_type: "RSC_OFF_CHAIN", //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
+      payment_type: getPaymentId(), //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
     };
 
     return fetch(
