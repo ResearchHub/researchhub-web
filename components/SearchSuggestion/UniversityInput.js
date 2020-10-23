@@ -160,7 +160,7 @@ class UniversityInput extends React.Component {
             placeholder={"Search university"}
             containerStyle={styles.removeMargin}
             type="search"
-            autocomplete="off"
+            autoComplete="off"
             onClick={onClick && onClick}
           />
           <div
