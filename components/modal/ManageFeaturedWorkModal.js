@@ -500,6 +500,7 @@ const styles = StyleSheet.create({
     position: "relative",
     boxShadow: "inset 0 1px 3px rgba(0,0,0,0.12)",
     background: "#F9F9F9",
+    border: `1px solid ${cardColors.BORDER}`,
     ":before": {
       display: "block",
       content: "",
