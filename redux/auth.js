@@ -188,6 +188,7 @@ export const AuthActions = {
   googleLogin: (params) => {
     return (dispatch, getState) => {
       params.uuid = getState().auth.user.uuid;
+      params.referral_code = window.localStorage.getItem("referralCode");
       let postConfig = API.POST_CONFIG(params);
       delete postConfig["headers"]["Authorization"];
       return fetch(API.GOOGLE_LOGIN, postConfig)

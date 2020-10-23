@@ -515,6 +515,20 @@ const Navbar = (props) => {
                         Add Preregistration
                       </div>
                     </Link>
+                    <Link
+                      href={{
+                        pathname: "/referral",
+                      }}
+                    >
+                      <div className={css(styles.option)}>
+                        <i
+                          className={
+                            css(styles.profileIcon) + " fas fa-asterisk"
+                          }
+                        ></i>
+                        Refer a Friend
+                      </div>
+                    </Link>
                     <div
                       className={css(styles.option, styles.lastOption)}
                       onClick={() => {
@@ -807,7 +821,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -220,
+    bottom: -265,
     right: 0,
     width: 225,
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
