@@ -42,11 +42,13 @@ class FormInput extends React.Component {
       search,
       error,
       icon,
+      messageStyle,
       iconStyles,
       inlineNodeRight,
+      inlineNodeStyles,
       disabled,
       message,
-      autocomplete,
+      autoComplete,
       subtitle,
       onSearch,
     } = this.props;
@@ -100,11 +102,13 @@ class FormInput extends React.Component {
           )}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
-          autocomplete={autocomplete && autocomplete}
+          autoComplete={autoComplete}
           onSearch={onSearch && onSearch}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
-        {message && <p className={css(styles.message)}>{message}</p>}
+        {message && (
+          <p className={css(styles.message, messageStyle)}>{message}</p>
+        )}
         {search && (
           <img
             src={"/static/icons/search.png"}
@@ -122,7 +126,9 @@ class FormInput extends React.Component {
           </div>
         )}
         {inlineNodeRight && (
-          <span className={css(styles.inlineNodeRight)}>{inlineNodeRight}</span>
+          <span className={css(styles.inlineNodeRight, inlineNodeStyles)}>
+            {inlineNodeRight}
+          </span>
         )}
       </div>
     );

@@ -170,7 +170,7 @@ class MajorsInput extends React.Component {
             required={required}
             placeholder={"Search major"}
             containerStyle={styles.removeMargin}
-            autocomplete="off"
+            autoComplete="off"
             onClick={onClick && onClick}
           />
           <div
