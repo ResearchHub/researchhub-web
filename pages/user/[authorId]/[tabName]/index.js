@@ -195,7 +195,8 @@ const AuthorPage = (props) => {
 
   async function fetchUserProjects() {
     await dispatch(
-      AuthorActions.getUserProjects({ userId: router.query.authorId })
+      // AuthorActions.getUserProjects({ userId: router.query.authorId })
+      AuthorActions.getUserProjects({ userId: 4 })
     );
     // let papers = store.getState().author.userProjects.projects;
     // return checkUserVotes(papers, "authored");
@@ -728,6 +729,15 @@ const AuthorPage = (props) => {
     }
   };
 
+  const openStripeOnboard = () => {
+    let url = `${window.location.origin}/user/${router.query.authorId}/stripe`;
+    window.open(
+      url,
+      "_blank",
+      `location=yes,height=600,width=500,scrollbars=yes,resizable=yes,status=yes`
+    );
+  };
+
   return (
     <div
       className={css(styles.container)}
@@ -847,6 +857,7 @@ const AuthorPage = (props) => {
                       authorId={router.query.authorId}
                       auth={auth}
                       author={author}
+                      onClick={openStripeOnboard}
                     />
                   </div>
                 )}
