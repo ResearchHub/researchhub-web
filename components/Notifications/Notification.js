@@ -117,6 +117,7 @@ class Notification extends React.Component {
   };
 
   renderNotifications = () => {
+    console.log("notifications", this.props.notifications);
     return this.props.notifications.map((notification, index) => {
       let action = notification.action[0];
       return (

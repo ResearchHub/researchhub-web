@@ -642,6 +642,12 @@ const NotificationEntry = (props) => {
             </span>
           </div>
         );
+      case "stripe":
+        return (
+          <div className={css(styles.message)}>
+            Stripe Notification Placeholder
+          </div>
+        );
       default:
         return;
     }

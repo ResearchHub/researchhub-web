@@ -87,6 +87,7 @@ const StripeOnboardingModal = (props) => {
             author={props.author}
             authorId={props.author.id}
             show={true}
+            label="Connect Stripe"
           />
         </div>
       </div>
