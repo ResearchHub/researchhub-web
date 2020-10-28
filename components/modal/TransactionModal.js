@@ -30,7 +30,7 @@ const MAINNET_CHAIN_ID = "1";
 
 const CURRENT_CHAIN_ID =
   process.env.REACT_APP_ENV === "staging" ||
-  !process.env.NODE_ENV === "production"
+  process.env.NODE_ENV !== "production"
     ? RINKEBY_CHAIN_ID
     : MAINNET_CHAIN_ID;
 
