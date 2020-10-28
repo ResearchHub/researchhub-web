@@ -2,6 +2,7 @@ import { GoogleLogin } from "react-google-login";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
+import * as Sentry from "@sentry/browser";
 
 import Button from "~/components/Form/Button";
 import { AuthActions } from "../redux/auth";
@@ -72,6 +73,7 @@ const GoogleLoginButton = (props) => {
   };
 
   function showLoginFailureMessage(response) {
+    Sentry.captureException(response);
     console.error(response);
     props.setMessage("Login failed");
     props.showMessage({ show: true, error: true });
