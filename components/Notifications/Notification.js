@@ -34,23 +34,21 @@ class Notification extends React.Component {
   };
 
   componentDidUpdate = async (prevProps) => {
-    if (prevProps !== this.props) {
-      if (prevProps.wsResponse !== this.props.wsResponse) {
-        let { wsResponse, addNotification, notifications } = this.props;
-        let response = JSON.parse(wsResponse);
-        let notification = response.data;
-        await addNotification(notifications, notification);
-        this.setState({
-          count: this.countReadNotifications(),
-        });
-      }
-      if (prevProps.notifications !== this.props.notifications) {
-        this.setState({
-          // notifications: this.props.notifications,
-          count: this.countReadNotifications(),
-        });
-      }
+    if (prevProps.wsResponse !== this.props.wsResponse) {
+      let { wsResponse, addNotification, notifications } = this.props;
+      let response = JSON.parse(wsResponse);
+      let notification = response.data;
+      await addNotification(notifications, notification);
+      this.setState({
+        count: this.countReadNotifications(),
+      });
     }
+    // if (prevProps.notifications !== this.props.notifications) {
+    //   this.setState({
+    //     // notifications: this.props.notifications,
+    //     count: this.countReadNotifications(),
+    //   });
+    //   }
   };
 
   componentWillUnmount() {
@@ -117,14 +115,33 @@ class Notification extends React.Component {
   };
 
   renderNotifications = () => {
-    console.log("notifications", this.props.notifications);
+    console.log("notification", this.props.notifications);
+
     return this.props.notifications.map((notification, index) => {
+      if (notification.extra && notification.extra.status) {
+        let stripeAction = {
+          content_type: "stripe",
+          created_by: notification.recipient,
+          created_date: notification.created_date,
+          ...notification.extra,
+        };
+
+        return (
+          <NotificationEntry
+            data={notification}
+            notification={stripeAction}
+            key={`notif-${notification.id}`}
+            closeMenu={this.toggleMenu}
+          />
+        );
+      }
+
       let action = notification.action[0];
       return (
         <NotificationEntry
           data={notification}
           notification={action}
-          key={`notif-${notification.id}${index}`}
+          key={`notif-${notification.id}`}
           closeMenu={this.toggleMenu}
         />
       );

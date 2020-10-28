@@ -43,7 +43,6 @@ const StripeVerification = (props) => {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            console.log("res", res);
             setFetching(false);
             setSuccess(res);
             setUrl(res.url);
@@ -86,13 +85,18 @@ const StripeVerification = (props) => {
     if (fetching) {
       return <Loader key={"stripe-loader"} loading={true} />;
     }
-    return success && url ? (
-      <span>
-        Please verify your <a href={url}>Stripe Account.</a>
-      </span>
-    ) : (
-      "Please try to connect your Stripe account again."
-    );
+    if (success && url) {
+      return (
+        <span>
+          Please verify your <a href={url}>Stripe Account.</a>
+        </span>
+      );
+    }
+    if (success) {
+      return "Your Stripe account has been verified.";
+    } else {
+      ("Please try to connect your Stripe account again.");
+    }
   }
 
   function showLoader() {}
