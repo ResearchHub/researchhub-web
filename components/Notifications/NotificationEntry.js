@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
@@ -643,15 +643,68 @@ const NotificationEntry = (props) => {
           </div>
         );
       case "stripe":
-        return (
-          <div className={css(styles.message)}>
-            Stripe Notification Placeholder
-          </div>
-        );
+        return handleStripeNotification();
       default:
         return;
     }
   };
+
+  function handleStripeNotification() {
+    const { created_date, status, url } = props.notification;
+
+    const timestamp = formatTimestamp(created_date);
+
+    function _formatText(status) {
+      switch (status) {
+        case "incomplete":
+          return (
+            <Fragment>
+              Almost done! Please verify your information from your{" "}
+              <span className={css(styles.link)}>
+                <b>Stripe Dashboard.</b>
+              </span>
+            </Fragment>
+          );
+        case "pending":
+          return (
+            <Fragment>
+              Your{" "}
+              <span className={css(styles.link)}>
+                <b>Stripe Account</b>
+              </span>
+              is pending verification.
+            </Fragment>
+          );
+        case "verified":
+          return (
+            <Fragment>
+              Congrats! Your Stripe account has been verified.
+            </Fragment>
+          );
+      }
+    }
+
+    return (
+      <div className={css(styles.message)} onClick={(e) => e.stopPropagation()}>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={url}
+          className={css(styles.atag)}
+        >
+          {_formatText(status)}
+          <span className={css(styles.timestamp)}>
+            <span className={css(styles.timestampDivider)}>•</span>
+            {timestamp}
+          </span>
+        </a>
+        <img
+          className={css(styles.stripeLogo)}
+          src={"/static/icons/stripe.png"}
+        />
+      </div>
+    );
+  }
 
   return (
     <Ripples
@@ -681,6 +734,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottom: "1px solid #dddfe2",
     backgroundColor: "#EDf2FA",
+    position: "relative",
     ":hover": {
       backgroundColor: "#EDf2FA",
     },
@@ -699,6 +753,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 1.5,
     width: "100%",
+  },
+  atag: {
+    color: "unset",
+    textDecoration: "unset",
   },
   username: {
     color: "#000",
@@ -744,6 +802,12 @@ const styles = StyleSheet.create({
     color: colors.GREY(1),
     lineHeight: "100%",
     verticalAlign: "middle",
+  },
+  stripeLogo: {
+    position: "absolute",
+    height: 20,
+    right: 0,
+    bottom: 0,
   },
 });
 
