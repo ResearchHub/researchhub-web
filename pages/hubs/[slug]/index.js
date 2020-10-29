@@ -108,13 +108,13 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.props.initialProps) {
+    if (!this.props.initialProps.initialFeed) {
       this.fetchHubInfo(this.state.slug);
     }
   }
 
-  componentDidUpdate(prevProp) {
-    if (Router.router.query.slug !== this.state.slug) {
+  componentDidUpdate(prevProp, prevState) {
+    if (prevState.slug !== this.state.slug) {
       this.setState(
         {
           slug: Router.router.query.slug,
