@@ -235,7 +235,9 @@ const Paper = (props) => {
   }, [paperId]);
 
   useEffect(() => {
-    checkUserVote();
+    if (Object.keys(paper).length !== 0) {
+      checkUserVote();
+    }
   }, [props.auth.isLoggedIn]);
 
   useEffect(() => {
