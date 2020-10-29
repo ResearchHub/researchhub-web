@@ -731,11 +731,7 @@ const AuthorPage = (props) => {
 
   const openStripeOnboard = () => {
     let url = `${window.location.origin}/user/${router.query.authorId}/stripe`;
-    window.open(
-      url,
-      "_blank",
-      `location=yes,height=600,width=500,scrollbars=yes,resizable=yes,status=yes`
-    );
+    window.open(url, "_blank");
   };
 
   return (

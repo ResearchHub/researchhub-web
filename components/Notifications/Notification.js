@@ -1,9 +1,12 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 // Component
 import withWebSocket from "~/components/withWebSocket";
 import NotificationEntry from "./NotificationEntry";
+import NotificationPlaceholder from "~/components/Placeholders/NotificationPlaceholder";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
@@ -19,6 +22,7 @@ class Notification extends React.Component {
       isOpen: false,
       newNotif: false,
       count: null,
+      fetching: true,
     };
     this.notifIcon;
     this.notifMenu;
@@ -26,10 +30,11 @@ class Notification extends React.Component {
   }
 
   componentDidMount = async () => {
-    this.props.getNotifications();
-    window.addEventListener("mousedown", this.handleOutsideClick);
+    await this.props.getNotifications();
+    document.addEventListener("mousedown", this.handleOutsideClick);
     this.setState({
       count: this.countReadNotifications(),
+      fetching: false,
     });
   };
 
@@ -52,7 +57,7 @@ class Notification extends React.Component {
   };
 
   componentWillUnmount() {
-    window.addEventListener("mousedown", this.handleOutsideClick);
+    document.addEventListener("mousedown", this.handleOutsideClick);
   }
 
   countReadNotifications() {
@@ -103,11 +108,17 @@ class Notification extends React.Component {
           className={css(styles.notificationFeed)}
           ref={(ref) => (this.notifFeed = ref)}
         >
-          {this.props.notifications.length > 0 ? (
-            this.renderNotifications()
-          ) : (
-            <div className={css(styles.emptyState)}>No Notifications</div>
-          )}
+          <ReactPlaceholder
+            ready={!this.state.fetching}
+            showLoadingAnimation
+            customPlaceholder={<NotificationPlaceholder color="#efefef" />}
+          >
+            {this.props.notifications && this.props.notifications.length ? (
+              this.renderNotifications()
+            ) : (
+              <div className={css(styles.emptyState)}>No Notifications</div>
+            )}
+          </ReactPlaceholder>
         </div>
       </div>
     );
@@ -115,8 +126,6 @@ class Notification extends React.Component {
   };
 
   renderNotifications = () => {
-    console.log("notification", this.props.notifications);
-
     return this.props.notifications.map((notification, index) => {
       if (notification.extra && notification.extra.status) {
         let stripeAction = {

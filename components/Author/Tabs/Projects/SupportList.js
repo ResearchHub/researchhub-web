@@ -42,6 +42,7 @@ const SupportList = (props) => {
         <div
           className={css(styles.supporter, i == 0 && styles.firstSupporter)}
           onClick={(e) => e.stopPropagation()}
+          key={`supporter-${author_profile.id}`}
         >
           <AuthorAvatar
             author={author_profile}
