@@ -10,6 +10,7 @@ import StripeButton from "~/components/Stripe/StripeButton";
 import StripeIntro from "~/components/Stripe/StripeIntro";
 
 import { MessageActions } from "~/redux/message";
+import { AuthorActions } from "~/redux/author";
 
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
@@ -39,6 +40,7 @@ const StripeVerification = (props) => {
 
     if (props.auth.isLoggedIn) {
       if (props.queryId == props.user.author_profile.id) {
+        // props.updateAuthorByKey({ })
         fetch(API.VERIFY_STRIPE({ authorId: props.queryId }), API.GET_CONFIG)
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
@@ -389,6 +391,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  updateAuthorByKey: AuthorActions.updateAuthorByKey,
 };
 
 export default connect(

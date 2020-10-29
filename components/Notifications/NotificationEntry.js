@@ -651,40 +651,47 @@ const NotificationEntry = (props) => {
   };
 
   function handleStripeNotification() {
-    const { created_date, created_by, status, url } = props.notification;
+    const {
+      created_date,
+      created_by,
+      status,
+      url,
+      message,
+    } = props.notification;
+
+    if (status && status === "pending") {
+      return null;
+    }
+
     const timestamp = formatTimestamp(created_date);
     const authorProfile = created_by.author_profile;
+
     _updateAuthorWallet(authorProfile.wallet, store.getState().author);
 
     function _updateAuthorWallet(wallet, author) {
       let { stripe_verified, stripe_acc } = author.wallet;
-
       if (!stripe_verified && wallet.stripe_verified) {
-        return dispatch(AuthorActions.updateAuthorByKey("wallet", wallet));
+        return dispatch(
+          AuthorActions.updateAuthorByKey({ key: "wallet", value: wallet })
+        );
       } else if (stripe_acc !== wallet.stripe_acc) {
-        return dispatch(AuthorActions.updateAuthorByKey("wallet", wallet));
+        return dispatch(
+          AuthorActions.updateAuthorByKey({ key: "wallet", value: wallet })
+        );
       }
     }
 
-    function _formatText(status) {
+    function _formatText(status, message) {
       switch (status) {
         case "inactive":
+          let field = message;
+
           return (
             <Fragment>
-              Almost done! Please verify your information from your{" "}
+              Almost done! Please verify your {` ${field} `} from your{" "}
               <span className={css(styles.link)}>
                 <b>Stripe Dashboard.</b>
               </span>
-            </Fragment>
-          );
-        case "pending":
-          return (
-            <Fragment>
-              Your{" "}
-              <span className={css(styles.link)}>
-                <b>Stripe Account</b>
-              </span>
-              is pending verification.
             </Fragment>
           );
         case "active":
@@ -697,14 +704,21 @@ const NotificationEntry = (props) => {
     }
 
     return (
-      <div className={css(styles.message)} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={css(styles.message)}
+        onClick={(e) => {
+          e.stopPropagation();
+          isRead && props.closeMenu();
+          markAsRead(props.data);
+        }}
+      >
         <a
           target="_blank"
           rel="noopener noreferrer"
           href={url}
           className={css(styles.atag)}
         >
-          {_formatText(status)}
+          {_formatText(status, message)}
           <span className={css(styles.timestamp)}>
             <span className={css(styles.timestampDivider)}>•</span>
             {timestamp}

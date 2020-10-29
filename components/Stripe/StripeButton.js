@@ -81,12 +81,7 @@ const StripeButton = (props) => {
 
   const openStripeVerify = () => {
     let url = `${window.location.origin}/user/${props.authorId}/stripe?verify_stripe=true`;
-
-    window.open(
-      url,
-      "_blank",
-      `location=yes,height=600,width=500,scrollbars=yes,resizable=yes,status=yes`
-    );
+    window.open(url, "_blank");
   };
 
   const openStripeDashboard = () => {
@@ -103,7 +98,7 @@ const StripeButton = (props) => {
           window.open(res.url, "_blank");
         })
         .catch((err) => {
-          setFetching(false);
+          setLoadingStripe(true);
           setSuccess(false);
         });
     }
@@ -157,7 +152,7 @@ const StripeButton = (props) => {
         )}
         onClick={handleClick}
         customButtonStyle={
-          needsVerification
+          needsVerification && !success
             ? styles.smallerButtonStyle
             : styles.customButtonStyle
         }
