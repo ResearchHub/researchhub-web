@@ -227,7 +227,7 @@ class LiveFeedNotification extends React.Component {
             uploaded a new{" "}
             {notification.paper_type === "PRE_REGISTRATION"
               ? "preregistration"
-              : "paper"}
+              : "paper"}{" "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}`}
