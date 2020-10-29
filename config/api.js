@@ -363,11 +363,12 @@ const routes = (BASE_URL) => {
     GET_HUB_CATEGORIES: () => {
       return BASE_URL + `hub_category/`;
     },
-    GET_HUB_PAPERS: ({ hubId, timePeriod, ordering, page = 1 }) => {
+    GET_HUB_PAPERS: ({ hubId, timePeriod, ordering, page = 1, slug }) => {
       let url = BASE_URL + `paper/get_hub_papers/`;
       let params = {
         querystring: {
           page,
+          slug,
           start_date__gte: timePeriod.start,
           end_date__lte: timePeriod.end,
           ordering,

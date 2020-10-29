@@ -56,7 +56,6 @@ const GoogleLoginButton = (props) => {
   const responseGoogle = async (response) => {
     let { googleLogin, getUser } = props;
     response["access_token"] = response["accessToken"];
-
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);
@@ -73,7 +72,7 @@ const GoogleLoginButton = (props) => {
   };
 
   function showLoginFailureMessage(response) {
-    Sentry.captureException(response);
+    Sentry.captureEvent(response);
     console.error(response);
     props.setMessage("Login failed");
     props.showMessage({ show: true, error: true });
