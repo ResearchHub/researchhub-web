@@ -282,7 +282,7 @@ class HubPage extends React.Component {
     return fetch(
       API.GET_HUB_PAPERS({
         timePeriod: scope,
-        slug: hub.slug,
+        hubId: hubId,
         ordering: this.state.filterBy.value,
         page: this.state.page,
       }),
