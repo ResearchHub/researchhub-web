@@ -18,6 +18,10 @@ const defaultAuthorState = {
     projects: [],
   },
   userOverview: [],
+  wallet: {
+    stripe_acc: null,
+    stripe_verified: null,
+  },
 };
 
 const AuthorReducer = (state = defaultAuthorState, action) => {
