@@ -22,7 +22,6 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { act } from "react-dom/test-utils";
 import StripeForm from "../Stripe/StripeForm";
 
 const Amount = ({ value, onChange, error, containerStyles, dollar }) => {
@@ -82,14 +81,6 @@ const AuthorSupportModal = (props) => {
       ),
       id: "RSC_OFF_CHAIN",
     },
-    {
-      label: (
-        <div className={css(iconStyles.row)}>
-          <span className={css(styles.boldResearch)}>Credit Card</span>
-          <i className={css(styles.creditCardIcon) + " fad fa-credit-card"}></i>
-        </div>
-      ),
-    },
   ];
 
   function closeModal() {
@@ -131,6 +122,25 @@ const AuthorSupportModal = (props) => {
         sendTransaction();
       },
     });
+  }
+
+  function formatPaymentOptions() {
+    let options = [...paymentOptions];
+
+    if (props.author.wallet && props.author.wallet.stripe_verified) {
+      options.push({
+        label: (
+          <div className={css(iconStyles.row)}>
+            <span className={css(styles.boldResearch)}>Credit Card</span>
+            <i
+              className={css(styles.creditCardIcon) + " fad fa-credit-card"}
+            ></i>
+          </div>
+        ),
+      });
+    }
+
+    return options;
   }
 
   function getAuthorId() {
@@ -263,11 +273,12 @@ const AuthorSupportModal = (props) => {
   }
 
   function renderPaymentScreen() {
+    const payments = formatPaymentOptions();
     return (
       <div className={css(styles.root)}>
         <h3 className={css(styles.title)}>Payment Details</h3>
         <div className={css(styles.paymentList)}>
-          {paymentOptions.map((payment, i) => {
+          {payments.map((payment, i) => {
             return (
               <div
                 className={css(styles.paymentOption)}
@@ -340,6 +351,7 @@ const AuthorSupportModal = (props) => {
                 rippleClass={styles.rippleClass}
                 customButtonStyle={styles.customButtonStyle}
                 label={label}
+                type={"submit"}
               />
             </div>
           </form>

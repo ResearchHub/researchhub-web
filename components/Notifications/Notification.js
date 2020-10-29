@@ -48,12 +48,15 @@ class Notification extends React.Component {
         count: this.countReadNotifications(),
       });
     }
-    // if (prevProps.notifications !== this.props.notifications) {
-    //   this.setState({
-    //     // notifications: this.props.notifications,
-    //     count: this.countReadNotifications(),
-    //   });
-    //   }
+    if (
+      JSON.stringify(prevProps.notifications) !==
+      JSON.stringify(this.props.notifications)
+    ) {
+      this.setState({
+        // notifications: this.props.notifications,
+        count: this.countReadNotifications(),
+      });
+    }
   };
 
   componentWillUnmount() {
@@ -126,6 +129,7 @@ class Notification extends React.Component {
   };
 
   renderNotifications = () => {
+    console.log("this.props.notifications", this.props.notifications);
     return this.props.notifications.map((notification, index) => {
       if (notification.extra && notification.extra.status) {
         let stripeAction = {

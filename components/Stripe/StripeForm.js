@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
     boxShadow: "none",
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
+    padding: 15,
   },
   error: {
     marginTop: 16,
@@ -152,10 +153,10 @@ const styles = StyleSheet.create({
   stripePoweredContainer: {
     display: "flex",
     justifyContent: "flex-end",
-    paddingTop: 10,
+    // paddingTop: 10,
   },
   stripePowered: {
-    width: 90,
+    width: 100,
   },
 });
 
