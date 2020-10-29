@@ -5,16 +5,12 @@ import Confetti from "react-confetti";
 
 // Component
 import BaseModal from "./BaseModal";
-import Button from "../Form/Button";
 import StripeButton from "~/components/Stripe/StripeButton";
 
 // Redux
-import { AuthActions } from "~/redux/auth";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 
 const StripeOnboardingModal = (props) => {
@@ -48,6 +44,7 @@ const StripeOnboardingModal = (props) => {
   return (
     <BaseModal
       isOpen={props.modals.openStripeOnboardModal}
+      // isOpen={true}
       closeModal={closeModal}
       title={
         <div className={css(styles.container)}>

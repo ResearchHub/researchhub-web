@@ -80,8 +80,19 @@ const StripeButton = (props) => {
   };
 
   const openStripeVerify = () => {
-    let url = `${window.location.origin}/user/${props.authorId}/stripe?verify_stripe=true`;
-    window.open(url, "_blank");
+    setLoadingStripe(true);
+    fetch(API.VERIFY_STRIPE({ authorId: props.author.id }), API.GET_CONFIG)
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setLoadingStripe(false);
+        setStripeUrl(res.url);
+        window.open(res.url, "_blank");
+      })
+      .catch((err) => {
+        setLoadingStripe(true);
+        setSuccess(false);
+      });
   };
 
   const openStripeDashboard = () => {

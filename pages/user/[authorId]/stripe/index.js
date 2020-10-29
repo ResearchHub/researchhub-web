@@ -165,6 +165,13 @@ const StripeVerification = (props) => {
                 src={"/static/icons/stripe.png"}
               />
             </div>
+            {/* <div className={css(styles.title)}>
+                Connect with
+                <img
+                  className={css(styles.stripeLogo)}
+                  src={"/static/icons/stripe.png"}
+                />
+              </div> */}
             <div className={css(styles.headerContainer)}>
               <React.Fragment>
                 <h1 className={css(styles.header, success && styles.green)}>

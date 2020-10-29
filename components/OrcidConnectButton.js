@@ -89,6 +89,7 @@ const OrcidConnectButton = (props) => {
                 customLabelStyle={customLabelStyle}
                 customIconStyle={[styles.iconStyle, iconStyle]}
                 label={customLabel ? customLabel : "Sign in ORCID"}
+                // isWhite={true}
               />
             )}
           </Fragment>

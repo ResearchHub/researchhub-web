@@ -708,8 +708,8 @@ const NotificationEntry = (props) => {
         className={css(styles.message)}
         onClick={(e) => {
           e.stopPropagation();
-          isRead && props.closeMenu();
           markAsRead(props.data);
+          isRead && props.closeMenu();
         }}
       >
         <a
