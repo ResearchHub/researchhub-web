@@ -30,17 +30,26 @@ const StripeButton = (props) => {
   const [loadingStripe, setLoadingStripe] = useState(false);
   const [stripeUrl, setStripeUrl] = useState();
   const [needsVerification, toggleVerification] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (author.wallet) {
-      let { stripe_verified, stripe_acc } = author.wallet;
-      if (stripe_acc && !stripe_verified) {
-        toggleVerification(true);
-      } else {
+    if (props.author.wallet) {
+      let { stripe_verified, stripe_acc } = props.author.wallet;
+      if (stripe_verified) {
+        return setSuccess(true);
+      }
+      if (!stripe_acc) {
         toggleVerification(false);
+      } else if (stripe_acc && !stripe_verified) {
+        toggleVerification(true);
       }
     }
-  }, [props.author, props.author.wallet]);
+  }, [
+    props.author,
+    props.author.wallet,
+    props.author.wallet.stripe_verified,
+    props.author.wallet.stripe_acc,
+  ]);
 
   const openStripe = () => {
     const payload = {
@@ -80,9 +89,31 @@ const StripeButton = (props) => {
     );
   };
 
+  const openStripeDashboard = () => {
+    if (stripeUrl) {
+      window.open(stripeUrl, "_blank");
+    } else {
+      setLoadingStripe(true);
+      fetch(API.VERIFY_STRIPE({ authorId: props.author.id }), API.GET_CONFIG)
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          setLoadingStripe(false);
+          setStripeUrl(res.url);
+          window.open(res.url, "_blank");
+        })
+        .catch((err) => {
+          setFetching(false);
+          setSuccess(false);
+        });
+    }
+  };
+
   const formatLabel = () => {
     if (label) {
       return label;
+    } else if (success) {
+      return "Stripe Dashboard";
     } else if (needsVerification) {
       return "Verify Stripe";
     } else {
@@ -91,7 +122,9 @@ const StripeButton = (props) => {
   };
 
   const handleClick = () => {
-    if (needsVerification) {
+    if (success) {
+      return openStripeDashboard();
+    } else if (needsVerification) {
       return openStripeVerify();
     } else if (onClick) {
       return onClick();
@@ -157,7 +190,10 @@ const styles = StyleSheet.create({
   stripeIcon: {
     width: 23,
     paddingLeft: 5,
-    paddingLeft: 5,
+    "@media only screen and (max-width: 767px)": {
+      width: 21,
+      paddingLeft: 0,
+    },
   },
   customButtonStyle: {
     width: 220,

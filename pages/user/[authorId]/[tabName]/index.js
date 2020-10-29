@@ -1101,6 +1101,10 @@ const styles = StyleSheet.create({
   },
   stripeButton: {
     marginLeft: 24,
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 15,
+      marginLeft: 0,
+    },
   },
   mobileConnectOrcid: {
     display: "none",

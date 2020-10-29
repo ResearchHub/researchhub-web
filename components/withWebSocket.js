@@ -51,6 +51,7 @@ export default function withWebSocket(
       if (props.wsAuth) {
         try {
           token = window.localStorage[TOKEN_NAME];
+          console.log("token", token);
         } catch (err) {
           console.error("Did not find auth token");
           return err;

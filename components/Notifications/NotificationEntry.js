@@ -10,6 +10,7 @@ import AuthorAvatar from "../AuthorAvatar";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
+import { AuthorActions } from "~/redux/author";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -21,7 +22,7 @@ import {
 } from "~/config/utils";
 
 const NotificationEntry = (props) => {
-  let { notification, data } = props;
+  const { notification, data } = props;
   const [isRead, toggleRead] = useState(data.read);
   const dispatch = useDispatch();
   const store = useStore();
@@ -650,13 +651,24 @@ const NotificationEntry = (props) => {
   };
 
   function handleStripeNotification() {
-    const { created_date, status, url } = props.notification;
-
+    const { created_date, created_by, status, url } = props.notification;
     const timestamp = formatTimestamp(created_date);
+    const authorProfile = created_by.author_profile;
+    _updateAuthorWallet(authorProfile.wallet, store.getState().author);
+
+    function _updateAuthorWallet(wallet, author) {
+      let { stripe_verified, stripe_acc } = author.wallet;
+
+      if (!stripe_verified && wallet.stripe_verified) {
+        return dispatch(AuthorActions.updateAuthorByKey("wallet", wallet));
+      } else if (stripe_acc !== wallet.stripe_acc) {
+        return dispatch(AuthorActions.updateAuthorByKey("wallet", wallet));
+      }
+    }
 
     function _formatText(status) {
       switch (status) {
-        case "incomplete":
+        case "inactive":
           return (
             <Fragment>
               Almost done! Please verify your information from your{" "}
@@ -675,7 +687,7 @@ const NotificationEntry = (props) => {
               is pending verification.
             </Fragment>
           );
-        case "verified":
+        case "active":
           return (
             <Fragment>
               Congrats! Your Stripe account has been verified.
