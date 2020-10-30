@@ -196,8 +196,7 @@ const AuthorPage = (props) => {
 
   async function fetchUserProjects() {
     await dispatch(
-      // AuthorActions.getUserProjects({ userId: router.query.authorId })
-      AuthorActions.getUserProjects({ userId: 4 })
+      AuthorActions.getUserProjects({ authorId: router.query.authorId })
     );
     // let papers = store.getState().author.userProjects.projects;
     // return checkUserVotes(papers, "authored");

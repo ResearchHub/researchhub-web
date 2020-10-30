@@ -197,10 +197,7 @@ const AuthorSupportModal = (props) => {
       payment_type: getPaymentId(), //{'RSC_ON_CHAIN', 'RSC_OFF_CHAIN', 'ETH', 'BTC', 'STRIPE', 'PAYPAL'}
     };
 
-    return fetch(
-      API.SUPPORT({ route: "get_supported" }),
-      API.POST_CONFIG(payload)
-    )
+    return fetch(API.SUPPORT({}), API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
