@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
   user: {
     marginBottom: 16,
     width: "100%",
+    boxSizing: "border-box",
   },
   link: {
     textDecoration: "none",
