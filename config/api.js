@@ -244,6 +244,8 @@ const routes = (BASE_URL) => {
         url += `source=${twitter ? "twitter" : "researchhub"}`;
       }
 
+      url += "&is_removed=False";
+
       return url;
     },
 

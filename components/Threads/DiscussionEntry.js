@@ -619,6 +619,9 @@ const styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
+  removed: {
+    display: "none",
+  },
   bottom: {
     width: "100%",
     justifyContent: "flex-start",
@@ -673,7 +676,7 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
   },
   removedText: {
-    fontSize: 18,
+    fontSize: 16,
     color: "rgb(35, 32, 56)",
     fontStyle: "italic",
   },
