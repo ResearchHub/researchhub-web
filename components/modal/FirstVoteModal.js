@@ -57,7 +57,10 @@ const FirstVoteModal = (props) => {
     let config = {
       has_seen_first_coin_modal: true,
     };
-    fetch(API.USER_FIRST_COIN, API.PATCH_CONFIG(config))
+    fetch(
+      API.USER({ route: "has_seen_first_coin_modal" }),
+      API.PATCH_CONFIG(config)
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {

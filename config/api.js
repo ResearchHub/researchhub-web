@@ -455,8 +455,6 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    USER_FIRST_COIN: BASE_URL + "user/has_seen_first_coin_modal/",
-    USER_ORCID_CONNECT_MODAL: BASE_URL + "user/has_seen_orcid_connect_modal/",
     FLAG_PAPER: ({ paperId }) => {
       let url = BASE_URL + "paper/";
 
@@ -556,17 +554,15 @@ const routes = (BASE_URL) => {
     },
     GOOGLE_ANALYTICS: ({ ignorePaper, ignoreUser, manual }) => {
       let url = BASE_URL + "events/forward_event/";
-      if (ignorePaper) {
-        url += "?ignore_paper=true&";
-      }
-      if (ignoreUser && !ignorePaper) {
-        url += "?ignore_user=true&";
-      } else if (ignoreUser && ignorePaper) {
-        url += "ignore_user=true&";
-      }
-      if (manual) {
-        url += "?manual=true";
-      }
+
+      let params = {
+        querystring: {
+          ignore_paper: ignorePaper && "true",
+          ignore_user: ignoreUser && "true",
+          manual: manual && "true",
+        },
+      };
+      url = prepURL(url, params);
 
       return url;
     },

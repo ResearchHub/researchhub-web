@@ -168,7 +168,10 @@ export const ModalActions = {
     return (dispatch, getState) => {
       if (!openModal && setHasSeen) {
         const config = { has_seen_orcid_connect_modal: true };
-        return fetch(API.USER_ORCID_CONNECT_MODAL, API.PATCH_CONFIG(config))
+        return fetch(
+          API.USER({ route: "has_seen_orcid_connect_modal" }),
+          API.PATCH_CONFIG(config)
+        )
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
