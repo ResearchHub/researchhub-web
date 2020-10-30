@@ -734,6 +734,15 @@ const AuthorPage = (props) => {
     window.open(url, "_blank");
   };
 
+  const openAuthorSupportModal = () => {
+    return props.openAuthorSupportModal(true, {
+      contentType: "author",
+      author: props.author,
+      // setSupporters: setSupporters,
+      // supporters,
+    });
+  };
+
   return (
     <div
       className={css(styles.container)}
@@ -845,7 +854,7 @@ const AuthorPage = (props) => {
                 >
                   {renderOrcid()}
                 </div>
-                {allowEdit && (
+                {allowEdit ? (
                   <div className={css(styles.stripeButton)}>
                     <StripeButton
                       customButtonStyle={styles.editButtonCustom}
@@ -854,6 +863,22 @@ const AuthorPage = (props) => {
                       auth={auth}
                       author={author}
                       onClick={openStripeOnboard}
+                    />
+                  </div>
+                ) : (
+                  <div className={css(styles.stripeButton)}>
+                    <Button
+                      customButtonStyle={styles.supportAuthorButton}
+                      label={
+                        <div className={css(styles.lightningButton)}>
+                          <img
+                            src={"/static/icons/lightning.png"}
+                            className={css(styles.lightningIcon)}
+                          />
+                          Support Author
+                        </div>
+                      }
+                      onClick={openAuthorSupportModal}
                     />
                   </div>
                 )}
@@ -1094,6 +1119,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
+  },
+  lightningIcon: {
+    height: 18,
+    marginRight: 10,
   },
   stripeButton: {
     marginLeft: 24,
@@ -1569,6 +1598,17 @@ const styles = StyleSheet.create({
       width: "100%",
       minWidth: "100%",
     },
+  },
+  supportAuthorButton: {
+    width: "max-content",
+  },
+  lightningButton: {
+    width: "unset",
+    paddingLeft: 20,
+    paddingRight: 20,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   mobileEditButtonCustom: {},
 });
