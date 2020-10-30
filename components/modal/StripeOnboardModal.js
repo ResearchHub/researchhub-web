@@ -8,26 +8,49 @@ import BaseModal from "./BaseModal";
 import StripeButton from "~/components/Stripe/StripeButton";
 
 // Redux
+import { AuthActions } from "~/redux/auth";
+import { AuthorActions } from "~/redux/author";
 import { ModalActions } from "~/redux/modals";
 
 // Config
 import colors from "~/config/themes/colors";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 const StripeOnboardingModal = (props) => {
   const [userFirstVote, setFirstVote] = useState();
-  // store.getState().auth.user.has_seen_first_coin_modal
   const [recycle, setRecycle] = useState(true);
   const [reveal, toggleReveal] = useState(false);
   const [showButton, toggleButton] = useState(false);
 
   useEffect(() => {
     toggleReveal(true);
-  });
+  }, [props.modals.openStripeOnboardModal]);
 
   function closeModal() {
     // toggleReveal(false)
     props.openStripeOnboardModal(false);
+    updateUserHasSeen();
     enableParentScroll();
+  }
+
+  function updateUserHasSeen() {
+    let config = {
+      has_seen_stripe_modal: true,
+    };
+    fetch(
+      API.USER({ route: "has_seen_stripe_modal" }),
+      API.PATCH_CONFIG(config)
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        if (res.has_seen_stripe_modal) {
+          let newUserObj = { ...res };
+          props.updateUser(newUserObj);
+        }
+        // props.updateUser()
+      });
   }
 
   function enableParentScroll() {
@@ -44,7 +67,6 @@ const StripeOnboardingModal = (props) => {
   return (
     <BaseModal
       isOpen={props.modals.openStripeOnboardModal}
-      // isOpen={true}
       closeModal={closeModal}
       title={
         <div className={css(styles.container)}>
@@ -65,13 +87,13 @@ const StripeOnboardingModal = (props) => {
       }}
     >
       <div className={css(styles.modalBody)}>
-        <Confetti
+        {/* <Confetti
           // recycle={recycle}
           recycle={false}
           numberOfPieces={500}
           width={584}
           height={469}
-        />
+        /> */}
         <div className={css(styles.text)}>
           Stripe makes it easy to make safe and secure transactions online.{" "}
           <span className={css(styles.hyperlink)} onClick={openLinkInTab}>
@@ -97,6 +119,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
   },
   coinIcon: {
     height: 20,
@@ -137,6 +160,7 @@ const styles = StyleSheet.create({
     // marginTop: 10,
     marginBotttom: 30,
     lineHeight: 1.4,
+    textAlign: "center",
   },
   button: {
     width: "100%",
@@ -152,6 +176,9 @@ const styles = StyleSheet.create({
   modalContentStyle: {
     overflow: "hidden",
     maxWidth: 469,
+    "@media only screen and (max-width: 665px)": {
+      maxWidth: "unset",
+    },
   },
   stripeLogo: {
     height: 40,
@@ -167,6 +194,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   openStripeOnboardModal: ModalActions.openStripeOnboardModal,
+  updateUser: AuthActions.updateUser,
 };
 
 export default connect(

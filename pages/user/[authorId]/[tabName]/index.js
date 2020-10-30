@@ -147,13 +147,14 @@ const AuthorPage = (props) => {
     if (prevProps && !auth.isLoggedIn) {
       checkUserVotes(); // clears the state
     } else if (!prevProps && auth.isLoggedIn) {
-      let papers = store.getState().author.authoredPapers.papers;
+      let papers = props.author.authoredPapers.papers;
       checkUserVotes(papers, "authored");
-      let contributions = store.getState().author.userContributions
-        .contributions;
+      let contributions = props.author.userContributions.contributions;
       checkUserVotes(contributions, "contributions");
     }
     setPrevProps(auth.isLoggedIn);
+    !props.auth.user.has_seen_stripe_modal &&
+      props.openStripeOnboardModal(true);
   }, [auth.isLoggedIn]);
 
   function updateDimensions() {
@@ -1624,6 +1625,7 @@ const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
   openUserInfoModal: ModalActions.openUserInfoModal,
   openAuthorSupportModal: ModalActions.openAuthorSupportModal,
+  openStripeOnboardModal: ModalActions.openStripeOnboardModal,
 };
 
 export default connect(
