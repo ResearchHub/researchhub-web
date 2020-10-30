@@ -69,11 +69,35 @@ class Footer extends React.Component {
           </div>
         </div>
         <div className={css(styles.legal, styles.tabContainer)}>
+          <div className={css(styles.socials)}>
+            <a
+              target="_blank"
+              className={css(styles.link)}
+              href="https://join.slack.com/t/researchhub-community/shared_invite/zt-hz0tgyqt-O5nFhFPOdxpQEVWVLwG9xg"
+            >
+              <div className={css(styles.social)}>
+                <i className={css(styles.logo) + " fab fa-slack"}></i>
+              </div>
+            </a>
+            <a
+              target="_blank"
+              className={css(styles.link)}
+              href="https://twitter.com/researchhub"
+            >
+              <div className={css(styles.social)}>
+                <i className={css(styles.logo) + " fab fa-twitter"}></i>
+              </div>
+            </a>
+          </div>
           <Link href={"/about/tos"} as={"/about/tos"}>
-            <div className={css(styles.tab)}>Terms of Service</div>
+            <a className={css(styles.link)}>
+              <div className={css(styles.tab)}>Terms of Service</div>
+            </a>
           </Link>
           <Link href={"/about/privacy"} as={"/about/privacy"}>
-            <div className={css(styles.tab)}>Privacy Policy</div>
+            <a className={css(styles.link)}>
+              <div className={css(styles.tab)}>Privacy Policy</div>
+            </a>
           </Link>
         </div>
       </footer>
@@ -115,6 +139,28 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 768px)": {
       marginLeft: "5%",
     },
+  },
+  link: {
+    textDecoration: "none",
+  },
+  social: {
+    background: "rgba(255, 255, 255, .7)",
+    height: 35,
+    width: 35,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
+    marginRight: 12,
+  },
+  socials: {
+    marginRight: 24,
+    display: "flex",
+  },
+  logo: {
+    color: "#282936",
+    fontSize: "1.1em",
+    marginTop: 3,
   },
   ccby: {
     color: "#fff",
