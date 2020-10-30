@@ -605,7 +605,7 @@ class PaperUploadInfo extends React.Component {
         {!editMode &&
           this.renderHeader(
             form.paper_type === "PRE_REGISTRATION"
-              ? "Add Preregistration"
+              ? "Add Funding Request"
               : "Add Paper",
             "Up to 15MB (.pdf)",
             false
@@ -615,7 +615,7 @@ class PaperUploadInfo extends React.Component {
             <div className={css(styles.paper)}>
               <div className={css(styles.label, styles.labelStyle)}>
                 {form.paper_type === "PRE_REGISTRATION"
-                  ? "Link to Preregistration"
+                  ? "Link to Funding Request (PDF)"
                   : this.state.urlView
                   ? `Link to Paper`
                   : "Paper PDF"}
@@ -640,7 +640,7 @@ class PaperUploadInfo extends React.Component {
             <FormInput
               label={
                 form.paper_type === "PRE_REGISTRATION"
-                  ? "Preregistration Title"
+                  ? "Project Title"
                   : "Paper Title"
               }
               placeholder="Enter title of paper"

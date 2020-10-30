@@ -520,7 +520,7 @@ const Navbar = (props) => {
                             css(styles.profileIcon) + " fas fa-layer-plus"
                           }
                         ></i>
-                        Add Preregistration
+                        Submit Funding Request
                       </div>
                     </Link>
                     <Link

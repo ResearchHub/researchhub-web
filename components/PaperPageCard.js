@@ -582,7 +582,7 @@ class PaperPageCard extends React.Component {
     return (
       <div className={css(styles.preRegContainer)}>
         <img src="/static/icons/wip.png" className={css(styles.preRegIcon)} />
-        Preregistration
+        Funding Request
       </div>
     );
   };
