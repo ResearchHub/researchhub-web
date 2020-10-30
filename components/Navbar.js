@@ -341,6 +341,7 @@ const Navbar = (props) => {
           iconStyle={styles.googleIcon}
           customLabelStyle={[styles.googleLabel]}
           isLoggedIn={isLoggedIn}
+          disabled={!authChecked}
         />
         <div className={css(styles.divider)}></div>
       </div>
@@ -450,9 +451,7 @@ const Navbar = (props) => {
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
-              authChecked ? (
-                renderLoginButtons(isLoggedIn)
-              ) : null
+              renderLoginButtons(isLoggedIn)
             ) : (
               <div className={css(styles.userDropdown)}>
                 <div
@@ -723,6 +722,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
+    width: 160,
   },
   addPaperButton: {
     width: "100%",

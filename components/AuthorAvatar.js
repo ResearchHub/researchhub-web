@@ -29,47 +29,29 @@ const AuthorAvatar = (props) => {
       finalSize = size - 5;
     }
     return (
-      <div className={css(styles.avatar)}>
-        {author && author.profile_image ? (
-          !error ? (
-            <img
-              src={author.profile_image}
-              style={{
-                width: finalSize,
-                height: finalSize,
-                objectFit: "cover",
-                borderRadius: "50%",
-                border: "2px solid #F1F1F1",
-              }}
-              onError={(e) => {
-                setError(true);
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                fontSize: size,
-                paddingBottom: 1,
-                border: "3px solid #F1F1F1",
-                borderRadius: "50%",
-                width: finalSize,
-                height: finalSize,
-              }}
-            >
-              <i className={css(styles.userCircle) + " fas fa-user-circle"} />
-            </div>
-          )
-        ) : (
-          <i
-            className={css(styles.userCircle) + " fas fa-user-circle"}
+      <>
+        {author && author.profile_image && !error ? (
+          <img
+            src={author.profile_image}
             style={{
-              fontSize: finalSize + 1,
-              color: "#aaa",
-              paddingTop: 3,
-              border: "3px solid #F1F1F1",
+              width: finalSize,
+              height: finalSize,
+              objectFit: "cover",
               borderRadius: "50%",
             }}
-          ></i>
+            onError={(e) => {
+              setError(true);
+            }}
+          />
+        ) : (
+          <i
+            className={css(styles.userIcon) + " fas fa-user-circle"}
+            style={{
+              width: finalSize,
+              height: finalSize,
+              fontSize: finalSize + 1,
+            }}
+          />
         )}
         {showModeratorBadge && (
           <img
@@ -77,7 +59,7 @@ const AuthorAvatar = (props) => {
             className={css(styles.moderatorBadge)}
           />
         )}
-      </div>
+      </>
     );
   }
 
@@ -117,6 +99,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "100%",
     position: "relative",
+    borderRadius: "50%",
+    border: "3px solid #F1F1F1",
   },
   moderatorBadge: {
     position: "absolute",
@@ -131,6 +115,12 @@ const styles = StyleSheet.create({
   atag: {
     color: "unset",
     textDecoration: "unset",
+  },
+  userIcon: {
+    color: "#aaa",
+    position: "relative",
+    top: 2,
+    left: 0.25,
   },
 });
 
