@@ -441,7 +441,7 @@ const PaperEntryCard = (props) => {
     return (
       <div className={css(styles.preRegContainer)}>
         <img src="/static/icons/wip.png" className={css(styles.wipIcon)} />
-        Preregistration
+        Funding Request
       </div>
     );
   };
