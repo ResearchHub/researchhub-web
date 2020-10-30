@@ -53,9 +53,10 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     // border: "1px solid rgb(237, 237, 237)",
     padding: 8,
+    paddingLeft: 25,
     background: "#fff",
     marginBottom: 16,
-    width: "80%",
+    width: "85%",
     margin: "0 auto",
   },
   round: {
