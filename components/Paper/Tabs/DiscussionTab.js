@@ -266,14 +266,14 @@ const DiscussionTab = (props) => {
     }
     setLoading(true);
     const currentPaper = props.paper;
-    const payload = await getThreads({
+    const res = await getThreads({
       paperId: paperId,
       paper: currentPaper,
       filter,
       loadMore,
       twitter: showTwitterComments,
     });
-    const threads = payload.payload.threads;
+    const threads = res.payload.threads;
     setFetching(false);
     setLoading(false);
     setThreads(threads);
