@@ -147,10 +147,10 @@ export const AuthorActions = {
     };
   },
 
-  getUserProjects: ({ userId, loadMore }) => {
+  getUserProjects: ({ authorId, loadMore }) => {
     return async (dispatch, getState) => {
       let query = {
-        uploaded_by: userId,
+        author_uploaded_by: authorId,
         paper_type: "PRE_REGISTRATION",
       };
 
