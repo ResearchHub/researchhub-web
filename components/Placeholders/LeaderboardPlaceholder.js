@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     padding: 8,
     background: "#fff",
     marginBottom: 16,
-    width: "100%",
+    width: "80%",
     margin: "0 auto",
   },
   round: {
