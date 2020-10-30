@@ -102,7 +102,11 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
     borderRadius: "50%",
+<<<<<<< HEAD
     // border: "3px solid #F1F1F1",
+=======
+    border: "3px solid #F1F1F1",
+>>>>>>> navbar buttons/icons move less
   },
   moderatorBadge: {
     position: "absolute",
