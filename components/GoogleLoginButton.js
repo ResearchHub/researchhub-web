@@ -16,7 +16,7 @@ import API from "../config/api";
 import { useEffect } from "react";
 
 const GoogleLoginButton = (props) => {
-  let { customLabel, hideButton, isLoggedIn, auth } = props;
+  let { customLabel, hideButton, isLoggedIn, auth, disabled } = props;
   const router = useRouter();
 
   useEffect(promptYolo, [auth.authChecked]);
@@ -98,7 +98,7 @@ const GoogleLoginButton = (props) => {
           return (
             <div className={css(styles.glogin)}>
               <Button
-                disabled={renderProps.disabled}
+                disabled={renderProps.disabled || disabled}
                 onClick={renderProps.onClick}
                 customButtonStyle={[styles.button, props.styles]}
                 icon={"/static/icons/google.png"}
