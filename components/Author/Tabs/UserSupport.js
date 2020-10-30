@@ -35,7 +35,7 @@ const List = (props) => {
     return (
       <div className={css(styles.supporterList)}>
         <SupportList size={size} users={props.supporters} limit={cutoff} />
-        {diff && (
+        {diff >= 1 ? (
           <div
             className={css(
               styles.supporterOverflow,
@@ -45,7 +45,7 @@ const List = (props) => {
           >
             {diff}+
           </div>
-        )}
+        ) : null}
       </div>
     );
   } else {

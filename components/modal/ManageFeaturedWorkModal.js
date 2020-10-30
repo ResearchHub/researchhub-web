@@ -24,12 +24,6 @@ import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-// Config
-import colors, { cardColors, formColors } from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-
 class ManageFeaturedWorkModal extends React.Component {
   constructor(props) {
     super(props);

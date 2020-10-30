@@ -12,12 +12,6 @@ import colors, { cardColors, formColors } from "~/config/themes/colors";
 import icons from "../../../../config/themes/icons";
 import { formatDate } from "../../../../config/utils";
 
-import { formatPublishedDate } from "~/config/utils";
-import { transformDate } from "~/redux/utils";
-import colors, { cardColors, formColors } from "~/config/themes/colors";
-import icons from "../../../../config/themes/icons";
-import { formatDate } from "../../../../config/utils";
-
 const DraggableProjectCard = (props) => {
   const { active, index, onClick, onEditCallback } = props;
   const [hover, setHover] = useState(false);
