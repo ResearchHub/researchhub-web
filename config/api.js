@@ -218,33 +218,41 @@ const routes = (BASE_URL) => {
       return BASE_URL + "permissions/";
     },
 
-    DISCUSSION: ({ paperId, filter, page, progress, twitter }) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/`;
+    DISCUSSION: ({ paperId, filter, page, progress, twitter, isRemoved }) => {
+      // let url = `${BASE_URL}paper/${paperId}/discussion/`;
 
-      if (progress) {
-        url += "?created_location=progress";
-      }
+      // if (progress) {
+      //   url += "?created_location=progress";
+      // }
 
-      if (typeof page === "number") {
-        url += `?page=${page}`;
-      }
+      // if (typeof page === "number") {
+      //   url += `?page=${page}`;
+      // }
 
-      if (filter !== undefined && filter !== null) {
-        if (typeof filter === "string") {
-          url += `&ordering=${filter}`;
-        }
-      }
+      // if (twitter !== undefined && twitter !== null) {
+      //   if (!(progress || typeof page === "number")) {
+      //     url += "?";
+      //   } else {
+      //     url += "&";
+      //   }
+      //   url += `source=${twitter ? "twitter" : "researchhub"}`;
+      // }
 
-      if (twitter !== undefined && twitter !== null) {
-        if (!(progress || typeof page === "number")) {
-          url += "?";
-        } else {
-          url += "&";
-        }
-        url += `source=${twitter ? "twitter" : "researchhub"}`;
-      }
+      // if (isRemoved) {
+      //   url += "&is_removed=False";
+      // }
 
-      url += "&is_removed=False";
+      let url = BASE_URL + `paper/${paperId}/discussion/`;
+      let params = {
+        querystring: {
+          created_location: progress ? "progress" : null,
+          page,
+          ordering: filter,
+          source: twitter ? "twitter" : "researchhub",
+          is_removed: isRemoved ? "False" : null,
+        },
+      };
+      url = prepURL(url, params);
 
       return url;
     },
