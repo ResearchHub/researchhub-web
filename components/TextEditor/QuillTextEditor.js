@@ -62,6 +62,13 @@ class Editor extends React.Component {
     if (!prevProps.editing && this.props.editing) {
       !this.state.focus && this.quillRef && this.focusEditor();
     }
+
+    if (prevProps.value !== this.props.value) {
+      this.setState({
+        value: this.props.value,
+        editValue: this.props.value,
+      });
+    }
   }
 
   addLinkSantizer = () => {

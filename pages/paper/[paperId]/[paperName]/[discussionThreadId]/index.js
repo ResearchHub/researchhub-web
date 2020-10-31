@@ -19,69 +19,83 @@ import Message from "~/components/Loader/Message";
 
 // Redux
 import DiscussionActions from "~/redux/discussion";
-import { MessageActions } from "../../../../redux/message";
+import { MessageActions } from "../../../../../redux/message";
 import { AuthActions } from "~/redux/auth";
 
 // Utils
 import { discussionPageColors } from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
-import colors from "../../../../config/themes/colors";
+import colors from "../../../../../config/themes/colors";
+import API from "../../../../../config/api";
+import * as utils from "../../../../../redux/utils";
 
 const DiscussionThreadPage = (props) => {
   const dispatch = useDispatch();
-  const store = useStore();
 
   if (props.error) {
     return <Error statusCode={404} />;
   }
 
-  const { discussion, discussionThreadId, hostname, paperId } = props;
+  const { discussion, discussionThreadId, hostname, paperId, threadId } = props;
 
-  const [thread, setThread] = useState(props.discussion);
+  let initialThread = {
+    createdBy: {
+      author_profile: { first_name: "", last_name: "" },
+    },
+  };
+  const [thread, setThread] = useState(initialThread);
   const [pageNumber, setPageNumber] = useState(1);
-  const { count, page } = discussion.commentPage;
   const [comments, setComments] = useState([]);
   const [transition, setTransition] = useState(false);
-  const [userVote, setUserVote] = useState(
-    props.discussion.success && props.discussion.userVote
-  );
+  const [userVote, setUserVote] = useState(false);
   const [active, setActive] = useState(true);
+  const [page, setPage] = useState(1);
+  const [count, setCount] = useState(0);
 
-  let title = "";
-  let body = "";
-  let createdBy = "";
-  let createdDate = "";
-  let score = 0;
+  const fetchThread = async () => {
+    const response = await fetch(
+      API.THREAD(paperId, threadId),
+      API.GET_CONFIG()
+    ).catch(utils.handleCatch);
 
-  if (thread.success) {
-    title = thread.title;
-    body = thread.text;
-    createdBy = thread.created_by;
-    createdDate = thread.created_date;
-    score = thread.score;
+    if (response.ok) {
+      let thread = await response.json();
+      thread.createdBy = thread.created_by;
+      setThread(thread);
+    } else {
+      utils.logFetchError(response);
+    }
+  };
+
+  const fetchComments = async () => {
+    const response = await fetch(
+      API.THREAD_COMMENT(paperId, threadId, page),
+      API.GET_CONFIG()
+    ).catch(utils.handleCatch);
+
+    if (response.ok) {
+      const body = await response.json();
+      const comments = body;
+      comments.page = page;
+      if (comments.length > 0) {
+        setComments([...comments, ...comments.results]);
+      } else {
+        setComments(comments.results);
+      }
+      setPage(page + 1);
+    } else {
+      utils.logFetchError(response);
+    }
+  };
+
+  async function fetchDiscussions() {
+    fetchThread();
+    fetchComments();
   }
 
   useEffect(() => {
-    if (thread.success) {
-      const currentComments = thread.comments;
-      setComments(currentComments);
-    }
-  }, [thread.success]);
-
-  useEffect(() => {
-    async function refetchDiscussion() {
-      dispatch(DiscussionActions.fetchThreadPending());
-      dispatch(DiscussionActions.fetchCommentsPending());
-      await dispatch(
-        DiscussionActions.fetchThread(paperId, discussionThreadId)
-      );
-      await dispatch(
-        DiscussionActions.fetchComments(paperId, discussionThreadId, pageNumber)
-      );
-    }
-
-    refetchDiscussion();
-  }, [props.isServer, paperId, discussionThreadId]);
+    fetchDiscussions();
+  }, []);
 
   function renderComments(comments) {
     let commentComponents =
@@ -126,7 +140,7 @@ const DiscussionThreadPage = (props) => {
   function addSubmittedComment(comment) {
     let newComments = [comment];
     props.showMessage({ load: true, show: true });
-    newComments = newComments.concat(props.discussion.comments);
+    newComments = newComments.concat(comments);
     setTransition(true);
     setComments(newComments);
     setActive(false);
@@ -137,32 +151,28 @@ const DiscussionThreadPage = (props) => {
   }
 
   const getNextPage = async (paperId, discussionThreadId, page) => {
-    await props.fetchComments(paperId, discussionThreadId, page);
-    if (props.state.commentPage.comments) {
-      if (props.state.commentPage.comments.length > 0) {
-        setComments([...comments, ...props.state.commentPage.comments]);
-      }
-    }
+    fetchComments();
   };
 
   return (
     <div>
       <Message />
       <Head
-        title={title}
+        title={thread.title}
         description={`Discuss on ResearchHub`}
         socialImageUrl={props.paper && props.paper.metatagImage}
       />
       <div className={css(styles.threadContainer)}>
-        <Thread
-          hostname={hostname}
-          title={title}
-          body={body}
-          createdBy={createdBy}
-          date={createdDate}
-          vote={userVote}
-          score={score}
-        />
+        {thread.text && (
+          <Thread
+            hostname={hostname}
+            body={thread.text}
+            createdBy={thread.createdBy}
+            date={thread.created_date}
+            vote={thread.user_vote}
+            score={thread.score}
+          />
+        )}
       </div>
       <div className={css(styles.divider)} />
       <div className={css(styles.contentContainer)}>
@@ -182,7 +192,7 @@ const DiscussionThreadPage = (props) => {
             loadMore={() => {
               let paperId = discussion.paper;
               let discussionThreadId = discussion.id;
-              getNextPage(paperId, discussionThreadId, page + 1);
+              getNextPage(paperId, discussionThreadId, page);
             }}
           >
             {renderComments(comments)}
@@ -196,22 +206,15 @@ const DiscussionThreadPage = (props) => {
 DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
   const { host } = absoluteUrl(req);
   const hostname = host;
-  let { discussion } = store.getState();
 
   const { paperId, discussionThreadId } = query;
-  const page = 1;
   try {
-    if (typeof paperId !== "number" || typeof discussionThreadId !== "number") {
+    if (
+      typeof parseInt(paperId, 10) !== "number" ||
+      typeof parseInt(discussionThreadId, 10) !== "number"
+    ) {
       throw 404;
     }
-    store.dispatch(DiscussionActions.fetchThreadPending());
-    store.dispatch(DiscussionActions.fetchCommentsPending());
-    await store.dispatch(
-      DiscussionActions.fetchThread(paperId, discussionThreadId)
-    );
-    await store.dispatch(
-      DiscussionActions.fetchComments(paperId, discussionThreadId, page)
-    );
   } catch (err) {
     if (res) {
       res.statusCode = 404;
@@ -219,9 +222,12 @@ DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
     return { error: true };
   }
 
-  discussion = store.getState().discussion;
-
-  return { discussion, discussionThreadId, hostname, paperId };
+  return {
+    discussionThreadId,
+    hostname,
+    paperId,
+    threadId: discussionThreadId,
+  };
 };
 
 const styles = StyleSheet.create({

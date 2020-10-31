@@ -55,6 +55,10 @@ const TextEditor = (props) => {
   const [editorRef, setEditorRef] = useState(null);
   const [uid, setUid] = useState(createUid());
 
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
   function handleChange(value) {
     onChange && onChange(value);
   }
