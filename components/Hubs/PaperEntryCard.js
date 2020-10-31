@@ -135,10 +135,10 @@ const PaperEntryCard = (props) => {
       } = uploaded_by.author_profile;
       return (
         <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
-          Submitted by{" "}
-          {/* <span className={css(styles.icon)}>
-            {icons.fileUpload}
-          </span> */}
+          <span className={css(styles.label)}>Submitted By: </span>
+          <div className={css(styles.avatar)}>
+            <AuthorAvatar author={uploaded_by.author_profile} size={20} />
+          </div>
           <span
             className={css(styles.capitalize)}
           >{`${first_name} ${last_name}`}</span>
@@ -148,15 +148,15 @@ const PaperEntryCard = (props) => {
       return (
         <div className={css(styles.uploadedBy)}>
           Retrieved from{" "}
-          {/* <span className={css(styles.icon)}>
-            {icons.fileUpload}
-          </span> */}
           <span className={css(styles.capitalize)}>{external_source}</span>
         </div>
       );
     } else {
       return (
-        <div className={css(styles.uploadedBy)}>Submitted by ResearchHub</div>
+        <div className={css(styles.uploadedBy)}>
+          <span className={css(styles.label)}>Submitted By: </span>
+          ResearchHub
+        </div>
       );
     }
   }
@@ -448,7 +448,8 @@ const PaperEntryCard = (props) => {
                 " clamp1"
               }
             >
-              Authors: {_formatAuthors(raw_authors)}
+              <span className={css(styles.label)}>Authors: </span>
+              {_formatAuthors(raw_authors)}
             </span>
           </div>
         );
@@ -489,6 +490,7 @@ const PaperEntryCard = (props) => {
           {/* {renderPaperTitle()} */}
           {renderRawAuthors(mobile)}
           {renderPublishDate(mobile)}
+          {!mobile && renderUploadedBy()}
         </div>
       );
     }
@@ -518,30 +520,20 @@ const PaperEntryCard = (props) => {
       function _convertDate() {
         return formatPublishedDate(
           transformDate(paper.paper_publish_date),
-          mobile
+          true
         );
       }
 
-      if (!mobile) {
-        return (
-          <div
-            className={css(styles.metadataContainer, styles.publishContainer)}
-          >
-            <span className={css(styles.metadata, styles.removeMargin)}>
-              {_convertDate(mobile)}
-            </span>
-          </div>
-        );
-      } else {
-        return (
-          <div
-            className={css(styles.metadataContainer, styles.publishContainer)}
-          >
+      return (
+        <div className={css(styles.metadataContainer, styles.publishContainer)}>
+          {mobile ? (
             <span className={css(styles.icon)}>{icons.calendar}</span>
-            <span className={css(styles.metadata)}>{_convertDate(mobile)}</span>
-          </div>
-        );
-      }
+          ) : (
+            <span className={css(styles.label)}>Published: </span>
+          )}
+          <span className={css(styles.metadata)}>{_convertDate(mobile)}</span>
+        </div>
+      );
     }
   };
 
@@ -628,13 +620,13 @@ const PaperEntryCard = (props) => {
               {desktopOnly(renderMainTitle())}
             </div>
             {mobileOnly(renderMainTitle())}
-            {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata(true))}
             {mobileOnly(renderPreview(), { fullWidth: true })}
+            {/* Content */}
             {renderContent()}
-            {/* {desktopOnly(renderMetadata())} */}
-
-            {renderUploadedBy()}
+            {/* Submitted */}
+            {desktopOnly(renderMetadata())}
+            {mobileOnly(renderUploadedBy())}
           </div>
           {desktopOnly(renderPreview())}
         </div>
@@ -646,7 +638,6 @@ const PaperEntryCard = (props) => {
           <div className={css(styles.row)}>
             {desktopOnly(renderPreregistrationTag())}
             {desktopOnly(renderHubTags())}
-            {/* {desktopOnly(renderPreregistrationTag())} */}
           </div>
         </div>
         {/* <div className={css(styles.bottomBar, styles.mobileHubTags)}>
@@ -762,13 +753,20 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
-  metadataRow: {
-    display: "flex",
-    alignItems: "flex-start",
-    width: "100%",
+  authorRow: {
     paddingTop: 3,
     paddingBottom: 5,
+  },
+  metadataRow: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: "100%",
+    // paddingTop: 3,
+    // paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
+      flexDirection: "row",
+      alignItems: "center",
       paddingTop: 0,
       paddingBottom: 5,
     },
@@ -777,9 +775,14 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
+    marginBottom: 8,
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 0,
+    },
   },
   publishContainer: {
     marginRight: 10,
+    marginBottom: 3,
   },
   authorContainer: {
     marginRight: 10,
@@ -831,16 +834,17 @@ const styles = StyleSheet.create({
     width: "unset",
   },
   icon: {
-    fontSize: 13,
+    fontSize: 14,
     color: "#C1C1CF",
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
     },
   },
   metadata: {
-    fontSize: 13,
-    color: "#918f9b",
+    fontSize: 14,
+    color: colors.BLACK(0.7),
     marginLeft: 7,
+    width: "max-content",
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
     },
@@ -851,11 +855,6 @@ const styles = StyleSheet.create({
   authors: {
     marginLeft: 0,
     maxWidth: "100%",
-  },
-  metadata: {
-    fontSize: 13,
-    color: "#918f9b",
-    marginLeft: 7,
   },
   discussion: {
     cursor: "pointer",
@@ -914,7 +913,8 @@ const styles = StyleSheet.create({
     },
   },
   avatar: {
-    marginRight: 5,
+    marginLeft: 4,
+    marginRight: 4,
   },
   hide: {
     display: "none",
@@ -951,12 +951,13 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    fontSize: 13,
+    fontSize: 14,
     color: "#918f9b",
     fontWeight: 400,
-    marginBottom: 8,
+    // marginBottom: 8,
     cursor: "pointer",
     whiteSpace: "pre-wrap",
+    color: "#918f9b",
     ":hover": {
       color: colors.BLUE(),
     },
@@ -970,6 +971,10 @@ const styles = StyleSheet.create({
   capitalize: {
     marginRight: 8,
     textTransform: "capitalize",
+    color: colors.BLACK(0.7),
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
   rhIcon: {
     height: 20,
@@ -1025,6 +1030,14 @@ const styles = StyleSheet.create({
   },
   fullWidth: {
     width: "100%",
+  },
+  label: {
+    color: "rgba(36, 31, 58, 0.7)",
+    fontSize: 14,
+    fontWeight: 500,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
   },
 });
 
