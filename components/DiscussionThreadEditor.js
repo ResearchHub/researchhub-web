@@ -8,7 +8,7 @@ import DiscussionActions from "~/redux/discussion";
 
 import { doesNotExist } from "../config/utils";
 
-const ThreadEditor = (props) => {
+const DiscussionThreadEditor = (props) => {
   const { readOnly, setReadOnly, commentStyles, onCancel } = props;
 
   const dispatch = useDispatch();
@@ -18,6 +18,10 @@ const ThreadEditor = (props) => {
   const { paperId, discussionThreadId } = router.query;
 
   const [value, setValue] = useState(props.text);
+
+  useEffect(() => {
+    setValue(props.text);
+  }, [props.text]);
 
   async function updateThread(text, plain_text) {
     const body = {
@@ -54,4 +58,4 @@ const ThreadEditor = (props) => {
   );
 };
 
-export default ThreadEditor;
+export default DiscussionThreadEditor;
