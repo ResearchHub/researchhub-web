@@ -2,6 +2,7 @@ import { transformDate, transformUser, transformVote } from "../utils";
 
 export const thread = (thread) => {
   return {
+    ...thread,
     id: thread.id,
     title: thread.title,
     text: thread.text,
@@ -39,6 +40,7 @@ export function transformComments(comments) {
 
 export function transformComment(comment) {
   return {
+    ...comment,
     id: comment.id,
     text: comment.text,
     thread: comment.parent,
@@ -77,6 +79,7 @@ export function transformReplies(replies) {
 
 export function transformReply(reply) {
   return {
+    ...reply,
     id: reply.id,
     text: reply.text,
     comment: reply.parent,

@@ -8,7 +8,7 @@ import { useDispatch, useStore } from "react-redux";
 
 // Components
 import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
-import ThreadEditor from "~/components/DiscussionThreadEditor";
+import DiscussionThreadEditor from "~/components/DiscussionThreadEditor";
 import EditAction from "~/components/EditAction";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
@@ -142,7 +142,7 @@ const Thread = (props) => {
             )}
           >
             {/* {title} */}
-            <ThreadEditor
+            <DiscussionThreadEditor
               readOnly={readOnly}
               styling={readOnly ? [styles.body] : [styles.bodyEdit]}
               text={body}
