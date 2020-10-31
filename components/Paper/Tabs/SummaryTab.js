@@ -472,7 +472,7 @@ class SummaryTab extends React.Component {
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
-        {!this.state.showAbstract && (paper.abstract || paper.summary) ? (
+        {!this.state.showAbstract ? (
           <a name="summary">
             {(paper.summary && paper.summary.summary) ||
             this.state.summaryExists ? (
