@@ -38,6 +38,7 @@ const AuthorAvatar = (props) => {
               height: finalSize,
               objectFit: "cover",
               borderRadius: "50%",
+              border: "3px solid #F1F1F1",
             }}
             onError={(e) => {
               setError(true);
@@ -50,6 +51,7 @@ const AuthorAvatar = (props) => {
               width: finalSize,
               height: finalSize,
               fontSize: finalSize + 1,
+              border: "3px solid #FFF",
             }}
           />
         )}
@@ -100,7 +102,7 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
     borderRadius: "50%",
-    border: "3px solid #F1F1F1",
+    // border: "3px solid #F1F1F1",
   },
   moderatorBadge: {
     position: "absolute",
