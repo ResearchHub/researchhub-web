@@ -83,6 +83,7 @@ const DiscussionThreadPage = (props) => {
         setComments(comments.results);
       }
       setPage(page + 1);
+      setCount(body.count);
     } else {
       utils.logFetchError(response);
     }
