@@ -83,7 +83,6 @@ class UserDiscussionsTab extends React.Component {
 
     let discussions = author.userDiscussions.discussions.map(
       (discussion, index) => {
-        console.log(discussion);
         let path = `/paper/${discussion.paper}/${discussion.paper_slug}/${discussion.id}`;
         return (
           <div
