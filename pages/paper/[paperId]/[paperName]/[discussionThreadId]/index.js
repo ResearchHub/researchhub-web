@@ -30,13 +30,11 @@ import API from "../../../../../config/api";
 import * as utils from "../../../../../redux/utils";
 
 const DiscussionThreadPage = (props) => {
-  const dispatch = useDispatch();
-
   if (props.error) {
     return <Error statusCode={404} />;
   }
 
-  const { discussion, discussionThreadId, hostname, paperId, threadId } = props;
+  const { discussion, hostname, paperId, threadId } = props;
 
   let initialThread = {
     createdBy: {
@@ -44,10 +42,8 @@ const DiscussionThreadPage = (props) => {
     },
   };
   const [thread, setThread] = useState(initialThread);
-  const [pageNumber, setPageNumber] = useState(1);
   const [comments, setComments] = useState([]);
   const [transition, setTransition] = useState(false);
-  const [userVote, setUserVote] = useState(false);
   const [active, setActive] = useState(true);
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
