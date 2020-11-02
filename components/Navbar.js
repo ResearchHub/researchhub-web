@@ -721,7 +721,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
-    width: 160,
+    width: 210,
   },
   addPaperButton: {
     width: "100%",
