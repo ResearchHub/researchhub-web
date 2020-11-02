@@ -51,7 +51,7 @@ const DiscussionThreadCard = (props) => {
     title = data.title;
     body = data.text;
     username = createUsername(data);
-    vote = data.userVote;
+    vote = data.user_vote;
   }
 
   const [selectedVoteType, setSelectedVoteType] = useState(
@@ -61,7 +61,7 @@ const DiscussionThreadCard = (props) => {
 
   useEffect(() => {
     if (data) {
-      setSelectedVoteType(data.userVote && data.userVote.voteType);
+      setSelectedVoteType(data.user_vote && data.user_vote.voteType);
     }
   }, [data]);
 

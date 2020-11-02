@@ -41,8 +41,8 @@ class ReplyEntry extends React.Component {
   componentDidMount() {
     const selectedVoteType = getNestedValue(this.props, [
       "reply",
-      "userVote",
-      "voteType",
+      "user_vote",
+      "vote_type",
     ]);
     const score = this.props.reply.score;
     this.setState(
