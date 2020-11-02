@@ -50,7 +50,8 @@ class DiscussionEntry extends React.Component {
   componentDidMount = async () => {
     const { data, newCard } = this.props;
     const comments = data.comments ? data.comments : [];
-    const selectedVoteType = getNestedValue(data, ["userVote", "voteType"]);
+    console.log(data);
+    const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
     this.setState(
       {
         comments,
@@ -194,7 +195,7 @@ class DiscussionEntry extends React.Component {
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       let newComment = { ...this.props.discussion.postedComment };
       newComment.highlight = true;
-      let comments = [newComment, ...this.state.comments];
+      let comments = [...this.state.comments, newComment];
       data.comments = comments;
       setCount(discussionCount + 1);
       this.setState(

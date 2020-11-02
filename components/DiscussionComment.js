@@ -49,8 +49,8 @@ class DiscussionComment extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const selectedVoteType = getNestedValue(this.props, [
       "data",
-      "userVote",
-      "voteType",
+      "user_vote",
+      "vote_type",
     ]);
     if (selectedVoteType !== prevState.selectedVoteType) {
       this.setState({ selectedVoteType });
