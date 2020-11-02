@@ -492,7 +492,7 @@ const PaperEntryCard = (props) => {
           {/* {renderPaperTitle()} */}
           {renderRawAuthors(mobile)}
           {renderPublishDate(mobile)}
-          {!mobile && renderUploadedBy()}
+          {/* {!mobile && renderUploadedBy()} */}
         </div>
       );
     }
@@ -624,11 +624,12 @@ const PaperEntryCard = (props) => {
             {mobileOnly(renderMainTitle())}
             {mobileOnly(renderMetadata(true))}
             {mobileOnly(renderPreview(), { fullWidth: true })}
+            {desktopOnly(renderMetadata())}
             {/* Content */}
             {renderContent()}
             {/* Submitted */}
-            {desktopOnly(renderMetadata())}
-            {mobileOnly(renderUploadedBy())}
+            {renderUploadedBy()}
+            {/* {desktopOnly(renderUploadedBy())} */}
           </div>
           {desktopOnly(renderPreview())}
         </div>
@@ -756,16 +757,17 @@ const styles = StyleSheet.create({
     },
   },
   authorRow: {
-    paddingTop: 3,
-    paddingBottom: 5,
+    // paddingTop: 3,
+    // paddingBottom: 5,
   },
   metadataRow: {
     display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
+    // flexDirection: "column",
+    // alignItems: "flex-start",
+    alignItems: "center",
     width: "100%",
-    // paddingTop: 3,
-    // paddingBottom: 5,
+    paddingTop: 3,
+    paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "row",
       alignItems: "center",
@@ -777,14 +779,14 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    marginBottom: 8,
+    // marginBottom: 8,
     "@media only screen and (max-width: 767px)": {
       marginBottom: 0,
     },
   },
   publishContainer: {
     marginRight: 10,
-    marginBottom: 3,
+    // marginBottom: 3,
   },
   authorContainer: {
     marginRight: 10,
@@ -860,8 +862,9 @@ const styles = StyleSheet.create({
   },
   discussion: {
     cursor: "pointer",
-    minWidth: 100,
+    // minWidth: 100,
     fontSize: 14,
+    width: "max-content",
     ":hover #discIcon": {
       color: colors.BLUE(1),
     },
