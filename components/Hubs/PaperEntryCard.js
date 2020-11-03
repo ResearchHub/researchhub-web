@@ -482,39 +482,28 @@ const PaperEntryCard = (props) => {
   };
 
   const renderMetadata = (mobile = false) => {
-    if (
-      paper_publish_date ||
-      (raw_authors && raw_authors.length) ||
-      uploaded_by
-    ) {
+    if (paper_publish_date || (raw_authors && raw_authors.length)) {
       return (
         <div className={css(styles.metadataRow)}>
-          {/* {renderPaperTitle()} */}
           {renderRawAuthors(mobile)}
           {renderPublishDate(mobile)}
-          {/* {!mobile && renderUploadedBy()} */}
         </div>
       );
     }
   };
 
   const renderPaperTitle = () => {
-    // if (paper_title && title !== paper_title) {
-    //   return (
-    //     <div className={css(styles.metadataContainer)}>
-    //       <span className={css(styles.icon)}>
-    //         {icons.file}
-    //       </span>
-    //       <div
-    //         className={
-    //           css(styles.metadataClamp, styles.metadata) + " clamp1"
-    //         }
-    //       >
-    //         {paper_title}
-    //       </div>
-    //     </div>
-    //   )
-    // }
+    if (paper_title && title !== paper_title) {
+      return (
+        <div className={css(styles.metadataContainer)}>
+          <div
+            className={css(styles.metadataClamp, styles.paperTitle) + " clamp1"}
+          >
+            From Paper: {paper_title}
+          </div>
+        </div>
+      );
+    }
   };
 
   const renderPublishDate = (mobile) => {
@@ -622,6 +611,7 @@ const PaperEntryCard = (props) => {
               {desktopOnly(renderMainTitle())}
             </div>
             {mobileOnly(renderMainTitle())}
+            {renderPaperTitle()}
             {mobileOnly(renderMetadata(true))}
             {mobileOnly(renderPreview(), { fullWidth: true })}
             {desktopOnly(renderMetadata())}
@@ -683,7 +673,7 @@ const styles = StyleSheet.create({
   },
   paperTitle: {
     color: "rgb(145, 143, 155)",
-    marginTop: 5,
+    marginBottom: 5,
     fontSize: 14,
     fontWeight: 400,
     color: "#918F9B",
@@ -756,15 +746,11 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
-  authorRow: {
-    // paddingTop: 3,
-    // paddingBottom: 5,
-  },
+  authorRow: {},
   metadataRow: {
     display: "flex",
-    // flexDirection: "column",
-    // alignItems: "flex-start",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
     width: "100%",
     paddingTop: 3,
     paddingBottom: 5,
@@ -779,17 +765,17 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    // marginBottom: 8,
     "@media only screen and (max-width: 767px)": {
       marginBottom: 0,
     },
   },
-  publishContainer: {
-    marginRight: 10,
-    // marginBottom: 3,
-  },
+  publishContainer: {},
   authorContainer: {
-    marginRight: 10,
+    marginBottom: 5,
+    marginRight: 8,
+  },
+  marginBottom: {
+    marginBottom: 5,
   },
   clampMetadata: {
     maxWidth: 180,
