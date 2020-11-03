@@ -8,7 +8,15 @@ const style = {
   cursor: "move",
 };
 
-const DraggableCard = ({ id, text, index, moveCard, data, onEditCallback }) => {
+const DraggableCard = ({
+  id,
+  text,
+  index,
+  moveCard,
+  data,
+  onEditCallback,
+  onRemoveCallback,
+}) => {
   const ref = useRef(null);
   const [, drop] = useDrop({
     accept: "bullet_point",
@@ -67,6 +75,7 @@ const DraggableCard = ({ id, text, index, moveCard, data, onEditCallback }) => {
         data={data}
         index={index}
         onEditCallback={onEditCallback}
+        onRemoveCallback={onRemoveCallback}
       />
     </div>
   );
