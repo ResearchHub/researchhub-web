@@ -134,6 +134,14 @@ class BulletsContainer extends React.Component {
     });
   };
 
+  onRemoveCallback = (index) => {
+    let bullets = [...this.state.bullets];
+    bullets.splice(index, 1);
+    this.setState({ bullets }, () => {
+      this.props.updateStateByKey("bullets", bullets);
+    });
+  };
+
   submitBulletPoint = async () => {
     let {
       bulletsRedux,
@@ -214,6 +222,7 @@ class BulletsContainer extends React.Component {
             key={`summaryBulletPoint-${bullet.id}`}
             data={bullet}
             onEditCallback={this.onEditCallback}
+            onRemoveCallback={this.onRemoveCallback}
             type={"KEY_TAKEAWAY"}
             index={index}
           />
