@@ -66,7 +66,8 @@ const StripeOnboardingModal = (props) => {
 
   return (
     <BaseModal
-      isOpen={props.modals.openStripeOnboardModal}
+      // isOpen={props.modals.openStripeOnboardModal}
+      isOpen={false} // hiding modal from users
       closeModal={closeModal}
       title={
         <div className={css(styles.container)}>

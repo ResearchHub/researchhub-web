@@ -866,7 +866,7 @@ const AuthorPage = (props) => {
                     />
                   </div>
                 ) : (
-                  <div className={css(styles.stripeButton)}>
+                  <div className={css(styles.supportAuthorContainer)}>
                     <Button
                       customButtonStyle={styles.supportAuthorButton}
                       label={
@@ -1131,6 +1131,7 @@ const styles = StyleSheet.create({
       marginLeft: 0,
     },
   },
+  supportAuthorContainer: {},
   mobileConnectOrcid: {
     display: "none",
     "@media only screen and (max-width: 767px)": {
@@ -1601,6 +1602,15 @@ const styles = StyleSheet.create({
   },
   supportAuthorButton: {
     width: "max-content",
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 15,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 220,
+      minWidth: 220,
+      height: 45,
+      minHeight: 45,
+    },
   },
   lightningButton: {
     width: "unset",

@@ -204,9 +204,21 @@ const styles = StyleSheet.create({
   customButtonStyle: {
     width: 220,
     height: 45,
+    "@media only screen and (max-width: 415px)": {
+      width: 220,
+      minWidth: 220,
+      height: 45,
+      minHeight: 45,
+    },
   },
   smallerButtonStyle: {
     width: 150,
+    "@media only screen and (max-width: 415px)": {
+      width: 220,
+      minWidth: 220,
+      height: 45,
+      minHeight: 45,
+    },
   },
   hidden: {
     // display: "none",

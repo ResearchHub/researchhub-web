@@ -175,7 +175,11 @@ const UserSupport = (props) => {
         supporters={supporters}
       />
       <div className={css(styles.buttonContainer)}>
-        <Button label="Join" onClick={openAuthorSupportModal} />
+        <Button
+          label="Join"
+          onClick={openAuthorSupportModal}
+          customButtonStyle={styles.customButtonStyle}
+        />
       </div>
     </div>
   );
@@ -195,6 +199,9 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: colors.BLACK(),
     marginBottom: 15,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 26,
+    },
   },
   subtitle: {
     fontSize: 16,
@@ -234,6 +241,14 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       textDecoration: "underline",
+    },
+  },
+  customButtonStyle: {
+    "@media only screen and (max-width: 415px)": {
+      width: 220,
+      minWidth: 220,
+      height: 45,
+      minHeight: 45,
     },
   },
 });

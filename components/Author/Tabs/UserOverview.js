@@ -125,6 +125,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       position: "unset",
     },
+    "@media only screen and (max-width: 415px)": {
+      marginBottom: 30,
+      fontSize: 13,
+    },
   },
   icon: {
     marginRight: 5,
