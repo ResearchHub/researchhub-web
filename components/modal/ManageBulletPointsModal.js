@@ -99,6 +99,14 @@ class ManageBulletPointsModal extends React.Component {
     });
   };
 
+  onRemoveCallback = (index) => {
+    let cards = [...this.state.cards];
+    cards.splice(index, 1);
+    this.setState({ cards }, () => {
+      this.props.bulletActions.updateStateByKey("bullets", cards);
+    });
+  };
+
   saveReorder = async () => {
     let { bulletActions, messageActions, type, limitationActions } = this.props;
     let paperId = this.props.paperId;
@@ -175,6 +183,7 @@ class ManageBulletPointsModal extends React.Component {
           data={card}
           moveCard={this.moveCard}
           onEditCallback={this.onEditCallback}
+          onRemoveCallback={this.onRemoveCallback}
         />
       );
     });
