@@ -50,7 +50,6 @@ class DiscussionEntry extends React.Component {
   componentDidMount = async () => {
     const { data, newCard } = this.props;
     const comments = data.comments ? data.comments : [];
-    console.log(data);
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
     this.setState(
       {
