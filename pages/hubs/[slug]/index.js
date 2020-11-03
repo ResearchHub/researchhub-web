@@ -113,8 +113,8 @@ class Index extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProp, prevState) {
-    if (prevState.slug !== this.state.slug) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.slug !== this.props.slug) {
       this.setState(
         {
           slug: Router.router.query.slug,
