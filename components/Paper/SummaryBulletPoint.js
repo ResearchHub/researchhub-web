@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import { useState, Fragment, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";
+import { useAlert } from "react-alert";
 
 import FormTextArea from "../Form/FormTextArea";
 import AuthorAvatar from "../AuthorAvatar";
@@ -15,12 +16,15 @@ import { ModalActions } from "~/redux/modals";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
 
 const SummaryBulletPoint = (props) => {
-  const { data, manage, type, onEditCallback } = props;
+  const { data, manage, type, index, onEditCallback, onRemoveCallback } = props;
   const store = useStore();
   const dispatch = useDispatch();
-  let { plain_text, created_by } = data;
+  const alert = useAlert();
+
+  let { plain_text, created_by, is_removed } = data;
   let userId = store.getState().auth.user.id;
   const [text, setText] = useState(plain_text ? plain_text : "");
   const [hovered, toggleHover] = useState(false);
@@ -28,6 +32,13 @@ const SummaryBulletPoint = (props) => {
   const [editView, setEditView] = useState(false);
   const [editText, setEditText] = useState(plain_text ? plain_text : "");
   const [pending, togglePending] = useState(false);
+  const [isModerator, setIsModerator] = useState(
+    store.getState().auth.user.moderator || false
+  );
+
+  useEffect(() => {
+    setIsModerator(store.getState().auth.user.moderator);
+  }, [store.getState().auth.user.moderator]);
 
   const setHover = (state) => {
     if (hovered !== state) {
@@ -131,12 +142,64 @@ const SummaryBulletPoint = (props) => {
     }
   };
 
+  const removalConfirmation = (e) => {
+    e && e.stopPropagation();
+
+    alert.show({
+      text: "Remove this key takeaway?",
+      buttonText: "Yes",
+      onClick: () => {
+        onRemove();
+      },
+    });
+  };
+
+  const onRemove = () => {
+    dispatch(MessageActions.showMessage({ show: true, load: true }));
+    let bulletId = data.id;
+    fetch(API.CENSOR_KEY_TAKEAWAY({ bulletId }), API.DELETE_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        onRemoveCallback && onRemoveCallback(index);
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage("Key takeaway removed"));
+        dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch((err) => {
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage("Something went wrong"));
+        dispatch(MessageActions.showMessage({ show: true, error: true }));
+      });
+  };
+
+  const renderDeleteButton = () => {
+    if (hovered && isModerator) {
+      let classNames = [styles.deleteButton];
+
+      if (editable) {
+        classNames.push(styles.position);
+      }
+
+      return (
+        <div className={css(classNames)} onClick={removalConfirmation}>
+          {icons.trash}
+        </div>
+      );
+    }
+  };
+
   return (
     <div
-      className={css(styles.bulletpoint, manage && styles.cursorMove)}
+      className={css(
+        styles.bulletpoint,
+        manage && styles.cursorMove,
+        is_removed && styles.hidden
+      )}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
+      {renderDeleteButton()}
       {renderBody()}
     </div>
   );
@@ -273,6 +336,25 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: "0.4",
+  },
+  deleteButton: {
+    position: "absolute",
+    top: 6,
+    right: 8,
+    fontSize: 12,
+    cursor: "pointer",
+    color: "#241F3A",
+    color: colors.RED(),
+    opacity: 0.6,
+    ":hover": {
+      opacity: 1,
+    },
+  },
+  position: {
+    right: 28,
+  },
+  hidden: {
+    display: "none",
   },
 });
 

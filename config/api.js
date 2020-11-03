@@ -502,6 +502,9 @@ const routes = (BASE_URL) => {
 
       return url + "censor/";
     },
+    CENSOR_KEY_TAKEAWAY: ({ bulletId }) => {
+      return BASE_URL + `bullet_point/${bulletId}/censor/`;
+    },
     BULLET_POINT: ({ paperId, ordinal__isnull, type, progress }) => {
       let url = BASE_URL + `paper/${paperId}/bullet_point/`;
       let params = {
