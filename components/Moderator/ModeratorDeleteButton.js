@@ -23,6 +23,8 @@ const ModeratorDeleteButton = (props) => {
     iconStyle,
     labelStyle,
     label,
+    user,
+    authorId,
   } = props;
 
   let containerClass = [
@@ -136,7 +138,21 @@ const ModeratorDeleteButton = (props) => {
    * Used to delete users
    */
   const deleteUser = () => {
-    //TODO: remove user
+    let { authorId } = props.metaData;
+    showLoader();
+    let param = {
+      authorId: authorId,
+    };
+    fetch(API.USER({ route: "censor" }), API.POST_CONFIG(param))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        showSucessMessage("User Successfully Removed.");
+        props.onRemove && props.onRemove();
+      })
+      .catch((err) => {
+        showErrorMessage();
+      });
   };
 
   const buildQuery = () => {

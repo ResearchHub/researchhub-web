@@ -502,6 +502,9 @@ const routes = (BASE_URL) => {
 
       return url + "censor/";
     },
+    CENSOR_HUB: ({ hubId }) => {
+      return BASE_URL + `hub/${hubId}/censor/`;
+    },
     CENSOR_KEY_TAKEAWAY: ({ bulletId }) => {
       return BASE_URL + `bullet_point/${bulletId}/censor/`;
     },
