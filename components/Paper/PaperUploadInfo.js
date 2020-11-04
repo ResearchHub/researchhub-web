@@ -918,14 +918,14 @@ class PaperUploadInfo extends React.Component {
       authActions.getUser();
       this.navigateToSummary();
     } else {
-      if (resp.payload.errorBody.status === 429) {
+      if (resp.payload.errorBody && resp.payload.errorBody.status === 429) {
         messageActions.showMessage({ show: false });
         return;
       }
       messageActions.setMessage(
-        resp.payload.errorBody.error
+        resp.payload.errorBody
           ? resp.payload.errorBody.error
-          : "Hmm something went wrong"
+          : "You are not allowed to upload papers"
       );
       messageActions.showMessage({ show: true, error: true });
       setTimeout(() => messageActions.showMessage({ show: false }), 2000);
