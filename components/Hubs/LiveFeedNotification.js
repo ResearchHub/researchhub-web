@@ -141,8 +141,6 @@ class LiveFeedNotification extends React.Component {
     let plainText =
       notification.thread_plain_text && notification.thread_plain_text;
 
-    console.log("LIVE NOTIF", notification);
-
     switch (notificationType) {
       case "bullet_point":
         return (

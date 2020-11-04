@@ -246,7 +246,7 @@ class HubCard extends React.Component {
             alt="Hub Background Image"
           ></img>
           {this.renderEdit()}
-          {this.renderDelete()}
+          {/* {this.renderDelete()} */}
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
               <div className={css(styles.hubName)}>{hub.name}</div>
