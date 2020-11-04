@@ -778,8 +778,22 @@ class LiveFeedNotification extends React.Component {
                 containerStyle={styles.dropdownItem}
                 labelStyle={[styles.text, styles.removeText]}
                 iconStyle={styles.expandIcon}
-                label={"Remove"}
+                label={"Remove Content"}
                 actionType={"post"}
+                metaData={metaData}
+                onRemove={this.removeContent}
+              />
+            )}
+            {correctContent(
+              this.props.notification.content_type,
+              moderator
+            ) && (
+              <ModeratorDeleteButton
+                containerStyle={styles.dropdownItem}
+                labelStyle={[styles.text, styles.removeText]}
+                iconStyle={styles.expandIcon}
+                label={"Remove User"}
+                actionType={"user"}
                 metaData={metaData}
                 onRemove={this.removeContent}
               />
@@ -975,7 +989,7 @@ const styles = StyleSheet.create({
   },
   dropdownMenu: {
     position: "absolute",
-    bottom: 20,
+    top: 30,
     right: 0,
     width: 120,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
@@ -986,7 +1000,8 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   twoItems: {
-    bottom: -20,
+    // bottom: -20,
+    width: 160,
   },
   dropdownIcon: {
     position: "absolute",
