@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import * as Sentry from "@sentry/browser";
+import { withAlert } from "react-alert";
 
 // Component
 import Button from "../Form/Button";
@@ -126,6 +127,20 @@ class HubCard extends React.Component {
     });
   };
 
+  removeHubConfirmation = () => {
+    this.props.alert.show({
+      text: `Remove this hub and all of its papers?`,
+      buttonText: "Yes",
+      onClick: () => {
+        this.removeHub();
+      },
+    });
+  };
+
+  removeHub = () => {
+    // TODO: API
+  };
+
   onMouseEnterSubscribe = () => {
     this.setState({
       subscribeHover: true,
@@ -183,6 +198,24 @@ class HubCard extends React.Component {
     }
   };
 
+  renderDelete = () => {
+    if (this.props.auth.isLoggedIn && this.props.user) {
+      if (this.props.user.moderator) {
+        return (
+          <button
+            className={css(styles.deleteButton)}
+            onClick={(e) => {
+              e.stopPropagation();
+              this.removeHubConfirmation();
+            }}
+          >
+            <span className={css(styles.deleteIcon)}>{icons.trash}</span>
+          </button>
+        );
+      }
+    }
+  };
+
   openEditHubModal = () => {
     this.props.openEditHubModal(true, this.props.hub);
   };
@@ -208,6 +241,7 @@ class HubCard extends React.Component {
             alt="Hub Background Image"
           ></img>
           {this.renderEdit()}
+          {this.renderDelete()}
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
               <div className={css(styles.hubName)}>{hub.name}</div>
@@ -381,6 +415,24 @@ const styles = StyleSheet.create({
   editIcon: {
     marginLeft: 1,
   },
+  deleteButton: {
+    height: 30,
+    width: 30,
+    borderRadius: "50%",
+    border: "#fff 1px solid",
+    background: "#fff",
+    color: colors.RED(),
+    opacity: 0.5,
+    fontWeight: 400,
+    fontSize: 16,
+    cursor: "pointer",
+    position: "absolute",
+    right: 45,
+    top: 10,
+    ":hover": {
+      opacity: 1,
+    },
+  },
   hubDescription: {
     fontSize: 13,
     padding: "10px 0 0 0",
@@ -431,4 +483,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HubCard);
+)(withAlert()(HubCard));
