@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import Ripples from "react-ripples";
 import { useAlert } from "react-alert";
 import "~/components/Paper/CitationCard.css";
+import Link from "next/link";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -242,6 +243,7 @@ function openTwitter(url) {
 const User = (props) => {
   const { name, paper, authorProfile, smaller, twitterUrl } = props;
   let isAuthor;
+  let authorId = authorProfile.id; // for the user
 
   if (paper && paper.authors && paper.authors.length && authorProfile) {
     paper.authors.forEach((author) => {
@@ -252,17 +254,24 @@ const User = (props) => {
   }
 
   return (
-    <div
-      className={css(
-        styles.userContainer,
-        smaller && styles.smallerUserContainer
-      )}
+    <Link
+      href={"/user/[authorId]/[tabName]"}
+      as={`/user/${authorId}/contributions`}
     >
-      <div className={css(styles.name, isAuthor && styles.authorName)}>
-        {name}
-      </div>
-      {isAuthor && <div className={css(styles.status)}>Author</div>}
-    </div>
+      <a href={`/user/${authorId}/contributions`} className={css(styles.atag)}>
+        <div
+          className={css(
+            styles.userContainer,
+            smaller && styles.smallerUserContainer
+          )}
+        >
+          <div className={css(styles.name, isAuthor && styles.authorName)}>
+            {name}
+          </div>
+          {isAuthor && <div className={css(styles.status)}>Author</div>}
+        </div>
+      </a>
+    </Link>
   );
 };
 
@@ -393,6 +402,11 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 436px)": {
       fontSize: 14,
     },
+  },
+  atag: {
+    cursor: "pointer",
+    textDecoration: "unset",
+    color: "unset",
   },
   smallerUserContainer: {
     fontSize: 13,
