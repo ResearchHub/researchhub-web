@@ -233,29 +233,27 @@ class HubPage extends React.Component {
   };
 
   detectPromoted = (papers) => {
-    papers.forEach((paper) => {
-      if (paper.promoted) {
-        let createdLocationMeta = this.state.filterBy;
-        if (createdLocationMeta === "hot") {
-          createdLocationMeta = "trending";
-        }
-
-        let payload = {
-          paper: paper.id,
-          paper_is_boosted: true,
-          interaction: "VIEW",
-          utc: new Date(),
-          created_location: "FEED",
-          created_location_meta: "trending",
-        };
-
-        fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {})
-          .catch((err) => {});
-      }
-    });
+    // papers.forEach((paper) => {
+    //   if (paper.promoted) {
+    //     let createdLocationMeta = this.state.filterBy;
+    //     if (createdLocationMeta === "hot") {
+    //       createdLocationMeta = "trending";
+    //     }
+    //     let payload = {
+    //       paper: paper.id,
+    //       paper_is_boosted: true,
+    //       interaction: "VIEW",
+    //       utc: new Date(),
+    //       created_location: "FEED",
+    //       created_location_meta: "trending",
+    //     };
+    //     fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
+    //       .then(Helpers.checkStatus)
+    //       .then(Helpers.parseJSON)
+    //       .then((res) => {})
+    //       .catch((err) => {});
+    //   }
+    // });
   };
 
   fetchPapers = ({ hub }) => {
