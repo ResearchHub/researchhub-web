@@ -734,7 +734,7 @@ const AuthorPage = (props) => {
                         containerStyle={styles.moderatorButton}
                         icon={<i className="fas fa-ban" />}
                         actionType={"user"}
-                        metaData={{ userId: router.query.authorId }}
+                        metaData={{ authorId: router.query.authorId }}
                         // onRemove={this.removeContent}
                       />
                     )}
