@@ -138,6 +138,10 @@ class LiveFeedNotification extends React.Component {
       ? notification.thread_title
       : notification.thread_plain_text;
     let threadId = notification.thread_id;
+    let plainText =
+      notification.thread_plain_text && notification.thread_plain_text;
+
+    console.log("LIVE NOTIF", notification);
 
     switch (notificationType) {
       case "bullet_point":
@@ -260,7 +264,7 @@ class LiveFeedNotification extends React.Component {
                 {username}
               </a>
             </Link>{" "}
-            created a{" "}
+            left a{" "}
             <Link
               href="/paper/[paperId]/[paperName]"
               as={`/paper/${paperId}/${title}#comments`}
@@ -269,10 +273,11 @@ class LiveFeedNotification extends React.Component {
                 className={css(styles.link)}
                 onClick={(e) => e.stopPropagation()}
               >
-                thread
+                comment,
               </a>
             </Link>
-            {"in "}
+            <em>{plainText && plainText}</em>
+            {" in "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}`}
@@ -661,6 +666,8 @@ class LiveFeedNotification extends React.Component {
       metaData.replyId = notification.reply_id;
     }
 
+    metaData.authorId = notification.created_by.author_profile.id;
+
     return metaData;
   };
 
@@ -792,7 +799,8 @@ class LiveFeedNotification extends React.Component {
                 containerStyle={styles.dropdownItem}
                 labelStyle={[styles.text, styles.removeText]}
                 iconStyle={styles.expandIcon}
-                label={"Remove User"}
+                icon={icons.ban}
+                label={"Ban User"}
                 actionType={"user"}
                 metaData={metaData}
                 onRemove={this.removeContent}

@@ -138,7 +138,12 @@ class HubCard extends React.Component {
   };
 
   removeHub = () => {
-    // TODO: API
+    fetch(API.CENSOR_HUB({ hubId: this.props.hub.id }), API.DELETE_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        // remove
+      });
   };
 
   onMouseEnterSubscribe = () => {
