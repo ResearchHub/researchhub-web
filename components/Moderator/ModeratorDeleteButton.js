@@ -35,6 +35,7 @@ const ModeratorDeleteButton = (props) => {
   const performAction = () => {
     let type = props.actionType;
     let text;
+
     switch (type) {
       case "page":
         text = "Are you sure you want to remove this page?";
@@ -61,6 +62,15 @@ const ModeratorDeleteButton = (props) => {
           buttonText: "Remove",
           onClick: () => {
             return deletePost();
+          },
+        });
+      case "user":
+        text = "Are you sure you want to remove this user?";
+        return alert.show({
+          text,
+          buttonText: "Remove",
+          onClick: () => {
+            return deleteUser();
           },
         });
       default:
@@ -120,6 +130,13 @@ const ModeratorDeleteButton = (props) => {
       .catch((err) => {
         showErrorMessage();
       });
+  };
+
+  /**
+   * Used to delete users
+   */
+  const deleteUser = () => {
+    //TODO: remove user
   };
 
   const buildQuery = () => {
