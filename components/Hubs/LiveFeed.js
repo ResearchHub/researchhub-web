@@ -462,6 +462,7 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginBottom: 0,
     backgroundColor: "#FFF",
+    minHeight: "unset",
   },
   toggleLive: {
     padding: "8px 12px",
