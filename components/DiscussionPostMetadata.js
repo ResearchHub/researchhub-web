@@ -196,6 +196,18 @@ const DiscussionPostMetadata = (props) => {
                       onRemove={onRemove}
                     />
                   )}
+                  {isModerator && (
+                    <ModeratorDeleteButton
+                      containerStyle={styles.dropdownItem}
+                      labelStyle={[styles.text, styles.removeText]}
+                      iconStyle={styles.expandIcon}
+                      icon={icons.ban}
+                      label={"Ban User"}
+                      actionType={"user"}
+                      metaData={metaData}
+                      onRemove={onRemove}
+                    />
+                  )}
                 </div>
               )}
             </div>
