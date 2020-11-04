@@ -138,6 +138,8 @@ class LiveFeedNotification extends React.Component {
       ? notification.thread_title
       : notification.thread_plain_text;
     let threadId = notification.thread_id;
+    let plainText =
+      notification.thread_plain_text && notification.thread_plain_text;
 
     switch (notificationType) {
       case "bullet_point":
@@ -260,7 +262,7 @@ class LiveFeedNotification extends React.Component {
                 {username}
               </a>
             </Link>{" "}
-            created a{" "}
+            left a{" "}
             <Link
               href="/paper/[paperId]/[paperName]"
               as={`/paper/${paperId}/${title}#comments`}
@@ -269,10 +271,11 @@ class LiveFeedNotification extends React.Component {
                 className={css(styles.link)}
                 onClick={(e) => e.stopPropagation()}
               >
-                thread
+                comment,
               </a>
             </Link>
-            {"in "}
+            <em>{plainText && plainText}</em>
+            {" in "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}`}
@@ -661,6 +664,8 @@ class LiveFeedNotification extends React.Component {
       metaData.replyId = notification.reply_id;
     }
 
+    metaData.authorId = notification.created_by.author_profile.id;
+
     return metaData;
   };
 
@@ -778,8 +783,23 @@ class LiveFeedNotification extends React.Component {
                 containerStyle={styles.dropdownItem}
                 labelStyle={[styles.text, styles.removeText]}
                 iconStyle={styles.expandIcon}
-                label={"Remove"}
+                label={"Remove Content"}
                 actionType={"post"}
+                metaData={metaData}
+                onRemove={this.removeContent}
+              />
+            )}
+            {correctContent(
+              this.props.notification.content_type,
+              moderator
+            ) && (
+              <ModeratorDeleteButton
+                containerStyle={styles.dropdownItem}
+                labelStyle={[styles.text, styles.removeText]}
+                iconStyle={styles.expandIcon}
+                icon={icons.ban}
+                label={"Ban User"}
+                actionType={"user"}
                 metaData={metaData}
                 onRemove={this.removeContent}
               />
@@ -975,7 +995,7 @@ const styles = StyleSheet.create({
   },
   dropdownMenu: {
     position: "absolute",
-    bottom: 20,
+    top: 30,
     right: 0,
     width: 120,
     boxShadow: "rgba(129,148,167,0.39) 0px 3px 10px 0px",
@@ -986,7 +1006,8 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   twoItems: {
-    bottom: -20,
+    // bottom: -20,
+    width: 160,
   },
   dropdownIcon: {
     position: "absolute",

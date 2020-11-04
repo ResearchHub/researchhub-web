@@ -23,6 +23,8 @@ const ModeratorDeleteButton = (props) => {
     iconStyle,
     labelStyle,
     label,
+    user,
+    authorId,
   } = props;
 
   let containerClass = [
@@ -35,6 +37,7 @@ const ModeratorDeleteButton = (props) => {
   const performAction = () => {
     let type = props.actionType;
     let text;
+
     switch (type) {
       case "page":
         text = "Are you sure you want to remove this page?";
@@ -61,6 +64,15 @@ const ModeratorDeleteButton = (props) => {
           buttonText: "Remove",
           onClick: () => {
             return deletePost();
+          },
+        });
+      case "user":
+        text = "Are you sure you want to remove this user?";
+        return alert.show({
+          text,
+          buttonText: "Remove",
+          onClick: () => {
+            return deleteUser();
           },
         });
       default:
@@ -115,6 +127,27 @@ const ModeratorDeleteButton = (props) => {
       .then(Helpers.parseJSON)
       .then((res) => {
         showSucessMessage("Post Successfully Removed.");
+        props.onRemove && props.onRemove();
+      })
+      .catch((err) => {
+        showErrorMessage();
+      });
+  };
+
+  /**
+   * Used to delete users
+   */
+  const deleteUser = () => {
+    let { authorId } = props.metaData;
+    showLoader();
+    let param = {
+      authorId: authorId,
+    };
+    fetch(API.USER({ route: "censor" }), API.POST_CONFIG(param))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        showSucessMessage("User Successfully Removed.");
         props.onRemove && props.onRemove();
       })
       .catch((err) => {

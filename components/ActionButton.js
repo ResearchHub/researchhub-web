@@ -7,6 +7,7 @@ import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton"
 
 // Config
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 const ActionButton = (props) => {
   let {
@@ -38,7 +39,7 @@ const ActionButton = (props) => {
   if (isModerator) {
     return (
       <ModeratorDeleteButton
-        icon={<i className="fas fa-ban" />}
+        icon={icons.ban}
         iconStyle={styles.deleteIcon}
         actionType={"page"}
         metaData={{ paperId }}

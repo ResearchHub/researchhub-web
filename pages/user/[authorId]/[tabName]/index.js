@@ -25,9 +25,11 @@ import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserInfoModal from "~/components/modal/UserInfoModal";
 import Button from "~/components/Form/Button";
+import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 
 // Config
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
 import API from "~/config/api";
@@ -615,6 +617,15 @@ const AuthorPage = (props) => {
     );
   };
 
+  const isModerator = () => {
+    if (props.auth.isLoggedIn) {
+      if (props.user.moderator) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const openAvatarModal = () => {
     setAvatarUploadIsOpen(true);
   };
@@ -718,6 +729,15 @@ const AuthorPage = (props) => {
                         setHoverName(false);
                         openUserInfoModal();
                       })}
+                    {isModerator() && (
+                      <ModeratorDeleteButton
+                        containerStyle={styles.moderatorButton}
+                        icon={<i className="fas fa-ban" />}
+                        actionType={"user"}
+                        metaData={{ authorId: router.query.authorId }}
+                        // onRemove={this.removeContent}
+                      />
+                    )}
                   </h1>
                 </Fragment>
               ) : (
@@ -1016,6 +1036,14 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     marginRight: 30,
   },
+  moderatorButton: {
+    fontSize: 16,
+    marginLeft: 8,
+    opacity: 0.6,
+    ":hover": {
+      opacity: 1,
+    },
+  },
   connectOrcid: {
     marginTop: 16,
     "@media only screen and (max-width: 767px)": {
@@ -1160,10 +1188,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     cursor: "pointer",
     height: "fit-content",
-    position: "absolute",
-    right: 0,
-    top: 0,
-
+    marginLeft: 8,
     ":hover": {
       opacity: 1,
     },

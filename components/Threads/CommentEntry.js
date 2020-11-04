@@ -364,6 +364,7 @@ class CommentEntry extends React.Component {
   formatMetaData = () => {
     let { data, comment } = this.props;
     return {
+      authorId: data.created_by.author_profile.id,
       threadId: data.id,
       commentId: comment.id,
       paperId: data.paper,
