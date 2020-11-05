@@ -31,11 +31,10 @@ import DndModal from "../components/modal/DndModal";
 import PaperFeatureModal from "~/components/modal/PaperFeatureModal";
 import PaperTransactionModal from "~/components/modal/PaperTransactionModal";
 import PromotionInfoModal from "~/components/modal/PromotionInfoModal";
-import SignUpBanner from "./Banner/SignUpBanner";
-import PaperPromotionBanner from "./Banner/PaperPromotionBanner";
 import ReCaptchaPrompt from "./modal/ReCaptchaPrompt";
 import EducationModal from "./modal/EducationModal";
 import AuthorSupportModal from "./modal/AuthorSupportModal";
+import UserStateBanner from "./Banner/UserStateBanner";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -569,7 +568,7 @@ const Navbar = (props) => {
           {icons.burgerMenu}
         </div>
       </div>
-      {/* <SignUpBanner route={router.route} /> */}
+      <UserStateBanner />
     </Fragment>
   );
 };

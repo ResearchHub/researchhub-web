@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontSize: 16,
     padding: "3px 5px",
-    paddingLeft: 0,
+    paddingLeft: 8,
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",
