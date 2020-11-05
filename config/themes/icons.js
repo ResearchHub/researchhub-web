@@ -42,6 +42,7 @@ const icons = {
   editHub: <i className="fas fa-edit" />,
   trash: <i className="fal fa-trash-alt"></i>,
   ban: <i className="fas fa-ban" />,
+  error: <i className="fas fa-exclamation-triangle" />,
 };
 
 export const voteWidgetIcons = {
