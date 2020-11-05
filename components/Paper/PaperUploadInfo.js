@@ -724,23 +724,21 @@ class PaperUploadInfo extends React.Component {
               </div>
             </Fragment>
           )}
-          {editMode && (
-            <div className={css(styles.section)}>
-              <div className={css(styles.row)}>
-                <span className={css(styles.doi)}>
-                  <FormInput
-                    label={"DOI"}
-                    placeholder="Enter DOI of paper"
-                    id={"doi"}
-                    value={form.doi}
-                    containerStyle={styles.doiInput}
-                    labelStyle={styles.labelStyle}
-                    onChange={this.handleInputChange}
-                  />
-                </span>
-              </div>
+          <div className={css(styles.section)}>
+            <div className={css(styles.row)}>
+              <span className={css(styles.doi)}>
+                <FormInput
+                  label={"DOI"}
+                  placeholder="Enter DOI of paper"
+                  id={"doi"}
+                  value={form.doi}
+                  containerStyle={styles.doiInput}
+                  labelStyle={styles.labelStyle}
+                  onChange={this.handleInputChange}
+                />
+              </span>
             </div>
-          )}
+          </div>
           <FormSelect
             label={"Hubs"}
             placeholder="Search Hubs"
