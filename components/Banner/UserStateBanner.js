@@ -19,7 +19,7 @@ const UserStateBanner = (props) => {
     determineBanner();
   }, [props.auth.isLoggedIn]);
 
-  function determineBanner() {
+  const determineBanner = () => {
     const { user } = props.auth;
     if (props.auth.isLoggedIn) {
       if (user.is_suspended || user.probable_spammer) {
@@ -27,9 +27,9 @@ const UserStateBanner = (props) => {
       }
     }
     return setShowBanner(false);
-  }
+  };
 
-  function getRootStyle() {
+  const getRootStyle = () => {
     const { user } = props.auth;
 
     let classNames = [styles.bannerContainer];
@@ -44,7 +44,7 @@ const UserStateBanner = (props) => {
       classNames.push(styles.suspended);
     }
     return classNames;
-  }
+  };
 
   const formatHeader = () => {
     const { user } = props.auth;
