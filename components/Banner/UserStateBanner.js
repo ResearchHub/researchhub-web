@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -8,42 +8,32 @@ import { BannerActions } from "~/redux/banner";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-class UserStateBanner extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showBanner: true,
-      transition: false,
-    };
-  }
+const UserStateBanner = (props) => {
+  const [showBanner, setShowBanner] = useState(false);
 
-  componentDidMount() {
-    this.showBanner();
-  }
+  useEffect(() => {
+    determineBanner();
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
-      return this.showBanner();
-    }
-  }
+  useEffect(() => {
+    determineBanner();
+  }, [props.auth.isLoggedIn]);
 
-  showBanner = () => {
-    const { user } = this.props.auth;
-    if (this.props.auth.isLoggedIn) {
+  function determineBanner() {
+    const { user } = props.auth;
+    if (props.auth.isLoggedIn) {
       if (user.is_suspended || user.probable_spammer) {
-        return this.setState({ showBanner: true });
+        return setShowBanner(true);
       }
     }
-  };
+    return setShowBanner(false);
+  }
 
-  getRootStyle = () => {
-    const { showBanner, transition } = this.state;
-    const { user } = this.props.auth;
+  function getRootStyle() {
+    const { user } = props.auth;
 
     let classNames = [styles.bannerContainer];
-    if (transition) {
-      classNames.push(styles.transition);
-    }
+
     if (!showBanner) {
       classNames.push(styles.closeBanner);
     }
@@ -54,10 +44,10 @@ class UserStateBanner extends React.Component {
       classNames.push(styles.suspended);
     }
     return classNames;
-  };
+  }
 
-  formatHeader = () => {
-    const { user } = this.props.auth;
+  const formatHeader = () => {
+    const { user } = props.auth;
 
     if (user.is_suspended) {
       return (
@@ -77,8 +67,8 @@ class UserStateBanner extends React.Component {
     return null;
   };
 
-  formatDescription = () => {
-    const { user } = this.props.auth;
+  const formatDescription = () => {
+    const { user } = props.auth;
 
     if (user.is_suspended) {
       return "Please email hello@researchhub.com to make an appeal.";
@@ -95,21 +85,17 @@ class UserStateBanner extends React.Component {
     return null;
   };
 
-  render() {
-    return (
-      <div className={css(this.getRootStyle())}>
-        <div className={css(styles.contentContainer)}>
-          <h3 className={css(styles.content)}>
-            <span className={css(styles.title)}>{this.formatHeader()}</span>
-            <div className={css(styles.paragraph)}>
-              {this.formatDescription()}
-            </div>
-          </h3>
-        </div>
+  return (
+    <div className={css(getRootStyle())}>
+      <div className={css(styles.contentContainer)}>
+        <h3 className={css(styles.content)}>
+          <span className={css(styles.title)}>{formatHeader()}</span>
+          <div className={css(styles.paragraph)}>{formatDescription()}</div>
+        </h3>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 const styles = StyleSheet.create({
   bannerContainer: {
@@ -177,9 +163,6 @@ const styles = StyleSheet.create({
   },
   hovered: {
     textDecoration: "underline",
-  },
-  transition: {
-    height: 0,
   },
   paragraph: {
     display: "flex",
