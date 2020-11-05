@@ -421,7 +421,7 @@ class PaperUploadInfo extends React.Component {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
     let uploadedFile = acceptedFiles[0];
-    this.setState({ uploadingPaper: true });
+    this.setState({ uploadingPaper: true, disabled: false });
 
     paperActions.uploadPaperToState(uploadedFile, metaData);
     error.dnd = false;
@@ -455,6 +455,9 @@ class PaperUploadInfo extends React.Component {
   };
 
   checkPaperSuggestions = (suggestedPapers) => {
+    this.setState({
+      duplicate: false,
+    });
     let length = suggestedPapers.length;
     if (length > 0) {
       this.setState({ suggestedPapers: true });
@@ -624,12 +627,12 @@ class PaperUploadInfo extends React.Component {
               <NewDND
                 handleDrop={this.uploadPaper}
                 onDrop={null}
+                onValidUrl={() => this.setState({ disabled: false })}
                 toggleFormatState={() => {
                   this.setState({
                     urlView: !this.state.urlView,
                   });
                 }}
-                onSearch={this.checkPaperSuggestions}
                 onDuplicate={() => this.setState({ disabled: true })}
               />
             </div>
