@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -6,8 +6,6 @@ import * as Sentry from "@sentry/browser";
 import { withAlert } from "react-alert";
 
 // Component
-import Button from "../Form/Button";
-import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -129,8 +127,18 @@ class HubCard extends React.Component {
   };
 
   removeHubConfirmation = () => {
-    this.props.alert.show({
-      text: `Remove this hub and all of its papers?`,
+    const { alert, hub } = this.props;
+
+    alert.show({
+      text: (
+        <Fragment>
+          Remove{" "}
+          <b style={{ textTransform: "capitalize", margin: "0px 4px" }}>
+            {hub.name}
+          </b>
+          and its papers?
+        </Fragment>
+      ),
       buttonText: "Yes",
       onClick: () => {
         this.removeHub();
