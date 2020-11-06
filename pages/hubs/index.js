@@ -150,6 +150,23 @@ class Index extends React.Component {
     }
   };
 
+  renderAddHubButton = () => {
+    if (this.props.auth.isLoggedIn) {
+      if (this.props.user.moderator) {
+        return (
+          <PermissionNotificationWrapper
+            modalMessage="suggest a hub"
+            loginRequired={true}
+            onClick={this.openAddHubModal}
+          >
+            <Button isWhite={true} label={"Suggest a Hub"} hideRipples={true} />
+          </PermissionNotificationWrapper>
+        );
+      }
+    }
+    return null;
+  };
+
   render() {
     let { finishedLoading, categories } = this.state;
 
@@ -173,17 +190,7 @@ class Index extends React.Component {
           <div className={css(styles.container)}>
             <div className={css(styles.titleContainer)}>
               <span className={css(styles.title)}>Hubs</span>
-              <PermissionNotificationWrapper
-                modalMessage="suggest a hub"
-                loginRequired={true}
-                onClick={this.openAddHubModal}
-              >
-                <Button
-                  isWhite={true}
-                  label={"Suggest a Hub"}
-                  hideRipples={true}
-                />
-              </PermissionNotificationWrapper>
+              {this.renderAddHubButton()}
             </div>
             <div
               className={css(
