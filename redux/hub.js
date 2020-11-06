@@ -15,6 +15,7 @@ export const HubConstants = {
   GET_TOP_HUBS_SUCCESS: "@@hub/GET_TOP_HUBS_SUCCESS",
   UPDATE_SUBSCRIBED_HUBS: "@@hub/UPDATE_SUBSCRIBED_HUBS",
   UPDATE_TOP_HUBS: "@@hub/UPDATE_TOP_HUBS",
+  REMOVE_HUB: "@@hub/REMOVE_HUB",
 };
 
 export const HubActions = {
@@ -172,6 +173,22 @@ export const HubActions = {
       });
     };
   },
+  removeHub: (hubId) => {
+    return (dispatch, getState) => {
+      const { hubs, topHubs } = getState().hubs;
+
+      let updatedHubs = hubs.filter((hub) => hub.id !== hubId);
+      let updatedTopHubs = topHubs.filter((hub) => hub.id !== hubId);
+
+      return dispatch({
+        type: HubConstants.REMOVE_HUB,
+        payload: {
+          topHubs: updatedTopHubs,
+          hubs: updatedHubs,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -199,6 +216,7 @@ const HubReducer = (state = defaultHubState, action) => {
     case HubConstants.GET_TOP_HUBS_SUCCESS:
     case HubConstants.UPDATE_SUBSCRIBED_HUBS:
     case HubConstants.UPDATE_TOP_HUBS:
+    case HubConstants.REMOVE_HUB:
       return {
         ...state,
         ...action.payload,
