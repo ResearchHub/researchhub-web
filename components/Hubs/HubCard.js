@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -6,8 +6,6 @@ import * as Sentry from "@sentry/browser";
 import { withAlert } from "react-alert";
 
 // Component
-import Button from "../Form/Button";
-import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -27,6 +25,7 @@ class HubCard extends React.Component {
     this.linkRef = React.createRef();
     this.state = {
       transition: false,
+      removed: false,
     };
   }
 
@@ -128,8 +127,15 @@ class HubCard extends React.Component {
   };
 
   removeHubConfirmation = () => {
-    this.props.alert.show({
-      text: `Remove this hub and all of its papers?`,
+    const { alert, hub } = this.props;
+
+    alert.show({
+      text: (
+        <Fragment>
+          Remove <b className={css(styles.hubConfirmation)}>{hub.name}</b>
+          and its papers?
+        </Fragment>
+      ),
       buttonText: "Yes",
       onClick: () => {
         this.removeHub();
@@ -138,11 +144,22 @@ class HubCard extends React.Component {
   };
 
   removeHub = () => {
+    const { showMessage, setMessage } = this.props;
+    showMessage({ load: true, show: true });
     fetch(API.CENSOR_HUB({ hubId: this.props.hub.id }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        // remove
+        showMessage({ show: false });
+        setMessage("Hub successfully removed.");
+        showMessage({ show: true });
+        this.setState({ removed: true });
+        this.props.removeHub(res.id);
+      })
+      .catch((err) => {
+        showMessage({ show: false });
+        setMessage("Something went wrong.");
+        showMessage({ show: true, error: true });
       });
   };
 
@@ -227,9 +244,10 @@ class HubCard extends React.Component {
 
   render() {
     const { hub } = this.props;
+    const { removed } = this.state;
     return (
       <div
-        className={css(styles.slugLink)}
+        className={css(styles.slugLink, removed && styles.removed)}
         onClick={() => {
           this.linkRef.current.click();
         }}
@@ -246,7 +264,7 @@ class HubCard extends React.Component {
             alt="Hub Background Image"
           ></img>
           {this.renderEdit()}
-          {/* {this.renderDelete()} */}
+          {this.renderDelete()}
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
               <div className={css(styles.hubName)}>{hub.name}</div>
@@ -318,6 +336,9 @@ const styles = StyleSheet.create({
     borderRadius: "8px",
     boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
     marginBottom: 50,
+  },
+  removed: {
+    display: "none",
   },
   roundedImage: {
     borderRadius: "8px 8px 0 0",
@@ -438,6 +459,10 @@ const styles = StyleSheet.create({
       opacity: 1,
     },
   },
+  hubConfirmation: {
+    textTransform: "capitalize",
+    margin: "0px 4px",
+  },
   hubDescription: {
     fontSize: 13,
     padding: "10px 0 0 0",
@@ -481,6 +506,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   updateSubscribedHubs: HubActions.updateSubscribedHubs,
+  removeHub: HubActions.removeHub,
   openEditHubModal: ModalActions.openEditHubModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
