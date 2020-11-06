@@ -14,11 +14,18 @@ import icons from "~/config/themes/icons";
 import OnboardHub from "./OnboardHub";
 
 const OnboardHubList = (props) => {
+  const { onClick, hubs } = props;
+
   return (
     <div className={css(styles.root)}>
-      {(props.hubs.topHubs.slice(0, 9) || []).map((hub, index) => (
+      {(hubs || []).map((hub, index) => (
         <div className={css(styles.cardContainer)}>
-          <OnboardHub key={`onboadrHub-${hub.id}`} hub={hub} index={index} />
+          <OnboardHub
+            key={`onboardHub-${hub.id}`}
+            hub={hub}
+            index={index}
+            onClick={onClick}
+          />
         </div>
       ))}
     </div>
@@ -30,10 +37,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-evenly",
     alignItems: "center",
-    width: 700,
+    maxWidth: 700,
+    width: "100%",
     flexWrap: "wrap",
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
+    "@media only screen and (max-width: 936px)": {
+      // width: "100%",
       justifyContent: "center",
     },
   },
@@ -42,13 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  hubs: state.hubs,
-});
-
-const mapDispatchToProps = {};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OnboardHubList);
+export default OnboardHubList;
