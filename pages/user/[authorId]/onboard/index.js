@@ -1,20 +1,19 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
+import OnboardPlaceholder from "~/components/Placeholders/OnboardPlaceholder";
 import OnboardHubList from "~/components/Onboard/OnboardHubList";
+import ButtonsRow from "~/components/Form/ButtonsRow";
+
+import colors from "~/config/themes/colors";
 
 const Index = (props) => {
   const [page, setPage] = useState(1);
-
-  const pages = [
-    {
-      title: "Select Hubs",
-    },
-    {
-      title: "Enter your personal information",
-    },
-  ];
+  const [saving, toggleSaving] = useState(false);
+  const [userHubs, setUserHubs] = useState(false);
 
   const formatStep = () => {
     switch (page) {
@@ -38,19 +37,54 @@ const Index = (props) => {
     }
   };
 
+  const formatButtons = () => {
+    let left = {
+      label: "Skip",
+      onClick: () => setPage(page + 1),
+    };
+
+    switch (page) {
+      case 1:
+        return {
+          left,
+          right: {
+            label: "Next Step",
+            onClick: saveHubPreferences,
+            disabled: saving,
+          },
+        };
+      case 2:
+        return {
+          left,
+          right: {
+            label: "Next Step",
+          },
+        };
+    }
+  };
+
+  const handleHubClick = (hub) => {
+    console.log("handleHubClick", hub);
+  };
+
   const renderPage = () => {
     return (
-      <Fragment>
-        <div className={css(styles.pageContent)}>
-          <OnboardHubList />
-        </div>
-      </Fragment>
+      <div className={css(styles.pageContent)}>
+        <ReactPlaceholder
+          ready={props.hubs.topHubs.length}
+          showLoadingAnimation
+          customPlaceholder={<OnboardPlaceholder color="#efefef" />}
+        >
+          <OnboardHubList
+            hubs={props.hubs.topHubs.slice(0, 9)}
+            onClick={handleHubClick}
+          />
+        </ReactPlaceholder>
+      </div>
     );
   };
 
-  const renderButton = () => {
-    return <div></div>;
-  };
+  const saveHubPreferences = () => {};
 
   return (
     <div className={css(styles.root)}>
@@ -62,7 +96,9 @@ const Index = (props) => {
         <h1 className={css(styles.pageTitle)}>{formatTitle()}</h1>
         {renderPage()}
       </div>
-      <div className={css(styles.buttonContainer)}>{renderButton()}</div>
+      <div className={css(styles.buttonRowContainer)}>
+        <ButtonsRow {...formatButtons()} />
+      </div>
     </div>
   );
 };
@@ -107,7 +143,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
     marginTop: 60,
-    marginBottom: 20,
+    marginBottom: 40,
   },
   form: {
     display: "flex",
@@ -122,7 +158,6 @@ const styles = StyleSheet.create({
     border: "1px solid #ddd",
     borderRadius: 4,
     padding: "30px 60px",
-    marginTop: 40,
     "@media only screen and (max-width: 935px)": {
       minWidth: "unset",
       width: 600,
@@ -146,12 +181,19 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #DDD",
     fontSize: 22,
   },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
+  // BUTTON
+  buttonRowContainer: {
+    marginTop: 40,
   },
 });
 
-export default Index;
+const mapStateToProps = (state) => ({
+  hubs: state.hubs,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Index);
