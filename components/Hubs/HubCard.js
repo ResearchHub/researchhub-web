@@ -223,7 +223,7 @@ class HubCard extends React.Component {
   };
 
   renderDelete = () => {
-    if (this.props.auth.isLoggedIn && this.props.user) {
+    if (this.props.auth.isLoggedIn) {
       if (this.props.user.moderator) {
         return (
           <button
