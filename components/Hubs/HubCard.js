@@ -132,10 +132,7 @@ class HubCard extends React.Component {
     alert.show({
       text: (
         <Fragment>
-          Remove{" "}
-          <b style={{ textTransform: "capitalize", margin: "0px 4px" }}>
-            {hub.name}
-          </b>
+          Remove <b className={css(styles.hubConfirmation)}>{hub.name}</b>
           and its papers?
         </Fragment>
       ),
@@ -461,6 +458,10 @@ const styles = StyleSheet.create({
     ":hover": {
       opacity: 1,
     },
+  },
+  hubConfirmation: {
+    textTransform: "capitalize",
+    margin: "0px 4px",
   },
   hubDescription: {
     fontSize: 13,
