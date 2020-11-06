@@ -206,17 +206,19 @@ class HubCard extends React.Component {
 
   renderEdit = () => {
     if (this.props.auth.isLoggedIn) {
-      return (
-        <button
-          className={css(styles.editButton)}
-          onClick={(e) => {
-            e.stopPropagation();
-            this.openEditHubModal();
-          }}
-        >
-          <span className={css(styles.editIcon)}>{icons.editHub}</span>
-        </button>
-      );
+      if (this.props.user.moderator) {
+        return (
+          <button
+            className={css(styles.editButton)}
+            onClick={(e) => {
+              e.stopPropagation();
+              this.openEditHubModal();
+            }}
+          >
+            <span className={css(styles.editIcon)}>{icons.editHub}</span>
+          </button>
+        );
+      }
     }
   };
 
