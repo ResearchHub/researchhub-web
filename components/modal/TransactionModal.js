@@ -353,6 +353,9 @@ class TransactionModal extends React.Component {
     if (!this.props.auth.isLoggedIn) {
       return;
     }
+    if (this.props.auth.user.probable_spammer) {
+      return;
+    }
     return fetch(API.WITHDRAW_COIN({}), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -365,6 +368,9 @@ class TransactionModal extends React.Component {
           userBalance: res.user.balance,
           withdrawals: [...res.results],
         });
+      })
+      .catch((err) => {
+        //Todo: handle error
       });
   };
 

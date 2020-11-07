@@ -43,10 +43,14 @@ const GoogleLoginButton = (props) => {
         showLoginFailureMessage(action);
       } else {
         getUser().then((userAction) => {
-          props.loginCallback && props.loginCallback();
+          props.loginCallback && props.loginCallback(); // closes banner if user signs in from banner
           props.showSignupBanner && props.removeBanner();
           if (!userAction.user.has_seen_orcid_connect_modal) {
-            props.openOrcidConnectModal(true);
+            // push user to onboarding - will eventually see the orcid modal
+            router.push(
+              "/user/[authorId]/onboard?internal=true",
+              `/user/${userAction.user.author_profile.id}/onboard`
+            );
           }
         });
       }
@@ -64,7 +68,11 @@ const GoogleLoginButton = (props) => {
           props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
           if (!userAction.user.has_seen_orcid_connect_modal) {
-            props.openOrcidConnectModal(true);
+            // push user to onboarding - will eventually see the orcid modal
+            router.push(
+              "/user/[authorId]/onboard?internal=true",
+              `/user/${userAction.user.author_profile.id}/onboard`
+            );
           }
         });
       }

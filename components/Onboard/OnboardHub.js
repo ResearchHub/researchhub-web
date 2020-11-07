@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import "~/components/Paper/CitationCard.css";
 
-// Redux
-import { MessageActions } from "~/redux/message";
-import { HubActions } from "~/redux/hub";
-
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -16,7 +12,9 @@ const OnboardHub = (props) => {
   const [subscribed, setSubscribed] = useState(false);
 
   const handleClick = (e) => {
-    setSubscribed(!subscribed);
+    let state = !subscribed;
+    setSubscribed(state);
+    props.onClick && props.onClick(props.hub, state);
   };
 
   const renderButton = () => {
@@ -36,6 +34,7 @@ const OnboardHub = (props) => {
         <div className={css(styles.title) + " clamp1"}>{name}</div>
         {renderButton()}
       </div>
+      {/* <div className={css(styles.image)}></div> */}
       <img
         loading={"lazy"}
         draggable={"false"}
@@ -50,6 +49,7 @@ const OnboardHub = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: 220,
+    height: 187,
     border: "1px solid #EDEDED",
     borderRadius: 3,
     background: "#FFFFFF",
@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
     width: "100%",
     objectFit: "cover",
     userSelect: "none",
+    background: "#FAFAFA",
   },
 });
 
