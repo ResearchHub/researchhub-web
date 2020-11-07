@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     margin: 0,
     marginTop: 10,
     "@media only screen and (max-width: 665px)": {
-      width: 300,
+      width: "100%",
       textAlign: "center",
     },
   },
@@ -237,9 +237,6 @@ const styles = StyleSheet.create({
       width: "calc(100% - 16px)",
       padding: 16,
     },
-    "@media only screen and (max-width: 415px)": {
-      borderTop: "unset",
-    },
   },
   pageTitle: {
     padding: 0,
@@ -249,6 +246,10 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     borderBottom: "1px solid #DDD",
     fontSize: 22,
+    "@media only screen and (max-width: 665px)": {
+      padding: 20,
+      fontSize: 18,
+    },
   },
   // BUTTON
   buttonRowContainer: {
