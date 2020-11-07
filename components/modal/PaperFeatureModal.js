@@ -316,7 +316,6 @@ class PaperFeatureModal extends React.Component {
         this.closeModal();
       })
       .catch((err) => {
-        console.log("err", err);
         if (err.response.status === 429) {
           showMessage({ show: false });
           this.closeModal();

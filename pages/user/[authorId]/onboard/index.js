@@ -1,19 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
+import Router from "next/router";
 
 import OnboardPlaceholder from "~/components/Placeholders/OnboardPlaceholder";
+import OnboardForm from "~/components/Onboard/OnboardForm";
 import OnboardHubList from "~/components/Onboard/OnboardHubList";
 import ButtonsRow from "~/components/Form/ButtonsRow";
 
-import colors from "~/config/themes/colors";
+import { ModalActions } from "~/redux/modals";
+import { HubActions } from "~/redux/hub";
+
+import { subscribeToHub } from "~/config/fetch";
 
 const Index = (props) => {
   const [page, setPage] = useState(1);
   const [saving, toggleSaving] = useState(false);
-  const [userHubs, setUserHubs] = useState(false);
+  const [userHubs, setUserHubs] = useState([]);
+
+  let formRef = useRef();
 
   const formatStep = () => {
     switch (page) {
@@ -31,22 +38,20 @@ const Index = (props) => {
       case 1:
         return "Select Hubs";
       case 2:
-        return "Enter your personal information";
+        return "Enter your profile information";
       default:
         return;
     }
   };
 
   const formatButtons = () => {
-    let left = {
-      label: "Skip",
-      onClick: () => setPage(page + 1),
-    };
-
     switch (page) {
       case 1:
         return {
-          left,
+          left: {
+            label: "Skip",
+            onClick: () => setPage(page + 1),
+          },
           right: {
             label: "Next Step",
             onClick: saveHubPreferences,
@@ -55,36 +60,89 @@ const Index = (props) => {
         };
       case 2:
         return {
-          left,
+          left: {
+            label: "Previous Step",
+            onClick: () => setPage(page - 1),
+          },
           right: {
-            label: "Next Step",
+            label: "Save",
+            onClick: saveUserInformation,
           },
         };
     }
   };
 
-  const handleHubClick = (hub) => {
-    console.log("handleHubClick", hub);
+  /**
+   * Handle user's click of hub on onboarding screen
+   * @param {Object} hub metadata of hub being clicked.
+   * @param {Boolean} state whether the hub is being add or removed.
+   */
+  const handleHubClick = (hub, state) => {
+    let updatedUserHubs;
+
+    if (state) {
+      updatedUserHubs = [...userHubs, hub];
+    } else {
+      updatedUserHubs = userHubs.filter((el) => el.id !== hub.id);
+    }
+
+    return setUserHubs(updatedUserHubs);
+  };
+
+  /**
+   * Saves user's hub selections and updates client's state
+   */
+  const saveHubPreferences = () => {
+    toggleSaving(true);
+
+    for (let i = 0; i < userHubs.length; i++) {
+      // hit backend
+      subscribeToHub(userHubs[i].id);
+    }
+    props.updateSubscribedHubs(userHubs); // update client
+    toggleSaving(false);
+    setPage(page + 1);
+  };
+
+  const saveUserInformation = () => {
+    const saveButton = formRef.current.buttonRef.current;
+    saveButton.click();
+  };
+
+  const connectOrcidAccount = () => {
+    props.openOrcidConnectModal(true);
+  };
+
+  const navigateToProfile = () => {
+    Router.push("/", `/`).then(() => {
+      connectOrcidAccount();
+    });
   };
 
   const renderPage = () => {
-    return (
-      <div className={css(styles.pageContent)}>
-        <ReactPlaceholder
-          ready={props.hubs.topHubs.length}
-          showLoadingAnimation
-          customPlaceholder={<OnboardPlaceholder color="#efefef" />}
-        >
-          <OnboardHubList
-            hubs={props.hubs.topHubs.slice(0, 9)}
-            onClick={handleHubClick}
+    switch (page) {
+      case 1:
+        return (
+          <ReactPlaceholder
+            ready={props.hubs.topHubs.length}
+            showLoadingAnimation
+            customPlaceholder={<OnboardPlaceholder color="#efefef" />}
+          >
+            <OnboardHubList
+              hubs={props.hubs.topHubs.slice(0, 9)}
+              onClick={handleHubClick}
+            />
+          </ReactPlaceholder>
+        );
+      case 2:
+        return (
+          <OnboardForm
+            forwardedRef={formRef}
+            onAuthorSave={navigateToProfile}
           />
-        </ReactPlaceholder>
-      </div>
-    );
+        );
+    }
   };
-
-  const saveHubPreferences = () => {};
 
   return (
     <div className={css(styles.root)}>
@@ -94,13 +152,24 @@ const Index = (props) => {
       </div>
       <div className={css(styles.pageContainer)}>
         <h1 className={css(styles.pageTitle)}>{formatTitle()}</h1>
-        {renderPage()}
+        <div className={css(styles.pageContent)}>{renderPage()}</div>
       </div>
       <div className={css(styles.buttonRowContainer)}>
         <ButtonsRow {...formatButtons()} />
       </div>
     </div>
   );
+};
+
+Index.getInitialProps = async ({ query, res }) => {
+  if (!query.internal && res.writeHead) {
+    res.writeHead(302, { Location: `/user/${query.authorId}/contributions` });
+    res.end();
+
+    return { authorId: query.authorId, redirect: true };
+  }
+
+  return { authorId: query.authorId };
 };
 
 const styles = StyleSheet.create({
@@ -184,14 +253,24 @@ const styles = StyleSheet.create({
   // BUTTON
   buttonRowContainer: {
     marginTop: 40,
+    width: "100%",
+    "@media only screen and (max-width: 935px)": {
+      marginBottom: 30,
+    },
   },
 });
 
 const mapStateToProps = (state) => ({
   hubs: state.hubs,
+  auth: state.auth,
+  author: state.auth.user.author_profile,
+  user: state.auth.user,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  openOrcidConnectModal: ModalActions.openOrcidConnectModal,
+  updateSubscribedHubs: HubActions.updateSubscribedHubs,
+};
 
 export default connect(
   mapStateToProps,
