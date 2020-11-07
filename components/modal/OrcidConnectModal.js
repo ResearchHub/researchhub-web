@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import Router, { withRouter } from "next/router";
+import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { Helpers } from "@quantfive/js-web-config";
 

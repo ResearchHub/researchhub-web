@@ -5,12 +5,11 @@ import ReactTooltip from "react-tooltip";
 
 // Component
 import AuthorAvatar from "~/components/AuthorAvatar";
-import BaseModal from "./BaseModal";
 import FormInput from "~/components/Form/FormInput";
 import AvatarUpload from "~/components/AvatarUpload";
 import FormTextArea from "~/components/Form/FormTextArea";
 import Button from "~/components/Form/Button";
-import EducationModal from "./EducationModal";
+import EducationModal from "~/components/modal/EducationModal";
 import EducationSummaryCard from "~/components/Form/EducationSummaryCard";
 import "~/components/TextEditor/stylesheets/ReactToggle.css";
 
@@ -22,13 +21,13 @@ import { MessageActions } from "~/redux/message";
 
 // Config
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class UserInfoModal extends React.Component {
+class OnboardForm extends React.Component {
   constructor(props) {
     super(props);
-
     this.initialState = this.mapStateFromProps();
     this.state = {
       ...this.initialState,
@@ -42,6 +41,8 @@ class UserInfoModal extends React.Component {
         this.props.author.education.length - 1,
       mainIndex: 0,
     };
+
+    this.buttonRef = React.createRef();
   }
 
   componentDidMount = async () => {
@@ -193,9 +194,9 @@ class UserInfoModal extends React.Component {
   };
 
   saveAuthorChanges = (e, silent = false) => {
-    const { setMessage, showMessage } = this.props;
+    const { setMessage, showMessage, onAuthorSave } = this.props;
     e && e.preventDefault();
-    !silent && showMessage({ show: true, load: true });
+    showMessage({ show: true, load: true });
 
     const education = this.state.education.filter((el) => el.summary);
 
@@ -225,6 +226,7 @@ class UserInfoModal extends React.Component {
         updateUser({ ...user, author_profile: updatedAuthorProfile });
         updateAuthor(updatedAuthorProfile);
         !silent && this.closeModal();
+        onAuthorSave && onAuthorSave();
       });
   };
 
@@ -351,25 +353,6 @@ class UserInfoModal extends React.Component {
           containerStyle={styles.formInput}
           value={label === "Headline" ? value.title : value}
         />
-        {/* {label === "Headline" && (
-          <div className={css(styles.isPublicContainer)}>
-            <h3
-              className={css(
-                styles.isPublicLabel,
-                value.isPublic && styles.activeLabel
-              )}
-            >
-              {value.isPublic ? "Public" : "Private"}
-            </h3>
-            <Toggle
-              className={"react-toggle"}
-              height={15}
-              value={value.isPublic}
-              checked={value.isPublic}
-              onChange={this.handleIsPublic}
-            />
-          </div>
-        )} */}
       </div>
     );
   };
@@ -384,130 +367,94 @@ class UserInfoModal extends React.Component {
       </button>
     );
   };
-
   render() {
     const { hoverAvatar, allowEdit, avatarUploadIsOpen } = this.state;
     const { author, modals } = this.props;
-    if (!this.props.auth.isLoggedIn) return null;
+
     return (
-      <BaseModal
-        isOpen={modals.openUserInfoModal}
-        closeModal={this.saveAndCloseModal}
-        modalStyle={styles.modalStyle}
-        title={"Edit your personal information"}
-        textAlign={"left"}
-        removeDefault={true}
-        modalContentStyle={styles.modalContentStyles}
-      >
-        <div className={css(styles.rootContainer)}>
-          <EducationModal
-            education={this.state.education[this.state.activeIndex]}
-            currentIndex={this.state.activeIndex}
-            onSave={this.onEducationModalSave}
-            onActive={this.setEducationActive}
-          />
-          <img
-            src={"/static/icons/close.png"}
-            className={css(styles.closeButton)}
-            onClick={this.closeModal}
-            draggable={false}
-          />
-          <div className={css(styles.titleContainer, styles.left)}>
-            <div className={css(styles.title)}>
-              {"Edit your personal information"}
+      <div className={css(styles.rootContainer)}>
+        <EducationModal
+          education={this.state.education[this.state.activeIndex]}
+          currentIndex={this.state.activeIndex}
+          onSave={this.onEducationModalSave}
+          onActive={this.setEducationActive}
+        />
+        <form className={css(styles.form)} onSubmit={this.saveAuthorChanges}>
+          <div className={css(styles.titleHeader)}>
+            <div
+              className={css(
+                styles.avatarContainer,
+                author.profile_image && styles.border
+              )}
+              onClick={() => this.toggleAvatarModal(true)}
+              onMouseEnter={this.onMouseEnterAvatar}
+              onMouseLeave={this.onMouseLeaveAvatar}
+              draggable={false}
+            >
+              <AuthorAvatar author={author} disableLink={true} size={120} />
+              {allowEdit && hoverAvatar && (
+                <div className={css(styles.profilePictureHover)}>Update</div>
+              )}
+            </div>
+            <div className={css(styles.column)}>
+              {this.renderFormInput({
+                label: "First Name",
+                id: "first_name",
+                required: true,
+                value: this.state.first_name,
+              })}
+              {this.renderFormInput({
+                label: "Last Name",
+                id: "last_name",
+                required: true,
+                value: this.state.last_name,
+              })}
             </div>
           </div>
-          <form className={css(styles.form)} onSubmit={this.saveAuthorChanges}>
-            <div className={css(styles.titleHeader)}>
-              <div
-                className={css(
-                  styles.avatarContainer,
-                  author.profile_image && styles.border
-                )}
-                onClick={() => this.toggleAvatarModal(true)}
-                onMouseEnter={this.onMouseEnterAvatar}
-                onMouseLeave={this.onMouseLeaveAvatar}
-                draggable={false}
-              >
-                <AuthorAvatar author={author} disableLink={true} size={120} />
-                {allowEdit && hoverAvatar && (
-                  <div className={css(styles.profilePictureHover)}>Update</div>
-                )}
-              </div>
-              <div className={css(styles.column)}>
-                {this.renderFormInput({
-                  label: "First Name",
-                  id: "first_name",
-                  required: true,
-                  value: this.state.first_name,
-                })}
-                {this.renderFormInput({
-                  label: "Last Name",
-                  id: "last_name",
-                  required: true,
-                  value: this.state.last_name,
-                })}
-              </div>
-            </div>
-            {this.renderFormInput({
-              label: "Headline",
-              id: "headline",
-              subtitle:
-                "This information will be displayed in comments below your name",
-              value: this.state.headline,
-            })}
-            {this.renderEducationList()}
-            {this.renderFormInput({
-              label: "About",
-              id: "description",
-              value: this.state.description,
-            })}
-            <AvatarUpload
-              isOpen={avatarUploadIsOpen}
-              closeModal={() => this.toggleAvatarModal(false)}
-              saveButton={this.renderSaveButton}
-              section={"pictures"}
-            />
-            <div className={css(styles.buttonContainer)}>
-              <Button
-                label={"Save Changes"}
-                customButtonStyle={styles.buttonCustomStyle}
-                rippleClass={styles.rippleClass}
-                type={"submit"}
-              />
-            </div>
-          </form>
-        </div>
-      </BaseModal>
+          {this.renderFormInput({
+            label: "Headline",
+            id: "headline",
+            subtitle:
+              "This information will be displayed in comments below your name",
+            value: this.state.headline,
+          })}
+          {this.renderEducationList()}
+          {this.renderFormInput({
+            label: "About",
+            id: "description",
+            value: this.state.description,
+          })}
+          <AvatarUpload
+            isOpen={avatarUploadIsOpen}
+            closeModal={() => this.toggleAvatarModal(false)}
+            saveButton={this.renderSaveButton}
+            section={"pictures"}
+          />
+          <div className={css(styles.buttonContainer)}>
+            <button type="submit" ref={this.buttonRef} />
+          </div>
+        </form>
+      </div>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  modalStyle: {
-    maxHeight: "95vh",
-    overflowY: "scroll",
-    width: 600,
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
-  },
   rootContainer: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 30,
-    borderRadius: 5,
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
+    minWidth: 700,
     width: "100%",
-    "@media only screen and (min-width: 768px)": {
-      overflowY: "auto",
-    },
-    "@media only screen and (max-width: 767px)": {
+    overflow: "visible",
+    "@media only screen and (max-width: 936px)": {
       padding: 16,
+      width: "97%",
+      minWidth: "unset",
     },
   },
   form: {
@@ -543,7 +490,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: "100%",
-    paddingTop: 30,
     paddingBottom: 10,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
@@ -584,7 +530,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     background: "#FFF",
-    zIndex: 2,
+    visibility: "hidden",
   },
   buttonCustomStyle: {
     padding: 16,
@@ -701,7 +647,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  author: state.author,
+  author: state.auth.user.author_profile,
   user: state.auth.user,
   modals: state.modals,
 });
@@ -720,4 +666,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(UserInfoModal);
+)(OnboardForm);

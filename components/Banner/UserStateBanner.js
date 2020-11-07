@@ -17,7 +17,7 @@ const UserStateBanner = (props) => {
 
   useEffect(() => {
     determineBanner();
-  }, [props.auth.isLoggedIn]);
+  }, [props.auth.isLoggedIn, props.user]);
 
   const determineBanner = () => {
     const { user } = props.auth;
@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  user: state.auth.user,
   banners: state.banners,
 });
 
