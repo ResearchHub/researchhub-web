@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
   buttonRowContainer: {
     marginTop: 40,
     width: "100%",
+    marginBottom: 40,
     "@media only screen and (max-width: 935px)": {
       marginBottom: 30,
     },
