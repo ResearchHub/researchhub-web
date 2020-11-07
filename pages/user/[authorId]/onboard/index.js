@@ -25,7 +25,7 @@ const Index = (props) => {
   const formatStep = () => {
     switch (page) {
       case 1:
-        return "Step 1: Select the hubs you want to subscribe";
+        return "Step 1: Select Hubs for topics you're interested in";
       case 2:
         return "Step 2: User Information";
       default:
@@ -36,7 +36,7 @@ const Index = (props) => {
   const formatTitle = () => {
     switch (page) {
       case 1:
-        return "Select Hubs";
+        return "Trending Hubs";
       case 2:
         return "Enter your profile information";
       default:
