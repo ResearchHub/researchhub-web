@@ -90,7 +90,7 @@ const UserStateBanner = (props) => {
       <div className={css(styles.contentContainer)}>
         <h3 className={css(styles.content)}>
           <span className={css(styles.title)}>{formatHeader()}</span>
-          <div className={css(styles.paragraph)}>{formatDescription()}</div>
+          {/* <div className={css(styles.paragraph)}>{formatDescription()}</div> */}
         </h3>
       </div>
     </div>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   bannerContainer: {
     width: "100%",
     minWidth: "100%",
-    minHeight: 70,
+    minHeight: 60,
     maxHeight: 120,
     color: "#FFF",
     display: "flex",
@@ -134,7 +134,6 @@ const styles = StyleSheet.create({
   },
   content: {
     fontSize: 16,
-    // fontWeight: 500,
     display: "flex",
     flexDirection: "column",
     textAlign: "center",
