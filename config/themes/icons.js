@@ -45,6 +45,8 @@ const icons = {
   trash: <i className="fal fa-trash-alt"></i>,
   ban: <i className="fas fa-ban" />,
   error: <i className="fas fa-exclamation-triangle" />,
+  starFilled: <i className="fas fa-star" />,
+  starEmpty: <i className="fal fa-star"></i>,
 };
 
 export const voteWidgetIcons = {

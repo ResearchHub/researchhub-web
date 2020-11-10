@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Ripples from "react-ripples";
+import Link from "next/link";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -489,14 +490,14 @@ class SummaryTab extends React.Component {
                         {this.renderTabs()}
                       </h3>
                       <div className={css(styles.summaryActions)}>
-                        {/* <Link
+                        <Link
                           href={"/paper/[paperId]/[tabName]/edits"}
                           as={`/paper/${paper.id}/summary/edits`}
                         >
                           <Ripples className={css(styles.action)}>
                             View Edit History
                           </Ripples>
-                        </Link> */}
+                        </Link>
                         <PermissionNotificationWrapper
                           modalMessage="propose summary edits"
                           onClick={this.edit}

@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import moment from "moment";
 import Plain from "slate-plain-serializer";
-import { Text, Block } from "slate";
 import { isMobile } from "react-device-detect";
 import Ripples from "react-ripples";
 
@@ -18,8 +17,11 @@ import { PaperActions } from "~/redux/paper";
 
 // Config
 import { convertToEditorValue } from "~/config/utils";
+import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
-const Diff = require("diff");
 class PaperEditHistory extends React.Component {
   static async getInitialProps({ store, isServer, query }) {
     await store.dispatch(PaperActions.getEditHistory(query.paperId));
@@ -35,173 +37,65 @@ class PaperEditHistory extends React.Component {
 
     this.state = {
       selectedEdit: 0,
+      activeEdit: 0,
       editorState: emptyState,
       finishedLoading: false,
+      transition: false,
     };
   }
 
   changeEditView = (selectedIndex, edit) => {
-    let previousState = {};
-
     let editorState = convertToEditorValue(edit.summary);
 
-    if (edit.previousSummary) {
-      previousState = convertToEditorValue(edit.previousSummary);
-      editorState = this.diffVersions(editorState, previousState);
-    }
-
-    this.setState({
-      selectedEdit: selectedIndex,
-      editorState,
-      previousState,
+    this.setState({ transition: true }, () => {
+      // transition is needed for Quill to update content
+      this.setState(
+        {
+          selectedEdit: selectedIndex,
+          editorState,
+          transition: false,
+        },
+        () => {
+          console.log("STATE", this.state);
+        }
+      );
     });
   };
 
   componentDidMount() {
     if (this.props.paper.editHistory.length > 0) {
-      let previousState = {};
-
       let edit = this.props.paper.editHistory[0];
       let editorState = convertToEditorValue(edit.summary);
 
-      if (edit.previousSummary) {
-        previousState = convertToEditorValue(edit.previousSummary);
-        editorState = this.diffVersions(editorState, previousState);
-      }
-
       this.setState({
         editorState,
-        previousState,
       });
     }
   }
 
-  /**
-   * Function of how to handle a diff. Create a new text node with the
-   * diff values. Add marks based on action performed.
-   * @param  {Object} diff -- diff object
-   * @param  {BlockNode} node -- slate block node being diffed
-   * @return {TextNode}      -- slate text node created
-   */
-  parseDiff = (diff, node) => {
-    let diffValue = diff.value;
-    let action = diff.added ? "added" : diff.removed ? "removed" : null;
-    let marks = node.getMarks();
-    let key = Math.floor(Math.random() * 1000000000).toString(36);
-    let markedNode = Text.create({ key: key, text: diffValue, marks });
-
-    if (diff.added || diff.removed) {
-      markedNode = markedNode.addMark(action);
-    }
-    return markedNode;
-  };
-
-  /**
-   * Function to handle all the comparisons for diffing and assembling the
-   * slate value with all added marks.
-   * @param  {ValueObject} editorState   -- current version slate value object
-   * @param  {ValueObject} previousState -- previous version slate value object
-   * @return {ValueObject}               -- new value object created from diffing the two versions
-   */
-  diffVersions = (editorState, previousState) => {
-    let blockArray = editorState.document.getBlocksAsArray();
-    let pathMap = editorState.document.getNodesToPathsMap();
-    let previousPathMap = previousState.document.getNodesToPathsMap();
-    let tempEditor = editorState;
-    let previousBlockComplete = {};
-    let previousBlockArray = previousState.document.getBlocksAsArray();
-
-    for (
-      let prevIndex = 0;
-      prevIndex < previousBlockArray.length;
-      prevIndex++
-    ) {
-      previousBlockComplete[previousBlockArray[prevIndex].key] = false;
-    }
-
-    for (let blockIndex = 0; blockIndex < blockArray.length; blockIndex++) {
-      let node = blockArray[blockIndex];
-      let key = node.key;
-      let prevNode = previousState.document.getNode(key);
-      previousBlockComplete[key] = true;
-      if (prevNode) {
-        let diffJSON = Diff.diffWords(prevNode.text, node.text);
-        if (diffJSON.length > 1 || diffJSON[0].added || diffJSON[0].removed) {
-          let newTextNodes = [];
-          for (let diffIndex = 0; diffIndex < diffJSON.length; diffIndex++) {
-            if (diffJSON[diffIndex].added) {
-              let newNode = this.parseDiff(diffJSON[diffIndex], node);
-              newTextNodes.push(newNode);
-            } else if (diffJSON[diffIndex].removed) {
-              let newNode = this.parseDiff(diffJSON[diffIndex], prevNode);
-              newTextNodes.push(newNode);
-            } else {
-              let newNode = this.parseDiff(diffJSON[diffIndex], node);
-              newTextNodes.push(newNode);
-            }
-          }
-          let pathToBlock = pathMap.get(node);
-          let newNodes = node.getTextsAsArray();
-          if (newTextNodes.length > 0) {
-            newNodes = newTextNodes;
-          }
-          let newDiffBlock = Block.create({
-            key: key,
-            nodes: newNodes,
-            type: node.type,
-          });
-          tempEditor = tempEditor.removeNode(pathToBlock);
-          tempEditor = tempEditor.insertNode(pathToBlock, newDiffBlock);
-        }
-      } else {
-        let pathToBlock = pathMap.get(node);
-        let nodeTextArray = node.getTextsAsArray();
-        let newNodeTexts = [];
-        for (
-          let nodeTextIndex = 0;
-          nodeTextIndex < nodeTextArray.length;
-          nodeTextIndex++
-        ) {
-          newNodeTexts.push(nodeTextArray[nodeTextIndex].addMark("added"));
-        }
-        let newBlock = Block.create({
-          key: key,
-          nodes: newNodeTexts,
-          type: node.type,
-        });
-        tempEditor = tempEditor.removeNode(pathToBlock);
-        tempEditor = tempEditor.insertNode(pathToBlock, newBlock);
-      }
-    }
-    let keys = Object.keys(previousBlockComplete);
-    for (let prevNodeIndex = 0; prevNodeIndex < keys.length; prevNodeIndex++) {
-      let key = keys[prevNodeIndex];
-      if (!previousBlockComplete[key]) {
-        let prevNode = previousState.document.getNode(key);
-        let previousTextArray = prevNode.getTextsAsArray();
-        let newRemovedBlock = prevNode;
-        for (
-          let prevTextIndex = 0;
-          prevTextIndex < previousTextArray.length;
-          prevTextIndex++
-        ) {
-          let pathToText = prevNode.getPath(previousTextArray[prevTextIndex]);
-          newRemovedBlock = prevNode.addMark(pathToText, "removed");
-        }
-        let pathToBlock = previousPathMap.get(prevNode);
-        tempEditor = tempEditor.insertNode(pathToBlock, newRemovedBlock);
-      }
-    }
-    return tempEditor;
+  saveAsMainSummary = (index, summary) => {
+    const payload = { summary_id: summary.id };
+    // let paperId = this.props.paper.id;
+    console.log("this.props.ppaper", this.props.paper);
+    fetch(API.PAPER({ paperId: this.props.paper.id }), API.PUT_CONFIG(payload))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        console.log("res", res);
+        this.setState({ activeEdit: index });
+        // update paper
+      });
   };
 
   setRef = (editor) => {
     this.editor = editor;
+    console.log("editor", editor);
   };
 
   render() {
     let { paper, router } = this.props;
     let editHistory = paper.editHistory.map((edit, index) => {
+      console.log("edit", edit);
       return (
         <div
           key={`edit_history_${index}`}
@@ -213,7 +107,17 @@ class PaperEditHistory extends React.Component {
         >
           <div className={css(styles.date)}>
             {moment(edit.approvedDate).format("MMM Do YYYY, h:mm A")}
-            {index === 0 && <span>{` (Current Ver.)`}</span>}
+
+            {/* {index === 0 && <span>{` (Current Ver.)`}</span>} */}
+            <span
+              className={css(
+                styles.starIcon,
+                this.state.activeEdit === index && styles.activeSummary
+              )}
+              onClick={() => this.saveAsMainSummary(index, edit)}
+            >
+              {icons.starFilled}
+            </span>
           </div>
           <div className={css(styles.user)}>
             {`${edit.proposedBy.firstName} ${edit.proposedBy.lastName}`}
@@ -255,16 +159,19 @@ class PaperEditHistory extends React.Component {
           </Link>
           <div className={css(styles.editor, isMobile && styles.mobileEditor)}>
             <h1> {paper.title} </h1>
-            <TextEditor
-              canEdit={false}
-              readOnly={true}
-              containerStyles={styles.editorContainer}
-              canSubmit={false}
-              commentEditor={false}
-              passedValue={this.state.editorState}
-              initialValue={this.state.editorState}
-              setRef={this.setRef}
-            />
+            {!this.state.transition && (
+              <TextEditor
+                canEdit={false}
+                readOnly={true}
+                containerStyles={styles.editorContainer}
+                canSubmit={false}
+                commentEditor={false}
+                passedValue={this.state.editorState}
+                initialValue={this.state.editorState}
+                s
+                setRef={this.setRef}
+              />
+            )}
           </div>
           {!isMobile && (
             <div className={css(styles.edits)}>
@@ -381,6 +288,17 @@ var styles = StyleSheet.create({
   },
   mobileEdits: {
     width: 310,
+  },
+  starIcon: {
+    color: colors.YELLOW(0.4),
+    cursor: "pointer",
+    marginLeft: 10,
+    ":hover": {
+      color: colors.YELLOW(1),
+    },
+  },
+  activeSummary: {
+    color: colors.YELLOW(1),
   },
 });
 const mapStateToProps = (state) => ({
