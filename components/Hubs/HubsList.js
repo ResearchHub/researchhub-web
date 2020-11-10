@@ -11,6 +11,7 @@ import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import colors from "../../config/themes/colors";
+import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -142,7 +143,7 @@ class HubsList extends React.Component {
               {name}
               {subscribedHubs[hub.id] && (
                 <span className={css(styles.subscribedIcon)}>
-                  <i className="fas fa-star" />
+                  {icons.starFilled}
                 </span>
               )}
             </a>
