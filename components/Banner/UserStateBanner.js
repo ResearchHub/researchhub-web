@@ -10,7 +10,6 @@ import icons from "~/config/themes/icons";
 
 const UserStateBanner = (props) => {
   const [showBanner, setShowBanner] = useState(false);
-
   useEffect(() => {
     determineBanner();
   }, []);
@@ -70,15 +69,10 @@ const UserStateBanner = (props) => {
   const formatDescription = () => {
     const { user } = props.auth;
 
-    if (user.is_suspended) {
-      return "Please email hello@researchhub.com to make an appeal.";
-    } else if (user.probable_spammer) {
+    if (user.probable_spammer) {
       return (
         <Fragment>
           <span>We've seen low quality content posted from your account.</span>
-          <span>
-            Please email hello@researchhub.com if you think this is in error.
-          </span>
         </Fragment>
       );
     }
@@ -90,7 +84,7 @@ const UserStateBanner = (props) => {
       <div className={css(styles.contentContainer)}>
         <h3 className={css(styles.content)}>
           <span className={css(styles.title)}>{formatHeader()}</span>
-          {/* <div className={css(styles.paragraph)}>{formatDescription()}</div> */}
+          <div className={css(styles.paragraph)}>{formatDescription()}</div>
         </h3>
       </div>
     </div>
@@ -119,6 +113,7 @@ const styles = StyleSheet.create({
   },
   pending: {
     backgroundColor: colors.YELLOW(),
+    minHeight: 70,
   },
   suspended: {
     backgroundColor: colors.RED(),
