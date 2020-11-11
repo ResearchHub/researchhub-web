@@ -286,7 +286,8 @@ const routes = (BASE_URL) => {
     },
 
     GET_EDITS: ({ paperId }) => {
-      let url = BASE_URL + `summary/get_edit_history/?paperId=${paperId}`;
+      let url =
+        BASE_URL + `summary/get_edit_history/?paperId=${paperId}&page=2`;
       return url;
     },
 
