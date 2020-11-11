@@ -501,7 +501,7 @@ class SummaryTab extends React.Component {
                             <span className={css(styles.pencilIcon)}>
                               {icons.manage}
                             </span>
-                            Edit History
+                            View Revisons
                           </Ripples>
                         </Link>
                         <PermissionNotificationWrapper
