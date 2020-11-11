@@ -23,6 +23,7 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import icons from "~/config/themes/icons";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
 import { sendAmpEvent } from "~/config/fetch";
@@ -494,8 +495,13 @@ class SummaryTab extends React.Component {
                           href={"/paper/[paperId]/[tabName]/edits"}
                           as={`/paper/${paper.id}/summary/edits`}
                         >
-                          <Ripples className={css(styles.action)}>
-                            View Edit History
+                          <Ripples
+                            className={css(styles.action, styles.editHistory)}
+                          >
+                            <span className={css(styles.pencilIcon)}>
+                              {icons.manage}
+                            </span>
+                            Edit History
                           </Ripples>
                         </Link>
                         <PermissionNotificationWrapper
@@ -508,7 +514,7 @@ class SummaryTab extends React.Component {
                             className={css(styles.action, styles.editAction)}
                           >
                             <div className={css(styles.pencilIcon)}>
-                              <i className="fas fa-pencil"></i>
+                              {icons.pencil}
                             </div>
                             Edit Summary
                           </div>
@@ -894,6 +900,9 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       marginLeft: 32,
     },
+  },
+  editHistory: {
+    marginRight: 15,
   },
   button: {
     border: "1px solid",

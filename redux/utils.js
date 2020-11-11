@@ -46,9 +46,10 @@ export function transformDate(date) {
 
 export function transformUser(user) {
   return {
+    // ...user
     id: getNestedValue(user, ["id"], null),
-    firstName: getNestedValue(user, ["first_name"], ""),
-    lastName: getNestedValue(user, ["last_name"], ""),
+    // firstName: getNestedValue(user, ["first_name"], ""),
+    // lastName: getNestedValue(user, ["last_name"], ""),
     authorProfile: getNestedValue(user, ["author_profile"], {}),
   };
 }
