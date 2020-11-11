@@ -169,8 +169,8 @@ export const PaperActions = {
     };
   },
 
-  getEditHistory: (paperId) => {
-    return (dispatch) => {
+  getEditHistory: (paperId, loadMore) => {
+    return (dispatch, getState) => {
       return fetch(API.GET_EDITS({ paperId }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)

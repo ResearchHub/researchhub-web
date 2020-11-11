@@ -2,22 +2,19 @@ import Link from "next/link";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
-import Plain from "slate-plain-serializer";
-import { isMobile } from "react-device-detect";
-import Ripples from "react-ripples";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
 import TextEditor from "~/components/TextEditor";
+import SummaryEditCard from "~/components/Paper/Tabs/Summary/SummaryEditCard";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
+import { MessageActions } from "~/redux/message";
 
 // Config
 import { convertToEditorValue } from "~/config/utils";
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -33,12 +30,10 @@ class PaperEditHistory extends React.Component {
   constructor(props) {
     super(props);
 
-    const emptyState = Plain.deserialize("");
-
     this.state = {
       selectedEdit: 0,
       activeEdit: 0,
-      editorState: emptyState,
+      editorState: null,
       finishedLoading: false,
       transition: false,
     };
@@ -49,82 +44,81 @@ class PaperEditHistory extends React.Component {
 
     this.setState({ transition: true }, () => {
       // transition is needed for Quill to update content
-      this.setState(
-        {
-          selectedEdit: selectedIndex,
-          editorState,
-          transition: false,
-        },
-        () => {
-          console.log("STATE", this.state);
-        }
-      );
+      this.setState({
+        selectedEdit: selectedIndex,
+        editorState,
+        transition: false,
+      });
     });
   };
 
   componentDidMount() {
     if (this.props.paper.editHistory.length > 0) {
-      let edit = this.props.paper.editHistory[0];
+      let activeIndex = 0;
+      let edit;
+
+      this.props.paper.editHistory.forEach((summary, i) => {
+        if (this.props.paper.summary.id === summary.id) {
+          edit = summary;
+          activeIndex = i;
+          return true;
+        }
+      });
+
       let editorState = convertToEditorValue(edit.summary);
 
       this.setState({
         editorState,
+        activeEdit: activeIndex,
+        selectedEdit: activeIndex,
       });
     }
   }
 
-  saveAsMainSummary = (index, summary) => {
+  loadMore = () => {};
+
+  saveAsMainSummary = (index, summary, callback) => {
+    const { setMessage, showMessage, paper, updatePaperState } = this.props;
     const payload = { summary_id: summary.id };
-    // let paperId = this.props.paper.id;
-    console.log("this.props.ppaper", this.props.paper);
-    fetch(API.PAPER({ paperId: this.props.paper.id }), API.PUT_CONFIG(payload))
+    const activeEdit = this.state.activeEdit;
+
+    this.setState({ activeEdit: index });
+
+    fetch(API.PAPER({ paperId: paper.id }), API.PUT_CONFIG(payload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        console.log("res", res);
-        this.setState({ activeEdit: index });
-        // update paper
+        updatePaperState("summary", summary);
+        showMessage({ show: false });
+        setMessage("Summary succesfully updated!");
+        showMessage({ show: true });
+        callback();
+      })
+      .catch((err) => {
+        this.setState({ activeEdit });
+        showMessage({ show: false });
+        setMessage("Something went wrong. Please try again.");
+        showMessage({ show: true, error: true });
       });
-  };
-
-  setRef = (editor) => {
-    this.editor = editor;
-    console.log("editor", editor);
   };
 
   render() {
     let { paper, router } = this.props;
     let editHistory = paper.editHistory.map((edit, index) => {
-      console.log("edit", edit);
       return (
-        <div
+        <SummaryEditCard
           key={`edit_history_${index}`}
-          className={css(
-            styles.editHistoryCard,
-            this.state.selectedEdit === index && styles.selectedEdit
-          )}
+          selected={this.state.selectedEdit === index}
+          active={this.state.activeEdit === index}
           onClick={() => this.changeEditView(index, edit)}
-        >
-          <div className={css(styles.date)}>
-            {moment(edit.approvedDate).format("MMM Do YYYY, h:mm A")}
-
-            {/* {index === 0 && <span>{` (Current Ver.)`}</span>} */}
-            <span
-              className={css(
-                styles.starIcon,
-                this.state.activeEdit === index && styles.activeSummary
-              )}
-              onClick={() => this.saveAsMainSummary(index, edit)}
-            >
-              {icons.starFilled}
-            </span>
-          </div>
-          <div className={css(styles.user)}>
-            {`${edit.proposedBy.firstName} ${edit.proposedBy.lastName}`}
-          </div>
-        </div>
+          onSetAsMain={(callback) =>
+            this.saveAsMainSummary(index, edit, callback)
+          }
+          summary={edit}
+        />
       );
     });
+
     return (
       <ComponentWrapper>
         <Head
@@ -135,19 +129,7 @@ class PaperEditHistory extends React.Component {
           }
           socialImageUrl={this.props.paper && this.props.paper.metatagImage}
         />
-        <div
-          className={css(styles.container, isMobile && styles.mobileContainer)}
-        >
-          {isMobile && (
-            <div className={css(styles.edits, styles.mobileEdits)}>
-              <div className={css(styles.editHistoryContainer)}>
-                <div className={css(styles.revisionTitle)}>
-                  Revision History
-                </div>
-                {editHistory}
-              </div>
-            </div>
-          )}
+        <div className={css(styles.container)}>
           <Link
             href={"/paper/[paperId]/[tabName]"}
             as={`/paper/${router.query.paperId}/summary`}
@@ -157,8 +139,19 @@ class PaperEditHistory extends React.Component {
               Summary
             </div>
           </Link>
-          <div className={css(styles.editor, isMobile && styles.mobileEditor)}>
-            <h1> {paper.title} </h1>
+          <div className={css(styles.editor)}>
+            <h1 className={css(styles.title)}> {paper.title} </h1>
+            <div className={css(styles.edits, styles.mobileEdits)}>
+              <div className={css(styles.editHistoryContainer)}>
+                <div className={css(styles.revisionTitle)}>
+                  Revision History
+                  <span className={css(styles.count)}>
+                    {paper.editHistory.length}
+                  </span>
+                </div>
+                {editHistory}
+              </div>
+            </div>
             {!this.state.transition && (
               <TextEditor
                 canEdit={false}
@@ -168,21 +161,20 @@ class PaperEditHistory extends React.Component {
                 commentEditor={false}
                 passedValue={this.state.editorState}
                 initialValue={this.state.editorState}
-                s
-                setRef={this.setRef}
               />
             )}
           </div>
-          {!isMobile && (
-            <div className={css(styles.edits)}>
-              <div className={css(styles.editHistoryContainer)}>
-                <div className={css(styles.revisionTitle)}>
-                  Revision History
-                </div>
-                {editHistory}
+          <div className={css(styles.edits)}>
+            <div className={css(styles.editHistoryContainer)}>
+              <div className={css(styles.revisionTitle)}>
+                Revision History
+                <span className={css(styles.count)}>
+                  {paper.editHistory.length}
+                </span>
               </div>
+              <div className={css(styles.list)}>{editHistory}</div>
             </div>
-          )}
+          </div>
         </div>
       </ComponentWrapper>
     );
@@ -194,6 +186,10 @@ var styles = StyleSheet.create({
     display: "flex",
     boxSizing: "border-box",
     position: "relative",
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      alignItems: "center",
+    },
   },
   summaryActions: {
     width: 280,
@@ -209,8 +205,19 @@ var styles = StyleSheet.create({
     display: "flex",
     cursor: "pointer",
   },
+  editHistoryContainer: {
+    background: "#F9F9FC",
+    borderRadius: 4,
+    position: "relative",
+  },
+  list: {
+    boxShadow: "inset 0 1px 3px rgba(0,0,0,0.24)",
+  },
   editorContainer: {
     marginLeft: -16,
+    "@media only screen and (max-width: 767px)": {
+      margin: 0,
+    },
   },
   pencilIcon: {
     marginRight: 5,
@@ -221,45 +228,63 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-end",
   },
+  title: {
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 22,
+    },
+  },
   editor: {
     paddingTop: 75,
     width: "100%",
-  },
-  edits: {
-    paddingTop: 75,
-  },
-  editHistoryContainer: {
-    background: "#F9F9FC",
-    minHeight: 200,
-    borderRadius: 4,
-  },
-  selectedEdit: {
-    background: "#F0F1F7",
-  },
-  editHistoryCard: {
-    width: 250,
-    padding: "14px 30px",
-    cursor: "pointer",
-    ":hover": {
-      background: "#F0F1F7",
+    "@media only screen and (max-width: 767px)": {
+      paddingTop: 60,
     },
   },
-  date: {
-    fontSize: 14,
-    fontWeight: 500,
+  mobileEditor: {},
+  edits: {
+    marginTop: 75,
+    borderRadius: 4,
+    border: "1px solid #F0F1F7",
+    borderRadius: 5,
+    height: "min-content",
+    width: "max-content",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
-  user: {
-    fontSize: 12,
-    opacity: 0.5,
+  mobileEdits: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      margin: "25px 0",
+      boxShadow: "none",
+      maxHeight: 300,
+      overflowY: "scroll",
+    },
   },
-  revisionTitle: {
-    padding: "20px 30px",
-    color: "#241F3A",
-    fontSize: 12,
-    opacity: 0.4,
-    letterSpacing: 1.2,
 
+  revisionTitle: {
+    padding: "20px 15px",
+    color: colors.BLACK(0.6),
+    fontSize: 12,
+    fontWeight: 500,
+    letterSpacing: 1.2,
     textTransform: "uppercase",
+    borderBottom: "1.5px solid #F0F1F7",
+    background: "#F9F9FC",
+    position: "sticky",
+    top: 0,
+    zIndex: 2,
+    "@media only screen and (max-width: 767px)": {
+      // fontSize: 14,
+    },
+  },
+  count: {
+    marginLeft: 10,
+    color: colors.BLACK(),
   },
   back: {
     display: "flex",
@@ -271,9 +296,11 @@ var styles = StyleSheet.create({
     left: 0,
     top: 16,
     cursor: "pointer",
-
     ":hover": {
       opacity: 1,
+    },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
     },
   },
   arrow: {
@@ -283,14 +310,10 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
   },
-  mobileEditor: {
-    paddingTop: 20,
-  },
-  mobileEdits: {
-    width: 310,
-  },
+
   starIcon: {
     color: colors.YELLOW(0.4),
+    borderRadius: "50%",
     cursor: "pointer",
     marginLeft: 10,
     ":hover": {
@@ -301,8 +324,18 @@ var styles = StyleSheet.create({
     color: colors.YELLOW(1),
   },
 });
+
 const mapStateToProps = (state) => ({
   paper: state.paper,
 });
 
-export default connect(mapStateToProps)(withRouter(PaperEditHistory));
+const mapDispatchToProps = {
+  updatePaperState: PaperActions.updatePaperState,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(PaperEditHistory));
