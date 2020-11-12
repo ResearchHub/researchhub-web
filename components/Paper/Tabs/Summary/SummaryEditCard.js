@@ -78,6 +78,7 @@ const SummaryEditCard = (props) => {
         author={summary.proposedBy.authorProfile}
         size={30}
         disableLink={true}
+        trueSize={true}
       />
       <div className={css(styles.column)}>
         <div className={css(styles.date, active && styles.selected)}>
