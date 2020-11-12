@@ -7,7 +7,11 @@ const defaultPaperState = {
   hubs: [],
   threads: [],
   threadCount: 0,
-  editHistory: [],
+  editHistory: {
+    next: null,
+    results: [],
+    count: null,
+  },
   doneFetchingPaper: false,
 };
 

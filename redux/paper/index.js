@@ -169,16 +169,27 @@ export const PaperActions = {
     };
   },
 
-  getEditHistory: (paperId, loadMore) => {
+  getEditHistory: (paperId, loadMore = false) => {
     return (dispatch, getState) => {
-      return fetch(API.GET_EDITS({ paperId }), API.GET_CONFIG())
+      const { next, results } = getState().paper.editHistory;
+      const ENDPOINT = next ? next : API.GET_EDITS({ paperId });
+
+      return fetch(ENDPOINT, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
+          let edits = shims.editHistory(resp.results);
+
+          if (loadMore) {
+            edits = [...results, ...edits];
+          }
           return dispatch({
             type: types.GET_EDITS,
             payload: {
-              editHistory: shims.editHistory(resp),
+              editHistory: {
+                ...resp,
+                results: edits,
+              },
               doneFetching: true,
             },
           });
