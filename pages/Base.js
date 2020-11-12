@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import Router from "next/router";
 
 // NPM Modules
 import { connect } from "react-redux";
@@ -51,6 +52,9 @@ class Base extends React.Component {
     determineBanner();
     fetchPermissionsPending();
     await fetchPermissions();
+    Router.events.on("routeChangeComplete", () => {
+      this.connectSift();
+    });
   };
 
   componentDidUpdate(prevProps) {
@@ -66,39 +70,39 @@ class Base extends React.Component {
   }
 
   connectSift = () => {
-    let _user_id = this.props.auth.user.id;
-    let _session_id = this.uniqueId();
-    let _sift = (window._sift = window._sift || []);
-    _sift.push(["_setAccount", SIFT_BEACON_KEY]);
-    _sift.push(["_setUserId", _user_id]);
-    _sift.push(["_setSessionId", _session_id]);
-    _sift.push(["_trackPageview"]);
+    if (this.props.auth.isLoggedIn) {
+      let _user_id = this.props.auth.user.id || "";
+      let _session_id = this.uniqueId();
+      let _sift = (window._sift = window._sift || []);
+      _sift.push(["_setAccount", SIFT_BEACON_KEY]);
+      _sift.push(["_setUserId", _user_id]);
+      _sift.push(["_setSessionId", _session_id]);
+      _sift.push(["_trackPageview"]);
 
-    if (window.attachEvent) {
-      window.attachEvent("onload", this.loadSift);
+      if (window.attachEvent) {
+        window.attachEvent("onload", this.loadSift);
+      } else {
+        window.addEventListener("load", this.loadSift, false);
+      }
+
+      this.loadSift();
     } else {
-      window.addEventListener("load", this.loadSift, false);
+      this.disconnectSift();
     }
-
-    this.loadSift();
   };
 
   disconnectSift = () => {
     let sift = document.getElementById("sift");
-    sift.parentNode.removeChild(sift);
+    sift && sift.parentNode.removeChild(sift);
   };
 
   loadSift = () => {
-    if (this.props.auth.isLoggedIn) {
-      if (!document.getElementById("sift")) {
-        // only attach script if it isn't there
-        let script = document.createElement("script");
-        script.setAttribute("id", "sift");
-        script.src = "https://cdn.sift.com/s.js";
-        document.body.appendChild(script);
-      }
-    } else {
-      this.disconnectSift();
+    if (!document.getElementById("sift")) {
+      // only attach script if it isn't there
+      let script = document.createElement("script");
+      script.setAttribute("id", "sift");
+      script.src = "https://cdn.sift.com/s.js";
+      document.body.appendChild(script);
     }
   };
 
