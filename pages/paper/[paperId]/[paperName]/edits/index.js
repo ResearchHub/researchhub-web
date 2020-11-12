@@ -67,7 +67,7 @@ class PaperEditHistory extends React.Component {
         }
       });
 
-      let editorState = convertToEditorValue(edit.summary);
+      let editorState = edit && convertToEditorValue(edit.summary);
 
       this.setState({
         editorState,
@@ -157,7 +157,7 @@ class PaperEditHistory extends React.Component {
     let { paper, router } = this.props;
 
     return (
-      <ComponentWrapper>
+      <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
         <Head
           title={this.props.paper && this.props.paper.title}
           description={
@@ -184,6 +184,7 @@ class PaperEditHistory extends React.Component {
                 canEdit={false}
                 readOnly={true}
                 containerStyles={styles.editorContainer}
+                commentStyles={styles.textStyles}
                 canSubmit={false}
                 commentEditor={false}
                 passedValue={this.state.editorState}
@@ -199,6 +200,9 @@ class PaperEditHistory extends React.Component {
 }
 
 var styles = StyleSheet.create({
+  componentWrapperStyles: {
+    position: "relative",
+  },
   container: {
     display: "flex",
     boxSizing: "border-box",
@@ -258,8 +262,15 @@ var styles = StyleSheet.create({
   },
   editorContainer: {
     marginLeft: -16,
+    paddingBottom: 30,
     "@media only screen and (max-width: 767px)": {
       margin: 0,
+    },
+  },
+  textStyles: {
+    fontSize: 16,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
     },
   },
   pencilIcon: {
