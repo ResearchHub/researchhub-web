@@ -11,6 +11,7 @@ const AuthorAvatar = (props) => {
     disableLink,
     showModeratorBadge,
     twitterUrl,
+    trueSize,
   } = props;
   let deviceWidth = null;
   if (process.browser) {
@@ -25,7 +26,7 @@ const AuthorAvatar = (props) => {
 
   function renderAvatar() {
     let finalSize = size;
-    if (deviceWidth < 768) {
+    if (deviceWidth < 768 && !trueSize) {
       finalSize = size - 5;
     }
     return (

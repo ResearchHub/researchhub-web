@@ -106,9 +106,9 @@
 }
 
 @media only screen and (max-width: 415px) {
-  .ql-editor {
-    font-size: 12px;
-  }
+  /* .ql-editor { */
+  /* font-size: 12px; */
+  /* } */
   .ql-video {
     margin-left: auto;
     margin-right: auto;

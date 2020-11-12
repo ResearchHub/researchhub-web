@@ -45,6 +45,11 @@ const icons = {
   trash: <i className="fal fa-trash-alt"></i>,
   ban: <i className="fas fa-ban" />,
   error: <i className="fas fa-exclamation-triangle" />,
+  starFilled: <i className="fas fa-star" />,
+  starEmpty: <i className="far fa-star" />,
+  manage: <i className="fal fa-tasks-alt" />,
+  pin: <i className="fas fa-thumbtack" />,
+  pinOutline: <i className="far fa-thumbtack" />,
 };
 
 export const voteWidgetIcons = {

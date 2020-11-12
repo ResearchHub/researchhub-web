@@ -49,6 +49,7 @@ const TextEditor = (props) => {
     editing,
     focusEditor,
     hasHeader,
+    summary,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
@@ -136,6 +137,7 @@ const TextEditor = (props) => {
       editing={editing}
       focusEditor={focusEditor && focusEditor}
       hasHeader={hasHeader && hasHeader}
+      summary={summary && summary}
     />
   );
 };
