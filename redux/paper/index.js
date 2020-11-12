@@ -183,6 +183,7 @@ export const PaperActions = {
           if (loadMore) {
             edits = [...results, ...edits];
           }
+
           return dispatch({
             type: types.GET_EDITS,
             payload: {

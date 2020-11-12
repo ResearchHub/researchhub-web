@@ -25,9 +25,9 @@ const AuthorAvatar = (props) => {
 
   function renderAvatar() {
     let finalSize = size;
-    if (deviceWidth < 768) {
-      finalSize = size - 5;
-    }
+    // if (deviceWidth < 768) {
+    //   finalSize = size - 5;
+    // }
     return (
       <>
         {author && author.profile_image && !error ? (
