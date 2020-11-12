@@ -2,15 +2,13 @@ import Link from "next/link";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import InfiniteScroll from "react-infinite-scroller";
-import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
 import TextEditor from "~/components/TextEditor";
 import SummaryEditCard from "~/components/Paper/Tabs/Summary/SummaryEditCard";
+import Loader from "~/components/Loader/Loader";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -75,15 +73,17 @@ class PaperEditHistory extends React.Component {
         editorState,
         activeEdit: activeIndex,
         selectedEdit: activeIndex,
+        finishedLoading: true,
       });
     }
   }
 
-  loadMore = () => {
+  loadMore = async () => {
     if (this.props.paper.editHistory.next) {
-      this.props.getEditHistory(this.props.paper.id, true);
+      this.setState({ loadMore: true });
+      await this.props.getEditHistory(this.props.paper.id, true);
+      this.setState({ loadMore: false });
     }
-    return;
   };
 
   saveAsMainSummary = (index, summary, callback) => {
@@ -111,8 +111,8 @@ class PaperEditHistory extends React.Component {
       });
   };
 
-  render() {
-    let { paper, router } = this.props;
+  renderSummaryRevisions = (mobile) => {
+    let { paper } = this.props;
 
     let editHistory = paper.editHistory.results.map((edit, index) => {
       return (
@@ -128,6 +128,33 @@ class PaperEditHistory extends React.Component {
         />
       );
     });
+
+    return (
+      <div className={css(styles.edits, mobile && styles.mobileEdits)}>
+        <div className={css(styles.editHistoryContainer)}>
+          <div className={css(styles.revisionTitle)}>
+            Revision History
+            <span className={css(styles.count)}>{paper.editHistory.count}</span>
+          </div>
+          <div className={css(styles.list)}>
+            {editHistory}
+            {paper.editHistory.next && (
+              <div className={css(styles.loadButton)} onClick={this.loadMore}>
+                {this.state.loadMore ? (
+                  <Loader loading={true} color={"#FFF"} size={16} />
+                ) : (
+                  "Load More"
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  render() {
+    let { paper, router } = this.props;
 
     return (
       <ComponentWrapper>
@@ -151,38 +178,7 @@ class PaperEditHistory extends React.Component {
           </Link>
           <div className={css(styles.editor)}>
             <h1 className={css(styles.title)}> {paper.title} </h1>
-            <div className={css(styles.edits, styles.mobileEdits)}>
-              <div className={css(styles.editHistoryContainer)}>
-                <div className={css(styles.revisionTitle)}>
-                  Revision History
-                  <span className={css(styles.count)}>
-                    {paper.editHistory.count}
-                  </span>
-                </div>
-                <InfiniteScroll
-                  className={css(styles.list)}
-                  hasMore={
-                    this.props.paper.editHistory.results.length >
-                    this.props.paper.editHistory.count
-                  }
-                  loadMore={this.loadMore}
-                  loader={
-                    <ReactPlaceholder
-                      ready={false}
-                      showLoadingAnimation
-                      type="media"
-                      rows={2}
-                      color="#efefef"
-                    />
-                  }
-                  useWindow={false}
-                  initialLoad={false}
-                  threshold={10}
-                >
-                  {editHistory}
-                </InfiniteScroll>
-              </div>
-            </div>
+            {this.renderSummaryRevisions(true)}
             {!this.state.transition && (
               <TextEditor
                 canEdit={false}
@@ -195,35 +191,7 @@ class PaperEditHistory extends React.Component {
               />
             )}
           </div>
-          <div className={css(styles.edits)}>
-            <div className={css(styles.editHistoryContainer)}>
-              <div className={css(styles.revisionTitle)}>
-                Revision History
-                <span className={css(styles.count)}>
-                  {paper.editHistory.count}
-                </span>
-              </div>
-              <InfiniteScroll
-                className={css(styles.list)}
-                hasMore={this.props.paper.editHistory.next}
-                loadMore={this.loadMore}
-                loader={
-                  <ReactPlaceholder
-                    ready={false}
-                    showLoadingAnimation
-                    type="media"
-                    rows={2}
-                    color="#efefef"
-                  />
-                }
-                useWindow={false}
-                // initialLoad={false}
-                // threshold={10}
-              >
-                {editHistory}
-              </InfiniteScroll>
-            </div>
-          </div>
+          {this.renderSummaryRevisions()}
         </div>
       </ComponentWrapper>
     );
@@ -263,6 +231,7 @@ var styles = StyleSheet.create({
     boxShadow: "inset 0 1px 3px rgba(0,0,0,0.24)",
     maxHeight: 600,
     overflow: "hidden",
+
     ":hover": {
       overflowY: "scroll",
       "@media only screen and (min-width: 767px)": {
@@ -272,6 +241,19 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       maxHeight: 300,
       overflowY: "scroll",
+    },
+  },
+  loadButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 14,
+    padding: 15,
+    background: colors.BLUE(),
+    color: "#FFF",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: "#3E43E8",
     },
   },
   editorContainer: {
