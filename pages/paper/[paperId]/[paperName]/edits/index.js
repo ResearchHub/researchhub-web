@@ -2,6 +2,9 @@ import Link from "next/link";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import InfiniteScroll from "react-infinite-scroller";
+import ReactPlaceholder from "react-placeholder/lib";
+import "react-placeholder/lib/reactPlaceholder.css";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -36,6 +39,7 @@ class PaperEditHistory extends React.Component {
       editorState: null,
       finishedLoading: false,
       transition: false,
+      loadMore: false,
     };
   }
 
@@ -53,11 +57,11 @@ class PaperEditHistory extends React.Component {
   };
 
   componentDidMount() {
-    if (this.props.paper.editHistory.length > 0) {
+    if (this.props.paper.editHistory.results.length > 0) {
       let activeIndex = 0;
       let edit;
 
-      this.props.paper.editHistory.forEach((summary, i) => {
+      this.props.paper.editHistory.results.forEach((summary, i) => {
         if (this.props.paper.summary.id === summary.id) {
           edit = summary;
           activeIndex = i;
@@ -75,7 +79,12 @@ class PaperEditHistory extends React.Component {
     }
   }
 
-  loadMore = () => {};
+  loadMore = () => {
+    if (this.props.paper.editHistory.next) {
+      this.props.getEditHistory(this.props.paper.id, true);
+    }
+    return;
+  };
 
   saveAsMainSummary = (index, summary, callback) => {
     const { setMessage, showMessage, paper, updatePaperState } = this.props;
@@ -104,7 +113,8 @@ class PaperEditHistory extends React.Component {
 
   render() {
     let { paper, router } = this.props;
-    let editHistory = paper.editHistory.map((edit, index) => {
+
+    let editHistory = paper.editHistory.results.map((edit, index) => {
       return (
         <SummaryEditCard
           key={`edit_history_${index}`}
@@ -146,10 +156,31 @@ class PaperEditHistory extends React.Component {
                 <div className={css(styles.revisionTitle)}>
                   Revision History
                   <span className={css(styles.count)}>
-                    {paper.editHistory.length}
+                    {paper.editHistory.count}
                   </span>
                 </div>
-                {editHistory}
+                <InfiniteScroll
+                  className={css(styles.list)}
+                  hasMore={
+                    this.props.paper.editHistory.results.length >
+                    this.props.paper.editHistory.count
+                  }
+                  loadMore={this.loadMore}
+                  loader={
+                    <ReactPlaceholder
+                      ready={false}
+                      showLoadingAnimation
+                      type="media"
+                      rows={2}
+                      color="#efefef"
+                    />
+                  }
+                  useWindow={false}
+                  initialLoad={false}
+                  threshold={10}
+                >
+                  {editHistory}
+                </InfiniteScroll>
               </div>
             </div>
             {!this.state.transition && (
@@ -169,10 +200,28 @@ class PaperEditHistory extends React.Component {
               <div className={css(styles.revisionTitle)}>
                 Revision History
                 <span className={css(styles.count)}>
-                  {paper.editHistory.length}
+                  {paper.editHistory.count}
                 </span>
               </div>
-              <div className={css(styles.list)}>{editHistory}</div>
+              <InfiniteScroll
+                className={css(styles.list)}
+                hasMore={this.props.paper.editHistory.next}
+                loadMore={this.loadMore}
+                loader={
+                  <ReactPlaceholder
+                    ready={false}
+                    showLoadingAnimation
+                    type="media"
+                    rows={2}
+                    color="#efefef"
+                  />
+                }
+                useWindow={false}
+                // initialLoad={false}
+                // threshold={10}
+              >
+                {editHistory}
+              </InfiniteScroll>
             </div>
           </div>
         </div>
@@ -212,6 +261,18 @@ var styles = StyleSheet.create({
   },
   list: {
     boxShadow: "inset 0 1px 3px rgba(0,0,0,0.24)",
+    maxHeight: 600,
+    overflow: "hidden",
+    ":hover": {
+      overflowY: "scroll",
+      "@media only screen and (min-width: 767px)": {
+        marginRight: -15,
+      },
+    },
+    "@media only screen and (max-width: 767px)": {
+      maxHeight: 300,
+      overflowY: "scroll",
+    },
   },
   editorContainer: {
     marginLeft: -16,
@@ -247,7 +308,6 @@ var styles = StyleSheet.create({
     border: "1px solid #F0F1F7",
     borderRadius: 5,
     height: "min-content",
-    width: "max-content",
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -261,8 +321,6 @@ var styles = StyleSheet.create({
       justifyContent: "flex-start",
       margin: "25px 0",
       boxShadow: "none",
-      maxHeight: 300,
-      overflowY: "scroll",
     },
   },
 
@@ -275,9 +333,10 @@ var styles = StyleSheet.create({
     textTransform: "uppercase",
     borderBottom: "1.5px solid #F0F1F7",
     background: "#F9F9FC",
-    position: "sticky",
-    top: 0,
-    zIndex: 2,
+    boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
+    // position: "sticky",
+    // top: 0,
+    // zIndex: 2,
     "@media only screen and (max-width: 767px)": {
       // fontSize: 14,
     },
@@ -331,6 +390,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   updatePaperState: PaperActions.updatePaperState,
+  getEditHistory: PaperActions.getEditHistory,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };

@@ -285,12 +285,23 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    GET_EDITS: ({ paperId }) => {
-      let url =
-        BASE_URL + `summary/get_edit_history/?paperId=${paperId}&page=2`;
+    GET_EDITS: ({ paperId, page = 1 }) => {
+      let url = BASE_URL + `summary/`;
+
+      let params = {
+        querystring: {
+          page,
+          paperId: paperId,
+        },
+        rest: {
+          route: "get_edit_history",
+        },
+      };
+
+      url = prepURL(url, params);
+
       return url;
     },
-
     THREAD_COMMENT: (paperId, threadId, page) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/`;
 

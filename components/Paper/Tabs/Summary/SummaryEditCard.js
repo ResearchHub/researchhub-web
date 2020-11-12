@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { useAlert } from "react-alert";
 import moment from "moment";
@@ -11,6 +12,7 @@ import colors from "~/config/themes/colors";
 
 const SummaryEditCard = (props) => {
   const alert = useAlert();
+
   const [pending, setPending] = useState(false);
   const [hovered, setHovered] = useState(false);
   const { summary, selected, active, onClick, onSetAsMain } = props;
@@ -34,6 +36,39 @@ const SummaryEditCard = (props) => {
     });
   };
 
+  const renderActions = () => {
+    const { auth } = props;
+    if (auth && auth.isLoggedIn) {
+      if (props.auth.user.moderator) {
+        return (
+          <span
+            className={css(styles.icon, active && styles.activeSummary)}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            onClick={saveConfirmation}
+          >
+            {pending ? (
+              <Loader
+                key={`summaryEditLoader-${summary.id}`}
+                loading={true}
+                size={15}
+                color={colors.BLUE()}
+              />
+            ) : active || hovered ? (
+              icons.starFilled
+            ) : (
+              icons.starEmpty
+            )}
+          </span>
+        );
+      }
+    } else {
+      return (
+        <span className={css(styles.icon)}>{active && icons.starFilled}</span>
+      );
+    }
+  };
+
   return (
     <div
       className={css(styles.editHistoryCard, selected && styles.selectedEdit)}
@@ -50,25 +85,7 @@ const SummaryEditCard = (props) => {
         </div>
         <div className={css(styles.user)}>{`${first_name} ${last_name}`}</div>
       </div>
-      <span
-        className={css(styles.icon, active && styles.activeSummary)}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onClick={saveConfirmation}
-      >
-        {pending ? (
-          <Loader
-            key={`summaryEditLoader-${summary.id}`}
-            loading={true}
-            size={15}
-            color={colors.BLUE()}
-          />
-        ) : active || hovered ? (
-          icons.starFilled
-        ) : (
-          icons.starEmpty
-        )}
-      </span>
+      {renderActions()}
     </div>
   );
 };
@@ -125,4 +142,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SummaryEditCard;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SummaryEditCard);
