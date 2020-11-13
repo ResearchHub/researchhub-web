@@ -47,21 +47,21 @@ export default function withWebSocket(
 
     useEffect(configureWebSocket, []);
     function configureWebSocket() {
-      // let token = null;
-      // if (props.wsAuth) {
-      //   try {
-      //     token = window.localStorage[TOKEN_NAME];
-      //   } catch (err) {
-      //     console.error("Did not find auth token");
-      //     return err;
-      //   }
-      //   const webSocket = new WebSocket(url, ["Token", token]);
-      //   setWs(webSocket);
-      // } else {
-      //   const webSocket = new WebSocket(url);
-      //   setWs(webSocket);
-      // }
-      // setConnectAttempts(connectAttempts + 1);
+      let token = null;
+      if (props.wsAuth) {
+        try {
+          token = window.localStorage[TOKEN_NAME];
+        } catch (err) {
+          console.error("Did not find auth token");
+          return err;
+        }
+        const webSocket = new WebSocket(url, ["Token", token]);
+        setWs(webSocket);
+      } else {
+        const webSocket = new WebSocket(url);
+        setWs(webSocket);
+      }
+      setConnectAttempts(connectAttempts + 1);
     }
 
     useEffect(stopConnectAttempts, [connectAttempts]);
