@@ -68,6 +68,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       marginBottom: 8,
     },
+    "@media only screen and (max-width: 415px)": {
+      height: "unset",
+    },
   },
   space: {
     width: 10,
@@ -81,6 +84,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     letterSpacing: 1,
     padding: "3px 10px 3px 10px",
+    flexWrap: "wrap",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 8,
+      padding: "3px 6px",
+      height: "unset",
+    },
   },
   grayTag: {
     backgroundColor: "rgba(36, 31, 58, 0.03)",

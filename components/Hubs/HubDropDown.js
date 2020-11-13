@@ -1,6 +1,8 @@
 // NPM
 import React, { useRef, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
+import Link from "next/link";
+import "~/components/Paper/CitationCard.css";
 
 // Component
 import HubTag from "./HubTag";
@@ -8,6 +10,7 @@ import HubTag from "./HubTag";
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { nameToUrl } from "~/config/constants";
 
 const HubDropDown = (props) => {
   let { hubs, hubName, isOpen, setIsOpen, labelStyle } = props;
@@ -53,15 +56,16 @@ const HubDropDown = (props) => {
       <div className={css(styles.dropdown, isOpen && styles.open)}>
         {hubs.map((hub, i) => {
           return (
-            <HubTag
-              key={`hub_dropdown${hub.id}-${i}`}
-              tag={hub}
-              hubName={hubName}
-              gray={false}
-              labelStyle={labelStyle}
-              overrideStyle={i !== hubs.length - 1 && styles.tagStyle}
-              last={i === hubs.length - 1}
-            />
+            <Link href={"/hubs/[slug]"} as={`/hubs/${nameToUrl(hub.slug)}`}>
+              <a className={css(styles.atag)}>
+                <div
+                  key={`hub_dropdown${hub.id}`}
+                  className={css(styles.listItem) + " clamp1"}
+                >
+                  {hub.name}
+                </div>
+              </a>
+            </Link>
           );
         })}
       </div>
@@ -78,13 +82,13 @@ const styles = StyleSheet.create({
     padding: "5px 0",
   },
   dropdown: {
-    minWidth: 250,
+    minWidth: 200,
     zIndex: 3,
     top: 20,
     right: -5,
     boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
-    background: "#FFF",
-    border: "1px solid rgb(238, 238, 238)",
+    background: "#FAFAFA",
+    border: "1px solid rgb(237, 237, 237)",
     borderRadius: 4,
     position: "absolute",
     boxSizing: "border-box",
@@ -96,7 +100,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     flexWrap: "wrap",
     alignItems: "center",
-    padding: "10px 15px",
+    "@media only screen and (max-width: 500px)": {
+      right: "unset",
+      left: -75,
+      minWidth: 150,
+    },
   },
   tagStyle: {
     marginBottom: 5,
@@ -114,6 +122,33 @@ const styles = StyleSheet.create({
   },
   active: {
     color: colors.BLUE(),
+  },
+  listItem: {
+    boxSizing: "border-box",
+    padding: "8px 20px",
+    cursor: "pointer",
+    background: "#FAFAFA",
+    borderBottom: "1px solid rgb(237, 237, 237)",
+    color: colors.BLUE(),
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-start",
+    textTransform: "uppercase",
+    fontWeight: "bold",
+    letterSpacing: 1,
+    fontSize: 10,
+    ":hover": {
+      background: "#edeefe",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 8,
+      height: "unset",
+    },
+  },
+  atag: {
+    color: "unset",
+    textDecoration: "unset",
+    width: "100%",
   },
 });
 
