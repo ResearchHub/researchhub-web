@@ -51,6 +51,9 @@ class TransactionModal extends React.Component {
       withdrawals: [],
       validating: false,
       transactionHash: "",
+      // error for withdrawal input
+      error: false,
+      amount: 0,
     };
     this.state = {
       ...this.initialState,
@@ -167,138 +170,21 @@ class TransactionModal extends React.Component {
     win.focus();
   };
 
-  renderSwitchNetworkMsg = () => {
-    // TODO: For now let's just tell them to use rinkeby
-    let { transition } = this.state;
-    return (
-      <div className={css(styles.networkContainer)}>
-        {transition ? (
-          <Loader loading={true} />
-        ) : (
-          <Fragment>
-            <div className={css(styles.title)}>
-              Oops, you're on the wrong network
-            </div>
-            <div className={css(styles.subtitle)}>
-              Simply open MetaMask and switch over to the
-              <b>{" Main Ethereum Network"}</b>
-            </div>
-            <img
-              src={"/static/background/metamask.png"}
-              className={css(styles.image)}
-              draggable={false}
-            />
-          </Fragment>
-        )}
-      </div>
-    );
+  handleAmountInput = (e) => {
+    let value = parseInt(e.target.value, 10);
+    value = value ? (value > 0 ? value : 0) : null;
+
+    this.setState({
+      amount: value,
+      error: this.handleAmountError(value),
+    });
   };
 
-  renderTransactionScreen = () => {
-    let { transition, userBalance, ethAccount, transactionHash } = this.state;
-    return (
-      <div className={css(styles.networkContainer)}>
-        {transition ? (
-          <Loader loading={true} />
-        ) : transactionHash ? (
-          <Fragment>
-            <div className={css(styles.row, styles.top)}>
-              <div className={css(styles.left)}>
-                <div className={css(styles.mainHeader)}>
-                  Withdrawal Successful
-                  <span className={css(styles.icon)}>
-                    <i className="fal fa-check-circle" />
-                  </span>
-                </div>
-                <div
-                  className={css(styles.confirmation)}
-                  onClick={this.closeModal}
-                >
-                  Review your transactions in your
-                  <Link
-                    href={"/user/[authorId]/[tabName]"}
-                    as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
-                  >
-                    <a
-                      href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
-                      className={css(styles.transactionHashLink)}
-                    >
-                      profile page
-                    </a>
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className={css(styles.buttons, styles.confirmationButtons)}>
-              <Button
-                label={"Finish"}
-                onClick={this.closeModal}
-                customButtonStyle={styles.button}
-              />
-            </div>
-          </Fragment>
-        ) : (
-          <Fragment>
-            <div className={css(styles.row, styles.top)}>
-              <div className={css(styles.left)}>
-                <div className={css(styles.mainHeader)}>Amount to withdraw</div>
-                <div className={css(styles.subtitle, styles.noMargin)}>
-                  Your current total balance in ResearchCoin
-                </div>
-              </div>
-              <div className={css(styles.right)}>
-                <div className={css(styles.userBalance)}>
-                  {userBalance}
-                  <img
-                    className={css(styles.coin)}
-                    src={"/static/icons/coin-filled.png"}
-                    draggable={false}
-                  />
-                </div>
-              </div>
-            </div>
-            {this.renderRow(
-              {
-                text: "Recipient ETH Address",
-                tooltip: "The address of your ETH Account (ex. 0x0000...)",
-                onClick: "",
-              },
-              {
-                value: ethAccount,
-                onChange: this.handleNetworkAddressInput,
-              }
-            )}
-            {!this.props.agreedToTerms && (
-              <div className={css(styles.checkBoxContainer)}>
-                <CheckBox
-                  id={"tos"}
-                  active={this.state.buttonEnabled}
-                  isSquare={true}
-                  label={
-                    <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>
-                      I agree to the ResearchHub{" "}
-                      <a href={"/about/tos"} target="_blank">
-                        Terms of Service.
-                      </a>
-                    </span>
-                  }
-                  onChange={this.toggleButton}
-                />
-              </div>
-            )}
-            <div className={css(styles.buttons)}>
-              <Button
-                disabled={!this.state.buttonEnabled || !ethAccount}
-                label={"Confirm"}
-                onClick={this.sendWithdrawalRequest}
-                customButtonStyle={styles.button}
-              />
-            </div>
-          </Fragment>
-        )}
-      </div>
-    );
+  handleAmountError = (value) => {
+    if (value > this.state.userBalance || value < 100) {
+      return true;
+    }
+    return false;
   };
 
   toggleButton = () => {
@@ -392,20 +278,37 @@ class TransactionModal extends React.Component {
   };
 
   sendWithdrawalRequest = (e) => {
+    const { showMessage, setMessage } = this.props;
+
     if (!this.state.buttonEnabled) {
       showMessage({ show: false });
       setMessage("Please agree to the ResearchHub ToS.");
       showMessage({ show: true, error: true });
       return;
     }
+
+    if (this.state.amount < 100) {
+      showMessage({ show: false });
+      setMessage("Withdrawal amount must be at least 100 RSC");
+      showMessage({ show: true, error: true });
+      return;
+    }
+
+    if (this.state.amount > this.state.userBalance) {
+      showMessage({ show: false });
+      setMessage("Not enough coins in balance");
+      showMessage({ show: true, error: true });
+      return;
+    }
+
     e.stopPropagation();
     let { ethAccount } = this.state;
-    let { showMessage, setMessage } = this.props;
     showMessage({ load: true, show: true });
     if (this.isAddress(ethAccount)) {
       let param = {
         to_address: this.toCheckSumAddress(ethAccount),
         agreed_to_terms: true,
+        amount: `${this.state.amount}`,
       };
       fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
@@ -669,6 +572,163 @@ class TransactionModal extends React.Component {
     return false;
   };
 
+  renderSwitchNetworkMsg = () => {
+    // TODO: For now let's just tell them to use rinkeby
+    let { transition } = this.state;
+    return (
+      <div className={css(styles.networkContainer)}>
+        {transition ? (
+          <Loader loading={true} />
+        ) : (
+          <Fragment>
+            <div className={css(styles.title)}>
+              Oops, you're on the wrong network
+            </div>
+            <div className={css(styles.subtitle)}>
+              Simply open MetaMask and switch over to the
+              <b>{" Main Ethereum Network"}</b>
+            </div>
+            <img
+              src={"/static/background/metamask.png"}
+              className={css(styles.image)}
+              draggable={false}
+            />
+          </Fragment>
+        )}
+      </div>
+    );
+  };
+
+  renderTransactionScreen = () => {
+    let {
+      transition,
+      userBalance,
+      ethAccount,
+      transactionHash,
+      error,
+      amount,
+    } = this.state;
+    return (
+      <div className={css(styles.networkContainer)}>
+        {transition ? (
+          <Loader loading={true} />
+        ) : transactionHash ? (
+          <Fragment>
+            <div className={css(styles.row, styles.top)}>
+              <div className={css(styles.left)}>
+                <div className={css(styles.mainHeader)}>
+                  Withdrawal Successful
+                  <span className={css(styles.icon)}>
+                    <i className="fal fa-check-circle" />
+                  </span>
+                </div>
+                <div
+                  className={css(styles.confirmation)}
+                  onClick={this.closeModal}
+                >
+                  Review your transactions in your
+                  <Link
+                    href={"/user/[authorId]/[tabName]"}
+                    as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+                  >
+                    <a
+                      href={"/user/[authorId]/[tabName]"}
+                      as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+                      className={css(styles.transactionHashLink)}
+                    >
+                      profile page
+                    </a>
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div className={css(styles.buttons, styles.confirmationButtons)}>
+              <Button
+                label={"Finish"}
+                onClick={this.closeModal}
+                customButtonStyle={styles.button}
+              />
+            </div>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <div className={css(styles.row, styles.top)}>
+              <div className={css(styles.left)}>
+                <div className={css(styles.mainHeader)}>Total Balance</div>
+                <div className={css(styles.subtitle, styles.noMargin)}>
+                  Your current total balance in ResearchCoin
+                </div>
+              </div>
+              <div className={css(styles.right)}>
+                <div className={css(styles.userBalance)}>
+                  {userBalance}
+                  <img
+                    className={css(styles.coin)}
+                    src={"/static/icons/coin-filled.png"}
+                    draggable={false}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={css(styles.row, styles.numbers)}>
+              <div className={css(styles.left)}>
+                <div className={css(styles.mainHeader)}>Withdrawal Amount</div>
+                <div className={css(styles.subtitle, styles.noMargin)}>
+                  Select the withdrawal amount (min. 100 RSC)
+                </div>
+              </div>
+              <div className={css(styles.right)}>
+                <input
+                  type="number"
+                  className={css(styles.amountInput, error && styles.error)}
+                  value={amount}
+                  onChange={this.handleAmountInput}
+                />
+              </div>
+            </div>
+            {this.renderRow(
+              {
+                text: "Recipient ETH Address",
+                tooltip: "The address of your ETH Account (ex. 0x0000...)",
+                onClick: "",
+              },
+              {
+                value: ethAccount,
+                onChange: this.handleNetworkAddressInput,
+              }
+            )}
+            {!this.props.agreedToTerms && (
+              <div className={css(styles.checkBoxContainer)}>
+                <CheckBox
+                  id={"tos"}
+                  active={this.state.buttonEnabled}
+                  isSquare={true}
+                  label={
+                    <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>
+                      I agree to the ResearchHub{" "}
+                      <a href={"/about/tos"} target="_blank">
+                        Terms of Service.
+                      </a>
+                    </span>
+                  }
+                  onChange={this.toggleButton}
+                />
+              </div>
+            )}
+            <div className={css(styles.buttons)}>
+              <Button
+                disabled={!this.state.buttonEnabled || !ethAccount}
+                label={"Confirm"}
+                onClick={this.sendWithdrawalRequest}
+                customButtonStyle={styles.button}
+              />
+            </div>
+          </Fragment>
+        )}
+      </div>
+    );
+  };
+
   renderOverlay = () => {
     return (
       <div className={css(styles.overlay)} onClick={this.closeModal}>
@@ -804,9 +864,6 @@ const styles = StyleSheet.create({
     color: "#232038",
     textAlign: "center",
     marginBottom: 20,
-    "@media only screen and (max-width: 557px)": {
-      width: 380,
-    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 22,
     },
@@ -828,6 +885,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 25,
     fontFamily: "Roboto",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+      lineHeight: 1.5,
+    },
   },
   image: {
     objectFit: "contain",
@@ -864,6 +925,9 @@ const styles = StyleSheet.create({
     color: "#82817D",
     height: 60,
     fontFamily: "Roboto",
+    "@media only screen and (max-width: 415px)": {
+      height: 70,
+    },
   },
   textLabel: {
     color: colors.BLACK(),
@@ -887,6 +951,9 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 22,
     color: "#000 ",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 20,
+    },
   },
   input: {
     height: 60,
@@ -896,6 +963,19 @@ const styles = StyleSheet.create({
   },
   checkBoxContainer: {
     marginTop: 40,
+  },
+
+  amountInput: {
+    height: 50,
+    width: 80,
+    fontSize: 16,
+    padding: "0 10px",
+    boxSizing: "border-box",
+    borderRadius: 4,
+    borderColor: colors.BLACK(0.4),
+  },
+  error: {
+    borderColor: "red",
   },
   infoIcon: {
     marginLeft: 5,
@@ -911,6 +991,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 18,
     fontWeight: 500,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 16,
+    },
   },
   coin: {
     height: 25,
@@ -923,6 +1006,11 @@ const styles = StyleSheet.create({
   },
   buttons: {
     marginTop: 20,
+  },
+  button: {
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+    },
   },
   successIcon: {
     color: "#7ae9b1",
