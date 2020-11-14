@@ -289,10 +289,13 @@ var styles = StyleSheet.create({
   mobileEditor: {},
   edits: {
     marginTop: 75,
+    marginBottom: 20,
     borderRadius: 4,
     border: "1px solid #F0F1F7",
     borderRadius: 5,
     height: "min-content",
+    position: "sticky",
+    top: 100,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -306,6 +309,7 @@ var styles = StyleSheet.create({
       justifyContent: "flex-start",
       margin: "25px 0",
       boxShadow: "none",
+      position: "unset",
     },
   },
 
