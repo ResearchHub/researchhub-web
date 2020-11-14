@@ -5,6 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Ripples from "react-ripples";
 import Link from "next/link";
+import moment from "moment";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -13,6 +14,7 @@ import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
+import AuthorAvatar from "~/components/AuthorAvatar";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -27,6 +29,7 @@ import icons from "~/config/themes/icons";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
 import { sendAmpEvent } from "~/config/fetch";
+import VoteWidget from "../../VoteWidget";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -539,50 +542,55 @@ class SummaryTab extends React.Component {
                   </div>
                 )}
                 {this.state.finishedLoading && (
-                  <TextEditor
-                    canEdit={true}
-                    readOnly={this.state.readOnly}
-                    canSubmit={true}
-                    commentEditor={false}
-                    initialValue={this.state.editorState}
-                    passedValue={this.state.editorState}
-                    placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
-                    
-                    Hypothesis: What question does this paper attempt to answer?
-
-                    Conclusion: What conclusion did the paper reach?
-
-                    Significance: What does this paper make possible in the world, and what should be tried from here?
-                    `}
-                    onCancel={this.cancel}
-                    onSubmit={this.submitEdit}
-                    onChange={this.onEditorStateChange}
-                    // smallToolBar={true}
-                    // hideButton={true}
-                    commentStyles={
-                      this.state.readOnly
-                        ? styles.commentReadStyles
-                        : styles.commentStyles
-                    }
-                    editing={this.state.editing}
-                  />
+                  <Fragment>
+                    <div className={css(styles.metaRow)}>
+                      <VoteWidget />
+                      <AuthorAvatar
+                        author={paper.summary.proposed_by.author_profile}
+                        size={30}
+                        disableLink={true}
+                        trueSize={true}
+                      />
+                      <div className={css(styles.column)}>
+                        <div className={css(styles.date)}>
+                          {moment(paper.summary.approved_date).format(
+                            "MMM Do YYYY, h:mm A"
+                          )}
+                        </div>
+                        <div
+                          className={css(styles.user)}
+                        >{`${paper.summary.proposed_by.author_profile.first_name} ${paper.summary.proposed_by.author_profile.last_name}`}</div>
+                      </div>
+                    </div>
+                    <TextEditor
+                      canEdit={true}
+                      readOnly={this.state.readOnly}
+                      canSubmit={true}
+                      commentEditor={false}
+                      initialValue={this.state.editorState}
+                      passedValue={this.state.editorState}
+                      placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
+                      
+                      Hypothesis: What question does this paper attempt to answer?
+  
+                      Conclusion: What conclusion did the paper reach?
+  
+                      Significance: What does this paper make possible in the world, and what should be tried from here?
+                      `}
+                      onCancel={this.cancel}
+                      onSubmit={this.submitEdit}
+                      onChange={this.onEditorStateChange}
+                      // smallToolBar={true}
+                      // hideButton={true}
+                      commentStyles={
+                        this.state.readOnly
+                          ? styles.commentReadStyles
+                          : styles.commentStyles
+                      }
+                      editing={this.state.editing}
+                    />
+                  </Fragment>
                 )}
-                {/* {!this.state.readOnly && (
-                  <div className={css(styles.buttonRow)}>
-                    <Ripples
-                      className={css(styles.cancelButton)}
-                      onClick={this.cancel}
-                    >
-                      Cancel
-                    </Ripples>
-                    <Ripples
-                      className={css(styles.submitButton)}
-                      onClick={this.submitEdit}
-                    >
-                      Submit
-                    </Ripples>
-                  </div>
-                )} */}
               </div>
             ) : (
               <div
@@ -800,6 +808,30 @@ var styles = StyleSheet.create({
     alignItems: "center",
     opacity: 1,
     transition: "all ease-in-out 0.3s",
+  },
+  metaRow: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+  },
+  column: {
+    width: 178,
+    marginLeft: 8,
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
+  },
+  date: {
+    fontSize: 14,
+    fontWeight: 400,
+    fontWeight: 500,
+  },
+  selected: {},
+  user: {
+    fontSize: 12,
+    opacity: 0.5,
+    marginTop: 3,
   },
   headerContainer: {
     display: "flex",
