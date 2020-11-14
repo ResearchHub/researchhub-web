@@ -4,10 +4,10 @@ import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
 
 import FormTextArea from "../Form/FormTextArea";
-import AuthorAvatar from "../AuthorAvatar";
 import Ripples from "react-ripples";
 import Button from "../Form/Button";
 import Loader from "~/components/Loader/Loader";
+import VoteWidget from "~/components/VoteWidget";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -131,7 +131,13 @@ const SummaryBulletPoint = (props) => {
           )}
           <div className={css(styles.topRow)}>
             <div className={css(styles.bulletpointIcon)}>
-              <i className="fas fa-dot-circle" />
+              {/* <i className="fas fa-dot-circle" /> */}
+              <VoteWidget
+                styles={styles.voteWidget}
+                showPromotion={false}
+                fontSize={"15px"}
+                width={"40px"}
+              />
             </div>
             <div className={css(styles.bulletpointText)}>
               {plain_text && text}
@@ -231,7 +237,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     boxSizing: "border-box",
     borderRadius: 3,
-    padding: 16,
+    padding: "25px 20px",
     marginBottom: 10,
     border: "1px solid #F0F0F0",
     position: "relative",
@@ -243,6 +249,10 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     alignItems: "flex-start",
+  },
+  voteWidget: {
+    marginLeft: 15,
+    marginRight: 5,
   },
   bulletpointIcon: {
     color: "#3971FF",
