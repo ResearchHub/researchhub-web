@@ -14,13 +14,18 @@ import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
 
 import { subscribeToHub } from "~/config/fetch";
+import VerificationForm from "../../../../components/Form/VerificationForm";
+import ComponentWrapper from "../../../../components/ComponentWrapper";
+import { MessageActions } from "../../../../redux/message";
 
 const Index = (props) => {
   const [page, setPage] = useState(1);
   const [saving, toggleSaving] = useState(false);
   const [userHubs, setUserHubs] = useState([]);
+  const { showMessage } = props;
 
   let formRef = useRef();
+  let verificationFormRef = useRef();
 
   const formatStep = () => {
     switch (page) {
@@ -28,6 +33,8 @@ const Index = (props) => {
         return "Step 1: Select Hubs for topics you're interested in";
       case 2:
         return "Step 2: User Information";
+      case 3:
+        return "Step 3: Higher Education Verification";
       default:
         return;
     }
@@ -39,9 +46,18 @@ const Index = (props) => {
         return "Trending Hubs";
       case 2:
         return "Enter your profile information";
+      case 3:
+        return "Do you have an advanced degree or are part of academia? \n\nUpload a screenshot verifying a PhD, Masters, or any other credentials to validate your education.";
       default:
         return;
     }
+  };
+
+  const saveVerification = () => {
+    // Saves verification step
+    verificationFormRef.current.uploadVerification().then(() => {
+      navigateHome();
+    });
   };
 
   const formatButtons = () => {
@@ -67,6 +83,17 @@ const Index = (props) => {
           right: {
             label: "Save",
             onClick: saveUserInformation,
+          },
+        };
+      case 3:
+        return {
+          left: {
+            label: "Previous Step",
+            onClick: () => setPage(page - 1),
+          },
+          right: {
+            label: "Next",
+            onClick: saveVerification,
           },
         };
     }
@@ -107,13 +134,14 @@ const Index = (props) => {
   const saveUserInformation = () => {
     const saveButton = formRef.current.buttonRef.current;
     saveButton.click();
+    setPage(page + 1);
   };
 
   const connectOrcidAccount = () => {
     props.openOrcidConnectModal(true);
   };
 
-  const navigateToProfile = () => {
+  const navigateHome = () => {
     Router.push("/", `/`).then(() => {
       connectOrcidAccount();
     });
@@ -135,10 +163,12 @@ const Index = (props) => {
           </ReactPlaceholder>
         );
       case 2:
+        return <OnboardForm forwardedRef={formRef} />;
+      case 3:
         return (
-          <OnboardForm
-            forwardedRef={formRef}
-            onAuthorSave={navigateToProfile}
+          <VerificationForm
+            ref={verificationFormRef}
+            showMessage={showMessage}
           />
         );
     }
@@ -150,10 +180,12 @@ const Index = (props) => {
         <h1 className={css(styles.title)}>Onboarding</h1>
         <h3 className={css(styles.subtitle)}>{formatStep()}</h3>
       </div>
-      <div className={css(styles.pageContainer)}>
-        <h1 className={css(styles.pageTitle)}>{formatTitle()}</h1>
-        <div className={css(styles.pageContent)}>{renderPage()}</div>
-      </div>
+      <ComponentWrapper overrideStyle={styles.componentWrapper}>
+        <div className={css(styles.pageContainer)}>
+          <h1 className={css(styles.pageTitle)}>{formatTitle()}</h1>
+          <div className={css(styles.pageContent)}>{renderPage()}</div>
+        </div>
+      </ComponentWrapper>
       <div className={css(styles.buttonRowContainer)}>
         <ButtonsRow {...formatButtons()} />
       </div>
@@ -162,12 +194,12 @@ const Index = (props) => {
 };
 
 Index.getInitialProps = async ({ query, res }) => {
-  if (!query.internal && res.writeHead) {
-    res.writeHead(302, { Location: `/user/${query.authorId}/contributions` });
-    res.end();
+  // if (!query.internal && res.writeHead) {
+  //   res.writeHead(302, { Location: `/user/${query.authorId}/contributions` });
+  //   res.end();
 
-    return { authorId: query.authorId, redirect: true };
-  }
+  //   return { authorId: query.authorId, redirect: true };
+  // }
 
   return { authorId: query.authorId };
 };
@@ -204,6 +236,9 @@ const styles = StyleSheet.create({
       width: "100%",
       textAlign: "center",
     },
+  },
+  componentWrapper: {
+    margin: "unset",
   },
   titleContainer: {
     display: "flex",
@@ -246,6 +281,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     borderBottom: "1px solid #DDD",
     fontSize: 22,
+    whiteSpace: "pre-wrap",
     "@media only screen and (max-width: 665px)": {
       padding: 20,
       fontSize: 18,
@@ -272,6 +308,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   openOrcidConnectModal: ModalActions.openOrcidConnectModal,
   updateSubscribedHubs: HubActions.updateSubscribedHubs,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
