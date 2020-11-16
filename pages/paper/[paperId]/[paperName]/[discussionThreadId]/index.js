@@ -48,50 +48,30 @@ const DiscussionThreadPage = (props) => {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
 
-  const fetchThread = async () => {
-    const response = await fetch(
-      API.THREAD(paperId, threadId),
-      API.GET_CONFIG()
-    ).catch(utils.handleCatch);
-
-    if (response.ok) {
-      let thread = await response.json();
-      thread.createdBy = thread.created_by;
-      setThread(thread);
-    } else {
-      utils.logFetchError(response);
-    }
-  };
-
   const fetchComments = async () => {
-    const response = await fetch(
-      API.THREAD_COMMENT(paperId, threadId, page),
-      API.GET_CONFIG()
-    ).catch(utils.handleCatch);
-
-    if (response.ok) {
-      const body = await response.json();
-      const comments = body;
-      comments.page = page;
-      if (comments.length > 0) {
-        setComments([...comments, ...comments.results]);
-      } else {
-        setComments(comments.results);
-      }
-      setPage(page + 1);
-      setCount(body.count);
-    } else {
-      utils.logFetchError(response);
-    }
+    return fetch(API.THREAD_COMMENT(paperId, threadId, page), API.GET_CONFIG())
+      .then(async (response) => {
+        if (response.ok) {
+          const body = await response.json();
+          const comments = body;
+          comments.page = page;
+          if (comments.length > 0) {
+            setComments([...comments, ...comments.results]);
+          } else {
+            setComments(comments.results);
+          }
+          setPage(page + 1);
+          setCount(body.count);
+        } else {
+          utils.logFetchError(response);
+        }
+      })
+      .catch(utils.handleCatch);
   };
 
-  async function fetchDiscussions() {
-    fetchThread();
-    fetchComments();
-  }
-
-  useEffect(() => {
-    fetchDiscussions();
+  useEffect(async () => {
+    await fetchComments();
+    setThread(props.thread);
   }, []);
 
   function renderComments(comments) {
@@ -164,7 +144,7 @@ const DiscussionThreadPage = (props) => {
           <Thread
             hostname={hostname}
             body={thread.text}
-            createdBy={thread.createdBy}
+            createdBy={thread.created_by}
             date={thread.created_date}
             vote={thread.user_vote}
             score={thread.score}
@@ -205,6 +185,8 @@ DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
   const hostname = host;
 
   const { paperId, discussionThreadId } = query;
+  let thread;
+
   try {
     if (
       typeof parseInt(paperId, 10) !== "number" ||
@@ -212,6 +194,12 @@ DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
     ) {
       throw 404;
     }
+    const response = await fetch(
+      API.THREAD(paperId, discussionThreadId),
+      API.GET_CONFIG()
+    );
+    thread = await response.json();
+    if (!thread.id) throw 404;
   } catch (err) {
     if (res) {
       res.statusCode = 404;
@@ -224,6 +212,7 @@ DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
     hostname,
     paperId,
     threadId: discussionThreadId,
+    thread,
   };
 };
 
