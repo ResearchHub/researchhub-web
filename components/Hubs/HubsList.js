@@ -175,7 +175,9 @@ class HubsList extends React.Component {
                   customPlaceholder={
                     <HubEntryPlaceholder color="#efefef" rows={9} />
                   }
-                />
+                >
+                  <div />
+                </ReactPlaceholder>
               </Fragment>
             )}
             <Link href={"/hubs"} as={"/hubs"}>
