@@ -91,8 +91,11 @@ const Index = ({ auth }) => {
             <h1 className={css(styles.title)}>ResearchHub Referral Program</h1>
             <p className={css(styles.subtitle)}>
               Invite your friends to ResearchHub. If they sign up and
-              contribute, you and your friend will receive 125 RSC! Share your
-              personal referral link by copying below.
+              contribute, you and your friend will receive 50 RSC! Share your
+              personal referral link by copying below. If you refer someone in
+              an advanced degree program or have already completed an advanced
+              degree program, then we will reward 1k RSC to the both of you on
+              an approval basis.
             </p>
             <FormInput
               getRef={formInputRef}
@@ -139,7 +142,7 @@ const Index = ({ auth }) => {
                       reputation={
                         <span className={css(styles.earnedRSC)}>
                           {friend.has_seen_first_coin_modal
-                            ? "+125 RSC"
+                            ? "+50 RSC"
                             : "0 RSC"}
                         </span>
                       }
@@ -363,6 +366,7 @@ const styles = StyleSheet.create({
     maxWidth: 650,
     margin: "0 auto",
     marginBottom: 32,
+    whiteSpace: "pre-wrap",
   },
   copyLink: {
     color: colors.PURPLE(),

@@ -42,7 +42,7 @@ const HowItWorks = (props) => {
         className={css(styles.dotted, styles.dottedUp)}
       />
       <Step
-        text={"After signing up & contributing, each of you earn 125 RSC."}
+        text={"After signing up & contributing, each of you earn 50 RSC."}
         title={"Earn RSC"}
         icon={<img src={"/static/referrals/third-step.svg"} />}
       />
