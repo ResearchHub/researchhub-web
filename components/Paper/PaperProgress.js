@@ -280,7 +280,7 @@ class PaperProgress extends React.Component {
       return this.props.openDndModal(true, {
         title: "Add Figures",
         subtitle: "Upload up to 3 figures at a time",
-        fileAccept: "image/x-png,image/jpeg",
+        accept: "image/x-png,image/jpeg",
         onSubmit: this.postFigures,
       });
     }

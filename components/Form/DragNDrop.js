@@ -83,7 +83,11 @@ class DragNDrop extends React.Component {
     let isPDF = true;
     let file = acceptedFiles[0];
     let type = file.type.split("/").pop();
-    if (type !== "pdf") {
+
+    let { accept } = this.props;
+    const toAccept = accept ? accept : "application/pdf";
+
+    if (type !== "pdf" && toAccept.includes("pdf")) {
       isPDF = false;
     }
 
@@ -177,7 +181,15 @@ class DragNDrop extends React.Component {
   };
 
   render() {
-    let { loading, uploadedPaper, uploadFinish, pasteUrl } = this.props;
+    let {
+      loading,
+      uploadedPaper,
+      uploadFinish,
+      pasteUrl,
+      accept,
+      noPasteUrl,
+    } = this.props;
+    const toAccept = accept ? accept : "application/pdf";
     return (
       <div
         className={css(styles.container)}
@@ -185,7 +197,7 @@ class DragNDrop extends React.Component {
       >
         <Dropzone
           onDrop={(acceptedFiles) => this.handleDrop(acceptedFiles)}
-          accept="application/pdf"
+          accept={toAccept}
           onDragEnter={this.setDragOverState}
           onDragOver={this.setDragOverState}
         >
@@ -219,11 +231,11 @@ class DragNDrop extends React.Component {
                       src={"/static/icons/dragNdrop.png"}
                     />
                   )}
-                  {this.state.isPDF ? (
+                  {!toAccept.includes("pdf") || this.state.isPDF ? (
                     <p className={css(styles.label)}>
                       {"Drag & drop or "}
                       <span className={css(styles.browse)}>browse</span>
-                      {" PDF to upload"}
+                      {" to upload"}
                     </p>
                   ) : (
                     <p className={css(styles.label, styles.error)}>
@@ -235,7 +247,7 @@ class DragNDrop extends React.Component {
             </section>
           )}
         </Dropzone>
-        {!uploadFinish && (
+        {!uploadFinish && !noPasteUrl && (
           <p
             className={css(styles.pasteInstruction, !pasteUrl && styles.link)}
             onClick={!pasteUrl ? this.props.openUploadPaperModal : null}
