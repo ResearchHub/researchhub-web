@@ -234,17 +234,9 @@ var styles = StyleSheet.create({
   list: {
     boxShadow: "inset 0 1px 3px rgba(0,0,0,0.24)",
     maxHeight: 600,
-    overflow: "hidden",
-
-    ":hover": {
-      overflowY: "scroll",
-      "@media only screen and (min-width: 767px)": {
-        marginRight: -15,
-      },
-    },
+    overflowY: "scroll",
     "@media only screen and (max-width: 767px)": {
       maxHeight: 300,
-      overflowY: "scroll",
     },
   },
   loadButton: {
