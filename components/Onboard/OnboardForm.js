@@ -217,8 +217,8 @@ class OnboardForm extends React.Component {
       .then((res) => {
         if (!silent) {
           showMessage({ show: false });
-          setMessage("Updates made successfully");
-          showMessage({ show: true });
+          // setMessage("Updates made successfully");
+          // showMessage({ show: true });
         }
         const { updateUser, updateAuthor, user } = this.props;
         const updatedAuthorProfile = { ...res };
