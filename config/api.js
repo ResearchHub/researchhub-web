@@ -473,6 +473,18 @@ const routes = (BASE_URL) => {
     },
     GET_CSL_ITEM: BASE_URL + "paper/get_csl_item/",
     SEARCH_BY_URL: BASE_URL + "paper/search_by_url/",
+    USER_VERIFICATION: ({ route }) => {
+      let url = BASE_URL + "user_verification/";
+
+      let params = {
+        querystring: {},
+        rest: {
+          route: route,
+        },
+      };
+      url = prepURL(url, params);
+      return url;
+    },
     // Ethereum
     WITHDRAW_COIN: ({ transactionId, page }) => {
       let url = BASE_URL + "withdrawal/";
