@@ -9,6 +9,8 @@ function AuthorPageRedirect() {
 }
 
 AuthorPageRedirect.getInitialProps = async (ctx) => {
+  let { query } = ctx;
+
   redirect(ctx, "authorId", redirectPath);
   return {};
 };
