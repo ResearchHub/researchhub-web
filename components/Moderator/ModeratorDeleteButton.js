@@ -25,6 +25,7 @@ const ModeratorDeleteButton = (props) => {
     label,
     user,
     authorId,
+    onAction,
   } = props;
 
   let containerClass = [
@@ -45,7 +46,11 @@ const ModeratorDeleteButton = (props) => {
           text,
           buttonText: "Remove",
           onClick: () => {
-            return deletePaperPage();
+            if (onAction) {
+              return onAction();
+            } else {
+              return deletePaperPage();
+            }
           },
         });
       case "pdf":
