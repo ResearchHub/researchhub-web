@@ -6,7 +6,7 @@ import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 
 const ButtonsRow = (props) => {
-  const { left, right } = props;
+  const { left, right, farRight } = props;
 
   return (
     <div className={css(styles.buttonContainer)}>
@@ -24,6 +24,16 @@ const ButtonsRow = (props) => {
         disabled={right.disabled && right.disabled}
         onClick={right.onClick && right.onClick}
       />
+      {farRight && (
+        <div
+          className={css(styles.button, styles.buttonLeft)}
+          onClick={farRight.onClick && farRight.onClick}
+        >
+          <span className={css(styles.buttonLabel)}>
+            {farRight.label && farRight.label}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
