@@ -555,7 +555,14 @@ class PaperUploadInfo extends React.Component {
   renderHeader = (label, header = false, clickable = true) => {
     return (
       <div className={css(styles.header, styles.text)}>
-        {label}
+        {label}{" "}
+        <a
+          className={css(styles.authorGuidelines)}
+          href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+          target="_blank"
+        >
+          Submission Guidelines
+        </a>
         {header && (
           <div
             className={css(
@@ -564,17 +571,7 @@ class PaperUploadInfo extends React.Component {
               styles.text
             )}
           >
-            {clickable ? (
-              <a
-                className={css(styles.authorGuidelines)}
-                href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
-                target="_blank"
-              >
-                {header}
-              </a>
-            ) : (
-              header
-            )}
+            {header}
           </div>
         )}
       </div>
@@ -1074,6 +1071,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
     paddingBottom: 8,
     borderBottom: `1px solid #EBEBEB`,
     "@media only screen and (max-width: 665px)": {
@@ -1407,6 +1405,20 @@ const styles = StyleSheet.create({
       fontSize: 10,
     },
   },
+  authorGuidelines: {
+    fontSize: 14,
+    letterSpacing: 0.3,
+    textDecoration: "none",
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 10,
+    },
+  },
   type: {
     color: colors.BLUE(),
     cursor: "pointer",
@@ -1445,17 +1457,6 @@ const customStyles = {
     },
     "@media only screen and (max-width: 321px)": {
       width: 270,
-    },
-  },
-  authorGuidelines: {
-    "@media only screen and (max-width: 665px)": {
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 10,
     },
   },
   capitalize: {

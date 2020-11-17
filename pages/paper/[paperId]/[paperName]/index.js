@@ -47,6 +47,7 @@ import { redirect, formatPaperSlug } from "~/config/utils";
 import * as shims from "~/redux/paper/shims";
 import PaperTransactionModal from "../../../../components/modal/PaperTransactionModal";
 import PaperFeatureModal from "../../../../components/modal/PaperFeatureModal";
+import PaperBanner from "../../../../components/Paper/PaperBanner";
 
 const isServer = () => typeof window === "undefined";
 
@@ -444,10 +445,33 @@ const Paper = (props) => {
           title={paper.title}
           description={formatDescription()}
           socialImageUrl={socialImageUrl}
+          noindex={paper.is_removed}
           canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
         />
         <div className={css(styles.paperPageContainer)}>
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
+            {paper.is_removed && (
+              <div style={{ marginTop: 16 }}>
+                <PaperBanner
+                  message={
+                    <div style={{ textAlign: "center", width: "100%" }}>
+                      This paper has been removed from ResearchHub by a
+                      moderator because of poor quality content.
+                      <br />
+                      Please visit our{" "}
+                      <a
+                        style={{ color: "#4E53FF" }}
+                        href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
+                        target="_blank"
+                      >
+                        Paper Submission Guidelines
+                      </a>{" "}
+                      to see what kind of content we accept.
+                    </div>
+                  }
+                />
+              </div>
+            )}
             <PaperPageCard
               paper={paper}
               paperId={paperId}
