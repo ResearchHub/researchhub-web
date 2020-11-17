@@ -168,8 +168,8 @@ class PaperEditHistory extends React.Component {
         />
         <div className={css(styles.container)}>
           <Link
-            href={"/paper/[paperId]/[tabName]"}
-            as={`/paper/${router.query.paperId}/summary`}
+            href={"/paper/[paperId]/[paperName]"}
+            as={`/paper/${router.query.paperId}/${router.query.paperName}#summary`}
           >
             <div className={css(styles.back)}>
               <i className={css(styles.arrow) + " fal fa-long-arrow-left"}></i>
