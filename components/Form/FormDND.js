@@ -23,7 +23,7 @@ import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 import Dropzone from "react-dropzone";
 import PaperEntry from "../SearchSuggestion/PaperEntry";
 
-class NewDND extends React.Component {
+class FormDND extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -643,4 +643,4 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(NewDND);
+)(FormDND);

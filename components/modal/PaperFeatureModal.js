@@ -10,7 +10,7 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import Loader from "~/components/Loader/Loader";
 import TextEditor from "~/components/TextEditor";
-import NewDND from "~/components/Form/NewDND";
+import FormDND from "~/components/Form/FormDND";
 
 // Redux
 import { BulletActions } from "~/redux/bullets";
@@ -638,7 +638,7 @@ class PaperFeatureModal extends React.Component {
         case "paper-pdf":
           return (
             <div className={css(styles.dndContainer)}>
-              <NewDND
+              <FormDND
                 handleDrop={this.handleFileDrop}
                 // onSearch={checkSearchResults}
               />

@@ -14,7 +14,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import ComponentWrapper from "~/components/ComponentWrapper";
-import NewDND from "../../Form/NewDND";
+import FormDND from "../../Form/FormDND";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import Button from "../../Form/Button";
 
@@ -163,7 +163,7 @@ function PaperTab(props) {
         return (
           <Fragment>
             <div className={css(styles.dndContainer)}>
-              <NewDND
+              <FormDND
                 handleDrop={handleFileDrop}
                 onSearch={checkSearchResults}
               />
