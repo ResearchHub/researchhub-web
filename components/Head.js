@@ -7,6 +7,7 @@ import { COMPANY_NAME, METATAG_DEFAULT_IMAGE_URL } from "../config/constants";
 
 const HeadComponent = (props) => {
   const router = useRouter();
+  const { noindex } = props;
   const title = props.title || `${COMPANY_NAME} | Open Science Community`;
   // TODO: What url can we use when rendered server side?
   const url =
@@ -76,7 +77,7 @@ const HeadComponent = (props) => {
       <meta property="og:url" name="og:url" content={url} />
       {/* Facebook */}
       <meta property="fb:app_id" content={"id"} />
-      {process.env.REACT_APP_ENV === "staging" && (
+      {(process.env.REACT_APP_ENV === "staging" || noindex) && (
         <meta name="robots" content="noindex" />
       )}
       {/* Twitter */}
