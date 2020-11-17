@@ -217,14 +217,21 @@ class BulletsContainer extends React.Component {
       );
     } else
       return bullets.map((bullet, index) => {
+        let editable = false;
+        let { auth } = this.props;
+        if (bullet.created_by.id === auth.user.id || auth.user.moderator) {
+          editable = true;
+        }
         return (
           <SummaryBulletPoint
             key={`summaryBulletPoint-${bullet.id}`}
             data={bullet}
             onEditCallback={this.onEditCallback}
+            editable={editable}
             onRemoveCallback={this.onRemoveCallback}
             type={"KEY_TAKEAWAY"}
             index={index}
+            authorProfile={bullet.created_by.author_profile}
           />
         );
       });

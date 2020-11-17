@@ -17,9 +17,19 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import AuthorAvatar from "../AuthorAvatar";
 
 const SummaryBulletPoint = (props) => {
-  const { data, manage, type, index, onEditCallback, onRemoveCallback } = props;
+  const {
+    data,
+    manage,
+    type,
+    index,
+    onEditCallback,
+    onRemoveCallback,
+    editable,
+    authorProfile,
+  } = props;
   const store = useStore();
   const dispatch = useDispatch();
   const alert = useAlert();
@@ -28,7 +38,6 @@ const SummaryBulletPoint = (props) => {
   let userId = store.getState().auth.user.id;
   const [text, setText] = useState(plain_text ? plain_text : "");
   const [hovered, toggleHover] = useState(false);
-  const [editable, setEditable] = useState(true);
   const [editView, setEditView] = useState(false);
   const [editText, setEditText] = useState(plain_text ? plain_text : "");
   const [pending, togglePending] = useState(false);
@@ -201,6 +210,13 @@ const SummaryBulletPoint = (props) => {
     >
       {renderDeleteButton()}
       {renderBody()}
+      <div className={css(styles.authorAvatar)}>
+        <AuthorAvatar
+          author={authorProfile}
+          name={authorProfile.first_name + " " + authorProfile.last_name}
+          disableLink={false}
+        />
+      </div>
     </div>
   );
 };
@@ -238,6 +254,11 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       padding: 8,
     },
+  },
+  authorAvatar: {
+    position: "absolute",
+    bottom: 4,
+    right: 4,
   },
   topRow: {
     width: "100%",
