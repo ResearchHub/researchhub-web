@@ -14,7 +14,7 @@ import Button from "../Form/Button";
 import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import Message from "../Loader/Message";
-import NewDND from "../Form/NewDND";
+import FormDND from "../Form/FormDND";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Modal
@@ -624,7 +624,7 @@ class PaperUploadInfo extends React.Component {
                   : "Paper PDF"}
                 <span className={css(styles.asterick)}>*</span>
               </div>
-              <NewDND
+              <FormDND
                 handleDrop={this.uploadPaper}
                 onDrop={null}
                 onValidUrl={() => this.setState({ disabled: false })}
