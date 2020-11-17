@@ -468,7 +468,7 @@ class PaperPageCard extends React.Component {
 
     let authors = {};
 
-    if (paper.authors) {
+    if (paper.authors && paper.authors.length) {
       paper.authors.map((author) => {
         if (author.first_name && !author.last_name) {
           authors[author.first_name] = author;
@@ -550,8 +550,8 @@ class PaperPageCard extends React.Component {
       } else {
         authors.push(
           <span className={css(styles.rawAuthor)}>
-            {`${author}${index < length - 1 ? "," : ""}`}
-            <meta property="author" content={author} />
+            {`${authorName}${index < length - 1 ? "," : ""}`}
+            <meta property="author" content={authorName} />
           </span>
         );
         index++;
