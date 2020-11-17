@@ -39,7 +39,7 @@ const ActionButton = (props) => {
   if (isModerator) {
     return (
       <ModeratorDeleteButton
-        icon={icons.ban}
+        icon={icon ? icon : icons.ban}
         iconStyle={styles.deleteIcon}
         actionType={"page"}
         metaData={{ paperId }}
