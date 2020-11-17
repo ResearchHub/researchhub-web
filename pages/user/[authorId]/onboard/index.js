@@ -92,8 +92,12 @@ const Index = (props) => {
             onClick: () => setPage(page - 1),
           },
           right: {
-            label: "Next",
+            label: "Finish",
             onClick: saveVerification,
+          },
+          farRight: {
+            label: "Skip",
+            onClick: navigateHome,
           },
         };
     }
