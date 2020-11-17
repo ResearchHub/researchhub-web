@@ -37,6 +37,7 @@ import API from "~/config/api";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate, openExternalLink } from "~/config/utils";
+import { MessageActions } from "../redux/message";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -90,6 +91,23 @@ class PaperPageCard extends React.Component {
     }
 
     return url;
+  };
+
+  removePaper = () => {
+    let { setMessage, showMessage } = this.props;
+    let params = {
+      is_removed: true,
+    };
+    return fetch(
+      API.PAPER({ paperId, progress }),
+      API.PATCH_FILE_CONFIG(params)
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setMessage("Paper Successfully Removed.");
+        showMessage({ show: true });
+      });
   };
 
   fetchFigures = () => {
@@ -276,8 +294,18 @@ class PaperPageCard extends React.Component {
             />
           </span>
         ) : (
-          <span data-tip={"Remove Page"}>
-            <ActionButton isModerator={isModerator} paperId={paper.id} />
+          <span>
+            <span data-tip={"Remove Page"} style={{ marginRight: 10 }}>
+              <ActionButton
+                isModerator={isModerator}
+                paperId={paper.id}
+                icon={icons.minusCircle}
+                onAction={this.removePaper}
+              />
+            </span>
+            <span data-tip={"Remove Page & Ban User"}>
+              <ActionButton isModerator={isModerator} paperId={paper.id} />
+            </span>
           </span>
         )}
       </div>
@@ -1489,6 +1517,8 @@ const carousel = StyleSheet.create({
 const mapDispatchToProps = {
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
   openAuthorSupportModal: ModalActions.openAuthorSupportModal,
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
 };
 
 export default connect(
