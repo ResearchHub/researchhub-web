@@ -496,8 +496,8 @@ class SummaryTab extends React.Component {
                       </h3>
                       <div className={css(styles.summaryActions)}>
                         <Link
-                          href={"/paper/[paperId]/[tabName]/edits"}
-                          as={`/paper/${paper.id}/summary/edits`}
+                          href={"/paper/[paperId]/[paperName]/edits"}
+                          as={`/paper/${paper.id}/${paper.slug}/edits`}
                         >
                           <Ripples
                             className={css(styles.action, styles.editHistory)}
