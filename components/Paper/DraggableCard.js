@@ -68,6 +68,7 @@ const DraggableCard = ({
   const opacity = isDragging ? 0.5 : 1;
   drag(drop(ref));
 
+  console.log(data);
   return (
     <div ref={ref} style={{ opacity }}>
       <SummaryBulletPoint
@@ -76,7 +77,7 @@ const DraggableCard = ({
         index={index}
         onEditCallback={onEditCallback}
         onRemoveCallback={onRemoveCallback}
-        authorProfile={data.created_by.user.author_profile}
+        authorProfile={data.created_by.author_profile}
       />
     </div>
   );
