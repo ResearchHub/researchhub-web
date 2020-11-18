@@ -66,3 +66,16 @@ export const summaryVote = async ({ type, summaryId }, callback) => {
       //Todo: handle error
     });
 };
+
+export const checkSummaryVote = async ({ summaryId }, callback) => {
+  return fetch(
+    API.SUMMARY({ summaryId, route: "check_user_vote", check_vote: true }),
+    API.GET_CONFIG()
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => callback(res))
+    .catch((err) => {
+      //Todo: handle error
+    });
+};

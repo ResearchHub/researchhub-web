@@ -12,8 +12,9 @@ import DiscussionPostMetadata from "../DiscussionPostMetadata";
 
 const SummaryContributor = (props) => {
   const { summary, hideMeta, voteStyles } = props;
-
-  const authorProfile = summary.proposed_by.author_profile;
+  const authorProfile = summary.proposed_by
+    ? summary.proposed_by.author_profile
+    : {};
 
   const [score, setScore] = useState(summary.score);
   const [userVote, setUserVote] = useState(summary.user_vote);
@@ -22,8 +23,12 @@ const SummaryContributor = (props) => {
   );
 
   useEffect(() => {
-    console.log("summary", summary);
-  }, []);
+    setScore(props.summary.score);
+    setUserVote(props.summary.user_vote);
+    setSelected(
+      props.summary.user_vote ? props.summary.user_vote.vote_type : false
+    );
+  }, [props.summary.score]);
 
   const onUpvote = () => {
     summaryVote(

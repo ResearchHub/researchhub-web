@@ -5,7 +5,6 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Ripples from "react-ripples";
 import Link from "next/link";
-import moment from "moment";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -14,7 +13,6 @@ import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
-import AuthorAvatar from "~/components/AuthorAvatar";
 import SummaryContributor from "../SummaryContributor";
 
 // Redux
@@ -29,9 +27,9 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
-import { sendAmpEvent, summaryVote } from "~/config/fetch";
-import VoteWidget from "../../VoteWidget";
+
 import DiscussionPostMetadata from "../../DiscussionPostMetadata";
+import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -51,6 +49,9 @@ class SummaryTab extends React.Component {
       abstract: "",
       showAbstract: false,
       editAbstract: false,
+
+      //
+      checked: false,
     };
   }
 
@@ -251,6 +252,7 @@ class SummaryTab extends React.Component {
    */
   initializeSummary = () => {
     const { paper } = this.props;
+
     if (paper.summary) {
       if (paper.summary.summary) {
         if (isQuillDelta(paper.summary.summary)) {
@@ -281,6 +283,28 @@ class SummaryTab extends React.Component {
     }
   };
 
+  // checkSummaryVote = () => {
+  //   if (this.props.paper.summary && !this.state.checked) {
+  //     const summaryId = this.props.paper.summary.id;
+
+  //     checkSummaryVote({
+  //       summaryId
+  //     }, (res) => {
+
+  //       this.setState({ checked: true })
+  //       let summary = {
+  //         ...this.props.paper.summary,
+  //         user_vote: res[summaryId],
+  //         score: res[summaryId].score
+  //       }
+  //       let paper = { ...this.props.paper, summary};
+  //       this.props.updatePaperState(paper);
+  //       this.props.updateRedux('summary', summary);
+
+  //     })
+  //   }
+  // }
+
   navigateToEditPaperInfo = () => {
     let paperId = this.props.paper.id;
     let href = "/paper/upload/info/[paperId]";
@@ -289,7 +313,6 @@ class SummaryTab extends React.Component {
   };
 
   componentDidMount() {
-    console.log("this", this.props.paper);
     this.initializeSummary();
   }
 
@@ -1092,6 +1115,7 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getEditHistory: PaperActions.getEditHistory,
   patchPaper: PaperActions.patchPaper,
+  // updateRedux: PaperActions.updatePaperState,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
