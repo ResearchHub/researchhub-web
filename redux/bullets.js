@@ -127,7 +127,10 @@ export const BulletActions = {
         order,
         bullet_type: "KEY_TAKEAWAY",
       };
-      return fetch(API.REORDER_BULLETS(), API.PATCH_CONFIG(params))
+      return fetch(
+        API.KEY_TAKEAWAY({ route: "reorder_all" }),
+        API.PATCH_CONFIG(params)
+      )
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {

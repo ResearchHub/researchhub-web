@@ -7,7 +7,7 @@ import FormTextArea from "../Form/FormTextArea";
 import Ripples from "react-ripples";
 import Button from "../Form/Button";
 import Loader from "~/components/Loader/Loader";
-import VoteWidget from "~/components/VoteWidget";
+import BulletPointVote from "./Vote/BulletPointVote";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -131,13 +131,7 @@ const SummaryBulletPoint = (props) => {
           )}
           <div className={css(styles.topRow)}>
             <div className={css(styles.bulletpointIcon)}>
-              {/* <i className="fas fa-dot-circle" /> */}
-              <VoteWidget
-                styles={styles.voteWidget}
-                showPromotion={false}
-                fontSize={"15px"}
-                width={"40px"}
-              />
+              <BulletPointVote bulletPoint={data} />
             </div>
             <div className={css(styles.bulletpointText)}>
               {plain_text && text}
@@ -163,7 +157,7 @@ const SummaryBulletPoint = (props) => {
   const onRemove = () => {
     dispatch(MessageActions.showMessage({ show: true, load: true }));
     let bulletId = data.id;
-    fetch(API.CENSOR_KEY_TAKEAWAY({ bulletId }), API.DELETE_CONFIG())
+    fetch(API.KEY_TAKEAWAY({ bulletId, route: "censor" }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -250,10 +244,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
   },
-  voteWidget: {
-    marginLeft: 15,
-    marginRight: 5,
-  },
+
   bulletpointIcon: {
     color: "#3971FF",
     height: 30,

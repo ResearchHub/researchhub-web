@@ -166,6 +166,8 @@ function transformEdit(edit) {
     createdDate: edit.created_date,
     updatedDate: edit.updated_date,
     paper: edit.paper,
+    score: edit.score,
+    user_vote: edit.user_vote,
   };
 }
 
