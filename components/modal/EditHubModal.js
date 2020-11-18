@@ -166,7 +166,9 @@ class EditHubModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    document.body.style.overflow = "auto";
+    if (document.body.style) {
+      document.body.style.overflow = "auto";
+    }
   };
 
   // Thank you stackoverflow :)

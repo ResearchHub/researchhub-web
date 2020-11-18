@@ -204,7 +204,9 @@ const Navbar = (props) => {
     }
     if (props.modals.openUploadPaperModal) {
       props.openUploadPaperModal(false);
-      document.body.style.overflow = "scroll";
+      if (document.body.style) {
+        document.body.style.overflow = "scroll";
+      }
     }
     toggleSideMenu();
   }

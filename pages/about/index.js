@@ -163,7 +163,9 @@ class Index extends React.Component {
   }
 
   componentDidMount() {
-    document.body.style.scrollSnapType = "y mandatory";
+    if (document.body.style) {
+      document.body.style.scrollSnapType = "y mandatory";
+    }
     setTimeout(() => {
       this.setState({ reveal: true }, () => {
         setTimeout(() => {
