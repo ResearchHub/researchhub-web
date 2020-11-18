@@ -23,13 +23,18 @@ class OrcidConnectModal extends React.Component {
    * closes the modal on button click
    */
   closeModal = () => {
-    const { openOrcidConnectModal } = this.props;
+    const { openOrcidConnectModal, auth } = this.props;
     let setHasSeen = false;
-    const hasSeen = this.props.auth.user.has_seen_orcid_connect_modal;
+    const hasSeen = auth.user.has_seen_orcid_connect_modal;
     if (!hasSeen) {
       setHasSeen = true;
     }
     openOrcidConnectModal(false, setHasSeen);
+  };
+
+  loginCallback = () => {
+    this.closeModal();
+    document.body.style.overflow = "scroll";
   };
 
   render() {
@@ -48,7 +53,10 @@ class OrcidConnectModal extends React.Component {
       >
         <div className={css(styles.titleContainer)}></div>
         <div className={css(styles.buttonColumn)}>
-          <OrcidConnectButton customLabel={"Connect to ORCID"} />
+          <OrcidConnectButton
+            customLabel={"Connect to ORCID"}
+            loginCallback={this.loginCallback}
+          />
         </div>
       </BaseModal>
     );

@@ -33,6 +33,7 @@ const OrcidConnectButton = (props) => {
     iconStyle,
     refreshProfileOnSuccess,
     iconButton,
+    loginCallback,
   } = props;
 
   const router = useRouter();
@@ -41,6 +42,7 @@ const OrcidConnectButton = (props) => {
     if (refreshProfileOnSuccess) {
       router.push(`/user/${author_id}`);
     }
+    loginCallback && loginCallback();
   }
 
   function showLoginFailureMessage(response) {
