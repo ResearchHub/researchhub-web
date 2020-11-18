@@ -205,6 +205,7 @@ const Paper = (props) => {
         .then(Helpers.parseJSON)
         .then((res) => {
           const paperUserVote = res[paperId];
+
           if (paperUserVote) {
             if (paper.summary) {
               // check summary vote if exist
@@ -217,8 +218,11 @@ const Paper = (props) => {
                   score: summaryUserVote.score,
                 };
 
-                let updatedPaper = { ...paper, summary };
-                updatedPaper.userVote = paperUserVote;
+                let updatedPaper = {
+                  ...paper,
+                  summary,
+                  userVote: paperUserVote,
+                };
                 setPaper(updatedPaper);
                 setSelectedVoteType(updatedPaper.userVote.vote_type);
               });
