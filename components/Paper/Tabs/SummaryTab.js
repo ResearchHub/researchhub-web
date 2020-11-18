@@ -15,6 +15,7 @@ import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import SummaryContributor from "../SummaryContributor";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -28,8 +29,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
-import { sendAmpEvent } from "~/config/fetch";
-import VoteWidget from "../../VoteWidget";
+import { sendAmpEvent, summaryVote } from "~/config/fetch";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -287,6 +287,7 @@ class SummaryTab extends React.Component {
   };
 
   componentDidMount() {
+    console.log("this", this.props.paper);
     this.initializeSummary();
   }
 
@@ -543,25 +544,7 @@ class SummaryTab extends React.Component {
                 )}
                 {this.state.finishedLoading && (
                   <Fragment>
-                    <div className={css(styles.metaRow)}>
-                      <VoteWidget />
-                      <AuthorAvatar
-                        author={paper.summary.proposed_by.author_profile}
-                        size={30}
-                        disableLink={true}
-                        trueSize={true}
-                      />
-                      <div className={css(styles.column)}>
-                        <div className={css(styles.date)}>
-                          {moment(paper.summary.approved_date).format(
-                            "MMM Do YYYY, h:mm A"
-                          )}
-                        </div>
-                        <div
-                          className={css(styles.user)}
-                        >{`${paper.summary.proposed_by.author_profile.first_name} ${paper.summary.proposed_by.author_profile.last_name}`}</div>
-                      </div>
-                    </div>
+                    <SummaryContributor summary={paper.summary} />
                     <TextEditor
                       canEdit={true}
                       readOnly={this.state.readOnly}
@@ -625,8 +608,6 @@ class SummaryTab extends React.Component {
                       onCancel={this.cancel}
                       onSubmit={this.submitEdit}
                       onChange={this.onEditorStateChange}
-                      // smallToolBar={true}
-                      // hideButton={true}
                       placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
                       
 Hypothesis: What question does this paper attempt to answer?
@@ -638,20 +619,6 @@ Significance: What does this paper make possible in the world, and what should b
                       commentStyles={styles.commentStyles}
                       editing={this.state.editing}
                     />
-                    {/* <div className={css(styles.buttonRow)}>
-                      <Ripples
-                        className={css(styles.cancelButton)}
-                        onClick={this.cancel}
-                      >
-                        Cancel
-                      </Ripples>
-                      <Ripples
-                        className={css(styles.submitButton)}
-                        onClick={this.submitEdit}
-                      >
-                        Submit
-                      </Ripples>
-                    </div> */}
                   </div>
                 ) : (
                   <Fragment>
