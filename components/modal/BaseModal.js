@@ -82,11 +82,15 @@ class BaseModal extends React.Component {
    * & renables scrolling of parent component when modal is closed
    */
   disableParentScroll = () => {
-    document.body.style.overflow = "hidden";
+    if (document.body.style) {
+      document.body.style.overflow = "hidden";
+    }
   };
 
   enableParentScroll = () => {
-    document.body.style.overflow = "scroll";
+    if (document.body.style) {
+      document.body.style.overflow = "scroll";
+    }
   };
 
   getMobileState = () => {

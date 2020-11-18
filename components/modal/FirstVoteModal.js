@@ -80,7 +80,9 @@ const FirstVoteModal = (props) => {
   }
 
   function enableParentScroll() {
-    document.body.style.overflow = "scroll";
+    if (document.body.style) {
+      document.body.style.overflow = "auto";
+    }
   }
 
   function openLinkInTab(e) {
