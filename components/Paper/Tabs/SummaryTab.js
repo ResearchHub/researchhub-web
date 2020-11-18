@@ -29,13 +29,9 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
-<<<<<<< HEAD
 import { sendAmpEvent, summaryVote } from "~/config/fetch";
-=======
-import { sendAmpEvent } from "~/config/fetch";
 import VoteWidget from "../../VoteWidget";
 import DiscussionPostMetadata from "../../DiscussionPostMetadata";
->>>>>>> adding in the user metadata to key takeawways
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -469,7 +465,6 @@ class SummaryTab extends React.Component {
   render() {
     let { paper } = this.props;
     let { transition } = this.state;
-    let authorProfile = paper.summary.proposed_by.author_profile;
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
         <a name="takeaways" id={"takeaway"}>

@@ -8,6 +8,7 @@ import VoteWidget from "~/components/VoteWidget";
 import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { summaryVote } from "~/config/fetch";
+import DiscussionPostMetadata from "../DiscussionPostMetadata";
 
 const SummaryContributor = (props) => {
   const { summary, hideMeta, voteStyles } = props;
@@ -83,13 +84,9 @@ const SummaryContributor = (props) => {
         promoted={false}
       />
       <DiscussionPostMetadata
-        username={
-          authorProfile.first_name +
-          " " +
-          authorProfile.last_name
-        }
+        username={authorProfile.first_name + " " + authorProfile.last_name}
         authorProfile={authorProfile}
-        date={paper.summary.approved_date}
+        date={summary.approved_date}
         fullDate={true}
       />
       {/* <AuthorAvatar
