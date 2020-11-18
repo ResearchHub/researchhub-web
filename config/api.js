@@ -219,29 +219,6 @@ const routes = (BASE_URL) => {
     },
 
     DISCUSSION: ({ paperId, filter, page, progress, twitter, isRemoved }) => {
-      // let url = `${BASE_URL}paper/${paperId}/discussion/`;
-
-      // if (progress) {
-      //   url += "?created_location=progress";
-      // }
-
-      // if (typeof page === "number") {
-      //   url += `?page=${page}`;
-      // }
-
-      // if (twitter !== undefined && twitter !== null) {
-      //   if (!(progress || typeof page === "number")) {
-      //     url += "?";
-      //   } else {
-      //     url += "&";
-      //   }
-      //   url += `source=${twitter ? "twitter" : "researchhub"}`;
-      // }
-
-      // if (isRemoved) {
-      //   url += "&is_removed=False";
-      // }
-
       let url = BASE_URL + `paper/${paperId}/discussion/`;
       let params = {
         querystring: {
@@ -257,20 +234,20 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    SUMMARY: ({ summaryId, progress }) => {
+    SUMMARY: ({ summaryId, route, progress }) => {
       let url = BASE_URL + `summary/`;
 
-      if (summaryId) {
-        url += `${summaryId}/?`;
-      } else {
-        url += "?";
-      }
+      let params = {
+        querystring: {
+          created_location: progress && "progress",
+        },
+        rest: {
+          route: route,
+          id: summaryId,
+        },
+      };
 
-      if (progress) {
-        url += "created_location=progress";
-      }
-
-      return url;
+      return (url = prepURL(url, params));
     },
 
     FIRST_SUMMARY: () => {
@@ -373,12 +350,6 @@ const routes = (BASE_URL) => {
     SORTED_HUB: ({ filter }) => {
       // hard codedlimit to 10
       let url = BASE_URL + `hub/?ordering=-score&page_limit=10`;
-
-      // if (filter !== undefined || filter !== null) {
-      //   if (typeof filter === "string") {
-      //     url += `&ordering=${filter}`;
-      //   }
-      // }
 
       return url;
     },
@@ -529,9 +500,7 @@ const routes = (BASE_URL) => {
     CENSOR_HUB: ({ hubId }) => {
       return BASE_URL + `hub/${hubId}/censor/`;
     },
-    CENSOR_KEY_TAKEAWAY: ({ bulletId }) => {
-      return BASE_URL + `bullet_point/${bulletId}/censor/`;
-    },
+
     BULLET_POINT: ({ paperId, ordinal__isnull, type, progress }) => {
       let url = BASE_URL + `paper/${paperId}/bullet_point/`;
       let params = {
@@ -559,12 +528,23 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+
     EDIT_BULLET_POINT: ({ paperId, bulletId }) => {
       let url = BASE_URL + `paper/${paperId}/bullet_point/${bulletId}/edit/`;
       return url;
     },
-    REORDER_BULLETS: () => {
-      return BASE_URL + `bullet_point/reorder_all/`;
+    KEY_TAKEAWAY: ({ bulletId = null, route, querystring = {} }) => {
+      let url = BASE_URL + `bullet_point/`;
+
+      let params = {
+        querystring,
+        rest: {
+          route: route,
+          id: bulletId,
+        },
+      };
+
+      return (url = prepURL(url, params));
     },
     NOTIFICATION: ({ notifId, ids }) => {
       let url = BASE_URL + `notification/`;
@@ -578,7 +558,6 @@ const routes = (BASE_URL) => {
       }
 
       return url;
-      // return BASE_URL + `notification/${userId}`
     },
     GET_PAPER_FIGURES: ({ paperId }) => {
       return BASE_URL + `figure/${paperId}/get_all_figures/`;
