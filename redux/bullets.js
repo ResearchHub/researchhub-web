@@ -75,7 +75,7 @@ export const BulletActions = {
         .then(Helpers.parseJSON)
         .then((res) => {
           let newBullet = res;
-          let bullets = [...prevState.bullets, res];
+          let bullets = [...prevState.bullets, newBullet];
 
           let payload = {
             event_type: "create_bulletpoints",

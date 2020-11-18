@@ -115,40 +115,25 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        let { paper } = this.props;
-        let localStorageKey = `editorState-${paper.id}-${paper.summary &&
-          paper.summary.id}`;
-        if (localStorage.getItem(localStorageKey)) {
-          localStorage.removeItem(localStorageKey);
-        }
+        // const localStorageKey = `editorState-${paper.id}-${paper.summary && paper.summary.id}`;
+        // if (localStorage.getItem(localStorageKey)) {
+        //   localStorage.removeItem(localStorageKey);
+        // }
         if (!resp.approved) {
           this.initializeSummary();
           setMessage("Edits Submitted for Approval!");
         } else {
-          let payload = {
-            event_type: "create_summary",
-            time: +new Date(),
-            user_id: this.props.auth.user
-              ? this.props.auth.user.id && this.props.auth.user.id
-              : null,
-            event_properties: {
-              paper: this.props.paperId,
-              interaction: "Paper Summary",
-            },
-          };
-          sendAmpEvent(payload);
-          setMessage("Edits Made!");
-          let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-          checkUserFirstTime(firstTime);
+          const ampPayload = this.formatAmpPayload();
+          sendAmpEvent(ampPayload);
+          checkUserFirstTime(!this.props.auth.user.has_seen_first_coin_modal);
           getUser();
-
-          let updatedPaper = { ...paper };
-          updatedPaper.summary = resp;
+          const updatedPaper = { ...this.props.paper, summary: resp };
           updatePaperState && updatePaperState(updatedPaper);
           this.setState({
             summaryExists: true,
           });
         }
+        setMessage("Edits Made!");
         showMessage({ show: true });
         this.setState({
           readOnly: true,
@@ -161,6 +146,18 @@ class SummaryTab extends React.Component {
         }
       });
   };
+
+  formatAmpPayload = () => ({
+    event_type: "create_summary",
+    time: +new Date(),
+    user_id: this.props.auth.user
+      ? this.props.auth.user.id && this.props.auth.user.id
+      : null,
+    event_properties: {
+      paper: this.props.paperId,
+      interaction: "Paper Summary",
+    },
+  });
 
   cancel = () => {
     this.setState({ transition: true }, () => {
@@ -282,28 +279,6 @@ class SummaryTab extends React.Component {
       }
     }
   };
-
-  // checkSummaryVote = () => {
-  //   if (this.props.paper.summary && !this.state.checked) {
-  //     const summaryId = this.props.paper.summary.id;
-
-  //     checkSummaryVote({
-  //       summaryId
-  //     }, (res) => {
-
-  //       this.setState({ checked: true })
-  //       let summary = {
-  //         ...this.props.paper.summary,
-  //         user_vote: res[summaryId],
-  //         score: res[summaryId].score
-  //       }
-  //       let paper = { ...this.props.paper, summary};
-  //       this.props.updatePaperState(paper);
-  //       this.props.updateRedux('summary', summary);
-
-  //     })
-  //   }
-  // }
 
   navigateToEditPaperInfo = () => {
     let paperId = this.props.paper.id;
