@@ -638,14 +638,20 @@ const AuthorPage = (props) => {
     setAvatarUploadIsOpen(false);
   };
 
+  const getOrcidId = () => {
+    return auth.user.author_profile && auth.user.author_profile.orcid_id;
+  };
+
+  const authorOrcidId = getOrcidId();
+
   const renderOrcid = (mobile = false) => {
     if (allowEdit) {
-      return author.orcid_id
+      return authorOrcidId
         ? null
         : !editName && (
             <OrcidConnectButton
               hostname={hostname}
-              refreshProfileOnSuccess={true}
+              refreshProfileOnSuccess={false}
               customLabel={"Connect ORCiD"}
               styles={styles.orcidButton}
               iconButton={mobile}
@@ -826,11 +832,11 @@ const AuthorPage = (props) => {
           </div>
           <div className={css(styles.column)}>
             <div className={css(styles.socialLinks)}>
-              {author.orcid_id && (
+              {authorOrcidId && (
                 <a
                   className={css(styles.link)}
                   target="_blank"
-                  href={`https://orcid.org/${author.orcid_id}`}
+                  href={`https://orcid.org/${authorOrcidId}`}
                 >
                   <img
                     src="/static/icons/orcid.png"
@@ -934,7 +940,7 @@ const AuthorPage = (props) => {
                   styles.socialMedia,
                   styles.facebook,
                   styles.mobileConnectOrcid,
-                  author.orcid_id && styles.orcidAvailable
+                  authorOrcidId && styles.orcidAvailable
                 )}
               >
                 {renderOrcid(true)}
@@ -950,7 +956,7 @@ const AuthorPage = (props) => {
             <div
               className={css(
                 styles.connectOrcid,
-                author.orcid_id && styles.orcidAvailable
+                authorOrcidId && styles.orcidAvailable
               )}
             >
               {renderOrcid()}
