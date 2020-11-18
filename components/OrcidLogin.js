@@ -91,13 +91,22 @@ const OrcidLogin = (props) => {
     return regex.test(uri);
   }
 
+  function checkOrcidConnected() {
+    const state = store.getState();
+    const authorProfile = state.auth.user.author_profile;
+    return (
+      authorProfile.orcid_id !== null && authorProfile.orcid_account !== null
+    );
+  }
+
   async function checkHasEmail() {
     await dispatch(AuthActions.getUser());
     const state = store.getState();
     if (state.auth.user.email && state.auth.user.email != "") {
       // TODO: Refactor this and handle all success and failure here too
-      if (method === orcidMethods.CONNECT) {
-        onSuccess();
+      const orcidConnected = checkOrcidConnected();
+      if (method === orcidMethods.CONNECT && orcidConnected) {
+        onSuccess(state.auth.user.author_profile.id);
       }
     } else {
       dispatch(AuthActions.signout({ walletLink: state.auth.walletLink }));
