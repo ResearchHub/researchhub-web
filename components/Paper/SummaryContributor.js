@@ -12,6 +12,8 @@ import { summaryVote } from "~/config/fetch";
 const SummaryContributor = (props) => {
   const { summary, hideMeta, voteStyles } = props;
 
+  const authorProfile = summary.proposed_by.author_profile;
+
   const [score, setScore] = useState(summary.score);
   const [userVote, setUserVote] = useState(summary.user_vote);
   const [selected, setSelected] = useState(
@@ -80,7 +82,17 @@ const SummaryContributor = (props) => {
         onDownvote={onDownvote}
         promoted={false}
       />
-      <AuthorAvatar
+      <DiscussionPostMetadata
+        username={
+          authorProfile.first_name +
+          " " +
+          authorProfile.last_name
+        }
+        authorProfile={authorProfile}
+        date={paper.summary.approved_date}
+        fullDate={true}
+      />
+      {/* <AuthorAvatar
         author={summary.proposed_by.author_profile}
         size={30}
         disableLink={true}
@@ -93,7 +105,7 @@ const SummaryContributor = (props) => {
         <div
           className={css(styles.user)}
         >{`${summary.proposed_by.author_profile.first_name} ${summary.proposed_by.author_profile.last_name}`}</div>
-      </div>
+      </div> */}
     </div>
   );
 };
