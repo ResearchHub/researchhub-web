@@ -10,6 +10,7 @@ import VoteWidget from "~/components/VoteWidget";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import SummaryContributor from "../../SummaryContributor";
 
 const SummaryEditCard = (props) => {
   const alert = useAlert();
@@ -76,7 +77,11 @@ const SummaryEditCard = (props) => {
       onClick={onClick && onClick}
     >
       <div className={css(styles.voteWidgetContainer)}>
-        <VoteWidget styles={styles.voteWidget} promoted={false} />
+        <SummaryContributor
+          summary={summary}
+          hideMeta={true}
+          voteStyles={styles.voteWidget}
+        />
       </div>
       <AuthorAvatar
         author={summary.proposedBy.authorProfile}
