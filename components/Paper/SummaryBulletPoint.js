@@ -270,26 +270,11 @@ const styles = StyleSheet.create({
     // display: "flex",
     // alignItems: "flex-start",
   },
-<<<<<<< HEAD
-
-  bulletpointIcon: {
-    color: "#3971FF",
-    height: 30,
-    minHeight: 30,
-    maxHeight: 30,
-    width: 30,
-    minWidth: 30,
-    maxWidth: 30,
-    borderRadius: "50%",
-    boxSizing: "border-box",
-    paddingTop: 3,
-=======
   voteWidget: {
     marginLeft: 0,
     marginRight: 16,
   },
   row: {
->>>>>>> adding in the user metadata to key takeawways
     display: "flex",
     alignItems: "center",
   },
