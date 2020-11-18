@@ -2,6 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import { useState, Fragment, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
+import moment from "moment";
 
 import FormTextArea from "../Form/FormTextArea";
 import Ripples from "react-ripples";
@@ -18,6 +19,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import AuthorAvatar from "../AuthorAvatar";
+import DiscussionPostMetadata from "../DiscussionPostMetadata";
 
 const SummaryBulletPoint = (props) => {
   const {
@@ -139,11 +141,21 @@ const SummaryBulletPoint = (props) => {
             </div>
           )}
           <div className={css(styles.topRow)}>
-            <div className={css(styles.bulletpointIcon)}>
+            <div className={css(styles.row)}>
               <BulletPointVote bulletPoint={data} />
+              <DiscussionPostMetadata
+                username={
+                  authorProfile.first_name + " " + authorProfile.last_name
+                }
+                authorProfile={authorProfile}
+                date={data.created_date}
+                fullDate={true}
+              />
             </div>
-            <div className={css(styles.bulletpointText)}>
-              {plain_text && text}
+            <div className={css(styles.row)}>
+              <div className={css(styles.bulletpointText)}>
+                {plain_text && text}
+              </div>
             </div>
           </div>
         </Fragment>
@@ -210,13 +222,6 @@ const SummaryBulletPoint = (props) => {
     >
       {renderDeleteButton()}
       {renderBody()}
-      <div className={css(styles.authorAvatar)}>
-        <AuthorAvatar
-          author={authorProfile}
-          name={authorProfile.first_name + " " + authorProfile.last_name}
-          disableLink={false}
-        />
-      </div>
     </div>
   );
 };
@@ -262,9 +267,10 @@ const styles = StyleSheet.create({
   },
   topRow: {
     width: "100%",
-    display: "flex",
-    alignItems: "flex-start",
+    // display: "flex",
+    // alignItems: "flex-start",
   },
+<<<<<<< HEAD
 
   bulletpointIcon: {
     color: "#3971FF",
@@ -277,13 +283,15 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     boxSizing: "border-box",
     paddingTop: 3,
+=======
+  voteWidget: {
+    marginLeft: 0,
+    marginRight: 16,
+  },
+  row: {
+>>>>>>> adding in the user metadata to key takeawways
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    marginRight: 20,
-    "@media only screen and (max-width: 415px)": {
-      marginRight: 5,
-    },
   },
   bulletpointText: {
     color: "#241F3A",
