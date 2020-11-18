@@ -234,16 +234,17 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    SUMMARY: ({ summaryId, route, progress }) => {
+    SUMMARY: ({ summaryId, route, progress, check_vote }) => {
       let url = BASE_URL + `summary/`;
 
       let params = {
         querystring: {
-          created_location: progress && "progress",
+          created_location: progress ? "progress" : null,
+          summary_ids: check_vote ? [summaryId] : null,
         },
         rest: {
           route: route,
-          id: summaryId,
+          id: !check_vote ? summaryId : null,
         },
       };
 

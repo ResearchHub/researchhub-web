@@ -23,6 +23,9 @@ import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
 import PaperProgress from "~/components/Paper/PaperProgress";
+import PaperTransactionModal from "../../../../components/modal/PaperTransactionModal";
+import PaperFeatureModal from "../../../../components/modal/PaperFeatureModal";
+import PaperBanner from "../../../../components/Paper/PaperBanner";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -34,7 +37,13 @@ import { BulletActions } from "~/redux/bullets";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { absoluteUrl, getNestedValue, getVoteType } from "~/config/utils";
+import {
+  absoluteUrl,
+  getNestedValue,
+  getVoteType,
+  formatPaperSlug,
+} from "~/config/utils";
+import { checkSummaryVote } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -43,11 +52,7 @@ import {
   convertDeltaToText,
   isQuillDelta,
 } from "~/config/utils/";
-import { redirect, formatPaperSlug } from "~/config/utils";
 import * as shims from "~/redux/paper/shims";
-import PaperTransactionModal from "../../../../components/modal/PaperTransactionModal";
-import PaperFeatureModal from "../../../../components/modal/PaperFeatureModal";
-import PaperBanner from "../../../../components/Paper/PaperBanner";
 
 const isServer = () => typeof window === "undefined";
 
@@ -199,11 +204,30 @@ const Paper = (props) => {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          if (res[paperId]) {
-            let updatedPaper = { ...paper };
-            updatedPaper.userVote = res[paperId];
-            setPaper(updatedPaper);
-            setSelectedVoteType(updatedPaper.userVote.vote_type);
+          const paperUserVote = res[paperId];
+          if (paperUserVote) {
+            if (paper.summary) {
+              // check summary vote if exist
+              checkSummaryVote({ summaryId: paper.summary.id }, (response) => {
+                const summaryUserVote = response[paper.summary.id];
+
+                let summary = {
+                  ...paper.summary,
+                  user_vote: summaryUserVote,
+                  score: summaryUserVote.score,
+                };
+
+                let updatedPaper = { ...paper, summary };
+                updatedPaper.userVote = paperUserVote;
+                setPaper(updatedPaper);
+                setSelectedVoteType(updatedPaper.userVote.vote_type);
+              });
+            } else {
+              let updatedPaper = { ...paper };
+              updatedPaper.userVote = paperUserVote;
+              setPaper(updatedPaper);
+              setSelectedVoteType(updatedPaper.userVote.vote_type);
+            }
           }
         });
     }
