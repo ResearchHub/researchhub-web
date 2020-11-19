@@ -16,7 +16,7 @@ const SummaryContributor = (props) => {
     ? summary.proposed_by.author_profile
     : {};
 
-  const [score, setScore] = useState(summary.score);
+  const [score, setScore] = useState(summary.score || 0);
   const [userVote, setUserVote] = useState(summary.user_vote);
   const [selected, setSelected] = useState(
     summary.user_vote ? summary.user_vote.vote_type : false

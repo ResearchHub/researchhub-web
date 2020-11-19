@@ -7,7 +7,7 @@ import { bulletVote } from "~/config/fetch";
 const BulletPointVote = (props) => {
   const { bulletPoint } = props;
 
-  const [score, setScore] = useState(bulletPoint.score);
+  const [score, setScore] = useState(bulletPoint.score || 0);
   const [userVote, setUserVote] = useState(bulletPoint.user_vote);
   const [selected, setSelected] = useState(
     bulletPoint.user_vote ? bulletPoint.user_vote.vote_type : false
