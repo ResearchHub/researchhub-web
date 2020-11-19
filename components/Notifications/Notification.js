@@ -134,12 +134,14 @@ class Notification extends React.Component {
       let action = notification.action[0];
 
       if (notification.extra && notification.extra.status) {
-        action = {
-          content_type: "stripe",
-          created_by: notification.recipient,
-          created_date: notification.created_date,
-          ...notification.extra,
-        };
+        // Stripe branch not yet integrated
+        return null;
+        // action = {
+        //   content_type: "stripe",
+        //   created_by: notification.recipient,
+        //   created_date: notification.created_date,
+        //   ...notification.extra,
+        // };
       } else if (notification.extra && notification.extra.bullet_point) {
         action = {
           content_type: "vote_bullet",
