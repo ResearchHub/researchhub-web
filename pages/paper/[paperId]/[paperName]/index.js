@@ -436,7 +436,7 @@ const Paper = (props) => {
           title={paper.title}
           description={formatDescription()}
           socialImageUrl={socialImageUrl}
-          noindex={paper.is_removed}
+          noindex={paper.is_removed || paper.is_removed_by_user}
           canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
         />
         <div className={css(styles.paperPageContainer)}>
