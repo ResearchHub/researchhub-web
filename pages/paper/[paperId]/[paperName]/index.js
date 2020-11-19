@@ -164,13 +164,16 @@ const Paper = (props) => {
         let summary = {
           ...paper.summary,
           user_vote: summaryUserVote,
-          score: summaryUserVote.score,
         };
+
+        if (summaryUserVote) {
+          summary.score = summaryUserVote.score || 0;
+        }
 
         setSummary(summary);
       });
     }
-  }, [summary.id]);
+  }, [summary.id, props.auth.isLoggedIn]);
 
   useEffect(() => {
     setLimitCount(store.getState().limitations.limits.length);
