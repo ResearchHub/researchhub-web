@@ -74,7 +74,6 @@ export const checkSummaryVote = async ({ summaryId }, callback) => {
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((res) => callback(res))
     .catch((err) => {
       //Todo: handle error
     });
