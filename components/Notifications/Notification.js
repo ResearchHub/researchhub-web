@@ -145,7 +145,7 @@ class Notification extends React.Component {
         action = {
           content_type: "vote_bullet",
           created_by: notification.extra.bullet_point.created_by,
-          created_date: notification.extra.bullet_point.created_date,
+          created_date: notification.created_date,
           plain_text: notification.extra.bullet_point.plain_text,
           paper_id: notification.extra.bullet_point.paper,
         };
@@ -153,7 +153,7 @@ class Notification extends React.Component {
         action = {
           content_type: "vote_summary",
           created_by: notification.extra.summary.proposed_by,
-          created_date: notification.extra.summary.created_date,
+          created_date: notification.created_date,
           plain_text: notification.extra.summary.summary_plain_text,
           paper_id: notification.extra.summary.paper,
           paper_official_title: notification.extra.summary.paper_title,
