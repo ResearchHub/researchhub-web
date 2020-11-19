@@ -195,7 +195,7 @@ const Paper = (props) => {
               updatedPaper.userVote = paperUserVote;
               setPaper(updatedPaper);
               setSelectedVoteType(updatedPaper.userVote.vote_type);
-            }  
+            }
           }
         });
     }
