@@ -125,45 +125,6 @@ const Paper = (props) => {
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
 
-  // const fetchReferences = () => {
-  //   let params = {
-  //     paperId: paperId,
-  //     route: "referenced_by",
-  //   };
-  //   return fetch(API.PAPER(params), API.GET_CONFIG())
-  //     .then(Helpers.checkStatus)
-  //     .then(Helpers.parseJSON)
-  //     .then((res) => {
-  //       setLoadingReferencedBy(false);
-  //       let newReferencedBy = [...res.results];
-  //       setReferencedBy(newReferencedBy);
-  //       setReferencedByCount(res.count);
-  //     });
-  // };
-
-  // const fetchFigures = () => {
-  //   let paperId = paper.id;
-  //   return fetch(API.GET_PAPER_FIGURES_ONLY({ paperId }), API.GET_CONFIG())
-  //     .then(Helpers.checkStatus)
-  //     .then(Helpers.parseJSON)
-  //     .then(async (res) => {
-  //       setFigureCount(res.data.length);
-  //       setFigures(res.data);
-  //       await dispatch(PaperActions.updatePaperState("figures", res.data));
-  //       setFetchedFigures(true);
-  //     });
-  // };
-
-  // const fetchBullets = () => {
-  //   let { getBullets } = props;
-  //   getBullets(paperId);
-  // };
-
-  const fetchDiscussions = () => {
-    let { getThreads, paper } = props;
-    getThreads({ paperId: paperId, paper, twitter: false });
-  };
-
   const fetchPaper = ({ paperId }) => {
     setLoadingPaper(true);
     return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
@@ -206,40 +167,39 @@ const Paper = (props) => {
         .then((res) => {
           const paperUserVote = res[paperId];
 
-          if (paperUserVote) {
-            if (paper.summary) {
-              // check summary vote if exist
-              checkSummaryVote({ summaryId: paper.summary.id }, (response) => {
-                const summaryUserVote = response[paper.summary.id];
+          if (paper.summary) {
+            // check summary vote if exist
+            checkSummaryVote({ summaryId: paper.summary.id }, (response) => {
+              const summaryUserVote = response[paper.summary.id];
 
-                let summary = {
-                  ...paper.summary,
-                  user_vote: summaryUserVote,
-                  score: summaryUserVote.score,
-                };
+              let summary = {
+                ...paper.summary,
+                user_vote: summaryUserVote,
+                score: summaryUserVote.score,
+              };
 
-                let updatedPaper = {
-                  ...paper,
-                  summary,
-                  userVote: paperUserVote,
-                };
-                setPaper(updatedPaper);
-                setSelectedVoteType(updatedPaper.userVote.vote_type);
-              });
-            } else {
+              let updatedPaper = {
+                ...paper,
+                summary,
+              };
+
+              if (paperUserVote) {
+                updatedPaper.userVote = paperUserVote;
+              }
+              setPaper(updatedPaper);
+              setSelectedVoteType(updatedPaper.userVote.vote_type);
+            });
+          } else {
+            if (paperUserVote) {
               let updatedPaper = { ...paper };
               updatedPaper.userVote = paperUserVote;
               setPaper(updatedPaper);
               setSelectedVoteType(updatedPaper.userVote.vote_type);
-            }
+            }  
           }
         });
     }
   }
-
-  // useEffect(() => {
-  //   store.getState().paper.id && setLoadingPaper(false);
-  // }, [store.getState().paper]);
 
   useEffect(() => {
     setPaper((props.paper && shims.paper(props.paper)) || {});
