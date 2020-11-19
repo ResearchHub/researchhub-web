@@ -75,6 +75,9 @@ const Paper = (props) => {
   const [paper, setPaper] = useState(
     (props.paper && shims.paper(props.paper)) || {}
   );
+  const [summary, setSummary] = useState(
+    (props.paper && props.paper.summary) || {}
+  );
   const [showAllSections, toggleShowAllSections] = useState(false);
   const [referencedBy, setReferencedBy] = useState([]);
   const [referencedByCount, setReferencedByCount] = useState(0);
@@ -124,6 +127,7 @@ const Paper = (props) => {
   const discussionRef = useRef(null);
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
+  let summaryVoteChecked = false;
 
   const fetchPaper = ({ paperId }) => {
     setLoadingPaper(true);
@@ -138,6 +142,7 @@ const Paper = (props) => {
         setSelectedVoteType(getVoteType(currPaper.userVote));
         setCount(calculateCommentCount(currPaper));
         setPaper(currPaper);
+        setSummary(currPaper.summary || {});
         // checkUserVote();
         return currPaper;
       })
@@ -149,7 +154,23 @@ const Paper = (props) => {
 
   useEffect(() => {
     setTabs(getActiveTabs());
-  }, [paper.summary, figureCount]);
+
+    const summaryId = summary.id;
+    if (summaryId && !summaryVoteChecked) {
+      checkSummaryVote({ summaryId: summaryId }).then((res) => {
+        const summaryUserVote = res[summaryId];
+        summaryVoteChecked = true;
+
+        let summary = {
+          ...paper.summary,
+          user_vote: summaryUserVote,
+          score: summaryUserVote.score,
+        };
+
+        setSummary(summary);
+      });
+    }
+  }, [summary.id]);
 
   useEffect(() => {
     setLimitCount(store.getState().limitations.limits.length);
@@ -167,35 +188,11 @@ const Paper = (props) => {
         .then((res) => {
           const paperUserVote = res[paperId];
 
-          if (paper.summary) {
-            // check summary vote if exist
-            checkSummaryVote({ summaryId: paper.summary.id }, (response) => {
-              const summaryUserVote = response[paper.summary.id];
-
-              let summary = {
-                ...paper.summary,
-                user_vote: summaryUserVote,
-                score: summaryUserVote.score,
-              };
-
-              let updatedPaper = {
-                ...paper,
-                summary,
-              };
-
-              if (paperUserVote) {
-                updatedPaper.userVote = paperUserVote;
-              }
-              setPaper(updatedPaper);
-              setSelectedVoteType(updatedPaper.userVote.vote_type);
-            });
-          } else {
-            if (paperUserVote) {
-              let updatedPaper = { ...paper };
-              updatedPaper.userVote = paperUserVote;
-              setPaper(updatedPaper);
-              setSelectedVoteType(updatedPaper.userVote.vote_type);
-            }
+          if (paperUserVote) {
+            let updatedPaper = { ...paper };
+            updatedPaper.userVote = paperUserVote;
+            setPaper(updatedPaper);
+            setSelectedVoteType(updatedPaper.userVote.vote_type);
           }
         });
     }
@@ -527,10 +524,12 @@ const Paper = (props) => {
           <SummaryTab
             paperId={paperId}
             paper={paper}
+            summary={summary}
             keyTakeawayRef={keyTakeawayRef}
             descriptionRef={descriptionRef}
             afterFetchBullets={() => setFetchBullets(true)}
             updatePaperState={updatePaperState}
+            updateSummary={setSummary}
           />
           <a name="comments" id="comments">
             <div className={css(styles.space)} />
@@ -675,7 +674,6 @@ Paper.getInitialProps = async (ctx) => {
 
   try {
     paper = await fetchPaper({ paperId: query.paperId });
-    paperSlug = paper.slug;
   } catch (err) {
     console.log(err);
     Sentry.captureException(err);
@@ -686,6 +684,7 @@ Paper.getInitialProps = async (ctx) => {
     return { error: true };
   }
 
+  paperSlug = paper.slug;
   let fetchedPaper = true;
 
   if (paperSlug !== query.paperName) {

@@ -23,11 +23,14 @@ const SummaryContributor = (props) => {
   );
 
   useEffect(() => {
-    setScore(props.summary.score);
     setUserVote(props.summary.user_vote);
     setSelected(
       props.summary.user_vote ? props.summary.user_vote.vote_type : false
     );
+  }, [props.summary.user_vote]);
+
+  useEffect(() => {
+    setScore(props.summary.score);
   }, [props.summary.score]);
 
   const onUpvote = () => {

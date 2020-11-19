@@ -99,6 +99,7 @@ class SummaryTab extends React.Component {
       checkUserFirstTime,
       getUser,
       updatePaperState,
+      updateSummary,
     } = this.props;
     let summary = content;
     let summary_plain_text = plain_text;
@@ -106,9 +107,7 @@ class SummaryTab extends React.Component {
     let param = {
       summary,
       paper: this.props.paperId,
-      previousSummaryId: this.props.paper.summary
-        ? this.props.paper.summary.id
-        : null,
+      previousSummaryId: this.props.summary ? this.props.summary.id : null,
       summary_plain_text,
     };
     return fetch(API.SUMMARY({}), API.POST_CONFIG(param))
@@ -125,6 +124,7 @@ class SummaryTab extends React.Component {
           getUser();
           const updatedPaper = { ...this.props.paper, summary: resp };
           updatePaperState && updatePaperState(updatedPaper);
+          updateSummary && updateSummary(resp);
           this.setState({
             summaryExists: true,
           });
@@ -244,19 +244,19 @@ class SummaryTab extends React.Component {
    * Initializes the summary from the paper redux
    */
   initializeSummary = () => {
-    const { paper } = this.props;
+    const { paper, summary } = this.props;
 
-    if (paper.summary) {
-      if (paper.summary.summary) {
-        if (isQuillDelta(paper.summary.summary)) {
+    if (summary) {
+      if (summary.summary) {
+        if (isQuillDelta(summary.summary)) {
           return this.setState({
-            editorState: paper.summary.summary,
+            editorState: summary.summary,
             finishedLoading: true,
             abstract: paper.abstract,
             showAbstract: false,
           });
         } else {
-          let summaryJSON = paper.summary.summary;
+          let summaryJSON = summary.summary;
           let editorState = Value.fromJSON(summaryJSON);
           return this.setState({
             editorState: editorState ? editorState : "",
@@ -291,7 +291,7 @@ class SummaryTab extends React.Component {
     if (prevProps.paperId !== this.props.paperId) {
       return this.initializeSummary();
     }
-    if (prevProps.paper.summary !== this.props.paper.summary) {
+    if (prevProps.summary !== this.props.summary) {
       return this.initializeSummary();
     }
     if (prevProps.paper.abstract !== this.props.paper.abstract) {
@@ -457,7 +457,7 @@ class SummaryTab extends React.Component {
   };
 
   render() {
-    let { paper } = this.props;
+    let { paper, summary } = this.props;
     let { transition } = this.state;
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
@@ -476,8 +476,7 @@ class SummaryTab extends React.Component {
         <div>{this.state.errorMessage}</div>
         {!this.state.showAbstract ? (
           <a name="summary">
-            {(paper.summary && paper.summary.summary) ||
-            this.state.summaryExists ? (
+            {(summary && summary.summary) || this.state.summaryExists ? (
               <div
                 className={css(styles.container)}
                 ref={this.props.descriptionRef}
@@ -540,7 +539,7 @@ class SummaryTab extends React.Component {
                 )}
                 {this.state.finishedLoading && (
                   <Fragment>
-                    <SummaryContributor summary={paper.summary} />
+                    <SummaryContributor summary={summary} />
                     <TextEditor
                       canEdit={true}
                       readOnly={this.state.readOnly}
