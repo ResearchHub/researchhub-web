@@ -37,6 +37,7 @@ import API from "~/config/api";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate, openExternalLink } from "~/config/utils";
+import { MessageActions } from "../redux/message";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -92,6 +93,32 @@ class PaperPageCard extends React.Component {
     }
 
     return url;
+  };
+
+  removePaper = () => {
+    let {
+      setMessage,
+      showMessage,
+      isModerator,
+      isSubmitter,
+      paperId,
+    } = this.props;
+    let params = {};
+    if (isModerator) {
+      params.is_removed = true;
+    }
+
+    if (isSubmitter) {
+      params.is_removed_by_user = true;
+    }
+
+    return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setMessage("Paper Successfully Removed.");
+        showMessage({ show: true });
+      });
   };
 
   fetchFigures = () => {
@@ -211,7 +238,7 @@ class PaperPageCard extends React.Component {
   };
 
   renderActions = () => {
-    let { paper, isModerator, flagged, setFlag } = this.props;
+    let { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
 
     let paperTitle = paper && paper.title;
     return (
@@ -268,7 +295,23 @@ class PaperPageCard extends React.Component {
             </span>
           </Ripples>
         )}
-        {!isModerator ? (
+        {isModerator || isSubmitter ? (
+          <span>
+            <span data-tip={"Remove Page"} style={{ marginRight: 10 }}>
+              <ActionButton
+                isModerator={true}
+                paperId={paper.id}
+                icon={icons.minusCircle}
+                onAction={this.removePaper}
+              />
+            </span>
+            {isModerator && (
+              <span data-tip={"Remove Page & Ban User"}>
+                <ActionButton isModerator={isModerator} paperId={paper.id} />
+              </span>
+            )}
+          </span>
+        ) : (
           <span data-tip={"Flag Paper"}>
             <FlagButton
               paperId={paper.id}
@@ -276,10 +319,6 @@ class PaperPageCard extends React.Component {
               setFlag={setFlag}
               style={styles.actionIcon}
             />
-          </span>
-        ) : (
-          <span data-tip={"Remove Page"}>
-            <ActionButton isModerator={isModerator} paperId={paper.id} />
           </span>
         )}
       </div>
@@ -442,7 +481,7 @@ class PaperPageCard extends React.Component {
 
     let authors = {};
 
-    if (paper.authors && Object.keys(paper.authors).length > 0) {
+    if (paper.authors && paper.authors.length > 0) {
       paper.authors.map((author) => {
         if (author.first_name && !author.last_name) {
           authors[author.first_name] = author;
@@ -593,16 +632,7 @@ class PaperPageCard extends React.Component {
   };
 
   renderTopRow = () => {
-    let {
-      paper,
-      isModerator,
-      flagged,
-      setFlag,
-      score,
-      upvote,
-      downvote,
-      selectedVoteType,
-    } = this.props;
+    let { score, upvote, downvote } = this.props;
     return (
       <Fragment>
         <div className={css(styles.topRow)}>
@@ -1491,6 +1521,8 @@ const carousel = StyleSheet.create({
 const mapDispatchToProps = {
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
   openAuthorSupportModal: ModalActions.openAuthorSupportModal,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(
