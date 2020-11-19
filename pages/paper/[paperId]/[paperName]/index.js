@@ -421,6 +421,9 @@ const Paper = (props) => {
     setPaper(newState);
   }
 
+  const isSubmitter =
+    paper.uploaded_by && paper.uploaded_by.id === props.auth.user.id;
+
   return (
     <div className={css(styles.container)}>
       <PaperTransactionModal
@@ -460,6 +463,19 @@ const Paper = (props) => {
                 />
               </div>
             )}
+            {paper.is_removed_by_user && (
+              <div style={{ marginTop: 16 }}>
+                <PaperBanner
+                  message={
+                    <div style={{ textAlign: "center", width: "100%" }}>
+                      This paper has been removed from ResearchHub by the
+                      submitter.
+                      <br />
+                    </div>
+                  }
+                />
+              </div>
+            )}
             <PaperPageCard
               paper={paper}
               paperId={paperId}
@@ -469,6 +485,7 @@ const Paper = (props) => {
               selectedVoteType={selectedVoteType}
               shareUrl={process.browser && window.location.href}
               isModerator={isModerator}
+              isSubmitter={isSubmitter}
               flagged={flagged}
               doneFetchingPaper={!loadingPaper}
               setFlag={setFlag}

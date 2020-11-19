@@ -18,6 +18,7 @@ const ActionButton = (props) => {
     active,
     isModerator,
     paperId,
+    onAction,
   } = props;
 
   function renderIcon() {
@@ -43,6 +44,8 @@ const ActionButton = (props) => {
         iconStyle={styles.deleteIcon}
         actionType={"page"}
         metaData={{ paperId }}
+        forceRender={true}
+        onAction={onAction}
         onRemove={paperPageDeleteCallback}
       />
     );
