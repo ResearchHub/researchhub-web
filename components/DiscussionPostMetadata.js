@@ -45,6 +45,8 @@ const DiscussionPostMetadata = (props) => {
     twitter,
     twitterUrl,
     smaller,
+    hideHeadline,
+    containerStyle,
   } = props;
 
   const alert = useAlert();
@@ -155,7 +157,7 @@ const DiscussionPostMetadata = (props) => {
   };
 
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.container, containerStyle && containerStyle)}>
       <AuthorAvatar
         author={authorProfile}
         name={username}
@@ -217,7 +219,8 @@ const DiscussionPostMetadata = (props) => {
           )}
         </div>
         {authorProfile &&
-          (authorProfile.headline || authorProfile.education) && (
+          (authorProfile.headline || authorProfile.education) &&
+          !hideHeadline && (
             <div
               className={
                 css(styles.headline, smaller && styles.smallerHeadline) +

@@ -143,6 +143,11 @@ const SummaryBulletPoint = (props) => {
           <div className={css(styles.topRow)}>
             <div className={css(styles.row)}>
               <BulletPointVote bulletPoint={data} />
+              <div className={css(styles.bulletpointText)}>
+                {plain_text && text}
+              </div>
+            </div>
+            <div className={css(styles.row, styles.bottomRow)}>
               <DiscussionPostMetadata
                 username={
                   authorProfile.first_name + " " + authorProfile.last_name
@@ -150,12 +155,10 @@ const SummaryBulletPoint = (props) => {
                 authorProfile={authorProfile}
                 date={data.created_date}
                 fullDate={true}
+                hideHeadline={true}
+                containerStyle={styles.metadata}
+                smaller={true}
               />
-            </div>
-            <div className={css(styles.row)}>
-              <div className={css(styles.bulletpointText)}>
-                {plain_text && text}
-              </div>
             </div>
           </div>
         </Fragment>
@@ -253,6 +256,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 3,
     padding: "25px 20px",
+    paddingBottom: 10,
     marginBottom: 10,
     border: "1px solid #F0F0F0",
     position: "relative",
@@ -296,10 +300,10 @@ const styles = StyleSheet.create({
   },
   bottomRow: {
     width: "100%",
-    display: "flex",
-    alignItems: "center",
-    paddingLeft: 50,
-    marginTop: 5,
+    marginTop: 10,
+  },
+  metadata: {
+    justifyContent: "flex-end",
   },
   contributorText: {
     color: "rgba(36, 31, 58, 0.4)",
