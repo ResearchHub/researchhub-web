@@ -76,6 +76,7 @@ const DraggableCard = ({
         index={index}
         onEditCallback={onEditCallback}
         onRemoveCallback={onRemoveCallback}
+        authorProfile={data.created_by.author_profile}
       />
     </div>
   );

@@ -6,9 +6,11 @@ import moment from "moment";
 
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Loader from "~/components/Loader/Loader";
+import VoteWidget from "~/components/VoteWidget";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import SummaryContributor from "../../SummaryContributor";
 
 const SummaryEditCard = (props) => {
   const alert = useAlert();
@@ -74,6 +76,13 @@ const SummaryEditCard = (props) => {
       className={css(styles.editHistoryCard, selected && styles.selectedEdit)}
       onClick={onClick && onClick}
     >
+      <div className={css(styles.voteWidgetContainer)}>
+        <SummaryContributor
+          summary={summary}
+          hideMeta={true}
+          voteStyles={styles.voteWidget}
+        />
+      </div>
       <AuthorAvatar
         author={summary.proposedBy.authorProfile}
         size={30}
@@ -97,7 +106,7 @@ const styles = StyleSheet.create({
     borderColor: "#D7D7E3",
   },
   editHistoryCard: {
-    width: 280,
+    // width: 320,
     boxSizing: "border-box",
     padding: "14px 15px",
     display: "flex",
@@ -115,9 +124,20 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
+  voteWidgetContainer: {
+    width: 40,
+    marginRight: 10,
+  },
+  voteWidget: {
+    marginRight: 0,
+    fontSize: 15,
+  },
   column: {
+    width: 178,
     marginLeft: 8,
-    width: "100%",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
   date: {
     fontSize: 14,

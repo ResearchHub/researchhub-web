@@ -46,3 +46,36 @@ export const sendAmpEvent = async (payload, cb) => {
     .then(Helpers.checkStatus)
     .then((res) => cb && cb(res));
 };
+
+export const bulletVote = async ({ type, bulletId }, callback) => {
+  return fetch(API.KEY_TAKEAWAY({ bulletId, route: type }), API.POST_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => callback(res))
+    .catch((err) => {
+      //Todo: handle error
+    });
+};
+
+export const summaryVote = async ({ type, summaryId }, callback) => {
+  return fetch(API.SUMMARY({ summaryId, route: type }), API.POST_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => callback(res))
+    .catch((err) => {
+      //Todo: handle error
+    });
+};
+
+export const checkSummaryVote = async ({ summaryId }, callback) => {
+  return fetch(
+    API.SUMMARY({ summaryId, route: "check_user_vote", check_vote: true }),
+    API.GET_CONFIG()
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => callback(res))
+    .catch((err) => {
+      //Todo: handle error
+    });
+};

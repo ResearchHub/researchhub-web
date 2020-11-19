@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
@@ -10,6 +10,7 @@ import AuthorAvatar from "../AuthorAvatar";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
+import { AuthorActions } from "~/redux/author";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -21,7 +22,7 @@ import {
 } from "~/config/utils";
 
 const NotificationEntry = (props) => {
-  let { notification, data } = props;
+  const { notification, data } = props;
   const [isRead, toggleRead] = useState(data.read);
   const dispatch = useDispatch();
   const store = useStore();
@@ -35,7 +36,7 @@ const NotificationEntry = (props) => {
     props.closeMenu();
   };
 
-  const truncatePaperTitle = (title) => {
+  const truncateText = (title) => {
     if (title && title.length >= 90) {
       return title.slice(0, 90).trim() + "...";
     }
@@ -88,13 +89,17 @@ const NotificationEntry = (props) => {
     } else if (type === "bullet_point") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}#takeaways`;
+    } else if (type === "vote_bullet") {
+      href = "/paper/[paperId]/[paperName]";
+      route = `/paper/${paperId}/paper#takeaways`;
+    } else if (type === "vote_summary") {
+      href = "/paper/[paperId]/[paperName]";
+      route = `/paper/${paperId}/${title}#description`;
     }
 
     isRead && props.closeMenu();
     markAsRead(props.data);
     href && route && Router.push(href, route);
-    document.body.scrollTop = 0; // For Safari
-    return (document.documentElement.scrollTop = 0);
   };
 
   const renderString = (contentType) => {
@@ -133,7 +138,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -160,7 +165,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={paperTip}
               >
-                {paperTip && truncatePaperTitle(paperTip)}
+                {paperTip && truncateText(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -174,7 +179,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -202,7 +207,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={paperTip}
               >
-                {paperTip && truncatePaperTitle(paperTip)}
+                {paperTip && truncateText(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -219,7 +224,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -246,7 +251,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={paperTitle}
               >
-                {paperTitle && truncatePaperTitle(paperTitle)}
+                {paperTitle && truncateText(paperTitle)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -260,7 +265,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -303,7 +308,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={paperTip}
               >
-                {paperTip && truncatePaperTitle(paperTip)}
+                {paperTip && truncateText(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -318,7 +323,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -362,7 +367,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={threadTip}
               >
-                {threadTip && truncatePaperTitle(threadTip)}
+                {threadTip && truncateText(threadTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -377,7 +382,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -421,7 +426,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={threadTip}
               >
-                {threadTip && truncatePaperTitle(threadTip)}
+                {threadTip && truncateText(threadTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -435,7 +440,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -462,7 +467,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={paperTip}
               >
-                {paperTip && truncatePaperTitle(paperTip)}
+                {paperTip && truncateText(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -476,7 +481,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -519,7 +524,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={paperTip}
               >
-                {paperTip && truncatePaperTitle(paperTip)}
+                {paperTip && truncateText(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -533,7 +538,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -576,7 +581,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={paperTip}
               >
-                {truncatePaperTitle(paperTip)}
+                {truncateText(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -590,7 +595,7 @@ const NotificationEntry = (props) => {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions}`}
+              as={`/user/${authorId}/contributions`}
             >
               <a
                 onClick={(e) => {
@@ -633,7 +638,7 @@ const NotificationEntry = (props) => {
                 className={css(styles.paper)}
                 data-tip={paperTip}
               >
-                {paperTip && truncatePaperTitle(paperTip)}
+                {paperTip && truncateText(paperTip)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -642,9 +647,222 @@ const NotificationEntry = (props) => {
             </span>
           </div>
         );
+      // case "stripe":
+      //   return handleStripeNotification();
+      case "vote_bullet":
+        return handleBulletVoteNotification();
+      case "vote_summary":
+        return handleSummaryVoteNotification();
       default:
         return;
     }
+  };
+
+  const handleStripeNotification = () => {
+    const {
+      created_date,
+      created_by,
+      status,
+      url,
+      message,
+    } = props.notification;
+
+    if (status && status === "pending") {
+      return null;
+    }
+
+    const timestamp = formatTimestamp(created_date);
+    const authorProfile = created_by.author_profile;
+
+    _updateAuthorWallet(authorProfile.wallet, store.getState().author);
+
+    function _updateAuthorWallet(wallet, author) {
+      let { stripe_verified, stripe_acc } = author.wallet;
+      if (!stripe_verified && wallet.stripe_verified) {
+        return dispatch(
+          AuthorActions.updateAuthorByKey({ key: "wallet", value: wallet })
+        );
+      } else if (stripe_acc !== wallet.stripe_acc) {
+        return dispatch(
+          AuthorActions.updateAuthorByKey({ key: "wallet", value: wallet })
+        );
+      }
+    }
+
+    function _formatText(status, message) {
+      switch (status) {
+        case "inactive":
+          let field = message;
+
+          return (
+            <Fragment>
+              Almost done! Please verify your {` ${field} `} from your{" "}
+              <span className={css(styles.link)}>
+                <b>Stripe Dashboard.</b>
+              </span>
+            </Fragment>
+          );
+        case "active":
+          return (
+            <Fragment>
+              Congrats! Your Stripe account has been verified.
+            </Fragment>
+          );
+      }
+    }
+
+    return (
+      <div
+        className={css(styles.message)}
+        onClick={(e) => {
+          e.stopPropagation();
+          markAsRead(props.data);
+          isRead && props.closeMenu();
+        }}
+      >
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={url}
+          className={css(styles.atag)}
+        >
+          {_formatText(status, message)}
+          <span className={css(styles.timestamp)}>
+            <span className={css(styles.timestampDivider)}>•</span>
+            {timestamp}
+          </span>
+        </a>
+        <img
+          className={css(styles.stripeLogo)}
+          src={"/static/icons/stripe.png"}
+        />
+      </div>
+    );
+  };
+
+  const handleBulletVoteNotification = () => {
+    const {
+      created_by,
+      created_date,
+      plain_text,
+      paper_id,
+    } = props.notification;
+
+    const author = created_by.author_profile;
+
+    return (
+      <div className={css(styles.message)}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${author.id}/contributions`}
+        >
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.username)}
+          >
+            {`${author.first_name} ${author.last_name}`}
+          </a>
+        </Link>{" "}
+        voted on your{" "}
+        <Link
+          href={"/paper/[paperId]/[paperName]"}
+          as={`/paper/${paper_id}/paper#description`}
+        >
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.link)}
+          >
+            key takeaway,{" "}
+          </a>
+        </Link>
+        <span className={css(styles.italics)}>{truncateText(plain_text)}</span>
+        <span className={css(styles.timestamp)}>
+          <span className={css(styles.timestampDivider)}>•</span>
+          {formatTimestamp(created_date)}
+        </span>
+      </div>
+    );
+  };
+
+  const handleSummaryVoteNotification = () => {
+    const {
+      content_type,
+      created_by,
+      created_date,
+      plain_text,
+      paper_id,
+      paper_official_title,
+    } = props.notification;
+
+    const author = created_by.author_profile;
+
+    return (
+      <div className={css(styles.message)}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${author.id}/contributions`}
+        >
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.username)}
+          >
+            {`${author.first_name} ${author.last_name}`}
+          </a>
+        </Link>{" "}
+        voted on your{" "}
+        <Link
+          href={"/paper/[paperId]/[paperName]"}
+          as={`/paper/${paper_id}/${formatPaperSlug(
+            paper_official_title
+          )}#description`}
+        >
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.link)}
+          >
+            summary,{" "}
+          </a>
+        </Link>
+        <span className={css(styles.italics)}>{truncateText(plain_text)}</span>{" "}
+        in{" "}
+        <Link
+          href={"/paper/[paperId]/[paperName]"}
+          as={`/paper/${paper_id}/${formatPaperSlug(paper_official_title)}`}
+        >
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.paper)}
+            data-tip={paper_official_title}
+          >
+            {paper_official_title && truncateText(paper_official_title)}
+          </a>
+        </Link>
+        <span className={css(styles.timestamp)}>
+          <span className={css(styles.timestampDivider)}>•</span>
+          {formatTimestamp(created_date)}
+        </span>
+      </div>
+    );
   };
 
   return (
@@ -675,6 +893,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottom: "1px solid #dddfe2",
     backgroundColor: "#EDf2FA",
+    position: "relative",
     ":hover": {
       backgroundColor: "#EDf2FA",
     },
@@ -693,6 +912,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 1.5,
     width: "100%",
+  },
+  atag: {
+    color: "unset",
+    textDecoration: "unset",
   },
   username: {
     color: "#000",
@@ -738,6 +961,15 @@ const styles = StyleSheet.create({
     color: colors.GREY(1),
     lineHeight: "100%",
     verticalAlign: "middle",
+  },
+  stripeLogo: {
+    position: "absolute",
+    height: 20,
+    right: 0,
+    bottom: 0,
+  },
+  italics: {
+    fontStyle: "italic",
   },
 });
 

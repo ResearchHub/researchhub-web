@@ -170,11 +170,10 @@ class BulletsContainer extends React.Component {
         showForm: false,
       });
     } else {
+      // handle error
       if (this.props.bulletsRedux.status === 429) {
         showMessage({ show: false });
-        return this.setState({
-          pendingSubmission: false,
-        });
+        return this.setState({ pendingSubmission: false });
       }
       showMessage({ show: false });
       setMessage("Something went wrong.");
@@ -217,14 +216,21 @@ class BulletsContainer extends React.Component {
       );
     } else
       return bullets.map((bullet, index) => {
+        let editable = false;
+        let { auth } = this.props;
+        if (bullet.created_by.id === auth.user.id || auth.user.moderator) {
+          editable = true;
+        }
         return (
           <SummaryBulletPoint
             key={`summaryBulletPoint-${bullet.id}`}
             data={bullet}
             onEditCallback={this.onEditCallback}
+            editable={editable}
             onRemoveCallback={this.onRemoveCallback}
             type={"KEY_TAKEAWAY"}
             index={index}
+            authorProfile={bullet.created_by.author_profile}
           />
         );
       });

@@ -412,7 +412,7 @@ class LiveFeedNotification extends React.Component {
             voted on{" "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/summary`}
+              as={`/paper/${paperId}`}
             >
               <a
                 className={css(styles.paper)}
@@ -457,7 +457,7 @@ class LiveFeedNotification extends React.Component {
             in{" "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/summary`}
+              as={`/paper/${paperId}`}
             >
               <a
                 className={css(styles.paper)}
@@ -502,7 +502,7 @@ class LiveFeedNotification extends React.Component {
             in{" "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/summary`}
+              as={`/paper/${paperId}`}
             >
               <a
                 className={css(styles.paper)}
