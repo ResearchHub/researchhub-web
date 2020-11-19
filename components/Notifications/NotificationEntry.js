@@ -647,8 +647,8 @@ const NotificationEntry = (props) => {
             </span>
           </div>
         );
-      case "stripe":
-        return handleStripeNotification();
+      // case "stripe":
+      //   return handleStripeNotification();
       case "vote_bullet":
         return handleBulletVoteNotification();
       case "vote_summary":
