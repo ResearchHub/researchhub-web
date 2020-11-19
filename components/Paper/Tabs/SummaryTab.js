@@ -13,6 +13,7 @@ import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
+import SummaryContributor from "../SummaryContributor";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -26,7 +27,9 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
-import { sendAmpEvent } from "~/config/fetch";
+
+import DiscussionPostMetadata from "../../DiscussionPostMetadata";
+import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -46,6 +49,9 @@ class SummaryTab extends React.Component {
       abstract: "",
       showAbstract: false,
       editAbstract: false,
+
+      //
+      checked: false,
     };
   }
 
@@ -109,40 +115,21 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        let { paper } = this.props;
-        let localStorageKey = `editorState-${paper.id}-${paper.summary &&
-          paper.summary.id}`;
-        if (localStorage.getItem(localStorageKey)) {
-          localStorage.removeItem(localStorageKey);
-        }
         if (!resp.approved) {
           this.initializeSummary();
           setMessage("Edits Submitted for Approval!");
         } else {
-          let payload = {
-            event_type: "create_summary",
-            time: +new Date(),
-            user_id: this.props.auth.user
-              ? this.props.auth.user.id && this.props.auth.user.id
-              : null,
-            event_properties: {
-              paper: this.props.paperId,
-              interaction: "Paper Summary",
-            },
-          };
-          sendAmpEvent(payload);
-          setMessage("Edits Made!");
-          let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
-          checkUserFirstTime(firstTime);
+          const ampPayload = this.formatAmpPayload();
+          sendAmpEvent(ampPayload);
+          checkUserFirstTime(!this.props.auth.user.has_seen_first_coin_modal);
           getUser();
-
-          let updatedPaper = { ...paper };
-          updatedPaper.summary = resp;
+          const updatedPaper = { ...this.props.paper, summary: resp };
           updatePaperState && updatePaperState(updatedPaper);
           this.setState({
             summaryExists: true,
           });
         }
+        setMessage("Edits Made!");
         showMessage({ show: true });
         this.setState({
           readOnly: true,
@@ -155,6 +142,18 @@ class SummaryTab extends React.Component {
         }
       });
   };
+
+  formatAmpPayload = () => ({
+    event_type: "create_summary",
+    time: +new Date(),
+    user_id: this.props.auth.user
+      ? this.props.auth.user.id && this.props.auth.user.id
+      : null,
+    event_properties: {
+      paper: this.props.paperId,
+      interaction: "Paper Summary",
+    },
+  });
 
   cancel = () => {
     this.setState({ transition: true }, () => {
@@ -246,6 +245,7 @@ class SummaryTab extends React.Component {
    */
   initializeSummary = () => {
     const { paper } = this.props;
+
     if (paper.summary) {
       if (paper.summary.summary) {
         if (isQuillDelta(paper.summary.summary)) {
@@ -492,8 +492,8 @@ class SummaryTab extends React.Component {
                       </h3>
                       <div className={css(styles.summaryActions)}>
                         <Link
-                          href={"/paper/[paperId]/[tabName]/edits"}
-                          as={`/paper/${paper.id}/summary/edits`}
+                          href={"/paper/[paperId]/[paperName]/edits"}
+                          as={`/paper/${paper.id}/${paper.slug}/edits`}
                         >
                           <Ripples
                             className={css(styles.action, styles.editHistory)}
@@ -539,50 +539,37 @@ class SummaryTab extends React.Component {
                   </div>
                 )}
                 {this.state.finishedLoading && (
-                  <TextEditor
-                    canEdit={true}
-                    readOnly={this.state.readOnly}
-                    canSubmit={true}
-                    commentEditor={false}
-                    initialValue={this.state.editorState}
-                    passedValue={this.state.editorState}
-                    placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
-                    
-                    Hypothesis: What question does this paper attempt to answer?
-
-                    Conclusion: What conclusion did the paper reach?
-
-                    Significance: What does this paper make possible in the world, and what should be tried from here?
-                    `}
-                    onCancel={this.cancel}
-                    onSubmit={this.submitEdit}
-                    onChange={this.onEditorStateChange}
-                    // smallToolBar={true}
-                    // hideButton={true}
-                    commentStyles={
-                      this.state.readOnly
-                        ? styles.commentReadStyles
-                        : styles.commentStyles
-                    }
-                    editing={this.state.editing}
-                  />
+                  <Fragment>
+                    <SummaryContributor summary={paper.summary} />
+                    <TextEditor
+                      canEdit={true}
+                      readOnly={this.state.readOnly}
+                      canSubmit={true}
+                      commentEditor={false}
+                      initialValue={this.state.editorState}
+                      passedValue={this.state.editorState}
+                      placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
+                      
+                      Hypothesis: What question does this paper attempt to answer?
+  
+                      Conclusion: What conclusion did the paper reach?
+  
+                      Significance: What does this paper make possible in the world, and what should be tried from here?
+                      `}
+                      onCancel={this.cancel}
+                      onSubmit={this.submitEdit}
+                      onChange={this.onEditorStateChange}
+                      // smallToolBar={true}
+                      // hideButton={true}
+                      commentStyles={
+                        this.state.readOnly
+                          ? styles.commentReadStyles
+                          : styles.commentStyles
+                      }
+                      editing={this.state.editing}
+                    />
+                  </Fragment>
                 )}
-                {/* {!this.state.readOnly && (
-                  <div className={css(styles.buttonRow)}>
-                    <Ripples
-                      className={css(styles.cancelButton)}
-                      onClick={this.cancel}
-                    >
-                      Cancel
-                    </Ripples>
-                    <Ripples
-                      className={css(styles.submitButton)}
-                      onClick={this.submitEdit}
-                    >
-                      Submit
-                    </Ripples>
-                  </div>
-                )} */}
               </div>
             ) : (
               <div
@@ -617,8 +604,6 @@ class SummaryTab extends React.Component {
                       onCancel={this.cancel}
                       onSubmit={this.submitEdit}
                       onChange={this.onEditorStateChange}
-                      // smallToolBar={true}
-                      // hideButton={true}
                       placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
                       
 Hypothesis: What question does this paper attempt to answer?
@@ -630,20 +615,6 @@ Significance: What does this paper make possible in the world, and what should b
                       commentStyles={styles.commentStyles}
                       editing={this.state.editing}
                     />
-                    {/* <div className={css(styles.buttonRow)}>
-                      <Ripples
-                        className={css(styles.cancelButton)}
-                        onClick={this.cancel}
-                      >
-                        Cancel
-                      </Ripples>
-                      <Ripples
-                        className={css(styles.submitButton)}
-                        onClick={this.submitEdit}
-                      >
-                        Submit
-                      </Ripples>
-                    </div> */}
                   </div>
                 ) : (
                   <Fragment>
@@ -800,6 +771,30 @@ var styles = StyleSheet.create({
     alignItems: "center",
     opacity: 1,
     transition: "all ease-in-out 0.3s",
+  },
+  metaRow: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+  },
+  column: {
+    width: 178,
+    marginLeft: 8,
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
+  },
+  date: {
+    fontSize: 14,
+    fontWeight: 400,
+    fontWeight: 500,
+  },
+  selected: {},
+  user: {
+    fontSize: 12,
+    opacity: 0.5,
+    marginTop: 3,
   },
   headerContainer: {
     display: "flex",
@@ -1091,6 +1086,7 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getEditHistory: PaperActions.getEditHistory,
   patchPaper: PaperActions.patchPaper,
+  // updateRedux: PaperActions.updatePaperState,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 

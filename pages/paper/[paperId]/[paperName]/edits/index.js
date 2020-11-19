@@ -168,8 +168,8 @@ class PaperEditHistory extends React.Component {
         />
         <div className={css(styles.container)}>
           <Link
-            href={"/paper/[paperId]/[tabName]"}
-            as={`/paper/${router.query.paperId}/summary`}
+            href={"/paper/[paperId]/[paperName]"}
+            as={`/paper/${router.query.paperId}/${router.query.paperName}#summary`}
           >
             <div className={css(styles.back)}>
               <i className={css(styles.arrow) + " fal fa-long-arrow-left"}></i>
@@ -289,10 +289,13 @@ var styles = StyleSheet.create({
   mobileEditor: {},
   edits: {
     marginTop: 75,
+    marginBottom: 20,
     borderRadius: 4,
     border: "1px solid #F0F1F7",
     borderRadius: 5,
     height: "min-content",
+    position: "sticky",
+    top: 100,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -306,6 +309,7 @@ var styles = StyleSheet.create({
       justifyContent: "flex-start",
       margin: "25px 0",
       boxShadow: "none",
+      position: "unset",
     },
   },
 

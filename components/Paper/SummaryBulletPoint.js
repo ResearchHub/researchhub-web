@@ -2,12 +2,13 @@ import { StyleSheet, css } from "aphrodite";
 import { useState, Fragment, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
+import moment from "moment";
 
 import FormTextArea from "../Form/FormTextArea";
-import AuthorAvatar from "../AuthorAvatar";
 import Ripples from "react-ripples";
 import Button from "../Form/Button";
 import Loader from "~/components/Loader/Loader";
+import BulletPointVote from "./Vote/BulletPointVote";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -17,9 +18,20 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import AuthorAvatar from "../AuthorAvatar";
+import DiscussionPostMetadata from "../DiscussionPostMetadata";
 
 const SummaryBulletPoint = (props) => {
-  const { data, manage, type, index, onEditCallback, onRemoveCallback } = props;
+  const {
+    data,
+    manage,
+    type,
+    index,
+    onEditCallback,
+    onRemoveCallback,
+    editable,
+    authorProfile,
+  } = props;
   const store = useStore();
   const dispatch = useDispatch();
   const alert = useAlert();
@@ -28,7 +40,6 @@ const SummaryBulletPoint = (props) => {
   let userId = store.getState().auth.user.id;
   const [text, setText] = useState(plain_text ? plain_text : "");
   const [hovered, toggleHover] = useState(false);
-  const [editable, setEditable] = useState(true);
   const [editView, setEditView] = useState(false);
   const [editText, setEditText] = useState(plain_text ? plain_text : "");
   const [pending, togglePending] = useState(false);
@@ -130,11 +141,24 @@ const SummaryBulletPoint = (props) => {
             </div>
           )}
           <div className={css(styles.topRow)}>
-            <div className={css(styles.bulletpointIcon)}>
-              <i className="fas fa-dot-circle" />
+            <div className={css(styles.row)}>
+              <BulletPointVote bulletPoint={data} />
+              <div className={css(styles.bulletpointText)}>
+                {plain_text && text}
+              </div>
             </div>
-            <div className={css(styles.bulletpointText)}>
-              {plain_text && text}
+            <div className={css(styles.row, styles.bottomRow)}>
+              <DiscussionPostMetadata
+                username={
+                  authorProfile.first_name + " " + authorProfile.last_name
+                }
+                authorProfile={authorProfile}
+                date={data.created_date}
+                fullDate={true}
+                hideHeadline={true}
+                containerStyle={styles.metadata}
+                smaller={true}
+              />
             </div>
           </div>
         </Fragment>
@@ -157,7 +181,7 @@ const SummaryBulletPoint = (props) => {
   const onRemove = () => {
     dispatch(MessageActions.showMessage({ show: true, load: true }));
     let bulletId = data.id;
-    fetch(API.CENSOR_KEY_TAKEAWAY({ bulletId }), API.DELETE_CONFIG())
+    fetch(API.KEY_TAKEAWAY({ bulletId, route: "censor" }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -231,7 +255,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     boxSizing: "border-box",
     borderRadius: 3,
-    padding: 16,
+    padding: "25px 20px",
+    paddingBottom: 10,
     marginBottom: 10,
     border: "1px solid #F0F0F0",
     position: "relative",
@@ -239,29 +264,23 @@ const styles = StyleSheet.create({
       padding: 8,
     },
   },
+  authorAvatar: {
+    position: "absolute",
+    bottom: 4,
+    right: 4,
+  },
   topRow: {
     width: "100%",
-    display: "flex",
-    alignItems: "flex-start",
+    // display: "flex",
+    // alignItems: "flex-start",
   },
-  bulletpointIcon: {
-    color: "#3971FF",
-    height: 30,
-    minHeight: 30,
-    maxHeight: 30,
-    width: 30,
-    minWidth: 30,
-    maxWidth: 30,
-    borderRadius: "50%",
-    boxSizing: "border-box",
-    paddingTop: 3,
+  voteWidget: {
+    marginLeft: 0,
+    marginRight: 16,
+  },
+  row: {
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    marginRight: 20,
-    "@media only screen and (max-width: 415px)": {
-      marginRight: 5,
-    },
   },
   bulletpointText: {
     color: "#241F3A",
@@ -281,10 +300,10 @@ const styles = StyleSheet.create({
   },
   bottomRow: {
     width: "100%",
-    display: "flex",
-    alignItems: "center",
-    paddingLeft: 50,
-    marginTop: 5,
+    marginTop: 10,
+  },
+  metadata: {
+    justifyContent: "flex-end",
   },
   contributorText: {
     color: "rgba(36, 31, 58, 0.4)",

@@ -4,8 +4,8 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import Ripples from "react-ripples";
 import { useAlert } from "react-alert";
-import "~/components/Paper/CitationCard.css";
 import Link from "next/link";
+import moment from "moment";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -16,6 +16,9 @@ import ShareAction from "~/components/ShareAction";
 //Redux
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
+
+// Styles
+import "~/components/Paper/CitationCard.css";
 
 // Config
 import icons from "~/config/themes/icons";
@@ -42,6 +45,8 @@ const DiscussionPostMetadata = (props) => {
     twitter,
     twitterUrl,
     smaller,
+    hideHeadline,
+    containerStyle,
   } = props;
 
   const alert = useAlert();
@@ -152,7 +157,7 @@ const DiscussionPostMetadata = (props) => {
   };
 
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.container, containerStyle && containerStyle)}>
       <AuthorAvatar
         author={authorProfile}
         name={username}
@@ -164,7 +169,6 @@ const DiscussionPostMetadata = (props) => {
         <div className={css(styles.firstRow)}>
           <User name={username} authorProfile={authorProfile} {...props} />
           <Timestamp date={date} {...props} />
-          {/* {onHideClick && <HideButton {...props} />} */}
           {dropDownEnabled && (
             <div className={css(styles.dropdownContainer)}>
               <div
@@ -215,7 +219,8 @@ const DiscussionPostMetadata = (props) => {
           )}
         </div>
         {authorProfile &&
-          (authorProfile.headline || authorProfile.education) && (
+          (authorProfile.headline || authorProfile.education) &&
+          !hideHeadline && (
             <div
               className={
                 css(styles.headline, smaller && styles.smallerHeadline) +
@@ -276,7 +281,7 @@ const User = (props) => {
 };
 
 const Timestamp = (props) => {
-  const timestamp = formatTimestamp(props.date);
+  const timestamp = formatTimestamp(props);
 
   if (props.twitter && props.twitterUrl) {
     return (
@@ -315,8 +320,12 @@ const Timestamp = (props) => {
   );
 };
 
-function formatTimestamp(date) {
+function formatTimestamp(props) {
+  let { date } = props;
   date = new Date(date);
+  if (props.fullDate) {
+    return moment(date).format("MMM Do YYYY");
+  }
   return timeAgo.format(date);
 }
 

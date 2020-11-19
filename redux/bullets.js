@@ -75,7 +75,7 @@ export const BulletActions = {
         .then(Helpers.parseJSON)
         .then((res) => {
           let newBullet = res;
-          let bullets = [...prevState.bullets, res];
+          let bullets = [...prevState.bullets, newBullet];
 
           let payload = {
             event_type: "create_bulletpoints",
@@ -127,7 +127,10 @@ export const BulletActions = {
         order,
         bullet_type: "KEY_TAKEAWAY",
       };
-      return fetch(API.REORDER_BULLETS(), API.PATCH_CONFIG(params))
+      return fetch(
+        API.KEY_TAKEAWAY({ route: "reorder_all" }),
+        API.PATCH_CONFIG(params)
+      )
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
