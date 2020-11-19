@@ -68,7 +68,6 @@ const DraggableCard = ({
   const opacity = isDragging ? 0.5 : 1;
   drag(drop(ref));
 
-  console.log(data);
   return (
     <div ref={ref} style={{ opacity }}>
       <SummaryBulletPoint

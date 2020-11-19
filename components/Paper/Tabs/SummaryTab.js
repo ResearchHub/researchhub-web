@@ -115,10 +115,6 @@ class SummaryTab extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
-        // const localStorageKey = `editorState-${paper.id}-${paper.summary && paper.summary.id}`;
-        // if (localStorage.getItem(localStorageKey)) {
-        //   localStorage.removeItem(localStorageKey);
-        // }
         if (!resp.approved) {
           this.initializeSummary();
           setMessage("Edits Submitted for Approval!");

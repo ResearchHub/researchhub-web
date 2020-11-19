@@ -94,20 +94,6 @@ const SummaryContributor = (props) => {
         date={summary.approved_date}
         fullDate={true}
       />
-      {/* <AuthorAvatar
-        author={summary.proposed_by.author_profile}
-        size={30}
-        disableLink={true}
-        trueSize={true}
-      />
-      <div className={css(styles.column)}>
-        <div className={css(styles.date)}>
-          {moment(summary.approved_date).format("MMM Do YYYY, h:mm A")}
-        </div>
-        <div
-          className={css(styles.user)}
-        >{`${summary.proposed_by.author_profile.first_name} ${summary.proposed_by.author_profile.last_name}`}</div>
-      </div> */}
     </div>
   );
 };
