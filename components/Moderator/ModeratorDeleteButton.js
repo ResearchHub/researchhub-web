@@ -23,6 +23,7 @@ const ModeratorDeleteButton = (props) => {
     iconStyle,
     labelStyle,
     label,
+    forceRender,
     user,
     authorId,
     onAction,
@@ -99,7 +100,11 @@ const ModeratorDeleteButton = (props) => {
         props.onRemove && props.onRemove();
       })
       .catch((err) => {
-        showErrorMessage();
+        let message = "Something went wrong";
+        if (err.message.detail) {
+          message = err.message.detail;
+        }
+        showErrorMessage(message);
       });
   };
 
@@ -117,7 +122,11 @@ const ModeratorDeleteButton = (props) => {
         props.onRemove && props.onRemove();
       })
       .catch((err) => {
-        showErrorMessage();
+        let message = "Something went wrong";
+        if (err.message.detail) {
+          message = err.message.detail;
+        }
+        showErrorMessage(message);
       });
   };
 
@@ -135,7 +144,11 @@ const ModeratorDeleteButton = (props) => {
         props.onRemove && props.onRemove();
       })
       .catch((err) => {
-        showErrorMessage();
+        let message = "Something went wrong";
+        if (err.message.detail) {
+          message = err.message.detail;
+        }
+        showErrorMessage(message);
       });
   };
 
@@ -156,7 +169,11 @@ const ModeratorDeleteButton = (props) => {
         props.onRemove && props.onRemove();
       })
       .catch((err) => {
-        showErrorMessage();
+        let message = "Something went wrong";
+        if (err.message.detail) {
+          message = err.message.detail;
+        }
+        showErrorMessage(message);
       });
   };
 
@@ -190,13 +207,13 @@ const ModeratorDeleteButton = (props) => {
     props.showMessage({ show: true, clickOff: true });
   };
 
-  const showErrorMessage = () => {
+  const showErrorMessage = (message) => {
     props.showMessage({ show: false });
-    props.setMessage("Something went wrong.");
+    props.setMessage(message || "Something went wrong");
     props.showMessage({ show: true, error: true, clickOff: true });
   };
 
-  if (isModerator) {
+  if (isModerator || forceRender) {
     return (
       <Ripples className={css(containerClass)} onClick={performAction}>
         <span className={css(iconClass)}>
