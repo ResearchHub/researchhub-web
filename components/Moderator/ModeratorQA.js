@@ -15,7 +15,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist } from "~/config/utils";
 
-const ModeratorPaperSection = ({
+const ModeratorQA = ({
   auth,
   label,
   type,
@@ -143,4 +143,4 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps,
   null
-)(ModeratorPaperSection);
+)(ModeratorQA);
