@@ -84,7 +84,7 @@ const PaperBanner = ({ paper, openPaperFeatureModal, bullets }) => {
           <div className={css(styles.removedMessage)}>
             <h3 className={css(styles.header)}>
               {renderIcon(true)}
-              Paper Content Removed
+              Paper Removed
             </h3>
             This paper has been removed for having poor quality content and not
             adhering to guidelines.
@@ -107,7 +107,24 @@ const PaperBanner = ({ paper, openPaperFeatureModal, bullets }) => {
               Help improve the quality of this page.
             </h3>
             <p className={css(styles.paragraph)}>
-              You can improve this paper page by contributing content.
+              You can improve this paper page by contributing content. Check out
+              our{" "}
+              <a
+                style={{ color: "#4E53FF" }}
+                target="_blank"
+                href="https://www.notion.so/researchhub/Writing-A-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+              >
+                Summary Guidelines
+              </a>{" "}
+              as well as our{" "}
+              <a
+                style={{ color: "#4E53FF" }}
+                target="_blank"
+                href="https://www.notion.so/researchhub/Discussion-Guidelines-cbeb823e47a342638320af716e698539"
+              >
+                Discussion Guidelines
+              </a>{" "}
+              to contribute the highest quality content.
             </p>
             {renderButton()}
           </div>
