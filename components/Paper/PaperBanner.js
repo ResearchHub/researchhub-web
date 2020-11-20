@@ -27,6 +27,7 @@ const PaperBanner = ({ paper, openPaperFeatureModal, bullets }) => {
 
     const summary = paper.summary && getSummaryText(paper.summary);
     const isRemoved = paper.is_removed;
+    const isRemovedByUser = paper.is_removed_by_user;
     const needSummary =
       paper.summary_low_quality || (summary && summary.trim().length < 250);
     const needTakeaways =
@@ -35,6 +36,11 @@ const PaperBanner = ({ paper, openPaperFeatureModal, bullets }) => {
 
     if (isRemoved) {
       setType("removed");
+      return setShowBanner(true);
+    }
+
+    if (isRemovedByUser) {
+      setType("removedBbyUser");
       return setShowBanner(true);
     }
 
@@ -98,6 +104,16 @@ const PaperBanner = ({ paper, openPaperFeatureModal, bullets }) => {
               Paper Submission Guidelines
             </a>{" "}
             to review our standard.
+          </div>
+        );
+      case "removedByUser":
+        return (
+          <div className={css(styles.removedMessage)}>
+            <h3 className={css(styles.header)}>
+              {renderIcon(true)}
+              Paper Removed
+            </h3>
+            This paper has been removed from ResearchHub by the submitter.
           </div>
         );
       case "incomplete":
