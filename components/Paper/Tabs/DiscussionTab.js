@@ -213,7 +213,7 @@ const DiscussionTab = (props) => {
             interaction: "Post Thread",
             paper: paperId,
             is_removed: resp.is_removed,
-            id: resp.id,
+            insert_id: `thread_${resp.id}`,
           },
         };
         props.setCount(props.calculatedCount + 1);

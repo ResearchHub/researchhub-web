@@ -152,7 +152,7 @@ class SummaryTab extends React.Component {
     event_properties: {
       paper: this.props.paperId,
       interaction: "Paper Summary",
-      id,
+      insert_id: `summary_${id}`,
     },
   });
 
