@@ -277,6 +277,7 @@ class PaperFeatureModal extends React.Component {
       showMessage,
       checkUserFirstTime,
       updatePaperState,
+      updateSummary,
     } = this.props;
     showMessage({ show: true, load: true });
     let summary = raw;
@@ -307,7 +308,8 @@ class PaperFeatureModal extends React.Component {
           this.ampEvent("summary");
           let updatedPaper = { ...paper };
           updatedPaper.summary = { ...res };
-          updatePaperState && updatePaperState(updatedPaper);
+          updatePaperState(updatedPaper);
+          updateSummary({ ...res });
           setMessage("Edits Made!");
           let firstTime = !this.props.auth.user.has_seen_first_coin_modal;
           checkUserFirstTime(firstTime);

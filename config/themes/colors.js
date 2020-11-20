@@ -44,4 +44,9 @@ export const modalColors = {
   SUBTITLE: colors.BLACK(0.65),
 };
 
+export const bannerColor = {
+  BLUE: "#E9F2FF",
+  GREY: "#F2F2F6",
+};
+
 export default colors;

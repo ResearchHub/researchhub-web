@@ -430,7 +430,11 @@ const Paper = (props) => {
         paper={paper}
         updatePaperState={updatePaperState}
       />
-      <PaperFeatureModal paper={paper} updatePaperState={updatePaperState} />
+      <PaperFeatureModal
+        paper={paper}
+        updatePaperState={updatePaperState}
+        updateSummary={setSummary}
+      />
       <Fragment>
         <Head
           title={paper.title}
@@ -441,14 +445,9 @@ const Paper = (props) => {
         />
         <div className={css(styles.paperPageContainer)}>
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
-            {/* {paper.is_removed && ( */}
             <div style={{ marginTop: 16 }}>
-              <PaperBanner
-                // type={'removed'}
-                type={"incomplete"}
-              />
+              <PaperBanner paper={paper} />
             </div>
-            {/* )} */}
             <PaperPageCard
               paper={paper}
               paperId={paperId}

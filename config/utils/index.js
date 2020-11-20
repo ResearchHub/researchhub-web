@@ -43,3 +43,10 @@ export function isEmpty(value) {
   }
   return false;
 }
+
+export function truncateText(text) {
+  if (text && text.length >= 90) {
+    return text.slice(0, 90).trim() + "...";
+  }
+  return text;
+}
