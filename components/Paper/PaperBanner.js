@@ -27,11 +27,11 @@ const PaperBanner = ({ paper, openPaperFeatureModal, bullets }) => {
 
     const summary = paper.summary && getSummaryText(paper.summary);
     const isRemoved = paper.is_removed;
-    // const isRemoved = true;
     const needSummary =
       paper.summary_low_quality || (summary && summary.trim().length < 250);
     const needTakeaways =
-      paper.bullet_low_quality || bullets.bullets.length < 3;
+      paper.bullet_low_quality ||
+      bullets.bullets.filter((bullet) => !bullet.is_removed).length < 3;
 
     if (isRemoved) {
       setType("removed");
@@ -53,7 +53,8 @@ const PaperBanner = ({ paper, openPaperFeatureModal, bullets }) => {
     const needSummary =
       paper.summary_low_quality || (summary && summary.trim().length < 250);
     const needTakeaways =
-      paper.bullet_low_quality || bullets.bullets.length < 3;
+      paper.bullet_low_quality ||
+      bullets.bullets.filter((bullet) => !bullet.is_removed).length < 3;
 
     if (needTakeaways) {
       props.label = "Add Key Takeaway";
