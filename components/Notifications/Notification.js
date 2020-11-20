@@ -131,6 +131,7 @@ class Notification extends React.Component {
   renderNotifications = () => {
     return this.props.notifications.map((notification, index) => {
       let action = notification.action[0];
+      return null;
 
       if (notification.extra && notification.extra.status) {
         // Stripe branch not yet integrated
