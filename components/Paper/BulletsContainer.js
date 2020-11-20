@@ -10,7 +10,7 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import ModeratorPaperSection from "~/components/Moderator/ModeratorPaperSection";
+import ModeratorQA from "~/components/Moderator/ModeratorQA";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -245,7 +245,7 @@ class BulletsContainer extends React.Component {
         className={css(dropdownStyles.row)}
         ref={(ref) => (this.dropdownMenu = ref)}
       >
-        <ModeratorPaperSection
+        <ModeratorQA
           containerStyles={dropdownStyles.item}
           updatePaperState={updatePaperState}
           type={"takeaways"}

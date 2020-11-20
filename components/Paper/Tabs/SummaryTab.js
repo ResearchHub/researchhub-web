@@ -14,7 +14,7 @@ import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
-import ModeratorPaperSection from "~/components/Moderator/ModeratorPaperSection";
+import ModeratorQA from "~/components/Moderator/ModeratorQA";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -496,7 +496,7 @@ class SummaryTab extends React.Component {
                         {this.renderTabs()}
                       </h3>
                       <div className={css(styles.summaryActions)}>
-                        <ModeratorPaperSection
+                        <ModeratorQA
                           containerStyles={[styles.action, styles.pinAction]}
                           updatePaperState={updatePaperState}
                           type={"summary"}
