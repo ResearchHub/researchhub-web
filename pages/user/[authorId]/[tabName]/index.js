@@ -694,7 +694,12 @@ const AuthorPage = (props) => {
       />
       <ComponentWrapper>
         <UserInfoModal />
-        <div className={css(styles.profileContainer)}>
+        <div
+          className={css(
+            styles.profileContainer,
+            isModerator() && styles.profileContainerPadding
+          )}
+        >
           <div
             className={css(
               styles.avatarContainer,
@@ -714,6 +719,18 @@ const AuthorPage = (props) => {
             />
             {allowEdit && hoverProfilePicture && (
               <div className={css(styles.profilePictureHover)}>Update</div>
+            )}
+            {isModerator() && (
+              <ModeratorDeleteButton
+                containerStyle={styles.moderatorButton}
+                iconStyle={styles.moderatorIcon}
+                labelStyle={styles.moderatorLabel}
+                icon={<i className="fas fa-ban" />}
+                label={"Ban User"}
+                actionType={"user"}
+                metaData={{ authorId: router.query.authorId }}
+                // onRemove={this.removeContent}
+              />
             )}
           </div>
           <div className={css(styles.profileInfo)}>
@@ -735,15 +752,6 @@ const AuthorPage = (props) => {
                         setHoverName(false);
                         openUserInfoModal();
                       })}
-                    {isModerator() && (
-                      <ModeratorDeleteButton
-                        containerStyle={styles.moderatorButton}
-                        icon={<i className="fas fa-ban" />}
-                        actionType={"user"}
-                        metaData={{ authorId: router.query.authorId }}
-                        // onRemove={this.removeContent}
-                      />
-                    )}
                   </h1>
                 </Fragment>
               ) : (
@@ -1037,18 +1045,35 @@ const styles = StyleSheet.create({
       justifyContent: "center",
     },
   },
+
   profileInfo: {
     width: "70%",
     marginLeft: 30,
     marginRight: 30,
   },
   moderatorButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
+    marginTop: 10,
+    borderRadius: 4,
+    fontWeight: 400,
     fontSize: 16,
-    marginLeft: 8,
-    opacity: 0.6,
+    height: 30,
+    background: colors.RED(0.9),
+    color: "#FFF",
+    border: `1px solid ${colors.RED()}`,
     ":hover": {
-      opacity: 1,
+      background: colors.RED(1),
     },
+  },
+  moderatorIcon: {
+    color: "inherit",
+    marginRight: 8,
+  },
+  moderatorLabel: {
+    fontWeight: 400,
   },
   connectOrcid: {
     marginTop: 16,
@@ -1144,7 +1169,6 @@ const styles = StyleSheet.create({
       marginLeft: 0,
       width: "70%",
       alignItems: "center",
-      // alignItems: 'flex-start'
     },
   },
   socialMedia: {
@@ -1348,7 +1372,6 @@ const styles = StyleSheet.create({
   },
   submitSocialButton: {
     background: colors.BLUE(1),
-    //borderRadius: "0 8px 8px 0",
     color: "#fff",
     display: "flex",
     alignItems: "center",
@@ -1375,6 +1398,13 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     position: "relative",
     borderRadius: "50%",
+    "@media only screen and (max-width: 767px)": {
+      height: "min-content",
+      width: "70%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
   },
   border: {},
   profilePictureHover: {

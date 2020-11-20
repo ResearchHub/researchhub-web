@@ -34,3 +34,8 @@ export function getInitialScope() {
     end: moment().unix(),
   };
 }
+
+export function timeAgoStamp(date) {
+  date = new Date(date);
+  return timeAgo.format(date);
+}

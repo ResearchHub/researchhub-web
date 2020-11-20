@@ -17,7 +17,7 @@ import colors from "../../config/themes/colors";
 import {
   doesNotExist,
   getNestedValue,
-  timeAgo,
+  timeAgoStamp,
   formatPaperSlug,
 } from "~/config/utils";
 
@@ -41,11 +41,6 @@ const NotificationEntry = (props) => {
       return title.slice(0, 90).trim() + "...";
     }
     return title;
-  };
-
-  const formatTimestamp = (date) => {
-    date = new Date(date);
-    return timeAgo.format(date);
   };
 
   const formatUsername = (userObject) => {
@@ -113,7 +108,7 @@ const NotificationEntry = (props) => {
       slug,
     } = notification;
     let notificationType = content_type;
-    const timestamp = formatTimestamp(created_date);
+    const timestamp = timeAgoStamp(created_date);
     const username = formatUsername(
       getNestedValue(created_by, ["author_profile"])
     );
@@ -671,7 +666,7 @@ const NotificationEntry = (props) => {
       return null;
     }
 
-    const timestamp = formatTimestamp(created_date);
+    const timestamp = timeAgoStamp(created_date);
     const authorProfile = created_by.author_profile;
 
     _updateAuthorWallet(authorProfile.wallet, store.getState().author);
@@ -786,7 +781,7 @@ const NotificationEntry = (props) => {
         <span className={css(styles.italics)}>{truncateText(plain_text)}</span>
         <span className={css(styles.timestamp)}>
           <span className={css(styles.timestampDivider)}>•</span>
-          {formatTimestamp(created_date)}
+          {timeAgoStamp(created_date)}
         </span>
       </div>
     );
@@ -859,7 +854,7 @@ const NotificationEntry = (props) => {
         </Link>
         <span className={css(styles.timestamp)}>
           <span className={css(styles.timestampDivider)}>•</span>
-          {formatTimestamp(created_date)}
+          {timeAgoStamp(created_date)}
         </span>
       </div>
     );
