@@ -333,7 +333,7 @@ class SummaryTab extends React.Component {
   };
 
   renderAbstract = () => {
-    let { paper } = this.props;
+    const { paper, updatePaperState } = this.props;
     let externalSource = paper.retrieved_from_external_source;
     if (this.state.showAbstract) {
       if (this.state.editAbstract) {
@@ -480,7 +480,9 @@ class SummaryTab extends React.Component {
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
-        {!this.state.showAbstract ? (
+        {this.state.showAbstract ? (
+          this.renderAbstract()
+        ) : (
           <a name="summary">
             {(summary && summary.summary) || this.state.summaryExists ? (
               <div
@@ -562,9 +564,9 @@ class SummaryTab extends React.Component {
                       placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
                       
                       Hypothesis: What question does this paper attempt to answer?
-  
+
                       Conclusion: What conclusion did the paper reach?
-  
+
                       Significance: What does this paper make possible in the world, and what should be tried from here?
                       `}
                       onCancel={this.cancel}
@@ -617,11 +619,11 @@ class SummaryTab extends React.Component {
                       onChange={this.onEditorStateChange}
                       placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
                       
-Hypothesis: What question does this paper attempt to answer?
-  
-Conclusion: What conclusion did the paper reach?
-  
-Significance: What does this paper make possible in the world, and what should be tried from here?
+  Hypothesis: What question does this paper attempt to answer?
+
+  Conclusion: What conclusion did the paper reach?
+
+  Significance: What does this paper make possible in the world, and what should be tried from here?
                       `}
                       commentStyles={styles.commentStyles}
                       editing={this.state.editing}
@@ -633,6 +635,14 @@ Significance: What does this paper make possible in the world, and what should b
                       <div className={css(styles.sectionTitle)}>
                         Description
                         {this.renderTabs()}
+                      </div>
+                      <div className={css(styles.summaryActions)}>
+                        <ModeratorQA
+                          containerStyles={[styles.action, styles.pinAction]}
+                          updatePaperState={updatePaperState}
+                          type={"summary"}
+                          paper={paper}
+                        />
                       </div>
                     </div>
                     <div className={css(styles.box) + " second-step"}>
@@ -662,8 +672,6 @@ Significance: What does this paper make possible in the world, and what should b
               </div>
             )}
           </a>
-        ) : (
-          this.renderAbstract()
         )}
         <ManageBulletPointsModal paperId={this.props.paperId} />
       </ComponentWrapper>
@@ -784,6 +792,7 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       justifyContent: "space-between",
       width: "100%",
+      marginBottom: 20,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
@@ -880,6 +889,7 @@ var styles = StyleSheet.create({
     },
   },
   abstractActions: {
+    display: "flex",
     "@media only screen and (max-width: 767px)": {
       marginTop: 8,
     },
