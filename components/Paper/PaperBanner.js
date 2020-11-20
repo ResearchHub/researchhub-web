@@ -40,6 +40,8 @@ const PaperBanner = ({ paper, openPaperFeatureModal, bullets }) => {
       setType("incomplete");
       return setShowBanner(true);
     }
+
+    setShowBanner(false);
   };
 
   const renderButton = () => {
