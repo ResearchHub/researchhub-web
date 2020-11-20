@@ -101,6 +101,22 @@ export function convertDeltaToText(delta) {
   return QuillToPlaintext(delta);
 }
 
+export function getSummaryText(summary) {
+  if (summary.summary) {
+    if (summary.summary_plain_text) {
+      return summary.summary_plain_text;
+    }
+    if (isQuillDelta(summary.summary)) {
+      return convertDeltaToText(summary.summary);
+    }
+    return convertToEditorValue(summary.summary).document.text
+      ? convertToEditorValue(summary.summary).document.text
+      : "";
+  } else {
+    return "";
+  }
+}
+
 export function getCurrentUser(storeState) {
   return getNestedValue(storeState, ["auth", "user"], null);
 }
