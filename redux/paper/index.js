@@ -233,7 +233,7 @@ export const PaperActions = {
             : null,
           event_properties: {
             interaction: "Create Paper",
-            id: paper.id,
+            insert_id: `paper_${paper.id}`,
             is_removed: paper.is_removed,
           },
         };
