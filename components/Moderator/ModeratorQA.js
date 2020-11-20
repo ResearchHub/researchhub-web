@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { useAlert } from "react-alert";
@@ -87,7 +87,10 @@ const ModeratorQA = ({
   };
 
   const renderIcon = () => {
-    return loading ? <Loader loading={true} size={5} /> : icons.pin;
+    if (loading) {
+      return <Loader loading={true} size={8} />;
+    }
+    return active ? icons.pin : icons.pinOutline;
   };
 
   const renderLabel = () => {
@@ -116,16 +119,13 @@ const styles = StyleSheet.create({
     padding: "20px 20px 0px 0px",
     fontSize: 16,
     cursor: "pointer",
-    "@media only screen and (max-width: 450px)": {
-      display: "none",
-    },
   },
   hide: {
     display: "none",
   },
   icon: {
-    fontSize: 14,
-    marginRight: 5,
+    fontSize: 13,
+    marginRight: 6,
     ":hover": {
       color: colors.BLUE(),
     },
