@@ -10,6 +10,7 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
+import ModeratorPaperSection from "~/components/Moderator/ModeratorPaperSection";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -238,12 +239,18 @@ class BulletsContainer extends React.Component {
 
   renderDropdown = () => {
     let { showDropdown } = this.state;
-    let { openManageBulletPointsModal } = this.props;
+    const { openManageBulletPointsModal, paper, updatePaperState } = this.props;
     return (
       <div
         className={css(dropdownStyles.row)}
         ref={(ref) => (this.dropdownMenu = ref)}
       >
+        <ModeratorPaperSection
+          containerStyles={dropdownStyles.item}
+          updatePaperState={updatePaperState}
+          type={"takeaways"}
+          paper={paper}
+        />
         <Ripples
           className={css(dropdownStyles.item)}
           onClick={() => openManageBulletPointsModal(true, "key_takeaway")}
@@ -318,9 +325,9 @@ class BulletsContainer extends React.Component {
 
   render() {
     let { showForm, pendingSubmission, transition } = this.state;
-    let { openManageBulletPointsModal } = this.props;
+    let { openManageBulletPointsModal, paper, updatePaperState } = this.props;
     return (
-      <div className={css(dropdownStyles.bulletContainer)}>
+      <div className={css(styles.bulletContainer)}>
         <div className={css(styles.bulletHeaderContainer)}>
           <div className={css(styles.bulletTitle)}>Key Takeaways</div>
           <div className={css(dropdownStyles.dropdownContainer)}>
@@ -344,6 +351,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 20,
     boxSizing: "border-box",
+    position: "relative",
   },
   bulletpointIcon: {
     color: "#3971FF",
@@ -374,6 +382,9 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: colors.BLACK(),
     textAlign: "left",
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 20,
+    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
@@ -485,6 +496,11 @@ const styles = StyleSheet.create({
       textAlign: "center",
     },
   },
+  moderatorButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
 });
 
 const dropdownStyles = StyleSheet.create({
@@ -534,13 +550,9 @@ const dropdownStyles = StyleSheet.create({
     },
   },
   itemLast: {
-    marginLeft: 16,
-    widht: 119,
+    width: 119,
     minWidth: 119,
     maxWidth: 119,
-    "@media only screen and (max-width: 767px)": {
-      marginLeft: 32,
-    },
   },
   item: {
     display: "flex",
@@ -562,6 +574,7 @@ const dropdownStyles = StyleSheet.create({
 
     "@media only screen and (max-width: 767px)": {
       padding: 0,
+      marginRight: 15,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,

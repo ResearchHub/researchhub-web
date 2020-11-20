@@ -14,6 +14,7 @@ import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
+import ModeratorPaperSection from "~/components/Moderator/ModeratorPaperSection";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -460,7 +461,7 @@ class SummaryTab extends React.Component {
   };
 
   render() {
-    let { paper, summary } = this.props;
+    let { paper, summary, updatePaperState } = this.props;
     let { transition } = this.state;
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
@@ -473,6 +474,8 @@ class SummaryTab extends React.Component {
             <BulletsContainer
               paperId={this.props.paperId}
               afterFetchBullets={this.props.afterFetchBullets}
+              updatePaperState={updatePaperState}
+              paper={paper}
             />
           </div>
         </a>
@@ -493,6 +496,12 @@ class SummaryTab extends React.Component {
                         {this.renderTabs()}
                       </h3>
                       <div className={css(styles.summaryActions)}>
+                        <ModeratorPaperSection
+                          containerStyles={[styles.action, styles.pinAction]}
+                          updatePaperState={updatePaperState}
+                          type={"summary"}
+                          paper={paper}
+                        />
                         <Link
                           href={"/paper/[paperId]/[paperName]/edits"}
                           as={`/paper/${paper.id}/${paper.slug}/edits`}
@@ -678,12 +687,22 @@ var styles = StyleSheet.create({
     marginTop: 30,
     backgroundColor: "#fff",
     padding: 50,
+    position: "relative",
     border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
+    },
+  },
+  moderatorButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    "@media only screen and (max-width: 767px)": {
+      right: -10,
+      top: -10,
     },
   },
   centerColumn: {
@@ -699,7 +718,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
-
+    position: "relative",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
@@ -761,6 +780,7 @@ var styles = StyleSheet.create({
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
+    marginTop: 0,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "space-between",
       width: "100%",
@@ -847,14 +867,13 @@ var styles = StyleSheet.create({
     },
   },
   summaryActions: {
-    width: 250,
+    width: "max-content",
     display: "flex",
     alignItems: "center",
-    // justifyContent: "space-between",
     justifyContent: "flex-end",
     paddingBottom: 0,
     "@media only screen and (max-width: 767px)": {
-      marginTop: 8,
+      justifyContent: "flex-start",
     },
     "@media only screen and (max-width: 415px)": {
       width: "unset",
@@ -867,6 +886,9 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "unset",
     },
+  },
+  pinAction: {
+    marginRight: 15,
   },
   summaryEdit: {
     width: "100%",
@@ -1066,6 +1088,9 @@ var styles = StyleSheet.create({
     borderRadius: 4,
     ":hover": {
       color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 767px)": {
+      marginRight: 0,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
