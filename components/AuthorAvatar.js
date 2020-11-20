@@ -52,7 +52,7 @@ const AuthorAvatar = (props) => {
               width: finalSize,
               height: finalSize,
               fontSize: finalSize + 1,
-              border: "3px solid #FFF",
+              border: "3px solid transparent",
             }}
           />
         )}

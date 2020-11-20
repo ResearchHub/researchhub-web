@@ -430,7 +430,11 @@ const Paper = (props) => {
         paper={paper}
         updatePaperState={updatePaperState}
       />
-      <PaperFeatureModal paper={paper} updatePaperState={updatePaperState} />
+      <PaperFeatureModal
+        paper={paper}
+        updatePaperState={updatePaperState}
+        updateSummary={setSummary}
+      />
       <Fragment>
         <Head
           title={paper.title}
@@ -441,41 +445,9 @@ const Paper = (props) => {
         />
         <div className={css(styles.paperPageContainer)}>
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
-            {paper.is_removed && (
-              <div style={{ marginTop: 16 }}>
-                <PaperBanner
-                  message={
-                    <div style={{ textAlign: "center", width: "100%" }}>
-                      This paper has been removed from ResearchHub by a
-                      moderator because of poor quality content.
-                      <br />
-                      Please visit our{" "}
-                      <a
-                        style={{ color: "#4E53FF" }}
-                        href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
-                        target="_blank"
-                      >
-                        Paper Submission Guidelines
-                      </a>{" "}
-                      to see what kind of content we accept.
-                    </div>
-                  }
-                />
-              </div>
-            )}
-            {paper.is_removed_by_user && (
-              <div style={{ marginTop: 16 }}>
-                <PaperBanner
-                  message={
-                    <div style={{ textAlign: "center", width: "100%" }}>
-                      This paper has been removed from ResearchHub by the
-                      submitter.
-                      <br />
-                    </div>
-                  }
-                />
-              </div>
-            )}
+            <div style={{ marginTop: 16 }}>
+              <PaperBanner paper={paper} />
+            </div>
             <PaperPageCard
               paper={paper}
               paperId={paperId}

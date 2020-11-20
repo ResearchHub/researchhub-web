@@ -49,7 +49,7 @@ const icons = {
   starEmpty: <i className="far fa-star" />,
   manage: <i className="fal fa-tasks-alt" />,
   pin: <i className="fas fa-thumbtack" />,
-  pinOutline: <i className="far fa-thumbtack" />,
+  pinOutline: <i class="fal fa-thumbtack"></i>,
 };
 
 export const voteWidgetIcons = {
