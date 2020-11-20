@@ -247,34 +247,36 @@ class SummaryTab extends React.Component {
   initializeSummary = () => {
     const { paper, summary } = this.props;
 
-    if (summary) {
-      if (summary.summary) {
-        if (isQuillDelta(summary.summary)) {
-          return this.setState({
-            editorState: summary.summary,
-            finishedLoading: true,
-            abstract: paper.abstract,
-            showAbstract: false,
-          });
-        } else {
-          let summaryJSON = summary.summary;
-          let editorState = Value.fromJSON(summaryJSON);
-          return this.setState({
-            editorState: editorState ? editorState : "",
-            finishedLoading: true,
-            abstract: paper.abstract,
-            showAbstract: false,
-          });
+    this.setState({ finishedLoading: false }, () => {
+      if (summary) {
+        if (summary.summary) {
+          if (isQuillDelta(summary.summary)) {
+            return this.setState({
+              editorState: summary.summary,
+              finishedLoading: true,
+              abstract: paper.abstract,
+              showAbstract: false,
+            });
+          } else {
+            let summaryJSON = summary.summary;
+            let editorState = Value.fromJSON(summaryJSON);
+            return this.setState({
+              editorState: editorState ? editorState : "",
+              finishedLoading: true,
+              abstract: paper.abstract,
+              showAbstract: false,
+            });
+          }
+        }
+        if (paper.abstract) {
+          this.setState({ abstract: paper.abstract, showAbstract: true });
+        }
+      } else {
+        if (paper.abstract) {
+          this.setState({ abstract: paper.abstract, showAbstract: true });
         }
       }
-      if (paper.abstract) {
-        this.setState({ abstract: paper.abstract, showAbstract: true });
-      }
-    } else {
-      if (paper.abstract) {
-        this.setState({ abstract: paper.abstract, showAbstract: true });
-      }
-    }
+    });
   };
 
   navigateToEditPaperInfo = () => {
