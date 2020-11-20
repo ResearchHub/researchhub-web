@@ -222,6 +222,9 @@ export const PaperActions = {
       let action = actions.setPostPaperFailure("POST", errorBody);
 
       if (response.ok) {
+        const body = await response.json();
+        const paper = shims.paper(body);
+
         let payload = {
           event_type: "create_paper",
           time: +new Date(),
@@ -230,12 +233,12 @@ export const PaperActions = {
             : null,
           event_properties: {
             interaction: "Create Paper",
+            id: paper.id,
+            is_removed: paper.is_removed,
           },
         };
-        sendAmpEvent(payload);
 
-        const body = await response.json();
-        const paper = shims.paper(body);
+        sendAmpEvent(payload);
         action = actions.setPostPaperSuccess(paper);
       } else {
         utils.logFetchError(response);

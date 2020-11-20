@@ -118,7 +118,7 @@ class SummaryTab extends React.Component {
           this.initializeSummary();
           setMessage("Edits Submitted for Approval!");
         } else {
-          const ampPayload = this.formatAmpPayload();
+          const ampPayload = this.formatAmpPayload(resp.id);
           sendAmpEvent(ampPayload);
           checkUserFirstTime(!this.props.auth.user.has_seen_first_coin_modal);
           getUser();
@@ -143,7 +143,7 @@ class SummaryTab extends React.Component {
       });
   };
 
-  formatAmpPayload = () => ({
+  formatAmpPayload = (id) => ({
     event_type: "create_summary",
     time: +new Date(),
     user_id: this.props.auth.user
@@ -152,6 +152,7 @@ class SummaryTab extends React.Component {
     event_properties: {
       paper: this.props.paperId,
       interaction: "Paper Summary",
+      id,
     },
   });
 

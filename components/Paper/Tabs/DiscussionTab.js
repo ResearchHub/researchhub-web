@@ -212,6 +212,8 @@ const DiscussionTab = (props) => {
           event_properties: {
             interaction: "Post Thread",
             paper: paperId,
+            is_removed: resp.is_removed,
+            id: resp.id,
           },
         };
         props.setCount(props.calculatedCount + 1);
