@@ -187,6 +187,10 @@ class BulletsContainer extends React.Component {
 
   renderBulletPoints = () => {
     let { loading, bullets, showForm } = this.state;
+
+    const emptyBullets =
+      bullets.filter((bullet) => !bullet.is_removed).length === 0;
+
     if (loading) {
       return (
         <ReactPlaceholder
@@ -197,7 +201,7 @@ class BulletsContainer extends React.Component {
           <div></div>
         </ReactPlaceholder>
       );
-    } else if (bullets.length === 0 && !showForm) {
+    } else if (emptyBullets && !showForm) {
       return (
         <Ripples
           className={css(styles.emptyStateContainer)}
