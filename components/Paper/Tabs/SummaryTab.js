@@ -14,6 +14,7 @@ import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
+import ModeratorQA from "~/components/Moderator/ModeratorQA";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -247,34 +248,36 @@ class SummaryTab extends React.Component {
   initializeSummary = () => {
     const { paper, summary } = this.props;
 
-    if (summary) {
-      if (summary.summary) {
-        if (isQuillDelta(summary.summary)) {
-          return this.setState({
-            editorState: summary.summary,
-            finishedLoading: true,
-            abstract: paper.abstract,
-            showAbstract: false,
-          });
-        } else {
-          let summaryJSON = summary.summary;
-          let editorState = Value.fromJSON(summaryJSON);
-          return this.setState({
-            editorState: editorState ? editorState : "",
-            finishedLoading: true,
-            abstract: paper.abstract,
-            showAbstract: false,
-          });
+    this.setState({ finishedLoading: false }, () => {
+      if (summary) {
+        if (summary.summary) {
+          if (isQuillDelta(summary.summary)) {
+            return this.setState({
+              editorState: summary.summary,
+              finishedLoading: true,
+              abstract: paper.abstract,
+              showAbstract: false,
+            });
+          } else {
+            let summaryJSON = summary.summary;
+            let editorState = Value.fromJSON(summaryJSON);
+            return this.setState({
+              editorState: editorState ? editorState : "",
+              finishedLoading: true,
+              abstract: paper.abstract,
+              showAbstract: false,
+            });
+          }
+        }
+        if (paper.abstract) {
+          this.setState({ abstract: paper.abstract, showAbstract: true });
+        }
+      } else {
+        if (paper.abstract) {
+          this.setState({ abstract: paper.abstract, showAbstract: true });
         }
       }
-      if (paper.abstract) {
-        this.setState({ abstract: paper.abstract, showAbstract: true });
-      }
-    } else {
-      if (paper.abstract) {
-        this.setState({ abstract: paper.abstract, showAbstract: true });
-      }
-    }
+    });
   };
 
   navigateToEditPaperInfo = () => {
@@ -330,7 +333,7 @@ class SummaryTab extends React.Component {
   };
 
   renderAbstract = () => {
-    let { paper } = this.props;
+    const { paper, updatePaperState } = this.props;
     let externalSource = paper.retrieved_from_external_source;
     if (this.state.showAbstract) {
       if (this.state.editAbstract) {
@@ -458,7 +461,7 @@ class SummaryTab extends React.Component {
   };
 
   render() {
-    let { paper, summary } = this.props;
+    let { paper, summary, updatePaperState } = this.props;
     let { transition } = this.state;
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
@@ -471,11 +474,15 @@ class SummaryTab extends React.Component {
             <BulletsContainer
               paperId={this.props.paperId}
               afterFetchBullets={this.props.afterFetchBullets}
+              updatePaperState={updatePaperState}
+              paper={paper}
             />
           </div>
         </a>
         <div>{this.state.errorMessage}</div>
-        {!this.state.showAbstract ? (
+        {this.state.showAbstract ? (
+          this.renderAbstract()
+        ) : (
           <a name="summary">
             {(summary && summary.summary) || this.state.summaryExists ? (
               <div
@@ -491,6 +498,12 @@ class SummaryTab extends React.Component {
                         {this.renderTabs()}
                       </h3>
                       <div className={css(styles.summaryActions)}>
+                        <ModeratorQA
+                          containerStyles={[styles.action, styles.pinAction]}
+                          updatePaperState={updatePaperState}
+                          type={"summary"}
+                          paper={paper}
+                        />
                         <Link
                           href={"/paper/[paperId]/[paperName]/edits"}
                           as={`/paper/${paper.id}/${paper.slug}/edits`}
@@ -551,9 +564,9 @@ class SummaryTab extends React.Component {
                       placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
                       
                       Hypothesis: What question does this paper attempt to answer?
-  
+
                       Conclusion: What conclusion did the paper reach?
-  
+
                       Significance: What does this paper make possible in the world, and what should be tried from here?
                       `}
                       onCancel={this.cancel}
@@ -606,11 +619,11 @@ class SummaryTab extends React.Component {
                       onChange={this.onEditorStateChange}
                       placeholder={`Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
                       
-Hypothesis: What question does this paper attempt to answer?
-  
-Conclusion: What conclusion did the paper reach?
-  
-Significance: What does this paper make possible in the world, and what should be tried from here?
+  Hypothesis: What question does this paper attempt to answer?
+
+  Conclusion: What conclusion did the paper reach?
+
+  Significance: What does this paper make possible in the world, and what should be tried from here?
                       `}
                       commentStyles={styles.commentStyles}
                       editing={this.state.editing}
@@ -622,6 +635,14 @@ Significance: What does this paper make possible in the world, and what should b
                       <div className={css(styles.sectionTitle)}>
                         Description
                         {this.renderTabs()}
+                      </div>
+                      <div className={css(styles.summaryActions)}>
+                        <ModeratorQA
+                          containerStyles={[styles.action, styles.pinAction]}
+                          updatePaperState={updatePaperState}
+                          type={"summary"}
+                          paper={paper}
+                        />
                       </div>
                     </div>
                     <div className={css(styles.box) + " second-step"}>
@@ -651,8 +672,6 @@ Significance: What does this paper make possible in the world, and what should b
               </div>
             )}
           </a>
-        ) : (
-          this.renderAbstract()
         )}
         <ManageBulletPointsModal paperId={this.props.paperId} />
       </ComponentWrapper>
@@ -676,12 +695,22 @@ var styles = StyleSheet.create({
     marginTop: 30,
     backgroundColor: "#fff",
     padding: 50,
+    position: "relative",
     border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
+    },
+  },
+  moderatorButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    "@media only screen and (max-width: 767px)": {
+      right: -10,
+      top: -10,
     },
   },
   centerColumn: {
@@ -697,7 +726,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
-
+    position: "relative",
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
@@ -759,9 +788,11 @@ var styles = StyleSheet.create({
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
+    marginTop: 0,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "space-between",
       width: "100%",
+      marginBottom: 20,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
@@ -845,12 +876,20 @@ var styles = StyleSheet.create({
     },
   },
   summaryActions: {
-    width: 250,
+    width: "max-content",
     display: "flex",
     alignItems: "center",
-    // justifyContent: "space-between",
     justifyContent: "flex-end",
     paddingBottom: 0,
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "flex-start",
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: "unset",
+    },
+  },
+  abstractActions: {
+    display: "flex",
     "@media only screen and (max-width: 767px)": {
       marginTop: 8,
     },
@@ -858,13 +897,8 @@ var styles = StyleSheet.create({
       width: "unset",
     },
   },
-  abstractActions: {
-    "@media only screen and (max-width: 767px)": {
-      marginTop: 8,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: "unset",
-    },
+  pinAction: {
+    marginRight: 15,
   },
   summaryEdit: {
     width: "100%",
@@ -1064,6 +1098,9 @@ var styles = StyleSheet.create({
     borderRadius: 4,
     ":hover": {
       color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 767px)": {
+      marginRight: 0,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
