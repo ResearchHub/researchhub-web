@@ -99,6 +99,8 @@ export function postComment(paperId, threadId, text, plain_text) {
           interaction: "Post Comment",
           paper: paperId,
           thread: threadId,
+          is_removed: resp.is_removed,
+          id: resp.id,
         },
       };
       sendAmpEvent(payload);
@@ -195,6 +197,8 @@ export function postReply(paperId, threadId, commentId, text, plain_text) {
           paper: paperId,
           thread: threadId,
           comment: commentId,
+          is_removed: resp.is_removed,
+          id: resp.id,
         },
       };
       sendAmpEvent(payload);
