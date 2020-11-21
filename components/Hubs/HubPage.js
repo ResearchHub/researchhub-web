@@ -695,7 +695,7 @@ class HubPage extends React.Component {
               initialHubList={this.props.initialHubList}
             />
             <LeaderboardContainer
-              hubId={this.props.hub && this.props.hub.id}
+              hubId={0}
               initialUsers={this.props.leaderboardFeed}
             />
           </div>
