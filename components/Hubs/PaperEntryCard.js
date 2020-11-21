@@ -545,12 +545,12 @@ const PaperEntryCard = (props) => {
             </div>
             {/* {mobileView && renderPreview()} */}
             {renderBullet()}
-            {renderUploadedBy()}
             {mobileView && !promotionSummary && renderHubTags()}
           </div>
           {!mobileView && renderPreview()}
         </div>
         <div className={css(styles.bottomBar)}>
+          {renderUploadedBy()}
           {/* <div className={css(styles.row)}>{renderDiscussionCount()}</div> */}
           {!mobileView && renderHubTags()}
           {paper_type === "PRE_REGISTRATION" && renderPreregistrationTag()}
