@@ -14,17 +14,22 @@ import { PaperActions } from "~/redux/paper";
 import colors, { bannerColor } from "~/config/themes/colors";
 import { getSummaryText } from "~/config/utils";
 
-const PaperBanner = ({ paper, openPaperFeatureModal, bullets }) => {
+const PaperBanner = ({
+  paper,
+  fetchBullets,
+  loadingPaper,
+  openPaperFeatureModal,
+  bullets,
+}) => {
   const [type, setType] = useState(null);
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     configureBanner();
-  }, [paper, bullets]);
+  }, [paper, bullets.bullets.length, loadingPaper]);
 
   const configureBanner = () => {
-    if (!paper) return;
-
+    if (!paper || !fetchBullets || loadingPaper) return;
     const summary = paper.summary && getSummaryText(paper.summary);
     const isRemoved = paper.is_removed;
     const isRemovedByUser = paper.is_removed_by_user;
