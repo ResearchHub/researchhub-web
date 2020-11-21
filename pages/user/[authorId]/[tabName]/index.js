@@ -705,21 +705,25 @@ const AuthorPage = (props) => {
               styles.avatarContainer,
               author.profile_image && styles.border
             )}
-            onClick={(allowEdit && openUserInfoModal) || undefined}
-            onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
-            onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
-            draggable={false}
           >
-            <AuthorAvatar author={author} disableLink={true} size={120} />
-            <meta
-              property="image"
-              content={
-                author.profile_image ? author.profile_image : "author avatar"
-              }
-            />
-            {allowEdit && hoverProfilePicture && (
-              <div className={css(styles.profilePictureHover)}>Update</div>
-            )}
+            <div
+              className={css(styles.avatarContainer)}
+              onClick={(allowEdit && openUserInfoModal) || undefined}
+              onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
+              onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
+              draggable={false}
+            >
+              <AuthorAvatar author={author} disableLink={true} size={120} />
+              <meta
+                property="image"
+                content={
+                  author.profile_image ? author.profile_image : "author avatar"
+                }
+              />
+              {allowEdit && hoverProfilePicture && (
+                <div className={css(styles.profilePictureHover)}>Update</div>
+              )}
+            </div>
             {isModerator() && (
               <ModeratorDeleteButton
                 containerStyle={styles.moderatorButton}
