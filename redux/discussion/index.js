@@ -89,6 +89,8 @@ export function postComment(paperId, threadId, text, plain_text) {
     }
 
     if (response.ok) {
+      const body = await response.json();
+      const comment = body;
       let payload = {
         event_type: "create_comment",
         time: +new Date(),
@@ -99,13 +101,11 @@ export function postComment(paperId, threadId, text, plain_text) {
           interaction: "Post Comment",
           paper: paperId,
           thread: threadId,
-          is_removed: resp.is_removed,
-          id: resp.id,
+          is_removed: comment.is_removed,
+          id: comment.id,
         },
       };
       sendAmpEvent(payload);
-      const body = await response.json();
-      const comment = body;
       action = actions.setPostCommentSuccess(comment);
     } else {
       utils.logFetchError(response);
@@ -186,6 +186,8 @@ export function postReply(paperId, threadId, commentId, text, plain_text) {
     }
 
     if (response.ok) {
+      const body = await response.json();
+      const reply = body;
       let payload = {
         event_type: "create_reply",
         time: +new Date(),
@@ -197,13 +199,11 @@ export function postReply(paperId, threadId, commentId, text, plain_text) {
           paper: paperId,
           thread: threadId,
           comment: commentId,
-          is_removed: resp.is_removed,
-          id: resp.id,
+          is_removed: reply.is_removed,
+          id: reply.id,
         },
       };
       sendAmpEvent(payload);
-      const body = await response.json();
-      const reply = body;
       action = actions.setPostReplySuccess(reply);
     } else {
       utils.logFetchError(response);
