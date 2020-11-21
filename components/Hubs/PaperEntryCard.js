@@ -28,6 +28,7 @@ import { transformDate } from "~/redux/utils";
 import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import AuthorAvatar from "../AuthorAvatar";
 
 const PaperEntryCard = (props) => {
   let {
@@ -141,8 +142,13 @@ const PaperEntryCard = (props) => {
       return (
         <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
           Submitted by{" "}
+          <AuthorAvatar
+            author={uploaded_by.author_profile}
+            name={first_name + " " + last_name}
+            size={25}
+          />
           <span
-            className={css(styles.capitalize)}
+            className={css(styles.capitalize, styles.authorName)}
           >{`${first_name} ${last_name}`}</span>
         </div>
       );
@@ -545,7 +551,7 @@ const PaperEntryCard = (props) => {
           {!mobileView && renderPreview()}
         </div>
         <div className={css(styles.bottomBar)}>
-          <div className={css(styles.row)}>{renderDiscussionCount()}</div>
+          {/* <div className={css(styles.row)}>{renderDiscussionCount()}</div> */}
           {!mobileView && renderHubTags()}
           {paper_type === "PRE_REGISTRATION" && renderPreregistrationTag()}
         </div>
@@ -814,6 +820,9 @@ const styles = StyleSheet.create({
   },
   capitalize: {
     textTransform: "capitalize",
+  },
+  authorName: {
+    marginLeft: 4,
   },
   rhIcon: {
     height: 20,
