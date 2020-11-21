@@ -868,12 +868,13 @@ const NotificationEntry = (props) => {
       <div className={css(styles.authorAvatar)}>
         <AuthorAvatar
           size={35}
-          author={notification.created_by.author_profile}
+          author={notification && notification.created_by.author_profile}
         />
       </div>
       <div className={css(styles.body)}>
         {/* <ReactTooltip /> */}
-        {renderString(notification.context_type && notification.context_type)}
+        {notification &&
+          renderString(notification.context_type && notification.context_type)}
       </div>
     </Ripples>
   );
