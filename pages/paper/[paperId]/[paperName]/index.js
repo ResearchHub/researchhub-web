@@ -446,7 +446,11 @@ const Paper = (props) => {
         <div className={css(styles.paperPageContainer)}>
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
             <div style={{ marginTop: 16 }}>
-              <PaperBanner paper={paper} />
+              <PaperBanner
+                paper={paper}
+                fetchBullets={fetchBullets}
+                loadingPaper={loadingPaper}
+              />
             </div>
             <PaperPageCard
               paper={paper}

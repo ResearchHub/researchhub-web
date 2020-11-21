@@ -63,8 +63,9 @@ class BulletsContainer extends React.Component {
   fetchBullets = async () => {
     this.setState({ loading: true });
     await this.props.getBullets(this.props.paperId);
-    this.setState({ loading: false });
-    this.props.afterFetchBullets && this.props.afterFetchBullets();
+    this.setState({ loading: false }, () => {
+      this.props.afterFetchBullets && this.props.afterFetchBullets();
+    });
   };
 
   componentWillUnmount() {
@@ -188,7 +189,7 @@ class BulletsContainer extends React.Component {
   renderBulletPoints = () => {
     let { loading, bullets, showForm } = this.state;
 
-    const emptyBullets =
+    let emptyBullets =
       bullets.filter((bullet) => !bullet.is_removed).length === 0;
 
     if (loading) {
