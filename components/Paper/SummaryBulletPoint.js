@@ -2,6 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import { useState, Fragment, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
+import * as Sentry from "@sentry/browser";
 import moment from "moment";
 
 import FormTextArea from "../Form/FormTextArea";
@@ -93,6 +94,7 @@ const SummaryBulletPoint = (props) => {
           togglePending(false);
           return dispatch(ModalActions.openRecaptchaPrompt(true));
         }
+        Sentry.captureException(err);
         togglePending(false);
         dispatch(MessageActions.setMessage("Something went wrong"));
         dispatch(MessageActions.showMessage({ show: true, error: true }));
