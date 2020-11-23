@@ -947,16 +947,19 @@ const AuthorPage = (props) => {
                 </div>
               )}
 
-              <div
-                className={css(
-                  styles.socialMedia,
-                  styles.facebook,
-                  styles.mobileConnectOrcid,
-                  authorOrcidId && styles.orcidAvailable
-                )}
-              >
-                {renderOrcid(true)}
-              </div>
+              {authorOrcidId && (
+                <div
+                  className={css(
+                    styles.socialMedia,
+                    styles.facebook,
+                    authorOrcidId && styles.mobileConnectOrcid,
+                    !authorOrcidId && styles.noSocial,
+                    authorOrcidId && styles.orcidAvailable
+                  )}
+                >
+                  {renderOrcid(true)}
+                </div>
+              )}
 
               <div
                 className={css(styles.socialMedia, styles.shareLink)}
@@ -968,6 +971,7 @@ const AuthorPage = (props) => {
             <div
               className={css(
                 styles.connectOrcid,
+                !authorOrcidId && styles.noSocial,
                 authorOrcidId && styles.orcidAvailable
               )}
             >
