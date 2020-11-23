@@ -157,8 +157,11 @@ const styles = StyleSheet.create({
   },
   link: {
     textAlign: "center",
+    whiteSpace: "pre",
     textDecoration: "none",
     textTransform: "capitalize",
+    display: "flex",
+    alignItems: "center",
   },
   selected: {
     color: colors.PURPLE(1),
