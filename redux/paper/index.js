@@ -19,20 +19,21 @@ export const PaperActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          const vote = shims.vote(res);
+          let action = actions.setUserVoteSuccess(vote);
+
           let payload = {
             event_type: "create_paper_vote",
             time: +new Date(),
             user_id: getState().auth.user
               ? getState().auth.user.id && getState().auth.user.id
               : null,
+            insert_id: `paper_vote_${vote.id}`,
             event_properties: {
               interaction: "Paper Upvote",
             },
           };
           sendAmpEvent(payload);
-
-          const vote = shims.vote(res);
-          let action = actions.setUserVoteSuccess(vote);
 
           return dispatch(action);
         })
@@ -53,20 +54,22 @@ export const PaperActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          const vote = shims.vote(res);
+          let action = actions.setUserVoteSuccess(vote);
+
           let payload = {
             event_type: "create_paper_vote",
             time: +new Date(),
             user_id: getState().auth.user
               ? getState().auth.user.id && getState().auth.user.id
               : null,
+            insert_id: `paper_vote_${vote.id}`,
             event_properties: {
               interaction: "Paper Downvote",
             },
           };
           sendAmpEvent(payload);
 
-          const vote = shims.vote(res);
-          let action = actions.setUserVoteSuccess(vote);
           return dispatch(action);
         })
         .catch((err) => {
@@ -231,9 +234,9 @@ export const PaperActions = {
           user_id: getState().auth.user
             ? getState().auth.user.id && getState().auth.user.id
             : null,
+          insert_id: `paper_${paper.id}`,
           event_properties: {
             interaction: "Create Paper",
-            insert_id: `paper_${paper.id}`,
             is_removed: paper.is_removed,
           },
         };
@@ -282,6 +285,7 @@ export const PaperActions = {
           user_id: getState().auth.user
             ? getState().auth.user.id && getState().auth.user.id
             : null,
+          insert_id: `summary_${response.id}`,
           event_properties: {
             paper: body.paperId,
             interaction: "Paper Summary",
