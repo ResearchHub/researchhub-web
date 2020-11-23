@@ -97,12 +97,12 @@ export function postComment(paperId, threadId, text, plain_text) {
         user_id: getState().auth.user
           ? getState().auth.user.id && getState().auth.user.id
           : null,
+        insert_id: `comment_${comment.id}`,
+        is_removed: comment.is_removed,
         event_properties: {
           interaction: "Post Comment",
           paper: paperId,
           thread: threadId,
-          is_removed: comment.is_removed,
-          id: comment.id,
         },
       };
       sendAmpEvent(payload);
@@ -194,13 +194,13 @@ export function postReply(paperId, threadId, commentId, text, plain_text) {
         user_id: getState().auth.user
           ? getState().auth.user.id && getState().auth.user.id
           : null,
+        insert_id: `reply_${reply.id}`,
+        is_removed: reply.is_removed,
         event_properties: {
           interaction: "Post Reply",
           paper: paperId,
           thread: threadId,
           comment: commentId,
-          is_removed: reply.is_removed,
-          id: reply.id,
         },
       };
       sendAmpEvent(payload);
@@ -267,20 +267,22 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
     }
 
     if (response.ok) {
+      const body = await response.json();
+      const vote = shims.vote(body);
+
       let payload = {
         event_type: "create_discussion_vote",
         time: +new Date(),
         user_id: getState().auth.user
           ? getState().auth.user.id && getState().auth.user.id
           : null,
+        insert_id: `dis_vote_${vote.id}`,
         event_properties: {
           interaction: "Discussion Upvote",
           paper: paperId,
         },
       };
       sendAmpEvent(payload);
-      const body = await response.json();
-      const vote = shims.vote(body);
       action = actions.setPostVoteSuccess(vote);
     } else {
       utils.logFetchError(response);
@@ -309,20 +311,22 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
     }
 
     if (response.ok) {
+      const body = await response.json();
+      const vote = shims.vote(body);
+
       let payload = {
         event_type: "create_discussion_vote",
         time: +new Date(),
         user_id: getState().auth.user
           ? getState().auth.user.id && getState().auth.user.id
           : null,
+        insert_id: `dis_vote_${vote.id}`,
         event_properties: {
           interaction: "Discussion Downvote",
           paper: paperId,
         },
       };
       sendAmpEvent(payload);
-      const body = await response.json();
-      const vote = shims.vote(body);
       action = actions.setPostVoteSuccess(vote);
     } else {
       utils.logFetchError(response);
