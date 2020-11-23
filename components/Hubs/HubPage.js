@@ -362,9 +362,6 @@ class HubPage extends React.Component {
               this.state.next ? this.state.next : this.state.prev
             ); // grab page from backend response
             let offset = this.state.next ? -1 : 1;
-            // if (this.state.filterBy.value === 'newest') {
-            //   offset = 0;
-            // }
             page = Number(page) + offset;
             this.updateSlugs(page);
           }
