@@ -253,19 +253,6 @@ class LiveFeed extends React.Component {
     return options;
   };
 
-  findStartingPage = () => {
-    // let page = 1;
-    // let { livefeed } = this.props;
-    // if (livefeed.grabbedPage) {
-    //   let seenPages = Object.keys(livefeed.grabbedPage);
-    //   seenPages.forEach((num, i, arr) => {
-    //     arr[i] = Number(num);
-    //   });
-    //   page = Math.max(...seenPages) + 1;
-    // }
-    // return page;
-  };
-
   render() {
     const { livefeed } = this.props;
 
