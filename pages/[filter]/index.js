@@ -6,7 +6,10 @@ import HubPage from "~/components/Hubs/HubPage";
 
 import API from "~/config/api";
 import { getInitialScope } from "~/config/utils/dates";
-import { slugToFilterQuery } from "~/config/utils/routing";
+import {
+  slugToFilterQuery,
+  calculateScopeFromSlug,
+} from "~/config/utils/routing";
 import { filterOptions } from "~/config/utils/options";
 
 const Index = (props) => {
@@ -22,6 +25,9 @@ Index.getInitialProps = async (ctx) => {
   };
   let page = query.page ? query.page : 1;
   let filter = query.filter && slugToFilterQuery(query.filter);
+  let scope = query.scope
+    ? calculateScopeFromSlug(query.scope)
+    : getInitialScope();
 
   try {
     const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
@@ -30,7 +36,7 @@ Index.getInitialProps = async (ctx) => {
           // Initial Feed
           hubId: 0,
           ordering: filter,
-          timePeriod: getInitialScope(),
+          timePeriod: scope,
           page,
         }),
         API.GET_CONFIG()
