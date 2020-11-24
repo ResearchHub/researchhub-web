@@ -750,11 +750,6 @@ const AuthorPage = (props) => {
                     property="name"
                   >
                     {author.first_name} {author.last_name}
-                    {allowEdit &&
-                      renderEditButton(() => {
-                        setHoverName(false);
-                        openUserInfoModal();
-                      })}
                   </h1>
                 </Fragment>
               ) : (
