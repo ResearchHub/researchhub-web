@@ -28,17 +28,13 @@ class CategoryList extends React.Component {
     return categories.map((category, i) => {
       let { category_name } = category;
       let slug = category_name.toLowerCase().replace(/\s/g, "-");
+
       return (
         <Ripples
           className={css(styles.categoryEntry)}
           key={`${category_name}-${i}`}
         >
-          <Link
-            href={{
-              pathname: "/hubs#${slug}",
-            }}
-            as={`/hubs#${slug}`}
-          >
+          <Link href={"/hubs"} as={`/hubs#${slug}`}>
             <a className={css(styles.categoryLink)}>{category_name}</a>
           </Link>
         </Ripples>
@@ -115,6 +111,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     padding: "8px",
+    width: "100%",
   },
   categoryList: {
     padding: "0px 30px",
