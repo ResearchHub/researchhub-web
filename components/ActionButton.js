@@ -19,8 +19,8 @@ const ActionButton = (props) => {
     isModerator,
     paperId,
     onAction,
-    //moderator,
     containerStyle,
+    iconStyle,
   } = props;
 
   function renderIcon() {
@@ -44,7 +44,7 @@ const ActionButton = (props) => {
       <ModeratorDeleteButton
         icon={icon ? icon : icons.ban}
         containerStyle={containerStyle && containerStyle}
-        iconStyle={styles.deleteIcon}
+        iconStyle={iconStyle ? iconStyle : styles.deleteIcon}
         actionType={"page"}
         metaData={{ paperId }}
         forceRender={true}
