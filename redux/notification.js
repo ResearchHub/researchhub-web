@@ -18,19 +18,27 @@ export const NotificationConstants = {
 };
 
 export const NotificationActions = {
-  getLivefeed: (prevState, hubId = 0, page = 1) => {
-    return (dispatch) => {
+  getLivefeed: ({ hubId = 0, loadMore }) => {
+    return (dispatch, getState) => {
       dispatch({ type: NotificationConstants.GET_LIVEFEED });
-      return fetch(API.GET_LIVE_FEED({ hubId, page }), API.GET_CONFIG())
+      const prevState = getState().livefeed.livefeed;
+      const ENDPOINT = loadMore ? prevState.next : API.GET_LIVE_FEED({ hubId });
+
+      return fetch(ENDPOINT, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let livefeed = shims.handleChanges(
-            prevState,
-            { ...res },
-            hubId,
-            page
-          );
+          let results = res.results;
+
+          if (loadMore) {
+            results = [...prevState.results, ...res.results];
+          }
+
+          const livefeed = {
+            ...res,
+            results,
+          };
+
           return dispatch({
             type: NotificationConstants.LIVEFEED_UPDATED,
             payload: {
@@ -155,24 +163,6 @@ const NotificationReducer = (state = defaultNotificationState, action) => {
 };
 
 const shims = {
-  handleChanges: (prevState, newResults, hubId, page) => {
-    var updatedFeed = { ...prevState };
-    if (doesNotExist(prevState.currentHub) || prevState.currentHub !== hubId) {
-      updatedFeed.currentHub = hubId;
-      updatedFeed.count = newResults.count;
-      updatedFeed.results = newResults.results;
-      updatedFeed.grabbedPage = { 0: true };
-      return updatedFeed;
-    } else {
-      if (!updatedFeed.grabbedPage[page]) {
-        // append to results if new page
-        updatedFeed.results = [...updatedFeed.results, ...newResults.results];
-        updatedFeed.grabbedPage[page] = true; // add page to cache
-        return updatedFeed;
-      }
-      return updatedFeed;
-    }
-  },
   findIndexById: (prevState, notifId) => {
     for (var i = 0; i < prevState.length; i++) {
       if (prevState[i].id === notifId) {
