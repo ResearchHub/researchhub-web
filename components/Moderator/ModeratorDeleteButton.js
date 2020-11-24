@@ -216,7 +216,7 @@ const ModeratorDeleteButton = (props) => {
   if (isModerator || forceRender) {
     return (
       <Ripples className={css(containerClass)} onClick={performAction}>
-        <span className={css(iconClass)}>
+        <span className={css(iconClass) + " modIcon"}>
           {icon ? icon : icons.minusCircle}
         </span>
         {label && <span className={css(labelClass)}>{label}</span>}

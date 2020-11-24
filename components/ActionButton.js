@@ -19,12 +19,14 @@ const ActionButton = (props) => {
     isModerator,
     paperId,
     onAction,
+    containerStyle,
+    iconStyle,
   } = props;
 
   function renderIcon() {
     if (icon) {
       return (
-        <span className={css(styles.icon)} id={"#icon"}>
+        <span className={css(styles.icon)}>
           <i className={icon} />
         </span>
       );
@@ -41,7 +43,8 @@ const ActionButton = (props) => {
     return (
       <ModeratorDeleteButton
         icon={icon ? icon : icons.ban}
-        iconStyle={styles.deleteIcon}
+        containerStyle={containerStyle && containerStyle}
+        iconStyle={iconStyle ? iconStyle : styles.deleteIcon}
         actionType={"page"}
         metaData={{ paperId }}
         forceRender={true}
@@ -131,6 +134,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.RED(1),
     },
+  },
+  activeIcon: {
+    color: colors.RED(1),
   },
   active: {
     color: "#FFF",
