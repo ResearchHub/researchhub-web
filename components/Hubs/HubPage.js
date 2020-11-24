@@ -56,7 +56,7 @@ class HubPage extends React.Component {
         this.props.initialFeed && this.props.initialFeed.next
           ? this.props.initialFeed.next
           : null,
-      page: this.props.page || 1,
+      page: this.props.page || 2,
       doneFetching: this.props.initialFeed ? true : false,
       filterBy: this.props.filter ? this.props.filter : defaultFilter,
       scope: this.props.scope ? this.props.scope : defaultScope,
@@ -363,7 +363,6 @@ class HubPage extends React.Component {
             ); // grab page from backend response
             let offset = this.state.next ? -1 : 1;
             page = Number(page) + offset;
-
             this.updateSlugs(page);
           }
         );

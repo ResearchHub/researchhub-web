@@ -130,30 +130,24 @@ class LiveFeed extends React.Component {
 
   fetchInitialFeed = (hubId) => {
     this.setState({ loading: true }, async () => {
-      let { getLivefeed, livefeed } = this.props;
-      let { page } = this.state;
-      await getLivefeed(livefeed, hubId, page);
+      const { getLivefeed } = this.props;
+      await getLivefeed({ hubId });
       this.setState({ loading: false });
     });
   };
 
   fetchNextPage = async () => {
+    const { livefeed, getLivefeed } = this.props;
+
     if (this.state.fetchingPage) {
       return;
     }
-    let { livefeed, getLivefeed } = this.props;
-    if (livefeed.count === livefeed.results.length) {
-      return;
-    }
-    let page = this.findStartingPage();
+    const hubId = this.state.currentHub.value;
 
-    if (livefeed.grabbedPage || !livefeed.grabbedPage[page]) {
-      let hubId = this.state.currentHub.value;
-      this.setState({ fetchingPage: true }, async () => {
-        await getLivefeed(livefeed, hubId, page);
-        this.setState({ fetchingPage: false });
-      });
-    }
+    this.setState({ fetchingPage: true }, async () => {
+      await getLivefeed({ hubId, loadMore: true });
+      this.setState({ fetchingPage: false });
+    });
   };
 
   transitionWrapper = (func) => {
@@ -237,7 +231,7 @@ class LiveFeed extends React.Component {
   };
 
   buildHubOptions = (hubs) => {
-    let options =
+    const options =
       hubs &&
       hubs.map((hub) => {
         let hubName = hub.name
@@ -259,21 +253,8 @@ class LiveFeed extends React.Component {
     return options;
   };
 
-  findStartingPage = () => {
-    let page = 1;
-    let { livefeed } = this.props;
-    if (livefeed.grabbedPage) {
-      let seenPages = Object.keys(livefeed.grabbedPage);
-      seenPages.forEach((num, i, arr) => {
-        arr[i] = Number(num);
-      });
-      page = Math.max(...seenPages) + 1;
-    }
-    return page;
-  };
-
   render() {
-    let { livefeed } = this.props;
+    const { livefeed } = this.props;
 
     return (
       <div className={css(styles.livefeedComponent)}>
@@ -343,12 +324,11 @@ class LiveFeed extends React.Component {
                 </span>
               ) : (
                 <InfiniteScroll
-                  pageStart={this.findStartingPage()}
                   loadMore={(page) => {
                     this.fetchNextPage(page);
                   }}
-                  initialLoad={true}
-                  hasMore={livefeed.count > livefeed.results.length}
+                  initialLoad={false}
+                  hasMore={livefeed.count && livefeed.next}
                   loader={
                     <span className={css(styles.loaderWrapper)}>
                       <Loader loading={true} size={20} />
