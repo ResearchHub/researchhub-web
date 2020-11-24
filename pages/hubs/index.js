@@ -115,6 +115,7 @@ class Index extends React.Component {
       let categoryID = category.id;
       let categoryName = category.category_name;
       let slug = categoryName.toLowerCase().replace(/\s/g, "-");
+
       return (
         <React.Fragment key={categoryID}>
           <div
