@@ -22,6 +22,7 @@ const icons = {
   flag: <i className="fas fa-flag" />,
   badge: <i className="fas fa-certificate" />,
   minusCircle: <i className="fad fa-minus-circle" />,
+  minus: <i className="fas fa-minus" />,
   ellipsisH: <i className="far fa-ellipsis-h" />,
   date: <i className="far fa-calendar-day" />,
   upload: <i className="fas fa-upload"></i>,
