@@ -724,7 +724,7 @@ const AuthorPage = (props) => {
                 <div className={css(styles.profilePictureHover)}>Update</div>
               )}
             </div>
-            {isModerator() && (
+            {/* {isModerator() && (
               <ModeratorDeleteButton
                 containerStyle={styles.moderatorButton}
                 iconStyle={styles.moderatorIcon}
@@ -733,9 +733,8 @@ const AuthorPage = (props) => {
                 label={"Ban User"}
                 actionType={"user"}
                 metaData={{ authorId: router.query.authorId }}
-                // onRemove={this.removeContent}
               />
-            )}
+            )} */}
           </div>
           <div className={css(styles.profileInfo)}>
             <div className={css(styles.nameLine)}>
@@ -947,19 +946,15 @@ const AuthorPage = (props) => {
                 </div>
               )}
 
-              {authorOrcidId && (
-                <div
-                  className={css(
-                    styles.socialMedia,
-                    styles.facebook,
-                    authorOrcidId && styles.mobileConnectOrcid,
-                    !authorOrcidId && styles.noSocial,
-                    authorOrcidId && styles.orcidAvailable
-                  )}
-                >
-                  {renderOrcid(true)}
-                </div>
-              )}
+              <div
+                className={css(
+                  styles.socialMedia,
+                  styles.orcid,
+                  authorOrcidId && styles.orcidAvailable
+                )}
+              >
+                {renderOrcid(true)}
+              </div>
 
               <div
                 className={css(styles.socialMedia, styles.shareLink)}
@@ -968,23 +963,21 @@ const AuthorPage = (props) => {
                 <i className="far fa-share"></i>
               </div>
             </div>
-            <div
-              className={css(
-                styles.connectOrcid,
-                !authorOrcidId && styles.noSocial,
-                authorOrcidId && styles.orcidAvailable
-              )}
-            >
-              {renderOrcid()}
-            </div>
             {allowEdit && (
               <div className={css(styles.editProfileButton)}>
                 <Button
-                  label={"Edit Profile"}
+                  label={() => (
+                    <Fragment>
+                      <i
+                        className="fas fa-edit"
+                        style={{ marginRight: 10, userSelect: "none" }}
+                      />
+                      Edit Profile
+                    </Fragment>
+                  )}
                   onClick={openUserInfoModal}
                   customButtonStyle={styles.editButtonCustom}
                   rippleClass={styles.rippleClass}
-                  isWhite={true}
                 />
               </div>
             )}
@@ -997,6 +990,17 @@ const AuthorPage = (props) => {
                   rippleClass={styles.editButtonCustom}
                 />
               </div>
+            )}
+            {isModerator() && (
+              <ModeratorDeleteButton
+                containerStyle={styles.moderatorButton}
+                iconStyle={styles.moderatorIcon}
+                labelStyle={styles.moderatorLabel}
+                icon={<i className="fas fa-ban" />}
+                label={"Ban User"}
+                actionType={"user"}
+                metaData={{ authorId: router.query.authorId }}
+              />
             )}
           </div>
         </div>
@@ -1063,17 +1067,27 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
     marginTop: 10,
-    borderRadius: 4,
     fontWeight: 400,
     fontSize: 16,
-    height: 30,
+    height: 35,
+    width: 175,
     background: colors.RED(0.9),
     color: "#FFF",
     border: `1px solid ${colors.RED()}`,
+    borderRadius: 5,
+    cursor: "pointer",
+    highlight: "none",
+    outline: "none",
+    border: "none",
+    userSelect: "none",
     ":hover": {
+      color: "#FFF",
       background: colors.RED(1),
+    },
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      height: 40,
     },
   },
   moderatorIcon: {
@@ -1201,6 +1215,9 @@ const styles = StyleSheet.create({
   facebook: {
     background: "#3B5998",
   },
+  orcid: {
+    background: "none",
+  },
   shareLink: {
     background: colors.BLUE(),
     minWidth: 35,
@@ -1214,7 +1231,6 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "fit-content",
     paddingRight: 20,
-    // marginRight: 3,
     "@media only screen and (max-width: 767px)": {
       width: "unset",
       paddingRight: 0,
@@ -1243,7 +1259,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontFamily: "Roboto, sans-serif",
     outline: "none",
-
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
     ":focus": {
@@ -1272,7 +1287,6 @@ const styles = StyleSheet.create({
   cancelButton: {
     color: colors.BLUE(),
     background: "#fff",
-
     ":hover": {
       color: "#fff",
       background: colors.BLUE(),
@@ -1310,7 +1324,6 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     marginTop: 0,
     marginBottom: 16,
-    // fontSize: 32,
   },
   nameInput: {
     fontSize: 32,
@@ -1487,6 +1500,7 @@ const styles = StyleSheet.create({
   },
   orcidButton: {
     width: 180,
+    height: 42,
     fontSize: 14,
     "@media only screen and (max-width: 415px)": {
       height: 50,
@@ -1524,7 +1538,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   editProfileButton: {
-    marginTop: 10,
+    marginTop: 20,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -1538,8 +1552,10 @@ const styles = StyleSheet.create({
     },
   },
   editButtonCustom: {
-    height: 40,
+    height: 35,
+    width: 175,
     "@media only screen and (max-width: 767px)": {
+      height: 40,
       width: "100%",
       minWidth: "100%",
     },
