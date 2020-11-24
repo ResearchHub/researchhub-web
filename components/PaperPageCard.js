@@ -1238,6 +1238,7 @@ const styles = StyleSheet.create({
   moderatorAction: {
     ":hover": {
       backgroundColor: colors.RED(0.3),
+      borderColor: colors.RED(),
     },
     ":hover .modIcon": {
       color: colors.RED(),
