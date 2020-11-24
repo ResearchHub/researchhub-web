@@ -248,7 +248,7 @@ class PaperPageCard extends React.Component {
           onClick={this.navigateToEditPaperInfo}
           permissionKey="UpdatePaper"
           loginRequired={true}
-          hideRipples={false}
+          hideRipples={true}
           styling={styles.borderRadius}
         >
           <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
@@ -298,9 +298,9 @@ class PaperPageCard extends React.Component {
               <ActionButton
                 isModerator={true}
                 paperId={paper.id}
-                icon={icons.minusCircle}
+                icon={icons.minus}
                 onAction={this.removePaper}
-                moderatorIconStyles={styles.removeIcon}
+                iconStyle={styles.moderatorIcon}
               />
             </span>
           </Ripples>
@@ -321,7 +321,7 @@ class PaperPageCard extends React.Component {
               <ActionButton
                 isModerator={isModerator}
                 paperId={paper.id}
-                moderatorIconStyles={styles.removeIcon}
+                iconStyle={styles.moderatorIcon}
               />
             </span>
           </Ripples>
@@ -1236,8 +1236,19 @@ const styles = StyleSheet.create({
     },
   },
   moderatorAction: {
+    ":hover": {
+      backgroundColor: colors.RED(0.3),
+    },
     ":hover .modIcon": {
       color: colors.RED(),
+    },
+  },
+  moderatorIcon: {
+    color: colors.RED(0.6),
+    fontSize: 18,
+    cursor: "pointer",
+    ":hover": {
+      color: colors.RED(1),
     },
   },
   downloadActionIcon: {
