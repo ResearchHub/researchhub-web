@@ -261,10 +261,7 @@ class PaperPageCard extends React.Component {
           subtitle={paperTitle}
           url={this.props.shareUrl}
           customButton={
-            <div
-              className={css(styles.actionIcon, styles.middleIcon)}
-              data-tip={"Share Paper"}
-            >
+            <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
               <i className="far fa-share-alt" />
             </div>
           }
@@ -296,21 +293,17 @@ class PaperPageCard extends React.Component {
           </Ripples>
         )}
         {isModerator || isSubmitter ? (
-          <span>
-            <span data-tip={"Remove Page"} style={{ marginRight: 10 }}>
+          <Ripples className={css(styles.actionIcon, styles.moderatorAction)}>
+            <span data-tip={"Remove Page"}>
               <ActionButton
                 isModerator={true}
                 paperId={paper.id}
                 icon={icons.minusCircle}
                 onAction={this.removePaper}
+                moderatorIconStyles={styles.removeIcon}
               />
             </span>
-            {isModerator && (
-              <span data-tip={"Remove Page & Ban User"}>
-                <ActionButton isModerator={isModerator} paperId={paper.id} />
-              </span>
-            )}
-          </span>
+          </Ripples>
         ) : (
           <span data-tip={"Flag Paper"}>
             <FlagButton
@@ -320,6 +313,18 @@ class PaperPageCard extends React.Component {
               style={styles.actionIcon}
             />
           </span>
+        )}
+
+        {isModerator && (
+          <Ripples className={css(styles.actionIcon, styles.moderatorAction)}>
+            <span data-tip={"Remove Page & Ban User"}>
+              <ActionButton
+                isModerator={isModerator}
+                paperId={paper.id}
+                moderatorIconStyles={styles.removeIcon}
+              />
+            </span>
+          </Ripples>
         )}
       </div>
     );
@@ -1223,14 +1228,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     cursor: "pointer",
     border: "1px solid rgba(36, 31, 58, 0.1)",
+    marginRight: 10,
     ":hover": {
       color: "rgba(36, 31, 58, 0.8)",
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },
   },
+  moderatorAction: {
+    ":hover .modIcon": {
+      color: colors.RED(),
+    },
+  },
   downloadActionIcon: {
-    marginRight: 10,
     color: "#fff",
     backgroundColor: colors.BLUE(),
     borderColor: colors.BLUE(),
@@ -1245,9 +1255,6 @@ const styles = StyleSheet.create({
   },
   borderRadius: {
     borderRadius: "50%",
-  },
-  middleIcon: {
-    margin: "0px 10px",
   },
   row: {
     display: "flex",
