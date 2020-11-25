@@ -293,17 +293,18 @@ class PaperPageCard extends React.Component {
           </Ripples>
         )}
         {isModerator || isSubmitter ? (
-          <Ripples className={css(styles.actionIcon, styles.moderatorAction)}>
-            <span data-tip={"Remove Page"}>
-              <ActionButton
-                isModerator={true}
-                paperId={paper.id}
-                icon={icons.minus}
-                onAction={this.removePaper}
-                iconStyle={styles.moderatorIcon}
-              />
-            </span>
-          </Ripples>
+          <span
+            className={css(styles.actionIcon, styles.moderatorAction)}
+            data-tip={"Remove Page"}
+          >
+            <ActionButton
+              isModerator={true}
+              paperId={paper.id}
+              icon={icons.minus}
+              onAction={this.removePaper}
+              iconStyle={styles.moderatorIcon}
+            />
+          </span>
         ) : (
           <span data-tip={"Flag Paper"}>
             <FlagButton
@@ -316,15 +317,16 @@ class PaperPageCard extends React.Component {
         )}
 
         {isModerator && (
-          <Ripples className={css(styles.actionIcon, styles.moderatorAction)}>
-            <span data-tip={"Remove Page & Ban User"}>
-              <ActionButton
-                isModerator={isModerator}
-                paperId={paper.id}
-                iconStyle={styles.moderatorIcon}
-              />
-            </span>
-          </Ripples>
+          <span
+            className={css(styles.actionIcon, styles.moderatorAction)}
+            data-tip={"Remove Page & Ban User"}
+          >
+            <ActionButton
+              isModerator={isModerator}
+              paperId={paper.id}
+              iconStyle={styles.moderatorIcon}
+            />
+          </span>
         )}
       </div>
     );

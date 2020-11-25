@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState, useRef, Fragment } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
-import "~/components/Paper/CitationCard.css";
+import ReactTooltip from "react-tooltip";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -26,6 +26,7 @@ import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserInfoModal from "~/components/modal/UserInfoModal";
 import Button from "~/components/Form/Button";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
+import "~/components/Paper/CitationCard.css";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -692,6 +693,7 @@ const AuthorPage = (props) => {
         title={`${name} on ResearchHub`}
         description={`View contributions by ${name} on ResearchHub`}
       />
+      <ReactTooltip />
       <ComponentWrapper>
         <UserInfoModal />
         <div
@@ -724,17 +726,6 @@ const AuthorPage = (props) => {
                 <div className={css(styles.profilePictureHover)}>Update</div>
               )}
             </div>
-            {/* {isModerator() && (
-              <ModeratorDeleteButton
-                containerStyle={styles.moderatorButton}
-                iconStyle={styles.moderatorIcon}
-                labelStyle={styles.moderatorLabel}
-                icon={<i className="fas fa-ban" />}
-                label={"Ban User"}
-                actionType={"user"}
-                metaData={{ authorId: router.query.authorId }}
-              />
-            )} */}
           </div>
           <div className={css(styles.profileInfo)}>
             <div className={css(styles.nameLine)}>
@@ -870,6 +861,7 @@ const AuthorPage = (props) => {
                     editLinkedin && styles.fullOpacity
                   )}
                   ref={(ref) => (linkedinRef = ref)}
+                  data-tip={"Set LinkedIn Profile"}
                 >
                   <div
                     className={css(styles.socialMedia, styles.linkedin)}
@@ -900,6 +892,7 @@ const AuthorPage = (props) => {
                     editTwitter && styles.fullOpacity
                   )}
                   ref={(ref) => (twitterRef = ref)}
+                  data-tip={"Set Twitter Profile"}
                 >
                   <div
                     className={css(styles.socialMedia, styles.twitter)}
@@ -934,6 +927,7 @@ const AuthorPage = (props) => {
                   <div
                     className={css(styles.socialMedia, styles.facebook)}
                     onClick={() => setEditFacebook(true)}
+                    data-tip={"Set Facebook Profile"}
                   >
                     <i className="fab fa-facebook-f"></i>
                   </div>
@@ -951,12 +945,13 @@ const AuthorPage = (props) => {
                 {renderOrcid(true)}
               </div>
 
-              <div
+              <span
                 className={css(styles.socialMedia, styles.shareLink)}
                 onClick={() => setOpenShareModal(true)}
+                data-tip={"Share Your Profile"}
               >
                 <i className="far fa-share"></i>
-              </div>
+              </span>
             </div>
             {allowEdit && (
               <div className={css(styles.editProfileButton)}>
