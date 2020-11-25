@@ -447,7 +447,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        {/* <Search /> */}
+        <Search />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
