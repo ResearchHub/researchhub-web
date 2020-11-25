@@ -447,7 +447,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        <Search />
+        {/* <Search /> */}
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -603,6 +603,7 @@ const styles = StyleSheet.create({
   },
   tabs: {
     display: "flex",
+    marginRight: "auto",
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
