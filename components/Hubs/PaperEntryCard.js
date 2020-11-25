@@ -141,15 +141,16 @@ const PaperEntryCard = (props) => {
       } = uploaded_by.author_profile;
       return (
         <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
-          Submitted by{" "}
-          <AuthorAvatar
-            author={uploaded_by.author_profile}
-            name={first_name + " " + last_name}
-            size={25}
-          />
-          <span
-            className={css(styles.capitalize, styles.authorName)}
-          >{`${first_name} ${last_name}`}</span>
+          <span className={css(styles.submittedSection)}>
+            <AuthorAvatar
+              author={uploaded_by.author_profile}
+              name={first_name + " " + last_name}
+              size={25}
+            />
+            <span
+              className={css(styles.capitalize, styles.authorName)}
+            >{`${first_name} ${last_name}`}</span>
+          </span>
         </div>
       );
     } else if (external_source) {
@@ -798,19 +799,24 @@ const styles = StyleSheet.create({
   hubLabel: {
     fontSize: 9,
   },
+  submittedSection: {
+    display: "flex",
+    alignItems: "center",
+    ":hover": {
+      color: colors.BLUE(1),
+    },
+  },
   uploadedBy: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     fontSize: 14,
-    color: "rgb(145, 143, 155)",
+    color: "rgba(145, 143, 155, 1)",
+    // color: 'rgb(120, 124, 126)',
+    letterSpacing: 0.2,
     fontWeight: 400,
-    marginBottom: 8,
     cursor: "pointer",
     whiteSpace: "pre-wrap",
-    ":hover": {
-      color: colors.BLUE(),
-    },
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
     },
