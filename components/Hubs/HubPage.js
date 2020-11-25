@@ -860,9 +860,7 @@ class HubPage extends React.Component {
 }
 
 var styles = StyleSheet.create({
-  content: {
-    backgroundColor: "#FFF",
-  },
+  content: {},
   column: {
     display: "flex",
     flexDirection: "column",
@@ -932,18 +930,16 @@ var styles = StyleSheet.create({
     },
   },
   body: {
-    backgroundColor: "#FCFCFC",
+    backgroundColor: "#FFF",
     width: "100%",
     alignItems: "flex-start",
   },
   sidebar: {
     width: "18%",
+    height: 1927,
     minHeight: "100vh",
     minWidth: 220,
-    // position: "relative",
-    position: "sticky",
-    top: 80,
-    backgroundColor: "#FFF",
+    paddingTop: 10,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
