@@ -71,14 +71,12 @@ class HubPage extends React.Component {
       subscribeClicked: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
+      height: null,
     };
   }
 
   updateDimensions = () => {
-    let height = document.getElementById("topbar").offsetHeight + 34;
-    this.setState({
-      leaderboardTop: height,
-    });
+    this.setSidebarHeight();
     if (window.innerWidth < 968) {
       this.setState({
         mobileView: true,
@@ -87,6 +85,19 @@ class HubPage extends React.Component {
     } else {
       this.setState({ mobileView: false, mobileBanner: false });
     }
+  };
+
+  setScrollShadow = () => {
+    const height = document.getElementById("topbar").offsetHeight + 34;
+    this.setState({ leaderboardTop: height });
+  };
+
+  /**
+   * Needed for sticky property
+   */
+  setSidebarHeight = () => {
+    const height = document.getElementById("mainfeed-body").clientHeight;
+    height !== this.state.height && this.setState({ height });
   };
 
   updateUserBannerPreference = () => {
@@ -119,7 +130,8 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    let { isLoggedIn, initialFeed, hubState } = this.props;
+    const { isLoggedIn, initialFeed, hubState } = this.props;
+
     if (initialFeed) {
       this.detectPromoted(this.state.papers);
     } else {
@@ -357,6 +369,8 @@ class HubPage extends React.Component {
             loadingMore: false,
           },
           () => {
+            this.setSidebarHeight();
+
             let page = getFragmentParameterByName(
               "page",
               this.state.next ? this.state.next : this.state.prev
@@ -687,8 +701,11 @@ class HubPage extends React.Component {
           )}
           {this.props.home && <Head title={this.props.home && null} />}
         </div>
-        <div className={css(styles.row, styles.body)}>
-          <div className={css(styles.sidebar, styles.column)}>
+        <div className={css(styles.row, styles.body)} id={"mainfeed-body"}>
+          <div
+            className={css(styles.sidebar, styles.column)}
+            style={{ height: this.state.height }}
+          >
             <HubsList
               current={this.props.home ? null : this.props.hub}
               initialHubList={this.props.initialHubList}
@@ -706,7 +723,7 @@ class HubPage extends React.Component {
                 this.state.titleBoxShadow && styles.titleBoxShadow,
                 this.props.home && styles.row
               )}
-              id={"topbar"}
+              // id={"topbar"}
             >
               <h1 className={css(styles.text, styles.feedTitle)}>
                 <span className={css(styles.fullWidth)}>
@@ -796,7 +813,10 @@ class HubPage extends React.Component {
                     {this.renderLoadMoreButton()}
                   </Fragment>
                 ) : (
-                  <div className={css(styles.column)}>
+                  <div
+                    className={css(styles.column)}
+                    style={{ height: this.state.height }}
+                  >
                     <img
                       className={css(styles.emptyPlaceholderImage)}
                       src={"/static/background/homepage-empty-state.png"}
@@ -860,9 +880,7 @@ class HubPage extends React.Component {
 }
 
 var styles = StyleSheet.create({
-  content: {
-    backgroundColor: "#FFF",
-  },
+  content: {},
   column: {
     display: "flex",
     flexDirection: "column",
@@ -932,18 +950,16 @@ var styles = StyleSheet.create({
     },
   },
   body: {
-    backgroundColor: "#FCFCFC",
+    backgroundColor: "#FFF",
     width: "100%",
     alignItems: "flex-start",
   },
   sidebar: {
     width: "18%",
-    minHeight: "100vh",
+    // height: 1927,
+    // minHeight: "100vh",
     minWidth: 220,
-    // position: "relative",
-    position: "sticky",
-    top: 80,
-    backgroundColor: "#FFF",
+    paddingTop: 10,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },

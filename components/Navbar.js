@@ -508,7 +508,7 @@ const Navbar = (props) => {
                         Settings
                       </div>
                     </Link>
-                    <Link
+                    {/* <Link
                       href={{
                         pathname: "/paper/upload/info",
                         query: { type: "pre_registration" },
@@ -522,7 +522,7 @@ const Navbar = (props) => {
                         ></i>
                         Submit Funding Request
                       </div>
-                    </Link>
+                    </Link> */}
                     <Link
                       href={{
                         pathname: "/referral",
