@@ -831,7 +831,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -265,
+    bottom: -215,
     right: 0,
     width: 225,
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
