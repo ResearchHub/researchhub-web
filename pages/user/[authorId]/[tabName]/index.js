@@ -35,6 +35,7 @@ import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import UserSummaries from "../../../../components/Author/Tabs/UserSummaries";
 
 const AuthorPage = (props) => {
   const { auth, author, hostname, user, transactions } = props;
@@ -379,6 +380,17 @@ const AuthorPage = (props) => {
       <ComponentWrapper>
         <div className={css(styles.tabMeta)}>
           <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+          <div
+            className={css(
+              tabName === "contributions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserSummaries
+              fetching={fetching}
+              mobileView={mobileView}
+              authorId={router.query.authorId}
+            />
+          </div>
           <div
             className={css(
               tabName === "contributions" ? styles.reveal : styles.hidden
