@@ -47,6 +47,18 @@ const UserPromotions = (props) => {
         ? author.promotions.results
         : [];
 
+    if (promotions.length === 0) {
+      return (
+        <div className={css(styles.box)}>
+          <div className={css(styles.icon)}>
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h2 className={css(styles.noContent)}>
+            User has not supported any content
+          </h2>
+        </div>
+      );
+    }
     return promotions.map((promotion, i) => {
       const { source } = promotion;
       return <PromotionCard paper={source} promotion={promotion} index={i} />;
@@ -146,6 +158,28 @@ const styles = StyleSheet.create({
       color: "#FFF",
       backgroundColor: colors.BLUE(),
     },
+  },
+  box: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  noContent: {
+    color: colors.BLACK(1),
+    fontSize: 20,
+    fontWeight: 500,
+    textAlign: "center",
+    "@media only screen and (max-width: 415px)": {
+      width: 280,
+      fontSize: 16,
+    },
+  },
+  icon: {
+    fontSize: 50,
+    color: colors.BLUE(1),
+    height: 50,
+    marginBottom: 10,
   },
   card: {
     width: "100%",
