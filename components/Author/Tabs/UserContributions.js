@@ -127,7 +127,7 @@ class UserContributionsTab extends React.Component {
               <i className="fad fa-comment-alt-edit"></i>
             </div>
             <h2 className={css(styles.noContent)}>
-              User has not submitted a paper.
+              User has not submitted a paper
             </h2>
           </div>
         )}
