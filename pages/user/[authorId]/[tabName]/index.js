@@ -36,6 +36,7 @@ import { createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import UserSummaries from "../../../../components/Author/Tabs/UserSummaries";
+import UserKeyTakeaways from "../../../../components/Author/Tabs/UserKeyTakeaways";
 
 const AuthorPage = (props) => {
   const { auth, author, hostname, user, transactions } = props;
@@ -66,6 +67,16 @@ const AuthorPage = (props) => {
 
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [mobileView, setMobileView] = useState(false);
+  // Summary constants
+  const [summaries, setSummaries] = useState([]);
+  const [summaryCount, setSummaryCount] = useState(0);
+  const [summaryNext, setSummaryNext] = useState(null);
+  const [summariesFetched, setSummariesFetched] = useState(false);
+  // KT Constants
+  const [keyTakeaways, setKeyTakeaways] = useState([]);
+  const [takeawayCount, setTakeawayCount] = useState(0);
+  const [takeawayNext, setTakeawayNext] = useState(null);
+  const [takeawaysFetched, setTakeawaysFetched] = useState(false);
 
   let facebookRef;
   let linkedinRef;
@@ -102,7 +113,11 @@ const AuthorPage = (props) => {
     let promotions = fetchUserPromotions();
     let transactions = fetchUserTransactions();
     let refetch = refetchAuthor();
+    let summaries = fetchSummaries();
+    let takeaways = fetchKeyTakeaways();
     Promise.all([
+      takeaways,
+      summaries,
       authored,
       discussions,
       contributions,
@@ -341,6 +356,18 @@ const AuthorPage = (props) => {
       count: () => author.userContributions.count,
     },
     {
+      href: "summaries",
+      label: "submitted summaries",
+      showCount: true,
+      count: () => summaryCount,
+    },
+    {
+      href: "takeaways",
+      label: "key takeaways",
+      showCount: true,
+      count: () => takeawayCount,
+    },
+    {
       href: "authored-papers",
       label: "authored papers",
       showCount: true,
@@ -366,6 +393,41 @@ const AuthorPage = (props) => {
     },
   ];
 
+  const fetchSummaries = (next) => {
+    return fetch(
+      next
+        ? next
+        : API.SUMMARY({ proposed_by__author_profile: router.query.authorId }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setSummaries(res.results);
+        setSummaryCount(res.count);
+        setSummaryNext(res.next);
+        setSummariesFetched(true);
+      });
+  };
+
+  const fetchKeyTakeaways = (next) => {
+    let querystring = {
+      created_by__author_profile: router.query.authorId,
+    };
+    return fetch(
+      next ? next : API.KEY_TAKEAWAY({ querystring }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setKeyTakeaways(res.results);
+        setTakeawayCount(res.count);
+        setTakeawayNext(res.next);
+        setTakeawaysFetched(true);
+      });
+  };
+
   const renderTabTitle = () => {
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].href === tabName) {
@@ -382,13 +444,26 @@ const AuthorPage = (props) => {
           <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
           <div
             className={css(
-              tabName === "contributions" ? styles.reveal : styles.hidden
+              tabName === "takeaways" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserKeyTakeaways
+              fetched={takeawaysFetched}
+              fetchItems={fetchKeyTakeaways}
+              items={keyTakeaways}
+              itemsNext={takeawayNext}
+            />
+          </div>
+          <div
+            className={css(
+              tabName === "summaries" ? styles.reveal : styles.hidden
             )}
           >
             <UserSummaries
-              fetching={fetching}
-              mobileView={mobileView}
-              authorId={router.query.authorId}
+              fetchSummaries={fetchSummaries}
+              summaries={summaries}
+              summaryNext={summaryNext}
+              summariesFetched={summariesFetched}
             />
           </div>
           <div

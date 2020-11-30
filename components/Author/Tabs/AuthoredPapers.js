@@ -122,7 +122,7 @@ class AuthoredPapersTab extends React.Component {
               <i className="fad fa-file-alt" />
             </div>
             <h2 className={css(styles.noContent)}>
-              User has not authored any papers.
+              User has not authored any papers
             </h2>
           </div>
         )}
