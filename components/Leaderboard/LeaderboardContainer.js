@@ -64,8 +64,7 @@ const LeaderboardContainer = (props) => {
     <div className={css(styles.container)}>
       <h3 className={css(styles.reputable)}>Most Reputable Users</h3>
       <ReactPlaceholder
-        // ready={!fetchingUsers}
-        ready={true}
+        ready={!fetchingUsers}
         customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
       >
         <div className={css(styles.leaderboardUsers)}>
