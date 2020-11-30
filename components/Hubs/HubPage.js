@@ -152,7 +152,6 @@ class HubPage extends React.Component {
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
     this.updateDimensions();
-    this.setSidebarHeight();
     window.addEventListener("resize", this.updateDimensions);
     window.addEventListener("scroll", this.scrollListener);
   }
