@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 
@@ -9,25 +9,16 @@ import Ripples from "react-ripples";
 import TextEditor from "~/components/TextEditor";
 import SummaryContributor from "../../Paper/SummaryContributor";
 
-import { AuthorActions } from "~/redux/author";
-
 // Config
 import colors from "~/config/themes/colors";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import { thread } from "../../../redux/discussion/shims";
+import SummaryBulletPoint from "../../Paper/SummaryBulletPoint";
 
-const UserSummaries = ({
-  summaries,
-  fetchSummaries,
-  summariesFetched,
-  summaryNext,
-}) => {
+const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
   const [fetchingMore, setFetchingMore] = useState(false);
 
   const loadMore = async () => {
     setFetchingMore(true);
-    await fetchSummaries(summaryNext);
+    await fetchItems(itemsNext);
     setFetchingMore(false);
   };
 
@@ -53,21 +44,22 @@ const UserSummaries = ({
     );
   };
 
-  let allSummaries = summaries.map((summary, index) => {
-    let path = `/paper/${summary.paper}/${summary.paper_slug}#summary`;
+  let allItems = items.map((item, index) => {
+    let path = `/paper/${item.paper}/${item.paper_slug}#summary`;
     return (
       <div
         className={css(
           styles.discussionContainer,
-          index === summaries.length - 1 && styles.noBorder
+          index === items.length - 1 && styles.noBorder
         )}
       >
-        <SummaryContributor summary={summary} />
-        <TextEditor
-          canEdit={true}
-          readOnly={true}
-          commentEditor={false}
-          initialValue={summary.summary}
+        <SummaryBulletPoint
+          key={`summaryBulletPoint-${item.id}`}
+          data={item}
+          editable={false}
+          type={"KEY_TAKEAWAY"}
+          index={index}
+          authorProfile={item.created_by.author_profile}
         />
       </div>
     );
@@ -75,13 +67,13 @@ const UserSummaries = ({
 
   return (
     <ReactPlaceholder
-      ready={summariesFetched}
+      ready={fetched}
       showLoadingAnimation
       customPlaceholder={<PaperPlaceholder color="#efefef" />}
     >
-      {allSummaries.length > 0 ? (
+      {allItems.length > 0 ? (
         <React.Fragment>
-          <div className={css(styles.container)}>{allSummaries}</div>
+          <div className={css(styles.container)}>{allItems}</div>
           {renderLoadMoreButton()}
         </React.Fragment>
       ) : (
@@ -170,4 +162,4 @@ var styles = StyleSheet.create({
   },
 });
 
-export default UserSummaries;
+export default UserKeyTakeaways;
