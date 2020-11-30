@@ -64,7 +64,8 @@ const LeaderboardContainer = (props) => {
     <div className={css(styles.container)}>
       <h3 className={css(styles.reputable)}>Most Reputable Users</h3>
       <ReactPlaceholder
-        ready={!fetchingUsers}
+        // ready={!fetchingUsers}
+        ready={true}
         customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
       >
         <div className={css(styles.leaderboardUsers)}>
@@ -86,9 +87,10 @@ LeaderboardContainer.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    // border: "1px solid #eee",
     background: "#fff",
-    // padding: 16,
+    display: "block",
+    position: "sticky",
+    top: 100,
     borderRadius: 4,
     width: "100%",
   },
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 13,
     letterSpacing: 1.2,
-    marginBottom: 15,
+    marginBottom: 23,
     textAlign: "left",
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
@@ -109,7 +111,6 @@ const styles = StyleSheet.create({
     },
   },
   leaderboardUsers: {
-    // opacity: 0,
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
@@ -139,7 +140,6 @@ const styles = StyleSheet.create({
     },
   },
   linkContainer: {
-    marginTop: 16,
     textAlign: "center",
     paddingBottom: 30,
   },
