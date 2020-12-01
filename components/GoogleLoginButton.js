@@ -50,9 +50,8 @@ const GoogleLoginButton = (props) => {
             let payload = {
               event_type: "user_signup",
               time: +new Date(),
-              user_id: getState().auth.user
-                ? getState().auth.user.id && getState().auth.user.id
-                : null,
+              user_id: userAction.user.id,
+              insert_id: `user_${userAction.user.id}`,
               event_properties: {
                 interaction: "User Signup",
               },
@@ -83,9 +82,8 @@ const GoogleLoginButton = (props) => {
             let payload = {
               event_type: "user_signup",
               time: +new Date(),
-              user_id: getState().auth.user
-                ? getState().auth.user.id && getState().auth.user.id
-                : null,
+              user_id: userAction.user.id,
+              insert_id: `user_${userAction.user.id}`,
               event_properties: {
                 interaction: "User Signup",
               },

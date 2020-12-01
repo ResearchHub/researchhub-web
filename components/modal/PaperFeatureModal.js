@@ -305,7 +305,7 @@ class PaperFeatureModal extends React.Component {
         if (!res.approved) {
           setMessage("Edits Submitted for Approval!");
         } else {
-          this.ampEvent("summary");
+          this.ampEvent("summary", res.id);
           let updatedPaper = { ...paper };
           updatedPaper.summary = { ...res };
           updatePaperState(updatedPaper);
@@ -359,7 +359,7 @@ class PaperFeatureModal extends React.Component {
         newDiscussion = thread(newDiscussion);
         props.setDiscussionThreads([newDiscussion, ...props.threads]);
         props.setCount(props.commentCount + 1);
-        this.ampEvent("comment");
+        this.ampEvent("comment", resp.id);
         setTimeout(() => {
           showMessage({ show: false });
           setMessage("Successfully Saved!");
@@ -385,7 +385,7 @@ class PaperFeatureModal extends React.Component {
     this.closeModal();
   };
 
-  ampEvent = (type) => {
+  ampEvent = (type, id) => {
     let payload;
 
     if (type === "summary") {
@@ -395,6 +395,7 @@ class PaperFeatureModal extends React.Component {
         user_id: this.props.auth.user
           ? this.props.auth.user.id && this.props.auth.user.id
           : null,
+        insert_id: `summary_${id}`,
         event_properties: {
           paper: this.props.paper.id,
           interaction: "Paper Summary",
@@ -408,6 +409,7 @@ class PaperFeatureModal extends React.Component {
         user_id: this.props.auth.user
           ? this.props.auth.user.id && this.props.auth.user.id
           : null,
+        insert_id: `thread_${id}`,
         event_properties: {
           interaction: "Post Thread",
           paper: this.props.paper.id,

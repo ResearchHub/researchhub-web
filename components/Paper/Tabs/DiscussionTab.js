@@ -209,11 +209,11 @@ const DiscussionTab = (props) => {
           user_id: props.auth.user
             ? props.auth.user.id && props.auth.user.id
             : null,
+          insert_id: `thread_${resp.id}`,
           event_properties: {
             interaction: "Post Thread",
             paper: paperId,
             is_removed: resp.is_removed,
-            insert_id: `thread_${resp.id}`,
           },
         };
         props.setCount(props.calculatedCount + 1);

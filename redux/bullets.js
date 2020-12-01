@@ -83,6 +83,7 @@ export const BulletActions = {
             user_id: getState().auth.user
               ? getState().auth.user.id && getState().auth.user.id
               : null,
+            insert_id: `bulletpoint_${res.id}`,
             event_properties: {
               interaction: "Post Key-Takeaway",
               paper: paperId,
