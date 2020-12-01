@@ -403,7 +403,7 @@ const AuthorPage = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setSummaries(res.results);
+        setSummaries([...summaries, ...res.results]);
         setSummaryCount(res.count);
         setSummaryNext(res.next);
         setSummariesFetched(true);
@@ -421,7 +421,7 @@ const AuthorPage = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setKeyTakeaways(res.results);
+        setKeyTakeaways([...keyTakeaways, ...res.results]);
         setTakeawayCount(res.count);
         setTakeawayNext(res.next);
         setTakeawaysFetched(true);
