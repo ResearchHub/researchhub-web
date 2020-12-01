@@ -1006,7 +1006,6 @@ var styles = StyleSheet.create({
     width: "82%",
     backgroundColor: "#FCFCFC",
     borderLeft: "1px solid #ededed",
-    backgroundColor: "#FFF",
     "@media only screen and (min-width: 900px)": {
       width: "82%",
     },

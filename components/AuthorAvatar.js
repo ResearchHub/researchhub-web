@@ -35,8 +35,12 @@ const AuthorAvatar = (props) => {
           <img
             src={author.profile_image}
             style={{
+              minWidth: finalSize,
               width: finalSize,
+              maxWidth: finalSize,
+              minHeight: finalSize,
               height: finalSize,
+              maxHeight: finalSize,
               objectFit: "cover",
               borderRadius: "50%",
               border: "3px solid #F1F1F1",
