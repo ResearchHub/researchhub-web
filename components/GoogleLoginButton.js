@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import * as Sentry from "@sentry/browser";
+import { sendAmpEvent } from "~/config/fetch";
 
 import Button from "~/components/Form/Button";
 import { AuthActions } from "../redux/auth";
@@ -46,6 +47,17 @@ const GoogleLoginButton = (props) => {
           props.loginCallback && props.loginCallback(); // closes banner if user signs in from banner
           props.showSignupBanner && props.removeBanner();
           if (!userAction.user.has_seen_orcid_connect_modal) {
+            let payload = {
+              event_type: "user_signup",
+              time: +new Date(),
+              user_id: getState().auth.user
+                ? getState().auth.user.id && getState().auth.user.id
+                : null,
+              event_properties: {
+                interaction: "User Signup",
+              },
+            };
+            sendAmpEvent(payload);
             // push user to onboarding - will eventually see the orcid modal
             router.push(
               "/user/[authorId]/onboard?internal=true",
@@ -68,6 +80,18 @@ const GoogleLoginButton = (props) => {
           props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
           if (!userAction.user.has_seen_orcid_connect_modal) {
+            let payload = {
+              event_type: "user_signup",
+              time: +new Date(),
+              user_id: getState().auth.user
+                ? getState().auth.user.id && getState().auth.user.id
+                : null,
+              event_properties: {
+                interaction: "User Signup",
+              },
+            };
+            sendAmpEvent(payload);
+
             // push user to onboarding - will eventually see the orcid modal
             router.push(
               "/user/[authorId]/onboard?internal=true",
