@@ -234,27 +234,27 @@ class HubPage extends React.Component {
   };
 
   detectPromoted = (papers) => {
-    // papers.forEach((paper) => {
-    //   if (paper.promoted) {
-    //     let createdLocationMeta = this.state.filterBy;
-    //     if (createdLocationMeta === "hot") {
-    //       createdLocationMeta = "trending";
-    //     }
-    //     let payload = {
-    //       paper: paper.id,
-    //       paper_is_boosted: true,
-    //       interaction: "VIEW",
-    //       utc: new Date(),
-    //       created_location: "FEED",
-    //       created_location_meta: "trending",
-    //     };
-    //     fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
-    //       .then(Helpers.checkStatus)
-    //       .then(Helpers.parseJSON)
-    //       .then((res) => {})
-    //       .catch((err) => {});
-    //   }
-    // });
+    papers.forEach((paper) => {
+      if (paper.promoted) {
+        let createdLocationMeta = this.state.filterBy;
+        if (createdLocationMeta === "hot") {
+          createdLocationMeta = "trending";
+        }
+        let payload = {
+          paper: paper.id,
+          paper_is_boosted: true,
+          interaction: "VIEW",
+          utc: new Date(),
+          created_location: "FEED",
+          created_location_meta: "trending",
+        };
+        fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((res) => {})
+          .catch((err) => {});
+      }
+    });
   };
 
   fetchPapers = ({ hub }) => {
@@ -462,6 +462,9 @@ class HubPage extends React.Component {
     let isHomePage = this.props.home;
     var prefix = "";
     switch (value) {
+      case "removed":
+        prefix = "Removed";
+        break;
       case "hot":
         prefix = "Trending";
         break;
@@ -679,6 +682,9 @@ class HubPage extends React.Component {
 
   render() {
     let { auth } = this.props;
+    if (auth.user.moderator && filterOptions.length < 5) {
+      filterOptions.push({ value: "removed", label: "Removed" });
+    }
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>
