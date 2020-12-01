@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   },
   removedMessage: {
     textAlign: "left",
-    width: "max-content",
+    width: "100%",
     marginLeft: 25,
     "@media only screen and (max-width: 767px)": {
       marginLeft: 14,

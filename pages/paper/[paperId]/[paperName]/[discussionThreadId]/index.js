@@ -69,9 +69,13 @@ const DiscussionThreadPage = (props) => {
       .catch(utils.handleCatch);
   };
 
-  useEffect(async () => {
+  const initialize = async () => {
     await fetchComments();
     setThread(props.thread);
+  };
+
+  useEffect(() => {
+    initialize();
   }, []);
 
   function renderComments(comments) {

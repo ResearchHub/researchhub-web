@@ -96,6 +96,7 @@ class UserDiscussionsTab extends React.Component {
               data={discussion}
               hostname={hostname}
               path={path}
+              paperId={discussion.paper}
               key={`discThread-${discussion.id}-${index}`}
               mobileView={this.props.mobileView}
             />
