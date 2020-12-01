@@ -687,7 +687,7 @@ class HubPage extends React.Component {
           )}
           {this.props.home && <Head title={this.props.home && null} />}
         </div>
-        <div className={css(styles.row, styles.body)} id={"mainfeed-body"}>
+        <div className={css(styles.row, styles.body)}>
           <div className={css(styles.column, styles.sidebar)}>
             <HubsList
               current={this.props.home ? null : this.props.hub}
@@ -933,12 +933,13 @@ var styles = StyleSheet.create({
     },
   },
   body: {
-    backgroundColor: "#FFF",
+    backgroundColor: "#FCFCFC",
     width: "100%",
     alignItems: "flex-start",
     display: "table",
   },
   sidebar: {
+    backgroundColor: "#FFF",
     width: "18%",
     height: "100%",
     display: "table-cell",
