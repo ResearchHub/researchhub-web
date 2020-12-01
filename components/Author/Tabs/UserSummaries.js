@@ -32,7 +32,7 @@ const UserSummaries = ({
   };
 
   const renderLoadMoreButton = () => {
-    if (!next) {
+    if (!summaryNext) {
       return null;
     }
     return (
