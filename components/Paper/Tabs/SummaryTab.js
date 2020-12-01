@@ -150,10 +150,10 @@ class SummaryTab extends React.Component {
     user_id: this.props.auth.user
       ? this.props.auth.user.id && this.props.auth.user.id
       : null,
+    insert_id: `summary_${id}`,
     event_properties: {
       paper: this.props.paperId,
       interaction: "Paper Summary",
-      insert_id: `summary_${id}`,
     },
   });
 

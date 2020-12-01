@@ -173,24 +173,10 @@ class PaperTransactionModal extends React.Component {
 
       let payload = { transaction_hash: hash.hash };
 
-      fetch(API.PROMOTION({ purchaseId: id }), API.PATCH_CONFIG(payload))
+      return fetch(API.PROMOTION({ purchaseId: id }), API.PATCH_CONFIG(payload))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          // AMP On-Chain
-          let payload = {
-            event_type: "create_purchase",
-            time: +new Date(),
-            user_id: this.props.auth.user
-              ? this.props.auth.user.id && this.props.auth.user.id
-              : null,
-            event_properties: {
-              interaction: "On-chain Purchase",
-              paper: this.props.paper.id,
-            },
-          };
-          sendAmpEvent(payload);
-
           showMessage({ show: false });
           setMessage("Transaction Successful!");
           showMessage({ show: true });
@@ -320,6 +306,7 @@ class PaperTransactionModal extends React.Component {
           let payload = {
             event_type: "create_purchase",
             time: +new Date(),
+            insert_id: `purchase_${res.id}`,
             user_id: this.props.auth.user
               ? this.props.auth.user.id && this.props.auth.user.id
               : null,
