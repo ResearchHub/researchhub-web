@@ -15,7 +15,8 @@
     "start:prod": "docker run -it -p 3010:3000 researchhub-web",
     "start:staging": "docker run -it -p 3010:3000 researchhub-web-staging",
     "sitemap": "node scripts/createSitemap.js",
-    "sitemap-index": "node scripts/createSitemapIndex.js"
+    "sitemap-index": "node scripts/createSitemapIndex.js",
+    "eb:deploy": "./scripts/deploy/eb-deploy.sh"
   },
   "dependencies": {
     "@elastic/apm-rum": "^5.6.0",
