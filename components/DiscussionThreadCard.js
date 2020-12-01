@@ -30,7 +30,10 @@ const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
-  const { paperId } = router.query;
+  let { paperId } = router.query;
+  if (props.paperId) {
+    paperId = props.paperId;
+  }
 
   const { hostname, hoverEvents, path, mobileView } = props;
 
@@ -61,7 +64,8 @@ const DiscussionThreadCard = (props) => {
 
   useEffect(() => {
     if (data) {
-      setSelectedVoteType(data.user_vote && data.user_vote.voteType);
+      console.log(data.user_vote);
+      setSelectedVoteType(data.user_vote && data.user_vote.vote_type);
     }
   }, [data]);
 
