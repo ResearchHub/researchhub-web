@@ -71,12 +71,10 @@ class HubPage extends React.Component {
       subscribeClicked: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
-      height: null,
     };
   }
 
   updateDimensions = () => {
-    this.setSidebarHeight();
     if (window.innerWidth < 968) {
       this.setState({
         mobileView: true,
@@ -90,14 +88,6 @@ class HubPage extends React.Component {
   setScrollShadow = () => {
     const height = document.getElementById("topbar").offsetHeight + 34;
     this.setState({ leaderboardTop: height });
-  };
-
-  /**
-   * Needed for sticky property
-   */
-  setSidebarHeight = () => {
-    const height = document.getElementById("mainfeed-body").clientHeight;
-    height !== this.state.height && this.setState({ height });
   };
 
   updateUserBannerPreference = () => {
@@ -169,7 +159,6 @@ class HubPage extends React.Component {
       this.props.hub &&
       prevProps.hub.id !== this.props.hub.id
     ) {
-      this.updateDimensions();
       if (this.props.hub.id) {
         this.setState(
           {
@@ -369,8 +358,6 @@ class HubPage extends React.Component {
             loadingMore: false,
           },
           () => {
-            this.setSidebarHeight();
-
             let page = getFragmentParameterByName(
               "page",
               this.state.next ? this.state.next : this.state.prev
@@ -488,7 +475,6 @@ class HubPage extends React.Component {
         prefix = "Most Discussed";
         break;
     }
-    //
     return `${prefix} Papers ${isHomePage ? "on" : "in"} `;
   };
 
@@ -702,10 +688,7 @@ class HubPage extends React.Component {
           {this.props.home && <Head title={this.props.home && null} />}
         </div>
         <div className={css(styles.row, styles.body)} id={"mainfeed-body"}>
-          <div
-            className={css(styles.sidebar, styles.column)}
-            style={{ height: this.state.height }}
-          >
+          <div className={css(styles.column, styles.sidebar)}>
             <HubsList
               current={this.props.home ? null : this.props.hub}
               initialHubList={this.props.initialHubList}
@@ -715,7 +698,7 @@ class HubPage extends React.Component {
               initialUsers={this.props.leaderboardFeed}
             />
           </div>
-          <div className={css(styles.mainFeed, styles.column)}>
+          <div className={css(styles.column, styles.mainFeed)}>
             <div
               className={css(
                 styles.column,
@@ -953,11 +936,12 @@ var styles = StyleSheet.create({
     backgroundColor: "#FFF",
     width: "100%",
     alignItems: "flex-start",
+    display: "table",
   },
   sidebar: {
     width: "18%",
-    // height: 1927,
-    // minHeight: "100vh",
+    height: "100%",
+    display: "table-cell",
     minWidth: 220,
     paddingTop: 10,
     "@media only screen and (max-width: 767px)": {
@@ -1016,6 +1000,7 @@ var styles = StyleSheet.create({
    * MAIN FEED STYLES
    */
   mainFeed: {
+    display: "table-cell",
     height: "100%",
     width: "82%",
     backgroundColor: "#FCFCFC",
