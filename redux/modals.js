@@ -1,6 +1,5 @@
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
-import { sendAmpEvent } from "~/config/fetch";
 
 /**********************************
  *        ACTIONS SECTION         *
@@ -168,18 +167,6 @@ export const ModalActions = {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
-            let payload = {
-              event_type: "user_signup",
-              time: +new Date(),
-              user_id: getState().auth.user
-                ? getState().auth.user.id && getState().auth.user.id
-                : null,
-              event_properties: {
-                interaction: "User Signup",
-              },
-            };
-            sendAmpEvent(payload);
-
             return dispatch({
               type: ModalConstants.ORCID_CONNECT_MODAL_TOGGLE,
               payload: {
