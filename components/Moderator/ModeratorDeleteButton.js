@@ -41,6 +41,17 @@ const ModeratorDeleteButton = (props) => {
     let text;
 
     switch (type) {
+      case "restore":
+        text = "Are you sure you want to restore this page?";
+        return alert.show({
+          text,
+          buttonText: "Restore",
+          onClick: () => {
+            if (onAction) {
+              return onAction();
+            }
+          },
+        });
       case "page":
         text = "Are you sure you want to remove this page?";
         return alert.show({

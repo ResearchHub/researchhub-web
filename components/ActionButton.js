@@ -21,6 +21,7 @@ const ActionButton = (props) => {
     onAction,
     containerStyle,
     iconStyle,
+    restore,
   } = props;
 
   function renderIcon() {
@@ -45,7 +46,7 @@ const ActionButton = (props) => {
         icon={icon ? icon : icons.ban}
         containerStyle={containerStyle && containerStyle}
         iconStyle={iconStyle ? iconStyle : styles.deleteIcon}
-        actionType={"page"}
+        actionType={restore ? "restore" : "page"}
         metaData={{ paperId }}
         forceRender={true}
         onAction={onAction}
