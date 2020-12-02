@@ -257,7 +257,8 @@ class ManageBulletPointsModal extends React.Component {
             type === "key_takeaway" ? "Key Takeaways" : "Limitations"
           }`}</div>
           <div className={css(styles.subtitle)}>
-            {`The selected ${
+            Drag & Drop a takeaway to change the ordering. <br />
+            {`The top 5 selected ${
               type === "key_takeaway" ? "key takeaways" : "limitations"
             } will be displayed on the paper in the ${
               type === "key_takeaway" ? "key takeaways" : "limitations"
@@ -363,6 +364,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     padding: 50,
+    position: "relative",
     overflow: "auto",
     borderRadius: 5,
     "@media only screen and (max-width: 767px)": {
@@ -375,7 +377,7 @@ const styles = StyleSheet.create({
   bulletPoints: {
     width: "100%",
     marginBottom: 16,
-    overflow: "auto",
+    // overflow: "auto",
   },
   title: {
     display: "flex",
@@ -432,7 +434,14 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "flex-end",
-    marginTop: 15,
+    position: "fixed",
+    bottom: 0,
+    right: 0,
+    background: "#fff",
+    width: "calc(100% - 66px)",
+    padding: 16,
+    paddingRight: 0,
+    marginRight: 50,
   },
   cancelButton: {
     height: 37,
