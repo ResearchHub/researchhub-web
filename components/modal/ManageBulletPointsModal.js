@@ -8,6 +8,7 @@ import { useDrag, useDrop, DndProvider } from "react-dnd";
 import Backend from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import Ripples from "react-ripples";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -189,6 +190,56 @@ class ManageBulletPointsModal extends React.Component {
     });
   };
 
+  onDragStart = () => {
+    // Add a little vibration if the browser supports it.
+    // Add's a nice little physical feedback
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate(100);
+    }
+  };
+
+  // a little function to help us with reordering the result
+  reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+  };
+
+  onDragEnd = (result) => {
+    let { cards } = this.state;
+    // combining item
+    if (result.combine) {
+      // super simple: just removing the dragging item
+      let newCards = [...cards];
+      newCards.splice(result.source.index, 1);
+      this.setState({
+        cards: newCards,
+      });
+      return;
+    }
+
+    // dropped outside the list
+    if (!result.destination) {
+      return;
+    }
+
+    if (result.destination.index === result.source.index) {
+      return;
+    }
+
+    const newCards = this.reorder(
+      cards,
+      result.source.index,
+      result.destination.index
+    );
+
+    this.setState({
+      cards: newCards,
+    });
+  };
+
   render() {
     let { modals, type } = this.props;
     let { mobileView, pendingSubmission, cards } = this.state;
@@ -198,6 +249,7 @@ class ManageBulletPointsModal extends React.Component {
         closeModal={this.closeModal}
         className={css(styles.modal)}
         shouldCloseOnOverlayClick={true}
+        ariaHideApp={false}
         style={mobileView ? mobileOverlayStyles : overlayStyles}
       >
         <div className={css(styles.modalContent)}>
@@ -212,9 +264,19 @@ class ManageBulletPointsModal extends React.Component {
             } section.`}
           </div>
           <div className={css(styles.bulletPoints)}>
-            <DndProvider backend={Backend}>
-              {this.renderCards(cards)}
-            </DndProvider>
+            <DragDropContext
+              onDragStart={this.onDragStart}
+              onDragEnd={this.onDragEnd}
+            >
+              <Droppable droppableId={"droppable-takeaways"}>
+                {(provided, snapshot) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {this.renderCards(cards)}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           </div>
           <div className={css(styles.buttonRow)}>
             <Ripples
@@ -280,8 +342,8 @@ const styles = StyleSheet.create({
     transform: "translate(-50%, -50%)",
     display: "flex",
     flexDirection: "column",
-    width: "50%",
-    maxHeight: "80%",
+    width: "65%",
+    maxHeight: "90%",
     "@media only screen and (max-width: 767px)": {
       width: "90%",
       maxHeight: "100%",
@@ -299,10 +361,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    position: "relative",
     backgroundColor: "#fff",
     padding: 50,
-    overflow: "scroll",
+    overflow: "auto",
     borderRadius: 5,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
@@ -313,8 +374,8 @@ const styles = StyleSheet.create({
   },
   bulletPoints: {
     width: "100%",
-    marginBottom: 20,
-    overflow: "scroll",
+    marginBottom: 16,
+    overflow: "auto",
   },
   title: {
     display: "flex",
