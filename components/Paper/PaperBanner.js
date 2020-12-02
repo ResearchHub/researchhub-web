@@ -29,9 +29,15 @@ const PaperBanner = ({
   }, [paper, bullets.bullets.length, loadingPaper]);
 
   const configureBanner = () => {
-    if (!paper || !fetchBullets || loadingPaper) return;
-    const summary = paper.summary && getSummaryText(paper.summary);
+    if (!paper) {
+      return;
+    } else {
+      if (!paper.is_removed && (!fetchBullets || loadingPaper)) {
+        return;
+      }
+    }
     const isRemoved = paper.is_removed;
+    const summary = paper.summary && getSummaryText(paper.summary);
     const isRemovedByUser = paper.is_removed_by_user;
     const needSummary = paper.summary_low_quality || !summary;
     const needTakeaways =
@@ -40,17 +46,20 @@ const PaperBanner = ({
 
     if (isRemoved) {
       setType("removed");
-      return setShowBanner(true);
+      setShowBanner(true);
+      return;
     }
 
     if (isRemovedByUser) {
       setType("removedBbyUser");
-      return setShowBanner(true);
+      setShowBanner(true);
+      return;
     }
 
     if (needSummary || needTakeaways) {
       setType("incomplete");
-      return setShowBanner(true);
+      setShowBanner(true);
+      return;
     }
 
     setShowBanner(false);

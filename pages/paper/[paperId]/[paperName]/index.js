@@ -284,6 +284,18 @@ const Paper = (props) => {
     }
   }
 
+  const restorePaper = () => {
+    let currPaper = { ...paper };
+    currPaper.is_removed = false;
+    setPaper(currPaper);
+  };
+
+  const removePaper = () => {
+    let currPaper = { ...paper };
+    currPaper.is_removed = true;
+    setPaper(currPaper);
+  };
+
   function onJoyrideComplete(joyrideState) {
     let { auth, updateUser, setUploadingPaper } = props;
     if (
@@ -463,6 +475,8 @@ const Paper = (props) => {
               isModerator={isModerator}
               isSubmitter={isSubmitter}
               flagged={flagged}
+              restorePaper={restorePaper}
+              removePaper={removePaper}
               doneFetchingPaper={!loadingPaper}
               setFlag={setFlag}
               sticky={sticky}

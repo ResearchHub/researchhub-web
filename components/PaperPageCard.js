@@ -95,6 +95,34 @@ class PaperPageCard extends React.Component {
     return url;
   };
 
+  restorePaper = () => {
+    let {
+      setMessage,
+      showMessage,
+      isModerator,
+      isSubmitter,
+      paperId,
+      restorePaper,
+    } = this.props;
+    let params = {};
+    if (isModerator) {
+      params.is_removed = false;
+    }
+
+    if (isSubmitter) {
+      params.is_removed_by_user = false;
+    }
+
+    return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setMessage("Paper Successfully Restored.");
+        showMessage({ show: true });
+        restorePaper();
+      });
+  };
+
   removePaper = () => {
     let {
       setMessage,
@@ -102,6 +130,7 @@ class PaperPageCard extends React.Component {
       isModerator,
       isSubmitter,
       paperId,
+      removePaper,
     } = this.props;
     let params = {};
     if (isModerator) {
@@ -118,6 +147,7 @@ class PaperPageCard extends React.Component {
       .then((res) => {
         setMessage("Paper Successfully Removed.");
         showMessage({ show: true });
+        removePaper();
       });
   };
 
@@ -295,13 +325,14 @@ class PaperPageCard extends React.Component {
         {isModerator || isSubmitter ? (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}
-            data-tip={"Remove Page"}
+            data-tip={paper.is_removed ? "Restore Page" : "Remove Page"}
           >
             <ActionButton
               isModerator={true}
               paperId={paper.id}
-              icon={icons.minus}
-              onAction={this.removePaper}
+              restore={paper.is_removed}
+              icon={paper.is_removed ? icons.plus : icons.minus}
+              onAction={paper.is_removed ? this.restorePaper : this.removePaper}
               iconStyle={styles.moderatorIcon}
             />
           </span>
