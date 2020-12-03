@@ -50,7 +50,8 @@ const icons = {
   starEmpty: <i className="far fa-star" />,
   manage: <i className="fal fa-tasks-alt" />,
   pin: <i className="fas fa-thumbtack" />,
-  pinOutline: <i class="fal fa-thumbtack"></i>,
+  pinOutline: <i className="fal fa-thumbtack"></i>,
+  fire: <i className="fad fa-fire-alt" />,
 };
 
 export const voteWidgetIcons = {
