@@ -291,6 +291,11 @@ const styles = StyleSheet.create({
       fontSize: 18,
     },
   },
+  pageContent: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+  },
   // BUTTON
   buttonRowContainer: {
     marginTop: 40,
