@@ -21,7 +21,6 @@ import icons from "~/config/themes/icons";
 import { HubActions } from "~/redux/hub";
 import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "../../redux/message";
-import { finished } from "stream";
 
 class Index extends React.Component {
   constructor(props) {
@@ -108,9 +107,8 @@ class Index extends React.Component {
     this.setState({ hubsByCategory });
   };
 
-  renderCategories = (_width) => {
+  renderCategories = () => {
     const { categories } = this.state;
-
     return categories.map((category, i) => {
       let categoryID = category.id;
       let categoryName = category.category_name;
@@ -118,12 +116,20 @@ class Index extends React.Component {
 
       return (
         <React.Fragment key={categoryID}>
-          <div
-            name={`${slug}`}
-            className={css(styles.categoryLabel)}
-          >{`${categoryName}`}</div>
+          <div name={`${slug}`} className={css(styles.categoryLabel)}>
+            {categoryName === "Trending" ? (
+              <span>
+                {categoryName}
+                <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+              </span>
+            ) : (
+              categoryName
+            )}
+          </div>
           <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
-            {this.renderHubs(categoryID)}
+            {categoryName === "Trending"
+              ? this.renderTrendingHubs()
+              : this.renderHubs(categoryID)}
           </div>
         </React.Fragment>
       );
@@ -168,17 +174,19 @@ class Index extends React.Component {
     return null;
   };
 
+  renderTrendingHubs = () => {
+    const { topHubs } = this.props.hubs;
+
+    return topHubs.map((hub) => <HubCard key={hub.id} hub={hub} />);
+  };
+
   render() {
-    let { finishedLoading, categories } = this.state;
+    const { finishedLoading, categories } = this.state;
 
     return (
       <div className={css(styles.row, styles.body)}>
         <div className={css(styles.sidebar)}>
-          <CategoryList
-            current={this.props.home ? null : this.props.hub}
-            initialHubList={this.props.initialHubList}
-            categories={categories}
-          />
+          <CategoryList categories={categories} />
         </div>
         <div className={css(styles.content)}>
           <AddHubModal addHub={this.addNewHubToState} />
@@ -199,7 +207,7 @@ class Index extends React.Component {
                 finishedLoading && styles.reveal
               )}
             >
-              {this.renderCategories(this.state.width)}
+              {this.renderCategories()}
             </div>
           </div>
         </div>
@@ -285,6 +293,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
     },
+  },
+  trendingIcon: {
+    color: "#FF6D00",
+    marginLeft: 5,
   },
 });
 
