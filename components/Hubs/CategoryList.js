@@ -11,6 +11,7 @@ import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import colors from "../../config/themes/colors";
+import icons from "~/config/themes/icons";
 
 class CategoryList extends React.Component {
   constructor(props) {
@@ -35,7 +36,16 @@ class CategoryList extends React.Component {
           key={`${category_name}-${i}`}
         >
           <Link href={"/hubs"} as={`/hubs#${slug}`}>
-            <a className={css(styles.categoryLink)}>{category_name}</a>
+            <a className={css(styles.categoryLink)}>
+              {category_name === "Trending" ? (
+                <span>
+                  {category_name}
+                  <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+                </span>
+              ) : (
+                category_name
+              )}
+            </a>
           </Link>
         </Ripples>
       );
@@ -115,6 +125,10 @@ const styles = StyleSheet.create({
   },
   categoryList: {
     padding: "0px 30px",
+  },
+  trendingIcon: {
+    color: "#FF6D00",
+    marginLeft: 5,
   },
 });
 
