@@ -39,10 +39,12 @@ export const HubActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
-          let categories = [...resp.results];
-          categories.sort(function(a, b) {
-            return a.category_name.localeCompare(b.category_name);
-          });
+          const categories = [...resp.results];
+          categories.sort((a, b) =>
+            a.category_name.localeCompare(b.category_name)
+          );
+          categories.unshift({ id: 0.5, category_name: "Trending" });
+
           return dispatch({
             type: HubConstants.GET_HUB_CATEGORIES_SUCCESS,
             payload: {
@@ -92,7 +94,7 @@ export const HubActions = {
     };
   },
   getTopHubs: (auth) => {
-    // call is defaulted to return 10
+    // call returns 10 by default
     return (dispatch) => {
       return fetch(API.SORTED_HUB({}), API.GET_CONFIG())
         .then(Helpers.checkStatus)
@@ -120,8 +122,8 @@ export const HubActions = {
    * @param { Boolean } - the new subscribed state of the hub
    */
   updateHub: (prevState, newHubState) => {
-    return (dispatch) => {
-      let { topHubs, subscribedHubs, hubs } = prevState;
+    return (dispatch, getState) => {
+      let { topHubs, subscribedHubs, hubs } = getState().hubs;
 
       let allHubIndex = shims.findIndexById(newHubState.id, hubs);
       let topHubIndex = shims.findIndexById(newHubState.id, topHubs);
