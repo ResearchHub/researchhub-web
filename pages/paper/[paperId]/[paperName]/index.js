@@ -261,23 +261,25 @@ const Paper = (props) => {
       if (voteType === UPVOTE) {
         setScore(selectedVoteType === DOWNVOTE ? score + 2 : score + 1);
         if (paper.promoted !== false) {
-          props.updatePaperState(
-            "promoted",
-            selectedVoteType === DOWNVOTE
-              ? paper.promoted + 2
-              : paper.promoted + 1
-          );
+          setPaper({
+            ...paper,
+            promoted:
+              selectedVoteType === UPVOTE
+                ? paper.promoted + 2
+                : paper.promoted + 1,
+          });
         }
         setSelectedVoteType(UPVOTE);
       } else if (voteType === DOWNVOTE) {
         setScore(selectedVoteType === UPVOTE ? score - 2 : score - 1);
         if (paper.promoted !== false) {
-          props.updatePaperState(
-            "promoted",
-            selectedVoteType === UPVOTE
-              ? paper.promoted - 2
-              : paper.promoted - 1
-          );
+          setPaper({
+            ...paper,
+            promoted:
+              selectedVoteType === UPVOTE
+                ? paper.promoted - 2
+                : paper.promoted - 1,
+          });
         }
         setSelectedVoteType(DOWNVOTE);
       }

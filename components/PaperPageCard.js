@@ -703,7 +703,7 @@ class PaperPageCard extends React.Component {
   };
 
   render() {
-    let {
+    const {
       paper,
       score,
       upvote,

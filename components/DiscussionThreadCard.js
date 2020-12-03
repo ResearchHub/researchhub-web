@@ -64,7 +64,6 @@ const DiscussionThreadCard = (props) => {
 
   useEffect(() => {
     if (data) {
-      console.log(data.user_vote);
       setSelectedVoteType(data.user_vote && data.user_vote.vote_type);
     }
   }, [data]);
