@@ -7,7 +7,6 @@ import VoteWidget from "../VoteWidget";
 import ThreadActionBar from "./ThreadActionBar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
 import ReplyEntry from "./ReplyEntry";
-import ThreadLine from "./ThreadLine";
 import ThreadTextEditor from "./ThreadTextEditor";
 
 // Config
@@ -28,7 +27,6 @@ class CommentEntry extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      elementHeight: 0,
       revealReply: false,
       hovered: false,
       collapsed: false,
@@ -71,8 +69,6 @@ class CommentEntry extends React.Component {
               this.props.auth.user.id === this.props.comment.created_by.id,
       },
       () => {
-        setTimeout(() => this.calculateThreadHeight(), 400);
-        this.props.calculateThreadHeight();
         this.props.comment.highlight &&
           setTimeout(() => {
             this.setState({ highlight: false }, () => {
@@ -84,7 +80,6 @@ class CommentEntry extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    // this.calculateThreadHeight();
     this.handleVoteTypeUpdate(prevProps);
     if (prevProps.auth !== this.props.auth) {
       let { data, comment } = this.props;
@@ -137,33 +132,6 @@ class CommentEntry extends React.Component {
 
   getNextReplies = () => {
     return getNestedValue(this.props, ["comment", "replies"], []);
-  };
-
-  calculateThreadHeight = (height) => {
-    if (this.commentRef) {
-      if (height) {
-        return this.setState(
-          {
-            elementHeight: height,
-          },
-          () => {
-            this.props.calculateThreadHeight &&
-              this.props.calculateThreadHeight();
-          }
-        );
-      }
-      if (this.commentRef.clientHeight !== this.state.elementHeight) {
-        this.setState(
-          {
-            elementHeight: this.commentRef.clientHeight,
-          },
-          () => {
-            this.props.calculateThreadHeight &&
-              this.props.calculateThreadHeight();
-          }
-        );
-      }
-    }
   };
 
   fetchReplies = (e) => {
@@ -352,9 +320,7 @@ class CommentEntry extends React.Component {
       setMessage("Comment successfully updated!");
       showMessage({ show: true });
       callback();
-      this.setState({ editing: false }, () => {
-        this.calculateThreadHeight();
-      });
+      this.setState({ editing: false });
     } else {
       setMessage("Something went wrong");
       showMessage({ show: true, error: true });
@@ -382,14 +348,9 @@ class CommentEntry extends React.Component {
   };
 
   toggleReplyView = () => {
-    this.setState(
-      {
-        revealReply: !this.state.revealReply,
-      },
-      () => {
-        this.calculateThreadHeight();
-      }
-    );
+    this.setState({
+      revealReply: !this.state.revealReply,
+    });
   };
 
   toggleHover = (e) => {
@@ -403,9 +364,7 @@ class CommentEntry extends React.Component {
   };
 
   toggleEdit = () => {
-    this.setState({ editing: !this.state.editing }, () => {
-      this.calculateThreadHeight();
-    });
+    this.setState({ editing: !this.state.editing });
   };
 
   removePostUI = () => {
@@ -446,7 +405,6 @@ class CommentEntry extends React.Component {
           hostname={hostname}
           path={path}
           key={`disc${reply.id}`}
-          calculateThreadHeight={this.calculateThreadHeight}
           comment={comment}
           reply={reply}
           paper={paper}
@@ -473,35 +431,34 @@ class CommentEntry extends React.Component {
       <div
         className={css(styles.row, styles.commentCard)}
         ref={(element) => (this.commentRef = element)}
-        onClick={() =>
-          this.setState({ elementHeight: this.commentRef.clientHeight })
-        }
       >
         <div className={css(styles.column, styles.left)}>
-          <VoteWidget
-            styles={styles.voteWidget}
-            score={this.state.score}
-            onUpvote={this.upvote}
-            onDownvote={this.downvote}
-            selected={this.state.selectedVoteType}
-            fontSize={"12px"}
-            width={"40px"}
-            type={"Comment"}
-            promoted={false}
-          />
-          {!this.state.collapsed && (
-            <ThreadLine
-              parent={this.commentRef}
-              offset={60}
-              parentHeight={this.state.elementHeight}
-              onClick={this.toggleReplyView}
-              hovered={this.state.hovered}
-              active={this.state.revealReply}
+          <div className={css(styles.voteContainer)}>
+            <VoteWidget
+              styles={styles.voteWidget}
+              score={this.state.score}
+              onUpvote={this.upvote}
+              onDownvote={this.downvote}
+              selected={this.state.selectedVoteType}
+              fontSize={"12px"}
+              width={"40px"}
+              type={"Comment"}
+              promoted={false}
             />
-          )}
+            {!this.state.collapsed && (
+              <div
+                className={css(
+                  styles.threadline,
+                  this.state.revealReply && styles.activeThreadline,
+                  this.state.hovered && styles.hoverThreadline
+                )}
+                onClick={this.toggleReplyView}
+              />
+            )}
+          </div>
         </div>
         <div className={css(styles.column, styles.metaData)}>
-          <span
+          <div
             className={css(
               styles.highlight,
               this.state.highlight && styles.active
@@ -536,7 +493,6 @@ class CommentEntry extends React.Component {
                     readOnly={true}
                     initialValue={body}
                     body={true}
-                    onChange={this.calculateThreadHeight}
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsComments}
@@ -548,8 +504,6 @@ class CommentEntry extends React.Component {
                     hostname={hostname}
                     count={commentCount}
                     comment={true}
-                    threadHeight={this.state.elementHeight}
-                    calculateThreadHeight={this.calculateThreadHeight}
                     onClick={this.toggleReplyView}
                     onSubmit={this.submitReply}
                     small={true}
@@ -576,8 +530,6 @@ class CommentEntry extends React.Component {
                     hostname={hostname}
                     count={commentCount}
                     comment={true}
-                    threadHeight={this.state.elementHeight}
-                    calculateThreadHeight={this.calculateThreadHeight}
                     onClick={this.toggleReplyView}
                     onSubmit={this.submitReply}
                     small={true}
@@ -589,7 +541,7 @@ class CommentEntry extends React.Component {
                 </div>
               </Fragment>
             )}
-          </span>
+          </div>
           {!this.state.collapsed &&
             (this.state.revealReply && (
               <Fragment>
@@ -620,9 +572,18 @@ const styles = StyleSheet.create({
   left: {
     alignItems: "center",
     width: 44,
+    display: "table-cell",
+    height: "100%",
+    verticalAlign: "top",
     "@media only screen and (max-width: 415px)": {
       width: 35,
     },
+  },
+  voteContainer: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   commentCard: {
     width: "100%",
@@ -630,13 +591,15 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginBottom: 5,
     overflow: "visible",
+    display: "table",
+    height: "100%",
     "@media only screen and (max-width: 415px)": {
       justifyContent: "space-between",
     },
   },
   topbar: {
     width: "100%",
-    margin: "15px 0px 5px 0",
+    margin: "8px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
     "@media only screen and (max-width: 415px)": {
@@ -655,6 +618,8 @@ const styles = StyleSheet.create({
     },
   },
   metaData: {
+    display: "table-cell",
+    height: "100%",
     boxSizing: "border-box",
     width: "100%",
     "@media only screen and (max-width: 415px)": {
@@ -741,6 +706,21 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  threadline: {
+    height: "calc(100% - 58px)",
+    width: 2,
+    backgroundColor: "#EEEFF1",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: colors.BLUE(1),
+    },
+  },
+  hoverThreadline: {
+    backgroundColor: colors.BLUE(),
+  },
+  activeThreadline: {
+    backgroundColor: colors.BLUE(0.3),
   },
 });
 
