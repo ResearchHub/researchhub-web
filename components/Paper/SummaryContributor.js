@@ -69,18 +69,13 @@ const SummaryContributor = (props) => {
     );
   };
 
-  if (hideMeta) {
-    return (
-      <VoteWidget
-        score={score}
-        selected={selected}
-        onUpvote={onUpvote}
-        onDownvote={onDownvote}
-        styles={voteStyles}
-        promoted={false}
-      />
-    );
-  }
+  /**
+   * Needed by DiscussionPostMetadata component to allow users to support/award content
+   */
+  const formatMetadata = () => ({
+    contentType: "summary",
+    objectId: summary.id,
+  });
 
   return (
     <div className={css(styles.metaRow)}>
@@ -91,12 +86,16 @@ const SummaryContributor = (props) => {
         onDownvote={onDownvote}
         promoted={false}
       />
-      <DiscussionPostMetadata
-        username={authorProfile.first_name + " " + authorProfile.last_name}
-        authorProfile={authorProfile}
-        date={summary.approved_date}
-        fullDate={true}
-      />
+      {!hideMeta && (
+        <DiscussionPostMetadata
+          data={summary}
+          username={authorProfile.first_name + " " + authorProfile.last_name}
+          authorProfile={authorProfile}
+          date={summary.approved_date}
+          fullDate={true}
+          metaData={formatMetadata()}
+        />
+      )}
     </div>
   );
 };

@@ -37,7 +37,7 @@ export function createUsername({ created_by, createdBy }) {
     const { first_name, last_name } = createdBy.authorProfile;
     return `${first_name} ${last_name}`;
   }
-  return null;
+  return "";
 }
 
 export function capitalize(string) {
