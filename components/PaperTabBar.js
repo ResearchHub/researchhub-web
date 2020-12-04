@@ -44,7 +44,7 @@ const PaperTabBar = (props) => {
       ];
 
       tabs.push({ href: "summary", label: "description" });
-      tabs.push({ href: "comments", label: "comments" });
+      tabs.push({ href: "discussions", label: "discussions" });
       // tabs.push({ href: "figures", label: "figures" });
       tabs.push({ href: "paper", label: "Paper PDF" });
       // // tabs.push({ href: "citations", label: "cited by" });
@@ -269,6 +269,7 @@ const PaperTabBar = (props) => {
     if (index === 2) {
       classNames.push(styles.lastTab);
     }
+    console.log(label);
     return (
       <a
         href={`#${href}`}
