@@ -7,7 +7,6 @@ import VoteWidget from "../VoteWidget";
 import ThreadActionBar from "./ThreadActionBar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
 import CommentEntry from "./CommentEntry";
-import ThreadLine from "./ThreadLine";
 import ThreadTextEditor from "./ThreadTextEditor";
 
 // Config
@@ -28,7 +27,6 @@ class DiscussionEntry extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      elementHeight: 0,
       revealComment: true,
       comments: [],
       hovered: false,
@@ -86,7 +84,6 @@ class DiscussionEntry extends React.Component {
             : false,
       });
     }
-    // this.calculateThreadHeight();
   };
 
   handleVoteTypeUpdate = (prevProps) => {
@@ -164,21 +161,6 @@ class DiscussionEntry extends React.Component {
     );
   };
 
-  calculateThreadHeight = (height) => {
-    if (this.divRef) {
-      if (height) {
-        return this.setState({
-          elementHeight: height,
-        });
-      }
-      if (this.divRef.clientHeight !== this.state.elementHeight) {
-        this.setState({
-          elementHeight: this.divRef.clientHeight,
-        });
-      }
-    }
-  };
-
   submitComment = async (text, plain_text, callback) => {
     let {
       data,
@@ -233,9 +215,7 @@ class DiscussionEntry extends React.Component {
       setMessage("Post successfully updated!");
       showMessage({ show: true });
       callback();
-      this.setState({ editing: false }, () => {
-        this.calculateThreadHeight();
-      });
+      this.setState({ editing: false });
     } else {
       setMessage("Something went wrong");
       showMessage({ show: true, error: true });
@@ -244,14 +224,9 @@ class DiscussionEntry extends React.Component {
 
   toggleCommentView = (e) => {
     e && e.stopPropagation();
-    this.setState(
-      {
-        revealComment: !this.state.revealComment,
-      },
-      () => {
-        this.calculateThreadHeight();
-      }
-    );
+    this.setState({
+      revealComment: !this.state.revealComment,
+    });
   };
 
   toggleHover = (e) => {
@@ -260,15 +235,11 @@ class DiscussionEntry extends React.Component {
   };
 
   toggleEdit = () => {
-    this.setState({ editing: !this.state.editing }, () => {
-      this.calculateThreadHeight();
-    });
+    this.setState({ editing: !this.state.editing });
   };
 
   removePostUI = () => {
-    this.setState({ removed: true }, () => {
-      this.calculateThreadHeight();
-    });
+    this.setState({ removed: true });
   };
 
   renderComments = () => {
@@ -283,7 +254,6 @@ class DiscussionEntry extends React.Component {
             hostname={hostname}
             path={path}
             key={`comment_${comment.id}`}
-            calculateThreadHeight={this.calculateThreadHeight}
             comment={comment}
             paper={paper}
             index={i}
@@ -411,31 +381,33 @@ class DiscussionEntry extends React.Component {
         )}
       >
         <div className={css(styles.column, styles.left)}>
-          <VoteWidget
-            score={this.state.score}
-            styles={styles.voteWidget}
-            onUpvote={this.upvote}
-            onDownvote={this.downvote}
-            selected={this.state.selectedVoteType}
-            type={"Discussion"}
-            fontSize={"16px"}
-            width={"44px"}
-            promoted={false}
-          />
-          <ThreadLine
-            parent={this.divRef}
-            offset={80}
-            parentHeight={this.state.elementHeight}
-            onClick={this.toggleCommentView}
-            hovered={this.state.hovered}
-            active={this.state.revealComment}
-          />
+          <div className={css(styles.voteContainer)}>
+            <VoteWidget
+              score={this.state.score}
+              styles={styles.voteWidget}
+              onUpvote={this.upvote}
+              onDownvote={this.downvote}
+              selected={this.state.selectedVoteType}
+              type={"Discussion"}
+              fontSize={"16px"}
+              width={"44px"}
+              promoted={false}
+            />
+            <div
+              className={css(
+                styles.threadline,
+                this.state.revealComment && styles.activeThreadline,
+                this.state.hovered && styles.hoverThreadline
+              )}
+              onClick={this.toggleCommentView}
+            />
+          </div>
         </div>
         <div
           className={css(styles.column, styles.metaData)}
           ref={(element) => (this.divRef = element)}
         >
-          <span
+          <div
             className={css(
               styles.highlight,
               this.state.highlight && styles.active
@@ -481,7 +453,6 @@ class DiscussionEntry extends React.Component {
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
-                    onChange={this.calculateThreadHeight}
                   />
                 </div>
               </Fragment>
@@ -498,8 +469,6 @@ class DiscussionEntry extends React.Component {
                 toggleEdit={this.state.canEdit && this.toggleEdit}
                 title={title}
                 count={commentCount}
-                threadHeight={this.state.elementHeight}
-                calculateThreadHeight={this.calculateThreadHeight}
                 showChildrenState={this.state.revealComment}
                 onSubmit={this.submitComment}
                 onClick={this.toggleCommentView}
@@ -509,7 +478,7 @@ class DiscussionEntry extends React.Component {
                 hideReply={data.source === "twitter"}
               />
             </div>
-          </span>
+          </div>
           <div className={css(styles.commentContainer)} id={"comments"}>
             {this.state.revealComment && (
               <Fragment>
@@ -538,12 +507,36 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     height: "calc(100%)",
   },
+  threadline: {
+    height: "calc(100% - 80px)",
+    width: 2,
+    backgroundColor: "#EEEFF1",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: colors.BLUE(1),
+    },
+  },
+  hoverThreadline: {
+    backgroundColor: colors.BLUE(),
+  },
+  activeThreadline: {
+    backgroundColor: colors.BLUE(0.3),
+  },
   left: {
     alignItems: "center",
     width: 48,
+    display: "table-cell",
+    height: "100%",
+    verticalAlign: "top",
     "@media only screen and (max-width: 415px)": {
       width: 35,
     },
+  },
+  voteContainer: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   container: {
     display: "flex",
@@ -564,6 +557,8 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     cursor: "default",
     justifyContent: "space-between",
+    display: "table",
+    height: "100%",
   },
   topbar: {
     width: "100%",
@@ -599,6 +594,8 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingTop: 2,
     boxSizing: "border-box",
+    display: "table-cell",
+    height: "100%",
     "@media only screen and (max-width: 415px)": {
       width: "calc(100% - 35px)",
     },

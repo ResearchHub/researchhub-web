@@ -17,12 +17,12 @@ import { getNestedValue } from "~/config/utils";
 import DiscussionActions from "../../redux/discussion";
 import { createUsername } from "../../config/utils";
 import { MessageActions } from "~/redux/message";
+import { divide } from "numeral";
 
 class ReplyEntry extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      elementHeight: 0,
       collapsed: false,
       highlight: false,
       score: 0,
@@ -56,13 +56,11 @@ class ReplyEntry extends React.Component {
           this.props.auth.user.id === this.props.reply.created_by.id,
       },
       () => {
-        setTimeout(() => this.calculateThreadHeight(), 400);
         this.props.reply.highlight &&
           setTimeout(() => {
             this.setState({ highlight: false }, () => {
               this.props.reply.highlight = false;
             });
-            this.calculateThreadHeight();
           }, 10000);
       }
     );
@@ -76,17 +74,6 @@ class ReplyEntry extends React.Component {
       });
     }
   }
-
-  calculateThreadHeight = () => {
-    if (this.replyRef) {
-      if (this.replyRef.clientHeight !== this.state.elementHeight) {
-        this.setState({
-          elementHeight: this.replyRef.clientHeight,
-        });
-      }
-    }
-    this.props.calculateThreadHeight();
-  };
 
   formatMetaData = () => {
     let { data, comment, reply } = this.props;
@@ -115,9 +102,7 @@ class ReplyEntry extends React.Component {
   };
 
   toggleEdit = () => {
-    this.setState({ editing: !this.state.editing }, () => {
-      this.calculateThreadHeight();
-    });
+    this.setState({ editing: !this.state.editing });
   };
 
   removePostUI = () => {
@@ -128,11 +113,11 @@ class ReplyEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, comment, reply, postUpvote, postUpvotePending } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
-    let commentId = comment.id;
-    let replyId = reply.id;
+    const { data, comment, reply, postUpvote, postUpvotePending } = this.props;
+    const discussionThreadId = data.id;
+    const paperId = data.paper;
+    const commentId = comment.id;
+    const replyId = reply.id;
 
     postUpvotePending();
 
@@ -142,17 +127,17 @@ class ReplyEntry extends React.Component {
   };
 
   downvote = async () => {
-    let {
+    const {
       data,
       comment,
       reply,
       postDownvote,
       postDownvotePending,
     } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
-    let commentId = comment.id;
-    let replyId = reply.id;
+    const discussionThreadId = data.id;
+    const paperId = data.paper;
+    const commentId = comment.id;
+    const replyId = reply.id;
 
     postDownvotePending();
 
@@ -254,9 +239,7 @@ class ReplyEntry extends React.Component {
       setMessage("Comment successfully updated!");
       showMessage({ show: true });
       callback();
-      this.setState({ editing: false }, () => {
-        this.calculateThreadHeight();
-      });
+      this.setState({ editing: false });
     } else {
       setMessage("Something went wrong");
       showMessage({ show: true, error: true });
@@ -335,28 +318,14 @@ class ReplyEntry extends React.Component {
     let body = this.formatBody();
     let username = createUsername(reply);
     let metaIds = this.formatMetaData();
-    const flexStyle = StyleSheet.create({
-      threadline: {
-        height: this.state.elementHeight - 58,
-        width: 2,
-        backgroundColor: "#EEEFF1",
-        cursor: "pointer",
-        ":hover": {
-          backgroundColor: colors.BLUE(1),
-        },
-      },
-    });
 
     return (
       <div
         className={css(styles.row, styles.replyCard)}
         ref={(element) => (this.replyRef = element)}
-        onClick={() =>
-          this.setState({ elementHeight: this.replyRef.clientHeight })
-        }
       >
         <div className={css(styles.column, styles.left)}>
-          <div>
+          <div className={css(styles.voteContainer)}>
             <VoteWidget
               styles={styles.voteWidget}
               score={this.state.score}
@@ -368,13 +337,13 @@ class ReplyEntry extends React.Component {
               type={"Reply"}
               promoted={false}
             />
+            {this.handleStateRendering() && (
+              <div className={css(styles.threadline)}></div>
+            )}
           </div>
-          {this.handleStateRendering() && (
-            <div className={css(flexStyle.threadline)}></div>
-          )}
         </div>
         <div className={css(styles.column, styles.metaData)}>
-          <span
+          <div
             className={css(
               styles.highlight,
               this.state.highlight && styles.active,
@@ -408,7 +377,6 @@ class ReplyEntry extends React.Component {
                     readOnly={true}
                     initialValue={body}
                     body={true}
-                    onChange={this.calculateThreadHeight}
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsReply}
@@ -421,7 +389,6 @@ class ReplyEntry extends React.Component {
                     count={dataCount}
                     comment={true}
                     small={true}
-                    calculateThreadHeight={this.calculateThreadHeight}
                     isRemoved={this.state.removed}
                     editing={this.state.editing}
                     toggleEdit={this.state.canEdit && this.toggleEdit}
@@ -441,7 +408,7 @@ class ReplyEntry extends React.Component {
                 )}
               </div>
             )}
-          </span>
+          </div>
         </div>
       </div>
     );
@@ -465,6 +432,15 @@ const styles = StyleSheet.create({
   left: {
     alignItems: "center",
     width: 40,
+    display: "table-cell",
+    height: "100%",
+    verticalAlign: "top",
+  },
+  voteContainer: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   replyCard: {
     width: "100%",
@@ -472,13 +448,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     overflow: "visible",
     cursor: "pointer",
+    display: "table",
+    height: "100%",
     "@media only screen and (max-width: 415px)": {
       justifyContent: "space-between",
     },
   },
   topbar: {
     width: "100%",
-    margin: "15px 0px 5px 0",
+    margin: "8px 0px",
     justifyContent: "flex-start",
     alignItems: "center",
     "@media only screen and (max-width: 415px)": {
@@ -500,11 +478,14 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     marginLeft: 5,
+    display: "table-cell",
+    height: "100%",
     "@media only screen and (max-width: 415px)": {
       width: "calc(100% - 35px)",
     },
   },
   highlight: {
+    // display: 'flex',
     width: "100%",
     boxSizing: "border-box",
     borderRadius: 5,
@@ -561,6 +542,15 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
+    },
+  },
+  threadline: {
+    height: "calc(100% - 53px)",
+    width: 2,
+    backgroundColor: "#EEEFF1",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: colors.BLUE(1),
     },
   },
 });

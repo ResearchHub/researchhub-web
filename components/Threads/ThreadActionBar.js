@@ -17,18 +17,6 @@ class ThreadActionBar extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  //   this.setState({ prevParentHeight: this.props.threadHeight });
-  // }
-
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.threadHeight !== this.props.threadHeight) {
-  //     if (this.props.threadHeight !== 0 && !this.state.showReplyBox) {
-  //       this.setState({ prevParentHeight: this.props.threadHeight });
-  //     }
-  //   }
-  // }
-
   renderReplyBox = () => {
     /**
      * TODO: create a button that when toggled, reveals a editor box
@@ -44,10 +32,6 @@ class ThreadActionBar extends React.Component {
         <ThreadTextEditor
           onCancel={this.toggleReplyBox}
           onSubmit={this.props.onSubmit && this.props.onSubmit}
-          onChange={() =>
-            this.props.calculateThreadHeight &&
-            this.props.calculateThreadHeight()
-          }
           editing={this.state.showReplyBox}
           initialValue={this.props.initialValue}
           hasHeader={this.props.hasHeader}
@@ -163,20 +147,9 @@ class ThreadActionBar extends React.Component {
   };
 
   toggleReplyBox = () => {
-    this.setState(
-      {
-        showReplyBox: !this.state.showReplyBox,
-      },
-      () => {
-        if (this.state.showReplyBox) {
-          this.props.calculateThreadHeight &&
-            this.props.calculateThreadHeight();
-        } else {
-          this.props.calculateThreadHeight &&
-            this.props.calculateThreadHeight();
-        }
-      }
-    );
+    this.setState({
+      showReplyBox: !this.state.showReplyBox,
+    });
   };
 
   render() {
