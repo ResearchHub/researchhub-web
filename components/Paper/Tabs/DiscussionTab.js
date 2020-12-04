@@ -372,7 +372,7 @@ const DiscussionTab = (props) => {
         >
           <div className={css(styles.header)}>
             <h3 className={css(styles.discussionTitle)}>
-              Comments
+              Discussion
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
@@ -461,7 +461,7 @@ const DiscussionTab = (props) => {
         <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
           <div className={css(styles.header)}>
             <div className={css(styles.discussionTitle)}>
-              Comments
+              Discussions
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader

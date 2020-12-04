@@ -105,7 +105,7 @@ class PaperProgress extends React.Component {
         count: summary ? summary.trim().length : 0,
       },
       {
-        label: "Comments",
+        label: "Discussions",
         active: commentCount > 0,
       },
       {
