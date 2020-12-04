@@ -30,6 +30,7 @@ import {
   timeAgo,
   formatPaperSlug,
 } from "~/config/utils";
+import { reply } from "../../redux/discussion/shims";
 
 class LiveFeedNotification extends React.Component {
   constructor(props) {
@@ -156,10 +157,24 @@ class LiveFeedNotification extends React.Component {
                 {username}
               </a>
             </Link>
-            {" added a key takeaway to "}
+            {" added a "}
+            <Link
+              href="/paper/[paperId]/[paperName]"
+              as={`/paper/${paperId}/${title}#takeaways`}
+            >
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+                data-tip={notification.tip}
+              >
+                key takeaway,
+              </a>
+            </Link>
+            <em style={{ marginRight: 3 }}>{notification.tip}</em>
+            {" to "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}#takeaways`}
+              as={`/paper/${paperId}/${title}`}
             >
               <a
                 className={css(styles.paper)}
@@ -189,7 +204,7 @@ class LiveFeedNotification extends React.Component {
                 {username}
               </a>
             </Link>{" "}
-            edited a <span>summary </span>
+            edited the <span>summary </span>
             for{" "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
@@ -319,10 +334,11 @@ class LiveFeedNotification extends React.Component {
                 data-tip={commentTip}
                 onClick={(e) => e.stopPropagation()}
               >
-                comment
+                comment,
               </a>
             </Link>
-            {"in "}
+            <em>{commentTip && commentTip}</em>
+            {" in "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}`}
@@ -366,10 +382,11 @@ class LiveFeedNotification extends React.Component {
                 data-tip={replyTip}
                 onClick={(e) => e.stopPropagation()}
               >
-                reply
+                reply,
               </a>
             </Link>
-            {"in "}
+            <em>{replyTip && replyTip}</em>
+            {" in "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}`}
