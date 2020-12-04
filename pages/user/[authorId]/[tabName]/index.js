@@ -1040,45 +1040,47 @@ const AuthorPage = (props) => {
                 <i className="far fa-share"></i>
               </span>
             </div>
-            {allowEdit && (
-              <div className={css(styles.editProfileButton)}>
-                <Button
-                  label={() => (
-                    <Fragment>
-                      <i
-                        className="fas fa-edit"
-                        style={{ marginRight: 10, userSelect: "none" }}
-                      />
-                      Edit Profile
-                    </Fragment>
-                  )}
-                  onClick={openUserInfoModal}
-                  customButtonStyle={styles.editButtonCustom}
-                  rippleClass={styles.rippleClass}
+            <div className={css(styles.userActions)}>
+              {allowEdit && (
+                <div className={css(styles.editProfileButton)}>
+                  <Button
+                    label={() => (
+                      <Fragment>
+                        <i
+                          className="fas fa-edit"
+                          style={{ marginRight: 10, userSelect: "none" }}
+                        />
+                        Edit Profile
+                      </Fragment>
+                    )}
+                    onClick={openUserInfoModal}
+                    customButtonStyle={styles.editButtonCustom}
+                    rippleClass={styles.rippleClass}
+                  />
+                </div>
+              )}
+              {allowEdit && (
+                <div className={css(styles.mobileEditProfileButton)}>
+                  <Button
+                    label={"Edit Profile"}
+                    onClick={openUserInfoModal}
+                    customButtonStyle={styles.editButtonCustom}
+                    rippleClass={styles.editButtonCustom}
+                  />
+                </div>
+              )}
+              {isModerator() && (
+                <ModeratorDeleteButton
+                  containerStyle={styles.moderatorButton}
+                  iconStyle={styles.moderatorIcon}
+                  labelStyle={styles.moderatorLabel}
+                  icon={<i className="fas fa-ban" />}
+                  label={"Ban User"}
+                  actionType={"user"}
+                  metaData={{ authorId: router.query.authorId }}
                 />
-              </div>
-            )}
-            {allowEdit && (
-              <div className={css(styles.mobileEditProfileButton)}>
-                <Button
-                  label={"Edit Profile"}
-                  onClick={openUserInfoModal}
-                  customButtonStyle={styles.editButtonCustom}
-                  rippleClass={styles.editButtonCustom}
-                />
-              </div>
-            )}
-            {isModerator() && (
-              <ModeratorDeleteButton
-                containerStyle={styles.moderatorButton}
-                iconStyle={styles.moderatorIcon}
-                labelStyle={styles.moderatorLabel}
-                icon={<i className="fas fa-ban" />}
-                label={"Ban User"}
-                actionType={"user"}
-                metaData={{ authorId: router.query.authorId }}
-              />
-            )}
+              )}
+            </div>
           </div>
         </div>
       </ComponentWrapper>
@@ -1613,6 +1615,12 @@ const styles = StyleSheet.create({
   },
   row: {
     display: "flex",
+  },
+  userActions: {
+    // marginTop: 20,
+    // '@media only screen and (min-width: 768px)': {
+    //   marginTop: 'auto',
+    // }
   },
   editProfileButton: {
     marginTop: 20,

@@ -336,7 +336,7 @@ const Paper = (props) => {
     if (paper.summary || paper.abstract || showAllSections) {
       tabs.push({ href: "summary", label: "description" });
     }
-    tabs.push({ href: "comments", label: "comments" });
+    tabs.push({ href: "comments", label: "discussions" });
     // if (figureCount || showAllSections) {
     //   tabs.push({ href: "figures", label: "figures" });
     // }
