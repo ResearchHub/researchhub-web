@@ -39,10 +39,10 @@ const SummaryBulletPoint = (props) => {
 
   let { plain_text, created_by, is_removed } = data;
   let userId = store.getState().auth.user.id;
-  const [text, setText] = useState(plain_text ? plain_text : "");
+  const [text, setText] = useState(plain_text || "");
   const [hovered, toggleHover] = useState(false);
   const [editView, setEditView] = useState(false);
-  const [editText, setEditText] = useState(plain_text ? plain_text : "");
+  const [editText, setEditText] = useState(plain_text || "");
   const [pending, togglePending] = useState(false);
   const [isModerator, setIsModerator] = useState(
     store.getState().auth.user.moderator || false
@@ -100,6 +100,45 @@ const SummaryBulletPoint = (props) => {
         dispatch(MessageActions.showMessage({ show: true, error: true }));
       });
   };
+
+  const removalConfirmation = (e) => {
+    e && e.stopPropagation();
+
+    alert.show({
+      text: "Remove this key takeaway?",
+      buttonText: "Yes",
+      onClick: () => {
+        onRemove();
+      },
+    });
+  };
+
+  const onRemove = () => {
+    dispatch(MessageActions.showMessage({ show: true, load: true }));
+    let bulletId = data.id;
+    fetch(API.KEY_TAKEAWAY({ bulletId, route: "censor" }), API.DELETE_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        onRemoveCallback && onRemoveCallback(index);
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage("Key takeaway removed"));
+        dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch((err) => {
+        dispatch(MessageActions.showMessage({ show: false }));
+        dispatch(MessageActions.setMessage("Something went wrong"));
+        dispatch(MessageActions.showMessage({ show: true, error: true }));
+      });
+  };
+
+  /**
+   * Needed by DiscussionPostMetadata component to allow users to support/award content
+   */
+  const formatMetadata = () => ({
+    contentType: "bullet_point",
+    objectId: data.id,
+  });
 
   const renderBody = () => {
     if (editView) {
@@ -160,43 +199,13 @@ const SummaryBulletPoint = (props) => {
                 hideHeadline={true}
                 containerStyle={styles.metadata}
                 smaller={true}
+                metaData={formatMetadata()}
               />
             </div>
           </div>
         </Fragment>
       );
     }
-  };
-
-  const removalConfirmation = (e) => {
-    e && e.stopPropagation();
-
-    alert.show({
-      text: "Remove this key takeaway?",
-      buttonText: "Yes",
-      onClick: () => {
-        onRemove();
-      },
-    });
-  };
-
-  const onRemove = () => {
-    dispatch(MessageActions.showMessage({ show: true, load: true }));
-    let bulletId = data.id;
-    fetch(API.KEY_TAKEAWAY({ bulletId, route: "censor" }), API.DELETE_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        onRemoveCallback && onRemoveCallback(index);
-        dispatch(MessageActions.showMessage({ show: false }));
-        dispatch(MessageActions.setMessage("Key takeaway removed"));
-        dispatch(MessageActions.showMessage({ show: true }));
-      })
-      .catch((err) => {
-        dispatch(MessageActions.showMessage({ show: false }));
-        dispatch(MessageActions.setMessage("Something went wrong"));
-        dispatch(MessageActions.showMessage({ show: true, error: true }));
-      });
   };
 
   const renderDeleteButton = () => {

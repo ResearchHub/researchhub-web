@@ -295,7 +295,7 @@ class PaperTransactionModal extends React.Component {
       purchase_type: "BOOST",
     };
 
-    fetch(API.PROMOTION_PURCHASE, API.POST_CONFIG(payload))
+    fetch(API.PROMOTE, API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
