@@ -175,6 +175,33 @@ class LiveFeed extends React.Component {
     }
   };
 
+  renderLoadMoreButton = () => {
+    const { next, fetchingPage } = this.state;
+    if (next !== null) {
+      return (
+        <div className={css(styles.buttonContainer)}>
+          {!fetchingPage ? (
+            <Ripples
+              className={css(styles.loadMoreButton)}
+              onClick={() => {
+                this.fetchNextPage();
+              }}
+            >
+              Load More Actions
+            </Ripples>
+          ) : (
+            <Loader
+              key={"paperLoader"}
+              loading={true}
+              size={25}
+              color={colors.BLUE()}
+            />
+          )}
+        </div>
+      );
+    }
+  };
+
   handleHubChange = (id, hub) => {
     this.setState(
       {
@@ -200,7 +227,7 @@ class LiveFeed extends React.Component {
       if (!currentHubNotifications.length) {
         return (
           <div className={css(styles.emptyState)}>
-            No notifications for this hub.
+            No new actions for this hub.
           </div>
         );
       } else {
@@ -216,7 +243,7 @@ class LiveFeed extends React.Component {
     } else {
       return (
         <div className={css(styles.emptyState)}>
-          No notifications for this hub.
+          No new actions for this hub.
         </div>
       );
     }
@@ -262,12 +289,7 @@ class LiveFeed extends React.Component {
           title={"Live on Researchhub"}
           description={"View the latest contributions on Researchhub"}
         />
-        <div
-          className={css(
-            styles.topContainer,
-            this.state.titleBoxShadow && styles.titleBoxShadow
-          )}
-        >
+        <div className={css(styles.topContainer)}>
           <div className={css(styles.content)}>
             <div className={css(styles.listLabel)}>
               <div className={css(styles.text, styles.feedTitle)}>
@@ -323,22 +345,10 @@ class LiveFeed extends React.Component {
                   <Loader loading={true} size={20} />
                 </span>
               ) : (
-                <InfiniteScroll
-                  loadMore={(page) => {
-                    this.fetchNextPage(page);
-                  }}
-                  initialLoad={false}
-                  hasMore={livefeed.count && livefeed.next}
-                  loader={
-                    <span className={css(styles.loaderWrapper)}>
-                      <Loader loading={true} size={20} />
-                    </span>
-                  }
-                  className={css(styles.infiniteScroll)}
-                  threshold={0}
-                >
+                <div className={css(styles.infiniteScroll)}>
                   {this.renderNotifications()}
-                </InfiniteScroll>
+                  {this.renderLoadMoreButton()}
+                </div>
               )}
             </div>
           </div>
@@ -371,9 +381,9 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     width: "100%",
-    position: "-webkit-sticky",
-    position: "sticky",
-    top: 80,
+    // position: "-webkit-sticky",
+    // position: "sticky",
+    // top: 80,
     zIndex: 3,
   },
   text: {
@@ -465,6 +475,36 @@ const styles = StyleSheet.create({
       width: "100%",
       justifyContent: "center",
       marginBottom: 10,
+    },
+  },
+  buttonContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 25,
+    height: 45,
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 15,
+      marginBottom: 15,
+    },
+  },
+  loadMoreButton: {
+    fontSize: 14,
+    border: `1px solid ${colors.BLUE()}`,
+    boxSizing: "border-box",
+    borderRadius: 4,
+    height: 45,
+    width: 155,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: colors.BLUE(),
+    cursor: "pointer",
+    userSelect: "none",
+    ":hover": {
+      color: "#FFF",
+      backgroundColor: colors.BLUE(),
     },
   },
   toggleIcon: {
