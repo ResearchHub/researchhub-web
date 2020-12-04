@@ -176,18 +176,18 @@ class LiveFeed extends React.Component {
   };
 
   renderLoadMoreButton = () => {
-    const { next, loadingMore } = this.state;
+    const { next, fetchingPage } = this.state;
     if (next !== null) {
       return (
         <div className={css(styles.buttonContainer)}>
-          {!loadingMore ? (
+          {!fetchingPage ? (
             <Ripples
               className={css(styles.loadMoreButton)}
               onClick={() => {
                 this.fetchNextPage();
               }}
             >
-              Load More Papers
+              Load More Actions
             </Ripples>
           ) : (
             <Loader
@@ -347,7 +347,7 @@ class LiveFeed extends React.Component {
               ) : (
                 <div className={css(styles.infiniteScroll)}>
                   {this.renderNotifications()}
-                  {/* {this.renderLoadMoreButton()} */}
+                  {this.renderLoadMoreButton()}
                 </div>
               )}
             </div>
