@@ -4,7 +4,6 @@ import { css, StyleSheet } from "aphrodite";
 
 import Loader from "~/components/Loader/Loader";
 import Sparkle from "react-sparkle";
-import Confetti from "react-confetti";
 
 import { ModalActions } from "~/redux/modals";
 
@@ -38,7 +37,16 @@ const ContentSupport = (props) => {
   };
 
   const renderAnimation = () => {
-    return <Sparkle color={colors.YELLOW()} flicker={false} maxSize={5} />;
+    if (update) {
+      return (
+        <Sparkle
+          color={colors.YELLOW()}
+          flicker={false}
+          maxSize={5}
+          newSparkleOnFadeOut={true}
+        />
+      );
+    }
   };
 
   const renderCount = () => {
@@ -65,7 +73,7 @@ const ContentSupport = (props) => {
       data-tip={`Award ResearchCoin`}
       onClick={openContentSupportModal}
     >
-      {update && renderAnimation()}
+      {renderAnimation()}
       <img className={css(styles.icon)} src={"/static/icons/coin-filled.png"} />
       {renderCount()}
     </div>
