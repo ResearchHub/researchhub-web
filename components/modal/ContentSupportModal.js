@@ -84,7 +84,7 @@ class ContentSupportModal extends React.Component {
     const { amount } = this.state;
 
     alert.show({
-      text: `Award ${amount} ResearchCoin to this post?`,
+      text: `Award ${amount} RSC to this post?`,
       buttonText: "Yes",
       onClick: () => this.handleTransaction(),
     });
@@ -125,10 +125,6 @@ class ContentSupportModal extends React.Component {
       </Fragment>
     );
   };
-
-  // renderReceipt = () => {
-
-  // }
 
   render() {
     const { modals } = this.props;
