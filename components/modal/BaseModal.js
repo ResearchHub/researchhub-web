@@ -189,7 +189,12 @@ class BaseModal extends React.Component {
                     : this.props.title}
                 </div>
                 {this.props.subtitle && (
-                  <div className={css(styles.subtitle)}>
+                  <div
+                    className={css(
+                      styles.subtitle,
+                      this.props.subtitleStyle && this.props.subtitleStyle
+                    )}
+                  >
                     {typeof this.props.subtitle === "function"
                       ? this.props.subtitle()
                       : this.props.subtitle}
@@ -217,6 +222,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     borderRadius: 5,
     boxSizing: "border-box",
+    boxShadow: " 0px 2px 4px rgba(185, 185, 185, 0.25)",
     "@media only screen and (max-width: 665px)": {
       width: "90%",
     },
@@ -280,6 +286,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
     boxSizing: "border-box",
+    width: "100%",
   },
   left: {
     textAlign: "left",
@@ -292,14 +299,12 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: 26,
     color: "#232038",
-    "@media only screen and (max-width: 557px)": {
-      fontSize: 24,
-    },
     "@media only screen and (max-width: 725px)": {
       width: 450,
     },
     "@media only screen and (max-width: 557px)": {
       width: 380,
+      fontSize: 24,
     },
     "@media only screen and (max-width: 415px)": {
       width: 300,
