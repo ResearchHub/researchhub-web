@@ -237,7 +237,7 @@ const DiscussionPostMetadata = (props) => {
       <div className={css(styles.column)}>
         <div className={css(styles.firstRow)}>
           <User {...props} />
-          <WidgetContentSupport {...props} />
+          <WidgetContentSupport data={data} metaData={metaData} />
           <Timestamp {...props} />
           {renderDropdown()}
         </div>
