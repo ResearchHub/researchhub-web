@@ -12,7 +12,7 @@ import FormSelect from "../Form/FormSelect";
 // Redux
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import { HubActions } from "~/redux/hub";
+import { AuthActions } from "~/redux/auth";
 
 // Config
 import API from "~/config/api";
@@ -33,8 +33,7 @@ class ContentSupportModal extends React.Component {
   }
 
   closeModal = () => {
-    this.props.openContentSupportModal(false);
-    this.setState({ ...this.initalState });
+    this.props.openContentSupportModal(false, { data: {}, metaData: {} });
     if (document.body.style) {
       document.body.style.overflow = "scroll";
     }
@@ -46,21 +45,49 @@ class ContentSupportModal extends React.Component {
     });
   };
 
-  handleTransaction = () => {
-    const { setMessage, showMessage, modals, auth } = this.props;
-    const { data, metaData, setCount } = modals.openContentSupportModal.props;
+  showSuccessMessage = () => {
+    const { setMessage, showMessage } = this.props;
+    showMessage({ show: false });
+    setMessage("ResearchCoin succesfully awarded!");
+    showMessage({ show: true });
+  };
 
-    supportContent({ ...metaData, amount: this.state.amount }).then((res) => {
-      console.log("res", res);
-      setCount(this.state.amount);
-    });
+  showErrorMessage = (err) => {
+    const { setMessage, showMessage } = this.props;
+    showMessage({ show: false });
+    setMessage("Something went wrong. Please try again.");
+    showMessage({ show: true, error: true });
+  };
+
+  handleTransaction = () => {
+    const { showMessage, updateUser, modals, auth } = this.props;
+    const { metaData, count, setCount } = modals.openContentSupportModal.props;
+    showMessage({ show: true, load: true });
+    supportContent({ ...metaData, amount: this.state.amount })
+      .then((res) => {
+        this.showSuccessMessage();
+        const updatedCount = Number(count) + Number(this.state.amount);
+        console.log(
+          "count",
+          count,
+          "amount",
+          this.state.amount,
+          "updatedCount",
+          updatedCount
+        );
+        const balance = auth.user.balance - this.state.amount;
+        setCount(updatedCount); // update promoted score
+        updateUser({ balance }); // update user's RSC balance
+        this.closeModal();
+      })
+      .catch(this.showErrorMessage);
   };
 
   confirmTransaction = (e) => {
     e && e.stopPropagation();
     e && e.preventDefault();
 
-    const { alert, setMessage, showMessage } = this.props;
+    const { alert } = this.props;
     const { amount } = this.state;
 
     alert.show({
@@ -70,15 +97,26 @@ class ContentSupportModal extends React.Component {
     });
   };
 
+  getAuthorProfile = () => {
+    const { data, metaData } = this.props.modals.openContentSupportModal.props;
+
+    if (data && metaData) {
+      return metaData.contentType === "summary"
+        ? data.proposed_by.author_profile
+        : data.created_by && data.created_by.author_profile;
+    }
+  };
+
   renderInputs = () => {
     return (
       <Fragment>
         <div className={css(styles.row)}>
           <AmountInput value={this.state.amount} onChange={this.handleAmount} />
-          <RecipientInput />
+          <RecipientInput author={this.getAuthorProfile()} />
         </div>
         <div className={css(styles.column)}>
           <RecipientInput
+            author={this.getAuthorProfile()}
             containerStyles={styles.recipientContainer}
             cardStyles={styles.recipientCard}
           />
@@ -94,6 +132,10 @@ class ContentSupportModal extends React.Component {
       </Fragment>
     );
   };
+
+  // renderReceipt = () => {
+
+  // }
 
   render() {
     const { modals } = this.props;
@@ -224,9 +266,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   openContentSupportModal: ModalActions.openContentSupportModal,
-  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
+  updateUser: AuthActions.updateUser,
 };
 
 export default connect(
