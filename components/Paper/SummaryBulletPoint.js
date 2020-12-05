@@ -136,7 +136,7 @@ const SummaryBulletPoint = (props) => {
    * Needed by DiscussionPostMetadata component to allow users to support/award content
    */
   const formatMetadata = () => ({
-    contentType: "bullet_point",
+    contentType: "bulletpoint",
     objectId: data.id,
   });
 
@@ -200,6 +200,7 @@ const SummaryBulletPoint = (props) => {
                 containerStyle={styles.metadata}
                 smaller={true}
                 metaData={formatMetadata()}
+                data={data}
               />
             </div>
           </div>

@@ -29,7 +29,6 @@ import icons from "~/config/themes/icons";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
 
-import DiscussionPostMetadata from "../../DiscussionPostMetadata";
 import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
 
 class SummaryTab extends React.Component {
