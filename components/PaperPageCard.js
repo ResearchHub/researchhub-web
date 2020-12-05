@@ -365,6 +365,7 @@ class PaperPageCard extends React.Component {
 
   renderPreview = () => {
     let { hovered, loading, fetching, previews } = this.state;
+    console.log(previews);
     let height =
       this.metaContainerRef.current &&
       this.metaContainerRef.current.clientHeight;
@@ -473,7 +474,7 @@ class PaperPageCard extends React.Component {
             wrapAround={true}
             enableKeyboardControls={true}
           >
-            {this.state.previews.map((preview, i) => {
+            {previews.map((preview, i) => {
               if (i === 0) {
                 return (
                   <img
@@ -920,14 +921,9 @@ class PaperPageCard extends React.Component {
               </div>
             </div>
           </div>
-          {this.state.width > 0 && (
-            <div
-              className={css(styles.absolutePreview)}
-              // style={{ right: -1 * (this.state.width + 20) }}
-            >
-              {process.browser && this.renderPreview()}
-            </div>
-          )}
+          <div className={css(styles.absolutePreview)}>
+            {process.browser && this.renderPreview()}
+          </div>
         </div>
         <div className={css(styles.bottomContainer)}>
           <div className={css(styles.bottomRow)}>
