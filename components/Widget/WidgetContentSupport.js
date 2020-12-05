@@ -3,6 +3,8 @@ import { useStore, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 
 import Loader from "~/components/Loader/Loader";
+import Sparkle from "react-sparkle";
+import Confetti from "react-confetti";
 
 import { ModalActions } from "~/redux/modals";
 
@@ -13,7 +15,7 @@ const ContentSupport = (props) => {
   const dispatch = useDispatch();
   const { data, metaData, fetching } = props;
   const [count, setCount] = useState((data && data.promoted) || 0);
-  const [update, setUpdate] = useState(true);
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     if (data && data.promoted) {
@@ -32,7 +34,11 @@ const ContentSupport = (props) => {
   const updateCountUI = (newCount) => {
     setCount(newCount);
     setUpdate(true);
-    setTimeout(() => setUpdate(false), 3000);
+    setTimeout(() => setUpdate(false), 1150);
+  };
+
+  const renderAnimation = () => {
+    return <Sparkle color={colors.YELLOW()} flicker={false} maxSize={5} />;
   };
 
   const renderCount = () => {
@@ -59,7 +65,7 @@ const ContentSupport = (props) => {
       data-tip={`Award ResearchCoin`}
       onClick={openContentSupportModal}
     >
-      {/* {renderUpdate()} */}
+      {update && renderAnimation()}
       <img className={css(styles.icon)} src={"/static/icons/coin-filled.png"} />
       {renderCount()}
     </div>
