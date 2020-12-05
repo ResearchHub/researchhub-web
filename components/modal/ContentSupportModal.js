@@ -34,6 +34,8 @@ class ContentSupportModal extends React.Component {
 
   closeModal = () => {
     this.props.openContentSupportModal(false, { data: {}, metaData: {} });
+    this.setState({ ...initialState });
+
     if (document.body.style) {
       document.body.style.overflow = "scroll";
     }
@@ -67,14 +69,6 @@ class ContentSupportModal extends React.Component {
       .then((res) => {
         this.showSuccessMessage();
         const updatedCount = Number(count) + Number(this.state.amount);
-        console.log(
-          "count",
-          count,
-          "amount",
-          this.state.amount,
-          "updatedCount",
-          updatedCount
-        );
         const balance = auth.user.balance - this.state.amount;
         setCount(updatedCount); // update promoted score
         updateUser({ balance }); // update user's RSC balance
