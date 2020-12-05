@@ -34,15 +34,16 @@ const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 const DiscussionPostMetadata = (props) => {
   const {
     data,
+    metaData,
     username,
     authorProfile,
+    fetching,
     threadPath,
-    metaData,
-    onRemove,
     dropDownEnabled,
     toggleEdit,
     twitter,
     twitterUrl,
+    onRemove,
     onHideClick,
     smaller,
     hideHeadline,
@@ -237,7 +238,11 @@ const DiscussionPostMetadata = (props) => {
       <div className={css(styles.column)}>
         <div className={css(styles.firstRow)}>
           <User {...props} />
-          <WidgetContentSupport data={data} metaData={metaData} />
+          <WidgetContentSupport
+            data={data}
+            metaData={metaData}
+            fetching={fetching}
+          />
           <Timestamp {...props} />
           {renderDropdown()}
         </div>

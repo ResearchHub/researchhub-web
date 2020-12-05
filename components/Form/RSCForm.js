@@ -70,7 +70,9 @@ const AmountInput = (props) => {
 };
 
 const RecipientInput = (props) => {
-  const { data } = props;
+  if (!props.author) return null;
+
+  const { first_name, last_name } = props.author;
 
   return (
     <div
@@ -86,13 +88,12 @@ const RecipientInput = (props) => {
           props.cardStyles && props.cardStyles
         )}
       >
-        <AuthorAvatar
-          // author={authorProfile}
-          // name={username}
-          // disableLink={false}
-          size={30}
-        />
-        <span className={css(styles.recipientName) + " clamp1"}>Jane Doe</span>
+        <AuthorAvatar author={props.author} size={30} />
+        {(first_name || last_name) && (
+          <span className={css(styles.recipientName) + " clamp1"}>
+            {`${first_name} ${last_name}`}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   input: {
-    height: 50,
+    height: 55,
     width: 100,
     fontSize: 20,
     fontWeight: "bold",
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
   recipientCard: {
     display: "flex",
     alignItems: "center",
-    height: 50,
+    height: 55,
     width: 300,
     padding: 10,
     boxSizing: "border-box",

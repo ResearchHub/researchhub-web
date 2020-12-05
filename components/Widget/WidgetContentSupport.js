@@ -1,27 +1,49 @@
 import { Fragment, useState, useEffect, useRef } from "react";
 import { useStore, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import Ripples from "react-ripples";
-import { useAlert } from "react-alert";
-import Link from "next/link";
-import moment from "moment";
+
+import Loader from "~/components/Loader/Loader";
 
 import { ModalActions } from "~/redux/modals";
+
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 const ContentSupport = (props) => {
   const dispatch = useDispatch();
-  const { data, metaData } = props;
-  const [count, setCount] = useState(data.promotion || 0);
+  const { data, metaData, fetching } = props;
+  const [count, setCount] = useState((data && data.promoted) || 0);
+  const [update, setUpdate] = useState(true);
+
+  useEffect(() => {
+    if (data && data.promoted) {
+      if (data.promoted >= count) {
+        setCount(data.promoted);
+      }
+    }
+  }, [data]);
 
   const openContentSupportModal = () => {
-    const params = { metaData, data, setCount };
+    const params = { metaData, data, count, setCount: updateCountUI };
 
     dispatch(ModalActions.openContentSupportModal(true, params));
   };
 
+  const updateCountUI = (newCount) => {
+    setCount(newCount);
+    setUpdate(true);
+    setTimeout(() => setUpdate(false), 3000);
+  };
+
   const renderCount = () => {
+    if (fetching) {
+      return (
+        <span className={css(styles.count)}>
+          <Loader loading={true} size={5} />
+        </span>
+      );
+    }
+
     return count > 0 ? (
       <span className={css(styles.count)}>{count}</span>
     ) : (
@@ -37,6 +59,7 @@ const ContentSupport = (props) => {
       data-tip={`Award ResearchCoin`}
       onClick={openContentSupportModal}
     >
+      {/* {renderUpdate()} */}
       <img className={css(styles.icon)} src={"/static/icons/coin-filled.png"} />
       {renderCount()}
     </div>
@@ -65,7 +88,7 @@ const styles = StyleSheet.create({
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },
   count: {
-    fontWeight: 400,
+    fontWeight: 500,
     fontSize: 12,
     marginLeft: 5,
   },
