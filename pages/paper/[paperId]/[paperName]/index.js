@@ -84,6 +84,7 @@ const Paper = (props) => {
   const [loadingReferencedBy, setLoadingReferencedBy] = useState(true);
   const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
   const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
+  const [loadingSummary, setLoadingSummary] = useState(true);
   const [loadingFile, setLoadingFile] = useState(true);
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
   const [sticky, setSticky] = useState(false);
@@ -168,9 +169,10 @@ const Paper = (props) => {
 
         if (summaryUserVote) {
           summary.score = summaryUserVote.score || 0;
+          summary.promoted = summaryUserVote.promoted;
         }
-
         setSummary(summary);
+        setLoadingSummary(false);
       });
     }
   }, [summary.id, props.auth.isLoggedIn]);
@@ -542,6 +544,7 @@ const Paper = (props) => {
             afterFetchBullets={() => setFetchBullets(true)}
             updatePaperState={updatePaperState}
             updateSummary={setSummary}
+            loadingSummary={loadingSummary}
           />
           <a name="comments" id="comments">
             <div className={css(styles.space)} />
