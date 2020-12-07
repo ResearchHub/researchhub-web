@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect, useRef } from "react";
-import { useStore, useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 
 import Loader from "~/components/Loader/Loader";
@@ -11,8 +11,14 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 const ContentSupport = (props) => {
-  const dispatch = useDispatch();
-  const { data, metaData, fetching } = props;
+  const {
+    data,
+    metaData,
+    fetching,
+    auth,
+    openLoginModal,
+    openContentSupportModal,
+  } = props;
   const [count, setCount] = useState((data && data.promoted) || 0);
   const [update, setUpdate] = useState(false);
 
@@ -24,10 +30,30 @@ const ContentSupport = (props) => {
     }
   }, [data]);
 
-  const openContentSupportModal = () => {
-    const params = { metaData, data, count, setCount: updateCountUI };
+  const handleClick = () => {
+    if (auth.isLoggedIn) {
+      if (!isUserContent()) {
+        return openSupportModal();
+      }
+    } else {
+      openLoginModal(true, "Please sign in Google to continue.");
+    }
+  };
 
-    dispatch(ModalActions.openContentSupportModal(true, params));
+  const isUserContent = () => {
+    if (auth.isLoggedIn && metaData && data) {
+      const contentAuthor =
+        metaData.contentType === "summary" ? data.proposed_by : data.created_by;
+      if (auth.user.id === contentAuthor.id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const openSupportModal = () => {
+    const params = { metaData, data, count, setCount: updateCountUI };
+    openContentSupportModal(true, params);
   };
 
   const updateCountUI = (newCount) => {
@@ -58,20 +84,31 @@ const ContentSupport = (props) => {
       );
     }
 
-    return count > 0 ? (
-      <span className={css(styles.count)}>{count}</span>
-    ) : (
-      <span className={css(styles.plusButton)} id={"plusIcon"}>
-        {icons.plusCircleSolid}
-      </span>
-    );
+    if (count > 0) {
+      return <span className={css(styles.count)}>{count}</span>;
+    }
+
+    if (!isUserContent()) {
+      return (
+        <span className={css(styles.plusButton)} id={"plusIcon"}>
+          {icons.plusCircleSolid}
+        </span>
+      );
+    }
+  };
+
+  const dataTip = () => {
+    if (isUserContent()) {
+      return "ResearchCoin awarded to your post";
+    }
+    return "Award ResearchCoin";
   };
 
   return (
     <div
       className={css(styles.container)}
-      data-tip={`Award ResearchCoin`}
-      onClick={openContentSupportModal}
+      data-tip={dataTip()}
+      onClick={handleClick}
     >
       {renderAnimation()}
       <img className={css(styles.icon)} src={"/static/icons/coin-filled.png"} />
@@ -122,4 +159,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ContentSupport;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = {
+  openContentSupportModal: ModalActions.openContentSupportModal,
+  openLoginModal: ModalActions.openLoginModal,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ContentSupport);
