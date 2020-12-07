@@ -23,7 +23,7 @@ import icons from "~/config/themes/icons";
 import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
 
 const Thread = (props) => {
-  const { hostname, title, body, createdBy, date, vote } = props;
+  const { thread, hostname, title, body, createdBy, date, vote } = props;
   let created_by = createdBy;
   const dispatch = useDispatch();
   const store = useStore();
@@ -132,6 +132,11 @@ const Thread = (props) => {
             authorProfile={createdBy.author_profile}
             username={username}
             date={date}
+            data={thread}
+            metaData={{
+              contentType: "thread",
+              objectId: thread.id,
+            }}
           />
         </div>
         <div className={css(styles.titleBar)}>
