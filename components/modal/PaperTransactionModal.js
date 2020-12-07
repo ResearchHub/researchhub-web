@@ -9,6 +9,7 @@ import miniToken from "./Artifacts/mini-me-token";
 import contractAbi from "./Artifacts/contract-abi";
 import { ethers } from "ethers";
 import * as Sentry from "@sentry/browser";
+import numeral from "numeral";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -788,7 +789,7 @@ class PaperTransactionModal extends React.Component {
             </div>
             <div className={css(styles.column, styles.right)}>
               <div className={css(styles.userBalance)}>
-                {user && user.balance}
+                {user && numeral(user.balance).format("0,0")}
                 <img
                   src={"/static/icons/coin-filled.png"}
                   draggable={false}
