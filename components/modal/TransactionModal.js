@@ -5,6 +5,7 @@ import ReactTooltip from "react-tooltip";
 import { keccak256, sha3_256 } from "js-sha3";
 import { ethers } from "ethers";
 import Link from "next/link";
+import numeral from "numeral";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -661,7 +662,7 @@ class TransactionModal extends React.Component {
               </div>
               <div className={css(styles.right)}>
                 <div className={css(styles.userBalance)}>
-                  {userBalance}
+                  {numeral(userBalance).format("0,0")}
                   <img
                     className={css(styles.coin)}
                     src={"/static/icons/coin-filled.png"}
