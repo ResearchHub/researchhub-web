@@ -99,7 +99,6 @@ class Notification extends React.Component {
 
   renderMenu = () => {
     let { isOpen } = this.state;
-    // this.props.notifications = []
     // if (isOpen) {
     return (
       <div
@@ -131,7 +130,6 @@ class Notification extends React.Component {
   renderNotifications = () => {
     return this.props.notifications.map((notification, index) => {
       let action = notification.action[0];
-
       if (notification.extra && notification.extra.status) {
         // Stripe branch not yet integrated
         return null;
@@ -144,7 +142,7 @@ class Notification extends React.Component {
       } else if (notification.extra && notification.extra.bullet_point) {
         action = {
           content_type: "vote_bullet",
-          created_by: notification.extra.bullet_point.created_by,
+          created_by: notification.action_user,
           created_date: notification.created_date,
           plain_text: notification.extra.bullet_point.plain_text,
           paper_id: notification.extra.bullet_point.paper,
@@ -152,7 +150,7 @@ class Notification extends React.Component {
       } else if (notification.extra && notification.extra.summary) {
         action = {
           content_type: "vote_summary",
-          created_by: notification.extra.summary.proposed_by,
+          created_by: notification.action_user,
           created_date: notification.created_date,
           plain_text: notification.extra.summary.summary_plain_text,
           paper_id: notification.extra.summary.paper,
