@@ -61,7 +61,9 @@ const UserPromotions = (props) => {
     }
     return promotions.map((promotion, i) => {
       const { source } = promotion;
-      return <PromotionCard paper={source} promotion={promotion} index={i} />;
+      if (source) {
+        return <PromotionCard paper={source} promotion={promotion} index={i} />;
+      }
     });
   };
 
