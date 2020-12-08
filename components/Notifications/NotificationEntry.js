@@ -68,7 +68,7 @@ const NotificationEntry = (props) => {
             : notification.paper_title
         );
 
-    if (type === "paper" || type === "summary") {
+    if (type === "paper" || type === "summary" || type === "support_content") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}`;
     } else if (
@@ -81,12 +81,9 @@ const NotificationEntry = (props) => {
     ) {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}#comments`;
-    } else if (type === "bullet_point") {
+    } else if (type === "bullet_point" || type === "vote_bullet") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}#takeaways`;
-    } else if (type === "vote_bullet") {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/paper#takeaways`;
     } else if (type === "vote_summary") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}#description`;
@@ -743,6 +740,7 @@ const NotificationEntry = (props) => {
       created_date,
       plain_text,
       paper_id,
+      slug,
     } = props.notification;
 
     const author = created_by.author_profile;
@@ -767,7 +765,7 @@ const NotificationEntry = (props) => {
         voted on your{" "}
         <Link
           href={"/paper/[paperId]/[paperName]"}
-          as={`/paper/${paper_id}/paper#description`}
+          as={`/paper/${paper_id}/${slug}#description`}
         >
           <a
             onClick={(e) => {
@@ -869,6 +867,7 @@ const NotificationEntry = (props) => {
       created_date,
       paper_id,
       amount,
+      slug,
     } = props.notification;
     const author = created_by.author_profile;
     const getContentType = () => {
@@ -902,7 +901,7 @@ const NotificationEntry = (props) => {
           {` contributed ${Number(amount)} RSC to support your `}
           <Link
             href={"/paper/[paperId]/[paperName]"}
-            as={`/paper/${paper_id}/paper`}
+            as={`/paper/${paper_id}/${slug}`}
           >
             <a
               onClick={(e) => {
@@ -943,7 +942,7 @@ const NotificationEntry = (props) => {
         {` awarded ${Number(amount)} RSC to your `}
         <Link
           href={"/paper/[paperId]/[paperName]"}
-          as={`/paper/${paper_id}/paper`}
+          as={`/paper/${paper_id}/${slug}`}
         >
           <a
             onClick={(e) => {
