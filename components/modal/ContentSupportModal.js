@@ -42,7 +42,7 @@ class ContentSupportModal extends React.Component {
 
   handleAmount = (e) => {
     this.setState({
-      amount: e.target.value,
+      amount: parseInt(e.target.value, 10),
     });
   };
 
@@ -84,7 +84,7 @@ class ContentSupportModal extends React.Component {
     const { amount } = this.state;
 
     alert.show({
-      text: `Award ${amount} RSC to this post?`,
+      text: `Award ${parseInt(amount, 10)} RSC to this post?`,
       buttonText: "Yes",
       onClick: () => this.handleTransaction(),
     });
