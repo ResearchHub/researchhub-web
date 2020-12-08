@@ -9,6 +9,7 @@ import { ModalActions } from "~/redux/modals";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import { formatScore } from "~/config/utils";
 
 const ContentSupport = (props) => {
   const {
@@ -85,7 +86,7 @@ const ContentSupport = (props) => {
     }
 
     if (count > 0) {
-      return <span className={css(styles.count)}>{count}</span>;
+      return <span className={css(styles.count)}>{formatScore(count)}</span>;
     }
 
     if (!isUserContent()) {

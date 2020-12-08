@@ -9,7 +9,6 @@ import miniToken from "./Artifacts/mini-me-token";
 import contractAbi from "./Artifacts/contract-abi";
 import { ethers } from "ethers";
 import * as Sentry from "@sentry/browser";
-import numeral from "numeral";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -31,6 +30,12 @@ import { Helpers } from "@quantfive/js-web-config";
 import { useMetaMask, useWalletLink } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 import { sendAmpEvent } from "~/config/fetch";
+import {
+  sanitizeNumber,
+  formatBalance,
+  onKeyDownNumInput,
+  onPasteNumInput,
+} from "~/config/utils";
 
 // Constants
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
@@ -229,7 +234,7 @@ class PaperTransactionModal extends React.Component {
   };
 
   handleInput = (e) => {
-    let value = parseInt(e.target.value, 10);
+    let value = parseInt(sanitizeNumber(e.target.value), 10);
     value = value ? (value > 0 ? value : 0) : null;
     this.setState({
       value,
@@ -411,15 +416,13 @@ class PaperTransactionModal extends React.Component {
         validating: true,
       },
       () => {
-        setTimeout(() => {
-          this.setState({
-            validating: false,
-            ethAccountIsValid: this.isAddress(this.state.ethAccount),
-            balance: this.isAddress(this.state.ethAccount)
-              ? this.checkBalance(value)
-              : null,
-          });
-        }, 400);
+        this.setState({
+          validating: false,
+          ethAccountIsValid: this.isAddress(this.state.ethAccount),
+          balance: this.isAddress(this.state.ethAccount)
+            ? this.checkBalance(value)
+            : null,
+        });
       }
     );
   };
@@ -789,7 +792,7 @@ class PaperTransactionModal extends React.Component {
             </div>
             <div className={css(styles.column, styles.right)}>
               <div className={css(styles.userBalance)}>
-                {user && numeral(user.balance).format("0,0")}
+                {formatBalance(user && user.balance)}
                 <img
                   src={"/static/icons/coin-filled.png"}
                   draggable={false}
@@ -814,6 +817,10 @@ class PaperTransactionModal extends React.Component {
                 className={css(styles.input, this.state.error && styles.error)}
                 value={this.state.value}
                 onChange={this.handleInput}
+                min={"0"}
+                max={user && user.balance}
+                onKeyDown={onKeyDownNumInput}
+                onPaste={onPasteNumInput}
               />
             </div>
           </div>
@@ -896,7 +903,7 @@ class PaperTransactionModal extends React.Component {
                 </div>
                 <div className={css(styles.column, styles.right)}>
                   <div className={css(styles.userBalance)}>
-                    {this.state.balance}
+                    {formatBalance(this.state.balance)}
                     <img
                       src={"/static/icons/coin-filled.png"}
                       draggable={false}
