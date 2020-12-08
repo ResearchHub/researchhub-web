@@ -19,6 +19,7 @@ import API from "~/config/api";
 import { supportContent } from "../../config/fetch";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
+import { sanitizeNumber } from "~/config/utils";
 
 class ContentSupportModal extends React.Component {
   constructor(props) {
@@ -41,8 +42,9 @@ class ContentSupportModal extends React.Component {
   };
 
   handleAmount = (e) => {
+    const amount = sanitizeNumber(e.target.value);
     this.setState({
-      amount: parseInt(e.target.value, 10),
+      amount: parseInt(amount, 10),
     });
   };
 
