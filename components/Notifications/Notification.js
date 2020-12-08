@@ -40,9 +40,9 @@ class Notification extends React.Component {
 
   componentDidUpdate = async (prevProps) => {
     if (prevProps.wsResponse !== this.props.wsResponse) {
-      let { wsResponse, addNotification, notifications } = this.props;
-      let response = JSON.parse(wsResponse);
-      let notification = response.data;
+      const { wsResponse, addNotification, notifications } = this.props;
+      const response = JSON.parse(wsResponse);
+      const notification = response.data;
       await addNotification(notifications, notification);
       this.setState({
         count: this.countReadNotifications(),
@@ -98,7 +98,13 @@ class Notification extends React.Component {
   };
 
   formatAction = (notification) => {
-    const { extra, action_user, created_date, paper } = notification;
+    const {
+      extra,
+      action_user,
+      created_date,
+      paper,
+      paper_slug,
+    } = notification;
     if (extra) {
       const { status, bullet_point, summary, content_type } = extra;
 
@@ -118,6 +124,7 @@ class Notification extends React.Component {
           created_date: created_date,
           plain_text: bullet_point.plain_text,
           paper_id: bullet_point.paper,
+          slug: paper_slug,
         };
       } else if (summary) {
         return {
@@ -127,6 +134,7 @@ class Notification extends React.Component {
           plain_text: summary.summary_plain_text,
           paper_id: summary.paper,
           paper_official_title: summary.paper_title,
+          slug: paper_slug,
         };
       } else if (content_type && content_type.model) {
         return {
@@ -136,6 +144,7 @@ class Notification extends React.Component {
           created_date: created_date,
           paper_id: paper,
           amount: extra.amount,
+          slug: paper_slug,
         };
       }
     }
@@ -177,14 +186,16 @@ class Notification extends React.Component {
     return this.props.notifications.map((notification, index) => {
       const action = this.formatAction(notification);
 
-      return (
-        <NotificationEntry
-          data={notification}
-          notification={action}
-          key={`notif-${notification.id}`}
-          closeMenu={this.toggleMenu}
-        />
-      );
+      if (action) {
+        return (
+          <NotificationEntry
+            data={notification}
+            notification={action}
+            key={`notif-${notification.id}`}
+            closeMenu={this.toggleMenu}
+          />
+        );
+      }
     });
   };
 
@@ -212,7 +223,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   bellIcon: {
-    fontSize: 20,
+    fontSize: 18,
     cursor: "pointer",
     padding: "3px 5px",
     color: "#C1C1CE",
