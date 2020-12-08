@@ -9,7 +9,11 @@ import "~/components/stylesheets/RSCForm.css";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import { onKeyDownNumInput, onPasteNumInput } from "~/config/utils";
+import {
+  onKeyDownNumInput,
+  onPasteNumInput,
+  formatBalance,
+} from "~/config/utils";
 
 const AmountInput = (props) => {
   const store = useStore();
@@ -60,7 +64,7 @@ const AmountInput = (props) => {
       >
         <span className={css(styles.balanceLabel)}>Available:</span>
         <span className={css(styles.balance)}>
-          {store.getState().auth.user.balance || 0}
+          {formatBalance(store.getState().auth.user.balance)}
         </span>
         {props.rightAlignBalance && (
           <img

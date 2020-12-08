@@ -137,7 +137,19 @@ class ContentSupportModal extends React.Component {
         closeModal={this.closeModal}
         title={"Award ResearchCoin"}
         subtitle={
-          "Support the author, or contributor, by giving them RSC. Learn more about RSC and how it can be used."
+          <Fragment>
+            Support the author, or contributor, by giving them ResearchCoin, or
+            RSC.{" "}
+            <a
+              href={
+                "https://www.notion.so/researchhub/RSC-Promotion-f3cb4ee4487046d88201062b1d6b1efa"
+              }
+              className={css(styles.link)}
+              target="_blank"
+            >
+              Learn more about RSC and how it can be used.
+            </a>
+          </Fragment>
         }
         modalContentStyle={styles.modalContentStyle}
         subtitleStyle={styles.subtitleStyle}
@@ -246,6 +258,14 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       height: 50,
+    },
+  },
+  link: {
+    textDecoration: "unset",
+    cursor: "pointer",
+    color: colors.BLUE(),
+    ":hover": {
+      textDecoration: "underline",
     },
   },
 });
