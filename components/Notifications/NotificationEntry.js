@@ -645,9 +645,11 @@ const NotificationEntry = (props) => {
       // case "stripe":
       //   return handleStripeNotification();
       case "vote_bullet":
-        return handleBulletVoteNotification();
+        return renderBulletVoteNotification();
       case "vote_summary":
-        return handleSummaryVoteNotification();
+        return renderSummaryVoteNotification();
+      case "support_content":
+        return renderContentSupportNotification();
       default:
         return;
     }
@@ -735,7 +737,7 @@ const NotificationEntry = (props) => {
     );
   };
 
-  const handleBulletVoteNotification = () => {
+  const renderBulletVoteNotification = () => {
     const {
       created_by,
       created_date,
@@ -787,7 +789,7 @@ const NotificationEntry = (props) => {
     );
   };
 
-  const handleSummaryVoteNotification = () => {
+  const renderSummaryVoteNotification = () => {
     const {
       content_type,
       created_by,
@@ -850,6 +852,69 @@ const NotificationEntry = (props) => {
             data-tip={paper_official_title}
           >
             {paper_official_title && truncateText(paper_official_title)}
+          </a>
+        </Link>
+        <span className={css(styles.timestamp)}>
+          <span className={css(styles.timestampDivider)}>•</span>
+          {timeAgoStamp(created_date)}
+        </span>
+      </div>
+    );
+  };
+
+  const renderContentSupportNotification = () => {
+    const {
+      type,
+      created_by, //: notification.action_user,
+      created_date, //: extra.created_date,
+      paper_id, //: notification.paper,
+      amount, //: extra.amount
+    } = props.notification;
+
+    const author = created_by.author_profile;
+    const getContentType = () => {
+      if (type === "bulletpoint") {
+        return "key takeaway";
+      }
+
+      if (type === "thread") {
+        return "comment";
+      }
+
+      return type;
+    };
+
+    return (
+      <div className={css(styles.message)}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${author.id}/contributions`}
+        >
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.username)}
+          >
+            {`${author.first_name} ${author.last_name}`}
+          </a>
+        </Link>
+        {` awarded ${amount} RSC to your `}
+        <Link
+          href={"/paper/[paperId]/[paperName]"}
+          as={`/paper/${paper_id}/paper`}
+        >
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.link)}
+          >
+            {getContentType() + "."}
           </a>
         </Link>
         <span className={css(styles.timestamp)}>
