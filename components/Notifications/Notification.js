@@ -97,6 +97,52 @@ class Notification extends React.Component {
     });
   };
 
+  formatAction = (notification) => {
+    const { extra, action_user, created_date, paper } = notification;
+    if (extra) {
+      const { status, bullet_point, summary, content_type } = extra;
+
+      if (status) {
+        // Stripe branch not yet integrated
+        return null;
+        // action = {
+        //   content_type: "stripe",
+        //   created_by: notification.recipient,
+        //   created_date: notification.created_date,
+        //   ...extra,
+        // };
+      } else if (bullet_point) {
+        return {
+          content_type: "vote_bullet",
+          created_by: action_user,
+          created_date: created_date,
+          plain_text: bullet_point.plain_text,
+          paper_id: bullet_point.paper,
+        };
+      } else if (summary) {
+        return {
+          content_type: "vote_summary",
+          created_by: action_user,
+          created_date: created_date,
+          plain_text: summary.summary_plain_text,
+          paper_id: summary.paper,
+          paper_official_title: summary.paper_title,
+        };
+      } else if (content_type && content_type.model) {
+        return {
+          type: content_type.model,
+          content_type: "support_content",
+          created_by: action_user,
+          created_date: created_date,
+          paper_id: paper,
+          amount: extra.amount,
+        };
+      }
+    }
+
+    return notification.action[0];
+  };
+
   renderMenu = () => {
     let { isOpen } = this.state;
     // if (isOpen) {
@@ -129,34 +175,7 @@ class Notification extends React.Component {
 
   renderNotifications = () => {
     return this.props.notifications.map((notification, index) => {
-      let action = notification.action[0];
-      if (notification.extra && notification.extra.status) {
-        // Stripe branch not yet integrated
-        return null;
-        // action = {
-        //   content_type: "stripe",
-        //   created_by: notification.recipient,
-        //   created_date: notification.created_date,
-        //   ...notification.extra,
-        // };
-      } else if (notification.extra && notification.extra.bullet_point) {
-        action = {
-          content_type: "vote_bullet",
-          created_by: notification.action_user,
-          created_date: notification.created_date,
-          plain_text: notification.extra.bullet_point.plain_text,
-          paper_id: notification.extra.bullet_point.paper,
-        };
-      } else if (notification.extra && notification.extra.summary) {
-        action = {
-          content_type: "vote_summary",
-          created_by: notification.action_user,
-          created_date: notification.created_date,
-          plain_text: notification.extra.summary.summary_plain_text,
-          paper_id: notification.extra.summary.paper,
-          paper_official_title: notification.extra.summary.paper_title,
-        };
-      }
+      const action = this.formatAction(notification);
 
       return (
         <NotificationEntry
