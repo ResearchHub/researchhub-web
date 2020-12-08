@@ -97,7 +97,7 @@ const NotificationEntry = (props) => {
     href && route && Router.push(href, route);
   };
 
-  const renderString = (contentType) => {
+  const renderMessage = (contentType) => {
     const notification = props.notification;
     let {
       created_date,
@@ -870,19 +870,58 @@ const NotificationEntry = (props) => {
       paper_id,
       amount,
     } = props.notification;
-
     const author = created_by.author_profile;
     const getContentType = () => {
       if (type === "bulletpoint") {
         return "key takeaway";
       }
-
       if (type === "thread") {
         return "comment";
       }
-
       return type;
     };
+
+    if (type === "paper") {
+      return (
+        <div className={css(styles.message)}>
+          <Link
+            href={"/user/[authorId]/[tabName]"}
+            as={`/user/${author.id}/contributions`}
+          >
+            <a
+              onClick={(e) => {
+                e.stopPropagation();
+                markAsRead(data);
+                props.closeMenu();
+              }}
+              className={css(styles.username)}
+            >
+              {`${author.first_name} ${author.last_name}`}
+            </a>
+          </Link>
+          {` contributed ${Number(amount)} RSC to support your `}
+          <Link
+            href={"/paper/[paperId]/[paperName]"}
+            as={`/paper/${paper_id}/paper`}
+          >
+            <a
+              onClick={(e) => {
+                e.stopPropagation();
+                markAsRead(data);
+                props.closeMenu();
+              }}
+              className={css(styles.link)}
+            >
+              paper.
+            </a>
+          </Link>
+          <span className={css(styles.timestamp)}>
+            <span className={css(styles.timestampDivider)}>•</span>
+            {timeAgoStamp(created_date)}
+          </span>
+        </div>
+      );
+    }
 
     return (
       <div className={css(styles.message)}>
@@ -937,9 +976,8 @@ const NotificationEntry = (props) => {
         />
       </div>
       <div className={css(styles.body)}>
-        {/* <ReactTooltip /> */}
         {notification &&
-          renderString(notification.context_type && notification.context_type)}
+          renderMessage(notification.context_type && notification.context_type)}
       </div>
     </Ripples>
   );
