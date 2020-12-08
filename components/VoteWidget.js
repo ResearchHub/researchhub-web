@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import numeral from "numeral";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
@@ -190,7 +191,9 @@ const ScorePill = (props) => {
         openPromotionInfoModal(e)
       }
     >
-      <div className={css(small && styles.small)}>{score}</div>
+      <div className={css(small && styles.small)}>
+        {numeral(score).format("0a")}
+      </div>
       {/* {props.promoted !== false && props.type === "Paper" && (
         <span className={css(styles.promotionIcon)}>
           <BoltSvg color={colors.GREEN()} opacity={1} />
