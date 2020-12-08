@@ -9,6 +9,7 @@ import "~/components/stylesheets/RSCForm.css";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import { onKeyDownNumInput, onPasteNumInput } from "~/config/utils";
 
 const AmountInput = (props) => {
   const store = useStore();
@@ -38,8 +39,11 @@ const AmountInput = (props) => {
           type="number"
           min={1}
           max={store.getState().auth.user.balance || 0}
+          pattern="[0-9]"
           value={props.value}
           onChange={props.onChange}
+          onKeyDown={onKeyDownNumInput}
+          onPaste={onPasteNumInput}
         />
         {!props.rightAlignBalance && (
           <img
