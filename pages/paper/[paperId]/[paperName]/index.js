@@ -708,12 +708,12 @@ Paper.getInitialProps = async (ctx) => {
       ? paperSlug
       : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
 
-    let redirectPath = `/paper/${paper.id}/${paperName}`;
     if (paperName === query.paperName) {
       // catch multiple redirect when slug does not exist
-      props = { hostname, paper, redirectPath, paperId: query.paperId };
+      props = { hostname, paper, fetchedPaper };
       return props;
     }
+    let redirectPath = `/paper/${paper.id}/${paperName}`;
 
     res.writeHead(301, { Location: redirectPath });
     res.end();
@@ -722,6 +722,8 @@ Paper.getInitialProps = async (ctx) => {
       paper,
       redirectPath,
       paperName,
+      paperSlug,
+      paperName: query.paperName,
     };
     return props;
   }
