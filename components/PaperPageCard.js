@@ -365,26 +365,28 @@ class PaperPageCard extends React.Component {
 
   renderPreview = () => {
     let { hovered, loading, fetching, previews } = this.state;
-    console.log(previews);
-    let height =
-      this.metaContainerRef.current &&
-      this.metaContainerRef.current.clientHeight;
+    // let height =
+    //   this.metaContainerRef.current &&
+    //   this.metaContainerRef.current.clientHeight;
 
-    let width;
-    if (height < 137.545) {
-      height = 137.545;
-    }
-    if (this.metaContainerRef.current) {
-      width = (8.5 * height) / 11; // keeps paper ar
-    }
+    // let width;
+    // if (height < 137.545) {
+    //   height = 137.545;
+    // }
+    // if (this.metaContainerRef.current) {
+    //   width = (8.5 * height) / 11; // keeps paper ar
+    // }
 
-    if (window.innerWidth < 769) {
-      height = 130;
-      width = 101;
-    }
-    if (!fetching && !loading) {
-      // width !== this.state.width && this.setState({ width });
-    }
+    // if (window.innerWidth < 769) {
+    //   height = 130;
+    //   width = 101;
+    // }
+    // if (!fetching && !loading) {
+    //   // width !== this.state.width && this.setState({ width });
+    // }
+
+    const height = 154;
+    const width = 119;
 
     if (fetching) {
       return (
@@ -1013,9 +1015,9 @@ const styles = StyleSheet.create({
     minHeight: "unset",
   },
   image: {
-    height: "80%",
+    height: "100%",
     width: "100%",
-    objectFit: "contain",
+    objectFit: "cover",
   },
   column: {
     display: "flex",
