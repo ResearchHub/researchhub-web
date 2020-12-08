@@ -865,10 +865,10 @@ const NotificationEntry = (props) => {
   const renderContentSupportNotification = () => {
     const {
       type,
-      created_by, //: notification.action_user,
-      created_date, //: extra.created_date,
-      paper_id, //: notification.paper,
-      amount, //: extra.amount
+      created_by,
+      created_date,
+      paper_id,
+      amount,
     } = props.notification;
 
     const author = created_by.author_profile;
@@ -901,7 +901,7 @@ const NotificationEntry = (props) => {
             {`${author.first_name} ${author.last_name}`}
           </a>
         </Link>
-        {` awarded ${amount} RSC to your `}
+        {` awarded ${Number(amount)} RSC to your `}
         <Link
           href={"/paper/[paperId]/[paperName]"}
           as={`/paper/${paper_id}/paper`}
