@@ -4,12 +4,14 @@ import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
 import * as Sentry from "@sentry/browser";
 import moment from "moment";
+import Link from "next/link";
 
 import FormTextArea from "../Form/FormTextArea";
 import Ripples from "react-ripples";
 import Button from "../Form/Button";
 import Loader from "~/components/Loader/Loader";
 import BulletPointVote from "./Vote/BulletPointVote";
+import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -22,6 +24,8 @@ import colors from "~/config/themes/colors";
 import AuthorAvatar from "../AuthorAvatar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
 
+const DYNAMIC_HREF = "/paper/[paperId]/[paperSlug]";
+
 const SummaryBulletPoint = (props) => {
   const {
     data,
@@ -32,6 +36,7 @@ const SummaryBulletPoint = (props) => {
     onRemoveCallback,
     editable,
     authorProfile,
+    path,
   } = props;
   const store = useStore();
   const dispatch = useDispatch();
@@ -225,6 +230,26 @@ const SummaryBulletPoint = (props) => {
     }
   };
 
+  const renderGoTo = () => {
+    if (window.location.pathname.includes("/user/")) {
+      let classNames = [styles.goToButton];
+      if (editable) {
+        classNames.push(styles.position);
+      }
+
+      let takeawayPath = `${path}#takeaways`;
+      return (
+        <div className={css(classNames)}>
+          <Link href={DYNAMIC_HREF} as={takeawayPath}>
+            <a id={"goTo"} className={css(classNames)}>
+              {icons.chevronRight}
+            </a>
+          </Link>
+        </div>
+      );
+    }
+  };
+
   return (
     <div
       className={css(
@@ -236,6 +261,7 @@ const SummaryBulletPoint = (props) => {
       onMouseLeave={() => setHover(false)}
     >
       {renderDeleteButton()}
+      {renderGoTo()}
       {renderBody()}
     </div>
   );
@@ -376,6 +402,18 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     color: "#241F3A",
     color: colors.RED(),
+    opacity: 0.6,
+    ":hover": {
+      opacity: 1,
+    },
+  },
+  goToButton: {
+    position: "absolute",
+    right: 10,
+    fontSize: 12,
+    cursor: "pointer",
+    color: "#241F3A",
+    color: colors.BLUE(),
     opacity: 0.6,
     ":hover": {
       opacity: 1,

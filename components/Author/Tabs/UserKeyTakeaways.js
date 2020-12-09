@@ -45,7 +45,7 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
   };
 
   let allItems = items.map((item, index) => {
-    let path = `/paper/${item.paper}/${item.paper_slug}#summary`;
+    let path = `/paper/${item.paper}/${item.paper_slug}`;
     return (
       <div
         className={css(
@@ -60,6 +60,7 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
           type={"KEY_TAKEAWAY"}
           index={index}
           authorProfile={item.created_by.author_profile}
+          path={path}
         />
       </div>
     );
