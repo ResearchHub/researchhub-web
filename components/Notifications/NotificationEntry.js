@@ -895,7 +895,7 @@ const NotificationEntry = (props) => {
           break;
         case "thread":
           link.href = link.href + "/[discussionThreadId]";
-          link.as = link.as + `/${props.data.extra.id}`;
+          link.as = link.as + `/${props.data.extra.source.id}`;
           break;
         case "comment":
           link.as = link.as + "#comments";
