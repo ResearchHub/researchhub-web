@@ -62,6 +62,7 @@ export const AuthorActions = {
       if (response.ok) {
         const body = await response.json();
         let discussions = [];
+
         for (let i = 0; i < body.results.length; i++) {
           discussions.push(discussionShim.thread(body.results[i]));
         }

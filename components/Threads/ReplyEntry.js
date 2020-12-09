@@ -84,6 +84,8 @@ class ReplyEntry extends React.Component {
       paperId: data.paper,
       replyId: reply.id,
       userFlag: reply.userFlag,
+      contentType: "reply",
+      objectId: reply.id,
     };
   };
 
@@ -367,6 +369,7 @@ class ReplyEntry extends React.Component {
                   // Moderator
                   metaData={metaIds}
                   onRemove={this.removePostUI}
+                  data={reply}
                 />
               </div>
             )}

@@ -681,7 +681,7 @@ class HubPage extends React.Component {
   };
 
   render() {
-    let { auth } = this.props;
+    const { auth } = this.props;
     if (auth.user.moderator && filterOptions.length < 5) {
       filterOptions.push({ value: "removed", label: "Removed" });
     }

@@ -68,7 +68,7 @@ const NotificationEntry = (props) => {
             : notification.paper_title
         );
 
-    if (type === "paper" || type === "summary") {
+    if (type === "paper" || type === "summary" || type === "support_content") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}`;
     } else if (
@@ -81,12 +81,9 @@ const NotificationEntry = (props) => {
     ) {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}#comments`;
-    } else if (type === "bullet_point") {
+    } else if (type === "bullet_point" || type === "vote_bullet") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}#takeaways`;
-    } else if (type === "vote_bullet") {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/paper#takeaways`;
     } else if (type === "vote_summary") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}#description`;
@@ -97,7 +94,7 @@ const NotificationEntry = (props) => {
     href && route && Router.push(href, route);
   };
 
-  const renderString = (contentType) => {
+  const renderMessage = (contentType) => {
     const notification = props.notification;
     let {
       created_date,
@@ -645,9 +642,11 @@ const NotificationEntry = (props) => {
       // case "stripe":
       //   return handleStripeNotification();
       case "vote_bullet":
-        return handleBulletVoteNotification();
+        return renderBulletVoteNotification();
       case "vote_summary":
-        return handleSummaryVoteNotification();
+        return renderSummaryVoteNotification();
+      case "support_content":
+        return renderContentSupportNotification();
       default:
         return;
     }
@@ -735,12 +734,13 @@ const NotificationEntry = (props) => {
     );
   };
 
-  const handleBulletVoteNotification = () => {
+  const renderBulletVoteNotification = () => {
     const {
       created_by,
       created_date,
       plain_text,
       paper_id,
+      slug,
     } = props.notification;
 
     const author = created_by.author_profile;
@@ -765,7 +765,7 @@ const NotificationEntry = (props) => {
         voted on your{" "}
         <Link
           href={"/paper/[paperId]/[paperName]"}
-          as={`/paper/${paper_id}/paper#description`}
+          as={`/paper/${paper_id}/${slug}#description`}
         >
           <a
             onClick={(e) => {
@@ -787,7 +787,7 @@ const NotificationEntry = (props) => {
     );
   };
 
-  const handleSummaryVoteNotification = () => {
+  const renderSummaryVoteNotification = () => {
     const {
       content_type,
       created_by,
@@ -860,6 +860,135 @@ const NotificationEntry = (props) => {
     );
   };
 
+  const renderContentSupportNotification = () => {
+    const {
+      type,
+      created_by,
+      created_date,
+      paper_id,
+      amount,
+      slug,
+    } = props.notification;
+    const author = created_by.author_profile;
+    const getContentType = () => {
+      if (type === "bulletpoint") {
+        return "key takeaway";
+      }
+      if (type === "thread") {
+        return "comment";
+      }
+      return type;
+    };
+
+    const formatLink = (props) => {
+      const link = {
+        href: "/paper/[paperId]/[paperName]",
+        as: `/paper/${paper_id}/${slug}`,
+      };
+
+      switch (type) {
+        case "summary":
+          link.as = link.as + "#summary";
+          break;
+        case "bulletpoint":
+          link.as = link.as + "#takeaways";
+          break;
+        case "thread":
+          link.href = link.href + "/[discussionThreadId]";
+          link.as = link.as + `/${props.data.extra.id}`;
+          break;
+        case "comment":
+          link.as = link.as + "#comments";
+          break;
+        case "reply":
+          link.as = link.as + "#comments";
+          break;
+        default:
+          break;
+      }
+      return link;
+    };
+
+    if (type === "paper") {
+      return (
+        <div className={css(styles.message)}>
+          <Link
+            href={"/user/[authorId]/[tabName]"}
+            as={`/user/${author.id}/contributions`}
+          >
+            <a
+              onClick={(e) => {
+                e.stopPropagation();
+                markAsRead(data);
+                props.closeMenu();
+              }}
+              className={css(styles.username)}
+            >
+              {`${author.first_name} ${author.last_name}`}
+            </a>
+          </Link>
+          {` contributed ${Number(amount)} RSC to support your `}
+          <Link
+            href={"/paper/[paperId]/[paperName]"}
+            as={`/paper/${paper_id}/${slug}`}
+          >
+            <a
+              onClick={(e) => {
+                e.stopPropagation();
+                markAsRead(data);
+                props.closeMenu();
+              }}
+              className={css(styles.link)}
+            >
+              paper.
+            </a>
+          </Link>
+          <span className={css(styles.timestamp)}>
+            <span className={css(styles.timestampDivider)}>•</span>
+            {timeAgoStamp(created_date)}
+          </span>
+        </div>
+      );
+    }
+
+    return (
+      <div className={css(styles.message)}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${author.id}/contributions`}
+        >
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.username)}
+          >
+            {`${author.first_name} ${author.last_name}`}
+          </a>
+        </Link>
+        {` awarded ${Number(amount)} RSC to your `}
+        <Link {...formatLink(props)}>
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.link)}
+          >
+            {getContentType() + "."}
+          </a>
+        </Link>
+        <span className={css(styles.timestamp)}>
+          <span className={css(styles.timestampDivider)}>•</span>
+          {timeAgoStamp(created_date)}
+        </span>
+      </div>
+    );
+  };
+
   return (
     <Ripples
       className={css(styles.container, isRead && styles.read)}
@@ -872,9 +1001,8 @@ const NotificationEntry = (props) => {
         />
       </div>
       <div className={css(styles.body)}>
-        {/* <ReactTooltip /> */}
         {notification &&
-          renderString(notification.context_type && notification.context_type)}
+          renderMessage(notification.context_type && notification.context_type)}
       </div>
     </Ripples>
   );

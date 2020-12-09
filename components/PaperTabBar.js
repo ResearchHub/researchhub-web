@@ -269,7 +269,7 @@ const PaperTabBar = (props) => {
     if (index === 2) {
       classNames.push(styles.lastTab);
     }
-    console.log(label);
+
     return (
       <a
         href={`#${href}`}

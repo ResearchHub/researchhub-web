@@ -17,7 +17,7 @@ import {
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "../config/constants";
-import { getCurrentUserReputation } from "../config/utils";
+import { getCurrentUserReputation, formatScore } from "../config/utils";
 
 import "./stylesheets/voteTooltip.css";
 const VoteWidget = (props) => {
@@ -190,7 +190,7 @@ const ScorePill = (props) => {
         openPromotionInfoModal(e)
       }
     >
-      <div className={css(small && styles.small)}>{score}</div>
+      <div className={css(small && styles.small)}>{formatScore(score)}</div>
       {/* {props.promoted !== false && props.type === "Paper" && (
         <span className={css(styles.promotionIcon)}>
           <BoltSvg color={colors.GREEN()} opacity={1} />
