@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import { useStore, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
@@ -12,6 +12,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import ShareAction from "~/components/ShareAction";
+import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
 
 //Redux
 import { MessageActions } from "~/redux/message";
@@ -32,18 +33,18 @@ const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 const DiscussionPostMetadata = (props) => {
   const {
-    username,
-    date,
-    paper,
-    authorProfile,
-    onHideClick,
-    threadPath,
+    data,
     metaData,
-    onRemove,
+    username,
+    authorProfile,
+    fetching,
+    threadPath,
     dropDownEnabled,
     toggleEdit,
     twitter,
     twitterUrl,
+    onRemove,
+    onHideClick,
     smaller,
     hideHeadline,
     containerStyle,
@@ -56,16 +57,23 @@ const DiscussionPostMetadata = (props) => {
   const [isFlagged, setFlagged] = useState(
     metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
   );
-  let dropdown;
-  let ellipsis;
+  const dropdown = useRef();
+  const ellipsis = useRef();
   let isModerator = store.getState().auth.user.moderator;
   let isLoggedIn = store.getState().auth.isLoggedIn;
 
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  });
+
   const handleOutsideClick = (e) => {
-    if (ellipsis && ellipsis.contains(e.target)) {
+    if (ellipsis.current && ellipsis.current.contains(e.target)) {
       return;
     }
-    if (dropdown && !dropdown.contains(e.target)) {
+    if (dropdown.current && !dropdown.current.contains(e.target)) {
       e.stopPropagation();
       setDropDown(false);
     }
@@ -122,13 +130,6 @@ const DiscussionPostMetadata = (props) => {
       });
   };
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  });
-
   const renderShareButton = () => {
     const { hostname, threadPath, title, small } = props;
     const shareUrl = hostname + threadPath;
@@ -156,6 +157,75 @@ const DiscussionPostMetadata = (props) => {
     );
   };
 
+  const renderDropdown = () => {
+    return (
+      <Fragment>
+        {dropDownEnabled && (
+          <div className={css(styles.dropdownContainer)}>
+            <div
+              className={css(styles.dropdownIcon)}
+              ref={ellipsis}
+              onClick={toggleDropDown}
+            >
+              {icons.ellipsisH}
+            </div>
+            {showDropDown && (
+              <div className={css(styles.dropdown)} ref={dropdown}>
+                {threadPath && <ExpandButton {...props} />}
+                {threadPath && renderShareButton()}
+                <FlagButton
+                  {...props}
+                  onClick={promptFlagConfirmation}
+                  isFlagged={isFlagged}
+                />
+                <ModeratorDeleteButton
+                  containerStyle={styles.dropdownItem}
+                  labelStyle={[styles.text, styles.removeText]}
+                  iconStyle={styles.expandIcon}
+                  label={"Remove"}
+                  actionType={"post"}
+                  metaData={metaData}
+                  onRemove={onRemove}
+                  isModerator={isModerator}
+                />
+                <ModeratorDeleteButton
+                  containerStyle={styles.dropdownItem}
+                  labelStyle={[styles.text, styles.removeText]}
+                  iconStyle={styles.expandIcon}
+                  icon={icons.ban}
+                  label={"Ban User"}
+                  actionType={"user"}
+                  metaData={metaData}
+                  onRemove={onRemove}
+                  isModerator={isModerator}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </Fragment>
+    );
+  };
+
+  const renderHeadline = () => {
+    const showHeadline =
+      authorProfile &&
+      (authorProfile.headline || authorProfile.education) &&
+      !hideHeadline;
+
+    if (showHeadline) {
+      return (
+        <div
+          className={
+            css(styles.headline, smaller && styles.smallerHeadline) + " clamp1"
+          }
+        >
+          {createUserSummary(authorProfile)}
+        </div>
+      );
+    }
+  };
+
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <AuthorAvatar
@@ -167,69 +237,16 @@ const DiscussionPostMetadata = (props) => {
       />
       <div className={css(styles.column)}>
         <div className={css(styles.firstRow)}>
-          <User name={username} authorProfile={authorProfile} {...props} />
-          <Timestamp date={date} {...props} />
-          {dropDownEnabled && (
-            <div className={css(styles.dropdownContainer)}>
-              <div
-                className={css(styles.dropdownIcon)}
-                ref={(ref) => (ellipsis = ref)}
-                onClick={toggleDropDown}
-              >
-                {icons.ellipsisH}
-              </div>
-              {showDropDown && (
-                <div
-                  className={css(styles.dropdown)}
-                  ref={(ref) => (dropdown = ref)}
-                >
-                  {threadPath && <ExpandButton {...props} />}
-                  {threadPath && renderShareButton()}
-                  <FlagButton
-                    {...props}
-                    onClick={promptFlagConfirmation}
-                    isFlagged={isFlagged}
-                  />
-                  {isModerator && (
-                    <ModeratorDeleteButton
-                      containerStyle={styles.dropdownItem}
-                      labelStyle={[styles.text, styles.removeText]}
-                      iconStyle={styles.expandIcon}
-                      label={"Remove"}
-                      actionType={"post"}
-                      metaData={metaData}
-                      onRemove={onRemove}
-                    />
-                  )}
-                  {isModerator && (
-                    <ModeratorDeleteButton
-                      containerStyle={styles.dropdownItem}
-                      labelStyle={[styles.text, styles.removeText]}
-                      iconStyle={styles.expandIcon}
-                      icon={icons.ban}
-                      label={"Ban User"}
-                      actionType={"user"}
-                      metaData={metaData}
-                      onRemove={onRemove}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+          <User {...props} />
+          <WidgetContentSupport
+            data={data}
+            metaData={metaData}
+            fetching={fetching}
+          />
+          <Timestamp {...props} />
+          {renderDropdown()}
         </div>
-        {authorProfile &&
-          (authorProfile.headline || authorProfile.education) &&
-          !hideHeadline && (
-            <div
-              className={
-                css(styles.headline, smaller && styles.smallerHeadline) +
-                " clamp1"
-              }
-            >
-              {createUserSummary(authorProfile)}
-            </div>
-          )}
+        {renderHeadline()}
       </div>
     </div>
   );
@@ -246,7 +263,7 @@ function openTwitter(url) {
 }
 
 const User = (props) => {
-  const { name, paper, authorProfile, smaller, twitterUrl } = props;
+  const { username, paper, authorProfile, smaller, twitterUrl } = props;
   let isAuthor;
   let authorId = authorProfile.id; // for the user
 
@@ -270,8 +287,14 @@ const User = (props) => {
             smaller && styles.smallerUserContainer
           )}
         >
-          <div className={css(styles.name, isAuthor && styles.authorName)}>
-            {name}
+          <div
+            className={css(
+              styles.name,
+              smaller && styles.smallerName,
+              isAuthor && styles.authorName
+            )}
+          >
+            {username}
           </div>
           {isAuthor && <div className={css(styles.status)}>Author</div>}
         </div>
@@ -297,7 +320,14 @@ const Timestamp = (props) => {
           href={props.twitterUrl}
           className={css(styles.twitterTag)}
         >
-          <span className={css(styles.timestampDivider)}>•</span>
+          <span
+            className={css(
+              styles.timestampDivider,
+              props.smaller && styles.smallerTimestamp
+            )}
+          >
+            •
+          </span>
           {timestamp} from Twitter
           <div className={css(styles.twitterIcon)}>
             <i className="fab fa-twitter" />
@@ -314,7 +344,14 @@ const Timestamp = (props) => {
         props.smaller && styles.smallerTimestamp
       )}
     >
-      <span className={css(styles.timestampDivider)}>•</span>
+      <span
+        className={css(
+          styles.timestampDivider,
+          props.smaller && styles.smallerTimestampDivider
+        )}
+      >
+        •
+      </span>
       {timestamp}
     </div>
   );
@@ -418,7 +455,7 @@ const styles = StyleSheet.create({
     color: "unset",
   },
   smallerUserContainer: {
-    fontSize: 13,
+    // fontSize: 13,
   },
   timestampContainer: {
     display: "flex",
@@ -454,6 +491,12 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
+  smallerName: {
+    // fontSize: 13,
+    // "@media only screen and (max-width: 415px)": {
+    //   fontSize: 12,
+    // },
+  },
   authorName: {
     fontWeight: 500,
   },
@@ -488,6 +531,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       padding: "0px 8px",
     },
+  },
+  smallerTimestampDivider: {
+    fontSize: 12,
+    padding: "0 8px",
   },
   hideContainer: {
     display: "flex",

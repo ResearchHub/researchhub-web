@@ -29,7 +29,6 @@ import icons from "~/config/themes/icons";
 import colors from "../../../config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
 
-import DiscussionPostMetadata from "../../DiscussionPostMetadata";
 import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
 
 class SummaryTab extends React.Component {
@@ -461,8 +460,8 @@ class SummaryTab extends React.Component {
   };
 
   render() {
-    let { paper, summary, updatePaperState } = this.props;
-    let { transition } = this.state;
+    const { paper, summary, loadingSummary, updatePaperState } = this.props;
+    const { transition } = this.state;
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
         <a name="takeaways" id={"takeaway"}>
@@ -553,7 +552,10 @@ class SummaryTab extends React.Component {
                 )}
                 {this.state.finishedLoading && (
                   <Fragment>
-                    <SummaryContributor summary={summary} />
+                    <SummaryContributor
+                      summary={summary}
+                      loadingSummary={loadingSummary}
+                    />
                     <TextEditor
                       canEdit={true}
                       readOnly={this.state.readOnly}

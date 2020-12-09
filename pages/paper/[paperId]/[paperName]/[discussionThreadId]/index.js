@@ -146,6 +146,7 @@ const DiscussionThreadPage = (props) => {
       <div className={css(styles.threadContainer)}>
         {thread.text && (
           <Thread
+            data={thread}
             hostname={hostname}
             body={thread.text}
             createdBy={thread.created_by}

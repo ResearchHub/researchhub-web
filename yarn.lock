@@ -1543,6 +1543,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
+"@juggle/resize-observer@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.2.0.tgz#5e0b448d27fe3091bae6216456512c5904d05661"
+  integrity sha512-fsLxt0CHx2HCV9EL8lDoVkwHffsA0snUpddYjdLyXcG5E41xaamn9ZyQqOE9TUJdrRlH8/hjIf+UdOdDeKCUgg==
+
 "@next/react-dev-overlay@9.5.3":
   version "9.5.3"
   resolved "https://registry.yarnpkg.com/@next/react-dev-overlay/-/react-dev-overlay-9.5.3.tgz#3275301f08045ecc709e3273031973a1f5e81427"
@@ -6737,6 +6742,13 @@ react-sortable-hoc@^1.8.3:
     "@babel/runtime" "^7.2.0"
     invariant "^2.2.4"
     prop-types "^15.5.7"
+
+react-sparkle@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/react-sparkle/-/react-sparkle-1.0.8.tgz#5540d3f8a6dc486441781288fac48f0e457c1667"
+  integrity sha512-1zta8K6zefi5uKomEZUXnBJZWAxsPtgg8YO0iCo7/lQGA+h0YN6i/w5Ez14iAo59WCd82LcuFSKc55YjUr3lMw==
+  dependencies:
+    "@juggle/resize-observer" "^3.2.0"
 
 react-spinners@^0.6.1:
   version "0.6.1"

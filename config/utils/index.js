@@ -4,6 +4,7 @@ export * from "./parsers";
 export * from "./routing";
 export * from "./serializers";
 export * from "./validation";
+export * from "./form";
 
 export function getNestedValue(root, nodes, defaultValue = null) {
   const initialValue = root;

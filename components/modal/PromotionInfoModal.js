@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     marginTop: 20,
     maxWidth: 400,
+    width: "100%",
     whiteSpace: "pre-wrap",
   },
   link: {

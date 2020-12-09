@@ -78,3 +78,17 @@ export const checkSummaryVote = async ({ summaryId }, callback) => {
       //Todo: handle error
     });
 };
+
+export const supportContent = async ({ contentType, objectId, amount }) => {
+  const PAYLOAD = {
+    content_type: contentType,
+    object_id: objectId,
+    amount,
+    purchase_type: "BOOST",
+    purchase_method: "OFF_CHAIN",
+  };
+
+  return fetch(API.PROMOTE, API.POST_CONFIG(PAYLOAD))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
