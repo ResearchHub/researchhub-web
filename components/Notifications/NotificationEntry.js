@@ -880,6 +880,35 @@ const NotificationEntry = (props) => {
       return type;
     };
 
+    const formatLink = (props) => {
+      const link = {
+        href: "/paper/[paperId]/[paperName]",
+        as: `/paper/${paper_id}/${slug}`,
+      };
+
+      switch (type) {
+        case "summary":
+          link.as = link.as + "#summary";
+          break;
+        case "bulletpoint":
+          link.as = link.as + "#takeaways";
+          break;
+        case "thread":
+          link.href = link.href + "/[discussionThreadId]";
+          link.as = link.as + `/${props.data.extra.id}`;
+          break;
+        case "comment":
+          link.as = link.as + "#comments";
+          break;
+        case "reply":
+          link.as = link.as + "#comments";
+          break;
+        default:
+          break;
+      }
+      return link;
+    };
+
     if (type === "paper") {
       return (
         <div className={css(styles.message)}>
@@ -940,10 +969,7 @@ const NotificationEntry = (props) => {
           </a>
         </Link>
         {` awarded ${Number(amount)} RSC to your `}
-        <Link
-          href={"/paper/[paperId]/[paperName]"}
-          as={`/paper/${paper_id}/${slug}`}
-        >
+        <Link {...formatLink(props)}>
           <a
             onClick={(e) => {
               e.stopPropagation();
