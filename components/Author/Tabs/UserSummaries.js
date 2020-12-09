@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
+import Link from "next/link";
 
 // Components
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
@@ -14,8 +15,11 @@ import { AuthorActions } from "~/redux/author";
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
+import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { thread } from "../../../redux/discussion/shims";
+
+const DYNAMIC_HREF = "/paper/[paperId]/[paperSlug]";
 
 const UserSummaries = ({
   summaries,
@@ -29,6 +33,24 @@ const UserSummaries = ({
     setFetchingMore(true);
     await fetchSummaries(summaryNext);
     setFetchingMore(false);
+  };
+
+  const renderGoTo = (path) => {
+    if (window.location.pathname.includes("/user/")) {
+      let classNames = [styles.goToButton];
+      classNames.push(styles.position);
+
+      let summaryPath = `${path}`;
+      return (
+        <div className={css(classNames)}>
+          <Link href={DYNAMIC_HREF} as={summaryPath}>
+            <a id={"goTo"} className={css(classNames)}>
+              {icons.chevronRight}
+            </a>
+          </Link>
+        </div>
+      );
+    }
   };
 
   const renderLoadMoreButton = () => {
@@ -62,6 +84,7 @@ const UserSummaries = ({
           index === summaries.length - 1 && styles.noBorder
         )}
       >
+        {renderGoTo(path)}
         <SummaryContributor summary={summary} />
         <TextEditor
           canEdit={true}
@@ -166,6 +189,20 @@ var styles = StyleSheet.create({
     ":hover": {
       color: "#FFF",
       backgroundColor: colors.BLUE(),
+    },
+  },
+  goToButton: {
+    position: "relative",
+    top: 10,
+    left: "50%",
+    fontSize: 12,
+    cursor: "pointer",
+    color: "#241F3A",
+    color: colors.BLUE(),
+    opacity: 0.6,
+    zIndex: 10,
+    ":hover": {
+      opacity: 1,
     },
   },
 });
