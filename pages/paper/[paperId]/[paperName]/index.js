@@ -84,6 +84,7 @@ const Paper = (props) => {
   const [loadingReferencedBy, setLoadingReferencedBy] = useState(true);
   const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
   const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
+  const [loadingSummary, setLoadingSummary] = useState(true);
   const [loadingFile, setLoadingFile] = useState(true);
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
   const [sticky, setSticky] = useState(false);
@@ -168,9 +169,10 @@ const Paper = (props) => {
 
         if (summaryUserVote) {
           summary.score = summaryUserVote.score || 0;
+          summary.promoted = summaryUserVote.promoted;
         }
-
         setSummary(summary);
+        setLoadingSummary(false);
       });
     }
   }, [summary.id, props.auth.isLoggedIn]);
@@ -542,6 +544,7 @@ const Paper = (props) => {
             afterFetchBullets={() => setFetchBullets(true)}
             updatePaperState={updatePaperState}
             updateSummary={setSummary}
+            loadingSummary={loadingSummary}
           />
           <a name="comments" id="comments">
             <div className={css(styles.space)} />
@@ -705,12 +708,12 @@ Paper.getInitialProps = async (ctx) => {
       ? paperSlug
       : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
 
-    let redirectPath = `/paper/${paper.id}/${paperName}`;
     if (paperName === query.paperName) {
       // catch multiple redirect when slug does not exist
-      props = { hostname, paper, redirectPath, paperId: query.paperId };
+      props = { hostname, paper, fetchedPaper };
       return props;
     }
+    let redirectPath = `/paper/${paper.id}/${paperName}`;
 
     res.writeHead(301, { Location: redirectPath });
     res.end();
@@ -719,6 +722,8 @@ Paper.getInitialProps = async (ctx) => {
       paper,
       redirectPath,
       paperName,
+      paperSlug,
+      paperName: query.paperName,
     };
     return props;
   }

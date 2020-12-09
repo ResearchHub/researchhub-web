@@ -1017,7 +1017,7 @@ const styles = StyleSheet.create({
   image: {
     height: "100%",
     width: "100%",
-    objectFit: "cover",
+    objectFit: "contain",
   },
   column: {
     display: "flex",

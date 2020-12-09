@@ -335,6 +335,8 @@ class CommentEntry extends React.Component {
       commentId: comment.id,
       paperId: data.paper,
       comment: comment.user_flag,
+      contentType: "comment",
+      objectId: comment.id,
     };
   };
 
@@ -471,6 +473,7 @@ class CommentEntry extends React.Component {
                     "created_by",
                     "author_profile",
                   ])}
+                  data={comment}
                   username={username}
                   date={date}
                   paper={paper}

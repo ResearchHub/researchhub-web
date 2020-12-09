@@ -145,8 +145,29 @@ class DiscussionComment extends React.Component {
     return false;
   };
 
+  formatDiscussionPostMeta = () => {
+    const { username, date } = this.state;
+    const { data, commentStyles, replyCardStyle } = this.props;
+    const authorProfile = data.created_by.author_profile;
+
+    return {
+      username,
+      date,
+      authorProfile,
+      data,
+      metaData: {
+        contentType: commentStyles
+          ? "comment"
+          : replyCardStyle
+          ? "reply"
+          : "thread",
+        objectId: data.id,
+      },
+    };
+  };
+
   renderTop = () => {
-    let type = this.props.commentStyles
+    const type = this.props.commentStyles
       ? "comment"
       : this.props.replyCardStyle
       ? "reply"
@@ -173,11 +194,7 @@ class DiscussionComment extends React.Component {
               type={type}
             />
           </span>
-          <DiscussionPostMetadata
-            username={this.state.username}
-            authorProfile={this.props.data.created_by.author_profile}
-            date={this.state.date}
-          />
+          <DiscussionPostMetadata {...this.formatDiscussionPostMeta()} />
         </div>
       </Fragment>
     );

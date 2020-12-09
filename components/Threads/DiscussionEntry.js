@@ -47,7 +47,7 @@ class DiscussionEntry extends React.Component {
 
   componentDidMount = async () => {
     const { data, newCard } = this.props;
-    const comments = data.comments ? data.comments : [];
+    const comments = data.comments || [];
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
     this.setState(
       {
@@ -364,12 +364,14 @@ class DiscussionEntry extends React.Component {
     let date = data.created_date;
     let title = data.title;
     let body = data.source === "twitter" ? data.plain_text : data.text;
-    let username = data.created_by ? createUsername(data) : "";
+    let username = createUsername(data);
     let metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
       userFlag: data.user_flag,
+      contentType: "thread",
+      objectId: data.id,
     };
 
     return (
@@ -426,6 +428,7 @@ class DiscussionEntry extends React.Component {
                       )
                     }
                     username={username}
+                    data={data}
                     date={date}
                     paper={paper}
                     threadPath={path}

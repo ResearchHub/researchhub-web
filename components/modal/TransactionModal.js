@@ -5,7 +5,6 @@ import ReactTooltip from "react-tooltip";
 import { keccak256, sha3_256 } from "js-sha3";
 import { ethers } from "ethers";
 import Link from "next/link";
-import numeral from "numeral";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -25,6 +24,12 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { useMetaMask, useWalletLink } from "../connectEthereum";
 import CheckBox from "../Form/CheckBox";
+import {
+  sanitizeNumber,
+  onKeyDownNumInput,
+  onPasteNumInput,
+  formatBalance,
+} from "~/config/utils";
 
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";
@@ -172,7 +177,7 @@ class TransactionModal extends React.Component {
   };
 
   handleAmountInput = (e) => {
-    let value = parseInt(e.target.value, 10);
+    let value = parseInt(sanitizeNumber(e.target.value), 10);
     value = value ? (value > 0 ? value : 0) : null;
 
     this.setState({
@@ -662,7 +667,7 @@ class TransactionModal extends React.Component {
               </div>
               <div className={css(styles.right)}>
                 <div className={css(styles.userBalance)}>
-                  {numeral(userBalance).format("0,0")}
+                  {formatBalance(userBalance)}
                   <img
                     className={css(styles.coin)}
                     src={"/static/icons/coin-filled.png"}
@@ -684,6 +689,10 @@ class TransactionModal extends React.Component {
                   className={css(styles.amountInput, error && styles.error)}
                   value={amount}
                   onChange={this.handleAmountInput}
+                  min={"0"}
+                  max={userBalance}
+                  onKeyDown={onKeyDownNumInput}
+                  onPaste={onPasteNumInput}
                 />
               </div>
             </div>

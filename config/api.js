@@ -621,11 +621,11 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    PROMOTE: BASE_URL + "purchase/",
     PROMOTION: ({ purchaseId }) => {
       let url = BASE_URL + `purchase/${purchaseId}/`;
       return url;
     },
-    PROMOTION_PURCHASE: BASE_URL + "purchase/",
     PROMOTION_TRANSACTIONS: ({ userId }) => {
       let url = BASE_URL + `purchase/${userId}/user_transactions/`;
       return url;
