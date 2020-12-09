@@ -41,9 +41,9 @@ import UserKeyTakeaways from "../../../../components/Author/Tabs/UserKeyTakeaway
 const AuthorPage = (props) => {
   const { auth, author, hostname, user, transactions } = props;
   const router = useRouter();
-  const { tabName } = router.query;
   const dispatch = useDispatch();
   const store = useStore();
+  const { tabName } = router.query;
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
 
   const [fetching, setFetching] = useState(true);
@@ -1617,10 +1617,9 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   userActions: {
-    // marginTop: 20,
-    // '@media only screen and (min-width: 768px)': {
-    //   marginTop: 'auto',
-    // }
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
   editProfileButton: {
     marginTop: 20,
