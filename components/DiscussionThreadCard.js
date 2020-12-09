@@ -187,6 +187,11 @@ const DiscussionThreadCard = (props) => {
                 authorProfile={data && data.createdBy.authorProfile}
                 username={username}
                 date={date}
+                data={data}
+                metaData={{
+                  contentType: "thread",
+                  objectId: data.id,
+                }}
               />
               <div className={css(styles.readbutton)}>
                 <ReadButton threadPath={path} />

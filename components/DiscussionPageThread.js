@@ -23,7 +23,7 @@ import icons from "~/config/themes/icons";
 import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
 
 const Thread = (props) => {
-  const { thread, hostname, title, body, createdBy, date, vote } = props;
+  const { data, hostname, title, body, createdBy, date, vote } = props;
   let created_by = createdBy;
   const dispatch = useDispatch();
   const store = useStore();
@@ -132,10 +132,10 @@ const Thread = (props) => {
             authorProfile={createdBy.author_profile}
             username={username}
             date={date}
-            data={thread}
+            data={data}
             metaData={{
               contentType: "thread",
-              objectId: thread.id,
+              objectId: data.id,
             }}
           />
         </div>
@@ -146,7 +146,6 @@ const Thread = (props) => {
               !readOnly && styles.threadTitleEdit
             )}
           >
-            {/* {title} */}
             <DiscussionThreadEditor
               readOnly={readOnly}
               styling={readOnly ? [styles.body] : [styles.bodyEdit]}
@@ -199,9 +198,7 @@ const styles = StyleSheet.create({
     position: "relative",
     top: 0,
   },
-  cardContainerEdit: {
-    // backgroundColor: colors.LIGHT_YELLOW(1),
-  },
+  cardContainerEdit: {},
   column: {
     display: "flex",
     flexDirection: "column",
