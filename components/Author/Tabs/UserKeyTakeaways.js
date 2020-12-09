@@ -23,7 +23,7 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
   };
 
   const renderLoadMoreButton = () => {
-    if (!next) {
+    if (!itemsNext) {
       return null;
     }
     return (
