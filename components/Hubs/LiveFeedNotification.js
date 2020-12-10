@@ -405,6 +405,69 @@ class LiveFeedNotification extends React.Component {
             </span>
           </div>
         );
+      case "purchase":
+        var { recipient } = notification;
+        var recipientAuthorId = recipient.author_id;
+        var recipientName = recipient.name;
+        var supportType = notification.support_type;
+        var paperTitle = notification.paper_title;
+
+        if (supportType === "bulletpoint") {
+          supportType = "key takeaway";
+        } else if (supportType === "summary") {
+          supportType = "summary";
+        } else {
+          supportType = "comment";
+        }
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/contributions`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            awarded {notification.amount} RSC{" "}
+            <img
+              className={css(styles.coinIcon)}
+              src={"/static/icons/coin-filled.png"}
+            />{" "}
+            to{" "}
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${recipientAuthorId}/contributions`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {recipientName}
+              </a>
+            </Link>{" "}
+            for their {supportType} on{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTitle}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTitle && this.truncatePaperTitle(paperTitle)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
       default:
         return;
     }
@@ -1075,6 +1138,10 @@ const styles = StyleSheet.create({
   expandIcon: {
     fontSize: 14,
     paddingLeft: 5,
+  },
+  coinIcon: {
+    maxWidth: 11,
+    maxHeight: 11,
   },
 });
 
