@@ -75,6 +75,7 @@ const AuthorPage = (props) => {
   const [summaryCount, setSummaryCount] = useState(0);
   const [summaryNext, setSummaryNext] = useState(null);
   const [summariesFetched, setSummariesFetched] = useState(false);
+
   // KT Constants
   const [keyTakeaways, setKeyTakeaways] = useState([]);
   const [takeawayCount, setTakeawayCount] = useState(0);
@@ -82,9 +83,9 @@ const AuthorPage = (props) => {
   const [takeawaysFetched, setTakeawaysFetched] = useState(false);
   const [isSuspended, setIsSuspended] = useState(null);
 
-  let facebookRef;
-  let linkedinRef;
-  let twitterRef;
+  const facebookRef = useRef();
+  const linkedinRef = useRef();
+  const twitterRef = useRef();
 
   const SECTIONS = {
     name: "name",
@@ -94,6 +95,84 @@ const AuthorPage = (props) => {
     twitter: "twitter",
     picture: "picture",
   };
+
+  const tabs = [
+    {
+      href: "contributions",
+      label: "paper submissions",
+      showCount: true,
+      count: () => author.userContributions.count,
+    },
+    {
+      href: "summaries",
+      label: "submitted summaries",
+      showCount: true,
+      count: () => summaryCount,
+    },
+    {
+      href: "takeaways",
+      label: "key takeaways",
+      showCount: true,
+      count: () => takeawayCount,
+    },
+    {
+      href: "authored-papers",
+      label: "authored papers",
+      showCount: true,
+      count: () => author.authoredPapers.count,
+    },
+    {
+      href: "discussions",
+      label: "discussions",
+      showCount: true,
+      count: () => author.userDiscussions.count,
+    },
+    {
+      href: "transactions",
+      label: "transactions",
+      showCount: true,
+      count: () => transactions.count,
+    },
+    {
+      href: "boosts",
+      label: "supported papers",
+      showCount: true,
+      count: () => author.promotions && author.promotions.count,
+    },
+  ];
+
+  const socialMedia = [
+    {
+      link: author.linkedin,
+      icon: <i className="fab fa-linkedin-in" />,
+      nodeRef: linkedinRef,
+      dataTip: "Set LinkedIn Profile",
+      onClick: () => setEditLinkedin(true),
+      renderDropdown: () => editLinkedin && renderSocialEdit(SECTIONS.linkedin),
+      customStyles: styles.linkedin,
+      isEditing: editLinkedin,
+    },
+    {
+      link: author.twitter,
+      icon: <i className="fab fa-twitter" />,
+      nodeRef: twitterRef,
+      dataTip: "Set Twitter Profile",
+      onClick: () => setEditTwitter(true),
+      renderDropdown: () => editTwitter && renderSocialEdit(SECTIONS.twitter),
+      customStyles: styles.twitter,
+      isEditing: editTwitter,
+    },
+    {
+      link: author.facebook,
+      icon: <i className="fab fa-facebook-f" />,
+      nodeRef: facebookRef,
+      dataTip: "Set Facebook Profile",
+      onClick: () => setEditFacebook(true),
+      renderDropdown: () => editFacebook && renderSocialEdit(SECTIONS.facebook),
+      customStyles: styles.facebook,
+      isEditing: editFacebook,
+    },
+  ];
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -105,7 +184,7 @@ const AuthorPage = (props) => {
   });
 
   useEffect(() => {
-    setFetching(true);
+    // setFetching(true);
     async function refetchAuthor() {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
@@ -199,13 +278,13 @@ const AuthorPage = (props) => {
    * @param { Event } e -- javascript event
    */
   function handleOutsideClick(e) {
-    if (facebookRef && !facebookRef.contains(e.target)) {
+    if (facebookRef.current && !facebookRef.current.contains(e.target)) {
       setEditFacebook(false);
     }
-    if (twitterRef && !twitterRef.contains(e.target)) {
+    if (twitterRef.current && !twitterRef.current.contains(e.target)) {
       setEditTwitter(false);
     }
-    if (linkedinRef && !linkedinRef.contains(e.target)) {
+    if (linkedinRef.current && !linkedinRef.current.contains(e.target)) {
       setEditLinkedin(false);
     }
   }
@@ -370,51 +449,6 @@ const AuthorPage = (props) => {
         }
       });
   };
-
-  const tabs = [
-    {
-      href: "contributions",
-      label: "paper submissions",
-      showCount: true,
-      count: () => author.userContributions.count,
-    },
-    {
-      href: "summaries",
-      label: "submitted summaries",
-      showCount: true,
-      count: () => summaryCount,
-    },
-    {
-      href: "takeaways",
-      label: "key takeaways",
-      showCount: true,
-      count: () => takeawayCount,
-    },
-    {
-      href: "authored-papers",
-      label: "authored papers",
-      showCount: true,
-      count: () => author.authoredPapers.count,
-    },
-    {
-      href: "discussions",
-      label: "discussions",
-      showCount: true,
-      count: () => author.userDiscussions.count,
-    },
-    {
-      href: "transactions",
-      label: "transactions",
-      showCount: true,
-      count: () => transactions.count,
-    },
-    {
-      href: "boosts",
-      label: "supported papers",
-      showCount: true,
-      count: () => author.promotions && author.promotions.count,
-    },
-  ];
 
   const fetchSummaries = (next) => {
     return fetch(
@@ -755,25 +789,14 @@ const AuthorPage = (props) => {
 
   const authorOrcidId = getOrcidId();
 
-  const renderOrcid = (mobile = false) => {
-    if (allowEdit) {
-      return (
-        <OrcidConnectButton
-          hostname={hostname}
-          refreshProfileOnSuccess={false}
-          customLabel={"Connect ORCiD"}
-          styles={styles.orcidButton}
-          iconButton={mobile}
-        />
-      );
-    }
-
+  const renderOrcid = () => {
     if (authorOrcidId) {
       return (
         <a
-          className={css(styles.link)}
+          className={css(styles.link, styles.socialMedia)}
           target="_blank"
           href={`https://orcid.org/${authorOrcidId}`}
+          data-tip={"Open Orcid Profile"}
         >
           <img
             src="/static/icons/orcid.png"
@@ -781,6 +804,38 @@ const AuthorPage = (props) => {
           />
         </a>
       );
+    } else {
+      if (allowEdit) {
+        return (
+          <div
+            className={css(
+              styles.socialMedia,
+              styles.orcid,
+              !authorOrcidId && styles.noSocial
+            )}
+            data-tip={"Connect Orcid"}
+          >
+            <OrcidConnectButton
+              hostname={hostname}
+              refreshProfileOnSuccess={false}
+              customLabel={"Connect ORCiD"}
+              styles={styles.orcidButton}
+              iconButton={true}
+            />
+          </div>
+        );
+      } else {
+        return (
+          <div
+            className={css(styles.socialMedia, styles.orcid, styles.noSocial)}
+          >
+            <img
+              src="/static/icons/orcid.png"
+              className={css(styles.orcidLogo)}
+            />
+          </div>
+        );
+      }
     }
   };
 
@@ -796,9 +851,7 @@ const AuthorPage = (props) => {
                 alt={"researchhub-coin-icon"}
               />
             </span>
-            <div className={css(styles.reputationTitle)}>
-              Current RSC Balance:
-            </div>
+            <div className={css(styles.reputationTitle)}>RSC Balance:</div>
             <div className={css(styles.amount)}>{props.user.balance}</div>
           </div>
         );
@@ -822,114 +875,66 @@ const AuthorPage = (props) => {
     );
   };
 
-  const renderSocialMediaButtons = (view = {}) => {
-    const { mobile } = view;
+  const renderSocialMedia = () => {
+    return socialMedia.map((app) => {
+      const {
+        link,
+        icon,
+        nodeRef,
+        dataTip,
+        onClick,
+        renderDropdown,
+        customStyles,
+        isEditing,
+      } = app;
+
+      if (allowEdit) {
+        return (
+          <div
+            className={css(
+              styles.editSocial,
+              !link && styles.noSocial,
+              isEditing && styles.fullOpacity
+            )}
+            ref={nodeRef}
+            data-tip={dataTip}
+          >
+            <div
+              className={css(styles.socialMedia, customStyles)}
+              onClick={onClick}
+            >
+              {icon}
+            </div>
+            {renderDropdown()}
+          </div>
+        );
+      }
+
+      if (link) {
+        return (
+          <a className={css(styles.link)} href={link} target="_blank">
+            <span className={css(styles.socialMedia, customStyles)}>
+              {icon}
+            </span>
+          </a>
+        );
+      } else {
+        return (
+          <div className={css(styles.editSocial, styles.noSocial)}>
+            <span className={css(styles.socialMedia, customStyles)}>
+              {icon}
+            </span>
+          </div>
+        );
+      }
+    });
+  };
+
+  const renderUserLinks = () => {
     return (
       <div className={css(styles.socialLinks)}>
-        {!allowEdit ? (
-          author.linkedin && (
-            <a
-              className={css(styles.link)}
-              href={author.linkedin}
-              target="_blank"
-            >
-              <div className={css(styles.socialMedia, styles.linkedin)}>
-                <i className="fab fa-linkedin-in"></i>
-              </div>
-            </a>
-          )
-        ) : (
-          <div
-            className={css(
-              styles.editSocial,
-              !author.linkedin && styles.noSocial,
-              editLinkedin && styles.fullOpacity
-            )}
-            ref={(ref) => (linkedinRef = ref)}
-            data-tip={"Set LinkedIn Profile"}
-          >
-            <div
-              className={css(styles.socialMedia, styles.linkedin)}
-              onClick={() => setEditLinkedin(true)}
-            >
-              <i className="fab fa-linkedin-in"></i>
-            </div>
-            {editLinkedin && renderSocialEdit(SECTIONS.linkedin)}
-          </div>
-        )}
-        {!allowEdit ? (
-          author.twitter && (
-            <a
-              className={css(styles.link)}
-              href={author.twitter}
-              target="_blank"
-            >
-              <div className={css(styles.socialMedia, styles.twitter)}>
-                <i className="fab fa-twitter"></i>
-              </div>
-            </a>
-          )
-        ) : (
-          <div
-            className={css(
-              styles.editSocial,
-              !author.twitter && styles.noSocial,
-              editTwitter && styles.fullOpacity
-            )}
-            ref={(ref) => (twitterRef = ref)}
-            data-tip={"Set Twitter Profile"}
-          >
-            <div
-              className={css(styles.socialMedia, styles.twitter)}
-              onClick={() => setEditTwitter(true)}
-            >
-              <i className="fab fa-twitter"></i>
-            </div>
-            {editTwitter && renderSocialEdit(SECTIONS.twitter)}
-          </div>
-        )}
-        {!allowEdit ? (
-          author.facebook && (
-            <a
-              className={css(styles.link)}
-              href={author.facebook}
-              target="_blank"
-            >
-              <div className={css(styles.socialMedia, styles.facebook)}>
-                <i className="fab fa-facebook-f"></i>
-              </div>
-            </a>
-          )
-        ) : (
-          <div
-            className={css(
-              styles.editSocial,
-              !author.facebook && styles.noSocial,
-              editFacebook && styles.fullOpacity
-            )}
-            ref={(ref) => (facebookRef = ref)}
-          >
-            <div
-              className={css(styles.socialMedia, styles.facebook)}
-              onClick={() => setEditFacebook(true)}
-              data-tip={"Set Facebook Profile"}
-            >
-              <i className="fab fa-facebook-f"></i>
-            </div>
-            {editFacebook && renderSocialEdit(SECTIONS.facebook)}
-          </div>
-        )}
-
-        <div
-          className={css(
-            styles.socialMedia,
-            styles.orcid,
-            authorOrcidId && styles.orcidAvailable
-          )}
-        >
-          {renderOrcid(true)}
-        </div>
-
+        {renderSocialMedia()}
+        {renderOrcid()}
         <span
           className={css(styles.socialMedia, styles.shareLink)}
           onClick={() => setOpenShareModal(true)}
@@ -941,19 +946,11 @@ const AuthorPage = (props) => {
     );
   };
 
-  const renderActionButtons = (view = {}) => {
-    const { mobile } = view;
+  const renderButtons = (view = {}) => {
     return (
-      <div
-        className={css(styles.userActions, mobile && styles.mobileUserActions)}
-      >
+      <div className={css(styles.userActions)}>
         {allowEdit && (
-          <div
-            className={css(
-              styles.editProfileButton,
-              mobile && styles.mobileEditProfileButton
-            )}
-          >
+          <div className={css(styles.editProfileButton)}>
             <Button
               label={() => (
                 <Fragment>
@@ -1001,6 +998,45 @@ const AuthorPage = (props) => {
             }}
           />
         )}
+      </div>
+    );
+  };
+
+  const renderEducationSummary = () => {
+    if (eduSummary) {
+      return (
+        <div className={css(styles.educationSummaryContainer) + " clamp2"}>
+          {(author.headline || author.education) && (
+            <div className={css(styles.educationSummary) + " clamp2"}>
+              <i className={css(styles.icon) + " fas fa-graduation-cap"}></i>
+              {eduSummary}
+            </div>
+          )}
+        </div>
+      );
+    }
+  };
+
+  const renderDescription = () => {
+    return (
+      <div
+        className={css(
+          styles.description,
+          styles.editButtonContainer,
+          !author.description && styles.hidden
+        )}
+        onMouseEnter={() => onMouseEnter(SECTIONS.description)}
+        onMouseLeave={() => onMouseLeave(SECTIONS.description)}
+      >
+        {!author.description && allowEdit && (
+          <span
+            className={css(styles.addDescriptionText)}
+            onClick={() => openUserInfoModal()}
+          >
+            Add description
+          </span>
+        )}
+        <span property="description">{author.description}</span>
       </div>
     );
   };
@@ -1059,68 +1095,15 @@ const AuthorPage = (props) => {
               >
                 {author.first_name} {author.last_name}
               </h1>
-              {renderSocialMediaButtons({ mobile: true })}
+              {renderUserLinks()}
             </div>
-
+            {renderEducationSummary()}
             <div className={css(styles.reputationContainer)}>
-              {eduSummary && (
-                <div className={css(styles.extraInfoContainer) + " clamp2"}>
-                  {(author.headline || author.education) && (
-                    <div className={css(styles.extraInfo) + " clamp2"}>
-                      <i
-                        className={css(styles.icon) + " fas fa-graduation-cap"}
-                      ></i>
-                      {eduSummary}
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className={css(styles.flexContainer)}>
-                {renderReputation()}
-                {renderRSCBalance()}
-              </div>
+              {renderReputation()}
+              {renderRSCBalance()}
             </div>
-            {!editDescription ? (
-              <div
-                className={css(
-                  styles.description,
-                  styles.editButtonContainer,
-                  !author.description && styles.hidden
-                )}
-                onMouseEnter={() => onMouseEnter(SECTIONS.description)}
-                onMouseLeave={() => onMouseLeave(SECTIONS.description)}
-              >
-                {!author.description && allowEdit && (
-                  <span
-                    className={css(styles.addDescriptionText)}
-                    onClick={() => openUserInfoModal()}
-                  >
-                    Add description
-                  </span>
-                )}
-                <span property="description">{author.description}</span>
-              </div>
-            ) : (
-              allowEdit && (
-                <div className={css(styles.editDescriptionContainer)}>
-                  <textarea
-                    className={css(styles.descriptionTextarea)}
-                    value={description}
-                    onChange={onDescriptionChange}
-                    resize={false}
-                  />
-                  <div className={css(styles.actionContainer)}>
-                    {renderCancelButton(SECTIONS.description)}
-                    {renderSaveButton(SECTIONS.description, {})}
-                  </div>
-                </div>
-              )
-            )}
-            {renderActionButtons()}
-          </div>
-          <div className={css(styles.mobileActionRow)}>
-            {/* {renderSocialMediaButtons({ mobile: true })} */}
-            {renderActionButtons({ mobile: true })}
+            {renderDescription()}
+            {renderButtons()}
           </div>
         </div>
       </ComponentWrapper>
@@ -1183,7 +1166,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       margin: 0,
     },
-    // marginRight: 30,
   },
   moderatorButton: {
     display: "flex",
@@ -1234,12 +1216,14 @@ const styles = StyleSheet.create({
   },
   socialLinks: {
     display: "flex",
-    height: 35,
     position: "relative",
     justifyContent: "flex-end",
-    width: "30%",
+    width: "max-content",
+  },
+  mobileSocialLinks: {
+    display: "none",
     "@media only screen and (max-width: 767px)": {
-      margin: 0,
+      display: "flex",
       width: "max-content",
     },
   },
@@ -1249,12 +1233,11 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     padding: 0,
     margin: 0,
-    marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
       paddingRight: 0,
       justifyContent: "center",
-      marginTop: 16,
       textAlign: "center",
+      marginBottom: 15,
     },
   },
   nameLine: {
@@ -1262,13 +1245,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    "@media only screen and (min-width: 768px)": {
-      alignItems: "flex-start",
-    },
-    "@media only screen and (min-width: 1280px)": {
-      display: "flex",
-      alignItems: "center",
-      flexDirection: "row",
+    marginBottom: 10,
+    "@media only screen and (max-width: 768px)": {
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      marginTop: 15,
     },
   },
   orcidAvailable: {
@@ -1278,16 +1259,18 @@ const styles = StyleSheet.create({
       flexDirection: "column",
     },
   },
-  extraInfoContainer: {
+  educationSummaryContainer: {
     display: "flex",
     marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      // justifyContent: "flex-start",
       justifyContent: "center",
       alignItems: "center",
       marginBottom: 15,
     },
   },
-  extraInfo: {
+  educationSummary: {
     color: "#241F3A",
     opacity: 0.5,
     fontSize: 15,
@@ -1299,11 +1282,14 @@ const styles = StyleSheet.create({
     },
   },
   description: {
-    marginBottom: 16,
+    marginBottom: 15,
     justifyContent: "center",
     width: "100%",
     color: "#241F3A",
     lineHeight: 1.5,
+    "@media only screen and (max-width: 440px)": {
+      justifyContent: "flex-start",
+    },
   },
   column: {
     display: "flex",
@@ -1319,7 +1305,7 @@ const styles = StyleSheet.create({
   socialMedia: {
     width: 35,
     height: 35,
-    borderRadius: "100%",
+    borderRadius: "50%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -1328,6 +1314,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     textDecorations: "none",
+    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },
   linkedin: {
     background: "#0077B5",
@@ -1354,7 +1341,6 @@ const styles = StyleSheet.create({
     display: "flex",
     position: "relative",
     width: "fit-content",
-    paddingRight: 20,
     "@media only screen and (max-width: 767px)": {
       width: "unset",
       paddingRight: 0,
@@ -1499,6 +1485,10 @@ const styles = StyleSheet.create({
   },
   editSocial: {
     position: "relative",
+    ":hover": {
+      borderRadius: "50%",
+      boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    },
   },
   socialInputContainer: {
     display: "flex",
@@ -1553,7 +1543,7 @@ const styles = StyleSheet.create({
   },
   border: {},
   profilePictureHover: {
-    width: 115,
+    width: 120,
     height: 60,
     borderRadius: "0 0 100px 100px",
     display: "flex",
@@ -1565,20 +1555,17 @@ const styles = StyleSheet.create({
     color: "#fff",
     bottom: 0,
   },
-  flexContainer: {
+  reputationContainer: {
     display: "flex",
     alignItems: "center",
     width: "100%",
+    marginBottom: 15,
     "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
+      justifyContent: "center",
     },
-  },
-  reputationContainer: {
-    marginBottom: 16,
-    "@media only screen and (max-width: 767px)": {
-      display: "flex",
+    "@media only screen and (max-width: 440px)": {
       flexDirection: "column",
-      alignItems: "center",
+      alignItems: "flex-start",
     },
   },
   reputation: {
@@ -1589,6 +1576,9 @@ const styles = StyleSheet.create({
     marginRight: 15,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
+    },
+    "@media only screen and (max-width: 440px)": {
+      marginBottom: 15,
     },
   },
   reputationTitle: {
@@ -1647,8 +1637,6 @@ const styles = StyleSheet.create({
     height: 35,
     width: 35,
     objectFit: "contain",
-    marginLeft: 5,
-    marginRight: 5,
   },
   hidden: {
     display: "none",
@@ -1671,28 +1659,16 @@ const styles = StyleSheet.create({
   userActions: {
     display: "flex",
     "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
-  },
-  mobileUserActions: {
-    display: "none",
-    "@media only screen and (max-width: 767px)": {
-      display: "block",
+      flexDirection: "column",
       width: "100%",
     },
   },
   editProfileButton: {
     marginRight: 15,
     "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
-  },
-  mobileEditProfileButton: {
-    display: "none",
-    "@media only screen and (max-width: 767px)": {
       display: "flex",
       width: "100%",
-      marginTop: 20,
+      margin: 0,
     },
   },
   editButtonCustom: {
