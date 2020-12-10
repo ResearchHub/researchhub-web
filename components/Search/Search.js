@@ -4,7 +4,7 @@ import ReactPlaceholder from "react-placeholder";
 import InfiniteScroll from "react-infinite-scroller";
 
 import SearchEntry from "./SearchEntry";
-import HubSearchResult from "./HubSearchResult";
+import HubSearchResult from "../HubSearchResult";
 import Loader from "~/components/Loader/Loader";
 
 // Config
@@ -134,10 +134,13 @@ export default class Search extends Component {
     if (results.length === 0 || universityCount === results.length) {
       return (
         <div className={css(styles.emptyResults)}>
-          <h2 className={css(styles.emptyTitle)}>
+          <h3 className={css(styles.emptyTitle)}>
             We can't find what you're looking for! Please try another search.
-          </h2>
-          <RHLogo iconStyle={styles.logo} />
+          </h3>
+          <img
+            src={"/static/icons/search-empty.png"}
+            className={css(styles.logo)}
+          />
         </div>
       );
     }
@@ -147,22 +150,26 @@ export default class Search extends Component {
 
   getResultComponent = (result, index, firstOfItsType) => {
     const indexName = result.meta.index;
-
     switch (indexName) {
-      // case "author":
-      //   return (
-      //     <SearchEntry
-      //       indexName={indexName}
-      //       result={result}
-      //       clearSearch={this.clearQuery}
-      //     />
-      //   );
+      case "author":
+        return (
+          <SearchEntry
+            indexName={indexName}
+            result={result}
+            clearSearch={this.clearQuery}
+          />
+        );
       case "crossref_paper":
       case "paper":
+        const hit = {
+          ...result,
+          __highlightResult: result.meta._highlightResult,
+        };
+
         return (
           <SearchEntry
             indexName={"paper"}
-            result={result}
+            result={hit}
             clearSearch={this.clearQuery}
             // index={index}
             firstOfItsType={firstOfItsType}
@@ -341,15 +348,17 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid rgb(235, 235, 235)",
   },
   emptyResults: {
-    textAlign: "center",
-    letterSpacing: 0.7,
+    padding: "15px 0",
     display: "flex",
-    flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
   },
   emptyTitle: {
     fontWeight: 400,
-    fontSize: 22,
+    fontSize: 18,
+  },
+  logo: {
+    height: 60,
   },
   searchResultPaper: {
     border: "none",

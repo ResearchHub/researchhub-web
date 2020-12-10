@@ -23,7 +23,7 @@ import InviteToHubModal from "../components/modal/InviteToHubModal";
 import LoginModal from "../components/modal/LoginModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
-import Search from "./Search";
+import Search from "./Search/Search";
 import TransactionModal from "../components/modal/TransactionModal";
 import UploadPaperModal from "../components/modal/UploadPaperModal";
 import Notification from "./Notifications/Notification";
