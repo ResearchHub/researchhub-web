@@ -26,6 +26,8 @@ import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserInfoModal from "~/components/modal/UserInfoModal";
 import Button from "~/components/Form/Button";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
+import Loader from "~/components/Loader/Loader";
+
 import "~/components/Paper/CitationCard.css";
 
 // Config
@@ -67,6 +69,7 @@ const AuthorPage = (props) => {
 
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [mobileView, setMobileView] = useState(false);
+
   // Summary constants
   const [summaries, setSummaries] = useState([]);
   const [summaryCount, setSummaryCount] = useState(0);
@@ -77,6 +80,7 @@ const AuthorPage = (props) => {
   const [takeawayCount, setTakeawayCount] = useState(0);
   const [takeawayNext, setTakeawayNext] = useState(null);
   const [takeawaysFetched, setTakeawaysFetched] = useState(false);
+  const [isSuspended, setIsSuspended] = useState(null);
 
   let facebookRef;
   let linkedinRef;
@@ -107,14 +111,16 @@ const AuthorPage = (props) => {
         AuthorActions.getAuthor({ authorId: router.query.authorId })
       );
     }
-    let authored = fetchAuthoredPapers();
-    let discussions = fetchUserDiscussions();
-    let contributions = fetchUserContributions();
-    let promotions = fetchUserPromotions();
-    let transactions = fetchUserTransactions();
-    let refetch = refetchAuthor();
-    let summaries = fetchSummaries();
-    let takeaways = fetchKeyTakeaways();
+    const authored = fetchAuthoredPapers();
+    const discussions = fetchUserDiscussions();
+    const contributions = fetchUserContributions();
+    const promotions = fetchUserPromotions();
+    const transactions = fetchUserTransactions();
+    const refetch = refetchAuthor();
+    const summaries = fetchSummaries();
+    const takeaways = fetchKeyTakeaways();
+    const suspendedState = fetchAuthorSuspended();
+
     Promise.all([
       takeaways,
       summaries,
@@ -123,6 +129,7 @@ const AuthorPage = (props) => {
       contributions,
       promotions,
       transactions,
+      suspendedState,
       refetch,
     ]).then((_) => {
       setFetching(false);
@@ -164,6 +171,22 @@ const AuthorPage = (props) => {
     setPrevProps(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
 
+  function fetchAuthorSuspended() {
+    return fetch(
+      API.USER({ authorId: router.query.authorId }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        const authorUser = res.results[0];
+        if (authorUser) {
+          setIsSuspended(authorUser.is_suspended);
+        } else {
+          setIsSuspended(true);
+        }
+      });
+  }
   function updateDimensions() {
     if (window.innerWidth < 968) {
       setMobileView(true);
@@ -734,17 +757,30 @@ const AuthorPage = (props) => {
 
   const renderOrcid = (mobile = false) => {
     if (allowEdit) {
-      return authorOrcidId
-        ? null
-        : !editName && (
-            <OrcidConnectButton
-              hostname={hostname}
-              refreshProfileOnSuccess={false}
-              customLabel={"Connect ORCiD"}
-              styles={styles.orcidButton}
-              iconButton={mobile}
-            />
-          );
+      return (
+        <OrcidConnectButton
+          hostname={hostname}
+          refreshProfileOnSuccess={false}
+          customLabel={"Connect ORCiD"}
+          styles={styles.orcidButton}
+          iconButton={mobile}
+        />
+      );
+    }
+
+    if (authorOrcidId) {
+      return (
+        <a
+          className={css(styles.link)}
+          target="_blank"
+          href={`https://orcid.org/${authorOrcidId}`}
+        >
+          <img
+            src="/static/icons/orcid.png"
+            className={css(styles.orcidLogo)}
+          />
+        </a>
+      );
     }
   };
 
@@ -768,6 +804,205 @@ const AuthorPage = (props) => {
         );
       }
     }
+  };
+
+  const renderReputation = () => {
+    return (
+      <div className={css(styles.reputation)}>
+        <span className={css(styles.icon)}>
+          <img
+            src={"/static/ResearchHubIcon.png"}
+            className={css(styles.rhIcon)}
+            alt={"reserachhub-icon"}
+          />
+        </span>
+        <div className={css(styles.reputationTitle)}>Lifetime Reputation:</div>
+        <div className={css(styles.amount)}>{props.author.reputation}</div>
+      </div>
+    );
+  };
+
+  const renderSocialMediaButtons = (view = {}) => {
+    const { mobile } = view;
+    return (
+      <div className={css(styles.socialLinks)}>
+        {!allowEdit ? (
+          author.linkedin && (
+            <a
+              className={css(styles.link)}
+              href={author.linkedin}
+              target="_blank"
+            >
+              <div className={css(styles.socialMedia, styles.linkedin)}>
+                <i className="fab fa-linkedin-in"></i>
+              </div>
+            </a>
+          )
+        ) : (
+          <div
+            className={css(
+              styles.editSocial,
+              !author.linkedin && styles.noSocial,
+              editLinkedin && styles.fullOpacity
+            )}
+            ref={(ref) => (linkedinRef = ref)}
+            data-tip={"Set LinkedIn Profile"}
+          >
+            <div
+              className={css(styles.socialMedia, styles.linkedin)}
+              onClick={() => setEditLinkedin(true)}
+            >
+              <i className="fab fa-linkedin-in"></i>
+            </div>
+            {editLinkedin && renderSocialEdit(SECTIONS.linkedin)}
+          </div>
+        )}
+        {!allowEdit ? (
+          author.twitter && (
+            <a
+              className={css(styles.link)}
+              href={author.twitter}
+              target="_blank"
+            >
+              <div className={css(styles.socialMedia, styles.twitter)}>
+                <i className="fab fa-twitter"></i>
+              </div>
+            </a>
+          )
+        ) : (
+          <div
+            className={css(
+              styles.editSocial,
+              !author.twitter && styles.noSocial,
+              editTwitter && styles.fullOpacity
+            )}
+            ref={(ref) => (twitterRef = ref)}
+            data-tip={"Set Twitter Profile"}
+          >
+            <div
+              className={css(styles.socialMedia, styles.twitter)}
+              onClick={() => setEditTwitter(true)}
+            >
+              <i className="fab fa-twitter"></i>
+            </div>
+            {editTwitter && renderSocialEdit(SECTIONS.twitter)}
+          </div>
+        )}
+        {!allowEdit ? (
+          author.facebook && (
+            <a
+              className={css(styles.link)}
+              href={author.facebook}
+              target="_blank"
+            >
+              <div className={css(styles.socialMedia, styles.facebook)}>
+                <i className="fab fa-facebook-f"></i>
+              </div>
+            </a>
+          )
+        ) : (
+          <div
+            className={css(
+              styles.editSocial,
+              !author.facebook && styles.noSocial,
+              editFacebook && styles.fullOpacity
+            )}
+            ref={(ref) => (facebookRef = ref)}
+          >
+            <div
+              className={css(styles.socialMedia, styles.facebook)}
+              onClick={() => setEditFacebook(true)}
+              data-tip={"Set Facebook Profile"}
+            >
+              <i className="fab fa-facebook-f"></i>
+            </div>
+            {editFacebook && renderSocialEdit(SECTIONS.facebook)}
+          </div>
+        )}
+
+        <div
+          className={css(
+            styles.socialMedia,
+            styles.orcid,
+            authorOrcidId && styles.orcidAvailable
+          )}
+        >
+          {renderOrcid(true)}
+        </div>
+
+        <span
+          className={css(styles.socialMedia, styles.shareLink)}
+          onClick={() => setOpenShareModal(true)}
+          data-tip={"Share Profile"}
+        >
+          <i className="far fa-link"></i>
+        </span>
+      </div>
+    );
+  };
+
+  const renderActionButtons = (view = {}) => {
+    const { mobile } = view;
+    return (
+      <div
+        className={css(styles.userActions, mobile && styles.mobileUserActions)}
+      >
+        {allowEdit && (
+          <div
+            className={css(
+              styles.editProfileButton,
+              mobile && styles.mobileEditProfileButton
+            )}
+          >
+            <Button
+              label={() => (
+                <Fragment>
+                  <i
+                    className="fas fa-edit"
+                    style={{ marginRight: 10, userSelect: "none" }}
+                  />
+                  Edit Profile
+                </Fragment>
+              )}
+              onClick={openUserInfoModal}
+              customButtonStyle={styles.editButtonCustom}
+              rippleClass={styles.rippleClass}
+            />
+          </div>
+        )}
+        {isModerator() && (
+          <ModeratorDeleteButton
+            containerStyle={styles.moderatorButton}
+            iconStyle={styles.moderatorIcon}
+            labelStyle={styles.moderatorLabel}
+            icon={
+              false ? (
+                " "
+              ) : isSuspended ? (
+                <i className="fas fa-user-plus" />
+              ) : (
+                <i className="fas fa-user-slash" />
+              )
+            }
+            label={
+              false ? (
+                <Loader loading={true} color={"#FFF"} size={15} />
+              ) : isSuspended ? (
+                "Reinstate User"
+              ) : (
+                "Ban User"
+              )
+            }
+            actionType={"user"}
+            metaData={{
+              authorId: router.query.authorId,
+              isSuspended,
+              setIsSuspended,
+            }}
+          />
+        )}
+      </div>
+    );
   };
 
   return (
@@ -816,35 +1051,15 @@ const AuthorPage = (props) => {
           </div>
           <div className={css(styles.profileInfo)}>
             <div className={css(styles.nameLine)}>
-              {!editName ? (
-                <Fragment>
-                  <h1
-                    className={css(
-                      styles.authorName,
-                      styles.editButtonContainer
-                    )}
-                    onMouseEnter={() => onMouseEnter(SECTIONS.name)}
-                    onMouseLeave={() => onMouseLeave(SECTIONS.name)}
-                    property="name"
-                  >
-                    {author.first_name} {author.last_name}
-                  </h1>
-                </Fragment>
-              ) : (
-                allowEdit && (
-                  <div className={css(styles.editDescriptionContainer)}>
-                    <input
-                      className={css(styles.nameInput)}
-                      value={name}
-                      onChange={onNameChange}
-                    />
-                    <div className={css(styles.actionContainer)}>
-                      {renderCancelButton(SECTIONS.name)}
-                      {renderSaveButton(SECTIONS.name, {})}
-                    </div>
-                  </div>
-                )
-              )}
+              <h1
+                className={css(styles.authorName, styles.editButtonContainer)}
+                onMouseEnter={() => onMouseEnter(SECTIONS.name)}
+                onMouseLeave={() => onMouseLeave(SECTIONS.name)}
+                property="name"
+              >
+                {author.first_name} {author.last_name}
+              </h1>
+              {renderSocialMediaButtons({ mobile: true })}
             </div>
 
             <div className={css(styles.reputationContainer)}>
@@ -860,22 +1075,10 @@ const AuthorPage = (props) => {
                   )}
                 </div>
               )}
-              <div className={css(styles.reputation)}>
-                <span className={css(styles.icon)}>
-                  <img
-                    src={"/static/ResearchHubIcon.png"}
-                    className={css(styles.rhIcon)}
-                    alt={"reserachhub-icon"}
-                  />
-                </span>
-                <div className={css(styles.reputationTitle)}>
-                  Lifetime Reputation:
-                </div>
-                <div className={css(styles.amount)}>
-                  {props.author.reputation}
-                </div>
+              <div className={css(styles.flexContainer)}>
+                {renderReputation()}
+                {renderRSCBalance()}
               </div>
-              {renderRSCBalance()}
             </div>
             {!editDescription ? (
               <div
@@ -913,174 +1116,11 @@ const AuthorPage = (props) => {
                 </div>
               )
             )}
+            {renderActionButtons()}
           </div>
-          <div className={css(styles.column)}>
-            <div className={css(styles.socialLinks)}>
-              {authorOrcidId && (
-                <a
-                  className={css(styles.link)}
-                  target="_blank"
-                  href={`https://orcid.org/${authorOrcidId}`}
-                >
-                  <img
-                    src="/static/icons/orcid.png"
-                    className={css(styles.orcidLogo)}
-                  />
-                </a>
-              )}
-              {!allowEdit ? (
-                author.linkedin && (
-                  <a
-                    className={css(styles.link)}
-                    href={author.linkedin}
-                    target="_blank"
-                  >
-                    <div className={css(styles.socialMedia, styles.linkedin)}>
-                      <i className="fab fa-linkedin-in"></i>
-                    </div>
-                  </a>
-                )
-              ) : (
-                <div
-                  className={css(
-                    styles.editSocial,
-                    !author.linkedin && styles.noSocial,
-                    editLinkedin && styles.fullOpacity
-                  )}
-                  ref={(ref) => (linkedinRef = ref)}
-                  data-tip={"Set LinkedIn Profile"}
-                >
-                  <div
-                    className={css(styles.socialMedia, styles.linkedin)}
-                    onClick={() => setEditLinkedin(true)}
-                  >
-                    <i className="fab fa-linkedin-in"></i>
-                  </div>
-                  {editLinkedin && renderSocialEdit(SECTIONS.linkedin)}
-                </div>
-              )}
-              {!allowEdit ? (
-                author.twitter && (
-                  <a
-                    className={css(styles.link)}
-                    href={author.twitter}
-                    target="_blank"
-                  >
-                    <div className={css(styles.socialMedia, styles.twitter)}>
-                      <i className="fab fa-twitter"></i>
-                    </div>
-                  </a>
-                )
-              ) : (
-                <div
-                  className={css(
-                    styles.editSocial,
-                    !author.twitter && styles.noSocial,
-                    editTwitter && styles.fullOpacity
-                  )}
-                  ref={(ref) => (twitterRef = ref)}
-                  data-tip={"Set Twitter Profile"}
-                >
-                  <div
-                    className={css(styles.socialMedia, styles.twitter)}
-                    onClick={() => setEditTwitter(true)}
-                  >
-                    <i className="fab fa-twitter"></i>
-                  </div>
-                  {editTwitter && renderSocialEdit(SECTIONS.twitter)}
-                </div>
-              )}
-              {!allowEdit ? (
-                author.facebook && (
-                  <a
-                    className={css(styles.link)}
-                    href={author.facebook}
-                    target="_blank"
-                  >
-                    <div className={css(styles.socialMedia, styles.facebook)}>
-                      <i className="fab fa-facebook-f"></i>
-                    </div>
-                  </a>
-                )
-              ) : (
-                <div
-                  className={css(
-                    styles.editSocial,
-                    !author.facebook && styles.noSocial,
-                    editFacebook && styles.fullOpacity
-                  )}
-                  ref={(ref) => (facebookRef = ref)}
-                >
-                  <div
-                    className={css(styles.socialMedia, styles.facebook)}
-                    onClick={() => setEditFacebook(true)}
-                    data-tip={"Set Facebook Profile"}
-                  >
-                    <i className="fab fa-facebook-f"></i>
-                  </div>
-                  {editFacebook && renderSocialEdit(SECTIONS.facebook)}
-                </div>
-              )}
-
-              <div
-                className={css(
-                  styles.socialMedia,
-                  styles.orcid,
-                  authorOrcidId && styles.orcidAvailable
-                )}
-              >
-                {renderOrcid(true)}
-              </div>
-
-              <span
-                className={css(styles.socialMedia, styles.shareLink)}
-                onClick={() => setOpenShareModal(true)}
-                data-tip={"Share Your Profile"}
-              >
-                <i className="far fa-share"></i>
-              </span>
-            </div>
-            <div className={css(styles.userActions)}>
-              {allowEdit && (
-                <div className={css(styles.editProfileButton)}>
-                  <Button
-                    label={() => (
-                      <Fragment>
-                        <i
-                          className="fas fa-edit"
-                          style={{ marginRight: 10, userSelect: "none" }}
-                        />
-                        Edit Profile
-                      </Fragment>
-                    )}
-                    onClick={openUserInfoModal}
-                    customButtonStyle={styles.editButtonCustom}
-                    rippleClass={styles.rippleClass}
-                  />
-                </div>
-              )}
-              {allowEdit && (
-                <div className={css(styles.mobileEditProfileButton)}>
-                  <Button
-                    label={"Edit Profile"}
-                    onClick={openUserInfoModal}
-                    customButtonStyle={styles.editButtonCustom}
-                    rippleClass={styles.editButtonCustom}
-                  />
-                </div>
-              )}
-              {isModerator() && (
-                <ModeratorDeleteButton
-                  containerStyle={styles.moderatorButton}
-                  iconStyle={styles.moderatorIcon}
-                  labelStyle={styles.moderatorLabel}
-                  icon={<i className="fas fa-ban" />}
-                  label={"Ban User"}
-                  actionType={"user"}
-                  metaData={{ authorId: router.query.authorId }}
-                />
-              )}
-            </div>
+          <div className={css(styles.mobileActionRow)}>
+            {/* {renderSocialMediaButtons({ mobile: true })} */}
+            {renderActionButtons({ mobile: true })}
           </div>
         </div>
       </ComponentWrapper>
@@ -1138,15 +1178,17 @@ const styles = StyleSheet.create({
   },
 
   profileInfo: {
-    width: "70%",
+    width: "100%",
     marginLeft: 30,
-    marginRight: 30,
+    "@media only screen and (max-width: 767px)": {
+      margin: 0,
+    },
+    // marginRight: 30,
   },
   moderatorButton: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
     fontWeight: 400,
     fontSize: 16,
     height: 35,
@@ -1167,6 +1209,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
       height: 40,
+      marginTop: 10,
     },
   },
   moderatorIcon: {
@@ -1217,7 +1260,8 @@ const styles = StyleSheet.create({
   nameLine: {
     display: "flex",
     alignItems: "center",
-    flexDirection: "column",
+    justifyContent: "space-between",
+    width: "100%",
     "@media only screen and (min-width: 768px)": {
       alignItems: "flex-start",
     },
@@ -1305,6 +1349,7 @@ const styles = StyleSheet.create({
   link: {
     textDecoration: "None",
   },
+
   editButtonContainer: {
     display: "flex",
     position: "relative",
@@ -1520,6 +1565,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     bottom: 0,
   },
+  flexContainer: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+    },
+  },
   reputationContainer: {
     marginBottom: 16,
     "@media only screen and (max-width: 767px)": {
@@ -1533,6 +1586,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     color: "#241F3A",
+    marginRight: 15,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
     },
@@ -1548,7 +1602,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     color: "#241F3A",
-    marginTop: 10,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
     },
@@ -1566,7 +1619,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 20,
     marginRight: 5,
-    paddingTop: 2,
     display: "flex",
     alignItems: "center",
   },
@@ -1575,7 +1627,7 @@ const styles = StyleSheet.create({
     paddingLeft: 1.5,
   },
   rscIcon: {
-    width: 16,
+    width: 18,
   },
   orcidButton: {
     width: 180,
@@ -1617,22 +1669,30 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   userActions: {
+    display: "flex",
     "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  mobileUserActions: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "block",
       width: "100%",
     },
   },
   editProfileButton: {
-    marginTop: 20,
+    marginRight: 15,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
   mobileEditProfileButton: {
-    marginTop: 20,
     display: "none",
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       width: "100%",
+      marginTop: 20,
     },
   },
   editButtonCustom: {
@@ -1642,6 +1702,11 @@ const styles = StyleSheet.create({
       height: 40,
       width: "100%",
       minWidth: "100%",
+    },
+  },
+  rippleClass: {
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
     },
   },
   mobileEditButtonCustom: {},
