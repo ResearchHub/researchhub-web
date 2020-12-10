@@ -969,10 +969,8 @@ const AuthorPage = (props) => {
         className={css(
           styles.description,
           styles.editButtonContainer,
-          !author.description && styles.hidden
+          !author.description && styles.defaultDescription
         )}
-        onMouseEnter={() => onMouseEnter(SECTIONS.description)}
-        onMouseLeave={() => onMouseLeave(SECTIONS.description)}
       >
         {!author.description && allowEdit && (
           <span
@@ -982,7 +980,11 @@ const AuthorPage = (props) => {
             Add description
           </span>
         )}
-        <span property="description">{author.description}</span>
+        <span property="description">
+          {author.description
+            ? author.description
+            : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
+        </span>
       </div>
     );
   };
@@ -1035,8 +1037,6 @@ const AuthorPage = (props) => {
             <div className={css(styles.nameLine)}>
               <h1
                 className={css(styles.authorName, styles.editButtonContainer)}
-                onMouseEnter={() => onMouseEnter(SECTIONS.name)}
-                onMouseLeave={() => onMouseLeave(SECTIONS.name)}
                 property="name"
               >
                 {author.first_name} {author.last_name}
@@ -1236,6 +1236,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 440px)": {
       justifyContent: "flex-start",
     },
+  },
+  defaultDescription: {
+    fontStyle: "italic",
   },
   column: {
     display: "flex",
