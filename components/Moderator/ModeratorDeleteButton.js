@@ -87,14 +87,8 @@ const ModeratorDeleteButton = (props) => {
           },
         });
       case "user":
-        text = "Are you sure you want to remove this user?";
-        return alert.show({
-          text,
-          buttonText: "Remove",
-          onClick: () => {
-            return handleUserDelete();
-          },
-        });
+        return handleUserDelete();
+
       default:
         return null;
     }
@@ -172,8 +166,16 @@ const ModeratorDeleteButton = (props) => {
   const handleUserDelete = () => {
     showLoader();
     const { isSuspended } = metaData;
-
-    return isSuspended ? reinstateUser() : removeUser();
+    const text = `Are you sure you want to ${
+      isSuspended ? "reinstate" : "remove"
+    } this user?`;
+    return alert.show({
+      text,
+      buttonText: isSuspended ? "Reinstate" : "Remove",
+      onClick: () => {
+        return isSuspended ? reinstateUser() : removeUser();
+      },
+    });
   };
 
   const removeUser = () => {
