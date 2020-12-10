@@ -61,13 +61,14 @@ const prepURL = (url, params) => {
 
 const routes = (BASE_URL) => {
   return {
-    USER: ({ userId, route, referralCode, invitedBy, page }) => {
+    USER: ({ userId, authorId, route, referralCode, invitedBy, page }) => {
       let url = BASE_URL + "user/";
 
       let params = {
         querystring: {
           referral_code: referralCode,
           invited_by: invitedBy,
+          author_profile: authorId,
           page,
         },
         rest: {

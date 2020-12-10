@@ -16,10 +16,17 @@ const UserStateBanner = (props) => {
 
   useEffect(() => {
     determineBanner();
-  }, [props.auth.isLoggedIn, props.user]);
+  }, [
+    props.auth.isLoggedIn,
+    props.user,
+    props.user.is_suspended,
+    props.user.probable_spammer,
+  ]);
 
   const determineBanner = () => {
     const { user } = props.auth;
+    console.log("user", user);
+
     if (props.auth.isLoggedIn) {
       if (user.is_suspended || user.probable_spammer) {
         return setShowBanner(true);

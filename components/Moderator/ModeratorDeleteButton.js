@@ -6,6 +6,8 @@ import { useAlert } from "react-alert";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+import { AuthorActions } from "~/redux/author";
+import { AuthActions } from "~/redux/auth";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -16,7 +18,7 @@ import { doesNotExist } from "~/config/utils";
 
 const ModeratorDeleteButton = (props) => {
   const alert = useAlert();
-  let {
+  const {
     isModerator,
     containerStyle,
     icon,
@@ -27,14 +29,15 @@ const ModeratorDeleteButton = (props) => {
     user,
     authorId,
     onAction,
+    metaData,
   } = props;
 
-  let containerClass = [
+  const containerClass = [
     styles.buttonContainer,
     containerStyle && containerStyle,
   ];
-  let iconClass = [styles.icon, iconStyle && iconStyle];
-  let labelClass = [styles.label, labelStyle && labelStyle];
+  const iconClass = [styles.icon, iconStyle && iconStyle];
+  const labelClass = [styles.label, labelStyle && labelStyle];
 
   const performAction = () => {
     let type = props.actionType;
@@ -89,7 +92,7 @@ const ModeratorDeleteButton = (props) => {
           text,
           buttonText: "Remove",
           onClick: () => {
-            return deleteUser();
+            return handleUserDelete();
           },
         });
       default:
@@ -166,18 +169,60 @@ const ModeratorDeleteButton = (props) => {
   /**
    * Used to delete users
    */
-  const deleteUser = () => {
-    let { authorId } = props.metaData;
+  const handleUserDelete = () => {
     showLoader();
-    let param = {
-      authorId: authorId,
-    };
-    fetch(API.USER({ route: "censor" }), API.POST_CONFIG(param))
+    const { isSuspended } = metaData;
+
+    return isSuspended ? reinstateUser() : removeUser();
+  };
+
+  const removeUser = () => {
+    const { authorId, setIsSuspended } = metaData;
+    const { auth, updateUser } = props;
+
+    fetch(
+      API.USER({ route: "censor" }),
+      API.POST_CONFIG({ authorId: authorId })
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        setIsSuspended(true);
+        if (auth.user.author_profile.id === authorId) {
+          updateUser({
+            ...auth.user,
+            is_suspended: true,
+            probable_spammer: true,
+          });
+        }
         showSucessMessage("User Successfully Removed.");
         props.onRemove && props.onRemove();
+      })
+      .catch((err) => {
+        let message = "Something went wrong";
+        if (err.message.detail) {
+          message = err.message.detail;
+        }
+        showErrorMessage(message);
+      });
+  };
+
+  const reinstateUser = () => {
+    const { authorId, setIsSuspended } = metaData;
+    const { auth, updateUser } = props;
+
+    fetch(
+      API.USER({ route: "reinstate" }),
+      API.POST_CONFIG({ author_id: authorId })
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setIsSuspended(false);
+        if (auth.user.author_profile.id === authorId) {
+          updateUser({ ...res });
+        }
+        showSucessMessage("User Successfully Reinstated.");
       })
       .catch((err) => {
         let message = "Something went wrong";
@@ -249,12 +294,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
+  auth: state.auth,
   isModerator: state.auth.user.moderator,
 });
 
 const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  updateUser: AuthActions.updateUser,
 };
 
 export default connect(
