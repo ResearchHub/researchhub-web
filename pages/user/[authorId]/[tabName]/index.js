@@ -764,7 +764,7 @@ const AuthorPage = (props) => {
             styles.orcid,
             !authorOrcidId && styles.noSocial
           )}
-          data-tip={allowEdit && "Connect Orcid"}
+          data-tip={allowEdit ? "Connect Orcid" : null}
         >
           {allowEdit ? (
             <OrcidConnectButton
