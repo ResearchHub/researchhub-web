@@ -47,16 +47,15 @@ const AuthorPage = (props) => {
   const store = useStore();
   const { tabName } = router.query;
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
-
   const [fetching, setFetching] = useState(true);
+
+  // User External Links
   const [openShareModal, setOpenShareModal] = useState(false);
-  const [hoverName, setHoverName] = useState(false);
-  const [hoverDescription, setHoverDescription] = useState(false);
-  const [editName, setEditName] = useState(false);
-  const [editDescription, setEditDescription] = useState(false);
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editTwitter, setEditTwitter] = useState(false);
+
+  // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
   const [eduSummary, setEduSummary] = useState(
@@ -342,21 +341,13 @@ const AuthorPage = (props) => {
   }
 
   const onMouseEnter = (section) => {
-    if (section === SECTIONS.name) {
-      setHoverName(true);
-    } else if (section === SECTIONS.description) {
-      setHoverDescription(true);
-    } else if (section === SECTIONS.picture) {
+    if (section === SECTIONS.picture) {
       setHoverProfilePicture(true);
     }
   };
 
   const onMouseLeave = (section) => {
-    if (section === SECTIONS.name) {
-      setHoverName(false);
-    } else if (section === SECTIONS.description) {
-      setHoverDescription(false);
-    } else if (section === SECTIONS.picture) {
+    if (section === SECTIONS.picture) {
       setHoverProfilePicture(false);
     }
   };
@@ -577,41 +568,6 @@ const AuthorPage = (props) => {
     );
   };
 
-  const renderEditButton = (action) => {
-    return (
-      <div className={css(styles.editButton)} onClick={action}>
-        <i className="fas fa-edit"></i>
-      </div>
-    );
-  };
-
-  const onDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
-
-  const onNameChange = (e) => {
-    setName(e.target.value);
-  };
-
-  const renderCancelButton = (section) => {
-    let action = null;
-
-    if (section === SECTIONS.name) {
-      action = () => setEditName(false);
-    } else if (section === SECTIONS.description) {
-      action = () => setEditDescription(false);
-    }
-
-    return (
-      <button
-        className={css(styles.button, styles.cancelButton)}
-        onClick={action}
-      >
-        Cancel
-      </button>
-    );
-  };
-
   const renderSaveButton = (section, { picture }) => {
     let action = null;
 
@@ -771,10 +727,6 @@ const AuthorPage = (props) => {
     return false;
   };
 
-  const openAvatarModal = () => {
-    setAvatarUploadIsOpen(true);
-  };
-
   const openUserInfoModal = () => {
     props.openUserInfoModal(true);
   };
@@ -805,16 +757,16 @@ const AuthorPage = (props) => {
         </a>
       );
     } else {
-      if (allowEdit) {
-        return (
-          <div
-            className={css(
-              styles.socialMedia,
-              styles.orcid,
-              !authorOrcidId && styles.noSocial
-            )}
-            data-tip={"Connect Orcid"}
-          >
+      return (
+        <div
+          className={css(
+            styles.socialMedia,
+            styles.orcid,
+            !authorOrcidId && styles.noSocial
+          )}
+          data-tip={allowEdit && "Connect Orcid"}
+        >
+          {allowEdit ? (
             <OrcidConnectButton
               hostname={hostname}
               refreshProfileOnSuccess={false}
@@ -822,20 +774,14 @@ const AuthorPage = (props) => {
               styles={styles.orcidButton}
               iconButton={true}
             />
-          </div>
-        );
-      } else {
-        return (
-          <div
-            className={css(styles.socialMedia, styles.orcid, styles.noSocial)}
-          >
+          ) : (
             <img
               src="/static/icons/orcid.png"
               className={css(styles.orcidLogo)}
             />
-          </div>
-        );
-      }
+          )}
+        </div>
+      );
     }
   };
 
@@ -1487,7 +1433,6 @@ const styles = StyleSheet.create({
     position: "relative",
     ":hover": {
       borderRadius: "50%",
-      boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
     },
   },
   socialInputContainer: {
