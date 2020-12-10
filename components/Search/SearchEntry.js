@@ -7,11 +7,11 @@ import Router from "next/router";
 import { MessageActions } from "~/redux/message";
 
 // Components
-import University from "./University";
+import University from "~/components/University";
 import AuthorAvatar from "~/components/AuthorAvatar";
 
 // Config
-import colors from "../config/themes/colors";
+import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
 import { formatDateStandard, formatPaperSlug } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
