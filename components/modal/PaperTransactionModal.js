@@ -318,7 +318,9 @@ class PaperTransactionModal extends React.Component {
               : null,
             event_properties: {
               interaction: "Off-chain Purchase",
-              paper: paperId,
+              object_id: paperId,
+              content_type: content_type,
+              amount: amount,
             },
           };
           sendAmpEvent(payload);
