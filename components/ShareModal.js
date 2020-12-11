@@ -30,9 +30,6 @@ const ShareModal = (props) => {
         message={copySuccessMessage}
         containerStyle={styles.inputStyle}
       />
-      <div className={css(styles.logoContainer)}>
-        <RHLogo iconStyle={styles.logo} />
-      </div>
     </BaseModal>
   );
 };
@@ -142,12 +139,13 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   logo: {
-    height: 40,
-    marginBottom: 20,
+    height: 30,
     userSelect: "none",
   },
   inputStyle: {
+    marginTop: 30,
     paddingRight: 80,
+    width: 400,
     "@media only screen and (max-width: 665px)": {
       width: 360,
     },
