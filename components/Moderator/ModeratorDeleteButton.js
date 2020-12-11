@@ -164,7 +164,6 @@ const ModeratorDeleteButton = (props) => {
    * Used to delete users
    */
   const handleUserDelete = () => {
-    showLoader();
     const { isSuspended } = metaData;
     const text = `Are you sure you want to ${
       isSuspended ? "reinstate" : "remove"
@@ -173,6 +172,7 @@ const ModeratorDeleteButton = (props) => {
       text,
       buttonText: isSuspended ? "Reinstate" : "Remove",
       onClick: () => {
+        showLoader();
         return isSuspended ? reinstateUser() : removeUser();
       },
     });
