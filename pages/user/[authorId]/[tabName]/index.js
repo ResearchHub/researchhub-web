@@ -183,7 +183,7 @@ const AuthorPage = (props) => {
   });
 
   useEffect(() => {
-    // setFetching(true);
+    setFetching(true);
     async function refetchAuthor() {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
@@ -919,7 +919,7 @@ const AuthorPage = (props) => {
             iconStyle={styles.moderatorIcon}
             labelStyle={styles.moderatorLabel}
             icon={
-              false ? (
+              fetching ? (
                 " "
               ) : isSuspended ? (
                 <i className="fas fa-user-plus" />
@@ -928,7 +928,7 @@ const AuthorPage = (props) => {
               )
             }
             label={
-              false ? (
+              fetching ? (
                 <Loader loading={true} color={"#FFF"} size={15} />
               ) : isSuspended ? (
                 "Reinstate User"
