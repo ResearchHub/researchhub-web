@@ -317,7 +317,7 @@ class PaperTransactionModal extends React.Component {
               ? this.props.auth.user.id && this.props.auth.user.id
               : null,
             event_properties: {
-              interaction: "Off-chain Purchase",
+              interaction: purchase_method,
               object_id: paperId,
               content_type: content_type,
               amount: amount,
