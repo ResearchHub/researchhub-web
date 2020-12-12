@@ -150,7 +150,7 @@ class SearchEntry extends React.Component {
   };
 
   renderMetaDataOne = () => {
-    const { indexName, result } = this.props;
+    const { indexName, result, query } = this.props;
 
     switch (indexName) {
       case "author":
@@ -167,7 +167,7 @@ class SearchEntry extends React.Component {
       case "paper":
         return (
           <span className={css(styles.abstract) + " clamp2"}>
-            <Highlight result={result} attribute={"abstract"} />
+            <Highlight result={result} attribute={"abstract"} search={query} />
           </span>
         );
       default:
@@ -269,9 +269,6 @@ class SearchEntry extends React.Component {
 
   render() {
     const { indexName, result, hideBullets, firstOfItsType } = this.props;
-    const { tagline, plainText } = result;
-    let isPaper = indexName === "paper";
-    let isDisc = indexName === "discussion_thread";
 
     return (
       <Fragment>
@@ -280,6 +277,7 @@ class SearchEntry extends React.Component {
           key={`${indexName}-${result.id}`}
           className={css(
             styles.searchEntryCard,
+            indexName === "author" && styles.authorEntryCard,
             hideBullets && styles.customStyles
           )}
           onClick={this.handleClick}
@@ -297,16 +295,6 @@ class SearchEntry extends React.Component {
             className={css(
               styles.column,
               styles.mid,
-              isPaper && tagline
-                ? tagline.length >= 100
-                  ? styles.mobilePadding
-                  : styles.spaced
-                : null,
-              isDisc && plainText
-                ? plainText.length >= 100
-                  ? styles.mobilePadding
-                  : styles.spaced
-                : null,
               hideBullets && styles.fullWidth
             )}
           >
@@ -340,6 +328,9 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
+  },
+  authorEntryCard: {
+    minHeight: 80,
   },
   customStyles: {
     border: "1px solid #EDEDED",
@@ -444,17 +435,21 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   avatar: {
-    height: 50,
-    width: 50,
-    borderRadius: 27.5,
+    height: 40,
+    width: 40,
+    borderRadius: "50%",
     objectFit: "contain",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },
   defaultAvatar: {
     color: "#aaa",
-    fontSize: 50,
+    fontSize: 40,
+    borderRadius: "50%",
+    boxShadow: "unset",
+    border: "1px solid #FAFAFA",
   },
   indexTag: {
     position: "absolute",
