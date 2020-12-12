@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Router from "next/router";
+import "./algolia.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -9,10 +10,10 @@ import { MessageActions } from "~/redux/message";
 // Components
 import University from "~/components/University";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import Highlight from "~/components/Search/Highlight";
-
+// import { Highlight } from "react-instantsearch-dom";
+import Highlight from "./AlgoliaHighlight";
 // Config
-import colors from "../../config/themes/colors";
+import colors, { bannerColor } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import {
   formatDateStandard,
@@ -49,16 +50,22 @@ class SearchEntry extends React.Component {
    * We want to take the user to the appropriate page when they click a search result
    */
   handleClick = () => {
-    const { indexName, result, clearSearch, onClickCallBack } = this.props;
-    const { id, slug, paper } = result;
-    const paperSlug = slug ? slug : formatPaperSlug(result.title);
+    let { indexName, result, clearSearch, onClickCallBack } = this.props;
+    let { id, slug } = result;
+    let paperSlug = slug ? slug : formatPaperSlug(result.title);
     clearSearch && clearSearch();
     if (indexName === "author") {
       Router.push("/user/[authorId]/[tabName]", `/user/${id}/contributions`);
     } else if (indexName === "paper") {
       Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
+    } else if (indexName === "discussion_thread") {
+      let { paper } = result;
+      Router.push(
+        "/paper/[paperId]/[paperName]/[discussionThreadId]",
+        `/paper/${paper}/${paperSlug}/${id}`
+      );
     }
-    onClickCallBack && onClickCallBack();
+    setTimeout(() => onClickCallBack && onClickCallBack(), 400);
   };
 
   parseTitleHighlight = (highlight, key) => {
@@ -78,124 +85,136 @@ class SearchEntry extends React.Component {
     return formatDateStandard(transformDate(date));
   };
 
-  // transformAuthors = () => {
-  //   const { result } = this.props;
-  //   const { authors, meta } = result;
-  //   if (result.meta.highlight && result.meta.highlight.authors) {
-  //     return (
-  //       <div className={css(styles.authors) + " clamp1"}>
-  //         {"by "}
-  //         {this.parseTitleHighlight(result.meta.highlight, "authors")}
-  //       </div>
-  //     );
-  //   } else {
-  //     return (
-  //       <div className={css(styles.authors) + " clamp1"}>
-  //         {"by "}
-  //         {authors.map((author, i) => {
-  //           if (i !== authors.length - 1) {
-  //             return (
-  //               <span>
-  //                 <Highlight
-  //                   attribute={`authors[${i}]`}
-  //                   result
-  //                 />
-  //                 {", "}
-  //               </span>
-  //             );
-  //           } else {
-  //             return (
-  //               <Highlight
-  //                 attribute={`authors[${i}]`}
-  //                 result
-  //               />
-  //             );
-  //           }
-  //         })}
-  //       </div>
-  //     );
-  //   }
-  // };
+  transformAuthors = () => {
+    const { result } = this.props;
+    const { authors, meta } = result;
+
+    if (result.meta.highlight && result.meta.highlight.authors) {
+      return (
+        <div className={css(styles.authors)}>
+          {"by "}
+          {this.parseTitleHighlight(result.meta.highlight, "authors")}
+        </div>
+      );
+    } else {
+      return (
+        <div className={css(styles.authors) + " clamp1"}>
+          {"by "}
+          {authors.map((author, i) => {
+            if (i !== authors.length - 1) {
+              return (
+                <span>
+                  <Highlight
+                    attribute={`authors[${i}]`}
+                    tagName={"span"}
+                    hit={result}
+                  />
+                  {", "}
+                </span>
+              );
+            } else {
+              return (
+                <Highlight
+                  attribute={`authors[${i}]`}
+                  tagName={"span"}
+                  hit={result}
+                />
+              );
+            }
+          })}
+        </div>
+      );
+    }
+  };
 
   renderMainText = () => {
     const { indexName, result } = this.props;
     const { authors } = result;
 
-    switch (indexName) {
-      case "author":
-        return (
-          <Fragment>
-            <span className={css(styles.first_name)}>
-              <Highlight result={result} attribute={"first_name"} />
-            </span>
-            <Highlight result={result} attribute={"last_name"} />
-          </Fragment>
-        );
-      case "paper":
-        return (
-          <span>
-            <span className={css(styles.paperTitle) + " clamp2"}>
-              <Highlight result={result} attribute={"title"} />
-            </span>
-            {authors && authors.length > 0 ? (
-              <Highlight result={result} attribute={"authors"} />
-            ) : (
-              <div className={css(styles.authors)}>No attributed author</div>
-            )}
+    if (indexName === "author") {
+      return (
+        <Fragment>
+          <span className={css(styles.first_name)}>
+            <Highlight tagName={"span"} attribute={"first_name"} hit={result} />
           </span>
-        );
-      default:
-        return null;
+          <Highlight tagName={"span"} attribute={"last_name"} hit={result} />
+        </Fragment>
+      );
+    } else if (indexName === "paper") {
+      return (
+        <span>
+          <span className={css(styles.paperTitle) + " clamp2"}>
+            <Highlight tagName={"span"} attribute={"title"} hit={result} />
+          </span>
+          {authors && authors.length > 0 ? (
+            this.transformAuthors()
+          ) : (
+            <div className={css(styles.authors)}>No attributed author</div>
+          )}
+        </span>
+      );
     }
   };
 
   renderMetaDataOne = () => {
     const { indexName, result } = this.props;
 
-    switch (indexName) {
-      case "author":
-        const userSummary = createUserSummary(result);
+    if (indexName === "author") {
+      const userSummary = createUserSummary(result);
 
-        if (userSummary) {
-          return (
-            <span className={css(styles.userHeadline) + " clamp1"}>
-              {userSummary}
-            </span>
-          );
-        }
-        break;
-      case "paper":
+      if (userSummary) {
         return (
-          <span className={css(styles.abstract) + " clamp2"}>
-            <Highlight result={result} attribute={"abstract"} />
+          <span className={css(styles.userHeadline) + " clamp1"}>
+            {createUserSummary(result)}
           </span>
         );
-      default:
-        return null;
+      }
+    } else if (indexName === "paper") {
+      return (
+        <span className={css(styles.abstract) + " clamp2"}>
+          <Highlight tagName={"span"} attribute={"abstract"} hit={result} />
+          {/* {result.abstract} */}
+        </span>
+      );
     }
   };
 
   renderCount = () => {
-    const { indexName, result } = this.props;
-    if (indexName === "paper") {
-      const count =
+    let { indexName, result } = this.props;
+    if (indexName === "paper" || indexName === "discussion_thread") {
+      let count =
         indexName === "paper" ? result.discussion_count : result.commentCount;
       return (
         <div className={css(styles.discussion)}>
           <span className={css(styles.icon)}>{icons.chat}</span>
           <span className={css(styles.discussionCount)}>
-            <span className={css(styles.count)}>{count} </span>
-            {count > 1 ? "comments" : count === 0 ? "comments" : "comment"}
+            {indexName === "paper" ? (
+              <Fragment>
+                <span className={css(styles.count)}>
+                  {result.discussion_count}{" "}
+                </span>
+                {count > 1 ? "comments" : count === 0 ? "comments" : "comment"}
+              </Fragment>
+            ) : (
+              <Fragment>
+                <span className={css(styles.count)}>
+                  {result.commentCount}{" "}
+                </span>
+                {count > 1 ? "comments" : count === 0 ? "comments" : "comment"}
+              </Fragment>
+            )}
           </span>
         </div>
       );
+    } else {
+      return;
     }
   };
 
   renderBulletPoints = () => {
-    const { indexName, result } = this.props;
+    let { indexName, result } = this.props;
     if (indexName === "paper") {
-      const { hubs, paper_publish_date } = result;
+      let { hubs, paper_publish_date, uploaded_date } = result;
       return (
         <Fragment>
           <div className={css(styles.bullet)}>{this.renderCount()}</div>
@@ -216,9 +235,33 @@ class SearchEntry extends React.Component {
             <div className={css(styles.discussion)}>
               <span className={css(styles.icon)}>{icons.date}</span>
               <span className={css(styles.discussionCount)}>
-                {paper_publish_date
-                  ? this.convertDate(paper_publish_date)
+                {uploaded_date
+                  ? this.convertDate(uploaded_date)
                   : "No publish date"}
+              </span>
+            </div>
+          </div>
+        </Fragment>
+      );
+    } else if (indexName === "discussion_thread") {
+      let { createdBy, createdDate } = result;
+      let { firstName, lastName } = createdBy;
+      return (
+        <Fragment>
+          <div className={css(styles.bullet)}>{this.renderCount()}</div>
+          <div className={css(styles.bullet)}>
+            <div className={css(styles.discussion)}>
+              <span className={css(styles.icon)}>{icons.simpleUser}</span>
+              <span className={css(styles.discussionCount)}>
+                {`${firstName} ${lastName}`}
+              </span>
+            </div>
+          </div>
+          <div className={css(styles.bullet)}>
+            <div className={css(styles.discussion)}>
+              <span className={css(styles.icon)}>{icons.date}</span>
+              <span className={css(styles.discussionCount)}>
+                {createdDate && this.convertDate(createdDate)}
               </span>
             </div>
           </div>
@@ -269,7 +312,7 @@ class SearchEntry extends React.Component {
 
   render() {
     const { indexName, result, hideBullets, firstOfItsType } = this.props;
-    const { tagline, plainText } = result;
+    const { score, tagline, plainText } = result;
     let isPaper = indexName === "paper";
     let isDisc = indexName === "discussion_thread";
 
@@ -315,6 +358,9 @@ class SearchEntry extends React.Component {
               {this.renderMetaDataOne()}
             </div>
           </div>
+          {/* <div className={css(styles.indexTag)}>
+            {indexName === "discussion_thread" ? "disc." : indexName}
+          </div> */}
           {!hideBullets && (
             <div className={css(styles.column, styles.right)}>
               {this.renderBulletPoints()}
@@ -359,7 +405,7 @@ const styles = StyleSheet.create({
   },
   mid: {
     justifyContent: "center",
-    width: "75%",
+    width: "calc(100% * 0.7)",
     marginRight: 20,
     "@media only screen and (max-width: 1200px)": {
       width: "calc(100% - 50px)",
@@ -369,7 +415,7 @@ const styles = StyleSheet.create({
   right: {
     justifyContent: "space-between",
     alignItems: "flex-start",
-    "@media only screen and (max-width: 1300px)": {
+    "@media only screen and (max-width: 1200px)": {
       display: "none",
     },
   },
@@ -506,6 +552,7 @@ const styles = StyleSheet.create({
   icon: {
     minWidth: 20,
     maxWidth: 20,
+    // color: "#918F9B",
     color: colors.YELLOW(),
     fontSize: 14,
   },
@@ -523,7 +570,7 @@ const styles = StyleSheet.create({
   discussionCount: {
     color: colors.BLACK(1),
     marginLeft: 7,
-    fontSize: 13,
+    fontSize: 14,
     paddingBottom: 2,
   },
   count: {
