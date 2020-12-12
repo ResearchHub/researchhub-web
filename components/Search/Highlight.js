@@ -9,9 +9,9 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist } from "~/config/utils";
 
-const Highlight = ({ result, attribute }) => {
-  const { meta } = result;
-  const { highlight } = meta;
+const Highlight = (props) => {
+  const { result, attribute } = props;
+  const { highlight } = result.meta;
 
   const highlightSpan = formatHighlightByAttribute();
 
@@ -19,10 +19,11 @@ const Highlight = ({ result, attribute }) => {
     switch (attribute) {
       case "authors":
         return transformAuthors();
+      case "abstract":
+      // return transformAbstract();
       case "first_name":
       case "last_name":
       case "title":
-      case "abstract":
       default:
         return parseHighlight();
     }
@@ -35,6 +36,7 @@ const Highlight = ({ result, attribute }) => {
     )
       return result[attribute];
 
+    console.log("_text", _text);
     const text = _text ? _text : highlight[attribute][0];
     const parts = text.split(/(<em>[^<]+<\/em>)/);
     const parsedString = parts.map((part) => {
@@ -73,6 +75,18 @@ const Highlight = ({ result, attribute }) => {
         })}
       </div>
     );
+  }
+
+  function transformAbstract() {
+    let regex = new RegExp(props.search, "ig");
+    if (result.abstract) {
+      const abstract = result.abstract.replace(
+        regex,
+        `<em>${props.search}</em>`
+      );
+      return abstract ? parseHighlight(abstract) : result[attribute];
+    }
+    return result[attribute];
   }
 
   return highlightSpan ? highlightSpan : null;
