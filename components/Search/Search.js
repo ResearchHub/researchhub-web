@@ -146,6 +146,7 @@ export default class Search extends Component {
       result,
       clearSearch: this.clearQuery,
       firstOfItsType,
+      query: this.state.query,
     };
     switch (indexName) {
       case "author":
@@ -220,13 +221,15 @@ export default class Search extends Component {
               hasMore={this.state.next}
               loadMore={this.fetchNextPage}
               loader={
-                <ReactPlaceholder
-                  ready={false}
-                  showLoadingAnimation
-                  type="media"
-                  rows={4}
-                  color="#efefef"
-                />
+                <div style={{ marginTop: 15 }}>
+                  <ReactPlaceholder
+                    ready={false}
+                    showLoadingAnimation
+                    type="media"
+                    rows={4}
+                    color="#efefef"
+                  />
+                </div>
               }
               useWindow={false}
               getScrollParent={() => this.scrollParent}
@@ -290,21 +293,24 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 10,
     top: 60,
-    maxHeight: 400,
     left: "50%",
     transform: "translateX(-50%)",
     background: "#fff",
     overflow: "scroll",
+    overflowX: "hidden",
     padding: 16,
     boxSizing: "border-box",
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     minWidth: 400,
+    maxHeight: 400,
   },
+
   searchResult: {
     borderBottom: "1px solid rgb(235, 235, 235)",
   },
   emptyResults: {
     padding: "15px 0",
+    width: "100%",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
