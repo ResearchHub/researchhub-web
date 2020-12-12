@@ -35,7 +35,7 @@ export default class Search extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.showDropdown !== this.props.showDropdown) {
       this.setState({
-        showDropdown: this.props.showDropdown,
+        // showDropdown: this.props.showDropdown,
       });
     }
   }
@@ -47,14 +47,14 @@ export default class Search extends Component {
   }
 
   onSearchChange = (e) => {
-    clearTimeout(this.searchTimeout);
+    // clearTimeout(this.searchTimeout);
 
     const value = e.target.value;
 
     if (!value) {
       this.setState({
         showDropdown: false,
-        finished: true,
+        // finished: true,
         query: "",
       });
 
@@ -62,29 +62,25 @@ export default class Search extends Component {
     } else {
       this.setState({
         showDropdown: true,
-        finished: false,
+        // finished: false,
         query: value,
       });
     }
 
-    this.searchTimeout = setTimeout(() => {
-      const config = {
-        route: "all",
-      };
+    const config = { route: "all" };
 
-      // TODO: add pagination
-      // Params to the search for pagination would be page
-      fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((resp) => {
-          this.setState({
-            results: resp.results,
-            finished: true,
-            next: resp.next,
-          });
+    // TODO: add pagination
+    // Params to the search for pagination would be page
+    fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        this.setState({
+          results: resp.results,
+          // finished: true,
+          next: resp.next,
         });
-    }, 200);
+      });
   };
 
   fetchNextPage = () => {
@@ -105,33 +101,7 @@ export default class Search extends Component {
   };
 
   renderSearchResults = () => {
-    let universityCount = 0;
-    let prevType;
-    const results = this.state.results.map((result, index) => {
-      result.meta.index === "university" && universityCount++;
-      let firstOfItsType = prevType !== result.meta.index;
-      prevType = result.meta.index;
-
-      return (
-        <div
-          key={index}
-          className={css(
-            styles.searchResult,
-            result.meta.index === "university" && styles.hide
-          )}
-          onClick={() => {
-            this.dropdownTimeout = setTimeout(
-              this.setState({ showDropdown: false }),
-              500
-            );
-          }}
-        >
-          {this.getResultComponent(result, index, firstOfItsType)}
-        </div>
-      );
-    });
-
-    if (results.length === 0 || universityCount === results.length) {
+    if (this.state.results.length === 0) {
       return (
         <div className={css(styles.emptyResults)}>
           <h3 className={css(styles.emptyTitle)}>
@@ -145,49 +115,43 @@ export default class Search extends Component {
       );
     }
 
+    let prevType;
+    const results = this.state.results.map((result, index) => {
+      let firstOfItsType = prevType !== result.meta.index;
+      prevType = result.meta.index;
+
+      return (
+        <div
+          key={index}
+          className={css(styles.searchResult)}
+          onClick={() => {
+            this.dropdownTimeout = setTimeout(
+              this.setState({ showDropdown: false }),
+              500
+            );
+          }}
+        >
+          {this.getResultComponent(result, index, firstOfItsType)}
+        </div>
+      );
+    });
+
     return results;
   };
 
   getResultComponent = (result, index, firstOfItsType) => {
     const indexName = result.meta.index;
+    const props = {
+      indexName,
+      result,
+      clearSearch: this.clearQuery,
+      firstOfItsType,
+    };
     switch (indexName) {
       case "author":
-        return (
-          <SearchEntry
-            indexName={indexName}
-            result={result}
-            clearSearch={this.clearQuery}
-          />
-        );
       case "crossref_paper":
       case "paper":
-        const hit = {
-          ...result,
-          __highlightResult: result.meta._highlightResult,
-        };
-
-        return (
-          <SearchEntry
-            indexName={"paper"}
-            result={hit}
-            clearSearch={this.clearQuery}
-            // index={index}
-            firstOfItsType={firstOfItsType}
-          />
-        );
-      // case "discussion_thread":
-      //   let data = thread(result);
-      //   if (data.isPublic) {
-      //     data = this.populateThreadData(data, result);
-      //     data.meta = result.meta;
-      //     return (
-      //       <SearchEntry
-      //         indexName={indexName}
-      //         result={data}
-      //         clearSearch={this.clearQuery}
-      //       />
-      //     );
-      //   }
+        return <SearchEntry {...props} />;
       case "hub":
         return (
           <HubSearchResult
@@ -269,15 +233,7 @@ export default class Search extends Component {
               initialLoad={false}
               threshold={20}
             >
-              <ReactPlaceholder
-                ready={this.state.finished}
-                showLoadingAnimation
-                type="media"
-                rows={4}
-                color="#efefef"
-              >
-                {this.renderSearchResults()}
-              </ReactPlaceholder>
+              {this.renderSearchResults()}
             </InfiniteScroll>
           </div>
         )}
