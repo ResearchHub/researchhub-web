@@ -317,10 +317,10 @@ class PaperTransactionModal extends React.Component {
               ? this.props.auth.user.id && this.props.auth.user.id
               : null,
             event_properties: {
-              interaction: purchase_method,
+              interaction: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
               object_id: paperId,
-              content_type: content_type,
-              amount: amount,
+              content_type: "paper",
+              amount: Number(this.state.value),
             },
           };
           sendAmpEvent(payload);
