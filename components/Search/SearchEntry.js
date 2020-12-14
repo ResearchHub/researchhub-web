@@ -7,8 +7,6 @@ import Router from "next/router";
 import { MessageActions } from "~/redux/message";
 
 // Components
-import University from "~/components/University";
-import AuthorAvatar from "~/components/AuthorAvatar";
 import Highlight from "~/components/Search/Highlight";
 
 // Config
@@ -350,7 +348,7 @@ const styles = StyleSheet.create({
   },
   mid: {
     justifyContent: "center",
-    width: "75%",
+    width: "73%",
     marginRight: 20,
     "@media only screen and (max-width: 1200px)": {
       width: "calc(100% - 50px)",
