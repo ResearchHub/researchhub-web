@@ -5,10 +5,9 @@ import InfiniteScroll from "react-infinite-scroller";
 
 import SearchEntry from "./SearchEntry";
 import HubSearchResult from "../HubSearchResult";
-import Loader from "~/components/Loader/Loader";
 
 // Config
-import { RHLogo } from "~/config/themes/icons";
+import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
@@ -32,14 +31,6 @@ export default class Search extends Component {
     document.addEventListener("click", this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.showDropdown !== this.props.showDropdown) {
-      this.setState({
-        // showDropdown: this.props.showDropdown,
-      });
-    }
-  }
-
   componentWillUnmount() {
     clearTimeout(this.searchTimeout);
     clearTimeout(this.dropdownTimeout);
@@ -47,14 +38,11 @@ export default class Search extends Component {
   }
 
   onSearchChange = (e) => {
-    // clearTimeout(this.searchTimeout);
-
     const value = e.target.value;
 
     if (!value) {
       this.setState({
         showDropdown: false,
-        // finished: true,
         query: "",
       });
 
@@ -62,7 +50,6 @@ export default class Search extends Component {
     } else {
       this.setState({
         showDropdown: true,
-        // finished: false,
         query: value,
       });
     }
@@ -77,7 +64,6 @@ export default class Search extends Component {
       .then((resp) => {
         this.setState({
           results: resp.results,
-          // finished: true,
           next: resp.next,
         });
       });
@@ -163,7 +149,6 @@ export default class Search extends Component {
           />
         );
       case "university":
-        // return <UniversitySearchResult result={result} />;
         return null;
       default:
         break;
@@ -303,6 +288,7 @@ const styles = StyleSheet.create({
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     minWidth: 400,
     maxHeight: 400,
+    color: colors.BLACK(),
   },
 
   searchResult: {
@@ -314,6 +300,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    color: colors.BLACK(),
   },
   emptyTitle: {
     fontWeight: 400,
