@@ -980,11 +980,13 @@ const AuthorPage = (props) => {
             Add description
           </span>
         )}
-        <span property="description">
-          {author.description
-            ? author.description
-            : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
-        </span>
+        {!author.description && !allowEdit && (
+          <span property="description">
+            {author.description
+              ? author.description
+              : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
+          </span>
+        )}
       </div>
     );
   };
