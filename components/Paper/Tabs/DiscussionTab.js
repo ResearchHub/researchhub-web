@@ -9,7 +9,7 @@ import ReactPlaceholder from "react-placeholder";
 // Components
 import ComponentWrapper from "../../ComponentWrapper";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
-import AddDiscussionModal from "~/components/Modal/AddDiscussionModal";
+import AddDiscussionModal from "~/components/Modals/AddDiscussionModal";
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
 import FormSelect from "~/components/Form/FormSelect";

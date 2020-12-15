@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import dynamic from "next/dynamic";
 
 // Components
-import BaseModal from "~/components/Modal/BaseModal";
+import BaseModal from "~/components/Modals/BaseModal";
 
 // Config
 import ResearchHubIcon from "../static/ResearchHubIcon";
