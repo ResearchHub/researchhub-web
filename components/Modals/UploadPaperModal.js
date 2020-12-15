@@ -14,7 +14,7 @@ import { PaperActions } from "../../redux/paper";
 import { MessageActions } from "../../redux/message";
 
 // Component
-import BaseModal from "../Modal/BaseModal";
+import BaseModal from "../Modals/BaseModal";
 import PaperEntryCard from "../Hubs/PaperEntryCard";
 
 // Config

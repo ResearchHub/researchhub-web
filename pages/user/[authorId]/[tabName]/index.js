@@ -23,7 +23,7 @@ import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
-import UserInfoModal from "~/components/Modal/UserInfoModal";
+import UserInfoModal from "~/components/Modals/UserInfoModal";
 import Button from "~/components/Form/Button";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import Loader from "~/components/Loader/Loader";
