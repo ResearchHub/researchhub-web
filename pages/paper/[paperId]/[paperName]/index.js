@@ -17,15 +17,14 @@ import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import FigureTab from "~/components/Paper/Tabs/FigureTab";
 import LimitationTab from "~/components/Paper/Tabs/LimitationTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
 import PaperProgress from "~/components/Paper/PaperProgress";
-import PaperTransactionModal from "../../../../components/modal/PaperTransactionModal";
-import PaperFeatureModal from "../../../../components/modal/PaperFeatureModal";
-import PaperBanner from "../../../../components/Paper/PaperBanner";
+import PaperTransactionModal from "~/components/Modal/PaperTransactionModal";
+import PaperFeatureModal from "~/components/Modal/PaperFeatureModal";
+import PaperBanner from "~/components/Paper/PaperBanner";
 
 // Redux
 import { PaperActions } from "~/redux/paper";

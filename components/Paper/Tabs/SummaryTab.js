@@ -11,7 +11,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import BulletsContainer from "../BulletsContainer";
-import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
+import ManageBulletPointsModal from "~/components/Modal/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
 

@@ -15,7 +15,7 @@ export const ModalConstants = {
   ADD_DISCUSSION_MODAL_TOGGLE: "@@MODAL/ADD_DISCUSSION_MODAL_TOGGLE",
   ADD_HUB_MODAL_TOGGLE: "@@MODAL/ADD_HUB_MODAL_TOGGLE",
   EDIT_HUB_MODAL_TOGGLE: "@@MODAL/EDIT_HUB_MODAL_TOGGLE",
-  TRANSACTION_MODAL_TOGGLE: "@@MODAL/TRANSACTION_MODAL_TOGGLE",
+  WITHDRAWAL_MODAL_TOGGLE: "@@MODAL/WITHDRAWAL_MODAL_TOGGLE",
   FIRST_VOTE_MODAL_TOGGLE: "@@MODAL/FIRST_VOTE_MODAL_TOGGLE",
   ORCID_CONNECT_MODAL_TOGGLE: "@@modal/ORCID_CONNECT_MODAL_TOGGLE",
   MANAGE_BULLET_POINTS_MODAL_TOGGLE: "@@modal/MANAGE_BULLET_POINTS_TOGGLE",
@@ -141,12 +141,12 @@ export const ModalActions = {
       });
     };
   },
-  openTransactionModal: (openModal) => {
+  openWithdrawalModal: (openModal) => {
     return (dispatch) => {
       return dispatch({
-        type: ModalConstants.TRANSACTION_MODAL_TOGGLE,
+        type: ModalConstants.WITHDRAWAL_MODAL_TOGGLE,
         payload: {
-          openTransactionModal: openModal,
+          openWithdrawalModal: openModal,
         },
       });
     };
@@ -330,7 +330,7 @@ const defaultModalState = {
   openAddHubModal: false,
   openEditHubModal: false,
   editHubModal: {},
-  openTransactionModal: false,
+  openWithdrawalModal: false,
   openFirstVoteModal: false,
   openOrcidConnectModal: false,
   openPaperTransactionModal: false,
@@ -382,7 +382,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.ADD_DISCUSSION_MODAL_TOGGLE:
     case ModalConstants.ADD_HUB_MODAL_TOGGLE:
     case ModalConstants.EDIT_HUB_MODAL_TOGGLE:
-    case ModalConstants.TRANSACTION_MODAL_TOGGLE:
+    case ModalConstants.WITHDRAWAL_MODAL_TOGGLE:
     case ModalConstants.FIRST_VOTE_MODAL_TOGGLE:
     case ModalConstants.ORCID_CONNECT_MODAL_TOGGLE:
     case ModalConstants.MANAGE_BULLET_POINTS_TOGGLE:
