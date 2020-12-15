@@ -18,8 +18,9 @@ const PaperTabBar = (props) => {
   const store = useStore();
   const [selectedTab, setSelectedTab] = useState("main");
   const [tabs, setTabs] = useState(props.activeTabs.map(formatTabs));
+  const [scrollEvent, setScrollEvent] = useState(null);
+
   const { scrollView } = props;
-  var timer;
 
   useEffect(() => {
     window.addEventListener("scroll", scrollListener);
@@ -28,8 +29,13 @@ const PaperTabBar = (props) => {
   }, [scrollListener]);
 
   useEffect(() => {
-    clearTimer();
-    startTimer();
+    clearTimeout(scrollEvent);
+
+    setScrollEvent(
+      setTimeout(() => {
+        trackEvent("scroll", selectedTab);
+      }, VIEW_TIMER)
+    );
   }, [selectedTab]);
 
   useEffect(() => {
@@ -56,15 +62,9 @@ const PaperTabBar = (props) => {
     }
   }, [props.showAllSections]);
 
-  const startTimer = () => {
-    timer = setTimeout(() => {
-      trackEvent("scroll", selectedTab);
-    }, VIEW_TIMER);
-  };
+  const startTimer = () => {};
 
-  const clearTimer = () => {
-    clearTimeout(timer);
-  };
+  const clearTimer = () => {};
 
   const getCoords = (elem) => {
     // crossbrowser version
