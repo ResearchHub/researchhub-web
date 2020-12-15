@@ -40,17 +40,17 @@ export default class Search extends Component {
   }
 
   onSearchChange = (e) => {
-    clearTimeout(this.searchTimeout);
+    const { query } = this.state;
+    const ignoreTimeout = query.length >= 7 && query.length % 7 === 0; // call search at 7th keystroke and every multiple of 7 thereafter
+
+    if (!ignoreTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
 
     const value = e.target.value;
 
     if (!value) {
-      this.setState({
-        showDropdown: false,
-        query: "",
-      });
-
-      return;
+      return this.setState({ showDropdown: false, query: "" });
     } else {
       this.setState({
         showDropdown: true,
