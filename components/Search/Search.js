@@ -1,10 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 import InfiniteScroll from "react-infinite-scroller";
 
 import SearchEntry from "./SearchEntry";
 import HubSearchResult from "../HubSearchResult";
+import Loader from "~/components/Loader/Loader";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -20,6 +21,7 @@ export default class Search extends Component {
   scrollParent;
   state = {
     showDropdown: this.props.showDropdown,
+    searching: false,
     searchMade: false,
     results: [],
     query: "",
@@ -51,6 +53,7 @@ export default class Search extends Component {
 
     if (!value) {
       return this.setState({
+        searching: false,
         searchMade: false,
         showDropdown: false,
         query: "",
@@ -59,6 +62,7 @@ export default class Search extends Component {
       this.setState({
         showDropdown: true,
         query: value,
+        searching: true,
       });
     }
 
@@ -75,6 +79,7 @@ export default class Search extends Component {
             results: resp.results,
             next: resp.next,
             searchMade: true,
+            searching: false,
           });
         });
     }, SEARCH_TIMEOUT);
@@ -98,7 +103,7 @@ export default class Search extends Component {
   };
 
   renderSearchResults = () => {
-    const { results, searchMade } = this.state;
+    const { results, searching, searchMade } = this.state;
 
     if (!searchMade && results.length === 0) {
       return (
@@ -115,14 +120,27 @@ export default class Search extends Component {
     if (searchMade && results.length === 0) {
       return (
         <div className={css(styles.emptyResults)}>
-          <h3 className={css(styles.emptyTitle)}>
-            We can't find what you're looking for!{"\n"}Please try another
-            search.
-          </h3>
           <img
             src={"/static/icons/search-empty.png"}
             className={css(styles.logo)}
           />
+          <h3 className={css(styles.emptyTitle)}>
+            We can't find what you're looking for!{"\n"}
+            {searching ? (
+              <div style={{ display: "flex" }}>
+                Please try another search
+                <Loader
+                  loading={true}
+                  size={3}
+                  type={"beat"}
+                  color={"#000"}
+                  containerStyle={styles.loaderStyle}
+                />
+              </div>
+            ) : (
+              "Please try another search."
+            )}
+          </h3>
         </div>
       );
     }
@@ -326,13 +344,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     color: colors.BLACK(),
+    boxSizing: "border-box",
   },
   emptyTitle: {
-    fontWeight: 400,
+    fontWeight: 500,
     fontSize: 18,
     whiteSpace: "pre-wrap",
-    marginRight: 10,
-    lineHeight: 1.3,
+    marginLeft: 15,
+    lineHeight: 1.5,
+    height: 55,
   },
   logo: {
     height: 55,
@@ -342,5 +362,9 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: "none",
+  },
+  loaderStyle: {
+    paddingTop: 2,
+    paddingLeft: 1,
   },
 });
