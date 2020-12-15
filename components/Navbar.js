@@ -17,25 +17,26 @@ import { AuthActions } from "../redux/auth";
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Button from "../components/Form/Button";
-import FirstVoteModal from "../components/modal/FirstVoteModal";
+import FirstVoteModal from "../components/Modal/FirstVoteModal";
 import GoogleLoginButton from "../components/GoogleLoginButton";
-import InviteToHubModal from "../components/modal/InviteToHubModal";
-import LoginModal from "../components/modal/LoginModal";
+import InviteToHubModal from "../components/Modal/InviteToHubModal";
+import LoginModal from "../components/Modal/LoginModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
-import Search from "./Search/Search";
-import TransactionModal from "../components/modal/TransactionModal";
-import UploadPaperModal from "../components/modal/UploadPaperModal";
+import Search from "./Search";
+import WithdrawalModal from "../components/Modal/WithdrawalModal";
+import UploadPaperModal from "../components/Modal/UploadPaperModal";
 import Notification from "./Notifications/Notification";
-import DndModal from "../components/modal/DndModal";
-import PaperFeatureModal from "~/components/modal/PaperFeatureModal";
-import PaperTransactionModal from "~/components/modal/PaperTransactionModal";
-import PromotionInfoModal from "~/components/modal/PromotionInfoModal";
-import ReCaptchaPrompt from "./modal/ReCaptchaPrompt";
-import EducationModal from "./modal/EducationModal";
-import AuthorSupportModal from "./modal/AuthorSupportModal";
+import DndModal from "../components/Modal/DndModal";
+import PaperFeatureModal from "~/components/Modal/PaperFeatureModal";
+import PaperTransactionModal from "~/components/Modal/PaperTransactionModal";
+import PromotionInfoModal from "~/components/Modal/PromotionInfoModal";
+import ReCaptchaPrompt from "./Modal/ReCaptchaPrompt";
+import EducationModal from "./Modal/EducationModal";
+import AuthorSupportModal from "./Modal/AuthorSupportModal";
 import UserStateBanner from "./Banner/UserStateBanner";
-import ContentSupportModal from "./modal/ContentSupportModal";
+import ContentSupportModal from "./Modal/ContentSupportModal";
+import OrcidConnectModal from "./Modal/OrcidConnectModal";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -43,7 +44,6 @@ import icons from "~/config/themes/icons";
 import { RHLogo } from "~/config/themes/icons";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import "./stylesheets/Navbar.css";
-import OrcidConnectModal from "./modal/OrcidConnectModal";
 
 const Navbar = (props) => {
   const dispatch = useDispatch();
@@ -115,7 +115,7 @@ const Navbar = (props) => {
       { label: "Hubs", route: "/hubs", icon: "hub" },
       {
         label: "Withdraw RSC",
-        onClick: openTransactionModal,
+        onClick: openWithdrawalModal,
         icon: "coins",
       },
       { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
@@ -354,8 +354,8 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
-  function openTransactionModal() {
-    props.openTransactionModal(true);
+  function openWithdrawalModal() {
+    props.openWithdrawalModal(true);
     setSideMenu(!sideMenu);
   }
 
@@ -435,7 +435,7 @@ const Navbar = (props) => {
         <UploadPaperModal />
         <LoginModal />
         <InviteToHubModal />
-        <TransactionModal />
+        <WithdrawalModal />
         <FirstVoteModal auth={auth} updateUser={updateUser} />
         <OrcidConnectModal />
         <DndModal />
@@ -966,7 +966,7 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
-  openTransactionModal: ModalActions.openTransactionModal,
+  openWithdrawalModal: ModalActions.openWithdrawalModal,
   openSignUpModal: ModalActions.openSignUpModal,
   updateUser: AuthActions.updateUser,
 };

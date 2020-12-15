@@ -9,7 +9,7 @@ import { transitions, positions, Provider as AlertProvider } from "react-alert";
 import Message from "~/components/Loader/Message";
 import Navbar from "~/components/Navbar";
 import PermissionNotification from "../components/PermissionNotification";
-import AlertTemplate from "~/components/modal/AlertTemplate";
+import AlertTemplate from "~/components/Modal/AlertTemplate";
 
 import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";

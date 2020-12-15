@@ -5,8 +5,8 @@ import Link from "next/link";
 
 // Component
 import Button from "../../components/Form/Button";
-import AddHubModal from "../../components/modal/AddHubModal";
-import EditHubModal from "../../components/modal/EditHubModal";
+import AddHubModal from "../../components/Modal/AddHubModal";
+import EditHubModal from "../../components/Modal/EditHubModal";
 import Message from "../../components/Loader/Message";
 import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
 import Head from "~/components/Head";

@@ -40,7 +40,7 @@ const CURRENT_CHAIN_ID =
     ? RINKEBY_CHAIN_ID
     : MAINNET_CHAIN_ID;
 
-class TransactionModal extends React.Component {
+class WithdrawalModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -80,9 +80,9 @@ class TransactionModal extends React.Component {
         });
       }
       if (
-        prevProps.modals.openTransactionModal !==
-          this.props.modals.openTransactionModal &&
-        this.props.modals.openTransactionModal
+        prevProps.modals.openWithdrawalModal !==
+          this.props.modals.openWithdrawalModal &&
+        this.props.modals.openWithdrawalModal
       ) {
         this.getBalance();
       }
@@ -159,12 +159,12 @@ class TransactionModal extends React.Component {
   };
 
   closeModal = () => {
-    let { openTransactionModal } = this.props;
+    let { openWithdrawalModal } = this.props;
     this.setState({
       ...this.initialState,
     });
     this.enableParentScroll();
-    openTransactionModal(false);
+    openWithdrawalModal(false);
   };
 
   enableParentScroll = () => {
@@ -824,7 +824,7 @@ class TransactionModal extends React.Component {
     let { modals } = this.props;
     return (
       <BaseModal
-        isOpen={modals.openTransactionModal}
+        isOpen={modals.openWithdrawalModal}
         closeModal={this.closeModal}
         removeDefault={true}
       >
@@ -1173,7 +1173,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openTransactionModal: ModalActions.openTransactionModal,
+  openWithdrawalModal: ModalActions.openWithdrawalModal,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
@@ -1185,4 +1185,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(TransactionModal);
+)(WithdrawalModal);

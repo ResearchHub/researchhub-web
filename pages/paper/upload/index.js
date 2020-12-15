@@ -3,7 +3,7 @@ import { StyleSheet } from "aphrodite";
 
 // Component
 import Head from "~/components/Head";
-import UploadPaperModal from "~/components/modal/UploadPaperModal";
+import UploadPaperModal from "~/components/Modal/UploadPaperModal";
 
 class Index extends React.Component {
   render() {

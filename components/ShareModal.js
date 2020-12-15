@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import PropTypes from "prop-types";
 
 import FormInput from "~/components/Form/FormInput";
-import BaseModal from "../components/modal/BaseModal";
+import BaseModal from "../components/Modal/BaseModal";
 import colors from "~/config/themes/colors";
 import { RHLogo } from "~/config/themes/icons";
 
