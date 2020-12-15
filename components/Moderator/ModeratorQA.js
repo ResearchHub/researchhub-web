@@ -1,18 +1,15 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import { useAlert } from "react-alert";
 
 import Loader from "~/components/Loader/Loader";
 
 // Redux
-import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import colors from "~/config/themes/colors";
 import icons from "../../config/themes/icons";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist } from "~/config/utils";
 
 const ModeratorQA = ({
@@ -22,19 +19,19 @@ const ModeratorQA = ({
   paper,
   updatePaperState,
   containerStyles,
+  openSectionBountyModal,
 }) => {
-  const alert = useAlert();
-  const [moderator, isModerator] = useState(false);
+  const [moderator, setIsModerator] = useState(false);
   const [active, setActive] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (auth.isLoggedIn) {
       if (auth.user.moderator) {
-        return isModerator(true);
+        return setIsModerator(true);
       }
     }
-    moderator && isModerator(false);
+    moderator && setIsModerator(false);
   }, [auth.isLoggedIn]);
 
   useEffect(() => {
@@ -47,54 +44,21 @@ const ModeratorQA = ({
 
   const handleClick = (e) => {
     e && e.stopPropagation();
-    alert.show({
-      text: active
-        ? `Unpin ${type} for improvement?`
-        : `Pin ${type} for improvement?`,
-      buttonText: "Yes",
-      onClick: () => {
-        markSection();
-      },
-    });
-  };
-
-  const markSection = () => {
-    setLoading(true);
-
     const paperId = paper.id;
-    const PAYLOAD = formatPayload();
-
-    fetch(API.PAPER({ paperId, progress: true }), API.PATCH_CONFIG(PAYLOAD))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        updatePaperState(res);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-      });
-  };
-
-  const formatPayload = () => {
-    const payload = {};
-    if (type === "takeaways") {
-      payload.bullet_low_quality = !paper.bullet_low_quality;
-    } else if (type === "summary") {
-      payload.summary_low_quality = !paper.summary_low_quality;
-    }
-    return payload;
+    openSectionBountyModal(true, { paperId, setLoading, updatePaperState });
   };
 
   const renderIcon = () => {
     if (loading) {
       return <Loader loading={true} size={8} />;
     }
-    return active ? icons.pin : icons.pinOutline;
+    // return active ? icons.pin : icons.pinOutline;
+    // return icons.coin
+    return icons.coinStack({ styles: styles.coinStackIcon, grey: true });
   };
 
   const renderLabel = () => {
-    return active ? "Unpin Section" : "Needs Improvement";
+    return active ? "Remove Bounty" : "Add Bounty";
   };
 
   return (
@@ -134,13 +98,23 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
     opacity: 1,
   },
+  coinStackIcon: {
+    height: 14,
+    width: 14,
+    // color: "#7a7785"
+    // color: colors.DARK_YELLOW()
+  },
 });
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
+const mapDispatchToProps = {
+  openSectionBountyModal: ModalActions.openSectionBountyModal,
+};
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(ModeratorQA);
