@@ -22,8 +22,8 @@ import PaperPageCard from "~/components/PaperPageCard";
 import CitationCard from "~/components/Paper/CitationCard";
 import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
 import PaperProgress from "~/components/Paper/PaperProgress";
-import PaperTransactionModal from "~/components/Modal/PaperTransactionModal";
-import PaperFeatureModal from "~/components/Modal/PaperFeatureModal";
+import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
+import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperBanner from "~/components/Paper/PaperBanner";
 
 // Redux
