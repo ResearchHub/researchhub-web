@@ -353,9 +353,16 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     lineHeight: 1.5,
     height: 55,
+    "@media only screen and (max-width: 415px)": {
+      height: 45,
+      fontSize: 16,
+    },
   },
   logo: {
     height: 55,
+    "@media only screen and (max-width: 415px)": {
+      height: 45,
+    },
   },
   searchResultPaper: {
     border: "none",
