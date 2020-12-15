@@ -11,6 +11,8 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { formatScore } from "~/config/utils";
 
+const DEFAULT_SHIMMER_TIME = 1150;
+
 const ContentSupport = (props) => {
   const {
     data,
@@ -60,7 +62,7 @@ const ContentSupport = (props) => {
   const updateCountUI = (newCount) => {
     setCount(newCount);
     setUpdate(true);
-    setTimeout(() => setUpdate(false), 1150);
+    setTimeout(() => setUpdate(false), DEFAULT_SHIMMER_TIME);
   };
 
   const renderAnimation = () => {

@@ -54,6 +54,17 @@ const icons = {
   pin: <i className="fas fa-thumbtack" />,
   pinOutline: <i className="fal fa-thumbtack"></i>,
   fire: <i className="fad fa-fire-alt" />,
+  coin: <i className="fad fa-coin" />,
+  coinStack: ({ styles, grey }) => (
+    <img
+      src={
+        grey
+          ? "/static/icons/coin-stack-grey.png"
+          : "/static/icons/coin-stack.png"
+      }
+      className={css(styles)}
+    />
+  ),
 };
 
 export const voteWidgetIcons = {
@@ -107,6 +118,7 @@ const styles = StyleSheet.create({
   logo: {
     height: 40,
   },
+  coinStack: {},
 });
 
 export default icons;

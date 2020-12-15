@@ -92,3 +92,11 @@ export const supportContent = async ({ contentType, objectId, amount }) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const setSectionBounty = async ({ paperId, type, amount }) => {
+  const PAYLOAD = { [type]: amount };
+
+  return fetch(API.PAPER({ paperId }), API.POST_CONFIG(PAYLOAD))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
