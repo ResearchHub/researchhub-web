@@ -28,7 +28,8 @@ export const ModalConstants = {
   USER_INFO_MODAL_TOGGLE: "@@modal/USER_INFO_MODAL_TOGGLE",
   OPEN_EDUCATION_MODAL_TOGGLE: "@@modal/OPEN_EDUCATION_MODAL_TOGGLE",
   AUTHOR_SUPPORT_MODAL_TOGGLE: "@@modal/AUTHOR_SUPPORT_MODAL_TOGGLE",
-  CONTENT_SUPPORT_MODAL_TOGGLE: "@@modal/CONTENT_SUPPORT_MODAL_TOGGLE,",
+  CONTENT_SUPPORT_MODAL_TOGGLE: "@@modal/CONTENT_SUPPORT_MODAL_TOGGLE",
+  SECTION_BOUNTY_MODAL_TOGGLE: "@@modal/SECTION_BOUNTY_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -300,6 +301,19 @@ export const ModalActions = {
       });
     };
   },
+  openSectionBountyModal: (openModal, props = {}) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.SECTION_BOUNTY_MODAL_TOGGLE,
+        payload: {
+          openSectionBountyModal: {
+            isOpen: openModal,
+            props,
+          },
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -352,6 +366,10 @@ const defaultModalState = {
     isOpen: false,
     props: {},
   },
+  openSectionBountyModal: {
+    isOpen: false,
+    props: {},
+  },
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -378,6 +396,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.OPEN_EDUCATION_MODAL_TOGGLE:
     case ModalConstants.AUTHOR_SUPPORT_MODAL_TOGGLE:
     case ModalConstants.CONTENT_SUPPORT_MODAL_TOGGLE:
+    case ModalConstants.SECTION_BOUNTY_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,
