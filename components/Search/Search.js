@@ -20,7 +20,7 @@ export default class Search extends Component {
   scrollParent;
   state = {
     showDropdown: this.props.showDropdown,
-    finished: true,
+    searchMade: false,
     results: [],
     query: "",
     next: null,
@@ -50,7 +50,11 @@ export default class Search extends Component {
     const value = e.target.value;
 
     if (!value) {
-      return this.setState({ showDropdown: false, query: "" });
+      return this.setState({
+        searchMade: false,
+        showDropdown: false,
+        query: "",
+      });
     } else {
       this.setState({
         showDropdown: true,
@@ -70,6 +74,7 @@ export default class Search extends Component {
           this.setState({
             results: resp.results,
             next: resp.next,
+            searchMade: true,
           });
         });
     }, SEARCH_TIMEOUT);
@@ -93,7 +98,21 @@ export default class Search extends Component {
   };
 
   renderSearchResults = () => {
-    if (this.state.results.length === 0) {
+    const { results, searchMade } = this.state;
+
+    if (!searchMade && results.length === 0) {
+      return (
+        <ReactPlaceholder
+          ready={false}
+          showLoadingAnimation
+          type="media"
+          rows={4}
+          color="#efefef"
+        />
+      );
+    }
+
+    if (searchMade && results.length === 0) {
       return (
         <div className={css(styles.emptyResults)}>
           <h3 className={css(styles.emptyTitle)}>
@@ -108,8 +127,9 @@ export default class Search extends Component {
       );
     }
 
-    let prevType;
-    const results = this.state.results.map((result, index) => {
+    let prevType; // used to add result type header
+
+    return results.map((result, index) => {
       let firstOfItsType = prevType !== result.meta.index;
       prevType = result.meta.index;
 
@@ -128,8 +148,6 @@ export default class Search extends Component {
         </div>
       );
     });
-
-    return results;
   };
 
   getResultComponent = (result, index, firstOfItsType) => {
