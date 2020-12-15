@@ -350,8 +350,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "73%",
     marginRight: 20,
-    "@media only screen and (max-width: 1200px)": {
-      width: "calc(100% - 50px)",
+    "@media only screen and (max-width: 1300px)": {
+      width: "calc(100% - 40px)",
       margin: 0,
     },
   },
@@ -392,6 +392,10 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    "@media only screen and (max-width: 1300px)": {
+      height: 40,
+      width: 40,
+    },
   },
   smallVoteDisplay: {
     height: 40,
