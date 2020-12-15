@@ -11,6 +11,8 @@ import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
+const SEARCH_TIMEOUT = 400;
+
 export default class Search extends Component {
   searchTimeout = -1;
   dropdownTimeout = -1;
@@ -38,6 +40,8 @@ export default class Search extends Component {
   }
 
   onSearchChange = (e) => {
+    clearTimeout(this.searchTimeout);
+
     const value = e.target.value;
 
     if (!value) {
@@ -54,19 +58,21 @@ export default class Search extends Component {
       });
     }
 
-    const config = { route: "all" };
+    this.searchTimeout = setTimeout(() => {
+      const config = {
+        route: "all",
+      };
 
-    // TODO: add pagination
-    // Params to the search for pagination would be page
-    fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        this.setState({
-          results: resp.results,
-          next: resp.next,
+      fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          this.setState({
+            results: resp.results,
+            next: resp.next,
+          });
         });
-      });
+    }, SEARCH_TIMEOUT);
   };
 
   fetchNextPage = () => {
@@ -91,7 +97,8 @@ export default class Search extends Component {
       return (
         <div className={css(styles.emptyResults)}>
           <h3 className={css(styles.emptyTitle)}>
-            We can't find what you're looking for! Please try another search.
+            We can't find what you're looking for!{"\n"}Please try another
+            search.
           </h3>
           <img
             src={"/static/icons/search-empty.png"}
@@ -305,9 +312,12 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontWeight: 400,
     fontSize: 18,
+    whiteSpace: "pre-wrap",
+    marginRight: 10,
+    lineHeight: 1.3,
   },
   logo: {
-    height: 60,
+    height: 55,
   },
   searchResultPaper: {
     border: "none",
