@@ -107,7 +107,7 @@ class ContentSupportModal extends React.Component {
       <Fragment>
         <div className={css(styles.row)}>
           <AmountInput value={this.state.amount} onChange={this.handleAmount} />
-          <RecipientInput author={this.getAuthorProfile()} />
+          {/* <RecipientInput author={this.getAuthorProfile()} /> */}
         </div>
         {/* <div className={css(styles.column)}>
           <RecipientInput
@@ -262,7 +262,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  openContentSupportModal: ModalActions.openContentSupportModal,
+  openSectionBountyModal: ModalActions.openSectionBountyModal,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   updateUser: AuthActions.updateUser,

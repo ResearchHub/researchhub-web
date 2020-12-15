@@ -18,7 +18,7 @@ import FormDND from "../Form/FormDND";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Modal
-import AddAuthorModal from "../modal/AddAuthorModal";
+import AddAuthorModal from "../Modal/AddAuthorModal";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
