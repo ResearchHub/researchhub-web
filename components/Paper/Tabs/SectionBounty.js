@@ -79,7 +79,11 @@ const SectionBounty = (props) => {
           isModerator && styles.moderatorContainer,
           !amount && styles.hidden
         )}
-        data-tip={`Earn ${amount} RSC for contributing to the ${section}`}
+        data-tip={
+          isModerator
+            ? `Adjust Bounty for ${section}`
+            : `Earn ${amount} RSC for contributing to the ${section}`
+        }
         onClick={handleClick}
       >
         {renderLabel()}

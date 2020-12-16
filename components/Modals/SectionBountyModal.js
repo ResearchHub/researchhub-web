@@ -147,12 +147,12 @@ class ContentSupportModal extends React.Component {
 
   render() {
     const { modals } = this.props;
-
+    const { amount } = this.state;
     return (
       <BaseModal
         isOpen={modals.openSectionBountyModal.isOpen}
         closeModal={this.closeModal}
-        title={"Add Bounty"}
+        title={"Set Bounty"}
         subtitle={
           "Select an amount to reward the first user who contributes high quality content to this section."
         }
