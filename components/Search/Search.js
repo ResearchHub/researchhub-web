@@ -1,16 +1,18 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 import InfiniteScroll from "react-infinite-scroller";
 
 import SearchEntry from "./SearchEntry";
-import HubSearchResult from "./HubSearchResult";
+import HubSearchResult from "../HubSearchResult";
 import Loader from "~/components/Loader/Loader";
 
 // Config
-import { RHLogo } from "~/config/themes/icons";
+import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+
+const SEARCH_TIMEOUT = 400;
 
 export default class Search extends Component {
   searchTimeout = -1;
@@ -19,7 +21,8 @@ export default class Search extends Component {
   scrollParent;
   state = {
     showDropdown: this.props.showDropdown,
-    finished: true,
+    searching: false,
+    searchMade: false,
     results: [],
     query: "",
     next: null,
@@ -32,14 +35,6 @@ export default class Search extends Component {
     document.addEventListener("click", this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.showDropdown !== this.props.showDropdown) {
-      this.setState({
-        showDropdown: this.props.showDropdown,
-      });
-    }
-  }
-
   componentWillUnmount() {
     clearTimeout(this.searchTimeout);
     clearTimeout(this.dropdownTimeout);
@@ -47,23 +42,27 @@ export default class Search extends Component {
   }
 
   onSearchChange = (e) => {
-    clearTimeout(this.searchTimeout);
+    const { query } = this.state;
+    const ignoreTimeout = query.length >= 7 && query.length % 7 === 0; // call search at 7th keystroke and every multiple of 7 thereafter
+
+    if (!ignoreTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
 
     const value = e.target.value;
 
     if (!value) {
-      this.setState({
+      return this.setState({
+        searching: false,
+        searchMade: false,
         showDropdown: false,
-        finished: true,
         query: "",
       });
-
-      return;
     } else {
       this.setState({
         showDropdown: true,
-        finished: false,
         query: value,
+        searching: true,
       });
     }
 
@@ -72,19 +71,18 @@ export default class Search extends Component {
         route: "all",
       };
 
-      // TODO: add pagination
-      // Params to the search for pagination would be page
       fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
           this.setState({
             results: resp.results,
-            finished: true,
             next: resp.next,
+            searchMade: true,
+            searching: false,
           });
         });
-    }, 200);
+    }, SEARCH_TIMEOUT);
   };
 
   fetchNextPage = () => {
@@ -105,20 +103,58 @@ export default class Search extends Component {
   };
 
   renderSearchResults = () => {
-    let universityCount = 0;
-    let prevType;
-    const results = this.state.results.map((result, index) => {
-      result.meta.index === "university" && universityCount++;
+    const { results, searching, searchMade } = this.state;
+
+    if (!searchMade && results.length === 0) {
+      return (
+        <ReactPlaceholder
+          ready={false}
+          showLoadingAnimation
+          type="media"
+          rows={4}
+          color="#efefef"
+        />
+      );
+    }
+
+    if (searchMade && results.length === 0) {
+      return (
+        <div className={css(styles.emptyResults)}>
+          <img
+            src={"/static/icons/search-empty.png"}
+            className={css(styles.logo)}
+          />
+          <h3 className={css(styles.emptyTitle)}>
+            We can't find what you're looking for!{"\n"}
+            {searching ? (
+              <div style={{ display: "flex" }}>
+                Please try another search
+                <Loader
+                  loading={true}
+                  size={3}
+                  type={"beat"}
+                  color={"#000"}
+                  containerStyle={styles.loaderStyle}
+                />
+              </div>
+            ) : (
+              "Please try another search."
+            )}
+          </h3>
+        </div>
+      );
+    }
+
+    let prevType; // used to add result type header
+
+    return results.map((result, index) => {
       let firstOfItsType = prevType !== result.meta.index;
       prevType = result.meta.index;
 
       return (
         <div
           key={index}
-          className={css(
-            styles.searchResult,
-            result.meta.index === "university" && styles.hide
-          )}
+          className={css(styles.searchResult)}
           onClick={() => {
             this.dropdownTimeout = setTimeout(
               this.setState({ showDropdown: false }),
@@ -130,57 +166,22 @@ export default class Search extends Component {
         </div>
       );
     });
-
-    if (results.length === 0 || universityCount === results.length) {
-      return (
-        <div className={css(styles.emptyResults)}>
-          <h2 className={css(styles.emptyTitle)}>
-            We can't find what you're looking for! Please try another search.
-          </h2>
-          <RHLogo iconStyle={styles.logo} />
-        </div>
-      );
-    }
-
-    return results;
   };
 
   getResultComponent = (result, index, firstOfItsType) => {
     const indexName = result.meta.index;
-
+    const props = {
+      indexName,
+      result,
+      clearSearch: this.clearQuery,
+      firstOfItsType,
+      query: this.state.query,
+    };
     switch (indexName) {
-      // case "author":
-      //   return (
-      //     <SearchEntry
-      //       indexName={indexName}
-      //       result={result}
-      //       clearSearch={this.clearQuery}
-      //     />
-      //   );
+      case "author":
       case "crossref_paper":
       case "paper":
-        return (
-          <SearchEntry
-            indexName={"paper"}
-            result={result}
-            clearSearch={this.clearQuery}
-            // index={index}
-            firstOfItsType={firstOfItsType}
-          />
-        );
-      // case "discussion_thread":
-      //   let data = thread(result);
-      //   if (data.isPublic) {
-      //     data = this.populateThreadData(data, result);
-      //     data.meta = result.meta;
-      //     return (
-      //       <SearchEntry
-      //         indexName={indexName}
-      //         result={data}
-      //         clearSearch={this.clearQuery}
-      //       />
-      //     );
-      //   }
+        return <SearchEntry {...props} />;
       case "hub":
         return (
           <HubSearchResult
@@ -191,7 +192,6 @@ export default class Search extends Component {
           />
         );
       case "university":
-        // return <UniversitySearchResult result={result} />;
         return null;
       default:
         break;
@@ -249,28 +249,22 @@ export default class Search extends Component {
               hasMore={this.state.next}
               loadMore={this.fetchNextPage}
               loader={
-                <ReactPlaceholder
-                  ready={false}
-                  showLoadingAnimation
-                  type="media"
-                  rows={4}
-                  color="#efefef"
-                />
+                <div style={{ marginTop: 15 }}>
+                  <ReactPlaceholder
+                    ready={false}
+                    showLoadingAnimation
+                    type="media"
+                    rows={4}
+                    color="#efefef"
+                  />
+                </div>
               }
               useWindow={false}
               getScrollParent={() => this.scrollParent}
               initialLoad={false}
               threshold={20}
             >
-              <ReactPlaceholder
-                ready={this.state.finished}
-                showLoadingAnimation
-                type="media"
-                rows={4}
-                color="#efefef"
-              >
-                {this.renderSearchResults()}
-              </ReactPlaceholder>
+              {this.renderSearchResults()}
             </InfiniteScroll>
           </div>
         )}
@@ -327,34 +321,57 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 10,
     top: 60,
-    maxHeight: 400,
     left: "50%",
     transform: "translateX(-50%)",
     background: "#fff",
     overflow: "scroll",
+    overflowX: "hidden",
     padding: 16,
     boxSizing: "border-box",
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
     minWidth: 400,
+    maxHeight: 400,
+    color: colors.BLACK(),
   },
+
   searchResult: {
     borderBottom: "1px solid rgb(235, 235, 235)",
   },
   emptyResults: {
-    textAlign: "center",
-    letterSpacing: 0.7,
+    padding: "15px 0",
+    width: "100%",
     display: "flex",
-    flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
+    color: colors.BLACK(),
+    boxSizing: "border-box",
   },
   emptyTitle: {
-    fontWeight: 400,
-    fontSize: 22,
+    fontWeight: 500,
+    fontSize: 18,
+    whiteSpace: "pre-wrap",
+    marginLeft: 15,
+    lineHeight: 1.5,
+    height: 55,
+    "@media only screen and (max-width: 415px)": {
+      height: 45,
+      fontSize: 16,
+    },
+  },
+  logo: {
+    height: 55,
+    "@media only screen and (max-width: 415px)": {
+      height: 45,
+    },
   },
   searchResultPaper: {
     border: "none",
   },
   hide: {
     display: "none",
+  },
+  loaderStyle: {
+    paddingTop: 2,
+    paddingLeft: 1,
   },
 });

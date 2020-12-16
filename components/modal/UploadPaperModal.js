@@ -15,8 +15,6 @@ import { MessageActions } from "../../redux/message";
 
 // Component
 import BaseModal from "../modal/BaseModal";
-import SearchEntry from "../SearchEntry";
-import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 import PaperEntryCard from "../Hubs/PaperEntryCard";
 
 // Config
