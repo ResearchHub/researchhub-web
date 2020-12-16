@@ -24,6 +24,7 @@ import LoginModal from "../components/Modals/LoginModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
 import Search from "./Search";
+import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import Notification from "./Notifications/Notification";
@@ -443,6 +444,7 @@ const Navbar = (props) => {
         <ReCaptchaPrompt />
         <AuthorSupportModal />
         <ContentSupportModal />
+        <SectionBountyModal />
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />
