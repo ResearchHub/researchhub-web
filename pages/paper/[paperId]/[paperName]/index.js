@@ -143,6 +143,7 @@ const Paper = (props) => {
         setCount(calculateCommentCount(currPaper));
         setPaper(currPaper);
         setSummary(currPaper.summary || {});
+        checkUserVote(currPaper);
         return currPaper;
       })
       .catch((error) => {
@@ -175,9 +176,9 @@ const Paper = (props) => {
     }
   }, [summary.id, props.auth.isLoggedIn]);
 
-  function checkUserVote() {
+  function checkUserVote(paperState = paper) {
     if (props.auth.isLoggedIn && props.auth.user) {
-      let params = { paperIds: [paperId] };
+      const params = { paperIds: [paperId] };
       return fetch(API.CHECK_USER_VOTE(params), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -187,7 +188,7 @@ const Paper = (props) => {
           if (paperUserVote) {
             const { bullet_low_quality, summary_low_quality } = paperUserVote;
             const updatedPaper = {
-              ...paper,
+              ...paperState,
               bullet_low_quality,
               summary_low_quality,
             };
@@ -198,6 +199,7 @@ const Paper = (props) => {
           setUserVoteChecked(true);
         });
     }
+    setUserVoteChecked(true);
   }
 
   useEffect(() => {
