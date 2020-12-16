@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Router from "next/router";
+import numeral from "numeral";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -257,7 +258,7 @@ class SearchEntry extends React.Component {
               hideBullets && styles.smallVoteDisplay
             )}
           >
-            {(score && score) || 0}
+            {numeral(score || 0).format("0a")}
           </div>
         );
       default:
