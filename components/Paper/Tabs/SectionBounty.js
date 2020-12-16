@@ -1,22 +1,56 @@
 import React, { Fragment } from "react";
-import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import { withAlert } from "react-alert";
-
-// Components
-import BaseModal from "./BaseModal";
-import Button from "../Form/Button";
-import { AmountInput, RecipientInput } from "../Form/RSCForm";
-import FormSelect from "../Form/FormSelect";
-
-// Redux
-import { MessageActions } from "~/redux/message";
-import { ModalActions } from "~/redux/modals";
-import { AuthActions } from "~/redux/auth";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import { setSectionBounty } from "../../config/fetch";
-import colors from "../../config/themes/colors";
-import { sanitizeNumber } from "~/config/utils";
+import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
+
+const SectionBounty = (props) => {
+  const { section, paper } = props;
+  const amount =
+    section === "summary"
+      ? paper.summary_low_quality || 0
+      : paper.bullet_low_quality || 0;
+
+  const renderLabel = () => {
+    return (
+      <Fragment>
+        Earn{" " + amount + " "}
+        {icons.coinStack({ styles: styles.coinStackIcon })}
+      </Fragment>
+    );
+  };
+
+  return (
+    <div className={css(styles.container, !amount && styles.hidden)}>
+      {renderLabel()}
+    </div>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "4px 12px",
+    fontSize: 14,
+    fontWeight: 500,
+    marginRight: 8,
+    borderRadius: 4,
+    backgroundColor: colors.ORANGE(0.1),
+    color: colors.ORANGE(),
+    marginLeft: 10,
+    cursor: "default",
+  },
+  hidden: {
+    display: "none",
+  },
+  coinStackIcon: {
+    marginLeft: 4,
+    height: 12,
+    width: 12,
+  },
+});
+
+export default SectionBounty;

@@ -96,7 +96,10 @@ export const supportContent = async ({ contentType, objectId, amount }) => {
 export const setSectionBounty = async ({ paperId, type, amount }) => {
   const PAYLOAD = { [type]: amount };
 
-  return fetch(API.PAPER({ paperId }), API.POST_CONFIG(PAYLOAD))
+  return fetch(
+    API.PAPER({ paperId, route: "bounty" }),
+    API.POST_CONFIG(PAYLOAD)
+  )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };

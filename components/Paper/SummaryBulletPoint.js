@@ -1,17 +1,15 @@
 import { StyleSheet, css } from "aphrodite";
 import { useState, Fragment, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";
-import { useAlert } from "react-alert";
 import * as Sentry from "@sentry/browser";
-import moment from "moment";
 import Link from "next/link";
+import { useAlert } from "react-alert";
 
 import FormTextArea from "../Form/FormTextArea";
 import Ripples from "react-ripples";
 import Button from "../Form/Button";
 import Loader from "~/components/Loader/Loader";
 import BulletPointVote from "./Vote/BulletPointVote";
-import { ClientLinkWrapper } from "~/components/LinkWrapper";
 
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -21,7 +19,6 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import AuthorAvatar from "../AuthorAvatar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperSlug]";
