@@ -10,6 +10,8 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
+import ModeratorQA from "~/components/Moderator/ModeratorQA";
+import SectionBounty from "./Tabs/SectionBounty";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -322,12 +324,16 @@ class BulletsContainer extends React.Component {
   };
 
   render() {
-    let { showForm, pendingSubmission, transition } = this.state;
-    let { openManageBulletPointsModal, paper, updatePaperState } = this.props;
+    const { transition } = this.state;
+    const { paper } = this.props;
+
     return (
       <div className={css(styles.bulletContainer)}>
         <div className={css(styles.bulletHeaderContainer)}>
-          <div className={css(styles.bulletTitle)}>Key Takeaways</div>
+          <div className={css(styles.bulletTitle)}>
+            Key Takeaways
+            <SectionBounty paper={paper} section={"takeaways"} />
+          </div>
           <div className={css(dropdownStyles.dropdownContainer)}>
             {this.renderDropdown()}
           </div>
@@ -376,6 +382,8 @@ const styles = StyleSheet.create({
     },
   },
   bulletTitle: {
+    display: "flex",
+    alignItems: "center",
     fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
@@ -509,7 +517,6 @@ const dropdownStyles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 8,
   },
   dropdownMenu: {
     position: "absolute",

@@ -6,8 +6,7 @@ import { withAlert } from "react-alert";
 // Components
 import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
-import { AmountInput, RecipientInput } from "../Form/RSCForm";
-import FormSelect from "../Form/FormSelect";
+import { AmountInput } from "../Form/RSCForm";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -34,7 +33,7 @@ class ContentSupportModal extends React.Component {
   }
 
   closeModal = () => {
-    this.props.openContentSupportModal(false, { data: {}, metaData: {} });
+    this.props.openSectionBountyModal(false, { data: {}, metaData: {} });
     this.setState({ ...this.initialState });
     if (document.body.style) {
       document.body.style.overflow = "scroll";
@@ -51,7 +50,7 @@ class ContentSupportModal extends React.Component {
   showSuccessMessage = () => {
     const { setMessage, showMessage } = this.props;
     showMessage({ show: false });
-    setMessage("ResearchCoin succesfully awarded!");
+    setMessage("Bounty succesfully set!");
     showMessage({ show: true });
   };
 
@@ -62,68 +61,60 @@ class ContentSupportModal extends React.Component {
     showMessage({ show: true, error: true });
   };
 
-  handleTransaction = () => {
-    // const { showMessage, updateUser, modals, auth } = this.props;
-    // const { metaData, count, setCount } = modals.openContentSupportModal.props;
-    // showMessage({ show: true, load: true });
-    // setSectionBounty();
-    // .then((res) => {
-    //   this.showSuccessMessage();
-    //   const updatedCount = Number(count) + Number(this.state.amount);
-    //   const balance = auth.user.balance - this.state.amount;
-    //   setCount(updatedCount); // update promoted score
-    //   updateUser({ balance }); // update user's RSC balance
-    //   this.closeModal();
-    // })
-    // .catch(this.showErrorMessage);
-  };
-
-  confirmTransaction = (e) => {
+  showConfirmation = (e) => {
     e && e.stopPropagation();
     e && e.preventDefault();
-
     const { alert } = this.props;
     const { amount } = this.state;
 
     alert.show({
-      text: `Award ${parseInt(amount, 10)} RSC to this post?`,
+      text: `Set a ${parseInt(amount, 10)} RSC bounty to this section?`,
       buttonText: "Yes",
-      onClick: () => this.handleTransaction(),
+      onClick: () => this.postBounty(),
     });
   };
 
-  getAuthorProfile = () => {
-    const { data, metaData } = this.props.modals.openContentSupportModal.props;
+  postBounty = () => {
+    const { showMessage, modals } = this.props;
+    const { amount } = this.state;
+    const {
+      type,
+      paper,
+      updatePaperState,
+      setLoading,
+    } = modals.openSectionBountyModal.props;
+    showMessage({ show: true, load: true });
+    setLoading(true);
 
-    if (data && metaData) {
-      return metaData.contentType === "summary"
-        ? data.proposed_by.author_profile
-        : data.created_by && data.created_by.author_profile;
-    }
+    const params = {
+      paperId: paper.id,
+      type: type === "takeaways" ? "bulletpoint_bounty" : "summary_bounty",
+      amount,
+    };
+
+    setSectionBounty(params)
+      .then((res) => {
+        this.showSuccessMessage();
+        updatePaperState({ ...res });
+        setLoading(false);
+        this.closeModal();
+      })
+      .catch(this.showErrorMessage);
   };
 
   renderInputs = () => {
     return (
       <Fragment>
-        <div className={css(styles.row)}>
-          <AmountInput value={this.state.amount} onChange={this.handleAmount} />
-          {/* <RecipientInput author={this.getAuthorProfile()} /> */}
-        </div>
-        {/* <div className={css(styles.column)}>
-          <RecipientInput
-            author={this.getAuthorProfile()}
-            containerStyles={styles.recipientContainer}
-            cardStyles={styles.recipientCard}
-          />
+        <div className={css(styles.column)}>
           <AmountInput
             value={this.state.amount}
             onChange={this.handleAmount}
             containerStyles={styles.amountInputContainer}
             inputContainerStyles={styles.amountInput}
             inputStyles={styles.amountInput}
-            rightAlignBalance={true}
+            hideBalance={true}
           />
-        </div> */}
+        </div>
       </Fragment>
     );
   };
@@ -133,14 +124,16 @@ class ContentSupportModal extends React.Component {
 
     return (
       <BaseModal
-        isOpen={modals.openContentSupportModal.isOpen}
+        isOpen={modals.openSectionBountyModal.isOpen}
         closeModal={this.closeModal}
-        title={"Set a Bounty"}
-        subtitle={""}
+        title={"Add Bounty"}
+        subtitle={
+          "Select an amount to reward the first user who contributes high quality content to this section."
+        }
         modalContentStyle={styles.modalContentStyle}
         subtitleStyle={styles.subtitleStyle}
       >
-        <form className={css(styles.form)} onSubmit={this.confirmTransaction}>
+        <form className={css(styles.form)} onSubmit={this.showConfirmation}>
           {this.renderInputs()}
           <div className={css(styles.buttonContainer)}>
             <Button
@@ -197,25 +190,18 @@ const styles = StyleSheet.create({
     },
   },
   column: {
-    display: "none",
-    "@media only screen and (max-width: 767px)": {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "flex-start",
-      justifyContent: "space-between",
-      width: "100%",
-      marginTop: 30,
-    },
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 30,
   },
   amountInputContainer: {
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
+    width: "100%",
   },
   amountInput: {
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
+    width: "100%",
   },
   recipientContainer: {
     "@media only screen and (max-width: 767px)": {

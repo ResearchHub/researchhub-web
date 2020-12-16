@@ -14,6 +14,8 @@ import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/Modals/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
+import ModeratorQA from "~/components/Moderator/ModeratorQA";
+import SectionBounty from "./SectionBounty";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -22,10 +24,10 @@ import { AuthActions } from "~/redux/auth";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import API from "../../../config/api";
+import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
-import colors from "../../../config/themes/colors";
+import colors from "~/config/themes/colors";
 import { isQuillDelta } from "~/config/utils/";
 
 import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
@@ -306,22 +308,23 @@ class SummaryTab extends React.Component {
   };
 
   renderTabs = () => {
+    const { paper } = this.props;
+    const { showAbstract } = this.state;
+
     return (
       <div className={css(styles.tabRow)}>
         <div
           className={css(
             styles.tab,
-            !this.state.showAbstract && styles.activeTab
+            styles.summaryTab,
+            !showAbstract && styles.activeTab
           )}
           onClick={() => this.toggleDescription(false)}
         >
           Summary
         </div>
         <div
-          className={css(
-            styles.tab,
-            this.state.showAbstract && styles.activeTab
-          )}
+          className={css(styles.tab, showAbstract && styles.activeTab)}
           onClick={() => this.toggleDescription(true)}
         >
           Abstract
@@ -492,7 +495,10 @@ class SummaryTab extends React.Component {
                   <Fragment>
                     <div className={css(styles.sectionHeader)}>
                       <h3 className={css(styles.sectionTitle)}>
-                        Description
+                        <span className={css(styles.titleRow)}>
+                          Description
+                          <SectionBounty paper={paper} section={"summary"} />
+                        </span>
                         {this.renderTabs()}
                       </h3>
                       <div className={css(styles.summaryActions)}>
@@ -628,7 +634,10 @@ class SummaryTab extends React.Component {
                   <Fragment>
                     <div className={css(styles.sectionHeader)}>
                       <div className={css(styles.sectionTitle)}>
-                        Description
+                        <span className={css(styles.titleRow)}>
+                          Description
+                          <SectionBounty paper={paper} section={"summary"} />
+                        </span>
                         {this.renderTabs()}
                       </div>
                     </div>
@@ -763,7 +772,6 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 20,
-
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
@@ -775,7 +783,7 @@ var styles = StyleSheet.create({
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
-    marginTop: 0,
+    margin: 0,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "space-between",
       width: "100%",
@@ -784,6 +792,9 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
+  },
+  titleRow: {
+    display: "flex",
   },
   noSummaryContainer: {
     alignItems: "center",
@@ -1093,6 +1104,7 @@ var styles = StyleSheet.create({
       fontSize: 12,
     },
   },
+  summaryTab: {},
   activeTab: {
     backgroundColor: colors.BLUE(0.11),
     color: colors.BLUE(),
