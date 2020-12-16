@@ -70,21 +70,18 @@ const Paper = (props) => {
 
   const dispatch = useDispatch();
   const store = useStore();
-  const isModerator = store.getState().auth.user.moderator;
+
   const [paper, setPaper] = useState(
     (props.paper && shims.paper(props.paper)) || {}
   );
   const [summary, setSummary] = useState(
     (props.paper && props.paper.summary) || {}
   );
-  const [showAllSections, toggleShowAllSections] = useState(false);
-  const [referencedBy, setReferencedBy] = useState([]);
-  const [referencedByCount, setReferencedByCount] = useState(0);
-  const [loadingReferencedBy, setLoadingReferencedBy] = useState(true);
   const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
+
+  const [showAllSections, toggleShowAllSections] = useState(false);
   const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
   const [loadingSummary, setLoadingSummary] = useState(true);
-  const [loadingFile, setLoadingFile] = useState(true);
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
   const [sticky, setSticky] = useState(false);
   const [scrollView, setScrollView] = useState(false);
@@ -92,9 +89,6 @@ const Paper = (props) => {
     getVoteType(props.paper && props.paper.userVote)
   );
   const [figureCount, setFigureCount] = useState();
-  const [limitCount, setLimitCount] = useState(
-    store.getState().limitations.limits.length
-  );
   const [discussionCount, setCount] = useState(
     calculateCommentCount(props.paper)
   );
@@ -116,8 +110,9 @@ const Paper = (props) => {
   ]);
   const [tabs, setTabs] = useState(getActiveTabs());
   const [fetchBullets, setFetchBullets] = useState(false);
+  const [userVoteChecked, setUserVoteChecked] = useState(false);
 
-  const { hostname, showMessage } = props;
+  const { hostname } = props;
   const { paperId, tabName } = router.query;
 
   const paperCardRef = useRef(null);
@@ -127,6 +122,11 @@ const Paper = (props) => {
   const discussionRef = useRef(null);
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
+
+  const isModerator = store.getState().auth.user.moderator;
+  const isSubmitter =
+    paper.uploaded_by && paper.uploaded_by.id === props.auth.user.id;
+
   let summaryVoteChecked = false;
 
   const fetchPaper = ({ paperId }) => {
@@ -143,7 +143,6 @@ const Paper = (props) => {
         setCount(calculateCommentCount(currPaper));
         setPaper(currPaper);
         setSummary(currPaper.summary || {});
-        // checkUserVote();
         return currPaper;
       })
       .catch((error) => {
@@ -176,16 +175,9 @@ const Paper = (props) => {
     }
   }, [summary.id, props.auth.isLoggedIn]);
 
-  useEffect(() => {
-    setLimitCount(store.getState().limitations.limits.length);
-    setTabs(getActiveTabs());
-  }, [store.getState().limitations.limits.length]);
-
   function checkUserVote() {
     if (props.auth.isLoggedIn && props.auth.user) {
-      let params = {
-        paperIds: [paperId],
-      };
+      let params = { paperIds: [paperId] };
       return fetch(API.CHECK_USER_VOTE(params), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -193,11 +185,17 @@ const Paper = (props) => {
           const paperUserVote = res[paperId];
 
           if (paperUserVote) {
-            let updatedPaper = { ...paper };
+            const { bullet_low_quality, summary_low_quality } = paperUserVote;
+            const updatedPaper = {
+              ...paper,
+              bullet_low_quality,
+              summary_low_quality,
+            };
             updatedPaper.userVote = paperUserVote;
             setPaper(updatedPaper);
             setSelectedVoteType(updatedPaper.userVote.vote_type);
           }
+          setUserVoteChecked(true);
         });
     }
   }
@@ -338,17 +336,8 @@ const Paper = (props) => {
       tabs.push({ href: "summary", label: "description" });
     }
     tabs.push({ href: "comments", label: "discussions" });
-    // if (figureCount || showAllSections) {
-    //   tabs.push({ href: "figures", label: "figures" });
-    // }
     if (paper.file || paper.url || showAllSections) {
       tabs.push({ href: "paper", label: "Paper PDF" });
-    }
-    if (referencedByCount || showAllSections) {
-      tabs.push({ href: "citations", label: "cited by" });
-    }
-    if (store.getState().limitations.limits.length > 0 || showAllSections) {
-      tabs.push({ href: "limitations", label: "limitations" });
     }
 
     return tabs;
@@ -436,9 +425,6 @@ const Paper = (props) => {
     setPaper(newState);
   }
 
-  const isSubmitter =
-    paper.uploaded_by && paper.uploaded_by.id === props.auth.user.id;
-
   return (
     <div className={css(styles.container)}>
       <PaperTransactionModal
@@ -508,8 +494,6 @@ const Paper = (props) => {
             figureCount={figureCount}
             activeTabs={tabs}
             showAllSections={showAllSections}
-            referencedByCount={referencedByCount}
-            loadingReferencedBy={loadingReferencedBy}
             updatePaperState={updatePaperState}
           />
         </div>
@@ -519,7 +503,6 @@ const Paper = (props) => {
               <PaperProgress
                 setFigureCount={setFigureCount}
                 figureCount={figureCount}
-                setLimitCount={setLimitCount}
                 commentCount={discussionCount}
                 setCount={setCount}
                 paper={paper}
@@ -544,6 +527,7 @@ const Paper = (props) => {
             updatePaperState={updatePaperState}
             updateSummary={setSummary}
             loadingSummary={loadingSummary}
+            userVoteChecked={userVoteChecked}
           />
           <a name="comments" id="comments">
             <div className={css(styles.space)} />
@@ -565,76 +549,9 @@ const Paper = (props) => {
                 paper={paper}
                 paperPdfRef={paperPdfRef}
                 isModerator={isModerator}
-                setLoadingFile={setLoadingFile}
               />
             </div>
           </a>
-          {false && referencedByCount > 0 && showAllSections ? (
-            <a name="citations">
-              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                <ReactPlaceholder
-                  ready={!loadingReferencedBy}
-                  showLoadingAnimation
-                  customPlaceholder={
-                    <CitationPreviewPlaceholder color="#efefef" />
-                  }
-                >
-                  <div
-                    className={css(styles.citationContainer)}
-                    ref={citationRef}
-                    id="citedby-tab"
-                  >
-                    <div className={css(styles.header)}>
-                      <div className={css(styles.citationTitle)}>Cited By</div>
-                      <span className={css(styles.citationCount)}>
-                        {referencedByCount > 0 && referencedByCount}
-                      </span>
-                    </div>
-                    <div className={css(styles.citations)}>
-                      {referencedBy.length > 0 ? (
-                        referencedBy.map((reference, id) => {
-                          return (
-                            <CitationCard
-                              key={`citation-${reference.id}-${id}`}
-                              citation={reference}
-                            />
-                          );
-                        })
-                      ) : (
-                        <div className={css(styles.citationEmpty)}>
-                          <div className={css(styles.icon)}>
-                            <i className="fad fa-file-alt" />
-                          </div>
-                          This paper has not been cited yet
-                          <div className={css(styles.citationEmptySubtext)}>
-                            No citations have been found in RH papers
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </ReactPlaceholder>
-              </ComponentWrapper>
-            </a>
-          ) : null}
-          {false && limitCount && showAllSections ? (
-            <a name="limitations">
-              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                <div
-                  className={css(
-                    styles.bulletsContainer,
-                    styles.limitsContainer
-                  )}
-                  id="limitations-tab"
-                >
-                  <LimitationTab
-                    paperId={paperId}
-                    setLimitCount={setLimitCount}
-                  />
-                </div>
-              </ComponentWrapper>
-            </a>
-          ) : null}
         </div>
         <Joyride
           steps={steps}
