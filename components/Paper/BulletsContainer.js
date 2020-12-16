@@ -251,6 +251,12 @@ class BulletsContainer extends React.Component {
         className={css(dropdownStyles.row)}
         ref={(ref) => (this.dropdownMenu = ref)}
       >
+        <ModeratorQA
+          containerStyles={dropdownStyles.item}
+          updatePaperState={updatePaperState}
+          type={"takeaways"}
+          paper={paper}
+        />
         <Ripples
           className={css(dropdownStyles.item)}
           onClick={() => openManageBulletPointsModal(true, "key_takeaway")}

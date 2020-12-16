@@ -513,6 +513,12 @@ class SummaryTab extends React.Component {
                         {this.renderTabs()}
                       </h3>
                       <div className={css(styles.summaryActions)}>
+                        <ModeratorQA
+                          containerStyles={[styles.action, styles.pinAction]}
+                          updatePaperState={updatePaperState}
+                          type={"summary"}
+                          paper={paper}
+                        />
                         <Link
                           href={"/paper/[paperId]/[paperName]/edits"}
                           as={`/paper/${paper.id}/${paper.slug}/edits`}
@@ -650,6 +656,14 @@ class SummaryTab extends React.Component {
                           <SectionBounty paper={paper} section={"summary"} />
                         </span>
                         {this.renderTabs()}
+                      </div>
+                      <div className={css(styles.summaryActions)}>
+                        <ModeratorQA
+                          containerStyles={[styles.action, styles.pinAction]}
+                          updatePaperState={updatePaperState}
+                          type={"summary"}
+                          paper={paper}
+                        />
                       </div>
                     </div>
                     <div className={css(styles.box) + " second-step"}>
