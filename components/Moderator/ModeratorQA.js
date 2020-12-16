@@ -1,9 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import { useAlert } from "react-alert";
-
-import Loader from "~/components/Loader/Loader";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -11,8 +8,6 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { doesNotExist } from "~/config/utils";
-import { setSectionBounty } from "~/config/fetch";
 
 const ModeratorQA = ({
   auth,
@@ -23,7 +18,6 @@ const ModeratorQA = ({
   containerStyles,
   openSectionBountyModal,
 }) => {
-  const alert = useAlert();
   const [moderator, setIsModerator] = useState(false);
   const [active, setActive] = useState(false);
   const [hover, setHover] = useState(false);
@@ -56,40 +50,13 @@ const ModeratorQA = ({
     return openSectionBountyModal(true, modalProps);
   };
 
-  const removeBounty = () => {
-    alert.show({
-      text: "Remove the bounty for this section?",
-      buttonText: "Yes",
-      onClick: () => {
-        const params = {
-          paperId: paper.id,
-          type: type === "takeaways" ? "bulletpoint_bounty" : "summary_bounty",
-          amount: 0,
-        };
-        setSectionBounty(params)
-          .then((res) => {
-            const updatedPaper = { ...paper };
-
-            if (type === "takeaways") {
-              updatedPaper.bullet_low_quality = 0;
-            } else {
-              updatedPaper.summary_low_quality = 0;
-            }
-
-            updatePaperState(updatedPaper);
-          })
-          .catch();
-      },
-    });
-  };
-
   const renderIcon = () => {
     const isActive = hover;
     return icons.coinStack({ styles: styles.coinStackIcon, grey: !isActive });
   };
 
   const renderLabel = () => {
-    return active ? "Adjust Bounty" : "Add Bounty";
+    return "Add Bounty";
   };
 
   return (
@@ -97,8 +64,8 @@ const ModeratorQA = ({
       className={css(
         styles.container,
         containerStyles && containerStyles,
-        // active && styles.activeContainer,
-        !moderator && styles.hide
+        !moderator && styles.hide,
+        active && styles.hide
       )}
       onClick={handleClick}
       onMouseEnter={() => setHover(true)}
