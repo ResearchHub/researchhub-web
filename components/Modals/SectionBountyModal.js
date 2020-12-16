@@ -18,7 +18,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { setSectionBounty } from "../../config/fetch";
 import colors from "../../config/themes/colors";
-import { sanitizeNumber } from "~/config/utils";
+import { doesNotExist, getBountyAmount, sanitizeNumber } from "~/config/utils";
 
 class ContentSupportModal extends React.Component {
   constructor(props) {
@@ -32,12 +32,33 @@ class ContentSupportModal extends React.Component {
     };
   }
 
+  componentDidMount = () => {
+    this.configureInitialAmount();
+  };
+
+  componentDidUpdate = (prevProps) => {
+    if (
+      !prevProps.modals.openSectionBountyModal.isOpen &&
+      this.props.modals.openSectionBountyModal.isOpen
+    ) {
+      return this.configureInitialAmount();
+    }
+  };
+
   closeModal = () => {
-    this.props.openSectionBountyModal(false, { data: {}, metaData: {} });
+    this.props.openSectionBountyModal(false, {});
     this.setState({ ...this.initialState });
     if (document.body.style) {
       document.body.style.overflow = "scroll";
     }
+  };
+
+  configureInitialAmount = () => {
+    const { type, paper } = this.props.modals.openSectionBountyModal.props;
+
+    this.setState({
+      amount: getBountyAmount({ type, paper }),
+    });
   };
 
   handleAmount = (e) => {
@@ -64,11 +85,19 @@ class ContentSupportModal extends React.Component {
   showConfirmation = (e) => {
     e && e.stopPropagation();
     e && e.preventDefault();
-    const { alert } = this.props;
+    const { alert, modals } = this.props;
+    const { type } = modals.openSectionBountyModal.props;
     const { amount } = this.state;
+    let text;
+
+    if (amount === 0) {
+      text = `Remove bounty for ${type}?`;
+    } else {
+      text = `Set a ${parseInt(amount, 10)} RSC bounty for ${type}?`;
+    }
 
     alert.show({
-      text: `Set a ${parseInt(amount, 10)} RSC bounty to this section?`,
+      text,
       buttonText: "Yes",
       onClick: () => this.postBounty(),
     });
@@ -81,10 +110,8 @@ class ContentSupportModal extends React.Component {
       type,
       paper,
       updatePaperState,
-      setLoading,
     } = modals.openSectionBountyModal.props;
     showMessage({ show: true, load: true });
-    setLoading(true);
 
     const params = {
       paperId: paper.id,
@@ -96,26 +123,25 @@ class ContentSupportModal extends React.Component {
       .then((res) => {
         this.showSuccessMessage();
         updatePaperState({ ...res });
-        setLoading(false);
         this.closeModal();
       })
       .catch(this.showErrorMessage);
   };
 
-  renderInputs = () => {
+  renderInput = () => {
     return (
-      <Fragment>
-        <div className={css(styles.column)}>
-          <AmountInput
-            value={this.state.amount}
-            onChange={this.handleAmount}
-            containerStyles={styles.amountInputContainer}
-            inputContainerStyles={styles.amountInput}
-            inputStyles={styles.amountInput}
-            hideBalance={true}
-          />
-        </div>
-      </Fragment>
+      <div className={css(styles.column)}>
+        <AmountInput
+          value={this.state.amount}
+          onChange={this.handleAmount}
+          containerStyles={styles.amountInputContainer}
+          inputContainerStyles={styles.amountInput}
+          inputStyles={styles.amountInput}
+          hideBalance={true}
+          minValue={"0"}
+          maxValue={Infinity}
+        />
+      </div>
     );
   };
 
@@ -134,7 +160,7 @@ class ContentSupportModal extends React.Component {
         subtitleStyle={styles.subtitleStyle}
       >
         <form className={css(styles.form)} onSubmit={this.showConfirmation}>
-          {this.renderInputs()}
+          {this.renderInput()}
           <div className={css(styles.buttonContainer)}>
             <Button
               label="Confirm"

@@ -1,16 +1,59 @@
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
+import { connect } from "react-redux";
+import numeral from "numeral";
+
+// Component
+import ReactPlaceholder from "react-placeholder/lib";
+
+// Redux
+import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import { getSummaryText } from "~/config/utils";
 
 const SectionBounty = (props) => {
-  const { section, paper } = props;
-  const amount =
-    section === "summary"
-      ? paper.summary_low_quality || 0
-      : paper.bullet_low_quality || 0;
+  const { section, paper, bullets, updatePaperState, loading, auth } = props;
+  const isModerator = auth.isLoggedIn && auth.user && auth.user.moderator;
+  const amount = configureBounty();
+
+  function configureBounty() {
+    const summary = paper.summary && getSummaryText(paper.summary);
+    const needSummary = !summary;
+    const needTakeaways =
+      bullets.bullets.filter((bullet) => !bullet.is_removed).length < 3;
+
+    let bounty =
+      section === "summary"
+        ? paper.summary_low_quality
+        : paper.bullet_low_quality;
+
+    if (typeof bounty === "boolean") {
+      // older papers have boolean fields
+      if (section === "summary" && needSummary) {
+        bounty = 5; // default reward for first summary
+      } else if (section === "takeaways" && needTakeaways) {
+        bounty = 1; // default reward for first keytakeaway
+      } else {
+        bounty = 0;
+      }
+    }
+
+    return numeral(bounty).format("0a");
+  }
+
+  const handleClick = () => {
+    if (!isModerator) return;
+
+    props.openSectionBountyModal(true, {
+      type: section,
+      paper,
+      updatePaperState,
+    });
+  };
 
   const renderLabel = () => {
     return (
@@ -22,9 +65,26 @@ const SectionBounty = (props) => {
   };
 
   return (
-    <div className={css(styles.container, !amount && styles.hidden)}>
-      {renderLabel()}
-    </div>
+    <ReactPlaceholder
+      ready={!loading}
+      showLoadingAnimation
+      type="textRow"
+      rows={1}
+      color={colors.ORANGE(0.2)}
+      className={css(styles.placeholder)}
+    >
+      <div
+        className={css(
+          styles.container,
+          isModerator && styles.moderatorContainer,
+          !amount && styles.hidden
+        )}
+        data-tip={`Earn ${amount} RSC for contributing to the ${section}`}
+        onClick={handleClick}
+      >
+        {renderLabel()}
+      </div>
+    </ReactPlaceholder>
   );
 };
 
@@ -43,6 +103,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     cursor: "default",
   },
+  moderatorContainer: {
+    cursor: "pointer",
+    ":hover": {
+      boxShadow: `0px 0px 2px ${colors.ORANGE()}`,
+    },
+  },
   hidden: {
     display: "none",
   },
@@ -51,6 +117,28 @@ const styles = StyleSheet.create({
     height: 12,
     width: 12,
   },
+  placeholder: {
+    width: 80,
+    height: 24,
+    margin: 0,
+    marginLeft: 10,
+    marginRight: 8,
+    borderRadius: 4,
+  },
 });
 
-export default SectionBounty;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  bullets: state.bullets,
+});
+
+const mapDispatchToProps = {
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+  openSectionBountyModal: ModalActions.openSectionBountyModal,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SectionBounty);

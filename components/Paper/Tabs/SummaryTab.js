@@ -281,9 +281,9 @@ class SummaryTab extends React.Component {
   };
 
   navigateToEditPaperInfo = () => {
-    let paperId = this.props.paper.id;
-    let href = "/paper/upload/info/[paperId]";
-    let as = `/paper/upload/info/${paperId}`;
+    const paperId = this.props.paper.id;
+    const href = "/paper/upload/info/[paperId]";
+    const as = `/paper/upload/info/${paperId}`;
     Router.push(href, as);
   };
 
@@ -308,7 +308,6 @@ class SummaryTab extends React.Component {
   };
 
   renderTabs = () => {
-    const { paper } = this.props;
     const { showAbstract } = this.state;
 
     return (
@@ -462,7 +461,13 @@ class SummaryTab extends React.Component {
   };
 
   render() {
-    const { paper, summary, loadingSummary, updatePaperState } = this.props;
+    const {
+      paper,
+      summary,
+      loadingSummary,
+      updatePaperState,
+      userVoteChecked,
+    } = this.props;
     const { transition } = this.state;
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
@@ -477,6 +482,7 @@ class SummaryTab extends React.Component {
               afterFetchBullets={this.props.afterFetchBullets}
               updatePaperState={updatePaperState}
               paper={paper}
+              userVoteChecked={userVoteChecked}
             />
           </div>
         </a>
@@ -497,7 +503,12 @@ class SummaryTab extends React.Component {
                       <h3 className={css(styles.sectionTitle)}>
                         <span className={css(styles.titleRow)}>
                           Description
-                          <SectionBounty paper={paper} section={"summary"} />
+                          <SectionBounty
+                            paper={paper}
+                            section={"summary"}
+                            loading={!userVoteChecked}
+                            updatePaperState={updatePaperState}
+                          />
                         </span>
                         {this.renderTabs()}
                       </h3>

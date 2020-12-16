@@ -325,14 +325,19 @@ class BulletsContainer extends React.Component {
 
   render() {
     const { transition } = this.state;
-    const { paper } = this.props;
+    const { paper, userVoteChecked, updatePaperState } = this.props;
 
     return (
       <div className={css(styles.bulletContainer)}>
         <div className={css(styles.bulletHeaderContainer)}>
           <div className={css(styles.bulletTitle)}>
             Key Takeaways
-            <SectionBounty paper={paper} section={"takeaways"} />
+            <SectionBounty
+              paper={paper}
+              section={"takeaways"}
+              loading={!userVoteChecked}
+              updatePaperState={updatePaperState}
+            />
           </div>
           <div className={css(dropdownStyles.dropdownContainer)}>
             {this.renderDropdown()}
