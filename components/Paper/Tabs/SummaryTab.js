@@ -14,7 +14,6 @@ import BulletsContainer from "../BulletsContainer";
 import ManageBulletPointsModal from "~/components/modal/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
-import ModeratorQA from "~/components/Moderator/ModeratorQA";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -497,12 +496,6 @@ class SummaryTab extends React.Component {
                         {this.renderTabs()}
                       </h3>
                       <div className={css(styles.summaryActions)}>
-                        <ModeratorQA
-                          containerStyles={[styles.action, styles.pinAction]}
-                          updatePaperState={updatePaperState}
-                          type={"summary"}
-                          paper={paper}
-                        />
                         <Link
                           href={"/paper/[paperId]/[paperName]/edits"}
                           as={`/paper/${paper.id}/${paper.slug}/edits`}
@@ -637,14 +630,6 @@ class SummaryTab extends React.Component {
                       <div className={css(styles.sectionTitle)}>
                         Description
                         {this.renderTabs()}
-                      </div>
-                      <div className={css(styles.summaryActions)}>
-                        <ModeratorQA
-                          containerStyles={[styles.action, styles.pinAction]}
-                          updatePaperState={updatePaperState}
-                          type={"summary"}
-                          paper={paper}
-                        />
                       </div>
                     </div>
                     <div className={css(styles.box) + " second-step"}>
