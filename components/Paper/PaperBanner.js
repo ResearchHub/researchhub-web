@@ -37,12 +37,7 @@ const PaperBanner = ({
       }
     }
     const isRemoved = paper.is_removed;
-    const summary = paper.summary && getSummaryText(paper.summary);
     const isRemovedByUser = paper.is_removed_by_user;
-    const needSummary = paper.summary_low_quality || !summary;
-    const needTakeaways =
-      paper.bullet_low_quality ||
-      bullets.bullets.filter((bullet) => !bullet.is_removed).length === 0;
 
     if (isRemoved) {
       setType("removed");
@@ -56,40 +51,7 @@ const PaperBanner = ({
       return;
     }
 
-    if (needSummary || needTakeaways) {
-      setType("incomplete");
-      setShowBanner(true);
-      return;
-    }
-
     setShowBanner(false);
-  };
-
-  const renderButton = () => {
-    const props = {};
-    const summary = paper.summary && getSummaryText(paper.summary);
-
-    const needSummary = paper.summary_low_quality || !summary;
-    const needTakeaways =
-      paper.bullet_low_quality ||
-      bullets.bullets.filter((bullet) => !bullet.is_removed).length === 0;
-
-    if (needTakeaways) {
-      props.label = "Add Key Takeaway";
-      props.onClick = () =>
-        openPaperFeatureModal(true, { tab: "key-takeaways" });
-      props.customButtonStyle = styles.button;
-      props.customLabelStyle = styles.buttonLabel;
-    } else if (needSummary) {
-      props.label = "Add Summary";
-      props.onClick = () => openPaperFeatureModal(true, { tab: "summary" });
-    }
-
-    return (
-      <div className={css(styles.buttonContainer)}>
-        <Button {...props} />
-      </div>
-    );
   };
 
   /**
@@ -128,35 +90,6 @@ const PaperBanner = ({
             This paper has been removed from ResearchHub by the submitter.
           </div>
         );
-      case "incomplete":
-        return (
-          <div className={css(styles.incompleteMessage)}>
-            <h3 className={css(styles.header)}>
-              Help improve the quality of this page.
-            </h3>
-            <p className={css(styles.paragraph)}>
-              You can improve this paper page by contributing content. Check out
-              our{" "}
-              <a
-                style={{ color: "#4E53FF" }}
-                target="_blank"
-                href="https://www.notion.so/researchhub/Writing-A-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
-              >
-                Summary Guidelines
-              </a>{" "}
-              as well as our{" "}
-              <a
-                style={{ color: "#4E53FF" }}
-                target="_blank"
-                href="https://www.notion.so/researchhub/Discussion-Guidelines-cbeb823e47a342638320af716e698539"
-              >
-                Discussion Guidelines
-              </a>{" "}
-              to contribute the highest quality content.
-            </p>
-            {renderButton()}
-          </div>
-        );
       default:
         return;
     }
@@ -173,14 +106,6 @@ const PaperBanner = ({
               css(styles.removeIcon, mobile && styles.mobileRemoveIcon) +
               " fas fa-exclamation-circle"
             }
-          />
-        );
-        break;
-      case "incomplete":
-        icon = (
-          <img
-            className={css(styles.incompleteIcon)}
-            src={"/static/icons/rh-group.png"}
           />
         );
         break;
@@ -208,16 +133,7 @@ const PaperBanner = ({
       )}
     >
       {type === "removed" && renderIcon()}
-      {conditionalContainer({
-        condition: type === "incomplete",
-        mobile: true,
-        component: renderIcon(),
-      })}
       <div className={css(styles.message)}>{renderMessage()}</div>
-      {conditionalContainer({
-        condition: type === "incomplete",
-        component: renderIcon(),
-      })}
     </div>
   );
 };
