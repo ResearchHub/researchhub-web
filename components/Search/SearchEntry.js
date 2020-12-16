@@ -77,45 +77,6 @@ class SearchEntry extends React.Component {
     return formatDateStandard(transformDate(date));
   };
 
-  // transformAuthors = () => {
-  //   const { result } = this.props;
-  //   const { authors, meta } = result;
-  //   if (result.meta.highlight && result.meta.highlight.authors) {
-  //     return (
-  //       <div className={css(styles.authors) + " clamp1"}>
-  //         {"by "}
-  //         {this.parseTitleHighlight(result.meta.highlight, "authors")}
-  //       </div>
-  //     );
-  //   } else {
-  //     return (
-  //       <div className={css(styles.authors) + " clamp1"}>
-  //         {"by "}
-  //         {authors.map((author, i) => {
-  //           if (i !== authors.length - 1) {
-  //             return (
-  //               <span>
-  //                 <Highlight
-  //                   attribute={`authors[${i}]`}
-  //                   result
-  //                 />
-  //                 {", "}
-  //               </span>
-  //             );
-  //           } else {
-  //             return (
-  //               <Highlight
-  //                 attribute={`authors[${i}]`}
-  //                 result
-  //               />
-  //             );
-  //           }
-  //         })}
-  //       </div>
-  //     );
-  //   }
-  // };
-
   renderMainText = () => {
     const { indexName, result } = this.props;
     const { authors } = result;
