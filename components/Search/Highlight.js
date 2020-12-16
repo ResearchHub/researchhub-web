@@ -24,13 +24,18 @@ const Highlight = (props) => {
   }
 
   function parseHighlight(_text) {
-    if (
-      doesNotExist(_text) &&
-      (doesNotExist(highlight) || doesNotExist(highlight[attribute]))
-    )
+    if (doesNotExist(_text)) {
       return result[attribute];
+    }
 
-    const text = _text ? _text : highlight[attribute][0];
+    if (doesNotExist(highlight) || doesNotExist(highlight[attribute])) {
+      return result[attribute];
+    }
+
+    const text = _text
+      ? _text
+      : highlight[attribute] && highlight[attribute][0];
+
     const parts = text.split(/(<em>[^<]+<\/em>)/);
     const parsedString = parts.map((part) => {
       if (part.includes("<em>")) {
