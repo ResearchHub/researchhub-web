@@ -721,7 +721,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       padding: 25,
     },
   },
@@ -729,7 +729,7 @@ var styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     right: 0,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       right: -10,
       top: -10,
     },
@@ -748,7 +748,7 @@ var styles = StyleSheet.create({
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
     position: "relative",
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       padding: 25,
     },
   },
@@ -773,7 +773,7 @@ var styles = StyleSheet.create({
     fontSize: 15,
     width: "100%",
     boxSizing: "border-box",
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       fontSize: 14,
       width: "100%",
     },
@@ -797,7 +797,7 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 20,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       flexDirection: "column",
       alignItems: "flex-start",
       paddingBottom: 20,
@@ -809,7 +809,7 @@ var styles = StyleSheet.create({
     color: colors.BLACK(),
     display: "flex",
     margin: 0,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       justifyContent: "space-between",
       width: "100%",
       marginBottom: 20,
@@ -835,7 +835,7 @@ var styles = StyleSheet.create({
   column: {
     width: 178,
     marginLeft: 8,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       width: "100%",
     },
   },
@@ -904,7 +904,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-end",
     paddingBottom: 0,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       justifyContent: "flex-start",
     },
     "@media only screen and (max-width: 415px)": {
@@ -913,7 +913,7 @@ var styles = StyleSheet.create({
   },
   abstractActions: {
     display: "flex",
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       marginTop: 8,
     },
     "@media only screen and (max-width: 415px)": {
@@ -936,7 +936,7 @@ var styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     padding: "3px 5px",
     paddingRight: 0,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       padding: 0,
     },
     ":hover": {
@@ -1075,7 +1075,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     marginTop: 20,
     lineHeight: 1.6,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       fontSize: 14,
     },
     "@media only screen and (max-width: 415px)": {
@@ -1087,7 +1087,7 @@ var styles = StyleSheet.create({
     paddingTop: 5,
     boxSizing: "border-box",
     lineHeight: 1.6,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       fontSize: 14,
     },
     "@media only screen and (max-width: 415px)": {
@@ -1122,7 +1122,7 @@ var styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(),
     },
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 967px)": {
       marginRight: 0,
     },
     "@media only screen and (max-width: 415px)": {
