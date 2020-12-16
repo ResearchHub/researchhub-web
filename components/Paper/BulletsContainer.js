@@ -10,7 +10,6 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import ModeratorQA from "~/components/Moderator/ModeratorQA";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -250,12 +249,6 @@ class BulletsContainer extends React.Component {
         className={css(dropdownStyles.row)}
         ref={(ref) => (this.dropdownMenu = ref)}
       >
-        <ModeratorQA
-          containerStyles={dropdownStyles.item}
-          updatePaperState={updatePaperState}
-          type={"takeaways"}
-          paper={paper}
-        />
         <Ripples
           className={css(dropdownStyles.item)}
           onClick={() => openManageBulletPointsModal(true, "key_takeaway")}
