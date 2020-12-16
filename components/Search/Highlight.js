@@ -24,12 +24,10 @@ const Highlight = (props) => {
   }
 
   function parseHighlight(_text) {
-    if (doesNotExist(_text)) {
-      return result[attribute];
-    }
-
     if (doesNotExist(highlight) || doesNotExist(highlight[attribute])) {
-      return result[attribute];
+      if (doesNotExist(_text)) {
+        return result[attribute];
+      }
     }
 
     const text = _text
