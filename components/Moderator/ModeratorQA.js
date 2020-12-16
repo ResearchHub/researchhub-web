@@ -27,7 +27,6 @@ const ModeratorQA = ({
   const [moderator, setIsModerator] = useState(false);
   const [active, setActive] = useState(false);
   const [hover, setHover] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (auth.isLoggedIn) {
@@ -48,14 +47,13 @@ const ModeratorQA = ({
 
   const handleClick = (e) => {
     e && e.stopPropagation();
-    return active
-      ? removeBounty()
-      : openSectionBountyModal(true, {
-          type,
-          setLoading,
-          paper,
-          updatePaperState,
-        });
+    const modalProps = {
+      type,
+      paper,
+      updatePaperState,
+    };
+
+    return openSectionBountyModal(true, modalProps);
   };
 
   const removeBounty = () => {
@@ -70,7 +68,15 @@ const ModeratorQA = ({
         };
         setSectionBounty(params)
           .then((res) => {
-            updatePaperState({ ...res });
+            const updatedPaper = { ...paper };
+
+            if (type === "takeaways") {
+              updatedPaper.bullet_low_quality = 0;
+            } else {
+              updatedPaper.summary_low_quality = 0;
+            }
+
+            updatePaperState(updatedPaper);
           })
           .catch();
       },
@@ -78,16 +84,12 @@ const ModeratorQA = ({
   };
 
   const renderIcon = () => {
-    if (loading) {
-      return <Loader loading={true} size={8} />;
-    }
-
     const isActive = hover;
     return icons.coinStack({ styles: styles.coinStackIcon, grey: !isActive });
   };
 
   const renderLabel = () => {
-    return active ? "Remove Bounty" : "Add Bounty";
+    return active ? "Adjust Bounty" : "Add Bounty";
   };
 
   return (
