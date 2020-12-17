@@ -146,21 +146,22 @@ class BulletsContainer extends React.Component {
   };
 
   submitBulletPoint = async () => {
-    let {
+    const {
       bulletsRedux,
       postBullet,
       showMessage,
       setMessage,
       auth,
       openLoginModal,
+      paper,
+      updatePaperState,
     } = this.props;
     if (!auth.isLoggedIn) {
       return openLoginModal(true, "Please login to add a key takeaway");
     }
     this.props.showMessage({ load: true, show: true });
-    let paperId = this.props.paperId;
-    let bullet = this.formatNewBullet();
-    let newBullets = [...this.state.bullets, bullet];
+    const paperId = this.props.paperId;
+    const bullet = this.formatNewBullet();
     this.setState({ pendingSubmission: true });
     await postBullet({ paperId, bullet, prevState: bulletsRedux });
     if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
@@ -172,6 +173,7 @@ class BulletsContainer extends React.Component {
         bulletText: "",
         showForm: false,
       });
+      updatePaperState({ ...paper, bullet_low_quality: 0 });
     } else {
       // handle error
       if (this.props.bulletsRedux.status === 429) {
