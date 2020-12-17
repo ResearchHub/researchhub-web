@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
 
 // Component
@@ -82,6 +83,7 @@ const SectionBounty = (props) => {
       color={colors.ORANGE(0.2)}
       className={css(styles.placeholder)}
     >
+      <ReactTooltip />
       <div
         className={css(
           styles.container,
