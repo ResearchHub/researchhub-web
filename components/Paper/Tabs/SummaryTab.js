@@ -5,7 +5,6 @@ import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Ripples from "react-ripples";
 import Link from "next/link";
-import ReactTooltip from "react-tooltip";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -472,7 +471,6 @@ class SummaryTab extends React.Component {
     const { transition } = this.state;
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-        <ReactTooltip />
         <a name="takeaways" id={"takeaway"}>
           <div
             className={css(styles.bulletsContainer)}
