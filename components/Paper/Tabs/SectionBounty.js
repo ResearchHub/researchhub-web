@@ -31,14 +31,11 @@ const SectionBounty = (props) => {
         ? paper.summary_low_quality
         : paper.bullet_low_quality;
 
-    if (typeof bounty === "boolean") {
-      // older papers have boolean fields
+    if (!bounty) {
       if (section === "summary" && needSummary) {
         bounty = 5; // default reward for first summary
       } else if (section === "takeaways" && needTakeaways) {
         bounty = 1; // default reward for first keytakeaway
-      } else {
-        bounty = 0;
       }
     }
 
@@ -67,7 +64,7 @@ const SectionBounty = (props) => {
   const formatToolTip = () => {
     const sectionName = {
       takeaways: "Key Takeaways",
-      sumamry: "Summary",
+      summary: "Summary",
     };
 
     if (isModerator) {
@@ -89,7 +86,7 @@ const SectionBounty = (props) => {
         className={css(
           styles.container,
           isModerator && styles.moderatorContainer,
-          !amount && styles.hidden
+          amount == 0 && styles.hidden
         )}
         data-tip={formatToolTip()}
         onClick={handleClick}
