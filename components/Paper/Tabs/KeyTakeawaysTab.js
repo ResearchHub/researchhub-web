@@ -5,13 +5,14 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
-import BulletPlaceholder from "../Placeholders/BulletPlaceholder";
-import FormTextArea from "../Form/FormTextArea";
-import Button from "../Form/Button";
-import SummaryBulletPoint from "./SummaryBulletPoint";
+import ComponentWrapper from "~/components/ComponentWrapper";
+import BulletPlaceholder from "../../Placeholders/BulletPlaceholder";
+import FormTextArea from "../../Form/FormTextArea";
+import Button from "../../Form/Button";
+import SummaryBulletPoint from "../SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
 import ModeratorQA from "~/components/Moderator/ModeratorQA";
-import SectionBounty from "./Tabs/SectionBounty";
+import SectionBounty from "./SectionBounty";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -50,7 +51,7 @@ class BulletsContainer extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
-      if (prevProps.paperId !== this.props.paperId) {
+      if (prevProps.paper.id !== this.props.paper.id) {
         this.fetchBullets();
       } else if (
         JSON.stringify(prevProps.bulletsRedux.bullets) !==
@@ -63,7 +64,7 @@ class BulletsContainer extends React.Component {
 
   fetchBullets = async () => {
     this.setState({ loading: true });
-    await this.props.getBullets(this.props.paperId);
+    await this.props.getBullets(this.props.paper.id);
     this.setState({ loading: false }, () => {
       this.props.afterFetchBullets && this.props.afterFetchBullets();
     });
@@ -92,7 +93,7 @@ class BulletsContainer extends React.Component {
       setTimeout(() => {
         fn();
         this.setState({ transition: false });
-      }, 400);
+      }, 200);
     });
   };
 
@@ -132,17 +133,17 @@ class BulletsContainer extends React.Component {
   onEditCallback = (bullet, index) => {
     let bullets = [...this.state.bullets];
     bullets[index] = bullet;
-    this.setState({ bullets }, () => {
-      this.props.updateStateByKey("bullets", bullets);
-    });
+    this.setState({ bullets }, () =>
+      this.props.updateStateByKey("bullets", bullets)
+    );
   };
 
   onRemoveCallback = (index) => {
     let bullets = [...this.state.bullets];
     bullets.splice(index, 1);
-    this.setState({ bullets }, () => {
-      this.props.updateStateByKey("bullets", bullets);
-    });
+    this.setState({ bullets }, () =>
+      this.props.updateStateByKey("bullets", bullets)
+    );
   };
 
   submitBulletPoint = async () => {
@@ -157,10 +158,10 @@ class BulletsContainer extends React.Component {
       updatePaperState,
     } = this.props;
     if (!auth.isLoggedIn) {
-      return openLoginModal(true, "Please login to add a key takeaway");
+      return openLoginModal(true, "Please sign in to add a key takeaway");
     }
-    this.props.showMessage({ load: true, show: true });
-    const paperId = this.props.paperId;
+    showMessage({ load: true, show: true });
+    const paperId = paper.id;
     const bullet = this.formatNewBullet();
     this.setState({ pendingSubmission: true });
     await postBullet({ paperId, bullet, prevState: bulletsRedux });
@@ -173,7 +174,7 @@ class BulletsContainer extends React.Component {
         bulletText: "",
         showForm: false,
       });
-      updatePaperState({ ...paper, bullet_low_quality: 0 });
+      updatePaperState({ ...paper });
     } else {
       // handle error
       if (this.props.bulletsRedux.status === 429) {
@@ -333,36 +334,66 @@ class BulletsContainer extends React.Component {
 
   render() {
     const { transition } = this.state;
-    const { paper, userVoteChecked, updatePaperState } = this.props;
+    const {
+      paper,
+      userVoteChecked,
+      updatePaperState,
+      keyTakeawayRef,
+    } = this.props;
 
     return (
-      <div className={css(styles.bulletContainer)}>
-        <div className={css(styles.bulletHeaderContainer)}>
-          <div className={css(styles.bulletTitle)}>
-            Key Takeaways
-            <SectionBounty
-              paper={paper}
-              section={"takeaways"}
-              loading={!userVoteChecked}
-              updatePaperState={updatePaperState}
-            />
+      <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+        <a name="takeaways" id={"takeaway"}>
+          <div
+            className={css(styles.bulletsContainer)}
+            ref={keyTakeawayRef}
+            id="takeaways-tab"
+          >
+            <div className={css(styles.bulletContainer)}>
+              <div className={css(styles.bulletHeaderContainer)}>
+                <div className={css(styles.bulletTitle)}>
+                  Key Takeaways
+                  <SectionBounty
+                    paper={paper}
+                    section={"takeaways"}
+                    loading={!userVoteChecked}
+                    updatePaperState={updatePaperState}
+                  />
+                </div>
+                <div className={css(dropdownStyles.dropdownContainer)}>
+                  {this.renderDropdown()}
+                </div>
+              </div>
+              <div
+                className={css(
+                  styles.bulletPoints,
+                  transition && styles.transition
+                )}
+              >
+                {this.showForm()}
+                {this.renderBulletPoints()}
+              </div>
+            </div>
           </div>
-          <div className={css(dropdownStyles.dropdownContainer)}>
-            {this.renderDropdown()}
-          </div>
-        </div>
-        <div
-          className={css(styles.bulletPoints, transition && styles.transition)}
-        >
-          {this.showForm()}
-          {this.renderBulletPoints()}
-        </div>
-      </div>
+        </a>
+      </ComponentWrapper>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  bulletsContainer: {
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
+  },
   bulletContainer: {
     width: "100%",
     backgroundColor: "#fff",
