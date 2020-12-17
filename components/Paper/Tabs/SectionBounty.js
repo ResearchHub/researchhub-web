@@ -4,9 +4,6 @@ import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import numeral from "numeral";
 
-// Component
-import ReactPlaceholder from "react-placeholder/lib";
-
 // Redux
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -75,27 +72,21 @@ const SectionBounty = (props) => {
   };
 
   return (
-    <ReactPlaceholder
-      ready={!loading}
-      showLoadingAnimation
-      type="textRow"
-      rows={1}
-      color={colors.ORANGE(0.2)}
-      className={css(styles.placeholder)}
-    >
+    <Fragment>
       <ReactTooltip />
       <div
         className={css(
           styles.container,
           isModerator && styles.moderatorContainer,
-          amount == 0 && styles.hidden
+          amount == 0 && styles.hidden,
+          loading && styles.hidden
         )}
         data-tip={formatToolTip()}
         onClick={handleClick}
       >
         {renderLabel()}
       </div>
-    </ReactPlaceholder>
+    </Fragment>
   );
 };
 

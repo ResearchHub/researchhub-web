@@ -56,7 +56,7 @@ const ModeratorQA = ({
   };
 
   const renderLabel = () => {
-    return "Add Bounty";
+    return "Set Bounty";
   };
 
   return (
@@ -64,8 +64,7 @@ const ModeratorQA = ({
       className={css(
         styles.container,
         containerStyles && containerStyles,
-        !moderator && styles.hide,
-        active && styles.hide
+        !moderator && styles.hide
       )}
       onClick={handleClick}
       onMouseEnter={() => setHover(true)}

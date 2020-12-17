@@ -48,7 +48,7 @@ const PermissionNotificationWrapper = (props) => {
       }
     } else {
       dispatch(
-        ModalActions.openLoginModal(true, `Please login to ${modalMessage}`)
+        ModalActions.openLoginModal(true, `Please sign in to ${modalMessage}`)
       );
     }
   }

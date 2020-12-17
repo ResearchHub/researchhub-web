@@ -14,11 +14,9 @@ import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import { setSectionBounty } from "../../config/fetch";
 import colors from "../../config/themes/colors";
-import { doesNotExist, getBountyAmount, sanitizeNumber } from "~/config/utils";
+import { getBountyAmount, sanitizeNumber } from "~/config/utils";
 
 class ContentSupportModal extends React.Component {
   constructor(props) {
@@ -142,7 +140,7 @@ class ContentSupportModal extends React.Component {
       summary: "Summary",
     };
 
-    return `Select an amount to reward the first user who contributes content to the ${sectionName[type]}.`;
+    return `Select an amount to reward the user who contributes content to the ${sectionName[type]}.`;
   };
 
   renderInput = () => {
@@ -164,7 +162,7 @@ class ContentSupportModal extends React.Component {
 
   render() {
     const { modals } = this.props;
-    const { amount } = this.state;
+
     return (
       <BaseModal
         isOpen={modals.openSectionBountyModal.isOpen}

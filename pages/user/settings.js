@@ -611,13 +611,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "left",
     color: colors.BLACK(),
-    transition: "all ease-out 0.1s",
     boxSizing: "border-box",
   },
   container: {
     padding: "15px 10px",
     borderTop: "1px solid #EDEDED",
-    transition: "all ease-in-out 0.2s",
   },
   formSelectContainer: {
     padding: 0,
@@ -678,7 +676,6 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     cursor: "pointer",
-    // padding: 8,
     borderRadius: "50%",
     color: "#afb5bc",
     boxSizing: "border-box",

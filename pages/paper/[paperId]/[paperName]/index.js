@@ -17,10 +17,8 @@ import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import LimitationTab from "~/components/Paper/Tabs/LimitationTab";
+import KeyTakeawaysTab from "~/components/Paper/Tabs/KeyTakeawaysTab";
 import PaperPageCard from "~/components/PaperPageCard";
-import CitationCard from "~/components/Paper/CitationCard";
-import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
 import PaperProgress from "~/components/Paper/PaperProgress";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
@@ -491,9 +489,7 @@ const Paper = (props) => {
             setSticky={setSticky}
             scrollView={scrollView}
             tabName={tabName}
-            discussionCount={discussionCount}
             paper={paper}
-            figureCount={figureCount}
             activeTabs={tabs}
             showAllSections={showAllSections}
             updatePaperState={updatePaperState}
@@ -519,21 +515,26 @@ const Paper = (props) => {
               />
             </div>
           </ComponentWrapper>
+          <KeyTakeawaysTab
+            keyTakeawayRef={keyTakeawayRef}
+            afterFetchBullets={() => setFetchBullets(true)}
+            updatePaperState={updatePaperState}
+            paper={paper}
+            userVoteChecked={userVoteChecked}
+            fetchBullets={fetchBullets}
+          />
           <SummaryTab
             paperId={paperId}
             paper={paper}
             summary={summary}
-            keyTakeawayRef={keyTakeawayRef}
             descriptionRef={descriptionRef}
-            afterFetchBullets={() => setFetchBullets(true)}
             updatePaperState={updatePaperState}
             updateSummary={setSummary}
             loadingSummary={loadingSummary}
             userVoteChecked={userVoteChecked}
           />
           <a name="comments" id="comments">
-            <div className={css(styles.space)} />
-            <div id="comments-tab">
+            <div id="comments-tab" className={css(styles.space)}>
               <DiscussionTab
                 hostname={hostname}
                 paperId={paperId}
@@ -824,7 +825,7 @@ const styles = StyleSheet.create({
     display: "none",
   },
   space: {
-    height: 30,
+    marginTop: 30,
   },
   stickyComponent: {
     top: 0,
@@ -916,18 +917,6 @@ const styles = StyleSheet.create({
   },
   figuresContainer: {
     marginTop: 32,
-  },
-  bulletsContainer: {
-    backgroundColor: "#fff",
-    padding: 50,
-    border: "1.5px solid #F0F0F0",
-    boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    borderRadius: 4,
-
-    "@media only screen and (max-width: 767px)": {
-      padding: 25,
-    },
   },
   limitsContainer: {
     marginTop: 30,
