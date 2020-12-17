@@ -88,12 +88,19 @@ class ContentSupportModal extends React.Component {
     const { alert, modals } = this.props;
     const { type } = modals.openSectionBountyModal.props;
     const { amount } = this.state;
+    const sectionName = {
+      takeaways: "Key Takeaways",
+      sumamry: "Summary",
+    };
+
     let text;
 
     if (amount === 0) {
-      text = `Remove bounty for ${type}?`;
+      text = `Remove bounty for ${sectionName[type]}?`;
     } else {
-      text = `Set a ${parseInt(amount, 10)} RSC bounty for ${type}?`;
+      text = `Set a ${parseInt(amount, 10)} RSC bounty for ${
+        sectionName[type]
+      }?`;
     }
 
     alert.show({
@@ -128,6 +135,17 @@ class ContentSupportModal extends React.Component {
       .catch(this.showErrorMessage);
   };
 
+  renderSubtitle = () => {
+    const { type } = this.props.modals.openSectionBountyModal.props;
+
+    const sectionName = {
+      takeaways: "Key Takeaways",
+      sumamry: "Summary",
+    };
+
+    return `Select an amount to reward the first user who contributes content to the ${sectionName[type]}.`;
+  };
+
   renderInput = () => {
     return (
       <div className={css(styles.column)}>
@@ -153,9 +171,7 @@ class ContentSupportModal extends React.Component {
         isOpen={modals.openSectionBountyModal.isOpen}
         closeModal={this.closeModal}
         title={"Set Bounty"}
-        subtitle={
-          "Select an amount to reward the first user who contributes high quality content to this section."
-        }
+        subtitle={this.renderSubtitle()}
         modalContentStyle={styles.modalContentStyle}
         subtitleStyle={styles.subtitleStyle}
       >

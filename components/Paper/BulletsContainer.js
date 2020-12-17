@@ -4,6 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
+import ReactTooltip from "react-tooltip";
 
 import BulletPlaceholder from "../Placeholders/BulletPlaceholder";
 import FormTextArea from "../Form/FormTextArea";
@@ -335,6 +336,7 @@ class BulletsContainer extends React.Component {
 
     return (
       <div className={css(styles.bulletContainer)}>
+        <ReactTooltip />
         <div className={css(styles.bulletHeaderContainer)}>
           <div className={css(styles.bulletTitle)}>
             Key Takeaways

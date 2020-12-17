@@ -64,6 +64,18 @@ const SectionBounty = (props) => {
     );
   };
 
+  const formatToolTip = () => {
+    const sectionName = {
+      takeaways: "Key Takeaways",
+      sumamry: "Summary",
+    };
+
+    if (isModerator) {
+      return `Set bounty for ${sectionName[section]}`;
+    }
+    return `Earn ${amount} RSC for contributing to the ${sectionName[section]}`;
+  };
+
   return (
     <ReactPlaceholder
       ready={!loading}
@@ -79,11 +91,7 @@ const SectionBounty = (props) => {
           isModerator && styles.moderatorContainer,
           !amount && styles.hidden
         )}
-        data-tip={
-          isModerator
-            ? `Adjust Bounty for ${section}`
-            : `Earn ${amount} RSC for contributing to the ${section}`
-        }
+        data-tip={formatToolTip()}
         onClick={handleClick}
       >
         {renderLabel()}
