@@ -90,7 +90,7 @@ class ContentSupportModal extends React.Component {
     const { amount } = this.state;
     const sectionName = {
       takeaways: "Key Takeaways",
-      sumamry: "Summary",
+      summary: "Summary",
     };
 
     let text;
