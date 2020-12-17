@@ -339,6 +339,7 @@ class BulletsContainer extends React.Component {
       userVoteChecked,
       updatePaperState,
       keyTakeawayRef,
+      fetchBullets,
     } = this.props;
 
     return (
@@ -356,7 +357,7 @@ class BulletsContainer extends React.Component {
                   <SectionBounty
                     paper={paper}
                     section={"takeaways"}
-                    loading={!userVoteChecked}
+                    loading={!userVoteChecked || !fetchBullets}
                     updatePaperState={updatePaperState}
                   />
                 </div>

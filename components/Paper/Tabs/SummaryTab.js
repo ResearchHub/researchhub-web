@@ -336,8 +336,6 @@ class SummaryTab extends React.Component {
       />
     );
 
-    console.log("paper", paper);
-
     const viewRevisions = (
       <Link
         href={"/paper/[paperId]/[paperName]/edits"}
@@ -672,7 +670,7 @@ class SummaryTab extends React.Component {
                   <SectionBounty
                     paper={paper}
                     section={"summary"}
-                    loading={!userVoteChecked && loadingSummary}
+                    loading={!userVoteChecked}
                     updatePaperState={updatePaperState}
                   />
                 </span>

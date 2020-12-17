@@ -172,6 +172,7 @@ const Paper = (props) => {
         setLoadingSummary(false);
       });
     }
+    setLoadingSummary(false);
   }, [summary.id, props.auth.isLoggedIn]);
 
   function checkUserVote(paperState = paper) {
@@ -194,10 +195,9 @@ const Paper = (props) => {
             setPaper(updatedPaper);
             setSelectedVoteType(updatedPaper.userVote.vote_type);
           }
-          setUserVoteChecked(true);
+          return setUserVoteChecked(true);
         });
     }
-    setUserVoteChecked(true);
   }
 
   useEffect(() => {

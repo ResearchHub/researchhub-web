@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
@@ -16,7 +16,13 @@ import { getSummaryText } from "~/config/utils";
 const SectionBounty = (props) => {
   const { section, paper, bullets, updatePaperState, loading, auth } = props;
   const isModerator = auth.isLoggedIn && auth.user && auth.user.moderator;
-  const amount = configureBounty();
+  const [amount, setAmount] = useState(0);
+
+  useEffect(() => {
+    if (!loading) {
+      setAmount(configureBounty());
+    }
+  }, [props.loading, props.paper]);
 
   function configureBounty() {
     const summary = paper.summary && getSummaryText(paper.summary);
@@ -26,8 +32,8 @@ const SectionBounty = (props) => {
 
     let bounty =
       section === "summary"
-        ? paper.summary_low_quality
-        : paper.bullet_low_quality;
+        ? props.paper.summary_low_quality
+        : props.paper.bullet_low_quality;
 
     if (!bounty) {
       if (section === "summary" && needSummary) {
