@@ -123,7 +123,11 @@ class SummaryTab extends React.Component {
           sendAmpEvent(ampPayload);
           checkUserFirstTime(!this.props.auth.user.has_seen_first_coin_modal);
           getUser();
-          const updatedPaper = { ...this.props.paper, summary: resp };
+          const updatedPaper = {
+            ...this.props.paper,
+            summary: resp,
+            summary_low_quality: 0,
+          };
           updatePaperState && updatePaperState(updatedPaper);
           updateSummary && updateSummary(resp);
           this.setState({
