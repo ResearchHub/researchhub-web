@@ -137,10 +137,9 @@ class ContentSupportModal extends React.Component {
 
   renderSubtitle = () => {
     const { type } = this.props.modals.openSectionBountyModal.props;
-
     const sectionName = {
       takeaways: "Key Takeaways",
-      sumamry: "Summary",
+      summary: "Summary",
     };
 
     return `Select an amount to reward the first user who contributes content to the ${sectionName[type]}.`;
