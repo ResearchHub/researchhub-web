@@ -155,11 +155,10 @@ class Notification extends React.Component {
       } else if (bounty_object_id) {
         return {
           content_type: "bounty_review",
-          type:
-            bounty_content_type === "bulletpoint" ? "key takeaway" : "summary", // summary or takeaway,
+          type: bounty_content_type, // summary or takeaway,
           created_by: action_user,
           created_date: created_date,
-          plain_text: action[0].tip,
+          plain_text: extra.tip,
           paper_id: paper,
           paper_official_title: action[0].paper_official_title,
           slug: paper_slug,
@@ -170,8 +169,7 @@ class Notification extends React.Component {
       } else if (bounty_approval) {
         return {
           content_type: "bounty_review_result",
-          type:
-            bounty_content_type === "bulletpoint" ? "key takeaway" : "summary", // summary or takeaway,
+          type: bounty_content_type, // summary or takeaway,
           created_by: action_user,
           created_date: created_date,
           plain_text: action[0].tip,
