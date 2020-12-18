@@ -50,15 +50,16 @@ class BulletsContainer extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      if (prevProps.paper.id !== this.props.paper.id) {
-        this.fetchBullets();
-      } else if (
-        JSON.stringify(prevProps.bulletsRedux.bullets) !==
-        JSON.stringify(this.props.bulletsRedux.bullets)
-      ) {
-        this.setState({ bullets: this.props.bulletsRedux.bullets });
-      }
+    if (prevProps.paper.id !== this.props.paper.id) {
+      this.fetchBullets();
+    } else if (
+      JSON.stringify(prevProps.bulletsRedux.bullets) !==
+      JSON.stringify(this.props.bulletsRedux.bullets)
+    ) {
+      this.setState({ bullets: this.props.bulletsRedux.bullets });
+    }
+    if (this.props.loadingPaper) {
+      return !this.state.loading && this.setState({ loading: true });
     }
   }
 
