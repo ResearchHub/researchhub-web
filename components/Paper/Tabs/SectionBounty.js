@@ -110,6 +110,9 @@ const styles = StyleSheet.create({
     color: colors.ORANGE(),
     marginLeft: 10,
     cursor: "default",
+    "@media only screen and (max-width: 500px)": {
+      fontSize: 12,
+    },
   },
   moderatorContainer: {
     cursor: "pointer",
@@ -124,6 +127,10 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     height: 12,
     width: 12,
+    "@media only screen and (max-width: 500px)": {
+      height: 10,
+      width: 10,
+    },
   },
   placeholder: {
     width: 80,

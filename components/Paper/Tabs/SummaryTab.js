@@ -776,6 +776,9 @@ var styles = StyleSheet.create({
       width: "100%",
       marginBottom: 20,
     },
+    "@media only screen and (max-width: 500px)": {
+      flexDirection: "column",
+    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
@@ -909,11 +912,7 @@ var styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  editAction: {
-    "@media only screen and (max-width: 415px)": {
-      marginLeft: 32,
-    },
-  },
+  editAction: {},
   editHistory: {
     marginRight: 15,
   },
@@ -1069,6 +1068,10 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     marginLeft: 20,
+    "@media only screen and (max-width: 500px)": {
+      marginLeft: 0,
+      marginTop: 15,
+    },
   },
   tab: {
     padding: "4px 12px",

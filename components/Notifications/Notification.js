@@ -48,10 +48,7 @@ class Notification extends React.Component {
         count: this.countReadNotifications(),
       });
     }
-    if (
-      JSON.stringify(prevProps.notifications) !==
-      JSON.stringify(this.props.notifications)
-    ) {
+    if (prevProps.notifications.length < this.props.notifications.length) {
       this.setState({
         // notifications: this.props.notifications,
         count: this.countReadNotifications(),
@@ -104,9 +101,18 @@ class Notification extends React.Component {
       created_date,
       paper,
       paper_slug,
+      action,
     } = notification;
     if (extra) {
-      const { status, bullet_point, summary, content_type } = extra;
+      const {
+        status,
+        bullet_point,
+        summary,
+        content_type,
+        bounty_object_id,
+        bounty_content_type,
+        bounty_approval,
+      } = extra;
 
       if (status) {
         // Stripe branch not yet integrated
@@ -146,6 +152,35 @@ class Notification extends React.Component {
           amount: extra.amount,
           slug: paper_slug,
         };
+      } else if (bounty_object_id) {
+        return {
+          content_type: "bounty_review",
+          type:
+            bounty_content_type === "bulletpoint" ? "key takeaway" : "summary", // summary or takeaway,
+          created_by: action_user,
+          created_date: created_date,
+          plain_text: action[0].tip,
+          paper_id: paper,
+          paper_official_title: action[0].paper_official_title,
+          slug: paper_slug,
+          bounty_amount: extra.bounty_amount,
+          bounty_id: extra.bounty_object_id,
+          bounty_approved: extra.bounty_approval,
+        };
+      } else if (bounty_approval) {
+        return {
+          content_type: "bounty_review_result",
+          type:
+            bounty_content_type === "bulletpoint" ? "key takeaway" : "summary", // summary or takeaway,
+          created_by: action_user,
+          created_date: created_date,
+          plain_text: action[0].tip,
+          paper_id: paper,
+          paper_official_title: action[0].paper_official_title,
+          slug: paper_slug,
+          bounty_amount: extra.bounty_amount,
+          bounty_approval: bounty_approval,
+        };
       }
     }
 
@@ -170,11 +205,12 @@ class Notification extends React.Component {
             showLoadingAnimation
             customPlaceholder={<NotificationPlaceholder color="#efefef" />}
           >
-            {this.props.notifications && this.props.notifications.length ? (
+            {this.renderNotifications()}
+            {/* {this.props.notifications && this.props.notifications.length ? (
               this.renderNotifications()
             ) : (
               <div className={css(styles.emptyState)}>No Notifications</div>
-            )}
+            )} */}
           </ReactPlaceholder>
         </div>
       </div>
