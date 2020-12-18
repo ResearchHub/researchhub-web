@@ -29,29 +29,30 @@ class Notification extends React.Component {
     this.notifFeed;
   }
 
-  componentDidMount = async () => {
-    await this.props.getNotifications();
+  componentDidMount = () => {
     document.addEventListener("mousedown", this.handleOutsideClick);
-    this.setState({
-      count: this.countReadNotifications(),
-      fetching: false,
+    this.props.getNotifications().then((res) => {
+      const results = res.payload.notifications;
+      this.setState({
+        count: this.countReadNotifications(),
+        fetching: false,
+      });
     });
   };
 
-  componentDidUpdate = async (prevProps) => {
+  componentDidUpdate = (prevProps) => {
     if (prevProps.wsResponse !== this.props.wsResponse) {
       const { wsResponse, addNotification, notifications } = this.props;
       const response = JSON.parse(wsResponse);
       const notification = response.data;
-      await addNotification(notifications, notification);
+      addNotification(notification);
       this.setState({
-        count: this.countReadNotifications(),
+        count: this.countReadNotifications([notification, ...notifications]),
       });
     }
-    if (prevProps.notifications.length < this.props.notifications.length) {
+    if (this.props.notifications.length > prevProps.notifications.length) {
       this.setState({
-        // notifications: this.props.notifications,
-        count: this.countReadNotifications(),
+        count: this.countReadNotifications(this.props.notification),
       });
     }
   };
@@ -60,9 +61,11 @@ class Notification extends React.Component {
     document.addEventListener("mousedown", this.handleOutsideClick);
   }
 
-  countReadNotifications() {
-    var count = 0;
-    this.props.notifications.forEach((notification) => {
+  countReadNotifications(arr) {
+    let count = 0;
+    const notifications = arr ? arr : this.props.notifications;
+
+    notifications.forEach((notification) => {
       if (!notification.read) {
         count++;
       }
@@ -83,8 +86,7 @@ class Notification extends React.Component {
   toggleMenu = () => {
     this.setState({ isOpen: !this.state.isOpen }, () => {
       let ids = this.formatIds();
-      this.state.isOpen &&
-        this.props.markAllAsRead(this.props.notifications, ids);
+      this.state.isOpen && this.props.markAllAsRead(ids);
     });
   };
 
