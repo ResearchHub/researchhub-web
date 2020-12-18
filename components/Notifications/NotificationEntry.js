@@ -1053,11 +1053,11 @@ const NotificationEntry = (props) => {
             }}
             className={css(styles.link)}
           >
-            {type}
+            {type === "bulletpoint" ? "key takeaway," : "summary,"}
           </a>
         </Link>
         <span className={css(styles.italics)}>{truncateText(plain_text)}</span>
-        {"in "}
+        {" in "}
         <Link href={"/paper/[paperId]/[paperName]"} as={paperLink}>
           <a
             onClick={(e) => {
@@ -1120,7 +1120,7 @@ const NotificationEntry = (props) => {
             }}
             className={css(styles.link)}
           >
-            {type}
+            {type === "bulletpoint" ? "key takeaway" : "summary"}
           </a>
         </Link>
         {"in "}
