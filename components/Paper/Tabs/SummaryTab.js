@@ -116,7 +116,7 @@ class SummaryTab extends React.Component {
           updateSummary && updateSummary(resp);
         }
         setMessage("Edits Made!");
-        showMessage({ show: true, clickoff: true });
+        showMessage({ show: true });
         this.setState({
           readOnly: true,
           finishedLoading: true,
