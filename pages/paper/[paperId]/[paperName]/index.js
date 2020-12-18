@@ -522,6 +522,7 @@ const Paper = (props) => {
             paper={paper}
             userVoteChecked={userVoteChecked}
             fetchBullets={fetchBullets}
+            loadingPaper={loadingPaper}
           />
           <SummaryTab
             paperId={paperId}

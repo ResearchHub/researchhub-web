@@ -1,12 +1,15 @@
 import { Fragment, useState } from "react";
 import { useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import { connect } from "react-redux";
 import Router from "next/router";
 import Link from "next/link";
 import Ripples from "react-ripples";
 
 // Component
 import AuthorAvatar from "../AuthorAvatar";
+import Button from "~/components/Form/Button";
+import Loader from "~/components/Loader/Loader";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
@@ -20,10 +23,14 @@ import {
   timeAgoStamp,
   formatPaperSlug,
 } from "~/config/utils";
+import { reviewBounty } from "~/config/fetch";
 
 const NotificationEntry = (props) => {
-  const { notification, data } = props;
+  const { notification, data, updateNotification } = props;
   const [isRead, toggleRead] = useState(data.read);
+  const [pendingApproval, setPendingApproval] = useState(false);
+  const [pendingDenial, setPendingDenial] = useState(false);
+
   const dispatch = useDispatch();
   const store = useStore();
   const markAsRead = async (data) => {
@@ -86,7 +93,7 @@ const NotificationEntry = (props) => {
       route = `/paper/${paperId}/${title}#takeaways`;
     } else if (type === "vote_summary") {
       href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}#description`;
+      route = `/paper/${paperId}/${title}#summary`;
     }
 
     isRead && props.closeMenu();
@@ -96,7 +103,7 @@ const NotificationEntry = (props) => {
 
   const renderMessage = (contentType) => {
     const notification = props.notification;
-    let {
+    const {
       created_date,
       created_by,
       content_type,
@@ -104,25 +111,25 @@ const NotificationEntry = (props) => {
       paper_official_title,
       slug,
     } = notification;
-    let notificationType = content_type;
+    const notificationType = content_type;
     const timestamp = timeAgoStamp(created_date);
     const username = formatUsername(
       getNestedValue(created_by, ["author_profile"])
     );
     const authorId = getNestedValue(created_by, ["author_profile", "id"]);
-    let title = slug
+    const title = slug
       ? slug
       : formatPaperSlug(
           paper_official_title ? paper_official_title : paper_title
         );
-    let paperTip = notification.paper_title
+    const paperTip = notification.paper_title
       ? notification.paper_title
       : notification.paper_official_title;
-    let paperId = notification.paper_id;
-    let threadTip = notification.thread_title
+    const paperId = notification.paper_id;
+    const threadTip = notification.thread_title
       ? notification.thread_title
       : notification.thread_plain_text;
-    let threadId = notification.thread_id;
+    const threadId = notification.thread_id;
 
     switch (notificationType) {
       case "bullet_point":
@@ -647,6 +654,10 @@ const NotificationEntry = (props) => {
         return renderSummaryVoteNotification();
       case "support_content":
         return renderContentSupportNotification();
+      case "bounty_review":
+        return renderBountyReviewNotification();
+      case "bounty_review_result":
+        return renderBountyReviewResultNotification();
       default:
         return;
     }
@@ -795,6 +806,7 @@ const NotificationEntry = (props) => {
       plain_text,
       paper_id,
       paper_official_title,
+      slug,
     } = props.notification;
 
     const author = created_by.author_profile;
@@ -819,9 +831,7 @@ const NotificationEntry = (props) => {
         voted on your{" "}
         <Link
           href={"/paper/[paperId]/[paperName]"}
-          as={`/paper/${paper_id}/${formatPaperSlug(
-            paper_official_title
-          )}#description`}
+          as={`/paper/${paper_id}/${slug}#description`}
         >
           <a
             onClick={(e) => {
@@ -838,7 +848,7 @@ const NotificationEntry = (props) => {
         in{" "}
         <Link
           href={"/paper/[paperId]/[paperName]"}
-          as={`/paper/${paper_id}/${formatPaperSlug(paper_official_title)}`}
+          as={`/paper/${paper_id}/${slug}`}
         >
           <a
             onClick={(e) => {
@@ -953,6 +963,27 @@ const NotificationEntry = (props) => {
 
     return (
       <div className={css(styles.message)}>
+        {"Congrats! "}
+        <img
+          className={css(styles.iconCongrats)}
+          src={"/static/icons/party-popper.png"}
+        />
+        {" Your "}
+        <Link {...formatLink(props)}>
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.link)}
+          >
+            {getContentType()}
+          </a>
+        </Link>
+        {"has been awarded "}
+        <span className={css(styles.rsc)}>{`${Number(amount)} RSC`}</span>
+        {" by "}
         <Link
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${author.id}/contributions`}
@@ -965,20 +996,7 @@ const NotificationEntry = (props) => {
             }}
             className={css(styles.username)}
           >
-            {`${author.first_name} ${author.last_name}`}
-          </a>
-        </Link>
-        {` awarded ${Number(amount)} RSC to your `}
-        <Link {...formatLink(props)}>
-          <a
-            onClick={(e) => {
-              e.stopPropagation();
-              markAsRead(data);
-              props.closeMenu();
-            }}
-            className={css(styles.link)}
-          >
-            {getContentType() + "."}
+            {`${author.first_name} ${author.last_name}. `}
           </a>
         </Link>
         <span className={css(styles.timestamp)}>
@@ -987,6 +1005,225 @@ const NotificationEntry = (props) => {
         </span>
       </div>
     );
+  };
+
+  const renderBountyReviewNotification = () => {
+    const {
+      type,
+      created_by,
+      created_date,
+      plain_text,
+      paper_id,
+      paper_official_title,
+      slug,
+      bounty_amount,
+      bounty_approved,
+    } = props.notification;
+
+    const author = created_by.author_profile;
+    const paperLink = `/paper/${paper_id}/${slug}`;
+    const sectionLink = `${paperLink}${
+      type === "summary" ? "#summary" : "#takeaways"
+    }`;
+
+    return (
+      <div className={css(styles.message)}>
+        {"Approve "}
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${author.id}/contributions`}
+        >
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.username)}
+          >
+            {`${author.first_name} ${author.last_name}'s`}
+          </a>
+        </Link>{" "}
+        <Link href={"/paper/[paperId]/[paperName]"} as={sectionLink}>
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.link)}
+          >
+            {type}
+          </a>
+        </Link>
+        <span className={css(styles.italics)}>{truncateText(plain_text)}</span>
+        {"in "}
+        <Link href={"/paper/[paperId]/[paperName]"} as={paperLink}>
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.paper)}
+            data-tip={paper_official_title}
+          >
+            {paper_official_title && truncateText(paper_official_title)}
+          </a>
+        </Link>
+        {"for "}
+        <span className={css(styles.rsc)}>{`${bounty_amount} RSC? `}</span>
+        <span className={css(styles.timestamp)}>
+          <span className={css(styles.timestampDivider)}>•</span>
+          {timeAgoStamp(created_date)}
+        </span>
+        {!doesNotExist(bounty_approved) &&
+          (bounty_approved ? (
+            <span className={css(styles.tagApproved)}>Approved</span>
+          ) : (
+            <span className={css(styles.tagDenied)}>Denied</span>
+          ))}
+      </div>
+    );
+  };
+
+  const renderBountyReviewResultNotification = () => {
+    const {
+      type,
+      created_by,
+      created_date,
+      plain_text,
+      paper_id,
+      paper_official_title,
+      slug,
+      bounty_amount,
+    } = props.notification;
+    const paperLink = `/paper/${paper_id}/${slug}`;
+    const sectionLink = `${paperLink}${
+      type === "summary" ? "#summary" : "#takeaways"
+    }`;
+
+    return (
+      <div className={css(styles.message)}>
+        {"Congrats! "}
+        <img
+          className={css(styles.iconCongrats)}
+          src={"/static/icons/party-popper.png"}
+        />
+        {" Your "}
+        <Link href={"/paper/[paperId]/[paperName]"} as={sectionLink}>
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.link)}
+          >
+            {type}
+          </a>
+        </Link>
+        {"in "}
+        <Link href={"/paper/[paperId]/[paperName]"} as={paperLink}>
+          <a
+            onClick={(e) => {
+              e.stopPropagation();
+              markAsRead(data);
+              props.closeMenu();
+            }}
+            className={css(styles.paper)}
+            data-tip={paper_official_title}
+          >
+            {paper_official_title && truncateText(paper_official_title)}
+          </a>
+        </Link>
+        {"has been approved for "}
+        <span className={css(styles.rsc)}>{`${bounty_amount} RSC. `}</span>
+        <span className={css(styles.timestamp)}>
+          <span className={css(styles.timestampDivider)}>•</span>
+          {timeAgoStamp(created_date)}
+        </span>
+      </div>
+    );
+  };
+
+  const renderActions = () => {
+    const { content_type, bounty_approved } = props.notification;
+
+    if (content_type === "bounty_review") {
+      if (doesNotExist(bounty_approved)) {
+        return (
+          <div className={css(styles.row)}>
+            <Button
+              label={
+                pendingDenial ? (
+                  <Loader loading={true} size={15} color={"#FFF"} />
+                ) : (
+                  "Deny"
+                )
+              }
+              customButtonStyle={styles.buttonDeny}
+              rippleClass={styles.button}
+              customLabelStyle={styles.buttonLabel}
+              disabled={pendingApproval || pendingDenial}
+              onClick={() => handleBounty(false)}
+            />
+            <div className={css()}></div>
+            <Button
+              label={
+                pendingApproval ? (
+                  <Loader loading={true} size={15} color={"#FFF"} />
+                ) : (
+                  "Approve"
+                )
+              }
+              customButtonStyle={styles.button}
+              rippleClass={styles.buttonApprove}
+              customLabelStyle={styles.buttonLabel}
+              disabled={pendingApproval || pendingDenial}
+              onClick={() => handleBounty(true)}
+            />
+          </div>
+        );
+      }
+    }
+  };
+
+  const handleBounty = (approved) => {
+    if (pendingApproval || pendingDenial) return;
+
+    if (approved) {
+      setPendingApproval(true);
+    } else {
+      setPendingDenial(true);
+    }
+
+    const { type, bounty_id, paper_id } = props.notification;
+
+    const PAYLOAD = {
+      bounty_content_type: type,
+      bounty_object_id: bounty_id,
+      notification_id: props.data.id,
+      approved,
+    };
+
+    reviewBounty({ paperId: paper_id, PAYLOAD })
+      .then((res) => {
+        // update
+        const updatedNotification = { ...props.data };
+        updatedNotification.extra.bounty_approval = approved;
+        updateNotification(updatedNotification);
+
+        if (approved) {
+          setPendingApproval(false);
+        } else {
+          setPendingDenial(false);
+        }
+      })
+      .catch((err) => {
+        setPendingApproval(false);
+        setPendingDenial(false);
+      });
   };
 
   return (
@@ -1003,6 +1240,7 @@ const NotificationEntry = (props) => {
       <div className={css(styles.body)}>
         {notification &&
           renderMessage(notification.context_type && notification.context_type)}
+        {renderActions()}
       </div>
     </Ripples>
   );
@@ -1011,7 +1249,7 @@ const NotificationEntry = (props) => {
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-start",
     width: "100%",
     boxSizing: "border-box",
     padding: 20,
@@ -1073,6 +1311,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     textOverflow: "ellipsis",
   },
+  rsc: {
+    fontWeight: 500,
+  },
   timestamp: {
     fontWeight: "normal",
     color: "#918f9b",
@@ -1095,6 +1336,66 @@ const styles = StyleSheet.create({
   italics: {
     fontStyle: "italic",
   },
+  row: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  button: {
+    height: 25,
+    width: "100%",
+  },
+  buttonApprove: {
+    height: 25,
+    width: "100%",
+    marginLeft: 10,
+  },
+  buttonDeny: {
+    height: 25,
+    width: "100%",
+    backgroundColor: colors.RED(0.8),
+    ":hover": {
+      backgroundColor: colors.RED(),
+    },
+  },
+  buttonLabel: {
+    fontSize: 14,
+    fontWeight: 400,
+  },
+  tagApproved: {
+    fontSize: 8,
+    color: "#FFF",
+    padding: "3px 8px",
+    background: colors.BLUE(),
+    borderRadius: 4,
+    textTransform: "uppercase",
+    fontWeight: "bold",
+    letterSpacing: 1,
+    marginLeft: 8,
+  },
+  tagDenied: {
+    fontSize: 8,
+    color: "#FFF",
+    padding: "3px 8px",
+    background: colors.RED(),
+    borderRadius: 4,
+    textTransform: "uppercase",
+    fontWeight: "bold",
+    letterSpacing: 1,
+    marginLeft: 8,
+  },
+  iconCongrats: {
+    height: 15,
+  },
 });
 
-export default NotificationEntry;
+const mapDispatchToProps = {
+  updateNotification: NotificationActions.updateNotification,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(NotificationEntry);
