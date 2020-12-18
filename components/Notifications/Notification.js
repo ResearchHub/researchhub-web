@@ -34,7 +34,7 @@ class Notification extends React.Component {
     this.props.getNotifications().then((res) => {
       const results = res.payload.notifications;
       this.setState({
-        count: this.countReadNotifications(),
+        count: this.countReadNotifications(results),
         fetching: false,
       });
     });
@@ -87,6 +87,7 @@ class Notification extends React.Component {
     this.setState({ isOpen: !this.state.isOpen }, () => {
       let ids = this.formatIds();
       this.state.isOpen && this.props.markAllAsRead(ids);
+      this.setState({ count: 0 });
     });
   };
 
