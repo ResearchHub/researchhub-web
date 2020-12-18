@@ -33,12 +33,12 @@ const NotificationEntry = (props) => {
 
   const dispatch = useDispatch();
   const store = useStore();
+
   const markAsRead = async (data) => {
     if (isRead) {
       return;
     }
-    let prevState = store.getState().livefeed.notifications;
-    await dispatch(NotificationActions.markAsRead(prevState, data.id));
+    await dispatch(NotificationActions.markAsRead(data.id));
     toggleRead(true);
     props.closeMenu();
   };
@@ -75,7 +75,13 @@ const NotificationEntry = (props) => {
             : notification.paper_title
         );
 
-    if (type === "paper" || type === "summary" || type === "support_content") {
+    if (
+      type === "paper" ||
+      type === "summary" ||
+      type === "support_content" ||
+      type === "bounty_review" ||
+      type === "bounty_review_result"
+    ) {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}`;
     } else if (
