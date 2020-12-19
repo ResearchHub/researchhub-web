@@ -18,12 +18,7 @@ import { AuthActions } from "~/redux/auth";
 import { UPVOTE, DOWNVOTE } from "../config/constants";
 import { voteWidgetIcons } from "~/config/themes/icons";
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import {
-  createUsername,
-  doesNotExist,
-  getCurrentUser,
-  getNestedValue,
-} from "~/config/utils";
+import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
 
 class DiscussionComment extends React.Component {
   state = {
