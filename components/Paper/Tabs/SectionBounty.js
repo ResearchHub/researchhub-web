@@ -27,8 +27,7 @@ const SectionBounty = (props) => {
   function configureBounty() {
     const summary = paper.summary && getSummaryText(paper.summary);
     const needSummary = !summary;
-    const needTakeaways =
-      bullets.bullets.filter((bullet) => !bullet.is_removed).length < 3;
+    const needTakeaways = bullets.bullets.length < 3;
 
     let bounty =
       section === "summary"
@@ -39,7 +38,7 @@ const SectionBounty = (props) => {
       if (section === "summary" && needSummary) {
         bounty = 5; // default reward for first summary
       } else if (section === "takeaways" && needTakeaways) {
-        bounty = 1; // default reward for first keytakeaway
+        bounty = 1; // default reward for 1-3 keytakeaway
       }
     }
 
@@ -66,10 +65,7 @@ const SectionBounty = (props) => {
   };
 
   const formatToolTip = () => {
-    const sectionName = {
-      takeaways: "Key Takeaways",
-      summary: "Summary",
-    };
+    const sectionName = { takeaways: "Key Takeaways", summary: "Summary" };
 
     if (isModerator) {
       return `Set bounty for ${sectionName[section]}`;

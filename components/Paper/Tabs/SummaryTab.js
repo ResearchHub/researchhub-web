@@ -50,8 +50,6 @@ class SummaryTab extends React.Component {
       abstract: "",
       showAbstract: false,
       editAbstract: false,
-
-      //
       checked: false,
     };
   }
@@ -115,8 +113,9 @@ class SummaryTab extends React.Component {
           updatePaperState && updatePaperState(updatedPaper);
           updateSummary && updateSummary(resp);
         }
-        setMessage("Edits Made!");
+        setMessage("Summary successfully updated!");
         showMessage({ show: true });
+        setTimeout(() => showMessage({ show: false }), 2000); // message sometimes persists longer
         this.setState({
           readOnly: true,
           finishedLoading: true,
@@ -177,7 +176,12 @@ class SummaryTab extends React.Component {
   };
 
   editAbstract = () => {
-    this.setState({ editAbstract: !this.state.editAbstract });
+    const { editAbstract, abstract } = this.state;
+
+    this.setState({
+      editAbstract: !editAbstract,
+      abstract: editAbstract ? "" : abstract, // don't keep changes when user cancels
+    });
   };
 
   handleAbstract = (id, value) => {
@@ -230,44 +234,39 @@ class SummaryTab extends React.Component {
     const { paper, summary } = this.props;
 
     this.setState({ finishedLoading: false }, () => {
-      if (summary) {
-        if (summary.summary) {
-          if (isQuillDelta(summary.summary)) {
-            return this.setState({
-              editorState: summary.summary,
-              finishedLoading: true,
-              abstract: paper.abstract,
-              showAbstract: false,
-              summaryExists: true,
-            });
-          } else {
-            let summaryJSON = summary.summary;
-            let editorState = Value.fromJSON(summaryJSON);
-            return this.setState({
-              editorState: editorState ? editorState : "",
-              finishedLoading: true,
-              abstract: paper.abstract,
-              showAbstract: false,
-              summaryExists: true,
-            });
-          }
-        }
-        if (paper.abstract) {
-          this.setState({
-            abstract: paper.abstract,
-            showAbstract: true,
+      if (summary && summary.summary) {
+        if (isQuillDelta(summary.summary)) {
+          // if Quill
+          return this.setState({
+            editorState: summary.summary,
             finishedLoading: true,
+            abstract: paper.abstract,
+            showAbstract: false,
+            summaryExists: true,
           });
-        }
-      } else {
-        if (paper.abstract) {
-          this.setState({
-            abstract: paper.abstract,
-            showAbstract: true,
+        } else {
+          // if legacy html or slate delta
+          const editorState = Value.fromJSON(summary.summary);
+          return this.setState({
+            editorState: editorState ? editorState : "",
             finishedLoading: true,
+            abstract: paper.abstract,
+            showAbstract: false,
+            summaryExists: true,
           });
         }
       }
+
+      if (paper.abstract) {
+        // if no summary but abstract
+        return this.setState({
+          abstract: paper.abstract,
+          showAbstract: true,
+          finishedLoading: true,
+        });
+      }
+
+      return this.setState({ finishedLoading: true }); // default case
     });
   };
 
@@ -595,16 +594,15 @@ class SummaryTab extends React.Component {
 
     if (!doesNotExist(summary.summary) || summaryExists) {
       if (!readOnly || editing) {
-        // When user wants to edit Summary
         return this.renderSummaryEdit();
       }
 
       if (finishedLoading) {
         return this.renderSummaryReadOnly();
       }
-    } else {
-      return this.renderSummaryEmptyState();
     }
+
+    return this.renderSummaryEmptyState();
   };
 
   containerStyle = () => {
@@ -926,7 +924,7 @@ var styles = StyleSheet.create({
     height: 45,
     outline: "none",
     cursor: "pointer",
-    borderRadius: 4,
+    borderRadius: 5,
     ":hover": {
       backgroundColor: "#3E43E8",
     },

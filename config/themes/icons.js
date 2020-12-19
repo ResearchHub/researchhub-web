@@ -65,6 +65,24 @@ const icons = {
       className={css(styles)}
     />
   ),
+  partyPopper: (props = {}) => {
+    const { style } = props;
+    return (
+      <img
+        className={css(styles.iconPartyPopper, style && style)}
+        src={"/static/icons/party-popper.png"}
+      />
+    );
+  },
+  RSC: (props = {}) => {
+    const { style } = props;
+    return (
+      <img
+        className={css(styles.iconRSC, style && style)}
+        src={"/static/icons/coin-filled.png"}
+      />
+    );
+  },
 };
 
 export const voteWidgetIcons = {
@@ -119,6 +137,12 @@ const styles = StyleSheet.create({
     height: 40,
   },
   coinStack: {},
+  iconPartyPopper: {
+    height: 15,
+  },
+  iconRSC: {
+    height: 15,
+  },
 });
 
 export default icons;

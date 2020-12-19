@@ -10,6 +10,15 @@ import Ripples from "react-ripples";
 import AuthorAvatar from "../AuthorAvatar";
 import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
+import { ModeratorBounty, ContributorBounty } from "./BountyNotifications";
+import {
+  ExternalLink,
+  HyperLink,
+  TimeStamp,
+  ModeratorDecisionTag,
+  PlainText,
+  Bold,
+} from "./NotificationHelpers";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
@@ -60,14 +69,10 @@ const NotificationEntry = (props) => {
 
   const handleNavigation = (e) => {
     e && e.stopPropagation();
-    let { notification } = props;
-    let { content_type, paper_id, thread_id, slug } = notification;
-    let type = content_type;
-    let paperId = paper_id;
-    let threadId = thread_id;
-    let href;
-    let route;
-    let title = slug
+    const { content_type, paper_id, thread_id, slug } = notification;
+    const type = content_type;
+    const paperId = paper_id;
+    const title = slug
       ? slug
       : formatPaperSlug(
           notification.paper_official_title
@@ -75,12 +80,12 @@ const NotificationEntry = (props) => {
             : notification.paper_title
         );
 
+    let href, route;
     if (
       type === "paper" ||
-      type === "summary" ||
       type === "support_content" ||
-      type === "bounty_review" ||
-      type === "bounty_review_result"
+      type === "bounty_moderator" ||
+      type === "bounty_contributor"
     ) {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}`;
@@ -97,17 +102,20 @@ const NotificationEntry = (props) => {
     } else if (type === "bullet_point" || type === "vote_bullet") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}#takeaways`;
-    } else if (type === "vote_summary") {
+    } else if (type === "summary" || type === "vote_summary") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${title}#summary`;
     }
 
-    isRead && props.closeMenu();
-    markAsRead(props.data);
-    href && route && Router.push(href, route);
+    if (href && route) {
+      Router.push(href, route).then(() => {
+        markAsRead(props.data);
+        props.closeMenu(); // added as a fallback
+      });
+    }
   };
 
-  const renderMessage = (contentType) => {
+  const renderMessage = () => {
     const notification = props.notification;
     const {
       created_date,
@@ -117,7 +125,6 @@ const NotificationEntry = (props) => {
       paper_official_title,
       slug,
     } = notification;
-    const notificationType = content_type;
     const timestamp = timeAgoStamp(created_date);
     const username = formatUsername(
       getNestedValue(created_by, ["author_profile"])
@@ -137,88 +144,82 @@ const NotificationEntry = (props) => {
       : notification.thread_plain_text;
     const threadId = notification.thread_id;
 
-    switch (notificationType) {
+    const onClick = (e) => {
+      e.stopPropagation();
+      markAsRead(data);
+      props.closeMenu();
+    };
+
+    const authorLink = {
+      href: "/user/[authorId]/[tabName]",
+      as: `/user/${authorId}/contributions`,
+    };
+
+    const paperLink = {
+      href: "/paper/[paperId]/[paperName]",
+      as: `/paper/${paperId}/${slug}`,
+    };
+
+    const discussionPageLink = {
+      href: "/paper/[paperId]/[paperName]/[discussionThreadId]",
+      as: `/paper/${paperId}/${title}/${threadId}`,
+    };
+
+    const sectionLink = (section) => {
+      let as = paperLink.as + "#" + section;
+      // switch(section) {
+      //   case "takeaway":
+      //     as = paperLink.as + "#takeaways";
+      //     break;
+      //   case "summary":
+      //     as = paperLink.as + "#summary";
+      //     break;
+      //   case "discussion":
+      //     as = paperLink.as + "#comments"
+      //     break;
+      // }
+
+      return { ...paperLink, as };
+    };
+
+    const user = (
+      <HyperLink
+        link={authorLink}
+        onClick={onClick}
+        style={styles.username}
+        text={username}
+      />
+    );
+
+    switch (content_type) {
       case "bullet_point":
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>
+            {user}
             {" added a key takeaway to "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}#takeaways`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={paperTip}
-              >
-                {paperTip && truncateText(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            <HyperLink
+              link={sectionLink("takeaways")}
+              onClick={onClick}
+              dataTip={paperTip}
+              text={paperTip && truncateText(paperTip)}
+              style={styles.paper}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       case "summary":
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            edited a <span>summary </span>
-            for{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}#summary`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={paperTip}
-              >
-                {paperTip && truncateText(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            {user}
+            {" edited a summary for "}
+            <HyperLink
+              link={sectionLink("summary")}
+              onClick={onClick}
+              dataTip={paperTip}
+              text={paperTip && truncateText(paperTip)}
+              style={styles.paper}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       case "paper":
@@ -227,429 +228,167 @@ const NotificationEntry = (props) => {
           : notification.paper_official_title;
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            uploaded a new paper{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={paperTitle}
-              >
-                {paperTitle && truncateText(paperTitle)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            {user}
+            {" uploaded a new paper "}
+            <HyperLink
+              link={paperLink}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={paperTitle}
+              text={paperTitle && truncateText(paperTitle)}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       case "thread":
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            created a{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/${title}/${threadId}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.link)}
-              >
-                thread
-              </a>
-            </Link>
+            {user}
+            {" created a "}
+            <HyperLink
+              link={discussionPageLink}
+              onClick={onClick}
+              style={styles.link}
+              text={"thread"}
+            />
             {"in "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={paperTip}
-              >
-                {paperTip && truncateText(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            <HyperLink
+              link={paperLink}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={paperTip}
+              text={paperTip && truncateText(paperTip)}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       case "comment":
         var commentTip = notification.tip;
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            left a{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}#comments`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.link)}
-                data-tip={commentTip}
-              >
-                comment
-              </a>
-            </Link>
+            {user}
+            {" left a "}
+            <HyperLink
+              link={sectionLink("comments")}
+              onClick={onClick}
+              style={styles.link}
+              dataTip={commentTip}
+              text={"comment"}
+            />
             {"in your thread: "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}#comments`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={threadTip}
-              >
-                {threadTip && truncateText(threadTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            <HyperLink
+              link={sectionLink("comments")}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={threadTip}
+              text={threadTip && truncateText(threadTip)}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       case "reply":
         var replyTip = notification.tip;
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            left a{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}#comments`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.link)}
-                data-tip={replyTip}
-              >
-                reply
-              </a>
-            </Link>
+            {user}
+            {" left a "}
+            <HyperLink
+              link={sectionLink("comments")}
+              onClick={onClick}
+              style={styles.link}
+              dataTip={replyTip}
+              text={"reply"}
+            />
             {"to your comment in "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}#comments`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={threadTip}
-              >
-                {threadTip && truncateText(threadTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            <HyperLink
+              link={sectionLink("comments")}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={threadTip}
+              text={threadTip && truncateText(threadTip)}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       case "vote_paper":
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            voted on{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={paperTip}
-              >
-                {paperTip && truncateText(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            {user}
+            {" voted on "}
+            <HyperLink
+              link={paperLink}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={paperTip}
+              text={paperTip && truncateText(paperTip)}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       case "vote_thread":
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            voted on a{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/${title}/${threadId}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.link)}
-              >
-                thread
-              </a>
-            </Link>
-            in{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={paperTip}
-              >
-                {paperTip && truncateText(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            {user}
+            {" voted on a "}
+            <HyperLink
+              link={discussionPageLink}
+              onClick={onClick}
+              style={styles.link}
+              text={"thread"}
+            />
+            {"in "}
+            <HyperLink
+              link={paperLink}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={paperTip}
+              text={paperTip && truncateText(paperTip)}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       case "vote_comment":
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            voted on a{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/${title}/${threadId}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.link)}
-              >
-                comment
-              </a>
-            </Link>
-            in{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={paperTip}
-              >
-                {truncateText(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            {user}
+            {" voted on a "}
+            <HyperLink
+              link={discussionPageLink}
+              onClick={onClick}
+              style={styles.link}
+              text={"comment"}
+            />
+            {"in "}
+            <HyperLink
+              link={paperLink}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={paperTip}
+              text={paperTip && truncateText(paperTip)}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       case "vote_reply":
         return (
           <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/contributions`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.username)}
-              >
-                {username}
-              </a>
-            </Link>{" "}
-            voted on a{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/${title}/${threadId}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.link)}
-              >
-                reply
-              </a>
-            </Link>
-            in{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
-              <a
-                onClick={(e) => {
-                  e.stopPropagation();
-                  markAsRead(data);
-                  props.closeMenu();
-                }}
-                className={css(styles.paper)}
-                data-tip={paperTip}
-              >
-                {paperTip && truncateText(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
+            {user}
+            {" voted on a "}
+            <HyperLink
+              link={discussionPageLink}
+              onClick={onClick}
+              style={styles.link}
+              text={"reply"}
+            />
+            {"in "}
+            <HyperLink
+              link={paperLink}
+              onClick={onClick}
+              style={styles.paper}
+              dataTip={paperTip}
+              text={paperTip && truncateText(paperTip)}
+            />
+            <TimeStamp date={created_date} />
           </div>
         );
       // case "stripe":
@@ -660,10 +399,18 @@ const NotificationEntry = (props) => {
         return renderSummaryVoteNotification();
       case "support_content":
         return renderContentSupportNotification();
-      case "bounty_review":
-        return renderBountyReviewNotification();
-      case "bounty_review_result":
-        return renderBountyReviewResultNotification();
+      case "bounty_moderator":
+        return (
+          <div className={css(styles.message)}>
+            <ModeratorBounty {...props} markAsRead={markAsRead} />
+          </div>
+        );
+      case "bounty_contributor":
+        return (
+          <div className={css(styles.message)}>
+            <ContributorBounty {...props} markAsRead={markAsRead} />
+          </div>
+        );
       default:
         return;
     }
@@ -1103,60 +850,114 @@ const NotificationEntry = (props) => {
       paper_official_title,
       slug,
       bounty_amount,
+      bounty_approval,
     } = props.notification;
     const paperLink = `/paper/${paper_id}/${slug}`;
     const sectionLink = `${paperLink}${
       type === "summary" ? "#summary" : "#takeaways"
     }`;
 
-    return (
-      <div className={css(styles.message)}>
-        {"Congrats! "}
-        <img
-          className={css(styles.iconCongrats)}
-          src={"/static/icons/party-popper.png"}
-        />
-        {" Your "}
-        <Link href={"/paper/[paperId]/[paperName]"} as={sectionLink}>
+    if (bounty_approval) {
+      return (
+        <div className={css(styles.message)}>
+          {"Congrats! "}
+          <img
+            className={css(styles.iconCongrats)}
+            src={"/static/icons/party-popper.png"}
+          />
+          {" Your "}
+          <Link href={"/paper/[paperId]/[paperName]"} as={sectionLink}>
+            <a
+              onClick={(e) => {
+                e.stopPropagation();
+                markAsRead(data);
+                props.closeMenu();
+              }}
+              className={css(styles.link)}
+            >
+              {type === "bulletpoint" ? "key takeaway" : "summary"}
+            </a>
+          </Link>
+          {"in "}
+          <Link href={"/paper/[paperId]/[paperName]"} as={paperLink}>
+            <a
+              onClick={(e) => {
+                e.stopPropagation();
+                markAsRead(data);
+                props.closeMenu();
+              }}
+              className={css(styles.paper)}
+              data-tip={paper_official_title}
+            >
+              {paper_official_title && truncateText(paper_official_title)}
+            </a>
+          </Link>
+          {"has been approved for "}
+          <span className={css(styles.rsc)}>{`${bounty_amount} RSC. `}</span>
+          <span className={css(styles.timestamp)}>
+            <span className={css(styles.timestampDivider)}>•</span>
+            {timeAgoStamp(created_date)}
+          </span>
+          <span className={css(styles.tagApproved)}>Approved</span>
+        </div>
+      );
+    } else {
+      return (
+        <div className={css(styles.message)}>
+          {"The bounty reward"}
+          <span className={css(styles.rsc)}>{` (${bounty_amount} RSC) `}</span>
+          {"for your "}
+          <Link href={"/paper/[paperId]/[paperName]"} as={sectionLink}>
+            <a
+              onClick={(e) => {
+                e.stopPropagation();
+                markAsRead(data);
+                props.closeMenu();
+              }}
+              className={css(styles.link)}
+            >
+              {type === "bulletpoint" ? "key takeaway" : "summary"}
+            </a>
+          </Link>
+          {"in "}
+          <Link href={"/paper/[paperId]/[paperName]"} as={paperLink}>
+            <a
+              onClick={(e) => {
+                e.stopPropagation();
+                markAsRead(data);
+                props.closeMenu();
+              }}
+              className={css(styles.paper)}
+              data-tip={paper_official_title}
+            >
+              {paper_official_title && truncateText(paper_official_title)}
+            </a>
+          </Link>
+          {"has been denied by a moderator."}
+
+          {" Please visit our "}
           <a
-            onClick={(e) => {
-              e.stopPropagation();
-              markAsRead(data);
-              props.closeMenu();
-            }}
             className={css(styles.link)}
+            href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
+            target="_blank"
           >
-            {type === "bulletpoint" ? "key takeaway" : "summary"}
+            Submission Guidelines
           </a>
-        </Link>
-        {"in "}
-        <Link href={"/paper/[paperId]/[paperName]"} as={paperLink}>
-          <a
-            onClick={(e) => {
-              e.stopPropagation();
-              markAsRead(data);
-              props.closeMenu();
-            }}
-            className={css(styles.paper)}
-            data-tip={paper_official_title}
-          >
-            {paper_official_title && truncateText(paper_official_title)}
-          </a>
-        </Link>
-        {"has been approved for "}
-        <span className={css(styles.rsc)}>{`${bounty_amount} RSC. `}</span>
-        <span className={css(styles.timestamp)}>
-          <span className={css(styles.timestampDivider)}>•</span>
-          {timeAgoStamp(created_date)}
-        </span>
-      </div>
-    );
+          {" and try again."}
+          <span className={css(styles.timestamp)}>
+            <span className={css(styles.timestampDivider)}>•</span>
+            {timeAgoStamp(created_date)}
+          </span>
+          <span className={css(styles.tagDenied)}>Denied</span>
+        </div>
+      );
+    }
   };
 
   const renderActions = () => {
     const { content_type, bounty_approved } = props.notification;
 
-    if (content_type === "bounty_review") {
+    if (content_type === "bounty_moderator") {
       if (doesNotExist(bounty_approved)) {
         return (
           <div className={css(styles.row)}>
@@ -1174,7 +975,6 @@ const NotificationEntry = (props) => {
               disabled={pendingApproval || pendingDenial}
               onClick={() => handleBounty(false)}
             />
-            <div className={css()}></div>
             <Button
               label={
                 pendingApproval ? (

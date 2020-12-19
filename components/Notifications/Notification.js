@@ -14,6 +14,7 @@ import { NotificationActions } from "~/redux/notification";
 // Config
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
+import { doesNotExist } from "~/config/utils";
 
 class Notification extends React.Component {
   constructor(props) {
@@ -85,7 +86,7 @@ class Notification extends React.Component {
 
   toggleMenu = () => {
     this.setState({ isOpen: !this.state.isOpen }, () => {
-      let ids = this.formatIds();
+      const ids = this.formatIds();
       this.state.isOpen && this.props.markAllAsRead(ids);
       this.setState({ count: 0 });
     });
@@ -157,7 +158,7 @@ class Notification extends React.Component {
         };
       } else if (bounty_object_id) {
         return {
-          content_type: "bounty_review",
+          content_type: "bounty_moderator",
           type: bounty_content_type, // summary or takeaway,
           created_by: action_user,
           created_date: created_date,
@@ -169,9 +170,9 @@ class Notification extends React.Component {
           bounty_id: extra.bounty_object_id,
           bounty_approved: extra.bounty_approval,
         };
-      } else if (bounty_approval) {
+      } else if (!doesNotExist(bounty_approval)) {
         return {
-          content_type: "bounty_review_result",
+          content_type: "bounty_contributor",
           type: bounty_content_type, // summary or takeaway,
           created_by: action_user,
           created_date: created_date,
