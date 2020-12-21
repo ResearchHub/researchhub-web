@@ -439,7 +439,7 @@ class SummaryTab extends React.Component {
                 <i className="fad fa-file-alt" />
               </div>
               <h2 className={css(styles.noSummaryTitle)}>
-                An abstract hasn't been filled in yet
+                Add an abstract to this paper
               </h2>
               <div className={css(styles.text)}>
                 Be the first person to add an abstract to this paper.
