@@ -5,13 +5,11 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
-import ComponentWrapper from "~/components/ComponentWrapper";
-import BulletPlaceholder from "../../Placeholders/BulletPlaceholder";
-import FormTextArea from "../../Form/FormTextArea";
-import Button from "../../Form/Button";
-import SummaryBulletPoint from "../SummaryBulletPoint";
+import BulletPlaceholder from "../Placeholders/BulletPlaceholder";
+import FormTextArea from "../Form/FormTextArea";
+import Button from "../Form/Button";
+import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import ModeratorQA from "~/components/Moderator/ModeratorQA";
 import SectionBounty from "./SectionBounty";
 
 // redux
@@ -50,22 +48,21 @@ class BulletsContainer extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (prevProps.paper.id !== this.props.paper.id) {
-      this.fetchBullets();
-    } else if (
-      JSON.stringify(prevProps.bulletsRedux.bullets) !==
-      JSON.stringify(this.props.bulletsRedux.bullets)
-    ) {
-      this.setState({ bullets: this.props.bulletsRedux.bullets });
-    }
-    if (this.props.loadingPaper) {
-      return !this.state.loading && this.setState({ loading: true });
+    if (prevProps !== this.props) {
+      if (prevProps.paperId !== this.props.paperId) {
+        this.fetchBullets();
+      } else if (
+        JSON.stringify(prevProps.bulletsRedux.bullets) !==
+        JSON.stringify(this.props.bulletsRedux.bullets)
+      ) {
+        this.setState({ bullets: this.props.bulletsRedux.bullets });
+      }
     }
   }
 
   fetchBullets = async () => {
     this.setState({ loading: true });
-    await this.props.getBullets(this.props.paper.id);
+    await this.props.getBullets(this.props.paperId);
     this.setState({ loading: false }, () => {
       this.props.afterFetchBullets && this.props.afterFetchBullets();
     });
@@ -94,7 +91,7 @@ class BulletsContainer extends React.Component {
       setTimeout(() => {
         fn();
         this.setState({ transition: false });
-      }, 200);
+      }, 400);
     });
   };
 
@@ -134,36 +131,35 @@ class BulletsContainer extends React.Component {
   onEditCallback = (bullet, index) => {
     let bullets = [...this.state.bullets];
     bullets[index] = bullet;
-    this.setState({ bullets }, () =>
-      this.props.updateStateByKey("bullets", bullets)
-    );
+    this.setState({ bullets }, () => {
+      this.props.updateStateByKey("bullets", bullets);
+    });
   };
 
   onRemoveCallback = (index) => {
     let bullets = [...this.state.bullets];
     bullets.splice(index, 1);
-    this.setState({ bullets }, () =>
-      this.props.updateStateByKey("bullets", bullets)
-    );
+    this.setState({ bullets }, () => {
+      this.props.updateStateByKey("bullets", bullets);
+    });
   };
 
   submitBulletPoint = async () => {
-    const {
+    let {
       bulletsRedux,
       postBullet,
       showMessage,
       setMessage,
       auth,
       openLoginModal,
-      paper,
-      updatePaperState,
     } = this.props;
     if (!auth.isLoggedIn) {
-      return openLoginModal(true, "Please sign in to add a key takeaway");
+      return openLoginModal(true, "Please login to add a key takeaway");
     }
-    showMessage({ load: true, show: true });
-    const paperId = paper.id;
-    const bullet = this.formatNewBullet();
+    this.props.showMessage({ load: true, show: true });
+    let paperId = this.props.paperId;
+    let bullet = this.formatNewBullet();
+    let newBullets = [...this.state.bullets, bullet];
     this.setState({ pendingSubmission: true });
     await postBullet({ paperId, bullet, prevState: bulletsRedux });
     if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
@@ -175,7 +171,6 @@ class BulletsContainer extends React.Component {
         bulletText: "",
         showForm: false,
       });
-      updatePaperState({ ...paper });
     } else {
       // handle error
       if (this.props.bulletsRedux.status === 429) {
@@ -192,15 +187,9 @@ class BulletsContainer extends React.Component {
   };
 
   renderBulletPoints = () => {
-    const {
-      paper,
-      userVoteChecked,
-      updatePaperState,
-      fetchBullets,
-    } = this.props;
-    const { loading, bullets, showForm } = this.state;
+    let { loading, bullets, showForm } = this.state;
 
-    const emptyBullets =
+    let emptyBullets =
       bullets.filter((bullet) => !bullet.is_removed).length === 0;
 
     if (loading) {
@@ -223,13 +212,11 @@ class BulletsContainer extends React.Component {
         >
           <div className={css(styles.text)}>
             <div className={css(styles.mainText)}>
-              Add a key takeaway to this paper
+              Add a key takeaway for this paper
             </div>
-            <div className={css(styles.subtitle)}>
-              <span className={css(styles.earnRSCButton)}>
-                Earn 1 {icons.coinStack({ styles: styles.coinStackIcon })}
-              </span>
-              for being the first to add a key takeaway
+            <div className={css(styles.subText)}>
+              Earn <SectionBounty value={1} /> for adding a key takeaway to the
+              paper
             </div>
           </div>
         </Ripples>
@@ -264,12 +251,6 @@ class BulletsContainer extends React.Component {
         className={css(dropdownStyles.row)}
         ref={(ref) => (this.dropdownMenu = ref)}
       >
-        <ModeratorQA
-          containerStyles={dropdownStyles.item}
-          updatePaperState={updatePaperState}
-          type={"takeaways"}
-          paper={paper}
-        />
         <Ripples
           className={css(dropdownStyles.item)}
           onClick={() => openManageBulletPointsModal(true, "key_takeaway")}
@@ -343,68 +324,28 @@ class BulletsContainer extends React.Component {
   };
 
   render() {
-    const { transition } = this.state;
-    const {
-      paper,
-      userVoteChecked,
-      updatePaperState,
-      keyTakeawayRef,
-      fetchBullets,
-    } = this.props;
-
+    let { showForm, pendingSubmission, transition } = this.state;
+    let { openManageBulletPointsModal, paper, updatePaperState } = this.props;
     return (
-      <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-        <a name="takeaways" id={"takeaway"}>
-          <div
-            className={css(styles.bulletsContainer)}
-            ref={keyTakeawayRef}
-            id="takeaways-tab"
-          >
-            <div className={css(styles.bulletContainer)}>
-              <div className={css(styles.bulletHeaderContainer)}>
-                <div className={css(styles.bulletTitle)}>
-                  Key Takeaways
-                  <SectionBounty
-                    paper={paper}
-                    section={"takeaways"}
-                    loading={!userVoteChecked || !fetchBullets}
-                    updatePaperState={updatePaperState}
-                  />
-                </div>
-                <div className={css(dropdownStyles.dropdownContainer)}>
-                  {this.renderDropdown()}
-                </div>
-              </div>
-              <div
-                className={css(
-                  styles.bulletPoints,
-                  transition && styles.transition
-                )}
-              >
-                {this.showForm()}
-                {this.renderBulletPoints()}
-              </div>
-            </div>
+      <div className={css(styles.bulletContainer)}>
+        <div className={css(styles.bulletHeaderContainer)}>
+          <div className={css(styles.bulletTitle)}>Key Takeaways</div>
+          <div className={css(dropdownStyles.dropdownContainer)}>
+            {this.renderDropdown()}
           </div>
-        </a>
-      </ComponentWrapper>
+        </div>
+        <div
+          className={css(styles.bulletPoints, transition && styles.transition)}
+        >
+          {this.showForm()}
+          {this.renderBulletPoints()}
+        </div>
+      </div>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  bulletsContainer: {
-    backgroundColor: "#fff",
-    padding: 50,
-    border: "1.5px solid #F0F0F0",
-    boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    borderRadius: 4,
-
-    "@media only screen and (max-width: 767px)": {
-      padding: 25,
-    },
-  },
   bulletContainer: {
     width: "100%",
     backgroundColor: "#fff",
@@ -437,8 +378,6 @@ const styles = StyleSheet.create({
     },
   },
   bulletTitle: {
-    display: "flex",
-    alignItems: "center",
     fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
@@ -548,35 +487,13 @@ const styles = StyleSheet.create({
       fontSize: 16,
     },
   },
-  subtitle: {
+  subText: {
     fontSize: 16,
     color: "rgba(36, 31, 58, 0.8)",
-    marginTop: 10,
+    marginTop: 5,
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
       textAlign: "center",
-    },
-  },
-  earnRSCButton: {
-    fontSize: 14,
-    fontWeight: 500,
-    marginRight: 8,
-    borderRadius: 4,
-    backgroundColor: colors.ORANGE(0.1),
-    color: colors.ORANGE(),
-    padding: "4px 12px",
-    cursor: "pointer",
-    ":hover": {
-      boxShadow: `0px 0px 2px ${colors.ORANGE()}`,
-    },
-  },
-  coinStackIcon: {
-    marginLeft: 4,
-    height: 12,
-    width: 12,
-    "@media only screen and (max-width: 500px)": {
-      height: 10,
-      width: 10,
     },
   },
   moderatorButton: {
@@ -594,6 +511,7 @@ const dropdownStyles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 8,
   },
   dropdownMenu: {
     position: "absolute",

@@ -28,32 +28,16 @@ const SectionBounty = (props) => {
     const summary = paper.summary && getSummaryText(paper.summary);
     const needSummary = !summary;
     const needTakeaways = bullets.bullets.length < 3;
+    let bounty = 0;
 
-    let bounty =
-      section === "summary"
-        ? props.paper.summary_low_quality
-        : props.paper.bullet_low_quality;
-
-    if (!bounty) {
-      if (section === "summary" && needSummary) {
-        bounty = 5; // default reward for first summary
-      } else if (section === "takeaways" && needTakeaways) {
-        bounty = 1; // default reward for 1-3 keytakeaway
-      }
+    if (section === "summary" && needSummary) {
+      bounty = 5; // default reward for first summary
+    } else if (section === "takeaways" && needTakeaways) {
+      bounty = 1; // default reward for 1-3 keytakeaway
     }
 
     return numeral(bounty).format("0a");
   }
-
-  const handleClick = () => {
-    if (!isModerator) return;
-
-    props.openSectionBountyModal(true, {
-      type: section,
-      paper,
-      updatePaperState,
-    });
-  };
 
   const renderLabel = () => {
     return (
@@ -79,12 +63,9 @@ const SectionBounty = (props) => {
       <div
         className={css(
           styles.container,
-          isModerator && styles.moderatorContainer,
           amount == 0 && styles.hidden,
           loading && styles.hidden
         )}
-        data-tip={formatToolTip()}
-        onClick={handleClick}
       >
         {renderLabel()}
       </div>
