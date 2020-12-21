@@ -303,11 +303,7 @@ class SummaryTab extends React.Component {
     return (
       <div className={css(styles.tabRow)}>
         <div
-          className={css(
-            styles.tab,
-            styles.summaryTab,
-            !showAbstract && styles.activeTab
-          )}
+          className={css(styles.tab, !showAbstract && styles.activeTab)}
           onClick={() => this.toggleDescription(false)}
         >
           Summary
@@ -464,6 +460,7 @@ class SummaryTab extends React.Component {
   };
 
   renderSummaryEmptyState = () => {
+    const { paper, updatePaperState, userVoteChecked } = this.props;
     const { editing } = this.state;
 
     if (editing) {
@@ -503,11 +500,21 @@ class SummaryTab extends React.Component {
             <i className="fad fa-file-alt" />
           </div>
           <h2 className={css(styles.noSummaryTitle)}>
-            A summary hasn't been filled in yet
+            Add a summary to this paper
           </h2>
           <div className={css(styles.text)}>
-            Earn 5 RSC for being the first person to add a summary to this
-            paper.
+            <PermissionNotificationWrapper
+              onClick={this.editSummary}
+              modalMessage="propose a summary"
+              permissionKey="ProposeSummaryEdit"
+              loginRequired={true}
+              hideRipples={true}
+            >
+              <span className={css(styles.earnRSCButton)}>
+                Earn 5 {icons.coinStack({ styles: styles.coinStackIcon })}
+              </span>
+            </PermissionNotificationWrapper>
+            for being the first to add a summary.
           </div>
           <PermissionNotificationWrapper
             onClick={this.editSummary}
@@ -647,12 +654,9 @@ class SummaryTab extends React.Component {
   };
 
   render() {
-    const {
-      paper,
-      updatePaperState,
-      userVoteChecked,
-      loadingSummary,
-    } = this.props;
+    const { paper, updatePaperState, userVoteChecked } = this.props;
+    const { showAbstract } = this.state;
+
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
         <a name="summary">
@@ -665,12 +669,14 @@ class SummaryTab extends React.Component {
               <h3 className={css(styles.sectionTitle)}>
                 <span className={css(styles.titleRow)}>
                   Description
-                  <SectionBounty
-                    paper={paper}
-                    section={"summary"}
-                    loading={!userVoteChecked}
-                    updatePaperState={updatePaperState}
-                  />
+                  {!showAbstract && (
+                    <SectionBounty
+                      paper={paper}
+                      section={"summary"}
+                      loading={!userVoteChecked}
+                      updatePaperState={updatePaperState}
+                    />
+                  )}
                 </span>
                 {this.renderTabs()}
               </h3>
@@ -852,6 +858,8 @@ var styles = StyleSheet.create({
     },
   },
   text: {
+    display: "flex",
+    alignItems: "center",
     fontSize: 16,
     color: colors.BLACK(0.8),
     marginBottom: 24,
@@ -1089,10 +1097,35 @@ var styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  summaryTab: {},
   activeTab: {
     backgroundColor: colors.BLUE(0.11),
     color: colors.BLUE(),
+  },
+  earnRSCButton: {
+    fontSize: 14,
+    fontWeight: 500,
+    marginRight: 8,
+    borderRadius: 4,
+    backgroundColor: colors.ORANGE(0.1),
+    color: colors.ORANGE(),
+    padding: "4px 12px",
+    cursor: "pointer",
+    ":hover": {
+      boxShadow: `0px 0px 2px ${colors.ORANGE()}`,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+      width: 300,
+    },
+  },
+  coinStackIcon: {
+    marginLeft: 4,
+    height: 12,
+    width: 12,
+    "@media only screen and (max-width: 500px)": {
+      height: 10,
+      width: 10,
+    },
   },
 });
 
