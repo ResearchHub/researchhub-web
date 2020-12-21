@@ -18,6 +18,8 @@ const ModeratorQA = ({
   containerStyles,
   openSectionBountyModal,
 }) => {
+  return null; // added in to disable bounty until we need;
+
   const [moderator, setIsModerator] = useState(false);
   const [active, setActive] = useState(false);
   const [hover, setHover] = useState(false);
