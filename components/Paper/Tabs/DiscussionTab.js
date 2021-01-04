@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { connect, useDispatch, useStore } from "react-redux";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Value } from "slate";
 import Ripples from "react-ripples";
@@ -19,7 +19,6 @@ import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import { thread } from "~/redux/discussion/shims";
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
 import { PaperActions } from "~/redux/paper";
@@ -289,21 +288,24 @@ const DiscussionTab = (props) => {
           styles.box,
           !fetching && threads.length < 1 && styles.emptyStateBox
         )}
+        onClick={() => {
+          setShowEditor(true);
+          setFocus(true);
+        }}
       >
         {threads.length < 1 && (
-          <span className={css(styles.box, styles.emptyStateBox)}>
+          <Fragment>
             <span className={css(styles.icon)}>
               <i className="fad fa-comments" />
             </span>
             <h2 className={css(styles.noSummaryTitle)}>
-              There are no comments {mobileView && "\n"}for this paper yet.
+              Add a comment to this paper
             </h2>
-            <div className={css(styles.text)}>
-              Please add a comment to this paper
-            </div>
-          </span>
+            <p className={css(styles.text)}>
+              Contribute a thought or post a question for this paper.
+            </p>
+          </Fragment>
         )}
-
         <PermissionNotificationWrapper
           onClick={() => {
             setShowEditor(true);
@@ -564,6 +566,14 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     width: "100%",
+    borderRadius: 3,
+    padding: "25px 0",
+    border: `1px solid #F0F0F0`,
+    backgroundColor: "#FBFBFD",
+    cursor: "pointer",
+    ":hover": {
+      borderColor: colors.BLUE(),
+    },
   },
   plainBox: {
     backgroundColor: "#FFF",
@@ -597,7 +607,7 @@ var styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: colors.BLACK(0.8),
-    marginBottom: 24,
+    margin: "0px 0px 20px",
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
@@ -623,19 +633,16 @@ var styles = StyleSheet.create({
   },
   addDiscussionButton: {
     border: "1px solid",
-    borderColor: colors.PURPLE(1),
     padding: "8px 32px",
-    background: "#fff",
-    color: colors.PURPLE(1),
+    color: "#fff",
+    background: colors.PURPLE(1),
     fontSize: 16,
-    borderRadius: 4,
+    borderRadius: 5,
     height: 45,
     outline: "none",
     cursor: "pointer",
     ":hover": {
-      borderColor: "#FFF",
-      color: "#FFF",
-      backgroundColor: colors.PURPLE(1),
+      backgroundColor: "#3E43E8",
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
@@ -777,7 +784,6 @@ var styles = StyleSheet.create({
     fontSize: 50,
     color: colors.BLUE(1),
     height: 50,
-    marginBottom: 10,
   },
   twitterIcon: {
     color: "#00ACEE",
