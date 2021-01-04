@@ -5,11 +5,13 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 
-import BulletPlaceholder from "../Placeholders/BulletPlaceholder";
-import FormTextArea from "../Form/FormTextArea";
-import Button from "../Form/Button";
-import SummaryBulletPoint from "./SummaryBulletPoint";
+import ComponentWrapper from "~/components/ComponentWrapper";
+import BulletPlaceholder from "../../Placeholders/BulletPlaceholder";
+import FormTextArea from "../../Form/FormTextArea";
+import Button from "../../Form/Button";
+import SummaryBulletPoint from "../SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
+import ModeratorQA from "~/components/Moderator/ModeratorQA";
 import SectionBounty from "./SectionBounty";
 
 // redux
@@ -48,21 +50,22 @@ class BulletsContainer extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      if (prevProps.paperId !== this.props.paperId) {
-        this.fetchBullets();
-      } else if (
-        JSON.stringify(prevProps.bulletsRedux.bullets) !==
-        JSON.stringify(this.props.bulletsRedux.bullets)
-      ) {
-        this.setState({ bullets: this.props.bulletsRedux.bullets });
-      }
+    if (prevProps.paper.id !== this.props.paper.id) {
+      this.fetchBullets();
+    } else if (
+      JSON.stringify(prevProps.bulletsRedux.bullets) !==
+      JSON.stringify(this.props.bulletsRedux.bullets)
+    ) {
+      this.setState({ bullets: this.props.bulletsRedux.bullets });
+    }
+    if (this.props.loadingPaper) {
+      return !this.state.loading && this.setState({ loading: true });
     }
   }
 
   fetchBullets = async () => {
     this.setState({ loading: true });
-    await this.props.getBullets(this.props.paperId);
+    await this.props.getBullets(this.props.paper.id);
     this.setState({ loading: false }, () => {
       this.props.afterFetchBullets && this.props.afterFetchBullets();
     });
@@ -91,7 +94,7 @@ class BulletsContainer extends React.Component {
       setTimeout(() => {
         fn();
         this.setState({ transition: false });
-      }, 400);
+      }, 200);
     });
   };
 
@@ -131,35 +134,36 @@ class BulletsContainer extends React.Component {
   onEditCallback = (bullet, index) => {
     let bullets = [...this.state.bullets];
     bullets[index] = bullet;
-    this.setState({ bullets }, () => {
-      this.props.updateStateByKey("bullets", bullets);
-    });
+    this.setState({ bullets }, () =>
+      this.props.updateStateByKey("bullets", bullets)
+    );
   };
 
   onRemoveCallback = (index) => {
     let bullets = [...this.state.bullets];
     bullets.splice(index, 1);
-    this.setState({ bullets }, () => {
-      this.props.updateStateByKey("bullets", bullets);
-    });
+    this.setState({ bullets }, () =>
+      this.props.updateStateByKey("bullets", bullets)
+    );
   };
 
   submitBulletPoint = async () => {
-    let {
+    const {
       bulletsRedux,
       postBullet,
       showMessage,
       setMessage,
       auth,
       openLoginModal,
+      paper,
+      updatePaperState,
     } = this.props;
     if (!auth.isLoggedIn) {
-      return openLoginModal(true, "Please login to add a key takeaway");
+      return openLoginModal(true, "Please sign in to add a key takeaway");
     }
-    this.props.showMessage({ load: true, show: true });
-    let paperId = this.props.paperId;
-    let bullet = this.formatNewBullet();
-    let newBullets = [...this.state.bullets, bullet];
+    showMessage({ load: true, show: true });
+    const paperId = paper.id;
+    const bullet = this.formatNewBullet();
     this.setState({ pendingSubmission: true });
     await postBullet({ paperId, bullet, prevState: bulletsRedux });
     if (!this.props.bulletsRedux.pending && this.props.bulletsRedux.success) {
@@ -171,6 +175,7 @@ class BulletsContainer extends React.Component {
         bulletText: "",
         showForm: false,
       });
+      updatePaperState({ ...paper });
     } else {
       // handle error
       if (this.props.bulletsRedux.status === 429) {
@@ -187,9 +192,15 @@ class BulletsContainer extends React.Component {
   };
 
   renderBulletPoints = () => {
-    let { loading, bullets, showForm } = this.state;
+    const {
+      paper,
+      userVoteChecked,
+      updatePaperState,
+      fetchBullets,
+    } = this.props;
+    const { loading, bullets, showForm } = this.state;
 
-    let emptyBullets =
+    const emptyBullets =
       bullets.filter((bullet) => !bullet.is_removed).length === 0;
 
     if (loading) {
@@ -210,14 +221,15 @@ class BulletsContainer extends React.Component {
             this.transitionWrapper(this.toggleForm);
           }}
         >
+          <div className={css(styles.icon)}>{icons.takeaway}</div>
           <div className={css(styles.text)}>
-            <div className={css(styles.mainText)}>
-              Add a key takeaway for this paper
-            </div>
-            <div className={css(styles.subText)}>
-              Earn <SectionBounty value={1} /> for adding a key takeaway to the
-              paper
-            </div>
+            <h2 className={css(styles.mainText)}>
+              Add a key takeaway to this paper
+            </h2>
+            <p className={css(styles.subtitle)}>
+              Earn 1 RSC for being the first to add a key takeaway.
+            </p>
+            <button className={css(styles.button)}>Add Key Takeaway</button>
           </div>
         </Ripples>
       );
@@ -251,6 +263,12 @@ class BulletsContainer extends React.Component {
         className={css(dropdownStyles.row)}
         ref={(ref) => (this.dropdownMenu = ref)}
       >
+        <ModeratorQA
+          containerStyles={dropdownStyles.item}
+          updatePaperState={updatePaperState}
+          type={"takeaways"}
+          paper={paper}
+        />
         <Ripples
           className={css(dropdownStyles.item)}
           onClick={() => openManageBulletPointsModal(true, "key_takeaway")}
@@ -324,28 +342,68 @@ class BulletsContainer extends React.Component {
   };
 
   render() {
-    let { showForm, pendingSubmission, transition } = this.state;
-    let { openManageBulletPointsModal, paper, updatePaperState } = this.props;
+    const { transition } = this.state;
+    const {
+      paper,
+      userVoteChecked,
+      updatePaperState,
+      keyTakeawayRef,
+      fetchBullets,
+    } = this.props;
+
     return (
-      <div className={css(styles.bulletContainer)}>
-        <div className={css(styles.bulletHeaderContainer)}>
-          <div className={css(styles.bulletTitle)}>Key Takeaways</div>
-          <div className={css(dropdownStyles.dropdownContainer)}>
-            {this.renderDropdown()}
+      <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+        <a name="takeaways" id={"takeaway"}>
+          <div
+            className={css(styles.bulletsContainer)}
+            ref={keyTakeawayRef}
+            id="takeaways-tab"
+          >
+            <div className={css(styles.bulletContainer)}>
+              <div className={css(styles.bulletHeaderContainer)}>
+                <div className={css(styles.bulletTitle)}>
+                  Key Takeaways
+                  <SectionBounty
+                    paper={paper}
+                    section={"takeaways"}
+                    loading={!userVoteChecked || !fetchBullets}
+                    updatePaperState={updatePaperState}
+                  />
+                </div>
+                <div className={css(dropdownStyles.dropdownContainer)}>
+                  {this.renderDropdown()}
+                </div>
+              </div>
+              <div
+                className={css(
+                  styles.bulletPoints,
+                  transition && styles.transition
+                )}
+              >
+                {this.showForm()}
+                {this.renderBulletPoints()}
+              </div>
+            </div>
           </div>
-        </div>
-        <div
-          className={css(styles.bulletPoints, transition && styles.transition)}
-        >
-          {this.showForm()}
-          {this.renderBulletPoints()}
-        </div>
-      </div>
+        </a>
+      </ComponentWrapper>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  bulletsContainer: {
+    backgroundColor: "#fff",
+    padding: 50,
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    borderRadius: 4,
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 25,
+    },
+  },
   bulletContainer: {
     width: "100%",
     backgroundColor: "#fff",
@@ -378,6 +436,8 @@ const styles = StyleSheet.create({
     },
   },
   bulletTitle: {
+    display: "flex",
+    alignItems: "center",
     fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
@@ -446,12 +506,13 @@ const styles = StyleSheet.create({
   },
   emptyStateContainer: {
     display: "flex",
+    flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
     boxSizing: "border-box",
     borderRadius: 3,
-    padding: 16,
+    padding: "25px 0",
     border: `1px solid #F0F0F0`,
     backgroundColor: "#FBFBFD",
     cursor: "pointer",
@@ -476,6 +537,11 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     border: `1.5px solid #3971FF`,
   },
+  icon: {
+    fontSize: 35,
+    color: colors.BLUE(1),
+    height: 35,
+  },
   text: {
     textAlign: "center",
     width: "100%",
@@ -483,17 +549,38 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 20,
     fontWeight: 500,
+
     "@media only screen and (max-width: 415px)": {
       fontSize: 16,
     },
   },
-  subText: {
+
+  subtitle: {
     fontSize: 16,
     color: "rgba(36, 31, 58, 0.8)",
-    marginTop: 5,
+    marginTop: 10,
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
       textAlign: "center",
+    },
+  },
+  button: {
+    border: "1px solid",
+    padding: "8px 25px",
+    color: "#fff",
+    background: colors.PURPLE(1),
+    fontSize: 16,
+    borderRadius: 4,
+    height: 45,
+    outline: "none",
+    cursor: "pointer",
+    borderRadius: 5,
+    ":hover": {
+      backgroundColor: "#3E43E8",
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: "6px 24px",
+      fontSize: 12,
     },
   },
   moderatorButton: {
@@ -511,7 +598,6 @@ const dropdownStyles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 8,
   },
   dropdownMenu: {
     position: "absolute",

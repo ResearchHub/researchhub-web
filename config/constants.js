@@ -55,3 +55,11 @@ export const RECAPTCHA_CLIENT_KEY = "6LdxeboZAAAAAEgn_Oa0VnohS724vZhI3_ezLbVD";
 
 export const SIFT_BEACON_KEY =
   process.env.NODE_ENV === "production" ? "b27b7ee421" : "891d8fb796";
+
+export const SUMMARY_PLACEHOLDER = `Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
+                      
+Hypothesis: What question does this paper attempt to answer?
+
+Conclusion: What conclusion did the paper reach?
+
+Significance: What does this paper make possible in the world, and what should be tried from here?`;

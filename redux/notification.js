@@ -15,6 +15,7 @@ export const NotificationConstants = {
   MARK_AS_READ: "@@notification/MARK_AS_READ",
   MARK_ALL_AS_READ: "@@notification/MARK_ALL_AS_READ",
   ADD_NOTIFICATION: "@@notification/ADD_NOTIFICATION",
+  UPDATE_NOTIFICATION: "@@notification/UPDATE_NOTIFICATION",
 };
 
 export const NotificationActions = {
@@ -79,8 +80,9 @@ export const NotificationActions = {
         });
     };
   },
-  markAsRead: (prevState, notifId) => {
-    return (dispatch) => {
+  markAsRead: (notifId) => {
+    return (dispatch, getState) => {
+      const prevState = getState().livefeed.notifications;
       return fetch(
         API.NOTIFICATION({ notifId }),
         API.PATCH_CONFIG({ read: true })
@@ -88,8 +90,8 @@ export const NotificationActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let index = shims.findIndexById(prevState, notifId);
-          let notifications = [...prevState];
+          const index = shims.findIndexById(prevState, notifId);
+          const notifications = [...prevState];
           notifications[index].read = true;
           return dispatch({
             type: NotificationConstants.MARK_AS_READ,
@@ -100,16 +102,16 @@ export const NotificationActions = {
         });
     };
   },
-  markAllAsRead: (prevState, ids) => {
-    return (dispatch) => {
+  markAllAsRead: (ids) => {
+    return (dispatch, getState) => {
+      const prevState = getState().livefeed.notifications;
       return fetch(API.NOTIFICATION({ ids }), API.PATCH_CONFIG({ ids }))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let notifications = prevState.map((notification) => {
-            let copy = { ...notification };
-            copy.read = true;
-            return copy;
+          const notifications = prevState.map((notification) => {
+            notification.read = true;
+            return notification;
           });
           return dispatch({
             type: NotificationConstants.MARK_ALL_AS_READ,
@@ -120,11 +122,25 @@ export const NotificationActions = {
         });
     };
   },
-  addNotification: (prevState, notification) => {
-    return (dispatch) => {
-      let notifications = [notification, ...prevState];
+  addNotification: (notification) => {
+    return (dispatch, getState) => {
+      const prevState = getState().livefeed.notifications;
+      const notifications = [notification, ...prevState];
       return dispatch({
         type: NotificationConstants.ADD_NOTIFICATION,
+        payload: {
+          notifications,
+        },
+      });
+    };
+  },
+  updateNotification: (notification) => {
+    return (dispatch, getState) => {
+      const notifications = [...getState().livefeed.notifications];
+      const index = shims.findIndexById(notifications, notification.id);
+      notification[index] = notification;
+      return dispatch({
+        type: NotificationConstants.UPDATE_NOTIFICATION,
         payload: {
           notifications,
         },
@@ -151,6 +167,7 @@ const NotificationReducer = (state = defaultNotificationState, action) => {
     case NotificationConstants.MARK_AS_READ:
     case NotificationConstants.MARK_ALL_AS_READ:
     case NotificationConstants.ADD_NOTIFICATION:
+    case NotificationConstants.UPDATE_NOTIFICATION:
       return {
         ...state,
         ...action.payload,
@@ -163,9 +180,9 @@ const NotificationReducer = (state = defaultNotificationState, action) => {
 };
 
 const shims = {
-  findIndexById: (prevState, notifId) => {
-    for (var i = 0; i < prevState.length; i++) {
-      if (prevState[i].id === notifId) {
+  findIndexById: (notifications, notifId) => {
+    for (var i = 0; i < notifications.length; i++) {
+      if (notifications[i].id === notifId) {
         return i;
       }
     }

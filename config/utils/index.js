@@ -45,9 +45,33 @@ export function isEmpty(value) {
   return false;
 }
 
-export function truncateText(text) {
-  if (text && text.length >= 90) {
-    return text.slice(0, 90).trim() + "...";
+export function truncateText(str) {
+  if (str && str.length >= 90) {
+    return str.slice(0, 90).trim() + "...";
   }
-  return text;
+  return str;
+}
+
+export function getBountyAmount({ type, paper }) {
+  if (doesNotExist(type) || doesNotExist(paper)) {
+    return 0;
+  }
+
+  if (type === "summary") {
+    if (
+      doesNotExist(paper.summary_low_quality) ||
+      typeof paper.summary_low_quality === "boolean"
+    ) {
+      return 0;
+    }
+    return paper.summary_low_quality;
+  } else if (type === "takeaways") {
+    if (
+      doesNotExist(paper.bullet_low_quality) ||
+      typeof paper.bullet_low_quality === "boolean"
+    ) {
+      return 0;
+    }
+    return paper.bullet_low_quality;
+  }
 }

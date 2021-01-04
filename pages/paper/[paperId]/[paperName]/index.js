@@ -17,15 +17,12 @@ import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import FigureTab from "~/components/Paper/Tabs/FigureTab";
-import LimitationTab from "~/components/Paper/Tabs/LimitationTab";
+import KeyTakeawaysTab from "~/components/Paper/Tabs/KeyTakeawaysTab";
 import PaperPageCard from "~/components/PaperPageCard";
-import CitationCard from "~/components/Paper/CitationCard";
-import CitationPreviewPlaceholder from "~/components/Placeholders/CitationPreviewPlaceholder";
 import PaperProgress from "~/components/Paper/PaperProgress";
-import PaperTransactionModal from "../../../../components/modal/PaperTransactionModal";
-import PaperFeatureModal from "../../../../components/modal/PaperFeatureModal";
-import PaperBanner from "../../../../components/Paper/PaperBanner";
+import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
+import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
+import PaperBanner from "~/components/Paper/PaperBanner";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -71,21 +68,18 @@ const Paper = (props) => {
 
   const dispatch = useDispatch();
   const store = useStore();
-  const isModerator = store.getState().auth.user.moderator;
+
   const [paper, setPaper] = useState(
     (props.paper && shims.paper(props.paper)) || {}
   );
   const [summary, setSummary] = useState(
     (props.paper && props.paper.summary) || {}
   );
-  const [showAllSections, toggleShowAllSections] = useState(false);
-  const [referencedBy, setReferencedBy] = useState([]);
-  const [referencedByCount, setReferencedByCount] = useState(0);
-  const [loadingReferencedBy, setLoadingReferencedBy] = useState(true);
   const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
+
+  const [showAllSections, toggleShowAllSections] = useState(false);
   const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
   const [loadingSummary, setLoadingSummary] = useState(true);
-  const [loadingFile, setLoadingFile] = useState(true);
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
   const [sticky, setSticky] = useState(false);
   const [scrollView, setScrollView] = useState(false);
@@ -93,9 +87,6 @@ const Paper = (props) => {
     getVoteType(props.paper && props.paper.userVote)
   );
   const [figureCount, setFigureCount] = useState();
-  const [limitCount, setLimitCount] = useState(
-    store.getState().limitations.limits.length
-  );
   const [discussionCount, setCount] = useState(
     calculateCommentCount(props.paper)
   );
@@ -117,8 +108,9 @@ const Paper = (props) => {
   ]);
   const [tabs, setTabs] = useState(getActiveTabs());
   const [fetchBullets, setFetchBullets] = useState(false);
+  const [userVoteChecked, setUserVoteChecked] = useState(false);
 
-  const { hostname, showMessage } = props;
+  const { hostname } = props;
   const { paperId, tabName } = router.query;
 
   const paperCardRef = useRef(null);
@@ -128,6 +120,11 @@ const Paper = (props) => {
   const discussionRef = useRef(null);
   const citationRef = useRef(null);
   const paperPdfRef = useRef(null);
+
+  const isModerator = store.getState().auth.user.moderator;
+  const isSubmitter =
+    paper.uploaded_by && paper.uploaded_by.id === props.auth.user.id;
+
   let summaryVoteChecked = false;
 
   const fetchPaper = ({ paperId }) => {
@@ -144,7 +141,7 @@ const Paper = (props) => {
         setCount(calculateCommentCount(currPaper));
         setPaper(currPaper);
         setSummary(currPaper.summary || {});
-        // checkUserVote();
+        checkUserVote(currPaper);
         return currPaper;
       })
       .catch((error) => {
@@ -175,18 +172,12 @@ const Paper = (props) => {
         setLoadingSummary(false);
       });
     }
+    setLoadingSummary(false);
   }, [summary.id, props.auth.isLoggedIn]);
 
-  useEffect(() => {
-    setLimitCount(store.getState().limitations.limits.length);
-    setTabs(getActiveTabs());
-  }, [store.getState().limitations.limits.length]);
-
-  function checkUserVote() {
+  function checkUserVote(paperState = paper) {
     if (props.auth.isLoggedIn && props.auth.user) {
-      let params = {
-        paperIds: [paperId],
-      };
+      const params = { paperIds: [paperId] };
       return fetch(API.CHECK_USER_VOTE(params), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -194,11 +185,17 @@ const Paper = (props) => {
           const paperUserVote = res[paperId];
 
           if (paperUserVote) {
-            let updatedPaper = { ...paper };
+            const { bullet_low_quality, summary_low_quality } = paperUserVote;
+            const updatedPaper = {
+              ...paperState,
+              bullet_low_quality,
+              summary_low_quality,
+            };
             updatedPaper.userVote = paperUserVote;
             setPaper(updatedPaper);
             setSelectedVoteType(updatedPaper.userVote.vote_type);
           }
+          return setUserVoteChecked(true);
         });
     }
   }
@@ -339,17 +336,8 @@ const Paper = (props) => {
       tabs.push({ href: "summary", label: "description" });
     }
     tabs.push({ href: "comments", label: "discussions" });
-    // if (figureCount || showAllSections) {
-    //   tabs.push({ href: "figures", label: "figures" });
-    // }
     if (paper.file || paper.url || showAllSections) {
       tabs.push({ href: "paper", label: "Paper PDF" });
-    }
-    if (referencedByCount || showAllSections) {
-      tabs.push({ href: "citations", label: "cited by" });
-    }
-    if (store.getState().limitations.limits.length > 0 || showAllSections) {
-      tabs.push({ href: "limitations", label: "limitations" });
     }
 
     return tabs;
@@ -437,9 +425,6 @@ const Paper = (props) => {
     setPaper(newState);
   }
 
-  const isSubmitter =
-    paper.uploaded_by && paper.uploaded_by.id === props.auth.user.id;
-
   return (
     <div className={css(styles.container)}>
       <PaperTransactionModal
@@ -504,13 +489,9 @@ const Paper = (props) => {
             setSticky={setSticky}
             scrollView={scrollView}
             tabName={tabName}
-            discussionCount={discussionCount}
             paper={paper}
-            figureCount={figureCount}
             activeTabs={tabs}
             showAllSections={showAllSections}
-            referencedByCount={referencedByCount}
-            loadingReferencedBy={loadingReferencedBy}
             updatePaperState={updatePaperState}
           />
         </div>
@@ -520,7 +501,6 @@ const Paper = (props) => {
               <PaperProgress
                 setFigureCount={setFigureCount}
                 figureCount={figureCount}
-                setLimitCount={setLimitCount}
                 commentCount={discussionCount}
                 setCount={setCount}
                 paper={paper}
@@ -535,20 +515,27 @@ const Paper = (props) => {
               />
             </div>
           </ComponentWrapper>
+          <KeyTakeawaysTab
+            keyTakeawayRef={keyTakeawayRef}
+            afterFetchBullets={() => setFetchBullets(true)}
+            updatePaperState={updatePaperState}
+            paper={paper}
+            userVoteChecked={userVoteChecked}
+            fetchBullets={fetchBullets}
+            loadingPaper={loadingPaper}
+          />
           <SummaryTab
             paperId={paperId}
             paper={paper}
             summary={summary}
-            keyTakeawayRef={keyTakeawayRef}
             descriptionRef={descriptionRef}
-            afterFetchBullets={() => setFetchBullets(true)}
             updatePaperState={updatePaperState}
             updateSummary={setSummary}
             loadingSummary={loadingSummary}
+            userVoteChecked={userVoteChecked}
           />
           <a name="comments" id="comments">
-            <div className={css(styles.space)} />
-            <div id="comments-tab">
+            <div id="comments-tab" className={css(styles.space)}>
               <DiscussionTab
                 hostname={hostname}
                 paperId={paperId}
@@ -566,76 +553,9 @@ const Paper = (props) => {
                 paper={paper}
                 paperPdfRef={paperPdfRef}
                 isModerator={isModerator}
-                setLoadingFile={setLoadingFile}
               />
             </div>
           </a>
-          {false && referencedByCount > 0 && showAllSections ? (
-            <a name="citations">
-              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                <ReactPlaceholder
-                  ready={!loadingReferencedBy}
-                  showLoadingAnimation
-                  customPlaceholder={
-                    <CitationPreviewPlaceholder color="#efefef" />
-                  }
-                >
-                  <div
-                    className={css(styles.citationContainer)}
-                    ref={citationRef}
-                    id="citedby-tab"
-                  >
-                    <div className={css(styles.header)}>
-                      <div className={css(styles.citationTitle)}>Cited By</div>
-                      <span className={css(styles.citationCount)}>
-                        {referencedByCount > 0 && referencedByCount}
-                      </span>
-                    </div>
-                    <div className={css(styles.citations)}>
-                      {referencedBy.length > 0 ? (
-                        referencedBy.map((reference, id) => {
-                          return (
-                            <CitationCard
-                              key={`citation-${reference.id}-${id}`}
-                              citation={reference}
-                            />
-                          );
-                        })
-                      ) : (
-                        <div className={css(styles.citationEmpty)}>
-                          <div className={css(styles.icon)}>
-                            <i className="fad fa-file-alt" />
-                          </div>
-                          This paper has not been cited yet
-                          <div className={css(styles.citationEmptySubtext)}>
-                            No citations have been found in RH papers
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </ReactPlaceholder>
-              </ComponentWrapper>
-            </a>
-          ) : null}
-          {false && limitCount && showAllSections ? (
-            <a name="limitations">
-              <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-                <div
-                  className={css(
-                    styles.bulletsContainer,
-                    styles.limitsContainer
-                  )}
-                  id="limitations-tab"
-                >
-                  <LimitationTab
-                    paperId={paperId}
-                    setLimitCount={setLimitCount}
-                  />
-                </div>
-              </ComponentWrapper>
-            </a>
-          ) : null}
         </div>
         <Joyride
           steps={steps}
@@ -906,7 +826,7 @@ const styles = StyleSheet.create({
     display: "none",
   },
   space: {
-    height: 30,
+    marginTop: 30,
   },
   stickyComponent: {
     top: 0,
@@ -998,18 +918,6 @@ const styles = StyleSheet.create({
   },
   figuresContainer: {
     marginTop: 32,
-  },
-  bulletsContainer: {
-    backgroundColor: "#fff",
-    padding: 50,
-    border: "1.5px solid #F0F0F0",
-    boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    borderRadius: 4,
-
-    "@media only screen and (max-width: 767px)": {
-      padding: 25,
-    },
   },
   limitsContainer: {
     marginTop: 30,
