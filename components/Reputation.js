@@ -27,9 +27,9 @@ const Reputation = (props) => {
     }
   }, [balance]);
 
-  function openTransactionModal(e) {
+  function openWithdrawalModal(e) {
     e.stopPropagation();
-    dispatch(ModalActions.openTransactionModal(true));
+    dispatch(ModalActions.openWithdrawalModal(true));
   }
 
   return (
@@ -37,7 +37,7 @@ const Reputation = (props) => {
       className={css(styles.reputationContainer)}
       data-tip={""}
       data-for="reputationTooltip"
-      onClick={openTransactionModal}
+      onClick={openWithdrawalModal}
     >
       <div className={css(styles.reputationValue)}>
         {transition

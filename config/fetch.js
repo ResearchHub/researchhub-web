@@ -92,3 +92,23 @@ export const supportContent = async ({ contentType, objectId, amount }) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const setSectionBounty = async ({ paperId, type, amount }) => {
+  const PAYLOAD = { [type]: amount };
+
+  return fetch(
+    API.PAPER({ paperId, route: "bounty" }),
+    API.POST_CONFIG(PAYLOAD)
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const reviewBounty = ({ paperId, PAYLOAD }) => {
+  return fetch(
+    API.PAPER({ paperId, route: "review_bounty" }),
+    API.POST_CONFIG(PAYLOAD)
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};

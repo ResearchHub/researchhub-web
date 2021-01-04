@@ -14,6 +14,7 @@ import { NotificationActions } from "~/redux/notification";
 // Config
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
+import { doesNotExist } from "~/config/utils";
 
 class Notification extends React.Component {
   constructor(props) {
@@ -29,32 +30,30 @@ class Notification extends React.Component {
     this.notifFeed;
   }
 
-  componentDidMount = async () => {
-    await this.props.getNotifications();
+  componentDidMount = () => {
     document.addEventListener("mousedown", this.handleOutsideClick);
-    this.setState({
-      count: this.countReadNotifications(),
-      fetching: false,
+    this.props.getNotifications().then((res) => {
+      const results = res.payload.notifications;
+      this.setState({
+        count: this.countReadNotifications(results),
+        fetching: false,
+      });
     });
   };
 
-  componentDidUpdate = async (prevProps) => {
+  componentDidUpdate = (prevProps) => {
     if (prevProps.wsResponse !== this.props.wsResponse) {
       const { wsResponse, addNotification, notifications } = this.props;
       const response = JSON.parse(wsResponse);
       const notification = response.data;
-      await addNotification(notifications, notification);
+      addNotification(notification);
       this.setState({
-        count: this.countReadNotifications(),
+        count: this.countReadNotifications([notification, ...notifications]),
       });
     }
-    if (
-      JSON.stringify(prevProps.notifications) !==
-      JSON.stringify(this.props.notifications)
-    ) {
+    if (this.props.notifications.length > prevProps.notifications.length) {
       this.setState({
-        // notifications: this.props.notifications,
-        count: this.countReadNotifications(),
+        count: this.countReadNotifications(this.props.notification),
       });
     }
   };
@@ -63,9 +62,11 @@ class Notification extends React.Component {
     document.addEventListener("mousedown", this.handleOutsideClick);
   }
 
-  countReadNotifications() {
-    var count = 0;
-    this.props.notifications.forEach((notification) => {
+  countReadNotifications(arr) {
+    let count = 0;
+    const notifications = arr ? arr : this.props.notifications;
+
+    notifications.forEach((notification) => {
       if (!notification.read) {
         count++;
       }
@@ -85,9 +86,9 @@ class Notification extends React.Component {
 
   toggleMenu = () => {
     this.setState({ isOpen: !this.state.isOpen }, () => {
-      let ids = this.formatIds();
-      this.state.isOpen &&
-        this.props.markAllAsRead(this.props.notifications, ids);
+      const ids = this.formatIds();
+      this.state.isOpen && this.props.markAllAsRead(ids);
+      this.setState({ count: 0 });
     });
   };
 
@@ -104,9 +105,18 @@ class Notification extends React.Component {
       created_date,
       paper,
       paper_slug,
+      action,
     } = notification;
     if (extra) {
-      const { status, bullet_point, summary, content_type } = extra;
+      const {
+        status,
+        bullet_point,
+        summary,
+        content_type,
+        bounty_object_id,
+        bounty_content_type,
+        bounty_approval,
+      } = extra;
 
       if (status) {
         // Stripe branch not yet integrated
@@ -146,6 +156,33 @@ class Notification extends React.Component {
           amount: extra.amount,
           slug: paper_slug,
         };
+      } else if (bounty_object_id) {
+        return {
+          content_type: "bounty_moderator",
+          type: bounty_content_type, // summary or takeaway,
+          created_by: action_user,
+          created_date: created_date,
+          plain_text: extra.tip,
+          paper_id: paper,
+          paper_official_title: action[0].paper_official_title,
+          slug: paper_slug,
+          bounty_amount: extra.bounty_amount,
+          bounty_id: extra.bounty_object_id,
+          bounty_approved: extra.bounty_approval,
+        };
+      } else if (!doesNotExist(bounty_approval)) {
+        return {
+          content_type: "bounty_contributor",
+          type: bounty_content_type, // summary or takeaway,
+          created_by: action_user,
+          created_date: created_date,
+          plain_text: action[0].tip,
+          paper_id: paper,
+          paper_official_title: action[0].paper_official_title,
+          slug: paper_slug,
+          bounty_amount: extra.bounty_amount,
+          bounty_approval: bounty_approval,
+        };
       }
     }
 
@@ -170,11 +207,12 @@ class Notification extends React.Component {
             showLoadingAnimation
             customPlaceholder={<NotificationPlaceholder color="#efefef" />}
           >
-            {this.props.notifications && this.props.notifications.length ? (
+            {this.renderNotifications()}
+            {/* {this.props.notifications && this.props.notifications.length ? (
               this.renderNotifications()
             ) : (
               <div className={css(styles.emptyState)}>No Notifications</div>
-            )}
+            )} */}
           </ReactPlaceholder>
         </div>
       </div>

@@ -23,7 +23,7 @@ import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
-import UserInfoModal from "~/components/modal/UserInfoModal";
+import UserInfoModal from "~/components/Modals/UserInfoModal";
 import Button from "~/components/Form/Button";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import Loader from "~/components/Loader/Loader";
@@ -32,13 +32,12 @@ import "~/components/Paper/CitationCard.css";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import UserSummaries from "../../../../components/Author/Tabs/UserSummaries";
-import UserKeyTakeaways from "../../../../components/Author/Tabs/UserKeyTakeaways";
+import UserSummaries from "~/components/Author/Tabs/UserSummaries";
+import UserKeyTakeaways from "~/components/Author/Tabs/UserKeyTakeaways";
 
 const AuthorPage = (props) => {
   const { auth, author, hostname, user, transactions } = props;

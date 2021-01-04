@@ -41,8 +41,12 @@ const AmountInput = (props) => {
             " rscInput"
           }
           type="number"
-          min={1}
-          max={store.getState().auth.user.balance || 0}
+          min={props.minValue ? props.minValue : 1}
+          max={
+            props.maxValue
+              ? props.maxValue
+              : store.getState().auth.user.balance || 0
+          }
           pattern="[0-9]"
           value={props.value}
           onChange={props.onChange}
@@ -59,7 +63,8 @@ const AmountInput = (props) => {
       <div
         className={css(
           styles.balanceContainer,
-          props.rightAlignBalance && styles.rightAlignBalance
+          props.rightAlignBalance && styles.rightAlignBalance,
+          props.hideBalance && styles.hideBalance
         )}
       >
         <span className={css(styles.balanceLabel)}>Available:</span>
@@ -159,6 +164,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     marginTop: 10,
+  },
+  hideBalance: {
+    display: "none",
   },
   balanceLabel: {
     color: colors.BLACK(0.6),

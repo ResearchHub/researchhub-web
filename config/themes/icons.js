@@ -45,15 +45,45 @@ const icons = {
   subscribers: <i className="fa fa-user" />,
   paper: <i className="fa fa-file" />,
   editHub: <i className="fas fa-edit" />,
-  trash: <i className="fal fa-trash-alt"></i>,
+  trash: <i className="fal fa-trash-alt" />,
   ban: <i className="fas fa-ban" />,
   error: <i className="fas fa-exclamation-triangle" />,
   starFilled: <i className="fas fa-star" />,
   starEmpty: <i className="far fa-star" />,
   manage: <i className="fal fa-tasks-alt" />,
   pin: <i className="fas fa-thumbtack" />,
-  pinOutline: <i className="fal fa-thumbtack"></i>,
+  pinOutline: <i className="fal fa-thumbtack" />,
   fire: <i className="fad fa-fire-alt" />,
+  coin: <i className="fad fa-coin" />,
+  takeaway: <i className="fad fa-list" />,
+  coinStack: ({ styles, grey }) => (
+    <img
+      src={
+        grey
+          ? "/static/icons/coin-stack-grey.png"
+          : "/static/icons/coin-stack.png"
+      }
+      className={css(styles)}
+    />
+  ),
+  partyPopper: (props = {}) => {
+    const { style } = props;
+    return (
+      <img
+        className={css(styles.iconPartyPopper, style && style)}
+        src={"/static/icons/party-popper.png"}
+      />
+    );
+  },
+  RSC: (props = {}) => {
+    const { style } = props;
+    return (
+      <img
+        className={css(styles.iconRSC, style && style)}
+        src={"/static/icons/coin-filled.png"}
+      />
+    );
+  },
 };
 
 export const voteWidgetIcons = {
@@ -106,6 +136,13 @@ export const BoltSvg = ({ height, width, color, opacity }) => {
 const styles = StyleSheet.create({
   logo: {
     height: 40,
+  },
+  coinStack: {},
+  iconPartyPopper: {
+    height: 15,
+  },
+  iconRSC: {
+    height: 15,
   },
 });
 
