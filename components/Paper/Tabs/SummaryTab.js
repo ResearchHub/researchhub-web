@@ -495,36 +495,36 @@ class SummaryTab extends React.Component {
       );
     } else {
       return (
-        <div className={css(styles.box) + " second-step"}>
-          <div className={css(styles.icon)}>
-            <i className="fad fa-file-alt" />
-          </div>
-          <h2 className={css(styles.noSummaryTitle)}>
-            Add a summary to this paper
-          </h2>
-          <div className={css(styles.text)}>
+        <PermissionNotificationWrapper
+          onClick={this.editSummary}
+          modalMessage="propose a summary"
+          permissionKey="ProposeSummaryEdit"
+          loginRequired={true}
+          hideRipples={true}
+        >
+          <div className={css(styles.box, styles.emptyStateSummary)}>
+            <div className={css(styles.icon)}>
+              <i className="fad fa-file-alt" />
+            </div>
+            <h2 className={css(styles.noSummaryTitle)}>
+              Add a summary to this paper
+            </h2>
+            <p className={css(styles.text)}>
+              <span className={css(styles.earnRSCButton)}>
+                Earn 5 {icons.coinStack({ styles: styles.coinStackIcon })}
+              </span>
+              for being the first to add a summary.
+            </p>
             <PermissionNotificationWrapper
               onClick={this.editSummary}
               modalMessage="propose a summary"
               permissionKey="ProposeSummaryEdit"
               loginRequired={true}
-              hideRipples={true}
             >
-              <span className={css(styles.earnRSCButton)}>
-                Earn 5 {icons.coinStack({ styles: styles.coinStackIcon })}
-              </span>
+              <button className={css(styles.button)}>Add Summary</button>
             </PermissionNotificationWrapper>
-            for being the first to add a summary.
           </div>
-          <PermissionNotificationWrapper
-            onClick={this.editSummary}
-            modalMessage="propose a summary"
-            permissionKey="ProposeSummaryEdit"
-            loginRequired={true}
-          >
-            <button className={css(styles.button)}>Add Summary</button>
-          </PermissionNotificationWrapper>
-        </div>
+        </PermissionNotificationWrapper>
       );
     }
   };
@@ -862,7 +862,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 16,
     color: colors.BLACK(0.8),
-    marginBottom: 24,
+    margin: "0 0 20px",
     textAlign: "center",
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
@@ -978,7 +978,6 @@ var styles = StyleSheet.create({
     fontSize: 50,
     color: colors.BLUE(1),
     height: 50,
-    marginBottom: 10,
   },
   transition: {
     opacity: 0,
@@ -1125,6 +1124,21 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 500px)": {
       height: 10,
       width: 10,
+    },
+  },
+  emptyStateSummary: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+    boxSizing: "border-box",
+    borderRadius: 3,
+    padding: "25px 0",
+    border: `1px solid #F0F0F0`,
+    backgroundColor: "#FBFBFD",
+    cursor: "pointer",
+    ":hover": {
+      borderColor: colors.BLUE(),
     },
   },
 });

@@ -27,7 +27,8 @@ const SectionBounty = (props) => {
   function configureBounty() {
     const summary = paper.summary && getSummaryText(paper.summary);
     const needSummary = !summary;
-    const needTakeaways = bullets.bullets.length < 3;
+    const needTakeaways =
+      bullets.bullets.filter((bullet) => !bullet.is_removed).length === 0;
     let bounty = 0;
 
     if (section === "summary" && needSummary) {
