@@ -221,16 +221,15 @@ class BulletsContainer extends React.Component {
             this.transitionWrapper(this.toggleForm);
           }}
         >
+          <div className={css(styles.icon)}>{icons.takeaway}</div>
           <div className={css(styles.text)}>
-            <div className={css(styles.mainText)}>
+            <h2 className={css(styles.mainText)}>
               Add a key takeaway to this paper
-            </div>
-            <div className={css(styles.subtitle)}>
-              <span className={css(styles.earnRSCButton)}>
-                Earn 1 {icons.coinStack({ styles: styles.coinStackIcon })}
-              </span>
-              for being the first to add a key takeaway
-            </div>
+            </h2>
+            <p className={css(styles.subtitle)}>
+              Earn 1 RSC for being the first to add a key takeaway.
+            </p>
+            <button className={css(styles.button)}>Add Key Takeaway</button>
           </div>
         </Ripples>
       );
@@ -507,12 +506,13 @@ const styles = StyleSheet.create({
   },
   emptyStateContainer: {
     display: "flex",
+    flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
     boxSizing: "border-box",
     borderRadius: 3,
-    padding: "20px 0",
+    padding: "25px 0",
     border: `1px solid #F0F0F0`,
     backgroundColor: "#FBFBFD",
     cursor: "pointer",
@@ -537,6 +537,11 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     border: `1.5px solid #3971FF`,
   },
+  icon: {
+    fontSize: 35,
+    color: colors.BLUE(1),
+    height: 35,
+  },
   text: {
     textAlign: "center",
     width: "100%",
@@ -544,10 +549,12 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 20,
     fontWeight: 500,
+
     "@media only screen and (max-width: 415px)": {
       fontSize: 16,
     },
   },
+
   subtitle: {
     fontSize: 16,
     color: "rgba(36, 31, 58, 0.8)",
@@ -557,26 +564,23 @@ const styles = StyleSheet.create({
       textAlign: "center",
     },
   },
-  earnRSCButton: {
-    fontSize: 14,
-    fontWeight: 500,
-    marginRight: 8,
+  button: {
+    border: "1px solid",
+    padding: "8px 25px",
+    color: "#fff",
+    background: colors.PURPLE(1),
+    fontSize: 16,
     borderRadius: 4,
-    backgroundColor: colors.ORANGE(0.1),
-    color: colors.ORANGE(),
-    padding: "4px 12px",
+    height: 45,
+    outline: "none",
     cursor: "pointer",
+    borderRadius: 5,
     ":hover": {
-      boxShadow: `0px 0px 2px ${colors.ORANGE()}`,
+      backgroundColor: "#3E43E8",
     },
-  },
-  coinStackIcon: {
-    marginLeft: 4,
-    height: 12,
-    width: 12,
-    "@media only screen and (max-width: 500px)": {
-      height: 10,
-      width: 10,
+    "@media only screen and (max-width: 415px)": {
+      padding: "6px 24px",
+      fontSize: 12,
     },
   },
   moderatorButton: {

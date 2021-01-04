@@ -510,10 +510,7 @@ class SummaryTab extends React.Component {
               Add a summary to this paper
             </h2>
             <p className={css(styles.text)}>
-              <span className={css(styles.earnRSCButton)}>
-                Earn 5 {icons.coinStack({ styles: styles.coinStackIcon })}
-              </span>
-              for being the first to add a summary.
+              Earn 5 RSC for being the first to add a summary.
             </p>
             <PermissionNotificationWrapper
               onClick={this.editSummary}
