@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     borderRadius: 3,
-    padding: 16,
+    padding: "20px 0",
     border: `1px solid #F0F0F0`,
     backgroundColor: "#FBFBFD",
     cursor: "pointer",
