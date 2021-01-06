@@ -18,6 +18,7 @@ const ReputationTooltip = (props) => {
             <img
               className={css(styles.icon)}
               src={"/static/icons/coin-filled.png"}
+              alt="RSC Coin"
             />
           </div>
           <div className={css(styles.paragraph, styles.description)}>

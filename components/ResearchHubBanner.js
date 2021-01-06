@@ -57,7 +57,7 @@ class ResearchHubBanner extends React.Component {
     }
 
     return (
-      <div className={css(styles.homeBanner, !showBanner && styles.hideBanner)}>
+      <div className={css(styles.homeBanner, styles.hideBanner)}>
         <span
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}
@@ -71,6 +71,7 @@ class ResearchHubBanner extends React.Component {
               : "/static/background/background-home.jpg"
           }
           className={css(styles.bannerOverlay)}
+          alt="ResearchHub Banner"
         />
         <div
           className={css(

@@ -361,6 +361,8 @@ const PaperEntryCard = (props) => {
                       src={preview.file}
                       className={css(carousel.image)}
                       key={`preview_${preview.file}`}
+                      alt={`Paper Preview Page ${i + 1}`}
+                      loading="lazy"
                     />
                   );
                 }
@@ -466,7 +468,11 @@ const PaperEntryCard = (props) => {
     if (paper_type === "PRE_REGISTRATION") {
       return (
         <div className={css(styles.preRegContainer)}>
-          <img src="/static/icons/wip.png" className={css(styles.wipIcon)} />
+          <img
+            src="/static/icons/wip.png"
+            className={css(styles.wipIcon)}
+            alt="Preregistration Icon"
+          />
           Preregistration
         </div>
       );
@@ -636,7 +642,6 @@ const PaperEntryCard = (props) => {
             {mobileOnly(renderMainTitle())}
             {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata())}
-            {/* {mobileOnly(renderPreview(), { fullWidth: true })} */}
             {renderContent()}
             {mobileOnly(renderUploadedBy())}
           </div>
@@ -822,9 +827,6 @@ const styles = StyleSheet.create({
   },
   voteWidget: {
     marginRight: 15,
-    "@media only screen and (max-width: 415px)": {
-      fonSize: 18,
-    },
   },
   bottomBar: {
     display: "flex",

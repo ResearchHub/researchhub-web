@@ -35,7 +35,11 @@ const PaperEntry = ({
           )}
           onClick={() => onClick && onClick(index)}
         >
-          <img src={"/static/icons/pdf.png"} className={css(styles.pdfIcon)} />
+          <img
+            src={"/static/icons/pdf.png"}
+            className={css(styles.pdfIcon)}
+            alt="PDF Icon"
+          />
           <div className={css(styles.fileDataContainer)}>
             <div className={css(styles.fileName, styles.text)}>
               {file && file}
@@ -46,6 +50,7 @@ const PaperEntry = ({
             src={"/static/icons/delete.png"}
             className={css(styles.deleteIcon)}
             onClick={onRemove && onRemove}
+            alt="Delete Button"
           />
         </div>
       );
@@ -65,7 +70,11 @@ const PaperEntry = ({
         )}
         onClick={() => onClick && onClick(index)}
       >
-        <img src={"/static/icons/pdf.png"} className={css(styles.pdfIcon)} />
+        <img
+          src={"/static/icons/pdf.png"}
+          className={css(styles.pdfIcon)}
+          alt="PDF Icon"
+        />
         <div className={css(styles.fileDataContainer)}>
           <div className={css(styles.fileName, styles.text)}>
             {name && name}
@@ -78,6 +87,7 @@ const PaperEntry = ({
           src={"/static/icons/delete.png"}
           className={css(styles.deleteIcon)}
           onClick={onRemove && onRemove}
+          alt="Delete Button"
         />
       </div>
     );

@@ -809,6 +809,8 @@ class HubPage extends React.Component {
                     <img
                       className={css(styles.emptyPlaceholderImage)}
                       src={"/static/background/homepage-empty-state.png"}
+                      loading="lazy"
+                      alt="Empty State Icon"
                     />
                     <div
                       className={css(styles.text, styles.emptyPlaceholderText)}
@@ -954,7 +956,7 @@ var styles = StyleSheet.create({
     display: "table-cell",
     minWidth: 220,
     paddingTop: 10,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 990px)": {
       display: "none",
     },
   },
@@ -1234,7 +1236,7 @@ var styles = StyleSheet.create({
   mobileHubListContainer: {
     display: "none",
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 768px)": {
+    "@media only screen and (max-width: 990px)": {
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",

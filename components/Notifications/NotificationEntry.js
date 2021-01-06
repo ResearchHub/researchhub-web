@@ -493,6 +493,7 @@ const NotificationEntry = (props) => {
         <img
           className={css(styles.stripeLogo)}
           src={"/static/icons/stripe.png"}
+          alt="Stripe Logo"
         />
       </div>
     );
@@ -720,6 +721,7 @@ const NotificationEntry = (props) => {
         <img
           className={css(styles.iconCongrats)}
           src={"/static/icons/party-popper.png"}
+          alt="Party Popper Icon"
         />
         {" Your "}
         <Link {...formatLink(props)}>
