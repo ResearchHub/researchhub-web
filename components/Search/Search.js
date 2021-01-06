@@ -123,6 +123,7 @@ export default class Search extends Component {
           <img
             src={"/static/icons/search-empty.png"}
             className={css(styles.logo)}
+            alt="Empty Search Icon"
           />
           <h3 className={css(styles.emptyTitle)}>
             We can't find what you're looking for!{"\n"}

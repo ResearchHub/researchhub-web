@@ -200,7 +200,11 @@ class SearchEntry extends React.Component {
         return (
           <div className={css(styles.avatarDisplay)}>
             {result.profile_image ? (
-              <img src={result.profile_image} className={css(styles.avatar)} />
+              <img
+                src={result.profile_image}
+                className={css(styles.avatar)}
+                alt="Author Avatar"
+              />
             ) : (
               <i
                 className={

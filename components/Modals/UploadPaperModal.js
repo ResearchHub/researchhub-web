@@ -147,6 +147,7 @@ class UploadPaperModal extends React.Component {
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
             onClick={this.closeModal}
+            alt="Close Button"
           />
           <div className={css(styles.header)}>Search Results:</div>
           <div className={css(styles.searchCount)}>{this.renderText()}</div>

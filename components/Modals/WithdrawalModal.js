@@ -598,6 +598,7 @@ class WithdrawalModal extends React.Component {
               src={"/static/background/metamask.png"}
               className={css(styles.image)}
               draggable={false}
+              alt="Metamask Network Screen"
             />
           </Fragment>
         )}
@@ -672,6 +673,7 @@ class WithdrawalModal extends React.Component {
                     className={css(styles.coin)}
                     src={"/static/icons/coin-filled.png"}
                     draggable={false}
+                    alt="RSC Coin"
                   />
                 </div>
               </div>
@@ -781,6 +783,7 @@ class WithdrawalModal extends React.Component {
           className={css(styles.closeButton)}
           onClick={this.closeModal}
           draggable={false}
+          alt="Close Button"
         />
         {!this.state.connectedMetaMask &&
           !this.state.connectedMetaMask &&
