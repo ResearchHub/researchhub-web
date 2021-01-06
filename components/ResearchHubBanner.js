@@ -1,5 +1,7 @@
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import ReactPlaceholder from "react-placeholder";
+import BannerPlaceholder from "./Placeholders/BannerPlaceholder";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Link from "next/link";
 
@@ -57,57 +59,66 @@ class ResearchHubBanner extends React.Component {
     }
 
     return (
-      <div className={css(styles.homeBanner, styles.hideBanner)}>
-        <span
-          className={css(styles.closeButton)}
-          onClick={this.updateUserBannerPreference}
-        >
-          <i className="fal fa-times" />
-        </span>
-        <img
-          src={
-            this.state.mobileBanner
-              ? "/static/background/background-home-mobile.png"
-              : "/static/background/background-home.jpg"
-          }
-          className={css(styles.bannerOverlay)}
-          alt="ResearchHub Banner"
-        />
+      <ReactPlaceholder
+        ready={!auth.isFetchingUser}
+        showLoadingAnimation
+        customPlaceholder={<BannerPlaceholder color="#efefef" />}
+      >
         <div
-          className={css(
-            styles.column,
-            styles.titleContainer,
-            auth.isLoggedIn && styles.centered
-          )}
+          className={css(styles.homeBanner, !showBanner && styles.hideBanner)}
         >
-          <div className={css(styles.header, styles.text)}>
-            Welcome to{" "}
-            <span className={css(styles.hubName)}>
-              {this.props.all || this.props.home
-                ? "ResearchHub"
-                : this.props.hub.name}
-              !
+          <span
+            className={css(styles.closeButton)}
+            onClick={this.updateUserBannerPreference}
+          >
+            <i className="fal fa-times" />
+          </span>
+          <img
+            src={
+              this.state.mobileBanner
+                ? "/static/background/background-home-mobile.png"
+                : "/static/background/background-home.jpg"
+            }
+            className={css(styles.bannerOverlay)}
+            alt="ResearchHub Banner"
+          />
+          <div
+            className={css(
+              styles.column,
+              styles.titleContainer,
+              auth.isLoggedIn && styles.centered
+            )}
+          >
+            <div className={css(styles.header, styles.text)}>
+              Welcome to{" "}
+              <span className={css(styles.hubName)}>
+                {this.props.all || this.props.home
+                  ? "ResearchHub"
+                  : this.props.hub.name}
+                !
+              </span>
+            </div>
+            <div className={css(styles.subtext, styles.text)}>
+              We're a community seeking to improve prioritization,
+              collaboration, reproducibility, and funding of scientific
+              research.{" "}
+              <Link href={"/about"}>
+                <a className={css(styles.readMore)}>Read more</a>
+              </Link>
+            </div>
+            <span className={css(styles.googleLogin)}>
+              {!auth.isLoggedIn && (
+                <GoogleLoginButton
+                  styles={styles.googleLoginButton}
+                  googleLogin={this.props.googleLogin}
+                  getUser={this.props.getUser}
+                  customLabel={"Sign in with Google"}
+                />
+              )}
             </span>
           </div>
-          <div className={css(styles.subtext, styles.text)}>
-            We're a community seeking to improve prioritization, collaboration,
-            reproducibility, and funding of scientific research.{" "}
-            <Link href={"/about"}>
-              <a className={css(styles.readMore)}>Read more</a>
-            </Link>
-          </div>
-          <span className={css(styles.googleLogin)}>
-            {!auth.isLoggedIn && (
-              <GoogleLoginButton
-                styles={styles.googleLoginButton}
-                googleLogin={this.props.googleLogin}
-                getUser={this.props.getUser}
-                customLabel={"Sign in with Google"}
-              />
-            )}
-          </span>
         </div>
-      </div>
+      </ReactPlaceholder>
     );
   }
 }
