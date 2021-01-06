@@ -158,6 +158,7 @@ class BaseModal extends React.Component {
               className={css(styles.backgroundImage)}
               src={"/static/background/background-modal.png"}
               draggable={false}
+              alt="Researchhub Modal Background"
             />
           )}
           {!this.props.removeDefault && (
@@ -170,6 +171,7 @@ class BaseModal extends React.Component {
                 )}
                 onClick={this.closeModal}
                 draggable={false}
+                alt="Close Button"
               />
               <div
                 className={css(

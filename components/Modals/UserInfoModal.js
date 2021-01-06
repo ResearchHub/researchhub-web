@@ -411,6 +411,7 @@ class UserInfoModal extends React.Component {
             className={css(styles.closeButton)}
             onClick={this.closeModal}
             draggable={false}
+            alt="Close Button"
           />
           <div className={css(styles.titleContainer, styles.left)}>
             <div className={css(styles.title)}>

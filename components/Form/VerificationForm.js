@@ -89,6 +89,7 @@ const VerificationForm = React.forwardRef((props, ref) => {
           <img
             className={css(styles.uploadImage)}
             src={"/static/background/homepage-empty-state.png"}
+            alt="Drag N Drop Icon"
           />
           <div className={css(styles.instructions)}>
             Drag & drop{"\n"}
@@ -115,7 +116,13 @@ const VerificationForm = React.forwardRef((props, ref) => {
                   onClick={() => removeFile(index)}
                   class={css(styles.times) + " fas fa-times"}
                 ></i>
-                {<img className={css(styles.previewImg)} src={file.preview} />}
+                {
+                  <img
+                    className={css(styles.previewImg)}
+                    src={file.preview}
+                    alt={`File Preview Page ${index + 1}`}
+                  />
+                }
               </div>
             );
           })}

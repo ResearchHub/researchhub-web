@@ -250,7 +250,11 @@ const PaperTabBar = (props) => {
     if (props.paper && props.paper.paper_type === "PRE_REGISTRATION") {
       return (
         <div className={css(styles.preRegContainer)}>
-          <img src="/static/icons/wip.png" className={css(styles.preRegIcon)} />
+          <img
+            src="/static/icons/wip.png"
+            className={css(styles.preRegIcon)}
+            alt="Preregistration Icon"
+          />
           Funding Request
         </div>
       );

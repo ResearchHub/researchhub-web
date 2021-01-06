@@ -48,6 +48,8 @@ const AuthorAvatar = (props) => {
             onError={(e) => {
               setError(true);
             }}
+            alt={"Author Profile Avatar"}
+            loading="lazy"
           />
         ) : (
           <i

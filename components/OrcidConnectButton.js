@@ -80,6 +80,7 @@ const OrcidConnectButton = (props) => {
                   styles.iconButton,
                   renderProps.disabled && styles.disabled
                 )}
+                alt="Orcid Login"
               />
             ) : (
               <Button

@@ -57,6 +57,7 @@ const AmountInput = (props) => {
           <img
             className={css(styles.rscIcon)}
             src={"/static/icons/coin-filled.png"}
+            alt="RSC Coin"
           />
         )}
       </div>
@@ -75,6 +76,7 @@ const AmountInput = (props) => {
           <img
             className={css(styles.rscIcon, styles.mobileIcon)}
             src={"/static/icons/coin-filled.png"}
+            alt="RSC Coin"
           />
         )}
       </div>

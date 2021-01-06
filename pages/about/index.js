@@ -118,7 +118,11 @@ const PointCards = (props) => {
         <div className={css(styles.itemCard)} key={`item-${index}`}>
           <div className={css(styles.itemIcon)}>
             {typeof icon === "string" ? (
-              <img draggable={false} src={icon && icon} />
+              <img
+                draggable={false}
+                src={icon && icon}
+                alt={`Info Card ${index + 1}`}
+              />
             ) : (
               icon
             )}

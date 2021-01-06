@@ -63,6 +63,7 @@ class Footer extends React.Component {
           <img
             src="/static/white_logo.png"
             className={css(styles.researchHubLogo)}
+            alt="RH Logo White"
           />
           <div className={css(styles.linkSection, styles.tabContainer)}>
             {tabs}
