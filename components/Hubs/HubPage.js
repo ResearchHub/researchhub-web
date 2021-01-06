@@ -943,6 +943,9 @@ var styles = StyleSheet.create({
     width: "100%",
     alignItems: "flex-start",
     display: "table",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+    },
   },
   sidebar: {
     backgroundColor: "#FFF",
