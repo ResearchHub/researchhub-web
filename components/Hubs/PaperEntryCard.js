@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import { connect, useStore } from "react-redux";
@@ -57,6 +57,7 @@ const PaperEntryCard = (props) => {
     abstract,
     user_vote,
     score,
+    summary,
     paper_title,
     first_figure,
     first_preview,
@@ -295,10 +296,10 @@ const PaperEntryCard = (props) => {
     );
   };
 
-  const renderBullet = () => {
+  const renderContent = () => {
     if (bullet_points && bullet_points.length > 0) {
       return (
-        <div className={css(styles.summary, styles.text)}>
+        <div className={css(styles.summary)}>
           <ul className={css(styles.bulletpoints) + " clamp1"}>
             {bullet_points.map((bullet, i) => {
               if (i < 2) {
@@ -319,10 +320,12 @@ const PaperEntryCard = (props) => {
       );
     } else if (abstract) {
       return (
-        <div className={css(styles.summary, styles.text) + " clamp2"}>
+        <div className={css(styles.summary) + " clamp2"}>
           <div className={"clamp2"}>{abstract}</div>
         </div>
       );
+    } else if (summary) {
+      // console.log("summary", summary);
     }
   };
 
@@ -407,8 +410,8 @@ const PaperEntryCard = (props) => {
     }
   };
 
-  const renderRawAuthors = () => {
-    const formatAuthors = (authors) => {
+  const renderRawAuthors = (mobile) => {
+    const _formatAuthors = (authors) => {
       let { first_name, last_name } = authors[0];
 
       if (authors.length >= 6) {
@@ -422,34 +425,176 @@ const PaperEntryCard = (props) => {
         .join(", ");
     };
 
-    // TODO: make sure raw_authors is in the right format
     if (raw_authors && raw_authors.length) {
       if (!Array.isArray(raw_authors)) {
         raw_authors = [JSON.parse(raw_authors)];
       }
-      return (
-        <div
-          className={css(
-            styles.publishContainer,
-            styles.publishDate,
-            styles.authorContainer
-          )}
-        >
-          <div className={css(styles.publishDate)}>
-            {raw_authors.length < 2 ? "Author: " : "Authors: "}
+
+      if (mobile) {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.authorContainer)}
+          >
+            <div className={css(styles.icon)}>{icons.author}</div>
+            <span
+              className={css(styles.clampMetadata, styles.metadata) + " clamp1"}
+            >
+              {_formatAuthors(raw_authors)}
+            </span>
           </div>
-          <span className={"clamp1"}>{formatAuthors(raw_authors)}</span>
+        );
+      } else {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.authorContainer)}
+          >
+            <span
+              className={
+                css(styles.clampMetadata, styles.metadata, styles.authors) +
+                " clamp1"
+              }
+            >
+              Authors: {_formatAuthors(raw_authors)}
+            </span>
+          </div>
+        );
+      }
+    }
+  };
+
+  const renderPreregistrationTag = () => {
+    if (paper_type === "PRE_REGISTRATION") {
+      return (
+        <div className={css(styles.preRegContainer)}>
+          <img src="/static/icons/wip.png" className={css(styles.wipIcon)} />
+          Preregistration
         </div>
       );
     }
   };
 
-  const renderPreregistrationTag = () => {
+  const renderPaperTitle = () => {
+    if (paper_title && title !== paper_title) {
+      return (
+        <div className={css(styles.metadataContainer, styles.authorContainer)}>
+          <div
+            className={
+              css(styles.metadataClamp, styles.metadata, styles.removeMargin) +
+              " clamp1"
+            }
+          >
+            From Paper: {paper_title}
+          </div>
+        </div>
+      );
+    }
+  };
+
+  const mobileOnly = (children, options = {}) => {
+    const { fullWidth } = options;
     return (
-      <div className={css(styles.preRegContainer)}>
-        <img src="/static/icons/wip.png" className={css(styles.wipIcon)} />
-        Funding Request
+      <div className={css(styles.mobile, fullWidth && styles.fullWidth)}>
+        {children}
       </div>
+    );
+  };
+
+  const desktopOnly = (children) => {
+    return <div className={css(styles.desktop)}>{children}</div>;
+  };
+
+  const renderMetadata = (mobile = false) => {
+    if (
+      paper_publish_date ||
+      (raw_authors && raw_authors.length) ||
+      uploaded_by
+    ) {
+      return (
+        <div className={css(styles.metadataRow)}>
+          {renderPaperTitle()}
+          {renderRawAuthors(mobile)}
+          {renderPublishDate(mobile)}
+        </div>
+      );
+    }
+  };
+
+  const renderPublishDate = (mobile) => {
+    if (paper_publish_date) {
+      function _convertDate() {
+        return formatPublishedDate(
+          transformDate(paper.paper_publish_date),
+          mobile
+        );
+      }
+
+      if (!mobile) {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.publishContainer)}
+          >
+            <span className={css(styles.metadata, styles.removeMargin)}>
+              {_convertDate(mobile)}
+            </span>
+          </div>
+        );
+      } else {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.publishContainer)}
+          >
+            <span className={css(styles.icon)}>{icons.calendar}</span>
+            <span className={css(styles.metadata)}>{_convertDate(mobile)}</span>
+          </div>
+        );
+      }
+    }
+  };
+
+  const renderVoteWidget = (mobile = false) => {
+    return (
+      <Fragment>
+        {!promotionSummary && (
+          <div className={css(styles.column)}>
+            <span
+              className={css(styles.voting)}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <VoteWidget
+                score={score}
+                onUpvote={onUpvote}
+                onDownvote={onDownvote}
+                selected={selected}
+                searchResult={searchResult}
+                isPaper={true}
+                styles={styles.voteWidget}
+                type={"Paper"}
+                paper={promoted ? paper : null}
+                promoted={promoted}
+                horizontalView={mobile}
+              />
+            </span>
+          </div>
+        )}
+      </Fragment>
+    );
+  };
+
+  const renderMainTitle = () => {
+    return (
+      <Link
+        href={"/paper/[paperId]/[paperName]"}
+        as={`/paper/${id}/${paperSlug}`}
+      >
+        <a
+          className={css(styles.link)}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <div className={css(styles.title)}>{title && title}</div>
+        </a>
+      </Link>
     );
   };
 
@@ -473,27 +618,7 @@ const PaperEntryCard = (props) => {
           />
         </div>
       )}
-      {!promotionSummary && (
-        <div className={css(styles.column)}>
-          <span
-            className={css(styles.voting)}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <VoteWidget
-              score={score}
-              onUpvote={onUpvote}
-              onDownvote={onDownvote}
-              selected={selected}
-              searchResult={searchResult}
-              isPaper={true}
-              styles={styles.voteWidget}
-              type={"Paper"}
-              paper={promoted ? paper : null}
-              promoted={promoted}
-            />
-          </span>
-        </div>
-      )}
+      {desktopOnly(renderVoteWidget())}
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div
@@ -503,58 +628,33 @@ const PaperEntryCard = (props) => {
               previews.length > 0 && styles.metaDataPreview
             )}
           >
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${id}/${paperSlug}`}
-            >
-              <a
-                className={css(styles.link)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <div className={css(styles.title, styles.text)}>
-                  {title && title}
-                  {paper_title && title !== paper_title && (
-                    <div
-                      className={
-                        css(styles.paperTitle, styles.text) + " clamp1"
-                      }
-                    >
-                      From Paper: {paper_title && paper_title}
-                    </div>
-                  )}
-                </div>
-              </a>
-            </Link>
-            {renderRawAuthors()}
-            <div
-              className={css(
-                styles.publishContainer,
-                !paper_publish_date && styles.hide
-              )}
-            >
-              <span className={css(styles.publishDate, styles.text)}>
-                {paper_publish_date && convertDate()}
-              </span>
-              <span
-                className={css(
-                  styles.avatars,
-                  authors && authors.length < 1 && styles.hide
-                )}
-              ></span>
+            <div className={css(styles.topRow)}>
+              {mobileOnly(renderVoteWidget(true))}
+              {mobileOnly(renderPreregistrationTag())}
+              {desktopOnly(renderMainTitle())}
             </div>
-            {/* {mobileView && renderPreview()} */}
-            {renderBullet()}
-            {mobileView && !promotionSummary && renderHubTags()}
+            {mobileOnly(renderMainTitle())}
+            {desktopOnly(renderMetadata())}
+            {mobileOnly(renderMetadata())}
+            {/* {mobileOnly(renderPreview(), { fullWidth: true })} */}
+            {renderContent()}
+            {mobileOnly(renderUploadedBy())}
           </div>
-          {!mobileView && renderPreview()}
+          {desktopOnly(renderPreview())}
         </div>
         <div className={css(styles.bottomBar)}>
-          {renderUploadedBy()}
-          {/* <div className={css(styles.row)}>{renderDiscussionCount()}</div> */}
-          {!mobileView && renderHubTags()}
-          {paper_type === "PRE_REGISTRATION" && renderPreregistrationTag()}
+          <div className={css(styles.rowContainer)}>
+            {desktopOnly(renderUploadedBy())}
+          </div>
+          {desktopOnly(
+            <div className={css(styles.row)}>
+              {renderPreregistrationTag()}
+              {renderHubTags()}
+            </div>
+          )}
+        </div>
+        <div className={css(styles.bottomBar, styles.mobileHubTags)}>
+          {renderHubTags()}
         </div>
       </div>
     </Ripples>
@@ -589,7 +689,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     height: "100%",
     width: "100%",
-    minHeight: 72,
+    boxSizing: "border-box",
   },
   paperTitle: {
     color: "rgb(145, 143, 155)",
@@ -602,19 +702,18 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: 19,
     fontWeight: 500,
-    paddingBottom: 5,
+    color: colors.BLACK(),
     "@media only screen and (max-width: 767px)": {
       fontSize: 16,
+      paddingBottom: 10,
     },
   },
   previewColumn: {
     paddingBottom: 10,
     "@media only screen and (max-width: 767px)": {
-      // display: 'flex',
-      // justifyContent: 'center',
-      // alignItems: 'center',
-      // width: '100%',
-      // margin: '10px 0'
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
     },
   },
   preview: {
@@ -638,8 +737,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     border: "unset",
     backgroundColor: "unset",
-    height: "usnet",
-    maxHeight: "usnet",
+    height: "unset",
+    maxHeight: "unset",
     width: "unset",
     minWidth: "unset",
     maxWidth: "unset",
@@ -657,12 +756,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
   },
-  publishContainer: {
-    maxWidth: "100%",
-    paddingBottom: 8,
-    display: "flex",
-    alignItems: "center",
-  },
   publishDate: {
     fontSize: 14,
     fontWeight: 400,
@@ -672,24 +765,66 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  authorContainer: {
+  topRow: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
     paddingBottom: 5,
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "space-between",
+      paddingBottom: 10,
+    },
+  },
+  metadataRow: {
+    display: "flex",
+    alignItems: "flex-start",
+    flexDirection: "column",
+    width: "100%",
+    paddingTop: 3,
+    paddingBottom: 5,
+    "@media only screen and (max-width: 767px)": {
+      paddingTop: 0,
+      paddingBottom: 5,
+    },
+  },
+  metadataContainer: {
+    maxWidth: "100%",
+    display: "flex",
+    alignItems: "center",
+  },
+  publishContainer: {
+    marginRight: 10,
+  },
+  authorContainer: {
+    marginBottom: 5,
+  },
+  clampMetadata: {
+    maxWidth: 180,
+    color: "#C1C1CF",
+    fontSize: 14,
   },
   summary: {
     minWidth: "100%",
     maxWidth: "100%",
-    color: "#4e4c5f",
+    color: colors.BLACK(),
     fontSize: 14,
-    paddingBottom: 8,
-  },
-  text: {
-    fontFamily: "Roboto",
+    padding: "3px 0 3px",
+    lineHeight: 1.3,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 13,
+    },
   },
   voting: {
-    width: 65,
+    width: 60,
+    "@media only screen and (max-width: 767px)": {
+      width: "unset",
+    },
   },
   voteWidget: {
     marginRight: 15,
+    "@media only screen and (max-width: 415px)": {
+      fonSize: 18,
+    },
   },
   bottomBar: {
     display: "flex",
@@ -711,7 +846,26 @@ const styles = StyleSheet.create({
     width: "unset",
   },
   icon: {
+    fontSize: 14,
     color: "#C1C1CF",
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 13,
+    },
+  },
+  metadata: {
+    fontSize: 14,
+    color: "#918f9b",
+    marginLeft: 7,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 13,
+    },
+  },
+  removeMargin: {
+    marginLeft: 0,
+  },
+  authors: {
+    marginLeft: 0,
+    maxWidth: "100%",
   },
   discussion: {
     cursor: "pointer",
@@ -727,7 +881,7 @@ const styles = StyleSheet.create({
       minWidth: "unset",
     },
     "@media only screen and (max-width: 767px)": {
-      fontSize: 12,
+      fontSize: 13,
     },
   },
   dicussionCount: {
@@ -738,13 +892,16 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
-    flexWrap: "wrap",
+    flexWrap: "wrap-reverse",
     marginLeft: "auto",
+    width: "max-content",
     "@media only screen and (max-width: 970px)": {
-      marginBottom: 15,
-      justifyContent: "flex-start",
-      width: "100%",
       flexWrap: "wrap",
+    },
+    "@media only screen and (max-width: 767px)": {
+      margin: 0,
+      padding: 0,
+      width: "max-content",
     },
   },
   row: {
@@ -775,7 +932,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    // paddingRight: 15,
     justifyContent: "space-between",
   },
   metaDataPreview: {},
@@ -793,11 +949,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     display: "list-item",
     "@media only screen and (max-width: 767px)": {
-      fontSize: 12,
+      fontSize: 13,
     },
   },
   hubLabel: {
     fontSize: 9,
+    "@media only screen and (max-width: 415px)": {
+      maxWidth: 60,
+      flexWrap: "unset",
+    },
   },
   submittedSection: {
     display: "flex",
@@ -812,19 +972,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 14,
     color: "rgba(145, 143, 155, 1)",
-    // color: 'rgb(120, 124, 126)',
     letterSpacing: 0.2,
     fontWeight: 400,
     cursor: "pointer",
     whiteSpace: "pre-wrap",
+    ":hover": {
+      color: colors.BLUE(),
+    },
     "@media only screen and (max-width: 767px)": {
-      fontSize: 12,
+      fontSize: 13,
+      marginTop: 8,
     },
   },
   uploadedByAvatar: {
     marginLeft: 10,
   },
   capitalize: {
+    marginRight: 8,
     textTransform: "capitalize",
   },
   authorName: {
@@ -849,7 +1013,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     width: "max-content",
     color: "#918f9b",
-    marginLeft: 10,
+    marginRight: 10,
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
       marginLeft: 0,
@@ -858,6 +1022,32 @@ const styles = StyleSheet.create({
   wipIcon: {
     marginRight: 5,
     height: 15,
+  },
+  calendarIcon: {
+    marginRight: 5,
+  },
+  desktop: {
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+    },
+  },
+  mobileHubTags: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+      width: "100%",
+      justifyContent: "flex-end",
+      marginTop: 0,
+    },
+  },
+  fullWidth: {
+    width: "100%",
   },
 });
 
