@@ -128,7 +128,6 @@ class HubPage extends React.Component {
     this.setState({
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
-    this.updateDimensions();
     window.addEventListener("scroll", this.scrollListener);
   }
 
