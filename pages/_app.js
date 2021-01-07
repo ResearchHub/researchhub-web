@@ -14,9 +14,9 @@ import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
 
 // FontAwesome SSR
-import { config } from "@fortawesome/fontawesome-svg-core";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-config.autoAddCss = false;
+// import { config } from "@fortawesome/fontawesome-svg-core";
+// import "@fortawesome/fontawesome-svg-core/styles.css";
+// config.autoAddCss = false;
 
 // Components
 import Base from "./Base";
