@@ -51,16 +51,19 @@ class ResearchHubBanner extends React.Component {
   render() {
     let { auth } = this.props;
     let showBanner = true;
-    let preference = localStorage.getItem("researchhub.banner.pref");
-    if (!preference || preference === "true") {
-      showBanner = true;
-    } else {
-      showBanner = false;
+
+    if (process.browser) {
+      let preference = localStorage.getItem("researchhub.banner.pref");
+      if (!preference || preference === "true") {
+        showBanner = true;
+      } else {
+        showBanner = false;
+      }
     }
 
     return (
       <ReactPlaceholder
-        ready={!auth.isFetchingUser}
+        ready={!auth.isFetchingUser && process.browser}
         showLoadingAnimation
         customPlaceholder={<BannerPlaceholder color="#efefef" />}
       >
@@ -77,7 +80,7 @@ class ResearchHubBanner extends React.Component {
             src={
               this.state.mobileBanner
                 ? "/static/background/background-home-mobile.png"
-                : "/static/background/background-home.jpg"
+                : "/static/background/background-home.webp"
             }
             className={css(styles.bannerOverlay)}
             alt="ResearchHub Banner"
