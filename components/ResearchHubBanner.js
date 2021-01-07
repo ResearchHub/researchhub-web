@@ -44,7 +44,7 @@ class ResearchHubBanner extends React.Component {
 
     return (
       <ReactPlaceholder
-        ready={!auth.isFetchingUser}
+        ready={!auth.isFetchingUser && process.browser}
         showLoadingAnimation
         customPlaceholder={<BannerPlaceholder color="#684ef5" />}
       >
