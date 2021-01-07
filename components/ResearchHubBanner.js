@@ -25,7 +25,6 @@ class ResearchHubBanner extends React.Component {
   };
 
   componentDidMount() {
-    this.updateDimensions();
     this.setState({
       browser: true,
     });
