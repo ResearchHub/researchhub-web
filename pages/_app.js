@@ -20,7 +20,6 @@ import { init as initApm } from "@elastic/apm-rum";
 
 // Components
 import Base from "./Base";
-import Head from "~/components/Head";
 import "./stylesheets/App.css";
 
 // Redux

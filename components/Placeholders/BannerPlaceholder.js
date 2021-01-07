@@ -1,14 +1,15 @@
-import React, { usEffect, useState } from "react";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import { RectShape } from "react-placeholder/lib/placeholders";
 
-import colors from "~/config/themes/colors";
-
 const BannerPlaceholder = (props) => {
   return (
     <div className={css(styles.card) + " show-loading-animation"}>
-      <RectShape className={css(styles.banner)} color={"#EFEFEF"} />
+      <RectShape
+        className={css(styles.banner)}
+        color={props.color ? props.color : "#EFEFEF"}
+      />
     </div>
   );
 };
