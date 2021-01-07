@@ -25,6 +25,13 @@ import "./stylesheets/App.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+import { AuthActions } from "../redux/auth";
+import { HubActions } from "../redux/hub";
+import { UniversityActions } from "../redux/universities";
+import { TransactionActions } from "../redux/transaction";
+import { NotificationActions } from "~/redux/notification";
+import { BannerActions } from "~/redux/banner";
+import PermissionActions from "../redux/permission";
 
 // Config
 import { SIFT_BEACON_KEY } from "~/config/constants";
@@ -94,6 +101,24 @@ class MyApp extends App {
     Router.events.on("routeChangeError", () => {
       props.store.dispatch(MessageActions.showMessage({ show: false }));
     });
+  }
+
+  static async getInitialProps({ Component, router, ctx }) {
+    const { store } = ctx;
+    const { dispatch } = store;
+    await dispatch(AuthActions.getUser());
+    dispatch(HubActions.getTopHubs());
+    dispatch(UniversityActions.getUniversities());
+    const auth = store.getState().auth;
+
+    if (auth.isLoggedIn) {
+      dispatch(TransactionActions.getWithdrawals());
+      dispatch(NotificationActions.getNotifications());
+    }
+
+    await dispatch(PermissionActions.fetchPermissions());
+
+    return {};
   }
 
   componentDidMount() {
