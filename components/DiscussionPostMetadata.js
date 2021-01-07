@@ -319,6 +319,7 @@ const Timestamp = (props) => {
           target="_blank"
           href={props.twitterUrl}
           className={css(styles.twitterTag)}
+          rel="noreferrer noopener"
         >
           <span
             className={css(

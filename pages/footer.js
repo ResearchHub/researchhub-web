@@ -37,6 +37,7 @@ class Footer extends React.Component {
                 "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
               }
               target="_blank"
+              rel="noreferrer noopener"
             >
               {tab.label}
             </a>
@@ -75,6 +76,7 @@ class Footer extends React.Component {
               target="_blank"
               className={css(styles.link)}
               href="https://join.slack.com/t/researchhub-community/shared_invite/zt-iqred46f-f0j0M6_ZxtliD~UszPyWEQ"
+              rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
                 <i className={css(styles.logo) + " fab fa-slack"}></i>
@@ -84,6 +86,7 @@ class Footer extends React.Component {
               target="_blank"
               className={css(styles.link)}
               href="https://twitter.com/researchhub"
+              rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
                 <i className={css(styles.logo) + " fab fa-twitter"}></i>

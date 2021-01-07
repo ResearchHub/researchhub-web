@@ -362,13 +362,23 @@ export function convertEditorValueToHtml(value) {
         let isUrl = mark.data.get("isUrl");
         if (isUrl) {
           return (
-            <a {...attributes} href={children} target={"_blank"}>
+            <a
+              {...attributes}
+              href={children}
+              target={"_blank"}
+              rel="noreferrer noopener"
+            >
               {children}
             </a>
           );
         }
         return (
-          <a {...attributes} href={url} target={"_blank"}>
+          <a
+            {...attributes}
+            href={url}
+            target={"_blank"}
+            rel="noreferrer noopener"
+          >
             {children}
           </a>
         );

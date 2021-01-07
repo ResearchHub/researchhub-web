@@ -474,6 +474,7 @@ class SummaryTab extends React.Component {
                 className={css(styles.authorGuidelines)}
                 href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
                 target="_blank"
+                rel="noreferrer noopener"
               >
                 Summary Guidelines
               </a>{" "}
@@ -539,6 +540,7 @@ class SummaryTab extends React.Component {
               className={css(styles.authorGuidelines)}
               href="https://www.notion.so/ResearchHub-Summary-Guidelines-7ebde718a6754bc894a2aa0c61721ae2"
               target="_blank"
+              rel="noreferrer noopener"
             >
               Summary Guidelines
             </a>{" "}
