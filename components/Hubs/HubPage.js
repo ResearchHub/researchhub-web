@@ -688,9 +688,7 @@ class HubPage extends React.Component {
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>
-          {process.browser && (
-            <ResearchHubBanner home={this.props.home} hub={this.props.hub} />
-          )}
+          <ResearchHubBanner home={this.props.home} hub={this.props.hub} />
           {this.props.home && <Head title={this.props.home && null} />}
         </div>
         <div className={css(styles.row, styles.body)}>
