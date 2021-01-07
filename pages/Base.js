@@ -12,23 +12,13 @@ import PermissionNotification from "../components/PermissionNotification";
 import AlertTemplate from "~/components/Modals/AlertTemplate";
 
 import { AuthActions } from "../redux/auth";
-import { HubActions } from "../redux/hub";
-import { UniversityActions } from "../redux/universities";
 import { TransactionActions } from "../redux/transaction";
 import { NotificationActions } from "~/redux/notification";
 import { BannerActions } from "~/redux/banner";
 
-import PermissionActions from "../redux/permission";
 import Footer from "./footer";
 
 class Base extends React.Component {
-  componentDidMount = async () => {
-    const { getUserBannerPreference, determineBanner } = this.props;
-
-    getUserBannerPreference();
-    determineBanner();
-  };
-
   render() {
     const { Component, pageProps } = this.props;
     const options = {
@@ -62,17 +52,23 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  authChecked: state.auth.authChecked,
-  auth: state.auth,
-});
+// const mapStateToProps = (state) => ({
+//   authChecked: state.auth.authChecked,
+//   auth: state.auth,
+// });
 
-const mapDispatchToProps = {
-  getUserBannerPreference: AuthActions.getUserBannerPreference,
-  determineBanner: BannerActions.determineBanner,
-};
+// const mapDispatchToProps = {
+//   getUser: AuthActions.getUser,
+//   getUserBannerPreference: AuthActions.getUserBannerPreference,
+//   determineBanner: BannerActions.determineBanner,
+//   getWithdrawals: TransactionActions.getWithdrawals,
+//   getNotifications: NotificationActions.getNotifications,
+//   fetchPermissions: PermissionActions.fetchPermissions
+// };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Base);
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(Base);
+
+export default Base;

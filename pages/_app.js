@@ -103,12 +103,13 @@ class MyApp extends App {
     });
   }
 
-  static async getInitialProps({ Component, router, ctx }) {
-    const { store } = ctx;
+  async componentDidMount() {
+    const { store } = this.props;
     const { dispatch } = store;
-    await dispatch(AuthActions.getUser());
+    this.connectSift();
     dispatch(HubActions.getTopHubs());
     dispatch(UniversityActions.getUniversities());
+    await dispatch(AuthActions.getUser());
     const auth = store.getState().auth;
 
     if (auth.isLoggedIn) {
@@ -116,13 +117,9 @@ class MyApp extends App {
       dispatch(NotificationActions.getNotifications());
     }
 
+    dispatch(AuthActions.getUserBannerPreference());
+    dispatch(BannerActions.determineBanner());
     await dispatch(PermissionActions.fetchPermissions());
-
-    return {};
-  }
-
-  componentDidMount() {
-    this.connectSift();
   }
 
   componentWillUnmount() {
