@@ -14,20 +14,8 @@ import { AuthActions } from "~/redux/auth";
 class ResearchHubBanner extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      mobileBanner: false,
-    };
+    this.state = {};
   }
-
-  updateDimensions = () => {
-    if (window.innerWidth < 968) {
-      this.setState({
-        mobileBanner: window.innerWidth < 580 ? true : false,
-      });
-    } else {
-      this.setState({ mobileBanner: false });
-    }
-  };
 
   updateUserBannerPreference = () => {
     this.props.setUserBannerPreference(false);
@@ -38,14 +26,9 @@ class ResearchHubBanner extends React.Component {
 
   componentDidMount() {
     this.updateDimensions();
-    window.addEventListener("resize", this.updateDimensions);
     this.setState({
       browser: true,
     });
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
   }
 
   render() {
@@ -100,7 +83,7 @@ class ResearchHubBanner extends React.Component {
               </Link>
             </div>
             <span className={css(styles.googleLogin)}>
-              {!auth.isLoggedIn && (
+              {!auth.isLoggedIn && !auth.isFetchingUser && (
                 <GoogleLoginButton
                   styles={styles.googleLoginButton}
                   googleLogin={this.props.googleLogin}
