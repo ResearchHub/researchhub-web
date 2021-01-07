@@ -64,8 +64,6 @@ class HubPage extends React.Component {
         ? this.props.filter.value === "hot" ||
           this.props.filter.value === "newest"
         : true,
-      mobileView: false,
-      mobileBanner: false,
       papersLoading: false,
       unsubscribeHover: false,
       subscribeClicked: false,
@@ -73,17 +71,6 @@ class HubPage extends React.Component {
       leaderboardTop: 0,
     };
   }
-
-  updateDimensions = () => {
-    if (window.innerWidth < 968) {
-      this.setState({
-        mobileView: true,
-        mobileBanner: window.innerWidth < 580 ? true : false,
-      });
-    } else {
-      this.setState({ mobileView: false, mobileBanner: false });
-    }
-  };
 
   setScrollShadow = () => {
     const height = document.getElementById("topbar").offsetHeight + 34;
@@ -142,7 +129,6 @@ class HubPage extends React.Component {
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
     this.updateDimensions();
-    window.addEventListener("resize", this.updateDimensions);
     window.addEventListener("scroll", this.scrollListener);
   }
 
@@ -201,7 +187,6 @@ class HubPage extends React.Component {
   };
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
     window.removeEventListener("scroll", this.scrollListener);
   }
 
@@ -793,7 +778,6 @@ class HubPage extends React.Component {
                         paper={paper}
                         index={i}
                         hubName={this.props.hubName}
-                        mobileView={this.state.mobileView}
                         voteCallback={this.voteCallback}
                       />
                     ))}
