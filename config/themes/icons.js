@@ -2,31 +2,41 @@ import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faComment,
-  faExternalLinkAlt,
-  faShare,
-  faShareAlt,
+  faAngleLeft,
+  faAngleRight,
+  faAsterick,
+  faBan,
   faBell,
-  faFlag,
+  faBolt,
+  faCaretDown,
+  faCaretUp,
   faCertificate,
+  faCheck,
+  faComment,
+  faCogs,
+  faEdit,
+  faExclamationTriangle,
+  faExternalLinkAlt,
+  faFile,
+  faFlag,
   faMinus,
-  faUpload,
   faPlay,
-  faStop,
   faPlusCircle as faPlusCircleSolid,
   faPlusSquare,
-  faBolt,
-  faFile,
-  faEdit,
-  faCheck,
-  faUser,
-  faBan,
-  faExclamationTriangle,
+  faPortrait,
+  faShare,
+  faShareAlt,
+  faStop,
   faThumbtack,
-  faCaretUp,
-  faCaretDown,
+  faUpload,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { faChartNetwork, faPencil } from "@fortawesome/pro-solid-svg-icons";
+import { faTwitter } from "@fortawesome/fontawesome-free-brands";
+import {
+  faArrowToBottom,
+  faChartNetwork,
+  faPencil,
+} from "@fortawesome/pro-solid-svg-icons";
 import {
   faLongArrowLeft,
   faBars,
@@ -36,6 +46,8 @@ import {
   faTrashAlt,
   faTasksAlt,
   faThumbtack as faThumbtackOutline,
+  faExpandArrows,
+  faChevronDown as falChevronDown,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   faEllipsisH,
@@ -45,6 +57,7 @@ import {
   faChevronUp,
   faChevronDown,
   faStar as faStarFilled,
+  faFlag as faFlagOutline,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faHome,
@@ -62,14 +75,23 @@ import {
   faFireAlt,
   faList,
   faStar as faStarOutline,
+  faShareSquare,
+  faEye,
+  faEyeSlash,
 } from "@fortawesome/pro-duotone-svg-icons";
 
 const icons = {
+  angleLeft: <FontAwesomeIcon icon={faAngleLeft} />,
+  angleRight: <FontAwesomeIcon icon={faAngleRight} />,
+  arrowToBottom: <FontAwesomeIcon icon={faArrowToBottom} />,
+  asterick: <FontAwesomeIcon icon={faAsterick} />,
   chat: <FontAwesomeIcon icon={faComment} />,
+  cog: <FontAwesomeIcon icon={faCogs} />,
   externalLink: <FontAwesomeIcon icon={faExternalLinkAlt} />,
   longArrowLeft: <FontAwesomeIcon icon={faLongArrowLeft} />,
   share: <FontAwesomeIcon icon={faShare} />,
   shareAlt: <FontAwesomeIcon icon={faShareAlt} />,
+  shareSquare: <FontAwesomeIcon icon={faShareSquare} />,
   burgerMenu: <FontAwesomeIcon icon={faBars} />,
   home: <FontAwesomeIcon icon={faHome} />,
   help: <FontAwesomeIcon icon={faQuestionCircle} />,
@@ -84,12 +106,14 @@ const icons = {
   bell: <FontAwesomeIcon icon={faBell} />,
   live: <FontAwesomeIcon icon={faBell} />,
   flag: <FontAwesomeIcon icon={faFlag} />,
+  flagOutline: <FontAwesomeIcon icon={faFlagOutline} />,
   badge: <FontAwesomeIcon icon={faCertificate} />,
   minus: <FontAwesomeIcon icon={faMinus} />,
   minusCircle: <FontAwesomeIcon icon={faMinusCircle} />,
   ellipsisH: <FontAwesomeIcon icon={faEllipsisH} />,
   date: <FontAwesomeIcon icon={faCalendarDay} />,
   upload: <FontAwesomeIcon icon={faUpload} />,
+  portrait: <FontAwesomeIcon icon={faPortrait} />,
   plusCircle: <FontAwesomeIcon icon={faPlusCircle} />,
   plus: <FontAwesomeIcon icon={faPlus} />,
   plusCircleSolid: <FontAwesomeIcon icon={faPlusCircleSolid} />,
@@ -100,6 +124,7 @@ const icons = {
   chevronRight: <FontAwesomeIcon icon={faChevronRight} />,
   chevronDown: <FontAwesomeIcon icon={faChevronDown} />,
   chevronUp: <FontAwesomeIcon icon={faChevronUp} />,
+  chevronDownLeft: <FontAwesomeIcon icon={falChevronDown} />,
   pencil: <FontAwesomeIcon icon={faPencil} />,
   trophy: <FontAwesomeIcon icon={faTrophy} />,
   check: <FontAwesomeIcon icon={faCheck} />,
@@ -119,6 +144,10 @@ const icons = {
   fire: <FontAwesomeIcon icon={faFireAlt} />,
   coin: <FontAwesomeIcon icon={faCoin} />,
   takeaway: <FontAwesomeIcon icon={faList} />,
+  twitter: <FontAwesomeIcon icon={faTwitter} />,
+  eye: <FontAwesomeIcon icon={faEye} />,
+  eyeSlash: <FontAwesomeIcon icon={faEyeSlash} />,
+  expandArrows: <FontAwesomeIcon icon={faExpandArrows} />,
   coinStack: ({ styles, grey }) => (
     <img
       src={

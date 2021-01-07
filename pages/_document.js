@@ -96,6 +96,15 @@ export default class MyDocument extends Document {
             data-aphrodite
             dangerouslySetInnerHTML={{ __html: this.props.css.content }}
           />
+          {/* <script
+            key={"fontawesome-url"}
+            src="https://kit.fontawesome.com/f57f706c59.js"
+            crossOrigin="anonymous"
+          ></script> */}
+          <link
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+            rel="stylesheet"
+          />
           <CustomHead />
         </Head>
         <body style={{ margin: 0, fontFamily: "Roboto, sans-serif" }}>

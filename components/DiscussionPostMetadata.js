@@ -27,7 +27,6 @@ import colors, { voteWidgetColors } from "~/config/themes/colors";
 import { timeAgo, createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { paperSummaryPost } from "../redux/paper/shims";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -140,7 +139,7 @@ const DiscussionPostMetadata = (props) => {
           <span
             className={css(styles.icon, styles.expandIcon, styles.shareIcon)}
           >
-            <i className="fad fa-share-square" />
+            {icons.shareSquare}
           </span>
           <span className={css(styles.text, styles.expandText)}>Share</span>
         </div>
@@ -330,9 +329,7 @@ const Timestamp = (props) => {
             •
           </span>
           {timestamp} from Twitter
-          <div className={css(styles.twitterIcon)}>
-            <i className="fab fa-twitter" />
-          </div>
+          <div className={css(styles.twitterIcon)}>{icons.twitter}</div>
         </a>
       </div>
     );
@@ -379,11 +376,7 @@ const HideButton = (props) => {
           className={css(styles.icon, hideState && styles.active)}
           id={"hideIcon"}
         >
-          {hideState ? (
-            <i className="fad fa-eye-slash" />
-          ) : (
-            <i className="fad fa-eye" />
-          )}
+          {hideState ? icons.eyeSlash : icons.eye}
         </span>
         <span className={css(styles.text)} id={"hideText"}>
           {hideState ? "Show" : "Hide"}
@@ -400,7 +393,7 @@ const ExpandButton = (props) => {
     <Ripples className={css(styles.dropdownItem)}>
       <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={threadPath}>
         <span className={css(styles.icon, styles.expandIcon)} id={"expandIcon"}>
-          <i className="fal fa-expand-arrows" />
+          {icons.expandArrows}
         </span>
         <span className={css(styles.text, styles.expandText)} id={"expandText"}>
           Expand
@@ -492,12 +485,7 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  smallerName: {
-    // fontSize: 13,
-    // "@media only screen and (max-width: 415px)": {
-    //   fontSize: 12,
-    // },
-  },
+  smallerName: {},
   authorName: {
     fontWeight: 500,
   },
