@@ -23,32 +23,10 @@ import Footer from "./footer";
 
 class Base extends React.Component {
   componentDidMount = async () => {
-    const {
-      fetchPermissions,
-      fetchPermissionsPending,
-      getCategories,
-      getHubs,
-      getUser,
-      getUniversities,
-      getUserBannerPreference,
-      getWithdrawals,
-      getTopHubs,
-      getNotifications,
-      determineBanner,
-      auth,
-    } = this.props;
+    const { getUserBannerPreference, determineBanner } = this.props;
 
-    await getUser();
-    getTopHubs(auth);
-    getUniversities();
-    if (auth.isLoggedIn) {
-      getWithdrawals();
-      getNotifications();
-    }
     getUserBannerPreference();
     determineBanner();
-    fetchPermissionsPending();
-    await fetchPermissions();
   };
 
   render() {
@@ -90,16 +68,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  getUser: AuthActions.getUser,
-  getCategories: HubActions.getCategories,
-  getHubs: HubActions.getHubs,
-  getTopHubs: HubActions.getTopHubs,
-  getUniversities: UniversityActions.getUniversities,
   getUserBannerPreference: AuthActions.getUserBannerPreference,
-  fetchPermissions: PermissionActions.fetchPermissions,
-  fetchPermissionsPending: PermissionActions.fetchPermissionsPending,
-  getWithdrawals: TransactionActions.getWithdrawals,
-  getNotifications: NotificationActions.getNotifications,
   determineBanner: BannerActions.determineBanner,
 };
 

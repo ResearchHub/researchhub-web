@@ -51,7 +51,6 @@ class ResearchHubBanner extends React.Component {
   render() {
     let { auth } = this.props;
     let showBanner = true;
-
     if (process.browser) {
       let preference = localStorage.getItem("researchhub.banner.pref");
       if (!preference || preference === "true") {
@@ -63,9 +62,9 @@ class ResearchHubBanner extends React.Component {
 
     return (
       <ReactPlaceholder
-        ready={!auth.isFetchingUser && process.browser}
+        ready={!auth.isFetchingUser}
         showLoadingAnimation
-        customPlaceholder={<BannerPlaceholder color="#efefef" />}
+        customPlaceholder={<BannerPlaceholder color="#684ef5" />}
       >
         <div
           className={css(styles.homeBanner, !showBanner && styles.hideBanner)}
@@ -76,15 +75,6 @@ class ResearchHubBanner extends React.Component {
           >
             <i className="fal fa-times" />
           </span>
-          <img
-            src={
-              this.state.mobileBanner
-                ? "/static/background/background-home-mobile.png"
-                : "/static/background/background-home.webp"
-            }
-            className={css(styles.bannerOverlay)}
-            alt="ResearchHub Banner"
-          />
           <div
             className={css(
               styles.column,

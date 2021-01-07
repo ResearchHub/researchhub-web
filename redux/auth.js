@@ -372,23 +372,25 @@ export const AuthActions = {
   },
   getUserBannerPreference: () => {
     return (dispatch) => {
-      let preference = localStorage.getItem("researchhub.banner.pref");
-      if (preference === "true") {
-        return dispatch({
-          type: AuthConstants.GET_USER_BANNER_PREFERENCE,
-          showBanner: true,
-        });
-      } else if (preference === "false") {
-        return dispatch({
-          type: AuthConstants.GET_USER_BANNER_PREFERENCE,
-          showBanner: false,
-        });
-      } else if (preference === null || preference === undefined) {
-        localStorage.setItem("researchhub.banner.pref", true);
-        return dispatch({
-          type: AuthConstants.GET_USER_BANNER_PREFERENCE,
-          showBanner: true,
-        });
+      if (process.browser) {
+        let preference = localStorage.getItem("researchhub.banner.pref");
+        if (preference === "true") {
+          return dispatch({
+            type: AuthConstants.GET_USER_BANNER_PREFERENCE,
+            showBanner: true,
+          });
+        } else if (preference === "false") {
+          return dispatch({
+            type: AuthConstants.GET_USER_BANNER_PREFERENCE,
+            showBanner: false,
+          });
+        } else if (preference === null || preference === undefined) {
+          localStorage.setItem("researchhub.banner.pref", true);
+          return dispatch({
+            type: AuthConstants.GET_USER_BANNER_PREFERENCE,
+            showBanner: true,
+          });
+        }
       }
     };
   },
