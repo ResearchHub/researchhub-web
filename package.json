@@ -20,13 +20,6 @@
   },
   "dependencies": {
     "@elastic/apm-rum": "^5.6.0",
-    "@fortawesome/fontawesome-svg-core": "^1.2.32",
-    "@fortawesome/free-solid-svg-icons": "^5.15.1",
-    "@fortawesome/pro-duotone-svg-icons": "^5.15.1",
-    "@fortawesome/pro-light-svg-icons": "^5.15.1",
-    "@fortawesome/pro-regular-svg-icons": "^5.15.1",
-    "@fortawesome/pro-solid-svg-icons": "^5.15.1",
-    "@fortawesome/react-fontawesome": "^0.1.14",
     "@quantfive/js-web-config": "latest",
     "@quantfive/react-burger-menu": "^2.6.19",
     "@quantfive/react-image-upload-grid": "1.1.3",
