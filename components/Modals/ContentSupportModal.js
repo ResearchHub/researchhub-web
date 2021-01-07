@@ -146,6 +146,7 @@ class ContentSupportModal extends React.Component {
               }
               className={css(styles.link)}
               target="_blank"
+              rel="noreferrer noopener"
             >
               Learn more about RSC and how it can be used.
             </a>

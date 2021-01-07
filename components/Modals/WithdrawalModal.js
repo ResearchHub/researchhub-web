@@ -718,7 +718,11 @@ class WithdrawalModal extends React.Component {
                   label={
                     <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>
                       I agree to the ResearchHub{" "}
-                      <a href={"/about/tos"} target="_blank">
+                      <a
+                        href={"/about/tos"}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
                         Terms of Service.
                       </a>
                     </span>

@@ -832,6 +832,7 @@ class PaperPageCard extends React.Component {
                           href={this.formatDoiUrl(paper.doi)}
                           target="_blank"
                           className={css(styles.link, styles.labelText)}
+                          rel="noreferrer noopener"
                         >
                           {paper.doi}
                         </a>

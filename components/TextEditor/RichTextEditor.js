@@ -839,13 +839,19 @@ class RichTextEditor extends React.Component {
               {...attributes}
               href={this.formatURL(children.props.text)}
               target={"_blank"}
+              rel="noreferrer noopener"
             >
               {children}
             </a>
           );
         }
         return (
-          <a {...attributes} href={url} target={"_blank"}>
+          <a
+            {...attributes}
+            href={url}
+            target={"_blank"}
+            rel="noreferrer noopener"
+          >
             {children}
           </a>
         );
