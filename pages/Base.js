@@ -10,12 +10,6 @@ import Message from "~/components/Loader/Message";
 import Navbar from "~/components/Navbar";
 import PermissionNotification from "../components/PermissionNotification";
 import AlertTemplate from "~/components/Modals/AlertTemplate";
-
-import { AuthActions } from "../redux/auth";
-import { TransactionActions } from "../redux/transaction";
-import { NotificationActions } from "~/redux/notification";
-import { BannerActions } from "~/redux/banner";
-
 import Footer from "./footer";
 
 class Base extends React.Component {
@@ -51,24 +45,5 @@ const styles = StyleSheet.create({
     background: "#fff",
   },
 });
-
-// const mapStateToProps = (state) => ({
-//   authChecked: state.auth.authChecked,
-//   auth: state.auth,
-// });
-
-// const mapDispatchToProps = {
-//   getUser: AuthActions.getUser,
-//   getUserBannerPreference: AuthActions.getUserBannerPreference,
-//   determineBanner: BannerActions.determineBanner,
-//   getWithdrawals: TransactionActions.getWithdrawals,
-//   getNotifications: NotificationActions.getNotifications,
-//   fetchPermissions: PermissionActions.fetchPermissions
-// };
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(Base);
 
 export default Base;
