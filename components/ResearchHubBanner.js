@@ -82,7 +82,7 @@ class ResearchHubBanner extends React.Component {
               </Link>
             </div>
             <span className={css(styles.googleLogin)}>
-              {!auth.isLoggedIn && !auth.isFetchingUser && (
+              {!auth.isLoggedIn && process.browser && (
                 <GoogleLoginButton
                   styles={styles.googleLoginButton}
                   googleLogin={this.props.googleLogin}
