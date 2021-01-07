@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@elastic/apm-rum": "^5.6.0",
+    "@fortawesome/fontawesome-free-brands": "^5.1.0-3",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/pro-duotone-svg-icons": "^5.15.1",
     "@fortawesome/pro-light-svg-icons": "^5.15.1",

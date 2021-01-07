@@ -282,7 +282,7 @@ class PaperPageCard extends React.Component {
           styling={styles.borderRadius}
         >
           <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
-            <i className="far fa-pencil" />
+            {icons.pencil}
           </div>
         </PermissionNotificationWrapper>
         <ShareAction
@@ -292,7 +292,7 @@ class PaperPageCard extends React.Component {
           url={this.props.shareUrl}
           customButton={
             <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
-              <i className="far fa-share-alt" />
+              {icons.shareAlt}
             </div>
           }
         />
@@ -305,7 +305,7 @@ class PaperPageCard extends React.Component {
               className={css(styles.downloadIcon)}
               data-tip={"Download PDF"}
             >
-              <i className="far fa-arrow-to-bottom" />
+              {icons.arrowToBottom}
             </span>
           </Ripples>
         )}
@@ -318,7 +318,7 @@ class PaperPageCard extends React.Component {
               className={css(styles.downloadIcon)}
               data-tip={"Open in External Link"}
             >
-              <i className="far fa-external-link" />
+              {icons.externalLink}
             </span>
           </Ripples>
         )}
@@ -451,7 +451,7 @@ class PaperPageCard extends React.Component {
                       hovered && carousel.show
                     )}
                   >
-                    <i className="far fa-angle-left" />
+                    {icons.angleLeft}
                   </span>
                   <span className={css(styles.slideCount)}>{`${currentSlide +
                     1} / ${slideCount}`}</span>
@@ -466,7 +466,7 @@ class PaperPageCard extends React.Component {
                       hovered && carousel.show
                     )}
                   >
-                    <i className="far fa-angle-right" />
+                    {icons.angleRight}
                   </span>
                 </div>
               );
