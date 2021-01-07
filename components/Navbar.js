@@ -4,13 +4,12 @@ import { useEffect, useState, Fragment } from "react";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { connect, useDispatch, useStore } from "react-redux";
+import { connect } from "react-redux";
 import "react-placeholder/lib/reactPlaceholder.css";
 import { slide as Menu } from "@quantfive/react-burger-menu";
 import Collapsible from "react-collapsible";
 
 // Redux
-import { MessageActions } from "../redux/message";
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
 
@@ -29,11 +28,8 @@ import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import Notification from "./Notifications/Notification";
 import DndModal from "../components/Modals/DndModal";
-import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
-import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
 import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
-import EducationModal from "./Modals/EducationModal";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import UserStateBanner from "./Banner/UserStateBanner";
 import ContentSupportModal from "./Modals/ContentSupportModal";
@@ -41,13 +37,12 @@ import OrcidConnectModal from "./Modals/OrcidConnectModal";
 
 // Styles
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { RHLogo } from "~/config/themes/icons";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import "./stylesheets/Navbar.css";
 
 const Navbar = (props) => {
-  const dispatch = useDispatch();
   const router = useRouter();
 
   const {
@@ -276,13 +271,14 @@ const Navbar = (props) => {
           trigger={
             <div className={css(styles.trigger)}>
               <div>
-                <i
-                  className={css(styles.tabIcon) + ` fal fa-${tab.icon}`}
-                  aria-hidden="true"
-                ></i>
+                <span className={css(styles.tabIcon)} aria-hidden="true">
+                  {icons[tab.icon]}
+                </span>
                 {tab.label}
               </div>
-              <i className={css(styles.chevronDown) + " fal fa-chevron-down"} />
+              <span className={css(styles.chevronDown)}>
+                {icons.chevronDownLeft}
+              </span>
             </div>
           }
           open={tab.key === "explore"}
@@ -472,7 +468,9 @@ const Navbar = (props) => {
                     disableLink={true}
                     showModeratorBadge={user && user.moderator}
                   />
-                  <i className={css(styles.caret) + " fas fa-caret-down"}></i>
+                  <span className={css(styles.caret)}>
+                    {voteWidgetIcons.downvote}
+                  </span>
                   <div className={css(styles.reputation)}>
                     <Reputation showBalance={true} />
                   </div>
@@ -497,20 +495,22 @@ const Navbar = (props) => {
                       as={`/user/${user.author_profile.id}/contributions`}
                     >
                       <div className={css(styles.option)}>
-                        <i
-                          className={
-                            css(styles.profileIcon, styles.portraitIcon) +
-                            " fas fa-portrait"
-                          }
-                        ></i>
+                        <span
+                          className={css(
+                            styles.profileIcon,
+                            styles.portraitIcon
+                          )}
+                        >
+                          {icons.portrait}
+                        </span>
                         Profile
                       </div>
                     </Link>
                     <Link href={"/user/settings"} as={`/user/settings`}>
                       <div className={css(styles.option)}>
-                        <i
-                          className={css(styles.profileIcon) + " fas fa-cog"}
-                        ></i>
+                        <span className={css(styles.profileIcon)}>
+                          {icons.cogs}
+                        </span>
                         Settings
                       </div>
                     </Link>
@@ -535,11 +535,9 @@ const Navbar = (props) => {
                       }}
                     >
                       <div className={css(styles.option)}>
-                        <i
-                          className={
-                            css(styles.profileIcon) + " fas fa-asterisk"
-                          }
-                        ></i>
+                        <span className={css(styles.profileIcon)}>
+                          {icons.asterick}
+                        </span>
                         Refer a Friend
                       </div>
                     </Link>
@@ -549,9 +547,9 @@ const Navbar = (props) => {
                         signout({ walletLink });
                       }}
                     >
-                      <i
-                        className={css(styles.profileIcon) + " fad fa-sign-out"}
-                      ></i>{" "}
+                      <span className={css(styles.profileIcon)}>
+                        {icons.signOut}
+                      </span>{" "}
                       <span>Logout</span>
                     </div>
                   </div>
