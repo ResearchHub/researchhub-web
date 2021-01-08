@@ -1,7 +1,5 @@
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import ReactPlaceholder from "react-placeholder";
-import BannerPlaceholder from "./Placeholders/BannerPlaceholder";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Link from "next/link";
 
@@ -14,7 +12,9 @@ import { AuthActions } from "~/redux/auth";
 class ResearchHubBanner extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      banner: true,
+    };
   }
 
   updateUserBannerPreference = () => {
@@ -24,26 +24,26 @@ class ResearchHubBanner extends React.Component {
     });
   };
 
-  componentDidMount() {
-    this.setState({
-      browser: true,
-    });
-  }
-
   render() {
     let { auth } = this.props;
     let showBanner = true;
     if (process.browser) {
       let preference = localStorage.getItem("researchhub.banner.pref");
       if (!preference || preference === "true") {
-        showBanner = true;
+        showBanner = true && this.state.banner;
       } else {
         showBanner = false;
       }
     }
 
     return (
-      <div className={css(styles.homeBanner, !showBanner && styles.hideBanner)}>
+      <div
+        className={css(
+          styles.homeBanner,
+          !showBanner && styles.hideBanner,
+          !this.state.banner && styles.hideBanner
+        )}
+      >
         <span
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}

@@ -29,7 +29,7 @@ import { HubActions } from "../redux/hub";
 import { UniversityActions } from "../redux/universities";
 import { TransactionActions } from "../redux/transaction";
 import { NotificationActions } from "~/redux/notification";
-import { BannerActions } from "~/redux/banner";
+// import { BannerActions } from "~/redux/banner";
 import PermissionActions from "../redux/permission";
 
 // Config
@@ -114,10 +114,10 @@ class MyApp extends App {
     if (auth.isLoggedIn) {
       dispatch(TransactionActions.getWithdrawals());
       dispatch(NotificationActions.getNotifications());
+      // dispatch(AuthActions.getUserBannerPreference());
+      // dispatch(BannerActions.determineBanner());
     }
 
-    dispatch(AuthActions.getUserBannerPreference());
-    dispatch(BannerActions.determineBanner());
     await dispatch(PermissionActions.fetchPermissions());
   }
 

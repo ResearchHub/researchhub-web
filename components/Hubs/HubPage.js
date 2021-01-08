@@ -16,7 +16,7 @@ import Loader from "~/components/Loader/Loader";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-import ResearchHubBanner from "../ResearchHubBanner";
+// import ResearchHubBanner from "../ResearchHubBanner";
 import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 
@@ -672,7 +672,7 @@ class HubPage extends React.Component {
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>
-          <ResearchHubBanner home={this.props.home} hub={this.props.hub} />
+          {/* <ResearchHubBanner home={this.props.home} hub={this.props.hub} /> */}
           {this.props.home && <Head title={this.props.home && null} />}
         </div>
         <div className={css(styles.row, styles.body)}>
@@ -694,7 +694,6 @@ class HubPage extends React.Component {
                 this.state.titleBoxShadow && styles.titleBoxShadow,
                 this.props.home && styles.row
               )}
-              // id={"topbar"}
             >
               <h1 className={css(styles.text, styles.feedTitle)}>
                 <span className={css(styles.fullWidth)}>
