@@ -143,11 +143,11 @@ const PaperEntryCard = (props) => {
       return (
         <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
           <span className={css(styles.submittedSection)}>
-            {/* <AuthorAvatar
+            <AuthorAvatar
               author={uploaded_by.author_profile}
               name={first_name + " " + last_name}
               size={25}
-            /> */}
+            />
             <span
               className={css(styles.capitalize, styles.authorName)}
             >{`${first_name} ${last_name}`}</span>
