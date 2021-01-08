@@ -43,57 +43,48 @@ class ResearchHubBanner extends React.Component {
     }
 
     return (
-      <ReactPlaceholder
-        ready={!auth.isFetchingUser && process.browser}
-        showLoadingAnimation
-        customPlaceholder={<BannerPlaceholder color="#684ef5" />}
-      >
-        <div
-          className={css(styles.homeBanner, !showBanner && styles.hideBanner)}
+      <div className={css(styles.homeBanner, !showBanner && styles.hideBanner)}>
+        <span
+          className={css(styles.closeButton)}
+          onClick={this.updateUserBannerPreference}
         >
-          <span
-            className={css(styles.closeButton)}
-            onClick={this.updateUserBannerPreference}
-          >
-            <i className="fal fa-times" />
-          </span>
-          <div
-            className={css(
-              styles.column,
-              styles.titleContainer,
-              auth.isLoggedIn && styles.centered
-            )}
-          >
-            <div className={css(styles.header, styles.text)}>
-              Welcome to{" "}
-              <span className={css(styles.hubName)}>
-                {this.props.all || this.props.home
-                  ? "ResearchHub"
-                  : this.props.hub.name}
-                !
-              </span>
-            </div>
-            <div className={css(styles.subtext, styles.text)}>
-              We're a community seeking to improve prioritization,
-              collaboration, reproducibility, and funding of scientific
-              research.{" "}
-              <Link href={"/about"}>
-                <a className={css(styles.readMore)}>Read more</a>
-              </Link>
-            </div>
-            <span className={css(styles.googleLogin)}>
-              {!auth.isLoggedIn && process.browser && (
-                <GoogleLoginButton
-                  styles={styles.googleLoginButton}
-                  googleLogin={this.props.googleLogin}
-                  getUser={this.props.getUser}
-                  customLabel={"Sign in with Google"}
-                />
-              )}
+          <i className="fal fa-times" />
+        </span>
+        <div
+          className={css(
+            styles.column,
+            styles.titleContainer,
+            auth.isLoggedIn && styles.centered
+          )}
+        >
+          <div className={css(styles.header, styles.text)}>
+            Welcome to{" "}
+            <span className={css(styles.hubName)}>
+              {this.props.all || this.props.home
+                ? "ResearchHub"
+                : this.props.hub.name}
+              !
             </span>
           </div>
+          <div className={css(styles.subtext, styles.text)}>
+            We're a community seeking to improve prioritization, collaboration,
+            reproducibility, and funding of scientific research.{" "}
+            <Link href={"/about"}>
+              <a className={css(styles.readMore)}>Read more</a>
+            </Link>
+          </div>
+          <span className={css(styles.googleLogin)}>
+            {!auth.isLoggedIn && process.browser && (
+              <GoogleLoginButton
+                styles={styles.googleLoginButton}
+                googleLogin={this.props.googleLogin}
+                getUser={this.props.getUser}
+                customLabel={"Sign in with Google"}
+              />
+            )}
+          </span>
         </div>
-      </ReactPlaceholder>
+      </div>
     );
   }
 }
