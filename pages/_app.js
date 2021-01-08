@@ -12,6 +12,7 @@ import { KeyUtils } from "slate";
 import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
+import { isMobile } from "react-device-detect";
 
 // FontAwesome SSR
 // import { config } from "@fortawesome/fontawesome-svg-core";
@@ -24,13 +25,6 @@ import "./stylesheets/App.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import { AuthActions } from "../redux/auth";
-import { HubActions } from "../redux/hub";
-import { UniversityActions } from "../redux/universities";
-import { TransactionActions } from "../redux/transaction";
-import { NotificationActions } from "~/redux/notification";
-// import { BannerActions } from "~/redux/banner";
-import PermissionActions from "../redux/permission";
 
 // Config
 import { SIFT_BEACON_KEY } from "~/config/constants";
@@ -102,23 +96,13 @@ class MyApp extends App {
     });
   }
 
-  async componentDidMount() {
-    const { store } = this.props;
-    const { dispatch } = store;
+  componentDidMount() {
     this.connectSift();
-    dispatch(HubActions.getTopHubs());
-    dispatch(UniversityActions.getUniversities());
-    await dispatch(AuthActions.getUser());
-    const auth = store.getState().auth;
-
-    if (auth.isLoggedIn) {
-      dispatch(TransactionActions.getWithdrawals());
-      dispatch(NotificationActions.getNotifications());
-      // dispatch(AuthActions.getUserBannerPreference());
-      // dispatch(BannerActions.determineBanner());
+    if (!isMobile) {
+      let scriptElem = document.createElement("script");
+      scriptElem.src = "https://app.appzi.io/bootstrap/bundle.js?token=ECg1v";
+      document.getElementsByTagName("head")[0].appendChild(scriptElem);
     }
-
-    await dispatch(PermissionActions.fetchPermissions());
   }
 
   componentWillUnmount() {
