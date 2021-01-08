@@ -50,6 +50,11 @@ class ResearchHubBanner extends React.Component {
         >
           <i className="fal fa-times" />
         </span>
+        <img
+          src={"/static/background/background-home.webp"}
+          className={css(styles.bannerOverlay)}
+          draggable={false}
+        />
         <div
           className={css(
             styles.column,
