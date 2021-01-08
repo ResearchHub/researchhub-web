@@ -143,11 +143,11 @@ const PaperEntryCard = (props) => {
       return (
         <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
           <span className={css(styles.submittedSection)}>
-            <AuthorAvatar
+            {/* <AuthorAvatar
               author={uploaded_by.author_profile}
               name={first_name + " " + last_name}
               size={25}
-            />
+            /> */}
             <span
               className={css(styles.capitalize, styles.authorName)}
             >{`${first_name} ${last_name}`}</span>
@@ -645,7 +645,7 @@ const PaperEntryCard = (props) => {
             {renderContent()}
             {mobileOnly(renderUploadedBy())}
           </div>
-          {desktopOnly(renderPreview())}
+          {/* {desktopOnly(renderPreview())} */}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
@@ -994,7 +994,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   authorName: {
-    marginLeft: 4,
+    // marginLeft: 4,
   },
   rhIcon: {
     height: 20,
