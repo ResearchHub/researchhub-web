@@ -994,7 +994,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   authorName: {
-    // marginLeft: 4,
+    marginLeft: 4,
   },
   rhIcon: {
     height: 20,
