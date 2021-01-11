@@ -15,7 +15,7 @@ const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
         className={css(styles.tag, overrideStyle && overrideStyle)}
         key={`tag-${name}-${Math.random()}`}
       >
-        <span className={css(styles.label)}>{name && name}</span>
+        <span className={css(styles.label) + " clamp1"}>{name && name}</span>
       </div>
     );
   } else {
@@ -32,11 +32,13 @@ const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
                 )}
               >
                 <span
-                  className={css(
-                    styles.label,
-                    gray && styles.grayLabel,
-                    labelStyle && labelStyle
-                  )}
+                  className={
+                    css(
+                      styles.label,
+                      gray && styles.grayLabel,
+                      labelStyle && labelStyle
+                    ) + " clamp1"
+                  }
                 >
                   {name && name}
                 </span>
@@ -56,12 +58,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#edeefe",
-    height: 21,
     borderRadius: 3,
+    padding: "5px 10px 5px 10px",
     cursor: "pointer",
     border: "1px solid #FFF",
+    fontSize: 10,
+    color: colors.BLUE(1),
+    textTransform: "uppercase",
+    fontWeight: "bold",
+    letterSpacing: 1,
     ":hover": {
-      color: "#FFF",
       borderColor: colors.BLUE(1),
     },
 
@@ -69,28 +75,15 @@ const styles = StyleSheet.create({
       marginBottom: 8,
     },
     "@media only screen and (max-width: 415px)": {
+      fontSize: 8,
+      padding: "3px 6px",
       height: "unset",
     },
   },
   space: {
     width: 10,
   },
-  label: {
-    fontFamily: "Roboto",
-    fontSize: 10,
-    color: colors.BLUE(1),
-    height: 12,
-    textTransform: "uppercase",
-    fontWeight: "bold",
-    letterSpacing: 1,
-    padding: "3px 10px 3px 10px",
-    flexWrap: "wrap",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 8,
-      padding: "3px 6px",
-      height: "unset",
-    },
-  },
+  label: {},
   grayTag: {
     backgroundColor: "rgba(36, 31, 58, 0.03)",
     border: "1px solid rgba(36, 31, 58, 0.1)",

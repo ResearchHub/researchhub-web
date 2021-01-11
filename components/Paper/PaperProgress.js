@@ -418,6 +418,7 @@ class PaperProgress extends React.Component {
                   <img
                     className={css(styles.image)}
                     src={"/static/background/homepage-empty-state.png"}
+                    alt={"Empty State"}
                   />
                 </div>
               </Fragment>

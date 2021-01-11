@@ -74,6 +74,7 @@ const PaperBanner = ({
               style={{ color: "#4E53FF" }}
               href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
               target="_blank"
+              rel="noreferrer noopener"
             >
               Paper Submission Guidelines
             </a>{" "}

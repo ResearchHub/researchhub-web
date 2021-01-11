@@ -163,6 +163,7 @@ const Navbar = (props) => {
                 "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
               }
               target="_blank"
+              rel="noreferrer noopener"
             >
               {tab.label}
             </a>
@@ -224,6 +225,7 @@ const Navbar = (props) => {
                 "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
               }
               target="_blank"
+              rel="noreferrer noopener"
             >
               <span className={css(styles.icon)} id={"icon"}>
                 {icons[tab.icon]}

@@ -134,6 +134,7 @@ class AddAuthorModal extends React.Component {
             src={"/static/icons/close.png"}
             className={css(styles.closeButton)}
             onClick={this.closeModal}
+            alt="Close Button"
           />
           <div className={css(styles.titleContainer)}>
             <div className={css(styles.title, styles.text)}>Add New Author</div>

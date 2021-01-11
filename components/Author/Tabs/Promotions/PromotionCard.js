@@ -180,6 +180,7 @@ class PromotionCard extends React.Component {
                 className={css(styles.coin)}
                 src={"/static/icons/coin-filled.png"}
                 draggable={false}
+                alt="RSC Coin"
               />
             </div>
             {this.renderData()}

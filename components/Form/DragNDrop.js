@@ -229,6 +229,7 @@ class DragNDrop extends React.Component {
                     <img
                       className={css(styles.icon)}
                       src={"/static/icons/dragNdrop.png"}
+                      alt="Drag N Drop Icon"
                     />
                   )}
                   {!toAccept.includes("pdf") || this.state.isPDF ? (

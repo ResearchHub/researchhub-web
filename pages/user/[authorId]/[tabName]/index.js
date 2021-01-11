@@ -748,6 +748,7 @@ const AuthorPage = (props) => {
           target="_blank"
           href={`https://orcid.org/${authorOrcidId}`}
           data-tip={"Open Orcid Profile"}
+          rel="noreferrer noopener"
         >
           <img
             src="/static/icons/orcid.png"
@@ -857,7 +858,12 @@ const AuthorPage = (props) => {
 
       if (link) {
         return (
-          <a className={css(styles.link)} href={link} target="_blank">
+          <a
+            className={css(styles.link)}
+            href={link}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
             <span className={css(styles.socialMedia, customStyles)}>
               {icon}
             </span>

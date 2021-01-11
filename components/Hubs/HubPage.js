@@ -16,7 +16,7 @@ import Loader from "~/components/Loader/Loader";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-import ResearchHubBanner from "../ResearchHubBanner";
+// import ResearchHubBanner from "../ResearchHubBanner";
 import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 
@@ -64,8 +64,6 @@ class HubPage extends React.Component {
         ? this.props.filter.value === "hot" ||
           this.props.filter.value === "newest"
         : true,
-      mobileView: false,
-      mobileBanner: false,
       papersLoading: false,
       unsubscribeHover: false,
       subscribeClicked: false,
@@ -73,17 +71,6 @@ class HubPage extends React.Component {
       leaderboardTop: 0,
     };
   }
-
-  updateDimensions = () => {
-    if (window.innerWidth < 968) {
-      this.setState({
-        mobileView: true,
-        mobileBanner: window.innerWidth < 580 ? true : false,
-      });
-    } else {
-      this.setState({ mobileView: false, mobileBanner: false });
-    }
-  };
 
   setScrollShadow = () => {
     const height = document.getElementById("topbar").offsetHeight + 34;
@@ -141,8 +128,6 @@ class HubPage extends React.Component {
     this.setState({
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
-    this.updateDimensions();
-    window.addEventListener("resize", this.updateDimensions);
     window.addEventListener("scroll", this.scrollListener);
   }
 
@@ -201,7 +186,6 @@ class HubPage extends React.Component {
   };
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
     window.removeEventListener("scroll", this.scrollListener);
   }
 
@@ -688,9 +672,7 @@ class HubPage extends React.Component {
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>
-          {process.browser && (
-            <ResearchHubBanner home={this.props.home} hub={this.props.hub} />
-          )}
+          {/* <ResearchHubBanner home={this.props.home} hub={this.props.hub} /> */}
           {this.props.home && <Head title={this.props.home && null} />}
         </div>
         <div className={css(styles.row, styles.body)}>
@@ -712,7 +694,6 @@ class HubPage extends React.Component {
                 this.state.titleBoxShadow && styles.titleBoxShadow,
                 this.props.home && styles.row
               )}
-              // id={"topbar"}
             >
               <h1 className={css(styles.text, styles.feedTitle)}>
                 <span className={css(styles.fullWidth)}>
@@ -795,7 +776,6 @@ class HubPage extends React.Component {
                         paper={paper}
                         index={i}
                         hubName={this.props.hubName}
-                        mobileView={this.state.mobileView}
                         voteCallback={this.voteCallback}
                       />
                     ))}
@@ -809,6 +789,8 @@ class HubPage extends React.Component {
                     <img
                       className={css(styles.emptyPlaceholderImage)}
                       src={"/static/background/homepage-empty-state.png"}
+                      loading="lazy"
+                      alt="Empty State Icon"
                     />
                     <div
                       className={css(styles.text, styles.emptyPlaceholderText)}
@@ -943,6 +925,9 @@ var styles = StyleSheet.create({
     width: "100%",
     alignItems: "flex-start",
     display: "table",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+    },
   },
   sidebar: {
     backgroundColor: "#FFF",
@@ -951,7 +936,7 @@ var styles = StyleSheet.create({
     display: "table-cell",
     minWidth: 220,
     paddingTop: 10,
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 990px)": {
       display: "none",
     },
   },
@@ -1231,7 +1216,7 @@ var styles = StyleSheet.create({
   mobileHubListContainer: {
     display: "none",
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 768px)": {
+    "@media only screen and (max-width: 990px)": {
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
