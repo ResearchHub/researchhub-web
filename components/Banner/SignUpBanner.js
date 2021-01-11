@@ -125,6 +125,7 @@ class SignUpBanner extends React.Component {
               <img
                 className={css(styles.coinIcon)}
                 src={"/static/icons/coin-filled.png"}
+                alt="RSC Coin"
               />
               <div
                 className={css(styles.flexContainer)}

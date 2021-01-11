@@ -37,7 +37,12 @@ const ExternalLink = (props) => {
   const { href, style, text } = props;
 
   return (
-    <a className={css(style && style)} href={href && href} target={"_blank"}>
+    <a
+      className={css(style && style)}
+      href={href && href}
+      target={"_blank"}
+      rel="noreferrer noopener"
+    >
       {text}
     </a>
   );

@@ -114,7 +114,11 @@ const ContentSupport = (props) => {
       onClick={handleClick}
     >
       {renderAnimation()}
-      <img className={css(styles.icon)} src={"/static/icons/coin-filled.png"} />
+      <img
+        className={css(styles.icon)}
+        src={"/static/icons/coin-filled.png"}
+        alt="RSC Coin"
+      />
       {renderCount()}
     </div>
   );

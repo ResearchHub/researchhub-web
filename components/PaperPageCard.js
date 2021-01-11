@@ -492,6 +492,7 @@ class PaperPageCard extends React.Component {
                       minWidth: width,
                       maxWidth: width,
                     }}
+                    alt={`Paper PDF Page:${i + 1}`}
                   />
                 );
               }
@@ -508,6 +509,7 @@ class PaperPageCard extends React.Component {
                     minWidth: width,
                     maxWidth: width,
                   }}
+                  alt={`Paper PDF Page:${i + 1}`}
                 />
               );
             })}
@@ -666,7 +668,11 @@ class PaperPageCard extends React.Component {
   renderPreregistrationTag = () => {
     return (
       <div className={css(styles.preRegContainer)}>
-        <img src="/static/icons/wip.png" className={css(styles.preRegIcon)} />
+        <img
+          src="/static/icons/wip.png"
+          className={css(styles.preRegIcon)}
+          alt="Preregistration Icon"
+        />
         Funding Request
       </div>
     );
@@ -826,6 +832,7 @@ class PaperPageCard extends React.Component {
                           href={this.formatDoiUrl(paper.doi)}
                           target="_blank"
                           className={css(styles.link, styles.labelText)}
+                          rel="noreferrer noopener"
                         >
                           {paper.doi}
                         </a>

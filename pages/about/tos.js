@@ -327,7 +327,11 @@ class TOS extends React.Component {
             Policy, so that we all may continue to use and enjoy the Services.
             We support the responsible reporting of security vulnerabilities. To
             report a security issue, please send an email to{" "}
-            <a href="mailto:hello@researchhub.com" target="_blank">
+            <a
+              href="mailto:hello@researchhub.com"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               hello@researchhub.com
             </a>
             .
@@ -465,7 +469,11 @@ class TOS extends React.Component {
           </p>
           <p className={css(styles.paragraph)}>Copyright Agent</p>
           <p className={css(styles.paragraph)}>
-            <a href="mailto:hello@researchhub.com" target="_blank">
+            <a
+              href="mailto:hello@researchhub.com"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               hello@researchhub.com
             </a>
           </p>
@@ -565,7 +573,11 @@ class TOS extends React.Component {
             dispute, you agree to raise it and try to resolve it with us
             informally. You can contact us with feedback and concerns here or by
             emailing us at{" "}
-            <a href="mailto:hello@researchhub.com" target="_blank">
+            <a
+              href="mailto:hello@researchhub.com"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               hello@researchhub.com
             </a>
             .
@@ -605,7 +617,11 @@ class TOS extends React.Component {
             rights. In addition, you will retain the right to opt out of
             arbitration entirely and litigate any Dispute if you provide us with
             written notice of your desire to do so by email at{" "}
-            <a href="mailto:hi@videocoin.io" target="_blank">
+            <a
+              href="mailto:hi@videocoin.io"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               hi@videocoin.io
             </a>{" "}
             or by regular mail at [postal address] within thirty (30) days
@@ -617,14 +633,22 @@ class TOS extends React.Component {
             <strong>AAA</strong>”) under its Consumer Arbitration Rules (the
             “AAA Rules”) then in effect, except as modified by these Terms. The
             AAA Rules are available at{" "}
-            <a href="http://www.adr.org" target="_blank">
+            <a
+              href="http://www.adr.org"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               www.adr.org
             </a>{" "}
             or by calling 1-800-778-7879. A party who wishes to start
             arbitration must submit a written Demand for Arbitration to AAA and
             give notice to the other party as specified in the AAA Rules. The
             AAA provides a form Demand for Arbitration at{" "}
-            <a href="http://www.adr.org" target="_blank">
+            <a
+              href="http://www.adr.org"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               www.adr.org
             </a>
             .{" "}
@@ -671,7 +695,11 @@ class TOS extends React.Component {
             accepted these Terms (or accepted any subsequent changes to these
             Terms), you may reject any such change by sending us written notice
             (including by email to{" "}
-            <a href="mailto:disputes@videocoin.io" target="_blank">
+            <a
+              href="mailto:disputes@videocoin.io"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               disputes@videocoin.io
             </a>
             ) within 30 days of the date such change became effective, as
@@ -779,7 +807,11 @@ class TOS extends React.Component {
             <strong>Contact Information</strong>
           </h3>
           <p className={css(styles.paragraph)}>
-            <a href="mailto:hello@researchhub.com" target="_blank">
+            <a
+              href="mailto:hello@researchhub.com"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               hello@researchhub.com
             </a>
           </p>

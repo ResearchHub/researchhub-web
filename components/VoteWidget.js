@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
       background: "rgba(30, 207, 49, 0.2)",
     },
     "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
+      fontSize: 14,
     },
   },
   promotedPillContainer: {

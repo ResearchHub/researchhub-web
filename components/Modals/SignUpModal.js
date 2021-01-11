@@ -67,6 +67,7 @@ const SignUpModal = (props) => {
           <img
             className={css(styles.coinIcon)}
             src={"/static/icons/coin-filled.png"}
+            alt="RSC Coin"
           />
         </div>
 

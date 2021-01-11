@@ -43,6 +43,7 @@ const PromotionInfoModal = (props) => {
           }
           className={css(styles.link)}
           target="_blank"
+          rel="noreferrer noopener"
         >
           Learn more.
         </a>

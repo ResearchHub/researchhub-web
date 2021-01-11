@@ -44,8 +44,6 @@ const AvatarUpload = (props) => {
           onBeforeFileLoad={onBeforeFileLoad}
           src={image}
         />
-        {/* <div className={css(styles.preview)}>Preview</div>
-        {preview && <img width={80} hieght={80} src={preview} alt="Preview" />} */}
       </div>
       {preview && (
         <div className={css(styles.actions)} disable={!preview}>

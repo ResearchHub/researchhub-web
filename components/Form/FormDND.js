@@ -353,6 +353,7 @@ class FormDND extends React.Component {
           <img
             className={css(styles.uploadImage)}
             src={"/static/background/homepage-empty-state.png"}
+            alt="Drag N Drop Icon"
           />
           <div className={css(styles.instructions)}>
             Drag & drop{"\n"}

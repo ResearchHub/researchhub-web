@@ -113,12 +113,14 @@ class FormInput extends React.Component {
           <img
             src={"/static/icons/search.png"}
             className={css(styles.searchIcon)}
+            alt="Search Icon"
           />
         )}
         {icon && typeof icon === "string" ? (
           <img
             src={icon}
             className={css(styles.searchIcon, iconStyles && iconStyles)}
+            alt="Form Input Icon"
           />
         ) : (
           <div className={css(styles.searchIcon, iconStyles && iconStyles)}>

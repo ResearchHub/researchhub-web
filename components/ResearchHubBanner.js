@@ -13,19 +13,9 @@ class ResearchHubBanner extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mobileBanner: false,
+      banner: true,
     };
   }
-
-  updateDimensions = () => {
-    if (window.innerWidth < 968) {
-      this.setState({
-        mobileBanner: window.innerWidth < 580 ? true : false,
-      });
-    } else {
-      this.setState({ mobileBanner: false });
-    }
-  };
 
   updateUserBannerPreference = () => {
     this.props.setUserBannerPreference(false);
@@ -34,30 +24,26 @@ class ResearchHubBanner extends React.Component {
     });
   };
 
-  componentDidMount() {
-    this.updateDimensions();
-    window.addEventListener("resize", this.updateDimensions);
-    this.setState({
-      browser: true,
-    });
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
-  }
-
   render() {
     let { auth } = this.props;
     let showBanner = true;
-    let preference = localStorage.getItem("researchhub.banner.pref");
-    if (!preference || preference === "true") {
-      showBanner = true;
-    } else {
-      showBanner = false;
+    if (process.browser) {
+      let preference = localStorage.getItem("researchhub.banner.pref");
+      if (!preference || preference === "true") {
+        showBanner = true && this.state.banner;
+      } else {
+        showBanner = false;
+      }
     }
 
     return (
-      <div className={css(styles.homeBanner, !showBanner && styles.hideBanner)}>
+      <div
+        className={css(
+          styles.homeBanner,
+          !showBanner && styles.hideBanner,
+          !this.state.banner && styles.hideBanner
+        )}
+      >
         <span
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}
@@ -65,12 +51,9 @@ class ResearchHubBanner extends React.Component {
           <i className="fal fa-times" />
         </span>
         <img
-          src={
-            this.state.mobileBanner
-              ? "/static/background/background-home-mobile.png"
-              : "/static/background/background-home.jpg"
-          }
+          src={"/static/background/background-home.webp"}
           className={css(styles.bannerOverlay)}
+          draggable={false}
         />
         <div
           className={css(
@@ -96,7 +79,7 @@ class ResearchHubBanner extends React.Component {
             </Link>
           </div>
           <span className={css(styles.googleLogin)}>
-            {!auth.isLoggedIn && (
+            {!auth.isLoggedIn && process.browser && (
               <GoogleLoginButton
                 styles={styles.googleLoginButton}
                 googleLogin={this.props.googleLogin}

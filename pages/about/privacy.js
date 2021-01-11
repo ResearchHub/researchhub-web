@@ -493,7 +493,11 @@ class Privacy extends React.Component {
           </h2>
           <p className={css(styles.paragraph)}>
             If you would like to get in contact with us, please reach out to{" "}
-            <a href="mailto:hello@researchhub.com" target="_blank">
+            <a
+              href="mailto:hello@researchhub.com"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               hello@ResearchHub.com
             </a>
           </p>
