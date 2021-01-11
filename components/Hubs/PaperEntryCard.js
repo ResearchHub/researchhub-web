@@ -645,7 +645,7 @@ const PaperEntryCard = (props) => {
             {renderContent()}
             {mobileOnly(renderUploadedBy())}
           </div>
-          {/* {desktopOnly(renderPreview())} */}
+          {desktopOnly(renderPreview())}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
