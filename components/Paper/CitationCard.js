@@ -127,6 +127,7 @@ class CitationCard extends React.Component {
                   src={preview.file}
                   onClick={this.toggleLightbox}
                   className={css(styles.image)}
+                  alt="Paper Preview"
                 />
               );
             })}

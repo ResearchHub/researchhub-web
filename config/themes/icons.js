@@ -64,6 +64,7 @@ const icons = {
           : "/static/icons/coin-stack.png"
       }
       className={css(styles)}
+      alt="Coin Stack Icon"
     />
   ),
   partyPopper: (props = {}) => {
@@ -72,6 +73,7 @@ const icons = {
       <img
         className={css(styles.iconPartyPopper, style && style)}
         src={"/static/icons/party-popper.png"}
+        alt="Party Popper Icon"
       />
     );
   },
@@ -81,6 +83,7 @@ const icons = {
       <img
         className={css(styles.iconRSC, style && style)}
         src={"/static/icons/coin-filled.png"}
+        alt="RSC Coin"
       />
     );
   },
@@ -112,6 +115,7 @@ export const RHLogo = ({ iconStyle, white }) => {
       src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.png"}
       className={css(styles.logo, iconStyle && iconStyle)}
       draggable={false}
+      alt="RH Logo"
     />
   );
 };

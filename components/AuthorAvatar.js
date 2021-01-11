@@ -48,6 +48,8 @@ const AuthorAvatar = (props) => {
             onError={(e) => {
               setError(true);
             }}
+            alt={"Author Profile Avatar"}
+            loading="lazy"
           />
         ) : (
           <i
@@ -73,7 +75,12 @@ const AuthorAvatar = (props) => {
   if (twitterUrl) {
     return (
       <div className={css(styles.avatar)}>
-        <a target="_blank" href={twitterUrl} className={css(styles.atag)}>
+        <a
+          target="_blank"
+          href={twitterUrl}
+          className={css(styles.atag)}
+          rel="noreferrer noopener"
+        >
           {renderAvatar()}
         </a>
       </div>
@@ -92,6 +99,7 @@ const AuthorAvatar = (props) => {
           <a
             href={`/user/${authorId}/contributions`}
             className={css(styles.atag)}
+            rel="noreferrer noopener"
           >
             {renderAvatar()}
           </a>

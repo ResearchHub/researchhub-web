@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 // NPM Modules
 import { connect } from "react-redux";
@@ -17,7 +17,6 @@ import { UniversityActions } from "../redux/universities";
 import { TransactionActions } from "../redux/transaction";
 import { NotificationActions } from "~/redux/notification";
 import { BannerActions } from "~/redux/banner";
-
 import PermissionActions from "../redux/permission";
 import Footer from "./footer";
 
@@ -25,9 +24,6 @@ class Base extends React.Component {
   componentDidMount = async () => {
     const {
       fetchPermissions,
-      fetchPermissionsPending,
-      getCategories,
-      getHubs,
       getUser,
       getUniversities,
       getUserBannerPreference,
@@ -38,17 +34,16 @@ class Base extends React.Component {
       auth,
     } = this.props;
 
+    getUniversities();
     await getUser();
     getTopHubs(auth);
-    getUniversities();
     if (auth.isLoggedIn) {
       getWithdrawals();
       getNotifications();
+      // getUserBannerPreference(); currently removed banner
+      // determineBanner();
     }
-    getUserBannerPreference();
-    determineBanner();
-    fetchPermissionsPending();
-    await fetchPermissions();
+    fetchPermissions();
   };
 
   render() {
@@ -59,19 +54,15 @@ class Base extends React.Component {
     };
 
     return (
-      <Fragment>
-        <Fragment>
-          <AlertProvider template={AlertTemplate} {...options}>
-            <div className={css(styles.pageWrapper)}>
-              <PermissionNotification />
-              <Navbar />
-              <Component {...pageProps} />
-              <Message />
-            </div>
-            <Footer />
-          </AlertProvider>
-        </Fragment>
-      </Fragment>
+      <AlertProvider template={AlertTemplate} {...options}>
+        <div className={css(styles.pageWrapper)}>
+          <PermissionNotification />
+          <Navbar />
+          <Component {...pageProps} />
+          <Message />
+        </div>
+        <Footer />
+      </AlertProvider>
     );
   }
 }
@@ -80,7 +71,7 @@ const styles = StyleSheet.create({
   pageWrapper: {
     width: "100%",
     minHeight: "100vh",
-    background: "#fff",
+    background: "#FAFAFA",
   },
 });
 
@@ -92,7 +83,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getCategories: HubActions.getCategories,
-  getHubs: HubActions.getHubs,
   getTopHubs: HubActions.getTopHubs,
   getUniversities: UniversityActions.getUniversities,
   getUserBannerPreference: AuthActions.getUserBannerPreference,

@@ -92,7 +92,11 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
     }
     if (url_is_pdf) {
       return (
-        <img src={"/static/icons/pdf.png"} className={css(styles.pdfIcon)} />
+        <img
+          src={"/static/icons/pdf.png"}
+          className={css(styles.pdfIcon)}
+          alt="PDF Icon"
+        />
       );
     } else {
       return (
@@ -110,6 +114,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
           <img
             className={css(styles.blankStateImg)}
             src={"/static/background/homepage-empty-state.png"}
+            alt="Empty State Background"
           />
           Add Paper
         </div>
@@ -215,6 +220,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
             src={"/static/icons/delete.png"}
             className={css(styles.deleteIcon)}
             onClick={onRemove ? onRemove : null}
+            alt="Close Button"
           />
         </Ripples>
       );

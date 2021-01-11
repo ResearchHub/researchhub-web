@@ -155,7 +155,7 @@ function PaperTab(props) {
     if (file) {
       return (
         <div className={css(styles.pdfFrame)}>
-          <iframe src={file} height={800} width={"100%"} />
+          <iframe src={file} height={800} width={"100%"} loading="lazy" />
         </div>
       );
     } else {
@@ -186,6 +186,7 @@ function PaperTab(props) {
               <img
                 className={css(styles.emptyPlaceholderImage)}
                 src={"/static/background/homepage-empty-state.png"}
+                alt="Empty State"
               />
               <div className={css(styles.emptyPlaceholderText)}>
                 This academic paper hasn't been uploaded yet

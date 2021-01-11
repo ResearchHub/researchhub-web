@@ -56,7 +56,11 @@ class AuthorCardList extends React.Component {
           }
         >
           {profile_image ? (
-            <img className={css(styles.avatar)} src={profile_image} />
+            <img
+              className={css(styles.avatar)}
+              src={profile_image}
+              alt="Author Avatar"
+            />
           ) : (
             <div className={css(styles.avatar, styles.default)}>
               <p className={css(styles.initials)}>
@@ -77,6 +81,7 @@ class AuthorCardList extends React.Component {
               e.stopPropagation();
               this.onRemove(id);
             }}
+            alt="Delete Icon"
           />
         </div>
       );

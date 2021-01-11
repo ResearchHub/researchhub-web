@@ -42,6 +42,7 @@ const Button = ({
             <img
               src={icon}
               className={css(styles.icon, iconStyle && iconStyle)}
+              alt="Button Icon"
             />
           )}
           <div
@@ -75,6 +76,7 @@ const Button = ({
             src={icon}
             className={css(styles.icon, customIconStyle && customIconStyle)}
             draggable={false}
+            alt="Button Icon"
           />
         )}
         <div

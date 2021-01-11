@@ -799,6 +799,7 @@ class PaperTransactionModal extends React.Component {
                   src={"/static/icons/coin-filled.png"}
                   draggable={false}
                   className={css(styles.coinIcon)}
+                  alt="RSC Coin"
                 />
               </div>
             </div>
@@ -910,6 +911,7 @@ class PaperTransactionModal extends React.Component {
                       src={"/static/icons/coin-filled.png"}
                       draggable={false}
                       className={css(styles.coinIcon)}
+                      alt="RSC Coin"
                     />
                   </div>
                 </div>

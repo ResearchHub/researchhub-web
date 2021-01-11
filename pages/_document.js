@@ -53,38 +53,41 @@ export default class MyDocument extends Document {
               })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`,
             }}
           />
+          {/* <!-- Appzi: Capture Insightful Feedback --> */}
+          {/* <script
+            src="https://app.appzi.io/bootstrap/bundle.js?token=ECg1v"
+            async
+          ></script> */}
+          {/* <!-- End Appzi --> */}
+          {/* Google one tap */}
+          <script src="https://accounts.google.com/gsi/client" async></script>
+          <script
+            key={"fontawesome-url"}
+            src="https://kit.fontawesome.com/f57f706c59.js"
+            crossOrigin="anonymous"
+            async
+          ></script>
+          <link rel="preconnect" href="https://fonts.gstatic.com/"></link>
+          <link
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+            rel="stylesheet"
+          />
           <link
             rel="apple-touch-icon"
             sizes="152x152"
             href="/static/favicons/apple-touch-icon.png"
-            preload
           />
-          {/* <!-- Appzi: Capture Insightful Feedback --> */}
-          <script
-            async
-            src="https://app.appzi.io/bootstrap/bundle.js?token=ECg1v"
-          ></script>
-          {/* <!-- End Appzi --> */}
-
-          {/* Google one tap */}
-          <script
-            src="https://accounts.google.com/gsi/client"
-            async
-            defer
-          ></script>
           <link
             rel="icon"
             type="image/png"
             sizes="32x32"
             href="/static/favicons/favicon-32x32.png"
-            preload
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
             href="/static/favicons/favicon-16x16.png"
-            preload
           />
           <link rel="manifest" href="/static/favicons/site.webmanifest" async />
           <meta name="msapplication-TileColor" content="#da532c" />
@@ -92,15 +95,6 @@ export default class MyDocument extends Document {
           <style
             data-aphrodite
             dangerouslySetInnerHTML={{ __html: this.props.css.content }}
-          />
-          <script
-            key={"fontawesome-url"}
-            src="https://kit.fontawesome.com/f57f706c59.js"
-            crossOrigin="anonymous"
-          ></script>
-          <link
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-            rel="stylesheet"
           />
           <CustomHead />
         </Head>

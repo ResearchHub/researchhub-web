@@ -41,10 +41,12 @@ const AuthorSupportModal = (props) => {
             <img
               className={css(iconStyles.rsc)}
               src={"/static/icons/coin-filled.png"}
+              alt="RSC Coin"
             />
             <img
               className={css(iconStyles.rscBanner)}
               src={"/static/ResearchHubText.png"}
+              alt="ResearchHub Text Logo"
             />
           </div>
         ),
@@ -251,6 +253,7 @@ const AuthorSupportModal = (props) => {
                 src={"/static/icons/coin-filled.png"}
                 draggable={false}
                 className={css(styles.coinIcon)}
+                alt="RSC Coin"
               />
             </div>
           </div>
@@ -297,6 +300,7 @@ const AuthorSupportModal = (props) => {
                   <img
                     className={css(styles.amountRSC)}
                     src={"/static/icons/coin-filled.png"}
+                    alt="RSC Coin"
                   />
                 </div>
               </div>

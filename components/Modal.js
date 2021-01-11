@@ -22,6 +22,7 @@ const ModalComponent = (props) => {
           src={"/static/icons/close.png"}
           className={css(styles.closeButton)}
           onClick={close}
+          alt={"Close Button"}
         />
         <div className={css(styles.titleContainer)}>
           <div className={css(styles.title, styles.text)}>{title}</div>

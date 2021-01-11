@@ -560,6 +560,7 @@ class PaperUploadInfo extends React.Component {
           className={css(styles.authorGuidelines)}
           href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
           target="_blank"
+          rel="noreferrer noopener"
         >
           Submission Guidelines
         </a>

@@ -436,6 +436,7 @@ class LiveFeedNotification extends React.Component {
             <img
               className={css(styles.coinIcon)}
               src={"/static/icons/coin-filled.png"}
+              alt="RSC Coin"
             />{" "}
             to{" "}
             <Link

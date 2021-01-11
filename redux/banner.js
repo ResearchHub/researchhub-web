@@ -32,6 +32,8 @@ const reportBanner = (params) => {
 export const BannerActions = {
   determineBanner: () => {
     return (dispatch) => {
+      if (!process.browser) return;
+
       let coinFlip = Math.random() >= 0.5; // 50% chance
       let uuid = localStorage.getItem("researchhub.uuid");
       if (!uuid) {

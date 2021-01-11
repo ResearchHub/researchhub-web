@@ -111,6 +111,7 @@ class DndModal extends React.Component {
           <img
             className={css(styles.uploadImage)}
             src={"/static/background/homepage-empty-state.png"}
+            alt="Drag N Drop Empty State"
           />
           <div className={css(styles.instructions)}>
             Drag & drop{"\n"}

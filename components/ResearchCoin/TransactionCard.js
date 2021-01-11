@@ -92,6 +92,7 @@ const TransactionCard = (props) => {
             className={css(styles.coin)}
             src={"/static/icons/coin-filled.png"}
             draggable={false}
+            alt="RSC Icon"
           />
         </div>
       </div>

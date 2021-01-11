@@ -68,6 +68,7 @@ class SignUpOverlay extends React.Component {
                 className={css(styles.closeButton)}
                 onClick={this.closeBanner}
                 draggable={false}
+                alt="Close Button"
               />
               <RHLogo iconStyle={styles.logo} />
               <div className={css(styles.title)}>Welcome to the community!</div>
@@ -77,6 +78,7 @@ class SignUpOverlay extends React.Component {
                   <img
                     className={css(styles.coinIcon)}
                     src={"/static/icons/coin-filled.png"}
+                    alt="Close Button"
                   />
                 </div>
                 <div className={css(styles.googleButton)}>

@@ -12,10 +12,15 @@ import { KeyUtils } from "slate";
 import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
+import { isMobile } from "react-device-detect";
+
+// FontAwesome SSR
+// import { config } from "@fortawesome/fontawesome-svg-core";
+// import "@fortawesome/fontawesome-svg-core/styles.css";
+// config.autoAddCss = false;
 
 // Components
 import Base from "./Base";
-import Head from "~/components/Head";
 import "./stylesheets/App.css";
 
 // Redux
@@ -93,6 +98,11 @@ class MyApp extends App {
 
   componentDidMount() {
     this.connectSift();
+    if (!isMobile) {
+      let scriptElem = document.createElement("script");
+      scriptElem.src = "https://app.appzi.io/bootstrap/bundle.js?token=ECg1v";
+      document.getElementsByTagName("head")[0].appendChild(scriptElem);
+    }
   }
 
   componentWillUnmount() {

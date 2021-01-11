@@ -80,6 +80,7 @@ class PaperPromotionBanner extends React.Component {
               className={css(styles.backgroundImage)}
               src={"/static/background/background-modal.png"}
               draggable={false}
+              alt="Researchhub Modal Backgroundd"
             />
             <div className={css(styles.contentContainer)}>
               <h3 className={css(styles.content)}>
