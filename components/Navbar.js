@@ -509,7 +509,7 @@ const Navbar = (props) => {
                     <Link href={"/user/settings"} as={`/user/settings`}>
                       <div className={css(styles.option)}>
                         <span className={css(styles.profileIcon)}>
-                          {icons.cogs}
+                          {icons.cog}
                         </span>
                         Settings
                       </div>
