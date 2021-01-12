@@ -99,11 +99,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
         />
       );
     } else {
-      return (
-        <div className={css(styles.bookIcon)}>
-          <i className="fad fa-book" />
-        </div>
-      );
+      return <div className={css(styles.bookIcon)}>{icons.book}</div>;
     }
   };
 
@@ -232,7 +228,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
             onClick={onRemove ? onRemove : null}
             // onClick={toggleEditState}
           >
-            <i className={"fas fa-pencil"} />
+            {icons.pencil}
           </div>
         </Ripples>
       );
@@ -281,9 +277,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     position: "relative",
     transition: "all ease-in-out 0.1s",
-    // ":hover": {
-    //   borderColor: "rgb(210, 210, 230)",
-    // },
   },
   blankState: {
     width: "100%",
@@ -300,7 +293,6 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     border: `1px dashed ${colors.BLUE(1)}`,
     borderColor: colors.BLUE(1),
-    // border: `0.5 dashed ${colors.BLUE(1)}`,
     backgroundColor: "#FFF",
   },
   blankStateImg: {

@@ -29,6 +29,7 @@ import { HubActions } from "~/redux/hub";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { getFragmentParameterByName } from "~/config/utils";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
@@ -529,16 +530,12 @@ class HubPage extends React.Component {
     if (this.state.subscribe) {
       let text = this.state.unsubscribeHover ? (
         this.state.subscribeClicked ? (
-          <span>
-            Subscribed <i className="fas fa-star" />
-          </span>
+          <span>Subscribed {icons.starFilled}</span>
         ) : (
           "Unsubscribe"
         )
       ) : (
-        <span>
-          Subscribed <i className="fas fa-star" />
-        </span>
+        <span>Subscribed {icons.starFilled}</span>
       );
       let hover = this.state.unsubscribeHover && !this.state.subscribeClicked;
       return (

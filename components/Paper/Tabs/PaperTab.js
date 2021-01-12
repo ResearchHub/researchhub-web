@@ -248,7 +248,7 @@ function PaperTab(props) {
           return (
             <Fragment>
               <span className={css(styles.downloadIcon)}>
-                <i className="far fa-arrow-to-bottom" />
+                {icons.arrowToBottom}
               </span>
               Download
             </Fragment>

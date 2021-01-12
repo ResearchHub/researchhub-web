@@ -364,9 +364,7 @@ class SummaryTab extends React.Component {
         loginRequired={true}
       >
         <div className={css(styles.action, styles.editAction)}>
-          <div className={css(styles.pencilIcon)}>
-            <i className="fas fa-pencil"></i>
-          </div>
+          <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
           {"Edit Abstract"}
         </div>
       </PermissionNotificationWrapper>
@@ -435,9 +433,7 @@ class SummaryTab extends React.Component {
         return (
           <div className={css(styles.centerColumn)}>
             <div className={css(styles.box) + " second-step"}>
-              <div className={css(styles.icon)}>
-                <i className="fad fa-file-alt" />
-              </div>
+              <div className={css(styles.icon)}>{icons.file}</div>
               <h2 className={css(styles.noSummaryTitle)}>
                 Add an abstract to this paper
               </h2>
@@ -504,9 +500,7 @@ class SummaryTab extends React.Component {
           hideRipples={true}
         >
           <div className={css(styles.box, styles.emptyStateSummary)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-file-alt" />
-            </div>
+            <div className={css(styles.icon)}>{icons.file}</div>
             <h2 className={css(styles.noSummaryTitle)}>
               Add a summary to this paper
             </h2>

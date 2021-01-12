@@ -815,13 +815,13 @@ class LiveFeedNotification extends React.Component {
         return icons.file;
       case "vote_comment":
       case "comment":
-        return <i className="fad fa-comment-alt-dots" />;
+        return icons.commentAltDots;
       case "reply":
       case "vote_reply":
-        return <i className="fad fa-comment-alt-dots" />;
+        return icons.commentAltDots;
       case "thread":
       case "vote_thread":
-        return <i className="fad fa-comment-alt-lines" />;
+        return icons.commentAltLines;
     }
   };
 

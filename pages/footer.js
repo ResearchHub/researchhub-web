@@ -1,9 +1,9 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 // NPM Modules
-import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import icons from "~/config/themes/icons";
 
 class Footer extends React.Component {
   tabData = [
@@ -79,7 +79,7 @@ class Footer extends React.Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <i className={css(styles.logo) + " fab fa-slack"}></i>
+                <span className={css(styles.logo)}>{icons.slack}</span>
               </div>
             </a>
             <a
@@ -89,7 +89,7 @@ class Footer extends React.Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <i className={css(styles.logo) + " fab fa-twitter"}></i>
+                <span className={css(styles.logo)}>{icons.twitter}</span>
               </div>
             </a>
             <a

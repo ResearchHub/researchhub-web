@@ -10,7 +10,6 @@ import FormTextArea from "~/components/Form/FormTextArea";
 import Button from "~/components/Form/Button";
 import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // redux
 import { LimitationsActions } from "~/redux/limitations";
@@ -20,7 +19,6 @@ import { MessageActions } from "~/redux/message";
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import EmptySummarySection from "./Summary/EmptySummary";
 
 const LIMITATIONS_COUNT = 5;
 
@@ -243,7 +241,7 @@ class LimitationTab extends React.Component {
           onClick={() => openManageBulletPointsModal(true, "limitations")}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            <i className="fal fa-tasks-alt" />
+            {icons.manage}
           </span>
           Manage
         </Ripples>

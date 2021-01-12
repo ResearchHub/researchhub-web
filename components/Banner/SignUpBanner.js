@@ -7,6 +7,7 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { BannerActions } from "~/redux/banner";
 
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 
@@ -137,7 +138,7 @@ class SignUpBanner extends React.Component {
                 className={css(styles.closeButton)}
                 onClick={this.closeBanner}
               >
-                <i className="fal fa-times" />
+                {icons.times}
               </div>
             </div>
           );
