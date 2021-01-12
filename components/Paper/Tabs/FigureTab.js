@@ -7,7 +7,6 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import { withAlert } from "react-alert";
-import { isMobile } from "react-device-detect";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -236,7 +235,7 @@ class FigureTab extends React.Component {
       return (
         <EmptyState
           text={"No Figures Found"}
-          icon={<i className="fad fa-image"></i>}
+          icon={icons.image}
           subtext={"No figures have been found in this paper's PDF"}
         />
       );
@@ -301,7 +300,7 @@ class FigureTab extends React.Component {
                 }
               >
                 <span className={css(styles.dropdownItemIcon)}>
-                  <i className="fal fa-minus-circle" />
+                  {icons.minusCircle}
                 </span>
                 Remove Figure
               </Ripples>

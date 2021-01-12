@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import Loader from "~/components/Loader/Loader";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
+import icons from "~/config/themes/icons";
 
 export default class PaperPdf extends React.Component {
   constructor(props) {
@@ -238,13 +239,13 @@ export default class PaperPdf extends React.Component {
                 className={css(styles.navigationButton)}
                 onClick={this.previousPage}
               >
-                <i className="far fa-angle-left" />
+                {icons.angleLeft}
               </div>
               <div
                 className={css(styles.navigationButton)}
                 onClick={this.nextPage}
               >
-                <i className="far fa-angle-right" />
+                {icons.angleRight}
               </div>
             </div>
           )}

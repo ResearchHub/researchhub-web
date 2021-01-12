@@ -2,13 +2,11 @@ import React, { Fragment, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { useAlert } from "react-alert";
-import Link from "next/link";
 
 // Component
 import BaseModal from "./BaseModal";
 import Button from "~/components/Form/Button";
 import OptionCard from "~/components/Payment/OptionCard";
-import { ScorePill } from "~/components/VoteWidget";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 // Redux
@@ -365,9 +363,7 @@ const AuthorSupportModal = (props) => {
         ) : (
           <div className={css(styles.mainHeader)}>
             Transaction Successful
-            <span className={css(styles.icon)}>
-              <i className="fal fa-check-circle" />
-            </span>
+            <span className={css(styles.icon)}>{icons.checkCircle}</span>
           </div>
         )
       }

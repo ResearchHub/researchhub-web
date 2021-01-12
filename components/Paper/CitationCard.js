@@ -15,6 +15,7 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 // Redux
 import { MessageActions } from "~/redux/message";
 import { formatPaperSlug } from "~/config/utils";
+import icons from "~/config/themes/icons";
 
 class CitationCard extends React.Component {
   constructor(props) {
@@ -101,7 +102,7 @@ class CitationCard extends React.Component {
                       hovered && carousel.show
                     )}
                   >
-                    <i className="far fa-angle-left" />
+                    {icons.angleLeft}
                   </span>
                   {`${currentSlide + 1} / ${slideCount}`}
                   <span
@@ -112,7 +113,7 @@ class CitationCard extends React.Component {
                       hovered && carousel.show
                     )}
                   >
-                    <i className="far fa-angle-right" />
+                    {icons.angleRight}
                   </span>
                 </div>
               );

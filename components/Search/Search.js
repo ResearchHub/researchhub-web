@@ -8,6 +8,7 @@ import HubSearchResult from "../HubSearchResult";
 import Loader from "~/components/Loader/Loader";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -235,12 +236,9 @@ export default class Search extends Component {
           onChange={this.onSearchChange}
           value={this.state.query}
         />
-        <i
-          className={
-            css(styles.searchIcon, this.props.searchIconClass) +
-            " far fa-search"
-          }
-        ></i>
+        <span className={css(styles.searchIcon, this.props.searchIconClass)}>
+          {icons.search}
+        </span>
         {this.state.showDropdown && (
           <div
             className={css(styles.searchDropdown, this.props.dropdownClass)}

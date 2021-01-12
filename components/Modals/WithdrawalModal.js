@@ -226,11 +226,7 @@ class WithdrawalModal extends React.Component {
                       !ethAccountIsValid && styles.errorIcon
                     )}
                   >
-                    {ethAccountIsValid ? (
-                      <i className="fal fa-check-circle" />
-                    ) : (
-                      <i className="fal fa-times-circle" />
-                    )}
+                    {ethAccountIsValid ? icons.checkCircle : icons.timesCircle}
                   </span>
                 )
               ) : null
@@ -625,9 +621,7 @@ class WithdrawalModal extends React.Component {
               <div className={css(styles.left)}>
                 <div className={css(styles.mainHeader)}>
                   Withdrawal Successful
-                  <span className={css(styles.icon)}>
-                    <i className="fal fa-check-circle" />
-                  </span>
+                  <span className={css(styles.icon)}>{icons.checkCircle}</span>
                 </div>
                 <div
                   className={css(styles.confirmation)}
@@ -750,13 +744,13 @@ class WithdrawalModal extends React.Component {
       <div className={css(styles.overlay)} onClick={this.closeModal}>
         <div className={css(styles.bannerContainer)}>
           <div className={css(styles.overlayButtonContainer)}>
-            <i
-              className={
-                css(styles.closeButton, styles.overlayButton) + " fal fa-times"
-              }
+            <span
+              className={css(styles.closeButton, styles.overlayButton)}
               onClick={this.closeModal}
               draggable={false}
-            />
+            >
+              {icons.times}
+            </span>
           </div>
           <p className={css(styles.banner)}>
             Withdrawals will resume again on Sept. 1st.

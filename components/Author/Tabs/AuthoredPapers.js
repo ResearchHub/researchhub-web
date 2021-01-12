@@ -8,6 +8,7 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import Loader from "../../Loader/Loader";
 import { AuthorActions } from "../../../redux/author";
@@ -118,9 +119,7 @@ class AuthoredPapersTab extends React.Component {
           </div>
         ) : (
           <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-file-alt" />
-            </div>
+            <div className={css(styles.icon)}>{icons.file}</div>
             <h2 className={css(styles.noContent)}>
               User has not authored any papers
             </h2>

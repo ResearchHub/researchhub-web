@@ -91,9 +91,7 @@ class UserTransaction extends React.Component {
           })
         ) : (
           <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-receipt" />
-            </div>
+            <div className={css(styles.icon)}>{icons.receipt}</div>
             <h2 className={css(styles.noContent)}>
               User has not created any transactions
             </h2>

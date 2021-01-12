@@ -21,6 +21,7 @@ import "./stylesheets/iFrame.css";
 
 // Scaffold
 import summaryScaffold from "./summaryScaffold.json";
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import Diff from "diff";
 import { convertEditorValueToHtml } from "~/config/utils";
@@ -757,10 +758,12 @@ class RichTextEditor extends React.Component {
               )}
               {!this.props.readOnly && (
                 <div className={css(styles.imageOverlay, styles.smallOverlay)}>
-                  <i
-                    className={css(styles.deleteImage) + " fal fa-times"}
+                  <span
+                    className={css(styles.deleteImage)}
                     onClick={() => this.deleteImage(node)}
-                  ></i>
+                  >
+                    {icons.times}
+                  </span>
                 </div>
               )}
             </div>
@@ -777,10 +780,12 @@ class RichTextEditor extends React.Component {
               />
               {!this.props.readOnly && (
                 <div className={css(styles.imageOverlay)}>
-                  <i
-                    className={css(styles.deleteImage) + " fal fa-times"}
+                  <span
+                    className={css(styles.deleteImage)}
                     onClick={() => this.deleteImage(node)}
-                  ></i>
+                  >
+                    {icons.times}
+                  </span>
                 </div>
               )}
             </div>

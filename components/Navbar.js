@@ -536,7 +536,7 @@ const Navbar = (props) => {
                     >
                       <div className={css(styles.option)}>
                         <span className={css(styles.profileIcon)}>
-                          {icons.asterick}
+                          {icons.asterisk}
                         </span>
                         Refer a Friend
                       </div>
