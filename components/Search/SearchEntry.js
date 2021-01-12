@@ -206,12 +206,9 @@ class SearchEntry extends React.Component {
                 alt="Author Avatar"
               />
             ) : (
-              <i
-                className={
-                  css(styles.avatar, styles.defaultAvatar) +
-                  " fas fa-user-circle"
-                }
-              />
+              <span className={css(styles.avatar, styles.defaultAvatar)}>
+                {icons.user}
+              </span>
             )}
           </div>
         );

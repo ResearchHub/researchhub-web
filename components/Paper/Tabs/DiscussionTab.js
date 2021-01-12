@@ -27,8 +27,9 @@ import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
-import { doesNotExist, endsWithSlash } from "~/config/utils";
+import { endsWithSlash } from "~/config/utils";
 import { sendAmpEvent } from "~/config/fetch";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -148,7 +149,7 @@ const DiscussionTab = (props) => {
           return (
             <span className={css(styles.box, styles.emptyStateBox)}>
               <span className={css(styles.icon, styles.twitterIcon)}>
-                <i className="fab fa-twitter" />
+                {icons.twitter}
               </span>
               <h2 className={css(styles.noSummaryTitle)}>
                 There are no tweets {mobileView && "\n"}for this paper yet.
@@ -295,9 +296,7 @@ const DiscussionTab = (props) => {
       >
         {threads.length < 1 && (
           <Fragment>
-            <span className={css(styles.icon)}>
-              <i className="fad fa-comments" />
-            </span>
+            <span className={css(styles.icon)}>{icons.comments}</span>
             <h2 className={css(styles.noSummaryTitle)}>
               Add a comment to this paper
             </h2>

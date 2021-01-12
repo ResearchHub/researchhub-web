@@ -727,9 +727,7 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column)}>
               <div className={css(styles.mainHeader)}>
                 Transaction Successful
-                <span className={css(styles.icon)}>
-                  <i className="fal fa-check-circle" />
-                </span>
+                <span className={css(styles.icon)}>icons.checkCircle</span>
               </div>
               {!offChain && (
                 <div className={css(styles.confirmation)}>
@@ -886,11 +884,9 @@ class PaperTransactionModal extends React.Component {
                           !ethAccountIsValid && styles.errorIcon
                         )}
                       >
-                        {ethAccountIsValid ? (
-                          <i className="fal fa-check-circle" />
-                        ) : (
-                          <i className="fal fa-times-circle" />
-                        )}
+                        {ethAccountIsValid
+                          ? icons.checkCircle
+                          : icons.timesCircle}
                       </span>
                     )
                   ) : null

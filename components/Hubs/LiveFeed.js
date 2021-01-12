@@ -11,6 +11,7 @@ import FormSelect from "~/components/Form/FormSelect";
 import Head from "~/components/Head";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -307,12 +308,9 @@ class LiveFeed extends React.Component {
                     ref={(ref) => (this.liveButton = ref)}
                     id={"syntheticClick"}
                   ></div>
-                  <i
-                    className={
-                      css(styles.toggleIcon) +
-                      ` ${this.state.liveMode ? "fas fa-stop" : "fas fa-play"}`
-                    }
-                  />
+                  <span className={css(styles.toggleIcon)}>
+                    {this.state.liveMode ? icons.stop : icons.play}
+                  </span>
                   Live Update
                 </Ripples>
                 <div className={css(styles.filterContainer)}>

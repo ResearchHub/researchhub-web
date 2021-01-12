@@ -44,7 +44,7 @@ const EducationSummaryCard = (props) => {
         onClick={() => onActive && onActive(index)}
       >
         {value.is_public && (
-          <i className={css(styles.checkIcon) + " far fa-check"} />
+          <span className={css(styles.checkIcon)}>{icons.check}</span>
         )}
       </div>
     </div>
