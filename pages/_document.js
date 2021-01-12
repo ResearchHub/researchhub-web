@@ -40,6 +40,40 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          {/* Google one tap */}
+          <link rel="preconnect" href="https://fonts.gstatic.com/"></link>
+          <link
+            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+            rel="stylesheet"
+            preload
+          />
+          <link
+            rel="apple-touch-icon"
+            sizes="152x152"
+            href="/static/favicons/apple-touch-icon.png"
+            preload
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/static/favicons/favicon-32x32.png"
+            preload
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/static/favicons/favicon-16x16.png"
+            preload
+          />
+          <link rel="manifest" href="/static/favicons/site.webmanifest" async />
+          <meta name="msapplication-TileColor" content="#da532c" />
+          <meta name="theme-color" content="#ffffff" />
+          <style
+            data-aphrodite
+            dangerouslySetInnerHTML={{ __html: this.props.css.content }}
+          />
           <script
             dangerouslySetInnerHTML={{
               __html: `
@@ -52,36 +86,6 @@ export default class MyDocument extends Document {
                   a.appendChild(r);
               })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`,
             }}
-          />
-          {/* Google one tap */}
-          <link rel="preconnect" href="https://fonts.gstatic.com/"></link>
-          <link
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-            rel="stylesheet"
-          />
-          <link
-            rel="apple-touch-icon"
-            sizes="152x152"
-            href="/static/favicons/apple-touch-icon.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="/static/favicons/favicon-32x32.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="/static/favicons/favicon-16x16.png"
-          />
-          <link rel="manifest" href="/static/favicons/site.webmanifest" async />
-          <meta name="msapplication-TileColor" content="#da532c" />
-          <meta name="theme-color" content="#ffffff" />
-          <style
-            data-aphrodite
-            dangerouslySetInnerHTML={{ __html: this.props.css.content }}
           />
           <script src="https://accounts.google.com/gsi/client" async></script>
           <CustomHead />
