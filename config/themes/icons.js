@@ -55,7 +55,6 @@ import {
   faH1,
   faH2,
   faImagePolaroid,
-  faLink,
   faListUl,
   faListOl,
   faMousePointer,
