@@ -233,7 +233,6 @@ class HubPage extends React.Component {
       paper_ids: promotedPapers,
       paper_is_boosted: true,
       interaction: "VIEW",
-      utc: new Date(),
       created_location: "FEED",
       created_location_meta: "trending",
     };
