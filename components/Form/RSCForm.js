@@ -1,13 +1,11 @@
 import React from "react";
-import { useStore, useDispatch } from "react-redux";
+import { useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
 import AuthorAvatar from "~/components/AuthorAvatar";
 import "~/components/stylesheets/RSCForm.css";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import {
   onKeyDownNumInput,
@@ -16,6 +14,7 @@ import {
 } from "~/config/utils";
 
 const AmountInput = (props) => {
+  const { placeholder, required } = props;
   const store = useStore();
 
   return (
@@ -27,7 +26,7 @@ const AmountInput = (props) => {
     >
       <span className={css(styles.label)}>
         Amount
-        <span className={css(styles.asterick)}>*</span>
+        {required && <span className={css(styles.asterick)}>*</span>}
       </span>
       <div
         className={css(
@@ -52,6 +51,8 @@ const AmountInput = (props) => {
           onChange={props.onChange}
           onKeyDown={onKeyDownNumInput}
           onPaste={onPasteNumInput}
+          placeholder={placeholder && placeholder}
+          required={required && required}
         />
         {!props.rightAlignBalance && (
           <img
@@ -86,8 +87,14 @@ const AmountInput = (props) => {
 
 const RecipientInput = (props) => {
   if (!props.author) return null;
+  const { RSCBalance, author } = props;
+  const { first_name, last_name } = author;
 
-  const { first_name, last_name } = props.author;
+  const renderLabel = () => {
+    const label = props.label ? props.label : "Recipient";
+
+    return <span className={css(styles.label)}>{label}</span>;
+  };
 
   return (
     <div
@@ -96,7 +103,7 @@ const RecipientInput = (props) => {
         props.containerStyles && props.containerStyles
       )}
     >
-      <span className={css(styles.label)}>Recipient</span>
+      {renderLabel()}
       <div
         className={css(
           styles.recipientCard,
@@ -137,7 +144,7 @@ const styles = StyleSheet.create({
   input: {
     height: 55,
     width: 100,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     padding: "5px 5px 5px 10px",
     boxSizing: "border-box",
