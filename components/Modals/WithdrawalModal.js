@@ -2,8 +2,7 @@ import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import { keccak256, sha3_256 } from "js-sha3";
-import { ethers } from "ethers";
+
 import Link from "next/link";
 
 // Component
@@ -11,6 +10,7 @@ import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
 import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
+import { AmountInput, RecipientInput } from "../Form/RSCForm";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -29,6 +29,8 @@ import {
   onKeyDownNumInput,
   onPasteNumInput,
   formatBalance,
+  isAddress,
+  toCheckSumAddress,
 } from "~/config/utils";
 
 const RINKEBY_CHAIN_ID = "4";
@@ -54,12 +56,12 @@ class WithdrawalModal extends React.Component {
       listenerNetwork: null,
       listenerAccount: null,
       userBalance: 0,
-      withdrawals: [],
       validating: false,
       transactionHash: "",
       // error for withdrawal input
       error: false,
       amount: 0,
+      transactionFee: null,
     };
     this.state = {
       ...this.initialState,
@@ -69,6 +71,7 @@ class WithdrawalModal extends React.Component {
   componentDidMount() {
     if (this.props.auth.isLoggedIn) {
       this.getBalance();
+      this.getTransactionFee();
     }
   }
 
@@ -85,15 +88,28 @@ class WithdrawalModal extends React.Component {
         this.props.modals.openWithdrawalModal
       ) {
         this.getBalance();
+        !this.state.transactionFee && this.getTransactionFee();
       }
       if (
         prevProps.auth.user.balance !== this.props.auth.user.balance ||
         this.state.userBalance === null
       ) {
         this.getBalance();
+        !this.state.transactionFee && this.getTransactionFee();
       }
     }
   }
+
+  getTransactionFee = () => {
+    fetch(API.WITHDRAWAL_FEE, API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(
+        (res) =>
+          !this.state.transactionFee !== res &&
+          this.setState({ transactionFee: res })
+      );
+  };
 
   checkNetwork = () => {
     let that = this;
@@ -143,7 +159,7 @@ class WithdrawalModal extends React.Component {
               this.setState({
                 transition: false,
               });
-            }, 400);
+            }, 200);
         }
       );
     }
@@ -151,7 +167,7 @@ class WithdrawalModal extends React.Component {
 
   updateAccount = (accounts) => {
     let account = accounts && accounts[0] && accounts[0];
-    let valid = this.isAddress(account);
+    let valid = isAddress(account);
     this.setState({
       ethAccount: account,
       ethAccountIsValid: valid,
@@ -198,45 +214,28 @@ class WithdrawalModal extends React.Component {
   };
 
   renderRow = (left, right) => {
-    let { ethAccount, validating, ethAccountIsValid } = this.state;
     return (
-      <div className={css(styles.row)}>
-        <div className={css(styles.left, styles.spacedContent)}>
-          <div>
-            {left.text}
-            <span className={css(styles.infoIcon)} data-tip={left.tooltip}>
-              {icons["info-circle"]}
-              <ReactTooltip />
-            </span>
-          </div>
-          <FormInput
-            value={right.value && right.value}
-            containerStyle={styles.formInput}
-            onChange={right.onChange && right.onChange}
-            inlineNodeRight={
-              ethAccount !== "" ? (
-                validating ? (
-                  <span className={css(styles.successIcon)}>
-                    <Loader loading={true} size={23} />
-                  </span>
-                ) : (
-                  <span
-                    className={css(
-                      styles.successIcon,
-                      !ethAccountIsValid && styles.errorIcon
-                    )}
-                  >
-                    {ethAccountIsValid ? (
-                      <i className="fal fa-check-circle" />
-                    ) : (
-                      <i className="fal fa-times-circle" />
-                    )}
-                  </span>
-                )
-              ) : null
-            }
-          />
+      <div className={css(styles.label, styles.spacedContent)}>
+        <div style={{ marginBottom: 10 }}>
+          {left.text}
+          <span className={css(styles.infoIcon)} data-tip={left.tooltip}>
+            {icons["info-circle"]}
+            <ReactTooltip />
+          </span>
         </div>
+        {!right.value && (
+          <span className={css(styles.placeholderIcon)}>
+            <i class="far fa-wallet" />
+          </span>
+        )}
+        <FormInput
+          required={true}
+          value={right.value}
+          containerStyle={styles.formInput}
+          onChange={right.onChange && right.onChange}
+          placeholder={"         Recipient ETH Address"}
+        />
+        {this.renderConnectionStatus()}
       </div>
     );
   };
@@ -252,14 +251,11 @@ class WithdrawalModal extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let param = {
+        const param = {
           balance: res.user.balance,
         };
         this.props.updateUser(param);
-        this.setState({
-          userBalance: res.user.balance,
-          withdrawals: [...res.results],
-        });
+        this.setState({ userBalance: res.user.balance });
       })
       .catch((err) => {
         //Todo: handle error
@@ -267,60 +263,72 @@ class WithdrawalModal extends React.Component {
   };
 
   handleNetworkAddressInput = (id, value) => {
-    this.setState(
-      {
-        ethAccount: value,
-        validating: true,
-      },
-      () => {
-        setTimeout(() => {
-          this.setState({
-            validating: false,
-            ethAccountIsValid: this.isAddress(value),
-          });
-        }, 400);
-      }
-    );
+    const validETHAddress = isAddress(value);
+    let nextState = {
+      ethAccount: value,
+      ethAccountIsValid: validETHAddress,
+    };
+
+    if (!validETHAddress) {
+      nextState = {
+        ...nextState,
+        connectedMetaMask: false,
+        connectedWalletLink: false,
+        networkVersion: ethereum.networkVersion,
+        metaMaskVisible: false,
+        walletLinkVisible: false,
+      };
+    }
+
+    this.setState({ ...nextState });
   };
 
   sendWithdrawalRequest = (e) => {
-    const { showMessage, setMessage } = this.props;
+    e.stopPropagation();
+    e.preventDefault();
 
-    if (!this.state.buttonEnabled) {
+    const { showMessage, setMessage } = this.props;
+    const {
+      buttonEnabled,
+      amount,
+      transactionFee,
+      userBalance,
+      ethAccount,
+    } = this.state;
+
+    if (!buttonEnabled) {
       showMessage({ show: false });
       setMessage("Please agree to the ResearchHub ToS.");
       showMessage({ show: true, error: true });
       return;
     }
 
-    if (this.state.amount < 100) {
+    if (amount < 100) {
       showMessage({ show: false });
       setMessage("Withdrawal amount must be at least 100 RSC");
       showMessage({ show: true, error: true });
       return;
     }
 
-    if (this.state.amount > this.state.userBalance) {
+    if (amount > userBalance) {
       showMessage({ show: false });
       setMessage("Not enough coins in balance");
       showMessage({ show: true, error: true });
       return;
     }
-
-    e.stopPropagation();
-    let { ethAccount } = this.state;
     showMessage({ load: true, show: true });
-    if (this.isAddress(ethAccount)) {
-      let param = {
-        to_address: this.toCheckSumAddress(ethAccount),
+    if (isAddress(ethAccount)) {
+      const param = {
+        to_address: toCheckSumAddress(ethAccount),
         agreed_to_terms: true,
-        amount: `${this.state.amount}`,
+        amount: `${amount}`,
+        transaction_fee: transactionFee,
       };
       fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let { id, paid_status, transaction_hash } = res;
+          const { id, paid_status, transaction_hash } = res;
           if (paid_status === "failed") {
             showMessage({ show: false });
             setMessage(
@@ -354,71 +362,6 @@ class WithdrawalModal extends React.Component {
     }
   };
 
-  toCheckSumAddress = (address) => {
-    address = address.toLowerCase().replace("0x", "");
-    let hash = keccak256(address);
-    let ret = "0x";
-
-    for (var i = 0; i < address.length; i++) {
-      if (parseInt(hash[i], 16) >= 8) {
-        ret += address[i].toUpperCase();
-      } else {
-        ret += address[i];
-      }
-    }
-
-    return ret;
-  };
-
-  /**
-   * Checks if the given string is an address
-   *
-   * @method isAddress
-   * @param {String} address the given HEX adress
-   * @return {Boolean}
-   */
-  isAddress = (address) => {
-    if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
-      // check if it has the basic requirements of an address
-      return false;
-    } else if (
-      /^(0x)?[0-9a-f]{40}$/.test(address) ||
-      /^(0x)?[0-9A-F]{40}$/.test(address)
-    ) {
-      // If it's all small caps or all all caps, return true
-      return true;
-    } else {
-      return true;
-      // Otherwise check each case
-      // return this.isChecksumAddress(address);
-    }
-  };
-
-  /**
-   * Checks if the given string is a checksummed address
-   *
-   * @method isChecksumAddress
-   * @param {String} address the given HEX adress
-   * @return {Boolean}
-   */
-  isChecksumAddress = (address) => {
-    // Check each case
-    address = address.replace("0x", "");
-    var addressHash = sha3_256(address.toLowerCase());
-    for (var i = 0; i < 40; i++) {
-      // the nth letter should be uppercase if the nth digit of casemap is 1
-      if (
-        (parseInt(addressHash[i], 16) > 7 &&
-          address[i].toUpperCase() !== address[i]) ||
-        (parseInt(addressHash[i], 16) <= 7 &&
-          address[i].toLowerCase() !== address[i])
-      ) {
-        return false;
-      }
-    }
-    return true;
-  };
-
   renderToggleContainer = (className) => {
     return (
       <div className={className}>
@@ -441,7 +384,6 @@ class WithdrawalModal extends React.Component {
           }
           this.transitionScreen(() =>
             this.setState({
-              nextScreen: true,
               offChain: false,
               metaMaskVisible: true,
               walletLinkVisible: false,
@@ -464,7 +406,7 @@ class WithdrawalModal extends React.Component {
         connectedWalletLink: false,
         ethAccount: account,
         networkVersion: ethereum.networkVersion,
-        ethAccountIsValid: this.isAddress(account),
+        ethAccountIsValid: isAddress(account),
       });
     } else {
       console.log("Failed to connect MetaMask");
@@ -498,7 +440,6 @@ class WithdrawalModal extends React.Component {
           }
           this.transitionScreen(() => {
             this.setState({
-              nextScreen: true,
               walletLinkVisible: true,
               connectedMetaMask: false,
               metaMaskVisible: false,
@@ -527,7 +468,7 @@ class WithdrawalModal extends React.Component {
         connectedMetaMask: false,
         connectedWalletLink: connected,
         ethAccount: account,
-        ethAccountIsValid: this.isAddress(account),
+        ethAccountIsValid: isAddress(account),
       });
     } else {
       console.log("Failed to connect WalletLink");
@@ -559,7 +500,7 @@ class WithdrawalModal extends React.Component {
             this.setState({ error: this.handleError(this.state.value) });
           }
         });
-      }, 300);
+      }, 200);
     });
   };
 
@@ -579,8 +520,7 @@ class WithdrawalModal extends React.Component {
   };
 
   renderSwitchNetworkMsg = () => {
-    // TODO: For now let's just tell them to use rinkeby
-    let { transition } = this.state;
+    const { transition } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
         {transition ? (
@@ -607,7 +547,7 @@ class WithdrawalModal extends React.Component {
   };
 
   renderTransactionScreen = () => {
-    let {
+    const {
       transition,
       userBalance,
       ethAccount,
@@ -615,173 +555,288 @@ class WithdrawalModal extends React.Component {
       error,
       amount,
     } = this.state;
-    return (
-      <div className={css(styles.networkContainer)}>
-        {transition ? (
-          <Loader loading={true} />
-        ) : transactionHash ? (
-          <Fragment>
-            <div className={css(styles.row, styles.top)}>
-              <div className={css(styles.left)}>
-                <div className={css(styles.mainHeader)}>
-                  Withdrawal Successful
-                  <span className={css(styles.icon)}>
-                    <i className="fal fa-check-circle" />
-                  </span>
-                </div>
-                <div
-                  className={css(styles.confirmation)}
-                  onClick={this.closeModal}
+
+    if (transition) {
+      return <Loader loading={true} />;
+    }
+
+    if (transactionHash) {
+      return (
+        <div className={css(styles.networkContainer)}>
+          <div className={css(styles.row, styles.top)}>
+            <div className={css(styles.left)}>
+              <div className={css(styles.mainHeader)}>
+                Withdrawal Successful
+                <span className={css(styles.icon)}>
+                  <i className="fal fa-check-circle" />
+                </span>
+              </div>
+              <div
+                className={css(styles.confirmation)}
+                onClick={this.closeModal}
+              >
+                Review your transactions in your
+                <Link
+                  href={"/user/[authorId]/[tabName]"}
+                  as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
                 >
-                  Review your transactions in your
-                  <Link
+                  <a
                     href={"/user/[authorId]/[tabName]"}
                     as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+                    className={css(styles.transactionHashLink)}
                   >
-                    <a
-                      href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
-                      className={css(styles.transactionHashLink)}
-                    >
-                      profile page
-                    </a>
-                  </Link>
-                </div>
+                    profile page
+                  </a>
+                </Link>
               </div>
             </div>
-            <div className={css(styles.buttons, styles.confirmationButtons)}>
-              <Button
-                label={"Finish"}
-                onClick={this.closeModal}
-                customButtonStyle={styles.button}
-              />
-            </div>
-          </Fragment>
-        ) : (
-          <Fragment>
-            <div className={css(styles.row, styles.top)}>
-              <div className={css(styles.left)}>
-                <div className={css(styles.mainHeader)}>Total Balance</div>
-                <div className={css(styles.subtitle, styles.noMargin)}>
-                  Your current total balance in ResearchCoin
-                </div>
-              </div>
-              <div className={css(styles.right)}>
-                <div className={css(styles.userBalance)}>
-                  {formatBalance(userBalance)}
-                  <img
-                    className={css(styles.coin)}
-                    src={"/static/icons/coin-filled.png"}
-                    draggable={false}
-                    alt="RSC Coin"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className={css(styles.row, styles.numbers)}>
-              <div className={css(styles.left)}>
-                <div className={css(styles.mainHeader)}>Withdrawal Amount</div>
-                <div className={css(styles.subtitle, styles.noMargin)}>
-                  Select the withdrawal amount (min. 100 RSC)
-                </div>
-              </div>
-              <div className={css(styles.right)}>
-                <input
-                  type="number"
-                  className={css(styles.amountInput, error && styles.error)}
-                  value={amount}
-                  onChange={this.handleAmountInput}
-                  min={"0"}
-                  max={userBalance}
-                  onKeyDown={onKeyDownNumInput}
-                  onPaste={onPasteNumInput}
-                />
-              </div>
-            </div>
-            {this.renderRow(
-              {
-                text: "Recipient ETH Address",
-                tooltip: "The address of your ETH Account (ex. 0x0000...)",
-                onClick: "",
-              },
-              {
-                value: ethAccount,
-                onChange: this.handleNetworkAddressInput,
-              }
-            )}
-            {!this.props.agreedToTerms && (
-              <div className={css(styles.checkBoxContainer)}>
-                <CheckBox
-                  id={"tos"}
-                  active={this.state.buttonEnabled}
-                  isSquare={true}
-                  label={
-                    <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>
-                      I agree to the ResearchHub{" "}
-                      <a
-                        href={"/about/tos"}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        Terms of Service.
-                      </a>
-                    </span>
-                  }
-                  onChange={this.toggleButton}
-                />
-              </div>
-            )}
-            <div className={css(styles.buttons)}>
-              <Button
-                disabled={!this.state.buttonEnabled || !ethAccount}
-                label={"Confirm"}
-                onClick={this.sendWithdrawalRequest}
-                customButtonStyle={styles.button}
-              />
-            </div>
-          </Fragment>
-        )}
-      </div>
-    );
-  };
-
-  renderOverlay = () => {
-    return (
-      <div className={css(styles.overlay)} onClick={this.closeModal}>
-        <div className={css(styles.bannerContainer)}>
-          <div className={css(styles.overlayButtonContainer)}>
-            <i
-              className={
-                css(styles.closeButton, styles.overlayButton) + " fal fa-times"
-              }
+          </div>
+          <div className={css(styles.buttons, styles.confirmationButtons)}>
+            <Button
+              label={"Finish"}
               onClick={this.closeModal}
-              draggable={false}
+              customButtonStyle={styles.button}
             />
           </div>
-          <p className={css(styles.banner)}>
-            Withdrawals will resume again on Sept. 1st.
-          </p>
+        </div>
+      );
+    }
+
+    return this.renderScreen();
+
+    return (
+      <div className={css(styles.networkContainer)}>
+        <div className={css(styles.row, styles.top)}>
+          <div className={css(styles.left)}>
+            <div className={css(styles.mainHeader)}>Total Balance</div>
+            <div className={css(styles.subtitle, styles.noMargin)}>
+              Your current total balance in ResearchCoin
+            </div>
+          </div>
+          <div className={css(styles.right)}>
+            <div className={css(styles.userBalance)}>
+              {formatBalance(userBalance)}
+              <img
+                className={css(styles.coin)}
+                src={"/static/icons/coin-filled.png"}
+                draggable={false}
+                alt="RSC Coin"
+              />
+            </div>
+          </div>
+        </div>
+        <div className={css(styles.row, styles.numbers)}>
+          <div className={css(styles.left)}>
+            <div className={css(styles.mainHeader)}>Withdrawal Amount</div>
+            <div className={css(styles.subtitle, styles.noMargin)}>
+              Select the withdrawal amount (min. 100 RSC)
+            </div>
+          </div>
+          <div className={css(styles.right)}>
+            <input
+              type="number"
+              className={css(styles.amountInput, error && styles.error)}
+              value={amount}
+              onChange={this.handleAmountInput}
+              min={"0"}
+              max={userBalance}
+              onKeyDown={onKeyDownNumInput}
+              onPaste={onPasteNumInput}
+            />
+          </div>
+        </div>
+        <div className={css(styles.row, styles.numbers)}>
+          <div className={css(styles.left)}>
+            <div className={css(styles.mainHeader)}>Transaction Speed</div>
+            <div className={css(styles.subtitle, styles.noMargin)}>
+              Select the speed for transaction (GWEI)
+            </div>
+          </div>
+          <div className={css(styles.right)}>{this.renderGasPrice()}</div>
+        </div>
+        {this.renderRow(
+          {
+            text: "Recipient ETH Address",
+            tooltip: "The address of your ETH Account (ex. 0x0000...)",
+            onClick: "",
+          },
+          {
+            value: ethAccount,
+            onChange: this.handleNetworkAddressInput,
+          }
+        )}
+        {!this.props.agreedToTerms && (
+          <div className={css(styles.checkBoxContainer)}>
+            <CheckBox
+              id={"tos"}
+              active={this.state.buttonEnabled}
+              isSquare={true}
+              label={
+                <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>
+                  I agree to the ResearchHub{" "}
+                  <a
+                    href={"/about/tos"}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    Terms of Service.
+                  </a>
+                </span>
+              }
+              onChange={this.toggleButton}
+            />
+          </div>
+        )}
+        <div className={css(styles.buttons)}>
+          <Button
+            disabled={!this.state.buttonEnabled || !ethAccount}
+            label={"Confirm"}
+            onClick={this.sendWithdrawalRequest}
+            customButtonStyle={styles.button}
+          />
         </div>
       </div>
     );
   };
 
+  renderConnectionStatus = () => {
+    const {
+      ethAccount,
+      connectedWalletLink,
+      connectedMetaMask,
+      ethAccountIsValid,
+    } = this.state;
+
+    if (ethAccount && !ethAccountIsValid) {
+      return (
+        <div className={css(styles.connectStatus)}>
+          <div className={css(styles.dot, styles.invalidAddress)} />
+          <span className={css(styles.red)}>Invalid ETH address</span>
+        </div>
+      );
+    }
+
+    if (!connectedMetaMask && ethAccountIsValid) {
+      return (
+        <div className={css(styles.connectStatus)}>
+          <div className={css(styles.dot, styles.connected)} />
+          <span className={css(styles.green)}>Valid ETH address</span>
+        </div>
+      );
+    }
+
+    if (connectedWalletLink) {
+      return (
+        <div className={css(styles.connectStatus)}>
+          <div
+            className={css(styles.dot, connectedWalletLink && styles.connected)}
+          />
+          <span className={css(styles.green)}>Connected to WalletLink</span>
+        </div>
+      );
+    }
+
+    if (connectedMetaMask) {
+      return (
+        <div className={css(styles.connectStatus)}>
+          <div
+            className={css(styles.dot, connectedMetaMask && styles.connected)}
+          />
+          <span className={css(styles.green)}>Connected to MetaMask</span>
+        </div>
+      );
+    }
+  };
+
+  renderScreen = () => {
+    const { ethAccount, amount, transactionFee } = this.state;
+
+    return (
+      <form
+        className={css(styles.networkContainer)}
+        onSubmit={this.sendWithdrawalRequest}
+      >
+        <RecipientInput
+          containerStyles={styles.fullWidth}
+          cardStyles={styles.fullWidth}
+          author={this.props.auth.user.author_profile}
+          label={"From"}
+        />
+        {this.renderRow(
+          {
+            text: "To",
+            tooltip: "The address of your ETH Account (ex. 0x0000...)",
+          },
+          {
+            value: ethAccount,
+            onChange: this.handleNetworkAddressInput,
+          }
+        )}
+        <AmountInput
+          rightAlignBalance={true}
+          containerStyles={styles.amountInputStyles}
+          inputContainerStyles={styles.fullWidth}
+          inputStyles={[styles.fullWidth]}
+          placeholder={"Enter the withdrawal amount (min. 100 RSC)"}
+          required={true}
+          minValue={100}
+          value={amount}
+          onChange={this.handleAmountInput}
+        />
+        <div className={css(styles.row)}>
+          <div className={css(styles.left)}>
+            <div className={css(styles.mainHeader)}>Network Fee</div>
+            <a
+              href={"https://ethereum.org/en/developers/docs/gas/"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={css(styles.description, styles.link)}
+            >
+              Learn more about fees.
+            </a>
+          </div>
+          <div className={css(styles.right)}>
+            {formatBalance(transactionFee)}
+          </div>
+        </div>
+        <div className={css(styles.row)}>
+          <div className={css(styles.left)}>
+            <div className={css(styles.mainHeader)}>Total</div>
+            <div className={css(styles.description)}>
+              The total RSC transferred after fees.
+            </div>
+          </div>
+          <div className={css(styles.right)}>
+            {formatBalance(amount - transactionFee)}
+          </div>
+        </div>
+        <div className={css(styles.buttons)}>
+          <Button
+            disabled={!this.state.buttonEnabled || !ethAccount}
+            label={"Confirm"}
+            type="submit"
+            customButtonStyle={styles.button}
+          />
+        </div>
+      </form>
+    );
+  };
+
   renderContent = () => {
-    let { connectedWalletLink, connectedMetaMask } = this.state;
+    const {
+      connectedWalletLink,
+      connectedMetaMask,
+      networkVersion,
+    } = this.state;
     return (
       <div
         className={css(
           styles.modalContent,
-          this.state.networkVersion === CURRENT_CHAIN_ID && styles.main
+          networkVersion === CURRENT_CHAIN_ID && styles.main
         )}
       >
         <div className={css(styles.header)}>Withdraw ResearchCoin</div>
-        {this.renderToggleContainer(
-          css(
-            styles.toggleContainer,
-            (connectedMetaMask || connectedWalletLink) && styles.marginBottom
-          )
-        )}
+        {this.renderToggleContainer(css(styles.toggleContainer))}
         <img
           src={"/static/icons/close.png"}
           className={css(styles.closeButton)}
@@ -789,38 +844,7 @@ class WithdrawalModal extends React.Component {
           draggable={false}
           alt="Close Button"
         />
-        {!this.state.connectedMetaMask &&
-          !this.state.connectedMetaMask &&
-          this.state.ethAccountIsValid && (
-            <div className={css(styles.connectStatus)}>
-              <div className={css(styles.dot, styles.connected)} />
-              Connected to Wallet
-            </div>
-          )}
-        {this.state.connectedWalletLink && (
-          <div className={css(styles.connectStatus)}>
-            <div
-              className={css(
-                styles.dot,
-                this.state.connectedWalletLink && styles.connected
-              )}
-            />
-            Connected to WalletLink
-          </div>
-        )}
-        {this.state.connectedMetaMask && (
-          <div className={css(styles.connectStatus)}>
-            <div
-              className={css(
-                styles.dot,
-                this.state.connectedMetaMask && styles.connected
-              )}
-            />
-            Connected to MetaMask
-          </div>
-        )}
-        {this.state.connectedMetaMask &&
-        this.state.networkVersion !== CURRENT_CHAIN_ID
+        {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
           ? this.renderSwitchNetworkMsg()
           : this.renderTransactionScreen()}
       </div>
@@ -836,7 +860,6 @@ class WithdrawalModal extends React.Component {
         removeDefault={true}
       >
         {this.renderContent()}
-        {/* {this.renderOverlay()} */}
       </BaseModal>
     );
   }
@@ -872,6 +895,16 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     transition: "all ease-in-out 0.3s",
+    width: 400,
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 410px)": {
+      width: 300,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
   header: {
     fontWeight: "500",
@@ -901,10 +934,26 @@ const styles = StyleSheet.create({
     color: "#83817c",
     fontSize: 14,
     marginBottom: 25,
-    fontFamily: "Roboto",
+    lineHeight: 1.5,
     "@media only screen and (max-width: 415px)": {
       fontSize: 13,
       lineHeight: 1.5,
+    },
+  },
+  description: {
+    fontSize: 14,
+    paddingTop: 5,
+    color: "#83817c",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
+  },
+  link: {
+    cursor: "pointer",
+    textDecoration: "unset",
+    color: colors.BLUE(),
+    ":hover": {
+      textDecoration: "underline",
     },
   },
   image: {
@@ -916,45 +965,60 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     borderBottom: "1px dashed #E7E5E4",
-    width: 440,
+    width: "100%",
     padding: "20px 0 20px",
-    "@media only screen and (max-width: 557px)": {
-      width: 380,
-    },
-    "@media only screen and (max-width: 410px)": {
-      width: 300,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 280,
-    },
   },
   top: {
     borderBottom: "none",
   },
   spacedContent: {
     width: "100%",
+    marginTop: 20,
   },
   left: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "flex-start",
     color: "#82817D",
-    height: 60,
+    height: 40,
     fontFamily: "Roboto",
     "@media only screen and (max-width: 415px)": {
       height: 70,
     },
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 500,
+    lineSpacing: 1.2,
+    color: colors.BLACK(),
+    position: "relative",
+  },
+  placeholderIcon: {
+    position: "absolute",
+    color: colors.BLUE(),
+    fontSize: 18,
+    height: 32,
+    width: 32,
+    borderRadius: "50%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    border: `1px solid rgb(232, 232, 242)`,
+    top: 38,
+    left: 10,
+    zIndex: 4,
   },
   textLabel: {
     color: colors.BLACK(),
   },
   right: {
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-end",
-    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    fontWeight: 500,
+    height: 40,
     fontFamily: "Roboto",
   },
   orientRow: {
@@ -963,10 +1027,11 @@ const styles = StyleSheet.create({
   },
   noMargin: {
     margin: 0,
+    color: colors.BLUE(),
   },
   mainHeader: {
     fontWeight: "500",
-    fontSize: 22,
+    fontSize: 16,
     color: "#000 ",
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
@@ -984,12 +1049,16 @@ const styles = StyleSheet.create({
 
   amountInput: {
     height: 50,
-    width: 80,
+    width: 90,
     fontSize: 16,
-    padding: "0 10px",
+    padding: "0 8px",
     boxSizing: "border-box",
     borderRadius: 4,
     borderColor: colors.BLACK(0.4),
+  },
+  gasInput: {
+    width: 90,
+    padding: "0 5px",
   },
   error: {
     borderColor: "red",
@@ -997,6 +1066,7 @@ const styles = StyleSheet.create({
   infoIcon: {
     marginLeft: 5,
     cursor: "pointer",
+    color: colors.BLACK(0.4),
   },
   eth: {
     color: "#82817D",
@@ -1018,8 +1088,15 @@ const styles = StyleSheet.create({
     marginTop: 1,
     marginLeft: 5,
   },
+  smallCoin: {
+    height: 20,
+    width: 20,
+  },
   formInput: {
     width: "100%",
+    margin: 0,
+    padding: 0,
+    minHeight: "unset",
   },
   buttons: {
     marginTop: 20,
@@ -1031,7 +1108,7 @@ const styles = StyleSheet.create({
   },
   successIcon: {
     color: "#7ae9b1",
-    fontSize: 28,
+    fontSize: 25,
     height: "100%",
     display: "flex",
     justifyContent: "center",
@@ -1044,19 +1121,19 @@ const styles = StyleSheet.create({
   },
   connectStatus: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
+    width: "100%",
     fontSize: 14,
-    marginTop: 15,
-    marginBottom: 10,
+    marginTop: 10,
   },
   dot: {
-    height: 10,
-    maxHeight: 10,
-    minHeight: 10,
-    width: 10,
-    maxWidth: 10,
-    minWidth: 10,
+    height: 5,
+    maxHeight: 5,
+    minHeight: 5,
+    width: 5,
+    maxWidth: 5,
+    minWidth: 5,
     borderRadius: "50%",
     marginRight: 5,
     backgroundColor: "#f9f4d3",
@@ -1066,10 +1143,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#d5f3d7",
     border: "2px solid #7ae9b1",
   },
+  invalidAddress: {
+    backgroundColor: colors.RED(0.7),
+    border: `2px solid ${colors.RED()}`,
+  },
+  red: {
+    color: colors.RED(),
+  },
+  green: {
+    color: colors.GREEN(),
+  },
   pendingConnection: {
     backgroundColor: "#FDF2DE",
     border: `2px solid ${colors.YELLOW()}`,
-    // #FDF2DE
   },
   confirmation: {
     color: "#000",
@@ -1170,6 +1256,17 @@ const styles = StyleSheet.create({
     right: "unset",
     height: "unset",
     width: "unset",
+  },
+  amountInputStyles: {
+    width: "100%",
+    marginTop: 20,
+    paddingBottom: 20,
+    borderBottom: "1px dashed #E7E5E4",
+  },
+  fullWidth: {
+    width: "100%",
+    fontSize: 16,
+    fontWeight: 400,
   },
 });
 

@@ -28,7 +28,7 @@ class FormInput extends React.Component {
   };
 
   render() {
-    let {
+    const {
       id,
       getRef,
       label,

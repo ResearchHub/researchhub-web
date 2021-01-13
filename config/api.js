@@ -483,6 +483,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    WITHDRAWAL_FEE: BASE_URL + "withdrawal/transaction_fee",
     USER_FIRST_COIN: BASE_URL + "user/has_seen_first_coin_modal/",
     USER_ORCID_CONNECT_MODAL: BASE_URL + "user/has_seen_orcid_connect_modal/",
     FLAG_PAPER: ({ paperId }) => {
