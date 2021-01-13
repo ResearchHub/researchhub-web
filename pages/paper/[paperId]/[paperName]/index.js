@@ -912,6 +912,7 @@ const styles = StyleSheet.create({
   },
   paperPageContainer: {
     overflowX: "hidden",
+    backgroundColor: "#FFF",
   },
   abstractText: {
     lineHeight: 1.6,
