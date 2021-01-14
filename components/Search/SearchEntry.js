@@ -20,16 +20,6 @@ import {
 } from "~/config/utils";
 import { transformDate } from "~/redux/utils";
 
-const search_fields = [
-  "title",
-  "text",
-  "first_name",
-  "last_name",
-  "authors",
-  "name",
-  "summary",
-];
-
 class SearchEntry extends React.Component {
   constructor(props) {
     super(props);
@@ -38,10 +28,6 @@ class SearchEntry extends React.Component {
       hidden: false,
       activeFields: 1,
     };
-  }
-
-  configureLink() {
-    // create link
   }
 
   /**

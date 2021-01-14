@@ -8,7 +8,6 @@ import "isomorphic-unfetch";
 import "../components/Paper/progressbar.css";
 import "react-tagsinput/react-tagsinput.css";
 import "../components/SearchSuggestion/authorinput.css";
-import { KeyUtils } from "slate";
 import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
@@ -171,14 +170,6 @@ class MyApp extends App {
 
   render() {
     const { store } = this.props;
-    let keyInt = 0;
-
-    const keygen = () => {
-      let keyString = `${Date.now().toString()}_${keyInt++}`;
-      return keyString;
-    };
-
-    KeyUtils.setGenerator(keygen);
 
     return (
       <Provider store={store}>

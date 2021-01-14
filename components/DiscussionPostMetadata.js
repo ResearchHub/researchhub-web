@@ -27,6 +27,7 @@ import colors, { voteWidgetColors } from "~/config/themes/colors";
 import { timeAgo, createUserSummary } from "~/config/utils";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import ContentSupportModal from "./Modals/ContentSupportModal";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -227,6 +228,7 @@ const DiscussionPostMetadata = (props) => {
 
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
+      <ContentSupportModal />
       <AuthorAvatar
         author={authorProfile}
         name={username}
