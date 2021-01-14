@@ -8,7 +8,10 @@ import Link from "next/link";
 import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
 import FormInput from "../Form/FormInput";
+// import FormSelect from "../Form/FormSelect";
 import Button from "../Form/Button";
+import ETHAddressInput from "../Ethereum/ETHAddressInput";
+import DepositScreen from "../Ethereum/DepositScreen";
 import { AmountInput, RecipientInput } from "../Form/RSCForm";
 
 // Redux
@@ -25,8 +28,6 @@ import { useMetaMask } from "../connectEthereum";
 import CheckBox from "../Form/CheckBox";
 import {
   sanitizeNumber,
-  onKeyDownNumInput,
-  onPasteNumInput,
   formatBalance,
   isAddress,
   toCheckSumAddress,
@@ -61,10 +62,13 @@ class WithdrawalModal extends React.Component {
       error: false,
       amount: 0,
       transactionFee: null,
+      depositScreen: false,
     };
     this.state = {
       ...this.initialState,
     };
+
+    this.provider = null;
   }
 
   componentDidMount() {
@@ -214,33 +218,6 @@ class WithdrawalModal extends React.Component {
     this.setState({ buttonEnabled: !this.state.buttonEnabled });
   };
 
-  renderRow = (left, right) => {
-    return (
-      <div className={css(styles.label, styles.spacedContent)}>
-        <div style={{ marginBottom: 10 }}>
-          {left.text}
-          <span className={css(styles.infoIcon)} data-tip={left.tooltip}>
-            {icons["info-circle"]}
-            <ReactTooltip />
-          </span>
-        </div>
-        {!right.value && (
-          <span className={css(styles.placeholderIcon)}>
-            <i class="far fa-wallet" />
-          </span>
-        )}
-        <FormInput
-          required={true}
-          value={right.value}
-          containerStyle={styles.formInput}
-          onChange={right.onChange && right.onChange}
-          placeholder={"         Recipient ETH Address"}
-        />
-        {this.renderConnectionStatus()}
-      </div>
-    );
-  };
-
   getBalance = () => {
     if (!this.props.auth.isLoggedIn) {
       return;
@@ -385,7 +362,6 @@ class WithdrawalModal extends React.Component {
           }
           this.transitionScreen(() =>
             this.setState({
-              offChain: false,
               metaMaskVisible: true,
               walletLinkVisible: false,
             })
@@ -398,7 +374,7 @@ class WithdrawalModal extends React.Component {
   };
 
   connectMetaMask = async () => {
-    const { connected, account } = await useMetaMask();
+    const { connected, provider, account } = await useMetaMask();
     if (connected) {
       this.setUpEthListeners();
       console.log("Connected to MetaMask");
@@ -409,6 +385,10 @@ class WithdrawalModal extends React.Component {
         networkVersion: ethereum.networkVersion,
         ethAccountIsValid: isAddress(account),
       });
+
+      if (!this.provider) {
+        this.provider = provider;
+      }
     } else {
       console.log("Failed to connect MetaMask");
       this.setState({
@@ -419,12 +399,14 @@ class WithdrawalModal extends React.Component {
   };
 
   setUpEthListeners() {
-    this.setState({
-      listenerNetwork: ethereum.on("networkChanged", () =>
-        this.updateChainId(ethereum.networkVersion)
-      ),
-      listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
-    });
+    if (!this.state.listnerNetwork && !this.state.listenerAccount) {
+      this.setState({
+        listenerNetwork: ethereum.on("networkChanged", () =>
+          this.updateChainId(ethereum.networkVersion)
+        ),
+        listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
+      });
+    }
   }
 
   renderWalletLinkButton = () => {
@@ -444,7 +426,6 @@ class WithdrawalModal extends React.Component {
               walletLinkVisible: true,
               connectedMetaMask: false,
               metaMaskVisible: false,
-              offChain: false,
             });
           });
         }}
@@ -456,11 +437,10 @@ class WithdrawalModal extends React.Component {
 
   connectWalletLink = async () => {
     if (this.state.connectedWalletLink) {
-      this.disconnectWalletLink();
-      return;
+      return this.disconnectWalletLink();
     }
 
-    const { connected, account, walletLink } = await useWalletLink();
+    const { connected, provider, account, walletLink } = await useWalletLink();
     if (connected) {
       this.props.setWalletLink(walletLink);
       console.log("Connected to WalletLink");
@@ -471,6 +451,9 @@ class WithdrawalModal extends React.Component {
         ethAccount: account,
         ethAccountIsValid: isAddress(account),
       });
+      if (!this.provider) {
+        this.provider = provider;
+      }
     } else {
       console.log("Failed to connect WalletLink");
       this.setState({
@@ -501,7 +484,7 @@ class WithdrawalModal extends React.Component {
             this.setState({ error: this.handleError(this.state.value) });
           }
         });
-      }, 200);
+      }, 100);
     });
   };
 
@@ -553,13 +536,14 @@ class WithdrawalModal extends React.Component {
       userBalance,
       ethAccount,
       transactionHash,
+      depositScreen,
       error,
       amount,
     } = this.state;
 
-    if (transition) {
-      return <Loader loading={true} />;
-    }
+    // if (transition) {
+    //   return <Loader loading={true} />;
+    // }
 
     if (transactionHash) {
       return (
@@ -603,101 +587,31 @@ class WithdrawalModal extends React.Component {
       );
     }
 
-    return this.renderScreen();
-
-    return (
-      <div className={css(styles.networkContainer)}>
-        <div className={css(styles.row, styles.top)}>
-          <div className={css(styles.left)}>
-            <div className={css(styles.mainHeader)}>Total Balance</div>
-            <div className={css(styles.subtitle, styles.noMargin)}>
-              Your current total balance in ResearchCoin
-            </div>
-          </div>
-          <div className={css(styles.right)}>
-            <div className={css(styles.userBalance)}>
-              {formatBalance(userBalance)}
-              <img
-                className={css(styles.coin)}
-                src={"/static/icons/coin-filled.png"}
-                draggable={false}
-                alt="RSC Coin"
-              />
-            </div>
-          </div>
-        </div>
-        <div className={css(styles.row, styles.numbers)}>
-          <div className={css(styles.left)}>
-            <div className={css(styles.mainHeader)}>Withdrawal Amount</div>
-            <div className={css(styles.subtitle, styles.noMargin)}>
-              Select the withdrawal amount (min. 100 RSC)
-            </div>
-          </div>
-          <div className={css(styles.right)}>
-            <input
-              type="number"
-              className={css(styles.amountInput, error && styles.error)}
-              value={amount}
-              onChange={this.handleAmountInput}
-              min={"0"}
-              max={userBalance}
-              onKeyDown={onKeyDownNumInput}
-              onPaste={onPasteNumInput}
-            />
-          </div>
-        </div>
-        <div className={css(styles.row, styles.numbers)}>
-          <div className={css(styles.left)}>
-            <div className={css(styles.mainHeader)}>Transaction Speed</div>
-            <div className={css(styles.subtitle, styles.noMargin)}>
-              Select the speed for transaction (GWEI)
-            </div>
-          </div>
-          <div className={css(styles.right)}>{this.renderGasPrice()}</div>
-        </div>
-        {this.renderRow(
-          {
-            text: "Recipient ETH Address",
-            tooltip: "The address of your ETH Account (ex. 0x0000...)",
-            onClick: "",
-          },
-          {
-            value: ethAccount,
-            onChange: this.handleNetworkAddressInput,
-          }
-        )}
-        {!this.props.agreedToTerms && (
-          <div className={css(styles.checkBoxContainer)}>
-            <CheckBox
-              id={"tos"}
-              active={this.state.buttonEnabled}
-              isSquare={true}
-              label={
-                <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>
-                  I agree to the ResearchHub{" "}
-                  <a
-                    href={"/about/tos"}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
-                    Terms of Service.
-                  </a>
-                </span>
-              }
-              onChange={this.toggleButton}
-            />
-          </div>
-        )}
-        <div className={css(styles.buttons)}>
-          <Button
-            disabled={!this.state.buttonEnabled || !ethAccount}
-            label={"Confirm"}
-            onClick={this.sendWithdrawalRequest}
-            customButtonStyle={styles.button}
+    if (depositScreen) {
+      return (
+        <form className={css(styles.networkContainer)}>
+          <ETHAddressInput
+            label="From"
+            tooltip="The address of your ETH Account (ex. 0x0000...)"
+            value={ethAccount}
+            onChange={this.handleNetworkAddressInput}
+            containerStyles={styles.ethAddressStyles}
+            {...this.state}
           />
-        </div>
-      </div>
-    );
+          <DepositScreen provider={this.provider} {...this.state} />
+          <div className={css(styles.buttons)}>
+            <Button
+              disabled={!this.state.buttonEnabled || !ethAccount}
+              label={"Confirm"}
+              type="submit"
+              customButtonStyle={styles.button}
+            />
+          </div>
+        </form>
+      );
+    }
+
+    return this.renderScreen();
   };
 
   renderConnectionStatus = () => {
@@ -732,7 +646,7 @@ class WithdrawalModal extends React.Component {
           <div
             className={css(styles.dot, connectedWalletLink && styles.connected)}
           />
-          <span className={css(styles.green)}>Connected to WalletLink</span>
+          <span className={css(styles.green)}>Connected: WalletLink</span>
         </div>
       );
     }
@@ -743,7 +657,12 @@ class WithdrawalModal extends React.Component {
           <div
             className={css(styles.dot, connectedMetaMask && styles.connected)}
           />
-          <span className={css(styles.green)}>Connected to MetaMask</span>
+          <span className={css(styles.green)}>Connected:</span>
+          <img
+            src={"/static/icons/metamask.svg"}
+            className={css(styles.metaMaskIcon)}
+          />
+          MetaMask
         </div>
       );
     }
@@ -758,21 +677,19 @@ class WithdrawalModal extends React.Component {
         onSubmit={this.sendWithdrawalRequest}
       >
         <RecipientInput
-          containerStyles={styles.fullWidth}
+          containerStyles={styles.recipientInputStyles}
           cardStyles={styles.fullWidth}
           author={this.props.auth.user.author_profile}
           label={"From"}
         />
-        {this.renderRow(
-          {
-            text: "To",
-            tooltip: "The address of your ETH Account (ex. 0x0000...)",
-          },
-          {
-            value: ethAccount,
-            onChange: this.handleNetworkAddressInput,
-          }
-        )}
+        <ETHAddressInput
+          label="To"
+          tooltip="The address of your ETH Account (ex. 0x0000...)"
+          value={ethAccount}
+          onChange={this.handleNetworkAddressInput}
+          containerStyles={styles.ethAddressStyles}
+          {...this.state}
+        />
         <AmountInput
           rightAlignBalance={true}
           containerStyles={styles.amountInputStyles}
@@ -824,36 +741,51 @@ class WithdrawalModal extends React.Component {
   };
 
   renderContent = () => {
-    const {
-      connectedWalletLink,
-      connectedMetaMask,
-      networkVersion,
-    } = this.state;
+    const { connectedMetaMask, networkVersion, depositScreen } = this.state;
     return (
-      <div
-        className={css(
-          styles.modalContent,
-          networkVersion === CURRENT_CHAIN_ID && styles.main
-        )}
-      >
-        <div className={css(styles.header)}>Withdraw ResearchCoin</div>
-        {this.renderToggleContainer(css(styles.toggleContainer))}
-        <img
-          src={"/static/icons/close.png"}
-          className={css(styles.closeButton)}
-          onClick={this.closeModal}
-          draggable={false}
-          alt="Close Button"
-        />
-        {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
-          ? this.renderSwitchNetworkMsg()
-          : this.renderTransactionScreen()}
-      </div>
+      <Fragment>
+        <div className={css(styles.tabBar)}>
+          <div
+            className={css(styles.tab, !depositScreen && styles.tabActive)}
+            onClick={() =>
+              this.transitionScreen(() =>
+                this.setState({ depositScreen: false })
+              )
+            }
+          >
+            Withdraw
+          </div>
+          <div
+            className={css(styles.tab, depositScreen && styles.tabActive)}
+            onClick={() =>
+              this.transitionScreen(() =>
+                this.setState({ depositScreen: true })
+              )
+            }
+          >
+            Deposit to RH
+          </div>
+        </div>
+        <div className={css(styles.content)}>
+          {/* <div className={css(styles.header)}>{`${depositScreen ? "Deposit" : "Withdraw"} ResearchCoin`}</div> */}
+          {this.renderToggleContainer(css(styles.toggleContainer))}
+          <img
+            src={"/static/icons/close.png"}
+            className={css(styles.closeButton)}
+            onClick={this.closeModal}
+            draggable={false}
+            alt="Close Button"
+          />
+          {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
+            ? this.renderSwitchNetworkMsg()
+            : this.renderTransactionScreen()}
+        </div>
+      </Fragment>
     );
   };
 
   render() {
-    let { modals } = this.props;
+    const { modals } = this.props;
     return (
       <BaseModal
         isOpen={modals.openWithdrawalModal}
@@ -867,15 +799,42 @@ class WithdrawalModal extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  modalContent: {
-    padding: 50,
+  content: {
+    padding: "0 50px 50px 50px",
     "@media only screen and (max-width: 767px)": {
-      padding: 25,
+      padding: "0 25px 25px 25px",
     },
   },
   disabled: {
     pointerEvents: "none",
     userSelect: "none",
+  },
+  tabBar: {
+    display: "flex",
+    width: "100%",
+  },
+  tab: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "50%",
+    height: 64,
+    fontSize: 20,
+    fontWeight: 500,
+    cursor: "pointer",
+    backgroundColor: "rgba(17, 51, 83, 0.02)",
+    borderLeft: "1px solid rgb(236, 239, 241)",
+    borderRight: "1px solid rgb(236, 239, 241)",
+    borderBottom: "1px solid rgb(236, 239, 241)",
+    color: "rgba(17, 51, 83, 0.6)",
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  tabActive: {
+    color: colors.BLUE(),
+    border: "none",
+    backgroundColor: "#FFF",
   },
   main: {
     paddingLeft: 30,
@@ -915,6 +874,9 @@ const styles = StyleSheet.create({
     color: "#232038",
     textAlign: "center",
     marginBottom: 20,
+    // test css
+    marginTop: 20,
+    // end test css
     "@media only screen and (max-width: 415px)": {
       fontSize: 22,
     },
@@ -1010,6 +972,11 @@ const styles = StyleSheet.create({
     top: 38,
     left: 10,
     zIndex: 4,
+    cursor: "pointer",
+  },
+  metaMaskIcon: {
+    height: 20,
+    margin: "0px 5px",
   },
   textLabel: {
     color: colors.BLACK(),
@@ -1124,9 +1091,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "center",
-    width: "100%",
+    width: "max-content",
     fontSize: 14,
-    marginTop: 10,
   },
   dot: {
     height: 5,
@@ -1180,7 +1146,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "center",
-    marginTop: 15,
+    marginTop: 30,
   },
   marginBottom: {
     marginBottom: 20,
@@ -1258,10 +1224,16 @@ const styles = StyleSheet.create({
     height: "unset",
     width: "unset",
   },
+  recipientInputStyles: {
+    marginTop: 25,
+    width: "100%",
+  },
+  ethAddressStyles: {
+    marginTop: 25,
+  },
   amountInputStyles: {
     width: "100%",
-    marginTop: 20,
-    paddingBottom: 20,
+    paddingBottom: 30,
     borderBottom: "1px dashed #E7E5E4",
   },
   fullWidth: {
