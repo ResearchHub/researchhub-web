@@ -18,21 +18,18 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import Button from "../components/Form/Button";
 import FirstVoteModal from "../components/Modals/FirstVoteModal";
 import GoogleLoginButton from "../components/GoogleLoginButton";
-import InviteToHubModal from "../components/Modals/InviteToHubModal";
 import LoginModal from "../components/Modals/LoginModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
-import SectionBountyModal from "../components/Modals/SectionBountyModal";
+// import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import Notification from "./Notifications/Notification";
 import DndModal from "../components/Modals/DndModal";
 import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
 import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
-import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import UserStateBanner from "./Banner/UserStateBanner";
-import ContentSupportModal from "./Modals/ContentSupportModal";
 import OrcidConnectModal from "./Modals/OrcidConnectModal";
 
 // Styles
@@ -433,16 +430,13 @@ const Navbar = (props) => {
       >
         <UploadPaperModal />
         <LoginModal />
-        <InviteToHubModal />
         <WithdrawalModal />
         <FirstVoteModal auth={auth} updateUser={updateUser} />
         <OrcidConnectModal />
         <DndModal />
         <PromotionInfoModal />
         <ReCaptchaPrompt />
-        <AuthorSupportModal />
-        <ContentSupportModal />
-        <SectionBountyModal />
+        {/* <SectionBountyModal /> */}
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />

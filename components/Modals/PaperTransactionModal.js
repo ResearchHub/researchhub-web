@@ -27,7 +27,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { useMetaMask, useWalletLink } from "../connectEthereum";
+import { useMetaMask } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 import { sendAmpEvent } from "~/config/fetch";
 import {
@@ -594,64 +594,6 @@ class PaperTransactionModal extends React.Component {
       listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
     });
   }
-
-  renderWalletLinkButton = () => {
-    return (
-      <div
-        className={css(
-          styles.toggle,
-          this.state.walletLinkVisible && styles.activeToggle
-        )}
-        onClick={async () => {
-          if (!this.state.connectedWalletLink) {
-            this.transitionScreen(() => {
-              this.setState({
-                nextScreen: true,
-                walletLinkVisible: true,
-                connectedMetaMask: false,
-                metaMaskVisible: false,
-                offChain: false,
-              });
-            });
-            await this.connectWalletLink();
-          }
-        }}
-      >
-        WalletLink
-      </div>
-    );
-  };
-
-  connectWalletLink = async () => {
-    if (this.state.connectedWalletLink) {
-      this.disconnectWalletLink();
-      return;
-    }
-
-    const { connected, account, walletLink, provider } = await useWalletLink();
-    if (connected) {
-      console.log("Connected to WalletLink");
-      const valid = this.isAddress(account);
-      this.setState(
-        {
-          walletLink,
-          connectedMetaMask: false,
-          connectedWalletLink: connected,
-          ethAccount: account,
-          ethAccountIsValid: valid,
-        },
-        () => {
-          valid && this.updateContractBalance(provider);
-        }
-      );
-    } else {
-      console.log("Failed to connect WalletLink");
-      this.setState({
-        connectedMetaMask: false,
-        connectedWalletLink: false,
-      });
-    }
-  };
 
   updateContractBalance = async (provider) => {
     const contract = await this.createContract(provider);

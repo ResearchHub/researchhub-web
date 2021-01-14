@@ -38,6 +38,7 @@ import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { formatPublishedDate, openExternalLink } from "~/config/utils";
 import { MessageActions } from "../redux/message";
+import AuthorSupportModal from "./Modals/AuthorSupportModal";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -739,6 +740,7 @@ class PaperPageCard extends React.Component {
 
     return (
       <Fragment>
+        <AuthorSupportModal />
         <div
           className={css(
             styles.container,
