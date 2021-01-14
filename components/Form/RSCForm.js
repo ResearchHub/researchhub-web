@@ -11,10 +11,11 @@ import {
   onKeyDownNumInput,
   onPasteNumInput,
   formatBalance,
+  doesNotExist,
 } from "~/config/utils";
 
 const AmountInput = (props) => {
-  const { placeholder, required } = props;
+  const { balance, placeholder, required } = props;
   const store = useStore();
 
   return (
@@ -71,7 +72,9 @@ const AmountInput = (props) => {
       >
         <span className={css(styles.balanceLabel)}>Available:</span>
         <span className={css(styles.balance)}>
-          {formatBalance(store.getState().auth.user.balance)}
+          {!doesNotExist(balance)
+            ? formatBalance(balance)
+            : formatBalance(store.getState().auth.user.balance)}
         </span>
         {props.rightAlignBalance && (
           <img
