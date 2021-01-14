@@ -204,10 +204,7 @@ class AddAuthorModal extends React.Component {
               >
                 Social Media Links
                 <div className={css(styles.dropdownIcon)}>
-                  <span
-                    className="fal fa-angle-down"
-                    style={{ fontSize: "25px" }}
-                  >
+                  <span style={{ fontSize: "25px" }}>
                     {showLinks ? icons.angleDown : icons.angleUp}
                   </span>
                 </div>
