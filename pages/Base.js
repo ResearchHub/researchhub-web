@@ -7,7 +7,7 @@ import { transitions, positions, Provider as AlertProvider } from "react-alert";
 
 // Components
 import Message from "~/components/Loader/Message";
-import Navbar from "~/components/Navbar";
+// import Navbar from "~/components/Navbar";
 import PermissionNotification from "../components/PermissionNotification";
 import AlertTemplate from "~/components/Modals/AlertTemplate";
 
@@ -52,7 +52,7 @@ class Base extends React.Component {
       <AlertProvider template={AlertTemplate} {...options}>
         <div className={css(styles.pageWrapper)}>
           <PermissionNotification />
-          <Navbar />
+          {/* <Navbar /> */}
           <Component {...pageProps} />
           <Message />
         </div>
