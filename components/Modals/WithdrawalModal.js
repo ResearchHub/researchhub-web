@@ -2,8 +2,7 @@ import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import { keccak256, sha3_256 } from "js-sha3";
-import { ethers } from "ethers";
+import { keccak256 } from "js-sha3";
 import Link from "next/link";
 
 // Component
@@ -22,7 +21,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { useMetaMask, useWalletLink } from "../connectEthereum";
+import { useMetaMask } from "../connectEthereum";
 import CheckBox from "../Form/CheckBox";
 import {
   sanitizeNumber,
@@ -397,29 +396,29 @@ class WithdrawalModal extends React.Component {
    * @param {String} address the given HEX adress
    * @return {Boolean}
    */
-  isChecksumAddress = (address) => {
-    // Check each case
-    address = address.replace("0x", "");
-    var addressHash = sha3_256(address.toLowerCase());
-    for (var i = 0; i < 40; i++) {
-      // the nth letter should be uppercase if the nth digit of casemap is 1
-      if (
-        (parseInt(addressHash[i], 16) > 7 &&
-          address[i].toUpperCase() !== address[i]) ||
-        (parseInt(addressHash[i], 16) <= 7 &&
-          address[i].toLowerCase() !== address[i])
-      ) {
-        return false;
-      }
-    }
-    return true;
-  };
+  // isChecksumAddress = (address) => {
+  //   // Check each case
+  //   address = address.replace("0x", "");
+  //   var addressHash = sha3_256(address.toLowerCase());
+  //   for (var i = 0; i < 40; i++) {
+  //     // the nth letter should be uppercase if the nth digit of casemap is 1
+  //     if (
+  //       (parseInt(addressHash[i], 16) > 7 &&
+  //         address[i].toUpperCase() !== address[i]) ||
+  //       (parseInt(addressHash[i], 16) <= 7 &&
+  //         address[i].toLowerCase() !== address[i])
+  //     ) {
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // };
 
   renderToggleContainer = (className) => {
     return (
       <div className={className}>
         {this.renderMetaMaskButton()}
-        {this.renderWalletLinkButton()}
+        {/* {this.renderWalletLinkButton()} */}
       </div>
     );
   };

@@ -3,7 +3,6 @@ import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Value } from "slate";
 import { withAlert } from "react-alert";
 
 // Component
@@ -31,11 +30,8 @@ import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "../../config/utils/options";
-import discussionScaffold from "./discussionScaffold.json";
 import FormTextArea from "../Form/FormTextArea";
 import { formatPaperSlug } from "~/config/utils";
-
-const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 class PaperUploadInfo extends React.Component {
   constructor(props) {

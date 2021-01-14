@@ -16,7 +16,6 @@ import { HubActions } from "../redux/hub";
 import { UniversityActions } from "../redux/universities";
 import { TransactionActions } from "../redux/transaction";
 import { NotificationActions } from "~/redux/notification";
-import { BannerActions } from "~/redux/banner";
 import PermissionActions from "../redux/permission";
 import Footer from "./footer";
 
@@ -26,11 +25,9 @@ class Base extends React.Component {
       fetchPermissions,
       getUser,
       getUniversities,
-      getUserBannerPreference,
       getWithdrawals,
       getTopHubs,
       getNotifications,
-      determineBanner,
       auth,
     } = this.props;
 
@@ -40,8 +37,6 @@ class Base extends React.Component {
     if (auth.isLoggedIn) {
       getWithdrawals();
       getNotifications();
-      // getUserBannerPreference(); currently removed banner
-      // determineBanner();
     }
     fetchPermissions();
   };
@@ -82,15 +77,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
-  getCategories: HubActions.getCategories,
   getTopHubs: HubActions.getTopHubs,
   getUniversities: UniversityActions.getUniversities,
-  getUserBannerPreference: AuthActions.getUserBannerPreference,
   fetchPermissions: PermissionActions.fetchPermissions,
-  fetchPermissionsPending: PermissionActions.fetchPermissionsPending,
   getWithdrawals: TransactionActions.getWithdrawals,
   getNotifications: NotificationActions.getNotifications,
-  determineBanner: BannerActions.determineBanner,
 };
 
 export default connect(
