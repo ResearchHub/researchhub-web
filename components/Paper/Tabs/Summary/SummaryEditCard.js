@@ -2,7 +2,7 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { useAlert } from "react-alert";
-import moment from "moment";
+import * as moment from "dayjs";
 
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Loader from "~/components/Loader/Loader";

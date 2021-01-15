@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import Ripples from "react-ripples";
 import { useAlert } from "react-alert";
 import Link from "next/link";
-import moment from "moment";
+import * as moment from "dayjs";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";

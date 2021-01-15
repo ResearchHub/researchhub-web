@@ -1,7 +1,7 @@
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
+import * as moment from "dayjs";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";

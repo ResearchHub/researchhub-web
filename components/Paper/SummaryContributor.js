@@ -2,7 +2,7 @@ import { Fragment, useState, useEffect } from "react";
 import Router from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
+import * as moment from "dayjs";
 
 import VoteWidget from "~/components/VoteWidget";
 import AuthorAvatar from "~/components/AuthorAvatar";
