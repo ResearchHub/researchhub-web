@@ -18,12 +18,8 @@ import { NotificationActions } from "~/redux/notification";
 
 // Config
 import colors from "../../config/themes/colors";
-import {
-  doesNotExist,
-  getNestedValue,
-  timeAgoStamp,
-  formatPaperSlug,
-} from "~/config/utils";
+import { doesNotExist, getNestedValue, formatPaperSlug } from "~/config/utils";
+import { timeAgoStamp } from "~/config/utils/dates";
 import { reviewBounty } from "~/config/fetch";
 
 const NotificationEntry = (props) => {

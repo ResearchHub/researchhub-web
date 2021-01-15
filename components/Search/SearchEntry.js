@@ -13,11 +13,8 @@ import Highlight from "~/components/Search/Highlight";
 // Config
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
-import {
-  formatDateStandard,
-  formatPaperSlug,
-  createUserSummary,
-} from "~/config/utils";
+import { formatPaperSlug, createUserSummary } from "~/config/utils";
+import { formatDateStandard } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
 class SearchEntry extends React.Component {
