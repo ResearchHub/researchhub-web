@@ -13,7 +13,6 @@ import { BannerActions } from "~/redux/banner";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import colors from "~/config/themes/colors";
-import API from "../config/api";
 import { useEffect } from "react";
 
 const GoogleLoginButton = (props) => {

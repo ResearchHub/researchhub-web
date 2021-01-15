@@ -6,7 +6,6 @@ import { connect, useDispatch, useStore } from "react-redux";
 import Joyride from "react-joyride";
 import Error from "next/error";
 import "./styles/anchor.css";
-import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import * as Sentry from "@sentry/browser";
 
@@ -19,7 +18,6 @@ import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import KeyTakeawaysTab from "~/components/Paper/Tabs/KeyTakeawaysTab";
 import PaperPageCard from "~/components/PaperPageCard";
-import PaperProgress from "~/components/Paper/PaperProgress";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperBanner from "~/components/Paper/PaperBanner";
@@ -496,25 +494,6 @@ const Paper = (props) => {
           />
         </div>
         <div className={css(styles.contentContainer)}>
-          <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-            <div className={css(styles.paperProgress)}>
-              <PaperProgress
-                setFigureCount={setFigureCount}
-                figureCount={figureCount}
-                commentCount={discussionCount}
-                setCount={setCount}
-                paper={paper}
-                fetchBullets={fetchBullets}
-                loadingPaper={loadingPaper}
-                // comments threads
-                threads={paper.discussion && paper.discussion.threads}
-                // setDiscussionThreads={setDiscussionThreads}
-                // toggle sections
-                showAllSections={showAllSections}
-                toggleShowAllSections={toggleShowAllSections}
-              />
-            </div>
-          </ComponentWrapper>
           <KeyTakeawaysTab
             keyTakeawayRef={keyTakeawayRef}
             afterFetchBullets={() => setFetchBullets(true)}
