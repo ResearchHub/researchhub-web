@@ -11,7 +11,7 @@ import PromotionGraph from "./PromotionGraph";
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { formatTransactionDate } from "~/config/utils";
+import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
 class PromotionCard extends React.Component {

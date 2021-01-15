@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 
 // Config
 import colors from "~/config/themes/colors";
-import { timeAgoStamp, truncateText } from "~/config/utils";
+import { truncateText } from "~/config/utils";
+import { timeAgoStamp } from "~/config/utils/dates";
 
 const HyperLink = (props) => {
   const { text, link, dataTip, onClick, style } = props;

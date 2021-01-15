@@ -5,19 +5,11 @@ import Ripples from "react-ripples";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
-import TimeAgo from "javascript-time-ago";
-
-// Load locale-specific relative date/time formatting rules.
-import en from "javascript-time-ago/locale/en";
-// Add locale-specific relative date/time formatting rules.
-TimeAgo.addLocale(en);
-
-// Create relative date/time formatter.
-const timeAgo = new TimeAgo("en-US");
 
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { timeAgo } from "~/config/utils/dates";
 
 // Components
 import ContentPage from "../../components/ContentPage/ContentPage";

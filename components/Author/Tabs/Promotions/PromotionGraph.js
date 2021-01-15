@@ -3,7 +3,7 @@ import Chart from "react-google-charts";
 
 import Loader from "../../../Loader/Loader";
 
-import { formatDate } from "~/config/utils";
+import { formatDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
 class PromotionGraph extends React.Component {

@@ -23,7 +23,8 @@ import {
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { formatPublishedDate, formatPaperSlug } from "~/config/utils";
+import { formatPaperSlug } from "~/config/utils";
+import { formatPublishedDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
