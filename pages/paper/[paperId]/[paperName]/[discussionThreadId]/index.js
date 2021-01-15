@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 // NPM Modules
 import { css, StyleSheet } from "aphrodite";
 import InfiniteScroll from "react-infinite-scroller";
-import { connect, useDispatch, useStore } from "react-redux";
+import { connect } from "react-redux";
 import Error from "next/error";
 
 // Components
@@ -11,7 +11,6 @@ import Head from "~/components/Head";
 import { Comment } from "~/components/DiscussionComment";
 import { CommentEditor } from "~/components/DiscussionCommentEditor";
 import Thread from "~/components/DiscussionPageThread";
-import TextEditor from "~/components/TextEditor";
 
 // components
 import Loader from "~/components/Loader/Loader";

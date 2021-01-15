@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
-import { useDrag, useDrop, DndProvider } from "react-dnd";
-import Backend from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import Ripples from "react-ripples";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
