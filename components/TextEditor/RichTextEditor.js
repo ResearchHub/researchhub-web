@@ -6,7 +6,6 @@ import { Value, Point, Decoration } from "slate";
 import Plain from "slate-plain-serializer";
 import { css, StyleSheet } from "aphrodite";
 import { isKeyHotkey } from "is-hotkey";
-import Sticky from "react-stickynode";
 import urlRegex from "url-regex";
 import ModalImage from "react-modal-image";
 
@@ -20,7 +19,6 @@ import "./stylesheets/RichTextEditor.css";
 import "./stylesheets/iFrame.css";
 
 // Scaffold
-import summaryScaffold from "./summaryScaffold.json";
 import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import Diff from "diff";

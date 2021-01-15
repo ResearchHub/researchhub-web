@@ -7,7 +7,6 @@ import { StyleSheet, css } from "aphrodite";
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
 
 // Components
-// import Navbar from "~/components/Navbar";
 import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
 import { UniversityActions } from "../redux/universities";

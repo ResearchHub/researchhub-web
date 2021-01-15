@@ -29,7 +29,7 @@ module.exports = withPlugins(
 
       config.resolve.alias["~"] = path.resolve(__dirname);
 
-      if (ANALYZE) {
+      if (ANALYZE && !isServer) {
         config.plugins.push(
           new BundleAnalyzerPlugin({
             analyzerMode: "server",
