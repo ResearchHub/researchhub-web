@@ -1,12 +1,9 @@
-import { connect } from "react-redux";
-import { StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
-
 import HubPage from "../components/Hubs/HubPage";
 
 import API from "~/config/api";
 import { getInitialScope } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
+
 const isServer = () => typeof window === "undefined";
 
 const Index = (props) => {

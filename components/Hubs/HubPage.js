@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
+import * as moment from "dayjs";
 import ReactPlaceholder from "react-placeholder/lib";
 import "react-placeholder/lib/reactPlaceholder.css";
 import Ripples from "react-ripples";
