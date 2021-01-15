@@ -1,4 +1,4 @@
-import moment from "moment";
+import * as moment from "dayjs";
 
 export function redirect(ctx, baseKey, path) {
   path = buildRedirectPath(ctx, baseKey, path);

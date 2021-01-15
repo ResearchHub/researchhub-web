@@ -1,6 +1,6 @@
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
-import moment from "moment";
+import * as moment from "dayjs";
 
 TimeAgo.addLocale(en);
 

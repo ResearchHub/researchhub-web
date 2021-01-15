@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
-import moment from "moment";
+import * as moment from "dayjs";
 
 // Components
 import { ScorePill } from "~/components/VoteWidget";

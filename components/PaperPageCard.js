@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
+import * as moment from "dayjs";
 import Router from "next/router";
 import Link from "next/link";
 import Carousel from "nuka-carousel";
