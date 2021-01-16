@@ -58,7 +58,10 @@ const ETHAddressInput = (props) => {
       return (
         <div className={css(styles.connectStatus)}>
           <div className={css(styles.dot, styles.connected)} />
-          <span className={css(styles.green)}>Connected</span>
+          <span className={css(styles.green)}>Valid Address</span>
+          {/* <span className={css(styles.walletIcon)}>
+            <i class="far fa-wallet" />
+          </span> */}
         </div>
       );
     }
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
   },
   metaMaskIcon: {
     height: 20,
-    margin: "0px 5px",
+    marginLeft: 5,
   },
   textLabel: {
     color: colors.BLACK(),
@@ -194,6 +197,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     cursor: "pointer",
     color: colors.BLACK(0.4),
+    color: "#FBFBFD",
   },
 
   connectStatus: {
