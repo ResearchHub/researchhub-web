@@ -12,6 +12,9 @@ import ETHAddressInput from "./ETHAddressInput";
 import { AmountInput } from "../Form/RSCForm";
 import Loader from "../Loader/Loader";
 
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+
 // Constants
 const RinkebyRSCContractAddress = "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be";
 
@@ -80,13 +83,34 @@ class DepositScreen extends React.Component {
     const contract = new ethers.Contract(address, contractABI, signer);
 
     const tx = await contract.transfer(
-      "0xFa3959797C08023c69723d58c895C446A3e7eD50",
+      "0x5F7329eC7D5e41D3f93aa821f0F56C24897d7Fd7", // recipient address (TODO: should be RH Wallet)
       amount
     );
+
+    if (tx) {
+      const PAYLOAD = {
+        ...tx,
+      };
+
+      this.props.onSuccess(tx.hash);
+
+      // fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
+      // .then(Helpers.checkStatus)
+      // .then(Helpers.parseJSON)
+      // .then(res => {
+      //   this
+      // })
+    }
   };
 
   render() {
-    const { ethAccount, buttonEnabled, ethAddressOnChange } = this.props;
+    const {
+      ethAccount,
+      buttonEnabled,
+      connectMetaMask,
+      ethAddressOnChange,
+    } = this.props;
+
     return (
       <form className={css(styles.form)} onSubmit={this.signTransaction}>
         <ETHAddressInput
@@ -95,6 +119,14 @@ class DepositScreen extends React.Component {
           value={ethAccount}
           onChange={ethAddressOnChange}
           containerStyles={styles.ethAddressStyles}
+          placeholder={"         Connect MetaMask Wallet"}
+          icon={
+            <img
+              src={"/static/icons/metamask.svg"}
+              className={css(styles.metaMaskIcon)}
+            />
+          }
+          onClick={connectMetaMask}
           {...this.props}
         />
         <AmountInput
@@ -134,7 +166,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   ethAddressStyles: {
-    marginTop: 25,
+    marginTop: 20,
   },
   amountInputStyles: {
     width: "100%",
@@ -157,6 +189,9 @@ const styles = StyleSheet.create({
       width: "100%",
       height: 50,
     },
+  },
+  metaMaskIcon: {
+    height: 23,
   },
 });
 
