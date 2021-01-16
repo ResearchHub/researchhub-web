@@ -1051,6 +1051,7 @@ const styles = StyleSheet.create({
     width: "100%",
     "@media only screen and (max-width: 415px)": {
       width: "100%",
+      height: 50,
     },
   },
   successIcon: {
