@@ -12,7 +12,7 @@ const Loader = ({
   containerStyle,
   type,
 }) => {
-  let spinner = (type) => {
+  const spinner = (type) => {
     switch (type) {
       case "dot":
         return (
