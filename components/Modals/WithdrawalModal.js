@@ -61,6 +61,9 @@ class WithdrawalModal extends React.Component {
       amount: 0,
       transactionFee: null,
       depositScreen: false,
+      // api toggle
+      metaMaskVisible: false,
+      walletLinkVisible: false,
     };
     this.state = {
       ...this.initialState,
@@ -382,6 +385,8 @@ class WithdrawalModal extends React.Component {
         ethAccount: account,
         networkVersion: ethereum.networkVersion,
         ethAccountIsValid: isAddress(account),
+        metaMaskVisible: true,
+        walletLinkVisible: false,
       });
 
       if (!this.provider) {
@@ -501,6 +506,10 @@ class WithdrawalModal extends React.Component {
     return false;
   };
 
+  setTransactionHash = (transactionHash) => {
+    this.setState({ transactionHash });
+  };
+
   renderSwitchNetworkMsg = () => {
     const { transition } = this.state;
     return (
@@ -529,61 +538,7 @@ class WithdrawalModal extends React.Component {
   };
 
   renderTransactionScreen = () => {
-    const {
-      transition,
-      userBalance,
-      ethAccount,
-      transactionHash,
-      depositScreen,
-      error,
-      amount,
-    } = this.state;
-
-    // if (transition) {
-    //   return <Loader loading={true} />;
-    // }
-
-    if (transactionHash) {
-      return (
-        <div className={css(styles.networkContainer)}>
-          <div className={css(styles.row, styles.top)}>
-            <div className={css(styles.left)}>
-              <div className={css(styles.mainHeader)}>
-                Withdrawal Successful
-                <span className={css(styles.icon)}>
-                  <i className="fal fa-check-circle" />
-                </span>
-              </div>
-              <div
-                className={css(styles.confirmation)}
-                onClick={this.closeModal}
-              >
-                Review your transactions in your
-                <Link
-                  href={"/user/[authorId]/[tabName]"}
-                  as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
-                >
-                  <a
-                    href={"/user/[authorId]/[tabName]"}
-                    as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
-                    className={css(styles.transactionHashLink)}
-                  >
-                    profile page
-                  </a>
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className={css(styles.buttons, styles.confirmationButtons)}>
-            <Button
-              label={"Finish"}
-              onClick={this.closeModal}
-              customButtonStyle={styles.button}
-            />
-          </div>
-        </div>
-      );
-    }
+    const { transactionHash, depositScreen } = this.state;
 
     if (depositScreen) {
       return (
@@ -591,70 +546,18 @@ class WithdrawalModal extends React.Component {
           <DepositScreen
             provider={this.provider}
             ethAddressOnChange={this.handleNetworkAddressInput}
+            onSuccess={this.setTransactionHash}
+            connectMetaMask={this.connectMetaMask}
             {...this.state}
           />
         </div>
       );
     }
 
-    return this.renderScreen();
+    return this.renderWithdrawalForm();
   };
 
-  renderConnectionStatus = () => {
-    const {
-      ethAccount,
-      connectedWalletLink,
-      connectedMetaMask,
-      ethAccountIsValid,
-    } = this.state;
-
-    if (ethAccount && !ethAccountIsValid) {
-      return (
-        <div className={css(styles.connectStatus)}>
-          <div className={css(styles.dot, styles.invalidAddress)} />
-          <span className={css(styles.red)}>Invalid ETH address</span>
-        </div>
-      );
-    }
-
-    if (!connectedMetaMask && ethAccountIsValid) {
-      return (
-        <div className={css(styles.connectStatus)}>
-          <div className={css(styles.dot, styles.connected)} />
-          <span className={css(styles.green)}>Valid ETH address</span>
-        </div>
-      );
-    }
-
-    if (connectedWalletLink) {
-      return (
-        <div className={css(styles.connectStatus)}>
-          <div
-            className={css(styles.dot, connectedWalletLink && styles.connected)}
-          />
-          <span className={css(styles.green)}>Connected: WalletLink</span>
-        </div>
-      );
-    }
-
-    if (connectedMetaMask) {
-      return (
-        <div className={css(styles.connectStatus)}>
-          <div
-            className={css(styles.dot, connectedMetaMask && styles.connected)}
-          />
-          <span className={css(styles.green)}>Connected:</span>
-          <img
-            src={"/static/icons/metamask.svg"}
-            className={css(styles.metaMaskIcon)}
-          />
-          MetaMask
-        </div>
-      );
-    }
-  };
-
-  renderScreen = () => {
+  renderWithdrawalForm = () => {
     const { ethAccount, amount, transactionFee } = this.state;
 
     return (
@@ -727,32 +630,131 @@ class WithdrawalModal extends React.Component {
     );
   };
 
-  renderContent = () => {
-    const { connectedMetaMask, networkVersion, depositScreen } = this.state;
-    return (
+  renderSuccessScreen = () => {
+    const { depositScreen, transactionHash } = this.state;
+
+    const title = depositScreen
+      ? "Deposit Successful"
+      : "Withdrawal Successful";
+
+    const confirmationMessage = depositScreen ? (
       <Fragment>
-        <div className={css(styles.tabBar)}>
-          <div
-            className={css(styles.tab, !depositScreen && styles.tabActive)}
-            onClick={() =>
-              this.transitionScreen(() =>
-                this.setState({ depositScreen: false })
-              )
-            }
+        {
+          "Congrats! Your balance will update when the transfer is fully processed.\n\n"
+        }
+        Review your transaction details and status on
+        <a
+          href={`https://rinkeby.etherscan.io/tx/${transactionHash}`}
+          rel="noopener noreferrer"
+          target="_blank"
+          className={css(styles.transactionHashLink)}
+        >
+          Etherscan
+        </a>
+        {" or in your"}
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+        >
+          <a
+            href={"/user/[authorId]/[tabName]"}
+            as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+            className={css(styles.transactionHashLink)}
           >
-            Withdraw
+            profile page.
+          </a>
+        </Link>
+      </Fragment>
+    ) : (
+      <Fragment>
+        {
+          "Congrats! Your wallet balance will update when the transfer is fully processed.\n\n"
+        }
+        Review your transactions in your
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+        >
+          <a
+            href={"/user/[authorId]/[tabName]"}
+            as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+            className={css(styles.transactionHashLink)}
+          >
+            profile page.
+          </a>
+        </Link>
+      </Fragment>
+    );
+
+    return (
+      <div className={css(styles.content)}>
+        <img
+          src={"/static/icons/close.png"}
+          className={css(styles.closeButton)}
+          onClick={this.closeModal}
+          draggable={false}
+          alt="Close Button"
+        />
+        <div className={css(styles.networkContainer)}>
+          <div className={css(styles.successContainer)}>
+            <div className={css(styles.title)}>
+              {title}
+              <span className={css(styles.icon)}>
+                {icons.partyPopper({ style: styles.partyIcon })}
+              </span>
+            </div>
+            <div className={css(styles.confirmation)} onClick={this.closeModal}>
+              {confirmationMessage}
+            </div>
           </div>
-          <div
-            className={css(styles.tab, depositScreen && styles.tabActive)}
-            onClick={() =>
-              this.transitionScreen(() =>
-                this.setState({ depositScreen: true })
-              )
-            }
-          >
-            Deposit to RH
+          <div className={css(styles.buttons)}>
+            <Button
+              label={"Finish"}
+              onClick={this.closeModal}
+              customButtonStyle={styles.button}
+              rippleClass={styles.button}
+            />
           </div>
         </div>
+      </div>
+    );
+  };
+
+  renderTabs = () => {
+    const { depositScreen } = this.state;
+
+    return (
+      <div className={css(styles.tabBar)}>
+        <div
+          className={css(styles.tab, !depositScreen && styles.tabActive)}
+          onClick={() =>
+            this.transitionScreen(() => this.setState({ depositScreen: false }))
+          }
+        >
+          Withdraw
+        </div>
+        <div
+          className={css(styles.tab, depositScreen && styles.tabActive)}
+          onClick={() =>
+            this.transitionScreen(() => this.setState({ depositScreen: true }))
+          }
+        >
+          Deposit to RH
+        </div>
+      </div>
+    );
+  };
+
+  renderContent = () => {
+    const { connectedMetaMask, networkVersion, transactionHash } = this.state;
+
+    if (transactionHash) {
+      return this.renderSuccessScreen();
+    }
+
+    return (
+      <Fragment>
+        {this.renderTabs()}
         <div className={css(styles.content)}>
           {this.renderToggleContainer(css(styles.toggleContainer))}
           {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
@@ -779,7 +781,7 @@ class WithdrawalModal extends React.Component {
 
 const styles = StyleSheet.create({
   content: {
-    padding: "0 50px 50px 50px",
+    padding: "0 50px 45px 50px",
     "@media only screen and (max-width: 767px)": {
       padding: "0 25px 25px 25px",
     },
@@ -844,6 +846,9 @@ const styles = StyleSheet.create({
       width: 280,
     },
   },
+  successContainer: {
+    paddingTop: 30,
+  },
   header: {
     fontWeight: "500",
     height: 30,
@@ -866,10 +871,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 500,
-    fontSize: 18,
-    marginBottom: 20,
+    fontSize: 22,
+    marginBottom: 25,
     textAlign: "center",
-    fontFamily: "Roboto",
+    color: colors.BLACK(),
   },
   subtitle: {
     color: "#83817c",
@@ -1047,6 +1052,8 @@ const styles = StyleSheet.create({
   buttons: {
     marginTop: 35,
     width: "100%",
+    position: "sticky",
+    bottom: 0,
   },
   button: {
     width: "100%",
@@ -1106,18 +1113,25 @@ const styles = StyleSheet.create({
     border: `2px solid ${colors.YELLOW()}`,
   },
   confirmation: {
-    color: "#000",
+    lineHeight: 1.3,
+    whiteSpace: "pre-wrap",
+    fontWeight: 400,
   },
   transactionHashLink: {
     cursor: "pointer",
     color: colors.BLUE(1),
-    marginLeft: 6,
+    marginLeft: 5,
+    textDecoration: "unset",
     ":hover": {
       textDecoration: "underline",
     },
   },
   icon: {
     color: colors.GREEN(1),
+    marginLeft: 5,
+  },
+  partyIcon: {
+    height: 25,
     marginLeft: 5,
   },
   confirmationButtons: {
@@ -1127,7 +1141,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "center",
-    marginTop: 30,
+    marginTop: 20,
   },
   marginBottom: {
     marginBottom: 20,
@@ -1158,55 +1172,8 @@ const styles = StyleSheet.create({
       border: `1px solid ${colors.BLUE()}`,
     },
   },
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    height: "100%",
-    width: "100%",
-    overflow: "hidden",
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-    zIndex: 3,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  bannerContainer: {
-    background: "#FFF",
-    padding: "25px 30px",
-    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
-    borderRadius: 4,
-    position: "relative",
-  },
-  banner: {
-    fontSize: 18,
-  },
-  overlayButtonContainer: {
-    background: "#FFF",
-    borderRadius: "50%",
-    height: 30,
-    width: 30,
-    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    cursor: "pointer",
-    top: -50,
-    right: -2,
-    ":hover": {
-      color: colors.BLUE(),
-    },
-  },
-  overlayButton: {
-    position: "unset",
-    top: "unset",
-    right: "unset",
-    height: "unset",
-    width: "unset",
-  },
   recipientInputStyles: {
-    marginTop: 25,
+    marginTop: 15,
     width: "100%",
   },
   ethAddressStyles: {

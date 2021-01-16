@@ -83,7 +83,7 @@ class BaseModal extends React.Component {
    */
   disableParentScroll = () => {
     if (document.body.style) {
-      document.body.style.overflow = "hidden";
+      // document.body.style.overflow = "hidden";
     }
   };
 
