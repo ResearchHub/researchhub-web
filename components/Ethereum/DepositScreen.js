@@ -153,6 +153,9 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "100%",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+    },
   },
 });
 
