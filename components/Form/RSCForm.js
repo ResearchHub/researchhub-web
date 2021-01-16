@@ -72,7 +72,9 @@ const AmountInput = (props) => {
         <span className={css(styles.balanceLabel)}>Available:</span>
         <span className={css(styles.balance)}>
           {!doesNotExist(balance)
-            ? formatBalance(balance)
+            ? typeof balance === "number" || typeof balance == "string"
+              ? formatBalance(balance)
+              : balance
             : formatBalance(store.getState().auth.user.balance)}
         </span>
         {props.rightAlignBalance && (
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
   },
   rscIcon: {
     marginLeft: 10,
-    height: 25,
+    height: 20,
     borderRadius: "50%",
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },

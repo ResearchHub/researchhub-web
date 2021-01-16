@@ -7,10 +7,8 @@ import Link from "next/link";
 // Component
 import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
-import FormInput from "../Form/FormInput";
-// import FormSelect from "../Form/FormSelect";
-import Button from "../Form/Button";
 import ETHAddressInput from "../Ethereum/ETHAddressInput";
+import Button from "../Form/Button";
 import DepositScreen from "../Ethereum/DepositScreen";
 import { AmountInput, RecipientInput } from "../Form/RSCForm";
 
@@ -589,25 +587,13 @@ class WithdrawalModal extends React.Component {
 
     if (depositScreen) {
       return (
-        <form className={css(styles.networkContainer)}>
-          <ETHAddressInput
-            label="From"
-            tooltip="The address of your ETH Account (ex. 0x0000...)"
-            value={ethAccount}
-            onChange={this.handleNetworkAddressInput}
-            containerStyles={styles.ethAddressStyles}
+        <div className={css(styles.networkContainer)}>
+          <DepositScreen
+            provider={this.provider}
+            ethAddressOnChange={this.handleNetworkAddressInput}
             {...this.state}
           />
-          <DepositScreen provider={this.provider} {...this.state} />
-          <div className={css(styles.buttons)}>
-            <Button
-              disabled={!this.state.buttonEnabled || !ethAccount}
-              label={"Confirm"}
-              type="submit"
-              customButtonStyle={styles.button}
-            />
-          </div>
-        </form>
+        </div>
       );
     }
 
@@ -734,6 +720,7 @@ class WithdrawalModal extends React.Component {
             label={"Confirm"}
             type="submit"
             customButtonStyle={styles.button}
+            rippleClass={styles.button}
           />
         </div>
       </form>
@@ -767,15 +754,7 @@ class WithdrawalModal extends React.Component {
           </div>
         </div>
         <div className={css(styles.content)}>
-          {/* <div className={css(styles.header)}>{`${depositScreen ? "Deposit" : "Withdraw"} ResearchCoin`}</div> */}
           {this.renderToggleContainer(css(styles.toggleContainer))}
-          <img
-            src={"/static/icons/close.png"}
-            className={css(styles.closeButton)}
-            onClick={this.closeModal}
-            draggable={false}
-            alt="Close Button"
-          />
           {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
             ? this.renderSwitchNetworkMsg()
             : this.renderTransactionScreen()}
@@ -854,7 +833,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    transition: "all ease-in-out 0.3s",
     width: 400,
     "@media only screen and (max-width: 557px)": {
       width: 380,
@@ -1067,12 +1045,11 @@ const styles = StyleSheet.create({
     minHeight: "unset",
   },
   buttons: {
-    marginTop: 20,
+    marginTop: 35,
+    width: "100%",
   },
   button: {
-    "@media only screen and (max-width: 415px)": {
-      width: "100%",
-    },
+    width: "100%",
   },
   successIcon: {
     color: "#7ae9b1",
