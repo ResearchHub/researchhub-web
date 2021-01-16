@@ -37,14 +37,17 @@ import {
 } from "~/config/utils";
 
 const ETHAddressInput = (props) => {
-  const renderConnectionStatus = () => {
-    const {
-      ethAccount,
-      connectedWalletLink,
-      connectedMetaMask,
-      ethAccountIsValid,
-    } = props;
+  const {
+    ethAccount,
+    connectedWalletLink,
+    connectedMetaMask,
+    ethAccountIsValid,
+    placeholder,
+    icon,
+    onClick,
+  } = props;
 
+  const renderConnectionStatus = () => {
     if (ethAccount && !ethAccountIsValid) {
       return (
         <div className={css(styles.connectStatus)}>
@@ -115,15 +118,18 @@ const ETHAddressInput = (props) => {
       </div>
       {!props.value && (
         <span className={css(styles.placeholderIcon)}>
-          <i class="far fa-wallet" />
+          {icon ? icon : <i class="far fa-wallet" />}
         </span>
       )}
       <FormInput
         required={true}
         value={props.value}
-        containerStyle={styles.formInput}
+        containerStyle={onClick ? styles.formInputClick : styles.formInput}
         onChange={props.onChange && props.onChange}
-        placeholder={"         Recipient ETH Address"}
+        placeholder={
+          placeholder ? placeholder : "         Recipient ETH Address"
+        }
+        onClick={onClick && onClick}
       />
       {renderConnectionStatus()}
     </div>
@@ -238,6 +244,13 @@ const styles = StyleSheet.create({
     color: colors.GREEN(),
   },
   formInput: {
+    width: "100%",
+    margin: 0,
+    padding: 0,
+    minHeight: "unset",
+  },
+  formInputClick: {
+    cursor: "pointer",
     width: "100%",
     margin: 0,
     padding: 0,
