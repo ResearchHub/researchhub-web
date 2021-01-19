@@ -772,6 +772,7 @@ class WithdrawalModal extends React.Component {
         isOpen={modals.openWithdrawalModal}
         closeModal={this.closeModal}
         removeDefault={true}
+        modalContentStyle={styles.root}
       >
         {this.renderContent()}
       </BaseModal>
@@ -780,6 +781,10 @@ class WithdrawalModal extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    maxHeight: "100vh",
+    overflowY: "scroll",
+  },
   content: {
     padding: "0 50px 45px 50px",
     "@media only screen and (max-width: 767px)": {
@@ -1052,8 +1057,6 @@ const styles = StyleSheet.create({
   buttons: {
     marginTop: 35,
     width: "100%",
-    position: "sticky",
-    bottom: 0,
   },
   button: {
     width: "100%",
