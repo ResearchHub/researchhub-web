@@ -76,30 +76,33 @@ class DepositScreen extends React.Component {
 
   signTransaction = async (e) => {
     e && e.preventDefault();
+    const { amount } = this.state;
     const address = RinkebyRSCContractAddress;
 
-    const amount = ethers.utils.parseEther(this.state.amount);
+    const convertedAmount = ethers.utils.parseEther(amount);
     const signer = this.props.provider.getSigner(0);
     const contract = new ethers.Contract(address, contractABI, signer);
 
     const tx = await contract.transfer(
       "0x5F7329eC7D5e41D3f93aa821f0F56C24897d7Fd7", // recipient address (TODO: should be RH Wallet)
-      amount
+      convertedAmount
     );
 
     if (tx) {
       const PAYLOAD = {
         ...tx,
+        amount,
+        transaction_hash: tx.hash,
+        to_address: tx.to,
       };
-
       this.props.onSuccess(tx.hash);
 
-      // fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
-      // .then(Helpers.checkStatus)
-      // .then(Helpers.parseJSON)
-      // .then(res => {
-      //   this
-      // })
+      fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          console.log("res", res);
+        });
     }
   };
 
