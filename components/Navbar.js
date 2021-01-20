@@ -37,7 +37,6 @@ import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { RHLogo } from "~/config/themes/icons";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
-import "./stylesheets/Navbar.css";
 
 const Navbar = (props) => {
   const router = useRouter();

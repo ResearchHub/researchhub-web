@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 import BulletPlaceholder from "~/components/Placeholders/BulletPlaceholder";
 import FormTextArea from "~/components/Form/FormTextArea";

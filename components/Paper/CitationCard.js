@@ -6,7 +6,6 @@ import FsLightbox from "fslightbox-react";
 import Link from "next/link";
 import "./CitationCard.css";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Components
 import HubTag from "~/components/Hubs/HubTag";
