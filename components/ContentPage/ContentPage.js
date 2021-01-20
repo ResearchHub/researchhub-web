@@ -1,5 +1,4 @@
 import { StyleSheet, css } from "aphrodite";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 class ContentPage extends React.Component {
   render() {

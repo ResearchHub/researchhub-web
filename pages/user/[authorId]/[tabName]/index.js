@@ -47,7 +47,6 @@ const AuthorPage = (props) => {
   const store = useStore();
   const { tabName } = router.query;
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
-  const [fetching, setFetching] = useState(true);
 
   // User External Links
   const [openShareModal, setOpenShareModal] = useState(false);
@@ -66,7 +65,10 @@ const AuthorPage = (props) => {
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
 
+  // FetchingState
+  const [fetching, setFetching] = useState(true);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
+  const [fetchedUser, setFetchedUser] = useState(false);
   const [mobileView, setMobileView] = useState(false);
 
   // Summary constants
@@ -99,42 +101,49 @@ const AuthorPage = (props) => {
     {
       href: "contributions",
       label: "paper submissions",
+      name: "Paper Submissions",
       showCount: true,
       count: () => author.userContributions.count,
     },
     {
       href: "summaries",
       label: "submitted summaries",
+      name: "Submitted Summaries",
       showCount: true,
       count: () => summaryCount,
     },
     {
       href: "takeaways",
       label: "key takeaways",
+      name: "Key Takeaways",
       showCount: true,
       count: () => takeawayCount,
     },
     {
       href: "authored-papers",
       label: "authored papers",
+      name: "Authored Papers",
       showCount: true,
       count: () => author.authoredPapers.count,
     },
     {
       href: "discussions",
       label: "discussions",
+      name: "Discussions",
       showCount: true,
       count: () => author.userDiscussions.count,
     },
     {
       href: "transactions",
       label: "transactions",
+      name: "Transactions",
       showCount: true,
       count: () => transactions.count,
     },
     {
       href: "boosts",
       label: "supported papers",
+      name: "Supported Papers",
       showCount: true,
       count: () => author.promotions && author.promotions.count,
     },
@@ -184,10 +193,12 @@ const AuthorPage = (props) => {
 
   useEffect(() => {
     setFetching(true);
+
     async function refetchAuthor() {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
       );
+      setFetchedUser(true); // needed for tabbar
     }
     const authored = fetchAuthoredPapers();
     const discussions = fetchUserDiscussions();
@@ -927,7 +938,7 @@ const AuthorPage = (props) => {
               fetching ? " " : isSuspended ? icons.userPlus : icons.userSlash
             }
             label={
-              fetching ? (
+              !fetchedUser ? (
                 <Loader loading={true} color={"#FFF"} size={15} />
               ) : isSuspended ? (
                 "Reinstate User"
@@ -992,7 +1003,7 @@ const AuthorPage = (props) => {
 
   return (
     <div
-      className={css(styles.container)}
+      className={css(styles.root)}
       vocab="https://schema.org/"
       typeof="Person"
     >
@@ -1061,6 +1072,7 @@ const AuthorPage = (props) => {
         author={author}
         user={user}
         fetching={fetching}
+        showTabBar={fetchedUser}
       />
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
       <ShareModal
@@ -1089,6 +1101,9 @@ AuthorPage.getInitialProps = async ({ isServer, req, store, query }) => {
 };
 
 const styles = StyleSheet.create({
+  root: {
+    background: "#FFF",
+  },
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
@@ -1098,7 +1113,6 @@ const styles = StyleSheet.create({
   profileContainer: {
     display: "flex",
     padding: "30px 0",
-
     "@media only screen and (max-width: 767px)": {
       padding: "32px 0px",
       flexDirection: "column",

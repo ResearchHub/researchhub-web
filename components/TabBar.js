@@ -1,40 +1,88 @@
+import { useRef, useState, useEffect } from "react";
+// import dynamic from 'next/dynamic'
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
-import colors, { paperTabColors } from "~/config/themes/colors";
-import { paperTabFont } from "~/config/themes/fonts";
-import Loader from "~/components/Loader/Loader";
+import ScrollMenu from "react-horizontal-scrolling-menu";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
+import Loader from "~/components/Loader/Loader";
+import ReactPlaceholder from "react-placeholder/lib";
+import TabBarPlaceholder from "~/components/Placeholders/TabBarPlaceholder";
+
+// Stylesheet
+import "./stylesheets/TabBar.css";
+
+// Config
+import icons from "~/config/themes/icons";
+import colors, { paperTabColors } from "~/config/themes/colors";
 
 const TabBar = (props) => {
-  const selectedTab = props.selectedTab;
-  const { dynamic_href, fetching } = props;
+  const { dynamic_href, fetching, showTabBar, selectedTab } = props;
+  const [selected, setSelected] = useState(selectedTab);
+  const menuRef = useRef();
   const tabs = props.tabs.map(formatTabs);
+
+  useEffect(() => {
+    menuRef.current && menuRef.current.scrollTo(selected);
+  }, [selectedTab]);
+
+  const menu = tabs.map((tab, index) => {
+    if (tab.label === "transactions" || tab.label === "boosts") {
+      const { user, author } = props;
+      if (author.user !== user.id) {
+        return null;
+      }
+    }
+
+    return (
+      <Tab
+        tab={tab}
+        key={tab.href}
+        selected={selectedTab}
+        dynamicHref={dynamic_href}
+        fetching={fetching}
+        authorId={props.author.id}
+      />
+    );
+  });
+
+  const onSelect = (key) => {
+    setSelected(key);
+  };
 
   return (
     <div className={css(styles.container)}>
-      <ComponentWrapper>
-        <div className={css(styles.tabContainer)}>
-          {tabs.map((tab) => {
-            if (tab.label === "transactions" || tab.label === "boosts") {
-              let { user, author } = props;
-              if (author.user !== user.id) {
-                return null;
-              }
+      <ComponentWrapper overrideStyle={styles.componentWrapper}>
+        <ReactPlaceholder
+          ready={showTabBar}
+          showLoadingAnimation
+          customPlaceholder={<TabBarPlaceholder color={"#FAFAFA"} />}
+        >
+          <ScrollMenu
+            ref={menuRef}
+            data={menu}
+            arrowLeft={
+              <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
             }
-            return renderTab(
-              tab,
-              selectedTab,
-              dynamic_href,
-              props.fetching,
-              props.author.id
-            );
-          })}
-        </div>
+            arrowRight={
+              <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+            }
+            menuStyle={styles.tabContainer}
+            itemStyle={{ border: "none", highlight: "none", outline: "none" }}
+            hideSingleArrow={true}
+            onSelect={onSelect}
+            selected={selected}
+            scrollToSelected={true}
+          />
+        </ReactPlaceholder>
       </ComponentWrapper>
     </div>
   );
+};
+
+const NavigationArrow = ({ icon, direction }) => {
+  return <div className={css(styles.arrowContainer)}>{icon}</div>;
 };
 
 function formatTabs(tab) {
@@ -42,30 +90,33 @@ function formatTabs(tab) {
   return tab;
 }
 
-function renderTab(
-  { key, href, label, showCount, count },
-  selected,
-  dynamic_href,
-  fetching,
-  userId
-) {
+const Tab = (props) => {
+  const { tab, selected, dynamicHref, fetching, authorId } = props;
+  const { key, href, label, showCount, count } = tab;
   let isSelected = false;
   let classNames = [styles.tab];
 
-  if (href === selected) {
+  if (selected) {
     isSelected = true;
     classNames.push(styles.selected);
   }
 
   return (
-    <Link key={key} href={dynamic_href} as={`/user/${userId}/${href}`}>
-      <div className={css(classNames)}>
+    <Link
+      href={dynamicHref}
+      as={`/user/${authorId}/${href}`}
+      shallow={true}
+      replace={true}
+    >
+      <div
+        className={css(classNames) + ` menu-item ${isSelected ? "active" : ""}`}
+      >
         <div className={css(styles.link)}>
           {label}{" "}
           {showCount && (
             <Count
               isSelected={isSelected}
-              amount={count()}
+              amount={!fetching && count()}
               fetching={fetching}
             />
           )}
@@ -73,7 +124,7 @@ function renderTab(
       </div>
     </Link>
   );
-}
+};
 
 const Count = (props) => {
   const { amount, isSelected, fetching } = props;
@@ -110,19 +161,26 @@ const UIStyling = (props) => {
 };
 
 const styles = StyleSheet.create({
+  componentWrapper: {
+    display: "flex",
+    justifyContent: "center",
+  },
   container: {
     display: "flex",
     width: "100%",
     justifyContent: "center",
     overflow: "auto",
     borderBottom: "1px solid #F0F0F0",
-    // background: paperTabColors.BACKGROUND,
+    background: "#FFF",
   },
   tabContainer: {
     display: "flex",
-    width: "100%",
-    minWidth: 450,
+    width: "105%",
     justifyContent: "flex-start",
+  },
+  placeholder: {
+    height: 54,
+    color: "#FAFAFA",
   },
   firstTab: {
     paddingLeft: 0,
@@ -174,6 +232,23 @@ const styles = StyleSheet.create({
   },
   loaderStyle: {
     display: "unset",
+  },
+  arrowContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 30,
+    width: 30,
+    fontSize: 18,
+    borderRadius: "50%",
+    background: "#FFF",
+    color: colors.PURPLE(),
+    border: "1px solid rgba(151, 151, 151, 0.2)",
+    cursor: "pointer",
+    boxShadow: "0 0 15px rgba(255, 255, 255, 0.14)",
+    ":hover": {
+      background: "#FAFAFA",
+    },
   },
 });
 
