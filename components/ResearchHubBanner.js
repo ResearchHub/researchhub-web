@@ -1,6 +1,5 @@
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import "react-placeholder/lib/reactPlaceholder.css";
 import Link from "next/link";
 
 // Components
