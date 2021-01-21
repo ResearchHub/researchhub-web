@@ -267,7 +267,7 @@ class Index extends React.Component {
   };
 
   renderItems = (point, index) => {
-    let { title, text, icon } = point;
+    const { title, text, icon } = point;
     return (
       <div className={css(styles.itemCard)} key={`item-${index}`}>
         <div className={css(styles.itemIcon)}>
@@ -922,14 +922,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    borderRadius: 40,
+    borderRadius: 8,
     width: 295,
     height: 300,
     minWidth: 295,
     maxWidth: 295,
     backgroundColor: "#FFF",
     scrollSnapAlign: "center",
-    boxShadow: "0px 10px 15px 0px rgba(0,0,0,0.1)",
+    boxShadow: "rgba(93, 83, 254, 0.18) 0px 4px 15px",
     zIndex: 3,
     "@media only screen and (max-width: 415px)": {
       padding: "20px 25px 20px 25px",

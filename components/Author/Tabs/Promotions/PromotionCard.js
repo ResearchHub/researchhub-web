@@ -133,10 +133,10 @@ class PromotionCard extends React.Component {
      * show loading state,
      * add pagination
      */
-    const { promotion, paper } = this.props;
+    const { promotion, paper, isLast } = this.props;
 
     return (
-      <div className={css(styles.card)}>
+      <div className={css(styles.card, isLast && styles.removeBottomBorder)}>
         <div className={css(styles.metadata)}>
           <div className={css(styles.column, styles.vote)}>
             <ScorePill
@@ -222,6 +222,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 620px)": {
       position: "relative",
     },
+  },
+  removeBottomBorder: {
+    borderBottom: "none",
   },
   hide: {
     display: "none",
