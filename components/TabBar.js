@@ -190,7 +190,6 @@ const styles = StyleSheet.create({
     color: "rgba(36, 31, 58, .6)",
     fontWeight: 500,
     padding: "1rem",
-
     "@media only screen and (min-width: 768px)": {
       marginRight: 28,
     },
