@@ -189,12 +189,12 @@ const styles = StyleSheet.create({
     color: "rgba(36, 31, 58, .5)",
     fontWeight: 500,
     padding: "1rem",
-    "@media only screen and (min-width: 768px)": {
-      marginRight: 28,
-    },
     ":hover": {
       color: colors.PURPLE(1),
       cursor: "pointer",
+    },
+    "@media only screen and (min-width: 768px)": {
+      marginRight: 28,
     },
   },
   count: {
@@ -219,6 +219,9 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   selected: {
     color: colors.PURPLE(1),
