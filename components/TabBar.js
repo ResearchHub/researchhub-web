@@ -57,7 +57,7 @@ const TabBar = (props) => {
         <ReactPlaceholder
           ready={showTabBar}
           showLoadingAnimation
-          customPlaceholder={<TabBarPlaceholder color={"#FAFAFA"} />}
+          customPlaceholder={<TabBarPlaceholder color={"#EFEFEF"} />}
         >
           <ScrollMenu
             ref={menuRef}
@@ -107,6 +107,7 @@ const Tab = (props) => {
       as={`/user/${authorId}/${href}`}
       shallow={true}
       replace={true}
+      scroll={false}
     >
       <div
         className={css(classNames) + ` menu-item ${isSelected ? "active" : ""}`}

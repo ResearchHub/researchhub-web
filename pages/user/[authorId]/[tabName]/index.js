@@ -572,6 +572,7 @@ const AuthorPage = (props) => {
             <UserPromotionsTab
               fetching={fetchingPromotions}
               mobileView={mobileView}
+              activeTab={tabName === "boosts"}
             />
           </div>
         </div>
@@ -997,6 +998,9 @@ const AuthorPage = (props) => {
               : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
           </span>
         )}
+        {author.description && (
+          <span property="description">{author.description}</span>
+        )}
       </div>
     );
   };
@@ -1233,7 +1237,7 @@ const styles = StyleSheet.create({
   },
   educationSummary: {
     color: "#241F3A",
-    opacity: 0.5,
+    opacity: 0.7,
     fontSize: 15,
     display: "flex",
     justifyContent: "center",
@@ -1574,6 +1578,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
     display: "flex",
     alignItems: "center",
+    // color: "#241F3A",
+    color: "#000",
   },
   rhIcon: {
     width: 13,
@@ -1602,7 +1608,9 @@ const styles = StyleSheet.create({
     objectFit: "contain",
   },
   hidden: {
-    display: "none",
+    visibility: "hidden",
+    height: 0,
+    overflow: "hidden",
     zIndex: -10,
   },
   reveal: {

@@ -9,6 +9,7 @@ const TabBarPlaceholder = ({ color }) => (
     <RectShape className={css(styles.textRow)} rows={1} color={color} />
     <RectShape className={css(styles.textRow)} rows={1} color={color} />
     <RectShape className={css(styles.textRow)} rows={1} color={color} />
+    <RectShape className={css(styles.textRow)} rows={1} color={color} />
   </div>
 );
 
