@@ -19,7 +19,6 @@ import {
 } from "../config/constants";
 import { getCurrentUserReputation, formatScore } from "../config/utils";
 
-import "./stylesheets/voteTooltip.css";
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
   const store = useStore();

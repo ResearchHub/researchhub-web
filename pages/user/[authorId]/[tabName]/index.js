@@ -28,8 +28,6 @@ import Button from "~/components/Form/Button";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import Loader from "~/components/Loader/Loader";
 
-import "~/components/Paper/CitationCard.css";
-
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";

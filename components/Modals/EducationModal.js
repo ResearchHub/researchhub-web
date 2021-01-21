@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import BaseModal from "./BaseModal";
 import FormSelect from "~/components/Form/FormSelect";
 import Toggle from "react-toggle";
-import "~/components/TextEditor/stylesheets/ReactToggle.css";
 import Button from "~/components/Form/Button";
 import UniversityInput from "../SearchSuggestion/UniversityInput";
 import MajorsInput from "../SearchSuggestion/MajorsInput";
