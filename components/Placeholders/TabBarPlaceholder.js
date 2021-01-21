@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   textRow: {
-    width: "15%",
+    width: "calc(20% - 44px)",
     height: 25,
     marginBottom: 16,
   },
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   count: {
     height: 25,
-    width: 40,
+    width: 28,
     marginLeft: 5,
     marginRight: 20,
     marginBottom: 5,

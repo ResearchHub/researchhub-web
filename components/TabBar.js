@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
   },
   tab: {
-    color: "rgba(36, 31, 58, .6)",
+    color: "rgba(36, 31, 58, .5)",
     fontWeight: 500,
     padding: "1rem",
     "@media only screen and (min-width: 768px)": {
