@@ -29,7 +29,7 @@ class PromotionCard extends React.Component {
   }
 
   setStateByKey = (key, value) => {
-    let newState = { [key]: value };
+    const newState = { [key]: value };
     if (key === "views") {
       newState["fetchingViews"] = false;
     } else {
@@ -77,7 +77,7 @@ class PromotionCard extends React.Component {
   };
 
   renderData = () => {
-    let { promotion } = this.props;
+    const { promotion } = this.props;
     return (
       <div className={css(styles.row)}>
         <div
@@ -133,7 +133,7 @@ class PromotionCard extends React.Component {
      * show loading state,
      * add pagination
      */
-    let { promotion, paper } = this.props;
+    const { promotion, paper } = this.props;
 
     return (
       <div className={css(styles.card)}>

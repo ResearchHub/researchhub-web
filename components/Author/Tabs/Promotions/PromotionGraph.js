@@ -15,6 +15,7 @@ class PromotionGraph extends React.Component {
       clicks: [["x", "Clicks"], [0, 0]],
       options: {},
       loading: true,
+      refreshed: false,
     };
   }
 
@@ -24,7 +25,7 @@ class PromotionGraph extends React.Component {
   }
 
   formatData = (value, interactions = []) => {
-    var data = [];
+    const data = [];
     data.push(["x", `${value[0].toUpperCase()}${value.slice(1)}`]);
 
     interactions.forEach((interaction) => {
@@ -148,7 +149,7 @@ class PromotionGraph extends React.Component {
       options = { ...options, ...customOptions };
     }
 
-    this.setState({ [value]: data, options, loading: value !== "views" });
+    this.setState({ [value]: data, options, loading: false });
   };
 
   formatOptions = () => {

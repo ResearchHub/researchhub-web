@@ -315,7 +315,6 @@ const Count = (props) => {
             size={4}
             color={paperTabColors.FONT}
             containerStyle={styles.customLoader}
-            // type={'beat'}
           />
         ) : (
           amount
