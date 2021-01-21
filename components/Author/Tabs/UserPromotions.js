@@ -40,7 +40,12 @@ const UserPromotions = (props) => {
             const { source } = promotion;
             if (source) {
               return (
-                <PromotionCard paper={source} promotion={promotion} index={i} />
+                <PromotionCard
+                  paper={source}
+                  promotion={promotion}
+                  index={i}
+                  isLast={promotions.length - 1 === i}
+                />
               );
             }
           })
