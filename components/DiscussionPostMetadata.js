@@ -359,10 +359,11 @@ const Timestamp = (props) => {
 };
 
 function formatTimestamp(props) {
+  console.log("props", props);
   let { date } = props;
   date = new Date(date);
   if (props.fullDate) {
-    return moment(date).format("MMM Do YYYY");
+    return moment(date).format("MMM D, YYYY");
   }
   return timeAgo.format(date);
 }
