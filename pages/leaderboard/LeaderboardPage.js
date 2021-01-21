@@ -710,7 +710,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     boxSizing: "content-box",
     width: "100%",
-    transition: "all ease-out 0.1s",
     borderRadius: 3,
     border: "1px solid #fff",
     marginBottom: 8,
