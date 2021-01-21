@@ -206,7 +206,6 @@ class PromotionCard extends React.Component {
 const styles = StyleSheet.create({
   card: {
     width: "100%",
-    width: "100%",
     padding: "27px 20px",
     display: "flex",
     justifyContent: "space-between",
@@ -216,11 +215,12 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     position: "relative",
     "@media only screen and (max-width: 767px)": {
-      width: "85%",
       flexDirection: "column",
     },
     "@media only screen and (max-width: 620px)": {
       position: "relative",
+      paddingLeft: 0,
+      paddingRight: 0,
     },
   },
   removeBottomBorder: {
