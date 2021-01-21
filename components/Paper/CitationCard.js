@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Link from "next/link";
-import "./CitationCard.css";
 import ReactPlaceholder from "react-placeholder/lib";
 
 // Components

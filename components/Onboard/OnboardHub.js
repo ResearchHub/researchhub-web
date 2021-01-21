@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import "~/components/Paper/CitationCard.css";
 
 // Config
 import colors from "~/config/themes/colors";

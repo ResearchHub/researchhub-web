@@ -12,7 +12,6 @@ import FormTextArea from "~/components/Form/FormTextArea";
 import Button from "~/components/Form/Button";
 import EducationModal from "./EducationModal";
 import EducationSummaryCard from "~/components/Form/EducationSummaryCard";
-import "~/components/TextEditor/stylesheets/ReactToggle.css";
 
 // Redux
 import { AuthActions } from "~/redux/auth";

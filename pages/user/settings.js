@@ -3,7 +3,6 @@ import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import Toggle from "react-toggle";
-import "~/components/TextEditor/stylesheets/ReactToggle.css";
 import { withAlert } from "react-alert";
 
 import Head from "~/components/Head";

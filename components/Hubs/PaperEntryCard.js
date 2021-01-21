@@ -6,7 +6,6 @@ import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
 import Ripples from "react-ripples";
 import FsLightbox from "fslightbox-react";
-import "~/components/Paper/CitationCard.css";
 
 // Components
 import VoteWidget from "../VoteWidget";
