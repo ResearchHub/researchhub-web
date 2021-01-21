@@ -92,7 +92,7 @@ function formatTabs(tab) {
 
 const Tab = (props) => {
   const { tab, selected, dynamicHref, fetching, authorId } = props;
-  const { key, href, label, showCount, count } = tab;
+  const { href, label, showCount, count } = tab;
   let isSelected = false;
   let classNames = [styles.tab];
 
@@ -165,6 +165,8 @@ const styles = StyleSheet.create({
   componentWrapper: {
     display: "flex",
     justifyContent: "center",
+    boxShadow:
+      "inset 25px 0px 25px -25px rgba(255,255,255,1), inset -25px 0px 25px -25px rgba(255,255,255,1)",
   },
   container: {
     display: "flex",
@@ -237,13 +239,13 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: 30,
-    width: 30,
+    height: 33,
+    width: 33,
     fontSize: 18,
     borderRadius: "50%",
     background: "#FFF",
     color: colors.PURPLE(),
-    border: "1px solid rgba(151, 151, 151, 0.2)",
+    border: "1.5px solid rgba(151, 151, 151, 0.2)",
     cursor: "pointer",
     boxShadow: "0 0 15px rgba(255, 255, 255, 0.14)",
     ":hover": {
