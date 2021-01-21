@@ -43,7 +43,7 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
     );
   };
 
-  let allItems = items.map((item, index) => {
+  const allItems = items.map((item, index) => {
     let path = `/paper/${item.paper}/${item.paper_slug}`;
     return (
       <div
@@ -98,10 +98,6 @@ var styles = StyleSheet.create({
   },
   discussionContainer: {
     width: "100%",
-    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
-    "@media only screen and (max-width: 415px)": {
-      borderBottom: "none",
-    },
   },
   box: {
     display: "flex",
