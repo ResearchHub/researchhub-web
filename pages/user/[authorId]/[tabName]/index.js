@@ -67,7 +67,6 @@ const AuthorPage = (props) => {
   const [fetching, setFetching] = useState(true);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
-  const [mobileView, setMobileView] = useState(false);
 
   // Summary constants
   const [summaries, setSummaries] = useState([]);
@@ -182,10 +181,8 @@ const AuthorPage = (props) => {
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
-    window.addEventListener("resize", updateDimensions);
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
-      window.removeEventListener("resize", updateDimensions);
     };
   });
 
@@ -274,13 +271,7 @@ const AuthorPage = (props) => {
         }
       });
   }
-  function updateDimensions() {
-    if (window.innerWidth < 968) {
-      setMobileView(true);
-    } else {
-      setMobileView(false);
-    }
-  }
+
   /**
    * When we click anywhere outside of the dropdown, close it
    * @param { Event } e -- javascript event
@@ -528,39 +519,35 @@ const AuthorPage = (props) => {
               tabName === "contributions" ? styles.reveal : styles.hidden
             )}
           >
-            <UserContributionsTab fetching={fetching} mobileView={mobileView} />
+            <UserContributionsTab fetching={fetching} />
           </div>
           <div
             className={css(
               tabName === "authored-papers" ? styles.reveal : styles.hidden
             )}
           >
-            <AuthoredPapersTab fetching={fetching} mobileView={mobileView} />
+            <AuthoredPapersTab fetching={fetching} />
           </div>
           <div
             className={css(
               tabName === "discussions" ? styles.reveal : styles.hidden
             )}
           >
-            <UserDiscussionsTab
-              hostname={hostname}
-              fetching={fetching}
-              mobileView={mobileView}
-            />
+            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
           </div>
           {/* <div
             className={css(
               tabName === "projects" ? styles.reveal : styles.hidden
             )}
           >
-            <UserProjectsTab fetching={fetching} mobileView={mobileView} />
+            <UserProjectsTab fetching={fetching}  />
           </div> */}
           <div
             className={css(
               tabName === "transactions" ? styles.reveal : styles.hidden
             )}
           >
-            <UserTransactionsTab fetching={fetching} mobileView={mobileView} />
+            <UserTransactionsTab fetching={fetching} />
           </div>
           <div
             className={css(
@@ -569,7 +556,6 @@ const AuthorPage = (props) => {
           >
             <UserPromotionsTab
               fetching={fetchingPromotions}
-              mobileView={mobileView}
               activeTab={tabName === "boosts"}
             />
           </div>
@@ -1163,6 +1149,12 @@ const styles = StyleSheet.create({
   },
   moderatorLabel: {
     fontWeight: 400,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   connectOrcid: {
     marginTop: 16,
@@ -1241,7 +1233,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
+      marginTop: 10,
+      fontSize: 14,
     },
   },
   description: {
@@ -1252,6 +1245,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.5,
     "@media only screen and (max-width: 440px)": {
       justifyContent: "flex-start",
+      fontSize: 14,
     },
   },
   defaultDescription: {
@@ -1549,7 +1543,7 @@ const styles = StyleSheet.create({
   reputationTitle: {
     marginRight: 10,
     "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
+      fontSize: 14,
     },
   },
   rscBalance: {
