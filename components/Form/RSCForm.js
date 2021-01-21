@@ -3,7 +3,6 @@ import { useStore, useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
 import AuthorAvatar from "~/components/AuthorAvatar";
-import "~/components/stylesheets/RSCForm.css";
 
 // Config
 import API from "~/config/api";

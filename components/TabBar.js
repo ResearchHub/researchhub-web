@@ -10,9 +10,6 @@ import Loader from "~/components/Loader/Loader";
 import ReactPlaceholder from "react-placeholder/lib";
 import TabBarPlaceholder from "~/components/Placeholders/TabBarPlaceholder";
 
-// Stylesheet
-import "./stylesheets/TabBar.css";
-
 // Config
 import icons from "~/config/themes/icons";
 import colors, { paperTabColors } from "~/config/themes/colors";
@@ -172,7 +169,7 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     justifyContent: "center",
-    overflow: "auto",
+    overflow: "hidden",
     borderBottom: "1px solid #F0F0F0",
     background: "#FFF",
   },
