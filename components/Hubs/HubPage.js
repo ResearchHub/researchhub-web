@@ -673,7 +673,6 @@ class HubPage extends React.Component {
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>
-          {/* <ResearchHubBanner home={this.props.home} hub={this.props.hub} /> */}
           {this.props.home && <Head title={this.props.home && null} />}
         </div>
         <div className={css(styles.row, styles.body)}>
@@ -768,8 +767,14 @@ class HubPage extends React.Component {
               </div>
             </div>
             <div className={css(styles.infiniteScroll)}>
-              {this.state.doneFetching ? (
-                this.state.papers.length > 0 ? (
+              <ReactPlaceholder
+                ready={this.state.doneFetching}
+                showLoadingAnimation
+                customPlaceholder={
+                  <PaperPlaceholder color="#efefef" rows={3} />
+                }
+              >
+                {this.state.papers.length > 0 ? (
                   <Fragment>
                     {this.state.papers.map((paper, i) => (
                       <PaperEntryCard
@@ -815,27 +820,8 @@ class HubPage extends React.Component {
                       <Button label={"Upload Paper"} hideRipples={true} />
                     </PermissionNotificationWrapper>
                   </div>
-                )
-              ) : (
-                <div className={css(styles.placeholder)}>
-                  <ReactPlaceholder
-                    ready={false}
-                    showLoadingAnimation
-                    customPlaceholder={<PaperPlaceholder color="#efefef" />}
-                  >
-                    <div />
-                  </ReactPlaceholder>
-                  <div className={css(styles.placeholderBottom)}>
-                    <ReactPlaceholder
-                      ready={false}
-                      showLoadingAnimation
-                      customPlaceholder={<PaperPlaceholder color="#efefef" />}
-                    >
-                      <div />
-                    </ReactPlaceholder>
-                  </div>
-                </div>
-              )}
+                )}
+              </ReactPlaceholder>
             </div>
             <div className={css(styles.mobileHubListContainer)}>
               <HubsList
