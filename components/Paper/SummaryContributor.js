@@ -92,7 +92,6 @@ const SummaryContributor = (props) => {
           username={authorProfile.first_name + " " + authorProfile.last_name}
           authorProfile={authorProfile}
           date={summary.approved_date}
-          fullDate={true}
           metaData={formatMetadata()}
           fetching={loadingSummary}
         />

@@ -50,7 +50,7 @@ class PaperEditHistory extends React.Component {
           onClick={() => this.changeEditView(index, edit.summary)}
         >
           <div className={css(styles.date)}>
-            {moment(edit.approvedDate).format("MMM Do YYYY, h:mm A")}
+            {moment(edit.approvedDate).format("MMM D YYYY, h:mm A")}
             {index === 0 && <span>{` (Current Ver.)`}</span>}
           </div>
           <div className={css(styles.user)}>

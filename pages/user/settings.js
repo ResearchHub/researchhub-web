@@ -639,7 +639,6 @@ const styles = StyleSheet.create({
   currentValue: {},
   primaryEmail: {
     width: "100%",
-    transition: "all ease-in-out 0.1s",
     fontSize: 16,
     fontWeight: 300,
   },
