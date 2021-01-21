@@ -21,49 +21,39 @@ const UserPromotions = (props) => {
   const [loading, setLoading] = useState(false);
 
   const renderPromotions = () => {
-    let { author, fetching } = props;
-    if (fetching) {
-      return (
-        <Fragment>
-          <div className={css(styles.card)}>
-            <ReactPlaceholder
-              ready={false}
-              showLoadingAnimation
-              customPlaceholder={<PaperPlaceholder color="#efefef" />}
-            />
-          </div>
-          <div className={css(styles.card)}>
-            <ReactPlaceholder
-              ready={false}
-              showLoadingAnimation
-              customPlaceholder={<PaperPlaceholder color="#efefef" />}
-            />
-          </div>
-        </Fragment>
-      );
-    }
+    const { author, fetching } = props;
 
-    let promotions =
+    const promotions =
       author.promotions && author.promotions.results
         ? author.promotions.results
         : [];
 
-    if (promotions.length === 0) {
-      return (
-        <div className={css(styles.box)}>
-          <div className={css(styles.icon)}>{icons.bolt}</div>
-          <h2 className={css(styles.noContent)}>
-            User has not supported any content
-          </h2>
-        </div>
-      );
-    }
-    return promotions.map((promotion, i) => {
-      const { source } = promotion;
-      if (source) {
-        return <PromotionCard paper={source} promotion={promotion} index={i} />;
-      }
-    });
+        
+    return (
+      <ReactPlaceholder
+        ready={!fetching}
+        showLoadingAnimation
+        customPlaceholder={<PaperPlaceholder color="#efefef" rows={2} />}
+      >
+        {promotions.length ? (
+          promotions.map((promotion, i) => {
+            const { source } = promotion;
+            if (source) {
+              return (
+                <PromotionCard paper={source} promotion={promotion} index={i} />
+              );
+            }
+          })
+        ) : (
+          <div className={css(styles.box)}>
+            <div className={css(styles.icon)}>{icons.bolt}</div>
+            <h2 className={css(styles.noContent)}>
+              User has not supported any content
+            </h2>
+          </div>
+        )}
+      </ReactPlaceholder>
+    );
   };
 
   const loadMore = () => {
@@ -87,9 +77,11 @@ const UserPromotions = (props) => {
   };
 
   const renderLoadMoreButton = () => {
-    if (props.fetching) return;
-    if (props.author && props.author.promotions) {
-      let { next } = props.author.promotions;
+    const { fetching, author } = props;
+
+    if (fetching) return;
+    if (author && author.promotions) {
+      const { next } = author.promotions;
       if (next !== null) {
         return (
           <div className={css(styles.buttonContainer)}>

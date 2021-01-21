@@ -38,19 +38,19 @@ const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
 const contentSubscriptionOptions = [
   {
     id: "paperSubscription",
-    label: "Threads on papers I authored",
+    label: "Threads on my authored papers",
   },
   {
     id: "threadSubscription",
-    label: "Comments on a thread I posted",
+    label: "Comments on my post",
   },
   {
     id: "commentSubscription",
-    label: "Replies to a comment I posted",
+    label: "Replies to my comments",
   },
   {
     id: "replySubscription",
-    label: "Responses to a reply I posted",
+    label: "Responses to my replies",
   },
 ];
 
@@ -177,7 +177,7 @@ class UserSettings extends Component {
   };
 
   renderPrimaryEmail = () => {
-    let { email, activeEmailInput, transition } = this.state;
+    const { email, activeEmailInput, transition } = this.state;
 
     return (
       <div className={css(styles.container)}>
@@ -400,23 +400,22 @@ class UserSettings extends Component {
   };
 
   handleHubOnChange = (id, newHubList) => {
-    let prevState = this.props.subscribedHubs;
+    const prevState = this.props.subscribedHubs;
 
     if (doesNotExist(newHubList)) {
       newHubList = [];
     }
 
     if (newHubList.length > prevState.length) {
-      let newHub = newHubList[newHubList.length - 1];
+      const newHub = newHubList[newHubList.length - 1];
       this.handleHubSubscribe(newHub, newHubList);
     } else {
-      let removedHub = this.detectRemovedHub(prevState, newHubList);
+      const removedHub = this.detectRemovedHub(prevState, newHubList);
       this.confirmUnsubscribe(removedHub, newHubList);
     }
   };
 
   handleHubSubscribe = (hub, newState) => {
-    let { hubState } = this.props;
     subscribeToHub(hub.value)
       .then((res) => {
         // this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
@@ -428,7 +427,7 @@ class UserSettings extends Component {
   };
 
   detectRemovedHub = (prevState, newState) => {
-    var cache = {};
+    const cache = {};
     prevState.forEach((hub) => {
       cache[hub.id] = hub;
     });
@@ -540,7 +539,7 @@ class UserSettings extends Component {
 
   render() {
     return (
-      <ComponentWrapper>
+      <ComponentWrapper overrideStyle={styles.componentWrapper}>
         <div className={css(styles.settingsPage)}>
           <div className={css(defaultStyles.title, styles.title)}>
             Email Settings
@@ -548,8 +547,6 @@ class UserSettings extends Component {
           {this.renderPrimaryEmail()}
           {this.renderFrequencySelect()}
           {this.renderSubscribedHubs()}
-          {/* {this.renderHubSelect()} */}
-
           <div className={css(styles.container)}>
             <div className={css(styles.listLabel)} id={"hubListTitle"}>
               {"Notifications"}
@@ -564,11 +561,28 @@ class UserSettings extends Component {
 }
 
 const styles = StyleSheet.create({
+  componentWrapper: {
+    "@media only screen and (min-width: 1280px)": {
+      width: 800,
+    },
+    "@media only screen and (min-width: 1440px)": {
+      width: 800,
+    },
+  },
   settingsPage: {
+    width: "100%",
     display: "flex",
     flexDirection: "column",
-    width: "100%",
-    paddingTop: 30,
+    boxSizing: "border-box",
+    background: "#fff",
+    border: "1.5px solid #F0F0F0",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    padding: 50,
+    paddingTop: 24,
+    marginTop: 30,
+    "@media only screen and (max-width: 767px)": {
+      padding: 20,
+    },
   },
   title: {
     paddingBottom: 10,
@@ -595,7 +609,7 @@ const styles = StyleSheet.create({
   listLabel: {
     textTransform: "uppercase",
     fontWeight: 500,
-    fontSize: 13,
+    fontSize: 15,
     letterSpacing: 1.2,
     marginBottom: 15,
     textAlign: "left",
@@ -603,13 +617,14 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   container: {
-    padding: "15px 10px",
+    padding: "30px 10px",
     borderTop: "1px solid #EDEDED",
   },
   formSelectContainer: {
     padding: 0,
     margin: 0,
     width: "100%",
+    minHeight: "unset",
   },
   formSelectInput: {
     width: "100%",
@@ -636,7 +651,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-  currentValue: {},
   primaryEmail: {
     width: "100%",
     fontSize: 16,
@@ -686,7 +700,6 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     minHeight: "unset",
-    // width: '100%'
     width: "calc(100% - 32px)",
   },
   emailInput: {
@@ -745,11 +758,15 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: 10,
+    padding: "10px 0",
+    borderTop: "1px solid #EDEDED",
+    fontWeight: 300,
+    ":hover": {
+      fontWeight: 500,
+    },
   },
   checkboxLabel: {
     fontSize: 16,
-    fontWeight: 300,
   },
   optOut: {
     fontWeight: 400,
