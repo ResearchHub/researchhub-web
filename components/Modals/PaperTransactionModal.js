@@ -669,7 +669,7 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column)}>
               <div className={css(styles.mainHeader)}>
                 Transaction Successful
-                <span className={css(styles.icon)}>icons.checkCircle</span>
+                <span className={css(styles.icon)}>{icons.checkCircle}</span>
               </div>
               {!offChain && (
                 <div className={css(styles.confirmation)}>
