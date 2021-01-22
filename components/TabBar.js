@@ -78,13 +78,17 @@ const TabBar = (props) => {
   );
 };
 
-const NavigationArrow = ({ icon, direction }) => {
+export const NavigationArrow = ({ icon, direction, customStyles }) => {
   const classNames = [styles.arrowContainer];
 
   if (direction === "left") {
     classNames.push(styles.arrowLeft);
   } else {
     classNames.push(styles.arrowRight);
+  }
+
+  if (customStyles) {
+    classNames.push(customStyles);
   }
 
   return <div className={css(classNames)}>{icon}</div>;
