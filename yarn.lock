@@ -6702,6 +6702,11 @@ react-google-recaptcha@^2.1.0:
     prop-types "^15.5.0"
     react-async-script "^1.1.1"
 
+react-horizontal-scrolling-menu@^0.7.8:
+  version "0.7.8"
+  resolved "https://registry.yarnpkg.com/react-horizontal-scrolling-menu/-/react-horizontal-scrolling-menu-0.7.8.tgz#9b209cb7620209fc1ae5e3fae25a0fe4d83b014e"
+  integrity sha512-81UkisL7BNdG0zboDLsNta8PZ4zrw6m5XpdOlzyxls38BSVqCkm1hsDjvAyL32XUb0UiPtpIBZDA8gI/neBEVA==
+
 react-hotjar@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/react-hotjar/-/react-hotjar-2.2.0.tgz#c520b3ab8dc7f0c9ba468a8232ac326924a07331"

@@ -74,9 +74,11 @@ class WithdrawalModal extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.auth.isLoggedIn) {
       if (!this.state.buttonEnabled && this.props.agreedToTerms) {
-        this.setState({
-          buttonEnabled: true,
-        });
+        if (this.state.userBalance) {
+          this.setState({
+            buttonEnabled: true,
+          });
+        }
       }
       if (
         prevProps.modals.openWithdrawalModal !==
@@ -95,12 +97,12 @@ class WithdrawalModal extends React.Component {
   }
 
   checkNetwork = () => {
-    let that = this;
+    const that = this;
     if (!this.state.connectedMetaMask) {
       ethereum
         .send("eth_requestAccounts")
         .then((accounts) => {
-          let account = accounts && accounts.result ? accounts.result[0] : [];
+          const account = accounts && accounts.result ? accounts.result[0] : [];
           that.setState({
             connectedMetaMask: true,
             ethAccount: account,
@@ -149,8 +151,8 @@ class WithdrawalModal extends React.Component {
   };
 
   updateAccount = (accounts) => {
-    let account = accounts && accounts[0] && accounts[0];
-    let valid = this.isAddress(account);
+    const account = accounts && accounts[0] && accounts[0];
+    const valid = this.isAddress(account);
     this.setState({
       ethAccount: account,
       ethAccountIsValid: valid,
@@ -158,7 +160,7 @@ class WithdrawalModal extends React.Component {
   };
 
   closeModal = () => {
-    let { openWithdrawalModal } = this.props;
+    const { openWithdrawalModal } = this.props;
     this.setState({
       ...this.initialState,
     });

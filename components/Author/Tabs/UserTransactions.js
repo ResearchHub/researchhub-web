@@ -7,6 +7,7 @@ import Ripples from "react-ripples";
 import TransactionCard from "../../ResearchCoin/TransactionCard";
 import Loader from "~/components/Loader/Loader";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+import EmptyState from "./EmptyState";
 
 // Redux
 import { TransactionActions } from "~/redux/transaction";
@@ -45,8 +46,8 @@ class UserTransaction extends React.Component {
 
   renderLoadMoreButton = () => {
     if (this.props.transactions && this.props.transactions.withdrawals) {
-      let { loading } = this.state;
-      let { next } = this.props.transactions;
+      const { loading } = this.state;
+      const { next } = this.props.transactions;
       if (next) {
         return (
           <div className={css(styles.buttonContainer)}>
@@ -72,7 +73,7 @@ class UserTransaction extends React.Component {
   };
 
   render() {
-    let { transactions } = this.props;
+    const { transactions } = this.props;
     return (
       <ReactPlaceholder
         ready={transactions && !this.props.fetching}
@@ -90,12 +91,10 @@ class UserTransaction extends React.Component {
             );
           })
         ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>{icons.receipt}</div>
-            <h2 className={css(styles.noContent)}>
-              User has not created any transactions
-            </h2>
-          </div>
+          <EmptyState
+            message={"User has not created any transactions"}
+            icon={icons.receipt}
+          />
         )}
         {this.renderLoadMoreButton()}
       </ReactPlaceholder>

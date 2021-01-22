@@ -1,7 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Component
 import withWebSocket from "~/components/withWebSocket";

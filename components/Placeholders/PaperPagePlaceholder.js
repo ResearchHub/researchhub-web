@@ -111,7 +111,6 @@ const PaperPagePlaceholder = ({ color }) => (
         </div>
         <RectShape
           className={css(styles.textRow)}
-          // rows={1}
           color={color}
           style={{ width: 180, height: 250 }}
         />

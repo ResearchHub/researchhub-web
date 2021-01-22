@@ -5,7 +5,6 @@ import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 import { withAlert } from "react-alert";
 
 // Components
