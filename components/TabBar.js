@@ -79,7 +79,15 @@ const TabBar = (props) => {
 };
 
 const NavigationArrow = ({ icon, direction }) => {
-  return <div className={css(styles.arrowContainer)}>{icon}</div>;
+  const classNames = [styles.arrowContainer];
+
+  if (direction === "left") {
+    classNames.push(styles.arrowLeft);
+  } else {
+    classNames.push(styles.arrowRight);
+  }
+
+  return <div className={css(classNames)}>{icon}</div>;
 };
 
 function formatTabs(tab) {
@@ -239,11 +247,16 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: 33,
-    width: 33,
-    fontSize: 18,
+    maxHeight: 40,
+    minHeight: 40,
+    height: 40,
+    maxWidth: 40,
+    minWidth: 40,
+    width: 40,
+    fontSize: 20,
     borderRadius: "50%",
     background: "#FFF",
+    boxSizing: "border-box",
     color: colors.PURPLE(),
     border: "1.5px solid rgba(151, 151, 151, 0.2)",
     cursor: "pointer",
@@ -251,6 +264,12 @@ const styles = StyleSheet.create({
     ":hover": {
       background: "#FAFAFA",
     },
+  },
+  arrowLeft: {
+    paddingRight: 2,
+  },
+  arrowRight: {
+    paddingLeft: 5,
   },
 });
 
