@@ -3,6 +3,7 @@ import { Fragment } from "react";
 
 import ThreadTextEditor from "./ThreadTextEditor";
 
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { doesNotExist } from "~/config/utils";
 
@@ -75,7 +76,7 @@ class ThreadActionBar extends React.Component {
           className={css(styles.iconChat, showChildrenState && styles.active)}
           id={"chatIcon"}
         >
-          <i className="fad fa-comments" />
+          {icons.comments}
         </span>
         <span
           className={css(
@@ -114,7 +115,7 @@ class ThreadActionBar extends React.Component {
           )}
           id={"chatIcon"}
         >
-          <i className="fad fa-pencil"></i>
+          {icons.pencil}
         </span>
         <span
           className={css(
@@ -186,7 +187,7 @@ class ThreadActionBar extends React.Component {
                   )}
                   id={"replyIcon"}
                 >
-                  <i className="fad fa-comment-alt-edit" />
+                  {icons.commentAltEdit}
                 </span>
                 Respond
               </div>

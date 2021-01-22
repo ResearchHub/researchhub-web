@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import Ripple from "react-ripples";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 
 const CheckBox = ({ id, active, label, isSquare, onChange, labelStyle }) => {
@@ -21,10 +22,9 @@ const CheckBox = ({ id, active, label, isSquare, onChange, labelStyle }) => {
           }}
         >
           {isSquare ? (
-            <i
-              className="far fa-check"
-              style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
-            />
+            <span style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}>
+              {icons.check}
+            </span>
           ) : (
             <div className={css(styles.dot, active && styles.white)} />
           )}

@@ -31,6 +31,7 @@ import Loader from "~/components/Loader/Loader";
 import "~/components/Paper/CitationCard.css";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
@@ -142,7 +143,7 @@ const AuthorPage = (props) => {
   const socialMedia = [
     {
       link: author.linkedin,
-      icon: <i className="fab fa-linkedin-in" />,
+      icon: icons.linkedIn,
       nodeRef: linkedinRef,
       dataTip: "Set LinkedIn Profile",
       onClick: () => setEditLinkedin(true),
@@ -152,7 +153,7 @@ const AuthorPage = (props) => {
     },
     {
       link: author.twitter,
-      icon: <i className="fab fa-twitter" />,
+      icon: icons.twitter,
       nodeRef: twitterRef,
       dataTip: "Set Twitter Profile",
       onClick: () => setEditTwitter(true),
@@ -162,7 +163,7 @@ const AuthorPage = (props) => {
     },
     {
       link: author.facebook,
-      icon: <i className="fab fa-facebook-f" />,
+      icon: icons.facebook,
       nodeRef: facebookRef,
       dataTip: "Set Facebook Profile",
       onClick: () => setEditFacebook(true),
@@ -710,7 +711,7 @@ const AuthorPage = (props) => {
             className={css(styles.submitSocialButton)}
             onClick={() => saveSocial(social)}
           >
-            <i className="fas fa-arrow-right"></i>
+            {icons.arrowRight}
           </div>
         </div>
       </div>
@@ -891,7 +892,7 @@ const AuthorPage = (props) => {
           onClick={() => setOpenShareModal(true)}
           data-tip={"Share Profile"}
         >
-          <i className="far fa-link"></i>
+          {icons.link}
         </span>
       </div>
     );
@@ -905,10 +906,9 @@ const AuthorPage = (props) => {
             <Button
               label={() => (
                 <Fragment>
-                  <i
-                    className="fas fa-edit"
-                    style={{ marginRight: 10, userSelect: "none" }}
-                  />
+                  <span style={{ marginRight: 10, userSelect: "none" }}>
+                    {icons.editHub}
+                  </span>
                   Edit Profile
                 </Fragment>
               )}
@@ -924,13 +924,7 @@ const AuthorPage = (props) => {
             iconStyle={styles.moderatorIcon}
             labelStyle={styles.moderatorLabel}
             icon={
-              fetching ? (
-                " "
-              ) : isSuspended ? (
-                <i className="fas fa-user-plus" />
-              ) : (
-                <i className="fas fa-user-slash" />
-              )
+              fetching ? " " : isSuspended ? icons.userPlus : icons.userSlash
             }
             label={
               fetching ? (
@@ -959,7 +953,7 @@ const AuthorPage = (props) => {
         <div className={css(styles.educationSummaryContainer) + " clamp2"}>
           {(author.headline || author.education) && (
             <div className={css(styles.educationSummary) + " clamp2"}>
-              <i className={css(styles.icon) + " fas fa-graduation-cap"}></i>
+              <span className={css(styles.icon)}>{icons.graduationCap}</span>
               {eduSummary}
             </div>
           )}

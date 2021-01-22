@@ -26,11 +26,7 @@ const ActionButton = (props) => {
 
   function renderIcon() {
     if (icon) {
-      return (
-        <span className={css(styles.icon)}>
-          <i className={icon} />
-        </span>
-      );
+      return <span className={css(styles.icon)}>{icons[icon]}</span>;
     } else if (iconNode) {
       return iconNode;
     }

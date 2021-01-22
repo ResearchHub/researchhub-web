@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import Ripples from "react-ripples";
 import { useAlert } from "react-alert";
 import Link from "next/link";
-import moment from "moment";
+import * as moment from "dayjs";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -24,10 +24,11 @@ import "~/components/Paper/CitationCard.css";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { timeAgo, createUserSummary } from "~/config/utils";
+import { createUserSummary } from "~/config/utils";
+import { timeAgo } from "~/config/utils/dates";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { paperSummaryPost } from "../redux/paper/shims";
+import ContentSupportModal from "./Modals/ContentSupportModal";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -140,7 +141,7 @@ const DiscussionPostMetadata = (props) => {
           <span
             className={css(styles.icon, styles.expandIcon, styles.shareIcon)}
           >
-            <i className="fad fa-share-square" />
+            {icons.shareSquare}
           </span>
           <span className={css(styles.text, styles.expandText)}>Share</span>
         </div>
@@ -228,6 +229,7 @@ const DiscussionPostMetadata = (props) => {
 
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
+      <ContentSupportModal />
       <AuthorAvatar
         author={authorProfile}
         name={username}
@@ -330,9 +332,7 @@ const Timestamp = (props) => {
             •
           </span>
           {timestamp} from Twitter
-          <div className={css(styles.twitterIcon)}>
-            <i className="fab fa-twitter" />
-          </div>
+          <div className={css(styles.twitterIcon)}>{icons.twitter}</div>
         </a>
       </div>
     );
@@ -359,10 +359,11 @@ const Timestamp = (props) => {
 };
 
 function formatTimestamp(props) {
+  console.log("props", props);
   let { date } = props;
   date = new Date(date);
   if (props.fullDate) {
-    return moment(date).format("MMM Do YYYY");
+    return moment(date).format("MMM D, YYYY");
   }
   return timeAgo.format(date);
 }
@@ -379,11 +380,7 @@ const HideButton = (props) => {
           className={css(styles.icon, hideState && styles.active)}
           id={"hideIcon"}
         >
-          {hideState ? (
-            <i className="fad fa-eye-slash" />
-          ) : (
-            <i className="fad fa-eye" />
-          )}
+          {hideState ? icons.eyeSlash : icons.eye}
         </span>
         <span className={css(styles.text)} id={"hideText"}>
           {hideState ? "Show" : "Hide"}
@@ -400,7 +397,7 @@ const ExpandButton = (props) => {
     <Ripples className={css(styles.dropdownItem)}>
       <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={threadPath}>
         <span className={css(styles.icon, styles.expandIcon)} id={"expandIcon"}>
-          <i className="fal fa-expand-arrows" />
+          {icons.expandArrows}
         </span>
         <span className={css(styles.text, styles.expandText)} id={"expandText"}>
           Expand
@@ -492,12 +489,7 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  smallerName: {
-    // fontSize: 13,
-    // "@media only screen and (max-width: 415px)": {
-    //   fontSize: 12,
-    // },
-  },
+  smallerName: {},
   authorName: {
     fontWeight: 500,
   },

@@ -5,23 +5,18 @@ import withRedux from "next-redux-wrapper";
 import { Provider } from "react-redux";
 import { configureStore } from "~/redux/configureStore";
 import "isomorphic-unfetch";
-import "../components/Paper/progressbar.css";
-import "react-tagsinput/react-tagsinput.css";
-import "../components/SearchSuggestion/authorinput.css";
-import { KeyUtils } from "slate";
 import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
-import { isMobile } from "react-device-detect";
-
-// FontAwesome SSR
-// import { config } from "@fortawesome/fontawesome-svg-core";
-// import "@fortawesome/fontawesome-svg-core/styles.css";
-// config.autoAddCss = false;
 
 // Components
 import Base from "./Base";
+
+// Stylesheets
 import "./stylesheets/App.css";
+import "../components/Paper/progressbar.css";
+import "react-tagsinput/react-tagsinput.css";
+import "../components/SearchSuggestion/authorinput.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -38,7 +33,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-const apm = initApm({
+initApm({
   // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
   serviceName:
     process.env.REACT_APP_ENV === "staging"
@@ -98,11 +93,9 @@ class MyApp extends App {
 
   componentDidMount() {
     this.connectSift();
-    if (!isMobile) {
-      let scriptElem = document.createElement("script");
-      scriptElem.src = "https://app.appzi.io/bootstrap/bundle.js?token=ECg1v";
-      document.getElementsByTagName("head")[0].appendChild(scriptElem);
-    }
+    let scriptElem = document.createElement("script");
+    scriptElem.src = "https://app.appzi.io/bootstrap/bundle.js?token=ECg1v";
+    document.getElementsByTagName("head")[0].appendChild(scriptElem);
   }
 
   componentWillUnmount() {
@@ -171,14 +164,6 @@ class MyApp extends App {
 
   render() {
     const { store } = this.props;
-    let keyInt = 0;
-
-    const keygen = () => {
-      let keyString = `${Date.now().toString()}_${keyInt++}`;
-      return keyString;
-    };
-
-    KeyUtils.setGenerator(keygen);
 
     return (
       <Provider store={store}>

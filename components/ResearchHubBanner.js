@@ -9,6 +9,8 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 // Redux
 import { AuthActions } from "~/redux/auth";
 
+import icons from "~/config/themes/icons";
+
 class ResearchHubBanner extends React.Component {
   constructor(props) {
     super(props);
@@ -48,7 +50,7 @@ class ResearchHubBanner extends React.Component {
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}
         >
-          <i className="fal fa-times" />
+          {icons.times}
         </span>
         <img
           src={"/static/background/background-home.webp"}

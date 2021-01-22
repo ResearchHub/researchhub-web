@@ -371,11 +371,9 @@ class PaperProgress extends React.Component {
               )}
               id="icon"
             >
-              {section.active && !loading ? (
-                icons.checkCircle
-              ) : (
-                <i className="fal fa-plus-circle"></i>
-              )}
+              {section.active && !loading
+                ? icons.checkCircle
+                : icons.plusCircle}
             </div>
             {section.label}
             {!!section.count && ":"}

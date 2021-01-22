@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { useSpring, animated as a } from "react-spring";
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 import API from "~/config/api";
@@ -64,11 +65,7 @@ const UserPrompt = (props) => {
             onMouseEnter={() => setHoverUp(true)}
             onMouseLeave={() => setHoverUp(false)}
           >
-            {hoverUp ? (
-              <i className="fas fa-thumbs-up" />
-            ) : (
-              <i className="fad fa-thumbs-up" />
-            )}
+            {hoverUp ? icons.solidThumbsUp : icons.opaqueThumbsUp}
           </div>
           <div
             className={css(styles.thumbsDown)}
@@ -76,11 +73,7 @@ const UserPrompt = (props) => {
             onMouseEnter={() => setHoverDown(true)}
             onMouseLeave={() => setHoverDown(false)}
           >
-            {hoverDown ? (
-              <i className="fas fa-thumbs-down" />
-            ) : (
-              <i className="fad fa-thumbs-down" />
-            )}
+            {hoverDown ? icons.solidThumbsDown : icons.opaqueThumbsDown}
           </div>
         </div>
       </Fragment>
@@ -93,7 +86,7 @@ const UserPrompt = (props) => {
         className={css(styles.closeButton)}
         onClick={() => displayShowPrompt(false)}
       >
-        <i className="fal fa-times" />
+        {icons.times}
       </div>
       {renderContent()}
     </a.div>

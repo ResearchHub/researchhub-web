@@ -4,7 +4,6 @@ import ReactPlaceholder from "react-placeholder";
 import Ripples from "react-ripples";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import TransactionCard from "../../ResearchCoin/TransactionCard";
 import Loader from "~/components/Loader/Loader";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
@@ -13,6 +12,7 @@ import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 import { TransactionActions } from "~/redux/transaction";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -91,9 +91,7 @@ class UserTransaction extends React.Component {
           })
         ) : (
           <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-receipt" />
-            </div>
+            <div className={css(styles.icon)}>{icons.receipt}</div>
             <h2 className={css(styles.noContent)}>
               User has not created any transactions
             </h2>

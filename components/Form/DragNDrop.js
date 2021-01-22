@@ -4,6 +4,7 @@ import Dropzone from "react-dropzone";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -276,11 +277,9 @@ class DragNDrop extends React.Component {
                       !this.state.validUrl && styles.errorIcon
                     )}
                   >
-                    {this.state.validUrl ? (
-                      <i className="fal fa-check-circle" />
-                    ) : (
-                      <i className="fal fa-times-circle" />
-                    )}
+                    {this.state.validUrl
+                      ? icons.checkCircle
+                      : icons.timesCircle}
                   </span>
                 )
               ) : null

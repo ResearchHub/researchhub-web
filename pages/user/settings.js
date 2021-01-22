@@ -12,12 +12,7 @@ import FormInput from "~/components/Form/FormInput";
 import ComponentWrapper from "~/components/ComponentWrapper";
 
 import { DIGEST_FREQUENCY } from "~/config/constants";
-import {
-  checkBoxStyles,
-  defaultStyles,
-  hubStyles,
-  selectStyles,
-} from "~/config/themes/styles";
+import { defaultStyles, hubStyles, selectStyles } from "~/config/themes/styles";
 import { updateEmailPreference, fetchEmailPreference } from "~/config/fetch";
 import {
   buildSubscriptionPatch,
@@ -30,7 +25,7 @@ import { HubActions } from "~/redux/hub";
 import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
 import { doesNotExist, isEmpty } from "~/config/utils";
 import colors from "../../config/themes/colors";
-
+import icons from "~/config/themes/icons";
 import "./stylesheets/toggle.css";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
@@ -194,11 +189,7 @@ class UserSettings extends Component {
             className={css(styles.editIcon)}
             onClick={this.toggleEmailInput}
           >
-            {activeEmailInput ? (
-              <i className="fal fa-times" />
-            ) : (
-              <i className="fas fa-pencil" />
-            )}
+            {activeEmailInput ? icons.times : icons.pencil}
           </Ripples>
         </div>
         <div
@@ -230,7 +221,7 @@ class UserSettings extends Component {
                   this.saveEmail();
                 }}
               >
-                <i className="fad fa-paper-plane" />
+                {icons.paperPlane}
               </Ripples>
             </form>
           ) : (
@@ -329,9 +320,7 @@ class UserSettings extends Component {
         className={css(hubStyles.entry, styles.hubEntry)}
       >
         {hub.name}
-        <div className={css(styles.closeIcon)}>
-          <i className="fal fa-times" />
-        </div>
+        <div className={css(styles.closeIcon)}>{icons.times}</div>
       </Ripples>
     );
   };
@@ -650,7 +639,6 @@ const styles = StyleSheet.create({
   currentValue: {},
   primaryEmail: {
     width: "100%",
-    transition: "all ease-in-out 0.1s",
     fontSize: 16,
     fontWeight: 300,
   },

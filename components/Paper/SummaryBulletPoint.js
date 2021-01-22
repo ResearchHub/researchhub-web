@@ -197,7 +197,6 @@ const SummaryBulletPoint = (props) => {
                 }
                 authorProfile={authorProfile}
                 date={data.created_date}
-                fullDate={true}
                 hideHeadline={true}
                 containerStyle={styles.metadata}
                 smaller={true}

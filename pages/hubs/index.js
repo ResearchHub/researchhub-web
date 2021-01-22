@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
 
 // Component
 import Button from "../../components/Form/Button";
@@ -14,7 +13,6 @@ import CategoryList from "~/components/Hubs/CategoryList";
 import HubCard from "../../components/Hubs/HubCard";
 
 // Config
-import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
 
 // Redux

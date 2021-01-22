@@ -27,8 +27,9 @@ import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
-import { doesNotExist, endsWithSlash } from "~/config/utils";
+import { endsWithSlash } from "~/config/utils";
 import { sendAmpEvent } from "~/config/fetch";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -111,53 +112,46 @@ const DiscussionTab = (props) => {
       threads = [];
     }
 
-    if (fetching) {
-      return (
-        <div className={css(styles.placeholderContainer)}>
-          <div className={css(styles.placeholder)}>
-            <ReactPlaceholder
-              ready={false}
-              showLoadingAnimation
-              customPlaceholder={<PaperPlaceholder color="#efefef" />}
-            >
-              <div></div>
-            </ReactPlaceholder>
-          </div>
+    return (
+      <div className={css(styles.placeholderContainer)}>
+        <div className={css(styles.placeholder)}>
+          <ReactPlaceholder
+            ready={!fetching}
+            showLoadingAnimation
+            customPlaceholder={<PaperPlaceholder color="#efefef" />}
+          >
+            {threads.length > 0
+              ? threads.map((t, i) => {
+                  return (
+                    <DiscussionEntry
+                      key={`thread-${t.data.id}`}
+                      data={t.data}
+                      hostname={hostname}
+                      hoverEvents={true}
+                      path={t.path}
+                      newCard={transition && i === 0} //conditions when a new card is made
+                      mobileView={mobileView}
+                      discussionCount={calculatedCount}
+                      setCount={setCount}
+                      paper={props.paperState}
+                    />
+                  );
+                })
+              : showTwitterComments && (
+                  <span className={css(styles.box, styles.emptyStateBox)}>
+                    <span className={css(styles.icon, styles.twitterIcon)}>
+                      {icons.twitter}
+                    </span>
+                    <h2 className={css(styles.noSummaryTitle)}>
+                      There are no tweets {mobileView && "\n"}for this paper
+                      yet.
+                    </h2>
+                  </span>
+                )}
+          </ReactPlaceholder>
         </div>
-      );
-    } else {
-      if (threads.length > 0) {
-        return threads.map((t, i) => {
-          return (
-            <DiscussionEntry
-              key={`thread-${t.data.id}`}
-              data={t.data}
-              hostname={hostname}
-              hoverEvents={true}
-              path={t.path}
-              newCard={transition && i === 0} //conditions when a new card is made
-              mobileView={mobileView}
-              discussionCount={calculatedCount}
-              setCount={setCount}
-              paper={props.paperState}
-            />
-          );
-        });
-      } else {
-        if (showTwitterComments) {
-          return (
-            <span className={css(styles.box, styles.emptyStateBox)}>
-              <span className={css(styles.icon, styles.twitterIcon)}>
-                <i className="fab fa-twitter" />
-              </span>
-              <h2 className={css(styles.noSummaryTitle)}>
-                There are no tweets {mobileView && "\n"}for this paper yet.
-              </h2>
-            </span>
-          );
-        }
-      }
-    }
+      </div>
+    );
   }
 
   const handleFilterChange = (id, filter) => {
@@ -295,9 +289,7 @@ const DiscussionTab = (props) => {
       >
         {threads.length < 1 && (
           <Fragment>
-            <span className={css(styles.icon)}>
-              <i className="fad fa-comments" />
-            </span>
+            <span className={css(styles.icon)}>{icons.comments}</span>
             <h2 className={css(styles.noSummaryTitle)}>
               Add a comment to this paper
             </h2>
@@ -757,7 +749,7 @@ var styles = StyleSheet.create({
     },
   },
   addDiscussionContainer: {
-    transition: "all ease-in-out 0.3s",
+    // transition: "all ease-in-out 0.3s",
     opacity: 1,
     width: "100%",
     "@media only screen and (max-width: 415px)": {

@@ -1,4 +1,5 @@
 import React from "react";
+import dynamic from "next/dynamic";
 
 // NPM Modules
 import { connect } from "react-redux";
@@ -6,19 +7,22 @@ import { StyleSheet, css } from "aphrodite";
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
 
 // Components
-import Message from "~/components/Loader/Message";
-import Navbar from "~/components/Navbar";
-import PermissionNotification from "../components/PermissionNotification";
-import AlertTemplate from "~/components/Modals/AlertTemplate";
-
 import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
 import { UniversityActions } from "../redux/universities";
 import { TransactionActions } from "../redux/transaction";
 import { NotificationActions } from "~/redux/notification";
-import { BannerActions } from "~/redux/banner";
 import PermissionActions from "../redux/permission";
-import Footer from "./footer";
+
+const DynamicPermissionNotification = dynamic(() =>
+  import("../components/PermissionNotification")
+);
+const DynamicMessage = dynamic(() => import("~/components/Loader/Message"));
+const DynamicAlertTemplate = dynamic(() =>
+  import("~/components/Modals/AlertTemplate")
+);
+const DynamicFooter = dynamic(() => import("./footer"));
+const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 
 class Base extends React.Component {
   componentDidMount = async () => {
@@ -26,11 +30,9 @@ class Base extends React.Component {
       fetchPermissions,
       getUser,
       getUniversities,
-      getUserBannerPreference,
       getWithdrawals,
       getTopHubs,
       getNotifications,
-      determineBanner,
       auth,
     } = this.props;
 
@@ -40,8 +42,6 @@ class Base extends React.Component {
     if (auth.isLoggedIn) {
       getWithdrawals();
       getNotifications();
-      // getUserBannerPreference(); currently removed banner
-      // determineBanner();
     }
     fetchPermissions();
   };
@@ -54,14 +54,14 @@ class Base extends React.Component {
     };
 
     return (
-      <AlertProvider template={AlertTemplate} {...options}>
+      <AlertProvider template={DynamicAlertTemplate} {...options}>
         <div className={css(styles.pageWrapper)}>
-          <PermissionNotification />
-          <Navbar />
+          <DynamicPermissionNotification />
+          <DynamicNavbar />
           <Component {...pageProps} />
-          <Message />
+          <DynamicMessage />
         </div>
-        <Footer />
+        <DynamicFooter />
       </AlertProvider>
     );
   }
@@ -82,15 +82,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
-  getCategories: HubActions.getCategories,
   getTopHubs: HubActions.getTopHubs,
   getUniversities: UniversityActions.getUniversities,
-  getUserBannerPreference: AuthActions.getUserBannerPreference,
   fetchPermissions: PermissionActions.fetchPermissions,
-  fetchPermissionsPending: PermissionActions.fetchPermissionsPending,
   getWithdrawals: TransactionActions.getWithdrawals,
   getNotifications: NotificationActions.getNotifications,
-  determineBanner: BannerActions.determineBanner,
 };
 
 export default connect(

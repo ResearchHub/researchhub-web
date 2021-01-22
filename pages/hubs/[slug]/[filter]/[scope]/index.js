@@ -1,13 +1,9 @@
 import React from "react";
 import Router from "next/router";
-import { connect } from "react-redux";
 
 // Components
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
-
-// Redux
-import { AuthActions } from "~/redux/auth";
 
 // Config
 import API from "~/config/api";

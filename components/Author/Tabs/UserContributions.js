@@ -12,6 +12,7 @@ import Loader from "~/components/Loader/Loader";
 import { AuthorActions } from "~/redux/author";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
@@ -123,9 +124,7 @@ class UserContributionsTab extends React.Component {
           </div>
         ) : (
           <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-comment-alt-edit"></i>
-            </div>
+            <div className={css(styles.icon)}>{icons.commmentAlt}</div>
             <h2 className={css(styles.noContent)}>
               User has not submitted a paper
             </h2>
