@@ -28,8 +28,6 @@ import Button from "~/components/Form/Button";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import Loader from "~/components/Loader/Loader";
 
-import "~/components/Paper/CitationCard.css";
-
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
@@ -47,7 +45,6 @@ const AuthorPage = (props) => {
   const store = useStore();
   const { tabName } = router.query;
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
-  const [fetching, setFetching] = useState(true);
 
   // User External Links
   const [openShareModal, setOpenShareModal] = useState(false);
@@ -66,8 +63,10 @@ const AuthorPage = (props) => {
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
 
+  // FetchingState
+  const [fetching, setFetching] = useState(true);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
-  const [mobileView, setMobileView] = useState(false);
+  const [fetchedUser, setFetchedUser] = useState(false);
 
   // Summary constants
   const [summaries, setSummaries] = useState([]);
@@ -99,42 +98,49 @@ const AuthorPage = (props) => {
     {
       href: "contributions",
       label: "paper submissions",
+      name: "Paper Submissions",
       showCount: true,
       count: () => author.userContributions.count,
     },
     {
       href: "summaries",
       label: "submitted summaries",
+      name: "Submitted Summaries",
       showCount: true,
       count: () => summaryCount,
     },
     {
       href: "takeaways",
       label: "key takeaways",
+      name: "Key Takeaways",
       showCount: true,
       count: () => takeawayCount,
     },
     {
       href: "authored-papers",
       label: "authored papers",
+      name: "Authored Papers",
       showCount: true,
       count: () => author.authoredPapers.count,
     },
     {
       href: "discussions",
       label: "discussions",
+      name: "Discussions",
       showCount: true,
       count: () => author.userDiscussions.count,
     },
     {
       href: "transactions",
       label: "transactions",
+      name: "Transactions",
       showCount: true,
       count: () => transactions.count,
     },
     {
       href: "boosts",
       label: "supported papers",
+      name: "Supported Papers",
       showCount: true,
       count: () => author.promotions && author.promotions.count,
     },
@@ -175,19 +181,19 @@ const AuthorPage = (props) => {
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
-    window.addEventListener("resize", updateDimensions);
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
-      window.removeEventListener("resize", updateDimensions);
     };
   });
 
   useEffect(() => {
     setFetching(true);
+
     async function refetchAuthor() {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
       );
+      setFetchedUser(true); // needed for tabbar
     }
     const authored = fetchAuthoredPapers();
     const discussions = fetchUserDiscussions();
@@ -265,13 +271,7 @@ const AuthorPage = (props) => {
         }
       });
   }
-  function updateDimensions() {
-    if (window.innerWidth < 968) {
-      setMobileView(true);
-    } else {
-      setMobileView(false);
-    }
-  }
+
   /**
    * When we click anywhere outside of the dropdown, close it
    * @param { Event } e -- javascript event
@@ -519,39 +519,35 @@ const AuthorPage = (props) => {
               tabName === "contributions" ? styles.reveal : styles.hidden
             )}
           >
-            <UserContributionsTab fetching={fetching} mobileView={mobileView} />
+            <UserContributionsTab fetching={fetching} />
           </div>
           <div
             className={css(
               tabName === "authored-papers" ? styles.reveal : styles.hidden
             )}
           >
-            <AuthoredPapersTab fetching={fetching} mobileView={mobileView} />
+            <AuthoredPapersTab fetching={fetching} />
           </div>
           <div
             className={css(
               tabName === "discussions" ? styles.reveal : styles.hidden
             )}
           >
-            <UserDiscussionsTab
-              hostname={hostname}
-              fetching={fetching}
-              mobileView={mobileView}
-            />
+            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
           </div>
           {/* <div
             className={css(
               tabName === "projects" ? styles.reveal : styles.hidden
             )}
           >
-            <UserProjectsTab fetching={fetching} mobileView={mobileView} />
+            <UserProjectsTab fetching={fetching}  />
           </div> */}
           <div
             className={css(
               tabName === "transactions" ? styles.reveal : styles.hidden
             )}
           >
-            <UserTransactionsTab fetching={fetching} mobileView={mobileView} />
+            <UserTransactionsTab fetching={fetching} />
           </div>
           <div
             className={css(
@@ -560,7 +556,7 @@ const AuthorPage = (props) => {
           >
             <UserPromotionsTab
               fetching={fetchingPromotions}
-              mobileView={mobileView}
+              activeTab={tabName === "boosts"}
             />
           </div>
         </div>
@@ -927,7 +923,7 @@ const AuthorPage = (props) => {
               fetching ? " " : isSuspended ? icons.userPlus : icons.userSlash
             }
             label={
-              fetching ? (
+              !fetchedUser ? (
                 <Loader loading={true} color={"#FFF"} size={15} />
               ) : isSuspended ? (
                 "Reinstate User"
@@ -986,13 +982,16 @@ const AuthorPage = (props) => {
               : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
           </span>
         )}
+        {author.description && (
+          <span property="description">{author.description}</span>
+        )}
       </div>
     );
   };
 
   return (
     <div
-      className={css(styles.container)}
+      className={css(styles.root)}
       vocab="https://schema.org/"
       typeof="Person"
     >
@@ -1061,6 +1060,7 @@ const AuthorPage = (props) => {
         author={author}
         user={user}
         fetching={fetching}
+        showTabBar={fetchedUser}
       />
       <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
       <ShareModal
@@ -1089,6 +1089,9 @@ AuthorPage.getInitialProps = async ({ isServer, req, store, query }) => {
 };
 
 const styles = StyleSheet.create({
+  root: {
+    background: "#FFF",
+  },
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
@@ -1098,7 +1101,6 @@ const styles = StyleSheet.create({
   profileContainer: {
     display: "flex",
     padding: "30px 0",
-
     "@media only screen and (max-width: 767px)": {
       padding: "32px 0px",
       flexDirection: "column",
@@ -1147,6 +1149,12 @@ const styles = StyleSheet.create({
   },
   moderatorLabel: {
     fontWeight: 400,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
   },
   connectOrcid: {
     marginTop: 16,
@@ -1219,13 +1227,14 @@ const styles = StyleSheet.create({
   },
   educationSummary: {
     color: "#241F3A",
-    opacity: 0.5,
+    opacity: 0.7,
     fontSize: 15,
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-start",
     "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
+      marginTop: 10,
+      fontSize: 14,
     },
   },
   description: {
@@ -1236,6 +1245,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.5,
     "@media only screen and (max-width: 440px)": {
       justifyContent: "flex-start",
+      fontSize: 14,
     },
   },
   defaultDescription: {
@@ -1533,7 +1543,7 @@ const styles = StyleSheet.create({
   reputationTitle: {
     marginRight: 10,
     "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
+      fontSize: 14,
     },
   },
   rscBalance: {
@@ -1560,6 +1570,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
     display: "flex",
     alignItems: "center",
+    // color: "#241F3A",
+    color: "#000",
   },
   rhIcon: {
     width: 13,
@@ -1588,7 +1600,9 @@ const styles = StyleSheet.create({
     objectFit: "contain",
   },
   hidden: {
-    display: "none",
+    visibility: "hidden",
+    height: 0,
+    overflow: "hidden",
     zIndex: -10,
   },
   reveal: {

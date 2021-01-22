@@ -315,7 +315,6 @@ const Count = (props) => {
             size={4}
             color={paperTabColors.FONT}
             containerStyle={styles.customLoader}
-            // type={'beat'}
           />
         ) : (
           amount
@@ -367,16 +366,17 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     textTransform: "capitalize",
     whiteSpace: "nowrap",
-
+    fontSize: 16,
     "@media only screen and (max-width: 767px)": {
       padding: 16,
+      fontWeight: 14,
     },
 
     "@media only screen and (min-width: 1288px)": {
       marginRight: 0,
     },
     ":hover": {
-      color: paperTabColors.HOVER_FONT,
+      color: colors.PURPLE(),
       cursor: "pointer",
     },
     ":hover #count_border": {

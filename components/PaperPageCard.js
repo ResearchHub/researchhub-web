@@ -9,7 +9,6 @@ import Ripples from "react-ripples";
 import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 import * as Sentry from "@sentry/browser";
 
 // Components
@@ -27,9 +26,6 @@ import Button from "~/components/Form/Button";
 
 // redux
 import { ModalActions } from "~/redux/modals";
-
-// Stylesheets
-import "./stylesheets/Carousel.css";
 
 // Config
 import colors from "~/config/themes/colors";

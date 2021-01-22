@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Component
 import LiveFeed from "~/components/Hubs/LiveFeed";

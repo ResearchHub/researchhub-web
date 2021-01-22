@@ -10,7 +10,6 @@ import AvatarUpload from "~/components/AvatarUpload";
 import FormTextArea from "~/components/Form/FormTextArea";
 import EducationModal from "~/components/Modals/EducationModal";
 import EducationSummaryCard from "~/components/Form/EducationSummaryCard";
-import "~/components/TextEditor/stylesheets/ReactToggle.css";
 
 // Redux
 import { AuthActions } from "~/redux/auth";

@@ -29,7 +29,7 @@ class PromotionCard extends React.Component {
   }
 
   setStateByKey = (key, value) => {
-    let newState = { [key]: value };
+    const newState = { [key]: value };
     if (key === "views") {
       newState["fetchingViews"] = false;
     } else {
@@ -77,7 +77,7 @@ class PromotionCard extends React.Component {
   };
 
   renderData = () => {
-    let { promotion } = this.props;
+    const { promotion } = this.props;
     return (
       <div className={css(styles.row)}>
         <div
@@ -133,10 +133,10 @@ class PromotionCard extends React.Component {
      * show loading state,
      * add pagination
      */
-    let { promotion, paper } = this.props;
+    const { promotion, paper, isLast } = this.props;
 
     return (
-      <div className={css(styles.card)}>
+      <div className={css(styles.card, isLast && styles.removeBottomBorder)}>
         <div className={css(styles.metadata)}>
           <div className={css(styles.column, styles.vote)}>
             <ScorePill
@@ -206,7 +206,6 @@ class PromotionCard extends React.Component {
 const styles = StyleSheet.create({
   card: {
     width: "100%",
-    width: "100%",
     padding: "27px 20px",
     display: "flex",
     justifyContent: "space-between",
@@ -216,12 +215,16 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     position: "relative",
     "@media only screen and (max-width: 767px)": {
-      width: "85%",
       flexDirection: "column",
     },
     "@media only screen and (max-width: 620px)": {
       position: "relative",
+      paddingLeft: 0,
+      paddingRight: 0,
     },
+  },
+  removeBottomBorder: {
+    borderBottom: "none",
   },
   hide: {
     display: "none",

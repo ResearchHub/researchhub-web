@@ -10,7 +10,6 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";

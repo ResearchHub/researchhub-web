@@ -4,7 +4,6 @@ import Link from "next/link";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Component
 import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";

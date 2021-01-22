@@ -7,6 +7,7 @@ import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 import Loader from "~/components/Loader/Loader";
 import Ripples from "react-ripples";
+import EmptyState from "./EmptyState";
 
 import { AuthorActions } from "~/redux/author";
 
@@ -26,16 +27,16 @@ class UserDiscussionsTab extends React.Component {
   }
 
   loadMore = () => {
-    let { author, updateAuthorByKey } = this.props;
-    let { userDiscussions } = author;
+    const { author, updateAuthorByKey } = this.props;
+    const { userDiscussions } = author;
 
     this.setState({ fetching: true }, () => {
       fetch(userDiscussions.next, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let newState = { ...userDiscussions };
-          let newThreads = res.results.map((result) => thread(result));
+          const newState = { ...userDiscussions };
+          const newThreads = res.results.map((result) => thread(result));
           newState.discussions = [...newState.discussions, ...newThreads];
           newState.next = res.next;
           updateAuthorByKey({
@@ -49,11 +50,11 @@ class UserDiscussionsTab extends React.Component {
   };
 
   renderLoadMoreButton = () => {
-    let { author } = this.props;
-    let { fetching } = this.state;
+    const { author } = this.props;
+    const { fetching } = this.state;
 
     if (author && author.userDiscussions) {
-      let { next } = author.userDiscussions;
+      const { next } = author.userDiscussions;
 
       if (next !== null) {
         return (
@@ -80,9 +81,9 @@ class UserDiscussionsTab extends React.Component {
   };
 
   render() {
-    let { author, hostname } = this.props;
+    const { author, hostname } = this.props;
 
-    let discussions = author.userDiscussions.discussions.map(
+    const discussions = author.userDiscussions.discussions.map(
       (discussion, index) => {
         let path = `/paper/${discussion.paper}/${discussion.paper_slug}/${discussion.id}`;
         return (
@@ -119,12 +120,10 @@ class UserDiscussionsTab extends React.Component {
             {this.renderLoadMoreButton()}
           </React.Fragment>
         ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>{icons.comments}</div>
-            <h2 className={css(styles.noContent)}>
-              User has not created any discussions
-            </h2>
-          </div>
+          <EmptyState
+            message={"User has not created any discussions"}
+            icon={icons.comments}
+          />
         )}
       </ReactPlaceholder>
     );

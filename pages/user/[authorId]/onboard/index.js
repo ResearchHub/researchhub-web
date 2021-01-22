@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 import Router from "next/router";
 
 import OnboardPlaceholder from "~/components/Placeholders/OnboardPlaceholder";
