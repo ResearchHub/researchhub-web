@@ -6,6 +6,7 @@ import ReactPlaceholder from "react-placeholder";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 import Loader from "~/components/Loader/Loader";
 import Ripples from "react-ripples";
+import EmptyState from "./EmptyState";
 
 // Config
 import icons from "~/config/themes/icons";
@@ -43,7 +44,7 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
     );
   };
 
-  let allItems = items.map((item, index) => {
+  const keytakeaways = items.map((item, index) => {
     let path = `/paper/${item.paper}/${item.paper_slug}`;
     return (
       <div
@@ -71,18 +72,16 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
       showLoadingAnimation
       customPlaceholder={<PaperPlaceholder color="#efefef" />}
     >
-      {allItems.length > 0 ? (
+      {keytakeaways.length > 0 ? (
         <React.Fragment>
-          <div className={css(styles.container)}>{allItems}</div>
+          <div className={css(styles.container)}>{keytakeaways}</div>
           {renderLoadMoreButton()}
         </React.Fragment>
       ) : (
-        <div className={css(styles.box)}>
-          <div className={css(styles.icon)}>{icons.file}</div>
-          <h2 className={css(styles.noContent)}>
-            User has not created any summaries
-          </h2>
-        </div>
+        <EmptyState
+          message={"User has not created any summaries"}
+          icon={icons.file}
+        />
       )}
     </ReactPlaceholder>
   );
@@ -98,10 +97,6 @@ var styles = StyleSheet.create({
   },
   discussionContainer: {
     width: "100%",
-    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
-    "@media only screen and (max-width: 415px)": {
-      borderBottom: "none",
-    },
   },
   box: {
     display: "flex",

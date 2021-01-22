@@ -4,9 +4,9 @@ import ReactPlaceholder from "react-placeholder";
 import Ripples from "react-ripples";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
+import EmptyState from "./EmptyState";
 
 // Redux
 import { AuthorActions } from "~/redux/author";
@@ -29,13 +29,6 @@ class UserContributionsTab extends React.Component {
     };
   }
 
-  componentDidMount() {
-    let { author } = this.props;
-    this.setState({
-      // contributions: author.userContributions.contributions,
-    });
-  }
-
   componentDidUpdate(prevProps) {
     if (
       this.props.author.userContributions !== prevProps.author.userContributions
@@ -47,9 +40,8 @@ class UserContributionsTab extends React.Component {
   }
 
   voteCallback = (index, paper) => {
-    let contributions = [...this.state.contributions];
+    const contributions = [...this.state.contributions];
     contributions[index] = paper;
-
     this.setState({ contributions });
   };
 
@@ -62,12 +54,12 @@ class UserContributionsTab extends React.Component {
   };
 
   renderLoadMoreButton = () => {
-    let { author } = this.props;
+    const { author } = this.props;
 
     if (author && author.userContributions) {
-      let { next } = author.userContributions;
+      const { next } = author.userContributions;
 
-      if (next !== null) {
+      if (next) {
         return (
           <div className={css(styles.buttonContainer)}>
             {!this.state.fetching ? (
@@ -92,23 +84,26 @@ class UserContributionsTab extends React.Component {
   };
 
   render() {
-    let contributions = this.state.contributions.map((contribution, index) => {
-      return (
-        <div className={css(styles.contributionContainer)}>
-          <PaperEntryCard
-            key={`userContribution-${contribution.id}-${index}`}
-            paper={contribution}
-            index={index}
-            style={[
-              styles.paperEntryCard,
-              index === this.state.contributions.length - 1 && styles.noBorder,
-            ]}
-            voteCallback={this.voteCallback}
-            mobileView={this.props.mobileView}
-          />
-        </div>
-      );
-    });
+    const contributions = this.state.contributions.map(
+      (contribution, index) => {
+        return (
+          <div className={css(styles.contributionContainer)}>
+            <PaperEntryCard
+              key={`userContribution-${contribution.id}-${index}`}
+              paper={contribution}
+              index={index}
+              style={[
+                styles.paperEntryCard,
+                index === this.state.contributions.length - 1 &&
+                  styles.noBorder,
+              ]}
+              voteCallback={this.voteCallback}
+              mobileView={this.props.mobileView}
+            />
+          </div>
+        );
+      }
+    );
     return (
       <ReactPlaceholder
         ready={
@@ -123,12 +118,10 @@ class UserContributionsTab extends React.Component {
             {this.renderLoadMoreButton()}
           </div>
         ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>{icons.commmentAlt}</div>
-            <h2 className={css(styles.noContent)}>
-              User has not submitted a paper
-            </h2>
-          </div>
+          <EmptyState
+            message={"User has not submitted a paper"}
+            icon={icons.commmentAlt}
+          />
         )}
       </ReactPlaceholder>
     );
@@ -136,7 +129,6 @@ class UserContributionsTab extends React.Component {
 }
 
 var styles = StyleSheet.create({
-  container: {},
   title: {
     fontWeight: 500,
   },

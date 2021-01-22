@@ -6,7 +6,6 @@ import { connect, useDispatch, useStore } from "react-redux";
 import Joyride from "react-joyride";
 import Error from "next/error";
 import "./styles/anchor.css";
-import "react-placeholder/lib/reactPlaceholder.css";
 import * as Sentry from "@sentry/browser";
 
 // Components

@@ -18,9 +18,6 @@ import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
-// Styles
-import "~/components/Paper/CitationCard.css";
-
 // Config
 import icons from "~/config/themes/icons";
 import colors, { voteWidgetColors } from "~/config/themes/colors";

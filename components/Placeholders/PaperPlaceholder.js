@@ -9,28 +9,36 @@ import {
   RoundShape,
 } from "react-placeholder/lib/placeholders";
 
-const PaperPlaceholder = ({ color }) => (
-  <div className={css(styles.placeholderContainer) + " show-loading-animation"}>
-    <TextBlock
-      className={css(styles.textRow)}
-      rows={1}
-      color={color}
-      style={{ width: "75%" }}
-    />
-    <TextBlock
-      className={css(styles.textRow)}
-      rows={1}
-      color={color}
-      style={{ width: "25%" }}
-    />
-    <TextBlock
-      className={css(styles.textRow)}
-      rows={1}
-      color={color}
-      style={{ width: "40%" }}
-    />
-  </div>
-);
+const PaperPlaceholder = ({ color, rows }) => {
+  const placeholder = (
+    <div
+      className={css(styles.placeholderContainer) + " show-loading-animation"}
+    >
+      <TextBlock
+        className={css(styles.textRow)}
+        rows={1}
+        color={color}
+        style={{ width: "75%" }}
+      />
+      <TextBlock
+        className={css(styles.textRow)}
+        rows={1}
+        color={color}
+        style={{ width: "25%" }}
+      />
+      <TextBlock
+        className={css(styles.textRow)}
+        rows={1}
+        color={color}
+        style={{ width: "40%" }}
+      />
+    </div>
+  );
+
+  const Placeholders = new Array(rows).fill(placeholder);
+
+  return Placeholders;
+};
 
 const styles = StyleSheet.create({
   placeholderContainer: {
@@ -41,9 +49,10 @@ const styles = StyleSheet.create({
     background: "#fff",
     width: "100%",
     boxSizing: "border-box",
+    marginBottom: 10,
   },
   textRow: {
-    marginBottom: 16,
+    marginBottom: 15,
   },
   space: {},
   label: {},
