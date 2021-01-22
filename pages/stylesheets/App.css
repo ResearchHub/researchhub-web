@@ -3,6 +3,11 @@
 }
 
 /* REACT-HORIZONTAL-SCROLL-MENU */
+
+.scroll-menu-arrow {
+  z-index: 1;
+}
+
 .scroll-menu-arrow--disabled {
   visibility: hidden;
 }

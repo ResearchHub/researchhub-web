@@ -4,6 +4,8 @@ import { useTransition, animated } from "react-spring";
 
 import Collapsible from "~/components/Form/Collapsible";
 import Head from "~/components/Head";
+import ScrollMenu from "react-horizontal-scrolling-menu";
+import { NavigationArrow } from "~/components/TabBar";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
@@ -159,17 +161,41 @@ class Index extends React.Component {
       reveal: false,
       revealText: false,
     };
+
+    this.pointsListRef = React.createRef();
+    this.points = points.map((point, index) => {
+      const { icon, title, text } = point;
+
+      return (
+        <div className={css(styles.itemCard)} key={`item-${index}`}>
+          <div className={css(styles.itemIcon)}>
+            {typeof icon === "string" ? (
+              <img
+                draggable={false}
+                src={icon && icon}
+                alt={`Info Card ${index + 1}`}
+              />
+            ) : (
+              icon
+            )}
+          </div>
+          <div className={css(styles.itemTitle)}>{title && title}</div>
+          <div className={css(styles.itemText)}>{text && text}</div>
+        </div>
+      );
+    });
   }
 
   componentDidMount() {
     if (document.body.style) {
       document.body.style.scrollSnapType = "y mandatory";
     }
+
     setTimeout(() => {
       this.setState({ reveal: true }, () => {
         setTimeout(() => {
           this.setState({ revealText: true });
-        }, 200);
+        }, 100);
       });
     }, 200);
   }
@@ -318,10 +344,36 @@ class Index extends React.Component {
               src={"/static/about/valueOverlay.png"}
               className={css(styles.bannerOverlay)}
             />
-            <div className={css(styles.row, styles.pointCardList)}>
-              <div className={css(styles.frontSpace)} />
-              <PointCards points={points} />
-              <div className={css(styles.endSpace)} />
+
+            <div className={css(styles.pointCardList)}>
+              <ScrollMenu
+                data={this.points}
+                arrowLeft={
+                  <NavigationArrow
+                    icon={icons.chevronLeft}
+                    direction={"left"}
+                    customStyles={styles.navArrow}
+                  />
+                }
+                arrowRight={
+                  <NavigationArrow
+                    icon={icons.chevronRight}
+                    direction={"right"}
+                    customStyles={styles.navArrow}
+                  />
+                }
+                menuStyle={{ justifyContent: "center", width: "100%" }}
+                wrapperStyle={{
+                  boxShadow:
+                    "inset 40px 0px 25px -25px rgba(255, 255, 255, 0.18), inset -25px 0px 40px -25px rgba(255, 255, 255, 0.18)",
+                }}
+                itemStyle={{
+                  border: "none",
+                  highlight: "none",
+                  outline: "none",
+                }}
+                hideSingleArrow={true}
+              />
             </div>
           </div>
         </div>
@@ -587,6 +639,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     maxWidth: "100vw",
     overflow: "hidden",
+    background: "#FFF",
   },
   banner: {
     height: 320,
@@ -619,6 +672,23 @@ const styles = StyleSheet.create({
     minHeight: "100%",
     width: "100%",
     minWidth: "100%",
+  },
+  navArrow: {
+    maxHeight: 50,
+    minHeight: 50,
+    height: 50,
+    maxWidth: 50,
+    minWidth: 50,
+    width: 50,
+    zIndex: 3,
+    "@media only screen and (max-width: 800px)": {
+      maxHeight: 40,
+      minHeight: 40,
+      height: 40,
+      maxWidth: 40,
+      minWidth: 40,
+      width: 40,
+    },
   },
   column: {
     display: "flex",
@@ -894,17 +964,17 @@ const styles = StyleSheet.create({
     },
   },
   pointCardList: {
-    justifyContent: "space-between",
-    overflowX: "scroll",
-    scrollSnapType: "x mandatory",
-    paddingBottom: 20,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     width: "80%",
-    padding: 16,
-    "::-webkit-scrollbar": {
-      display: "none",
-    },
+    marginTop: 20,
+    zIndex: 2,
     "@media only screen and (max-width: 800px)": {
-      width: 600,
+      width: "90%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
     },
   },
   fullWidth: {
@@ -915,7 +985,7 @@ const styles = StyleSheet.create({
     },
   },
   itemCard: {
-    margin: "20px 20px 0 20px",
+    margin: 20,
     padding: "25px 35px 25px 35px",
     display: "flex",
     textAlign: "center",
@@ -928,14 +998,14 @@ const styles = StyleSheet.create({
     minWidth: 295,
     maxWidth: 295,
     backgroundColor: "#FFF",
-    scrollSnapAlign: "center",
     boxShadow: "rgba(93, 83, 254, 0.18) 0px 4px 15px",
     zIndex: 3,
     "@media only screen and (max-width: 415px)": {
       padding: "20px 25px 20px 25px",
-      width: 230,
-      minWidth: 230,
-      maxWidth: 230,
+      width: 200,
+      minWidth: 200,
+      maxWidth: 200,
+      height: 350,
     },
   },
   itemIcon: {
