@@ -5,10 +5,10 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import PromotionCard from "./Promotions/PromotionCard";
 import Loader from "~/components/Loader/Loader";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+import EmptyState from "./EmptyState";
 
 import { AuthorActions } from "~/redux/author";
 
@@ -28,7 +28,6 @@ const UserPromotions = (props) => {
         ? author.promotions.results
         : [];
 
-        
     return (
       <ReactPlaceholder
         ready={!fetching}
@@ -50,12 +49,10 @@ const UserPromotions = (props) => {
             }
           })
         ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>{icons.bolt}</div>
-            <h2 className={css(styles.noContent)}>
-              User has not supported any content
-            </h2>
-          </div>
+          <EmptyState
+            message={"User has not supported any content"}
+            icon={icons.bolt}
+          />
         )}
       </ReactPlaceholder>
     );
@@ -68,7 +65,7 @@ const UserPromotions = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let obj = { ...res };
+        const obj = { ...res };
         obj.results = [...results, ...res.results];
         props.dispatch(
           AuthorActions.updateAuthorByKey({
