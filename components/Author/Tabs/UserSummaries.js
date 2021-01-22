@@ -9,6 +9,7 @@ import Loader from "~/components/Loader/Loader";
 import Ripples from "react-ripples";
 import TextEditor from "~/components/TextEditor";
 import SummaryContributor from "../../Paper/SummaryContributor";
+import EmptyState from "./EmptyState";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -70,7 +71,7 @@ const UserSummaries = ({
     );
   };
 
-  let allSummaries = summaries.map((summary, index) => {
+  const allSummaries = summaries.map((summary, index) => {
     let path = `/paper/${summary.paper}/${summary.paper_slug}#summary`;
     return (
       <div
@@ -103,12 +104,10 @@ const UserSummaries = ({
           {renderLoadMoreButton()}
         </React.Fragment>
       ) : (
-        <div className={css(styles.box)}>
-          <div className={css(styles.icon)}>{icons.file}</div>
-          <h2 className={css(styles.noContent)}>
-            User has not created any summaries
-          </h2>
-        </div>
+        <EmptyState
+          message={"User has not created any summaries"}
+          icon={icons.file}
+        />
       )}
     </ReactPlaceholder>
   );
