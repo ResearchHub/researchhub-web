@@ -2,7 +2,7 @@ import { Fragment, useState, useEffect } from "react";
 import Router from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
+import * as moment from "dayjs";
 
 import VoteWidget from "~/components/VoteWidget";
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -92,7 +92,6 @@ const SummaryContributor = (props) => {
           username={authorProfile.first_name + " " + authorProfile.last_name}
           authorProfile={authorProfile}
           date={summary.approved_date}
-          fullDate={true}
           metaData={formatMetadata()}
           fetching={loadingSummary}
         />

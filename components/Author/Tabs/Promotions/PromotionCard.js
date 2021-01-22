@@ -2,15 +2,16 @@ import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
-import moment from "moment";
+import * as moment from "dayjs";
 
 // Components
 import { ScorePill } from "~/components/VoteWidget";
 import PromotionGraph from "./PromotionGraph";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { formatTransactionDate } from "~/config/utils";
+import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
 class PromotionCard extends React.Component {
@@ -90,7 +91,7 @@ class PromotionCard extends React.Component {
             className={css(styles.icon, this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            <i className="fas fa-eye" />
+            {icons.eye}
           </span>
           <div
             className={css(styles.stats, this.state.showViews && styles.active)}
@@ -111,7 +112,7 @@ class PromotionCard extends React.Component {
             className={css(styles.icon, !this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            <i className="fas fa-mouse-pointer" />
+            {icons.mousePointer}
           </span>
           <div
             className={css(

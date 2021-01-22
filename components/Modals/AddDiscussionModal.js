@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import { Value } from "slate";
 
 // Component
 import TextEditor from "~/components/TextEditor";

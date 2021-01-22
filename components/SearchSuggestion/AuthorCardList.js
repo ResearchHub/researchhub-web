@@ -1,6 +1,8 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
+
 import colors from "../../config/themes/colors";
+import icons from "~/config/themes/icons";
 
 // Component
 import Loader from "../Loader/Loader";
@@ -120,10 +122,9 @@ class AuthorCardList extends React.Component {
           onClick={this.props.addAuthor && this.props.addAuthor}
         >
           <div className={css(styles.addButtonWrapper)}>
-            <i
-              className="fal fa-plus"
-              style={{ color: colors.BLUE(1), height: 12, width: 12 }}
-            />
+            <span style={{ color: colors.BLUE(1), height: 12, width: 12 }}>
+              {icons.plus}
+            </span>
           </div>
           <div className={css(styles.nameContactWrapper, styles.marginLeft)}>
             <div className={css(styles.name)}>Add New User</div>

@@ -13,6 +13,7 @@ import { MessageActions } from "~/redux/message";
 import { FlagActions } from "~/redux/flags";
 
 // Utility
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
@@ -73,11 +74,7 @@ const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
       styling={[styles.borderRadius, flagged && styles.flagged]}
     >
       <div className={css(style && style)}>
-        {flagged ? (
-          <i className={"fas fa-flag"} />
-        ) : (
-          <i className={"far fa-flag"} />
-        )}
+        {flagged ? icons.flag : icons.flagOutline}
       </div>
     </PermissionNotificationWrapper>
   );

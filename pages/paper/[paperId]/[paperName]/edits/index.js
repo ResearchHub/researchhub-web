@@ -17,6 +17,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { convertToEditorValue } from "~/config/utils";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
@@ -172,7 +173,7 @@ class PaperEditHistory extends React.Component {
             as={`/paper/${router.query.paperId}/${router.query.paperName}#summary`}
           >
             <div className={css(styles.back)}>
-              <i className={css(styles.arrow) + " fal fa-long-arrow-left"}></i>
+              <span className={css(styles.arrow)}>{icons.longArrowLeft}</span>
               Summary
             </div>
           </Link>

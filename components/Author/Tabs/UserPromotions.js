@@ -12,6 +12,7 @@ import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 
 import { AuthorActions } from "~/redux/author";
 
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -50,9 +51,7 @@ const UserPromotions = (props) => {
     if (promotions.length === 0) {
       return (
         <div className={css(styles.box)}>
-          <div className={css(styles.icon)}>
-            <i class="fas fa-bolt"></i>
-          </div>
+          <div className={css(styles.icon)}>{icons.bolt}</div>
           <h2 className={css(styles.noContent)}>
             User has not supported any content
           </h2>

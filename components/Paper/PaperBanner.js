@@ -2,17 +2,13 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
-// Component
-import Button from "~/components/Form/Button";
-
 // Redux
 import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "~/redux/message";
-import { PaperActions } from "~/redux/paper";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
-import { getSummaryText } from "~/config/utils";
 
 const PaperBanner = ({
   paper,
@@ -102,12 +98,14 @@ const PaperBanner = ({
     switch (type) {
       case "removed":
         icon = (
-          <i
-            className={
-              css(styles.removeIcon, mobile && styles.mobileRemoveIcon) +
-              " fas fa-exclamation-circle"
-            }
-          />
+          <span
+            className={css(
+              styles.removeIcon,
+              mobile && styles.mobileRemoveIcon
+            )}
+          >
+            {icons.exclamationCircle}
+          </span>
         );
         break;
       default:

@@ -11,27 +11,15 @@ import AuthorAvatar from "../AuthorAvatar";
 import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 import { ModeratorBounty, ContributorBounty } from "./BountyNotifications";
-import {
-  ExternalLink,
-  HyperLink,
-  TimeStamp,
-  ModeratorDecisionTag,
-  PlainText,
-  Bold,
-} from "./NotificationHelpers";
+import { HyperLink, TimeStamp } from "./NotificationHelpers";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
-import { AuthorActions } from "~/redux/author";
 
 // Config
 import colors from "../../config/themes/colors";
-import {
-  doesNotExist,
-  getNestedValue,
-  timeAgoStamp,
-  formatPaperSlug,
-} from "~/config/utils";
+import { doesNotExist, getNestedValue, formatPaperSlug } from "~/config/utils";
+import { timeAgoStamp } from "~/config/utils/dates";
 import { reviewBounty } from "~/config/fetch";
 
 const NotificationEntry = (props) => {
@@ -167,17 +155,6 @@ const NotificationEntry = (props) => {
 
     const sectionLink = (section) => {
       let as = paperLink.as + "#" + section;
-      // switch(section) {
-      //   case "takeaway":
-      //     as = paperLink.as + "#takeaways";
-      //     break;
-      //   case "summary":
-      //     as = paperLink.as + "#summary";
-      //     break;
-      //   case "discussion":
-      //     as = paperLink.as + "#comments"
-      //     break;
-      // }
 
       return { ...paperLink, as };
     };
@@ -391,8 +368,6 @@ const NotificationEntry = (props) => {
             <TimeStamp date={created_date} />
           </div>
         );
-      // case "stripe":
-      //   return handleStripeNotification();
       case "vote_bullet":
         return renderBulletVoteNotification();
       case "vote_summary":
@@ -414,89 +389,6 @@ const NotificationEntry = (props) => {
       default:
         return;
     }
-  };
-
-  const handleStripeNotification = () => {
-    const {
-      created_date,
-      created_by,
-      status,
-      url,
-      message,
-    } = props.notification;
-
-    if (status && status === "pending") {
-      return null;
-    }
-
-    const timestamp = timeAgoStamp(created_date);
-    const authorProfile = created_by.author_profile;
-
-    _updateAuthorWallet(authorProfile.wallet, store.getState().author);
-
-    function _updateAuthorWallet(wallet, author) {
-      let { stripe_verified, stripe_acc } = author.wallet;
-      if (!stripe_verified && wallet.stripe_verified) {
-        return dispatch(
-          AuthorActions.updateAuthorByKey({ key: "wallet", value: wallet })
-        );
-      } else if (stripe_acc !== wallet.stripe_acc) {
-        return dispatch(
-          AuthorActions.updateAuthorByKey({ key: "wallet", value: wallet })
-        );
-      }
-    }
-
-    function _formatText(status, message) {
-      switch (status) {
-        case "inactive":
-          let field = message;
-
-          return (
-            <Fragment>
-              Almost done! Please verify your {` ${field} `} from your{" "}
-              <span className={css(styles.link)}>
-                <b>Stripe Dashboard.</b>
-              </span>
-            </Fragment>
-          );
-        case "active":
-          return (
-            <Fragment>
-              Congrats! Your Stripe account has been verified.
-            </Fragment>
-          );
-      }
-    }
-
-    return (
-      <div
-        className={css(styles.message)}
-        onClick={(e) => {
-          e.stopPropagation();
-          markAsRead(props.data);
-          isRead && props.closeMenu();
-        }}
-      >
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={url}
-          className={css(styles.atag)}
-        >
-          {_formatText(status, message)}
-          <span className={css(styles.timestamp)}>
-            <span className={css(styles.timestampDivider)}>•</span>
-            {timestamp}
-          </span>
-        </a>
-        <img
-          className={css(styles.stripeLogo)}
-          src={"/static/icons/stripe.png"}
-          alt="Stripe Logo"
-        />
-      </div>
-    );
   };
 
   const renderBulletVoteNotification = () => {

@@ -11,6 +11,7 @@ import Ripples from "react-ripples";
 import { AuthorActions } from "~/redux/author";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -119,9 +120,7 @@ class UserDiscussionsTab extends React.Component {
           </React.Fragment>
         ) : (
           <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-comments" />
-            </div>
+            <div className={css(styles.icon)}>{icons.comments}</div>
             <h2 className={css(styles.noContent)}>
               User has not created any discussions
             </h2>

@@ -13,6 +13,7 @@ import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
 import UniversityInput from "../SearchSuggestion/UniversityInput";
 
+import icons from "~/config/themes/icons";
 import * as shims from "../../config/shims";
 
 class AddAuthorModal extends React.Component {
@@ -203,17 +204,9 @@ class AddAuthorModal extends React.Component {
               >
                 Social Media Links
                 <div className={css(styles.dropdownIcon)}>
-                  {showLinks ? (
-                    <i
-                      className="fal fa-angle-down"
-                      style={{ fontSize: "25px" }}
-                    />
-                  ) : (
-                    <i
-                      className="fal fa-angle-up"
-                      style={{ fontSize: "25px" }}
-                    />
-                  )}
+                  <span style={{ fontSize: "25px" }}>
+                    {showLinks ? icons.angleDown : icons.angleUp}
+                  </span>
                 </div>
               </div>
               <span
@@ -252,7 +245,7 @@ class AddAuthorModal extends React.Component {
                   inputStyle={styles.inputStyle}
                   containerStyle={styles.inputStyle}
                   iconStyles={styles.icon}
-                  icon={<i className="fab fa-twitter" />}
+                  icon={icons.twitter}
                   labelStyle={styles.labelStyle}
                 />
               </span>

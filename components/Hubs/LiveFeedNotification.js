@@ -24,13 +24,8 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import {
-  doesNotExist,
-  getNestedValue,
-  timeAgo,
-  formatPaperSlug,
-} from "~/config/utils";
-import { reply } from "../../redux/discussion/shims";
+import { doesNotExist, getNestedValue, formatPaperSlug } from "~/config/utils";
+import { timeAgo } from "~/config/utils/dates";
 
 class LiveFeedNotification extends React.Component {
   constructor(props) {
@@ -815,13 +810,13 @@ class LiveFeedNotification extends React.Component {
         return icons.file;
       case "vote_comment":
       case "comment":
-        return <i className="fad fa-comment-alt-dots" />;
+        return icons.commentAltDots;
       case "reply":
       case "vote_reply":
-        return <i className="fad fa-comment-alt-dots" />;
+        return icons.commentAltDots;
       case "thread":
       case "vote_thread":
-        return <i className="fad fa-comment-alt-lines" />;
+        return icons.commentAltLines;
     }
   };
 

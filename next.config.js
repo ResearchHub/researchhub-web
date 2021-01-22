@@ -3,6 +3,9 @@ const withTM = require("next-transpile-modules");
 const withPlugins = require("next-compose-plugins");
 const path = require("path");
 const withSourceMaps = require("@zeit/next-source-maps");
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+
+const ANALYZE = process.env.ANALYZE;
 
 module.exports = withPlugins(
   [
@@ -16,7 +19,7 @@ module.exports = withPlugins(
     ],
   ],
   {
-    webpack: (config, options) => {
+    webpack: (config, { isServer }) => {
       // Fixes npm packages that depend on `fs` module
       config.node = {
         fs: "empty",
@@ -25,6 +28,16 @@ module.exports = withPlugins(
       };
 
       config.resolve.alias["~"] = path.resolve(__dirname);
+
+      if (ANALYZE && !isServer) {
+        config.plugins.push(
+          new BundleAnalyzerPlugin({
+            analyzerMode: "server",
+            analyzerPort: isServer ? 8888 : 8889,
+            openAnalyzer: true,
+          })
+        );
+      }
 
       return config;
     },
