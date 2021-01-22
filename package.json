@@ -36,6 +36,7 @@
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-source-maps": "^0.0.3",
     "aphrodite": "^2.4.0",
+    "babel-plugin-transform-imports": "^2.0.0",
     "dayjs": "^1.10.3",
     "diff": "^4.0.1",
     "ethers": "^5.0.26",
@@ -99,7 +100,6 @@
   },
   "devDependencies": {
     "axios": "^0.21.1",
-    "babel-plugin-transform-imports": "^2.0.0",
     "cypress": "^3.4.1",
     "husky": "3.0.8",
     "prettier": "1.18.2",
