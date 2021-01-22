@@ -6,10 +6,9 @@ import ReactPlaceholder from "react-placeholder";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 import Loader from "~/components/Loader/Loader";
 import Ripples from "react-ripples";
-import TextEditor from "~/components/TextEditor";
-import SummaryContributor from "../../Paper/SummaryContributor";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import SummaryBulletPoint from "../../Paper/SummaryBulletPoint";
 
@@ -79,9 +78,7 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
         </React.Fragment>
       ) : (
         <div className={css(styles.box)}>
-          <div className={css(styles.icon)}>
-            <i className="fad fa-file-alt" />
-          </div>
+          <div className={css(styles.icon)}>{icons.file}</div>
           <h2 className={css(styles.noContent)}>
             User has not created any summaries
           </h2>

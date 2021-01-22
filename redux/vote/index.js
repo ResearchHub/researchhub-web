@@ -2,7 +2,6 @@ import * as actions from "./actions";
 import * as shims from "./shims";
 import API from "~/config/api";
 import * as utils from "../utils";
-import { ModalActions } from "~/redux/modals";
 
 export function postUpvote(paperId, threadId, commentId, replyId) {
   const isUpvote = true;

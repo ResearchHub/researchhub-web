@@ -1,6 +1,6 @@
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
-import moment from "moment";
+import * as moment from "dayjs";
 
 TimeAgo.addLocale(en);
 
@@ -11,11 +11,11 @@ export function formatDateStandard(momentDate) {
 }
 
 export function formatTransactionDate(momentDate) {
-  return momentDate.format("MMM Do YY, h:mm a");
+  return momentDate.format("MMM D, YY, h:mm a");
 }
 
 export function formatDate(momentDate) {
-  return momentDate.format("MMM Do");
+  return momentDate.format("MMM D");
 }
 
 export function formatPublishedDate(momentDate, removeText) {

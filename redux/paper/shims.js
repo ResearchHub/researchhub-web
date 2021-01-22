@@ -1,5 +1,4 @@
 import { transformDate, transformUser, transformVote } from "../utils";
-import moment from "moment";
 
 export const paper = (paper) => {
   return {

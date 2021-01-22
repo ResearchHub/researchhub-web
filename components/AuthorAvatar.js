@@ -1,6 +1,8 @@
 import { StyleSheet, css } from "aphrodite";
 import { useState } from "react";
 import Link from "next/link";
+
+import icons from "~/config/themes/icons";
 import colors from "../config/themes/colors";
 
 const AuthorAvatar = (props) => {
@@ -52,15 +54,17 @@ const AuthorAvatar = (props) => {
             loading="lazy"
           />
         ) : (
-          <i
-            className={css(styles.userIcon) + " fas fa-user-circle"}
+          <span
+            className={css(styles.userIcon)}
             style={{
               width: finalSize,
               height: finalSize,
               fontSize: finalSize + 1,
               border: "3px solid transparent",
             }}
-          />
+          >
+            {icons.user}
+          </span>
         )}
         {showModeratorBadge && (
           <img

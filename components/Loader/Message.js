@@ -14,6 +14,7 @@ import Loader from "./Loader.js";
 
 // Redux
 import { MessageActions } from "~/redux/message";
+import icons from "~/config/themes/icons";
 
 class Message extends Component {
   constructor(props) {
@@ -53,18 +54,10 @@ class Message extends Component {
       <div className={css(styles.popupMessage, !message.show && styles.hide)}>
         {message.load ? (
           <Loader loading={true} />
-        ) : message.error ? (
-          <i
-            className={"far fa-times"}
-            style={inlineStyle.check}
-            color="#fff"
-          />
         ) : (
-          <i
-            className={"far fa-check"}
-            style={inlineStyle.check}
-            color="#fff"
-          />
+          <span style={inlineStyle.check} color="#fff">
+            {message.error ? icons.times : icons.check}
+          </span>
         )}
         {!message.load && (
           <div className={css(styles.message)}>{message.message}</div>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { useAlert } from "react-alert";
-import moment from "moment";
+import * as moment from "dayjs";
 
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Loader from "~/components/Loader/Loader";
@@ -91,7 +91,7 @@ const SummaryEditCard = (props) => {
       />
       <div className={css(styles.column)}>
         <div className={css(styles.date, active && styles.selected)}>
-          {moment(summary.approvedDate).format("MMM Do YYYY, h:mm A")}
+          {moment(summary.approvedDate).format("MMM D YYYY, h:mm A")}
         </div>
         <div className={css(styles.user)}>{`${first_name} ${last_name}`}</div>
       </div>

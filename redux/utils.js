@@ -1,4 +1,4 @@
-import moment from "moment";
+import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
@@ -6,8 +6,6 @@ import { doesNotExist, getNestedValue } from "~/config/utils";
 
 export { logFetchError } from "~/config/utils";
 import { ModalActions } from "~/redux/modals";
-
-const FETCH_ERROR_MESSAGE = "Fetch error caught in promise";
 
 export function handleCatch(err, dispatch) {
   if (err.response && err.response.status === 429) {

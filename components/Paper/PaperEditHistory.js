@@ -1,7 +1,7 @@
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
+import * as moment from "dayjs";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -50,7 +50,7 @@ class PaperEditHistory extends React.Component {
           onClick={() => this.changeEditView(index, edit.summary)}
         >
           <div className={css(styles.date)}>
-            {moment(edit.approvedDate).format("MMM Do YYYY, h:mm A")}
+            {moment(edit.approvedDate).format("MMM D YYYY, h:mm A")}
             {index === 0 && <span>{` (Current Ver.)`}</span>}
           </div>
           <div className={css(styles.user)}>

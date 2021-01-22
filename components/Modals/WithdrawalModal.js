@@ -2,8 +2,7 @@ import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import { keccak256, sha3_256 } from "js-sha3";
-import { ethers } from "ethers";
+import { keccak256 } from "js-sha3";
 import Link from "next/link";
 
 // Component
@@ -22,7 +21,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { useMetaMask, useWalletLink } from "../connectEthereum";
+import { useMetaMask } from "../connectEthereum";
 import CheckBox from "../Form/CheckBox";
 import {
   sanitizeNumber,
@@ -226,11 +225,7 @@ class WithdrawalModal extends React.Component {
                       !ethAccountIsValid && styles.errorIcon
                     )}
                   >
-                    {ethAccountIsValid ? (
-                      <i className="fal fa-check-circle" />
-                    ) : (
-                      <i className="fal fa-times-circle" />
-                    )}
+                    {ethAccountIsValid ? icons.checkCircle : icons.timesCircle}
                   </span>
                 )
               ) : null
@@ -401,29 +396,29 @@ class WithdrawalModal extends React.Component {
    * @param {String} address the given HEX adress
    * @return {Boolean}
    */
-  isChecksumAddress = (address) => {
-    // Check each case
-    address = address.replace("0x", "");
-    var addressHash = sha3_256(address.toLowerCase());
-    for (var i = 0; i < 40; i++) {
-      // the nth letter should be uppercase if the nth digit of casemap is 1
-      if (
-        (parseInt(addressHash[i], 16) > 7 &&
-          address[i].toUpperCase() !== address[i]) ||
-        (parseInt(addressHash[i], 16) <= 7 &&
-          address[i].toLowerCase() !== address[i])
-      ) {
-        return false;
-      }
-    }
-    return true;
-  };
+  // isChecksumAddress = (address) => {
+  //   // Check each case
+  //   address = address.replace("0x", "");
+  //   var addressHash = sha3_256(address.toLowerCase());
+  //   for (var i = 0; i < 40; i++) {
+  //     // the nth letter should be uppercase if the nth digit of casemap is 1
+  //     if (
+  //       (parseInt(addressHash[i], 16) > 7 &&
+  //         address[i].toUpperCase() !== address[i]) ||
+  //       (parseInt(addressHash[i], 16) <= 7 &&
+  //         address[i].toLowerCase() !== address[i])
+  //     ) {
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // };
 
   renderToggleContainer = (className) => {
     return (
       <div className={className}>
         {this.renderMetaMaskButton()}
-        {this.renderWalletLinkButton()}
+        {/* {this.renderWalletLinkButton()} */}
       </div>
     );
   };
@@ -625,9 +620,7 @@ class WithdrawalModal extends React.Component {
               <div className={css(styles.left)}>
                 <div className={css(styles.mainHeader)}>
                   Withdrawal Successful
-                  <span className={css(styles.icon)}>
-                    <i className="fal fa-check-circle" />
-                  </span>
+                  <span className={css(styles.icon)}>{icons.checkCircle}</span>
                 </div>
                 <div
                   className={css(styles.confirmation)}
@@ -750,13 +743,13 @@ class WithdrawalModal extends React.Component {
       <div className={css(styles.overlay)} onClick={this.closeModal}>
         <div className={css(styles.bannerContainer)}>
           <div className={css(styles.overlayButtonContainer)}>
-            <i
-              className={
-                css(styles.closeButton, styles.overlayButton) + " fal fa-times"
-              }
+            <span
+              className={css(styles.closeButton, styles.overlayButton)}
               onClick={this.closeModal}
               draggable={false}
-            />
+            >
+              {icons.times}
+            </span>
           </div>
           <p className={css(styles.banner)}>
             Withdrawals will resume again on Sept. 1st.

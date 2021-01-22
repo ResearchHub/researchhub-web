@@ -1,0 +1,15 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    ["transform-imports", {
+      "@fortawesome/free-solid-svg-icons": {
+        "transform": "@fortawesome/free-solid-svg-icons/${member}",
+        "skipDefaultConversion": true
+      },
+      "@fortawesome/fontawesome-free-brands": {
+        "transform": "@fortawesome/fontawesome-free-brands/${member}",
+        "skipDefaultConversion": true
+      }
+    }]
+  ]
+}

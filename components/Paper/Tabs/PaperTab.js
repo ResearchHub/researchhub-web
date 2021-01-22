@@ -4,11 +4,8 @@ import { useState, useRef, Fragment, useEffect } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { pdfjs } from "react-pdf";
 import { useAlert } from "react-alert";
 import Ripples from "react-ripples";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 // Component
 import Loader from "~/components/Loader/Loader";
@@ -248,7 +245,7 @@ function PaperTab(props) {
           return (
             <Fragment>
               <span className={css(styles.downloadIcon)}>
-                <i className="far fa-arrow-to-bottom" />
+                {icons.arrowToBottom}
               </span>
               Download
             </Fragment>

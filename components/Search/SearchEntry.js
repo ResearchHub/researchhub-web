@@ -13,22 +13,9 @@ import Highlight from "~/components/Search/Highlight";
 // Config
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
-import {
-  formatDateStandard,
-  formatPaperSlug,
-  createUserSummary,
-} from "~/config/utils";
+import { formatPaperSlug, createUserSummary } from "~/config/utils";
+import { formatDateStandard } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
-
-const search_fields = [
-  "title",
-  "text",
-  "first_name",
-  "last_name",
-  "authors",
-  "name",
-  "summary",
-];
 
 class SearchEntry extends React.Component {
   constructor(props) {
@@ -38,10 +25,6 @@ class SearchEntry extends React.Component {
       hidden: false,
       activeFields: 1,
     };
-  }
-
-  configureLink() {
-    // create link
   }
 
   /**
@@ -206,12 +189,9 @@ class SearchEntry extends React.Component {
                 alt="Author Avatar"
               />
             ) : (
-              <i
-                className={
-                  css(styles.avatar, styles.defaultAvatar) +
-                  " fas fa-user-circle"
-                }
-              />
+              <span className={css(styles.avatar, styles.defaultAvatar)}>
+                {icons.user}
+              </span>
             )}
           </div>
         );

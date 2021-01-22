@@ -27,7 +27,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { useMetaMask, useWalletLink } from "../connectEthereum";
+import { useMetaMask } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 import { sendAmpEvent } from "~/config/fetch";
 import {
@@ -595,64 +595,6 @@ class PaperTransactionModal extends React.Component {
     });
   }
 
-  renderWalletLinkButton = () => {
-    return (
-      <div
-        className={css(
-          styles.toggle,
-          this.state.walletLinkVisible && styles.activeToggle
-        )}
-        onClick={async () => {
-          if (!this.state.connectedWalletLink) {
-            this.transitionScreen(() => {
-              this.setState({
-                nextScreen: true,
-                walletLinkVisible: true,
-                connectedMetaMask: false,
-                metaMaskVisible: false,
-                offChain: false,
-              });
-            });
-            await this.connectWalletLink();
-          }
-        }}
-      >
-        WalletLink
-      </div>
-    );
-  };
-
-  connectWalletLink = async () => {
-    if (this.state.connectedWalletLink) {
-      this.disconnectWalletLink();
-      return;
-    }
-
-    const { connected, account, walletLink, provider } = await useWalletLink();
-    if (connected) {
-      console.log("Connected to WalletLink");
-      const valid = this.isAddress(account);
-      this.setState(
-        {
-          walletLink,
-          connectedMetaMask: false,
-          connectedWalletLink: connected,
-          ethAccount: account,
-          ethAccountIsValid: valid,
-        },
-        () => {
-          valid && this.updateContractBalance(provider);
-        }
-      );
-    } else {
-      console.log("Failed to connect WalletLink");
-      this.setState({
-        connectedMetaMask: false,
-        connectedWalletLink: false,
-      });
-    }
-  };
-
   updateContractBalance = async (provider) => {
     const contract = await this.createContract(provider);
     this.checkBalance(contract);
@@ -727,9 +669,7 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column)}>
               <div className={css(styles.mainHeader)}>
                 Transaction Successful
-                <span className={css(styles.icon)}>
-                  <i className="fal fa-check-circle" />
-                </span>
+                <span className={css(styles.icon)}>{icons.checkCircle}</span>
               </div>
               {!offChain && (
                 <div className={css(styles.confirmation)}>
@@ -886,11 +826,9 @@ class PaperTransactionModal extends React.Component {
                           !ethAccountIsValid && styles.errorIcon
                         )}
                       >
-                        {ethAccountIsValid ? (
-                          <i className="fal fa-check-circle" />
-                        ) : (
-                          <i className="fal fa-times-circle" />
-                        )}
+                        {ethAccountIsValid
+                          ? icons.checkCircle
+                          : icons.timesCircle}
                       </span>
                     )
                   ) : null

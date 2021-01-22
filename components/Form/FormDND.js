@@ -12,6 +12,7 @@ import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -398,11 +399,9 @@ class FormDND extends React.Component {
                     )}
                   >
                     <div className={css(styles.icon)}>
-                      {this.state.urlIsValid ? (
-                        <i className="fal fa-check-circle" />
-                      ) : (
-                        <i className="fal fa-times-circle" />
-                      )}
+                      {this.state.urlIsValid
+                        ? icons.checkCircle
+                        : icons.timesCircle}
                     </div>
                   </span>
                 )

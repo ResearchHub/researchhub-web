@@ -5,7 +5,7 @@ import ReactTooltip from "react-tooltip";
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { formatTransactionDate } from "~/config/utils";
+import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
 const TransactionCard = (props) => {
