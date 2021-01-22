@@ -49,6 +49,7 @@ import {
   faLinkedinIn,
   faSlack,
   faTwitter,
+  faReddit,
 } from "@fortawesome/fontawesome-free-brands";
 import {
   faArrowToBottom,
@@ -167,6 +168,7 @@ library.add(
   faUserPlus,
   faFacebookF,
   faLinkedinIn,
+  faReddit,
   faSlack,
   faTwitter,
   faArrowToBottom,
@@ -309,6 +311,7 @@ const icons = {
   plusSquare: <FontAwesomeIcon icon={faPlusSquare} />,
   portrait: <FontAwesomeIcon icon={faPortrait} />,
   receipt: <FontAwesomeIcon icon={faReceipt} />,
+  reddit: <FontAwesomeIcon icon={faReddit} />,
   search: <FontAwesomeIcon icon={faSearch} />,
   share: <FontAwesomeIcon icon={faShare} />,
   shareAlt: <FontAwesomeIcon icon={faShareAlt} />,

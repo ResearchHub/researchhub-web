@@ -55,11 +55,7 @@ class Message extends Component {
         {message.load ? (
           <Loader loading={true} />
         ) : (
-          <span
-            style={inlineStyle.check}
-            className={"far fa-times"}
-            color="#fff"
-          >
+          <span style={inlineStyle.check} color="#fff">
             {message.error ? icons.times : icons.check}
           </span>
         )}
