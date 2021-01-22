@@ -135,7 +135,7 @@ const DiscussionThreadPage = (props) => {
   };
 
   return (
-    <div>
+    <div className={css(styles.root)}>
       <Message />
       <Head
         title={thread.title}
@@ -221,6 +221,10 @@ DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
 };
 
 const styles = StyleSheet.create({
+  root: {
+    background: "#FFF",
+    minHeight: "100vh",
+  },
   threadContainer: {
     width: "80%",
     margin: "auto",
