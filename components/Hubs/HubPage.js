@@ -8,6 +8,7 @@ import * as Sentry from "@sentry/browser";
 import Router from "next/router";
 
 // Component
+import FeedList from "./FeedList";
 import HubsList from "~/components/Hubs/HubsList";
 import FormSelect from "~/components/Form/FormSelect";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
@@ -15,7 +16,6 @@ import Loader from "~/components/Loader/Loader";
 import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-// import ResearchHubBanner from "../ResearchHubBanner";
 import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 
@@ -676,17 +676,7 @@ class HubPage extends React.Component {
           {this.props.home && <Head title={this.props.home && null} />}
         </div>
         <div className={css(styles.row, styles.body)}>
-          <div className={css(styles.column, styles.sidebar)}>
-            <HubsList
-              current={this.props.home ? null : this.props.hub}
-              initialHubList={this.props.initialHubList}
-            />
-            <LeaderboardContainer
-              hubId={0}
-              initialUsers={this.props.leaderboardFeed}
-            />
-          </div>
-          <div className={css(styles.column, styles.mainFeed)}>
+          <div className={css(styles.column, styles.mainfeed)}>
             <div
               className={css(
                 styles.column,
@@ -831,6 +821,17 @@ class HubPage extends React.Component {
               />
             </div>
           </div>
+          <div className={css(styles.column, styles.sidebar)}>
+            <FeedList />
+            <HubsList
+              current={this.props.home ? null : this.props.hub}
+              initialHubList={this.props.initialHubList}
+            />
+            <LeaderboardContainer
+              hubId={0}
+              initialUsers={this.props.leaderboardFeed}
+            />
+          </div>
         </div>
       </div>
     );
@@ -910,19 +911,43 @@ var styles = StyleSheet.create({
   body: {
     backgroundColor: "#FCFCFC",
     width: "100%",
+    display: "flex",
+    // alignItems: "flex-start",
+    justifyContent: "center",
     alignItems: "flex-start",
-    display: "table",
+    // display: "table",
+    // tableLayout: "fixed",
     "@media only screen and (max-width: 767px)": {
       display: "flex",
     },
   },
-  sidebar: {
-    backgroundColor: "#FFF",
-    width: "18%",
+  mainfeed: {
+    // display: "table-cell",
     height: "100%",
-    display: "table-cell",
-    minWidth: 220,
-    paddingTop: 10,
+    // width: "80%",
+    maxWidth: 1000,
+    // tableLayout: "fixed",
+    backgroundColor: "#FCFCFC",
+    // borderRight: "1px solid #ededed",
+    // "@media only screen and (min-width: 900px)": {
+    //   width: "82%",
+    // },
+    // "@media only screen and (max-width: 768px)": {
+    //   width: "100%",
+    // },
+  },
+  sidebar: {
+    // backgroundColor: "#FFF",
+    // width: "20%",
+    width: 300,
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    // minWidth: 220,
+    // width: 360,
+    // maxWidth: 360,
+    // paddingTop: 10,
     "@media only screen and (max-width: 990px)": {
       display: "none",
     },
@@ -978,19 +1003,7 @@ var styles = StyleSheet.create({
   /**
    * MAIN FEED STYLES
    */
-  mainFeed: {
-    display: "table-cell",
-    height: "100%",
-    width: "82%",
-    backgroundColor: "#FCFCFC",
-    borderLeft: "1px solid #ededed",
-    "@media only screen and (min-width: 900px)": {
-      width: "82%",
-    },
-    "@media only screen and (max-width: 768px)": {
-      width: "100%",
-    },
-  },
+
   feedTitle: {
     display: "flex",
     justifyContent: "flex-start",
