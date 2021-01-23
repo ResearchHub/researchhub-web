@@ -17,139 +17,58 @@ import { HubActions } from "~/redux/hub";
 
 const DEFAULT_TRANSITION_TIME = 400;
 
-class HubsList extends React.Component {
+const feeds = [
+  {
+    label: "My feed",
+    icon: "",
+  },
+  {
+    label: "Popular",
+    icon: icons.chartLine,
+  },
+  {
+    label: "All",
+    icon: icons.squares,
+  },
+];
+
+class FeedList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hubs:
-        this.props.initialHubList && this.props.initialHubList.results
-          ? this.props.initialHubList.results
-          : [],
+      activeFeed: 0,
       reveal: true,
     };
   }
 
-  componentDidMount() {
-    let { auth } = this.props;
-    if (this.props.hubs.length) {
-      this.setState({ hubs: [...this.props.hubs] });
-    }
-
-    if (auth.isLoggedIn) {
-      this.updateTopHubs();
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.current !== this.props.current) {
-      this.setState({
-        hubs: this.props.hubs,
-      });
-    }
-    if (prevProps.hubs !== this.props.hubs) {
-      this.setState({ hubs: [...this.props.hubs] });
-    }
-    if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
-      this.updateTopHubs();
-    }
-    if (prevProps.auth.user !== this.props.auth.user) {
-      this.updateTopHubs();
-    }
-  }
+  componentDidMount() {}
 
   componentWillUnmount() {
     clearTimeout(this.revealTimeout);
     this.setState({ reveal: false });
   }
 
-  fetchHubs = async () => {
-    if (!this.props.hubs.length > 0) {
-      await this.props.getTopHubs(this.props.auth);
-    }
-    this.setState({ hubs: this.props.hubs }, () => {
-      this.revealTransition();
-    });
-  };
-
-  isCurrentHub(current, hubId) {
-    if (current && current.id) {
-      return hubId === current.id;
-    }
-  }
-
-  updateTopHubs = (state) => {
-    let hubState = this.props.hubState;
-    if (this.props.auth.isLoggedIn) {
-      let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
-      let subscribedHubs = {};
-      subscribed.forEach((hub) => {
-        subscribedHubs[hub.id] = true;
-      });
-
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        if (subscribedHubs[hub.id]) {
-          hub.user_is_subscribed = true;
-        }
-        return hub;
-      });
-
-      this.props.updateTopHubs(updatedTopHubs);
-    } else {
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        hub.user_is_subscribed = false;
-        return hub;
-      });
-
-      this.props.updateTopHubs(updatedTopHubs);
-    }
-  };
-
   revealTransition = () => {
     setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
   };
 
-  renderHubEntry = () => {
-    let selectedHubs = this.state.hubs;
-    let subscribed = this.props.hubState.subscribedHubs
-      ? this.props.hubState.subscribedHubs
-      : [];
-    let subscribedHubs = {};
-    subscribed.forEach((hub) => {
-      subscribedHubs[hub.id] = true;
-    });
-    return selectedHubs.slice(0, 5).map((hub, i) => {
-      const { name, id, hub_image, user_is_subscribed } = hub;
+  renderFeedList = () => {
+    const { activeFeed } = this.state;
+    return feeds.map((feed, i) => {
+      const { label, icon } = feed;
       return (
         <Ripples
           className={css(
-            styles.hubEntry,
-            this.isCurrentHub(this.props.current, id) && styles.current
+            styles.listItem,
+            i === activeFeed && styles.activeListItem
           )}
-          key={`${id}-${i}`}
+          key={`${label}-${i}`}
+          onClick={() => this.setState({ activeFeed: i })}
         >
-          <Link
-            href={{
-              pathname: "/hubs/[slug]",
-              query: {
-                name: `${hub.name}`,
-
-                slug: `${encodeURIComponent(hub.slug)}`,
-              },
-            }}
-            as={`/hubs/${encodeURIComponent(hub.slug)}`}
-          >
-            <a className={css(styles.hubLink)}>
-              <img
-                className={css(styles.hubImage)}
-                src={hub_image}
-                // alt={hub.name}
-              />
-              <span className={"clamp1"}>{name}</span>
-              {subscribedHubs[hub.id] && (
-                <span className={css(styles.subscribedIcon)}>
-                  {icons.starFilled}
-                </span>
-              )}
+          <Link href={"/"} as={"/"}>
+            <a className={css(styles.link)}>
+              <span className={css(styles.icon)}>{icon}</span>
+              <span className={"clamp1"}>{label}</span>
             </a>
           </Link>
         </Ripples>
@@ -164,19 +83,19 @@ class HubsList extends React.Component {
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
           <h5 className={css(styles.listLabel)} id={"hubListTitle"}>
-            Hubs From Your Feed
+            ResearchHub Feeds
           </h5>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
             <ReactPlaceholder
               showLoadingAnimation
-              ready={this.state.hubs && this.state.hubs.length}
+              ready={true}
               customPlaceholder={
-                <HubEntryPlaceholder color="#efefef" rows={9} />
+                <HubEntryPlaceholder color="#efefef" rows={3} />
               }
             >
-              {this.renderHubEntry()}
+              {this.renderFeedList()}
             </ReactPlaceholder>
             <Link href={"/hubs"} as={"/hubs"}>
               <a className={css(styles.link)}>View all hubs</a>
@@ -194,12 +113,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: "15px 20px",
+    padding: "15px 0",
     backgroundColor: "#FFF",
     border: "1px solid #ededed",
     boxSizing: "border-box",
     width: "100%",
-    marginTop: 20,
+    marginTop: 30,
     ":hover #hubListTitle": {
       color: colors.BLACK(),
     },
@@ -226,6 +145,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     margin: 0,
     padding: 0,
+    paddingLeft: 20,
     marginBottom: 10,
   },
   topIcon: {
@@ -233,7 +153,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     fontSize: 13,
   },
-  hubEntry: {
+  listItem: {
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
@@ -245,12 +165,15 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     borderRadius: 3,
     borderBottom: "1px solid #F0F0F0",
-    paddingTop: 10,
-    paddingBottom: 10,
+    padding: "10px 15px",
+    color: colors.BLACK(0.6),
     ":hover": {
       borderColor: "rgb(237, 237, 237)",
       backgroundColor: "#FAFAFA",
     },
+  },
+  activeListItem: {
+    color: colors.NEW_BLUE(),
   },
   hubImage: {
     height: 35,
@@ -260,13 +183,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
     background: "#EAEAEA",
   },
-  hubLink: {
+  link: {
     textDecoration: "none",
-    color: "#111",
     width: "100%",
     display: "flex",
     alignItems: "center",
     fontWeight: 500,
+    color: "unset",
   },
   current: {
     borderColor: "rgb(237, 237, 237)",
@@ -275,6 +198,10 @@ const styles = StyleSheet.create({
       borderColor: "rgb(227, 227, 227)",
       backgroundColor: "#EAEAEA",
     },
+  },
+  icon: {
+    fontSize: 20,
+    marginRight: 10,
   },
   hubsList: {
     opacity: 0,
@@ -296,18 +223,18 @@ const styles = StyleSheet.create({
     color: colors.DARK_YELLOW(),
     fontSize: 11,
   },
-  link: {
-    textDecoration: "none",
-    color: "rgba(78, 83, 255)",
-    fontWeight: 300,
-    textTransform: "capitalize",
-    fontSize: 16,
-    marginTop: 20,
-    ":hover": {
-      color: "rgba(78, 83, 255, .5)",
-      textDecoration: "underline",
-    },
-  },
+  // link: {
+  //   textDecoration: "none",
+  //   color: "rgba(78, 83, 255)",
+  //   fontWeight: 300,
+  //   textTransform: "capitalize",
+  //   fontSize: 16,
+  //   marginTop: 20,
+  //   ":hover": {
+  //     color: "rgba(78, 83, 255, .5)",
+  //     textDecoration: "underline",
+  //   },
+  // },
 });
 
 const mapStateToProps = (state) => ({
@@ -325,4 +252,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HubsList);
+)(FeedList);
