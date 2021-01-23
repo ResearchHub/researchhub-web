@@ -29,7 +29,7 @@ const LeaderboardUser = (props) => {
               disableLink={false}
               size={35}
             />
-            <div className={css(styles.name)}>{name}</div>
+            <div className={css(styles.name) + " clamp1"}>{name}</div>
             {props.extraInfo}
             <div className={css(styles.rep, repClass)}>{reputation}</div>
           </div>
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
   nameRow: {
     display: "flex",
     alignItems: "center",
+    fontSize: 16,
   },
   link: {
     color: colors.BLACK(1),
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
   },
   rep: {
     marginLeft: "auto",
-    color: colors.PURPLE(1),
+    // color: colors.PURPLE(1),
     fontWeight: 500,
   },
 });
