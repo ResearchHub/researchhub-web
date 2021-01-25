@@ -193,7 +193,6 @@ const AuthorPage = (props) => {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
       );
-      setFetchedUser(true); // needed for tabbar
     }
     const authored = fetchAuthoredPapers();
     const discussions = fetchUserDiscussions();
@@ -217,6 +216,7 @@ const AuthorPage = (props) => {
       refetch,
     ]).then((_) => {
       setFetching(false);
+      setFetchedUser(true); // needed for tabbar
     });
   }, [router.query.authorId]);
 
