@@ -18,30 +18,27 @@ const TabBar = (props) => {
   const { dynamic_href, fetching, showTabBar, selectedTab } = props;
   const [selected, setSelected] = useState(selectedTab);
   const menuRef = useRef();
-  const tabs = props.tabs.map(formatTabs);
+  const tabs = props.tabs
+    .map((tab) => formatTabs(tab, props))
+    .filter((tab) => tab && tab);
 
   useEffect(() => {
     menuRef.current && menuRef.current.scrollTo(selected);
   }, [selectedTab]);
 
-  const menu = tabs.map((tab, index) => {
-    if (tab.label === "transactions" || tab.label === "boosts") {
-      const { user, author } = props;
-      if (author.user !== user.id) {
-        return null;
-      }
+  const menu = tabs.map((tab) => {
+    if (tab) {
+      return (
+        <Tab
+          tab={tab}
+          key={tab.href}
+          selected={selectedTab}
+          dynamicHref={dynamic_href}
+          fetching={fetching}
+          authorId={props.author.id}
+        />
+      );
     }
-
-    return (
-      <Tab
-        tab={tab}
-        key={tab.href}
-        selected={selectedTab}
-        dynamicHref={dynamic_href}
-        fetching={fetching}
-        authorId={props.author.id}
-      />
-    );
   });
 
   const onSelect = (key) => {
@@ -94,7 +91,14 @@ export const NavigationArrow = ({ icon, direction, customStyles }) => {
   return <div className={css(classNames)}>{icon}</div>;
 };
 
-function formatTabs(tab) {
+function formatTabs(tab, props) {
+  if (tab.label === "transactions" || tab.label === "boosts") {
+    const { user, author } = props;
+    if (author.user !== user.id) {
+      return;
+    }
+  }
+
   tab.key = `nav-link-${tab.href}`;
   return tab;
 }
