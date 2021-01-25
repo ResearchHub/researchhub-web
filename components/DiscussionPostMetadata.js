@@ -356,7 +356,6 @@ const Timestamp = (props) => {
 };
 
 function formatTimestamp(props) {
-  console.log("props", props);
   let { date } = props;
   date = new Date(date);
   if (props.fullDate) {
