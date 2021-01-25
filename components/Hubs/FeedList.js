@@ -17,21 +17,6 @@ import { HubActions } from "~/redux/hub";
 
 const DEFAULT_TRANSITION_TIME = 400;
 
-const feeds = [
-  {
-    label: "My feed",
-    icon: "",
-  },
-  {
-    label: "Popular",
-    icon: icons.chartLine,
-  },
-  {
-    label: "All",
-    icon: icons.squares,
-  },
-];
-
 class FeedList extends React.Component {
   constructor(props) {
     super(props);
@@ -39,6 +24,26 @@ class FeedList extends React.Component {
       activeFeed: 0,
       reveal: true,
     };
+
+    this.feeds = [
+      {
+        label: "My feed",
+        icon: (
+          <img
+            src={"/static/ResearchHubIcon.png"}
+            className={css(styles.rhIcon)}
+          />
+        ),
+      },
+      {
+        label: "Popular",
+        icon: icons.chartLine,
+      },
+      {
+        label: "All",
+        icon: icons.squares,
+      },
+    ];
   }
 
   componentDidMount() {}
@@ -54,7 +59,7 @@ class FeedList extends React.Component {
 
   renderFeedList = () => {
     const { activeFeed } = this.state;
-    return feeds.map((feed, i) => {
+    return this.feeds.map((feed, i) => {
       const { label, icon } = feed;
       return (
         <Ripples
@@ -68,7 +73,9 @@ class FeedList extends React.Component {
           <Link href={"/"} as={"/"}>
             <a className={css(styles.link)}>
               <span className={css(styles.icon)}>{icon}</span>
-              <span className={"clamp1"}>{label}</span>
+              <span style={{ opacity: 1 }} className={"clamp1"}>
+                {label}
+              </span>
             </a>
           </Link>
         </Ripples>
@@ -88,18 +95,7 @@ class FeedList extends React.Component {
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
-            <ReactPlaceholder
-              showLoadingAnimation
-              ready={true}
-              customPlaceholder={
-                <HubEntryPlaceholder color="#efefef" rows={3} />
-              }
-            >
-              {this.renderFeedList()}
-            </ReactPlaceholder>
-            <Link href={"/hubs"} as={"/hubs"}>
-              <a className={css(styles.link)}>View all hubs</a>
-            </Link>
+            {this.renderFeedList()}
           </div>
         </div>
       </div>
@@ -113,7 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: "15px 0",
+    paddingTop: 15,
     backgroundColor: "#FFF",
     border: "1px solid #ededed",
     boxSizing: "border-box",
@@ -160,20 +156,24 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
-    boxSizing: "content-box",
+    boxSizing: "border-box",
     width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
+    borderLeft: "3px solid #fff",
     borderBottom: "1px solid #F0F0F0",
     padding: "10px 15px",
     color: colors.BLACK(0.6),
     ":hover": {
-      borderColor: "rgb(237, 237, 237)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: "#FAFAFA",
     },
   },
   activeListItem: {
     color: colors.NEW_BLUE(),
+    background:
+      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   hubImage: {
     height: 35,
@@ -200,8 +200,9 @@ const styles = StyleSheet.create({
     },
   },
   icon: {
-    fontSize: 20,
+    fontSize: 24,
     marginRight: 10,
+    opacity: 1,
   },
   hubsList: {
     opacity: 0,
@@ -215,8 +216,12 @@ const styles = StyleSheet.create({
   reveal: {
     opacity: 1,
   },
+  rhIcon: {
+    // height: 30,
+    width: 20,
+  },
   space: {
-    height: 10,
+    height: 50,
   },
   subscribedIcon: {
     marginLeft: "auto",
