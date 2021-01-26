@@ -104,3 +104,15 @@ export const reviewBounty = ({ paperId, PAYLOAD }) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const checkUserVotesOnPapers = async ({ paperIds }) => {
+  return await fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const fetchPaperFeed = async (PARAMS) => {
+  return await fetch(API.GET_HUB_PAPERS(PARAMS), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};

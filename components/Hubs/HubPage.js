@@ -13,13 +13,12 @@ import HubsList from "~/components/Hubs/HubsList";
 import FormSelect from "~/components/Form/FormSelect";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
-import Button from "../Form/Button";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 import MainHeader from "../Home/MainHeader";
 import SubscribeButton from "../Home/SubscribeButton";
+import EmpytFeedScreen from "../Home/EmptyFeedScreen";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -32,6 +31,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import { checkUserVotesOnPapers, fetchPaperFeed } from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 
@@ -67,7 +67,6 @@ class HubPage extends React.Component {
           this.props.filter.value === "newest"
         : true,
       papersLoading: false,
-      unsubscribeHover: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
     };
@@ -87,7 +86,7 @@ class HubPage extends React.Component {
    * title bar when we hit a certain height
    */
   scrollListener = () => {
-    let { auth } = this.props;
+    const { auth } = this.props;
     if (auth.showBanner && window.scrollY > 323) {
       this.setState({
         titleBoxShadow: true,
@@ -120,8 +119,8 @@ class HubPage extends React.Component {
       this.checkUserVotes(this.state.papers);
     }
 
-    let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
-    let subscribedHubs = {};
+    const subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
+    const subscribedHubs = {};
     subscribed.forEach((hub) => {
       subscribedHubs[hub.id] = true;
     });
@@ -133,9 +132,9 @@ class HubPage extends React.Component {
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
-    const { auth, user, hubState } = this.props;
-    let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
-    let subscribedHubs = {};
+    const { hubState } = this.props;
+    const subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
+    const subscribedHubs = {};
     subscribed.forEach((hub) => {
       subscribedHubs[hub.id] = true;
     });
@@ -166,7 +165,7 @@ class HubPage extends React.Component {
         fetch(API.HUB({ slug: this.props.slug }), API.GET_CONFIG())
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
-          .then((res) => {
+          .then((_) => {
             this.setState({
               subscribe: subscribedHubs[this.props.hub.id],
             });
@@ -191,35 +190,26 @@ class HubPage extends React.Component {
   }
 
   checkUserVotes = (papers) => {
-    let paperIds = papers.map((paper) => paper.id);
-    if (!paperIds || !paperIds.length) {
-      return null;
-    }
-    return fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let updates = { ...res };
-        let updatedPapers = papers.map((paper) => {
-          if (updates[paper.id]) {
-            paper.user_vote = updates[paper.id];
-          }
-          return paper;
-        });
+    if (!papers || !papers.length) return;
 
-        this.setState(
-          {
-            papers: [],
-          },
-          () => {
-            this.setState({ papers: updatedPapers });
-          }
-        );
+    const paperIds = papers.map((paper) => paper.id);
+    checkUserVotesOnPapers({ paperIds }).then((res) => {
+      const userVotes = { ...res };
+      const updatedPapers = papers.map((paper) => {
+        if (userVotes[paper.id]) {
+          paper.user_vote = userVotes[paper.id];
+        }
+        return paper;
       });
+
+      this.setState({
+        papers: updatedPapers,
+      });
+    });
   };
 
   detectPromoted = (papers) => {
-    let promotedPapers = [];
+    const promotedPapers = [];
     papers.forEach((paper) => {
       if (paper.promoted) {
         promotedPapers.push(paper.id);
@@ -230,73 +220,65 @@ class HubPage extends React.Component {
     if (createdLocationMeta === "hot") {
       createdLocationMeta = "trending";
     }
-    let payload = {
+
+    const PAYLOAD = {
       paper_ids: promotedPapers,
       paper_is_boosted: true,
       interaction: "VIEW",
       created_location: "FEED",
       created_location_meta: "trending",
     };
+
     fetch(
       API.PROMOTION_STATS({ route: "batch_views" }),
-      API.POST_CONFIG(payload)
+      API.POST_CONFIG(PAYLOAD)
     )
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {})
-      .catch((err) => {});
+      .then(Helpers.parseJSON);
   };
 
   fetchPapers = ({ hub }) => {
-    this.setState({ doneFetching: false });
-    if (this.state.papersLoading) {
+    const { papersLoading, filterBy, page } = this.state;
+
+    if (papersLoading || (hub && !hub.id)) {
       return null;
     }
 
-    if (hub && !hub.id) {
-      return null;
-    }
-
-    this.state.doneFetching && this.setState({ doneFetching: false });
-    let hubId = 0;
-
-    if (hub) {
-      hubId = hub.id;
-    }
-    let scope = this.calculateScope();
     this.setState({
       papersLoading: true,
+      doneFetching: false,
     });
 
-    return fetch(
-      API.GET_HUB_PAPERS({
-        timePeriod: scope,
-        hubId: hubId,
-        ordering: this.state.filterBy.value,
-        page: this.state.page,
-      }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
+    const PARAMS = {
+      timePeriod: this.calculateScope(),
+      hubId: hub ? hub.id : 0,
+      ordering: filterBy.value,
+      page: page,
+    };
+
+    fetchPaperFeed(PARAMS)
       .then((res) => {
-        this.detectPromoted([...res.results.data]);
-        this.setState({
-          count: res.count,
-          papers: res.results.data,
-          next: res.next,
-          page: this.state.page + 1,
+        const { count, next, results } = res;
+        const papers = results.data;
+        this.detectPromoted(papers);
+        const newState = {
+          count,
+          next,
+          papers,
+          page: page + 1,
           papersLoading: false,
           doneFetching: true,
-          noResults: res.results.no_results,
+          noResults: results.no_results,
+        };
+
+        this.setState({ ...newState }, () => {
+          this.checkUserVotes(papers);
         });
-        if (res.results.data.length > 0) {
-          this.checkUserVotes(res.results.data);
-        }
       })
-      .catch((error) => {
+      .catch((err) => {
+        const { response } = err;
         // If we get a 401 error it means the token is expired.
-        if (error.response && error.response.status === 401) {
+        if (response && response.status === 401) {
           this.setState(
             {
               papersLoading: false,
@@ -306,61 +288,52 @@ class HubPage extends React.Component {
             }
           );
         }
-        Sentry.captureException(error);
+        Sentry.captureException(err);
       });
   };
 
   loadMore = () => {
-    let { hub } = this.props;
-    let hubId = 0;
-    if (hub) {
-      hubId = hub.id;
-    }
-
-    if (this.state.loadingMore) {
-      return;
-    }
+    const { loadingMore, page, filterBy } = this.state;
+    const { hub } = this.props;
+    if (loadingMore) return;
 
     this.setState({
       loadingMore: true,
     });
 
-    let scope = this.calculateScope();
+    const PARAMS = {
+      timePeriod: this.calculateScope(),
+      hubId: hub ? hub.id : 0,
+      page: page,
+      ordering: filterBy.value,
+    };
 
-    let url = API.GET_HUB_PAPERS({
-      timePeriod: scope,
-      hubId: hubId,
-      page: this.state.page,
-      ordering: this.state.filterBy.value,
+    fetchPaperFeed(PARAMS).then((res) => {
+      const { next, previous, results } = res;
+      const papers = results.data;
+      this.detectPromoted(papers);
+      this.setState(
+        {
+          papers: [...this.state.papers, ...papers],
+          next,
+          prev: previous,
+          page: page + 1,
+          loadingMore: false,
+        },
+        () => {
+          const pageParam = getFragmentParameterByName(
+            "page",
+            this.state.next ? this.state.next : this.state.prev
+          ); // grab page from backend response
+          const offset = this.state.next ? -1 : 1;
+          this.updateSlugs(Number(pageParam) + offset);
+        }
+      );
     });
-
-    return fetch(url, API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.detectPromoted([...res.results.data]);
-        this.setState(
-          {
-            papers: [...this.state.papers, ...res.results.data],
-            next: res.next,
-            prev: !res.next ? res.previous : null,
-            page: this.state.page + 1,
-            loadingMore: false,
-          },
-          () => {
-            let page = getFragmentParameterByName(
-              "page",
-              this.state.next ? this.state.next : this.state.prev
-            ); // grab page from backend response
-            let offset = this.state.next ? -1 : 1;
-            page = Number(page) + offset;
-            this.updateSlugs(page);
-          }
-        );
-      });
   };
 
   updateSlugs = (page) => {
+    const { home, slug } = this.props;
     const { filterBy, scope, disableScope } = this.state;
 
     const filter = filterBy.label
@@ -372,31 +345,32 @@ class HubPage extends React.Component {
 
     if (disableScope) {
       // if filter, but no scope
-      if (this.props.home) {
+      if (home) {
         href = "/[filter]";
         as = `/${filter}`;
       } else {
         // Hub Page
         href = "/hubs/[slug]/[filter]";
-        as = `/hubs/${this.props.slug}/${filter}`;
+        as = `/hubs/${slug}/${filter}`;
       }
     } else {
       // filter & scope
-      if (this.props.home) {
+      if (home) {
         href = "/[filter]/[scope]";
         as = `/${filter}/${scope.value}`;
       } else {
         href = "/hubs/[slug]/[filter]/[scope]";
-        as = `/hubs/${this.props.slug}/${filter}/${scope.value}`;
+        as = `/hubs/${slug}/${filter}/${scope.value}`;
       }
     }
 
-    if (this.props.home && filter === "trending") {
+    // removes trending slug from url
+    if (home && filter === "trending") {
       href = "/";
       as = "/";
-    } else if (!this.props.home && filter === "trending") {
+    } else if (!home && filter === "trending") {
       href = "/hubs/[slug]";
-      as = `/hubs/${this.props.slug}`;
+      as = `/hubs/${slug}`;
     }
 
     if (page) {
@@ -407,21 +381,21 @@ class HubPage extends React.Component {
   };
 
   calculateScope = () => {
-    let scope = {
+    const scope = {
       start: 0,
       end: 0,
     };
-    let scopeId = this.state.scope.value;
+    const scopeId = this.state.scope.value;
 
-    let now = moment();
-    let today = moment().startOf("day");
-    let week = moment()
+    const now = moment();
+    const today = moment().startOf("day");
+    const week = moment()
       .startOf("day")
       .subtract(7, "days");
-    let month = moment()
+    const month = moment()
       .startOf("day")
       .subtract(30, "days");
-    let year = moment()
+    const year = moment()
       .startOf("day")
       .subtract(365, "days");
 
@@ -436,10 +410,9 @@ class HubPage extends React.Component {
     } else if (scopeId === "year") {
       scope.start = year.unix();
     } else if (scopeId === "all-time") {
-      let start = "2019-01-01";
-      let diff = now.diff(start, "days") + 1;
-
-      let alltime = now.startOf("day").subtract(diff, "days");
+      const start = "2019-01-01";
+      const diff = now.diff(start, "days") + 1;
+      const alltime = now.startOf("day").subtract(diff, "days");
       scope.start = alltime.unix();
     }
 
@@ -482,18 +455,12 @@ class HubPage extends React.Component {
       });
     }
 
-    if (this.state[type].label === option.label) {
-      return;
-    }
-
-    const param = {
-      page: 1,
-      [type]: option,
-    };
+    if (this.state[type].label === option.label) return;
 
     this.setState(
       {
-        ...param,
+        page: 1,
+        [type]: option,
       },
       () => {
         this.updateSlugs();
@@ -502,17 +469,12 @@ class HubPage extends React.Component {
   };
 
   onScopeSelect = (type, option) => {
-    if (this.state[type].label === option.label) {
-      return;
-    }
-    const param = {
-      page: 1,
-      [type]: option,
-    };
+    if (this.state[type].label === option.label) return;
 
     this.setState(
       {
-        ...param,
+        page: 1,
+        [type]: option,
       },
       () => {
         this.updateSlugs();
@@ -530,7 +492,7 @@ class HubPage extends React.Component {
 
   updateSubscription = (subscribing) => {
     const { hub, hubState, updateSubscribedHubs } = this.props;
-    let subscribedHubs = [];
+    let subscribedHubs;
     if (subscribing) {
       subscribedHubs = JSON.parse(JSON.stringify(hubState.subscribedHubs));
       subscribedHubs.push(hub);
@@ -564,10 +526,6 @@ class HubPage extends React.Component {
     });
   };
 
-  navigateToPaperUploadPage = () => {
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
-  };
-
   renderLoadMoreButton = () => {
     const { next, loadingMore } = this.state;
     if (next !== null) {
@@ -594,7 +552,15 @@ class HubPage extends React.Component {
   };
 
   render() {
-    const { auth } = this.props;
+    const {
+      auth,
+      home,
+      hub,
+      hubName,
+      initialHubList,
+      leaderboardFeed,
+    } = this.props;
+
     if (auth.user.moderator && filterOptions.length < 5) {
       filterOptions.push({ value: "removed", label: "Removed" });
     }
@@ -602,7 +568,7 @@ class HubPage extends React.Component {
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>
-          {this.props.home && <Head title={this.props.home && null} />}
+          {home && <Head title={home && null} />}
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.column, styles.mainfeed)}>
@@ -610,7 +576,7 @@ class HubPage extends React.Component {
               {...this.props}
               {...this.state}
               title={this.formatMainHeader()}
-              hubName={this.props.home ? "ResearchHub" : this.props.hub.name}
+              hubName={home ? "ResearchHub" : hubName}
               scopeOptions={scopeOptions}
               filterOptions={filterOptions}
               onScopeSelect={this.onScopeSelect}
@@ -640,66 +606,33 @@ class HubPage extends React.Component {
                         key={`${paper.id}-${i}`}
                         paper={paper}
                         index={i}
-                        hubName={this.props.hubName}
+                        hubName={hubName}
                         voteCallback={this.voteCallback}
+                        vote={paper.user_vote}
                       />
                     ))}
                     {this.renderLoadMoreButton()}
                   </Fragment>
                 ) : (
-                  <div
-                    className={css(styles.column)}
-                    style={{ height: this.state.height }}
-                  >
-                    <img
-                      className={css(styles.emptyPlaceholderImage)}
-                      src={"/static/background/homepage-empty-state.png"}
-                      loading="lazy"
-                      alt="Empty State Icon"
-                    />
-                    <div
-                      className={css(styles.text, styles.emptyPlaceholderText)}
-                    >
-                      There are no academic papers uploaded for this hub.
-                    </div>
-                    <div
-                      className={css(
-                        styles.text,
-                        styles.emptyPlaceholderSubtitle
-                      )}
-                    >
-                      Click ‘Upload paper’ button to upload a PDF
-                    </div>
-                    <PermissionNotificationWrapper
-                      onClick={this.navigateToPaperUploadPage}
-                      modalMessage="upload a paper"
-                      loginRequired={true}
-                      permissionKey="CreatePaper"
-                    >
-                      <Button label={"Upload Paper"} hideRipples={true} />
-                    </PermissionNotificationWrapper>
-                  </div>
+                  <EmpytFeedScreen />
                 )}
               </ReactPlaceholder>
             </div>
             <div className={css(styles.mobileHubListContainer)}>
               <HubsList
-                current={this.props.home ? null : this.props.hub}
+                current={home ? null : hub}
                 overrideStyle={styles.mobileList}
-                initialHubList={this.props.initialHubList}
+                initialHubList={initialHubList}
               />
             </div>
           </div>
           <div className={css(styles.column, styles.sidebar)}>
             <FeedList />
             <HubsList
-              current={this.props.home ? null : this.props.hub}
-              initialHubList={this.props.initialHubList}
+              current={home ? null : hub}
+              initialHubList={initialHubList}
             />
-            <LeaderboardContainer
-              hubId={0}
-              initialUsers={this.props.leaderboardFeed}
-            />
+            <LeaderboardContainer hubId={0} initialUsers={leaderboardFeed} />
           </div>
         </div>
       </div>
@@ -708,7 +641,6 @@ class HubPage extends React.Component {
 }
 
 var styles = StyleSheet.create({
-  content: {},
   column: {
     display: "flex",
     flexDirection: "column",
@@ -1097,35 +1029,7 @@ var styles = StyleSheet.create({
     paddingTop: 20,
     width: "90%",
   },
-  emptyPlaceholderImage: {
-    width: 400,
-    objectFit: "contain",
-    marginTop: 40,
-    "@media only screen and (max-width: 415px)": {
-      width: "70%",
-    },
-  },
-  emptyPlaceholderText: {
-    width: 500,
-    textAlign: "center",
-    fontSize: 18,
-    color: "#241F3A",
-    marginTop: 20,
-    "@media only screen and (max-width: 415px)": {
-      width: "85%",
-    },
-  },
-  emptyPlaceholderSubtitle: {
-    width: 500,
-    textAlign: "center",
-    fontSize: 14,
-    color: "#4e4c5f",
-    marginTop: 10,
-    marginBottom: 15,
-    "@media only screen and (max-width: 415px)": {
-      width: "85%",
-    },
-  },
+
   optionContainer: {
     display: "flex",
     width: "100%",
