@@ -10,7 +10,6 @@ import Router from "next/router";
 // Component
 import FeedList from "./FeedList";
 import HubsList from "~/components/Hubs/HubsList";
-import FormSelect from "~/components/Form/FormSelect";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
@@ -571,6 +570,14 @@ class HubPage extends React.Component {
           {home && <Head title={home && null} />}
         </div>
         <div className={css(styles.row, styles.body)}>
+          <div className={css(styles.column, styles.sidebar)}>
+            <FeedList />
+            <HubsList
+              current={home ? null : hub}
+              initialHubList={initialHubList}
+            />
+            <LeaderboardContainer hubId={0} initialUsers={leaderboardFeed} />
+          </div>
           <div className={css(styles.column, styles.mainfeed)}>
             <MainHeader
               {...this.props}
@@ -625,14 +632,6 @@ class HubPage extends React.Component {
                 initialHubList={initialHubList}
               />
             </div>
-          </div>
-          <div className={css(styles.column, styles.sidebar)}>
-            <FeedList />
-            <HubsList
-              current={home ? null : hub}
-              initialHubList={initialHubList}
-            />
-            <LeaderboardContainer hubId={0} initialUsers={leaderboardFeed} />
           </div>
         </div>
       </div>
@@ -710,47 +709,48 @@ var styles = StyleSheet.create({
     },
   },
   body: {
-    // backgroundColor: "#FCFCFC",
     width: "100%",
-    display: "flex",
+    height: "100%",
+    display: "table",
+    paddingLeft: 50,
+    boxSizing: "border-box",
+    // display: "flex",
+    // justifyContent: "flex-start",
     // alignItems: "flex-start",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    // display: "table",
-    // tableLayout: "fixed",
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (min-width: 1920px)": {
       display: "flex",
+      justifyContent: "center",
+      alignItems: "flex-start",
+    },
+    "@media only screen and (max-width: 990px)": {
+      padding: "0px 20px",
     },
   },
   mainfeed: {
-    // display: "table-cell",
+    minHeight: "inherit",
     height: "100%",
-    width: "60%",
-    // tableLayout: "fixed",
-    // backgroundColor: "#FCFCFC",
-    // borderRight: "1px solid #ededed",
-    // "@media only screen and (min-width: 900px)": {
-    //   width: "82%",
-    // },
-    // "@media only screen and (max-width: 768px)": {
-    //   width: "100%",
-    // },
+    maxWidth: 1200,
+    display: "table-cell",
+    flexDirection: "column",
+    "@media only screen and (max-width: 990px)": {
+      width: "100%",
+    },
   },
   sidebar: {
-    // backgroundColor: "#FFF",
-    // width: "20%",
-    width: 280,
-    height: "100%",
-    display: "flex",
+    // display: "flex",
+    display: "table-cell",
     flexDirection: "column",
     alignItems: "flex-start",
-    // minWidth: 220,
-    // width: 360,
-    // maxWidth: 360,
-    // paddingTop: 10,
+    width: 280,
+    minWidth: 250,
+    minHeight: "inherit",
+    // height: "100%",
     "@media only screen and (max-width: 990px)": {
       display: "none",
     },
+  },
+  sidebarRight: {
+    marginLeft: 0,
   },
   subtext: {
     whiteSpace: "initial",
