@@ -3,7 +3,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { emailPreference } from "./shims";
 
 export const fetchEmailPreference = async () => {
-  let params = API.GET_CONFIG();
+  const params = API.GET_CONFIG();
   const data = await fetch(API.EMAIL_PREFERENCE({}), params)
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
@@ -15,30 +15,22 @@ export const fetchEmailPreference = async () => {
 };
 
 export const updateEmailPreference = async (emailRecipientId, data) => {
-  let params = API.PATCH_CONFIG(data);
+  const params = API.PATCH_CONFIG(data);
   return await fetch(API.EMAIL_PREFERENCE({ emailRecipientId }), params)
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
 
-export const subscribeToHub = async (hubId) => {
-  const config = API.POST_CONFIG();
-  return await fetch(API.HUB_SUBSCRIBE({ hubId }), config)
+export const subscribeToHub = async ({ hubId }) => {
+  return await fetch(API.HUB_SUBSCRIBE({ hubId }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .catch((err) => {
-      //Todo: handle error
-    });
+    .then(Helpers.parseJSON);
 };
 
-export const unsubscribeFromHub = async (hubId) => {
-  const config = API.POST_CONFIG();
-  return await fetch(API.HUB_UNSUBSCRIBE({ hubId }), config)
+export const unsubscribeFromHub = async ({ hubId }) => {
+  return await fetch(API.HUB_UNSUBSCRIBE({ hubId }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .catch((err) => {
-      //Todo: handle error
-    });
+    .then(Helpers.parseJSON);
 };
 
 export const sendAmpEvent = async (payload, cb) => {
