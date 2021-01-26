@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     },
   },
   icon: {
-    fontSize: 24,
+    fontSize: 22,
     marginRight: 10,
     opacity: 1,
   },
@@ -218,7 +218,8 @@ const styles = StyleSheet.create({
   },
   rhIcon: {
     // height: 30,
-    width: 20,
+    width: 17,
+    marginLeft: 3,
   },
   space: {
     height: 50,

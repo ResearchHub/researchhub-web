@@ -18,6 +18,8 @@ import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
+import MainHeader from "../Home/MainHeader";
+import SubscribeButton from "../Home/SubscribeButton";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -66,7 +68,6 @@ class HubPage extends React.Component {
         : true,
       papersLoading: false,
       unsubscribeHover: false,
-      subscribeClicked: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
     };
@@ -360,9 +361,9 @@ class HubPage extends React.Component {
   };
 
   updateSlugs = (page) => {
-    let { filterBy, scope, disableScope } = this.state;
+    const { filterBy, scope, disableScope } = this.state;
 
-    let filter = filterBy.label
+    const filter = filterBy.label
       .split(" ")
       .join("-")
       .toLowerCase();
@@ -445,12 +446,12 @@ class HubPage extends React.Component {
     return scope;
   };
 
-  getTitle = () => {
-    let { filterBy } = this.state;
-    let value = filterBy.value;
-    let isHomePage = this.props.home;
-    var prefix = "";
-    switch (value) {
+  formatMainHeader = () => {
+    const { filterBy } = this.state;
+    const isHomePage = this.props.home;
+    let prefix = "";
+
+    switch (filterBy.value) {
       case "removed":
         prefix = "Removed";
         break;
@@ -470,16 +471,45 @@ class HubPage extends React.Component {
     return `${prefix} Papers ${isHomePage ? "on" : "in"} `;
   };
 
-  onFilterSelect = (option, type) => {
+  onFilterSelect = (type, option) => {
+    if (option.disableScope) {
+      this.setState({
+        disableScope: true,
+      });
+    } else {
+      this.setState({
+        disableScope: false,
+      });
+    }
+
     if (this.state[type].label === option.label) {
       return;
     }
-    let { showMessage } = this.props;
-    let param = {
+
+    const param = {
       page: 1,
+      [type]: option,
     };
-    param[type] = option;
-    showMessage({ show: true, load: true });
+
+    this.setState(
+      {
+        ...param,
+      },
+      () => {
+        this.updateSlugs();
+      }
+    );
+  };
+
+  onScopeSelect = (type, option) => {
+    if (this.state[type].label === option.label) {
+      return;
+    }
+    const param = {
+      page: 1,
+      [type]: option,
+    };
+
     this.setState(
       {
         ...param,
@@ -491,7 +521,7 @@ class HubPage extends React.Component {
   };
 
   voteCallback = (index, paper) => {
-    let papers = [...this.state.papers];
+    const papers = [...this.state.papers];
     papers[index] = paper;
     this.setState({
       papers,
@@ -512,127 +542,25 @@ class HubPage extends React.Component {
     updateSubscribedHubs(subscribedHubs);
   };
 
-  onMouseEnterSubscribe = () => {
+  onSubscribe = () => {
+    const { showMessage, setMessage } = this.props;
+    this.updateSubscription(true);
+    setMessage("Subscribed!");
+    showMessage({ show: true });
     this.setState({
-      unsubscribeHover: true,
+      transition: false,
+      subscribe: !this.state.subscribe,
     });
   };
 
-  onMouseExitSubscribe = () => {
+  onUnsubscribe = () => {
+    const { showMessage, setMessage } = this.props;
+    this.updateSubscription(false);
+    setMessage("Unsubscribed!");
+    showMessage({ show: true });
     this.setState({
-      unsubscribeHover: false,
-      subscribeClicked: false,
-    });
-  };
-
-  renderSubscribeButton = () => {
-    if (this.state.subscribe) {
-      let text = this.state.unsubscribeHover ? (
-        this.state.subscribeClicked ? (
-          <span>Subscribed {icons.starFilled}</span>
-        ) : (
-          "Unsubscribe"
-        )
-      ) : (
-        <span>Subscribed {icons.starFilled}</span>
-      );
-      let hover = this.state.unsubscribeHover && !this.state.subscribeClicked;
-      return (
-        <Ripples
-          onClick={this.subscribeToHub}
-          className={css(styles.subscribe)}
-        >
-          <button
-            className={css(styles.subscribe, hover && styles.subscribeHover)}
-            onMouseEnter={this.onMouseEnterSubscribe}
-            onMouseLeave={this.onMouseExitSubscribe}
-          >
-            <span>
-              {!this.state.transition ? (
-                text
-              ) : (
-                <Loader
-                  key={"subscribeLoader"}
-                  loading={true}
-                  containerStyle={styles.loader}
-                  size={10}
-                  color={"#FFF"}
-                />
-              )}
-            </span>
-          </button>
-        </Ripples>
-      );
-    } else {
-      return (
-        <Ripples
-          onClick={this.subscribeToHub}
-          className={css(styles.subscribe)}
-        >
-          <button className={css(styles.subscribe)}>
-            <span>
-              {!this.state.transition ? (
-                "Subscribe"
-              ) : (
-                <Loader
-                  key={"subscribeLoader"}
-                  loading={true}
-                  containerStyle={styles.loader}
-                  size={10}
-                  color={"#FFF"}
-                />
-              )}
-            </span>
-          </button>
-        </Ripples>
-      );
-    }
-  };
-
-  subscribeToHub = () => {
-    let { hub, showMessage, setMessage, hubState } = this.props;
-    showMessage({ show: false });
-    this.setState({ transition: true }, () => {
-      let config = API.POST_CONFIG();
-      if (this.state.subscribe) {
-        return fetch(API.HUB_UNSUBSCRIBE({ hubId: hub.id }), config)
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {
-            this.updateSubscription(false);
-            setMessage("Unsubscribed!");
-            showMessage({ show: true });
-            this.setState({
-              transition: false,
-              subscribe: !this.state.subscribe,
-              subscribeClicked: false,
-            });
-          })
-          .catch((err) => {
-            if (err.response.status === 429) {
-              this.props.openRecaptchaPrompt(true);
-            }
-          });
-      } else {
-        return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {
-            this.updateSubscription(true);
-            setMessage("Subscribed!");
-            showMessage({ show: true });
-            this.setState({
-              transition: false,
-              subscribe: !this.state.subscribe,
-              subscribeClicked: true,
-            });
-          })
-          .catch((err) => {
-            if (err.response.status === 429) {
-              this.props.openRecaptchaPrompt(true);
-            }
-          });
-      }
+      transition: false,
+      subscribe: !this.state.subscribe,
     });
   };
 
@@ -670,6 +598,7 @@ class HubPage extends React.Component {
     if (auth.user.moderator && filterOptions.length < 5) {
       filterOptions.push({ value: "removed", label: "Removed" });
     }
+
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>
@@ -677,85 +606,25 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.column, styles.mainfeed)}>
-            <div
-              className={css(
-                styles.column,
-                styles.topbar,
-                this.state.titleBoxShadow && styles.titleBoxShadow,
-                this.props.home && styles.row
-              )}
-            >
-              <h1 className={css(styles.text, styles.feedTitle)}>
-                <span className={css(styles.fullWidth)}>
-                  {this.getTitle()}
-                  <span className={css(styles.hubName)}>
-                    {this.props.home ? "ResearchHub" : this.props.hub.name}
-                  </span>
-                </span>
-              </h1>
-              <div
-                className={css(
-                  styles.inputContainer,
-                  !this.props.home && styles.hubInputContainer,
-                  this.props.home && styles.homeInputContainer
-                )}
-              >
-                <div
-                  className={css(
-                    styles.subscribeContainer,
-                    this.props.home && styles.hideBanner
-                  )}
-                >
-                  {this.props.hub && this.renderSubscribeButton()}
-                </div>
-                <div className={css(styles.row, styles.inputs)}>
-                  <FormSelect
-                    id={"filterBy"}
-                    options={filterOptions}
-                    value={this.state.filterBy}
-                    containerStyle={styles.dropDownLeft}
-                    inputStyle={{
-                      fontWeight: 500,
-                      minHeight: "unset",
-                      backgroundColor: "#FFF",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                    onChange={(id, option) => {
-                      if (option.disableScope) {
-                        this.setState({
-                          disableScope: true,
-                        });
-                      } else {
-                        this.setState({
-                          disableScope: false,
-                        });
-                      }
-                      this.onFilterSelect(option, id);
-                    }}
-                    isSearchable={false}
-                  />
-                  <FormSelect
-                    id={"scope"}
-                    options={scopeOptions}
-                    value={this.state.scope}
-                    containerStyle={[
-                      styles.dropDown,
-                      this.state.disableScope && styles.disableScope,
-                    ]}
-                    inputStyle={{
-                      fontWeight: 500,
-                      minHeight: "unset",
-                      backgroundColor: "#FFF",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                    onChange={(id, option) => this.onFilterSelect(option, id)}
-                    isSearchable={false}
-                  />
-                </div>
-              </div>
-            </div>
+            <MainHeader
+              {...this.props}
+              {...this.state}
+              title={this.formatMainHeader()}
+              hubName={this.props.home ? "ResearchHub" : this.props.hub.name}
+              scopeOptions={scopeOptions}
+              filterOptions={filterOptions}
+              onScopeSelect={this.onScopeSelect}
+              onFilterSelect={this.onFilterSelect}
+              subscribeButton={
+                <SubscribeButton
+                  {...this.props}
+                  {...this.state}
+                  onClick={() => this.setState({ transition: true })}
+                  onSubscribe={this.onSubscribe}
+                  onUnsubscribe={this.onUnsubscribe}
+                />
+              }
+            />
             <div className={css(styles.infiniteScroll)}>
               <ReactPlaceholder
                 ready={this.state.doneFetching}
@@ -909,7 +778,7 @@ var styles = StyleSheet.create({
     },
   },
   body: {
-    backgroundColor: "#FCFCFC",
+    // backgroundColor: "#FCFCFC",
     width: "100%",
     display: "flex",
     // alignItems: "flex-start",
@@ -924,10 +793,9 @@ var styles = StyleSheet.create({
   mainfeed: {
     // display: "table-cell",
     height: "100%",
-    // width: "80%",
-    maxWidth: 1000,
+    width: "60%",
     // tableLayout: "fixed",
-    backgroundColor: "#FCFCFC",
+    // backgroundColor: "#FCFCFC",
     // borderRight: "1px solid #ededed",
     // "@media only screen and (min-width: 900px)": {
     //   width: "82%",
@@ -939,7 +807,7 @@ var styles = StyleSheet.create({
   sidebar: {
     // backgroundColor: "#FFF",
     // width: "20%",
-    width: 300,
+    width: 280,
     height: "100%",
     display: "flex",
     flexDirection: "column",
@@ -1054,7 +922,7 @@ var styles = StyleSheet.create({
     paddingLeft: 70,
     paddingRight: 70,
     boxSizing: "border-box",
-    backgroundColor: "#FCFCFC",
+    // backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
     top: 80,
@@ -1164,9 +1032,9 @@ var styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
-    backgroundColor: "#FCFCFC",
-    paddingLeft: 70,
-    paddingRight: 70,
+    // backgroundColor: "#FCFCFC",
+    // paddingLeft: 70,
+    // paddingRight: 20,
     paddingBottom: 30,
     "@media only screen and (min-width: 900px)": {
       paddingLeft: 25,
