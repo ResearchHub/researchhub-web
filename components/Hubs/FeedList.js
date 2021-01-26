@@ -89,9 +89,7 @@ class FeedList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <h5 className={css(styles.listLabel)} id={"hubListTitle"}>
-            ResearchHub Feeds
-          </h5>
+          <h5 className={css(styles.listLabel)}>ResearchHub Feeds</h5>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
@@ -115,9 +113,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     marginTop: 30,
-    ":hover #hubListTitle": {
-      color: colors.BLACK(),
-    },
   },
   hubsListContainer: {
     height: "100%",
@@ -218,8 +213,9 @@ const styles = StyleSheet.create({
   },
   rhIcon: {
     // height: 30,
-    width: 17,
-    marginLeft: 3,
+    width: 15,
+    marginLeft: 5,
+    marginRight: 2,
   },
   space: {
     height: 50,

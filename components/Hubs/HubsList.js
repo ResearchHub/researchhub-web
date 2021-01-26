@@ -163,9 +163,7 @@ class HubsList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <h5 className={css(styles.listLabel)} id={"hubListTitle"}>
-            Hubs From Your Feed
-          </h5>
+          <h5 className={css(styles.listLabel)}>Hubs From Your Feed</h5>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
@@ -194,15 +192,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: "15px 20px",
+    padding: "15px 0",
     backgroundColor: "#FFF",
     border: "1px solid #ededed",
     boxSizing: "border-box",
     width: "100%",
     marginTop: 20,
-    ":hover #hubListTitle": {
-      color: colors.BLACK(),
-    },
   },
   hubsListContainer: {
     height: "100%",
@@ -225,7 +220,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     margin: 0,
-    padding: 0,
+    padding: "0px 0px 0px 20px",
     marginBottom: 10,
   },
   topIcon: {
@@ -240,13 +235,11 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
-    boxSizing: "content-box",
+    boxSizing: "border-box",
     width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
     borderBottom: "1px solid #F0F0F0",
-    paddingTop: 10,
-    paddingBottom: 10,
     ":hover": {
       borderColor: "rgb(237, 237, 237)",
       backgroundColor: "#FAFAFA",
@@ -267,6 +260,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontWeight: 500,
+    padding: "10px 20px",
   },
   current: {
     borderColor: "rgb(237, 237, 237)",
@@ -303,6 +297,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontSize: 16,
     marginTop: 20,
+    paddingLeft: 20,
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",

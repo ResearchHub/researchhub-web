@@ -63,9 +63,7 @@ const LeaderboardContainer = (props) => {
 
   return (
     <div className={css(styles.container)}>
-      <h3 className={css(styles.reputable)} id={"reputableUserLabel"}>
-        Most Reputable Users
-      </h3>
+      <h3 className={css(styles.reputable)}>Most Reputable Users</h3>
       <ReactPlaceholder
         ready={!fetchingUsers}
         customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
@@ -99,9 +97,6 @@ const styles = StyleSheet.create({
     padding: "15px 20px",
     boxSizing: "border-box",
     marginTop: 20,
-    ":hover #reputableUserLabel": {
-      color: colors.BLACK(),
-    },
   },
   reputable: {
     textTransform: "uppercase",
