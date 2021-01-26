@@ -17,12 +17,12 @@ const EmpytFeedScreen = () => {
         loading="lazy"
         alt="Empty State Icon"
       />
-      <div className={css(styles.emptyPlaceholderText)}>
+      <span className={css(styles.emptyPlaceholderText)}>
         There are no academic papers uploaded for this hub.
-      </div>
-      <div className={css(styles.emptyPlaceholderSubtitle)}>
+      </span>
+      <span className={css(styles.emptyPlaceholderSubtitle)}>
         Click ‘Upload paper’ button to upload a PDF
-      </div>
+      </span>
       <PermissionNotificationWrapper
         onClick={navigateToPaperUploadPage}
         modalMessage="upload a paper"
@@ -51,22 +51,26 @@ const styles = StyleSheet.create({
     },
   },
   emptyPlaceholderText: {
-    width: 500,
     textAlign: "center",
-    fontSize: 18,
+    fontSize: 22,
     color: "#241F3A",
     marginTop: 20,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 16,
+    },
     "@media only screen and (max-width: 415px)": {
       width: "85%",
     },
   },
   emptyPlaceholderSubtitle: {
-    width: 500,
     textAlign: "center",
-    fontSize: 14,
+    fontSize: 18,
     color: "#4e4c5f",
     marginTop: 10,
     marginBottom: 15,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
+    },
     "@media only screen and (max-width: 415px)": {
       width: "85%",
     },
