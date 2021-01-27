@@ -117,7 +117,7 @@ class HubsList extends React.Component {
     subscribed.forEach((hub) => {
       subscribedHubs[hub.id] = true;
     });
-    return selectedHubs.slice(0, 5).map((hub, i) => {
+    return selectedHubs.map((hub, i) => {
       const { name, id, hub_image, user_is_subscribed } = hub;
       return (
         <Ripples
@@ -125,6 +125,7 @@ class HubsList extends React.Component {
             styles.hubEntry,
             this.isCurrentHub(this.props.current, id) && styles.current
           )}
+          onClick={this.props.onHubSelect}
           key={`${id}-${i}`}
         >
           <Link
@@ -163,7 +164,7 @@ class HubsList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <h5 className={css(styles.listLabel)}>Hubs From Your Feed</h5>
+          <h5 className={css(styles.listLabel)}>Trending Hubs</h5>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >

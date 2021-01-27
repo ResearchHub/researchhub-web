@@ -122,34 +122,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    SEARCH_MATCHING_PAPERS: ({
-      search,
-      page,
-      size,
-      external_search = true,
-    }) => {
-      let url = BASE_URL + "search/match/";
-      let params = {
-        querystring: {
-          search,
-          page,
-          size,
-          external_search,
-        },
-      };
-      url = prepURL(url, params);
-
-      return url;
-    },
-    PAPER: ({
-      paperId,
-      search,
-      page,
-      filters,
-      highlights,
-      route,
-      progress,
-    }) => {
+    PAPER: ({ paperId, search, page, filters, route, progress }) => {
       let url = BASE_URL + `paper/`;
 
       let params = {
@@ -166,12 +139,6 @@ const routes = (BASE_URL) => {
 
       url = prepURL(url, params);
 
-      if (highlights) {
-        for (let i = 0; i < highlights.length; i++) {
-          url += `highlight=${highlights[i]}&`;
-        }
-      }
-
       url += "make_public=true&";
 
       if (progress) {
@@ -183,6 +150,21 @@ const routes = (BASE_URL) => {
 
     AUTHOR: ({ authorId }) => {
       let url = BASE_URL + `author/${authorId}`;
+
+      let params = {
+        filters,
+        querystring: {
+          search,
+          page,
+        },
+        rest: {
+          route: route,
+          id: authorId,
+        },
+      };
+
+      url = prepURL(url, params);
+
       return url;
     },
 
@@ -369,7 +351,14 @@ const routes = (BASE_URL) => {
     GET_HUB_CATEGORIES: () => {
       return BASE_URL + `hub_category/`;
     },
-    GET_HUB_PAPERS: ({ hubId, timePeriod, ordering, page = 1, slug }) => {
+    GET_HUB_PAPERS: ({
+      hubId,
+      timePeriod,
+      ordering,
+      page = 1,
+      slug,
+      subscribedHubs,
+    }) => {
       let url = BASE_URL + `paper/get_hub_papers/`;
       let params = {
         querystring: {
@@ -379,6 +368,7 @@ const routes = (BASE_URL) => {
           end_date__lte: timePeriod.end,
           ordering,
           hub_id: hubId,
+          subscribed_hubs: subscribedHubs,
         },
       };
       url = prepURL(url, params);
@@ -589,9 +579,6 @@ const routes = (BASE_URL) => {
     },
     DELETE_FIGURE: ({ figureId }) => {
       return BASE_URL + `figure/${figureId}/delete_figure`;
-    },
-    MAKE_PAPER_PUBLIC: ({ paperId }) => {
-      return BASE_URL + `paper/${paperId}/?make_public=true/`;
     },
     PAPER_FILES: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/additional_file/`;
