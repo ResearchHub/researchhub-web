@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: "15px 0",
+    padding: "15px 0 1px",
     backgroundColor: "#FFF",
     border: "1px solid #ededed",
     boxSizing: "border-box",
