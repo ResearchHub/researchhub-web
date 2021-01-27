@@ -325,7 +325,6 @@ class UserSettings extends Component {
   };
 
   confirmUnsubscribe = (hub, newState) => {
-    console.log("hub", hub);
     this.props.alert.show({
       text: (
         <span>
