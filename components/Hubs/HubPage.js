@@ -28,9 +28,12 @@ import { HubActions } from "~/redux/hub";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { checkUserVotesOnPapers, fetchPaperFeed } from "~/config/fetch";
+import {
+  checkUserVotesOnPapers,
+  fetchPaperFeed,
+  fetchURL,
+} from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 
@@ -65,6 +68,7 @@ class HubPage extends React.Component {
         ? this.props.filter.value === "hot" ||
           this.props.filter.value === "newest"
         : true,
+      feed: 1,
       papersLoading: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
@@ -178,7 +182,8 @@ class HubPage extends React.Component {
 
     if (
       prevState.scope !== this.state.scope ||
-      prevState.filterBy !== this.state.filterBy
+      prevState.filterBy !== this.state.filterBy ||
+      prevState.feed !== this.state.feed
     ) {
       this.fetchPapers({ hub: this.props.hub });
     }
@@ -228,16 +233,16 @@ class HubPage extends React.Component {
       created_location_meta: "trending",
     };
 
-    fetch(
-      API.PROMOTION_STATS({ route: "batch_views" }),
-      API.POST_CONFIG(PAYLOAD)
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
+    // fetch(
+    //   API.PROMOTION_STATS({ route: "batch_views" }),
+    //   API.POST_CONFIG(PAYLOAD)
+    // )
+    //   .then(Helpers.checkStatus)
+    //   .then(Helpers.parseJSON);
   };
 
   fetchPapers = ({ hub }) => {
-    const { papersLoading, filterBy, page } = this.state;
+    const { papersLoading, filterBy, feed } = this.state;
 
     if (papersLoading || (hub && !hub.id)) {
       return null;
@@ -250,10 +255,15 @@ class HubPage extends React.Component {
 
     const PARAMS = {
       timePeriod: this.calculateScope(),
-      hubId: hub ? hub.id : 0,
       ordering: filterBy.value,
-      page: page,
+      page: 1,
     };
+
+    if (feed === 0) {
+      PARAMS.subscribedHubs = true;
+    } else {
+      PARAMS.hubId = hub ? hub.id : 0;
+    }
 
     fetchPaperFeed(PARAMS)
       .then((res) => {
@@ -264,12 +274,10 @@ class HubPage extends React.Component {
           count,
           next,
           papers,
-          page: page + 1,
           papersLoading: false,
           doneFetching: true,
           noResults: results.no_results,
         };
-
         this.setState({ ...newState }, () => {
           this.checkUserVotes(papers);
         });
@@ -292,7 +300,7 @@ class HubPage extends React.Component {
   };
 
   loadMore = () => {
-    const { loadingMore, page, filterBy } = this.state;
+    const { loadingMore, page, filterBy, feed } = this.state;
     const { hub } = this.props;
     if (loadingMore) return;
 
@@ -300,14 +308,7 @@ class HubPage extends React.Component {
       loadingMore: true,
     });
 
-    const PARAMS = {
-      timePeriod: this.calculateScope(),
-      hubId: hub ? hub.id : 0,
-      page: page,
-      ordering: filterBy.value,
-    };
-
-    fetchPaperFeed(PARAMS).then((res) => {
+    fetchURL(this.state.next).then((res) => {
       const { next, previous, results } = res;
       const papers = results.data;
       this.detectPromoted(papers);
@@ -419,7 +420,12 @@ class HubPage extends React.Component {
   };
 
   formatMainHeader = () => {
-    const { filterBy } = this.state;
+    const { filterBy, feed } = this.state;
+
+    if (feed === 0) {
+      return "My Feed on ";
+    }
+
     const isHomePage = this.props.home;
     let prefix = "";
 
@@ -440,6 +446,7 @@ class HubPage extends React.Component {
         prefix = "Most Discussed";
         break;
     }
+
     return `${prefix} Papers ${isHomePage ? "on" : "in"} `;
   };
 
@@ -479,6 +486,14 @@ class HubPage extends React.Component {
         this.updateSlugs();
       }
     );
+  };
+
+  onFeedSelect = (index) => {
+    this.setState({ feed: index });
+  };
+
+  onHubSelect = (e) => {
+    this.setState({ feed: null });
   };
 
   voteCallback = (index, paper) => {
@@ -571,10 +586,14 @@ class HubPage extends React.Component {
         </div>
         <div className={css(styles.row, styles.body)}>
           <div className={css(styles.column, styles.sidebar)}>
-            <FeedList />
+            <FeedList
+              activeFeed={this.state.feed}
+              onFeedSelect={this.onFeedSelect}
+            />
             <HubsList
               current={home ? null : hub}
               initialHubList={initialHubList}
+              onHubSelect={this.onHubSelect}
             />
             <LeaderboardContainer hubId={0} initialUsers={leaderboardFeed} />
           </div>
@@ -583,7 +602,7 @@ class HubPage extends React.Component {
               {...this.props}
               {...this.state}
               title={this.formatMainHeader()}
-              hubName={home ? "ResearchHub" : hubName}
+              hubName={home ? "ResearchHub" : hub.name}
               scopeOptions={scopeOptions}
               filterOptions={filterOptions}
               onScopeSelect={this.onScopeSelect}
@@ -621,7 +640,7 @@ class HubPage extends React.Component {
                     {this.renderLoadMoreButton()}
                   </Fragment>
                 ) : (
-                  <EmpytFeedScreen />
+                  <EmpytFeedScreen activeFeed={this.state.feed} />
                 )}
               </ReactPlaceholder>
             </div>

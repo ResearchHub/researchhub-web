@@ -21,7 +21,7 @@ class FeedList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeFeed: 0,
+      // activeFeed: this.props.feed,
       reveal: true,
     };
 
@@ -34,14 +34,18 @@ class FeedList extends React.Component {
             className={css(styles.rhIcon)}
           />
         ),
+        href: "/",
+        as: "/",
       },
-      {
-        label: "Popular",
-        icon: icons.chartLine,
-      },
+      // {
+      //   label: "Popular",
+      //   icon: icons.chartLine,
+      // },
       {
         label: "All",
         icon: icons.squares,
+        href: "/",
+        as: "/",
       },
     ];
   }
@@ -58,9 +62,10 @@ class FeedList extends React.Component {
   };
 
   renderFeedList = () => {
-    const { activeFeed } = this.state;
+    const { activeFeed, onFeedSelect } = this.props;
     return this.feeds.map((feed, i) => {
-      const { label, icon } = feed;
+      const { label, icon, href, as } = feed;
+
       return (
         <Ripples
           className={css(
@@ -68,9 +73,9 @@ class FeedList extends React.Component {
             i === activeFeed && styles.activeListItem
           )}
           key={`${label}-${i}`}
-          onClick={() => this.setState({ activeFeed: i })}
+          onClick={() => onFeedSelect(i)}
         >
-          <Link href={"/"} as={"/"}>
+          <Link href={href} as={as} shallow={true}>
             <a className={css(styles.link)}>
               <span className={css(styles.icon)}>{icon}</span>
               <span style={{ opacity: 1 }} className={"clamp1"}>

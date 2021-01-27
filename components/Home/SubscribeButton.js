@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
@@ -21,6 +21,10 @@ const SubscribeButton = (props) => {
     onClick,
   } = props;
   const [hover, setHover] = useState(false);
+
+  useEffect(() => {
+    setHover(false);
+  }, [hub]);
 
   const _onClick = () => {
     onClick && onClick();

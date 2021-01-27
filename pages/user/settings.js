@@ -325,6 +325,7 @@ class UserSettings extends Component {
   };
 
   confirmUnsubscribe = (hub, newState) => {
+    console.log("hub", hub);
     this.props.alert.show({
       text: (
         <span>
@@ -341,7 +342,7 @@ class UserSettings extends Component {
 
   handleHubUnsubscribe = (hubId, newState) => {
     const { hubState } = this.props;
-    unsubscribeFromHub(hubId)
+    unsubscribeFromHub({ hubId })
       .then((res) => {
         this.props.dispatch(HubActions.updateSubscribedHubs(newState));
         this.props.dispatch(MessageActions.setMessage("Unsubscribed!"));
@@ -415,7 +416,7 @@ class UserSettings extends Component {
   };
 
   handleHubSubscribe = (hub, newState) => {
-    subscribeToHub(hub.value)
+    subscribeToHub({ hubId: hub.id })
       .then((res) => {
         // this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
         this.props.dispatch(HubActions.updateSubscribedHubs(newState));

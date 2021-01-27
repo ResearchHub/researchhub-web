@@ -116,3 +116,9 @@ export const fetchPaperFeed = async (PARAMS) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const fetchURL = async (URL) => {
+  return await fetch(URL, API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
