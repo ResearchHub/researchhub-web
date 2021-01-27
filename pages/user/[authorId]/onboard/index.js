@@ -127,7 +127,7 @@ const Index = (props) => {
 
     for (let i = 0; i < userHubs.length; i++) {
       // hit backend
-      subscribeToHub(userHubs[i].id);
+      subscribeToHub({ hubId: userHubs[i].id });
     }
     props.updateSubscribedHubs(userHubs); // update client
     toggleSaving(false);
