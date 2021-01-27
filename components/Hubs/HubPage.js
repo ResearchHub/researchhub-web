@@ -10,6 +10,7 @@ import Router from "next/router";
 // Component
 import FeedList from "./FeedList";
 import HubsList from "~/components/Hubs/HubsList";
+import SubscribedHubList from "../Home/SubscribedHubList";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
@@ -590,6 +591,7 @@ class HubPage extends React.Component {
               activeFeed={this.state.feed}
               onFeedSelect={this.onFeedSelect}
             />
+            <SubscribedHubList />
             <HubsList
               current={home ? null : hub}
               initialHubList={initialHubList}
@@ -733,9 +735,6 @@ var styles = StyleSheet.create({
     display: "table",
     paddingLeft: 50,
     boxSizing: "border-box",
-    // display: "flex",
-    // justifyContent: "flex-start",
-    // alignItems: "flex-start",
     "@media only screen and (min-width: 1920px)": {
       display: "flex",
       justifyContent: "center",
@@ -763,6 +762,8 @@ var styles = StyleSheet.create({
     width: 280,
     minWidth: 250,
     minHeight: "inherit",
+    paddingBottom: 30,
+
     // height: "100%",
     "@media only screen and (max-width: 990px)": {
       display: "none",
@@ -983,9 +984,6 @@ var styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
-    // backgroundColor: "#FCFCFC",
-    // paddingLeft: 70,
-    // paddingRight: 20,
     paddingBottom: 30,
     "@media only screen and (min-width: 900px)": {
       paddingLeft: 25,
