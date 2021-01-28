@@ -37,7 +37,7 @@ Index.getInitialProps = async (ctx) => {
   let { query } = ctx;
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
-  const { page } = query;
+  let page = query.page || 1;
   let defaultProps = {
     home: true,
     initialFeed: null,
@@ -48,7 +48,10 @@ Index.getInitialProps = async (ctx) => {
 
   try {
     let initialFeed = await getHubPapers(page, authToken);
-    let props = { initialFeed, query, page: page + 1 };
+    if (initialFeed.results.feed_type === "all") {
+      defaultProps.feed = 1;
+    }
+    let props = { ...defaultProps, initialFeed, query, page: page + 1 };
     return props;
   } catch (e) {
     console.log(e);
