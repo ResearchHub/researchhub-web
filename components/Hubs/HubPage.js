@@ -619,6 +619,7 @@ class HubPage extends React.Component {
       home,
       hub,
       hubName,
+      hubState,
       initialHubList,
       leaderboardFeed,
     } = this.props;
@@ -632,10 +633,11 @@ class HubPage extends React.Component {
     }
 
     const sampleFeed = this.state.feedType === "all" && this.state.feed === 0;
-    const loggedIn = process.browser
-      ? window.localStorage[AUTH_TOKEN]
-      : Cookies.get(AUTH_TOKEN);
-    console.log(loggedIn);
+    const hasSubscribed = process.browser
+      ? hubState.subscribedHubs.length > 0
+      : false;
+
+    const loggedIn = process.browser ? auth.isLoggedIn : this.props.loggedIn;
 
     return (
       <div className={css(styles.content, styles.column)}>
@@ -686,7 +688,7 @@ class HubPage extends React.Component {
               >
                 {this.state.papers.length > 0 ? (
                   <Fragment>
-                    {sampleFeed || !loggedIn ? (
+                    {sampleFeed || !hasSubscribed ? (
                       <div className={css(styles.bannerContainer)}>
                         <CreateFeedBanner
                           message={
@@ -694,6 +696,8 @@ class HubPage extends React.Component {
                               ? loggedIn
                                 ? null
                                 : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
+                              : loggedIn
+                              ? null
                               : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
                           }
                         />
