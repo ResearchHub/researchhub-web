@@ -34,8 +34,6 @@ class FeedList extends React.Component {
             className={css(styles.rhIcon)}
           />
         ),
-        href: "/",
-        as: "/",
       },
       // {
       //   label: "Popular",
@@ -44,22 +42,11 @@ class FeedList extends React.Component {
       {
         label: "All",
         icon: icons.squares,
-        href: "/",
-        as: "/",
       },
     ];
   }
 
-  componentDidMount() {}
-
-  componentWillUnmount() {
-    clearTimeout(this.revealTimeout);
-    this.setState({ reveal: false });
-  }
-
-  revealTransition = () => {
-    setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
-  };
+  onClick = () => {};
 
   renderFeedList = () => {
     const { activeFeed, onFeedSelect } = this.props;
@@ -75,14 +62,12 @@ class FeedList extends React.Component {
           key={`${label}-${i}`}
           onClick={() => onFeedSelect(i)}
         >
-          <Link href={href} as={as} shallow={true}>
-            <a className={css(styles.link)}>
-              <span className={css(styles.icon)}>{icon}</span>
-              <span style={{ opacity: 1 }} className={"clamp1"}>
-                {label}
-              </span>
-            </a>
-          </Link>
+          <div className={css(styles.link)}>
+            <span className={css(styles.icon)}>{icon}</span>
+            <span style={{ opacity: 1 }} className={"clamp1"}>
+              {label}
+            </span>
+          </div>
         </Ripples>
       );
     });

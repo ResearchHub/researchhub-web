@@ -69,7 +69,7 @@ class HubPage extends React.Component {
         ? this.props.filter.value === "hot" ||
           this.props.filter.value === "newest"
         : true,
-      feed: 1,
+      feed: this.props.feed,
       papersLoading: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
@@ -271,17 +271,19 @@ class HubPage extends React.Component {
         const { count, next, results } = res;
         const papers = results.data;
         this.detectPromoted(papers);
-        const newState = {
-          count,
-          next,
-          papers,
-          papersLoading: false,
-          doneFetching: true,
-          noResults: results.no_results,
-        };
-        this.setState({ ...newState }, () => {
-          this.checkUserVotes(papers);
-        });
+        this.setState(
+          {
+            count,
+            next,
+            papers,
+            papersLoading: false,
+            doneFetching: true,
+            noResults: results.no_results,
+          },
+          () => {
+            this.checkUserVotes(papers);
+          }
+        );
       })
       .catch((err) => {
         const { response } = err;
@@ -335,44 +337,105 @@ class HubPage extends React.Component {
 
   updateSlugs = (page) => {
     const { home, slug } = this.props;
-    const { filterBy, scope, disableScope } = this.state;
+    const { feed, filterBy, scope, disableScope } = this.state;
 
-    const filter = filterBy.label
-      .split(" ")
-      .join("-")
-      .toLowerCase();
+    const filter = filterBy.key;
 
     let href, as;
+
+    if (feed) {
+      href = "/";
+      as = "/";
+    } else if (feed === 0) {
+      href = "/[feed]";
+      as = "/custom";
+    }
 
     if (disableScope) {
       // if filter, but no scope
       if (home) {
-        href = "/[filter]";
-        as = `/${filter}`;
+        if (feed === 0) {
+          if (filter === "trending") {
+            href = "/[feed]";
+            as = `/custom`;
+          } else {
+            href = "/[feed]/[filter]";
+            as = `/custom/${filter}`;
+          }
+        } else {
+          if (filter === "trending") {
+            href = "/";
+            as = "/";
+          } else {
+            href = "/[feed]/[filter]";
+            as = `/all/${filter}`;
+          }
+        }
       } else {
         // Hub Page
-        href = "/hubs/[slug]/[filter]";
-        as = `/hubs/${slug}/${filter}`;
+        if (feed === 0) {
+          if (filter === "trending") {
+            href = "/[feed]";
+            as = `/custom`;
+          } else {
+            href = "/[feed]/[filter]";
+            as = `/custom/${filter}`;
+          }
+        } else if (feed === 1) {
+          if (filter === "trending") {
+            href = "/";
+            as = "/";
+          } else {
+            href = "/[feed]/[filter]";
+            as = `/all/${filter}`;
+          }
+        } else {
+          href = "/hubs/[slug]/[filter]";
+          as = `/hubs/${slug}/${filter}`;
+        }
       }
     } else {
       // filter & scope
       if (home) {
-        href = "/[filter]/[scope]";
-        as = `/${filter}/${scope.value}`;
+        if (feed === 0) {
+          href = "/[feed]/[filter]/[scope]";
+          as = `/custom/${filter}/${scope.value}`;
+        } else {
+          href = "/[feed]/[filter]/[scope]";
+          as = `/all/${filter}/${scope.value}`;
+        }
       } else {
-        href = "/hubs/[slug]/[filter]/[scope]";
-        as = `/hubs/${slug}/${filter}/${scope.value}`;
+        if (feed === 0) {
+          if (filter === "trending") {
+            href = "/[feed]";
+            as = `/custom`;
+          } else {
+            href = "/[feed]/[filter]";
+            as = `/custom/${filter}`;
+          }
+        } else if (feed === 1) {
+          if (filter === "trending") {
+            href = "/";
+            as = "/";
+          } else {
+            href = "/[feed]/[filter]";
+            as = `/all/${filter}`;
+          }
+        } else {
+          href = "/hubs/[slug]/[filter]/[scope]";
+          as = `/hubs/${slug}/${filter}/${scope.value}`;
+        }
       }
     }
 
-    // removes trending slug from url
-    if (home && filter === "trending") {
-      href = "/";
-      as = "/";
-    } else if (!home && filter === "trending") {
-      href = "/hubs/[slug]";
-      as = `/hubs/${slug}`;
-    }
+    // removes hot slug from url
+    // if (home && filter === "trending") {
+    //   href = "/";
+    //   as = "/";
+    // } else if (!home && filter === "trending") {
+    //   href = "/hubs/[slug]";
+    //   as = `/hubs/${slug}`;
+    // }
 
     if (page) {
       as += `?page=${page}`;
@@ -452,22 +515,15 @@ class HubPage extends React.Component {
   };
 
   onFilterSelect = (type, option) => {
-    if (option.disableScope) {
-      this.setState({
-        disableScope: true,
-      });
-    } else {
-      this.setState({
-        disableScope: false,
-      });
-    }
+    const { disableScope, label } = option;
 
-    if (this.state[type].label === option.label) return;
+    if (this.state[type].label === label) return;
 
     this.setState(
       {
         page: 1,
         [type]: option,
+        disableScope: disableScope || false,
       },
       () => {
         this.updateSlugs();
@@ -476,7 +532,9 @@ class HubPage extends React.Component {
   };
 
   onScopeSelect = (type, option) => {
-    if (this.state[type].label === option.label) return;
+    const { label } = option;
+
+    if (this.state[type].label === label) return;
 
     this.setState(
       {
@@ -490,7 +548,15 @@ class HubPage extends React.Component {
   };
 
   onFeedSelect = (index) => {
-    this.setState({ feed: index });
+    this.setState(
+      {
+        feed: index,
+        page: 1,
+      },
+      () => {
+        this.updateSlugs();
+      }
+    );
   };
 
   onHubSelect = (e) => {
@@ -591,7 +657,7 @@ class HubPage extends React.Component {
               activeFeed={this.state.feed}
               onFeedSelect={this.onFeedSelect}
             />
-            <SubscribedHubList />
+            <SubscribedHubList current={home ? null : hub} />
             <HubsList
               current={home ? null : hub}
               initialHubList={initialHubList}
