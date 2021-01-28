@@ -1,12 +1,8 @@
 import HubPage from "~/components/Hubs/HubPage";
 
-import API from "~/config/api";
 import { getInitialScope } from "~/config/utils/dates";
-import {
-  slugToFilterQuery,
-  calculateScopeFromSlug,
-} from "~/config/utils/routing";
-import { fetchPaperFeed, fetchLeaderboard, fetchTopHubs } from "~/config/fetch";
+import { slugToFilterQuery } from "~/config/utils/routing";
+import { fetchPaperFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 
 const Index = (props) => {
@@ -33,7 +29,9 @@ Index.getInitialProps = async (ctx) => {
 
   try {
     const initialFeed = await fetchPaperFeed(PARAMS);
-    const filterObj = filterOptions.filter((el) => el.value === filter)[0];
+    const filterObj = filterOptions.filter(
+      (el) => el.value === slugToFilterQuery(filter)
+    )[0];
 
     return {
       initialFeed,

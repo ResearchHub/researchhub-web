@@ -35,7 +35,9 @@ Index.getInitialProps = async (ctx) => {
   try {
     const initialFeed = await fetchPaperFeed(PARAMS);
 
-    const filterObj = filterOptions.filter((el) => el.value === filter)[0];
+    const filterObj = filterOptions.filter(
+      (el) => el.value === slugToFilterQuery(filter)
+    )[0];
     const scopeObj = scopeOptions.filter((el) => el.value === query.scope)[0];
 
     return {
@@ -44,6 +46,7 @@ Index.getInitialProps = async (ctx) => {
       feed: 0,
       filter: filterObj,
       scope: scopeObj,
+      test: query.fiot,
     };
   } catch {
     return defaultProps;
