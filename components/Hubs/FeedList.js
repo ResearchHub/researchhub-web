@@ -1,12 +1,8 @@
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
+import Router from "next/router";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
-import ReactPlaceholder from "react-placeholder/lib";
-
-// Component
-import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -34,6 +30,8 @@ class FeedList extends React.Component {
             className={css(styles.rhIcon)}
           />
         ),
+        href: "/",
+        as: "/",
       },
       // {
       //   label: "Popular",
@@ -42,14 +40,20 @@ class FeedList extends React.Component {
       {
         label: "All",
         icon: icons.squares,
+        href: "/all",
+        as: "/all",
       },
     ];
   }
 
-  onClick = () => {};
+  onClick = async ({ href, as }, index) => {
+    const { onFeedSelect } = this.props;
+    await Router.push(href, as, { shallow: true });
+    onFeedSelect(index);
+  };
 
   renderFeedList = () => {
-    const { activeFeed, onFeedSelect } = this.props;
+    const { activeFeed } = this.props;
     return this.feeds.map((feed, i) => {
       const { label, icon, href, as } = feed;
 
@@ -60,7 +64,7 @@ class FeedList extends React.Component {
             i === activeFeed && styles.activeListItem
           )}
           key={`${label}-${i}`}
-          onClick={() => onFeedSelect(i)}
+          onClick={() => this.onClick({ href, as }, i)}
         >
           <div className={css(styles.link)}>
             <span className={css(styles.icon)}>{icon}</span>

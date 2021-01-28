@@ -31,7 +31,7 @@ const getHubPapers = (page, authToken) => {
 
 Index.getInitialProps = async (ctx) => {
   if (!isServer()) {
-    return { home: true, page: 1, feed: 1 };
+    return { home: true, page: 1, feed: 0 };
   }
   let { query } = ctx;
   const cookies = nookies.get(ctx);
@@ -42,13 +42,32 @@ Index.getInitialProps = async (ctx) => {
     initialFeed: null,
     leaderboardFeed: null,
     initialHubList: null,
-    feed: 1, // all feed default
+    feed: 0,
   };
 
+<<<<<<< HEAD
   try {
     let initialFeed = await getHubPapers(page, authToken);
     let props = { initialFeed, query, page: page + 1 };
     return props;
+=======
+  const PARAMS = {
+    ordering: "hot",
+    timePeriod: getInitialScope(),
+    page: page || 1,
+    subscribedHubs: true,
+  };
+
+  try {
+    const initialFeed = await fetchPaperFeed(PARAMS);
+
+    return {
+      home: true,
+      initialFeed,
+      query,
+      feed: 0,
+    };
+>>>>>>> restructure slugs pending cookies
   } catch (e) {
     console.log(e);
     return defaultProps;

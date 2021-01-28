@@ -111,6 +111,7 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
+    console.log("this.props", this.props);
     const { isLoggedIn, initialFeed, hubState } = this.props;
 
     if (initialFeed) {
@@ -186,7 +187,9 @@ class HubPage extends React.Component {
       prevState.filterBy !== this.state.filterBy ||
       prevState.feed !== this.state.feed
     ) {
-      this.fetchPapers({ hub: this.props.hub });
+      if (!this.initialFeed) {
+        this.fetchPapers({ hub: this.props.hub });
+      }
     }
   };
 
@@ -336,112 +339,84 @@ class HubPage extends React.Component {
   };
 
   updateSlugs = (page) => {
-    const { home, slug } = this.props;
-    const { feed, filterBy, scope, disableScope } = this.state;
-
-    const filter = filterBy.key;
-
-    let href, as;
-
-    if (feed) {
-      href = "/";
-      as = "/";
-    } else if (feed === 0) {
-      href = "/[feed]";
-      as = "/custom";
-    }
-
-    if (disableScope) {
-      // if filter, but no scope
-      if (home) {
-        if (feed === 0) {
-          if (filter === "trending") {
-            href = "/[feed]";
-            as = `/custom`;
-          } else {
-            href = "/[feed]/[filter]";
-            as = `/custom/${filter}`;
-          }
-        } else {
-          if (filter === "trending") {
-            href = "/";
-            as = "/";
-          } else {
-            href = "/[feed]/[filter]";
-            as = `/all/${filter}`;
-          }
-        }
-      } else {
-        // Hub Page
-        if (feed === 0) {
-          if (filter === "trending") {
-            href = "/[feed]";
-            as = `/custom`;
-          } else {
-            href = "/[feed]/[filter]";
-            as = `/custom/${filter}`;
-          }
-        } else if (feed === 1) {
-          if (filter === "trending") {
-            href = "/";
-            as = "/";
-          } else {
-            href = "/[feed]/[filter]";
-            as = `/all/${filter}`;
-          }
-        } else {
-          href = "/hubs/[slug]/[filter]";
-          as = `/hubs/${slug}/${filter}`;
-        }
-      }
-    } else {
-      // filter & scope
-      if (home) {
-        if (feed === 0) {
-          href = "/[feed]/[filter]/[scope]";
-          as = `/custom/${filter}/${scope.value}`;
-        } else {
-          href = "/[feed]/[filter]/[scope]";
-          as = `/all/${filter}/${scope.value}`;
-        }
-      } else {
-        if (feed === 0) {
-          if (filter === "trending") {
-            href = "/[feed]";
-            as = `/custom`;
-          } else {
-            href = "/[feed]/[filter]";
-            as = `/custom/${filter}`;
-          }
-        } else if (feed === 1) {
-          if (filter === "trending") {
-            href = "/";
-            as = "/";
-          } else {
-            href = "/[feed]/[filter]";
-            as = `/all/${filter}`;
-          }
-        } else {
-          href = "/hubs/[slug]/[filter]/[scope]";
-          as = `/hubs/${slug}/${filter}/${scope.value}`;
-        }
-      }
-    }
-
-    // removes hot slug from url
-    // if (home && filter === "trending") {
-    //   href = "/";
-    //   as = "/";
-    // } else if (!home && filter === "trending") {
-    //   href = "/hubs/[slug]";
-    //   as = `/hubs/${slug}`;
-    // }
-
+    const { href, as } = this.formatLink();
     if (page) {
       as += `?page=${page}`;
     }
-
     Router.push(href, as, { shallow: true });
+  };
+
+  formatLink = () => {
+    const { home, slug } = this.props;
+    const { feed, filterBy, scope, disableScope } = this.state;
+    const filter = filterBy.key;
+    const filterRoute = "/[filter]";
+    const scopeRoute = "/[scope]";
+    const hubNameRoute = "/[slug]";
+    const hubPrefix = "/hubs";
+    const allPrefix = "/all";
+
+    const myFeed = feed === 0;
+    const trending = filter === "trending";
+
+    if (home && disableScope) {
+      if (myFeed && trending) {
+        // hide trending slug
+        return {
+          href: "/",
+          as: "/",
+        };
+      } else if (myFeed && !trending) {
+        // show filter slugs
+        return {
+          href: filterRoute,
+          as: `/${filter}`,
+        };
+      } else {
+        // all route with filters
+        if (trending) {
+          return {
+            href: allPrefix,
+            as: allPrefix,
+          };
+        }
+        return {
+          href: allPrefix + filterRoute,
+          as: allPrefix + `/${filter}`,
+        };
+      }
+    } else if (home && !disableScope) {
+      if (myFeed) {
+        // hide trending slug
+        return {
+          href: filterRoute + scopeRoute,
+          as: `/${filter}/${scope.value}`,
+        };
+      } else {
+        // all route with filters
+        return {
+          href: allPrefix + filterRoute + scopeRoute,
+          as: allPrefix + `/${filter}/${scope.value}`,
+        };
+      }
+    } else if (!home && disableScope) {
+      if (trending) {
+        return {
+          href: hubPrefix + hubNameRoute,
+          as: hubPrefix + `/${slug}`,
+        };
+      } else {
+        return {
+          href: hubPrefix + hubNameRoute + filterRoute,
+          as: hubPrefix + `/${slug}/${filter}`,
+        };
+      }
+    } else if (!home && !disableScope) {
+      return {
+        href: hubPrefix + hubNameRoute + filterRoute + scopeRoute,
+        as: hubPrefix + `/${slug}/${filter}/${scope.value}`,
+      };
+    }
   };
 
   calculateScope = () => {
@@ -492,7 +467,6 @@ class HubPage extends React.Component {
 
     const isHomePage = this.props.home;
     let prefix = "";
-
     switch (filterBy.value) {
       case "removed":
         prefix = "Removed";
@@ -643,7 +617,11 @@ class HubPage extends React.Component {
     } = this.props;
 
     if (auth.user.moderator && filterOptions.length < 5) {
-      filterOptions.push({ value: "removed", label: "Removed" });
+      filterOptions.push({
+        value: "removed",
+        label: "Removed",
+        key: "removed",
+      });
     }
 
     return (
