@@ -6,6 +6,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import Ripples from "react-ripples";
 import * as Sentry from "@sentry/browser";
 import Router from "next/router";
+import Cookies from "js-cookie";
 
 // Component
 import FeedList from "./FeedList";
@@ -18,7 +19,7 @@ import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 import MainHeader from "../Home/MainHeader";
 import SubscribeButton from "../Home/SubscribeButton";
-import EmpytFeedScreen from "../Home/EmptyFeedScreen";
+import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -37,6 +38,9 @@ import {
 } from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
+import CreateFeedBanner from "../Home/CreateFeedBanner";
+import Button from "../Form/Button";
+import { AUTH_TOKEN } from "../../config/constants";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -65,6 +69,9 @@ class HubPage extends React.Component {
       doneFetching: this.props.initialFeed ? true : false,
       filterBy: this.props.filter ? this.props.filter : defaultFilter,
       scope: this.props.scope ? this.props.scope : defaultScope,
+      feedType: this.props.initialFeed
+        ? this.props.initialFeed.results.feed_type
+        : "all",
       disableScope: this.props.filter
         ? this.props.filter.value === "hot" ||
           this.props.filter.value === "newest"
@@ -281,6 +288,7 @@ class HubPage extends React.Component {
             papersLoading: false,
             doneFetching: true,
             noResults: results.no_results,
+            feedType: results.feed_type,
           },
           () => {
             this.checkUserVotes(papers);
@@ -623,6 +631,12 @@ class HubPage extends React.Component {
       });
     }
 
+    const sampleFeed = this.state.feedType === "all" && this.state.feed === 0;
+    const loggedIn = process.browser
+      ? window.localStorage[AUTH_TOKEN]
+      : Cookies.get(AUTH_TOKEN);
+    console.log(loggedIn);
+
     return (
       <div className={css(styles.content, styles.column)}>
         <div className={css(styles.banner)}>
@@ -672,20 +686,54 @@ class HubPage extends React.Component {
               >
                 {this.state.papers.length > 0 ? (
                   <Fragment>
-                    {this.state.papers.map((paper, i) => (
-                      <PaperEntryCard
-                        key={`${paper.id}-${i}`}
-                        paper={paper}
-                        index={i}
-                        hubName={hubName}
-                        voteCallback={this.voteCallback}
-                        vote={paper.user_vote}
-                      />
-                    ))}
-                    {this.renderLoadMoreButton()}
+                    {sampleFeed || !loggedIn ? (
+                      <div className={css(styles.bannerContainer)}>
+                        <CreateFeedBanner
+                          message={
+                            sampleFeed
+                              ? loggedIn
+                                ? null
+                                : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
+                              : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
+                          }
+                        />
+                      </div>
+                    ) : null}
+                    <div
+                      className={css(
+                        styles.feedPapers,
+                        sampleFeed && styles.sampleFeed
+                      )}
+                    >
+                      {sampleFeed && (
+                        <Fragment>
+                          <div className={css(styles.blur)} />
+                          <Button
+                            isLink={{
+                              href: "/all",
+                              linkAs: "/all",
+                            }}
+                            hideRipples={true}
+                            label={"View All Hubs"}
+                            customButtonStyle={styles.allFeedButton}
+                          />
+                        </Fragment>
+                      )}
+                      {this.state.papers.map((paper, i) => (
+                        <PaperEntryCard
+                          key={`${paper.id}-${i}`}
+                          paper={paper}
+                          index={i}
+                          hubName={hubName}
+                          voteCallback={this.voteCallback}
+                          vote={paper.user_vote}
+                        />
+                      ))}
+                    </div>
+                    {!sampleFeed && this.renderLoadMoreButton()}
                   </Fragment>
                 ) : (
-                  <EmpytFeedScreen activeFeed={this.state.feed} />
+                  <EmptyFeedScreen activeFeed={this.state.feed} />
                 )}
               </ReactPlaceholder>
             </div>
@@ -797,6 +845,14 @@ var styles = StyleSheet.create({
       width: "100%",
     },
   },
+  allFeedButton: {
+    position: "absolute",
+    bottom: 100,
+    left: "50%",
+    transform: "translateX(-50%)",
+    zIndex: 3,
+    cursor: "pointer",
+  },
   sidebar: {
     // display: "flex",
     display: "table-cell",
@@ -832,6 +888,17 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       width: 280,
     },
+  },
+  feedPapers: {
+    position: "relative",
+  },
+  bannerContainer: {
+    marginBottom: 32,
+    marginTop: -16,
+  },
+  sampleFeed: {
+    height: "calc(100vh - 420px)",
+    overflow: "hidden",
   },
   banner: {
     width: "100%",
@@ -887,14 +954,8 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 1149px)": {
       fontSize: 30,
     },
-    "@media only screen and (max-width: 665px)": {
+    "@media only screen and (max-width: 767px)": {
       fontSize: 25,
-    },
-    "@media only screen and (max-width: 416px)": {
-      fontSize: 25,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 20,
     },
   },
   feedSubtitle: {
@@ -933,6 +994,8 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
     },
     "@media only screen and (max-width: 665px)": {
       display: "flex",
@@ -940,16 +1003,6 @@ var styles = StyleSheet.create({
       justifyContent: "flex-start",
       alignItems: "center",
       paddingBottom: 20,
-    },
-    "@media only screen and (max-width: 577px)": {
-      paddingLeft: 40,
-      paddingRight: 40,
-      width: "100%",
-      boxSizing: "border-box",
-    },
-    "@media only screen and (max-width: 416px)": {
-      paddingLeft: 30,
-      paddingRight: 30,
     },
   },
   dropDown: {
@@ -1048,16 +1101,25 @@ var styles = StyleSheet.create({
       width: "100%",
     },
   },
+  // blur: {
+  //   height: 30,
+  //   marginTop: 10,
+  //   backgroundColor: colors.BLUE(0.2),
+  //   width: "100%",
+  //   "-webkit-filter": "blur(6px)",
+  //   "-moz-filter": "blur(6px)",
+  //   "-ms-filter": "blur(6px)",
+  //   "-o-filter": "blur(6px)",
+  //   filter: "blur(6px)",
+  // },
   blur: {
-    height: 30,
-    marginTop: 10,
-    backgroundColor: colors.BLUE(0.2),
+    background:
+      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FAFAFA 86.38%)",
+    height: "100%",
+    position: "absolute",
+    zIndex: 3,
+    top: 0,
     width: "100%",
-    "-webkit-filter": "blur(6px)",
-    "-moz-filter": "blur(6px)",
-    "-ms-filter": "blur(6px)",
-    "-o-filter": "blur(6px)",
-    filter: "blur(6px)",
   },
   blank: {
     opacity: 0,
@@ -1076,14 +1138,14 @@ var styles = StyleSheet.create({
   mobileHubListContainer: {
     display: "none",
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 990px)": {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-      borderTop: "1px solid #EDEDED",
-    },
+    // "@media only screen and (max-width: 990px)": {
+    //   display: "flex",
+    //   flexDirection: "column",
+    //   justifyContent: "center",
+    //   alignItems: "center",
+    //   width: "100%",
+    //   borderTop: "1px solid #EDEDED",
+    // },
   },
   mobileList: {
     paddingTop: 20,

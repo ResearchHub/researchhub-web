@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
@@ -6,9 +5,8 @@ import { connect } from "react-redux";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import CreateFeedBanner from "./CreateFeedBanner";
 
-const EmpytFeedScreen = (props) => {
+const CreateFeedBanner = (props) => {
   const navigateToPaperUploadPage = () => {
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
   };
@@ -20,39 +18,38 @@ const EmpytFeedScreen = (props) => {
     Router.push("/user/[authorId]/onboard", `/user/${authorId}/onboard`);
   };
 
-  const renderContent = () => {
-    const { hubs } = props;
-    const subscribedHubs = hubs.subscribedHubs || [];
-    if (props.activeFeed === 0 && !subscribedHubs.length) {
-      return <CreateFeedBanner />;
-    }
-
-    return (
-      <Fragment>
+  return (
+    <div className={css(styles.column)}>
+      <div className={css(styles.banner)}>
+        <div className={css(styles.contentContainer)}>
+          <h1 className={css(styles.title)}>
+            {props.message
+              ? props.message
+              : "Follow areas of Research that you care about. Create your personalized feed by subscribing to the hubs you wish to follow."}
+          </h1>
+          <PermissionNotificationWrapper
+            onClick={navigateToUserOnnboardPage}
+            modalMessage="create your feed"
+            loginRequired={true}
+            permissionKey="CreatePaper"
+          >
+            <Button
+              isWhite={true}
+              hideRipples={true}
+              label={"Get Started"}
+              customButtonStyle={styles.button}
+              customLabelStyle={styles.buttonLabel}
+            />
+          </PermissionNotificationWrapper>
+        </div>
         <img
-          className={css(styles.emptyPlaceholderImage)}
-          src={"/static/background/homepage-empty-state.png"}
-          loading="lazy"
-          alt="Empty State Icon"
+          draggable={false}
+          src={"/static/icons/hubs-feed.svg"}
+          className={css(styles.bannerImage)}
         />
-        <span className={css(styles.emptyPlaceholderText)}>
-          There are no academic papers found for this criteria.
-        </span>
-        <span className={css(styles.emptyPlaceholderSubtitle)}>
-          Click ‘Upload paper’ button to upload a PDF
-        </span>
-        <PermissionNotificationWrapper
-          onClick={navigateToPaperUploadPage}
-          modalMessage="upload a paper"
-          loginRequired={true}
-          permissionKey="CreatePaper"
-        >
-          <Button label={"Upload Paper"} hideRipples={true} />
-        </PermissionNotificationWrapper>
-      </Fragment>
-    );
-  };
-  return <div className={css(styles.column)}>{renderContent()}</div>;
+      </div>
+    </div>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -63,40 +60,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-  emptyPlaceholderImage: {
-    width: 400,
-    objectFit: "contain",
-    marginTop: 40,
-    "@media only screen and (max-width: 415px)": {
-      width: "70%",
-    },
-  },
-  emptyPlaceholderText: {
-    textAlign: "center",
-    fontSize: 22,
-    color: "#241F3A",
-    marginTop: 20,
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 16,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: "85%",
-    },
-  },
-  emptyPlaceholderSubtitle: {
-    textAlign: "center",
-    fontSize: 18,
-    color: "#4e4c5f",
-    marginTop: 10,
-    marginBottom: 15,
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 14,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: "85%",
-    },
-  },
-
   banner: {
     display: "flex",
     justifyContent: "space-between",
@@ -182,4 +145,4 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps,
   null
-)(EmpytFeedScreen);
+)(CreateFeedBanner);
