@@ -111,7 +111,6 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
-    console.log("this.props", this.props);
     const { isLoggedIn, initialFeed, hubState } = this.props;
 
     if (initialFeed) {

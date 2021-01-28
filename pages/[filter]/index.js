@@ -11,7 +11,7 @@ const Index = (props) => {
 
 Index.getInitialProps = async (ctx) => {
   const { query } = ctx;
-  const { filter, scope, page } = query;
+  const { filter, page } = query;
 
   const defaultProps = {
     initialFeed: null,
@@ -29,7 +29,9 @@ Index.getInitialProps = async (ctx) => {
 
   try {
     const initialFeed = await fetchPaperFeed(PARAMS);
-    const filterObj = filterOptions.filter((el) => el.value === filter)[0];
+    const filterObj = filterOptions.filter(
+      (el) => el.value === slugToFilterQuery(filter)
+    )[0];
 
     return {
       initialFeed,
