@@ -28,7 +28,7 @@
     "@fortawesome/pro-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@next/bundle-analyzer": "^10.0.5",
-    "@quantfive/js-web-config": "latest",
+    "@quantfive/js-web-config": "^1.0.7",
     "@quantfive/react-burger-menu": "^2.6.19",
     "@quantfive/react-image-upload-grid": "^1.1.4",
     "@sentry/browser": "^5.9.1",
