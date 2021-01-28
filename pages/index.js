@@ -52,6 +52,10 @@ Index.getInitialProps = async (ctx) => {
       defaultProps.feed = 1;
     }
     let props = { ...defaultProps, initialFeed, query, page: page + 1 };
+    const { res } = ctx;
+    res.statusCode = 302;
+    res.setHeader("location", "/all");
+    res.end();
     return props;
   } catch (e) {
     console.log(e);
