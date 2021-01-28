@@ -117,6 +117,18 @@ export const fetchPaperFeed = async (PARAMS) => {
     .then(Helpers.parseJSON);
 };
 
+export const fetchLeaderboard = async (PARAMS) => {
+  fetch(API.LEADERBOARD(PARAMS), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const fetchTopHubs = async () => {
+  fetch(API.SORTED_HUB(), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const fetchURL = async (URL) => {
   return await fetch(URL, API.GET_CONFIG())
     .then(Helpers.checkStatus)

@@ -257,13 +257,16 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     borderRadius: 3,
     borderBottom: "1px solid #F0F0F0",
+    borderLeft: "3px solid #FFF",
     ":hover": {
-      borderColor: "rgb(237, 237, 237)",
-      backgroundColor: "#FAFAFA",
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
   last: {
-    border: "none",
+    borderBottom: "none",
   },
   hubImage: {
     height: 35,
@@ -286,12 +289,10 @@ const styles = StyleSheet.create({
     padding: "10px 20px",
   },
   current: {
-    borderColor: "rgb(237, 237, 237)",
-    backgroundColor: "#FAFAFA",
-    ":hover": {
-      borderColor: "rgb(227, 227, 227)",
-      backgroundColor: "#EAEAEA",
-    },
+    color: colors.NEW_BLUE(),
+    background:
+      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   hubsList: {
     opacity: 0,
