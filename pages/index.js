@@ -3,6 +3,8 @@ import HubPage from "../components/Hubs/HubPage";
 import API from "~/config/api";
 import { getInitialScope } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
+import nookies from "nookies";
+import { AUTH_TOKEN } from "../config/constants";
 
 const isServer = () => typeof window === "undefined";
 
@@ -10,7 +12,7 @@ const Index = (props) => {
   return <HubPage home={true} {...props} />;
 };
 
-const getHubPapers = (page) => {
+const getHubPapers = (page, authToken) => {
   return fetch(
     API.GET_HUB_PAPERS({
       hubId: 0,
@@ -18,7 +20,7 @@ const getHubPapers = (page) => {
       timePeriod: getInitialScope(),
       page,
     }),
-    API.GET_CONFIG()
+    API.GET_CONFIG(authToken)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
@@ -32,6 +34,8 @@ Index.getInitialProps = async (ctx) => {
     return { page: 1 };
   }
   let { query } = ctx;
+  const cookies = nookies.get(ctx);
+  const authToken = cookies[AUTH_TOKEN];
   let defaultProps = {
     initialFeed: null,
     leaderboardFeed: null,
@@ -39,7 +43,7 @@ Index.getInitialProps = async (ctx) => {
   };
   let page = query.page ? query.page : 1;
   try {
-    let initialFeed = await getHubPapers(page);
+    let initialFeed = await getHubPapers(page, authToken);
     let props = { initialFeed, query, page: page + 1 };
     return props;
   } catch (e) {
