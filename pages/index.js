@@ -31,17 +31,20 @@ const getHubPapers = (page, authToken) => {
 
 Index.getInitialProps = async (ctx) => {
   if (!isServer()) {
-    return { page: 1 };
+    return { home: true, page: 1, feed: 1 };
   }
   let { query } = ctx;
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
+  const { page } = query;
   let defaultProps = {
+    home: true,
     initialFeed: null,
     leaderboardFeed: null,
     initialHubList: null,
+    feed: 1, // all feed default
   };
-  let page = query.page ? query.page : 1;
+
   try {
     let initialFeed = await getHubPapers(page, authToken);
     let props = { initialFeed, query, page: page + 1 };

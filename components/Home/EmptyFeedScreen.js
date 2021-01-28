@@ -22,6 +22,7 @@ const EmpytFeedScreen = (props) => {
   };
 
   const renderContent = () => {
+    console.log("props", props);
     if (props.activeFeed === 0) {
       return (
         <div className={css(styles.banner)}>

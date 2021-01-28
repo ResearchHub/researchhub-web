@@ -342,7 +342,8 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    SORTED_HUB: ({ filter }) => {
+    SORTED_HUB: (params = {}) => {
+      const { filter } = params;
       // hard codedlimit to 10
       let url = BASE_URL + `hub/?ordering=-score&page_limit=10`;
 
