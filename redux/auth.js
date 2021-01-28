@@ -41,7 +41,9 @@ export const AuthConstants = {
 function saveToLocalStorage(key, value) {
   var storage = window.localStorage;
   storage.setItem(key, value);
-  Cookies.set(key, value);
+  if (value) {
+    Cookies.set(key, value);
+  }
   return;
 }
 
@@ -67,7 +69,9 @@ let getUserHelper = (dispatch, dispatchFetching) => {
         dispatch(HubActions.updateSubscribedHubs(json.results[0].subscribed)); // updates the subscribedHubs on Hub Redux State
       }
 
-      saveToLocalStorage(AUTH_TOKEN, window.localStorage[AUTH_TOKEN]);
+      if (window.localStorage[AUTH_TOKEN]) {
+        saveToLocalStorage(AUTH_TOKEN, window.localStorage[AUTH_TOKEN]);
+      }
 
       if (json.results.length > 0) {
         return dispatch({
@@ -321,6 +325,7 @@ export const AuthActions = {
           }
           window.localStorage.removeItem(AUTH_TOKEN);
           window.location.replace("/");
+          Cookies.remove(AUTH_TOKEN);
         });
     };
   },
