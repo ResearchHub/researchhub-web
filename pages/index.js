@@ -18,6 +18,7 @@ const getHubPapers = (page, authToken) => {
       hubId: 0,
       ordering: "hot",
       timePeriod: getInitialScope(),
+      subscribedHubs: true,
       page,
     }),
     API.GET_CONFIG(authToken)
@@ -45,29 +46,10 @@ Index.getInitialProps = async (ctx) => {
     feed: 0,
   };
 
-<<<<<<< HEAD
   try {
     let initialFeed = await getHubPapers(page, authToken);
     let props = { initialFeed, query, page: page + 1 };
     return props;
-=======
-  const PARAMS = {
-    ordering: "hot",
-    timePeriod: getInitialScope(),
-    page: page || 1,
-    subscribedHubs: true,
-  };
-
-  try {
-    const initialFeed = await fetchPaperFeed(PARAMS);
-
-    return {
-      home: true,
-      initialFeed,
-      query,
-      feed: 0,
-    };
->>>>>>> restructure slugs pending cookies
   } catch (e) {
     console.log(e);
     return defaultProps;
