@@ -23,7 +23,7 @@ class FeedList extends React.Component {
 
     this.feeds = [
       {
-        label: "My feed",
+        label: "My Hubs",
         icon: (
           <img
             src={"/static/ResearchHubIcon.png"}
