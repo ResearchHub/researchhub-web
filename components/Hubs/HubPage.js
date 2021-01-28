@@ -461,7 +461,7 @@ class HubPage extends React.Component {
     const { filterBy, feed } = this.state;
 
     if (feed === 0) {
-      return "My Feed on ";
+      return "My Hubs on ";
     }
 
     const isHomePage = this.props.home;
