@@ -21,43 +21,25 @@ Index.getInitialProps = async (ctx) => {
     initialFeed: null,
     leaderboardFeed: null,
     initialHubList: null,
-    feed: null,
-    error: true,
-    query: query,
+    feed: 1,
   };
 
   const PARAMS = {
-    ordering: filter && slugToFilterQuery(filter),
-    timePeriod: scope ? calculateScopeFromSlug(scope) : getInitialScope(),
+    ordering: "hot",
+    timePeriod: getInitialScope(),
     page: page || 1,
+    hubId: 0,
   };
 
-  const isCustomFeed = feed && feed === "custom";
-
-  if (isCustomFeed) {
-    PARAMS.subscribedHubs = true;
-  } else {
-    PARAMS.hubId = 0;
-  }
-
   try {
-    const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-      fetchPaperFeed(PARAMS),
-      fetchLeaderboard({ limit: 10, page: 1, hubId: 0 }),
-      fetchTopHubs(),
-    ]);
-
+    const initialFeed = await fetchPaperFeed(PARAMS);
     const filterObj = filterOptions.filter((el) => el.value === filter)[0];
-    const scopeObj = scopeOptions.filter((el) => el.value === query.scope)[0];
 
     return {
       initialFeed,
-      leaderboardFeed,
-      initialHubList,
       query,
-      feed: isCustomFeed ? 0 : 1,
       filter: filterObj,
-      scope: scopeObj,
+      feed: 1,
     };
   } catch {
     return defaultProps;
