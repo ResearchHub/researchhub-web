@@ -174,6 +174,8 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
     },
     "@media only screen and (max-width: 665px)": {
       display: "flex",
@@ -181,16 +183,6 @@ const styles = StyleSheet.create({
       justifyContent: "flex-start",
       alignItems: "center",
       paddingBottom: 20,
-    },
-    "@media only screen and (max-width: 577px)": {
-      paddingLeft: 40,
-      paddingRight: 40,
-      width: "100%",
-      boxSizing: "border-box",
-    },
-    "@media only screen and (max-width: 416px)": {
-      paddingLeft: 30,
-      paddingRight: 30,
     },
   },
   dropDown: {
