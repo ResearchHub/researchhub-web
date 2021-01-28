@@ -321,7 +321,6 @@ const PaperEntryCard = (props) => {
         </div>
       );
     } else if (summary) {
-      // console.log("summary", summary);
     }
   };
 

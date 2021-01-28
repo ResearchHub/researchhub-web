@@ -22,8 +22,9 @@ const EmpytFeedScreen = (props) => {
   };
 
   const renderContent = () => {
-    console.log("props", props);
-    if (props.activeFeed === 0) {
+    const { hubs } = props;
+    const subscribedHubs = hubs.subscribedHubs || [];
+    if (props.activeFeed === 0 && !subscribedHubs.length) {
       return (
         <div className={css(styles.banner)}>
           <div className={css(styles.contentContainer)}>
@@ -64,7 +65,7 @@ const EmpytFeedScreen = (props) => {
           alt="Empty State Icon"
         />
         <span className={css(styles.emptyPlaceholderText)}>
-          There are no academic papers uploaded for this hub.
+          There are no academic papers found for this criteria.
         </span>
         <span className={css(styles.emptyPlaceholderSubtitle)}>
           Click ‘Upload paper’ button to upload a PDF
@@ -205,6 +206,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  hubs: state.hubs,
 });
 export default connect(
   mapStateToProps,
