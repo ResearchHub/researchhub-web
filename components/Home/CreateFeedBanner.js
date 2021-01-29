@@ -7,15 +7,17 @@ import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 
 const CreateFeedBanner = (props) => {
-  const navigateToPaperUploadPage = () => {
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
-  };
-
-  const navigateToUserOnnboardPage = () => {
+  const navigateToUserOnboardPage = () => {
     const { user } = props.auth;
     const authorId = user.author_profile.id;
 
-    Router.push("/user/[authorId]/onboard", `/user/${authorId}/onboard`);
+    Router.push({
+      pathname: `/user/${authorId}/onboard`,
+
+      query: {
+        selectHubs: true,
+      },
+    });
   };
 
   return (
@@ -28,7 +30,7 @@ const CreateFeedBanner = (props) => {
               : "Follow areas of Research that you care about. Create your personalized feed by subscribing to the hubs you wish to follow."}
           </h1>
           <PermissionNotificationWrapper
-            onClick={navigateToUserOnnboardPage}
+            onClick={navigateToUserOnboardPage}
             modalMessage="create your feed"
             loginRequired={true}
             permissionKey="CreatePaper"
@@ -92,8 +94,10 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     lineHeight: 1.3,
+    marginBottom: 30,
     "@media only screen and (max-width: 767px)": {
       fontSize: 22,
+      marginBottom: 20,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 18,
@@ -114,7 +118,6 @@ const styles = StyleSheet.create({
     },
   },
   button: {
-    marginTop: 30,
     width: 200,
     ":hover": {
       color: "#fff",
@@ -122,7 +125,6 @@ const styles = StyleSheet.create({
       background: "#FAFAFA",
     },
     "@media only screen and (max-width: 767px)": {
-      marginTop: 20,
       width: "unset",
     },
   },

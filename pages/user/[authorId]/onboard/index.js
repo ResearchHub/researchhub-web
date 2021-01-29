@@ -18,6 +18,7 @@ import ComponentWrapper from "../../../../components/ComponentWrapper";
 import { MessageActions } from "../../../../redux/message";
 
 const Index = (props) => {
+  const [onlyHubSelection, setOnlyHubSelection] = useState(props.selectHubs);
   const [page, setPage] = useState(1);
   const [saving, toggleSaving] = useState(false);
   const [userHubs, setUserHubs] = useState([]);
@@ -60,6 +61,19 @@ const Index = (props) => {
   };
 
   const formatButtons = () => {
+    if (onlyHubSelection) {
+      return {
+        left: {
+          label: "Cancel",
+          onClick: () => Router.back(),
+        },
+        right: {
+          label: "Save",
+          onClick: saveHubPreferences,
+          disabled: saving,
+        },
+      };
+    }
     switch (page) {
       case 1:
         return {
@@ -131,7 +145,12 @@ const Index = (props) => {
     }
     props.updateSubscribedHubs(userHubs); // update client
     toggleSaving(false);
-    setPage(page + 1);
+
+    if (onlyHubSelection) {
+      return Router.push("/");
+    } else {
+      setPage(page + 1);
+    }
   };
 
   const saveUserInformation = () => {
@@ -197,14 +216,9 @@ const Index = (props) => {
 };
 
 Index.getInitialProps = async ({ query, res }) => {
-  // if (!query.internal && res.writeHead) {
-  //   res.writeHead(302, { Location: `/user/${query.authorId}/contributions` });
-  //   res.end();
+  const { authorId, selectHubs } = query;
 
-  //   return { authorId: query.authorId, redirect: true };
-  // }
-
-  return { authorId: query.authorId };
+  return { authorId, selectHubs };
 };
 
 const styles = StyleSheet.create({

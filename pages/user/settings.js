@@ -540,9 +540,7 @@ class UserSettings extends Component {
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
         <div className={css(styles.settingsPage)}>
-          <div className={css(defaultStyles.title, styles.title)}>
-            Email Settings
-          </div>
+          <div className={css(defaultStyles.title, styles.title)}>Settings</div>
           {this.renderPrimaryEmail()}
           {this.renderFrequencySelect()}
           {this.renderSubscribedHubs()}
@@ -575,10 +573,10 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     background: "#fff",
     border: "1.5px solid #F0F0F0",
+    borderRadius: 4,
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    padding: 50,
-    paddingTop: 24,
-    marginTop: 30,
+    padding: "25px 50px",
+    margin: "40px 0 50px",
     "@media only screen and (max-width: 767px)": {
       padding: 20,
     },

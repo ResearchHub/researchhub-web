@@ -46,7 +46,7 @@ const PaperEntryCard = (props) => {
 
   const store = useStore();
 
-  const {
+  let {
     id,
     authors,
     bullet_points,
@@ -153,7 +153,7 @@ const PaperEntryCard = (props) => {
     } else if (external_source) {
       return (
         <div className={css(styles.uploadedBy)}>
-          Retrieved from{" "}
+          Published on{" "}
           <span className={css(styles.capitalize)}>{external_source}</span>
         </div>
       );

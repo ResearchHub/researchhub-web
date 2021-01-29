@@ -33,12 +33,10 @@ Index.getInitialProps = async (ctx) => {
 
   try {
     const initialFeed = await fetchPaperFeed(PARAMS);
-    const filterObj = filterOptions.filter((el) => el.value === filter)[0];
 
     return {
       initialFeed,
       query,
-      filter: filterObj,
       feed: 1,
     };
   } catch {
