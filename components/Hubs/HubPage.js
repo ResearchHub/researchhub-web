@@ -255,6 +255,8 @@ class HubPage extends React.Component {
   fetchPapers = ({ hub }) => {
     const { papersLoading, filterBy, feed } = this.state;
 
+    console.log(hub);
+    console.log(papersLoading);
     if (papersLoading || (hub && !hub.id)) {
       return null;
     }
@@ -281,6 +283,7 @@ class HubPage extends React.Component {
         const { count, next, results } = res;
         const papers = results.data;
         this.detectPromoted(papers);
+        console.log(results.feed_type);
         this.setState(
           {
             count,
@@ -634,7 +637,8 @@ class HubPage extends React.Component {
       });
     }
 
-    const sampleFeed = this.state.feedType === "all" && this.state.feed === 0;
+    const sampleFeed =
+      this.state.feedType !== "subscribed" && this.state.feed === 0;
     const hasSubscribed = process.browser
       ? auth.authChecked
         ? hubState.subscribedHubs.length > 0
