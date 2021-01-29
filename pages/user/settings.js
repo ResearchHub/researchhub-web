@@ -307,6 +307,14 @@ class UserSettings extends Component {
             isClearable={false}
           />
         </div>
+        <div className={css(styles.buttonContainer)}>
+          <div
+            className={css(styles.unsubscribeButton)}
+            onClick={this.confirmUnsubscribeAll}
+          >
+            Unsubscribe from all
+          </div>
+        </div>
       </div>
     );
   };
@@ -345,6 +353,32 @@ class UserSettings extends Component {
       .then((res) => {
         this.props.dispatch(HubActions.updateSubscribedHubs(newState));
         this.props.dispatch(MessageActions.setMessage("Unsubscribed!"));
+        this.props.dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch(this.displayError);
+  };
+
+  confirmUnsubscribeAll = () => {
+    this.props.alert.show({
+      text: <span>Unsubscribe from all hubs?</span>,
+      buttonText: "Yes",
+      onClick: () => {
+        return this.unsubscribeFromAll();
+      },
+    });
+  };
+
+  unsubscribeFromAll = async () => {
+    await Promise.all(
+      this.props.subscribedHubs.map((hub) => {
+        return unsubscribeFromHub({ hubId: hub.id });
+      })
+    )
+      .then((_) => {
+        this.props.dispatch(HubActions.updateSubscribedHubs([]));
+        this.props.dispatch(
+          MessageActions.setMessage("Unsubscribed from all!")
+        );
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
       .catch(this.displayError);
@@ -498,7 +532,6 @@ class UserSettings extends Component {
           checked={this.state.isOptedOut}
           className={"react-toggle"}
           active={this.state.isOptedOut}
-          // label={"Opt out of all email updates"}
           id={"optOut"}
           onChange={this.handleOptOut}
         />
@@ -671,7 +704,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     backgroundColor: colors.BLUE(),
     color: "#FFF",
-    marginLeft: 15,
+    position: "absolute",
+    right: 5,
   },
   editIcon: {
     cursor: "pointer",
@@ -691,6 +725,7 @@ const styles = StyleSheet.create({
   emailInputContainer: {
     display: "flex",
     alignItems: "center",
+    position: "relative",
     marginTop: 5,
   },
   emailInputStyles: {
@@ -773,6 +808,20 @@ const styles = StyleSheet.create({
     marginRight: 3,
     ":hover": {
       backgroundColor: "#fff",
+    },
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingTop: 15,
+  },
+  unsubscribeButton: {
+    fontSize: 14,
+    cursor: "pointer",
+    color: colors.BLUE(),
+    ":hover": {
+      textDecoration: "underline",
     },
   },
 });
