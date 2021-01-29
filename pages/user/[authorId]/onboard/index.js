@@ -28,6 +28,10 @@ const Index = (props) => {
   let verificationFormRef = useRef();
 
   const formatStep = () => {
+    if (onlyHubSelection) {
+      return "Step 1: Select Hubs for topics you're interested in";
+    }
+
     switch (page) {
       case 1:
         return "Step 1: Select Hubs for topics you're interested in";
@@ -136,18 +140,19 @@ const Index = (props) => {
   /**
    * Saves user's hub selections and updates client's state
    */
-  const saveHubPreferences = () => {
+  const saveHubPreferences = async () => {
     toggleSaving(true);
 
-    for (let i = 0; i < userHubs.length; i++) {
-      // hit backend
-      subscribeToHub({ hubId: userHubs[i].id });
-    }
+    await Promise.resolve(
+      userHubs.map((hub) => {
+        return subscribeToHub({ hubId: hub.id });
+      })
+    );
     props.updateSubscribedHubs(userHubs); // update client
     toggleSaving(false);
 
     if (onlyHubSelection) {
-      return Router.push("/");
+      return Router.push("/", "/");
     } else {
       setPage(page + 1);
     }
@@ -199,7 +204,9 @@ const Index = (props) => {
   return (
     <div className={css(styles.root)}>
       <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title)}>Onboarding</h1>
+        <h1 className={css(styles.title)}>
+          {onlyHubSelection ? "Select Your Hubs" : "Onboarding"}
+        </h1>
         <h3 className={css(styles.subtitle)}>{formatStep()}</h3>
       </div>
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
