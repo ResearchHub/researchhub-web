@@ -30,21 +30,22 @@ import { Helpers } from "@quantfive/js-web-config";
 import AuthorAvatar from "../AuthorAvatar";
 
 const PaperEntryCard = (props) => {
-  let {
+  const {
     paper,
     index,
     hubName,
     discussionCount,
-    mobileView,
     style,
     searchResult,
     voteCallback,
     postUpvote,
     postDownvote,
-    reduxPaper,
     promotionSummary,
     onClick,
   } = props;
+
+  const store = useStore();
+
   let {
     id,
     authors,
@@ -67,6 +68,7 @@ const PaperEntryCard = (props) => {
     slug,
     paper_type,
   } = paper || null;
+
   let vote_type = 0;
   let selected = setVoteSelected(paper.user_vote);
   const [lightbox, toggleLightbox] = useState(false);
@@ -84,7 +86,6 @@ const PaperEntryCard = (props) => {
   const [paperSlug, setPaperSlug] = useState(
     slug ? slug : formatPaperSlug(paper_title ? paper_title : title)
   );
-  const store = useStore();
 
   if (discussion_count == undefined) {
     discussion_count = discussionCount;
@@ -92,7 +93,7 @@ const PaperEntryCard = (props) => {
 
   useEffect(() => {
     selected = setVoteSelected(props.paper.user_vote);
-  }, [props.paper]);
+  }, [props.paper, props.vote]);
 
   function setVoteSelected(userVote) {
     if (userVote) {
@@ -109,10 +110,6 @@ const PaperEntryCard = (props) => {
     return arr.filter((el) => {
       return el !== null;
     });
-  }
-
-  function convertDate() {
-    return formatPublishedDate(transformDate(paper.paper_publish_date));
   }
 
   function navigateToSubmitter(e) {
@@ -156,7 +153,7 @@ const PaperEntryCard = (props) => {
     } else if (external_source) {
       return (
         <div className={css(styles.uploadedBy)}>
-          Retrieved from{" "}
+          Published on{" "}
           <span className={css(styles.capitalize)}>{external_source}</span>
         </div>
       );
@@ -324,7 +321,6 @@ const PaperEntryCard = (props) => {
         </div>
       );
     } else if (summary) {
-      // console.log("summary", summary);
     }
   };
 

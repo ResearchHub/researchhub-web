@@ -196,7 +196,11 @@ class FormDND extends React.Component {
   searchTitle = (value) => {
     this.setState({ searching: true });
     fetch(
-      API.SEARCH_MATCHING_PAPERS({ search: value, external_search: false }),
+      API.SEARCH({
+        search: value,
+        external_search: false,
+        config: { route: "match" },
+      }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)

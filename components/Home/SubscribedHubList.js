@@ -108,22 +108,15 @@ class HubsList extends React.Component {
     setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
   };
 
-  renderHubEntry = () => {
-    const selectedHubs = this.state.hubs.slice(0, 5);
-    const subscribed = this.props.hubState.subscribedHubs
-      ? this.props.hubState.subscribedHubs
-      : [];
-    const subscribedHubs = {};
-    subscribed.forEach((hub) => {
-      subscribedHubs[hub.id] = true;
-    });
-    return selectedHubs.map((hub, i) => {
-      const { name, id, hub_image } = hub;
+  renderHubEntry = (hubs) => {
+    return hubs.map((hub, i) => {
+      const { name, id, hub_image, user_is_subscribed } = hub;
       return (
         <Ripples
           className={css(
             styles.hubEntry,
-            this.isCurrentHub(this.props.current, id) && styles.current
+            this.isCurrentHub(this.props.current, id) && styles.current,
+            i === hubs.length - 1 && styles.last
           )}
           onClick={this.props.onHubSelect}
           key={`${id}-${i}`}
@@ -150,11 +143,6 @@ class HubsList extends React.Component {
                 alt={hub.name}
               />
               <span className={"clamp1"}>{name}</span>
-              {subscribedHubs[hub.id] && (
-                <span className={css(styles.subscribedIcon)}>
-                  {icons.starFilled}
-                </span>
-              )}
             </a>
           </Link>
         </Ripples>
@@ -164,30 +152,44 @@ class HubsList extends React.Component {
 
   render() {
     const { overrideStyle } = this.props;
+    const subscribedHubs = this.props.hubState.subscribedHubs
+      ? this.props.hubState.subscribedHubs
+      : [];
 
-    return (
-      <div className={css(styles.container, overrideStyle && overrideStyle)}>
-        <div className={css(styles.hubsListContainer)}>
-          <h5 className={css(styles.listLabel)}>Recommended</h5>
-          <div
-            className={css(styles.hubsList, this.state.reveal && styles.reveal)}
-          >
-            <ReactPlaceholder
-              showLoadingAnimation
-              ready={this.state.hubs && this.state.hubs.length}
-              customPlaceholder={
-                <HubEntryPlaceholder color="#efefef" rows={9} />
-              }
+    if (subscribedHubs.length) {
+      return (
+        <div className={css(styles.container, overrideStyle && overrideStyle)}>
+          <div className={css(styles.hubsListContainer)}>
+            <h5 className={css(styles.listLabel)}>
+              <span>Your Hubs</span>
+              <Link href={"/user/settings"} as={"/user/settings"}>
+                <a className={css(styles.link, styles.cogButton)}>
+                  {icons.cog}
+                </a>
+              </Link>
+            </h5>
+            <div
+              className={css(
+                styles.hubsList,
+                this.state.reveal && styles.reveal
+              )}
             >
-              {this.renderHubEntry()}
-            </ReactPlaceholder>
-            <Link href={"/hubs"} as={"/hubs"}>
-              <a className={css(styles.link)}>View all hubs</a>
-            </Link>
+              <ReactPlaceholder
+                showLoadingAnimation
+                ready={this.state.hubs && this.state.hubs.length}
+                customPlaceholder={
+                  <HubEntryPlaceholder color="#efefef" rows={9} />
+                }
+              >
+                {this.renderHubEntry(subscribedHubs)}
+              </ReactPlaceholder>
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return null;
+    }
   }
 }
 
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: "15px 0",
+    padding: "15px 0 1px",
     backgroundColor: "#FFF",
     border: "1px solid #ededed",
     borderRadius: 4,
@@ -220,14 +222,24 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 12,
     letterSpacing: 1.2,
-    textAlign: "left",
+    display: "flex",
+    justifyContent: "space-between",
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
     width: "100%",
     boxSizing: "border-box",
     margin: 0,
-    padding: "0px 0px 0px 20px",
+    padding: "0px 15px 0px 20px",
     marginBottom: 10,
+  },
+  cogButton: {
+    color: "#a7a6b0",
+    opacity: 0.7,
+    fontSize: 14,
+    cursor: "pointer",
+    ":hover": {
+      opacity: 1,
+    },
   },
   topIcon: {
     color: colors.RED(),
@@ -253,6 +265,9 @@ const styles = StyleSheet.create({
         "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
+  },
+  last: {
+    borderBottom: "none",
   },
   hubImage: {
     height: 35,
@@ -302,16 +317,6 @@ const styles = StyleSheet.create({
   },
   link: {
     textDecoration: "none",
-    color: "rgba(78, 83, 255)",
-    fontWeight: 300,
-    textTransform: "capitalize",
-    fontSize: 16,
-    marginTop: 20,
-    paddingLeft: 20,
-    ":hover": {
-      color: "rgba(78, 83, 255, .5)",
-      textDecoration: "underline",
-    },
   },
 });
 

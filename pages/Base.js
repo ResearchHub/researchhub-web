@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
   pageWrapper: {
     width: "100%",
     minHeight: "100vh",
-    background: "#FAFAFA",
+    // background: "#FAFAFA",
+    background: "#FCFCFC",
   },
 });
 
