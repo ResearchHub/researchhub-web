@@ -202,6 +202,7 @@ const styles = StyleSheet.create({
     padding: "15px 0 1px",
     backgroundColor: "#FFF",
     border: "1px solid #ededed",
+    borderRadius: 4,
     boxSizing: "border-box",
     width: "100%",
     marginTop: 20,
