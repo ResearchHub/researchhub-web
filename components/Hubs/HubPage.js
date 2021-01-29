@@ -833,9 +833,7 @@ var styles = StyleSheet.create({
     paddingLeft: 50,
     boxSizing: "border-box",
     "@media only screen and (min-width: 1920px)": {
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "flex-start",
+      maxWidth: 1920,
     },
     "@media only screen and (max-width: 990px)": {
       padding: "0px 20px",
@@ -847,6 +845,9 @@ var styles = StyleSheet.create({
     maxWidth: 1200,
     display: "table-cell",
     flexDirection: "column",
+    "@media only screen and (min-width: 1920px)": {
+      minWidth: 1200,
+    },
     "@media only screen and (max-width: 990px)": {
       width: "100%",
     },
@@ -868,8 +869,9 @@ var styles = StyleSheet.create({
     minWidth: 250,
     minHeight: "inherit",
     paddingBottom: 30,
-
-    // height: "100%",
+    "@media only screen and (min-width: 1920px)": {
+      minWidth: 280,
+    },
     "@media only screen and (max-width: 990px)": {
       display: "none",
     },
