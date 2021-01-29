@@ -638,10 +638,14 @@ class HubPage extends React.Component {
     const hasSubscribed = process.browser
       ? auth.authChecked
         ? hubState.subscribedHubs.length > 0
-        : true
+        : this.props.loggedIn
       : this.props.loggedIn;
 
-    const loggedIn = process.browser ? auth.isLoggedIn : this.props.loggedIn;
+    const loggedIn = process.browser
+      ? auth.authChecked
+        ? auth.isLoggedIn
+        : this.props.loggedIn
+      : this.props.loggedIn;
 
     return (
       <Fragment>
@@ -688,6 +692,27 @@ class HubPage extends React.Component {
                   />
                 }
               />
+              <div>
+                {(this.state.papers.length > 0 && sampleFeed) ||
+                !hasSubscribed ? (
+                  <div
+                    className={css(styles.bannerContainer)}
+                    id="create-feed-banner"
+                  >
+                    <CreateFeedBanner
+                      message={
+                        sampleFeed
+                          ? loggedIn
+                            ? null
+                            : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
+                          : loggedIn
+                          ? null
+                          : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
+                      }
+                    />
+                  </div>
+                ) : null}
+              </div>
               <div className={css(styles.infiniteScroll)}>
                 <ReactPlaceholder
                   ready={this.state.doneFetching}
@@ -698,26 +723,6 @@ class HubPage extends React.Component {
                 >
                   {this.state.papers.length > 0 ? (
                     <div>
-                      <div>
-                        {sampleFeed || !hasSubscribed ? (
-                          <div
-                            className={css(styles.bannerContainer)}
-                            id="create-feed-banner"
-                          >
-                            <CreateFeedBanner
-                              message={
-                                sampleFeed
-                                  ? loggedIn
-                                    ? null
-                                    : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                                  : loggedIn
-                                  ? null
-                                  : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                              }
-                            />
-                          </div>
-                        ) : null}
-                      </div>
                       <div
                         className={css(
                           styles.feedPapers,
@@ -908,8 +913,28 @@ var styles = StyleSheet.create({
     position: "relative",
   },
   bannerContainer: {
-    marginBottom: 32,
-    marginTop: -16,
+    paddingLeft: 50,
+    paddingRight: 50,
+
+    "@media only screen and (min-width: 900px)": {
+      paddingLeft: 25,
+      paddingRight: 25,
+    },
+    "@media only screen and (min-width: 1200px)": {
+      paddingLeft: 50,
+      paddingRight: 50,
+    },
+    "@media only screen and (min-width: 800px)": {
+      paddingTop: 25,
+    },
+    "@media only screen and (max-width: 577px)": {
+      paddingLeft: 40,
+      paddingRight: 40,
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: 0,
+      width: "100%",
+    },
   },
   sampleFeed: {
     height: "calc(100vh - 420px)",
