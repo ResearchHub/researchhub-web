@@ -357,8 +357,8 @@ class HubPage extends React.Component {
   formatLink = () => {
     const { home, slug } = this.props;
     const { feed, filterBy, scope, disableScope } = this.state;
-    const filter = filterBy.key;
-    const filterRoute = "/[filter]";
+    const filter = filterBy.href;
+    const filterRoute = `/${filter}`;
     const scopeRoute = "/[scope]";
     const hubNameRoute = "/[slug]";
     const hubPrefix = "/hubs";
@@ -630,7 +630,7 @@ class HubPage extends React.Component {
       filterOptions.push({
         value: "removed",
         label: "Removed",
-        key: "removed",
+        href: "removed",
       });
     }
 

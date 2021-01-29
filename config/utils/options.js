@@ -74,23 +74,25 @@ const filterOptions = [
     value: "hot",
     label: "Trending",
     disableScope: true,
-    key: "trending",
+    href: "trending",
   },
   {
+    //1
     value: "top_rated",
     label: "Top Rated",
-    key: "top-rated",
+    href: "top-rated",
   },
   {
+    //2
     value: "newest",
     label: "Newest",
     disableScope: true,
-    key: "newest",
+    href: "newest",
   },
   {
     value: "most_discussed",
     label: "Most Discussed",
-    key: "most-discussed",
+    href: "most-discussed",
   },
 ];
 
