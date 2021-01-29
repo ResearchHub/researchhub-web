@@ -1142,20 +1142,9 @@ var styles = StyleSheet.create({
       width: "100%",
     },
   },
-  // blur: {
-  //   height: 30,
-  //   marginTop: 10,
-  //   backgroundColor: colors.BLUE(0.2),
-  //   width: "100%",
-  //   "-webkit-filter": "blur(6px)",
-  //   "-moz-filter": "blur(6px)",
-  //   "-ms-filter": "blur(6px)",
-  //   "-o-filter": "blur(6px)",
-  //   filter: "blur(6px)",
-  // },
   blur: {
     background:
-      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FAFAFA 86.38%)",
+      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 86.38%)",
     height: "100%",
     position: "absolute",
     zIndex: 3,
