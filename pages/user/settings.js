@@ -74,7 +74,7 @@ class UserSettings extends Component {
 
   componentDidMount = async () => {
     this.props.dispatch(MessageActions.showMessage({ load: true, show: true }));
-    if (doesNotExist(this.props.hubs)) {
+    if (!this.props.hubs.length) {
       this.props.dispatch(HubActions.getHubs());
     }
     if (doesNotExist(this.props.user.email)) {
@@ -277,10 +277,18 @@ class UserSettings extends Component {
   };
 
   renderSubscribedHubs = () => {
-    const subscribedHubIds = this.props.subscribedHubs.map((hub) => hub.id);
-    const availableHubs = this.props.hubs.filter((hub) => {
-      return !subscribedHubIds.includes(hub.id);
+    const subscribedHubIds = {};
+
+    this.props.subscribedHubs.forEach((hub) => {
+      subscribedHubIds[hub.id] = true;
     });
+
+    const availableHubs = this.props.hubs.filter((hub) => {
+      return !subscribedHubIds[hub.id];
+    });
+
+    console.log("this.props.hubs", this.props.hubs);
+    console.log("avaiable,", availableHubs);
 
     return (
       <div className={css(styles.container)}>
@@ -306,6 +314,19 @@ class UserSettings extends Component {
             multiTagLabelStyle={styles.multiTagLabelStyle}
             isClearable={false}
           />
+        </div>
+        <div
+          className={css(
+            styles.buttonContainer,
+            !this.props.subscribedHubs.length && styles.hide
+          )}
+        >
+          <div
+            className={css(styles.unsubscribeButton)}
+            onClick={this.confirmUnsubscribeAll}
+          >
+            Unsubscribe from all
+          </div>
         </div>
       </div>
     );
@@ -341,10 +362,36 @@ class UserSettings extends Component {
 
   handleHubUnsubscribe = (hubId, newState) => {
     const { hubState } = this.props;
-    unsubscribeFromHub(hubId)
+    unsubscribeFromHub({ hubId })
       .then((res) => {
         this.props.dispatch(HubActions.updateSubscribedHubs(newState));
         this.props.dispatch(MessageActions.setMessage("Unsubscribed!"));
+        this.props.dispatch(MessageActions.showMessage({ show: true }));
+      })
+      .catch(this.displayError);
+  };
+
+  confirmUnsubscribeAll = () => {
+    this.props.alert.show({
+      text: <span>Unsubscribe from all hubs?</span>,
+      buttonText: "Yes",
+      onClick: () => {
+        return this.unsubscribeFromAll();
+      },
+    });
+  };
+
+  unsubscribeFromAll = async () => {
+    await Promise.all(
+      this.props.subscribedHubs.map((hub) => {
+        return unsubscribeFromHub({ hubId: hub.id });
+      })
+    )
+      .then((_) => {
+        this.props.dispatch(HubActions.updateSubscribedHubs([]));
+        this.props.dispatch(
+          MessageActions.setMessage("Unsubscribed from all!")
+        );
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
       .catch(this.displayError);
@@ -415,7 +462,7 @@ class UserSettings extends Component {
   };
 
   handleHubSubscribe = (hub, newState) => {
-    subscribeToHub(hub.value)
+    subscribeToHub({ hubId: hub.id })
       .then((res) => {
         // this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
         this.props.dispatch(HubActions.updateSubscribedHubs(newState));
@@ -498,7 +545,6 @@ class UserSettings extends Component {
           checked={this.state.isOptedOut}
           className={"react-toggle"}
           active={this.state.isOptedOut}
-          // label={"Opt out of all email updates"}
           id={"optOut"}
           onChange={this.handleOptOut}
         />
@@ -540,9 +586,7 @@ class UserSettings extends Component {
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
         <div className={css(styles.settingsPage)}>
-          <div className={css(defaultStyles.title, styles.title)}>
-            Email Settings
-          </div>
+          <div className={css(defaultStyles.title, styles.title)}>Settings</div>
           {this.renderPrimaryEmail()}
           {this.renderFrequencySelect()}
           {this.renderSubscribedHubs()}
@@ -575,10 +619,10 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     background: "#fff",
     border: "1.5px solid #F0F0F0",
+    borderRadius: 4,
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    padding: 50,
-    paddingTop: 24,
-    marginTop: 30,
+    padding: "25px 50px",
+    margin: "40px 0 50px",
     "@media only screen and (max-width: 767px)": {
       padding: 20,
     },
@@ -673,7 +717,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     backgroundColor: colors.BLUE(),
     color: "#FFF",
-    marginLeft: 15,
+    position: "absolute",
+    right: 5,
   },
   editIcon: {
     cursor: "pointer",
@@ -693,6 +738,7 @@ const styles = StyleSheet.create({
   emailInputContainer: {
     display: "flex",
     alignItems: "center",
+    position: "relative",
     marginTop: 5,
   },
   emailInputStyles: {
@@ -776,6 +822,25 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#fff",
     },
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingTop: 15,
+  },
+  unsubscribeButton: {
+    fontSize: 14,
+    cursor: "pointer",
+    color: colors.BLUE(),
+    ":hover": {
+      textDecoration: "underline",
+    },
+  },
+  hide: {
+    height: 0,
+    padding: 0,
+    visibility: "hidden",
   },
 });
 

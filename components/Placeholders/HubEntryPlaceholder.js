@@ -26,8 +26,9 @@ const HubEntryPlaceholder = ({ color, rows }) => {
 
 const styles = StyleSheet.create({
   placeholderContainer: {
-    paddingLeft: 5,
+    padding: 16,
     width: "100%",
+    boxSizing: "border-box",
   },
   textRow: {
     marginTop: 10,

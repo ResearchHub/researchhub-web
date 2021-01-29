@@ -33,7 +33,6 @@ const OnboardHub = (props) => {
         <div className={css(styles.title) + " clamp1"}>{name}</div>
         {renderButton()}
       </div>
-      {/* <div className={css(styles.image)}></div> */}
       <img
         loading={"lazy"}
         draggable={"false"}
@@ -84,6 +83,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 25,
     width: 25,
+    minWidth: 25,
     borderRadius: "50%",
     background: "rgba(36, 31, 58, 0.03)",
     color: "rgba(36, 31, 58, 0.5)",
