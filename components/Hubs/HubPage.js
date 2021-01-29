@@ -77,7 +77,7 @@ class HubPage extends React.Component {
         ? this.props.filter.value === "hot" ||
           this.props.filter.value === "newest"
         : true,
-      feed: this.props.feed || 0,
+      feed: this.props.feed,
       papersLoading: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
@@ -415,13 +415,13 @@ class HubPage extends React.Component {
         };
       } else {
         return {
-          href: hubPrefix + hubNameRoute + filterRoute,
+          href: hubPrefix + hubNameRoute + "/[filter]",
           as: hubPrefix + `/${slug}/${filter}`,
         };
       }
     } else if (!home && !disableScope) {
       return {
-        href: hubPrefix + hubNameRoute + filterRoute + scopeRoute,
+        href: hubPrefix + hubNameRoute + "/[filter]" + scopeRoute,
         as: hubPrefix + `/${slug}/${filter}/${scope.value}`,
       };
     }
