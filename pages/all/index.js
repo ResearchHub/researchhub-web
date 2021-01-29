@@ -1,21 +1,22 @@
 import HubPage from "~/components/Hubs/HubPage";
 
-import API from "~/config/api";
 import { getInitialScope } from "~/config/utils/dates";
-import {
-  slugToFilterQuery,
-  calculateScopeFromSlug,
-} from "~/config/utils/routing";
-import { fetchPaperFeed, fetchLeaderboard, fetchTopHubs } from "~/config/fetch";
+import { fetchPaperFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 
 const Index = (props) => {
   return <HubPage home={true} {...props} />;
 };
 
+const isServer = () => typeof window === "undefined";
+
 Index.getInitialProps = async (ctx) => {
   const { query } = ctx;
-  const { filter, scope, page, feed } = query;
+  const { filter, page } = query;
+  const filterObj = filterOptions.filter((el) => el.value === filter)[0];
+  if (!isServer()) {
+    return { home: true, page: 1, feed: 1, filter: filterObj, query };
+  }
 
   const defaultProps = {
     initialFeed: null,
