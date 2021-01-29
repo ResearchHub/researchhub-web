@@ -640,7 +640,7 @@ class SummaryTab extends React.Component {
           showLoadingAnimation
           customPlaceholder={<BulletPlaceholder color="#efefef" />}
         >
-          {showAbstract ? this.renderAbstract() : this.renderSummary()}
+          {this.renderAbstract()}
         </ReactPlaceholder>
       </div>
     );
@@ -661,7 +661,7 @@ class SummaryTab extends React.Component {
             <div className={css(this.sectionHeaderStyle())}>
               <h3 className={css(styles.sectionTitle)}>
                 <span className={css(styles.titleRow)}>
-                  Description
+                  Abstract
                   {!showAbstract && (
                     <SectionBounty
                       paper={paper}
@@ -671,7 +671,7 @@ class SummaryTab extends React.Component {
                     />
                   )}
                 </span>
-                {this.renderTabs()}
+                {/* {this.renderTabs()} */}
               </h3>
               {this.renderActions()}
             </div>
@@ -697,7 +697,7 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    marginTop: 30,
+    // marginTop: 30,
     backgroundColor: "#fff",
     padding: 50,
     position: "relative",
