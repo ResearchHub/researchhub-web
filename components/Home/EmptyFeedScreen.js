@@ -6,25 +6,17 @@ import { connect } from "react-redux";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
-import CreateFeedBanner from "./CreateFeedBanner";
 
 const EmpytFeedScreen = (props) => {
   const navigateToPaperUploadPage = () => {
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
   };
 
-  const navigateToUserOnnboardPage = () => {
-    const { user } = props.auth;
-    const authorId = user.author_profile.id;
-
-    Router.push("/user/[authorId]/onboard", `/user/${authorId}/onboard`);
-  };
-
   const renderContent = () => {
     const { hubs } = props;
     const subscribedHubs = hubs.subscribedHubs || [];
     if (props.activeFeed === 0 && !subscribedHubs.length) {
-      return <CreateFeedBanner />;
+      return null;
     }
 
     return (
