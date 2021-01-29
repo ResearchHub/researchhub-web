@@ -637,7 +637,9 @@ class HubPage extends React.Component {
     const sampleFeed = this.state.feedType === "all" && this.state.feed === 0;
     const hasSubscribed = process.browser
       ? hubState.subscribedHubs.length > 0
-      : false;
+      : this.props.loggedIn;
+
+    debugger;
 
     const loggedIn = process.browser ? auth.isLoggedIn : this.props.loggedIn;
 
