@@ -72,12 +72,12 @@ class HubPage extends React.Component {
       scope: this.props.scope ? this.props.scope : defaultScope,
       feedType: this.props.initialFeed
         ? this.props.initialFeed.results.feed_type
-        : "all",
+        : "subscribed",
       disableScope: this.props.filter
         ? this.props.filter.value === "hot" ||
           this.props.filter.value === "newest"
         : true,
-      feed: this.props.feed,
+      feed: this.props.feed || 0,
       papersLoading: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
@@ -636,10 +636,10 @@ class HubPage extends React.Component {
 
     const sampleFeed = this.state.feedType === "all" && this.state.feed === 0;
     const hasSubscribed = process.browser
-      ? hubState.subscribedHubs.length > 0
+      ? auth.authChecked
+        ? hubState.subscribedHubs.length > 0
+        : true
       : this.props.loggedIn;
-
-    debugger;
 
     const loggedIn = process.browser ? auth.isLoggedIn : this.props.loggedIn;
 
@@ -697,22 +697,27 @@ class HubPage extends React.Component {
                   }
                 >
                   {this.state.papers.length > 0 ? (
-                    <Fragment>
-                      {sampleFeed || !hasSubscribed ? (
-                        <div className={css(styles.bannerContainer)}>
-                          <CreateFeedBanner
-                            message={
-                              sampleFeed
-                                ? loggedIn
+                    <div>
+                      <div>
+                        {sampleFeed || !hasSubscribed ? (
+                          <div
+                            className={css(styles.bannerContainer)}
+                            id="create-feed-banner"
+                          >
+                            <CreateFeedBanner
+                              message={
+                                sampleFeed
+                                  ? loggedIn
+                                    ? null
+                                    : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
+                                  : loggedIn
                                   ? null
                                   : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                                : loggedIn
-                                ? null
-                                : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                            }
-                          />
-                        </div>
-                      ) : null}
+                              }
+                            />
+                          </div>
+                        ) : null}
+                      </div>
                       <div
                         className={css(
                           styles.feedPapers,
@@ -745,7 +750,7 @@ class HubPage extends React.Component {
                         ))}
                       </div>
                       {!sampleFeed && this.renderLoadMoreButton()}
-                    </Fragment>
+                    </div>
                   ) : (
                     <EmpytFeedScreen activeFeed={this.state.feed} />
                   )}
