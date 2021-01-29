@@ -74,7 +74,7 @@ class UserSettings extends Component {
 
   componentDidMount = async () => {
     this.props.dispatch(MessageActions.showMessage({ load: true, show: true }));
-    if (doesNotExist(this.props.hubs)) {
+    if (!this.props.hubs.length) {
       this.props.dispatch(HubActions.getHubs());
     }
     if (doesNotExist(this.props.user.email)) {
@@ -277,10 +277,18 @@ class UserSettings extends Component {
   };
 
   renderSubscribedHubs = () => {
-    const subscribedHubIds = this.props.subscribedHubs.map((hub) => hub.id);
-    const availableHubs = this.props.hubs.filter((hub) => {
-      return !subscribedHubIds.includes(hub.id);
+    const subscribedHubIds = {};
+
+    this.props.subscribedHubs.forEach((hub) => {
+      subscribedHubIds[hub.id] = true;
     });
+
+    const availableHubs = this.props.hubs.filter((hub) => {
+      return !subscribedHubIds[hub.id];
+    });
+
+    console.log("this.props.hubs", this.props.hubs);
+    console.log("avaiable,", availableHubs);
 
     return (
       <div className={css(styles.container)}>
@@ -307,7 +315,12 @@ class UserSettings extends Component {
             isClearable={false}
           />
         </div>
-        <div className={css(styles.buttonContainer)}>
+        <div
+          className={css(
+            styles.buttonContainer,
+            !this.props.subscribedHubs.length && styles.hide
+          )}
+        >
           <div
             className={css(styles.unsubscribeButton)}
             onClick={this.confirmUnsubscribeAll}
@@ -823,6 +836,11 @@ const styles = StyleSheet.create({
     ":hover": {
       textDecoration: "underline",
     },
+  },
+  hide: {
+    height: 0,
+    padding: 0,
+    visibility: "hidden",
   },
 });
 

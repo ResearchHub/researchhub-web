@@ -255,8 +255,6 @@ class HubPage extends React.Component {
   fetchPapers = ({ hub }) => {
     const { papersLoading, filterBy, feed } = this.state;
 
-    console.log(hub);
-    console.log(papersLoading);
     if (papersLoading || (hub && !hub.id)) {
       return null;
     }
@@ -283,7 +281,6 @@ class HubPage extends React.Component {
         const { count, next, results } = res;
         const papers = results.data;
         this.detectPromoted(papers);
-        console.log(results.feed_type);
         this.setState(
           {
             count,
