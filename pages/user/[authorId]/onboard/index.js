@@ -142,18 +142,17 @@ const Index = (props) => {
    */
   const saveHubPreferences = async () => {
     toggleSaving(true);
-
-    await Promise.resolve(
+    await Promise.all(
       userHubs.map((hub) => {
         return subscribeToHub({ hubId: hub.id });
       })
     );
     props.updateSubscribedHubs(userHubs); // update client
     toggleSaving(false);
-
     if (onlyHubSelection) {
       return Router.push("/", "/");
     } else {
+      showMessage({ show: false });
       setPage(page + 1);
     }
   };
