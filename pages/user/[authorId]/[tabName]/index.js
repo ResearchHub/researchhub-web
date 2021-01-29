@@ -920,7 +920,11 @@ const AuthorPage = (props) => {
             iconStyle={styles.moderatorIcon}
             labelStyle={styles.moderatorLabel}
             icon={
-              fetching ? " " : isSuspended ? icons.userPlus : icons.userSlash
+              !fetchedUser
+                ? " "
+                : isSuspended
+                ? icons.userPlus
+                : icons.userSlash
             }
             label={
               !fetchedUser ? (

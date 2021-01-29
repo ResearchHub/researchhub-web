@@ -38,25 +38,26 @@ const PaperTabBar = (props) => {
     );
   }, [selectedTab]);
 
+  function getActiveTabs() {
+    let tabs = [
+      { href: "main", label: "main" },
+      // { href: "takeaways", label: "key takeaways" },
+    ];
+
+    // tabs.push({ href: "summary", label: "abstract" });
+    tabs.push({ href: "discussions", label: "discussions" });
+    // tabs.push({ href: "figures", label: "figures" });
+    tabs.push({ href: "paper", label: "Paper PDF" });
+    // // tabs.push({ href: "citations", label: "cited by" });
+    // tabs.push({ href: "limitations", label: "limitations" });
+    return tabs;
+  }
+
   useEffect(() => {
     setTabs(props.activeTabs.map(formatTabs));
   }, [props.activeTabs.length]);
 
   useEffect(() => {
-    function getActiveTabs() {
-      let tabs = [
-        { href: "main", label: "main" },
-        { href: "takeaways", label: "key takeaways" },
-      ];
-
-      tabs.push({ href: "summary", label: "description" });
-      tabs.push({ href: "discussions", label: "discussions" });
-      // tabs.push({ href: "figures", label: "figures" });
-      tabs.push({ href: "paper", label: "Paper PDF" });
-      // // tabs.push({ href: "citations", label: "cited by" });
-      // tabs.push({ href: "limitations", label: "limitations" });
-      return tabs;
-    }
     if (props.showAllSections) {
       setTabs(getActiveTabs().map(formatTabs));
     }

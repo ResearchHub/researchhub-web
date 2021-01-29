@@ -8,6 +8,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import LeaderboardPlaceholder from "../Placeholders/LeaderboardPlaceholder";
 import LeaderboardUser from "./LeaderboardUser";
 import Link from "next/link";
+import colors from "../../config/themes/colors";
 
 const LeaderboardContainer = (props) => {
   const [users, setUsers] = useState(
@@ -92,22 +93,24 @@ const styles = StyleSheet.create({
     top: 100,
     borderRadius: 4,
     width: "100%",
+    border: "1px solid #ededed",
+    padding: "15px 20px",
+    boxSizing: "border-box",
+    marginTop: 20,
   },
   reputable: {
     textTransform: "uppercase",
     fontWeight: 500,
-    fontSize: 13,
+    fontSize: 12,
     letterSpacing: 1.2,
-    marginBottom: 23,
     textAlign: "left",
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
-    width: "90%",
-    paddingLeft: 35,
+    width: "100%",
     boxSizing: "border-box",
-    "@media only screen and (max-width: 1303px)": {
-      paddingLeft: 25,
-    },
+    margin: 0,
+    padding: 0,
+    marginBottom: 20,
   },
   leaderboardUsers: {
     boxSizing: "border-box",
@@ -115,11 +118,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    padding: "0px 30px",
-    paddingLeft: 35,
-    "@media only screen and (max-width: 1303px)": {
-      padding: "0px 20px",
-    },
+    width: "100%",
   },
   user: {
     marginBottom: 16,
@@ -140,7 +139,6 @@ const styles = StyleSheet.create({
   },
   linkContainer: {
     textAlign: "center",
-    paddingBottom: 30,
   },
 });
 

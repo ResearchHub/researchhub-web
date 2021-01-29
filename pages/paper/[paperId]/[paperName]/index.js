@@ -15,11 +15,10 @@ import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import KeyTakeawaysTab from "~/components/Paper/Tabs/KeyTakeawaysTab";
+// import KeyTakeawaysTab from "~/components/Paper/Tabs/KeyTakeawaysTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
-import PaperBanner from "~/components/Paper/PaperBanner";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -326,11 +325,11 @@ const Paper = (props) => {
   function getActiveTabs() {
     let tabs = [
       { href: "main", label: "main" },
-      { href: "takeaways", label: "key takeaways" },
+      // { href: "takeaways", label: "key takeaways" },
     ];
 
     if (paper.summary || paper.abstract || showAllSections) {
-      tabs.push({ href: "summary", label: "description" });
+      // tabs.push({ href: "summary", label: "description" });
     }
     tabs.push({ href: "comments", label: "discussions" });
     if (paper.file || paper.url || showAllSections) {
@@ -443,13 +442,6 @@ const Paper = (props) => {
         />
         <div className={css(styles.paperPageContainer)}>
           <ComponentWrapper overrideStyle={styles.componentWrapper}>
-            <div style={{ marginTop: 16 }}>
-              <PaperBanner
-                paper={paper}
-                fetchBullets={fetchBullets}
-                loadingPaper={loadingPaper}
-              />
-            </div>
             <PaperPageCard
               paper={paper}
               paperId={paperId}
@@ -493,7 +485,7 @@ const Paper = (props) => {
           />
         </div>
         <div className={css(styles.contentContainer)}>
-          <KeyTakeawaysTab
+          {/* <KeyTakeawaysTab
             keyTakeawayRef={keyTakeawayRef}
             afterFetchBullets={() => setFetchBullets(true)}
             updatePaperState={updatePaperState}
@@ -501,7 +493,7 @@ const Paper = (props) => {
             userVoteChecked={userVoteChecked}
             fetchBullets={fetchBullets}
             loadingPaper={loadingPaper}
-          />
+          /> */}
           <SummaryTab
             paperId={paperId}
             paper={paper}

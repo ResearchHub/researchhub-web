@@ -249,7 +249,7 @@ class PaperPageCard extends React.Component {
     } else if (external_source) {
       return (
         <div className={css(styles.labelContainer)}>
-          <span className={css(styles.label)}>Retrieved From:</span>
+          <span className={css(styles.label)}>Published on:</span>
           <span className={css(styles.capitalize, styles.labelText)}>
             {external_source}
           </span>
