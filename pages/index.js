@@ -50,6 +50,10 @@ Index.getInitialProps = async (ctx) => {
     let initialFeed = await getHubPapers(page, authToken);
     if (initialFeed.results.feed_type === "all") {
       defaultProps.feed = 1;
+      const { res } = ctx;
+      res.statusCode = 302;
+      res.setHeader("location", "/all");
+      res.end();
     }
     let props = {
       ...defaultProps,
@@ -58,10 +62,6 @@ Index.getInitialProps = async (ctx) => {
       page: page + 1,
       loggedIn: authToken !== undefined,
     };
-    const { res } = ctx;
-    res.statusCode = 302;
-    res.setHeader("location", "/all");
-    res.end();
     return props;
   } catch (e) {
     console.log(e);
