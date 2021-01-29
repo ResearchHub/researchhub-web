@@ -33,10 +33,6 @@ class FeedList extends React.Component {
         href: "/",
         as: "/",
       },
-      // {
-      //   label: "Popular",
-      //   icon: icons.chartLine,
-      // },
       {
         label: "All",
         icon: icons.squares,
