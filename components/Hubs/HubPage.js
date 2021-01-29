@@ -19,12 +19,8 @@ import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 import MainHeader from "../Home/MainHeader";
 import SubscribeButton from "../Home/SubscribeButton";
-<<<<<<< HEAD
-import EmptyFeedScreen from "../Home/EmptyFeedScreen";
-=======
 import EmpytFeedScreen from "../Home/EmptyFeedScreen";
 import MobileFeedTabs from "../Home/MobileFeedTabs";
->>>>>>> add feed toggle tabs for mobile screen
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -351,7 +347,7 @@ class HubPage extends React.Component {
   };
 
   updateSlugs = (page) => {
-    const { href, as } = this.formatLink();
+    let { href, as } = this.formatLink();
     if (page) {
       as += `?page=${page}`;
     }
@@ -656,90 +652,13 @@ class HubPage extends React.Component {
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
           </div>
-          <div className={css(styles.column, styles.mainfeed)}>
-            <MainHeader
-              {...this.props}
-              {...this.state}
-              title={this.formatMainHeader()}
-              hubName={home ? "ResearchHub" : hub.name}
-              scopeOptions={scopeOptions}
-              filterOptions={filterOptions}
-              onScopeSelect={this.onScopeSelect}
-              onFilterSelect={this.onFilterSelect}
-              subscribeButton={
-                <SubscribeButton
-                  {...this.props}
-                  {...this.state}
-                  onClick={() => this.setState({ transition: true })}
-                  onSubscribe={this.onSubscribe}
-                  onUnsubscribe={this.onUnsubscribe}
-                />
-              }
-            />
-            <div className={css(styles.infiniteScroll)}>
-              <ReactPlaceholder
-                ready={this.state.doneFetching}
-                showLoadingAnimation
-                customPlaceholder={
-                  <PaperPlaceholder color="#efefef" rows={3} />
-                }
-              >
-                {this.state.papers.length > 0 ? (
-                  <Fragment>
-                    {sampleFeed || !hasSubscribed ? (
-                      <div className={css(styles.bannerContainer)}>
-                        <CreateFeedBanner
-                          message={
-                            sampleFeed
-                              ? loggedIn
-                                ? null
-                                : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                              : loggedIn
-                              ? null
-                              : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                          }
-                        />
-                      </div>
-                    ) : null}
-                    <div
-                      className={css(
-                        styles.feedPapers,
-                        sampleFeed && styles.sampleFeed
-                      )}
-                    >
-                      {sampleFeed && (
-                        <Fragment>
-                          <div className={css(styles.blur)} />
-                          <Button
-                            isLink={{
-                              href: "/all",
-                              linkAs: "/all",
-                            }}
-                            hideRipples={true}
-                            label={"View All Hubs"}
-                            customButtonStyle={styles.allFeedButton}
-                          />
-                        </Fragment>
-                      )}
-                      {this.state.papers.map((paper, i) => (
-                        <PaperEntryCard
-                          key={`${paper.id}-${i}`}
-                          paper={paper}
-                          index={i}
-                          hubName={hubName}
-                          voteCallback={this.voteCallback}
-                          vote={paper.user_vote}
-                        />
-                      ))}
-                    </div>
-                    {!sampleFeed && this.renderLoadMoreButton()}
-                  </Fragment>
-                ) : (
-                  <EmptyFeedScreen activeFeed={this.state.feed} />
-                )}
-              </ReactPlaceholder>
-            </div>
-            <div className={css(styles.mobileHubListContainer)}>
+          <div className={css(styles.row, styles.body)}>
+            <div className={css(styles.column, styles.sidebar)}>
+              <FeedList
+                activeFeed={this.state.feed}
+                onFeedSelect={this.onFeedSelect}
+              />
+              <SubscribedHubList current={home ? null : hub} />
               <HubsList
                 current={home ? null : hub}
                 initialHubList={initialHubList}
@@ -777,29 +696,58 @@ class HubPage extends React.Component {
                 >
                   {this.state.papers.length > 0 ? (
                     <Fragment>
-                      {this.state.papers.map((paper, i) => (
-                        <PaperEntryCard
-                          key={`${paper.id}-${i}`}
-                          paper={paper}
-                          index={i}
-                          hubName={hubName}
-                          voteCallback={this.voteCallback}
-                          vote={paper.user_vote}
-                        />
-                      ))}
-                      {this.renderLoadMoreButton()}
+                      {sampleFeed || !hasSubscribed ? (
+                        <div className={css(styles.bannerContainer)}>
+                          <CreateFeedBanner
+                            message={
+                              sampleFeed
+                                ? loggedIn
+                                  ? null
+                                  : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
+                                : loggedIn
+                                ? null
+                                : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
+                            }
+                          />
+                        </div>
+                      ) : null}
+                      <div
+                        className={css(
+                          styles.feedPapers,
+                          sampleFeed && styles.sampleFeed
+                        )}
+                      >
+                        {sampleFeed && (
+                          <Fragment>
+                            <div className={css(styles.blur)} />
+                            <Button
+                              isLink={{
+                                href: "/all",
+                                linkAs: "/all",
+                              }}
+                              hideRipples={true}
+                              label={"View All Hubs"}
+                              customButtonStyle={styles.allFeedButton}
+                            />
+                          </Fragment>
+                        )}
+                        {this.state.papers.map((paper, i) => (
+                          <PaperEntryCard
+                            key={`${paper.id}-${i}`}
+                            paper={paper}
+                            index={i}
+                            hubName={hubName}
+                            voteCallback={this.voteCallback}
+                            vote={paper.user_vote}
+                          />
+                        ))}
+                      </div>
+                      {!sampleFeed && this.renderLoadMoreButton()}
                     </Fragment>
                   ) : (
                     <EmpytFeedScreen activeFeed={this.state.feed} />
                   )}
                 </ReactPlaceholder>
-              </div>
-              <div className={css(styles.mobileHubListContainer)}>
-                <HubsList
-                  current={home ? null : hub}
-                  overrideStyle={styles.mobileList}
-                  initialHubList={initialHubList}
-                />
               </div>
             </div>
           </div>
@@ -1196,14 +1144,6 @@ var styles = StyleSheet.create({
   mobileHubListContainer: {
     display: "none",
     backgroundColor: "#FFF",
-    // "@media only screen and (max-width: 990px)": {
-    //   display: "flex",
-    //   flexDirection: "column",
-    //   justifyContent: "center",
-    //   alignItems: "center",
-    //   width: "100%",
-    //   borderTop: "1px solid #EDEDED",
-    // },
   },
   mobileList: {
     paddingTop: 20,
