@@ -35,7 +35,6 @@ Index.getInitialProps = async (ctx) => {
 
     return {
       initialFeed,
-      query,
       filter: filterObj,
       feed: 1,
     };

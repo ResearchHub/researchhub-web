@@ -37,7 +37,6 @@ Index.getInitialProps = async (ctx) => {
 
     return {
       initialFeed,
-      query,
       feed: 1,
     };
   } catch {
