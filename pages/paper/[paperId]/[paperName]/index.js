@@ -597,6 +597,13 @@ Paper.getInitialProps = async (ctx) => {
     return { error: true };
   }
 
+  if (!paper) {
+    if (res) {
+      res.statusCode = 404;
+    }
+    return { error: true };
+  }
+
   paperSlug = paper.slug;
   let fetchedPaper = true;
 
