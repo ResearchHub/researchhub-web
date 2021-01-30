@@ -382,6 +382,7 @@ class UserSettings extends Component {
   };
 
   unsubscribeFromAll = async () => {
+    this.props.dispatch(MessageActions.showMessage({ show: true, load: true }));
     await Promise.all(
       this.props.subscribedHubs.map((hub) => {
         return unsubscribeFromHub({ hubId: hub.id });
@@ -389,6 +390,7 @@ class UserSettings extends Component {
     )
       .then((_) => {
         this.props.dispatch(HubActions.updateSubscribedHubs([]));
+        this.props.dispatch(MessageActions.showMessage({ show: false }));
         this.props.dispatch(
           MessageActions.setMessage("Unsubscribed from all!")
         );
