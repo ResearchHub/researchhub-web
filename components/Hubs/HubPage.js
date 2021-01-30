@@ -195,6 +195,7 @@ class HubPage extends React.Component {
       prevState.feed !== this.state.feed
     ) {
       if (!this.initialFeed) {
+        debugger;
         this.fetchPapers({ hub: this.props.hub });
       }
     }
@@ -542,7 +543,7 @@ class HubPage extends React.Component {
   };
 
   onHubSelect = (e) => {
-    this.setState({ feed: null });
+    this.setState({ feed: undefined });
   };
 
   voteCallback = (index, paper) => {
