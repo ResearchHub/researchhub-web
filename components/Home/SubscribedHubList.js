@@ -14,62 +14,47 @@ import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
+import { ethers } from "ethers";
 
 const DEFAULT_TRANSITION_TIME = 400;
 
-class HubsList extends React.Component {
+class SubscribedHubList extends React.Component {
   constructor(props) {
     super(props);
+    this.initialState = {
+      hubs: [],
+      paginatedLists: {},
+      pages: 1,
+      page: 1,
+      ready: false,
+    };
     this.state = {
-      hubs:
-        this.props.initialHubList && this.props.initialHubList.results
-          ? this.props.initialHubList.results
-          : [],
-      reveal: true,
+      ...this.initialState,
     };
   }
 
   componentDidMount() {
-    let { auth } = this.props;
-    if (this.props.hubs.length) {
-      this.setState({ hubs: [...this.props.hubs] });
-    }
-
+    const { auth } = this.props;
     if (auth.isLoggedIn) {
-      this.updateTopHubs();
+      this.formatHubList();
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.current !== this.props.current) {
-      this.setState({
-        hubs: this.props.hubs,
-      });
-    }
-    if (prevProps.hubs !== this.props.hubs) {
-      this.setState({ hubs: [...this.props.hubs] });
+    if (prevProps.hubs.subscribedHubs !== this.props.hubs.subscribedHubs) {
+      this.formatHubList();
     }
     if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
-      this.updateTopHubs();
+      if (this.props.auth.isLoggedIn) {
+        this.formatHubList();
+      } else {
+        this.setState({ ...this.initialState });
+      }
     }
     if (prevProps.auth.user !== this.props.auth.user) {
-      this.updateTopHubs();
+      this.formatHubList();
     }
   }
-
-  componentWillUnmount() {
-    clearTimeout(this.revealTimeout);
-    this.setState({ reveal: false });
-  }
-
-  fetchHubs = async () => {
-    if (!this.props.hubs.length > 0) {
-      await this.props.getTopHubs(this.props.auth);
-    }
-    this.setState({ hubs: this.props.hubs }, () => {
-      this.revealTransition();
-    });
-  };
 
   isCurrentHub(current, hubId) {
     if (current && current.id) {
@@ -77,40 +62,50 @@ class HubsList extends React.Component {
     }
   }
 
-  updateTopHubs = (state) => {
-    let hubState = this.props.hubState;
-    if (this.props.auth.isLoggedIn) {
-      let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
-      let subscribedHubs = {};
-      subscribed.forEach((hub) => {
-        subscribedHubs[hub.id] = true;
-      });
+  formatHubList = () => {
+    const hubs = [...this.props.hubs.subscribedHubs] || [];
+    const paginatedLists = {};
+    const count = hubs.length;
+    let pages = 1;
 
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        if (subscribedHubs[hub.id]) {
-          hub.user_is_subscribed = true;
+    if (count > 10) {
+      pages = Math.floor(count / 10) + 1;
+
+      for (let i = 1; i <= pages; i++) {
+        let start = (i - 1) * 10;
+        let end = i * 10;
+
+        if (i === pages) {
+          paginatedLists[i] = hubs.slice(start);
+        } else {
+          paginatedLists[i] = hubs.slice(start, end);
         }
-        return hub;
-      });
+      }
 
-      this.props.updateTopHubs(updatedTopHubs);
+      this.setState({
+        hubs: paginatedLists[1],
+        paginatedLists,
+        pages,
+        page: 1,
+        ready: true,
+      });
     } else {
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        hub.user_is_subscribed = false;
-        return hub;
-      });
-
-      this.props.updateTopHubs(updatedTopHubs);
+      this.setState({ hubs, ready: true });
     }
   };
 
-  revealTransition = () => {
-    setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
+  nextPage = () => {
+    const { paginatedLists, page } = this.state;
+    const next = page + 1;
+    const hubs = [...this.state.hubs, ...paginatedLists[next]];
+    this.setState({ hubs, page: next });
   };
 
-  renderHubEntry = (hubs) => {
+  renderHubEntry = () => {
+    const { hubs } = this.state;
     return hubs.map((hub, i) => {
       const { name, id, hub_image, user_is_subscribed } = hub;
+
       return (
         <Ripples
           className={css(
@@ -151,12 +146,11 @@ class HubsList extends React.Component {
   };
 
   render() {
+    const { pages, page, hubs } = this.state;
     const { overrideStyle } = this.props;
-    const subscribedHubs = this.props.hubState.subscribedHubs
-      ? this.props.hubState.subscribedHubs
-      : [];
+    const subscribedHubs = this.props.hubs.subscribedHubs || [];
 
-    if (subscribedHubs.length) {
+    if (hubs.length) {
       return (
         <div className={css(styles.container, overrideStyle && overrideStyle)}>
           <div className={css(styles.hubsListContainer)}>
@@ -168,21 +162,24 @@ class HubsList extends React.Component {
                 </a>
               </Link>
             </h5>
-            <div
-              className={css(
-                styles.hubsList,
-                this.state.reveal && styles.reveal
-              )}
-            >
+            <div className={css(styles.hubsList)}>
               <ReactPlaceholder
                 showLoadingAnimation
-                ready={this.state.hubs && this.state.hubs.length}
+                ready={this.state.ready}
                 customPlaceholder={
-                  <HubEntryPlaceholder color="#efefef" rows={9} />
+                  <HubEntryPlaceholder color="#efefef" rows={5} />
                 }
               >
-                {this.renderHubEntry(subscribedHubs)}
+                {this.renderHubEntry()}
               </ReactPlaceholder>
+              {pages > page && (
+                <div
+                  className={css(styles.viewMoreButton)}
+                  onClick={this.nextPage}
+                >
+                  View more
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -267,6 +264,7 @@ const styles = StyleSheet.create({
     },
   },
   last: {
+    opacity: 1,
     borderBottom: "none",
   },
   hubImage: {
@@ -296,7 +294,6 @@ const styles = StyleSheet.create({
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   hubsList: {
-    opacity: 0,
     width: "100%",
     boxSizing: "border-box",
     display: "flex",
@@ -318,21 +315,33 @@ const styles = StyleSheet.create({
   link: {
     textDecoration: "none",
   },
+  viewMoreButton: {
+    color: "rgba(78, 83, 255)",
+    fontWeight: 300,
+    textTransform: "capitalize",
+    fontSize: 16,
+    padding: 20,
+    borderTop: "1px solid #F0F0F0",
+    boxSizing: "border-box",
+    width: "100%",
+    cursor: "pointer",
+    ":hover": {
+      color: "rgba(78, 83, 255, .5)",
+      textDecoration: "underline",
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
-  hubState: state.hubs,
-  hubs: state.hubs.topHubs,
+  hubs: state.hubs,
   auth: state.auth,
 });
 
 const mapDispatchToProps = {
-  updateCurrentHubPage: HubActions.updateCurrentHubPage,
-  getTopHubs: HubActions.getTopHubs,
-  updateTopHubs: HubActions.updateTopHubs,
+  getSubscribedHubs: HubActions.getSubscribedHubs,
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(HubsList);
+)(SubscribedHubList);
