@@ -179,8 +179,17 @@ class SummaryTab extends React.Component {
     const { editAbstract, abstract } = this.state;
 
     this.setState({
+      editAbstract: !editAbstract, // don't keep changes when user cancels
+    });
+  };
+
+  cancelEditAbstract = () => {
+    const { paper } = this.props;
+    const { editAbstract } = this.state;
+
+    this.setState({
       editAbstract: !editAbstract,
-      abstract: editAbstract ? "" : abstract, // don't keep changes when user cancels
+      abstract: paper.abstract,
     });
   };
 
@@ -400,7 +409,7 @@ class SummaryTab extends React.Component {
             <div className={css(styles.buttonRow)}>
               <Ripples
                 className={css(styles.cancelButton)}
-                onClick={this.editAbstract}
+                onClick={this.cancelEditAbstract}
               >
                 Cancel
               </Ripples>
