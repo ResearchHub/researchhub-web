@@ -288,6 +288,7 @@ const ModeratorDeleteButton = (props) => {
 
 const styles = StyleSheet.create({
   buttonContainer: {
+    marginRight: 15,
     cursor: "pointer",
   },
   icon: {
