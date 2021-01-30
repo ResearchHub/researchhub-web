@@ -57,7 +57,8 @@ class FeedList extends React.Component {
         <Ripples
           className={css(
             styles.listItem,
-            i === activeFeed && styles.activeListItem
+            i === activeFeed && styles.activeListItem,
+            i === 1 && styles.lastItem
           )}
           key={`${label}-${i}`}
           onClick={() => this.onClick({ href, as }, i)}
@@ -160,6 +161,9 @@ const styles = StyleSheet.create({
     background:
       "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+  },
+  lastItem: {
+    borderBottom: "none",
   },
   hubImage: {
     height: 35,
