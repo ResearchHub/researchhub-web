@@ -943,6 +943,23 @@ const AuthorPage = (props) => {
             }}
           />
         )}
+        {isModerator() && (
+          <div className={css(styles.editProfileButton)}>
+            <Button
+              label={() => (
+                <Fragment>
+                  <span style={{ marginRight: 10, userSelect: "none" }}>
+                    {icons.user}
+                  </span>
+                  Sift Profile
+                </Fragment>
+              )}
+              onClick={() => window.open(props.author.sift_link, "_blank")}
+              customButtonStyle={styles.editButtonCustom}
+              rippleClass={styles.rippleClass}
+            />
+          </div>
+        )}
       </div>
     );
   };
