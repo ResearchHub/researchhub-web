@@ -944,7 +944,7 @@ const AuthorPage = (props) => {
           />
         )}
         {isModerator() && (
-          <div className={css(styles.editProfileButton)}>
+          <div className={css(styles.editProfileButton, styles.siftButton)}>
             <Button
               label={() => (
                 <Fragment>
@@ -955,7 +955,7 @@ const AuthorPage = (props) => {
                 </Fragment>
               )}
               onClick={() => window.open(props.author.sift_link, "_blank")}
-              customButtonStyle={styles.editButtonCustom}
+              customButtonStyle={[styles.editButtonCustom, styles.siftCustom]}
               rippleClass={styles.rippleClass}
             />
           </div>
@@ -1656,6 +1656,11 @@ const styles = StyleSheet.create({
       margin: 0,
     },
   },
+  siftButton: {
+    marginLeft: 16,
+    background: colors.NAVY(1),
+    borderRadius: 4,
+  },
   editButtonCustom: {
     height: 35,
     width: 175,
@@ -1664,6 +1669,9 @@ const styles = StyleSheet.create({
       width: "100%",
       minWidth: "100%",
     },
+  },
+  siftCustom: {
+    background: colors.NEW_BLUE(1),
   },
   rippleClass: {
     "@media only screen and (max-width: 767px)": {
