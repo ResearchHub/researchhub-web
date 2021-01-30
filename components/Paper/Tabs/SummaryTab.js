@@ -48,7 +48,7 @@ class SummaryTab extends React.Component {
       editing: false,
       // abstract
       abstract: "",
-      showAbstract: false,
+      showAbstract: true,
       editAbstract: false,
       checked: false,
     };
@@ -241,7 +241,7 @@ class SummaryTab extends React.Component {
             editorState: summary.summary,
             finishedLoading: true,
             abstract: paper.abstract,
-            showAbstract: false,
+            // showAbstract: false,
             summaryExists: true,
           });
         } else {
@@ -251,7 +251,7 @@ class SummaryTab extends React.Component {
             editorState: editorState ? editorState : "",
             finishedLoading: true,
             abstract: paper.abstract,
-            showAbstract: false,
+            // showAbstract: false,
             summaryExists: true,
           });
         }
@@ -452,6 +452,8 @@ class SummaryTab extends React.Component {
           </div>
         );
       }
+    } else {
+      return <div />;
     }
   };
 
