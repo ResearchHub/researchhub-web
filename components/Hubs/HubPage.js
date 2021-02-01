@@ -844,7 +844,7 @@ var styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     display: "table",
-    paddingLeft: 50,
+    paddingLeft: 20,
     boxSizing: "border-box",
     "@media only screen and (min-width: 1920px)": {
       maxWidth: 1920,
@@ -865,6 +865,25 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 990px)": {
       width: "100%",
     },
+    "@media only screen and (min-width: 900px)": {
+      paddingLeft: 25,
+      paddingRight: 25,
+    },
+    "@media only screen and (min-width: 1200px)": {
+      paddingLeft: 30,
+      paddingRight: 50,
+    },
+    "@media only screen and (min-width: 800px)": {
+      paddingTop: 25,
+    },
+    "@media only screen and (max-width: 577px)": {
+      paddingLeft: 40,
+      paddingRight: 40,
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: 0,
+      width: "100%",
+    },
   },
   allFeedButton: {
     position: "absolute",
@@ -879,8 +898,9 @@ var styles = StyleSheet.create({
     display: "table-cell",
     flexDirection: "column",
     alignItems: "flex-start",
-    width: 280,
-    minWidth: 250,
+    width: 260,
+    minWidth: 260,
+    maxWidth: 260,
     minHeight: "inherit",
     paddingBottom: 30,
     "@media only screen and (min-width: 1920px)": {
@@ -889,9 +909,6 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 990px)": {
       display: "none",
     },
-  },
-  sidebarRight: {
-    marginLeft: 0,
   },
   subtext: {
     whiteSpace: "initial",
@@ -915,23 +932,8 @@ var styles = StyleSheet.create({
     position: "relative",
   },
   bannerContainer: {
-    paddingLeft: 50,
-    paddingRight: 50,
-
-    "@media only screen and (min-width: 900px)": {
-      paddingLeft: 25,
-      paddingRight: 25,
-    },
-    "@media only screen and (min-width: 1200px)": {
-      paddingLeft: 50,
-      paddingRight: 50,
-    },
     "@media only screen and (min-width: 800px)": {
       paddingTop: 25,
-    },
-    "@media only screen and (max-width: 577px)": {
-      paddingLeft: 40,
-      paddingRight: 40,
     },
     "@media only screen and (max-width: 415px)": {
       padding: 0,
@@ -1123,25 +1125,6 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
     paddingBottom: 30,
-    "@media only screen and (min-width: 900px)": {
-      paddingLeft: 25,
-      paddingRight: 25,
-    },
-    "@media only screen and (min-width: 1200px)": {
-      paddingLeft: 50,
-      paddingRight: 50,
-    },
-    "@media only screen and (min-width: 800px)": {
-      paddingTop: 25,
-    },
-    "@media only screen and (max-width: 577px)": {
-      paddingLeft: 40,
-      paddingRight: 40,
-    },
-    "@media only screen and (max-width: 415px)": {
-      padding: 0,
-      width: "100%",
-    },
   },
   blur: {
     background:
