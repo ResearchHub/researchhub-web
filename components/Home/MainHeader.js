@@ -155,27 +155,13 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 20,
     width: "100%",
-    paddingLeft: 70,
-    paddingRight: 70,
     boxSizing: "border-box",
-    // backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
     top: 80,
-    "@media only screen and (min-width: 900px)": {
-      paddingLeft: 25,
-      paddingRight: 25,
-    },
-    "@media only screen and (min-width: 1200px)": {
-      paddingLeft: 50,
-      paddingRight: 50,
-    },
-
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
-      paddingLeft: 0,
-      paddingRight: 0,
     },
     "@media only screen and (max-width: 665px)": {
       display: "flex",
