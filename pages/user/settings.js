@@ -287,9 +287,6 @@ class UserSettings extends Component {
       return !subscribedHubIds[hub.id];
     });
 
-    console.log("this.props.hubs", this.props.hubs);
-    console.log("avaiable,", availableHubs);
-
     return (
       <div className={css(styles.container)}>
         <div className={css(styles.labelContainer)}>
