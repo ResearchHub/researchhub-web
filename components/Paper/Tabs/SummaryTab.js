@@ -46,6 +46,7 @@ class SummaryTab extends React.Component {
       firstLoad: true,
       summaryExists: false,
       editing: false,
+      finishedLoading: false,
       // abstract
       abstract: "",
       showAbstract: true,
@@ -397,6 +398,7 @@ class SummaryTab extends React.Component {
     const { paper } = this.props;
     const { abstract, showAbstract, editAbstract, readOnly } = this.state;
     const externalSource = paper.retrieved_from_external_source;
+
     if (showAbstract) {
       if (editAbstract) {
         return (
@@ -643,11 +645,12 @@ class SummaryTab extends React.Component {
 
   renderContent = () => {
     const { showAbstract, finishedLoading } = this.state;
+    const { paper } = this.props;
 
     return (
       <div style={{ width: "100%" }}>
         <ReactPlaceholder
-          ready={finishedLoading}
+          ready={paper && paper.id}
           showLoadingAnimation
           customPlaceholder={<BulletPlaceholder color="#efefef" />}
         >
