@@ -6,7 +6,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import Ripples from "react-ripples";
 import * as Sentry from "@sentry/browser";
 import Router from "next/router";
-import Cookies from "js-cookie";
 
 // Component
 import FeedList from "./FeedList";
@@ -120,7 +119,7 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     const { isLoggedIn, initialFeed, hubState } = this.props;
-
+    console.log("this.props", this.props);
     if (initialFeed) {
       this.detectPromoted(this.state.papers);
     } else {
@@ -195,7 +194,6 @@ class HubPage extends React.Component {
       prevState.feed !== this.state.feed
     ) {
       if (!this.initialFeed) {
-        debugger;
         this.fetchPapers({ hub: this.props.hub });
       }
     }
