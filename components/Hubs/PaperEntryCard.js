@@ -124,14 +124,6 @@ const PaperEntryCard = (props) => {
   }
 
   function renderUploadedBy() {
-    return (
-      <div className={css(styles.uploadedBy)}>
-        Published on{" "}
-        {/* <span className={css(styles.capitalize)}>{external_source}</span> */}
-        <span className={css(styles.capitalize)}>Arxiv</span>
-      </div>
-    );
-
     if (uploaded_by) {
       const {
         first_name,
@@ -474,19 +466,6 @@ const PaperEntryCard = (props) => {
   };
 
   const renderPaperTitle = () => {
-    return (
-      <div className={css(styles.metadataContainer, styles.authorContainer)}>
-        <div
-          className={
-            css(styles.metadataClamp, styles.metadata, styles.removeMargin) +
-            " clamp1"
-          }
-        >
-          From Paper: Poncelet-Darboux, Kippenhahn, and Szegő: interactions
-          between projective geometry, matrices and orthogonal polynomials
-        </div>
-      </div>
-    );
     if (paper_title && title !== paper_title) {
       return (
         <div className={css(styles.metadataContainer, styles.authorContainer)}>

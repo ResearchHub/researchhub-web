@@ -110,11 +110,6 @@ class HubsList extends React.Component {
 
   renderHubEntry = () => {
     const selectedHubs = this.state.hubs.slice(0, 5);
-    const subscribed = this.props.hubState.subscribedHubs || [];
-    const subscribedHubs = {};
-    subscribed.forEach((hub) => {
-      subscribedHubs[hub.id] = true;
-    });
 
     return selectedHubs.map((hub, i) => {
       const { name, id, hub_image } = hub;
@@ -149,11 +144,6 @@ class HubsList extends React.Component {
                 alt={hub.name}
               />
               <span className={"clamp1"}>{name}</span>
-              {subscribedHubs[hub.id] && (
-                <span className={css(styles.subscribedIcon)}>
-                  {icons.starFilled}
-                </span>
-              )}
             </a>
           </Link>
         </Ripples>
@@ -167,7 +157,7 @@ class HubsList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <h5 className={css(styles.listLabel)}>Recommended</h5>
+          <h5 className={css(styles.listLabel)}>Trending</h5>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >

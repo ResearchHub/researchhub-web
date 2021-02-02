@@ -155,7 +155,7 @@ class SubscribedHubList extends React.Component {
         <div className={css(styles.container, overrideStyle && overrideStyle)}>
           <div className={css(styles.hubsListContainer)}>
             <h5 className={css(styles.listLabel)}>
-              <span>Your Hubs</span>
+              <span>My Hubs</span>
               <Link href={"/user/settings"} as={"/user/settings"}>
                 <a className={css(styles.link, styles.cogButton)}>
                   {icons.cog}

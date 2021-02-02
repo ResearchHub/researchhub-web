@@ -291,7 +291,7 @@ class UserSettings extends Component {
       <div className={css(styles.container)}>
         <div className={css(styles.labelContainer)}>
           <div className={css(styles.listLabel)} id={"hubListTitle"}>
-            {"Currently Subscribed Hubs"}
+            {"My Hubs"}
           </div>
         </div>
         <div className={css(hubStyles.list, styles.hubsList)}>
@@ -304,7 +304,7 @@ class UserSettings extends Component {
             inputStyle={(selectStyles.input, styles.formSelectInput)}
             onChange={this.handleHubOnChange}
             isSearchable={true}
-            placeholder={"Subscribe to a hub"}
+            placeholder={"Join a hub"}
             value={this.buildHubOptions(this.props.subscribedHubs)}
             isMulti={true}
             multiTagStyle={styles.multiTagStyle}
@@ -322,7 +322,7 @@ class UserSettings extends Component {
             className={css(styles.unsubscribeButton)}
             onClick={this.confirmUnsubscribeAll}
           >
-            Unsubscribe from all
+            Leave all hubs
           </div>
         </div>
       </div>
