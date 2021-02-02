@@ -2,8 +2,13 @@ import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
 
+// Redux
+import { AuthActions } from "~/redux/auth";
+
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import GoogleLoginButton from "~/components/GoogleLoginButton";
 import Button from "../Form/Button";
+
 import colors from "~/config/themes/colors";
 
 const CreateFeedBanner = (props) => {
@@ -20,29 +25,52 @@ const CreateFeedBanner = (props) => {
     });
   };
 
+  const renderTitle = () => {
+    const { auth } = props;
+
+    return auth.isLoggedIn
+      ? "Follow the research you care about. Create your personalized feed."
+      : "Sign up to follow the research you care about.";
+  };
+
+  const renderButton = () => {
+    const { auth, googleLogin, getUser } = props;
+
+    return auth.isLoggedIn ? (
+      <PermissionNotificationWrapper
+        onClick={navigateToUserOnboardPage}
+        modalMessage="create your feed"
+        loginRequired={true}
+        permissionKey="CreatePaper"
+      >
+        <Button
+          isWhite={true}
+          hideRipples={true}
+          label={"Get Started"}
+          customButtonStyle={styles.button}
+          customLabelStyle={styles.buttonLabel}
+        />
+      </PermissionNotificationWrapper>
+    ) : (
+      process.browser && (
+        <GoogleLoginButton
+          styles={[styles.button, styles.googleLoginButton, styles.login]}
+          iconStyle={styles.googleIcon}
+          customLabelStyle={[styles.googleLabel]}
+          googleLogin={googleLogin}
+          getUser={getUser}
+          customLabel={"Sign in with Google"}
+        />
+      )
+    );
+  };
+
   return (
     <div className={css(styles.column)}>
       <div className={css(styles.banner)}>
         <div className={css(styles.contentContainer)}>
-          <h1 className={css(styles.title)}>
-            {props.message
-              ? props.message
-              : "Follow areas of Research that you care about. Create your personalized feed by subscribing to the hubs you wish to follow."}
-          </h1>
-          <PermissionNotificationWrapper
-            onClick={navigateToUserOnboardPage}
-            modalMessage="create your feed"
-            loginRequired={true}
-            permissionKey="CreatePaper"
-          >
-            <Button
-              isWhite={true}
-              hideRipples={true}
-              label={"Get Started"}
-              customButtonStyle={styles.button}
-              customLabelStyle={styles.buttonLabel}
-            />
-          </PermissionNotificationWrapper>
+          <h1 className={css(styles.title)}>{renderTitle()}</h1>
+          {renderButton()}
         </div>
         <img
           draggable={false}
@@ -94,7 +122,7 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     lineHeight: 1.3,
-    marginBottom: 30,
+    marginBottom: 20,
     "@media only screen and (max-width: 767px)": {
       fontSize: 22,
       marginBottom: 20,
@@ -138,12 +166,47 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
+  rippleClass: {
+    width: "100%",
+  },
+  googleIcon: {
+    width: 25,
+    height: 25,
+    boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+    borderRadius: "50%",
+  },
+  googleLoginButton: {
+    backgroundColor: "#fff",
+    border: "1px solid #fff",
+    borderRadius: 4,
+  },
+  login: {
+    border: "1px solid #E7E7E7",
+    background: "#FFF",
+    margin: 0,
+    ":hover": {
+      backgroundColor: "rgba(250, 250, 250, 1)",
+    },
+    "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
+  },
+  googleLabel: {
+    color: colors.NEW_BLUE(),
+    fontSize: 16,
+  },
 });
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
   hubs: state.hubs,
 });
+
+const mapDispatchToProps = {
+  googleLogin: AuthActions.googleLogin,
+  getUser: AuthActions.getUser,
+};
+
 export default connect(
   mapStateToProps,
   null
