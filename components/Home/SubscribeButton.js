@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 import Loader from "~/components/Loader/Loader";
 
 import { ModalActions } from "~/redux/modals";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
+import { capitalize } from "~/config/utils";
 
 const SubscribeButton = (props) => {
   const {
@@ -29,9 +30,9 @@ const SubscribeButton = (props) => {
   const _onClick = () => {
     onClick && onClick();
     const SUBSCRIBE_API = subscribe ? unsubscribeFromHub : subscribeToHub;
-
+    const hubName = hub.name && capitalize(hub.name);
     SUBSCRIBE_API({ hubId: hub.id })
-      .then((_) => (subscribe ? onUnsubscribe() : onSubscribe()))
+      .then((_) => (subscribe ? onUnsubscribe(hubName) : onSubscribe(hubName)))
       .catch((err) => {
         if (err.response.status === 429) {
           props.openRecaptchaPrompt(true);
@@ -74,23 +75,30 @@ const SubscribeButton = (props) => {
   };
 
   return (
-    <Ripples onClick={_onClick} className={css(styles.subscribe)}>
-      <button {...formatButtonProps()}>
-        <span>
-          {!transition ? (
-            formatText()
-          ) : (
-            <Loader
-              key={"subscribeLoader"}
-              loading={true}
-              containerStyle={styles.loader}
-              size={10}
-              color={"#FFF"}
-            />
-          )}
-        </span>
-      </button>
-    </Ripples>
+    <PermissionNotificationWrapper
+      modalMessage="join hubs"
+      loginRequired={true}
+      styling={styles.subscribe}
+      onClick={_onClick}
+    >
+      <div className={css(styles.subscribe)}>
+        <button {...formatButtonProps()}>
+          <span>
+            {!transition ? (
+              formatText()
+            ) : (
+              <Loader
+                key={"subscribeLoader"}
+                loading={true}
+                containerStyle={styles.loader}
+                size={10}
+                color={"#FFF"}
+              />
+            )}
+          </span>
+        </button>
+      </div>
+    </PermissionNotificationWrapper>
   );
 };
 
