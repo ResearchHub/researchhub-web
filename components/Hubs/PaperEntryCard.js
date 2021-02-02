@@ -123,10 +123,6 @@ const PaperEntryCard = (props) => {
     onClick && onClick();
   }
 
-  function renderPromoter() {
-    return <span className={css(styles.promotion)}>Promoted</span>;
-  }
-
   function renderUploadedBy() {
     if (uploaded_by) {
       let {
@@ -138,16 +134,14 @@ const PaperEntryCard = (props) => {
       } = uploaded_by.author_profile;
       return (
         <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
-          <span className={css(styles.submittedSection)}>
-            <AuthorAvatar
-              author={uploaded_by.author_profile}
-              name={first_name + " " + last_name}
-              size={25}
-            />
-            <span
-              className={css(styles.capitalize, styles.authorName)}
-            >{`${first_name} ${last_name}`}</span>
-          </span>
+          <AuthorAvatar
+            author={uploaded_by.author_profile}
+            name={first_name + " " + last_name}
+            size={25}
+            border={"1px solid #EDEDED"}
+            trueSize={true}
+            dropShadow={true}
+          />
         </div>
       );
     } else if (external_source) {
@@ -296,22 +290,20 @@ const PaperEntryCard = (props) => {
     if (bullet_points && bullet_points.length > 0) {
       return (
         <div className={css(styles.summary)}>
-          <ul className={css(styles.bulletpoints) + " clamp1"}>
-            {bullet_points.map((bullet, i) => {
-              if (i < 2) {
-                return (
-                  <li
-                    key={`bullet-${bullet.paper}-${i}`}
-                    className={css(styles.bullet)}
-                  >
-                    <div style={{ overflow: "hidden" }} className={"clamp1"}>
-                      {bullet.plain_text}
-                    </div>
-                  </li>
-                );
-              }
-            })}
-          </ul>
+          {bullet_points.map((bullet, i) => {
+            if (i < 2) {
+              return (
+                <div
+                  key={`bullet-${bullet.paper}-${i}`}
+                  className={css(styles.bullet)}
+                >
+                  <span style={{ overflow: "hidden" }} className={"clamp1"}>
+                    {bullet.plain_text}
+                  </span>
+                </div>
+              );
+            }
+          })}
         </div>
       );
     } else if (abstract) {
@@ -388,7 +380,6 @@ const PaperEntryCard = (props) => {
                   tag={tag}
                   hubName={hubName}
                   last={index === hubs.length - 1}
-                  gray={false}
                   labelStyle={styles.hubLabel}
                 />
               )
@@ -692,15 +683,13 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   paperTitle: {
-    color: "rgb(145, 143, 155)",
+    fontSize: 13,
+    color: colors.BLACK(0.5),
     marginTop: 5,
-    fontSize: 14,
-    fontWeight: 400,
-    color: "#918F9B",
   },
   title: {
     width: "100%",
-    fontSize: 19,
+    fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
     "@media only screen and (max-width: 767px)": {
@@ -769,7 +758,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     width: "100%",
-    paddingBottom: 5,
+    paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "space-between",
       paddingBottom: 10,
@@ -780,36 +769,30 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     flexDirection: "column",
     width: "100%",
-    paddingTop: 3,
-    paddingBottom: 5,
-    "@media only screen and (max-width: 767px)": {
-      paddingTop: 0,
-      paddingBottom: 5,
-    },
   },
   metadataContainer: {
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
+    marginBottom: 5,
   },
   publishContainer: {
     marginRight: 10,
   },
-  authorContainer: {
-    marginBottom: 5,
-  },
+  authorContainer: {},
   clampMetadata: {
     maxWidth: 180,
     color: "#C1C1CF",
     fontSize: 14,
   },
   summary: {
+    width: "100%",
     minWidth: "100%",
     maxWidth: "100%",
-    color: colors.BLACK(),
+    color: colors.BLACK(0.8),
     fontSize: 14,
-    padding: "3px 0 3px",
     lineHeight: 1.3,
+    marginTop: 5,
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
@@ -828,7 +811,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginTop: 8,
+    marginTop: 10,
   },
   link: {
     textDecoration: "none",
@@ -850,8 +833,8 @@ const styles = StyleSheet.create({
     },
   },
   metadata: {
-    fontSize: 14,
-    color: "#918f9b",
+    fontSize: 13,
+    color: colors.BLACK(0.5),
     marginLeft: 7,
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
@@ -943,14 +926,12 @@ const styles = StyleSheet.create({
   bullet: {
     margin: 0,
     padding: 0,
-    fontSize: 14,
-    display: "list-item",
+    fontSize: 14.5,
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
   },
   hubLabel: {
-    fontSize: 9,
     "@media only screen and (max-width: 415px)": {
       maxWidth: 60,
       flexWrap: "unset",
@@ -967,18 +948,13 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    fontSize: 14,
-    color: "rgba(145, 143, 155, 1)",
-    letterSpacing: 0.2,
-    fontWeight: 400,
     cursor: "pointer",
-    whiteSpace: "pre-wrap",
     ":hover": {
       color: colors.BLUE(),
+      opacity: 0.8,
     },
     "@media only screen and (max-width: 767px)": {
-      fontSize: 13,
-      marginTop: 8,
+      marginTop: 10,
     },
   },
   uploadedByAvatar: {
