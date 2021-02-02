@@ -993,11 +993,11 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     display: "flex",
-    paddingTop: 50,
+    paddingTop: 35,
     position: "relative",
     overflow: "visible",
     "@media only screen and (max-width: 767px)": {
-      paddingTop: 20,
+      paddingTop: 30,
       paddingBottom: 0,
     },
   },
@@ -1193,7 +1193,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 70,
     left: -70,
-    top: 37,
+    top: 22,
     display: "block",
     "@media only screen and (max-width: 768px)": {
       display: "none",
