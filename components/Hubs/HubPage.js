@@ -701,17 +701,7 @@ class HubPage extends React.Component {
                     className={css(styles.bannerContainer)}
                     id="create-feed-banner"
                   >
-                    <CreateFeedBanner
-                      message={
-                        sampleFeed
-                          ? loggedIn
-                            ? null
-                            : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                          : loggedIn
-                          ? null
-                          : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                      }
-                    />
+                    <CreateFeedBanner />
                   </div>
                 ) : null}
               </div>
