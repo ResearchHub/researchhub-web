@@ -1,6 +1,9 @@
+import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
+import Ripples from "react-ripples";
 import Router from "next/router";
 import { connect } from "react-redux";
+import { parseCookies, setCookie, destroyCookie } from "nookies";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -9,9 +12,30 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 import Button from "../Form/Button";
 
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
+const removeUserBanner = () => {
+  const cookies = parseCookies();
+  if (typeof window === "undefined") {
+    return cookies.bannerPref && cookies.bannerPref === "false";
+  } else {
+    const bannerRef = localStorage.getItem("researchhub.banner.pref");
+    return (
+      (cookies.bannerPref && cookies.bannerPref === "false") ||
+      (bannerRef && bannerRef === "false")
+    );
+  }
+};
+
 const CreateFeedBanner = (props) => {
+  const [remove, setRemove] = useState(removeUserBanner());
+  const buttonRef = useRef();
+
+  useEffect(() => {
+    setRemove(removeUserBanner());
+  }, []);
+
   const navigateToUserOnboardPage = () => {
     const { user } = props.auth;
     const authorId = user.author_profile.id;
@@ -23,6 +47,19 @@ const CreateFeedBanner = (props) => {
         selectHubs: true,
       },
     });
+  };
+
+  const onClose = (e) => {
+    e && e.stopPropagation();
+    setCookie(null, "bannerPref", "false");
+    // localStorage.setItem("researchhub.banner.pref", "false");
+    setRemove(true);
+  };
+
+  const onBannerClick = (e) => {
+    e && e.stopPropagation();
+    const button = buttonRef.current.children[0].children[0];
+    button && button.click();
   };
 
   const renderTitle = () => {
@@ -65,12 +102,22 @@ const CreateFeedBanner = (props) => {
     );
   };
 
+  if (remove) {
+    return null;
+  }
+
   return (
-    <div className={css(styles.column)}>
+    <div
+      className={css(styles.column, remove && styles.remove)}
+      onClick={onBannerClick}
+    >
+      <span className={css(styles.closeButton)} onClick={onClose}>
+        {icons.times}
+      </span>
       <div className={css(styles.banner)}>
         <div className={css(styles.contentContainer)}>
           <h1 className={css(styles.title)}>{renderTitle()}</h1>
-          {renderButton()}
+          <div ref={buttonRef}>{renderButton()}</div>
         </div>
         <img
           draggable={false}
@@ -89,6 +136,22 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+    position: "relative",
+    cursor: "pointer",
+  },
+  remove: {
+    display: "none",
+  },
+  closeButton: {
+    position: "absolute",
+    fontSize: 18,
+    top: 10,
+    right: 20,
+    color: "#fff",
+    cursor: "pointer",
+    ":hover": {
+      color: "#FAFAFA",
+    },
   },
   banner: {
     display: "flex",
