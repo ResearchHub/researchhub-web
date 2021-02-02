@@ -124,8 +124,16 @@ const PaperEntryCard = (props) => {
   }
 
   function renderUploadedBy() {
+    return (
+      <div className={css(styles.uploadedBy)}>
+        Published on{" "}
+        {/* <span className={css(styles.capitalize)}>{external_source}</span> */}
+        <span className={css(styles.capitalize)}>Arxiv</span>
+      </div>
+    );
+
     if (uploaded_by) {
-      let {
+      const {
         first_name,
         last_name,
         profile_image,
@@ -466,6 +474,19 @@ const PaperEntryCard = (props) => {
   };
 
   const renderPaperTitle = () => {
+    return (
+      <div className={css(styles.metadataContainer, styles.authorContainer)}>
+        <div
+          className={
+            css(styles.metadataClamp, styles.metadata, styles.removeMargin) +
+            " clamp1"
+          }
+        >
+          From Paper: Poncelet-Darboux, Kippenhahn, and Szegő: interactions
+          between projective geometry, matrices and orthogonal polynomials
+        </div>
+      </div>
+    );
     if (paper_title && title !== paper_title) {
       return (
         <div className={css(styles.metadataContainer, styles.authorContainer)}>
@@ -584,7 +605,7 @@ const PaperEntryCard = (props) => {
             e.stopPropagation();
           }}
         >
-          <div className={css(styles.title)}>{title && title}</div>
+          <span className={css(styles.title)}>{title && title}</span>
         </a>
       </Link>
     );
@@ -926,7 +947,8 @@ const styles = StyleSheet.create({
   bullet: {
     margin: 0,
     padding: 0,
-    fontSize: 14.5,
+    // fontSize: 14.5,
+    fontSize: 14,
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
@@ -949,8 +971,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     cursor: "pointer",
+    whiteSpace: "pre-wrap",
+    fontSize: 14,
+    color: colors.BLACK(0.8),
+    // fontWeight: 500,
     ":hover": {
-      color: colors.BLUE(),
+      // color: colors.BLUE(),
       opacity: 0.8,
     },
     "@media only screen and (max-width: 767px)": {
