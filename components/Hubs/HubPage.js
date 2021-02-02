@@ -40,7 +40,6 @@ import { getFragmentParameterByName } from "~/config/utils";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import Button from "../Form/Button";
-import { AUTH_TOKEN } from "../../config/constants";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -566,10 +565,10 @@ class HubPage extends React.Component {
     updateSubscribedHubs(subscribedHubs);
   };
 
-  onSubscribe = () => {
+  onSubscribe = (name = "") => {
     const { showMessage, setMessage } = this.props;
     this.updateSubscription(true);
-    setMessage("Subscribed!");
+    setMessage(`Joined ${name}`);
     showMessage({ show: true });
     this.setState({
       transition: false,
@@ -577,10 +576,10 @@ class HubPage extends React.Component {
     });
   };
 
-  onUnsubscribe = () => {
+  onUnsubscribe = (name = "") => {
     const { showMessage, setMessage } = this.props;
     this.updateSubscription(false);
-    setMessage("Unsubscribed!");
+    setMessage(`Left ${name}`);
     showMessage({ show: true });
     this.setState({
       transition: false,

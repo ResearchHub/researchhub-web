@@ -22,7 +22,7 @@ import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { HubActions } from "~/redux/hub";
 import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
-import { doesNotExist, isEmpty } from "~/config/utils";
+import { doesNotExist, isEmpty, capitalize } from "~/config/utils";
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
 import "./stylesheets/toggle.css";
@@ -304,7 +304,7 @@ class UserSettings extends Component {
             inputStyle={(selectStyles.input, styles.formSelectInput)}
             onChange={this.handleHubOnChange}
             isSearchable={true}
-            placeholder={"Join a hub"}
+            placeholder={"Search Hubs"}
             value={this.buildHubOptions(this.props.subscribedHubs)}
             isMulti={true}
             multiTagStyle={styles.multiTagStyle}
@@ -322,7 +322,7 @@ class UserSettings extends Component {
             className={css(styles.unsubscribeButton)}
             onClick={this.confirmUnsubscribeAll}
           >
-            Leave all hubs
+            Leave All
           </div>
         </div>
       </div>
@@ -346,23 +346,24 @@ class UserSettings extends Component {
     this.props.alert.show({
       text: (
         <span>
-          Unsubscribe from
+          Leave from
           <span className={css(styles.hubName)}>{` ${hub.name} `}</span>?
         </span>
       ),
       buttonText: "Yes",
       onClick: () => {
-        return this.handleHubUnsubscribe(hub.id, newState);
+        return this.handleHubUnsubscribe(hub, newState);
       },
     });
   };
 
-  handleHubUnsubscribe = (hubId, newState) => {
-    const { hubState } = this.props;
+  handleHubUnsubscribe = (hub, newState) => {
+    const hubId = hub.id;
+    const hubName = capitalize(hub.name);
     unsubscribeFromHub({ hubId })
       .then((res) => {
         this.props.dispatch(HubActions.updateSubscribedHubs(newState));
-        this.props.dispatch(MessageActions.setMessage("Unsubscribed!"));
+        this.props.dispatch(MessageActions.setMessage(`Left ${hubName}!`));
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
       .catch(this.displayError);
@@ -370,7 +371,7 @@ class UserSettings extends Component {
 
   confirmUnsubscribeAll = () => {
     this.props.alert.show({
-      text: <span>Unsubscribe from all hubs?</span>,
+      text: <span>Leave from all your hubs?</span>,
       buttonText: "Yes",
       onClick: () => {
         return this.unsubscribeFromAll();
@@ -388,39 +389,13 @@ class UserSettings extends Component {
       .then((_) => {
         this.props.dispatch(HubActions.updateSubscribedHubs([]));
         this.props.dispatch(MessageActions.showMessage({ show: false }));
-        this.props.dispatch(
-          MessageActions.setMessage("Unsubscribed from all!")
-        );
-        this.props.dispatch(MessageActions.showMessage({ show: true }));
+        // this.props.dispatch(
+        //   MessageActions.setMessage("Successfully left all hubs!")
+        // );
+        // this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
       .catch(this.displayError);
   };
-
-  renderHubSelect() {
-    const subscribedHubIds = this.props.user.subscribed
-      ? this.props.user.subscribed
-      : this.props.subscribedHubs.map((hub) => hub.id);
-    const availableHubs = this.props.hubs.filter((hub) => {
-      return !subscribedHubIds.includes(hub.id);
-    });
-    return (
-      <div className={css(styles.container)}>
-        <div className={css(styles.listLabel)} id={"hubListTitle"}>
-          {"Available Hubs"}
-        </div>
-        <FormSelect
-          id={"hubSelect"}
-          options={this.buildHubOptions(availableHubs)}
-          containerStyle={(selectStyles.container, styles.formSelectContainer)}
-          inputStyle={(selectStyles.input, styles.formSelectInput)}
-          onChange={this.handleHubSubscribe}
-          isSearchable={true}
-          placeholder={"Subscribe to a hub"}
-        />
-      </div>
-    );
-  }
-
   buildHubOptions = (hubs) => {
     return (
       hubs &&
@@ -461,11 +436,13 @@ class UserSettings extends Component {
   };
 
   handleHubSubscribe = (hub, newState) => {
+    const hubName = capitalize(hub.name);
+
     subscribeToHub({ hubId: hub.id })
-      .then((res) => {
+      .then((_) => {
         // this.props.dispatch(HubActions.updateHub(hubState, { ...res }));
         this.props.dispatch(HubActions.updateSubscribedHubs(newState));
-        this.props.dispatch(MessageActions.setMessage("Subscribed!"));
+        this.props.dispatch(MessageActions.setMessage(`Joined ${hubName}`));
         this.props.dispatch(MessageActions.showMessage({ show: true }));
       })
       .catch(this.displayError);

@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Ripples from "react-ripples";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
