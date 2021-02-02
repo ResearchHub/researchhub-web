@@ -75,3 +75,7 @@ export function getBountyAmount({ type, paper }) {
     return paper.bullet_low_quality;
   }
 }
+
+export function capitalize(str) {
+  return str.replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+}
