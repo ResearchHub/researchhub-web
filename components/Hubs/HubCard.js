@@ -184,10 +184,10 @@ class HubCard extends React.Component {
       buttonStyle = this.state.subscribeHover
         ? styles.unsubscribeButton
         : styles.subscribed;
-      buttonLabel = this.state.subscribeHover ? "Unsubscribe" : "Subscribed";
+      buttonLabel = this.state.subscribeHover ? "Leave" : "Joined";
     } else {
       buttonStyle = styles.subscribeButton;
-      buttonLabel = "Subscribe";
+      buttonLabel = "Join";
     }
     return (
       <button

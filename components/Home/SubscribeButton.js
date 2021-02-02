@@ -49,10 +49,10 @@ const SubscribeButton = (props) => {
 
   const formatText = () => {
     if (subscribe) {
-      return hover ? "Unsubscribe" : <span>Subscribed {icons.starFilled}</span>;
+      return hover ? "Leave" : <span>Joined</span>;
     }
 
-    return "Subscribe";
+    return "Join";
   };
 
   const formatButtonProps = () => {
@@ -63,6 +63,7 @@ const SubscribeButton = (props) => {
     if (subscribe) {
       buttonProps.className = css(
         styles.subscribe,
+        styles.subscribed,
         hover && styles.subscribeHover
       );
       buttonProps.onMouseEnter = onMouseEnterSubscribe;
@@ -95,13 +96,12 @@ const SubscribeButton = (props) => {
 
 const styles = StyleSheet.create({
   subscribe: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 500,
     letterSpacing: 0.7,
-    width: 120,
+    width: 100,
     height: 37,
     boxSizing: "border-box",
-    // padding: "5px 15px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -120,6 +120,15 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 801px)": {
       width: "100%",
+    },
+  },
+  subscribed: {
+    backgroundColor: "#fff",
+    color: colors.BLUE(),
+    border: `1.5px solid ${colors.BLUE()}`,
+    ":hover": {
+      color: "#FFF",
+      backgroundColor: colors.BLUE(),
     },
   },
   subscribeHover: {
