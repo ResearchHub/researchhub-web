@@ -932,6 +932,8 @@ var styles = StyleSheet.create({
     position: "relative",
   },
   bannerContainer: {
+    dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    marginBottom: 10,
     "@media only screen and (min-width: 800px)": {
       paddingTop: 25,
     },
@@ -1047,74 +1049,6 @@ var styles = StyleSheet.create({
       justifyContent: "flex-start",
       alignItems: "center",
       paddingBottom: 20,
-    },
-  },
-  dropDown: {
-    width: 140,
-    margin: 0,
-    minHeight: "unset",
-    fontSize: 14,
-    "@media only screen and (max-width: 1343px)": {
-      height: "unset",
-    },
-    "@media only screen and (max-width: 1149px)": {
-      width: 150,
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 779px)": {
-      width: "calc(50% - 5px)",
-      fontSize: 14,
-    },
-  },
-  dropDownLeft: {
-    width: 140,
-    margin: 0,
-    minHeight: "unset",
-    fontSize: 14,
-    marginRight: 10,
-    "@media only screen and (max-width: 1343px)": {
-      height: "unset",
-    },
-    "@media only screen and (max-width: 1149px)": {
-      width: 150,
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 779px)": {
-      width: "calc(50% - 5px)",
-    },
-  },
-  inputContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 779px)": {
-      flexDirection: "column",
-      alignItems: "flex-end",
-    },
-  },
-  hubInputContainer: {
-    width: "100%",
-    marginTop: 16,
-  },
-  homeInputContainer: {
-    justifyContent: "flex-end",
-
-    "@media only screen and (max-width: 799px)": {
-      width: "100%",
-      marginTop: 16,
-    },
-  },
-  smallerInputContainer: {
-    width: "unset",
-  },
-  inputs: {
-    "@media only screen and (max-width: 779px)": {
-      width: "100%",
-      justifyContent: "flex-end",
-      alignItems: "center",
     },
   },
   /**
