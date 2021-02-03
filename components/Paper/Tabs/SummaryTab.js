@@ -199,7 +199,7 @@ class SummaryTab extends React.Component {
   };
 
   submitAbstract = () => {
-    const { paper, setMessage, showMessage } = this.props;
+    const { paper, setMessage, showMessage, updatePaperState } = this.props;
     showMessage({ show: true, load: true });
     let body = {
       abstract: this.state.abstract,
@@ -216,9 +216,15 @@ class SummaryTab extends React.Component {
             return showMessage({ show: false });
           }
         }
+        const updatedPaper = {
+          ...this.props.paper,
+          abstract: this.state.abstract,
+        };
+        updatePaperState && updatePaperState(updatedPaper);
         showMessage({ show: false });
         setMessage("Abstract successfully edited.");
         showMessage({ show: true });
+
         this.setState({ editAbstract: false });
       })
       .catch((err) => {
@@ -443,7 +449,7 @@ class SummaryTab extends React.Component {
       } else {
         return (
           <div className={css(styles.centerColumn)}>
-            <div className={css(styles.box) + " second-step"}>
+            <div className={css(styles.box, styles.emptyStateSummary)}>
               <div className={css(styles.icon)}>{icons.file}</div>
               <h2 className={css(styles.noSummaryTitle)}>
                 Add an abstract to this paper
@@ -1161,7 +1167,6 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getEditHistory: PaperActions.getEditHistory,
   patchPaper: PaperActions.patchPaper,
-  // updateRedux: PaperActions.updatePaperState,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
