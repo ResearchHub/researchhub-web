@@ -727,8 +727,10 @@ class HubPage extends React.Component {
                               isLink={
                                 loggedIn
                                   ? {
-                                      href: "/user/[authorId]/onboard",
-                                      linkAs: `/user/${auth.user.author_profile.id}/onboard`,
+                                      href: `/user/${auth.user.author_profile.id}/onboard`,
+                                      query: {
+                                        selectHubs: true,
+                                      },
                                     }
                                   : {
                                       href: "/all",
