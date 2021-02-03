@@ -76,10 +76,8 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.8),
     fontWeight: 500,
     ":hover": {
-      // borderColor: colors.BLUE(1),
       color: colors.BLUE(1),
       backgroundColor: "#edeefe",
-      // backgroundColor: colors.NEW_BLUE(0.1)
     },
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
@@ -90,11 +88,10 @@ const styles = StyleSheet.create({
       height: "unset",
     },
   },
-  // space: {
-  //   width: 10,
-  // },
   label: {
     cursor: "pointer",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   hubImage: {
     height: 20,
@@ -138,6 +135,7 @@ const styles = StyleSheet.create({
   atag: {
     color: "unset",
     textDecoration: "unset",
+    maxWidth: 150,
   },
 });
 
