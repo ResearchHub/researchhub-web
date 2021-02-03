@@ -371,7 +371,7 @@ class UserSettings extends Component {
 
   confirmUnsubscribeAll = () => {
     this.props.alert.show({
-      text: <span>Leave from all your hubs?</span>,
+      text: <span>Leave from all your hub communities?</span>,
       buttonText: "Yes",
       onClick: () => {
         return this.unsubscribeFromAll();
