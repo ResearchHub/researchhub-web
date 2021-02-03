@@ -873,9 +873,7 @@ var styles = StyleSheet.create({
       paddingLeft: 30,
       paddingRight: 50,
     },
-    "@media only screen and (min-width: 800px)": {
-      paddingTop: 25,
-    },
+
     "@media only screen and (max-width: 577px)": {
       paddingLeft: 40,
       paddingRight: 40,
