@@ -14,6 +14,7 @@ import Button from "../Form/Button";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import { sendAmpEvent } from "~/config/fetch";
 
 const removeUserBanner = () => {
   const cookies = parseCookies();
@@ -58,8 +59,25 @@ const CreateFeedBanner = (props) => {
 
   const onBannerClick = (e) => {
     e && e.stopPropagation();
+    handleAmpEvent();
+
     const button = buttonRef.current.children[0].children[0];
     button && button.click();
+  };
+
+  const handleAmpEvent = () => {
+    const { auth } = props;
+
+    const PAYLOAD = {
+      event_type: "click_create_feed_banner",
+      time: +new Date(),
+      user_id: auth.user ? auth.user.id && auth.user.id : null,
+      event_properties: {
+        interaction: auth.isLoggedIn ? "Create Own Feed" : "Sign In",
+      },
+    };
+
+    sendAmpEvent(PAYLOAD);
   };
 
   const renderTitle = () => {
