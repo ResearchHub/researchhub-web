@@ -6,9 +6,9 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const OnboardHub = (props) => {
-  const { id, name, hub_image } = props.hub;
-
-  const [subscribed, setSubscribed] = useState(false);
+  const { userHubIds, hub } = props;
+  const { id, name, hub_image } = hub;
+  const [subscribed, setSubscribed] = useState(userHubIds[id] && true);
 
   const handleClick = (e) => {
     let state = !subscribed;
