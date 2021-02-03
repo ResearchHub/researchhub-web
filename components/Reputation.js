@@ -68,12 +68,21 @@ const styles = StyleSheet.create({
     marginRight: 8,
     minWidth: 18.5,
     textAlign: "right",
+    "@media only screen and (max-width: 900px)": {
+      fontSize: 14,
+      marginRight: 5,
+    },
   },
   blur: {
     filter: "blur(2px)",
   },
   coinIcon: {
     height: 25,
+    borderRadius: "50%",
+    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    "@media only screen and (max-width: 900px)": {
+      height: 20,
+    },
   },
 });
 

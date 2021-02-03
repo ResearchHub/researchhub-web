@@ -456,7 +456,7 @@ const Navbar = (props) => {
                 >
                   <AuthorAvatar
                     author={user.author_profile}
-                    size={34}
+                    size={33}
                     textSizeRatio={2.5}
                     disableLink={true}
                     showModeratorBadge={user && user.moderator}
@@ -606,9 +606,9 @@ const styles = StyleSheet.create({
     },
   },
   buttonLeft: {
-    marginLeft: 35,
+    marginRight: 16,
     "@media only screen and (min-width: 1024px)": {
-      marginLeft: 70,
+      marginLeft: 20,
       marginRight: 16,
     },
   },
@@ -697,11 +697,11 @@ const styles = StyleSheet.create({
     },
   },
   tab: {
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 15,
+    marginRight: 15,
     cursor: "pointer",
-    "@media only screen and (max-width: 840px)": {
-      margin: "0 15px 0 15px",
+    "@media only screen and (max-width: 900px)": {
+      margin: "0 10px 0 10px",
       fontSize: 14,
     },
   },
@@ -714,13 +714,12 @@ const styles = StyleSheet.create({
     color: "#aaa",
   },
   userDropdown: {
-    marginRight: 16,
     position: "relative",
     zIndex: 5,
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
-    width: 210,
+    // width: 210,
   },
   addPaperButton: {
     width: "100%",
@@ -907,7 +906,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   notification: {
-    marginLeft: 16,
+    marginLeft: 15,
+    marginnRight: 15,
+    "@media only screen and (max-width: 900px)": {
+      marginLeft: 10,
+    },
   },
   searchDropdown: {
     width: "150%",
