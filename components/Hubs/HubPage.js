@@ -920,10 +920,9 @@ var styles = StyleSheet.create({
   },
   bannerContainer: {
     dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
-    marginBottom: 10,
-    "@media only screen and (min-width: 800px)": {
-      paddingTop: 25,
-    },
+    // "@media only screen and (min-width: 800px)": {
+    //   paddingTop: 25,
+    // },
     "@media only screen and (max-width: 415px)": {
       padding: 0,
       width: "100%",
@@ -1045,6 +1044,7 @@ var styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
+    marginTop: 10,
     paddingBottom: 30,
   },
   blur: {
@@ -1162,7 +1162,7 @@ var styles = StyleSheet.create({
   },
   leaderboard: {
     display: "none",
-    background: "#FCFCFC",
+    // background: "#FCFCFC",
     "@media only screen and (min-width: 900px)": {
       display: "block",
       width: "20%",

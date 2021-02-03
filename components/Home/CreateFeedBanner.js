@@ -52,7 +52,7 @@ const CreateFeedBanner = (props) => {
   const onClose = (e) => {
     e && e.stopPropagation();
     setCookie(null, "bannerPref", "false");
-    // localStorage.setItem("researchhub.banner.pref", "false");
+    localStorage.setItem("researchhub.banner.pref", "false");
     setRemove(true);
   };
 
