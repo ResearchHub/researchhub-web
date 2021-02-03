@@ -942,6 +942,7 @@ var styles = StyleSheet.create({
   },
   sampleFeed: {
     height: "calc(100vh - 420px)",
+    minHeight: 600,
     overflow: "hidden",
   },
   banner: {
