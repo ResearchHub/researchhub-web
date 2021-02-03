@@ -31,13 +31,33 @@ Index.getInitialProps = async (ctx) => {
     hubId: 0,
   };
 
+  if (filter === "pulled-papers") {
+    PARAMS.ordering = "hot";
+    PARAMS.externalSearch = "True";
+  }
+
   try {
     const initialFeed = await fetchPaperFeed(PARAMS);
 
-    const filterObj = filterOptions.filter(
+    const scopeObj = scopeOptions.filter((el) => el.value === scope)[0];
+
+    let filterObj = filterOptions.filter(
       (el) => el.value === slugToFilterQuery(filter)
     )[0];
-    const scopeObj = scopeOptions.filter((el) => el.value === scope)[0];
+
+    if (filter === "pulled-papers") {
+      filterObj = {
+        value: "pulled-papers",
+        href: "pulled-papers",
+        label: "Pulled Papers",
+      };
+    } else if (filter === "removed") {
+      filterObj = {
+        value: "removed",
+        label: "Removed",
+        href: "removed",
+      };
+    }
 
     return {
       initialFeed,

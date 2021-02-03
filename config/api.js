@@ -359,6 +359,7 @@ const routes = (BASE_URL) => {
       page = 1,
       slug,
       subscribedHubs,
+      externalSearch,
     }) => {
       let url = BASE_URL + `paper/get_hub_papers/`;
       let params = {
@@ -370,6 +371,7 @@ const routes = (BASE_URL) => {
           ordering,
           hub_id: hubId,
           subscribed_hubs: subscribedHubs,
+          external_search: externalSearch,
         },
       };
       url = prepURL(url, params);
