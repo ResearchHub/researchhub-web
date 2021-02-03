@@ -61,7 +61,7 @@ const Index = (props) => {
 
   const formatStep = () => {
     if (onlyHubSelection) {
-      return "Step 1: Select Hubs for topics you're interested in";
+      return "Select Hubs for topics you're interested in";
     }
 
     switch (page) {
