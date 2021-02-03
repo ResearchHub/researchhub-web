@@ -634,6 +634,8 @@ class HubPage extends React.Component {
 
     const sampleFeed =
       this.state.feedType !== "subscribed" && this.state.feed === 0;
+
+    console.log("feed", this.state.feedType);
     const hasSubscribed = process.browser
       ? auth.authChecked
         ? hubState.subscribedHubs.length > 0
@@ -722,12 +724,21 @@ class HubPage extends React.Component {
                           <Fragment>
                             <div className={css(styles.blur)} />
                             <Button
-                              isLink={{
-                                href: "/all",
-                                linkAs: "/all",
-                              }}
+                              isLink={
+                                loggedIn
+                                  ? {
+                                      href: "/user/[authorId]/onboard",
+                                      linkAs: `/user/${auth.user.author_profile.id}/onboard`,
+                                    }
+                                  : {
+                                      href: "/all",
+                                      linkAs: "/all",
+                                    }
+                              }
                               hideRipples={true}
-                              label={"View All Hubs"}
+                              label={
+                                loggedIn ? "Create Your Feed" : "View All Hubs"
+                              }
                               customButtonStyle={styles.allFeedButton}
                             />
                           </Fragment>
@@ -879,6 +890,10 @@ var styles = StyleSheet.create({
     transform: "translateX(-50%)",
     zIndex: 3,
     cursor: "pointer",
+    boxSizing: "border-box",
+    width: "unset",
+    padding: "0px 15px",
+    boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
   },
   sidebar: {
     // display: "flex",
@@ -920,9 +935,6 @@ var styles = StyleSheet.create({
   },
   bannerContainer: {
     dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
-    // "@media only screen and (min-width: 800px)": {
-    //   paddingTop: 25,
-    // },
     "@media only screen and (max-width: 415px)": {
       padding: 0,
       width: "100%",
