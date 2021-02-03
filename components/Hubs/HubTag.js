@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
   atag: {
     color: "unset",
     textDecoration: "unset",
-    maxWidth: 150,
   },
 });
 

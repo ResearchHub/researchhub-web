@@ -380,7 +380,9 @@ const PaperEntryCard = (props) => {
                   tag={tag}
                   hubName={hubName}
                   last={index === hubs.length - 1}
-                  labelStyle={styles.hubLabel}
+                  labelStyle={
+                    hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+                  }
                 />
               )
           )}
@@ -881,7 +883,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       margin: 0,
       padding: 0,
-      width: "max-content",
+      width: "fit-content",
     },
   },
   row: {
@@ -933,6 +935,13 @@ const styles = StyleSheet.create({
     },
   },
   hubLabel: {
+    "@media only screen and (max-width: 415px)": {
+      maxWidth: 60,
+      flexWrap: "unset",
+    },
+  },
+  smallerHubLabel: {
+    maxWidth: 150,
     "@media only screen and (max-width: 415px)": {
       maxWidth: 60,
       flexWrap: "unset",
