@@ -333,7 +333,7 @@ const routes = (BASE_URL) => {
       }
 
       if (search) {
-        url += `search=${search}&`;
+        url += `name__fuzzy=${search}&`;
       }
 
       if (!doesNotExist(pageLimit)) {
