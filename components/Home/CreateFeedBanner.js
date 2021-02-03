@@ -67,7 +67,7 @@ const CreateFeedBanner = (props) => {
 
     return auth.isLoggedIn
       ? "Follow the research you care about. Create your personalized feed."
-      : "Sign up to follow the research you care about.";
+      : "Sign in to follow the research you care about.";
   };
 
   const renderButton = () => {
