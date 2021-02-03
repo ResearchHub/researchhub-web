@@ -105,14 +105,14 @@ const routes = (BASE_URL) => {
     GOOGLE_YOLO: BASE_URL + "auth/google/yolo/",
     ORCID_CONNECT: BASE_URL + "auth/orcid/connect/",
     SIGNOUT: BASE_URL + "auth/logout/",
-    SEARCH: ({ search, config, page, size, external_search = true }) => {
+    SEARCH: ({ search, config, page, size, external_source = true }) => {
       let url = BASE_URL + "search/";
       let params = {
         querystring: {
           search,
           page,
           size,
-          external_search,
+          external_source,
         },
         rest: {
           route: config.route,
@@ -359,7 +359,7 @@ const routes = (BASE_URL) => {
       page = 1,
       slug,
       subscribedHubs,
-      externalSearch,
+      externalSource,
     }) => {
       let url = BASE_URL + `paper/get_hub_papers/`;
       let params = {
@@ -371,7 +371,7 @@ const routes = (BASE_URL) => {
           ordering,
           hub_id: hubId,
           subscribed_hubs: subscribedHubs,
-          external_search: externalSearch,
+          external_source: externalSource,
         },
       };
       url = prepURL(url, params);

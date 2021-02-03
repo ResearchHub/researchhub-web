@@ -274,7 +274,7 @@ class HubPage extends React.Component {
     }
 
     if (filterBy.value === "pulled-papers") {
-      PARAMS.externalSearch = "True";
+      PARAMS.externalSource = "True";
       PARAMS.ordering = "hot";
     }
 

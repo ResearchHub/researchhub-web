@@ -33,7 +33,7 @@ Index.getInitialProps = async (ctx) => {
 
   if (filter === "pulled-papers") {
     PARAMS.ordering = "hot";
-    PARAMS.externalSearch = "True";
+    PARAMS.externalSource = "True";
   }
 
   try {
