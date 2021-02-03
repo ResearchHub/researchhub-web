@@ -118,7 +118,6 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     const { isLoggedIn, initialFeed, hubState } = this.props;
-    console.log("this.props", this.props);
     if (initialFeed) {
       this.detectPromoted(this.state.papers);
     } else {
@@ -635,7 +634,6 @@ class HubPage extends React.Component {
     const sampleFeed =
       this.state.feedType !== "subscribed" && this.state.feed === 0;
 
-    console.log("feed", this.state.feedType);
     const hasSubscribed = process.browser
       ? auth.authChecked
         ? hubState.subscribedHubs.length > 0
