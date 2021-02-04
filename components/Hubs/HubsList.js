@@ -30,7 +30,7 @@ class HubsList extends React.Component {
   }
 
   componentDidMount() {
-    let { auth } = this.props;
+    const { auth } = this.props;
     if (this.props.hubs.length) {
       this.setState({ hubs: [...this.props.hubs] });
     }
@@ -80,7 +80,7 @@ class HubsList extends React.Component {
   updateTopHubs = (state) => {
     let hubState = this.props.hubState;
     if (this.props.auth.isLoggedIn) {
-      let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
+      let subscribed = hubState.subscribedHubs || [];
       let subscribedHubs = {};
       subscribed.forEach((hub) => {
         subscribedHubs[hub.id] = true;
@@ -110,13 +110,7 @@ class HubsList extends React.Component {
 
   renderHubEntry = () => {
     const selectedHubs = this.state.hubs.slice(0, 5);
-    const subscribed = this.props.hubState.subscribedHubs
-      ? this.props.hubState.subscribedHubs
-      : [];
-    const subscribedHubs = {};
-    subscribed.forEach((hub) => {
-      subscribedHubs[hub.id] = true;
-    });
+
     return selectedHubs.map((hub, i) => {
       const { name, id, hub_image } = hub;
       return (
@@ -150,11 +144,6 @@ class HubsList extends React.Component {
                 alt={hub.name}
               />
               <span className={"clamp1"}>{name}</span>
-              {subscribedHubs[hub.id] && (
-                <span className={css(styles.subscribedIcon)}>
-                  {icons.starFilled}
-                </span>
-              )}
             </a>
           </Link>
         </Ripples>
@@ -168,7 +157,7 @@ class HubsList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <h5 className={css(styles.listLabel)}>Recommended</h5>
+          <h5 className={css(styles.listLabel)}>Trending</h5>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
@@ -248,6 +237,16 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #F0F0F0",
     borderLeft: "3px solid #FFF",
     ":hover": {
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+      backgroundColor: "#FAFAFA",
+    },
+    ":active": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+    ":focus": {
       color: colors.NEW_BLUE(),
       background:
         "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",

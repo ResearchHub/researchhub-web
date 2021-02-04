@@ -131,11 +131,6 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     marginBottom: 10,
   },
-  topIcon: {
-    color: colors.RED(),
-    marginLeft: 6,
-    fontSize: 13,
-  },
   listItem: {
     fontSize: 16,
     fontWeight: 300,
@@ -154,6 +149,18 @@ const styles = StyleSheet.create({
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: "#FAFAFA",
+    },
+    ":active": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+    ":focus": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
   activeListItem: {
@@ -191,7 +198,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 22,
-    marginRight: 10,
+    marginRight: 12,
+    marginLeft: 8,
     opacity: 1,
   },
   hubsList: {
@@ -207,9 +215,8 @@ const styles = StyleSheet.create({
     opacity: 1,
   },
   rhIcon: {
-    // height: 30,
     width: 15,
-    marginLeft: 5,
+    marginLeft: 4,
     marginRight: 2,
   },
   space: {
@@ -220,18 +227,6 @@ const styles = StyleSheet.create({
     color: colors.DARK_YELLOW(),
     fontSize: 11,
   },
-  // link: {
-  //   textDecoration: "none",
-  //   color: "rgba(78, 83, 255)",
-  //   fontWeight: 300,
-  //   textTransform: "capitalize",
-  //   fontSize: 16,
-  //   marginTop: 20,
-  //   ":hover": {
-  //     color: "rgba(78, 83, 255, .5)",
-  //     textDecoration: "underline",
-  //   },
-  // },
 });
 
 const mapStateToProps = (state) => ({

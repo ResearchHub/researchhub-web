@@ -8,7 +8,6 @@ import { withAlert } from "react-alert";
 // Component
 
 // Redux
-import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
@@ -16,6 +15,7 @@ import { HubActions } from "~/redux/hub";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { capitalize } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
@@ -81,9 +81,8 @@ class HubCard extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
+            const hubName = capitalize(hub.name);
             this.updateSubscription(false);
-            setMessage("Unsubscribed!");
-            showMessage({ show: true });
             this.setState((state, props) => {
               return {
                 transition: false,
@@ -104,8 +103,9 @@ class HubCard extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
+            const hubName = capitalize(hub.name);
             this.updateSubscription(true);
-            setMessage("Subscribed!");
+            setMessage(`Joined ${hubName}!`);
             showMessage({ show: true });
             this.setState((state, props) => {
               return {
@@ -184,10 +184,10 @@ class HubCard extends React.Component {
       buttonStyle = this.state.subscribeHover
         ? styles.unsubscribeButton
         : styles.subscribed;
-      buttonLabel = this.state.subscribeHover ? "Unsubscribe" : "Subscribed";
+      buttonLabel = this.state.subscribeHover ? "Leave" : "Joined";
     } else {
       buttonStyle = styles.subscribeButton;
-      buttonLabel = "Subscribe";
+      buttonLabel = "Join";
     }
     return (
       <button

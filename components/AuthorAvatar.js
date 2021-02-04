@@ -14,6 +14,8 @@ const AuthorAvatar = (props) => {
     showModeratorBadge,
     twitterUrl,
     trueSize,
+    border,
+    dropShadow,
   } = props;
   let deviceWidth = null;
   if (process.browser) {
@@ -31,6 +33,7 @@ const AuthorAvatar = (props) => {
     if (deviceWidth < 768 && !trueSize) {
       finalSize = size - 5;
     }
+
     return (
       <>
         {author && author.profile_image && !error ? (
@@ -45,7 +48,8 @@ const AuthorAvatar = (props) => {
               maxHeight: finalSize,
               objectFit: "cover",
               borderRadius: "50%",
-              border: "3px solid #F1F1F1",
+              border: border ? border : "3px solid #F1F1F1",
+              boxShadow: dropShadow && "0px 2px 4px rgba(185, 185, 185, 0.25)",
             }}
             onError={(e) => {
               setError(true);

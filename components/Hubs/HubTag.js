@@ -6,7 +6,7 @@ import Ripples from "react-ripples";
 import { nameToUrl } from "~/config/constants";
 
 const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
-  let { id, name, link, slug } = tag;
+  let { id, name, hub_image, link, slug } = tag;
   const nameArr = (name && name.split(" ")) || [];
 
   if (name === hubName) {
@@ -31,13 +31,24 @@ const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
                   overrideStyle && overrideStyle
                 )}
               >
+                <img
+                  className={css(styles.hubImage) + " hubImage"}
+                  src={
+                    hub_image
+                      ? hub_image
+                      : "/static/background/hub-placeholder.svg"
+                  }
+                  alt={name}
+                />
                 <span
                   className={
                     css(
                       styles.label,
                       gray && styles.grayLabel,
                       labelStyle && labelStyle
-                    ) + " clamp1"
+                    ) +
+                    " clamp1" +
+                    " hubLabel"
                   }
                 >
                   {name && name}
@@ -57,33 +68,56 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#edeefe",
     borderRadius: 3,
-    padding: "5px 10px 5px 10px",
+    padding: "5px 8px",
     cursor: "pointer",
-    border: "1px solid #FFF",
-    fontSize: 10,
-    color: colors.BLUE(1),
-    textTransform: "uppercase",
-    fontWeight: "bold",
-    letterSpacing: 1,
+    textTransform: "capitalize",
+    fontSize: 14,
+    color: colors.BLACK(0.8),
+    fontWeight: 500,
     ":hover": {
-      borderColor: colors.BLUE(1),
+      color: colors.BLUE(1),
+      backgroundColor: "#edeefe",
     },
-
     "@media only screen and (max-width: 767px)": {
-      marginBottom: 8,
+      fontSize: 13,
     },
     "@media only screen and (max-width: 415px)": {
-      fontSize: 8,
+      fontSize: 12,
       padding: "3px 6px",
       height: "unset",
     },
   },
-  space: {
-    width: 10,
+  label: {
+    cursor: "pointer",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
-  label: {},
+  hubImage: {
+    height: 20,
+    width: 20,
+    minWidth: 20,
+    minHeight: 20,
+    marginRight: 6,
+    objectFit: "cover",
+    borderRadius: 3,
+    dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    opacity: 1,
+    "@media only screen and (max-width: 767px)": {
+      height: 18,
+      width: 18,
+      minWidth: 18,
+      minHeight: 18,
+      marginRight: 5,
+    },
+    "@media only screen and (max-width: 415px)": {
+      height: 15,
+      width: 15,
+      minWidth: 15,
+      minHeight: 15,
+      marginRight: 4,
+    },
+  },
   grayTag: {
     backgroundColor: "rgba(36, 31, 58, 0.03)",
     border: "1px solid rgba(36, 31, 58, 0.1)",

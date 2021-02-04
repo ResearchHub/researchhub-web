@@ -291,7 +291,7 @@ const DiscussionTab = (props) => {
           <Fragment>
             <span className={css(styles.icon)}>{icons.comments}</span>
             <h2 className={css(styles.noSummaryTitle)}>
-              Add a comment to this paper
+              Ask a question for the author or community
             </h2>
             <p className={css(styles.text)}>
               Contribute a thought or post a question for this paper.
@@ -381,7 +381,7 @@ const DiscussionTab = (props) => {
                   props.calculatedCount
                 )}
               </span>
-              <div className={css(styles.tabRow)}>
+              {/* <div className={css(styles.tabRow)}>
                 <div
                   className={css(
                     styles.tab,
@@ -400,7 +400,7 @@ const DiscussionTab = (props) => {
                 >
                   Tweets
                 </div>
-              </div>
+              </div> */}
             </h3>
             {!showEditor && !showTwitterComments && renderAddDiscussion()}
           </div>
@@ -455,7 +455,7 @@ const DiscussionTab = (props) => {
         <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
           <div className={css(styles.header)}>
             <div className={css(styles.discussionTitle)}>
-              Discussions
+              Discussion
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
@@ -468,7 +468,7 @@ const DiscussionTab = (props) => {
                   props.calculatedCount
                 )}
               </span>
-              <div className={css(styles.tabRow)}>
+              {/* <div className={css(styles.tabRow)}>
                 <div
                   className={css(
                     styles.tab,
@@ -487,7 +487,7 @@ const DiscussionTab = (props) => {
                 >
                   Tweets
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           {showEditor
