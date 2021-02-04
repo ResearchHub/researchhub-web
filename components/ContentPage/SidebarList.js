@@ -16,17 +16,13 @@ class SidebarList extends React.Component {
   }
 
   render() {
-    let { overrideStyle } = this.props;
+    const { overrideStyle } = this.props;
 
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
-        <div className={css(styles.hubsListContainer)}>
-          <div className={css(styles.listLabel)} id={"hubListTitle"}>
-            {this.props.sidebarName}
-          </div>
-          <div
-            className={css(styles.hubsList, this.state.reveal && styles.reveal)}
-          >
+        <div className={css(styles.column)}>
+          <div className={css(styles.listLabel)}>{this.props.sidebarName}</div>
+          <div className={css(styles.list, this.state.reveal && styles.reveal)}>
             {this.props.sidebarItems.length > 0 ? (
               this.props.renderSidebarEntry()
             ) : (
@@ -59,7 +55,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 30,
   },
-  hubsListContainer: {
+  column: {
     height: "100%",
     width: "100%",
     display: "flex",
@@ -80,7 +76,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "left",
     color: "#a7a6b0",
-    transition: "all ease-out 0.1s",
     width: "90%",
     paddingLeft: 35,
     boxSizing: "border-box",
@@ -109,7 +104,7 @@ const styles = StyleSheet.create({
       backgroundColor: "#EAEAEA",
     },
   },
-  hubsList: {
+  list: {
     opacity: 0,
     width: "90%",
     boxSizing: "border-box",
