@@ -2,9 +2,9 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 
 import colors from "~/config/themes/colors";
-import ReactPlaceholder from "react-placeholder/lib";
 import AuthorAvatar from "../AuthorAvatar";
 import Link from "next/link";
+import numeral from "numeral";
 
 const LeaderboardUser = (props) => {
   const {
@@ -31,7 +31,9 @@ const LeaderboardUser = (props) => {
             />
             <div className={css(styles.name) + " clamp1"}>{name}</div>
             {props.extraInfo}
-            <div className={css(styles.rep, repClass)}>{reputation}</div>
+            <div className={css(styles.rep, repClass)}>
+              {numeral(reputation).format("0,0")}
+            </div>
           </div>
         </a>
       </Link>
@@ -46,13 +48,17 @@ LeaderboardUser.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    width: "100%",
+  },
   nameRow: {
     display: "flex",
     alignItems: "center",
     fontSize: 16,
+    width: "100%",
   },
   link: {
+    width: "100%",
     color: colors.BLACK(1),
     textDecoration: "none",
   },

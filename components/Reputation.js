@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import ReputationTooltip from "./ReputationTooltip";
 
 const Reputation = (props) => {
-  const { reputation, balance, showBalance, auth } = props;
+  const { reputation, balance, showBalance } = props;
   const dispatch = useDispatch();
   const [prevCount, setPrevCount] = useState(balance);
   const [count, setBalance] = useState(balance);
