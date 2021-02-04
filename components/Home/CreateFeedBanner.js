@@ -76,7 +76,7 @@ const CreateFeedBanner = (props) => {
       time: +new Date(),
       user_id: auth.user ? auth.user.id && auth.user.id : null,
       event_properties: {
-        interaction: auth.isLoggedIn ? "Create Own Feed" : "Sign In",
+        interaction: auth.isLoggedIn ? "Generate My Hubs" : "Sign In",
       },
     };
 
