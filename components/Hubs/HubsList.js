@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
@@ -213,9 +213,8 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     width: "100%",
     boxSizing: "border-box",
-    margin: 0,
-    padding: "0px 0px 0px 20px",
-    marginBottom: 10,
+    margin: "0 0 10px 0",
+    padding: "0 0 0 20px",
   },
   topIcon: {
     color: colors.RED(),
@@ -304,7 +303,7 @@ const styles = StyleSheet.create({
     fontWeight: 300,
     textTransform: "capitalize",
     fontSize: 16,
-    marginTop: 20,
+    marginTop: 15,
     paddingLeft: 20,
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
