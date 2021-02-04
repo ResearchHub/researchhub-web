@@ -52,6 +52,8 @@ const CreateFeedBanner = (props) => {
 
   const onClose = (e) => {
     e && e.stopPropagation();
+    handleAmpEvent("close");
+
     setCookie(null, "bannerPref", "false");
     localStorage.setItem("researchhub.banner.pref", "false");
     setRemove(true);
@@ -59,13 +61,13 @@ const CreateFeedBanner = (props) => {
 
   const onBannerClick = (e) => {
     e && e.stopPropagation();
-    handleAmpEvent();
+    handleAmpEvent("click");
 
     const button = buttonRef.current.children[0].children[0];
     button && button.click();
   };
 
-  const handleAmpEvent = () => {
+  const handleAmpEvent = (type) => {
     const { auth } = props;
 
     const PAYLOAD = {
@@ -76,6 +78,10 @@ const CreateFeedBanner = (props) => {
         interaction: auth.isLoggedIn ? "Create Own Feed" : "Sign In",
       },
     };
+
+    if (type == "close") {
+      PAYLOAD.event_properties.interaction = "Close Banner";
+    }
 
     sendAmpEvent(PAYLOAD);
   };
