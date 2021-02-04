@@ -6,7 +6,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import Ripples from "react-ripples";
 import * as Sentry from "@sentry/browser";
 import Router from "next/router";
-import Cookies from "js-cookie";
 
 // Component
 import FeedList from "./FeedList";
@@ -41,7 +40,6 @@ import { getFragmentParameterByName } from "~/config/utils";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import Button from "../Form/Button";
-import { AUTH_TOKEN } from "../../config/constants";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -117,7 +115,6 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     const { isLoggedIn, initialFeed, hubState } = this.props;
-
     if (initialFeed) {
       this.detectPromoted(this.state.papers);
     } else {
@@ -573,10 +570,10 @@ class HubPage extends React.Component {
     updateSubscribedHubs(subscribedHubs);
   };
 
-  onSubscribe = () => {
+  onSubscribe = (name = "") => {
     const { showMessage, setMessage } = this.props;
     this.updateSubscription(true);
-    setMessage("Subscribed!");
+    setMessage(`Joined ${name}`);
     showMessage({ show: true });
     this.setState({
       transition: false,
@@ -584,10 +581,10 @@ class HubPage extends React.Component {
     });
   };
 
-  onUnsubscribe = () => {
+  onUnsubscribe = (name = "") => {
     const { showMessage, setMessage } = this.props;
     this.updateSubscription(false);
-    setMessage("Unsubscribed!");
+    setMessage(`Left ${name}`);
     showMessage({ show: true });
     this.setState({
       transition: false,
@@ -650,6 +647,7 @@ class HubPage extends React.Component {
 
     const sampleFeed =
       this.state.feedType !== "subscribed" && this.state.feed === 0;
+
     const hasSubscribed = process.browser
       ? auth.authChecked
         ? hubState.subscribedHubs.length > 0
@@ -714,17 +712,7 @@ class HubPage extends React.Component {
                     className={css(styles.bannerContainer)}
                     id="create-feed-banner"
                   >
-                    <CreateFeedBanner
-                      message={
-                        sampleFeed
-                          ? loggedIn
-                            ? null
-                            : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                          : loggedIn
-                          ? null
-                          : "Follow areas of Research that you care about. Signup and create your personalized feed by subscribing to your hubs today."
-                      }
-                    />
+                    <CreateFeedBanner />
                   </div>
                 ) : null}
               </div>
@@ -748,12 +736,23 @@ class HubPage extends React.Component {
                           <Fragment>
                             <div className={css(styles.blur)} />
                             <Button
-                              isLink={{
-                                href: "/all",
-                                linkAs: "/all",
-                              }}
+                              isLink={
+                                loggedIn
+                                  ? {
+                                      href: `/user/${auth.user.author_profile.id}/onboard`,
+                                      query: {
+                                        selectHubs: true,
+                                      },
+                                    }
+                                  : {
+                                      href: "/all",
+                                      linkAs: "/all",
+                                    }
+                              }
                               hideRipples={true}
-                              label={"View All Hubs"}
+                              label={
+                                loggedIn ? "Generate My Hubs" : "View All Hubs"
+                              }
                               customButtonStyle={styles.allFeedButton}
                             />
                           </Fragment>
@@ -886,9 +885,7 @@ var styles = StyleSheet.create({
       paddingLeft: 30,
       paddingRight: 50,
     },
-    "@media only screen and (min-width: 800px)": {
-      paddingTop: 25,
-    },
+
     "@media only screen and (max-width: 577px)": {
       paddingLeft: 40,
       paddingRight: 40,
@@ -905,6 +902,10 @@ var styles = StyleSheet.create({
     transform: "translateX(-50%)",
     zIndex: 3,
     cursor: "pointer",
+    boxSizing: "border-box",
+    width: "unset",
+    padding: "0px 15px",
+    boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
   },
   sidebar: {
     // display: "flex",
@@ -945,9 +946,7 @@ var styles = StyleSheet.create({
     position: "relative",
   },
   bannerContainer: {
-    "@media only screen and (min-width: 800px)": {
-      paddingTop: 25,
-    },
+    dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
     "@media only screen and (max-width: 415px)": {
       padding: 0,
       width: "100%",
@@ -955,6 +954,7 @@ var styles = StyleSheet.create({
   },
   sampleFeed: {
     height: "calc(100vh - 420px)",
+    minHeight: 600,
     overflow: "hidden",
   },
   banner: {
@@ -1062,74 +1062,6 @@ var styles = StyleSheet.create({
       paddingBottom: 20,
     },
   },
-  dropDown: {
-    width: 140,
-    margin: 0,
-    minHeight: "unset",
-    fontSize: 14,
-    "@media only screen and (max-width: 1343px)": {
-      height: "unset",
-    },
-    "@media only screen and (max-width: 1149px)": {
-      width: 150,
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 779px)": {
-      width: "calc(50% - 5px)",
-      fontSize: 14,
-    },
-  },
-  dropDownLeft: {
-    width: 140,
-    margin: 0,
-    minHeight: "unset",
-    fontSize: 14,
-    marginRight: 10,
-    "@media only screen and (max-width: 1343px)": {
-      height: "unset",
-    },
-    "@media only screen and (max-width: 1149px)": {
-      width: 150,
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 779px)": {
-      width: "calc(50% - 5px)",
-    },
-  },
-  inputContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 779px)": {
-      flexDirection: "column",
-      alignItems: "flex-end",
-    },
-  },
-  hubInputContainer: {
-    width: "100%",
-    marginTop: 16,
-  },
-  homeInputContainer: {
-    justifyContent: "flex-end",
-
-    "@media only screen and (max-width: 799px)": {
-      width: "100%",
-      marginTop: 16,
-    },
-  },
-  smallerInputContainer: {
-    width: "unset",
-  },
-  inputs: {
-    "@media only screen and (max-width: 779px)": {
-      width: "100%",
-      justifyContent: "flex-end",
-      alignItems: "center",
-    },
-  },
   /**
    * INFINITE SCROLL
    */
@@ -1137,6 +1069,7 @@ var styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
+    marginTop: 10,
     paddingBottom: 30,
   },
   blur: {
@@ -1254,7 +1187,7 @@ var styles = StyleSheet.create({
   },
   leaderboard: {
     display: "none",
-    background: "#FCFCFC",
+    // background: "#FCFCFC",
     "@media only screen and (min-width: 900px)": {
       display: "block",
       width: "20%",

@@ -155,7 +155,7 @@ class SubscribedHubList extends React.Component {
         <div className={css(styles.container, overrideStyle && overrideStyle)}>
           <div className={css(styles.hubsListContainer)}>
             <h5 className={css(styles.listLabel)}>
-              <span>Your Hubs</span>
+              <span>My Hubs</span>
               <Link href={"/user/settings"} as={"/user/settings"}>
                 <a className={css(styles.link, styles.cogButton)}>
                   {icons.cog}
@@ -257,6 +257,16 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #F0F0F0",
     borderLeft: "3px solid #FFF",
     ":hover": {
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+      backgroundColor: "#FAFAFA",
+    },
+    ":active": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+    ":focus": {
       color: colors.NEW_BLUE(),
       background:
         "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",

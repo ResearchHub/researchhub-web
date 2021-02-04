@@ -268,6 +268,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(),
     },
+    "@media only screen and (max-width: 900px)": {
+      fontSize: 16,
+    },
   },
   notifCount: {
     minWidth: 10,
