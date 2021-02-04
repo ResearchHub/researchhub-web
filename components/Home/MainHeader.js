@@ -1,5 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import FormSelect from "~/components/Form/FormSelect";
+import { capitalize } from "~/config/utils";
 
 const MainHeader = (props) => {
   const {
@@ -24,24 +25,23 @@ const MainHeader = (props) => {
         styles.column,
         styles.topbar,
         titleBoxShadow && styles.titleBoxShadow,
-        home && styles.row
+        styles.row
       )}
     >
-      <h1 className={css(styles.feedTitle, home && styles.feedTitleMargin)}>
-        <span className={css(styles.fullWidth)}>
-          {title}
-          <span className={css(styles.hubName)}>{hubName}</span>
-        </span>
+      <h1 className={css(styles.feedTitle)}>
+        <span className="clamp1">{`${title} ${capitalize(hubName)}`}</span>
+        <div className={css(styles.subscribeContainer)}>
+          {hub && subscribeButton}
+        </div>
       </h1>
+
       <div
         className={css(
           styles.inputContainer,
           home ? styles.homeInputContainer : styles.hubInputContainer
         )}
       >
-        <div
-          className={css(styles.subscribeContainer, home && styles.hideBanner)}
-        >
+        <div className={css(styles.subscribeContainer, styles.mobile)}>
           {hub && subscribeButton}
         </div>
         <div className={css(styles.row, styles.inputs)}>
@@ -121,15 +121,13 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     fontWeight: 400,
     fontSize: 30,
-    flexWrap: "wrap",
-    whiteSpace: "pre-wrap",
-    width: "100%",
-    textAlign: "center",
     padding: 0,
     margin: 0,
-    "@media only screen and (min-width: 800px)": {
-      textAlign: "left",
-    },
+    // width: "max-content",
+    // "@media only screen and (min-width: 800px)": {
+    //   textAlign: "left",
+    //   paddingRight: 16,
+    // },
     "@media only screen and (max-width: 1149px)": {
       fontSize: 30,
     },
@@ -147,7 +145,7 @@ const styles = StyleSheet.create({
     marginTop: -3,
   },
   fullWidth: {
-    width: "100%",
+    display: "flex",
     boxSizing: "border-box",
   },
   titleBoxShadow: {
@@ -164,8 +162,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
-    },
-    "@media only screen and (max-width: 665px)": {
       display: "flex",
       flexDirection: "column",
       justifyContent: "flex-start",
@@ -178,6 +174,7 @@ const styles = StyleSheet.create({
     margin: 0,
     minHeight: "unset",
     fontSize: 14,
+    borderRadius: 3,
     "@media only screen and (max-width: 1343px)": {
       height: "unset",
     },
@@ -196,6 +193,7 @@ const styles = StyleSheet.create({
     minHeight: "unset",
     fontSize: 14,
     marginRight: 10,
+    borderRadius: 3,
     "@media only screen and (max-width: 1343px)": {
       height: "unset",
     },
@@ -203,7 +201,7 @@ const styles = StyleSheet.create({
       width: 150,
       fontSize: 13,
     },
-    "@media only screen and (max-width: 779px)": {
+    "@media only screen and (max-width: 767px)": {
       width: "calc(50% - 5px)",
     },
   },
@@ -214,14 +212,20 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1149px)": {
       fontSize: 13,
     },
-    "@media only screen and (max-width: 779px)": {
+    "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-end",
     },
   },
   hubInputContainer: {
-    width: "100%",
-    paddingTop: 15,
+    width: "max-content",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      marginTop: 16,
+    },
   },
   homeInputContainer: {
     justifyContent: "flex-end",
@@ -240,7 +244,6 @@ const styles = StyleSheet.create({
   },
   hubName: {
     textTransform: "capitalize",
-    marginRight: 13,
     "@media only screen and (max-width: 1343px)": {
       marginRight: 8,
     },
@@ -252,11 +255,19 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    "@media only screen and (max-width: 665px)": {
-      marginRight: 10,
+    marginLeft: 10,
+    // "@media only screen and (max-width: 665px)": {
+    //   marginRight: 10,
+    // },
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
     },
-    "@media only screen and (max-width: 799px)": {
-      marginRight: 0,
+  },
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+      margin: 0,
       width: "100%",
       justifyContent: "center",
       marginBottom: 16,
