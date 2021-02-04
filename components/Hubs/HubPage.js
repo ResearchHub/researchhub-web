@@ -73,10 +73,7 @@ class HubPage extends React.Component {
       feedType: this.props.initialFeed
         ? this.props.initialFeed.results.feed_type
         : "subscribed",
-      disableScope: this.props.filter
-        ? this.props.filter.value === "hot" ||
-          this.props.filter.value === "newest"
-        : true,
+      disableScope: this.props.filter ? this.props.filter.disableScope : true,
       feed: this.props.feed,
       papersLoading: false,
       titleBoxShadow: false,
@@ -195,7 +192,6 @@ class HubPage extends React.Component {
       prevState.feed !== this.state.feed
     ) {
       if (!this.initialFeed) {
-        debugger;
         this.fetchPapers({ hub: this.props.hub });
       }
     }
@@ -277,10 +273,16 @@ class HubPage extends React.Component {
       PARAMS.hubId = hub ? hub.id : 0;
     }
 
+    if (filterBy.value === "pulled-papers") {
+      PARAMS.externalSource = "True";
+      PARAMS.ordering = "hot";
+    }
+
     fetchPaperFeed(PARAMS)
       .then((res) => {
         const { count, next, results } = res;
         const papers = results.data;
+
         this.detectPromoted(papers);
         this.setState(
           {
@@ -492,6 +494,9 @@ class HubPage extends React.Component {
       case "most_discussed":
         prefix = "Most Discussed";
         break;
+      case "pulled-papers":
+        prefix = "Pulled";
+        break;
     }
 
     return `${prefix} Papers ${isHomePage ? "on" : "in"} `;
@@ -628,11 +633,19 @@ class HubPage extends React.Component {
     } = this.props;
 
     if (auth.user.moderator && filterOptions.length < 5) {
-      filterOptions.push({
-        value: "removed",
-        label: "Removed",
-        href: "removed",
-      });
+      filterOptions.push(
+        {
+          value: "removed",
+          label: "Removed",
+          href: "removed",
+        },
+        {
+          value: "pulled-papers",
+          href: "pulled-papers",
+          label: "Pulled Papers",
+          disableScope: true,
+        }
+      );
     }
 
     const sampleFeed =
