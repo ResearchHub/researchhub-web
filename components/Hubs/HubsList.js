@@ -10,7 +10,6 @@ import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -165,7 +164,7 @@ class HubsList extends React.Component {
               showLoadingAnimation
               ready={this.state.hubs && this.state.hubs.length}
               customPlaceholder={
-                <HubEntryPlaceholder color="#efefef" rows={9} />
+                <HubEntryPlaceholder color="#efefef" rows={5} />
               }
             >
               {this.renderHubEntry()}

@@ -66,7 +66,7 @@ const LeaderboardContainer = (props) => {
       <h3 className={css(styles.reputable)}>Most Reputable Users</h3>
       <ReactPlaceholder
         ready={!fetchingUsers}
-        customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
+        customPlaceholder={<LeaderboardPlaceholder color="#efefef" rows={5} />}
       >
         <div className={css(styles.leaderboardUsers)}>
           {renderLeaderboardUsers(users)}
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   user: {
-    marginBottom: 16,
+    marginBottom: 15,
     width: "100%",
     boxSizing: "border-box",
   },
