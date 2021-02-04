@@ -46,7 +46,7 @@ const GoogleLoginButton = (props) => {
           props.loginCallback && props.loginCallback(); // closes banner if user signs in from banner
           props.showSignupBanner && props.removeBanner();
           if (!userAction.user.has_seen_orcid_connect_modal) {
-            let payload = {
+            const payload = {
               event_type: "user_signup",
               time: +new Date(),
               user_id: userAction.user.id,
@@ -68,7 +68,7 @@ const GoogleLoginButton = (props) => {
   }
 
   const responseGoogle = async (response) => {
-    let { googleLogin, getUser } = props;
+    const { googleLogin, getUser } = props;
     response["access_token"] = response["accessToken"];
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
@@ -103,8 +103,18 @@ const GoogleLoginButton = (props) => {
   function showLoginFailureMessage(response) {
     Sentry.captureEvent(response);
     console.error(response);
-    props.setMessage("Login failed");
-    props.showMessage({ show: true, error: true });
+    handleError(response);
+  }
+
+  function handleError(response) {
+    switch (response.error) {
+      case "popup_closed_by_user": // incognito or if user exits flow voluntarily
+      case "idpiframe_initialization_failed": // incognito
+        return null;
+      default:
+        props.setMessage("Login failed");
+        return props.showMessage({ show: true, error: true });
+    }
   }
 
   return (
