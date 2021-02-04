@@ -40,6 +40,7 @@ const CreateFeedBanner = (props) => {
   const navigateToUserOnboardPage = () => {
     const { user } = props.auth;
     const authorId = user.author_profile.id;
+    handleAmpEvent("click");
 
     Router.push({
       pathname: `/user/${authorId}/onboard`,
@@ -121,6 +122,7 @@ const CreateFeedBanner = (props) => {
           googleLogin={googleLogin}
           getUser={getUser}
           customLabel={"Sign in with Google"}
+          loginCallback={() => handleAmpEvent("click")}
         />
       )
     );
