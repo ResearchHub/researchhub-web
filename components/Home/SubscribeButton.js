@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 import Loader from "~/components/Loader/Loader";
@@ -108,7 +107,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     letterSpacing: 0.7,
     width: 100,
-    height: 37,
+    height: 36,
     boxSizing: "border-box",
     display: "flex",
     justifyContent: "center",
