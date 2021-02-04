@@ -18,6 +18,7 @@ Index.getInitialProps = async (ctx) => {
     leaderboardFeed: null,
     initialHubList: null,
     feed: 1,
+    query,
   };
 
   const PARAMS = {
@@ -27,16 +28,37 @@ Index.getInitialProps = async (ctx) => {
     hubId: 0,
   };
 
+  if (filter === "pulled-papers") {
+    PARAMS.ordering = "hot";
+    PARAMS.externalSource = "True";
+  }
+
   try {
     const initialFeed = await fetchPaperFeed(PARAMS);
-    const filterObj = filterOptions.filter(
+    let filterObj = filterOptions.filter(
       (el) => el.value === slugToFilterQuery(filter)
     )[0];
+
+    if (filter === "pulled-papers") {
+      filterObj = {
+        value: "pulled-papers",
+        href: "pulled-papers",
+        label: "Pulled Papers",
+        disableScope: true,
+      };
+    } else if (filter === "removed") {
+      filterObj = {
+        value: "removed",
+        label: "Removed",
+        href: "removed",
+      };
+    }
 
     return {
       initialFeed,
       filter: filterObj,
       feed: 1,
+      query,
     };
   } catch {
     return defaultProps;
