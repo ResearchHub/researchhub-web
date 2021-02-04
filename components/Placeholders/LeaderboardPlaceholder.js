@@ -1,78 +1,56 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import {
-  TextBlock,
-  TextRow,
-  RoundShape,
-} from "react-placeholder/lib/placeholders";
+import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
 
-const LeaderboardPlaceholder = ({ color }) => (
-  <Fragment>
-    <div
-      className={css(styles.placeholderContainer) + " show-loading-animation"}
-    >
-      <div className={css(styles.row)}>
-        <RoundShape className={css(styles.round)} color={color} />
-        <TextBlock
-          className={css(styles.textRow)}
-          rows={1}
-          color={color}
-          style={{ width: "70%" }}
-        />
+const LeaderboardPlaceholder = ({ color, rows = 1 }) => {
+  return new Array(rows).fill(0).map((el, i) => {
+    return (
+      <div
+        className={css(styles.placeholderContainer) + " show-loading-animation"}
+      >
+        <div className={css(styles.row)}>
+          <RoundShape className={css(styles.round)} color={color} />
+          <TextBlock
+            className={css(styles.textRow)}
+            rows={1}
+            color={color}
+            style={{ width: "50%" }}
+          />
+          <TextBlock
+            className={css(styles.textRow)}
+            rows={1}
+            color={color}
+            style={{ width: "20%" }}
+          />
+        </div>
       </div>
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
-      />
-    </div>
-    <div
-      className={css(styles.placeholderContainer) + " show-loading-animation"}
-    >
-      <div className={css(styles.row)}>
-        <RoundShape className={css(styles.round)} color={color} />
-        <TextBlock
-          className={css(styles.textRow)}
-          rows={1}
-          color={color}
-          style={{ width: "70%" }}
-        />
-      </div>
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
-      />
-    </div>
-  </Fragment>
-);
+    );
+  });
+};
 
 const styles = StyleSheet.create({
   placeholderContainer: {
-    borderRadius: 3,
-    // border: "1px solid rgb(237, 237, 237)",
-    padding: 8,
-    paddingLeft: 25,
-    background: "#fff",
-    marginBottom: 16,
-    width: "85%",
-    margin: "0 auto",
+    marginBottom: 20,
+    width: "100%",
+    boxSizing: "border-box",
   },
   round: {
-    height: 30,
-    width: 30,
-    marginRight: 16,
+    height: 38,
+    minHeight: 38,
+    maxHeight: 38,
+    width: 38,
+    minWidth: 38,
+    maxWidth: 38,
+    // marginRight: 10,
   },
   row: {
     display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  textRow: {
-    marginBottom: 16,
-    marginTop: 8,
-  },
-  space: {},
-  label: {},
+  textRow: {},
+  rep: {},
 });
 
 export default LeaderboardPlaceholder;
