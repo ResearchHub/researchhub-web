@@ -91,8 +91,8 @@ const CreateFeedBanner = (props) => {
     const { auth } = props;
 
     return auth.isLoggedIn
-      ? "Follow the research you care about. Create your personalized feed."
-      : "Sign in to follow the research you care about.";
+      ? "Subscribe to hubs to discover all of the research papers you care about, live as they're published."
+      : "Sign in to discover all of the research papers you care about, live as they're published.";
   };
 
   const renderButton = () => {

@@ -737,7 +737,7 @@ class HubPage extends React.Component {
                               }
                               hideRipples={true}
                               label={
-                                loggedIn ? "Create Your Feed" : "View All Hubs"
+                                loggedIn ? "Generate My Hubs" : "View All Hubs"
                               }
                               customButtonStyle={styles.allFeedButton}
                             />
