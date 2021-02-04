@@ -31,9 +31,10 @@ const LeaderboardPlaceholder = ({ color, rows = 1 }) => {
 
 const styles = StyleSheet.create({
   placeholderContainer: {
-    marginBottom: 20,
     width: "100%",
     boxSizing: "border-box",
+    padding: "10px 20px",
+    borderLeft: "3px solid #FFF",
   },
   round: {
     height: 38,
@@ -42,7 +43,6 @@ const styles = StyleSheet.create({
     width: 38,
     minWidth: 38,
     maxWidth: 38,
-    // marginRight: 10,
   },
   row: {
     display: "flex",

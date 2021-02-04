@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import ReactPlaceholder from "react-placeholder/lib";
 import LeaderboardPlaceholder from "../Placeholders/LeaderboardPlaceholder";
 import LeaderboardUser from "./LeaderboardUser";
 import Link from "next/link";
-import colors from "../../config/themes/colors";
+import Ripples from "react-ripples";
+
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import colors from "~/config/themes/colors";
 
 const LeaderboardContainer = (props) => {
   const [users, setUsers] = useState(
@@ -48,7 +49,7 @@ const LeaderboardContainer = (props) => {
       }
 
       return (
-        <div className={css(styles.user)} key={`user_${index}_${user.id}`}>
+        <Ripples className={css(styles.user)} key={`user_${index}_${user.id}`}>
           <LeaderboardUser
             user={user}
             name={name}
@@ -56,15 +57,16 @@ const LeaderboardContainer = (props) => {
             reputation={user.reputation}
             authorId={authorId}
           />
-        </div>
+        </Ripples>
       );
     });
   };
 
   return (
     <div className={css(styles.container)}>
-      <h3 className={css(styles.reputable)}>Most Reputable Users</h3>
+      <h3 className={css(styles.title)}>Most Reputable Users</h3>
       <ReactPlaceholder
+        ready={false}
         ready={!fetchingUsers}
         customPlaceholder={<LeaderboardPlaceholder color="#efefef" rows={5} />}
       >
@@ -94,11 +96,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     width: "100%",
     border: "1px solid #ededed",
-    padding: "15px 20px",
+    padding: "15px 0",
     boxSizing: "border-box",
     marginTop: 20,
   },
-  reputable: {
+  title: {
     textTransform: "uppercase",
     fontWeight: 500,
     fontSize: 12,
@@ -108,9 +110,8 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     width: "100%",
     boxSizing: "border-box",
-    margin: 0,
-    padding: 0,
-    marginBottom: 20,
+    margin: "0 0 10px 0",
+    padding: "0 0 0 20px",
   },
   leaderboardUsers: {
     boxSizing: "border-box",
@@ -121,9 +122,19 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   user: {
-    marginBottom: 15,
+    display: "flex",
     width: "100%",
     boxSizing: "border-box",
+    padding: "7px 20px",
+    borderLeft: "3px solid #FFF",
+    transition: "all ease-out 0.1s",
+    ":hover": {
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+      backgroundColor: "#FAFAFA",
+    },
+  },
+  linkContainer: {
+    marginTop: 15,
   },
   link: {
     textDecoration: "none",
@@ -132,13 +143,11 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontSize: 16,
     padding: "3px 5px",
+    paddingLeft: 25,
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",
     },
-  },
-  linkContainer: {
-    textAlign: "center",
   },
 });
 
