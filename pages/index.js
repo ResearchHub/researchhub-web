@@ -37,6 +37,7 @@ Index.getInitialProps = async (ctx) => {
   let { query } = ctx;
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
+
   let page = query.page || 1;
   let defaultProps = {
     home: true,

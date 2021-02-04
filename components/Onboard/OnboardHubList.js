@@ -1,35 +1,61 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
 
-// Redux
-import { MessageActions } from "~/redux/message";
-import { HubActions } from "~/redux/hub";
+// Components
+import OnboardHub from "./OnboardHub";
+import Loader from "~/components/Loader/Loader";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import OnboardHub from "./OnboardHub";
+import colors from "../../config/themes/colors";
 
 const OnboardHubList = (props) => {
-  const { onClick, hubs } = props;
+  const { searching, onClick, hubs, userHubIds } = props;
 
-  return (
-    <div className={css(styles.root)}>
-      {(hubs || []).map((hub, index) => (
+  const renderContent = () => {
+    if (hubs && hubs.length) {
+      return hubs.map((hub, index) => (
         <div className={css(styles.cardContainer)}>
           <OnboardHub
             key={`onboardHub-${hub.id}`}
             hub={hub}
             index={index}
             onClick={onClick}
+            userHubIds={userHubIds}
           />
         </div>
-      ))}
-    </div>
-  );
+      ));
+    } else {
+      return (
+        <div className={css(styles.emptyResults)}>
+          <img
+            src={"/static/icons/search-empty.png"}
+            className={css(styles.logo)}
+            alt="Empty Search Icon"
+          />
+          <h3 className={css(styles.emptyTitle)}>
+            We can't find what you're looking for!{"\n"}
+            {searching ? (
+              <div style={{ display: "flex" }}>
+                Please try another search
+                <Loader
+                  loading={true}
+                  size={3}
+                  type={"beat"}
+                  color={"#000"}
+                  containerStyle={styles.loaderStyle}
+                />
+              </div>
+            ) : (
+              "Please try another search."
+            )}
+          </h3>
+        </div>
+      );
+    }
+  };
+
+  return <div className={css(styles.root)}>{renderContent()}</div>;
 };
 
 const styles = StyleSheet.create({
@@ -41,12 +67,55 @@ const styles = StyleSheet.create({
     width: "100%",
     flexWrap: "wrap",
     "@media only screen and (max-width: 936px)": {
-      // width: "100%",
       justifyContent: "center",
     },
   },
   cardContainer: {
     margin: 5,
+  },
+  container: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  emptyResults: {
+    padding: "15px 0",
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: colors.BLACK(),
+    boxSizing: "border-box",
+  },
+  emptyTitle: {
+    fontWeight: 500,
+    fontSize: 20,
+    whiteSpace: "pre-wrap",
+    marginLeft: 15,
+    lineHeight: 1.5,
+    height: 60,
+    "@media only screen and (max-width: 415px)": {
+      height: 45,
+      fontSize: 16,
+    },
+  },
+  logo: {
+    height: 60,
+    "@media only screen and (max-width: 415px)": {
+      height: 45,
+    },
+  },
+  searchResultPaper: {
+    border: "none",
+  },
+  hide: {
+    display: "none",
+  },
+  loaderStyle: {
+    paddingTop: 2,
+    paddingLeft: 1,
   },
 });
 
