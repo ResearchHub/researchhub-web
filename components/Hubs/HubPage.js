@@ -908,7 +908,6 @@ var styles = StyleSheet.create({
     boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
   },
   sidebar: {
-    // display: "flex",
     display: "table-cell",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -972,58 +971,6 @@ var styles = StyleSheet.create({
     width: 230,
     marginTop: 10,
     marginBottom: 0,
-  },
-  iconStyle: {
-    height: 33,
-    width: 33,
-  },
-  coinIcon: {
-    height: 20,
-    marginLeft: 8,
-    "@media only screen and (max-width: 760px)": {
-      height: 18,
-    },
-    "@media only screen and (max-width: 415px)": {
-      height: 16,
-    },
-  },
-  /**
-   * MAIN FEED STYLES
-   */
-
-  feedTitle: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    color: "#241F3A",
-    fontWeight: 400,
-    fontSize: 30,
-    flexWrap: "wrap",
-    whiteSpace: "pre-wrap",
-    width: "100%",
-    textAlign: "center",
-    padding: 0,
-    margin: 0,
-    "@media only screen and (min-width: 800px)": {
-      textAlign: "left",
-      paddingRight: 16,
-    },
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 30,
-    },
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 25,
-    },
-  },
-  feedSubtitle: {
-    fontSize: 14,
-    "@media only screen and (max-width: 665px)": {
-      display: "none",
-    },
-  },
-  fullWidth: {
-    width: "100%",
-    boxSizing: "border-box",
   },
   titleBoxShadow: {
     boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",

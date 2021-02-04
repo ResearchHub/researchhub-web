@@ -27,7 +27,7 @@ const MainHeader = (props) => {
         home && styles.row
       )}
     >
-      <h1 className={css(styles.feedTitle)}>
+      <h1 className={css(styles.feedTitle, home && styles.feedTitleMargin)}>
         <span className={css(styles.fullWidth)}>
           {title}
           <span className={css(styles.hubName)}>{hubName}</span>
@@ -129,7 +129,6 @@ const styles = StyleSheet.create({
     margin: 0,
     "@media only screen and (min-width: 800px)": {
       textAlign: "left",
-      paddingRight: 16,
     },
     "@media only screen and (max-width: 1149px)": {
       fontSize: 30,
@@ -143,6 +142,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 20,
     },
+  },
+  feedTitleMargin: {
+    marginTop: -3,
   },
   fullWidth: {
     width: "100%",
@@ -219,7 +221,7 @@ const styles = StyleSheet.create({
   },
   hubInputContainer: {
     width: "100%",
-    marginTop: 16,
+    paddingTop: 15,
   },
   homeInputContainer: {
     justifyContent: "flex-end",
