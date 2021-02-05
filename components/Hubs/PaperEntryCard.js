@@ -11,6 +11,7 @@ import FsLightbox from "fslightbox-react";
 import VoteWidget from "../VoteWidget";
 import HubTag from "./HubTag";
 import HubDropDown from "./HubDropDown";
+import PaperJournalTag from "../Paper/PaperJournalTag";
 
 // Utility
 import {
@@ -67,6 +68,7 @@ const PaperEntryCard = (props) => {
     raw_authors,
     slug,
     paper_type,
+    url,
   } = paper || null;
 
   let vote_type = 0;
@@ -124,37 +126,30 @@ const PaperEntryCard = (props) => {
   }
 
   function renderUploadedBy() {
-    if (uploaded_by) {
-      const {
-        first_name,
-        last_name,
-        profile_image,
-        id,
-        user,
-      } = uploaded_by.author_profile;
-      return (
-        <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
-          <AuthorAvatar
-            author={uploaded_by.author_profile}
-            name={first_name + " " + last_name}
-            size={25}
-            border={"1px solid #EDEDED"}
-            trueSize={true}
-            dropShadow={true}
-          />
-        </div>
-      );
-    } else if (external_source) {
-      return (
-        <div className={css(styles.uploadedBy)}>
-          Published on{" "}
-          <span className={css(styles.capitalize)}>{external_source}</span>
-        </div>
-      );
-    } else {
-      return (
-        <div className={css(styles.uploadedBy)}>Submitted by ResearchHub</div>
-      );
+    // if (uploaded_by) {
+    //   const {
+    //     first_name,
+    //     last_name,
+    //     profile_image,
+    //     id,
+    //     user,
+    //   } = uploaded_by.author_profile;
+    //   return (
+    //     <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
+    //       <AuthorAvatar
+    //         author={uploaded_by.author_profile}
+    //         name={first_name + " " + last_name}
+    //         size={25}
+    //         border={"1px solid #EDEDED"}
+    //         trueSize={true}
+    //         dropShadow={true}
+    //       />
+    //     </div>
+    //   );
+    // } else
+
+    if (url || external_source) {
+      return <PaperJournalTag url={url} externalSource={external_source} />;
     }
   }
 

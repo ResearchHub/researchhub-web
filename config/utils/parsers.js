@@ -13,3 +13,8 @@ export const getFragmentParameterByName = (name, path) => {
     ? ""
     : decodeURIComponent(results[1].replace(/\+/g, " "));
 };
+
+export const getHostFromPath = (path) => {
+  const pathArray = path.split(".");
+  return pathArray[1];
+};
