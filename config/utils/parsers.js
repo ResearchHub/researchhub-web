@@ -15,6 +15,9 @@ export const getFragmentParameterByName = (name, path) => {
 };
 
 export const getHostFromPath = (path) => {
-  const pathArray = path.split(".");
-  return pathArray[1];
+  if (path) {
+    const pathArray = path.split(".");
+    return pathArray[1];
+  }
+  return null;
 };
