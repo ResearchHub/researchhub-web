@@ -34,7 +34,6 @@ const PaperJournalTag = (props) => {
     switch (source) {
       case "doi":
       case "org/10":
-        // return "doi";
         return null;
       case "org/abs/":
       case "org/abs/2003":
@@ -72,6 +71,9 @@ const PaperJournalTag = (props) => {
       case "SAGE Publications":
         return "sage";
       default:
+        if (source && (source.includes("abs") || source.includes("arxiv"))) {
+          return "arxiv";
+        }
         return source;
     }
   };
