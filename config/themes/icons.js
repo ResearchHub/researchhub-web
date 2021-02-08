@@ -10,6 +10,7 @@ import {
   faBan,
   faBold,
   faBell,
+  faBookOpen,
   faBolt,
   faCaretDown,
   faCaretUp,
@@ -44,6 +45,7 @@ import {
   faUnderline,
   faUpload,
   faUser,
+  faUserEdit,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -134,6 +136,7 @@ library.add(
   faAsterisk,
   faBan,
   faBold,
+  faBookOpen,
   faBell,
   faBolt,
   faCaretDown,
@@ -237,7 +240,8 @@ library.add(
   opaqueThumbsDown,
   faTrophy,
   faSimpleUser,
-  faUserCircle
+  faUserCircle,
+  faUserEdit
 );
 
 const icons = {
@@ -254,6 +258,7 @@ const icons = {
   bell: <FontAwesomeIcon icon={faBell} />,
   bolt: <FontAwesomeIcon icon={faBolt} />,
   book: <FontAwesomeIcon icon={faBook} />,
+  bookOpen: <FontAwesomeIcon icon={faBookOpen} />,
   burgerMenu: <FontAwesomeIcon icon={faBars} />,
   chartLine: <FontAwesomeIcon icon={faChartLine} />,
   chat: <FontAwesomeIcon icon={faComment} />,
@@ -339,6 +344,7 @@ const icons = {
   twitter: <FontAwesomeIcon icon={faTwitter} />,
   upload: <FontAwesomeIcon icon={faUpload} />,
   user: <FontAwesomeIcon icon={faUserCircle} />,
+  userEdit: <FontAwesomeIcon icon={faUserEdit} />,
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
   // customIcons
