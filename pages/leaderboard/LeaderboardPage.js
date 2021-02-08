@@ -523,6 +523,7 @@ class Index extends React.Component {
             }
             this.setState({
               fetchingLeaderboard: true,
+              type: item.type,
             });
           }}
           key={`${id}-${i}`}
