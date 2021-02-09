@@ -1,25 +1,25 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import VisibilitySensor from "react-visibility-sensor";
+import { Waypoint } from "react-waypoint";
 
 // Component
-import Button from "../../components/Form/Button";
-import AddHubModal from "../../components/Modals/AddHubModal";
-import EditHubModal from "../../components/Modals/EditHubModal";
-import Message from "../../components/Loader/Message";
-import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
+import Button from "~/components/Form/Button";
+import AddHubModal from "~/components/Modals/AddHubModal";
+import EditHubModal from "~/components/Modals/EditHubModal";
+import Message from "~/components/Loader/Message";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
 import CategoryList from "~/components/Hubs/CategoryList";
-import HubCard from "../../components/Hubs/HubCard";
+import HubCard from "~/components/Hubs/HubCard";
 
 // Config
 import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
-import { ModalActions } from "../../redux/modals";
-import { MessageActions } from "../../redux/message";
+import { ModalActions } from "~/redux/modals";
+import { MessageActions } from "~/redux/message";
 
 class Index extends React.Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class Index extends React.Component {
       categories: [],
       hubsByCategory: {},
       finishedLoading: false,
-      activeCategory: null,
+      activeCategory: 0,
     };
     this.state = {
       ...this.initialState,
@@ -39,6 +39,7 @@ class Index extends React.Component {
   componentDidMount = async () => {
     const { getCategories, getHubs, showMessage, hubs } = this.props;
     showMessage({ show: true, load: true });
+
     if (!hubs.fetchedHubs) {
       getCategories().then((payload) => {
         this.setState({ categories: payload.payload.categories });
@@ -72,10 +73,9 @@ class Index extends React.Component {
     }
   }
 
-  handleMenuOnScroll = (state, activeCategory) => {
-    if (state) {
-      activeCategory !== this.state.activeCategory &&
-        this.setState({ activeCategory });
+  setActiveCategory = (activeCategory) => {
+    if (activeCategory !== this.state.activeCategory) {
+      this.setState({ activeCategory });
     }
   };
 
@@ -121,19 +121,16 @@ class Index extends React.Component {
       let categoryID = category.id;
       let categoryName = category.category_name;
       let slug = categoryName.toLowerCase().replace(/\s/g, "-");
-      this[slug] = React.createRef();
 
       return (
-        <React.Fragment key={categoryID}>
-          <VisibilitySensor
-            onChange={(isVisible) => this.handleMenuOnScroll(isVisible, i)}
-            active={i !== this.state.activeIndex}
-          >
+        <Waypoint onEnter={() => this.setActiveCategory(i)}>
+          <div key={categoryID}>
             <div
-              ref={this[slug]}
               id={`${i}-category`}
               name={`${slug}`}
               className={css(styles.categoryLabel) + " category"}
+              onClick={() => this.setActiveCategory(i)}
+              key={categoryID}
             >
               {categoryName === "Trending" ? (
                 <span>
@@ -144,13 +141,13 @@ class Index extends React.Component {
                 categoryName
               )}
             </div>
-          </VisibilitySensor>
-          <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
-            {categoryName === "Trending"
-              ? this.renderTrendingHubs()
-              : this.renderHubs(categoryID)}
+            <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
+              {categoryName === "Trending"
+                ? this.renderTrendingHubs()
+                : this.renderHubs(categoryID)}
+            </div>
           </div>
-        </React.Fragment>
+        </Waypoint>
       );
     });
   };
