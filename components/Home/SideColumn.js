@@ -89,7 +89,7 @@ class SideColumn extends React.Component {
           <div className={css(styles.list)}>
             <ReactPlaceholder
               showLoadingAnimation
-              ready={true}
+              ready={ready ? ready : true}
               customPlaceholder={
                 customPlaceholder ? (
                   customPlaceholder
@@ -202,7 +202,6 @@ const styles = StyleSheet.create({
     },
   },
   last: {
-    opacity: 1,
     borderBottom: "none",
   },
   hubImage: {
