@@ -62,6 +62,7 @@ const AuthorPage = (props) => {
   const [name, setName] = useState("");
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
+  const [claimAccount, setClaimAccount] = useState(false);
 
   // FetchingState
   const [fetching, setFetching] = useState(true);
@@ -187,37 +188,35 @@ const AuthorPage = (props) => {
   });
 
   useEffect(() => {
-    setFetching(true);
-
-    async function refetchAuthor() {
-      await dispatch(
-        AuthorActions.getAuthor({ authorId: router.query.authorId })
-      );
-      setFetchedUser(true); // needed for tabbar
-    }
-    const authored = fetchAuthoredPapers();
-    const discussions = fetchUserDiscussions();
-    const contributions = fetchUserContributions();
-    const promotions = fetchUserPromotions();
-    const transactions = fetchUserTransactions();
-    const refetch = refetchAuthor();
-    const summaries = fetchSummaries();
-    const takeaways = fetchKeyTakeaways();
-    const suspendedState = fetchAuthorSuspended();
-
-    Promise.all([
-      takeaways,
-      summaries,
-      authored,
-      discussions,
-      contributions,
-      promotions,
-      transactions,
-      suspendedState,
-      refetch,
-    ]).then((_) => {
-      setFetching(false);
-    });
+    // setFetching(true);
+    // async function refetchAuthor() {
+    //   await dispatch(
+    //     AuthorActions.getAuthor({ authorId: router.query.authorId })
+    //   );
+    //   setFetchedUser(true); // needed for tabbar
+    // }
+    // const authored = fetchAuthoredPapers();
+    // const discussions = fetchUserDiscussions();
+    // const contributions = fetchUserContributions();
+    // const promotions = fetchUserPromotions();
+    // const transactions = fetchUserTransactions();
+    // const refetch = refetchAuthor();
+    // const summaries = fetchSummaries();
+    // const takeaways = fetchKeyTakeaways();
+    // const suspendedState = fetchAuthorSuspended();
+    // Promise.all([
+    //   takeaways,
+    //   summaries,
+    //   authored,
+    //   discussions,
+    //   contributions,
+    //   promotions,
+    //   transactions,
+    //   suspendedState,
+    //   refetch,
+    // ]).then((_) => {
+    //   setFetching(false);
+    // });
   }, [router.query.authorId]);
 
   useEffect(() => {
@@ -238,6 +237,10 @@ const AuthorPage = (props) => {
     if (author.user && user) {
       if (author.user === user.id) {
         setAllowEdit(true);
+      }
+    } else {
+      if (author && !author.user) {
+        setClaimAccount(true);
       }
     }
   }, [author, user]);
@@ -948,14 +951,33 @@ const AuthorPage = (props) => {
             <Button
               label={() => (
                 <Fragment>
-                  <span style={{ marginRight: 10, userSelect: "none" }}>
-                    {icons.user}
-                  </span>
-                  Sift Profile
+                  <img
+                    className={css(styles.siftIcon)}
+                    src="/static/icons/sift.png"
+                  />
                 </Fragment>
               )}
               onClick={() => window.open(props.author.sift_link, "_blank")}
               customButtonStyle={[styles.editButtonCustom, styles.siftCustom]}
+              rippleClass={styles.rippleClass}
+            />
+          </div>
+        )}
+        {claimAccount && (
+          <div className={css(styles.editProfileButton)}>
+            <Button
+              label={() => (
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  <span
+                    style={{ marginRight: 8, userSelect: "none", fontSize: 16 }}
+                  >
+                    {icons.checkSquare}
+                  </span>
+                  Claim Profile
+                </span>
+              )}
+              onClick={openUserInfoModal}
+              customButtonStyle={styles.editButtonCustom}
               rippleClass={styles.rippleClass}
             />
           </div>
@@ -1145,7 +1167,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 16,
     height: 35,
-    width: 175,
+    width: 130,
     background: colors.RED(0.9),
     color: "#FFF",
     border: `1px solid ${colors.RED()}`,
@@ -1168,6 +1190,7 @@ const styles = StyleSheet.create({
   moderatorIcon: {
     color: "inherit",
     marginRight: 8,
+    fontSize: 12,
   },
   moderatorLabel: {
     fontWeight: 400,
@@ -1658,20 +1681,29 @@ const styles = StyleSheet.create({
   },
   siftButton: {
     marginLeft: 16,
-    background: colors.NAVY(1),
     borderRadius: 4,
   },
   editButtonCustom: {
     height: 35,
-    width: 175,
+    width: 130,
     "@media only screen and (max-width: 767px)": {
+      marginTop: 10,
       height: 40,
       width: "100%",
       minWidth: "100%",
     },
   },
   siftCustom: {
-    background: colors.NEW_BLUE(1),
+    background: "#fff",
+    border: `1px solid ${colors.NEW_BLUE()}`,
+
+    ":hover": {
+      background: "#FAFAFA",
+    },
+  },
+  siftIcon: {
+    userSelect: "none",
+    height: 18,
   },
   rippleClass: {
     "@media only screen and (max-width: 767px)": {
