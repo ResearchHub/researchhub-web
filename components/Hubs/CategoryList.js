@@ -57,19 +57,21 @@ class CategoryList extends React.Component {
 
   render() {
     return (
-      <SideColumn
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={9} />}
-        title={"Categories"}
-        renderListItem={this.renderCategoryEntry}
-        ready={this.props.categories.length}
-      />
+      <div className={css(styles.categoryListContainer)}>
+        <SideColumn
+          customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={9} />}
+          title={"Categories"}
+          renderListItem={this.renderCategoryEntry}
+          ready={this.props.categories.length}
+        />
+      </div>
     );
   }
 }
 
 const styles = StyleSheet.create({
   categoryListContainer: {
-    paddingTop: 30,
+    paddingTop: 15,
     alignItems: "center",
     textAlign: "left",
     cursor: "default",
