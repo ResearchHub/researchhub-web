@@ -194,6 +194,7 @@ class Index extends React.Component {
             title={"Hubs on Researchhub"}
             description={"View all of the communities on Researchhub"}
           />
+
           <div className={css(styles.container)}>
             <div className={css(styles.titleContainer)}>
               <span className={css(styles.title)}>Hubs</span>
@@ -246,18 +247,19 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   sidebar: {
-    minWidth: 220,
+    width: 265,
+    minWidth: 255,
+    maxWidth: 265,
     width: "18%",
     position: "sticky",
     top: 79,
-    background: "#fff",
     minHeight: "100vh",
+    marginLeft: 20,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
   content: {
-    borderLeft: "1px solid #ededed",
     "@media only screen and (min-width: 900px)": {
       width: "82%",
     },

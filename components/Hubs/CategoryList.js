@@ -7,6 +7,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 
 // Component
 import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
+import SideColumn from "~/components/Home/SideColumn";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -31,7 +32,10 @@ class CategoryList extends React.Component {
 
       return (
         <Ripples
-          className={css(styles.categoryEntry)}
+          className={css(
+            styles.categoryEntry,
+            i === categories.length - 1 && styles.last
+          )}
           key={`${category_name}-${i}`}
         >
           <Link href={"/hubs"} as={`/hubs#${slug}`}>
@@ -53,26 +57,12 @@ class CategoryList extends React.Component {
 
   render() {
     return (
-      <div className={css(styles.categoryListContainer)}>
-        <div className={css(styles.listLabel)} id={"categoryListTitle"}>
-          Categories
-        </div>
-        <div className={css(styles.categoryList)}>
-          {this.props.categories.length > 0 ? (
-            this.renderCategoryEntry()
-          ) : (
-            <Fragment>
-              <ReactPlaceholder
-                showLoadingAnimation
-                ready={false}
-                customPlaceholder={
-                  <HubEntryPlaceholder color="#efefef" rows={9} />
-                }
-              />
-            </Fragment>
-          )}
-        </div>
-      </div>
+      <SideColumn
+        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={9} />}
+        title={"Categories"}
+        renderListItem={this.renderCategoryEntry}
+        ready={this.props.categories.length}
+      />
     );
   }
 }
@@ -101,26 +91,47 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   categoryEntry: {
-    width: "99%",
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
-    transition: "all ease-out 0.1s",
+    textTransform: "capitalize",
+    display: "flex",
+    alignItems: "center",
+    boxSizing: "border-box",
+    width: "100%",
     borderRadius: 3,
-    border: "1px solid #fcfcfc",
-    marginBottom: 8,
+    borderLeft: "3px solid #fff",
+    borderBottom: "1px solid #F0F0F0",
+    color: colors.BLACK(0.6),
     ":hover": {
-      borderColor: "rgb(237, 237, 237)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: "#FAFAFA",
+      color: colors.NEW_BLUE(),
+      transition: "all ease-out 0.1s",
     },
+    ":active": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+    ":focus": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+  },
+  last: {
+    borderBottom: "none",
   },
   categoryLink: {
     textDecoration: "none",
     color: "#111",
     display: "flex",
     alignItems: "center",
-    padding: "8px",
     width: "100%",
+    padding: 15,
   },
   categoryList: {
     padding: "0px 30px",

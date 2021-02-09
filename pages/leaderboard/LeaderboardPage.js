@@ -716,7 +716,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     boxSizing: "border-box",
     width: "100%",
-    transition: "all ease-out 0.1s",
     borderRadius: 3,
     borderLeft: "3px solid #fff",
     borderBottom: "1px solid #F0F0F0",
@@ -725,6 +724,7 @@ const styles = StyleSheet.create({
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: "#FAFAFA",
       color: colors.NEW_BLUE(),
+      transition: "all ease-out 0.1s",
     },
     ":active": {
       color: colors.NEW_BLUE(),
