@@ -188,35 +188,35 @@ const AuthorPage = (props) => {
   });
 
   useEffect(() => {
-    // setFetching(true);
-    // async function refetchAuthor() {
-    //   await dispatch(
-    //     AuthorActions.getAuthor({ authorId: router.query.authorId })
-    //   );
-    //   setFetchedUser(true); // needed for tabbar
-    // }
-    // const authored = fetchAuthoredPapers();
-    // const discussions = fetchUserDiscussions();
-    // const contributions = fetchUserContributions();
-    // const promotions = fetchUserPromotions();
-    // const transactions = fetchUserTransactions();
-    // const refetch = refetchAuthor();
-    // const summaries = fetchSummaries();
-    // const takeaways = fetchKeyTakeaways();
-    // const suspendedState = fetchAuthorSuspended();
-    // Promise.all([
-    //   takeaways,
-    //   summaries,
-    //   authored,
-    //   discussions,
-    //   contributions,
-    //   promotions,
-    //   transactions,
-    //   suspendedState,
-    //   refetch,
-    // ]).then((_) => {
-    //   setFetching(false);
-    // });
+    setFetching(true);
+    async function refetchAuthor() {
+      await dispatch(
+        AuthorActions.getAuthor({ authorId: router.query.authorId })
+      );
+      setFetchedUser(true); // needed for tabbar
+    }
+    const authored = fetchAuthoredPapers();
+    const discussions = fetchUserDiscussions();
+    const contributions = fetchUserContributions();
+    const promotions = fetchUserPromotions();
+    const transactions = fetchUserTransactions();
+    const refetch = refetchAuthor();
+    const summaries = fetchSummaries();
+    const takeaways = fetchKeyTakeaways();
+    const suspendedState = fetchAuthorSuspended();
+    Promise.all([
+      takeaways,
+      summaries,
+      authored,
+      discussions,
+      contributions,
+      promotions,
+      transactions,
+      suspendedState,
+      refetch,
+    ]).then((_) => {
+      setFetching(false);
+    });
   }, [router.query.authorId]);
 
   useEffect(() => {
@@ -240,7 +240,9 @@ const AuthorPage = (props) => {
       }
     } else {
       if (author && !author.user) {
-        setClaimAccount(true);
+        if (!auth.isLoggedIn) {
+          setClaimAccount(true);
+        }
       }
     }
   }, [author, user]);
@@ -973,10 +975,10 @@ const AuthorPage = (props) => {
                   >
                     {icons.checkSquare}
                   </span>
-                  Claim Profile
+                  Claim Account
                 </span>
               )}
-              onClick={openUserInfoModal}
+              onClick={() => props.openClaimAccountModal(true)}
               customButtonStyle={styles.editButtonCustom}
               rippleClass={styles.rippleClass}
             />
@@ -1685,7 +1687,7 @@ const styles = StyleSheet.create({
   },
   editButtonCustom: {
     height: 35,
-    width: 130,
+    width: 140,
     "@media only screen and (max-width: 767px)": {
       marginTop: 10,
       height: 40,
@@ -1724,6 +1726,7 @@ const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
   openUserInfoModal: ModalActions.openUserInfoModal,
   openAuthorSupportModal: ModalActions.openAuthorSupportModal,
+  openClaimAccountModal: ModalActions.openClaimAccountModal,
 };
 
 export default connect(

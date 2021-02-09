@@ -30,6 +30,7 @@ export const ModalConstants = {
   AUTHOR_SUPPORT_MODAL_TOGGLE: "@@modal/AUTHOR_SUPPORT_MODAL_TOGGLE",
   CONTENT_SUPPORT_MODAL_TOGGLE: "@@modal/CONTENT_SUPPORT_MODAL_TOGGLE",
   SECTION_BOUNTY_MODAL_TOGGLE: "@@modal/SECTION_BOUNTY_MODAL_TOGGLE",
+  CLAIM_ACCOUNT_MODAL_TOGGLE: "@@modal/CLAIM_ACCOUNT_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -314,6 +315,16 @@ export const ModalActions = {
       });
     };
   },
+  openClaimAccountModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.CLAIM_ACCOUNT_MODAL_TOGGLE,
+        payload: {
+          openClaimAccountModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -370,6 +381,7 @@ const defaultModalState = {
     isOpen: false,
     props: {},
   },
+  openClaimAccountModal: false,
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
@@ -397,6 +409,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.AUTHOR_SUPPORT_MODAL_TOGGLE:
     case ModalConstants.CONTENT_SUPPORT_MODAL_TOGGLE:
     case ModalConstants.SECTION_BOUNTY_MODAL_TOGGLE:
+    case ModalConstants.CLAIM_ACCOUNT_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,

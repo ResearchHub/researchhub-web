@@ -15,22 +15,23 @@ import { AuthActions } from "../redux/auth";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
-import Button from "../components/Form/Button";
-import FirstVoteModal from "../components/Modals/FirstVoteModal";
-import GoogleLoginButton from "../components/GoogleLoginButton";
-import LoginModal from "../components/Modals/LoginModal";
+import Button from "./Form/Button";
+import FirstVoteModal from "./Modals/FirstVoteModal";
+import GoogleLoginButton from "./GoogleLoginButton";
+import LoginModal from "./Modals/LoginModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
-// import SectionBountyModal from "../components/Modals/SectionBountyModal";
-import WithdrawalModal from "../components/Modals/WithdrawalModal";
-import UploadPaperModal from "../components/Modals/UploadPaperModal";
+// import SectionBountyModal from "./Modals/SectionBountyModal";
+import WithdrawalModal from "./Modals/WithdrawalModal";
+import UploadPaperModal from "./Modals/UploadPaperModal";
 import Notification from "./Notifications/Notification";
-import DndModal from "../components/Modals/DndModal";
+import DndModal from "./Modals/DndModal";
 import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
 import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
 import UserStateBanner from "./Banner/UserStateBanner";
 import OrcidConnectModal from "./Modals/OrcidConnectModal";
+import ClaimAccountModal from "./Modals/ClaimAccountModal";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -436,6 +437,7 @@ const Navbar = (props) => {
         <PromotionInfoModal />
         <ReCaptchaPrompt />
         {/* <SectionBountyModal /> */}
+        <ClaimAccountModal />
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />
