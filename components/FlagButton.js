@@ -71,6 +71,7 @@ const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
       permissionKey="UpdatePaper"
       loginRequired={true}
       styling={[styles.borderRadius, flagged && styles.flagged]}
+      hideRipples={true}
     >
       <div className={css(style && style)}>
         {flagged ? icons.flag : icons.flagOutline}
