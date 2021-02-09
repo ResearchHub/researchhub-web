@@ -49,9 +49,12 @@ const ClaimAccountModal = (props) => {
             ResearchCoin, or RSC.
           </a>
         </p>
-        <h3 className={css(styles.subheader)}>How do I claim my account?</h3>
+        <h3 className={css(styles.subheader)}>
+          How do I claim my account and RSC?
+        </h3>
         <p className={css(styles.paragraph)}>
-          If this is you, please send an email to
+          To claim this account and receive the RSC awarded to it, please send
+          an email to
           <a
             href="mailto:hello@researchhub.com"
             target="_blank"
@@ -88,11 +91,10 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     marginTop: 10,
-    lineHeight: 1.3,
+    lineHeight: 1.5,
     wordBreak: "normal",
     "@media only screen and (max-width: 767px)": {
       fontSize: 14,
-      lineHeight: 1.5,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 13,
