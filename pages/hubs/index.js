@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import VisibilitySensor from "react-visibility-sensor";
 
 // Component
 import Button from "../../components/Form/Button";
@@ -28,6 +29,7 @@ class Index extends React.Component {
       categories: [],
       hubsByCategory: {},
       finishedLoading: false,
+      activeCategory: null,
     };
     this.state = {
       ...this.initialState,
@@ -70,6 +72,13 @@ class Index extends React.Component {
     }
   }
 
+  handleMenuOnScroll = (state, activeCategory) => {
+    if (state) {
+      activeCategory !== this.state.activeCategory &&
+        this.setState({ activeCategory });
+    }
+  };
+
   openAddHubModal = () => {
     this.props.openAddHubModal(true);
   };
@@ -107,23 +116,35 @@ class Index extends React.Component {
 
   renderCategories = () => {
     const { categories } = this.state;
+
     return categories.map((category, i) => {
       let categoryID = category.id;
       let categoryName = category.category_name;
       let slug = categoryName.toLowerCase().replace(/\s/g, "-");
+      this[slug] = React.createRef();
 
       return (
         <React.Fragment key={categoryID}>
-          <div name={`${slug}`} className={css(styles.categoryLabel)}>
-            {categoryName === "Trending" ? (
-              <span>
-                {categoryName}
-                <span className={css(styles.trendingIcon)}>{icons.fire}</span>
-              </span>
-            ) : (
-              categoryName
-            )}
-          </div>
+          <VisibilitySensor
+            onChange={(isVisible) => this.handleMenuOnScroll(isVisible, i)}
+            active={i !== this.state.activeIndex}
+          >
+            <div
+              ref={this[slug]}
+              id={`${i}-category`}
+              name={`${slug}`}
+              className={css(styles.categoryLabel) + " category"}
+            >
+              {categoryName === "Trending" ? (
+                <span>
+                  {categoryName}
+                  <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+                </span>
+              ) : (
+                categoryName
+              )}
+            </div>
+          </VisibilitySensor>
           <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
             {categoryName === "Trending"
               ? this.renderTrendingHubs()
@@ -179,12 +200,15 @@ class Index extends React.Component {
   };
 
   render() {
-    const { finishedLoading, categories } = this.state;
+    const { finishedLoading, categories, activeCategory } = this.state;
 
     return (
       <div className={css(styles.row, styles.body)}>
         <div className={css(styles.sidebar)}>
-          <CategoryList categories={categories} />
+          <CategoryList
+            categories={categories}
+            activeCategory={activeCategory}
+          />
         </div>
         <div className={css(styles.content)}>
           <AddHubModal addHub={this.addNewHubToState} />
