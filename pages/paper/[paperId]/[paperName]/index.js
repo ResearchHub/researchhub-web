@@ -328,9 +328,7 @@ const Paper = (props) => {
       // { href: "takeaways", label: "key takeaways" },
     ];
 
-    if (paper.summary || paper.abstract || showAllSections) {
-      tabs.push({ href: "summary", label: "abstract" });
-    }
+    tabs.push({ href: "summary", label: "abstract" });
     tabs.push({ href: "comments", label: "discussions" });
     if (paper.file || paper.url || showAllSections) {
       tabs.push({ href: "paper", label: "Paper PDF" });
