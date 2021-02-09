@@ -25,7 +25,8 @@ class CategoryList extends React.Component {
   }
 
   renderCategoryEntry = () => {
-    let categories = this.props.categories;
+    const { categories, activeCategory } = this.props;
+
     return categories.map((category, i) => {
       let { category_name } = category;
       let slug = category_name.toLowerCase().replace(/\s/g, "-");
@@ -34,7 +35,8 @@ class CategoryList extends React.Component {
         <Ripples
           className={css(
             styles.categoryEntry,
-            i === categories.length - 1 && styles.last
+            i === categories.length - 1 && styles.last,
+            activeCategory === i && styles.active
           )}
           key={`${category_name}-${i}`}
         >
@@ -123,6 +125,12 @@ const styles = StyleSheet.create({
         "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
+  },
+  active: {
+    color: colors.NEW_BLUE(),
+    background:
+      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   last: {
     borderBottom: "none",

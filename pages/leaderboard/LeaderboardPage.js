@@ -91,15 +91,9 @@ class Index extends React.Component {
     };
 
     Router.events.on("routeChangeComplete", (url) => {
-      console.log("Router", Router);
-      this.setState(
-        {
-          type: Router.router.query.type,
-        },
-        () => {
-          console.log("this.state", this.state);
-        }
-      );
+      this.setState({
+        type: Router.router.query.type,
+      });
     });
 
     this.items = [
@@ -330,9 +324,6 @@ class Index extends React.Component {
   };
 
   isCurrentItem = (currentType, itemType) => {
-    console.log("currentType", currentType);
-    console.log("itemType", itemType);
-
     return currentType === itemType;
   };
 
