@@ -221,14 +221,14 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   container: {
-    width: "90%",
+    width: "95%",
     margin: "auto",
   },
   titleContainer: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: 40,
+    paddingTop: 30,
     paddingBottom: 40,
   },
   hubsContainer: {
