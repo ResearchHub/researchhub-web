@@ -16,7 +16,7 @@ import icons from "~/config/themes/icons";
 import { HubActions } from "~/redux/hub";
 import { ethers } from "ethers";
 
-const DEFAULT_TRANSITION_TIME = 400;
+const DEFAULT_PAGE_SIZE = 5;
 
 class SubscribedHubList extends React.Component {
   constructor(props) {
@@ -68,12 +68,12 @@ class SubscribedHubList extends React.Component {
     const count = hubs.length;
     let pages = 1;
 
-    if (count > 10) {
-      pages = Math.floor(count / 10) + 1;
+    if (count > DEFAULT_PAGE_SIZE) {
+      pages = Math.ceil(count / DEFAULT_PAGE_SIZE);
 
       for (let i = 1; i <= pages; i++) {
-        let start = (i - 1) * 10;
-        let end = i * 10;
+        let start = (i - 1) * DEFAULT_PAGE_SIZE;
+        let end = i * DEFAULT_PAGE_SIZE;
 
         if (i === pages) {
           paginatedLists[i] = hubs.slice(start);
@@ -148,41 +148,55 @@ class SubscribedHubList extends React.Component {
   render() {
     const { pages, page, hubs } = this.state;
     const { overrideStyle } = this.props;
-    const subscribedHubs = this.props.hubs.subscribedHubs || [];
 
     if (hubs.length) {
       return (
-        <div className={css(styles.container, overrideStyle && overrideStyle)}>
-          <div className={css(styles.hubsListContainer)}>
-            <h5 className={css(styles.listLabel)}>
-              <span>My Hubs</span>
-              <Link href={"/user/settings"} as={"/user/settings"}>
-                <a className={css(styles.link, styles.cogButton)}>
-                  {icons.cog}
-                </a>
-              </Link>
-            </h5>
-            <div className={css(styles.hubsList)}>
-              <ReactPlaceholder
-                showLoadingAnimation
-                ready={this.state.ready}
-                customPlaceholder={
-                  <HubEntryPlaceholder color="#efefef" rows={5} />
-                }
-              >
-                {this.renderHubEntry()}
-              </ReactPlaceholder>
-              {pages > page && (
-                <div
-                  className={css(styles.viewMoreButton)}
-                  onClick={this.nextPage}
-                >
-                  View more
-                </div>
-              )}
+        <div className={css(styles.hubsList)}>
+          <ReactPlaceholder
+            showLoadingAnimation
+            // ready={this.state.ready}
+            ready={true}
+            customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={5} />}
+          >
+            {this.renderHubEntry()}
+          </ReactPlaceholder>
+          {pages > page && (
+            <div className={css(styles.viewMoreButton)} onClick={this.nextPage}>
+              View more
             </div>
-          </div>
+          )}
         </div>
+        // <div className={css(styles.container, overrideStyle && overrideStyle)}>
+        //   <div className={css(styles.hubsListContainer)}>
+        //     <h5 className={css(styles.listLabel)}>
+        //       <span>My Hubs</span>
+        //       <Link href={"/user/settings"} as={"/user/settings"}>
+        //         <a className={css(styles.link, styles.cogButton)}>
+        //           {icons.cog}
+        //         </a>
+        //       </Link>
+        //     </h5>
+        //     <div className={css(styles.hubsList)}>
+        //       <ReactPlaceholder
+        //         showLoadingAnimation
+        //         ready={this.state.ready}
+        //         customPlaceholder={
+        //           <HubEntryPlaceholder color="#efefef" rows={5} />
+        //         }
+        //       >
+        //         {this.renderHubEntry()}
+        //       </ReactPlaceholder>
+        //       {pages > page && (
+        //         <div
+        //           className={css(styles.viewMoreButton)}
+        //           onClick={this.nextPage}
+        //         >
+        //           View more
+        //         </div>
+        //       )}
+        //     </div>
+        //   </div>
+        // </div>
       );
     } else {
       return null;
@@ -198,7 +212,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: "15px 0 1px",
     backgroundColor: "#FFF",
-    border: "1px solid #ededed",
+    // border: "1px solid #ededed",
     borderRadius: 4,
     boxSizing: "border-box",
     width: "100%",
@@ -330,7 +344,7 @@ const styles = StyleSheet.create({
     fontWeight: 300,
     textTransform: "capitalize",
     fontSize: 16,
-    padding: 20,
+    padding: "10px 20px",
     borderTop: "1px solid #F0F0F0",
     boxSizing: "border-box",
     width: "100%",
@@ -338,6 +352,7 @@ const styles = StyleSheet.create({
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",
+      background: "#FAFAFA",
     },
   },
 });
