@@ -131,6 +131,16 @@ const PaperEntryCard = (props) => {
         url={url}
         externalSource={external_source}
         onFallback={() => {
+          if (external_source) {
+            return (
+              <div className={css(styles.uploadedBy)}>
+                <span className={css(styles.capitalize, styles.externalSource)}>
+                  {external_source}
+                </span>
+              </div>
+            );
+          }
+
           if (uploaded_by) {
             const {
               first_name,
@@ -153,15 +163,6 @@ const PaperEntryCard = (props) => {
                   trueSize={true}
                   dropShadow={true}
                 />
-              </div>
-            );
-          } else if (external_source) {
-            return (
-              <div className={css(styles.uploadedBy)}>
-                Published on{" "}
-                <span className={css(styles.capitalize)}>
-                  {external_source}
-                </span>
               </div>
             );
           }
@@ -989,6 +990,11 @@ const styles = StyleSheet.create({
   capitalize: {
     marginRight: 8,
     textTransform: "capitalize",
+  },
+  externalSource: {
+    fontSize: 14,
+    color: colors.BLACK(0.8),
+    fontWeight: 500,
   },
   authorName: {
     marginLeft: 4,
