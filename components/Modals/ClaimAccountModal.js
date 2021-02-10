@@ -25,7 +25,7 @@ const ClaimAccountModal = (props) => {
     <BaseModal
       isOpen={modals.openClaimAccountModal}
       closeModal={closeModal}
-      title={"Claim Account"}
+      title={"Claim Account & RSC"}
     >
       <div className={css(styles.content)}>
         <h3 className={css(styles.subheader)}>

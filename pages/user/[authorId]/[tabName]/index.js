@@ -975,11 +975,11 @@ const AuthorPage = (props) => {
                   >
                     {icons.checkSquare}
                   </span>
-                  Claim Account
+                  Claim Account & RSC
                 </span>
               )}
               onClick={() => props.openClaimAccountModal(true)}
-              customButtonStyle={styles.editButtonCustom}
+              customButtonStyle={styles.claimAccountButton}
               rippleClass={styles.rippleClass}
             />
           </div>
@@ -1688,6 +1688,16 @@ const styles = StyleSheet.create({
   editButtonCustom: {
     height: 35,
     width: 140,
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 10,
+      height: 40,
+      width: "100%",
+      minWidth: "100%",
+    },
+  },
+  claimAccountButton: {
+    width: 190,
+    height: 35,
     "@media only screen and (max-width: 767px)": {
       marginTop: 10,
       height: 40,
