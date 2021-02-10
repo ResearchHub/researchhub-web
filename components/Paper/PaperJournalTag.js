@@ -9,29 +9,25 @@ import { MessageActions } from "~/redux/message";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
-import { getHostFromPath } from "~/config/utils";
+import { getJournalFromURL } from "~/config/utils";
 
 const PaperJournalTag = (props) => {
   const { url, externalSource } = props;
-  const [hidden, setHidden] = useState(false);
+  const [error, setError] = useState(false);
 
-  const renderLogo = () => {
-    const source = getJournalName(
-      externalSource ? externalSource : getHostFromPath(url)
-    );
-    const src = getLogoPath(source);
+  const source = externalSource ? externalSource : getJournalFromURL(url);
+  const journal = getJournalName(source);
+  const src = getLogoPath(journal);
 
-    const imgProps = {
+  const formatImageProps = () => {
+    return {
       src,
-      className: css(styles.logo, styles[source], hidden && styles.hidden),
-      onError: () => setHidden(true),
+      className: css(styles.logo, styles[journal], error && styles.error),
     };
-
-    return source ? <img {...imgProps} /> : props.onFallback();
   };
 
-  const getJournalName = (source) => {
-    switch (source) {
+  function getJournalName(journal) {
+    switch (journal) {
       case "doi":
       case "org/10":
         return null;
@@ -56,6 +52,7 @@ const PaperJournalTag = (props) => {
       case "Georg Thieme Verlag KG":
         return "thieme";
       case "Frontiers Media SA":
+      case "Frontiers in Bioengineering and Biotechnology":
       case "frontiersin":
         return "frontiers";
       case "Semantic_scholar":
@@ -73,15 +70,20 @@ const PaperJournalTag = (props) => {
         return "sage";
       case "World Scientific Pub Co Pte Lt":
         return "wspc";
+      case "BMC Biology":
+        return "biomedcentral";
       default:
-        if (source && (source.includes("abs") || source.includes("arxiv"))) {
+        if (journal && (journal.includes("abs") || journal.includes("arxiv"))) {
           return "arxiv";
         }
-        return source;
+        if (journal && journal.includes("Frontiers")) {
+          return "frontiers";
+        }
+        return journal;
     }
-  };
+  }
 
-  const getLogoPath = (source) => {
+  function getLogoPath(source) {
     const src = `/static/icons/journals/${source}`;
     switch (source) {
       case "googleapis":
@@ -95,9 +97,15 @@ const PaperJournalTag = (props) => {
       default:
         return src + ".svg";
     }
-  };
+  }
 
-  return renderLogo();
+  console.log("source", source);
+
+  if (error) {
+    return props.onFallback(source);
+  } else {
+    return <img {...formatImageProps()} onError={() => setError(true)} />;
+  }
 };
 
 const styles = StyleSheet.create({
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
       marginTop: 10,
     },
   },
-  hidden: {
+  error: {
     display: "none",
   },
   arxiv: {
@@ -185,6 +193,9 @@ const styles = StyleSheet.create({
   },
   sciencedirect: {
     height: 50,
+  },
+  researchgate: {
+    height: 12,
   },
 });
 
