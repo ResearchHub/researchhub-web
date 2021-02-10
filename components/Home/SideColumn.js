@@ -19,16 +19,12 @@ class SideColumn extends React.Component {
     };
   }
 
-  componentDidMount() {}
-
-  componentDidUpdate(prevProps) {}
-
   isActive = (id) => {
     return this.props.activeItem === id;
   };
 
   renderListItem = (list = []) => {
-    const { activeItem, onItemClick, id } = this.props;
+    const { onItemClick, id } = this.props;
 
     return list.map((entry, i) => {
       const { href, query, linkAs, name, icon } = entry;
@@ -100,14 +96,6 @@ class SideColumn extends React.Component {
             >
               {renderListItem ? renderListItem() : this.renderListItem(data)}
             </ReactPlaceholder>
-            {/* {pages > page && (
-              <div
-                className={css(styles.viewMoreButton)}
-                onClick={this.nextPage}
-              >
-                View more
-              </div>
-            )} */}
           </div>
         </div>
       </div>
