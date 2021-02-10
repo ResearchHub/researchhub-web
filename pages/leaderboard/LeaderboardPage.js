@@ -10,18 +10,21 @@ import ReactPlaceholder from "react-placeholder/lib";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { timeAgo } from "~/config/utils/dates";
+import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
 
 // Components
 import ContentPage from "../../components/ContentPage/ContentPage";
 import SidebarList from "../../components/ContentPage/SidebarList";
 import FormSelect from "~/components/Form/FormSelect";
-import LeaderboardPlaceholder from "../../components/Placeholders/LeaderboardPlaceholder";
-import colors from "../../config/themes/colors";
+import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+import LeaderboardFeedPlaceholder from "../../components/Placeholders/LeaderboardFeedPlaceholder";
 import LeaderboardUser from "../../components/Leaderboard/LeaderboardUser";
 import Loader from "~/components/Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Head from "~/components/Head";
 import HeadComponent from "../../components/Head";
+import SideColumn from "~/components/Home/SideColumn";
 
 const filterOptions = [
   {
@@ -94,9 +97,9 @@ class Index extends React.Component {
     });
 
     this.items = [
-      { name: "Users", id: "users", type: "users" },
-      { name: "Authors", id: "authors", type: "authors" },
-      { name: "Papers", id: "papers", type: "papers" },
+      { name: "Users", id: "users", type: "users", icon: icons.subscribers },
+      { name: "Authors", id: "authors", type: "authors", icon: icons.userEdit },
+      { name: "Papers", id: "papers", type: "papers", icon: icons.bookOpen },
     ];
   }
 
@@ -496,20 +499,22 @@ class Index extends React.Component {
    */
   renderSidebarEntry = () => {
     return this.items.map((item, i) => {
-      let { name, id } = item;
-
+      const { name, icon, id } = item;
       return (
         <Ripples
           className={css(
             styles.sidebarEntry,
-            this.isCurrentItem(this.state.type, id) && styles.current
+            this.state.type === id && styles.current,
+            i === this.items.length - 1 && styles.last
           )}
+          key={`listItem-${id}-${i}`}
           onClick={() => {
             if (this.state.type === item.type) {
               return;
             }
             this.setState({
               fetchingLeaderboard: true,
+              type: item.type,
             });
           }}
           key={`${id}-${i}`}
@@ -525,7 +530,10 @@ class Index extends React.Component {
               this.state.by.slug
             }/${this.convertToSlug(this.state.filterBy.value)}`}
           >
-            <a className={css(styles.sidebarLink)}>{name}</a>
+            <a className={css(styles.sidebarLink)}>
+              <span className={css(styles.icon)}>{icon}</span>
+              {name}
+            </a>
           </Link>
         </Ripples>
       );
@@ -563,9 +571,6 @@ class Index extends React.Component {
                 options={this.state.byOptions}
                 value={this.state.by}
                 containerStyle={mainFeedStyles.dropDownLeft}
-                // singleValue={{
-                //   color: colors.PURPLE(),
-                // }}
                 indicatorSeparator={{
                   display: "none",
                 }}
@@ -652,25 +657,16 @@ class Index extends React.Component {
               <ReactPlaceholder
                 ready={false}
                 showLoadingAnimation
-                customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
+                customPlaceholder={
+                  this.state.type === "papers" ? (
+                    <PaperPlaceholder color="#efefef" rows={3} />
+                  ) : (
+                    <LeaderboardFeedPlaceholder color="#efefef" rows={5} />
+                  )
+                }
               />
-              <div className={css(mainFeedStyles.placeholderBottom)}>
-                <ReactPlaceholder
-                  ready={false}
-                  showLoadingAnimation
-                  customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
-                >
-                  <div />
-                </ReactPlaceholder>
-              </div>
             </div>
           )}
-        </div>
-        <div className={css(mainFeedStyles.mobileHubListContainer)}>
-          {/* <HubsList
-            current={this.props.home ? null : this.props.hub}
-            overrideStyle={mainFeedStyles.mobileList}
-          /> */}
         </div>
         <HeadComponent title="ResearchHub Leaderboards" />
       </Fragment>
@@ -678,7 +674,7 @@ class Index extends React.Component {
   };
 
   render() {
-    let mainFeed = this.renderMainFeed();
+    const mainFeed = this.renderMainFeed();
     return (
       <Fragment>
         <Head
@@ -688,10 +684,11 @@ class Index extends React.Component {
         <ContentPage
           mainFeed={mainFeed}
           sidebar={
-            <SidebarList
-              sidebarItems={this.items}
-              renderSidebarEntry={this.renderSidebarEntry}
-              sidebarName={"Leaderboard"}
+            <SideColumn
+              renderListItem={this.renderSidebarEntry}
+              title={"Leaderboard"}
+              ready={true}
+              active={this.state.type}
             />
           }
         />
@@ -708,34 +705,63 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
-    boxSizing: "content-box",
+    boxSizing: "border-box",
     width: "100%",
     borderRadius: 3,
-    border: "1px solid #fff",
-    marginBottom: 8,
+    borderLeft: "3px solid #fff",
+    borderBottom: "1px solid #F0F0F0",
+    color: colors.BLACK(0.6),
     ":hover": {
-      borderColor: "rgb(237, 237, 237)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: "#FAFAFA",
+      color: colors.NEW_BLUE(),
+      transition: "all ease-out 0.1s",
     },
+    ":active": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+    ":focus": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+  },
+  current: {
+    color: colors.NEW_BLUE(),
+    background:
+      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+  },
+  last: {
+    borderBottom: "none",
   },
   sidebarLink: {
     textDecoration: "none",
-    color: "#111",
     width: "100%",
     display: "flex",
     alignItems: "center",
-    padding: "8px",
+    fontWeight: 500,
+    color: "unset",
+    padding: "15px 15px",
+  },
+  icon: {
+    fontSize: 18,
+    marginLeft: 5,
+    marginRight: 12,
+    width: 25,
+    display: "flex",
   },
   user: {
+    boxSizing: "border-box",
     borderBottom: "1px solid #EDEDED",
     padding: 16,
-  },
-  current: {
-    borderColor: "rgb(237, 237, 237)",
-    backgroundColor: "#FAFAFA",
     ":hover": {
-      borderColor: "rgb(227, 227, 227)",
-      backgroundColor: "#EAEAEA",
+      transition: "all ease-out 0.1s",
+      backgroundColor: "#FAFAFA",
     },
   },
   leaderboardSection: {
@@ -765,10 +791,12 @@ const styles = StyleSheet.create({
   },
   createdAt: {
     color: "#918F9C",
+    display: "flex",
+    alignItems: "center",
   },
   repClass: {
     "@media only screen and (min-width: 1024px)": {
-      paddingRight: 130,
+      paddingRight: 100,
     },
   },
   bullet: {
@@ -991,8 +1019,8 @@ const mainFeedStyles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 20,
     width: "100%",
-    paddingLeft: 70,
-    paddingRight: 70,
+    paddingLeft: 30,
+    paddingRight: 30,
     boxSizing: "border-box",
     backgroundColor: "#FCFCFC",
     alignItems: "center",
@@ -1144,8 +1172,8 @@ const mainFeedStyles = StyleSheet.create({
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
     backgroundColor: "#FCFCFC",
-    paddingLeft: 70,
-    paddingRight: 70,
+    paddingLeft: 50,
+    paddingRight: 50,
     paddingBottom: 30,
     "@media only screen and (min-width: 900px)": {
       paddingLeft: 25,

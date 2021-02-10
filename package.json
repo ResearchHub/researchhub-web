@@ -91,6 +91,7 @@
     "react-tagsinput": "^3.19.0",
     "react-toggle": "^4.1.1",
     "react-tooltip": "^3.11.1",
+    "react-waypoint": "^9.0.3",
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
