@@ -230,6 +230,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     color: "unset",
+    height: 32,
   },
   spacebetween: {
     justifyContent: "space-between",
