@@ -85,7 +85,7 @@ class SideColumn extends React.Component {
           <div className={css(styles.list)}>
             <ReactPlaceholder
               showLoadingAnimation
-              ready={ready ? ready : true}
+              ready={ready}
               customPlaceholder={
                 customPlaceholder ? (
                   customPlaceholder
