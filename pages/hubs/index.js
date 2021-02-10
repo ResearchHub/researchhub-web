@@ -74,7 +74,9 @@ class Index extends React.Component {
   }
 
   setActiveCategory = (activeCategory) => {
-    if (activeCategory !== this.state.activeCategory) {
+    const { categories, finishedLoading } = this.state;
+
+    if (finishedLoading && categories.length) {
       this.setState({ activeCategory });
     }
   };
