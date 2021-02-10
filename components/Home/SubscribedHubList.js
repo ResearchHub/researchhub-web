@@ -154,8 +154,7 @@ class SubscribedHubList extends React.Component {
         <div className={css(styles.hubsList)}>
           <ReactPlaceholder
             showLoadingAnimation
-            // ready={this.state.ready}
-            ready={true}
+            ready={this.state.ready}
             customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={5} />}
           >
             {this.renderHubEntry()}
@@ -166,37 +165,6 @@ class SubscribedHubList extends React.Component {
             </div>
           )}
         </div>
-        // <div className={css(styles.container, overrideStyle && overrideStyle)}>
-        //   <div className={css(styles.hubsListContainer)}>
-        //     <h5 className={css(styles.listLabel)}>
-        //       <span>My Hubs</span>
-        //       <Link href={"/user/settings"} as={"/user/settings"}>
-        //         <a className={css(styles.link, styles.cogButton)}>
-        //           {icons.cog}
-        //         </a>
-        //       </Link>
-        //     </h5>
-        //     <div className={css(styles.hubsList)}>
-        //       <ReactPlaceholder
-        //         showLoadingAnimation
-        //         ready={this.state.ready}
-        //         customPlaceholder={
-        //           <HubEntryPlaceholder color="#efefef" rows={5} />
-        //         }
-        //       >
-        //         {this.renderHubEntry()}
-        //       </ReactPlaceholder>
-        //       {pages > page && (
-        //         <div
-        //           className={css(styles.viewMoreButton)}
-        //           onClick={this.nextPage}
-        //         >
-        //           View more
-        //         </div>
-        //       )}
-        //     </div>
-        //   </div>
-        // </div>
       );
     } else {
       return null;
@@ -212,7 +180,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: "15px 0 1px",
     backgroundColor: "#FFF",
-    // border: "1px solid #ededed",
     borderRadius: 4,
     boxSizing: "border-box",
     width: "100%",

@@ -13,8 +13,6 @@ import icons from "~/config/themes/icons";
 // Redux
 import { HubActions } from "~/redux/hub";
 
-const DEFAULT_TRANSITION_TIME = 400;
-
 class FeedList extends React.Component {
   constructor(props) {
     super(props);
@@ -273,6 +271,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   dropdownIcon: {
+    fontSize: 18,
     position: "absolute",
     right: 15,
     color: colors.BLACK(0.6),

@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
   },
   signinContainer: {
     borderRadius: 16,
-    // border: '1px solid #ddd',
     padding: 16,
     width: 550,
   },
