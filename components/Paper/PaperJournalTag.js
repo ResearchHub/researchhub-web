@@ -59,6 +59,7 @@ const PaperJournalTag = (props) => {
       case "frontiersin":
         return "frontiers";
       case "Semantic_scholar":
+      case "semantic_scholar":
         return "semanticscholar";
       case "Manubot":
         return "manubot";
@@ -70,6 +71,8 @@ const PaperJournalTag = (props) => {
         return "embo";
       case "SAGE Publications":
         return "sage";
+      case "World Scientific Pub Co Pte Lt":
+        return "wspc";
       default:
         if (source && (source.includes("abs") || source.includes("arxiv"))) {
           return "arxiv";
@@ -87,6 +90,7 @@ const PaperJournalTag = (props) => {
       case "biomedcentral":
       case "sage":
       case "sciencedirect":
+      case "wspc":
         return src + ".png";
       default:
         return src + ".svg";
