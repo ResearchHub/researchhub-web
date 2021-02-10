@@ -55,10 +55,11 @@ class FeedList extends React.Component {
     this.setState({ dropdown: !this.state.dropdown });
   };
 
-  renderDropdownButton = () => {
+  renderDropdownButton = (i) => {
     const { auth, hubState } = this.props;
+    const { dropdown } = this.state;
 
-    if (auth.loggedIn && hubState.subscribedHubs) {
+    if (auth.isLoggedIn && hubState.subscribedHubs.length) {
       return (
         i === 0 && (
           <span
@@ -74,10 +75,11 @@ class FeedList extends React.Component {
     return null;
   };
 
-  renderDropdown = () => {
+  renderDropdown = (i) => {
     const { auth, hubState } = this.props;
+    const { dropdown } = this.state;
 
-    if (auth.loggedIn && hubState.subscribedHubs) {
+    if (auth.isLoggedIn && hubState.subscribedHubs.length) {
       return (
         i === 0 &&
         dropdown && (
@@ -111,10 +113,10 @@ class FeedList extends React.Component {
               <span style={{ opacity: 1 }} className={"clamp1"}>
                 {label}
               </span>
-              {this.renderDropdownButton}
+              {this.renderDropdownButton(i)}
             </div>
           </Ripples>
-          {this.renderDropdown()}
+          {this.renderDropdown(i)}
         </Fragment>
       );
     });
@@ -282,7 +284,6 @@ const styles = StyleSheet.create({
   dropdown: {
     width: "100%",
     borderBottom: "1px solid #F0F0F0",
-    // boxShadow: "inset 0 0 10px #EDEDED"
     boxShadow:
       "inset 0px 11px 8px -10px #EDEDED, inset 0px -11px 8px -10px #EDEDED",
   },
