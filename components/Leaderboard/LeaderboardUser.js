@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   },
   rep: {
     marginLeft: "auto",
-    // color: colors.PURPLE(1),
     fontWeight: 500,
   },
 });

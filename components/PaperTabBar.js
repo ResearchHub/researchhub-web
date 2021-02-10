@@ -109,14 +109,13 @@ const PaperTabBar = (props) => {
 
     if (window.scrollY < 200) {
       setSelectedTab("main");
-    } else if (
-      window.scrollY <= calculateOffset("takeaways-tab", -navbarHeight)
-    ) {
-      setSelectedTab("key takeaways");
-    } else if (
-      document.getElementById("summary-tab") &&
-      window.scrollY <= calculateOffset("summary-tab", -navbarHeight)
-    ) {
+    }
+    // else if (
+    //   window.scrollY <= calculateOffset("takeaways-tab", -navbarHeight)
+    // ) {
+    //   setSelectedTab("key takeaways");
+    // }
+    else if (window.scrollY <= calculateOffset("summary-tab", -navbarHeight)) {
       setSelectedTab("summary");
       if (window.outerWidth < 667) {
         let paperNavigation = document.getElementById("paper-navigation");

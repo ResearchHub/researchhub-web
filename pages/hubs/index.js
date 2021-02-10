@@ -1,24 +1,25 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import { Waypoint } from "react-waypoint";
 
 // Component
-import Button from "../../components/Form/Button";
-import AddHubModal from "../../components/Modals/AddHubModal";
-import EditHubModal from "../../components/Modals/EditHubModal";
-import Message from "../../components/Loader/Message";
-import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
+import Button from "~/components/Form/Button";
+import AddHubModal from "~/components/Modals/AddHubModal";
+import EditHubModal from "~/components/Modals/EditHubModal";
+import Message from "~/components/Loader/Message";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
 import CategoryList from "~/components/Hubs/CategoryList";
-import HubCard from "../../components/Hubs/HubCard";
+import HubCard from "~/components/Hubs/HubCard";
 
 // Config
 import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
-import { ModalActions } from "../../redux/modals";
-import { MessageActions } from "../../redux/message";
+import { ModalActions } from "~/redux/modals";
+import { MessageActions } from "~/redux/message";
 
 class Index extends React.Component {
   constructor(props) {
@@ -28,6 +29,7 @@ class Index extends React.Component {
       categories: [],
       hubsByCategory: {},
       finishedLoading: false,
+      activeCategory: 0,
     };
     this.state = {
       ...this.initialState,
@@ -37,6 +39,7 @@ class Index extends React.Component {
   componentDidMount = async () => {
     const { getCategories, getHubs, showMessage, hubs } = this.props;
     showMessage({ show: true, load: true });
+
     if (!hubs.fetchedHubs) {
       getCategories().then((payload) => {
         this.setState({ categories: payload.payload.categories });
@@ -69,6 +72,12 @@ class Index extends React.Component {
       );
     }
   }
+
+  setActiveCategory = (activeCategory) => {
+    if (activeCategory !== this.state.activeCategory) {
+      this.setState({ activeCategory });
+    }
+  };
 
   openAddHubModal = () => {
     this.props.openAddHubModal(true);
@@ -107,29 +116,38 @@ class Index extends React.Component {
 
   renderCategories = () => {
     const { categories } = this.state;
+
     return categories.map((category, i) => {
       let categoryID = category.id;
       let categoryName = category.category_name;
       let slug = categoryName.toLowerCase().replace(/\s/g, "-");
 
       return (
-        <React.Fragment key={categoryID}>
-          <div name={`${slug}`} className={css(styles.categoryLabel)}>
-            {categoryName === "Trending" ? (
-              <span>
-                {categoryName}
-                <span className={css(styles.trendingIcon)}>{icons.fire}</span>
-              </span>
-            ) : (
-              categoryName
-            )}
+        <Waypoint onEnter={() => this.setActiveCategory(i)}>
+          <div key={categoryID}>
+            <div
+              id={`${i}-category`}
+              name={`${slug}`}
+              className={css(styles.categoryLabel) + " category"}
+              onClick={() => this.setActiveCategory(i)}
+              key={categoryID}
+            >
+              {categoryName === "Trending" ? (
+                <span>
+                  {categoryName}
+                  <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+                </span>
+              ) : (
+                categoryName
+              )}
+            </div>
+            <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
+              {categoryName === "Trending"
+                ? this.renderTrendingHubs()
+                : this.renderHubs(categoryID)}
+            </div>
           </div>
-          <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
-            {categoryName === "Trending"
-              ? this.renderTrendingHubs()
-              : this.renderHubs(categoryID)}
-          </div>
-        </React.Fragment>
+        </Waypoint>
       );
     });
   };
@@ -179,12 +197,15 @@ class Index extends React.Component {
   };
 
   render() {
-    const { finishedLoading, categories } = this.state;
+    const { finishedLoading, categories, activeCategory } = this.state;
 
     return (
       <div className={css(styles.row, styles.body)}>
         <div className={css(styles.sidebar)}>
-          <CategoryList categories={categories} />
+          <CategoryList
+            categories={categories}
+            activeCategory={activeCategory}
+          />
         </div>
         <div className={css(styles.content)}>
           <AddHubModal addHub={this.addNewHubToState} />
@@ -194,6 +215,7 @@ class Index extends React.Component {
             title={"Hubs on Researchhub"}
             description={"View all of the communities on Researchhub"}
           />
+
           <div className={css(styles.container)}>
             <div className={css(styles.titleContainer)}>
               <span className={css(styles.title)}>Hubs</span>
@@ -220,14 +242,14 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   container: {
-    width: "90%",
+    width: "95%",
     margin: "auto",
   },
   titleContainer: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: 40,
+    paddingTop: 30,
     paddingBottom: 40,
   },
   hubsContainer: {
@@ -246,18 +268,19 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   sidebar: {
-    minWidth: 220,
+    width: 265,
+    minWidth: 255,
+    maxWidth: 265,
     width: "18%",
     position: "sticky",
     top: 79,
-    background: "#fff",
     minHeight: "100vh",
+    marginLeft: 20,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
   content: {
-    borderLeft: "1px solid #ededed",
     "@media only screen and (min-width: 900px)": {
       width: "82%",
     },
