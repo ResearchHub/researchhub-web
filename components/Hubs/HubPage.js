@@ -629,7 +629,7 @@ class HubPage extends React.Component {
       leaderboardFeed,
     } = this.props;
 
-    if (filterOptions.length < 5) {
+    if (auth.user.moderator && filterOptions.length < 5) {
       filterOptions.push(
         {
           value: "removed",
