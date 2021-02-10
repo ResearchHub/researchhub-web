@@ -54,17 +54,44 @@ class FeedList extends React.Component {
     e && e.stopPropagation();
     this.setState({ dropdown: !this.state.dropdown });
   };
+
+  renderDropdownButton = () => {
+    const { auth, hubState } = this.props;
+
+    if (auth.loggedIn && hubState.subscribedHubs) {
+      return (
+        i === 0 && (
+          <span
+            className={css(styles.dropdownIcon)}
+            onClick={this.toggleDropdown}
+          >
+            {dropdown ? icons.chevronUp : icons.chevronDown}
+          </span>
+        )
+      );
+    }
+
+    return null;
+  };
+
   renderDropdown = () => {
-    return (
-      <div className={css(styles.dropdown)}>
-        <SubscribedHubList current={this.props.current} />
-      </div>
-    );
+    const { auth, hubState } = this.props;
+
+    if (auth.loggedIn && hubState.subscribedHubs) {
+      return (
+        i === 0 &&
+        dropdown && (
+          <div className={css(styles.dropdown)}>
+            <SubscribedHubList current={this.props.current} />
+          </div>
+        )
+      );
+    }
+    return null;
   };
 
   renderFeedList = () => {
     const { activeFeed } = this.props;
-    const { dropdown } = this.state;
     return this.feeds.map((feed, i) => {
       const { label, icon, href, as } = feed;
 
@@ -84,17 +111,10 @@ class FeedList extends React.Component {
               <span style={{ opacity: 1 }} className={"clamp1"}>
                 {label}
               </span>
-              {i === 0 && (
-                <span
-                  className={css(styles.dropdownIcon)}
-                  onClick={this.toggleDropdown}
-                >
-                  {dropdown ? icons.chevronUp : icons.chevronDown}
-                </span>
-              )}
+              {this.renderDropdownButton}
             </div>
           </Ripples>
-          {i === 0 && dropdown && this.renderDropdown()}
+          {this.renderDropdown()}
         </Fragment>
       );
     });
