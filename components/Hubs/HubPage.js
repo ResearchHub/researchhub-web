@@ -672,8 +672,12 @@ class HubPage extends React.Component {
           </div>
           <div className={css(styles.row, styles.body)}>
             <div className={css(styles.column, styles.sidebar)}>
-              <FeedList activeFeed={feed} onFeedSelect={this.onFeedSelect} />
-              <SubscribedHubList current={home ? null : hub} />
+              <FeedList
+                activeFeed={feed}
+                onFeedSelect={this.onFeedSelect}
+                current={home ? null : hub}
+              />
+              {/* <SubscribedHubList current={home ? null : hub} /> */}
               <HubsList
                 current={home ? null : hub}
                 initialHubList={initialHubList}
@@ -978,7 +982,6 @@ var styles = StyleSheet.create({
     paddingLeft: 70,
     paddingRight: 70,
     boxSizing: "border-box",
-    // backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
     top: 80,
@@ -1097,7 +1100,6 @@ var styles = StyleSheet.create({
     width: 120,
     height: 37,
     boxSizing: "border-box",
-    // padding: "5px 15px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -1130,7 +1132,6 @@ var styles = StyleSheet.create({
   },
   leaderboard: {
     display: "none",
-    // background: "#FCFCFC",
     "@media only screen and (min-width: 900px)": {
       display: "block",
       width: "20%",
