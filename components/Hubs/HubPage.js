@@ -672,8 +672,12 @@ class HubPage extends React.Component {
           </div>
           <div className={css(styles.row, styles.body)}>
             <div className={css(styles.column, styles.sidebar)}>
-              <FeedList activeFeed={feed} onFeedSelect={this.onFeedSelect} />
-              <SubscribedHubList current={home ? null : hub} />
+              <FeedList
+                activeFeed={feed}
+                onFeedSelect={this.onFeedSelect}
+                current={home ? null : hub}
+              />
+              {/* <SubscribedHubList current={home ? null : hub} /> */}
               <HubsList
                 current={home ? null : hub}
                 initialHubList={initialHubList}

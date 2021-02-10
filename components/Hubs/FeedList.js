@@ -4,6 +4,8 @@ import Router from "next/router";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 
+import SubscribedHubList from "../Home/SubscribedHubList";
+
 // Config
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -18,7 +20,7 @@ class FeedList extends React.Component {
     super(props);
     this.state = {
       // activeFeed: this.props.feed,
-      reveal: true,
+      dropdown: false,
     };
 
     this.feeds = [
@@ -48,28 +50,52 @@ class FeedList extends React.Component {
     onFeedSelect(index);
   };
 
+  toggleDropdown = (e) => {
+    e && e.stopPropagation();
+    this.setState({ dropdown: !this.state.dropdown });
+  };
+  renderDropdown = () => {
+    return (
+      <div className={css(styles.dropdown)}>
+        <SubscribedHubList current={this.props.current} />
+      </div>
+    );
+  };
+
   renderFeedList = () => {
     const { activeFeed } = this.props;
+    const { dropdown } = this.state;
     return this.feeds.map((feed, i) => {
       const { label, icon, href, as } = feed;
 
       return (
-        <Ripples
-          className={css(
-            styles.listItem,
-            i === activeFeed && styles.activeListItem,
-            i === 1 && styles.lastItem
-          )}
-          key={`${label}-${i}`}
-          onClick={() => this.onClick({ href, as }, i)}
-        >
-          <div className={css(styles.link)}>
-            <span className={css(styles.icon)}>{icon}</span>
-            <span style={{ opacity: 1 }} className={"clamp1"}>
-              {label}
-            </span>
-          </div>
-        </Ripples>
+        <Fragment>
+          <Ripples
+            className={css(
+              styles.listItem,
+              i === activeFeed && styles.activeListItem,
+              i === 1 && styles.lastItem
+            )}
+            key={`${label}-${i}`}
+            onClick={() => this.onClick({ href, as }, i)}
+          >
+            <div className={css(styles.link)}>
+              <span className={css(styles.icon)}>{icon}</span>
+              <span style={{ opacity: 1 }} className={"clamp1"}>
+                {label}
+              </span>
+              {i === 0 && (
+                <span
+                  className={css(styles.dropdownIcon)}
+                  onClick={this.toggleDropdown}
+                >
+                  {dropdown ? icons.chevronUp : icons.chevronDown}
+                </span>
+              )}
+            </div>
+          </Ripples>
+          {i === 0 && dropdown && this.renderDropdown()}
+        </Fragment>
       );
     });
   };
@@ -81,11 +107,7 @@ class FeedList extends React.Component {
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
           <h5 className={css(styles.listLabel)}>ResearchHub Feeds</h5>
-          <div
-            className={css(styles.hubsList, this.state.reveal && styles.reveal)}
-          >
-            {this.renderFeedList()}
-          </div>
+          <div className={css(styles.hubsList)}>{this.renderFeedList()}</div>
         </div>
       </div>
     );
@@ -146,6 +168,7 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #F0F0F0",
     padding: "10px 15px",
     color: colors.BLACK(0.6),
+    position: "relative",
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: "#FAFAFA",
@@ -188,6 +211,9 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: "unset",
   },
+  spacebetween: {
+    justifyContent: "space-between",
+  },
   current: {
     borderColor: "rgb(237, 237, 237)",
     backgroundColor: "#FAFAFA",
@@ -203,16 +229,13 @@ const styles = StyleSheet.create({
     opacity: 1,
   },
   hubsList: {
-    opacity: 0,
+    opacity: 1,
     width: "100%",
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-  },
-  reveal: {
-    opacity: 1,
   },
   rhIcon: {
     width: 15,
@@ -226,6 +249,22 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     color: colors.DARK_YELLOW(),
     fontSize: 11,
+  },
+  dropdownIcon: {
+    position: "absolute",
+    right: 15,
+    color: colors.BLACK(0.6),
+    ":hover": {
+      cursor: "pointer",
+      color: colors.NEW_BLUE(),
+    },
+  },
+  dropdown: {
+    width: "100%",
+    borderBottom: "1px solid #F0F0F0",
+    // boxShadow: "inset 0 0 10px #EDEDED"
+    boxShadow:
+      "inset 0px 11px 8px -10px #EDEDED, inset 0px -11px 8px -10px #EDEDED",
   },
 });
 
