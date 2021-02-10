@@ -130,18 +130,18 @@ const PaperEntryCard = (props) => {
       <PaperJournalTag
         url={url}
         externalSource={external_source}
-        onFallback={() => {
-          if (external_source) {
+        onFallback={(externalSource) => {
+          if (externalSource && externalSource !== "doi") {
             return (
               <div className={css(styles.uploadedBy)}>
                 <span className={css(styles.capitalize, styles.externalSource)}>
-                  {external_source}
+                  {externalSource}
                 </span>
               </div>
             );
           }
 
-          if (uploaded_by) {
+          if (uploaded_by && externalSource !== "doi") {
             const {
               first_name,
               last_name,
@@ -166,6 +166,8 @@ const PaperEntryCard = (props) => {
               </div>
             );
           }
+
+          return null;
         }}
       />
     );
