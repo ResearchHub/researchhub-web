@@ -35,6 +35,8 @@ const PaperJournalTag = (props) => {
       case "org/abs/2003":
       case "org/ftp/arxiv/papers/2101/2101":
       case "org/abs/2101":
+      case "arxiv":
+      case "Arxiv":
         return "arxiv";
       case "Future Science Ltd":
         return "futurescience";
