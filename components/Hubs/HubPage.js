@@ -470,7 +470,7 @@ class HubPage extends React.Component {
     const { filterBy, feed } = this.state;
 
     if (feed === 0) {
-      return "My Hubs on ";
+      return;
     }
 
     const isHomePage = this.props.home;
@@ -645,8 +645,7 @@ class HubPage extends React.Component {
       );
     }
 
-    const sampleFeed =
-      this.state.feedType !== "subscribed" && this.state.feed === 0;
+    const sampleFeed = this.state.feedType !== "subscribed" && feed === 0;
 
     const hasSubscribed = process.browser
       ? auth.authChecked
@@ -673,10 +672,7 @@ class HubPage extends React.Component {
           </div>
           <div className={css(styles.row, styles.body)}>
             <div className={css(styles.column, styles.sidebar)}>
-              <FeedList
-                activeFeed={this.state.feed}
-                onFeedSelect={this.onFeedSelect}
-              />
+              <FeedList activeFeed={feed} onFeedSelect={this.onFeedSelect} />
               <SubscribedHubList current={home ? null : hub} />
               <HubsList
                 current={home ? null : hub}
@@ -690,7 +686,7 @@ class HubPage extends React.Component {
                 {...this.props}
                 {...this.state}
                 title={this.formatMainHeader()}
-                hubName={home ? "ResearchHub" : hub.name}
+                hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
                 scopeOptions={scopeOptions}
                 filterOptions={filterOptions}
                 onScopeSelect={this.onScopeSelect}
