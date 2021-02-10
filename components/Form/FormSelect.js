@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBFBFD",
     padding: 15,
     fontWeight: "400",
-    borderRadius: 2,
+    borderRadius: 3,
     color: "#232038",
     highlight: "none",
     outline: "none",

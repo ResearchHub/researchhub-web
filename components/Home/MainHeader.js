@@ -1,5 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import FormSelect from "~/components/Form/FormSelect";
+import { capitalize } from "~/config/utils";
 
 const MainHeader = (props) => {
   const {
@@ -18,6 +19,54 @@ const MainHeader = (props) => {
     disableScope,
   } = props;
 
+  const renderFilters = (options = {}) => {
+    const { smallWindow } = options;
+
+    return (
+      <div
+        className={css(
+          styles.row,
+          styles.inputs,
+          smallWindow && styles.smallWindow
+        )}
+      >
+        <FormSelect
+          id={"filterBy"}
+          options={filterOptions}
+          value={filterBy}
+          containerStyle={styles.dropDownLeft}
+          inputStyle={{
+            fontWeight: 500,
+            minHeight: "unset",
+            backgroundColor: "#FFF",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+          onChange={onFilterSelect}
+          isSearchable={false}
+        />
+        <FormSelect
+          id={"scope"}
+          options={scopeOptions}
+          value={scope}
+          containerStyle={[
+            styles.dropDown,
+            disableScope && styles.disableScope,
+          ]}
+          inputStyle={{
+            fontWeight: 500,
+            minHeight: "unset",
+            backgroundColor: "#FFF",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+          onChange={onScopeSelect}
+          isSearchable={false}
+        />
+      </div>
+    );
+  };
+
   return (
     <div
       className={css(
@@ -27,12 +76,19 @@ const MainHeader = (props) => {
         home && styles.row
       )}
     >
-      <h1 className={css(styles.feedTitle, home && styles.feedTitleMargin)}>
-        <span className={css(styles.fullWidth)}>
-          {title}
-          <span className={css(styles.hubName)}>{hubName}</span>
-        </span>
-      </h1>
+      <div className={css(styles.headerContainer)}>
+        <div className={css(styles.titleContainer)}>
+          <h1 className={css(styles.title) + " clamp1"}>{`${title} ${capitalize(
+            hubName
+          )}`}</h1>
+          <div
+            className={css(styles.subscribeContainer, home && styles.hidden)}
+          >
+            {hub && subscribeButton}
+          </div>
+        </div>
+        {renderFilters({ smallWindow: false })}
+      </div>
       <div
         className={css(
           styles.inputContainer,
@@ -40,45 +96,15 @@ const MainHeader = (props) => {
         )}
       >
         <div
-          className={css(styles.subscribeContainer, home && styles.hideBanner)}
+          className={css(
+            styles.subscribeContainer,
+            styles.mobile,
+            home && styles.hidden
+          )}
         >
           {hub && subscribeButton}
         </div>
-        <div className={css(styles.row, styles.inputs)}>
-          <FormSelect
-            id={"filterBy"}
-            options={filterOptions}
-            value={filterBy}
-            containerStyle={styles.dropDownLeft}
-            inputStyle={{
-              fontWeight: 500,
-              minHeight: "unset",
-              backgroundColor: "#FFF",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-            onChange={onFilterSelect}
-            isSearchable={false}
-          />
-          <FormSelect
-            id={"scope"}
-            options={scopeOptions}
-            value={scope}
-            containerStyle={[
-              styles.dropDown,
-              disableScope && styles.disableScope,
-            ]}
-            inputStyle={{
-              fontWeight: 500,
-              minHeight: "unset",
-              backgroundColor: "#FFF",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-            onChange={onScopeSelect}
-            isSearchable={false}
-          />
-        </div>
+        {renderFilters({ smallWindow: true })}
       </div>
     </div>
   );
@@ -114,27 +140,32 @@ const styles = StyleSheet.create({
    * MAIN FEED STYLES
    */
 
-  feedTitle: {
+  headerContainer: {
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center",
+    width: "100%",
+    "@media only screen and (max-width: 767px)": {
+      textAlign: "center",
+      justifyContent: "center",
+    },
+  },
+  title: {
     color: "#241F3A",
+    width: "100%",
     fontWeight: 400,
     fontSize: 30,
-    flexWrap: "wrap",
-    whiteSpace: "pre-wrap",
-    width: "100%",
-    textAlign: "center",
     padding: 0,
     margin: 0,
-    "@media only screen and (min-width: 800px)": {
-      textAlign: "left",
-    },
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
     "@media only screen and (max-width: 1149px)": {
       fontSize: 30,
     },
-    "@media only screen and (max-width: 665px)": {
+    "@media only screen and (max-width: 767px)": {
       fontSize: 25,
+      textAlign: "center",
+      justifyContent: "center",
     },
     "@media only screen and (max-width: 416px)": {
       fontSize: 25,
@@ -147,7 +178,7 @@ const styles = StyleSheet.create({
     marginTop: -3,
   },
   fullWidth: {
-    width: "100%",
+    display: "flex",
     boxSizing: "border-box",
   },
   titleBoxShadow: {
@@ -158,14 +189,12 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     width: "100%",
     boxSizing: "border-box",
-    alignItems: "center",
+    alignItems: "flex-start",
     zIndex: 2,
     top: 80,
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
-    },
-    "@media only screen and (max-width: 665px)": {
       display: "flex",
       flexDirection: "column",
       justifyContent: "flex-start",
@@ -178,6 +207,7 @@ const styles = StyleSheet.create({
     margin: 0,
     minHeight: "unset",
     fontSize: 14,
+    borderRadius: 3,
     "@media only screen and (max-width: 1343px)": {
       height: "unset",
     },
@@ -185,9 +215,8 @@ const styles = StyleSheet.create({
       width: 150,
       fontSize: 13,
     },
-    "@media only screen and (max-width: 779px)": {
+    "@media only screen and (max-width: 767px)": {
       width: "calc(50% - 5px)",
-      fontSize: 14,
     },
   },
   dropDownLeft: {
@@ -196,6 +225,7 @@ const styles = StyleSheet.create({
     minHeight: "unset",
     fontSize: 14,
     marginRight: 10,
+    borderRadius: 3,
     "@media only screen and (max-width: 1343px)": {
       height: "unset",
     },
@@ -203,7 +233,7 @@ const styles = StyleSheet.create({
       width: 150,
       fontSize: 13,
     },
-    "@media only screen and (max-width: 779px)": {
+    "@media only screen and (max-width: 767px)": {
       width: "calc(50% - 5px)",
     },
   },
@@ -214,25 +244,41 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1149px)": {
       fontSize: 13,
     },
-    "@media only screen and (max-width: 779px)": {
+    "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-end",
     },
   },
   hubInputContainer: {
     width: "100%",
-    paddingTop: 15,
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    "@media only screen and (max-width: 1300px)": {
+      marginTop: 15,
+    },
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      marginTop: 16,
+    },
   },
   homeInputContainer: {
     justifyContent: "flex-end",
 
-    "@media only screen and (max-width: 799px)": {
+    "@media only screen and (max-width: 767px)": {
       width: "100%",
       marginTop: 16,
     },
   },
   inputs: {
-    "@media only screen and (max-width: 779px)": {
+    display: "flex",
+    justifyContent: "flex-end",
+    width: "max-content",
+    alignItems: "center",
+    "@media only screen and (max-width: 1300px)": {
+      display: "none",
+    },
+    "@media only screen and (max-width: 767px)": {
       width: "100%",
       justifyContent: "flex-end",
       alignItems: "center",
@@ -240,7 +286,6 @@ const styles = StyleSheet.create({
   },
   hubName: {
     textTransform: "capitalize",
-    marginRight: 13,
     "@media only screen and (max-width: 1343px)": {
       marginRight: 8,
     },
@@ -252,15 +297,45 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    "@media only screen and (max-width: 665px)": {
-      marginRight: 10,
+    marginLeft: 15,
+    minWidth: 100,
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
     },
-    "@media only screen and (max-width: 799px)": {
-      marginRight: 0,
+  },
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+      margin: 0,
       width: "100%",
       justifyContent: "center",
       marginBottom: 16,
     },
+  },
+  hidden: {
+    display: "none",
+    margin: 0,
+    padding: 0,
+    height: 0,
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+      margin: 0,
+      padding: 0,
+      height: 0,
+    },
+  },
+
+  smallWindow: {
+    display: "none",
+    "@media only screen and (max-width: 1300px)": {
+      display: "flex",
+      justifyContent: "flex-end",
+      width: "100%",
+    },
+  },
+  titleContainer: {
+    display: "flex",
   },
 });
 
