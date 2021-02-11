@@ -30,10 +30,12 @@ class Index extends React.Component {
       hubsByCategory: {},
       finishedLoading: false,
       activeCategory: 0,
+      scrollDirection: "down",
     };
     this.state = {
       ...this.initialState,
     };
+    this.scrollPos = 0;
   }
 
   componentDidMount = async () => {
@@ -52,9 +54,11 @@ class Index extends React.Component {
         categories: JSON.parse(JSON.stringify(hubs.categories)),
         hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
         finishedLoading: true,
+        activeCategory: 0,
       });
       showMessage({ show: false });
     }
+    window.addEventListener("scroll", this.getScrollDirection);
   };
 
   componentDidUpdate(prevProps) {
@@ -73,8 +77,27 @@ class Index extends React.Component {
     }
   }
 
-  setActiveCategory = (activeCategory) => {
+  componentDidUnmount() {
+    window.removeEventListener("scroll", this.getScrollDirection);
+  }
+
+  getScrollDirection = () => {
+    const { scrollDirection } = this.state;
+
+    if (document.body.getBoundingClientRect().top > this.scrollPos) {
+      scrollDirection !== "up" && this.setState({ scrollDirection: "up" });
+    } else {
+      scrollDirection !== "down" && this.setState({ scrollDirection: "down" });
+    }
+    this.scrollPos = document.body.getBoundingClientRect().top;
+  };
+
+  setActiveCategory = (activeCategory, onLeave) => {
     const { categories, finishedLoading } = this.state;
+
+    if (this.state.activeCategory === 0 && onLeave) {
+      return;
+    }
 
     if (finishedLoading && categories.length) {
       this.setState({ activeCategory });
@@ -117,7 +140,7 @@ class Index extends React.Component {
   };
 
   renderCategories = () => {
-    const { categories } = this.state;
+    const { categories, scrollDirection } = this.state;
 
     return categories.map((category, i) => {
       let categoryID = category.id;
@@ -125,7 +148,16 @@ class Index extends React.Component {
       let slug = categoryName.toLowerCase().replace(/\s/g, "-");
 
       return (
-        <Waypoint onEnter={() => this.setActiveCategory(i)}>
+        <Waypoint
+          onEnter={() => this.setActiveCategory(i)}
+          topOffset={80}
+          onLeave={() =>
+            this.setActiveCategory(
+              scrollDirection === "up" ? i - 1 : i + 1,
+              true
+            )
+          }
+        >
           <div key={categoryID}>
             <div
               id={`${i}-category`}
@@ -169,6 +201,7 @@ class Index extends React.Component {
       subscribed.forEach((hub) => {
         subscribedHubs[hub.id] = true;
       });
+
       return hubsByCategory[key].map((hub) => {
         return <HubCard key={hub.id} hub={hub} />;
       });
