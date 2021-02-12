@@ -825,6 +825,7 @@ class PaperPageCard extends React.Component {
                         }
                       />
                       <PaperMetadata
+                        centered={true}
                         attribute={
                           paper && (paper.url || paper.external_source)
                         }

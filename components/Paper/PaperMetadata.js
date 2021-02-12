@@ -12,10 +12,16 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 const PaperMetadata = (props) => {
-  const { attribute, label, value } = props;
+  const { attribute, centered, label, value } = props;
 
   return (
-    <div className={css(styles.container, !attribute && styles.hidden)}>
+    <div
+      className={css(
+        styles.container,
+        centered && styles.centered,
+        (!attribute || !value) && styles.hidden
+      )}
+    >
       <div className={css(styles.labelContainer)}>
         <p className={css(styles.label)}>{`${label && label}:`}</p>
       </div>
@@ -29,6 +35,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     margin: "5px 0",
+  },
+  centered: {
+    alignItems: "center",
   },
   labelContainer: {
     width: 100,
