@@ -282,7 +282,7 @@ class WithdrawalModal extends React.Component {
       return;
     }
 
-    if (amount < 100) {
+    if (amount < 5000) {
       showMessage({ show: false });
       setMessage("Withdrawal amount must be at least 100 RSC");
       showMessage({ show: true, error: true });
@@ -342,12 +342,7 @@ class WithdrawalModal extends React.Component {
   };
 
   renderToggleContainer = (className) => {
-    return (
-      <div className={className}>
-        {this.renderMetaMaskButton()}
-        {/* {this.renderWalletLinkButton()} */}
-      </div>
-    );
+    return <div className={className}>{this.renderMetaMaskButton()}</div>;
   };
 
   renderMetaMaskButton = () => {
@@ -584,9 +579,9 @@ class WithdrawalModal extends React.Component {
           containerStyles={styles.amountInputStyles}
           inputContainerStyles={styles.fullWidth}
           inputStyles={[styles.fullWidth]}
-          placeholder={"Enter the withdrawal amount (min. 100 RSC)"}
+          placeholder={"Enter the withdrawal amount (min. 5000 RSC)"}
           required={true}
-          minValue={100}
+          minValue={5000}
           value={amount}
           onChange={this.handleAmountInput}
         />
@@ -737,14 +732,6 @@ class WithdrawalModal extends React.Component {
         >
           Withdraw RSC
         </div>
-        {/* <div
-          className={css(styles.tab, depositScreen && styles.tabActive, styles.disabled)}
-          onClick={
-            this.transitionScreen(() => this.setState({ depositScreen: true }))
-          }
-        >
-          Deposit to RH
-        </div> */}
       </div>
     );
   };
@@ -818,15 +805,11 @@ const styles = StyleSheet.create({
     height: 64,
     fontSize: 20,
     fontWeight: 500,
-    // cursor: "pointer",
     backgroundColor: "rgba(17, 51, 83, 0.02)",
     borderLeft: "1px solid rgb(236, 239, 241)",
     borderRight: "1px solid rgb(236, 239, 241)",
     borderBottom: "1px solid rgb(236, 239, 241)",
     color: "rgba(17, 51, 83, 0.6)",
-    // ":hover": {
-    //   color: colors.BLUE(),
-    // },
   },
   tabActive: {
     color: colors.BLUE(),
