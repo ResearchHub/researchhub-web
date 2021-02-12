@@ -145,32 +145,6 @@ const PaperEntryCard = (props) => {
               );
             }
 
-            if (uploaded_by && externalSource !== "doi") {
-              const {
-                first_name,
-                last_name,
-                profile_image,
-                id,
-                user,
-              } = uploaded_by.author_profile;
-
-              return (
-                <div
-                  className={css(styles.uploadedBy)}
-                  onClick={navigateToSubmitter}
-                >
-                  <AuthorAvatar
-                    author={uploaded_by.author_profile}
-                    name={first_name + " " + last_name}
-                    size={25}
-                    border={"1px solid #EDEDED"}
-                    trueSize={true}
-                    dropShadow={true}
-                  />
-                </div>
-              );
-            }
-
             return null;
           }}
         />
