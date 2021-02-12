@@ -1,20 +1,20 @@
 import React from "react";
-import { useStore, useDispatch } from "react-redux";
+import { useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
 import AuthorAvatar from "~/components/AuthorAvatar";
 
 // Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import {
   onKeyDownNumInput,
   onPasteNumInput,
   formatBalance,
+  doesNotExist,
 } from "~/config/utils";
 
 const AmountInput = (props) => {
+  const { balance, placeholder, required } = props;
   const store = useStore();
 
   return (
@@ -26,7 +26,7 @@ const AmountInput = (props) => {
     >
       <span className={css(styles.label)}>
         Amount
-        <span className={css(styles.asterick)}>*</span>
+        {required && <span className={css(styles.asterick)}>*</span>}
       </span>
       <div
         className={css(
@@ -51,6 +51,8 @@ const AmountInput = (props) => {
           onChange={props.onChange}
           onKeyDown={onKeyDownNumInput}
           onPaste={onPasteNumInput}
+          placeholder={placeholder && placeholder}
+          required={required && required}
         />
         {!props.rightAlignBalance && (
           <img
@@ -69,7 +71,11 @@ const AmountInput = (props) => {
       >
         <span className={css(styles.balanceLabel)}>Available:</span>
         <span className={css(styles.balance)}>
-          {formatBalance(store.getState().auth.user.balance)}
+          {!doesNotExist(balance)
+            ? typeof balance === "number" || typeof balance == "string"
+              ? formatBalance(balance)
+              : balance
+            : formatBalance(store.getState().auth.user.balance)}
         </span>
         {props.rightAlignBalance && (
           <img
@@ -85,8 +91,14 @@ const AmountInput = (props) => {
 
 const RecipientInput = (props) => {
   if (!props.author) return null;
+  const { RSCBalance, author } = props;
+  const { first_name, last_name } = author;
 
-  const { first_name, last_name } = props.author;
+  const renderLabel = () => {
+    const label = props.label ? props.label : "Recipient";
+
+    return <span className={css(styles.label)}>{label}</span>;
+  };
 
   return (
     <div
@@ -95,7 +107,7 @@ const RecipientInput = (props) => {
         props.containerStyles && props.containerStyles
       )}
     >
-      <span className={css(styles.label)}>Recipient</span>
+      {renderLabel()}
       <div
         className={css(
           styles.recipientCard,
@@ -136,7 +148,7 @@ const styles = StyleSheet.create({
   input: {
     height: 55,
     width: 100,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     padding: "5px 5px 5px 10px",
     boxSizing: "border-box",
@@ -147,7 +159,7 @@ const styles = StyleSheet.create({
   },
   rscIcon: {
     marginLeft: 10,
-    height: 25,
+    height: 20,
     borderRadius: "50%",
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
   },

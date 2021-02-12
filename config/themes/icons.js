@@ -95,6 +95,7 @@ import {
   faChevronDown,
   faFlag as faFlagOutline,
   faStar as faStarOutline,
+  faWallet,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faBook,
@@ -241,7 +242,8 @@ library.add(
   faTrophy,
   faSimpleUser,
   faUserCircle,
-  faUserEdit
+  faUserEdit,
+  faWallet
 );
 
 const icons = {
@@ -347,6 +349,7 @@ const icons = {
   userEdit: <FontAwesomeIcon icon={faUserEdit} />,
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
+  wallet: <FontAwesomeIcon icon={faWallet} />,
   // customIcons
   coinStack: ({ styles, grey }) => (
     <img
