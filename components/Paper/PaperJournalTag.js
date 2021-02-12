@@ -71,6 +71,7 @@ const PaperJournalTag = (props) => {
       case "World Scientific Pub Co Pte Lt":
         return "wspc";
       case "BMC Biology":
+      case "BMC Medical Genomics":
         return "biomedcentral";
       default:
         if (journal && (journal.includes("abs") || journal.includes("arxiv"))) {
@@ -196,7 +197,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
   researchgate: {
-    height: 12,
+    height: 11,
   },
 });
 

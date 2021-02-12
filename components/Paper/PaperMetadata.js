@@ -13,7 +13,6 @@ import { Helpers } from "@quantfive/js-web-config";
 
 const PaperMetadata = (props) => {
   const { attribute, centered, label, value } = props;
-
   return (
     <div
       className={css(
