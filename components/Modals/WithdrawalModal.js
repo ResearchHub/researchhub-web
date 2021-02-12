@@ -2,14 +2,15 @@ import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import { keccak256 } from "js-sha3";
 import Link from "next/link";
 
 // Component
 import BaseModal from "./BaseModal";
 import Loader from "../Loader/Loader";
-import FormInput from "../Form/FormInput";
+import ETHAddressInput from "../Ethereum/ETHAddressInput";
 import Button from "../Form/Button";
+import DepositScreen from "../Ethereum/DepositScreen";
+import { AmountInput, RecipientInput } from "../Form/RSCForm";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -25,9 +26,9 @@ import { useMetaMask } from "../connectEthereum";
 import CheckBox from "../Form/CheckBox";
 import {
   sanitizeNumber,
-  onKeyDownNumInput,
-  onPasteNumInput,
   formatBalance,
+  isAddress,
+  toCheckSumAddress,
 } from "~/config/utils";
 
 const RINKEBY_CHAIN_ID = "4";
@@ -53,21 +54,28 @@ class WithdrawalModal extends React.Component {
       listenerNetwork: null,
       listenerAccount: null,
       userBalance: 0,
-      withdrawals: [],
       validating: false,
       transactionHash: "",
       // error for withdrawal input
       error: false,
       amount: 0,
+      transactionFee: null,
+      depositScreen: false,
+      // api toggle
+      metaMaskVisible: false,
+      walletLinkVisible: false,
     };
     this.state = {
       ...this.initialState,
     };
+
+    this.provider = null;
   }
 
   componentDidMount() {
     if (this.props.auth.isLoggedIn) {
       this.getBalance();
+      this.getTransactionFee();
     }
   }
 
@@ -86,15 +94,28 @@ class WithdrawalModal extends React.Component {
         this.props.modals.openWithdrawalModal
       ) {
         this.getBalance();
+        !this.state.transactionFee && this.getTransactionFee();
       }
       if (
         prevProps.auth.user.balance !== this.props.auth.user.balance ||
         this.state.userBalance === null
       ) {
         this.getBalance();
+        !this.state.transactionFee && this.getTransactionFee();
       }
     }
   }
+
+  getTransactionFee = () => {
+    fetch(API.WITHDRAWAL_FEE, API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(
+        (res) =>
+          !this.state.transactionFee !== res &&
+          this.setState({ transactionFee: res })
+      );
+  };
 
   checkNetwork = () => {
     const that = this;
@@ -144,15 +165,15 @@ class WithdrawalModal extends React.Component {
               this.setState({
                 transition: false,
               });
-            }, 400);
+            }, 200);
         }
       );
     }
   };
 
   updateAccount = (accounts) => {
-    const account = accounts && accounts[0] && accounts[0];
-    const valid = this.isAddress(account);
+    let account = accounts && accounts[0] && accounts[0];
+    let valid = isAddress(account);
     this.setState({
       ethAccount: account,
       ethAccountIsValid: valid,
@@ -198,46 +219,6 @@ class WithdrawalModal extends React.Component {
     this.setState({ buttonEnabled: !this.state.buttonEnabled });
   };
 
-  renderRow = (left, right) => {
-    let { ethAccount, validating, ethAccountIsValid } = this.state;
-    return (
-      <div className={css(styles.row)}>
-        <div className={css(styles.left, styles.spacedContent)}>
-          <div>
-            {left.text}
-            <span className={css(styles.infoIcon)} data-tip={left.tooltip}>
-              {icons["info-circle"]}
-              <ReactTooltip />
-            </span>
-          </div>
-          <FormInput
-            value={right.value && right.value}
-            containerStyle={styles.formInput}
-            onChange={right.onChange && right.onChange}
-            inlineNodeRight={
-              ethAccount !== "" ? (
-                validating ? (
-                  <span className={css(styles.successIcon)}>
-                    <Loader loading={true} size={23} />
-                  </span>
-                ) : (
-                  <span
-                    className={css(
-                      styles.successIcon,
-                      !ethAccountIsValid && styles.errorIcon
-                    )}
-                  >
-                    {ethAccountIsValid ? icons.checkCircle : icons.timesCircle}
-                  </span>
-                )
-              ) : null
-            }
-          />
-        </div>
-      </div>
-    );
-  };
-
   getBalance = () => {
     if (!this.props.auth.isLoggedIn) {
       return;
@@ -249,14 +230,11 @@ class WithdrawalModal extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let param = {
+        const param = {
           balance: res.user.balance,
         };
         this.props.updateUser(param);
-        this.setState({
-          userBalance: res.user.balance,
-          withdrawals: [...res.results],
-        });
+        this.setState({ userBalance: res.user.balance });
       })
       .catch((err) => {
         //Todo: handle error
@@ -264,60 +242,72 @@ class WithdrawalModal extends React.Component {
   };
 
   handleNetworkAddressInput = (id, value) => {
-    this.setState(
-      {
-        ethAccount: value,
-        validating: true,
-      },
-      () => {
-        setTimeout(() => {
-          this.setState({
-            validating: false,
-            ethAccountIsValid: this.isAddress(value),
-          });
-        }, 400);
-      }
-    );
+    const validETHAddress = isAddress(value);
+    let nextState = {
+      ethAccount: value,
+      ethAccountIsValid: validETHAddress,
+    };
+
+    if (!validETHAddress) {
+      nextState = {
+        ...nextState,
+        connectedMetaMask: false,
+        connectedWalletLink: false,
+        networkVersion: ethereum.networkVersion,
+        metaMaskVisible: false,
+        walletLinkVisible: false,
+      };
+    }
+
+    this.setState({ ...nextState });
   };
 
   sendWithdrawalRequest = (e) => {
-    const { showMessage, setMessage } = this.props;
+    e.stopPropagation();
+    e.preventDefault();
 
-    if (!this.state.buttonEnabled) {
+    const { showMessage, setMessage } = this.props;
+    const {
+      buttonEnabled,
+      amount,
+      transactionFee,
+      userBalance,
+      ethAccount,
+    } = this.state;
+
+    if (!buttonEnabled) {
       showMessage({ show: false });
       setMessage("Please agree to the ResearchHub ToS.");
       showMessage({ show: true, error: true });
       return;
     }
 
-    if (this.state.amount < 100) {
+    if (amount < 5000) {
       showMessage({ show: false });
       setMessage("Withdrawal amount must be at least 100 RSC");
       showMessage({ show: true, error: true });
       return;
     }
 
-    if (this.state.amount > this.state.userBalance) {
+    if (amount > userBalance) {
       showMessage({ show: false });
       setMessage("Not enough coins in balance");
       showMessage({ show: true, error: true });
       return;
     }
-
-    e.stopPropagation();
-    let { ethAccount } = this.state;
     showMessage({ load: true, show: true });
-    if (this.isAddress(ethAccount)) {
-      let param = {
-        to_address: this.toCheckSumAddress(ethAccount),
+    if (isAddress(ethAccount)) {
+      const param = {
+        to_address: toCheckSumAddress(ethAccount),
         agreed_to_terms: true,
-        amount: `${this.state.amount}`,
+        amount: `${amount}`,
+        transaction_fee: transactionFee,
       };
       fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let { id, paid_status, transaction_hash } = res;
+          const { id, paid_status, transaction_hash } = res;
           if (paid_status === "failed") {
             showMessage({ show: false });
             setMessage(
@@ -351,78 +341,8 @@ class WithdrawalModal extends React.Component {
     }
   };
 
-  toCheckSumAddress = (address) => {
-    address = address.toLowerCase().replace("0x", "");
-    let hash = keccak256(address);
-    let ret = "0x";
-
-    for (var i = 0; i < address.length; i++) {
-      if (parseInt(hash[i], 16) >= 8) {
-        ret += address[i].toUpperCase();
-      } else {
-        ret += address[i];
-      }
-    }
-
-    return ret;
-  };
-
-  /**
-   * Checks if the given string is an address
-   *
-   * @method isAddress
-   * @param {String} address the given HEX adress
-   * @return {Boolean}
-   */
-  isAddress = (address) => {
-    if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
-      // check if it has the basic requirements of an address
-      return false;
-    } else if (
-      /^(0x)?[0-9a-f]{40}$/.test(address) ||
-      /^(0x)?[0-9A-F]{40}$/.test(address)
-    ) {
-      // If it's all small caps or all all caps, return true
-      return true;
-    } else {
-      return true;
-      // Otherwise check each case
-      // return this.isChecksumAddress(address);
-    }
-  };
-
-  /**
-   * Checks if the given string is a checksummed address
-   *
-   * @method isChecksumAddress
-   * @param {String} address the given HEX adress
-   * @return {Boolean}
-   */
-  // isChecksumAddress = (address) => {
-  //   // Check each case
-  //   address = address.replace("0x", "");
-  //   var addressHash = sha3_256(address.toLowerCase());
-  //   for (var i = 0; i < 40; i++) {
-  //     // the nth letter should be uppercase if the nth digit of casemap is 1
-  //     if (
-  //       (parseInt(addressHash[i], 16) > 7 &&
-  //         address[i].toUpperCase() !== address[i]) ||
-  //       (parseInt(addressHash[i], 16) <= 7 &&
-  //         address[i].toLowerCase() !== address[i])
-  //     ) {
-  //       return false;
-  //     }
-  //   }
-  //   return true;
-  // };
-
   renderToggleContainer = (className) => {
-    return (
-      <div className={className}>
-        {this.renderMetaMaskButton()}
-        {/* {this.renderWalletLinkButton()} */}
-      </div>
-    );
+    return <div className={className}>{this.renderMetaMaskButton()}</div>;
   };
 
   renderMetaMaskButton = () => {
@@ -438,8 +358,6 @@ class WithdrawalModal extends React.Component {
           }
           this.transitionScreen(() =>
             this.setState({
-              nextScreen: true,
-              offChain: false,
               metaMaskVisible: true,
               walletLinkVisible: false,
             })
@@ -452,7 +370,7 @@ class WithdrawalModal extends React.Component {
   };
 
   connectMetaMask = async () => {
-    const { connected, account } = await useMetaMask();
+    const { connected, provider, account } = await useMetaMask();
     if (connected) {
       this.setUpEthListeners();
       console.log("Connected to MetaMask");
@@ -461,8 +379,14 @@ class WithdrawalModal extends React.Component {
         connectedWalletLink: false,
         ethAccount: account,
         networkVersion: ethereum.networkVersion,
-        ethAccountIsValid: this.isAddress(account),
+        ethAccountIsValid: isAddress(account),
+        metaMaskVisible: true,
+        walletLinkVisible: false,
       });
+
+      if (!this.provider) {
+        this.provider = provider;
+      }
     } else {
       console.log("Failed to connect MetaMask");
       this.setState({
@@ -473,12 +397,14 @@ class WithdrawalModal extends React.Component {
   };
 
   setUpEthListeners() {
-    this.setState({
-      listenerNetwork: ethereum.on("networkChanged", () =>
-        this.updateChainId(ethereum.networkVersion)
-      ),
-      listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
-    });
+    if (!this.state.listnerNetwork && !this.state.listenerAccount) {
+      this.setState({
+        listenerNetwork: ethereum.on("networkChanged", () =>
+          this.updateChainId(ethereum.networkVersion)
+        ),
+        listenerAccount: ethereum.on("accountsChanged", this.updateAccount),
+      });
+    }
   }
 
   renderWalletLinkButton = () => {
@@ -495,11 +421,9 @@ class WithdrawalModal extends React.Component {
           }
           this.transitionScreen(() => {
             this.setState({
-              nextScreen: true,
               walletLinkVisible: true,
               connectedMetaMask: false,
               metaMaskVisible: false,
-              offChain: false,
             });
           });
         }}
@@ -511,11 +435,10 @@ class WithdrawalModal extends React.Component {
 
   connectWalletLink = async () => {
     if (this.state.connectedWalletLink) {
-      this.disconnectWalletLink();
-      return;
+      return this.disconnectWalletLink();
     }
 
-    const { connected, account, walletLink } = await useWalletLink();
+    const { connected, provider, account, walletLink } = await useWalletLink();
     if (connected) {
       this.props.setWalletLink(walletLink);
       console.log("Connected to WalletLink");
@@ -524,8 +447,11 @@ class WithdrawalModal extends React.Component {
         connectedMetaMask: false,
         connectedWalletLink: connected,
         ethAccount: account,
-        ethAccountIsValid: this.isAddress(account),
+        ethAccountIsValid: isAddress(account),
       });
+      if (!this.provider) {
+        this.provider = provider;
+      }
     } else {
       console.log("Failed to connect WalletLink");
       this.setState({
@@ -556,7 +482,7 @@ class WithdrawalModal extends React.Component {
             this.setState({ error: this.handleError(this.state.value) });
           }
         });
-      }, 300);
+      }, 100);
     });
   };
 
@@ -575,9 +501,12 @@ class WithdrawalModal extends React.Component {
     return false;
   };
 
+  setTransactionHash = (transactionHash) => {
+    this.setState({ transactionHash });
+  };
+
   renderSwitchNetworkMsg = () => {
-    // TODO: For now let's just tell them to use rinkeby
-    let { transition } = this.state;
+    const { transition } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
         {transition ? (
@@ -604,179 +533,156 @@ class WithdrawalModal extends React.Component {
   };
 
   renderTransactionScreen = () => {
-    let {
-      transition,
-      userBalance,
-      ethAccount,
-      transactionHash,
-      error,
-      amount,
-    } = this.state;
-    return (
-      <div className={css(styles.networkContainer)}>
-        {transition ? (
-          <Loader loading={true} />
-        ) : transactionHash ? (
-          <Fragment>
-            <div className={css(styles.row, styles.top)}>
-              <div className={css(styles.left)}>
-                <div className={css(styles.mainHeader)}>
-                  Withdrawal Successful
-                  <span className={css(styles.icon)}>{icons.checkCircle}</span>
-                </div>
-                <div
-                  className={css(styles.confirmation)}
-                  onClick={this.closeModal}
-                >
-                  Review your transactions in your
-                  <Link
-                    href={"/user/[authorId]/[tabName]"}
-                    as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
-                  >
-                    <a
-                      href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
-                      className={css(styles.transactionHashLink)}
-                    >
-                      profile page
-                    </a>
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className={css(styles.buttons, styles.confirmationButtons)}>
-              <Button
-                label={"Finish"}
-                onClick={this.closeModal}
-                customButtonStyle={styles.button}
-              />
-            </div>
-          </Fragment>
-        ) : (
-          <Fragment>
-            <div className={css(styles.row, styles.top)}>
-              <div className={css(styles.left)}>
-                <div className={css(styles.mainHeader)}>Total Balance</div>
-                <div className={css(styles.subtitle, styles.noMargin)}>
-                  Your current total balance in ResearchCoin
-                </div>
-              </div>
-              <div className={css(styles.right)}>
-                <div className={css(styles.userBalance)}>
-                  {formatBalance(userBalance)}
-                  <img
-                    className={css(styles.coin)}
-                    src={"/static/icons/coin-filled.png"}
-                    draggable={false}
-                    alt="RSC Coin"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className={css(styles.row, styles.numbers)}>
-              <div className={css(styles.left)}>
-                <div className={css(styles.mainHeader)}>Withdrawal Amount</div>
-                <div className={css(styles.subtitle, styles.noMargin)}>
-                  Select the withdrawal amount (min. 100 RSC)
-                </div>
-              </div>
-              <div className={css(styles.right)}>
-                <input
-                  type="number"
-                  className={css(styles.amountInput, error && styles.error)}
-                  value={amount}
-                  onChange={this.handleAmountInput}
-                  min={"0"}
-                  max={userBalance}
-                  onKeyDown={onKeyDownNumInput}
-                  onPaste={onPasteNumInput}
-                />
-              </div>
-            </div>
-            {this.renderRow(
-              {
-                text: "Recipient ETH Address",
-                tooltip: "The address of your ETH Account (ex. 0x0000...)",
-                onClick: "",
-              },
-              {
-                value: ethAccount,
-                onChange: this.handleNetworkAddressInput,
-              }
-            )}
-            {!this.props.agreedToTerms && (
-              <div className={css(styles.checkBoxContainer)}>
-                <CheckBox
-                  id={"tos"}
-                  active={this.state.buttonEnabled}
-                  isSquare={true}
-                  label={
-                    <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>
-                      I agree to the ResearchHub{" "}
-                      <a
-                        href={"/about/tos"}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        Terms of Service.
-                      </a>
-                    </span>
-                  }
-                  onChange={this.toggleButton}
-                />
-              </div>
-            )}
-            <div className={css(styles.buttons)}>
-              <Button
-                disabled={!this.state.buttonEnabled || !ethAccount}
-                label={"Confirm"}
-                onClick={this.sendWithdrawalRequest}
-                customButtonStyle={styles.button}
-              />
-            </div>
-          </Fragment>
-        )}
-      </div>
-    );
-  };
+    const { transactionHash, depositScreen } = this.state;
 
-  renderOverlay = () => {
-    return (
-      <div className={css(styles.overlay)} onClick={this.closeModal}>
-        <div className={css(styles.bannerContainer)}>
-          <div className={css(styles.overlayButtonContainer)}>
-            <span
-              className={css(styles.closeButton, styles.overlayButton)}
-              onClick={this.closeModal}
-              draggable={false}
-            >
-              {icons.times}
-            </span>
-          </div>
-          <p className={css(styles.banner)}>
-            Withdrawals will resume again on Sept. 1st.
-          </p>
+    if (depositScreen) {
+      return (
+        <div className={css(styles.networkContainer)}>
+          <DepositScreen
+            provider={this.provider}
+            ethAddressOnChange={this.handleNetworkAddressInput}
+            onSuccess={this.setTransactionHash}
+            connectMetaMask={this.connectMetaMask}
+            {...this.state}
+          />
         </div>
-      </div>
+      );
+    }
+
+    return this.renderWithdrawalForm();
+  };
+
+  renderWithdrawalForm = () => {
+    const { ethAccount, amount, transactionFee } = this.state;
+
+    return (
+      <form
+        className={css(styles.networkContainer)}
+        onSubmit={this.sendWithdrawalRequest}
+      >
+        <RecipientInput
+          containerStyles={styles.recipientInputStyles}
+          cardStyles={styles.fullWidth}
+          author={this.props.auth.user.author_profile}
+          label={"From"}
+        />
+        <ETHAddressInput
+          label="To"
+          tooltip="The address of your ETH Account (ex. 0x0000...)"
+          value={ethAccount}
+          onChange={this.handleNetworkAddressInput}
+          containerStyles={styles.ethAddressStyles}
+          {...this.state}
+        />
+        <AmountInput
+          rightAlignBalance={true}
+          containerStyles={styles.amountInputStyles}
+          inputContainerStyles={styles.fullWidth}
+          inputStyles={[styles.fullWidth]}
+          placeholder={"Enter the withdrawal amount (min. 5000 RSC)"}
+          required={true}
+          minValue={5000}
+          value={amount}
+          onChange={this.handleAmountInput}
+        />
+        <div className={css(styles.row)}>
+          <div className={css(styles.left)}>
+            <div className={css(styles.mainHeader)}>Network Fee</div>
+            <a
+              href={"https://ethereum.org/en/developers/docs/gas/"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={css(styles.description, styles.link)}
+            >
+              Learn more about fees.
+            </a>
+          </div>
+          <div className={css(styles.right)}>
+            {formatBalance(transactionFee)}
+          </div>
+        </div>
+        <div className={css(styles.row)}>
+          <div className={css(styles.left)}>
+            <div className={css(styles.mainHeader)}>Total</div>
+            <div className={css(styles.description)}>
+              The total RSC transferred after fees.
+            </div>
+          </div>
+          <div className={css(styles.right)}>
+            {formatBalance(amount - transactionFee)}
+          </div>
+        </div>
+        <div className={css(styles.buttons)}>
+          <Button
+            disabled={!this.state.buttonEnabled || !ethAccount}
+            label={"Confirm"}
+            type="submit"
+            customButtonStyle={styles.button}
+            rippleClass={styles.button}
+          />
+        </div>
+      </form>
     );
   };
 
-  renderContent = () => {
-    let { connectedWalletLink, connectedMetaMask } = this.state;
+  renderSuccessScreen = () => {
+    const { depositScreen, transactionHash } = this.state;
+
+    const title = depositScreen
+      ? "Deposit Successful"
+      : "Withdrawal Successful";
+
+    const confirmationMessage = depositScreen ? (
+      <Fragment>
+        {
+          "Congrats! Your balance will update when the transfer is fully processed.\n\n"
+        }
+        Review your transaction details and status on
+        <a
+          href={`https://rinkeby.etherscan.io/tx/${transactionHash}`}
+          rel="noopener noreferrer"
+          target="_blank"
+          className={css(styles.transactionHashLink)}
+        >
+          Etherscan
+        </a>
+        {" or in your"}
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+        >
+          <a
+            href={"/user/[authorId]/[tabName]"}
+            as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+            className={css(styles.transactionHashLink)}
+          >
+            profile page.
+          </a>
+        </Link>
+      </Fragment>
+    ) : (
+      <Fragment>
+        {
+          "Congrats! Your wallet balance will update when the transfer is fully processed.\n\n"
+        }
+        Review your transactions in your
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+        >
+          <a
+            href={"/user/[authorId]/[tabName]"}
+            as={`/user/${this.props.auth.user.author_profile.id}/transactions`}
+            className={css(styles.transactionHashLink)}
+          >
+            profile page.
+          </a>
+        </Link>
+      </Fragment>
+    );
+
     return (
-      <div
-        className={css(
-          styles.modalContent,
-          this.state.networkVersion === CURRENT_CHAIN_ID && styles.main
-        )}
-      >
-        <div className={css(styles.header)}>Withdraw ResearchCoin</div>
-        {this.renderToggleContainer(
-          css(
-            styles.toggleContainer,
-            (connectedMetaMask || connectedWalletLink) && styles.marginBottom
-          )
-        )}
+      <div className={css(styles.content)}>
         <img
           src={"/static/icons/close.png"}
           className={css(styles.closeButton)}
@@ -784,69 +690,138 @@ class WithdrawalModal extends React.Component {
           draggable={false}
           alt="Close Button"
         />
-        {!this.state.connectedMetaMask &&
-          !this.state.connectedMetaMask &&
-          this.state.ethAccountIsValid && (
-            <div className={css(styles.connectStatus)}>
-              <div className={css(styles.dot, styles.connected)} />
-              Connected to Wallet
+        <div className={css(styles.networkContainer)}>
+          <div className={css(styles.successContainer)}>
+            <div className={css(styles.title)}>
+              {title}
+              <span className={css(styles.icon)}>
+                {icons.partyPopper({ style: styles.partyIcon })}
+              </span>
             </div>
-          )}
-        {this.state.connectedWalletLink && (
-          <div className={css(styles.connectStatus)}>
-            <div
-              className={css(
-                styles.dot,
-                this.state.connectedWalletLink && styles.connected
-              )}
-            />
-            Connected to WalletLink
+            <div className={css(styles.confirmation)} onClick={this.closeModal}>
+              {confirmationMessage}
+            </div>
           </div>
-        )}
-        {this.state.connectedMetaMask && (
-          <div className={css(styles.connectStatus)}>
-            <div
-              className={css(
-                styles.dot,
-                this.state.connectedMetaMask && styles.connected
-              )}
+          <div className={css(styles.buttons)}>
+            <Button
+              label={"Finish"}
+              onClick={this.closeModal}
+              customButtonStyle={styles.button}
+              rippleClass={styles.button}
             />
-            Connected to MetaMask
           </div>
-        )}
-        {this.state.connectedMetaMask &&
-        this.state.networkVersion !== CURRENT_CHAIN_ID
-          ? this.renderSwitchNetworkMsg()
-          : this.renderTransactionScreen()}
+        </div>
       </div>
     );
   };
 
+  renderTabs = () => {
+    const { depositScreen } = this.state;
+
+    return (
+      <div className={css(styles.tabBar)}>
+        <div
+          className={css(
+            styles.tab,
+            !depositScreen && styles.tabActive,
+            styles.oneTab
+          )}
+          onClick={() =>
+            this.transitionScreen(() => this.setState({ depositScreen: false }))
+          }
+        >
+          Withdraw RSC
+        </div>
+      </div>
+    );
+  };
+
+  renderContent = () => {
+    const { connectedMetaMask, networkVersion, transactionHash } = this.state;
+
+    if (transactionHash) {
+      return this.renderSuccessScreen();
+    }
+
+    return (
+      <Fragment>
+        {this.renderTabs()}
+        <div className={css(styles.content)}>
+          {this.renderToggleContainer(css(styles.toggleContainer))}
+          {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
+            ? this.renderSwitchNetworkMsg()
+            : this.renderTransactionScreen()}
+          <img
+            src={"/static/icons/close.png"}
+            className={css(styles.closeButton)}
+            onClick={this.closeModal}
+            draggable={false}
+            alt="Close Button"
+          />
+        </div>
+      </Fragment>
+    );
+  };
+
   render() {
-    let { modals } = this.props;
+    const { modals } = this.props;
     return (
       <BaseModal
         isOpen={modals.openWithdrawalModal}
         closeModal={this.closeModal}
         removeDefault={true}
+        modalContentStyle={styles.root}
       >
         {this.renderContent()}
-        {/* {this.renderOverlay()} */}
       </BaseModal>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  modalContent: {
-    padding: 50,
+  root: {
+    maxHeight: "90vh",
+    overflowY: "scroll",
+  },
+  content: {
+    padding: "0 50px 45px 50px",
     "@media only screen and (max-width: 767px)": {
-      padding: 25,
+      padding: "0 25px 25px 25px",
     },
   },
   disabled: {
     pointerEvents: "none",
     userSelect: "none",
+  },
+  tabBar: {
+    display: "flex",
+    width: "100%",
+  },
+  tab: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "50%",
+    height: 64,
+    fontSize: 20,
+    fontWeight: 500,
+    backgroundColor: "rgba(17, 51, 83, 0.02)",
+    borderLeft: "1px solid rgb(236, 239, 241)",
+    borderRight: "1px solid rgb(236, 239, 241)",
+    borderBottom: "1px solid rgb(236, 239, 241)",
+    color: "rgba(17, 51, 83, 0.6)",
+  },
+  tabActive: {
+    color: colors.BLUE(),
+    border: "none",
+    backgroundColor: "#FFF",
+  },
+  oneTab: {
+    width: "100%",
+    fontSize: 22,
+    paddingTop: 30,
+    color: colors.BLACK(),
+    height: 30,
   },
   main: {
     paddingLeft: 30,
@@ -866,7 +841,19 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    transition: "all ease-in-out 0.3s",
+    width: 400,
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 410px)": {
+      width: 300,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
+  },
+  successContainer: {
+    paddingTop: 30,
   },
   header: {
     fontWeight: "500",
@@ -876,6 +863,9 @@ const styles = StyleSheet.create({
     color: "#232038",
     textAlign: "center",
     marginBottom: 20,
+    // test css
+    marginTop: 20,
+    // end test css
     "@media only screen and (max-width: 415px)": {
       fontSize: 22,
     },
@@ -887,19 +877,35 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 500,
-    fontSize: 18,
-    marginBottom: 20,
+    fontSize: 22,
+    marginBottom: 25,
     textAlign: "center",
-    fontFamily: "Roboto",
+    color: colors.BLACK(),
   },
   subtitle: {
     color: "#83817c",
     fontSize: 14,
     marginBottom: 25,
-    fontFamily: "Roboto",
+    lineHeight: 1.5,
     "@media only screen and (max-width: 415px)": {
       fontSize: 13,
       lineHeight: 1.5,
+    },
+  },
+  description: {
+    fontSize: 14,
+    paddingTop: 5,
+    color: "#83817c",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
+  },
+  link: {
+    cursor: "pointer",
+    textDecoration: "unset",
+    color: colors.BLUE(),
+    ":hover": {
+      textDecoration: "underline",
     },
   },
   image: {
@@ -911,45 +917,65 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     borderBottom: "1px dashed #E7E5E4",
-    width: 440,
+    width: "100%",
     padding: "20px 0 20px",
-    "@media only screen and (max-width: 557px)": {
-      width: 380,
-    },
-    "@media only screen and (max-width: 410px)": {
-      width: 300,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 280,
-    },
   },
   top: {
     borderBottom: "none",
   },
   spacedContent: {
     width: "100%",
+    marginTop: 20,
   },
   left: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "flex-start",
     color: "#82817D",
-    height: 60,
+    height: 40,
     fontFamily: "Roboto",
     "@media only screen and (max-width: 415px)": {
       height: 70,
     },
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 500,
+    lineSpacing: 1.2,
+    color: colors.BLACK(),
+    position: "relative",
+  },
+  placeholderIcon: {
+    position: "absolute",
+    color: colors.BLUE(),
+    fontSize: 18,
+    height: 32,
+    width: 32,
+    borderRadius: "50%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    border: `1px solid rgb(232, 232, 242)`,
+    top: 38,
+    left: 10,
+    zIndex: 4,
+    cursor: "pointer",
+  },
+  metaMaskIcon: {
+    height: 20,
+    margin: "0px 5px",
   },
   textLabel: {
     color: colors.BLACK(),
   },
   right: {
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-end",
-    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    fontWeight: 500,
+    height: 40,
     fontFamily: "Roboto",
   },
   orientRow: {
@@ -958,10 +984,11 @@ const styles = StyleSheet.create({
   },
   noMargin: {
     margin: 0,
+    color: colors.BLUE(),
   },
   mainHeader: {
     fontWeight: "500",
-    fontSize: 22,
+    fontSize: 16,
     color: "#000 ",
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
@@ -979,12 +1006,16 @@ const styles = StyleSheet.create({
 
   amountInput: {
     height: 50,
-    width: 80,
+    width: 90,
     fontSize: 16,
-    padding: "0 10px",
+    padding: "0 8px",
     boxSizing: "border-box",
     borderRadius: 4,
     borderColor: colors.BLACK(0.4),
+  },
+  gasInput: {
+    width: 90,
+    padding: "0 5px",
   },
   error: {
     borderColor: "red",
@@ -992,6 +1023,7 @@ const styles = StyleSheet.create({
   infoIcon: {
     marginLeft: 5,
     cursor: "pointer",
+    color: colors.BLACK(0.4),
   },
   eth: {
     color: "#82817D",
@@ -1013,20 +1045,30 @@ const styles = StyleSheet.create({
     marginTop: 1,
     marginLeft: 5,
   },
+  smallCoin: {
+    height: 20,
+    width: 20,
+  },
   formInput: {
     width: "100%",
+    margin: 0,
+    padding: 0,
+    minHeight: "unset",
   },
   buttons: {
-    marginTop: 20,
+    marginTop: 35,
+    width: "100%",
   },
   button: {
+    width: "100%",
     "@media only screen and (max-width: 415px)": {
       width: "100%",
+      height: 50,
     },
   },
   successIcon: {
     color: "#7ae9b1",
-    fontSize: 28,
+    fontSize: 25,
     height: "100%",
     display: "flex",
     justifyContent: "center",
@@ -1039,19 +1081,18 @@ const styles = StyleSheet.create({
   },
   connectStatus: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
+    width: "max-content",
     fontSize: 14,
-    marginTop: 15,
-    marginBottom: 10,
   },
   dot: {
-    height: 10,
-    maxHeight: 10,
-    minHeight: 10,
-    width: 10,
-    maxWidth: 10,
-    minWidth: 10,
+    height: 5,
+    maxHeight: 5,
+    minHeight: 5,
+    width: 5,
+    maxWidth: 5,
+    minWidth: 5,
     borderRadius: "50%",
     marginRight: 5,
     backgroundColor: "#f9f4d3",
@@ -1061,24 +1102,40 @@ const styles = StyleSheet.create({
     backgroundColor: "#d5f3d7",
     border: "2px solid #7ae9b1",
   },
+  invalidAddress: {
+    backgroundColor: colors.RED(0.7),
+    border: `2px solid ${colors.RED()}`,
+  },
+  red: {
+    color: colors.RED(),
+  },
+  green: {
+    color: colors.GREEN(),
+  },
   pendingConnection: {
     backgroundColor: "#FDF2DE",
     border: `2px solid ${colors.YELLOW()}`,
-    // #FDF2DE
   },
   confirmation: {
-    color: "#000",
+    lineHeight: 1.3,
+    whiteSpace: "pre-wrap",
+    fontWeight: 400,
   },
   transactionHashLink: {
     cursor: "pointer",
     color: colors.BLUE(1),
-    marginLeft: 6,
+    marginLeft: 5,
+    textDecoration: "unset",
     ":hover": {
       textDecoration: "underline",
     },
   },
   icon: {
     color: colors.GREEN(1),
+    marginLeft: 5,
+  },
+  partyIcon: {
+    height: 25,
     marginLeft: 5,
   },
   confirmationButtons: {
@@ -1088,7 +1145,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "center",
-    marginTop: 15,
+    marginTop: 20,
   },
   marginBottom: {
     marginBottom: 20,
@@ -1119,52 +1176,22 @@ const styles = StyleSheet.create({
       border: `1px solid ${colors.BLUE()}`,
     },
   },
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    height: "100%",
+  recipientInputStyles: {
+    marginTop: 15,
     width: "100%",
-    overflow: "hidden",
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-    zIndex: 3,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
   },
-  bannerContainer: {
-    background: "#FFF",
-    padding: "25px 30px",
-    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
-    borderRadius: 4,
-    position: "relative",
+  ethAddressStyles: {
+    marginTop: 25,
   },
-  banner: {
-    fontSize: 18,
+  amountInputStyles: {
+    width: "100%",
+    paddingBottom: 30,
+    borderBottom: "1px dashed #E7E5E4",
   },
-  overlayButtonContainer: {
-    background: "#FFF",
-    borderRadius: "50%",
-    height: 30,
-    width: 30,
-    boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    cursor: "pointer",
-    top: -50,
-    right: -2,
-    ":hover": {
-      color: colors.BLUE(),
-    },
-  },
-  overlayButton: {
-    position: "unset",
-    top: "unset",
-    right: "unset",
-    height: "unset",
-    width: "unset",
+  fullWidth: {
+    width: "100%",
+    fontSize: 16,
+    fontWeight: 400,
   },
 });
 

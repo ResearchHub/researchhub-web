@@ -28,7 +28,7 @@ class FormInput extends React.Component {
   };
 
   render() {
-    let {
+    const {
       id,
       getRef,
       label,
@@ -51,6 +51,7 @@ class FormInput extends React.Component {
       autoComplete,
       subtitle,
       onSearch,
+      onClick,
     } = this.props;
 
     return (
@@ -98,7 +99,8 @@ class FormInput extends React.Component {
             inputStyle && inputStyle,
             styles.text,
             search && styles.search,
-            icon && styles.search
+            icon && styles.search,
+            onClick && styles.inputClick
           )}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
@@ -182,6 +184,9 @@ const styles = StyleSheet.create({
         cursor: "text",
       },
     },
+  },
+  inputClick: {
+    cursor: "pointer",
   },
   asterick: {
     color: colors.BLUE(1),
