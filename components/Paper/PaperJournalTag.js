@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-
-// Redux
-import { ModalActions } from "../../redux/modals";
-import { MessageActions } from "~/redux/message";
 
 // Config
 import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
-import { getJournalFromURL } from "~/config/utils";
+import { getJournalFromURL, capitalize } from "~/config/utils";
 
 const PaperJournalTag = (props) => {
   const { url, externalSource } = props;
@@ -19,11 +14,16 @@ const PaperJournalTag = (props) => {
   const journal = getJournalName(source);
   const src = getLogoPath(journal);
 
-  const formatImageProps = () => {
-    return {
-      src,
-      className: css(styles.logo, styles[journal], error && styles.error),
-    };
+  console.log(`${source} / ${journal} / ${src}`);
+
+  useEffect(() => {
+    imgExists(src);
+  }, []);
+
+  const imageProps = {
+    src,
+    className: css(styles.logo, styles[journal], error && styles.error),
+    "data-tip": capitalize(source || ""),
   };
 
   function getJournalName(journal) {
@@ -101,12 +101,16 @@ const PaperJournalTag = (props) => {
     }
   }
 
-  console.log("source", source);
+  function imgExists(url) {
+    return fetch(url)
+      .then((res) => setError(!res.ok))
+      .catch((err) => setError(true));
+  }
 
   if (error) {
     return props.onFallback(source);
   } else {
-    return <img {...formatImageProps()} onError={() => setError(true)} />;
+    return <img {...imageProps} />;
   }
 };
 
@@ -116,9 +120,6 @@ const styles = StyleSheet.create({
     opacity: 1,
     ":hover": {
       opacity: 0.8,
-    },
-    "@media only screen and (max-width: 767px)": {
-      marginTop: 10,
     },
   },
   error: {
