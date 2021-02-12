@@ -1043,8 +1043,10 @@ const styles = StyleSheet.create({
   half: {
     alignItems: "flex-start",
     width: "50%",
+    paddingRight: 10,
     "@media only screen and (max-width: 768px)": {
       width: "100%",
+      paddingRight: 0,
     },
   },
   cardContainer: {
