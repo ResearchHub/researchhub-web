@@ -33,7 +33,11 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
-import { openExternalLink, capitalize } from "~/config/utils";
+import {
+  getJournalFromURL,
+  openExternalLink,
+  capitalize,
+} from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
@@ -827,7 +831,10 @@ class PaperPageCard extends React.Component {
                       <PaperMetadata
                         centered={true}
                         attribute={
-                          paper && (paper.url || paper.external_source)
+                          paper &&
+                          (paper.url || paper.external_source) &&
+                          (getJournalFromURL(paper.url) !== "doi" &&
+                            paper.external_source !== "doi")
                         }
                         label={"Journal"}
                         value={
@@ -835,7 +842,7 @@ class PaperPageCard extends React.Component {
                             url={paper.url}
                             externalSource={paper.external_source}
                             onFallback={(externalSource) => {
-                              if (externalSource && externalSource !== "doi") {
+                              if (externalSource) {
                                 return capitalize(externalSource);
                               }
                               return null;
