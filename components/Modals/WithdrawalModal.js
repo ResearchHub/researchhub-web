@@ -726,21 +726,25 @@ class WithdrawalModal extends React.Component {
     return (
       <div className={css(styles.tabBar)}>
         <div
-          className={css(styles.tab, !depositScreen && styles.tabActive)}
+          className={css(
+            styles.tab,
+            !depositScreen && styles.tabActive,
+            styles.oneTab
+          )}
           onClick={() =>
             this.transitionScreen(() => this.setState({ depositScreen: false }))
           }
         >
-          Withdraw
+          Withdraw RSC
         </div>
-        <div
-          className={css(styles.tab, depositScreen && styles.tabActive)}
-          onClick={() =>
+        {/* <div
+          className={css(styles.tab, depositScreen && styles.tabActive, styles.disabled)}
+          onClick={
             this.transitionScreen(() => this.setState({ depositScreen: true }))
           }
         >
           Deposit to RH
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -760,6 +764,13 @@ class WithdrawalModal extends React.Component {
           {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
             ? this.renderSwitchNetworkMsg()
             : this.renderTransactionScreen()}
+          <img
+            src={"/static/icons/close.png"}
+            className={css(styles.closeButton)}
+            onClick={this.closeModal}
+            draggable={false}
+            alt="Close Button"
+          />
         </div>
       </Fragment>
     );
@@ -807,20 +818,27 @@ const styles = StyleSheet.create({
     height: 64,
     fontSize: 20,
     fontWeight: 500,
-    cursor: "pointer",
+    // cursor: "pointer",
     backgroundColor: "rgba(17, 51, 83, 0.02)",
     borderLeft: "1px solid rgb(236, 239, 241)",
     borderRight: "1px solid rgb(236, 239, 241)",
     borderBottom: "1px solid rgb(236, 239, 241)",
     color: "rgba(17, 51, 83, 0.6)",
-    ":hover": {
-      color: colors.BLUE(),
-    },
+    // ":hover": {
+    //   color: colors.BLUE(),
+    // },
   },
   tabActive: {
     color: colors.BLUE(),
     border: "none",
     backgroundColor: "#FFF",
+  },
+  oneTab: {
+    width: "100%",
+    fontSize: 22,
+    paddingTop: 30,
+    color: colors.BLACK(),
+    height: 40,
   },
   main: {
     paddingLeft: 30,
