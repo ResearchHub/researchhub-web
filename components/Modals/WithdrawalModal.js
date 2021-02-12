@@ -780,7 +780,7 @@ class WithdrawalModal extends React.Component {
 
 const styles = StyleSheet.create({
   root: {
-    maxHeight: "100vh",
+    maxHeight: "80vh",
     overflowY: "scroll",
   },
   content: {
@@ -821,7 +821,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingTop: 30,
     color: colors.BLACK(),
-    height: 40,
+    height: 30,
   },
   main: {
     paddingLeft: 30,
