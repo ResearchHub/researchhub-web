@@ -12,13 +12,14 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 const PaperMetadata = (props) => {
-  const { attribute, centered, label, value } = props;
+  const { active, centered, label, value, containerStyles } = props;
   return (
     <div
       className={css(
         styles.container,
         centered && styles.centered,
-        (!attribute || !value) && styles.hidden
+        containerStyles && containerStyles,
+        (!active || !value) && styles.hidden
       )}
     >
       <div className={css(styles.labelContainer)}>
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
 
 PaperMetadata.propTypes = {
   label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.node || PropTypes.string,
   attribute: PropTypes.bool.isRequired,
 };
 
