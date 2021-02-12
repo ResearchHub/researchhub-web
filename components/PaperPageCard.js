@@ -672,7 +672,6 @@ class PaperPageCard extends React.Component {
     const { fetching, previews, figureUrls } = this.state;
 
     return (
-      // <div className={css(styles.container)} ref={this.containerRef}>
       <ReactPlaceholder
         ready={doneFetchingPaper}
         showLoadingAnimation
@@ -939,14 +938,6 @@ class PaperPageCard extends React.Component {
                     : "Support"}
                 </div>
               </PermissionNotificationWrapper>
-              {/* <Button
-                    label="Support Author"
-                    onClick={() =>
-                      this.props.openAuthorSupportModal(true, {
-                        paper: this.props.paper,
-                      })
-                    }
-                  /> */}
             </div>
             <div className={css(styles.bottomRow, styles.hubsRow)}>
               {this.renderHubs()}
@@ -954,7 +945,6 @@ class PaperPageCard extends React.Component {
           </div>
         </Fragment>
       </ReactPlaceholder>
-      // </div>
     );
   }
 }
