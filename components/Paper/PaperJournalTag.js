@@ -14,11 +14,9 @@ const PaperJournalTag = (props) => {
   const journal = getJournalName(source);
   const src = getLogoPath(journal);
 
-  console.log(`${source} / ${journal} / ${src}`);
-
   useEffect(() => {
     imgExists(src);
-  }, []);
+  }, [url, externalSource]);
 
   const imageProps = {
     src,
