@@ -22,7 +22,8 @@ import ActionButton from "~/components/ActionButton";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import { BoltSvg } from "~/config/themes/icons";
-import Button from "~/components/Form/Button";
+import PaperMetadata from "./Paper/PaperMetadata";
+import PaperJournalTag from "./Paper/PaperJournalTag";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -32,7 +33,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
-import { openExternalLink } from "~/config/utils";
+import { openExternalLink, capitalize } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
@@ -232,7 +233,7 @@ class PaperPageCard extends React.Component {
       let { author_profile } = uploaded_by;
       return (
         <div className={css(styles.labelContainer)}>
-          <span className={css(styles.label)}>Submitted By:</span>
+          {/* <span className={css(styles.label)}>Submitted By:</span> */}
           <div
             onClick={this.navigateToSubmitter}
             className={css(styles.authorSection)}
@@ -244,22 +245,6 @@ class PaperPageCard extends React.Component {
               {`${author_profile.first_name} ${author_profile.last_name}`}
             </span>
           </div>
-        </div>
-      );
-    } else if (external_source) {
-      return (
-        <div className={css(styles.labelContainer)}>
-          <span className={css(styles.label)}>Published on:</span>
-          <span className={css(styles.capitalize, styles.labelText)}>
-            {external_source}
-          </span>
-        </div>
-      );
-    } else {
-      return (
-        <div className={css(styles.labelContainer)}>
-          <span className={css(styles.label)}>Submitted By:</span>
-          <span className={css(styles.labelText)}>ResearchHub</span>
         </div>
       );
     }
@@ -362,27 +347,7 @@ class PaperPageCard extends React.Component {
   };
 
   renderPreview = () => {
-    let { hovered, loading, fetching, previews } = this.state;
-    // let height =
-    //   this.metaContainerRef.current &&
-    //   this.metaContainerRef.current.clientHeight;
-
-    // let width;
-    // if (height < 137.545) {
-    //   height = 137.545;
-    // }
-    // if (this.metaContainerRef.current) {
-    //   width = (8.5 * height) / 11; // keeps paper ar
-    // }
-
-    // if (window.innerWidth < 769) {
-    //   height = 130;
-    //   width = 101;
-    // }
-    // if (!fetching && !loading) {
-    //   // width !== this.state.width && this.setState({ width });
-    // }
-
+    const { hovered, fetching, previews } = this.state;
     const height = 154;
     const width = 119;
 
@@ -392,6 +357,7 @@ class PaperPageCard extends React.Component {
           className={css(styles.previewContainer)}
           onMouseEnter={this.setHover}
           onMouseLeave={this.unsetHover}
+          onClick={() => !fetching && previews.length && this.toggleLightbox()}
           style={{
             minHeight: height,
             maxHeight: height,
@@ -402,86 +368,89 @@ class PaperPageCard extends React.Component {
           }}
         >
           <ReactPlaceholder
-            ready={false}
+            ready={!fetching}
             showLoadingAnimation
             customPlaceholder={<PreviewPlaceholder color="#efefef" />}
           >
-            <div />
-          </ReactPlaceholder>
-        </div>
-      );
-    }
-    if (!fetching && previews.length > 0) {
-      return (
-        <div
-          className={css(styles.previewContainer)}
-          onClick={this.toggleLightbox}
-          style={{
-            minHeight: height,
-            maxHeight: height,
-            height,
-            width,
-            minWidth: width,
-            maxWidth: width,
-          }}
-        >
-          <Carousel
-            afterSlide={(slideIndex) =>
-              this.setState({ slideIndex: slideIndex + 1 })
-            }
-            renderBottomCenterControls={(arg) => {
-              let { currentSlide, slideCount, previousSlide, nextSlide } = arg;
-              return (
-                <div
-                  className={css(
-                    carousel.bottomControl,
-                    hovered && carousel.show
-                  )}
-                >
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      previousSlide(e);
-                    }}
+            <Carousel
+              afterSlide={(slideIndex) =>
+                this.setState({ slideIndex: slideIndex + 1 })
+              }
+              renderBottomCenterControls={(arg) => {
+                const {
+                  currentSlide,
+                  slideCount,
+                  previousSlide,
+                  nextSlide,
+                } = arg;
+                return (
+                  <div
                     className={css(
-                      carousel.button,
-                      carousel.left,
+                      carousel.bottomControl,
                       hovered && carousel.show
                     )}
                   >
-                    {icons.angleLeft}
-                  </span>
-                  <span className={css(styles.slideCount)}>{`${currentSlide +
-                    1} / ${slideCount}`}</span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      nextSlide(e);
-                    }}
-                    className={css(
-                      carousel.button,
-                      carousel.right,
-                      hovered && carousel.show
-                    )}
-                  >
-                    {icons.angleRight}
-                  </span>
-                </div>
-              );
-            }}
-            renderCenterLeftControls={null}
-            renderCenterRightControls={null}
-            wrapAround={true}
-            enableKeyboardControls={true}
-          >
-            {previews.map((preview, i) => {
-              if (i === 0) {
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        previousSlide(e);
+                      }}
+                      className={css(
+                        carousel.button,
+                        carousel.left,
+                        hovered && carousel.show
+                      )}
+                    >
+                      {icons.angleLeft}
+                    </span>
+                    <span className={css(styles.slideCount)}>{`${currentSlide +
+                      1} / ${slideCount}`}</span>
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        nextSlide(e);
+                      }}
+                      className={css(
+                        carousel.button,
+                        carousel.right,
+                        hovered && carousel.show
+                      )}
+                    >
+                      {icons.angleRight}
+                    </span>
+                  </div>
+                );
+              }}
+              renderCenterLeftControls={null}
+              renderCenterRightControls={null}
+              wrapAround={true}
+              enableKeyboardControls={true}
+            >
+              {previews.map((preview, i) => {
+                if (i === 0) {
+                  return (
+                    <img
+                      src={preview.file}
+                      className={css(styles.image)}
+                      key={`preview-${preview.id}-${i}`}
+                      property="image"
+                      style={{
+                        minHeight: height,
+                        maxHeight: height,
+                        height,
+                        width,
+                        minWidth: width,
+                        maxWidth: width,
+                      }}
+                      alt={`Paper PDF Page:${i + 1}`}
+                    />
+                  );
+                }
                 return (
                   <img
                     src={preview.file}
                     className={css(styles.image)}
                     key={`preview-${preview.id}-${i}`}
-                    property="image"
                     style={{
                       minHeight: height,
                       maxHeight: height,
@@ -493,25 +462,9 @@ class PaperPageCard extends React.Component {
                     alt={`Paper PDF Page:${i + 1}`}
                   />
                 );
-              }
-              return (
-                <img
-                  src={preview.file}
-                  className={css(styles.image)}
-                  key={`preview-${preview.id}-${i}`}
-                  style={{
-                    minHeight: height,
-                    maxHeight: height,
-                    height,
-                    width,
-                    minWidth: width,
-                    maxWidth: width,
-                  }}
-                  alt={`Paper PDF Page:${i + 1}`}
-                />
-              );
-            })}
-          </Carousel>
+              })}
+            </Carousel>
+          </ReactPlaceholder>
         </div>
       );
     }
@@ -561,8 +514,6 @@ class PaperPageCard extends React.Component {
   };
 
   renderAuthors = () => {
-    let { paper } = this.props;
-
     let authorsObj = this.getAuthors();
     let authorKeys = Object.keys(authorsObj);
     let length = authorKeys.length;
@@ -616,18 +567,15 @@ class PaperPageCard extends React.Component {
   };
 
   renderPublishDate = () => {
-    let { paper } = this.props;
+    const { paper } = this.props;
     if (paper.paper_publish_date) {
-      return (
-        <div className={css(styles.info)}>
-          {formatPublishedDate(moment(paper.paper_publish_date), true)}
-        </div>
-      );
+      return formatPublishedDate(moment(paper.paper_publish_date), true);
     }
   };
 
   renderHubs = () => {
-    let { paper } = this.props;
+    const { paper } = this.props;
+
     if (paper.hubs && paper.hubs.length > 0) {
       return (
         <div className={css(styles.hubTags)}>
@@ -639,7 +587,9 @@ class PaperPageCard extends React.Component {
                   <HubTag
                     tag={hub}
                     gray={false}
-                    overrideStyle={this.state.showAllHubs && styles.tagStyle}
+                    overrideStyle={
+                      this.state.showAllHubs ? styles.tagStyle : styles.hubTag
+                    }
                     last={last}
                   />
                   <meta property="about" content={hub.name} />
@@ -677,7 +627,7 @@ class PaperPageCard extends React.Component {
   };
 
   renderTopRow = () => {
-    let { score, upvote, downvote } = this.props;
+    const { score, upvote, downvote } = this.props;
     return (
       <Fragment>
         <div className={css(styles.topRow)}>
@@ -716,275 +666,295 @@ class PaperPageCard extends React.Component {
       upvote,
       downvote,
       selectedVoteType,
-      scrollView,
       doneFetchingPaper,
     } = this.props;
 
-    let { fetching, previews, figureUrls } = this.state;
-    if (!doneFetchingPaper) {
-      return (
-        <div className={css(styles.container)} ref={this.containerRef}>
-          <ReactPlaceholder
-            ready={false}
-            showLoadingAnimation
-            customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
-          >
-            <div />
-          </ReactPlaceholder>
-        </div>
-      );
-    }
+    const { fetching, previews, figureUrls } = this.state;
 
     return (
-      <Fragment>
-        <AuthorSupportModal />
-        <div
-          className={css(
-            styles.container,
-            this.state.dropdown && styles.overflow
-          )}
-          ref={this.containerRef}
-          onMouseEnter={this.setHover}
-          onMouseLeave={this.unsetHover}
-          vocab="https://schema.org/"
-          typeof="ScholarlyArticle"
-        >
-          <ReactTooltip />
-          <meta property="description" content={paper.abstract} />
-          <meta property="commentCount" content={paper.discussion_count} />
-          <div className={css(styles.voting)}>
-            <VoteWidget
-              score={score}
-              onUpvote={upvote}
-              onDownvote={downvote}
-              selected={this.props.selectedVoteType}
-              isPaper={true}
-              type={"Paper"}
-              paperPage={true}
-              promoted={this.props.paper && this.props.paper.promoted}
-              paper={
-                this.props.paper && this.props.paper.promoted !== false
-                  ? this.props.paper
-                  : null
-              }
-              showPromotion={true}
-            />
-          </div>
-          <div className={css(styles.votingMobile)}>
-            <VoteWidget
-              score={score}
-              onUpvote={upvote}
-              onDownvote={downvote}
-              selected={selectedVoteType}
-              isPaper={true}
-              horizontalView={true}
-              type={"Paper"}
-              paperPage={true}
-              promoted={this.props.paper && this.props.paper.promoted}
-              paper={
-                this.props.paper && this.props.paper.promoted
-                  ? this.props.paper
-                  : null
-              }
-              showPromotion={true}
-            />
-          </div>
-          {figureUrls.length > 0 && (
-            <FsLightbox
-              toggler={this.state.toggleLightbox}
-              type="image"
-              sources={[...figureUrls]}
-              slide={this.state.slideIndex}
-            />
-          )}
+      // <div className={css(styles.container)} ref={this.containerRef}>
+      <ReactPlaceholder
+        ready={doneFetchingPaper}
+        showLoadingAnimation
+        customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
+      >
+        <Fragment>
+          <AuthorSupportModal />
           <div
             className={css(
-              styles.column,
-              !fetching && previews.length === 0 && styles.emptyPreview
+              styles.container,
+              this.state.dropdown && styles.overflow
             )}
-            ref={this.metaContainerRef}
+            ref={this.containerRef}
+            onMouseEnter={this.setHover}
+            onMouseLeave={this.unsetHover}
+            vocab="https://schema.org/"
+            typeof="ScholarlyArticle"
           >
-            <div className={css(styles.row)}>
-              <div
-                className={css(
-                  styles.cardContainer,
-                  !fetching && previews.length === 0 && styles.emptyPreview
-                )}
-              >
-                <div className={css(styles.metaContainer)}>
-                  <div className={css(styles.titleHeader)}>
-                    <h1 className={css(styles.title)} property={"headline"}>
-                      {paper && paper.title}
-                    </h1>
-                    {paper.paper_title && paper.paper_title !== paper.title ? (
-                      <h2 className={css(styles.subtitle)} property={"name"}>
-                        {`From Paper: ${paper.paper_title}`}
-                      </h2>
-                    ) : null}
-                  </div>
-                  <div className={css(styles.column)}>
-                    {paper && paper.doi && (
-                      <div className={css(styles.labelContainer)}>
-                        <span className={css(styles.label)}>DOI:</span>
-                        <a
-                          property="sameAs"
-                          href={this.formatDoiUrl(paper.doi)}
-                          target="_blank"
-                          className={css(styles.link, styles.labelText)}
-                          rel="noreferrer noopener"
-                        >
-                          {paper.doi}
-                        </a>
-                      </div>
-                    )}
-                    {paper &&
-                    ((paper.authors && paper.authors.length) ||
-                      (paper.raw_authors && paper.raw_authors.length)) ? (
+            <ReactTooltip />
+            <meta property="description" content={paper.abstract} />
+            <meta property="commentCount" content={paper.discussion_count} />
+            <div className={css(styles.voting)}>
+              <VoteWidget
+                score={score}
+                onUpvote={upvote}
+                onDownvote={downvote}
+                selected={this.props.selectedVoteType}
+                isPaper={true}
+                type={"Paper"}
+                paperPage={true}
+                promoted={this.props.paper && this.props.paper.promoted}
+                paper={
+                  this.props.paper && this.props.paper.promoted !== false
+                    ? this.props.paper
+                    : null
+                }
+                showPromotion={true}
+              />
+            </div>
+            <div className={css(styles.votingMobile)}>
+              <VoteWidget
+                score={score}
+                onUpvote={upvote}
+                onDownvote={downvote}
+                selected={selectedVoteType}
+                isPaper={true}
+                horizontalView={true}
+                type={"Paper"}
+                paperPage={true}
+                promoted={this.props.paper && this.props.paper.promoted}
+                paper={
+                  this.props.paper && this.props.paper.promoted
+                    ? this.props.paper
+                    : null
+                }
+                showPromotion={true}
+              />
+            </div>
+            {figureUrls.length > 0 && (
+              <FsLightbox
+                toggler={this.state.toggleLightbox}
+                type="image"
+                sources={[...figureUrls]}
+                slide={this.state.slideIndex}
+              />
+            )}
+            <div
+              className={css(
+                styles.column,
+                !fetching && previews.length === 0 && styles.emptyPreview
+              )}
+              ref={this.metaContainerRef}
+            >
+              <div className={css(styles.row)}>
+                <div
+                  className={css(
+                    styles.cardContainer,
+                    !fetching && previews.length === 0 && styles.emptyPreview
+                  )}
+                >
+                  <div className={css(styles.metaContainer)}>
+                    <div className={css(styles.titleHeader)}>
+                      <h1 className={css(styles.title)} property={"headline"}>
+                        {paper && paper.title}
+                      </h1>
+                    </div>
+                    <div className={css(styles.column)}>
+                      <PaperMetadata
+                        attribute={
+                          paper.paper_title && paper.paper_title !== paper.title
+                        }
+                        label={"Paper Title"}
+                        value={
+                          <h2
+                            className={css(styles.metadata)}
+                            property={"name"}
+                          >
+                            {paper.paper_title}
+                          </h2>
+                        }
+                      />
+                      <PaperMetadata
+                        attribute={paper && paper.doi}
+                        label={"DOI"}
+                        value={
+                          <a
+                            property="sameAs"
+                            href={this.formatDoiUrl(paper.doi)}
+                            target="_blank"
+                            className={css(styles.metadata, styles.link)}
+                            rel="noreferrer noopener"
+                          >
+                            {paper.doi}
+                          </a>
+                        }
+                      />
+                      <PaperMetadata
+                        attribute={
+                          paper &&
+                          ((paper.authors && paper.authors.length) ||
+                            (paper.raw_authors && paper.raw_authors.length))
+                        }
+                        label={`Author${
+                          (paper.authors && paper.authors.length > 1) ||
+                          (paper.raw_authors && paper.raw_authors.length > 1)
+                            ? "s"
+                            : ""
+                        }`}
+                        value={
+                          <div
+                            className={css(
+                              styles.metadata,
+                              styles.authorsContainer
+                            )}
+                          >
+                            {this.renderAuthors()}
+                          </div>
+                        }
+                      />
+                      <PaperMetadata
+                        attribute={paper && paper.paper_publish_date}
+                        label={"Published"}
+                        value={
+                          <div
+                            className={css(styles.metadata)}
+                            property="datePublished"
+                            datetime={paper.paper_publish_date}
+                          >
+                            {this.renderPublishDate()}
+                          </div>
+                        }
+                      />
+                      <PaperMetadata
+                        attribute={
+                          paper && (paper.url || paper.external_source)
+                        }
+                        label={"Journal"}
+                        value={
+                          <PaperJournalTag
+                            url={paper.url}
+                            externalSource={paper.external_source}
+                            onFallback={(externalSource) => {
+                              if (externalSource && externalSource !== "doi") {
+                                return capitalize(externalSource);
+                              }
+                              return null;
+                            }}
+                          />
+                        }
+                      />
                       <div
                         className={css(
-                          styles.labelContainer,
-                          styles.authorLabelContainer,
-                          !paper.paper_publish_date && styles.marginTop
+                          styles.uploadedByContainer,
+                          styles.mobile
                         )}
                       >
-                        <span className={css(styles.label, styles.authorLabel)}>
-                          {`Author${
-                            (paper.authors && paper.authors.length > 1) ||
-                            (paper.raw_authors && paper.raw_authors.length > 1)
-                              ? "s"
-                              : ""
-                          }:`}
-                        </span>
-                        <div
-                          className={css(
-                            styles.labelText,
-                            styles.authorsContainer
-                          )}
-                        >
-                          {this.renderAuthors()}
-                        </div>
-                      </div>
-                    ) : null}
-                    {paper && paper.paper_publish_date ? (
-                      <div className={css(styles.labelContainer)}>
-                        <span className={css(styles.label)}>Published:</span>
-                        <div
-                          className={css(styles.labelText)}
-                          property="datePublished"
-                          datetime={paper.paper_publish_date}
-                        >
-                          {this.renderPublishDate()}
-                        </div>
-                      </div>
-                    ) : null}
-                    {this.renderUploadedBy()}
-                    <div
-                      className={css(styles.uploadedByContainer, styles.mobile)}
-                    >
-                      <div className={css(styles.mobile)}>
-                        <PermissionNotificationWrapper
-                          modalMessage="promote paper"
-                          onClick={() =>
-                            this.props.openPaperTransactionModal(true)
-                          }
-                          loginRequired={true}
-                          hideRipples={false}
-                        >
-                          <div
-                            className={css(styles.promotionButton)}
-                            onMouseEnter={() => this.toggleBoostHover(true)}
-                            onMouseLeave={() => this.toggleBoostHover(false)}
+                        <div className={css(styles.mobile)}>
+                          <PermissionNotificationWrapper
+                            modalMessage="promote paper"
+                            onClick={() =>
+                              this.props.openPaperTransactionModal(true)
+                            }
+                            loginRequired={true}
+                            hideRipples={false}
                           >
-                            <span className={css(styles.boostIcon)}>
-                              <BoltSvg
-                                color={
-                                  this.state.boostHover
-                                    ? "rgb(255, 255, 255)"
-                                    : colors.BLUE()
-                                }
-                                opacity={1}
-                              />
-                            </span>
-                            Support
-                          </div>
-                        </PermissionNotificationWrapper>
+                            <div
+                              className={css(styles.promotionButton)}
+                              onMouseEnter={() => this.toggleBoostHover(true)}
+                              onMouseLeave={() => this.toggleBoostHover(false)}
+                            >
+                              <span className={css(styles.boostIcon)}>
+                                <BoltSvg
+                                  color={
+                                    this.state.boostHover
+                                      ? "rgb(255, 255, 255)"
+                                      : colors.BLUE()
+                                  }
+                                  opacity={1}
+                                />
+                              </span>
+                              Support
+                            </div>
+                          </PermissionNotificationWrapper>
+                        </div>
                       </div>
                     </div>
+                    <div className={css(styles.mobile)}>
+                      {process.browser && this.renderPreview()}
+                    </div>
+                    <div className={css(styles.mobile, styles.preregMobile)}>
+                      {paper &&
+                        paper.paper_type === "PRE_REGISTRATION" &&
+                        this.renderPreregistrationTag()}
+                      {this.renderHubs()}
+                    </div>
                   </div>
-                  <div className={css(styles.mobile)}>
-                    {process.browser && this.renderPreview()}
-                  </div>
-                  <div className={css(styles.mobile, styles.preregMobile)}>
-                    {paper &&
-                      paper.paper_type === "PRE_REGISTRATION" &&
-                      this.renderPreregistrationTag()}
-                    {this.renderHubs()}
+                </div>
+                <div className={css(styles.rightColumn, styles.mobile)}>
+                  <div className={css(styles.actionMobileContainer)}>
+                    {this.renderActions()}
                   </div>
                 </div>
               </div>
-              <div className={css(styles.rightColumn, styles.mobile)}>
-                <div className={css(styles.actionMobileContainer)}>
-                  {this.renderActions()}
-                </div>
+            </div>
+            <div className={css(styles.absolutePreview)}>
+              {process.browser && this.renderPreview()}
+            </div>
+          </div>
+          <div className={css(styles.bottomContainer)}>
+            <div className={css(styles.bottomRow)}>
+              <div className={css(styles.actionsContainer)}>
+                {this.renderActions()}
               </div>
-            </div>
-          </div>
-          <div className={css(styles.absolutePreview)}>
-            {process.browser && this.renderPreview()}
-          </div>
-        </div>
-        <div className={css(styles.bottomContainer)}>
-          <div className={css(styles.bottomRow)}>
-            <div className={css(styles.actionsContainer)}>
-              {this.renderActions()}
-            </div>
-            <PermissionNotificationWrapper
-              modalMessage="promote paper"
-              onClick={() =>
-                this.props.paper.paper_type === "PRE_REGISTRATION"
-                  ? this.props.openAuthorSupportModal(true, {
-                      paper: this.props.paper,
-                    })
-                  : this.props.openPaperTransactionModal(true)
-              }
-              loginRequired={true}
-              hideRipples={false}
-            >
-              <div
-                className={css(styles.promotionButton)}
-                onMouseEnter={() => this.toggleBoostHover(true)}
-                onMouseLeave={() => this.toggleBoostHover(false)}
+              <PermissionNotificationWrapper
+                modalMessage="promote paper"
+                onClick={() =>
+                  this.props.paper.paper_type === "PRE_REGISTRATION"
+                    ? this.props.openAuthorSupportModal(true, {
+                        paper: this.props.paper,
+                      })
+                    : this.props.openPaperTransactionModal(true)
+                }
+                loginRequired={true}
+                hideRipples={false}
               >
-                <span className={css(styles.boostIcon)}>
-                  <BoltSvg
-                    color={
-                      this.state.boostHover
-                        ? "rgb(255, 255, 255)"
-                        : colors.BLUE()
+                <div
+                  className={css(styles.promotionButton)}
+                  onMouseEnter={() => this.toggleBoostHover(true)}
+                  onMouseLeave={() => this.toggleBoostHover(false)}
+                >
+                  <span className={css(styles.boostIcon)}>
+                    <BoltSvg
+                      color={
+                        this.state.boostHover
+                          ? "rgb(255, 255, 255)"
+                          : colors.BLUE()
+                      }
+                      opacity={1}
+                    />
+                  </span>
+                  {this.props.paper &&
+                  this.props.paper.paper_type === "PRE_REGISTRATION"
+                    ? "Support Project"
+                    : "Support"}
+                </div>
+              </PermissionNotificationWrapper>
+              {/* <Button
+                    label="Support Author"
+                    onClick={() =>
+                      this.props.openAuthorSupportModal(true, {
+                        paper: this.props.paper,
+                      })
                     }
-                    opacity={1}
-                  />
-                </span>
-                {this.props.paper &&
-                this.props.paper.paper_type === "PRE_REGISTRATION"
-                  ? "Support Project"
-                  : "Support"}
-              </div>
-            </PermissionNotificationWrapper>
-            {/* <Button
-              label="Support Author"
-              onClick={() =>
-                this.props.openAuthorSupportModal(true, {
-                  paper: this.props.paper,
-                })
-              }
-            /> */}
+                  /> */}
+            </div>
+            <div className={css(styles.bottomRow, styles.hubsRow)}>
+              {this.renderHubs()}
+            </div>
           </div>
-          <div className={css(styles.bottomRow, styles.hubsRow)}>
-            {this.renderHubs()}
-          </div>
-        </div>
-      </Fragment>
+        </Fragment>
+      </ReactPlaceholder>
+      // </div>
     );
   }
 }
@@ -1065,6 +1035,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 768px)": {
       marginTop: 15,
     },
+  },
+  hubTag: {
+    fontSize: 16,
   },
   title: {
     fontSize: 30,
@@ -1156,8 +1129,19 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     display: "flex",
     width: "100%",
+    marginTop: 5,
     marginBottom: 5,
     alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+  },
+  metadata: {
+    fontSize: 16,
+    color: colors.BLACK(0.7),
+    margin: 0,
+    padding: 0,
+    fontWeight: "unset",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
@@ -1187,7 +1171,6 @@ const styles = StyleSheet.create({
   },
   authorsContainer: {
     width: "100%",
-    marginLeft: 59,
   },
   voting: {
     position: "absolute",
@@ -1205,7 +1188,7 @@ const styles = StyleSheet.create({
     },
     display: "unset",
     position: "absolute",
-    top: 20,
+    top: 35,
     left: 5,
   },
   buttonRow: {

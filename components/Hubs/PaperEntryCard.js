@@ -6,6 +6,7 @@ import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
 import Ripples from "react-ripples";
 import FsLightbox from "fslightbox-react";
+import ReactTooltip from "react-tooltip";
 
 // Components
 import VoteWidget from "../VoteWidget";
@@ -127,49 +128,53 @@ const PaperEntryCard = (props) => {
 
   function renderUploadedBy() {
     return (
-      <PaperJournalTag
-        url={url}
-        externalSource={external_source}
-        onFallback={(externalSource) => {
-          if (externalSource && externalSource !== "doi") {
-            return (
-              <div className={css(styles.uploadedBy)}>
-                <span className={css(styles.capitalize, styles.externalSource)}>
-                  {externalSource}
-                </span>
-              </div>
-            );
-          }
+      <div className={css(styles.journalTagContainer)}>
+        <PaperJournalTag
+          url={url}
+          externalSource={external_source}
+          onFallback={(externalSource) => {
+            if (externalSource && externalSource !== "doi") {
+              return (
+                <div className={css(styles.uploadedBy)}>
+                  <span
+                    className={css(styles.capitalize, styles.externalSource)}
+                  >
+                    {externalSource}
+                  </span>
+                </div>
+              );
+            }
 
-          if (uploaded_by && externalSource !== "doi") {
-            const {
-              first_name,
-              last_name,
-              profile_image,
-              id,
-              user,
-            } = uploaded_by.author_profile;
+            if (uploaded_by && externalSource !== "doi") {
+              const {
+                first_name,
+                last_name,
+                profile_image,
+                id,
+                user,
+              } = uploaded_by.author_profile;
 
-            return (
-              <div
-                className={css(styles.uploadedBy)}
-                onClick={navigateToSubmitter}
-              >
-                <AuthorAvatar
-                  author={uploaded_by.author_profile}
-                  name={first_name + " " + last_name}
-                  size={25}
-                  border={"1px solid #EDEDED"}
-                  trueSize={true}
-                  dropShadow={true}
-                />
-              </div>
-            );
-          }
+              return (
+                <div
+                  className={css(styles.uploadedBy)}
+                  onClick={navigateToSubmitter}
+                >
+                  <AuthorAvatar
+                    author={uploaded_by.author_profile}
+                    name={first_name + " " + last_name}
+                    size={25}
+                    border={"1px solid #EDEDED"}
+                    trueSize={true}
+                    dropShadow={true}
+                  />
+                </div>
+              );
+            }
 
-          return null;
-        }}
-      />
+            return null;
+          }}
+        />
+      </div>
     );
   }
 
@@ -617,6 +622,7 @@ const PaperEntryCard = (props) => {
       key={`${id}-${index}-${title}`}
       onClick={navigateToPage}
     >
+      <ReactTooltip />
       {figures.length > 0 && (
         <div onClick={(e) => e.stopPropagation()}>
           <FsLightbox
@@ -977,11 +983,14 @@ const styles = StyleSheet.create({
     whiteSpace: "pre-wrap",
     fontSize: 14,
     color: colors.BLACK(0.8),
-    // fontWeight: 500,
     ":hover": {
-      // color: colors.BLUE(),
       opacity: 0.8,
     },
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 10,
+    },
+  },
+  journalTagContainer: {
     "@media only screen and (max-width: 767px)": {
       marginTop: 10,
     },
