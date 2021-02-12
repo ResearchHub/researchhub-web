@@ -64,7 +64,7 @@ const LeaderboardContainer = (props) => {
 
   return (
     <div className={css(styles.container)}>
-      <h3 className={css(styles.title)}>Most Reputable Users</h3>
+      <h3 className={css(styles.title)}>Trending Users</h3>
       <ReactPlaceholder
         ready={false}
         ready={!fetchingUsers}

@@ -156,7 +156,7 @@ class HubsList extends React.Component {
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <h5 className={css(styles.listLabel)}>Trending</h5>
+          <h5 className={css(styles.listLabel)}>Trending Hubs</h5>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
