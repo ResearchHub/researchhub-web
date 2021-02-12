@@ -1022,9 +1022,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     width: "100%",
     flexWrap: "wrap",
-    "@media only screen and (max-width: 768px)": {
-      marginTop: 15,
-    },
   },
   hubTag: {
     fontSize: 16,
