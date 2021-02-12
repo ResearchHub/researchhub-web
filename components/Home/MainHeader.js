@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
+
     "@media only screen and (max-width: 1149px)": {
       fontSize: 30,
     },
@@ -166,6 +166,9 @@ const styles = StyleSheet.create({
       fontSize: 25,
       textAlign: "center",
       justifyContent: "center",
+      whiteSpace: "pre-wrap",
+      wordBreak: "normal",
+      display: "flex",
     },
     "@media only screen and (max-width: 416px)": {
       fontSize: 25,
