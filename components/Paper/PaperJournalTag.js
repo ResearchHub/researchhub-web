@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     display: "none",
   },
   arxiv: {
-    height: 17,
+    height: 16,
   },
   biorxiv: {
     height: 16,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
   sciencedirect: {
-    height: 50,
+    height: 20,
   },
   researchgate: {
     height: 12,
