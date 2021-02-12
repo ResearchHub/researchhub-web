@@ -231,13 +231,117 @@ class PaperPageCard extends React.Component {
     );
   };
 
+  renderMetadata = () => {
+    const { paper } = this.props;
+
+    this.metadata = [
+      {
+        label: `Author${
+          (paper.authors && paper.authors.length > 1) ||
+          (paper.raw_authors && paper.raw_authors.length > 1)
+            ? "s"
+            : ""
+        }`,
+        value: (
+          <span className={css(styles.metadata, styles.authorsContainer)}>
+            {this.renderAuthors()}
+          </span>
+        ),
+        active:
+          paper &&
+          ((paper.authors && paper.authors.length) ||
+            (Array.isArray(paper.raw_authors)
+              ? paper.raw_authors.length
+              : paper.raw_authors)),
+      },
+      {
+        label: "Published",
+        value: (
+          <span
+            className={css(styles.metadata)}
+            property="datePublished"
+            datetime={paper.paper_publish_date}
+          >
+            {this.renderPublishDate()}
+          </span>
+        ),
+        active: paper && paper.paper_publish_date,
+      },
+
+      {
+        label: "DOI",
+        value: (
+          <a
+            property="sameAs"
+            href={this.formatDoiUrl(paper.doi)}
+            target="_blank"
+            className={css(styles.metadata, styles.link)}
+            rel="noreferrer noopener"
+          >
+            {paper.doi}
+          </a>
+        ),
+        active: paper && paper.doi,
+      },
+      {
+        label: "Journal",
+        value: (
+          <PaperJournalTag
+            url={paper.url}
+            externalSource={paper.external_source}
+            onFallback={(externalSource) => {
+              if (externalSource) {
+                return capitalize(externalSource);
+              }
+              return null;
+            }}
+          />
+        ),
+        active:
+          paper &&
+          (paper.url || paper.external_source) &&
+          (getJournalFromURL(paper.url) !== "doi" &&
+            paper.external_source !== "doi"),
+        centered: true,
+      },
+    ];
+
+    const metadata = this.metadata.filter((data) => data.active);
+    let columnOne, columnTwo;
+
+    if (metadata.length > 2) {
+      columnOne = metadata.slice(0, 2);
+      columnTwo = metadata.slice(2);
+    } else {
+      columnOne = metadata;
+    }
+
+    return (
+      <div className={css(styles.row)}>
+        {columnOne.length && (
+          <div className={css(styles.column, styles.half)}>
+            {columnOne.map((props) => (
+              <PaperMetadata {...props} />
+            ))}
+          </div>
+        )}
+        {columnTwo && (
+          <div className={css(styles.column, styles.half)}>
+            {columnTwo.map((props) => (
+              <PaperMetadata {...props} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   renderUploadedBy = () => {
-    let { uploaded_by, external_source } = this.props.paper;
+    const { uploaded_by } = this.props.paper;
     if (uploaded_by) {
       let { author_profile } = uploaded_by;
       return (
         <div className={css(styles.labelContainer)}>
-          {/* <span className={css(styles.label)}>Submitted By:</span> */}
           <div
             onClick={this.navigateToSubmitter}
             className={css(styles.authorSection)}
@@ -255,7 +359,7 @@ class PaperPageCard extends React.Component {
   };
 
   renderActions = () => {
-    let { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
+    const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
 
     let paperTitle = paper && paper.title;
     return (
@@ -474,10 +578,10 @@ class PaperPageCard extends React.Component {
     }
   };
 
-  getAuthors = () => {
-    let { paper } = this.props;
+  formatAuthors = () => {
+    const { paper } = this.props;
 
-    let authors = {};
+    const authors = {};
 
     if (paper.authors && paper.authors.length > 0) {
       paper.authors.map((author) => {
@@ -498,6 +602,17 @@ class PaperPageCard extends React.Component {
             if (!Array.isArray(rawAuthors)) {
               rawAuthors = [rawAuthors];
             }
+          } else if (
+            typeof rawAuthors === "object" &&
+            !Array.isArray(rawAuthors)
+          ) {
+            authors[rawAuthors["main_author"]] = true;
+
+            rawAuthors["other_authors"].map((author) => {
+              authors[author] = true;
+            });
+
+            return authors;
           }
           rawAuthors.forEach((author) => {
             if (author.first_name && !author.last_name) {
@@ -518,11 +633,10 @@ class PaperPageCard extends React.Component {
   };
 
   renderAuthors = () => {
-    let authorsObj = this.getAuthors();
-    let authorKeys = Object.keys(authorsObj);
-    let length = authorKeys.length;
-    let index = 0;
-    let authors = [];
+    const authorsObj = this.formatAuthors();
+    const authorKeys = Object.keys(authorsObj);
+    const length = authorKeys.length;
+    const authors = [];
 
     if (length >= 15) {
       let author = authorKeys[0];
@@ -549,21 +663,19 @@ class PaperPageCard extends React.Component {
               className={css(styles.atag)}
             >
               <span className={css(styles.authorName)} property="name">
-                {`${authorName}${index < length - 1 ? "," : ""}`}
+                {`${authorName}${i < length - 1 ? "," : ""}`}
               </span>
               <meta property="author" content={author} />
             </a>
           </Link>
         );
-        index++;
       } else {
         authors.push(
           <span className={css(styles.rawAuthor)}>
-            {`${authorName}${index < length - 1 ? "," : ""}`}
+            {`${authorName}${i < length - 1 ? "," : ""}`}
             <meta property="author" content={authorName} />
           </span>
         );
-        index++;
       }
     }
 
@@ -761,95 +873,24 @@ class PaperPageCard extends React.Component {
                       <h1 className={css(styles.title)} property={"headline"}>
                         {paper && paper.title}
                       </h1>
-                    </div>
-                    <div className={css(styles.column)}>
                       <PaperMetadata
-                        attribute={
+                        active={
                           paper.paper_title && paper.paper_title !== paper.title
                         }
                         label={"Paper Title"}
                         value={
-                          <h2
+                          <h3
                             className={css(styles.metadata)}
                             property={"name"}
                           >
                             {paper.paper_title}
-                          </h2>
+                          </h3>
                         }
+                        containerStyles={styles.paperTitle}
                       />
-                      <PaperMetadata
-                        attribute={paper && paper.doi}
-                        label={"DOI"}
-                        value={
-                          <a
-                            property="sameAs"
-                            href={this.formatDoiUrl(paper.doi)}
-                            target="_blank"
-                            className={css(styles.metadata, styles.link)}
-                            rel="noreferrer noopener"
-                          >
-                            {paper.doi}
-                          </a>
-                        }
-                      />
-                      <PaperMetadata
-                        attribute={
-                          paper &&
-                          ((paper.authors && paper.authors.length) ||
-                            (paper.raw_authors && paper.raw_authors.length))
-                        }
-                        label={`Author${
-                          (paper.authors && paper.authors.length > 1) ||
-                          (paper.raw_authors && paper.raw_authors.length > 1)
-                            ? "s"
-                            : ""
-                        }`}
-                        value={
-                          <div
-                            className={css(
-                              styles.metadata,
-                              styles.authorsContainer
-                            )}
-                          >
-                            {this.renderAuthors()}
-                          </div>
-                        }
-                      />
-                      <PaperMetadata
-                        attribute={paper && paper.paper_publish_date}
-                        label={"Published"}
-                        value={
-                          <div
-                            className={css(styles.metadata)}
-                            property="datePublished"
-                            datetime={paper.paper_publish_date}
-                          >
-                            {this.renderPublishDate()}
-                          </div>
-                        }
-                      />
-                      <PaperMetadata
-                        centered={true}
-                        attribute={
-                          paper &&
-                          (paper.url || paper.external_source) &&
-                          (getJournalFromURL(paper.url) !== "doi" &&
-                            paper.external_source !== "doi")
-                        }
-                        label={"Journal"}
-                        value={
-                          <PaperJournalTag
-                            url={paper.url}
-                            externalSource={paper.external_source}
-                            onFallback={(externalSource) => {
-                              if (externalSource) {
-                                return capitalize(externalSource);
-                              }
-                              return null;
-                            }}
-                          />
-                        }
-                      />
+                    </div>
+                    <div className={css(styles.column)}>
+                      {this.renderMetadata()}
                       <div
                         className={css(
                           styles.uploadedByContainer,
@@ -904,9 +945,9 @@ class PaperPageCard extends React.Component {
                 </div>
               </div>
             </div>
-            <div className={css(styles.absolutePreview)}>
+            {/* <div className={css(styles.absolutePreview)}>
               {process.browser && this.renderPreview()}
-            </div>
+            </div> */}
           </div>
           <div className={css(styles.bottomContainer)}>
             <div className={css(styles.bottomRow)}>
@@ -999,6 +1040,13 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     width: "100%",
   },
+  half: {
+    alignItems: "flex-start",
+    width: "50%",
+    "@media only screen and (max-width: 768px)": {
+      width: "100%",
+    },
+  },
   cardContainer: {
     display: "flex",
     flexDirection: "column",
@@ -1015,7 +1063,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    "@media only screen and (min-width: 768px)": {},
   },
   topRow: {
     display: "flex",
@@ -1053,6 +1100,9 @@ const styles = StyleSheet.create({
   },
   titleHeader: {
     marginBottom: 15,
+  },
+  paperTitle: {
+    margin: "8px 0 0",
   },
   subtitle: {
     color: "#241F3A",
