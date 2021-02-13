@@ -9,125 +9,124 @@ import {
   RoundShape,
 } from "react-placeholder/lib/placeholders";
 
-const PaperPagePlaceholder = ({ color }) => (
-  <div className={css(styles.placeholderContainer) + " show-loading-animation"}>
-    <div className={css(styles.spaceBetween)}>
-      <div className={css(styles.column)}>
-        <div className={css(styles.marginBottom)}>
-          <TextBlock
-            className={css(styles.textRow)}
-            rows={1}
-            color={color}
-            style={{ width: "90%" }}
-          />
-          <TextBlock
-            className={css(styles.textRow)}
-            rows={1}
-            color={color}
-            style={{ width: "90%" }}
-          />
-        </div>
-        <div className={css(styles.marginBottom)}>
-          <TextBlock
-            className={css(styles.textRow)}
-            rows={1}
-            color={color}
-            style={{ width: "80%" }}
-          />
-          <TextBlock
-            className={css(styles.textRow)}
-            rows={1}
-            color={color}
-            style={{ width: "80%" }}
-          />
-          <TextBlock
-            className={css(styles.textRow)}
-            rows={1}
-            color={color}
-            style={{ width: "80%" }}
-          />
-        </div>
-        <div className={css(styles.marginBottom)}>
-          <TextBlock
-            className={css(styles.textRow)}
-            rows={1}
-            color={color}
-            style={{ width: "20%" }}
-          />
-        </div>
-        <div className={css(styles.marginBottom)}>
-          <TextBlock
-            className={css(styles.textRow)}
-            rows={1}
-            color={color}
-            style={{ width: "20%" }}
-          />
-        </div>
-        <div className={css(styles.marginBottom)}>
-          <div className={css(styles.row)}>
-            <TextBlock
-              className={css(styles.tag)}
-              rows={1}
-              color={color}
-              style={{ width: "15%" }}
-            />
-            <TextBlock
-              className={css(styles.tag)}
-              rows={1}
-              color={color}
-              style={{ width: "18%", margin: "0 10px" }}
-            />
-            <TextBlock
-              className={css(styles.tag)}
-              rows={1}
-              color={color}
-              style={{ width: "13%" }}
-            />
+const PaperPagePlaceholder = ({ color }) => {
+  const header = (
+    <div className={css(styles.header)}>
+      <TextBlock
+        className={css(styles.textRow)}
+        rows={1}
+        color={color}
+        style={{ width: "90%" }}
+      />
+      <TextBlock
+        className={css(styles.textRow)}
+        rows={1}
+        color={color}
+        style={{ width: "90%" }}
+      />
+    </div>
+  );
+
+  const actions = (
+    <div className={css(styles.row)}>
+      <RoundShape
+        className={css(styles.actions)}
+        color={color}
+        style={{ width: 30, height: 30 }}
+      />
+      <RoundShape
+        className={css(styles.actions)}
+        color={color}
+        style={{ width: 30, height: 30, margin: "0px 10px" }}
+      />
+      <RoundShape
+        className={css(styles.actions)}
+        color={color}
+        style={{ width: 30, height: 30, marginRight: 10 }}
+      />
+      <RoundShape
+        className={css(styles.actions)}
+        color={color}
+        style={{ width: 30, height: 30, marginRight: 10 }}
+      />
+    </div>
+  );
+
+  const metaRow = (width) => (
+    <div className={css(styles.row, styles.marginBottom)}>
+      <div style={{ width: 100 }}>
+        <TextBlock rows={1} color={color} style={{ width, marginRight: 20 }} />
+      </div>
+      <TextBlock rows={1} color={color} style={{ width: "20%" }} />
+    </div>
+  );
+
+  const button = (
+    <RectShape
+      color={color}
+      style={{ marginLeft: 35, width: 115, height: 31 }}
+    />
+  );
+
+  const tag = <RectShape color={color} style={{ width: 115, height: 31 }} />;
+
+  return (
+    <div
+      className={css(styles.placeholderContainer) + " show-loading-animation"}
+    >
+      <RoundShape className={css(styles.round)} color={color} />
+      <RectShape
+        color={color}
+        className={css(styles.tag)}
+        style={{ width: 115, height: 25 }}
+      />
+      <div className={css(styles.spaceBetween)}>
+        <div className={css(styles.column)}>
+          {header}
+          {metaRow(81)}
+          {metaRow(60)}
+          {metaRow(75)}
+          {metaRow(58)}
+          <div className={css(styles.row, styles.marginBottom, styles.bottom)}>
+            {actions}
+            {button}
           </div>
         </div>
-      </div>
-      <div className={css(styles.columnRight)}>
-        <div className={css(styles.row)}>
-          <RoundShape
-            className={css(styles.actions)}
+        <div className={css(styles.columnRight)}>
+          <RectShape
+            className={css(styles.textRow)}
             color={color}
-            style={{ width: 30, height: 30 }}
-          />
-          <RoundShape
-            className={css(styles.actions)}
-            color={color}
-            style={{ width: 30, height: 30, margin: "0px 10px" }}
-          />
-          <RoundShape
-            className={css(styles.actions)}
-            color={color}
-            style={{ width: 30, height: 30, marginRight: 10 }}
-          />
-          <RoundShape
-            className={css(styles.actions)}
-            color={color}
-            style={{ width: 30, height: 30, marginRight: 10 }}
+            style={{ height: 154, width: 119 }}
           />
         </div>
-        <RectShape
-          className={css(styles.textRow)}
-          color={color}
-          style={{ width: 180, height: 250 }}
-        />
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   placeholderContainer: {
+    paddingTop: 30,
     width: "100%",
     height: "100%",
+    position: "relative",
+  },
+  round: {
+    width: 53,
+    height: 25,
+    position: "absolute",
+    top: 32,
+    left: -70,
+  },
+  tag: {
+    position: "absolute",
+    bottom: 15,
+    right: 0,
+  },
+  header: {
+    paddingBottom: 20,
   },
   textRow: {},
-  tag: {
-    height: 25,
-  },
   column: {
     width: "100%",
     display: "flex",
@@ -148,7 +147,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   marginBottom: {
-    marginBottom: 16,
+    margin: "5px 0",
+  },
+  bottom: {
+    marginTop: 20,
   },
   space: {},
   label: {},
