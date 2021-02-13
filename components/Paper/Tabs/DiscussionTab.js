@@ -333,7 +333,9 @@ const DiscussionTab = (props) => {
               canEdit={true}
               readOnly={false}
               onChange={handleDiscussionTextEditor}
-              placeholder={"Leave a question or a comment"}
+              placeholder={
+                "Leave a question or a comment for the Author of the paper or the community"
+              }
               initialValue={discussion.question}
               commentEditor={true}
               smallToolBar={true}
