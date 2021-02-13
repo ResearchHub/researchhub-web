@@ -587,7 +587,7 @@ class WithdrawalModal extends React.Component {
         />
         <div className={css(styles.row)}>
           <div className={css(styles.left)}>
-            <div className={css(styles.mainHeader)}>Network Fee</div>
+            <div className={css(styles.mainHeader)}>Transaction Fee</div>
             <a
               href={"https://ethereum.org/en/developers/docs/gas/"}
               target="_blank"
