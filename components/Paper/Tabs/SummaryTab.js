@@ -16,7 +16,7 @@ import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
 import ModeratorQA from "~/components/Moderator/ModeratorQA";
 import SectionBounty from "./SectionBounty";
-import BulletPlaceholder from "../../Placeholders/BulletPlaceholder";
+import AbstractPlaceholder from "../../Placeholders/AbstractPlaceholder";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -658,7 +658,7 @@ class SummaryTab extends React.Component {
         <ReactPlaceholder
           ready={paper && paper.id}
           showLoadingAnimation
-          customPlaceholder={<BulletPlaceholder color="#efefef" />}
+          customPlaceholder={<AbstractPlaceholder color="#efefef" />}
         >
           {this.renderAbstract()}
         </ReactPlaceholder>

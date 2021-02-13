@@ -13,3 +13,12 @@ export const getFragmentParameterByName = (name, path) => {
     ? ""
     : decodeURIComponent(results[1].replace(/\+/g, " "));
 };
+
+export const getJournalFromURL = (url) => {
+  if (url) {
+    const matches = url.match(/^https?\:\/\/(?:www\.)?([^\/?#]+)(?:[\/?#]|$)/i);
+    // extract hostname (will be null if no match is found)
+    return matches && matches[1] ? matches[1].split(".")[0] : null;
+  }
+  return null;
+};
