@@ -671,35 +671,33 @@ class SummaryTab extends React.Component {
     const { showAbstract } = this.state;
 
     return (
-      <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-        <a name="summary">
-          <div
-            className={css(this.containerStyle())}
-            ref={this.props.descriptionRef}
-            id="summary-tab"
-          >
-            <div className={css(this.sectionHeaderStyle())}>
-              <h3 className={css(styles.sectionTitle)}>
-                <span className={css(styles.titleRow)}>
-                  Abstract
-                  {!showAbstract && (
-                    <SectionBounty
-                      paper={paper}
-                      section={"summary"}
-                      loading={!userVoteChecked}
-                      updatePaperState={updatePaperState}
-                    />
-                  )}
-                </span>
-                {/* {this.renderTabs()} */}
-              </h3>
-              {this.renderActions()}
-            </div>
-            {this.renderContent()}
+      <a name="summary">
+        <div
+          className={css(this.containerStyle())}
+          ref={this.props.descriptionRef}
+          id="summary-tab"
+        >
+          <div className={css(this.sectionHeaderStyle())}>
+            <h3 className={css(styles.sectionTitle)}>
+              <span className={css(styles.titleRow)}>
+                Abstract
+                {!showAbstract && (
+                  <SectionBounty
+                    paper={paper}
+                    section={"summary"}
+                    loading={!userVoteChecked}
+                    updatePaperState={updatePaperState}
+                  />
+                )}
+              </span>
+              {/* {this.renderTabs()} */}
+            </h3>
+            {this.renderActions()}
           </div>
-        </a>
+          {this.renderContent()}
+        </div>
         <ManageBulletPointsModal paperId={this.props.paper.id} />
-      </ComponentWrapper>
+      </a>
     );
   }
 }
@@ -717,13 +715,9 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    // marginTop: 30,
-    backgroundColor: "#fff",
-    padding: 50,
+    marginTop: 40,
     position: "relative",
-    border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
     "@media only screen and (max-width: 967px)": {
       padding: 25,

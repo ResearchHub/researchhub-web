@@ -351,7 +351,7 @@ const DiscussionTab = (props) => {
   };
 
   return (
-    <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+    <Fragment>
       <AddDiscussionModal
         handleDiscussionTextEditor={handleDiscussionTextEditor}
         discussion={discussion}
@@ -498,7 +498,7 @@ const DiscussionTab = (props) => {
           {renderThreads(formattedThreads, hostname)}
         </div>
       )}
-    </ComponentWrapper>
+    </Fragment>
   );
 };
 
@@ -741,7 +741,7 @@ var styles = StyleSheet.create({
   },
   discussionThreadContainer: {
     backgroundColor: "#fff",
-    padding: 50,
+    padding: 30,
     border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
@@ -760,7 +760,7 @@ var styles = StyleSheet.create({
   },
   emptyState: {
     backgroundColor: "#fff",
-    padding: 50,
+    padding: 30,
     border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
