@@ -362,8 +362,9 @@ class PaperPageCard extends React.Component {
     const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
 
     let paperTitle = paper && paper.title;
+
     return (
-      <div className={css(styles.actions)}>
+      <div className={css(styles.actions) + " action-bars"}>
         <PermissionNotificationWrapper
           modalMessage="edit papers"
           onClick={this.navigateToEditPaperInfo}
@@ -809,24 +810,7 @@ class PaperPageCard extends React.Component {
             <ReactTooltip />
             <meta property="description" content={paper.abstract} />
             <meta property="commentCount" content={paper.discussion_count} />
-            <div className={css(styles.voting)}>
-              <VoteWidget
-                score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                selected={this.props.selectedVoteType}
-                isPaper={true}
-                type={"Paper"}
-                paperPage={true}
-                promoted={this.props.paper && this.props.paper.promoted}
-                paper={
-                  this.props.paper && this.props.paper.promoted !== false
-                    ? this.props.paper
-                    : null
-                }
-                showPromotion={true}
-              />
-            </div>
+
             <div className={css(styles.votingMobile)}>
               <VoteWidget
                 score={score}
@@ -868,6 +852,38 @@ class PaperPageCard extends React.Component {
                     !fetching && previews.length === 0 && styles.emptyPreview
                   )}
                 >
+                  <div
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginBottom: 20,
+                    }}
+                  >
+                    <div className={css(styles.voting)}>
+                      <VoteWidget
+                        score={score}
+                        onUpvote={upvote}
+                        onDownvote={downvote}
+                        selected={this.props.selectedVoteType}
+                        isPaper={true}
+                        type={"Paper"}
+                        paperPage={true}
+                        promoted={this.props.paper && this.props.paper.promoted}
+                        paper={
+                          this.props.paper &&
+                          this.props.paper.promoted !== false
+                            ? this.props.paper
+                            : null
+                        }
+                        showPromotion={true}
+                        horizontalView={true}
+                      />
+                    </div>
+                    <div className={css(styles.actionsContainer)}>
+                      {this.renderActions()}
+                    </div>
+                  </div>
                   <div className={css(styles.metaContainer)}>
                     <div className={css(styles.titleHeader)}>
                       <h1 className={css(styles.title)} property={"headline"}>
@@ -913,11 +929,7 @@ class PaperPageCard extends React.Component {
                             >
                               <span className={css(styles.boostIcon)}>
                                 <BoltSvg
-                                  color={
-                                    this.state.boostHover
-                                      ? "rgb(255, 255, 255)"
-                                      : colors.BLUE()
-                                  }
+                                  color={"rgb(255, 255, 255)"}
                                   opacity={1}
                                 />
                               </span>
@@ -951,9 +963,6 @@ class PaperPageCard extends React.Component {
           </div>
           <div className={css(styles.bottomContainer)}>
             <div className={css(styles.bottomRow)}>
-              <div className={css(styles.actionsContainer)}>
-                {this.renderActions()}
-              </div>
               <PermissionNotificationWrapper
                 modalMessage="promote paper"
                 onClick={() =>
@@ -972,14 +981,7 @@ class PaperPageCard extends React.Component {
                   onMouseLeave={() => this.toggleBoostHover(false)}
                 >
                   <span className={css(styles.boostIcon)}>
-                    <BoltSvg
-                      color={
-                        this.state.boostHover
-                          ? "rgb(255, 255, 255)"
-                          : colors.BLUE()
-                      }
-                      opacity={1}
-                    />
+                    <BoltSvg color={"rgb(255, 255, 255)"} opacity={1} />
                   </span>
                   {this.props.paper &&
                   this.props.paper.paper_type === "PRE_REGISTRATION"
@@ -1002,13 +1004,8 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     display: "flex",
-    paddingTop: 35,
     position: "relative",
     overflow: "visible",
-    "@media only screen and (max-width: 767px)": {
-      paddingTop: 30,
-      paddingBottom: 0,
-    },
   },
   overflow: {
     overflow: "visible",
@@ -1039,6 +1036,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     width: "100%",
+    ":hover .action-bars": {
+      opacity: 1,
+    },
   },
   half: {
     alignItems: "flex-start",
@@ -1220,10 +1220,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   voting: {
-    position: "absolute",
-    width: 70,
-    left: -70,
-    top: 22,
     display: "block",
     "@media only screen and (max-width: 768px)": {
       display: "none",
@@ -1271,12 +1267,15 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
+    opacity: 0,
+    transition: "all ease-in-out 0.2s",
+
     "@media only screen and (max-width: 768px)": {
       paddingBottom: 15,
     },
   },
   actionsContainer: {
-    marginRight: 30,
+    // marginRight: 30,
   },
   actionIcon: {
     padding: 5,
@@ -1482,19 +1481,19 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     display: "flex",
     alignItems: "center",
-    background: "#FFF",
     border: `1px solid ${colors.BLUE()}`,
-    color: colors.BLUE(),
+    backgroundColor: colors.BLUE(),
+    color: "#FFF",
     cursor: "pointer",
     ":hover": {
-      backgroundColor: colors.BLUE(),
-      color: "#FFF",
+      backgroundColor: "#3E43E8",
     },
     "@media only screen and (max-width: 768px)": {
       fontSize: 12,
     },
   },
   boostIcon: {
+    color: "#FFF",
     marginRight: 8,
   },
   link: {
