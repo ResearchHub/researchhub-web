@@ -235,25 +235,25 @@ class PaperPageCard extends React.Component {
     const { paper } = this.props;
 
     this.metadata = [
-      {
-        label: `Author${
-          (paper.authors && paper.authors.length > 1) ||
-          (paper.raw_authors && paper.raw_authors.length > 1)
-            ? "s"
-            : ""
-        }`,
-        value: (
-          <span className={css(styles.metadata, styles.authorsContainer)}>
-            {this.renderAuthors()}
-          </span>
-        ),
-        active:
-          paper &&
-          ((paper.authors && paper.authors.length) ||
-            (Array.isArray(paper.raw_authors)
-              ? paper.raw_authors.length
-              : paper.raw_authors)),
-      },
+      // {
+      //   label: `Author${
+      //     (paper.authors && paper.authors.length > 1) ||
+      //     (paper.raw_authors && paper.raw_authors.length > 1)
+      //       ? "s"
+      //       : ""
+      //   }`,
+      //   value: (
+      //     <span className={css(styles.metadata, styles.authorsContainer)}>
+      //       {this.renderAuthors()}
+      //     </span>
+      //   ),
+      //   active:
+      //     paper &&
+      //     ((paper.authors && paper.authors.length) ||
+      //       (Array.isArray(paper.raw_authors)
+      //         ? paper.raw_authors.length
+      //         : paper.raw_authors)),
+      // },
       {
         label: "Published",
         value: (
@@ -283,27 +283,27 @@ class PaperPageCard extends React.Component {
         ),
         active: paper && paper.doi,
       },
-      {
-        label: "Journal",
-        value: (
-          <PaperJournalTag
-            url={paper.url}
-            externalSource={paper.external_source}
-            onFallback={(externalSource) => {
-              if (externalSource) {
-                return capitalize(externalSource);
-              }
-              return null;
-            }}
-          />
-        ),
-        active:
-          paper &&
-          (paper.url || paper.external_source) &&
-          (getJournalFromURL(paper.url) !== "doi" &&
-            paper.external_source !== "doi"),
-        centered: true,
-      },
+      // {
+      //   label: "Journal",
+      //   value: (
+      //     <PaperJournalTag
+      //       url={paper.url}
+      //       externalSource={paper.external_source}
+      //       onFallback={(externalSource) => {
+      //         if (externalSource) {
+      //           return capitalize(externalSource);
+      //         }
+      //         return null;
+      //       }}
+      //     />
+      //   ),
+      //   active:
+      //     paper &&
+      //     (paper.url || paper.external_source) &&
+      //     (getJournalFromURL(paper.url) !== "doi" &&
+      //       paper.external_source !== "doi"),
+      //   centered: true,
+      // },
     ];
 
     const metadata = this.metadata.filter((data) => data.active);
@@ -361,34 +361,43 @@ class PaperPageCard extends React.Component {
   renderActions = () => {
     const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
 
-    let paperTitle = paper && paper.title;
-
-    return (
-      <div className={css(styles.actions) + " action-bars"}>
-        <PermissionNotificationWrapper
-          modalMessage="edit papers"
-          onClick={this.navigateToEditPaperInfo}
-          permissionKey="UpdatePaper"
-          loginRequired={true}
-          hideRipples={true}
-          styling={styles.borderRadius}
-        >
-          <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
-            {icons.pencil}
-          </div>
-        </PermissionNotificationWrapper>
-        <ShareAction
-          addRipples={true}
-          title={"Share this paper"}
-          subtitle={paperTitle}
-          url={this.props.shareUrl}
-          customButton={
-            <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
-              {icons.shareAlt}
+    const actionButtons = [
+      {
+        active: true,
+        button: (
+          <PermissionNotificationWrapper
+            modalMessage="edit papers"
+            onClick={this.navigateToEditPaperInfo}
+            permissionKey="UpdatePaper"
+            loginRequired={true}
+            hideRipples={true}
+            styling={styles.borderRadius}
+          >
+            <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
+              {icons.pencil}
             </div>
-          }
-        />
-        {paper && paper.file && (
+          </PermissionNotificationWrapper>
+        ),
+      },
+      {
+        active: true,
+        button: (
+          <ShareAction
+            addRipples={true}
+            title={"Share this paper"}
+            subtitle={paper && paper.title}
+            url={this.props.shareUrl}
+            customButton={
+              <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
+                {icons.shareAlt}
+              </div>
+            }
+          />
+        ),
+      },
+      {
+        active: paper && paper.file,
+        button: (
           <Ripples
             className={css(styles.actionIcon, styles.downloadActionIcon)}
             onClick={this.downloadPDF}
@@ -400,8 +409,11 @@ class PaperPageCard extends React.Component {
               {icons.arrowToBottom}
             </span>
           </Ripples>
-        )}
-        {paper && paper.url && (paper && !paper.file) && (
+        ),
+      },
+      {
+        active: paper && paper.url && (paper && !paper.file),
+        button: (
           <Ripples
             className={css(styles.actionIcon, styles.downloadActionIcon)}
             onClick={() => openExternalLink(paper.url)}
@@ -413,8 +425,11 @@ class PaperPageCard extends React.Component {
               {icons.externalLink}
             </span>
           </Ripples>
-        )}
-        {isModerator || isSubmitter ? (
+        ),
+      },
+      {
+        active: isModerator || isSubmitter,
+        button: (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}
             data-tip={paper.is_removed ? "Restore Page" : "Remove Page"}
@@ -428,7 +443,11 @@ class PaperPageCard extends React.Component {
               iconStyle={styles.moderatorIcon}
             />
           </span>
-        ) : (
+        ),
+      },
+      {
+        active: !isModerator && !isSubmitter,
+        button: (
           <span data-tip={"Flag Paper"}>
             <FlagButton
               paperId={paper.id}
@@ -437,9 +456,11 @@ class PaperPageCard extends React.Component {
               style={styles.actionIcon}
             />
           </span>
-        )}
-
-        {isModerator && (
+        ),
+      },
+      {
+        active: isModerator,
+        button: (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}
             data-tip={"Remove Page & Ban User"}
@@ -450,7 +471,21 @@ class PaperPageCard extends React.Component {
               iconStyle={styles.moderatorIcon}
             />
           </span>
-        )}
+        ),
+      },
+    ].filter((action) => action.active);
+
+    return (
+      <div className={css(styles.actions) + " action-bars"}>
+        {actionButtons.map((action, i) => {
+          if (actionButtons.length - 1 === i) {
+            return action.button;
+          }
+
+          return (
+            <span className={css(styles.marginRight)}>{action.button}</span>
+          );
+        })}
       </div>
     );
   };
@@ -857,7 +892,8 @@ class PaperPageCard extends React.Component {
                       width: "100%",
                       display: "flex",
                       justifyContent: "space-between",
-                      marginBottom: 20,
+                      alignItems: "center",
+                      marginBottom: 25,
                     }}
                   >
                     <div className={css(styles.voting)}>
@@ -1084,7 +1120,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   title: {
-    fontSize: 30,
+    fontSize: 28,
     position: "relative",
     wordBreak: "break-word",
     fontWeight: "unset",
@@ -1267,9 +1303,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
-    opacity: 0,
+    opacity: 1,
     transition: "all ease-in-out 0.2s",
-
+    cursor: "pointer",
     "@media only screen and (max-width: 768px)": {
       paddingBottom: 15,
     },
@@ -1294,7 +1330,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     cursor: "pointer",
     border: "1px solid rgba(36, 31, 58, 0.1)",
-    marginRight: 10,
     ":hover": {
       color: "rgba(36, 31, 58, 0.8)",
       backgroundColor: "#EDEDF0",
@@ -1309,6 +1344,9 @@ const styles = StyleSheet.create({
     ":hover .modIcon": {
       color: colors.RED(),
     },
+  },
+  marginRight: {
+    marginRight: 10,
   },
   moderatorIcon: {
     color: colors.RED(0.6),
