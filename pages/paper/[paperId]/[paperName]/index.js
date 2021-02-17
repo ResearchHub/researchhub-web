@@ -19,6 +19,7 @@ import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
+import PaperSideColumn from "~/components/Paper/PaperSideColumn";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -544,7 +545,9 @@ const Paper = (props) => {
               </div>
             </a>
           </div>
-          <div className={css(styles.sidebar)}>testing testing</div>
+          <div className={css(styles.sidebar)}>
+            <PaperSideColumn user={props.user} paper={paper} />
+          </div>
         </div>
       </ComponentWrapper>
     </Fragment>
@@ -651,10 +654,8 @@ const styles = StyleSheet.create({
     display: "table-cell",
     maxWidth: 300,
     minWidth: 300,
-    border: "1.5px solid #F0F0F0",
-    backgroundColor: "#fff",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     boxSizing: "border-box",
+    verticalAlign: "top",
   },
   container: {
     display: "table-cell",
@@ -917,7 +918,7 @@ const styles = StyleSheet.create({
     border: "1.5px solid #F0F0F0",
     backgroundColor: "#fff",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    padding: 30,
+    padding: "20px 30px 30px 30px",
     boxSizing: "border-box",
     // backgroundColor: "#FFF",
   },
@@ -963,6 +964,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   vote: state.vote,
   auth: state.auth,
+  user: state.auth.user,
 });
 
 const mapDispatchToProps = {

@@ -769,7 +769,7 @@ var styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: 20,
+    paddingBottom: 10,
     "@media only screen and (max-width: 967px)": {
       flexDirection: "column",
       alignItems: "flex-start",
