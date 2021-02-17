@@ -26,17 +26,22 @@ class Index extends React.Component {
         .then((res) => res.json())
         .then((body) => body.results[0]);
 
+      const PARAMS = {
+        ordering: filter,
+        timePeriod: getInitialScope(),
+        page: page || 1,
+        hubId: currentHub.id,
+      };
+
+      if (filter === "pulled-papers") {
+        PARAMS.ordering = "hot";
+        PARAMS.externalSource = "True";
+      }
+
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-        fetch(
-          API.GET_HUB_PAPERS({
-            // Initial Feed
-            hubId: currentHub.id,
-            ordering: filter,
-            timePeriod: getInitialScope(),
-            page,
-          }),
-          API.GET_CONFIG()
-        ).then((res) => res.json()),
+        fetch(API.GET_HUB_PAPERS(PARAMS), API.GET_CONFIG()).then((res) =>
+          res.json()
+        ),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
           API.GET_CONFIG()
