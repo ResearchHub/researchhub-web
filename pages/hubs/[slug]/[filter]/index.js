@@ -46,6 +46,21 @@ class Index extends React.Component {
 
       let filterObj = filterOptions.filter((el) => el.value === filter)[0];
 
+      if (filter === "pulled-papers") {
+        filterObj = {
+          value: "pulled-papers",
+          href: "pulled-papers",
+          label: "Pulled Papers",
+          disableScope: true,
+        };
+      } else if (filter === "removed") {
+        filterObj = {
+          value: "removed",
+          label: "Removed",
+          href: "removed",
+        };
+      }
+
       return {
         slug,
         name,
