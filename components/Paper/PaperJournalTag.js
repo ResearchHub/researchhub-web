@@ -15,7 +15,13 @@ const PaperJournalTag = (props) => {
   const src = getLogoPath(journal);
 
   useEffect(() => {
-    imgExists(src);
+    return imgExists(src, (exists) => {
+      if (exists && !error) {
+        return setError(false);
+      } else {
+        return setError(true);
+      }
+    });
   }, [url, externalSource]);
 
   const imageProps = {
@@ -36,6 +42,8 @@ const PaperJournalTag = (props) => {
       case "arxiv":
       case "Arxiv":
         return "arxiv";
+      case "Biorxiv":
+        return "biorxiv";
       case "Future Science Ltd":
         return "futurescience";
       case "Wiley":
@@ -100,16 +108,21 @@ const PaperJournalTag = (props) => {
     }
   }
 
-  function imgExists(url) {
-    return fetch(url)
-      .then((res) => setError(!res.ok))
-      .catch((err) => setError(true));
+  function imgExists(url, callback) {
+    var img = new Image();
+    img.onload = function() {
+      callback(true);
+    };
+    img.onerror = function() {
+      callback(false);
+    };
+    img.src = url;
   }
 
-  if (error) {
+  if (!journal || error) {
     return props.onFallback(source);
   } else {
-    return <img {...imageProps} />;
+    return <img {...imageProps} onError={() => null} />;
   }
 };
 
