@@ -2,7 +2,6 @@ import HubPage from "~/components/Hubs/HubPage";
 
 import { getInitialScope } from "~/config/utils/dates";
 import { fetchPaperFeed } from "~/config/fetch";
-import { filterOptions } from "~/config/utils/options";
 
 const Index = (props) => {
   return <HubPage home={true} {...props} />;
