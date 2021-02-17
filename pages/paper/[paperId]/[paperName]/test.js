@@ -420,7 +420,7 @@ const Paper = (props) => {
   }
 
   return (
-    <Fragment>
+    <div className={css(styles.container)}>
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
@@ -430,124 +430,119 @@ const Paper = (props) => {
         updatePaperState={updatePaperState}
         updateSummary={setSummary}
       />
-      <Head
-        title={paper.title}
-        description={formatDescription()}
-        socialImageUrl={socialImageUrl}
-        noindex={paper.is_removed || paper.is_removed_by_user}
-        canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
-      />
-      <Joyride
-        steps={steps}
-        continuous={true}
-        locale={{ last: "Done" }}
-        styles={{
-          options: {
-            primaryColor: colors.BLUE(1),
-          },
-        }}
-        callback={onJoyrideComplete}
-        run={
-          props.auth.uploadingPaper &&
-          props.auth.isLoggedIn &&
-          !props.auth.user.upload_tutorial_complete
-        }
-      />
-      <ComponentWrapper overrideStyle={styles.componentWrapper}>
-        <div className={css(styles.root)}>
-          <div className={css(styles.container)}>
-            <div className={css(styles.paperPageContainer)}>
-              <PaperPageCard
-                paper={paper}
+      <Fragment>
+        <Head
+          title={paper.title}
+          description={formatDescription()}
+          socialImageUrl={socialImageUrl}
+          noindex={paper.is_removed || paper.is_removed_by_user}
+          canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
+        />
+        <div className={css(styles.paperPageContainer)}>
+          <ComponentWrapper overrideStyle={styles.componentWrapper}>
+            <PaperPageCard
+              paper={paper}
+              paperId={paperId}
+              score={score}
+              upvote={upvote}
+              downvote={downvote}
+              selectedVoteType={selectedVoteType}
+              shareUrl={process.browser && window.location.href}
+              isModerator={isModerator}
+              isSubmitter={isSubmitter}
+              flagged={flagged}
+              restorePaper={restorePaper}
+              removePaper={removePaper}
+              doneFetchingPaper={!loadingPaper}
+              setFlag={setFlag}
+              sticky={sticky}
+              scrollView={scrollView}
+              setSticky={setSticky}
+            />
+          </ComponentWrapper>
+        </div>
+        <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
+          <PaperTabBar
+            baseUrl={paperId}
+            selectedTab={tabName}
+            paperCardRef={paperCardRef}
+            keyTakeawayRef={keyTakeawayRef}
+            descriptionRef={descriptionRef}
+            discussionRef={discussionRef}
+            paperPdfRef={paperPdfRef}
+            citationRef={citationRef}
+            paperTabsRef={paperTabsRef}
+            sticky={sticky}
+            setSticky={setSticky}
+            scrollView={scrollView}
+            tabName={tabName}
+            paper={paper}
+            activeTabs={tabs}
+            showAllSections={showAllSections}
+            updatePaperState={updatePaperState}
+          />
+        </div>
+        <div className={css(styles.contentContainer)}>
+          {/* <KeyTakeawaysTab
+            keyTakeawayRef={keyTakeawayRef}
+            afterFetchBullets={() => setFetchBullets(true)}
+            updatePaperState={updatePaperState}
+            paper={paper}
+            userVoteChecked={userVoteChecked}
+            fetchBullets={fetchBullets}
+            loadingPaper={loadingPaper}
+          /> */}
+          <SummaryTab
+            paperId={paperId}
+            paper={paper}
+            summary={summary}
+            descriptionRef={descriptionRef}
+            updatePaperState={updatePaperState}
+            updateSummary={setSummary}
+            loadingSummary={loadingSummary}
+            userVoteChecked={userVoteChecked}
+          />
+          <a name="comments" id="comments">
+            <div id="comments-tab" className={css(styles.space)}>
+              <DiscussionTab
+                hostname={hostname}
                 paperId={paperId}
-                score={score}
-                upvote={upvote}
-                downvote={downvote}
-                selectedVoteType={selectedVoteType}
-                shareUrl={process.browser && window.location.href}
-                isModerator={isModerator}
-                isSubmitter={isSubmitter}
-                flagged={flagged}
-                restorePaper={restorePaper}
-                removePaper={removePaper}
-                doneFetchingPaper={!loadingPaper}
-                setFlag={setFlag}
-                sticky={sticky}
-                scrollView={scrollView}
-                setSticky={setSticky}
-              />
-              <SummaryTab
-                paperId={paperId}
-                paper={paper}
-                summary={summary}
-                descriptionRef={descriptionRef}
-                updatePaperState={updatePaperState}
-                updateSummary={setSummary}
-                loadingSummary={loadingSummary}
-                userVoteChecked={userVoteChecked}
+                paperState={paper}
+                calculatedCount={discussionCount}
+                setCount={setCount}
+                discussionRef={discussionRef}
               />
             </div>
-            {/* <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
-              <PaperTabBar
-                baseUrl={paperId}
-                selectedTab={tabName}
-                paperCardRef={paperCardRef}
-                keyTakeawayRef={keyTakeawayRef}
-                descriptionRef={descriptionRef}
-                discussionRef={discussionRef}
+          </a>
+          <a name="paper">
+            <div id="paper-tab" className={css(styles.paperTabContainer)}>
+              <PaperTab
+                paperId={paperId}
+                paper={paper}
                 paperPdfRef={paperPdfRef}
-                citationRef={citationRef}
-                paperTabsRef={paperTabsRef}
-                sticky={sticky}
-                setSticky={setSticky}
-                scrollView={scrollView}
-                tabName={tabName}
-                paper={paper}
-                activeTabs={tabs}
-                showAllSections={showAllSections}
-                updatePaperState={updatePaperState}
+                isModerator={isModerator}
               />
-            </div> */}
-            {/* <div className={css(styles.contentContainer)}>
-              <KeyTakeawaysTab
-                keyTakeawayRef={keyTakeawayRef}
-                afterFetchBullets={() => setFetchBullets(true)}
-                updatePaperState={updatePaperState}
-                paper={paper}
-                userVoteChecked={userVoteChecked}
-                fetchBullets={fetchBullets}
-                loadingPaper={loadingPaper}
-              />
-              
-              
-              <a name="paper">
-                <div id="paper-tab" className={css(styles.paperTabContainer)}>
-                  <PaperTab
-                    paperId={paperId}
-                    paper={paper}
-                    paperPdfRef={paperPdfRef}
-                    isModerator={isModerator}
-                  />
-                </div>
-              </a>
-            </div> */}
-            <a name="comments" id="comments">
-              <div id="comments-tab" className={css(styles.space)}>
-                <DiscussionTab
-                  hostname={hostname}
-                  paperId={paperId}
-                  paperState={paper}
-                  calculatedCount={discussionCount}
-                  setCount={setCount}
-                  discussionRef={discussionRef}
-                />
-              </div>
-            </a>
-          </div>
-          <div className={css(styles.sidebar)}>testing testing</div>
+            </div>
+          </a>
         </div>
-      </ComponentWrapper>
-    </Fragment>
+        <Joyride
+          steps={steps}
+          continuous={true}
+          locale={{ last: "Done" }}
+          styles={{
+            options: {
+              primaryColor: colors.BLUE(1),
+            },
+          }}
+          callback={onJoyrideComplete}
+          run={
+            props.auth.uploadingPaper &&
+            props.auth.isLoggedIn &&
+            !props.auth.user.upload_tutorial_complete
+          }
+        />
+      </Fragment>
+    </div>
   );
 };
 
@@ -639,32 +634,10 @@ const styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
-  root: {
-    display: "table",
-    // marginTop: 30,
-    width: "100%",
-    boxSizing: "border-box",
-    borderCollapse: "separate",
-    borderSpacing: "20px 30px",
-  },
-  sidebar: {
-    display: "table-cell",
-    maxWidth: 300,
-    minWidth: 300,
-    border: "1.5px solid #F0F0F0",
-    backgroundColor: "#fff",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    boxSizing: "border-box",
-  },
-  container: {
-    display: "table-cell",
-    maxWidth: 900,
-    minWidth: 900,
-    boxSizing: "border-box",
-  },
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
+    backgroundColor: "#FAFAFA",
     minHeight: "100vh",
     position: "relative",
     "@media only screen and (max-width: 415px)": {
@@ -913,41 +886,8 @@ const styles = StyleSheet.create({
     },
   },
   paperPageContainer: {
-    // overflowX: "hidden",
-    border: "1.5px solid #F0F0F0",
-    backgroundColor: "#fff",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    padding: 30,
-    boxSizing: "border-box",
-    // backgroundColor: "#FFF",
-  },
-  componentWrapper: {
-    // width: 600,
-    width: 1200,
-    boxSizing: "border-box",
-    // "@media only screen and (min-width: 300px)": {
-    //   width: "100%",
-    //   paddingRight: 20,
-    //   paddingLeft: 20,
-    // },
-
-    // "@media only screen and (min-width: 768px)": {
-    //   width: 680,
-    //   paddingRight: 0,
-    //   paddingLeft: 0,
-    // },
-
-    // "@media only screen and (min-width: 900px)": {
-    //   width: "80%",
-    // },
-
-    // "@media only screen and (min-width: 1280px)": {
-    //   width: 1200,
-    // },
-
-    // "@media only screen and (min-width: 1440px)": {
-    //   width: 1200,
-    // },
+    overflowX: "hidden",
+    backgroundColor: "#FFF",
   },
   abstractText: {
     lineHeight: 1.6,
