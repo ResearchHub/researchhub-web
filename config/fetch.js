@@ -134,3 +134,12 @@ export const fetchURL = async (URL) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const fetchPaperFigures = async (paperId) => {
+  return fetch(
+    API.FIGURES({ paperId, route: "get_all_figures" }),
+    API.GET_CONFIG()
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};

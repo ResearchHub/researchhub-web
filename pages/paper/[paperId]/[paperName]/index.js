@@ -19,7 +19,8 @@ import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
-import PaperSideColumn from "~/components/Paper/PaperSideColumn";
+import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
+import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -420,8 +421,60 @@ const Paper = (props) => {
     setPaper(newState);
   }
 
+  function formatAuthors() {
+    const authors = {};
+
+    if (paper.authors && paper.authors.length > 0) {
+      paper.authors.map((author) => {
+        if (author.first_name && !author.last_name) {
+          authors[author.first_name] = author;
+        } else if (author.last_name && !author.first_name) {
+          authors[author.last_name] = author;
+        } else {
+          authors[`${author.first_name} ${author.last_name}`] = author;
+        }
+      });
+    } else {
+      try {
+        if (paper.raw_authors) {
+          let rawAuthors = paper.raw_authors;
+          if (typeof paper.raw_authors === "string") {
+            rawAuthors = JSON.parse(paper.raw_authors);
+            if (!Array.isArray(rawAuthors)) {
+              rawAuthors = [rawAuthors];
+            }
+          } else if (
+            typeof rawAuthors === "object" &&
+            !Array.isArray(rawAuthors)
+          ) {
+            authors[rawAuthors["main_author"]] = true;
+
+            rawAuthors["other_authors"].map((author) => {
+              authors[author] = true;
+            });
+
+            return authors;
+          }
+          rawAuthors.forEach((author) => {
+            if (author.first_name && !author.last_name) {
+              authors[author.first_name] = true;
+            } else if (author.last_name && !author.first_name) {
+              authors[author.last_name] = true;
+            } else {
+              authors[`${author.first_name} ${author.last_name}`] = true;
+            }
+          });
+        }
+      } catch (e) {
+        Sentry.captureException(e);
+      }
+    }
+
+    return authors;
+  }
+
   return (
-    <Fragment>
+    <div>
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
@@ -454,7 +507,14 @@ const Paper = (props) => {
           !props.auth.user.upload_tutorial_complete
         }
       />
-      <ComponentWrapper overrideStyle={styles.componentWrapper}>
+      {/* <ComponentWrapper overrideStyle={styles.componentWrapper}> */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+        }}
+      >
         <div className={css(styles.root)}>
           <div className={css(styles.container)}>
             <div className={css(styles.paperPageContainer)}>
@@ -546,11 +606,17 @@ const Paper = (props) => {
             </a>
           </div>
           <div className={css(styles.sidebar)}>
-            <PaperSideColumn user={props.user} paper={paper} />
+            <PaperPreview paper={paper} paperId={paper.id} />
+            <PaperSideColumn
+              authors={Object.keys(formatAuthors())}
+              paper={paper}
+              hubs={paper.hubs}
+            />
           </div>
         </div>
-      </ComponentWrapper>
-    </Fragment>
+      </div>
+      {/* </ComponentWrapper> */}
+    </div>
   );
 };
 
@@ -636,6 +702,9 @@ Paper.getInitialProps = async (ctx) => {
 
 const styles = StyleSheet.create({
   componentWrapperStyles: {
+    width: "100%",
+    paddingLeft: 0,
+    paddingRight: 0,
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       paddingLeft: 0,
@@ -649,18 +718,24 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderCollapse: "separate",
     borderSpacing: "20px 30px",
+    maxWidth: 1600,
   },
   sidebar: {
     display: "table-cell",
-    maxWidth: 300,
-    minWidth: 300,
+    maxWidth: 250,
+    // minWidth: 300,
+    // minWidth: 300,
+    width: "20%",
     boxSizing: "border-box",
     verticalAlign: "top",
+    position: "relative",
   },
   container: {
     display: "table-cell",
-    maxWidth: 900,
-    minWidth: 900,
+    maxWidth: 1200,
+    // minWidth: 1200,
+    // minWidth: 900,
+    width: "80%",
     boxSizing: "border-box",
   },
   contentContainer: {

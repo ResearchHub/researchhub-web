@@ -60,7 +60,7 @@ class PaperPageCard extends React.Component {
   }
 
   componentDidMount = () => {
-    this.fetchFigures();
+    // this.fetchFigures();
   };
 
   componentWillUnmount() {
@@ -309,9 +309,9 @@ class PaperPageCard extends React.Component {
     const metadata = this.metadata.filter((data) => data.active);
     let columnOne, columnTwo;
 
-    if (metadata.length > 2) {
-      columnOne = metadata.slice(0, 2);
-      columnTwo = metadata.slice(2);
+    if (metadata.length > 1) {
+      columnOne = metadata.slice(0, 1);
+      columnTwo = metadata.slice(1);
     } else {
       columnOne = metadata;
     }
@@ -825,7 +825,8 @@ class PaperPageCard extends React.Component {
 
     return (
       <ReactPlaceholder
-        ready={doneFetchingPaper}
+        // ready={doneFetchingPaper}
+        ready={true}
         showLoadingAnimation
         customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
       >
@@ -916,9 +917,9 @@ class PaperPageCard extends React.Component {
                         horizontalView={true}
                       />
                     </div>
-                    <div className={css(styles.actionsContainer)}>
+                    {/* <div className={css(styles.actionsContainer)}>
                       {this.renderActions()}
-                    </div>
+                    </div> */}
                   </div>
                   <div className={css(styles.metaContainer)}>
                     <div className={css(styles.titleHeader)}>
@@ -982,7 +983,7 @@ class PaperPageCard extends React.Component {
                       {paper &&
                         paper.paper_type === "PRE_REGISTRATION" &&
                         this.renderPreregistrationTag()}
-                      {this.renderHubs()}
+                      {/* {this.renderHubs()} */}
                     </div>
                   </div>
                 </div>
@@ -993,12 +994,10 @@ class PaperPageCard extends React.Component {
                 </div>
               </div>
             </div>
-            {/* <div className={css(styles.absolutePreview)}>
-              {process.browser && this.renderPreview()}
-            </div> */}
           </div>
           <div className={css(styles.bottomContainer)}>
             <div className={css(styles.bottomRow)}>
+              {this.renderActions()}
               <PermissionNotificationWrapper
                 modalMessage="promote paper"
                 onClick={() =>
@@ -1026,9 +1025,9 @@ class PaperPageCard extends React.Component {
                 </div>
               </PermissionNotificationWrapper>
             </div>
-            <div className={css(styles.bottomRow, styles.hubsRow)}>
+            {/* <div className={css(styles.bottomRow, styles.hubsRow)}>
               {this.renderHubs()}
-            </div>
+            </div> */}
           </div>
         </Fragment>
       </ReactPlaceholder>
@@ -1523,6 +1522,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.BLUE(),
     color: "#FFF",
     cursor: "pointer",
+    marginLeft: 20,
     ":hover": {
       backgroundColor: "#3E43E8",
     },

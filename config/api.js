@@ -567,6 +567,21 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    FIGURES: ({ paperId, route }) => {
+      let url = BASE_URL + `figure/`;
+
+      let params = {
+        querystring: {},
+        rest: {
+          route: route,
+          id: paperId,
+        },
+      };
+
+      url = prepURL(url, params);
+
+      return url;
+    },
     GET_PAPER_FIGURES: ({ paperId }) => {
       return BASE_URL + `figure/${paperId}/get_all_figures/`;
     },
