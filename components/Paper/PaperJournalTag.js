@@ -4,15 +4,20 @@ import { StyleSheet, css } from "aphrodite";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
-import { getJournalFromURL, capitalize } from "~/config/utils";
+import {
+  getJournalFromURL,
+  capitalize,
+  getJournalImagePath,
+  formatJournalName,
+} from "~/config/utils";
 
 const PaperJournalTag = (props) => {
   const { url, externalSource } = props;
   const [error, setError] = useState(false);
 
   const source = externalSource ? externalSource : getJournalFromURL(url);
-  const journal = getJournalName(source);
-  const src = getLogoPath(journal);
+  const journal = formatJournalName(source);
+  const src = getJournalImagePath(journal);
 
   useEffect(() => {
     return imgExists(src, (exists) => {

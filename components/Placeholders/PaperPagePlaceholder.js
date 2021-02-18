@@ -74,7 +74,7 @@ const PaperPagePlaceholder = ({ color }) => {
     <div
       className={css(styles.placeholderContainer) + " show-loading-animation"}
     >
-      <RoundShape className={css(styles.round)} color={color} />
+      {/* <RoundShape className={css(styles.round)} color={color} /> */}
       <RectShape
         color={color}
         className={css(styles.tag)}
