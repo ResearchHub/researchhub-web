@@ -5,6 +5,9 @@ import { calculateScopeFromSlug } from "~/config/utils/routing";
 import { fetchPaperFeed } from "~/config/fetch";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 
+import nookies from "nookies";
+import { AUTH_TOKEN } from "~/config/constants";
+
 const Index = (props) => {
   return <HubPage home={true} {...props} />;
 };
@@ -12,6 +15,9 @@ const Index = (props) => {
 Index.getInitialProps = async (ctx) => {
   const { query } = ctx;
   const { scope, page } = query;
+
+  const cookies = nookies.get(ctx);
+  const authToken = cookies[AUTH_TOKEN];
 
   const defaultProps = {
     initialFeed: null,
@@ -29,7 +35,7 @@ Index.getInitialProps = async (ctx) => {
   };
 
   try {
-    const initialFeed = await fetchPaperFeed(PARAMS);
+    const initialFeed = await fetchPaperFeed(PARAMS, authToken);
     const filter = filterOptions[2];
     const scopeObj = scopeOptions.filter((el) => el.value === scope)[0];
 

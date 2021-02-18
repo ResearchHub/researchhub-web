@@ -4,6 +4,9 @@ import { getInitialScope } from "~/config/utils/dates";
 import { fetchPaperFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 
+import nookies from "nookies";
+import { AUTH_TOKEN } from "~/config/constants";
+
 const Index = (props) => {
   return <HubPage home={true} {...props} />;
 };
@@ -11,6 +14,9 @@ const Index = (props) => {
 Index.getInitialProps = async (ctx) => {
   const { query } = ctx;
   const { page } = query;
+
+  const cookies = nookies.get(ctx);
+  const authToken = cookies[AUTH_TOKEN];
 
   const defaultProps = {
     initialFeed: null,
@@ -27,7 +33,7 @@ Index.getInitialProps = async (ctx) => {
   };
 
   try {
-    const initialFeed = await fetchPaperFeed(PARAMS);
+    const initialFeed = await fetchPaperFeed(PARAMS, authToken);
     const filter = filterOptions[1];
 
     return {
