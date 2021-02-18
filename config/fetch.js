@@ -111,8 +111,8 @@ export const checkUserVotesOnPapers = async ({ paperIds }) => {
     .then(Helpers.parseJSON);
 };
 
-export const fetchPaperFeed = async (PARAMS) => {
-  return await fetch(API.GET_HUB_PAPERS(PARAMS), API.GET_CONFIG())
+export const fetchPaperFeed = async (PARAMS, authToken = null) => {
+  return await fetch(API.GET_HUB_PAPERS(PARAMS), API.GET_CONFIG(authToken))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
