@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   title: {
-    marginTop: 20,
+    margin: "15px 0 10px",
   },
   authors: {
     display: "flex",
