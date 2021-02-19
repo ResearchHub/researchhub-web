@@ -381,7 +381,7 @@ class SummaryTab extends React.Component {
       >
         <div className={css(styles.action, styles.editAction)}>
           <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
-          {"Edit Abstract"}
+          {/* {"Edit Abstract"} */}
         </div>
       </PermissionNotificationWrapper>
     );
@@ -681,6 +681,16 @@ class SummaryTab extends React.Component {
             <h3 className={css(styles.sectionTitle)}>
               <span className={css(styles.titleRow)}>
                 Abstract
+                <PermissionNotificationWrapper
+                  modalMessage="propose abstract edit"
+                  onClick={this.editAbstract}
+                  loginRequired={true}
+                >
+                  <div className={css(styles.action, styles.editAction)}>
+                    <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
+                    {/* {"Edit Abstract"} */}
+                  </div>
+                </PermissionNotificationWrapper>
                 {!showAbstract && (
                   <SectionBounty
                     paper={paper}
@@ -692,7 +702,7 @@ class SummaryTab extends React.Component {
               </span>
               {/* {this.renderTabs()} */}
             </h3>
-            {this.renderActions()}
+            {/* {this.renderActions()} */}
           </div>
           {this.renderContent()}
         </div>
@@ -719,6 +729,7 @@ var styles = StyleSheet.create({
     position: "relative",
     boxSizing: "border-box",
     borderRadius: 4,
+    paddingLeft: 50,
     "@media only screen and (max-width: 967px)": {
       padding: 25,
     },
@@ -949,7 +960,7 @@ var styles = StyleSheet.create({
     },
   },
   pencilIcon: {
-    marginRight: 5,
+    marginLeft: 5,
   },
   draftContainer: {
     width: "100%",
