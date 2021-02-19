@@ -25,6 +25,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     margin: 0,
     padding: "0px 15px 0px 20px",
-    marginBottom: 10,
+    // marginBottom: 10,
   },
 });
