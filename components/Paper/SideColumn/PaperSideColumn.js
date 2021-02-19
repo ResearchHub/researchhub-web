@@ -52,22 +52,13 @@ const PaperColumn = (props) => {
 
   const renderAuthorsDetails = () => {
     const { authors } = props;
-    // console.log("authors", authors)
 
     const list = (authors || []).map((name, index) => {
       return <ColumnAuthor name={name} key={`user_${index}`} />;
     });
 
     if (list && list.length) {
-      return (
-        <Fragment>
-          <SideColumnTitle
-            title={"Author Details"}
-            overrideStyles={styles.title}
-          />
-          <div className={css(styles.authors)}>{list}</div>
-        </Fragment>
-      );
+      return <div className={css(styles.authors)}>{list}</div>;
     } else {
       return null;
     }
@@ -116,7 +107,14 @@ const PaperColumn = (props) => {
   return (
     <div className={css(styles.root)}>
       {renderPaperTabs()}
-      {renderAuthorsDetails()}
+      <SideColumnTitle title={"Author Details"} overrideStyles={styles.title} />
+      <ReactPlaceholder
+        showLoadingAnimation
+        ready={paper && paper.raw_authors}
+        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
+      >
+        {renderAuthorsDetails()}
+      </ReactPlaceholder>
       <SideColumnTitle title={"Journal"} overrideStyles={styles.title} />
       <ReactPlaceholder
         showLoadingAnimation
@@ -128,8 +126,8 @@ const PaperColumn = (props) => {
       <SideColumnTitle title={"Hubs"} overrideStyles={styles.title} />
       <ReactPlaceholder
         showLoadingAnimation
-        ready={paper}
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={2} />}
+        ready={paper.hubs}
+        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
         {renderHubEntry()}
       </ReactPlaceholder>
@@ -169,6 +167,7 @@ const styles = StyleSheet.create({
     borderLeft: "1px solid #F0F0F0",
   },
   active: {
+    border: "unset",
     borderBottom: `3px solid ${colors.NEW_BLUE()}`,
     background: "#fff",
     color: colors.BLUE(),
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
     width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
-    borderBottom: "1px solid #F0F0F0",
+    height: 60,
     borderLeft: "3px solid #FFF",
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,

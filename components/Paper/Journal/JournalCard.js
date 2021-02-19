@@ -59,15 +59,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     boxSizing: "border-box",
-    padding: "15px 15px 15px 20px",
+    padding: "10px 15px 10px 20px",
     borderLeft: `3px solid #FFF`,
     textDecoration: "unset",
     color: "unset",
+    transition: "all ease-in-out 0.2s",
     ":hover": {
       cursor: "pointer",
       background: "#FAFAFA",
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      transition: "all ease-in-out 0.2s",
     },
     ":hover .url": {
       color: colors.BLUE(),
@@ -105,8 +105,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     width: "100%",
     textOverflow: "ellipsis",
+    paddingTop: 5,
+    color: colors.BLUE(),
     ":hover": {
-      color: colors.BLUE(),
       cursor: "pointer",
       textDecoration: "underline",
     },
