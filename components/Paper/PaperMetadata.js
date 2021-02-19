@@ -40,10 +40,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   labelContainer: {
-    width: 100,
-    minWidth: 100,
     display: "flex",
     justifyContent: "flex-start",
+    marginRight: 15,
     "@media only screen and (max-width: 768px)": {
       width: 90,
       minWidth: 90,

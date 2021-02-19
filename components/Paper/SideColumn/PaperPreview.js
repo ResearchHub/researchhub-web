@@ -17,16 +17,14 @@ import { fetchPaperFigures } from "~/config/fetch";
 
 const PaperPreview = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
-  const [figureUrls, setFigureUrls] = useState([
-    "https://researchhub-paper-prod.s3.amazonaws.com/uploads/figures/2021/02/18/887494-0.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=0MPRfrfJ73vgn1bznPx5Rs9eXEM%3D&Expires=1614286622",
-  ]);
+  const [figureUrls, setFigureUrls] = useState([]);
   const [hovered, setHovered] = useState(false);
   const [lightbox, setLightbox] = useState(false);
   const [fetching, setFetching] = useState(false);
 
   useEffect(() => {
     fetchFigures();
-  }, [props.paperId]);
+  }, [props.paperId, props.paper]);
 
   const fetchFigures = () => {
     const paperId = props.paperId;
@@ -59,9 +57,14 @@ const PaperPreview = (props) => {
   };
 
   return (
-    <ColumnContainer overrideStyles={styles.container}>
+    <ColumnContainer
+      overrideStyles={
+        !fetching && !figureUrls.length ? styles.hidden : styles.container
+      }
+    >
       <ReactPlaceholder
         ready={!fetching}
+        // ready={false}
         showLoadingAnimation
         customPlaceholder={<PreviewPlaceholder color="#efefef" />}
       >
@@ -88,6 +91,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     position: "relative",
     cursor: "pointer",
+  },
+  hidden: {
+    display: "none",
   },
   preview: {
     width: "100%",

@@ -307,31 +307,17 @@ class PaperPageCard extends React.Component {
     ];
 
     const metadata = this.metadata.filter((data) => data.active);
-    let columnOne, columnTwo;
-
-    if (metadata.length > 1) {
-      columnOne = metadata.slice(0, 1);
-      columnTwo = metadata.slice(1);
-    } else {
-      columnOne = metadata;
-    }
 
     return (
       <div className={css(styles.row)}>
-        {columnOne.length && (
-          <div className={css(styles.column, styles.half)}>
-            {columnOne.map((props) => (
-              <PaperMetadata {...props} />
-            ))}
-          </div>
-        )}
-        {columnTwo && (
-          <div className={css(styles.column, styles.half)}>
-            {columnTwo.map((props) => (
-              <PaperMetadata {...props} />
-            ))}
-          </div>
-        )}
+        {metadata.length &&
+          metadata.map((props, i) => (
+            <PaperMetadata
+              key={`metadata-${1}`}
+              {...props}
+              containerStyles={i === 1 && styles.marginLeft}
+            />
+          ))}
       </div>
     );
   };
@@ -825,13 +811,13 @@ class PaperPageCard extends React.Component {
 
     return (
       <ReactPlaceholder
-        // ready={doneFetchingPaper}
-        ready={true}
+        ready={doneFetchingPaper}
         showLoadingAnimation
         customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
       >
         <Fragment>
           <AuthorSupportModal />
+
           <div
             className={css(
               styles.container,
@@ -846,7 +832,25 @@ class PaperPageCard extends React.Component {
             <ReactTooltip />
             <meta property="description" content={paper.abstract} />
             <meta property="commentCount" content={paper.discussion_count} />
-
+            <div className={css(styles.voting)}>
+              <VoteWidget
+                score={score}
+                onUpvote={upvote}
+                onDownvote={downvote}
+                selected={this.props.selectedVoteType}
+                isPaper={true}
+                type={"Paper"}
+                paperPage={true}
+                promoted={this.props.paper && this.props.paper.promoted}
+                paper={
+                  this.props.paper && this.props.paper.promoted !== false
+                    ? this.props.paper
+                    : null
+                }
+                showPromotion={true}
+                // horizontalView={true}
+              />
+            </div>
             <div className={css(styles.votingMobile)}>
               <VoteWidget
                 score={score}
@@ -888,39 +892,6 @@ class PaperPageCard extends React.Component {
                     !fetching && previews.length === 0 && styles.emptyPreview
                   )}
                 >
-                  <div
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: 25,
-                    }}
-                  >
-                    <div className={css(styles.voting)}>
-                      <VoteWidget
-                        score={score}
-                        onUpvote={upvote}
-                        onDownvote={downvote}
-                        selected={this.props.selectedVoteType}
-                        isPaper={true}
-                        type={"Paper"}
-                        paperPage={true}
-                        promoted={this.props.paper && this.props.paper.promoted}
-                        paper={
-                          this.props.paper &&
-                          this.props.paper.promoted !== false
-                            ? this.props.paper
-                            : null
-                        }
-                        showPromotion={true}
-                        horizontalView={true}
-                      />
-                    </div>
-                    {/* <div className={css(styles.actionsContainer)}>
-                      {this.renderActions()}
-                    </div> */}
-                  </div>
                   <div className={css(styles.metaContainer)}>
                     <div className={css(styles.titleHeader)}>
                       <h1 className={css(styles.title)} property={"headline"}>
@@ -1041,6 +1012,9 @@ const styles = StyleSheet.create({
     display: "flex",
     position: "relative",
     overflow: "visible",
+    paddingLeft: 50,
+    // paddingRight: 10,
+    boxSizing: "border-box",
   },
   overflow: {
     overflow: "visible",
@@ -1125,6 +1099,9 @@ const styles = StyleSheet.create({
     fontWeight: "unset",
     padding: 0,
     margin: 0,
+    display: "flex",
+    paddingRight: 15,
+
     "@media only screen and (max-width: 760px)": {
       fontSize: 28,
     },
@@ -1136,6 +1113,7 @@ const styles = StyleSheet.create({
     },
   },
   titleHeader: {
+    marginTop: 16,
     marginBottom: 15,
   },
   paperTitle: {
@@ -1256,6 +1234,11 @@ const styles = StyleSheet.create({
   },
   voting: {
     display: "block",
+    width: 70,
+    fontSize: 18,
+    position: "absolute",
+    top: 0,
+    left: -15,
     "@media only screen and (max-width: 768px)": {
       display: "none",
     },
@@ -1379,6 +1362,9 @@ const styles = StyleSheet.create({
       flexDirection: "column-reverse",
     },
   },
+  marginLeft: {
+    marginLeft: 40,
+  },
   rightColumn: {
     display: "flex",
     flexDirection: "column",
@@ -1419,6 +1405,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     margin: "15px 0px 20px 0",
     marginTop: 0,
+    paddingLeft: 50,
   },
   bottomRow: {
     maxWidth: "100%",
