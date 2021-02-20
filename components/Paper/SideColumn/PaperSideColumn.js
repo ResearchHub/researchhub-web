@@ -107,28 +107,34 @@ const PaperColumn = (props) => {
   return (
     <div className={css(styles.root)}>
       {renderPaperTabs()}
-      <SideColumnTitle title={"Author Details"} overrideStyles={styles.title} />
-      <ReactPlaceholder
-        showLoadingAnimation
-        ready={paper && paper.raw_authors}
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
-      >
-        {renderAuthorsDetails()}
-      </ReactPlaceholder>
-      <SideColumnTitle title={"Journal"} overrideStyles={styles.title} />
       <ReactPlaceholder
         showLoadingAnimation
         ready={paper.url || paper.external_source}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
+        {paper && (paper.url || paper.external_source) && (
+          <SideColumnTitle title={"Journal"} overrideStyles={styles.title} />
+        )}
         <JournalCard paper={paper} />
       </ReactPlaceholder>
-      <SideColumnTitle title={"Hubs"} overrideStyles={styles.title} />
+      <ReactPlaceholder
+        showLoadingAnimation
+        ready={paper && paper.raw_authors}
+        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
+      >
+        {paper && (paper.raw_authors && paper.raw_authors.length) && (
+          <SideColumnTitle title={"Authors"} overrideStyles={styles.title} />
+        )}
+        {renderAuthorsDetails()}
+      </ReactPlaceholder>
       <ReactPlaceholder
         showLoadingAnimation
         ready={paper.hubs}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
+        {paper && (paper.hubs && paper.hubs.length > 0) && (
+          <SideColumnTitle title={"Hubs"} overrideStyles={styles.title} />
+        )}
         {renderHubEntry()}
       </ReactPlaceholder>
     </div>
@@ -142,8 +148,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     boxSizing: "border-box",
-    position: "sticky",
-    top: 15,
   },
   tabs: {
     width: "100%",
@@ -241,7 +245,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontWeight: 500,
-    padding: "10px 20px",
+    padding: "10px 20px 10px 17px",
   },
   rhIcon: {
     width: 12,
@@ -250,7 +254,7 @@ const styles = StyleSheet.create({
   },
   commentIcon: {
     marginRight: 10,
-    // color: "#EDEDED"
+    color: colors.BLUE(),
   },
 });
 

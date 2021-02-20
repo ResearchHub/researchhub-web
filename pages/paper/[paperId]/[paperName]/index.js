@@ -7,6 +7,7 @@ import Joyride from "react-joyride";
 import Error from "next/error";
 import "./styles/anchor.css";
 import * as Sentry from "@sentry/browser";
+import { Waypoint } from "react-waypoint";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -21,6 +22,7 @@ import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
+import ColumnContentTab from "~/components/Paper/SideColumn/ColumnContentTab";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -107,6 +109,7 @@ const Paper = (props) => {
   const [tabs, setTabs] = useState(getActiveTabs());
   const [fetchBullets, setFetchBullets] = useState(false);
   const [userVoteChecked, setUserVoteChecked] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
 
   const { hostname } = props;
   const { paperId, tabName } = router.query;
@@ -473,6 +476,11 @@ const Paper = (props) => {
     return authors;
   }
 
+  function onSectionEnter(index) {
+    console.log("index", index);
+    setActiveTab(index);
+  }
+
   return (
     <div>
       <PaperTransactionModal
@@ -513,41 +521,59 @@ const Paper = (props) => {
           display: "flex",
           justifyContent: "center",
           alignItems: "flex-start",
+          width: "100%",
         }}
       >
         <div className={css(styles.root)}>
           <div className={css(styles.container)}>
             <div className={css(styles.paperPageContainer)}>
-              <PaperPageCard
-                paper={paper}
-                paperId={paperId}
-                score={score}
-                upvote={upvote}
-                downvote={downvote}
-                selectedVoteType={selectedVoteType}
-                shareUrl={process.browser && window.location.href}
-                isModerator={isModerator}
-                isSubmitter={isSubmitter}
-                flagged={flagged}
-                restorePaper={restorePaper}
-                removePaper={removePaper}
-                doneFetchingPaper={!loadingPaper}
-                setFlag={setFlag}
-                sticky={sticky}
-                scrollView={scrollView}
-                setSticky={setSticky}
-              />
-              <SummaryTab
-                paperId={paperId}
-                paper={paper}
-                summary={summary}
-                descriptionRef={descriptionRef}
-                updatePaperState={updatePaperState}
-                updateSummary={setSummary}
-                loadingSummary={loadingSummary}
-                userVoteChecked={userVoteChecked}
-              />
+              <Waypoint
+                onEnter={() => onSectionEnter(0)}
+                topOffset={80}
+                bottomOffset={"85%"}
+              >
+                <div>
+                  <PaperPageCard
+                    paper={paper}
+                    paperId={paperId}
+                    score={score}
+                    upvote={upvote}
+                    downvote={downvote}
+                    selectedVoteType={selectedVoteType}
+                    shareUrl={process.browser && window.location.href}
+                    isModerator={isModerator}
+                    isSubmitter={isSubmitter}
+                    flagged={flagged}
+                    restorePaper={restorePaper}
+                    removePaper={removePaper}
+                    doneFetchingPaper={!loadingPaper}
+                    setFlag={setFlag}
+                    sticky={sticky}
+                    scrollView={scrollView}
+                    setSticky={setSticky}
+                  />
+                </div>
+              </Waypoint>
+              <Waypoint
+                onEnter={() => onSectionEnter(1)}
+                topOffset={80}
+                bottomOffset={"85%"}
+              >
+                <div>
+                  <SummaryTab
+                    paperId={paperId}
+                    paper={paper}
+                    summary={summary}
+                    descriptionRef={descriptionRef}
+                    updatePaperState={updatePaperState}
+                    updateSummary={setSummary}
+                    loadingSummary={loadingSummary}
+                    userVoteChecked={userVoteChecked}
+                  />
+                </div>
+              </Waypoint>
             </div>
+
             {/* <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
               <PaperTabBar
                 baseUrl={paperId}
@@ -581,6 +607,32 @@ const Paper = (props) => {
               />
               
               
+              
+            </div> */}
+            <Waypoint
+              onEnter={() => onSectionEnter(2)}
+              topOffset={80}
+              bottomOffset={"85%"}
+            >
+              <a name="comments" id="comments">
+                <div id="comments-tab" className={css(styles.space)}>
+                  <DiscussionTab
+                    hostname={hostname}
+                    paperId={paperId}
+                    paperState={paper}
+                    calculatedCount={discussionCount}
+                    setCount={setCount}
+                    discussionRef={discussionRef}
+                  />
+                </div>
+              </a>
+            </Waypoint>
+
+            <Waypoint
+              onEnter={() => onSectionEnter(3)}
+              topOffset={80}
+              bottomOffset={"85%"}
+            >
               <a name="paper">
                 <div id="paper-tab" className={css(styles.paperTabContainer)}>
                   <PaperTab
@@ -591,19 +643,7 @@ const Paper = (props) => {
                   />
                 </div>
               </a>
-            </div> */}
-            <a name="comments" id="comments">
-              <div id="comments-tab" className={css(styles.space)}>
-                <DiscussionTab
-                  hostname={hostname}
-                  paperId={paperId}
-                  paperState={paper}
-                  calculatedCount={discussionCount}
-                  setCount={setCount}
-                  discussionRef={discussionRef}
-                />
-              </div>
-            </a>
+            </Waypoint>
           </div>
           <div className={css(styles.sidebar)}>
             <PaperPreview paper={paper} paperId={paper.id} />
@@ -611,6 +651,10 @@ const Paper = (props) => {
               authors={Object.keys(formatAuthors())}
               paper={paper}
               hubs={paper.hubs}
+            />
+            <ColumnContentTab
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
             />
           </div>
         </div>
@@ -715,13 +759,16 @@ const styles = StyleSheet.create({
     display: "table",
     width: "80%",
     // width: 1400,
-    maxWidth: 1200,
+    // maxWidth: 1200,
     marginLeft: "auto",
     marginRight: "auto",
     boxSizing: "border-box",
     borderCollapse: "separate",
     borderSpacing: "30px 40px",
-    maxWidth: 1600,
+    // maxWidth: 1600,
+    "@media only screen and (max-width: 1200px)": {
+      width: "100%",
+    },
   },
   sidebar: {
     display: "table-cell",
@@ -734,7 +781,7 @@ const styles = StyleSheet.create({
   },
   container: {
     display: "table-cell",
-    width: "calc(100% - 280px)",
+    // width: "calc(100% - 280px)",
     boxSizing: "border-box",
   },
   contentContainer: {

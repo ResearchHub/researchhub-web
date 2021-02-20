@@ -261,31 +261,31 @@ function PaperTab(props) {
   }
 
   return (
-    <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-      <div className={css(styles.container)} ref={containerRef}>
-        <div className={css(styles.headerContainer)} ref={paperPdfRef}>
-          <div className={css(styles.titleContainer)}>
-            <h3 className={css(styles.title)}>Paper PDF</h3>
-            {file && renderDownloadPdf()}
-          </div>
-          {file && isModerator && (
-            <div className={css(styles.moderatorContainer)}>
-              <ModeratorDeleteButton
-                label={`Remove PDF`}
-                labelStyle={styles.moderatorLabel}
-                containerStyle={styles.moderatorButton}
-                actionType={"pdf"}
-                metaData={{ paperId: props.paperId }}
-                onRemove={onPdfRemove}
-                icon={" "}
-                iconStyle={styles.iconStyle}
-              />
-            </div>
-          )}
+    // <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+    <div className={css(styles.container)} ref={containerRef}>
+      <div className={css(styles.headerContainer)} ref={paperPdfRef}>
+        <div className={css(styles.titleContainer)}>
+          <h3 className={css(styles.title)}>Paper PDF</h3>
+          {file && renderDownloadPdf()}
         </div>
-        {handleRenderState()}
+        {file && isModerator && (
+          <div className={css(styles.moderatorContainer)}>
+            <ModeratorDeleteButton
+              label={`Remove PDF`}
+              labelStyle={styles.moderatorLabel}
+              containerStyle={styles.moderatorButton}
+              actionType={"pdf"}
+              metaData={{ paperId: props.paperId }}
+              onRemove={onPdfRemove}
+              icon={" "}
+              iconStyle={styles.iconStyle}
+            />
+          </div>
+        )}
       </div>
-    </ComponentWrapper>
+      {handleRenderState()}
+    </div>
+    // </ComponentWrapper>
   );
 }
 
@@ -307,7 +307,8 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    padding: 50,
+    // padding: 50,
+    padding: 25,
     backgroundColor: "#FFF",
     marginTop: 30,
     border: "1.5px solid #F0F0F0",
