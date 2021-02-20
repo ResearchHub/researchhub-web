@@ -313,7 +313,7 @@ class PaperPageCard extends React.Component {
         {metadata.length &&
           metadata.map((props, i) => (
             <PaperMetadata
-              key={`metadata-${1}`}
+              // key={`metadata-${}`}
               {...props}
               containerStyles={i === 1 && styles.marginLeft}
             />
@@ -848,7 +848,6 @@ class PaperPageCard extends React.Component {
                     : null
                 }
                 showPromotion={true}
-                // horizontalView={true}
               />
             </div>
             <div className={css(styles.votingMobile)}>
@@ -1113,7 +1112,7 @@ const styles = StyleSheet.create({
     },
   },
   titleHeader: {
-    marginTop: 16,
+    marginTop: 5,
     marginBottom: 15,
   },
   paperTitle: {
@@ -1238,7 +1237,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     position: "absolute",
     top: 0,
-    left: -15,
+    left: -17,
     "@media only screen and (max-width: 768px)": {
       display: "none",
     },

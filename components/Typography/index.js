@@ -1,4 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
 
 export const SideColumnTitle = ({ title, overrideStyles }) => {
   return (
@@ -18,9 +19,11 @@ const styles = StyleSheet.create({
   sidecolumnHeader: {
     textTransform: "uppercase",
     fontWeight: 500,
+    // fontWeight: "bold",
     fontSize: 12,
     letterSpacing: 1.2,
     color: "#a7a6b0",
+    // color: colors.BLACK(),
     width: "100%",
     boxSizing: "border-box",
     margin: 0,

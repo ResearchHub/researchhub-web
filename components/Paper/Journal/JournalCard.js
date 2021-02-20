@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     boxSizing: "border-box",
-    padding: "10px 15px 10px 20px",
+    padding: "10px 15px 10px 17px",
     borderLeft: `3px solid #FFF`,
     textDecoration: "unset",
     color: "unset",

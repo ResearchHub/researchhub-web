@@ -20,7 +20,7 @@ const PaperPreview = (props) => {
   const [figureUrls, setFigureUrls] = useState([]);
   const [hovered, setHovered] = useState(false);
   const [lightbox, setLightbox] = useState(false);
-  const [fetching, setFetching] = useState(false);
+  const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
     fetchFigures();
