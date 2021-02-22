@@ -109,23 +109,33 @@ const PaperColumn = (props) => {
       {renderPaperTabs()}
       <ReactPlaceholder
         showLoadingAnimation
-        ready={paper.url || paper.external_source}
+        ready={paper || (paper.url || paper.external_source)}
+        ready={true}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
         {paper && (paper.url || paper.external_source) && (
-          <SideColumnTitle title={"Journal"} overrideStyles={styles.title} />
+          <Fragment>
+            <SideColumnTitle title={"Journal"} overrideStyles={styles.title} />
+            <JournalCard paper={paper} />
+          </Fragment>
         )}
-        <JournalCard paper={paper} />
       </ReactPlaceholder>
       <ReactPlaceholder
         showLoadingAnimation
-        ready={paper && paper.raw_authors}
+        ready={paper}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
-        {paper && (paper.raw_authors && paper.raw_authors.length) && (
-          <SideColumnTitle title={"Authors"} overrideStyles={styles.title} />
-        )}
-        {renderAuthorsDetails()}
+        {paper &&
+          ((paper.authors && paper.authors.length > 0) ||
+            (paper.raw_authors && paper.raw_authors.length > 0)) && (
+            <Fragment>
+              <SideColumnTitle
+                title={"Authors"}
+                overrideStyles={styles.title}
+              />
+              {renderAuthorsDetails()}
+            </Fragment>
+          )}
       </ReactPlaceholder>
       <ReactPlaceholder
         showLoadingAnimation
@@ -133,9 +143,11 @@ const PaperColumn = (props) => {
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
         {paper && (paper.hubs && paper.hubs.length > 0) && (
-          <SideColumnTitle title={"Hubs"} overrideStyles={styles.title} />
+          <Fragment>
+            <SideColumnTitle title={"Hubs"} overrideStyles={styles.title} />
+            {renderHubEntry()}
+          </Fragment>
         )}
-        {renderHubEntry()}
       </ReactPlaceholder>
     </div>
   );
