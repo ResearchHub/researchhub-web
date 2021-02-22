@@ -28,8 +28,6 @@ const ColumnAuthor = (props) => {
 
 ColumnAuthor.propTypes = {
   name: PropTypes.string,
-  // authorProfile: PropTypes.object,
-  // reputation: PropTypes.number,
 };
 
 const styles = StyleSheet.create({
@@ -39,7 +37,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     boxSizing: "border-box",
-    padding: "10px 15px",
+    padding: "10px 15px 10px 12px",
     borderLeft: `3px solid #FFF`,
     ":hover": {
       cursor: "pointer",
