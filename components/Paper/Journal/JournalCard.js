@@ -37,11 +37,7 @@ const JournalCard = (props) => {
       rel="noreferrer noopener"
     >
       {imgExists && <img {...journalImageProps()} />}
-      <div
-        className={
-          css(styles.column, imgExists && styles.marginLeft) + " clamp1"
-        }
-      >
+      <div className={css(styles.column) + " clamp1"}>
         {externalSource && (
           <span className={css(styles.journal)}>
             {capitalize(externalSource)}
@@ -111,9 +107,6 @@ const styles = StyleSheet.create({
       cursor: "pointer",
       textDecoration: "underline",
     },
-  },
-  marginLeft: {
-    marginLeft: 15,
   },
 });
 

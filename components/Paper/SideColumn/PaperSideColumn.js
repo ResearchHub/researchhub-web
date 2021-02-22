@@ -22,7 +22,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { getJournalFromURL, capitalize } from "~/config/utils";
 
-const PaperColumn = (props) => {
+const PaperSideColumn = (props) => {
   const { paper } = props;
   const [activeTab, setActiveTab] = useState(0);
 
@@ -109,33 +109,17 @@ const PaperColumn = (props) => {
       {renderPaperTabs()}
       <ReactPlaceholder
         showLoadingAnimation
-        ready={paper || (paper.url || paper.external_source)}
-        ready={true}
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
-      >
-        {paper && (paper.url || paper.external_source) && (
-          <Fragment>
-            <SideColumnTitle title={"Journal"} overrideStyles={styles.title} />
-            <JournalCard paper={paper} />
-          </Fragment>
-        )}
-      </ReactPlaceholder>
-      <ReactPlaceholder
-        showLoadingAnimation
         ready={paper}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
         {paper &&
           ((paper.authors && paper.authors.length > 0) ||
             (paper.raw_authors && paper.raw_authors.length > 0)) && (
-            <Fragment>
-              <SideColumnTitle
-                title={"Authors"}
-                overrideStyles={styles.title}
-              />
-              {renderAuthorsDetails()}
-            </Fragment>
+            // <Fragment>
+            <SideColumnTitle title={"Authors"} overrideStyles={styles.title} />
+            // </Fragment>
           )}
+        {renderAuthorsDetails()}
       </ReactPlaceholder>
       <ReactPlaceholder
         showLoadingAnimation
@@ -148,6 +132,19 @@ const PaperColumn = (props) => {
             {renderHubEntry()}
           </Fragment>
         )}
+      </ReactPlaceholder>
+      <ReactPlaceholder
+        showLoadingAnimation
+        ready={paper || (paper.url || paper.external_source)}
+        ready={true}
+        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
+      >
+        {paper && (paper.url || paper.external_source) && (
+          // <Fragment>
+          <SideColumnTitle title={"Journal"} overrideStyles={styles.title} />
+          // </Fragment>
+        )}
+        <JournalCard paper={paper} />
       </ReactPlaceholder>
     </div>
   );
@@ -215,7 +212,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     transition: "all ease-out 0.1s",
-    borderRadius: 3,
     height: 60,
     borderLeft: "3px solid #FFF",
     ":hover": {
@@ -261,7 +257,6 @@ const styles = StyleSheet.create({
   },
   rhIcon: {
     width: 12,
-    // marginLeft: 3,
     marginRight: 10,
   },
   commentIcon: {
@@ -270,4 +265,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaperColumn;
+export default PaperSideColumn;
