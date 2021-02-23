@@ -28,7 +28,12 @@ const LeaderboardContainer = (props) => {
   const fetchLeaderboard = () => {
     setFetchingUsers(true);
     return fetch(
-      API.LEADERBOARD({ limit: 10, page: 1, hubId: props.hubId }),
+      API.LEADERBOARD({
+        limit: 10,
+        page: 1,
+        hubId: props.hubId,
+        timeframe: "past_week",
+      }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
@@ -47,6 +52,9 @@ const LeaderboardContainer = (props) => {
         name =
           user.author_profile.first_name + " " + user.author_profile.last_name;
       }
+      let reputation = user.hub_reputation
+        ? user.hub_reputation
+        : user.reputation;
 
       return (
         <Ripples className={css(styles.user)} key={`user_${index}_${user.id}`}>
@@ -54,7 +62,7 @@ const LeaderboardContainer = (props) => {
             user={user}
             name={name}
             authorProfile={user.author_profile}
-            reputation={user.reputation}
+            reputation={reputation}
             authorId={authorId}
           />
         </Ripples>
