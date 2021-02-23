@@ -23,6 +23,7 @@ import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
 import ColumnContentTab from "~/components/Paper/SideColumn/ColumnContentTab";
+import PaperDraft from "~/components/Paper/Tabs/PaperDraft";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -570,6 +571,7 @@ const Paper = (props) => {
                     loadingSummary={loadingSummary}
                     userVoteChecked={userVoteChecked}
                   />
+                  <PaperDraft abstract={paper.abstract} />
                 </div>
               </Waypoint>
             </div>
