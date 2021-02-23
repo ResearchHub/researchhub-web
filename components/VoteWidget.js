@@ -177,24 +177,8 @@ const ScorePill = (props) => {
   };
 
   return (
-    <div
-      className={css(
-        styles.pillContainer,
-        promoted !== false && styles.promotedPillContainer
-      )}
-      // data-tip={"This paper has been promoted."}
-      onClick={(e) =>
-        props.promoted !== false &&
-        props.type === "Paper" &&
-        openPromotionInfoModal(e)
-      }
-    >
+    <div className={css(styles.pillContainer)}>
       <div className={css(small && styles.small)}>{formatScore(score)}</div>
-      {/* {props.promoted !== false && props.type === "Paper" && (
-        <span className={css(styles.promotionIcon)}>
-          <BoltSvg color={colors.GREEN()} opacity={1} />
-        </span>
-      )} */}
     </div>
   );
 };
