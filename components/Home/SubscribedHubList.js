@@ -14,7 +14,6 @@ import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
-import { ethers } from "ethers";
 
 const DEFAULT_PAGE_SIZE = 5;
 
@@ -145,6 +144,23 @@ class SubscribedHubList extends React.Component {
     });
   };
 
+  renderActionBar = () => {
+    const { pages, page } = this.state;
+
+    const viewMore = pages > page;
+
+    return (
+      <div
+        className={css(styles.viewMoreButton, viewMore && styles.spaceBetween)}
+      >
+        {viewMore && <div onClick={this.nextPage}>View more</div>}
+        <Link href={"/user/settings"} as={"/user/settings"}>
+          <a className={css(styles.link, styles.cogButton)}>{icons.cog}</a>
+        </Link>
+      </div>
+    );
+  };
+
   render() {
     const { pages, page, hubs } = this.state;
     const { overrideStyle } = this.props;
@@ -159,6 +175,7 @@ class SubscribedHubList extends React.Component {
           >
             {this.renderHubEntry()}
           </ReactPlaceholder>
+          {this.renderActionBar()}
           {pages > page && (
             <div className={css(styles.viewMoreButton)} onClick={this.nextPage}>
               View more
@@ -184,6 +201,11 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     marginTop: 20,
+  },
+  spaceBetween: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   hubsListContainer: {
     height: "100%",
@@ -307,6 +329,8 @@ const styles = StyleSheet.create({
     textDecoration: "none",
   },
   viewMoreButton: {
+    display: "flex",
+    justifyContent: "flex-end",
     color: "rgba(78, 83, 255)",
     fontWeight: 300,
     textTransform: "capitalize",
