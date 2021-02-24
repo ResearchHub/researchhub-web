@@ -52,9 +52,7 @@ const LeaderboardContainer = (props) => {
         name =
           user.author_profile.first_name + " " + user.author_profile.last_name;
       }
-      let reputation = user.hub_reputation
-        ? user.hub_reputation
-        : user.reputation;
+      let reputation = user.hub_reputation;
 
       return (
         <Ripples className={css(styles.user)} key={`user_${index}_${user.id}`}>
