@@ -60,7 +60,7 @@ const LeaderboardContainer = (props) => {
             user={user}
             name={name}
             authorProfile={user.author_profile}
-            reputation={reputation}
+            // reputation={reputation}
             authorId={authorId}
           />
         </Ripples>
