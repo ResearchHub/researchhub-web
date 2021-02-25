@@ -478,7 +478,6 @@ const Paper = (props) => {
   }
 
   function onSectionEnter(index) {
-    console.log("index", index);
     setActiveTab(index);
   }
 
@@ -571,7 +570,7 @@ const Paper = (props) => {
                     loadingSummary={loadingSummary}
                     userVoteChecked={userVoteChecked}
                   />
-                  <PaperDraft abstract={paper.abstract} />
+                  <PaperDraft paperId={paperId} abstract={paper.abstract} />
                 </div>
               </Waypoint>
             </div>
