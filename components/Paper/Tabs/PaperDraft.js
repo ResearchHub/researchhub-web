@@ -118,7 +118,7 @@ class PaperDraft extends React.Component {
     fetch(
       API.PAPER({
         paperId: this.props.paperId,
-        // hidePublic: true,
+        hidePublic: true,
         route: "pdf_extract_xml_string",
       }),
       API.GET_CONFIG()
@@ -166,6 +166,9 @@ class PaperDraft extends React.Component {
         } catch {
           this.setState({ fetching: false });
         }
+      })
+      .catch((err) => {
+        this.setState({ fetching: false });
       });
   };
 
