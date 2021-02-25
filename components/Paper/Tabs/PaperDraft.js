@@ -12,16 +12,18 @@ import {
   KeyBindingUtil,
   CompositeDecorator,
 } from "draft-js";
-import { convertToHTML, convertFromHTML } from "draft-convert";
-
+import { convertFromHTML } from "draft-convert";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
+import ReactPlaceholder from "react-placeholder/lib";
+
+// Components
+import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { html } from "./html";
 
 const { hasCommandModifier } = KeyBindingUtil;
 
@@ -65,6 +67,7 @@ class PaperDraft extends React.Component {
       editorState: EditorState.createEmpty(),
       showCommentButton: false,
       focused: false,
+      fetching: true,
     };
 
     this.decorator = new CompositeDecorator([
@@ -93,7 +96,6 @@ class PaperDraft extends React.Component {
       .then((res) => {
         const blocksFromHTML = convertFromHTML({
           htmlToStyle: (nodeName, node, currentStyle) => {
-            console.log("nodeName", nodeName);
             if (nodeName === "title") {
               return currentStyle.add("TITLE");
             } else if (nodeName === "abstract") {
@@ -116,7 +118,7 @@ class PaperDraft extends React.Component {
           allowUndo: true,
         });
 
-        this.setState({ editorState });
+        this.setState({ editorState, fetching: false });
       });
   };
 
@@ -134,7 +136,7 @@ class PaperDraft extends React.Component {
   };
 
   onFocus = () => {
-    this.setState({ focused: true });
+    // this.setState({ focused: true });
   };
 
   onBlur = () => {
@@ -261,7 +263,6 @@ class PaperDraft extends React.Component {
 
   blockRenderer = (contentBlock) => {
     const type = contentBlock.getType();
-    console.log("type", type);
     // if (type === "article") {
     //   return {
     //     component: AnnotatedText,
@@ -274,21 +275,27 @@ class PaperDraft extends React.Component {
   };
 
   render() {
-    const { editorState, showCommentButton } = this.state;
+    const { fetching, editorState, showCommentButton } = this.state;
 
     return (
-      <div className={css(styles.root)}>
-        <h3 className={css(styles.title)}>Paper</h3>
-        <Editor
-          editorState={editorState}
-          onChange={this.onChange}
-          customStyleMap={styleMap}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-          blockRendererFn={this.blockRenderer}
-        />
-        {showCommentButton && this.renderShowCommentButton()}
-      </div>
+      <ReactPlaceholder
+        ready={!fetching}
+        showLoadingAnimation
+        customPlaceholder={<AbstractPlaceholder color="#efefef" />}
+      >
+        <div className={css(styles.root)}>
+          <h3 className={css(styles.title)}>Paper</h3>
+          <Editor
+            editorState={editorState}
+            onChange={this.onChange}
+            customStyleMap={styleMap}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+            blockRendererFn={this.blockRenderer}
+          />
+          {showCommentButton && this.renderShowCommentButton()}
+        </div>
+      </ReactPlaceholder>
     );
   }
 }
@@ -316,8 +323,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   title: {
-    paddingTop: 30,
-    paddingLeft: 50,
+    padding: "20px 0 0 50px",
     fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
