@@ -532,7 +532,7 @@ const Paper = (props) => {
                 topOffset={80}
                 bottomOffset={"85%"}
               >
-                <div>
+                <a name="main">
                   <PaperPageCard
                     paper={paper}
                     paperId={paperId}
@@ -552,14 +552,14 @@ const Paper = (props) => {
                     scrollView={scrollView}
                     setSticky={setSticky}
                   />
-                </div>
+                </a>
               </Waypoint>
               <Waypoint
                 onEnter={() => onSectionEnter(1)}
                 topOffset={80}
                 bottomOffset={"85%"}
               >
-                <div>
+                <a name="abstract">
                   <SummaryTab
                     paperId={paperId}
                     paper={paper}
@@ -570,16 +570,16 @@ const Paper = (props) => {
                     loadingSummary={loadingSummary}
                     userVoteChecked={userVoteChecked}
                   />
-                </div>
+                </a>
               </Waypoint>
               <Waypoint
                 onEnter={() => onSectionEnter(2)}
                 topOffset={80}
                 bottomOffset={"85%"}
               >
-                <div>
+                <a name="paper">
                   <PaperDraft paperId={paperId} abstract={paper.abstract} />
-                </div>
+                </a>
               </Waypoint>
             </div>
 
@@ -623,8 +623,12 @@ const Paper = (props) => {
               topOffset={80}
               bottomOffset={"85%"}
             >
-              <a name="comments" id="comments">
-                <div id="comments-tab" className={css(styles.space)}>
+              <a name="discussions" id="comments">
+                <div
+                  id="comments-tab"
+                  name="discussions"
+                  className={css(styles.space)}
+                >
                   <DiscussionTab
                     hostname={hostname}
                     paperId={paperId}
@@ -642,7 +646,7 @@ const Paper = (props) => {
               topOffset={80}
               bottomOffset={"85%"}
             >
-              <a name="paper">
+              <a name="paper pdf">
                 <div id="paper-tab" className={css(styles.paperTabContainer)}>
                   <PaperTab
                     paperId={paperId}

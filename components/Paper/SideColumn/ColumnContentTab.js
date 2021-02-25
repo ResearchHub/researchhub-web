@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
+import Link from "next/link";
 
 // Component
 import ColumnContainer from "./ColumnContainer";
@@ -22,12 +22,13 @@ const ColumnContentTab = (props) => {
     return ["Main", "Abstract", "Paper", "Discussions", "Paper PDF"].map(
       (name, i) => {
         return (
-          <div
+          <a
+            href={`#${name.toLowerCase()}`}
             className={css(styles.card, activeTab === i && styles.active)}
             onClick={() => handleClick(i)}
           >
             <div className={css(styles.name) + " clamp1"}>{name}</div>
-          </div>
+          </a>
         );
       }
     );
@@ -72,6 +73,7 @@ const styles = StyleSheet.create({
     borderLeft: `3px solid #FFF`,
     color: colors.BLUE(),
     cursor: "pointer",
+    textDecoration: "unset",
     ":hover": {
       cursor: "pointer",
       background: "#FAFAFA",
