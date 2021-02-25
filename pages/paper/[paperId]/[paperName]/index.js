@@ -570,6 +570,14 @@ const Paper = (props) => {
                     loadingSummary={loadingSummary}
                     userVoteChecked={userVoteChecked}
                   />
+                </div>
+              </Waypoint>
+              <Waypoint
+                onEnter={() => onSectionEnter(2)}
+                topOffset={80}
+                bottomOffset={"85%"}
+              >
+                <div>
                   <PaperDraft paperId={paperId} abstract={paper.abstract} />
                 </div>
               </Waypoint>
@@ -611,7 +619,7 @@ const Paper = (props) => {
               
             </div> */}
             <Waypoint
-              onEnter={() => onSectionEnter(2)}
+              onEnter={() => onSectionEnter(3)}
               topOffset={80}
               bottomOffset={"85%"}
             >
@@ -630,7 +638,7 @@ const Paper = (props) => {
             </Waypoint>
 
             <Waypoint
-              onEnter={() => onSectionEnter(3)}
+              onEnter={() => onSectionEnter(4)}
               topOffset={80}
               bottomOffset={"85%"}
             >

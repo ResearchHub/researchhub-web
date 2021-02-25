@@ -58,6 +58,13 @@ const styleMap = {
     whiteSpace: "normal",
     lineHeight: 1.3,
   },
+  BACK: {
+    display: "inline-block",
+    fontSize: 10,
+    fontWeight: 300,
+    whiteSpace: "normal",
+    lineHeight: 1,
+  },
 };
 class PaperDraft extends React.Component {
   constructor(props) {
@@ -96,16 +103,21 @@ class PaperDraft extends React.Component {
       .then((res) => {
         const blocksFromHTML = convertFromHTML({
           htmlToStyle: (nodeName, node, currentStyle) => {
-            if (nodeName === "title") {
-              return currentStyle.add("TITLE");
-            } else if (nodeName === "abstract") {
-              return currentStyle.add("ABSTRACT");
-            } else if (nodeName === "sec") {
-              return currentStyle.add("SEC");
-            } else if (nodeName.includes("journal")) {
-              return currentStyle.add("JOURNAL");
-            } else {
-              return currentStyle.add("META");
+            switch (nodeName) {
+              case "article-title":
+                return currentStyle.add("ARTICLE-TITLE");
+              case "title":
+                return currentStyle.add("TITLE");
+              case "abstract":
+                return currentStyle.add("ABSTRACT");
+              case "sec":
+                return currentStyle.add("SEC");
+              case "journal":
+                return currentStyle.add("JOURNAL");
+              case "back":
+                return currentStyle.add("BACK");
+              default:
+                return currentStyle.add("META");
             }
           },
         })(res);
@@ -281,7 +293,11 @@ class PaperDraft extends React.Component {
       <ReactPlaceholder
         ready={!fetching}
         showLoadingAnimation
-        customPlaceholder={<AbstractPlaceholder color="#efefef" />}
+        customPlaceholder={
+          <div style={{ padding: "30px 0 0 50px" }}>
+            <AbstractPlaceholder color="#efefef" />
+          </div>
+        }
       >
         <div className={css(styles.root)}>
           <h3 className={css(styles.title)}>Paper</h3>
@@ -317,8 +333,6 @@ const AnnotatedText = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: "100%",
-    lineHeight: 2,
-    // display: "flex",
     paddingRight: 10,
     position: "relative",
   },
