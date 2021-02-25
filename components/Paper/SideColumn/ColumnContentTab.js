@@ -19,23 +19,22 @@ const ColumnContentTab = (props) => {
   };
 
   const renderSections = () => {
-    return ["Main", "Abstract", "Discussions", "Paper"].map((name, i) => {
-      return (
-        <div
-          className={css(styles.card, activeTab === i && styles.active)}
-          onClick={() => handleClick(i)}
-        >
-          <div className={css(styles.name) + " clamp1"}>{name}</div>
-        </div>
-      );
-    });
+    return ["Main", "Abstract", "Paper", "Discussions", "Paper PDF"].map(
+      (name, i) => {
+        return (
+          <div
+            className={css(styles.card, activeTab === i && styles.active)}
+            onClick={() => handleClick(i)}
+          >
+            <div className={css(styles.name) + " clamp1"}>{name}</div>
+          </div>
+        );
+      }
+    );
   };
   return (
     <ColumnContainer overrideStyles={styles.container}>
       <div className={css(styles.title)}>Sections</div>
-      {/* <span className={css(styles.title)}>
-        Sections
-      </span> */}
       {renderSections()}
     </ColumnContainer>
   );
