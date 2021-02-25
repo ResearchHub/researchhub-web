@@ -176,11 +176,6 @@ class SubscribedHubList extends React.Component {
             {this.renderHubEntry()}
           </ReactPlaceholder>
           {this.renderActionBar()}
-          {pages > page && (
-            <div className={css(styles.viewMoreButton)} onClick={this.nextPage}>
-              View more
-            </div>
-          )}
         </div>
       );
     } else {
@@ -343,7 +338,6 @@ const styles = StyleSheet.create({
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",
-      background: "#FAFAFA",
     },
   },
 });
