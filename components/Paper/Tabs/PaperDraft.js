@@ -50,6 +50,7 @@ const styleMap = {
   SEC: {
     fontSize: 14,
     lineHeight: 2,
+    fontWeight: "unset",
   },
   META: {
     display: "inline-block",
@@ -64,6 +65,9 @@ const styleMap = {
     fontWeight: 300,
     whiteSpace: "normal",
     lineHeight: 1,
+  },
+  FIGURES: {
+    display: "none",
   },
 };
 class PaperDraft extends React.Component {
@@ -101,36 +105,46 @@ class PaperDraft extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        const blocksFromHTML = convertFromHTML({
-          htmlToStyle: (nodeName, node, currentStyle) => {
-            switch (nodeName) {
-              case "article-title":
-                return currentStyle.add("ARTICLE-TITLE");
-              case "title":
-                return currentStyle.add("TITLE");
-              case "abstract":
-                return currentStyle.add("ABSTRACT");
-              case "sec":
-                return currentStyle.add("SEC");
-              case "journal":
-                return currentStyle.add("JOURNAL");
-              case "back":
-                return currentStyle.add("BACK");
-              default:
-                return currentStyle.add("META");
-            }
-          },
-        })(res);
-        let editorState = EditorState.push(
-          this.state.editorState,
-          blocksFromHTML
-        );
-        editorState = EditorState.set(editorState, {
-          decorator: this.decorator,
-          allowUndo: true,
-        });
+        try {
+          const html = decodeURIComponent(escape(window.atob(res)));
+          const blocksFromHTML = convertFromHTML({
+            htmlToStyle: (nodeName, node, currentStyle) => {
+              console.log(nodeName, node);
+              switch (nodeName) {
+                case "article-title":
+                  return currentStyle.add("ARTICLE-TITLE");
+                case "title":
+                  return currentStyle.add("TITLE");
+                case "abstract":
+                  return currentStyle.add("ABSTRACT");
+                case "sec":
+                  return currentStyle.add("SEC");
+                case "journal":
+                  return currentStyle.add("JOURNAL");
+                case "back":
+                  return currentStyle.add("BACK");
+                case "fig":
+                case "graphic":
+                case "front":
+                  return currentStyle.add("FIGURE");
+                default:
+                  return currentStyle.add("META");
+              }
+            },
+          })(html);
+          let editorState = EditorState.push(
+            this.state.editorState,
+            blocksFromHTML
+          );
+          editorState = EditorState.set(editorState, {
+            decorator: this.decorator,
+            allowUndo: true,
+          });
 
-        this.setState({ editorState, fetching: false });
+          this.setState({ editorState, fetching: false });
+        } catch {
+          this.setState({ fetching: false });
+        }
       });
   };
 
