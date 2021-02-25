@@ -41,14 +41,14 @@ const styleMap = {
   },
   ABSTRACT: {
     fontStyle: "italic",
-    fontSize: 14,
+    fontSize: 16,
     padding: "0px 0 20px",
     display: "inline-block",
     lineHeight: 2,
     whiteSpace: "pre-wrap",
   },
   SEC: {
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 2,
     fontWeight: "unset",
   },
@@ -72,6 +72,8 @@ const styleMap = {
     overflow: "hidden",
     visibility: "hidden",
     opacity: 0,
+    padding: 0,
+    margin: 0,
   },
   DOI: {
     color: colors.BLUE(),
@@ -114,26 +116,23 @@ class PaperDraft extends React.Component {
       .then((res) => {
         try {
           const html = decodeURIComponent(escape(window.atob(res)));
-          console.log("html", html);
           const blocksFromHTML = convertFromHTML({
             htmlToStyle: (nodeName, node, currentStyle) => {
-              console.log("nodeName", nodeName, nodeName === "front");
-
               switch (nodeName) {
                 case "article-title":
                   return currentStyle.add("ARTICLE-TITLE");
                 case "title":
                   return currentStyle.add("TITLE");
-                case "abstract":
-                  return currentStyle.add("ABSTRACT");
+                case "p":
                 case "sec":
                   return currentStyle.add("SEC");
-                case "journal":
-                  return currentStyle.add("JOURNAL");
+                case "abstract":
+                // return currentStyle.add("ABSTRACT");
                 case "fig":
                 case "graphic":
                 case "front":
                 case "back":
+                case "journal":
                   return currentStyle.add("HIDDEN");
                 case "article-id":
                   return currentStyle.add("DOI");
@@ -341,12 +340,6 @@ class PaperDraft extends React.Component {
 }
 
 const AnnotatedText = (props) => {
-  console.log("props", props);
-
-  // useEffect(() => {
-  //   props.setOffset(props.offsetKey);
-  // })
-
   return (
     <span {...props} className={css(styles.annotatedText)}>
       {props.children}
@@ -361,7 +354,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   title: {
-    padding: "20px 0 0 50px",
+    padding: "30px 0px 0px 50px",
     fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
