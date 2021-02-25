@@ -43,6 +43,7 @@ const styleMap = {
     padding: "20px 0",
     display: "inline-block",
     lineHeight: 2,
+    whiteSpace: "pre-wrap",
   },
   SEC: {
     fontSize: 14,
