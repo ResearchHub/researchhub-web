@@ -749,6 +749,18 @@ var styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     paddingTop: 7,
+    color: colors.BLACK(),
+    fontWeight: 400,
+    fontSize: 15,
+    width: "100%",
+    boxSizing: "border-box",
+    "@media only screen and (max-width: 967px)": {
+      fontSize: 14,
+      width: "100%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   abstractText: {
     lineHeight: 1.6,

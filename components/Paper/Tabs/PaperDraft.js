@@ -41,16 +41,28 @@ const styleMap = {
   },
   ABSTRACT: {
     fontStyle: "italic",
-    fontSize: 16,
+    fontSize: 14,
     padding: "0px 0 20px",
     display: "inline-block",
     lineHeight: 2,
     whiteSpace: "pre-wrap",
   },
-  SEC: {
-    fontSize: 16,
+  PARAGRAPH: {
+    display: "flex",
+    justifyContent: "flex-start",
+    color: colors.BLACK(),
+    fontWeight: 400,
+    fontSize: 15,
+    width: "100%",
     lineHeight: 2,
-    fontWeight: "unset",
+    boxSizing: "border-box",
+    "@media only screen and (max-width: 967px)": {
+      fontSize: 14,
+      width: "100%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
+    },
   },
   META: {
     display: "inline-block",
@@ -125,7 +137,7 @@ class PaperDraft extends React.Component {
                   return currentStyle.add("TITLE");
                 case "p":
                 case "sec":
-                  return currentStyle.add("SEC");
+                  return currentStyle.add("PARAGRAPH");
                 case "abstract":
                 // return currentStyle.add("ABSTRACT");
                 case "fig":
@@ -323,7 +335,7 @@ class PaperDraft extends React.Component {
         }
       >
         <div className={css(styles.root)}>
-          <h3 className={css(styles.title)}>Paper</h3>
+          {/* <h3 className={css(styles.title)}>Paper</h3> */}
           <Editor
             editorState={editorState}
             onChange={this.onChange}
