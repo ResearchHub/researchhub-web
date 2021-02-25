@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import {
   Editor,
   EditorState,
@@ -10,77 +10,137 @@ import {
   convertToRaw,
   getDefaultKeyBinding,
   KeyBindingUtil,
+  CompositeDecorator,
 } from "draft-js";
+import { convertToHTML, convertFromHTML } from "draft-convert";
+
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { html } from "./html";
 
 const { hasCommandModifier } = KeyBindingUtil;
 
 const styleMap = {
   HIGHLIGHT: {
-    backgroundColor: "#FFFF00",
+    backgroundColor: colors.BLACK(0.1),
+    borderRadius: 2,
+  },
+  TITLE: {
+    padding: "10px 0",
+    fontWeight: 500,
+    fontSize: 20,
+    display: "inline-block",
+    lineHeight: 2,
+  },
+  ABSTRACT: {
+    fontStyle: "italic",
+    fontSize: 14,
+    padding: "20px 0",
+    display: "inline-block",
+    lineHeight: 2,
+  },
+  SEC: {
+    fontSize: 14,
+    lineHeight: 2,
+  },
+  META: {
+    display: "inline-block",
+    fontSize: 10,
+    fontWeight: 300,
+    whiteSpace: "normal",
+    lineHeight: 1.3,
   },
 };
 class PaperDraft extends React.Component {
-  state = {
-    editorState: EditorState.createEmpty(),
-    showBox: false,
-    selectedText: false,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      showCommentButton: false,
+      focused: false,
+    };
+
+    this.decorator = new CompositeDecorator([
+      {
+        strategy: this.findAnnotatedText,
+        component: (props) => <AnnotatedText {...props} />,
+      },
+    ]);
+  }
 
   componentDidMount() {
-    const { abstract } = this.props;
-    this.setState({
-      editorState: EditorState.createWithContent(
-        ContentState.createFromText(
-          "For traditional library collections, archivists can select a representative sample from a collection and display it in a featured physical or digital library space. Web archive collections may consist of thousands of archived pages, or mementos. How should an archivist display this sample to drive visitors to their collection? Search engines and social media platforms often represent web pages as cards consisting of text snippets, titles, and images. Web storytelling is a popular method for grouping these cards in order to summarize a topic. Unfortunately, social media platforms are not archive-aware and fail to consistently create a good experience for mementos. They also allow no UI alterations for their cards. Thus, we created MementoEmbed to generate cards for individual mementos and Raintale for creating entire stories that archivists can export to a variety of formats."
-        )
-      ),
-    });
+    this.fetchHTML();
   }
+
+  fetchHTML = () => {
+    fetch(
+      API.PAPER({
+        paperId: this.props.paperId,
+        hidePublic: true,
+        route: "pdf_extract_xml_string",
+      }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        const blocksFromHTML = convertFromHTML({
+          htmlToStyle: (nodeName, node, currentStyle) => {
+            console.log("nodeName", nodeName);
+            if (nodeName === "title") {
+              return currentStyle.add("TITLE");
+            } else if (nodeName === "abstract") {
+              return currentStyle.add("ABSTRACT");
+            } else if (nodeName === "sec") {
+              return currentStyle.add("SEC");
+            } else if (nodeName.includes("journal")) {
+              return currentStyle.add("JOURNAL");
+            } else {
+              return currentStyle.add("META");
+            }
+          },
+        })(res);
+        let editorState = EditorState.push(
+          this.state.editorState,
+          blocksFromHTML
+        );
+        editorState = EditorState.set(editorState, {
+          decorator: this.decorator,
+          allowUndo: true,
+        });
+
+        this.setState({ editorState });
+      });
+  };
+
+  findAnnotatedText = (contentBlock, callback, contentState) => {
+    contentBlock.findEntityRanges((character) => {
+      const entityKey = character.getEntity();
+      return entityKey !== null && entityKey === "comment";
+    }, callback);
+  };
 
   onChange = (editorState) => {
     this.setState({ editorState }, () => {
-      this.getSelectedText(editorState);
+      this.handleSelectedText(editorState);
     });
   };
 
   onFocus = () => {
-    this.setState({
-      showBox: true,
-    });
+    this.setState({ focused: true });
   };
 
-  blockRenderer = (contentBlock) => {
-    const type = contentBlock.getType();
-    if (type === "unstyled") {
-      return {
-        component: (props) => (
-          <Component
-            {...props}
-            highlight={false}
-            showBox={this.state.showBox}
-            setHighlight={this.setHighlight}
-          />
-        ),
-        editable: false,
-        props: {
-          foo: "bar",
-        },
-      };
-    }
-    // else if (type === "HIGHLIGHT") {
-    //   return {
-    //     component: (props) => <Component {...props} highlight={true} />,
-    //     editable: false,
-    //     props: {
-    //       foo: "bar"
-    //     }
-    //   }
-    // }
+  onBlur = () => {
+    // this.setState({
+    //   showCommentButton: false,
+    //   focused: false
+    // })
   };
 
   insertBlock = () => {
@@ -108,35 +168,52 @@ class PaperDraft extends React.Component {
     });
   };
 
-  setHighlight = () => {
-    const selectionState = this.state.editorState.getSelection();
-    const anchorKey = selectionState.getAnchorKey();
-    const currentContent = this.state.editorState.getCurrentContent();
-    const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-    const start = selectionState.getStartOffset();
-    const end = selectionState.getEndOffset();
+  handleSelectedText = (editorState) => {
+    // const { editorState } = this.state;
+    const selection = editorState.getSelection();
+    const content = editorState.getCurrentContent();
+    const anchorKey = selection.getAnchorKey();
+    const contentBlock = content.getBlockForKey(anchorKey);
+    const start = selection.getStartOffset();
+    const end = selection.getEndOffset();
 
-    this.setComment(currentContent, selectionState);
+    const selectedText = contentBlock.getText().slice(start, end);
+    // console.log("selectedText", selectedText)
+    if (this.state.focused && (selectedText && selectedText.length)) {
+      this.promptAddCommentButton();
+    } else {
+      this.setState({ showCommentButton: false });
+    }
   };
 
-  getSelectedText = () => {
-    const selectionState = this.state.editorState.getSelection();
-    const anchorKey = selectionState.getAnchorKey();
-    const currentContent = this.state.editorState.getCurrentContent();
-    const currentContentBlock = currentContent.getBlockForKey(anchorKey);
-    const start = selectionState.getStartOffset();
-    const end = selectionState.getEndOffset();
+  applyEntityToSelection = () => {
+    const { editorState } = this.state;
+    const selection = editorState.getSelection();
+    const content = editorState.getCurrentContent();
 
-    const selectedText = currentContentBlock.getText().slice(start, end);
-    this.setComment(currentContent, selectionState);
+    const newContent = Modifier.applyEntity(content, selection, "comment");
+    this.setEditorState(newContent, "apply-entity-comment");
+    // this.setState({
+    //   promptAddCommentButton: false
+    // })
   };
 
-  setComment = (contentState, selectionState) => {
-    const newContent = Modifier.applyInlineStyle(
-      this.state.editorState.getCurrentContent(),
-      selectionState,
-      "HIGHLIGHT"
-    );
+  promptAddCommentButton = () => {
+    this.setState({
+      showCommentButton: true,
+    });
+  };
+
+  setComment = (content, selection) => {
+    const currentStyle = this.state.editorState.getCurrentInlineStyle();
+    const inlineStyle = "HIGHLIGHT";
+    let newContent;
+
+    if (currentStyle.has(inlineStyle)) {
+      newContent = Modifier.removeInlineStyle(content, selection, inlineStyle);
+    } else {
+      newContent = Modifier.applyInlineStyle(content, selection, inlineStyle);
+    }
 
     this.setState({
       editorState: EditorState.push(
@@ -147,57 +224,85 @@ class PaperDraft extends React.Component {
     });
   };
 
-  render() {
-    const { editorState } = this.state;
-
-    return (
-      <div className={css(styles.root)}>
-        <Editor
-          editorState={editorState}
-          onChange={this.onChange}
-          blockRendererFn={this.blockRenderer}
-          focus={this.onFocus}
-          customStyleMap={styleMap}
-          onFocus={this.onFocus}
-          // onBlur={() => this.setState({ showBox: false })}
-        />
-      </div>
+  setEditorState = (content, changeType) => {
+    const editorState = EditorState.push(
+      this.state.editorState,
+      content,
+      changeType
     );
-  }
-}
 
-const Component = (props) => {
-  // const [showBox, setShowBox] = useState(false);
-  const {
-    block,
-    contentState,
-    blockProps,
-    highlight,
-    showBox,
-    setHighlight,
-  } = props;
-  // const data = contentState.getEntity(block.getEntityAt(0)).getData();
-  // console.log(props, data, blockProps);
+    this.setState({ editorState });
+  };
 
-  // const [showBox, setShowBox] = useState(false);
+  undo = () => {
+    const editorState = EditorState.undo(this.state.editorState);
 
-  const renderBox = () => {
+    this.setState({
+      editorState,
+    });
+  };
+
+  renderShowCommentButton = () => {
+    // document.querySelector([
+    // const customStyles = {
+    //   top:
+    // };
+
     return (
-      <div className={css(styles.commentContainer)} onClick={setHighlight}>
+      <div
+        className={css(styles.addCommentButton)}
+        onClick={this.applyEntityToSelection}
+      >
         {icons.commentAltPlus}
       </div>
     );
   };
 
+  blockRenderer = (contentBlock) => {
+    const type = contentBlock.getType();
+    console.log("type", type);
+    // if (type === "article") {
+    //   return {
+    //     component: AnnotatedText,
+    //     editable: true,
+    //     props: {
+    //       foo: "bar"
+    //     }
+    //   };
+    // }
+  };
+
+  render() {
+    const { editorState, showCommentButton } = this.state;
+
+    return (
+      <div className={css(styles.root)}>
+        <h3 className={css(styles.title)}>Paper</h3>
+        <Editor
+          editorState={editorState}
+          onChange={this.onChange}
+          customStyleMap={styleMap}
+          onFocus={this.onFocus}
+          onBlur={this.onBlur}
+          blockRendererFn={this.blockRenderer}
+        />
+        {showCommentButton && this.renderShowCommentButton()}
+      </div>
+    );
+  }
+}
+
+const AnnotatedText = (props) => {
+  console.log("props", props);
+
+  // useEffect(() => {
+  //   props.setOffset(props.offsetKey);
+  // })
+
   return (
-    <p
-      className={css(styles.text)}
-      // onMouseEnter={() => setShowBox(true)}
-      // onMouseLeave={() => setShowBox(false)}
-    >
-      {showBox && renderBox()}
-      {<EditorBlock {...props} />}
-    </p>
+    <span {...props} className={css(styles.annotatedText)}>
+      {props.children}
+    </span>
   );
 };
 
@@ -205,23 +310,52 @@ const styles = StyleSheet.create({
   root: {
     width: "100%",
     lineHeight: 2,
-    display: "flex",
+    // display: "flex",
     paddingRight: 10,
-  },
-  text: {
-    width: "100%",
     position: "relative",
+  },
+  title: {
+    paddingTop: 30,
+    paddingLeft: 50,
+    fontSize: 22,
+    fontWeight: 500,
+    color: colors.BLACK(),
+    display: "flex",
     margin: 0,
-    padding: 0,
+    "@media only screen and (max-width: 967px)": {
+      justifyContent: "space-between",
+      width: "100%",
+      marginBottom: 20,
+    },
+    "@media only screen and (max-width: 500px)": {
+      flexDirection: "column",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 20,
+    },
   },
-  highlight: {
-    background: "#EDEDED",
+  annotatedText: {
+    backgroundColor: colors.LIGHT_YELLOW(),
+    borderRadius: 2,
+    cursor: "pointer",
   },
-  commentContainer: {
+  addCommentButton: {
     position: "absolute",
-    right: -49,
-    fontSize: 20,
-    color: colors.BLACK(0.7),
+    right: -40,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 18,
+    color: colors.BLACK(0.4),
+    cursor: "pointer",
+    height: 30,
+    minHeight: 30,
+    width: 30,
+    minWidth: 30,
+    padding: 2,
+    borderRadius: "50%",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+    background: "#FAFAFA",
   },
 });
 
