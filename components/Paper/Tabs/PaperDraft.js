@@ -129,7 +129,7 @@ class PaperDraft extends React.Component {
 
   onChange = (editorState) => {
     this.setState({ editorState }, () => {
-      this.handleSelectedText(editorState);
+      // this.handleSelectedText(editorState);
     });
   };
 
