@@ -1,6 +1,5 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
 
 // Component
 import ColumnContainer from "./ColumnContainer";
@@ -9,7 +8,7 @@ import ColumnContainer from "./ColumnContainer";
 import colors from "~/config/themes/colors";
 
 const ColumnContentTab = (props) => {
-  const { activeTab, setActiveTab } = props;
+  const { activeTab, setActiveTab, paperExists } = props;
 
   useEffect(() => {}, [activeTab]);
 
@@ -17,24 +16,29 @@ const ColumnContentTab = (props) => {
     setActiveTab(i);
     setTimeout(() => {
       activeTab !== i && setActiveTab(i);
-    }, 10);
+    }, 20);
   };
 
   const renderSections = () => {
-    return ["Main", "Abstract", "Paper", "Discussions", "Paper PDF"].map(
-      (name, i) => {
-        return (
-          <a
-            href={`#${name.toLowerCase()}`}
-            className={css(styles.card, activeTab === i && styles.active)}
-            onClick={() => handleClick(i)}
-          >
-            <div className={css(styles.name) + " clamp1"}>{name}</div>
-          </a>
-        );
-      }
-    );
+    const sections = ["Main", "Abstract", "Discussions", "Paper PDF"];
+
+    if (paperExists) {
+      sections.splice(2, 0, "Paper");
+    }
+
+    return sections.map((name, i) => {
+      return (
+        <a
+          href={`#${name.toLowerCase()}`}
+          className={css(styles.card, activeTab === i && styles.active)}
+          onClick={() => handleClick(i)}
+        >
+          <div className={css(styles.name) + " clamp1"}>{name}</div>
+        </a>
+      );
+    });
   };
+
   return (
     <ColumnContainer overrideStyles={styles.container}>
       <div className={css(styles.title)}>Sections</div>

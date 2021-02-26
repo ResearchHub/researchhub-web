@@ -41,7 +41,6 @@ class ColumnAuthors extends React.Component {
   renderAuthorCards = () => {
     const { authors } = this.state;
 
-    console.log("authors", authors);
     return authors.map((name, index) => {
       return <AuthorCard name={name} key={`user_${index}`} />;
     });

@@ -20,7 +20,6 @@ import PaperPageCard from "~/components/PaperPageCard";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
-import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
 import ColumnContentTab from "~/components/Paper/SideColumn/ColumnContentTab";
 import PaperDraft from "~/components/Paper/Tabs/PaperDraft";
 
@@ -40,7 +39,7 @@ import {
   getVoteType,
   formatPaperSlug,
 } from "~/config/utils";
-import { checkSummaryVote } from "~/config/fetch";
+import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -77,16 +76,15 @@ const Paper = (props) => {
   );
   const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
 
-  const [showAllSections, toggleShowAllSections] = useState(false);
   const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
   const [loadingSummary, setLoadingSummary] = useState(true);
+
+  const [paperExists, setPaperExists] = useState(false);
+
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
-  const [sticky, setSticky] = useState(false);
-  const [scrollView, setScrollView] = useState(false);
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(props.paper && props.paper.userVote)
   );
-  const [figureCount, setFigureCount] = useState();
   const [discussionCount, setCount] = useState(
     calculateCommentCount(props.paper)
   );
@@ -106,21 +104,11 @@ const Paper = (props) => {
       disableBeacon: true,
     },
   ]);
-  const [tabs, setTabs] = useState(getActiveTabs());
-  const [fetchBullets, setFetchBullets] = useState(false);
   const [userVoteChecked, setUserVoteChecked] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
   const { hostname } = props;
-  const { paperId, tabName } = router.query;
-
-  const paperCardRef = useRef(null);
-  const paperTabsRef = useRef(null);
-  const keyTakeawayRef = useRef(null);
-  const descriptionRef = useRef(null);
-  const discussionRef = useRef(null);
-  const citationRef = useRef(null);
-  const paperPdfRef = useRef(null);
+  const { paperId } = router.query;
 
   const isModerator = store.getState().auth.user.moderator;
   const isSubmitter =
@@ -128,32 +116,7 @@ const Paper = (props) => {
 
   let summaryVoteChecked = false;
 
-  const fetchPaper = ({ paperId }) => {
-    setLoadingPaper(true);
-    return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        setLoadingPaper(false);
-        let currPaper = shims.paper(resp);
-        setScore(getNestedValue(currPaper, ["score"], 0));
-        setFlag(currPaper.user_flag);
-        setSelectedVoteType(getVoteType(currPaper.userVote));
-        setCount(calculateCommentCount(currPaper));
-        setPaper(currPaper);
-        setSummary(currPaper.summary || {});
-        checkUserVote(currPaper);
-        return currPaper;
-      })
-      .catch((error) => {
-        console.log(error);
-        Sentry.captureException(error);
-      });
-  };
-
   useEffect(() => {
-    setTabs(getActiveTabs());
-
     const summaryId = summary.id;
     if (summaryId && !summaryVoteChecked) {
       checkSummaryVote({ summaryId: summaryId }).then((res) => {
@@ -176,33 +139,8 @@ const Paper = (props) => {
     setLoadingSummary(false);
   }, [summary.id, props.auth.isLoggedIn]);
 
-  function checkUserVote(paperState = paper) {
-    if (props.auth.isLoggedIn && props.auth.user) {
-      const params = { paperIds: [paperId] };
-      return fetch(API.CHECK_USER_VOTE(params), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          const paperUserVote = res[paperId];
-
-          if (paperUserVote) {
-            const { bullet_low_quality, summary_low_quality } = paperUserVote;
-            const updatedPaper = {
-              ...paperState,
-              bullet_low_quality,
-              summary_low_quality,
-            };
-            updatedPaper.userVote = paperUserVote;
-            setPaper(updatedPaper);
-            setSelectedVoteType(updatedPaper.userVote.vote_type);
-          }
-          return setUserVoteChecked(true);
-        });
-    }
-  }
-
   useEffect(() => {
-    setPaper((props.paper && shims.paper(props.paper)) || {});
+    setPaper(props.paper ? shims.paper(props.paper) : {});
   }, [props.paper]);
 
   useEffect(() => {
@@ -230,14 +168,56 @@ const Paper = (props) => {
   }, [props.auth.isLoggedIn]);
 
   useEffect(() => {
-    window.addEventListener("scroll", scrollListener);
-
-    return () => window.removeEventListener("scroll", scrollListener);
-  }, [scrollListener]);
-
-  useEffect(() => {
     setCount(calculateCommentCount(paper));
   }, [paper.discussionSource]);
+
+  function fetchPaper({ paperId }) {
+    setLoadingPaper(true);
+    return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        setLoadingPaper(false);
+        const currPaper = shims.paper(resp);
+        setScore(getNestedValue(currPaper, ["score"], 0));
+        setFlag(currPaper.user_flag);
+        setSelectedVoteType(getVoteType(currPaper.userVote));
+        setCount(calculateCommentCount(currPaper));
+        setPaper(currPaper);
+        setSummary(currPaper.summary || {});
+        checkUserVote(currPaper);
+        return currPaper;
+      })
+      .catch((error) => {
+        console.log(error);
+        Sentry.captureException(error);
+      });
+  }
+
+  function checkUserVote(paperState = paper) {
+    if (props.auth.isLoggedIn && props.auth.user) {
+      return checkUserVotesOnPapers({ paperIds: [paperId] }).then(
+        (userVotes) => {
+          const userVote = userVotes[paperId];
+
+          if (userVote) {
+            const { bullet_low_quality, summary_low_quality } = userVote;
+
+            const updatedPaper = {
+              ...paperState,
+              bullet_low_quality,
+              summary_low_quality,
+              userVote: userVote,
+            };
+
+            setPaper(updatedPaper);
+            setSelectedVoteType(updatedPaper.userVote.vote_type);
+          }
+          return setUserVoteChecked(true);
+        }
+      );
+    }
+  }
 
   async function upvote() {
     dispatch(VoteActions.postUpvotePending());
@@ -287,15 +267,11 @@ const Paper = (props) => {
   }
 
   const restorePaper = () => {
-    let currPaper = { ...paper };
-    currPaper.is_removed = false;
-    setPaper(currPaper);
+    setPaper({ ...paper, is_removed: false });
   };
 
   const removePaper = () => {
-    let currPaper = { ...paper };
-    currPaper.is_removed = true;
-    setPaper(currPaper);
+    setPaper({ ...paper, is_removed: true });
   };
 
   function onJoyrideComplete(joyrideState) {
@@ -317,31 +293,6 @@ const Paper = (props) => {
     }
   }
 
-  function scrollListener() {
-    if (!scrollView && window.scrollY >= 5) {
-      setScrollView(true);
-      setSticky(true);
-    } else if (scrollView && window.scrollY < 30) {
-      setScrollView(false);
-      setSticky(false);
-    }
-  }
-
-  function getActiveTabs() {
-    let tabs = [
-      { href: "main", label: "main" },
-      // { href: "takeaways", label: "key takeaways" },
-    ];
-
-    tabs.push({ href: "summary", label: "abstract" });
-    tabs.push({ href: "comments", label: "discussions" });
-    if (paper.file || paper.url || showAllSections) {
-      tabs.push({ href: "paper", label: "Paper PDF" });
-    }
-
-    return tabs;
-  }
-
   function calculateCommentCount(paper) {
     let discussionCount = 0;
     if (paper) {
@@ -351,25 +302,33 @@ const Paper = (props) => {
   }
 
   function formatDescription() {
-    if (paper) {
-      if (paper.summary) {
-        if (paper.summary.summary) {
-          if (paper.summary.summary_plain_text) {
-            return paper.summary.summary_plain_text;
-          }
-          if (isQuillDelta(paper.summary.summary)) {
-            return convertDeltaToText(paper.summary.summary);
-          }
-          return convertToEditorValue(paper.summary.summary).document.text;
-        }
-      } else if (paper.abstract) {
-        return paper.abstract;
-      } else if (paper.tagline) {
-        return paper.tagline;
-      } else {
-        return "";
+    const { abstract, tagline } = paper;
+
+    if (!paper) return "";
+
+    if (paper.summary) {
+      const { summary, summary_plain_text } = paper.summary;
+
+      if (summary_plain_text) {
+        return summary_plain_text;
+      }
+
+      if (summary) {
+        return isQuillDelta(summary)
+          ? convertDeltaToText(summary)
+          : convertToEditorValue(summary).document.text;
       }
     }
+
+    if (abstract) {
+      return abstract;
+    }
+
+    if (tagline) {
+      return tagline;
+    }
+
+    return "";
   }
 
   function formatStructuredData() {
@@ -547,9 +506,6 @@ const Paper = (props) => {
                 removePaper={removePaper}
                 doneFetchingPaper={!loadingPaper}
                 setFlag={setFlag}
-                sticky={sticky}
-                scrollView={scrollView}
-                setSticky={setSticky}
               />
               <Waypoint
                 onEnter={() => onSectionEnter(1)}
@@ -561,7 +517,6 @@ const Paper = (props) => {
                     paperId={paperId}
                     paper={paper}
                     summary={summary}
-                    descriptionRef={descriptionRef}
                     updatePaperState={updatePaperState}
                     updateSummary={setSummary}
                     loadingSummary={loadingSummary}
@@ -575,7 +530,11 @@ const Paper = (props) => {
                 bottomOffset={"95%"}
               >
                 <a name="paper">
-                  <PaperDraft paperId={paperId} abstract={paper.abstract} />
+                  <PaperDraft
+                    paperId={paperId}
+                    abstract={paper.abstract}
+                    setPaperExists={setPaperExists}
+                  />
                 </a>
               </Waypoint>
             </div>
@@ -596,7 +555,6 @@ const Paper = (props) => {
                     paperState={paper}
                     calculatedCount={discussionCount}
                     setCount={setCount}
-                    discussionRef={discussionRef}
                   />
                 </div>
               </a>
@@ -612,7 +570,6 @@ const Paper = (props) => {
                   <PaperTab
                     paperId={paperId}
                     paper={paper}
-                    paperPdfRef={paperPdfRef}
                     isModerator={isModerator}
                   />
                 </div>
@@ -629,6 +586,7 @@ const Paper = (props) => {
             <ColumnContentTab
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              paperExists={paperExists}
             />
           </div>
         </div>

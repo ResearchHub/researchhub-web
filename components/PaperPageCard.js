@@ -23,7 +23,6 @@ import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import { BoltSvg } from "~/config/themes/icons";
 import PaperMetadata from "./Paper/PaperMetadata";
-import PaperJournalTag from "./Paper/PaperJournalTag";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -33,11 +32,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
-import {
-  getJournalFromURL,
-  openExternalLink,
-  capitalize,
-} from "~/config/utils";
+import { openExternalLink } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
