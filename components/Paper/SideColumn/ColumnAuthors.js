@@ -29,7 +29,11 @@ class ColumnAuthors extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.paperId !== this.props.paperId) {
+    const { paperId, authors } = this.props;
+
+    if (prevProps.paperId !== paperId) {
+      this.setState({ ready: false }, () => this.formatAuthorPages());
+    } else if (JSON.stringify(prevProps.authors) !== JSON.stringify(authors)) {
       this.setState({ ready: false }, () => this.formatAuthorPages());
     }
   }
@@ -37,7 +41,8 @@ class ColumnAuthors extends React.Component {
   renderAuthorCards = () => {
     const { authors } = this.state;
 
-    return (authors || []).map((name, index) => {
+    console.log("authors", authors);
+    return authors.map((name, index) => {
       return <AuthorCard name={name} key={`user_${index}`} />;
     });
   };
@@ -89,7 +94,7 @@ class ColumnAuthors extends React.Component {
     return (
       <ReactPlaceholder
         showLoadingAnimation
-        ready={ready && paper}
+        ready={ready}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
         <div>

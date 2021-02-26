@@ -10,7 +10,6 @@ import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
@@ -523,40 +522,39 @@ const Paper = (props) => {
           width: "100%",
         }}
       >
+        <Waypoint
+          onEnter={() => onSectionEnter(0)}
+          topOffset={40}
+          bottomOffset={"95%"}
+        >
+          <a name="main" />
+        </Waypoint>
         <div className={css(styles.root)}>
           <div className={css(styles.container)}>
             <div className={css(styles.paperPageContainer)}>
-              <Waypoint
-                onEnter={() => onSectionEnter(0)}
-                topOffset={80}
-                bottomOffset={"85%"}
-              >
-                <a name="main">
-                  <PaperPageCard
-                    paper={paper}
-                    paperId={paperId}
-                    score={score}
-                    upvote={upvote}
-                    downvote={downvote}
-                    selectedVoteType={selectedVoteType}
-                    shareUrl={process.browser && window.location.href}
-                    isModerator={isModerator}
-                    isSubmitter={isSubmitter}
-                    flagged={flagged}
-                    restorePaper={restorePaper}
-                    removePaper={removePaper}
-                    doneFetchingPaper={!loadingPaper}
-                    setFlag={setFlag}
-                    sticky={sticky}
-                    scrollView={scrollView}
-                    setSticky={setSticky}
-                  />
-                </a>
-              </Waypoint>
+              <PaperPageCard
+                paper={paper}
+                paperId={paperId}
+                score={score}
+                upvote={upvote}
+                downvote={downvote}
+                selectedVoteType={selectedVoteType}
+                shareUrl={process.browser && window.location.href}
+                isModerator={isModerator}
+                isSubmitter={isSubmitter}
+                flagged={flagged}
+                restorePaper={restorePaper}
+                removePaper={removePaper}
+                doneFetchingPaper={!loadingPaper}
+                setFlag={setFlag}
+                sticky={sticky}
+                scrollView={scrollView}
+                setSticky={setSticky}
+              />
               <Waypoint
                 onEnter={() => onSectionEnter(1)}
-                topOffset={80}
-                bottomOffset={"85%"}
+                topOffset={40}
+                bottomOffset={"95%"}
               >
                 <a name="abstract">
                   <SummaryTab
@@ -573,8 +571,8 @@ const Paper = (props) => {
               </Waypoint>
               <Waypoint
                 onEnter={() => onSectionEnter(2)}
-                topOffset={80}
-                bottomOffset={"85%"}
+                topOffset={40}
+                bottomOffset={"95%"}
               >
                 <a name="paper">
                   <PaperDraft paperId={paperId} abstract={paper.abstract} />
@@ -583,8 +581,8 @@ const Paper = (props) => {
             </div>
             <Waypoint
               onEnter={() => onSectionEnter(3)}
-              topOffset={80}
-              bottomOffset={"85%"}
+              topOffset={40}
+              bottomOffset={"95%"}
             >
               <a name="discussions" id="comments">
                 <div
@@ -606,8 +604,8 @@ const Paper = (props) => {
 
             <Waypoint
               onEnter={() => onSectionEnter(4)}
-              topOffset={80}
-              bottomOffset={"85%"}
+              topOffset={40}
+              bottomOffset={"95%"}
             >
               <a name="paper pdf">
                 <div id="paper-tab" className={css(styles.paperTabContainer)}>

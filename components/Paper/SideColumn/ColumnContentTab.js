@@ -15,6 +15,9 @@ const ColumnContentTab = (props) => {
 
   const handleClick = (i) => {
     setActiveTab(i);
+    setTimeout(() => {
+      activeTab !== i && setActiveTab(i);
+    }, 10);
   };
 
   const renderSections = () => {

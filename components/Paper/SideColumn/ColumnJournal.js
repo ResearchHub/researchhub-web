@@ -13,7 +13,7 @@ const ColumnJournal = (props) => {
   return (
     <ReactPlaceholder
       showLoadingAnimation
-      ready={paper || (paper.url || paper.external_source)}
+      ready={paper}
       customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
     >
       <div>
