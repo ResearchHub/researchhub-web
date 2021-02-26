@@ -40,7 +40,6 @@ const styleMap = {
     display: "inline-block",
     lineHeight: 2,
     fontFamily: "Roboto",
-    // color: "#000"
   },
   ABSTRACT: {
     fontStyle: "italic",
@@ -94,6 +93,7 @@ const styleMap = {
     color: colors.BLUE(),
   },
 };
+
 class PaperDraft extends React.Component {
   constructor(props) {
     super(props);
@@ -167,6 +167,7 @@ class PaperDraft extends React.Component {
           });
 
           this.setState({ editorState, fetching: false });
+          this.props.setPaperExists(true);
         } catch {
           this.setState({ fetching: false });
         }
@@ -235,7 +236,7 @@ class PaperDraft extends React.Component {
     const end = selection.getEndOffset();
 
     const selectedText = contentBlock.getText().slice(start, end);
-    // console.log("selectedText", selectedText)
+
     if (this.state.focused && (selectedText && selectedText.length)) {
       this.promptAddCommentButton();
     } else {
