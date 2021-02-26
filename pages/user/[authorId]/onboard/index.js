@@ -56,6 +56,13 @@ const Index = (props) => {
     setUserHubIds(mapArrayToObject(props.hubs.subscribedHubs));
   }, [props.hubs]);
 
+  useEffect(() => {
+    window.scrollTo({
+      behavior: "auto",
+      top: 0,
+    });
+  }, [page]);
+
   let formRef = useRef();
   let verificationFormRef = useRef();
 
@@ -79,11 +86,11 @@ const Index = (props) => {
   const formatTitle = () => {
     switch (page) {
       case 1:
-        return "Trending Hubs";
+        return "Subscribe to Hubs for topics you're interested in";
       case 2:
         return "Enter your profile information";
       case 3:
-        return "Do you have an advanced degree or are part of academia? \n\nUpload a screenshot verifying a PhD, Masters, or any other credentials to validate your education.";
+        return "Do you have a PhD or Masters? Upload a photo to verify your account";
       default:
         return;
     }
@@ -315,7 +322,7 @@ const Index = (props) => {
         <h1 className={css(styles.title)}>
           {onlyHubSelection ? "Select Your Hubs" : "Onboarding"}
         </h1>
-        <h3 className={css(styles.subtitle)}>{formatStep()}</h3>
+        {/* <h3 className={css(styles.subtitle)}>{formatStep()}</h3> */}
       </div>
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
         <div className={css(styles.pageContainer)}>
@@ -442,7 +449,6 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     width: "100%",
-    maxWidth: 700,
     minWidth: 300,
     display: "flex",
     justifyContent: "center",
