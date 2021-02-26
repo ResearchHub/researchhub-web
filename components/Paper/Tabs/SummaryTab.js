@@ -730,7 +730,6 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 4,
     paddingLeft: 50,
-    fontFamily: "CharterBT",
     "@media only screen and (max-width: 967px)": {
       padding: 25,
     },
@@ -755,6 +754,7 @@ var styles = StyleSheet.create({
     fontSize: 16,
     width: "100%",
     boxSizing: "border-box",
+    fontFamily: "CharterBT",
     "@media only screen and (max-width: 967px)": {
       fontSize: 14,
       width: "100%",
