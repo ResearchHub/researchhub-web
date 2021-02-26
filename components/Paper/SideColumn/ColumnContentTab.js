@@ -8,7 +8,7 @@ import ColumnContainer from "./ColumnContainer";
 import colors from "~/config/themes/colors";
 
 const ColumnContentTab = (props) => {
-  const { activeTab, setActiveTab, paperExists } = props;
+  const { activeTab, setActiveTab, paperExists, sections } = props;
 
   useEffect(() => {}, [activeTab]);
 
@@ -20,22 +20,60 @@ const ColumnContentTab = (props) => {
   };
 
   const renderSections = () => {
-    const sections = ["Main", "Abstract", "Discussions", "Paper PDF"];
+    const allsections = [
+      { name: "Main", index: 0 },
+      { name: "Abstract", index: 1 },
+      { name: "Discussions", index: 2 },
+      { name: "Paper PDF", index: 3 },
+    ];
 
     if (paperExists) {
-      sections.splice(2, 0, "Paper");
+      allsections.splice(2, 0, { name: "Paper", index: 2 });
+      allsections.forEach((section, i) => {
+        section.index = i;
+      });
     }
 
-    return sections.map((name, i) => {
-      return (
-        <a
-          href={`#${name.toLowerCase()}`}
-          className={css(styles.card, activeTab === i && styles.active)}
-          onClick={() => handleClick(i)}
-        >
-          <div className={css(styles.name) + " clamp1"}>{name}</div>
-        </a>
-      );
+    if (sections && sections.length > 0) {
+      allsections.splice(3, 0, ...sections);
+    }
+
+    const isPaperContent = (name) => {
+      switch (name) {
+        case "Main":
+        case "Abstract":
+        case "Discussions":
+        case "Paper PDF":
+        case "Paper":
+          return true;
+        default:
+          return false;
+      }
+    };
+
+    return allsections.map((section) => {
+      const { name, index } = section;
+
+      if (isPaperContent(name)) {
+        return (
+          <a
+            href={`#${name.toLowerCase()}`}
+            className={css(styles.card, activeTab === index && styles.active)}
+            onClick={() => handleClick(index)}
+          >
+            <div className={css(styles.name) + " clamp1"}>{name}</div>
+          </a>
+        );
+      } else {
+        return (
+          <a
+            href={`#${section.toLowerCase()}`}
+            className={css(styles.card, styles.small)}
+          >
+            <div className={css(styles.name) + " clamp1"}>{section}</div>
+          </a>
+        );
+      }
     });
   };
 
@@ -84,6 +122,10 @@ const styles = StyleSheet.create({
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       color: colors.BLACK(1),
     },
+  },
+  small: {
+    fontSize: 14,
+    paddingLeft: 20,
   },
   name: {
     fontWeight: 500,

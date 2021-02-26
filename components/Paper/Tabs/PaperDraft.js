@@ -1,4 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
+import ReactDOMServer from "react-dom/server";
+
 import {
   Editor,
   EditorState,
@@ -16,6 +18,7 @@ import { convertFromHTML } from "draft-convert";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import ReactPlaceholder from "react-placeholder/lib";
+import { Waypoint } from "react-waypoint";
 
 // Components
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
@@ -40,6 +43,7 @@ const styleMap = {
     display: "inline-block",
     lineHeight: 2,
     fontFamily: "Roboto",
+    width: "100%",
   },
   ABSTRACT: {
     fontStyle: "italic",
@@ -48,6 +52,10 @@ const styleMap = {
     display: "inline-block",
     lineHeight: 2,
     whiteSpace: "pre-wrap",
+  },
+  SECTION: {
+    display: "inline-block",
+    padding: "10px 0",
   },
   PARAGRAPH: {
     display: "flex",
@@ -66,6 +74,9 @@ const styleMap = {
       fontSize: 12,
     },
   },
+  XREF: {
+    fontStyle: "italic",
+  },
   META: {
     display: "inline-block",
     fontSize: 10,
@@ -83,11 +94,13 @@ const styleMap = {
   HIDDEN: {
     display: "none",
     height: 0,
+    maxHeight: 0,
     overflow: "hidden",
     visibility: "hidden",
     opacity: 0,
     padding: 0,
     margin: 0,
+    lineHeight: 0,
   },
   DOI: {
     color: colors.BLUE(),
@@ -100,6 +113,7 @@ class PaperDraft extends React.Component {
 
     this.state = {
       editorState: EditorState.createEmpty(),
+      readOnly: true,
       showCommentButton: false,
       focused: false,
       fetching: true,
@@ -115,6 +129,8 @@ class PaperDraft extends React.Component {
   }
 
   componentDidMount() {
+    const { setPaperSections } = this.props;
+
     this.fetchHTML();
   }
 
@@ -130,18 +146,70 @@ class PaperDraft extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        const { setPaperSections, setActiveSection } = this.props;
+
+        const sectionTitles = [];
+        const idsToRemove = {};
+        const html = decodeURIComponent(escape(window.atob(res)));
+        const doc = new DOMParser().parseFromString(html, "text/xml");
+        const sections = doc.getElementsByTagName("sec");
+
+        for (let index = 0; index < sections.length; index++) {
+          const section = sections[index];
+          const title =
+            section.getElementsByTagName("title")[0].textContent.trim() || "";
+          const paragraph =
+            section.getElementsByTagName("p")[0].textContent.trim() || "";
+
+          if (title.length <= 1 || paragraph.length <= 1) {
+            idsToRemove[section.id] = true;
+          } else {
+            sectionTitles.push(title); // push title for tabbar
+
+            // const waypoint = ReactDOMServer.renderToString(
+            //   <Waypoint
+            //     onEnter={() => {
+            //       setActiveSection(index)
+            //     }}
+            //     topOffset={40}
+            //     bottomOffset={"95%"}
+            //   >
+            //   </Waypoint>
+            // );
+            // const newSection = new DOMParser().parseFromString(waypoint, "text/xml").firstChild;
+            // const newATag = document.createElement('a');
+            // newATag.setAttribute("name", title.toLowerCase());
+            // newSection.appendChild(newATag);
+
+            // section.parentNode.replaceChild(newSection, section);
+            // newATag.appendChild(section);
+          }
+        }
+        // html = doc.documentElement.innerHTML;
+        setPaperSections(sectionTitles);
+
         try {
-          const html = decodeURIComponent(escape(window.atob(res)));
           const blocksFromHTML = convertFromHTML({
             htmlToStyle: (nodeName, node, currentStyle) => {
+              if (idsToRemove[node.id]) {
+                return currentStyle.add("HIDDEN");
+              }
+
               switch (nodeName) {
                 case "article-title":
                   return currentStyle.add("ARTICLE-TITLE");
                 case "title":
-                  return currentStyle.add("TITLE");
+                  if (node.textContent.trim().length > 1) {
+                    return currentStyle.add("TITLE");
+                  } else {
+                    return currentStyle.add("HIDDEN");
+                  }
                 case "p":
-                case "sec":
                   return currentStyle.add("PARAGRAPH");
+                case "sec":
+                  return currentStyle.add("SECTION");
+                case "xref":
+                  return currentStyle.add("XREF");
                 case "abstract":
                 // return currentStyle.add("ABSTRACT");
                 case "fig":
@@ -157,6 +225,7 @@ class PaperDraft extends React.Component {
               }
             },
           })(html);
+
           let editorState = EditorState.push(
             this.state.editorState,
             blocksFromHTML
@@ -185,6 +254,8 @@ class PaperDraft extends React.Component {
   };
 
   onChange = (editorState) => {
+    if (this.state.readyOnly) return;
+
     this.setState({ editorState }, () => {
       this.handleSelectedText(editorState);
     });
@@ -195,10 +266,10 @@ class PaperDraft extends React.Component {
   };
 
   onBlur = () => {
-    // this.setState({
-    //   showCommentButton: false,
-    //   focused: false
-    // })
+    this.setState({
+      readOnly: true,
+      focused: false,
+    });
   };
 
   insertBlock = () => {
@@ -335,6 +406,7 @@ class PaperDraft extends React.Component {
       editorState,
       showCommentButton,
       expandPaper,
+      readOnly,
     } = this.state;
 
     return (
@@ -347,27 +419,26 @@ class PaperDraft extends React.Component {
           </div>
         }
       >
-        <div className={css(styles.root, expandPaper && styles.expand)}>
-          <Editor
-            editorState={editorState}
-            onChange={this.onChange}
-            customStyleMap={styleMap}
-            onFocus={this.onFocus}
-            onBlur={this.onBlur}
-            blockRendererFn={this.blockRenderer}
-          />
-          {showCommentButton && this.renderShowCommentButton()}
-          {!expandPaper && (
-            <Fragment>
-              <div className={css(styles.blur)} />
-              <Button
-                hideRipples={true}
-                label={"Expand Paper"}
-                customButtonStyle={styles.expandButton}
-                onClick={() => this.setState({ expandPaper: true })}
-              />
-            </Fragment>
-          )}
+        <div className={css(styles.root)}>
+          <h3 className={css(styles.title, !readOnly && styles.paddingBottom)}>
+            Paper
+            <span
+              className={css(styles.pencilIcon)}
+              onClick={() => this.setState({ readOnly: !readOnly })}
+            >
+              {icons.pencil}
+            </span>
+          </h3>
+          <div className={css(!readOnly && styles.editor)}>
+            <Editor
+              editorState={editorState}
+              onChange={this.onChange}
+              customStyleMap={styleMap}
+              onBlur={this.onBlur}
+              blockRendererFn={this.blockRenderer}
+              readOnly={readOnly}
+            />
+          </div>
         </div>
       </ReactPlaceholder>
     );
@@ -388,20 +459,40 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     position: "relative",
     fontFamily: "CharterBT",
-    maxHeight: 600,
-    overflow: "hidden",
   },
-  expand: {
-    overflow: "unset",
-    maxHeight: "unset",
+  paddingBottom: {
+    paddingBottom: 30,
+  },
+  pencilIcon: {
+    marginLeft: 8,
+    color: colors.BLACK(0.6),
+    fontSize: 14,
+    cursor: "pointer",
+  },
+  editor: {
+    border: "1px solid #E8E8F2",
+    backgroundColor: "#FBFBFD",
+    ":hover": {
+      borderColor: "#B3B3B3",
+    },
+    ":focus": {
+      borderColor: "#3f85f7",
+      ":hover": {
+        boxShadow: "0px 0px 1px 1px #3f85f7",
+        cursor: "text",
+      },
+    },
   },
   title: {
-    padding: "30px 0px 0px 50px",
-    fontSize: 22,
+    paddingTop: 30,
+    paddingLeft: 50,
+    fontSize: 21,
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
+    alignItems: "center",
     margin: 0,
+    fontFamily: "Roboto",
     "@media only screen and (max-width: 967px)": {
       justifyContent: "space-between",
       width: "100%",

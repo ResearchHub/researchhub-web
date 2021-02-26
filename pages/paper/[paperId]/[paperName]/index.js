@@ -88,6 +88,10 @@ const Paper = (props) => {
   const [discussionCount, setCount] = useState(
     calculateCommentCount(props.paper)
   );
+
+  const [paperSections, setPaperSections] = useState([]);
+  const [activeSection, setActiveSection] = useState(0);
+
   const [steps, setSteps] = useState([
     {
       target: ".first-step",
@@ -534,6 +538,8 @@ const Paper = (props) => {
                     paperId={paperId}
                     abstract={paper.abstract}
                     setPaperExists={setPaperExists}
+                    setPaperSections={setPaperSections}
+                    setActiveSection={setActiveSection}
                   />
                 </a>
               </Waypoint>
@@ -586,6 +592,9 @@ const Paper = (props) => {
             <ColumnContentTab
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              sections={paperSections}
+              // activeTab={activeSection}
+              // setActiveTab={setActiveSection}
               paperExists={paperExists}
             />
           </div>
