@@ -59,10 +59,6 @@ class PaperPageCard extends React.Component {
     this.metaContainerRef = React.createRef();
   }
 
-  componentDidMount = () => {
-    // this.fetchFigures();
-  };
-
   componentWillUnmount() {
     if (document.body.style) {
       document.body.style.overflow = "scroll";
@@ -154,41 +150,6 @@ class PaperPageCard extends React.Component {
       });
   };
 
-  fetchFigures = () => {
-    this.setState({ fetching: true }, () => {
-      let { paper, paperId } = this.props;
-      fetch(API.GET_PAPER_FIGURES({ paperId }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          if (res.data.length === 0) {
-            return this.setState(
-              {
-                fetching: false,
-                previews: [],
-                figureUrls: [],
-              },
-              this.revealPage()
-            );
-          } else {
-            this.setState(
-              {
-                previews: res.data,
-                figureUrls: res.data.map((preview, index) => preview.file),
-              },
-              this.revealPage()
-            );
-          }
-        })
-        .catch((err) => {
-          this.setState({
-            fetching: false,
-          });
-          this.revealPage();
-        });
-    });
-  };
-
   toggleShowHubs = () => {
     this.setState({ showAllHubs: !this.state.showAllHubs });
   };
@@ -235,25 +196,6 @@ class PaperPageCard extends React.Component {
     const { paper } = this.props;
 
     this.metadata = [
-      // {
-      //   label: `Author${
-      //     (paper.authors && paper.authors.length > 1) ||
-      //     (paper.raw_authors && paper.raw_authors.length > 1)
-      //       ? "s"
-      //       : ""
-      //   }`,
-      //   value: (
-      //     <span className={css(styles.metadata, styles.authorsContainer)}>
-      //       {this.renderAuthors()}
-      //     </span>
-      //   ),
-      //   active:
-      //     paper &&
-      //     ((paper.authors && paper.authors.length) ||
-      //       (Array.isArray(paper.raw_authors)
-      //         ? paper.raw_authors.length
-      //         : paper.raw_authors)),
-      // },
       {
         label: "Published",
         value: (
@@ -283,41 +225,19 @@ class PaperPageCard extends React.Component {
         ),
         active: paper && paper.doi,
       },
-      // {
-      //   label: "Journal",
-      //   value: (
-      //     <PaperJournalTag
-      //       url={paper.url}
-      //       externalSource={paper.external_source}
-      //       onFallback={(externalSource) => {
-      //         if (externalSource) {
-      //           return capitalize(externalSource);
-      //         }
-      //         return null;
-      //       }}
-      //     />
-      //   ),
-      //   active:
-      //     paper &&
-      //     (paper.url || paper.external_source) &&
-      //     (getJournalFromURL(paper.url) !== "doi" &&
-      //       paper.external_source !== "doi"),
-      //   centered: true,
-      // },
     ];
 
     const metadata = this.metadata.filter((data) => data.active);
 
     return (
       <div className={css(styles.row)}>
-        {metadata.length &&
-          metadata.map((props, i) => (
-            <PaperMetadata
-              // key={`metadata-${}`}
-              {...props}
-              containerStyles={i === 1 && styles.marginLeft}
-            />
-          ))}
+        {metadata.map((props, i) => (
+          <PaperMetadata
+            key={`metadata-${i}`}
+            {...props}
+            containerStyles={i === 1 && styles.marginLeft}
+          />
+        ))}
       </div>
     );
   };
