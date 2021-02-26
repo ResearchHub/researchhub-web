@@ -329,6 +329,33 @@ class PaperPageCard extends React.Component {
         ),
       },
       {
+        active: true,
+        button: (
+          <PermissionNotificationWrapper
+            modalMessage="boost paper"
+            onClick={() => this.props.openPaperTransactionModal(true)}
+            loginRequired={true}
+            hideRipples={true}
+          >
+            <div
+              className={css(styles.actionIcon, styles.downloadActionIcon)}
+              onMouseEnter={() => this.toggleBoostHover(true)}
+              onMouseLeave={() => this.toggleBoostHover(false)}
+              data-tip={"Boost Paper"}
+            >
+              <span className={css(styles.boostIcon)}>
+                <BoltSvg
+                  color={"rgb(255, 255, 255)"}
+                  opacity={1}
+                  width={20}
+                  height={17}
+                />
+              </span>
+            </div>
+          </PermissionNotificationWrapper>
+        ),
+      },
+      {
         active: isModerator || isSubmitter,
         button: (
           <span
@@ -881,35 +908,7 @@ class PaperPageCard extends React.Component {
             </div>
           </div>
           <div className={css(styles.bottomContainer)}>
-            <div className={css(styles.bottomRow)}>
-              {this.renderActions()}
-              <PermissionNotificationWrapper
-                modalMessage="promote paper"
-                onClick={() =>
-                  this.props.paper.paper_type === "PRE_REGISTRATION"
-                    ? this.props.openAuthorSupportModal(true, {
-                        paper: this.props.paper,
-                      })
-                    : this.props.openPaperTransactionModal(true)
-                }
-                loginRequired={true}
-                hideRipples={false}
-              >
-                <div
-                  className={css(styles.promotionButton)}
-                  onMouseEnter={() => this.toggleBoostHover(true)}
-                  onMouseLeave={() => this.toggleBoostHover(false)}
-                >
-                  <span className={css(styles.boostIcon)}>
-                    <BoltSvg color={"rgb(255, 255, 255)"} opacity={1} />
-                  </span>
-                  {this.props.paper &&
-                  this.props.paper.paper_type === "PRE_REGISTRATION"
-                    ? "Support Project"
-                    : "Support"}
-                </div>
-              </PermissionNotificationWrapper>
-            </div>
+            <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
             {/* <div className={css(styles.bottomRow, styles.hubsRow)}>
               {this.renderHubs()}
             </div> */}
@@ -1433,7 +1432,7 @@ const styles = StyleSheet.create({
   },
   boostIcon: {
     color: "#FFF",
-    marginRight: 8,
+    paddingTop: 2,
   },
   link: {
     cursor: "pointer",

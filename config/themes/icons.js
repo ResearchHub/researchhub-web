@@ -431,6 +431,8 @@ export const BoltSvg = ({ height, width, color, opacity }) => {
         fill={color ? color : "#241F3A"}
         d="M5.063 5.318H9L3.937 13V7.682H0L5.063 0v5.318z"
         opacity={opacity ? opacity : "0.5"}
+        width={width ? width : "9"}
+        height={height ? height : "13"}
       />
     </svg>
   );
