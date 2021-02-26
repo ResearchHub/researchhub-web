@@ -72,10 +72,10 @@ const styles = StyleSheet.create({
     },
   },
   image: {
-    height: 35,
-    width: 35,
-    minWidth: 35,
-    maxWidth: 35,
+    height: 30,
+    width: 30,
+    minWidth: 30,
+    maxWidth: 30,
     borderRadius: 4,
     objectFit: "cover",
     marginRight: 10,
@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
     width: "inherit",
     display: "inline-block",
     textOverflow: "ellipsis",
-    paddingTop: 5,
     color: colors.BLUE(),
     ":hover": {
       cursor: "pointer",
