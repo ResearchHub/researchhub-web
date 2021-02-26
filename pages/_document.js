@@ -48,6 +48,11 @@ export default class MyDocument extends Document {
             preload
           />
           <link
+            href="https://fonts.googleapis.com/css?family=CharterBT:300,400,500,700"
+            rel="stylesheet"
+            preload
+          />
+          <link
             rel="apple-touch-icon"
             sizes="152x152"
             href="/static/favicons/apple-touch-icon.png"

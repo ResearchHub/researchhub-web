@@ -581,53 +581,13 @@ const Paper = (props) => {
                 </a>
               </Waypoint>
             </div>
-
-            {/* <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
-              <PaperTabBar
-                baseUrl={paperId}
-                selectedTab={tabName}
-                paperCardRef={paperCardRef}
-                keyTakeawayRef={keyTakeawayRef}
-                descriptionRef={descriptionRef}
-                discussionRef={discussionRef}
-                paperPdfRef={paperPdfRef}
-                citationRef={citationRef}
-                paperTabsRef={paperTabsRef}
-                sticky={sticky}
-                setSticky={setSticky}
-                scrollView={scrollView}
-                tabName={tabName}
-                paper={paper}
-                activeTabs={tabs}
-                showAllSections={showAllSections}
-                updatePaperState={updatePaperState}
-              />
-            </div> */}
-            {/* <div className={css(styles.contentContainer)}>
-              <KeyTakeawaysTab
-                keyTakeawayRef={keyTakeawayRef}
-                afterFetchBullets={() => setFetchBullets(true)}
-                updatePaperState={updatePaperState}
-                paper={paper}
-                userVoteChecked={userVoteChecked}
-                fetchBullets={fetchBullets}
-                loadingPaper={loadingPaper}
-              />
-              
-              
-              
-            </div> */}
             <Waypoint
               onEnter={() => onSectionEnter(3)}
               topOffset={80}
               bottomOffset={"85%"}
             >
               <a name="discussions" id="comments">
-                <div
-                  id="comments-tab"
-                  name="discussions"
-                  className={css(styles.space)}
-                >
+                <div id="comments-tab" className={css(styles.space)}>
                   <DiscussionTab
                     hostname={hostname}
                     paperId={paperId}
@@ -768,14 +728,11 @@ const styles = StyleSheet.create({
   root: {
     display: "table",
     width: "80%",
-    // width: 1400,
-    // maxWidth: 1200,
     marginLeft: "auto",
     marginRight: "auto",
     boxSizing: "border-box",
     borderCollapse: "separate",
     borderSpacing: "30px 40px",
-    // maxWidth: 1600,
     "@media only screen and (max-width: 1200px)": {
       width: "100%",
     },
@@ -791,7 +748,6 @@ const styles = StyleSheet.create({
   },
   container: {
     display: "table-cell",
-    // width: "calc(100% - 280px)",
     boxSizing: "border-box",
   },
   contentContainer: {
