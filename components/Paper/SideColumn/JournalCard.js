@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
     color: "unset",
     transition: "all ease-in-out 0.2s",
+    overflow: "hidden",
     ":hover": {
       cursor: "pointer",
       background: "#FAFAFA",
