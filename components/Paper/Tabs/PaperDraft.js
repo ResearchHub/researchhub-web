@@ -32,11 +32,11 @@ import icons from "~/config/themes/icons";
 const { hasCommandModifier } = KeyBindingUtil;
 
 const styleMap = {
-  HIGHLIGHT: {
+  highlight: {
     backgroundColor: colors.BLACK(0.1),
     borderRadius: 2,
   },
-  TITLE: {
+  title: {
     padding: "10px 0",
     fontWeight: 500,
     fontSize: 20,
@@ -45,7 +45,7 @@ const styleMap = {
     fontFamily: "Roboto",
     width: "100%",
   },
-  ABSTRACT: {
+  abstract: {
     fontStyle: "italic",
     fontSize: 14,
     padding: "0px 0 20px",
@@ -53,13 +53,11 @@ const styleMap = {
     lineHeight: 2,
     whiteSpace: "pre-wrap",
   },
-  SECTION: {
+  section: {
     display: "inline-block",
     padding: "10px 0",
   },
-  PARAGRAPH: {
-    display: "flex",
-    justifyContent: "flex-start",
+  paragraph: {
     color: colors.BLACK(),
     fontWeight: 400,
     fontSize: 16,
@@ -74,24 +72,17 @@ const styleMap = {
       fontSize: 12,
     },
   },
-  XREF: {
+  xref: {
     fontStyle: "italic",
   },
-  META: {
+  meta: {
     display: "inline-block",
     fontSize: 10,
     fontWeight: 300,
     whiteSpace: "normal",
     lineHeight: 1.3,
   },
-  BACK: {
-    display: "inline-block",
-    fontSize: 10,
-    fontWeight: 300,
-    whiteSpace: "normal",
-    lineHeight: 1,
-  },
-  HIDDEN: {
+  hidden: {
     display: "none",
     height: 0,
     maxHeight: 0,
@@ -101,9 +92,6 @@ const styleMap = {
     padding: 0,
     margin: 0,
     lineHeight: 0,
-  },
-  DOI: {
-    color: colors.BLUE(),
   },
 };
 
@@ -197,31 +185,29 @@ class PaperDraft extends React.Component {
 
               switch (nodeName) {
                 case "article-title":
-                  return currentStyle.add("ARTICLE-TITLE");
+                  return currentStyle.add("article-title");
                 case "title":
                   if (node.textContent.trim().length > 1) {
-                    return currentStyle.add("TITLE");
+                    return currentStyle.add("title");
                   } else {
-                    return currentStyle.add("HIDDEN");
+                    return currentStyle.add("hidden");
                   }
                 case "p":
-                  return currentStyle.add("PARAGRAPH");
+                  return currentStyle.add("paragraph");
                 case "sec":
-                  return currentStyle.add("SECTION");
+                  return currentStyle.add("section");
                 case "xref":
-                  return currentStyle.add("XREF");
+                  return currentStyle.add("xref");
                 case "abstract":
-                // return currentStyle.add("ABSTRACT");
-                case "fig":
                 case "graphic":
                 case "front":
                 case "back":
                 case "journal":
-                  return currentStyle.add("HIDDEN");
+                  return currentStyle.add("hidden");
                 case "article-id":
-                  return currentStyle.add("DOI");
+                  return currentStyle.add("doi");
                 default:
-                  return currentStyle.add("META");
+                  return currentStyle.add("meta");
               }
             },
           })(html);
