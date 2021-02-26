@@ -100,7 +100,8 @@ const styles = StyleSheet.create({
   },
   url: {
     fontSize: 14,
-    width: "100%",
+    width: "inherit",
+    display: "inline-block",
     textOverflow: "ellipsis",
     paddingTop: 5,
     color: colors.BLUE(),
