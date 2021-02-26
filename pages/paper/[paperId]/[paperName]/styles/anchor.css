@@ -1,20 +1,8 @@
 :target:before {
   content: "";
   display: block;
-  height: 50px; /* fixed header height*/
-  margin: -50px 0 0; /* negative fixed header height */
-}
-
-#comments:before {
-  content: "";
-  display: block;
-  height: 50px; /* fixed header height*/
-  margin: -50px 0 0; /* negative fixed header height */
-}
-
-#takeaway:before {
-  height: 80px; /* fixed header height*/
-  margin: -80px 0 0; /* negative fixed header height */
+  height: 5px; /* fixed header height*/
+  margin: -5px 0 0; /* negative fixed header height */
 }
 
 @media only screen and (max-width: 767px) {
@@ -28,9 +16,4 @@
     height: 160px; /* fixed header height*/
     margin: -160px 0 0; /* negative fixed header height */
   }
-}
-
-#main {
-  height: unset;
-  margin: unset;
 }
