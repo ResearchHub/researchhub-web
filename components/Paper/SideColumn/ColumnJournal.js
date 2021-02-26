@@ -9,7 +9,6 @@ import JournalCard from "./JournalCard";
 
 const ColumnJournal = (props) => {
   const { paper } = props;
-  const [showJournal, toggleShowJournal] = useState(true);
 
   return (
     <ReactPlaceholder
@@ -20,13 +19,8 @@ const ColumnJournal = (props) => {
       <div>
         {paper && (paper.url || paper.external_source) && (
           <Fragment>
-            <SideColumnTitle
-              title={"Journal"}
-              overrideStyles={styles.title}
-              onClick={() => toggleShowJournal(!showJournal)}
-              state={showJournal}
-            />
-            {showJournal && <JournalCard paper={paper} />}
+            <SideColumnTitle title={"Journal"} overrideStyles={styles.title} />
+            {<JournalCard paper={paper} />}
           </Fragment>
         )}
       </div>

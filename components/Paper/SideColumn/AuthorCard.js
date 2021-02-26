@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     padding: "8px 15px 8px 12px",
     borderLeft: `3px solid #FFF`,
+    transition: "all ease-out 0.1s",
     ":hover": {
       cursor: "pointer",
       background: "#FAFAFA",
