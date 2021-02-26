@@ -61,9 +61,8 @@ const OnboardHubList = (props) => {
 const styles = StyleSheet.create({
   root: {
     display: "flex",
-    justifyContent: "space-evenly",
+    // justifyContent: "center",
     alignItems: "center",
-    maxWidth: 700,
     width: "100%",
     flexWrap: "wrap",
     "@media only screen and (max-width: 936px)": {
@@ -71,7 +70,7 @@ const styles = StyleSheet.create({
     },
   },
   cardContainer: {
-    margin: 5,
+    margin: 16,
   },
   container: {
     width: "100%",
