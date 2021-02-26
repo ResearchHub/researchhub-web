@@ -685,10 +685,10 @@ class SummaryTab extends React.Component {
                   modalMessage="propose abstract edit"
                   onClick={this.editAbstract}
                   loginRequired={true}
+                  hideRipples={true}
                 >
                   <div className={css(styles.action, styles.editAction)}>
                     <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
-                    {/* {"Edit Abstract"} */}
                   </div>
                 </PermissionNotificationWrapper>
                 {!showAbstract && (
@@ -787,6 +787,7 @@ var styles = StyleSheet.create({
   formContainerStyle: {
     paddingBottom: 0,
     marginBottom: 0,
+    fontFamily: "CharterBT",
   },
   sectionHeader: {
     display: "flex",
@@ -821,6 +822,7 @@ var styles = StyleSheet.create({
   },
   titleRow: {
     display: "flex",
+    alignItems: "center",
   },
   noSummaryContainer: {
     alignItems: "center",
