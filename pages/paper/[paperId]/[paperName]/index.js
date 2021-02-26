@@ -587,7 +587,11 @@ const Paper = (props) => {
               bottomOffset={"85%"}
             >
               <a name="discussions" id="comments">
-                <div id="comments-tab" className={css(styles.space)}>
+                <div
+                  id="comments-tab"
+                  name="discussions"
+                  className={css(styles.space)}
+                >
                   <DiscussionTab
                     hostname={hostname}
                     paperId={paperId}
@@ -622,6 +626,7 @@ const Paper = (props) => {
               authors={Object.keys(formatAuthors())}
               paper={paper}
               hubs={paper.hubs}
+              paperId={paperId}
             />
             <ColumnContentTab
               activeTab={activeTab}

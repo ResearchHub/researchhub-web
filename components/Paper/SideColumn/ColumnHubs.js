@@ -11,7 +11,6 @@ import HubCard from "./HubCard";
 
 const ColumnHubs = (props) => {
   const { paper, hubs } = props;
-  const [showHubs, toggleShowHubs] = useState(true);
 
   const renderHubEntry = () => {
     const { hubs } = props;
@@ -33,11 +32,8 @@ const ColumnHubs = (props) => {
             <SideColumnTitle
               title={`${hubs.length > 1 ? "Hubs" : "Hub"}`}
               overrideStyles={styles.title}
-              onClick={() => toggleShowHubs(!showHubs)}
-              state={showHubs}
-              count={hubs.length}
             />
-            {showHubs && renderHubEntry()}
+            {renderHubEntry()}
           </Fragment>
         )}
       </div>
