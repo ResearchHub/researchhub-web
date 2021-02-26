@@ -4,7 +4,6 @@ import Link from "next/link";
 
 // Component
 import ColumnContainer from "./ColumnContainer";
-import { SideColumnTitle } from "~/components/Typography";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -71,6 +70,7 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
     cursor: "pointer",
     textDecoration: "unset",
+    transition: "all ease-out 0.1s",
     ":hover": {
       cursor: "pointer",
       background: "#FAFAFA",

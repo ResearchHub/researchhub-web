@@ -10,7 +10,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 const PaperSideColumn = (props) => {
-  const { paper, authors, hubs } = props;
+  const { paper, paperId, authors, hubs } = props;
   const [activeTab, setActiveTab] = useState(0);
 
   const renderPaperTabs = () => {
@@ -39,9 +39,9 @@ const PaperSideColumn = (props) => {
 
   return (
     <div className={css(styles.root)}>
-      <ColumnAuthors paper={paper} authors={authors} />
-      <ColumnHubs paper={paper} hubs={hubs} />
-      <ColumnJournal paper={paper} />
+      <ColumnAuthors paper={paper} authors={authors} paperId={paperId} />
+      <ColumnHubs paper={paper} hubs={hubs} paperId={paperId} />
+      <ColumnJournal paper={paper} paperId={paperId} />
     </div>
   );
 };
