@@ -19,6 +19,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 
 // Components
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
+import Button from "~/components/Form/Button";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -102,6 +103,7 @@ class PaperDraft extends React.Component {
       showCommentButton: false,
       focused: false,
       fetching: true,
+      expandPaper: false,
     };
 
     this.decorator = new CompositeDecorator([
@@ -327,7 +329,12 @@ class PaperDraft extends React.Component {
   };
 
   render() {
-    const { fetching, editorState, showCommentButton } = this.state;
+    const {
+      fetching,
+      editorState,
+      showCommentButton,
+      expandPaper,
+    } = this.state;
 
     return (
       <ReactPlaceholder
@@ -339,7 +346,7 @@ class PaperDraft extends React.Component {
           </div>
         }
       >
-        <div className={css(styles.root)}>
+        <div className={css(styles.root, expandPaper && styles.expand)}>
           <Editor
             editorState={editorState}
             onChange={this.onChange}
@@ -349,6 +356,17 @@ class PaperDraft extends React.Component {
             blockRendererFn={this.blockRenderer}
           />
           {showCommentButton && this.renderShowCommentButton()}
+          {!expandPaper && (
+            <Fragment>
+              <div className={css(styles.blur)} />
+              <Button
+                hideRipples={true}
+                label={"Expand Paper"}
+                customButtonStyle={styles.expandButton}
+                onClick={() => this.setState({ expandPaper: true })}
+              />
+            </Fragment>
+          )}
         </div>
       </ReactPlaceholder>
     );
@@ -356,8 +374,6 @@ class PaperDraft extends React.Component {
 }
 
 const AnnotatedText = (props) => {
-  console.log("props", props);
-
   return (
     <span {...props} className={css(styles.annotatedText)}>
       {props.children}
@@ -371,6 +387,12 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     position: "relative",
     fontFamily: "CharterBT",
+    maxHeight: 600,
+    overflow: "hidden",
+  },
+  expand: {
+    overflow: "unset",
+    maxHeight: "unset",
   },
   title: {
     padding: "30px 0px 0px 50px",
@@ -413,6 +435,27 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     border: "1px solid rgba(36, 31, 58, 0.1)",
     background: "#FAFAFA",
+  },
+  blur: {
+    background:
+      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 86.38%)",
+    height: "100%",
+    position: "absolute",
+    zIndex: 3,
+    top: 0,
+    width: "100%",
+  },
+  expandButton: {
+    position: "absolute",
+    bottom: 100,
+    left: "50%",
+    transform: "translateX(-50%)",
+    zIndex: 3,
+    cursor: "pointer",
+    boxSizing: "border-box",
+    width: "unset",
+    padding: "0px 15px",
+    boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
   },
 });
 
