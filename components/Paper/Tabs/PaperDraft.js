@@ -38,6 +38,8 @@ const styleMap = {
     fontSize: 20,
     display: "inline-block",
     lineHeight: 2,
+    fontFamily: "Roboto",
+    // color: "#000"
   },
   ABSTRACT: {
     fontStyle: "italic",
@@ -52,7 +54,7 @@ const styleMap = {
     justifyContent: "flex-start",
     color: colors.BLACK(),
     fontWeight: 400,
-    fontSize: 15,
+    fontSize: 16,
     width: "100%",
     lineHeight: 2,
     boxSizing: "border-box",
@@ -181,7 +183,7 @@ class PaperDraft extends React.Component {
 
   onChange = (editorState) => {
     this.setState({ editorState }, () => {
-      // this.handleSelectedText(editorState);
+      this.handleSelectedText(editorState);
     });
   };
 
@@ -338,7 +340,6 @@ class PaperDraft extends React.Component {
         }
       >
         <div className={css(styles.root)}>
-          {/* <h3 className={css(styles.title)}>Paper</h3> */}
           <Editor
             editorState={editorState}
             onChange={this.onChange}
@@ -355,6 +356,8 @@ class PaperDraft extends React.Component {
 }
 
 const AnnotatedText = (props) => {
+  console.log("props", props);
+
   return (
     <span {...props} className={css(styles.annotatedText)}>
       {props.children}
@@ -367,6 +370,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingRight: 10,
     position: "relative",
+    fontFamily: "CharterBT",
   },
   title: {
     padding: "30px 0px 0px 50px",
