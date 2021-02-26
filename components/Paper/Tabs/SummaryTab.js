@@ -730,6 +730,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 4,
     paddingLeft: 50,
+    fontFamily: "CharterBT",
     "@media only screen and (max-width: 967px)": {
       padding: 25,
     },
@@ -751,7 +752,7 @@ var styles = StyleSheet.create({
     paddingTop: 7,
     color: colors.BLACK(),
     fontWeight: 400,
-    fontSize: 15,
+    fontSize: 16,
     width: "100%",
     boxSizing: "border-box",
     "@media only screen and (max-width: 967px)": {
@@ -800,11 +801,12 @@ var styles = StyleSheet.create({
     },
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
     margin: 0,
+    fontFamily: "Roboto",
     "@media only screen and (max-width: 967px)": {
       justifyContent: "space-between",
       width: "100%",
