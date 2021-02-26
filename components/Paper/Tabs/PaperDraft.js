@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   },
   blur: {
     background:
-      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 86.38%)",
+      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FFF 86.38%)",
     height: "100%",
     position: "absolute",
     zIndex: 3,
