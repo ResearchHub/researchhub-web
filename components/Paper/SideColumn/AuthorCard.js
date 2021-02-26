@@ -5,28 +5,18 @@ import PropTypes from "prop-types";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-const ColumnAuthor = (props) => {
+const AuthorCard = (props) => {
   const { name } = props;
 
   return (
     <div className={css(styles.container)}>
-      <span
-        className={css(styles.userIcon)}
-        style={{
-          width: 35,
-          height: 35,
-          fontSize: 35 + 1,
-          border: "3px solid transparent",
-        }}
-      >
-        {icons.user}
-      </span>
+      <span className={css(styles.userIcon)}>{icons.user}</span>
       <div className={css(styles.name) + " clamp1"}>{name}</div>
     </div>
   );
 };
 
-ColumnAuthor.propTypes = {
+AuthorCard.propTypes = {
   name: PropTypes.string,
 };
 
@@ -37,7 +27,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     boxSizing: "border-box",
-    padding: "10px 15px 10px 12px",
+    padding: "8px 15px 8px 12px",
     borderLeft: `3px solid #FFF`,
     ":hover": {
       cursor: "pointer",
@@ -52,7 +42,11 @@ const styles = StyleSheet.create({
   },
   userIcon: {
     color: "#aaa",
+    width: 35,
+    height: 35,
+    fontSize: 33 + 1,
+    border: "3px solid transparent",
   },
 });
 
-export default ColumnAuthor;
+export default AuthorCard;

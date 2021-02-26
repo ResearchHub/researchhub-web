@@ -1,29 +1,16 @@
-import { Fragment, useState } from "react";
-import Router from "next/link";
-import { connect } from "react-redux";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
-import Link from "next/link";
-import ReactPlaceholder from "react-placeholder/lib";
 
 // Component
-import { SideColumnTitle } from "~/components/Typography";
-import LeaderboardPlaceholder from "~/components/Placeholders/LeaderboardPlaceholder";
-import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
-import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
-import PaperJournalTag from "~/components/Paper/PaperJournalTag";
-import JournalCard from "../Journal/JournalCard";
-import ColumnAuthor from "./ColumnAuthor";
+import ColumnAuthors from "./ColumnAuthors";
+import ColumnHubs from "./ColumnHubs";
+import ColumnJournal from "./ColumnJournal";
 
-import { checkSummaryVote } from "~/config/fetch";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import { getJournalFromURL, capitalize } from "~/config/utils";
 
 const PaperSideColumn = (props) => {
-  const { paper } = props;
+  const { paper, authors, hubs } = props;
   const [activeTab, setActiveTab] = useState(0);
 
   const renderPaperTabs = () => {
@@ -50,102 +37,11 @@ const PaperSideColumn = (props) => {
     );
   };
 
-  const renderAuthorsDetails = () => {
-    const { authors } = props;
-
-    const list = (authors || []).map((name, index) => {
-      return <ColumnAuthor name={name} key={`user_${index}`} />;
-    });
-
-    if (list && list.length) {
-      return <div className={css(styles.authors)}>{list}</div>;
-    } else {
-      return null;
-    }
-  };
-
-  const renderHubEntry = () => {
-    const { hubs } = props;
-
-    return (hubs || []).map((hub, i) => {
-      const { name, id, hub_image, user_is_subscribed } = hub;
-
-      return (
-        <Ripples
-          className={css(styles.hubEntry, i === hubs.length - 1 && styles.last)}
-          key={`${id}-${i}`}
-        >
-          <Link
-            href={{
-              pathname: "/hubs/[slug]",
-              query: {
-                name: `${hub.name}`,
-
-                slug: `${encodeURIComponent(hub.slug)}`,
-              },
-            }}
-            as={`/hubs/${encodeURIComponent(hub.slug)}`}
-          >
-            <a className={css(styles.hubLink)}>
-              <img
-                className={css(styles.hubImage)}
-                src={
-                  hub_image
-                    ? hub_image
-                    : "/static/background/hub-placeholder.svg"
-                }
-                alt={hub.name}
-              />
-              <span className={"clamp1"}>{name}</span>
-            </a>
-          </Link>
-        </Ripples>
-      );
-    });
-  };
-
   return (
     <div className={css(styles.root)}>
-      {renderPaperTabs()}
-      <ReactPlaceholder
-        showLoadingAnimation
-        ready={paper}
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
-      >
-        {paper &&
-          ((paper.authors && paper.authors.length > 0) ||
-            (paper.raw_authors && paper.raw_authors.length > 0)) && (
-            // <Fragment>
-            <SideColumnTitle title={"Authors"} overrideStyles={styles.title} />
-            // </Fragment>
-          )}
-        {renderAuthorsDetails()}
-      </ReactPlaceholder>
-      <ReactPlaceholder
-        showLoadingAnimation
-        ready={paper.hubs}
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
-      >
-        {paper && (paper.hubs && paper.hubs.length > 0) && (
-          <Fragment>
-            <SideColumnTitle title={"Hubs"} overrideStyles={styles.title} />
-            {renderHubEntry()}
-          </Fragment>
-        )}
-      </ReactPlaceholder>
-      <ReactPlaceholder
-        showLoadingAnimation
-        ready={paper || (paper.url || paper.external_source)}
-        ready={true}
-        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
-      >
-        {paper && (paper.url || paper.external_source) && (
-          // <Fragment>
-          <SideColumnTitle title={"Journal"} overrideStyles={styles.title} />
-          // </Fragment>
-        )}
-        <JournalCard paper={paper} />
-      </ReactPlaceholder>
+      <ColumnAuthors paper={paper} authors={authors} />
+      <ColumnHubs paper={paper} hubs={hubs} />
+      <ColumnJournal paper={paper} />
     </div>
   );
 };
@@ -187,73 +83,6 @@ const styles = StyleSheet.create({
     background:
       "linear-gradient(0deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
     boxSizing: "border-box",
-  },
-  title: {
-    margin: "15px 0 10px",
-  },
-  authors: {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-  },
-  user: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "10px 15px",
-  },
-
-  hubEntry: {
-    fontSize: 16,
-    fontWeight: 300,
-    cursor: "pointer",
-    textTransform: "capitalize",
-    display: "flex",
-    alignItems: "center",
-    boxSizing: "border-box",
-    width: "100%",
-    transition: "all ease-out 0.1s",
-    height: 60,
-    borderLeft: "3px solid #FFF",
-    ":hover": {
-      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
-    },
-    ":active": {
-      color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
-      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-    },
-    ":focus": {
-      color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
-      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-    },
-  },
-  last: {
-    opacity: 1,
-    borderBottom: "none",
-  },
-  hubImage: {
-    height: 35,
-    width: 35,
-    minWidth: 35,
-    maxWidth: 35,
-    borderRadius: 4,
-    objectFit: "cover",
-    marginRight: 10,
-    background: "#EAEAEA",
-    border: "1px solid #ededed",
-  },
-  hubLink: {
-    textDecoration: "none",
-    color: "#111",
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    fontWeight: 500,
-    padding: "10px 20px 10px 17px",
   },
   rhIcon: {
     width: 12,
