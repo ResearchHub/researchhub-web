@@ -515,7 +515,6 @@ const Paper = (props) => {
           !props.auth.user.upload_tutorial_complete
         }
       />
-      {/* <ComponentWrapper overrideStyle={styles.componentWrapper}> */}
       <div
         style={{
           display: "flex",
@@ -659,7 +658,6 @@ const Paper = (props) => {
             </Waypoint>
           </div>
           <div className={css(styles.sidebar)}>
-            <PaperPreview paper={paper} paperId={paper.id} />
             <PaperSideColumn
               authors={Object.keys(formatAuthors())}
               paper={paper}
@@ -672,7 +670,6 @@ const Paper = (props) => {
           </div>
         </div>
       </div>
-      {/* </ComponentWrapper> */}
     </div>
   );
 };
