@@ -50,7 +50,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     transition: "all ease-out 0.1s",
-    height: 60,
     borderLeft: "3px solid #FFF",
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
@@ -74,10 +73,10 @@ const styles = StyleSheet.create({
     borderBottom: "none",
   },
   hubImage: {
-    height: 35,
-    width: 35,
-    minWidth: 35,
-    maxWidth: 35,
+    height: 30,
+    width: 30,
+    minWidth: 30,
+    maxWidth: 30,
     borderRadius: 4,
     objectFit: "cover",
     marginRight: 10,

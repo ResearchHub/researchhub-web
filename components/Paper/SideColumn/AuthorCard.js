@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
   },
   userIcon: {
     color: "#aaa",
-    width: 35,
-    height: 35,
-    fontSize: 33 + 1,
+    width: 30,
+    height: 30,
+    fontSize: 30 + 1,
     border: "3px solid transparent",
   },
 });
