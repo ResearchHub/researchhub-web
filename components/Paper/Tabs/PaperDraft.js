@@ -217,7 +217,7 @@ class PaperDraft extends React.Component {
                 case "front":
                 case "back":
                 case "journal":
-                  return currentStyle.clear().add("HIDDEN");
+                  return currentStyle.add("hidden");
                 case "article-id":
                   return currentStyle.add("doi");
                 default:
