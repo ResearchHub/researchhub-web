@@ -59,12 +59,8 @@ const styleMap = {
     display: "inline-block",
     padding: "10px 0",
   },
-<<<<<<< HEAD
-  paragraph: {
-=======
   PARAGRAPH: {
     display: "inline",
->>>>>>> xref are inline
     color: colors.BLACK(),
     fontWeight: 400,
     fontSize: 16,
@@ -90,10 +86,6 @@ const styleMap = {
     whiteSpace: "normal",
     lineHeight: 1.3,
   },
-<<<<<<< HEAD
-  hidden: {
-    display: "none",
-=======
   BACK: {
     display: "inline-block",
     fontSize: 10,
@@ -102,7 +94,6 @@ const styleMap = {
     lineHeight: 1,
   },
   HIDDEN: {
->>>>>>> xref are inline
     height: 0,
     maxHeight: 0,
     overflow: "hidden",
@@ -111,7 +102,7 @@ const styleMap = {
     padding: 0,
     margin: 0,
     lineHeight: 0,
-    display: "flex",
+    display: "none",
   },
 };
 
