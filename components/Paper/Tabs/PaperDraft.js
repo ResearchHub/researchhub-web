@@ -39,7 +39,7 @@ const styleMap = {
     borderRadius: 2,
   },
   title: {
-    padding: "10px 0",
+    padding: "15px 0",
     fontWeight: 500,
     fontSize: 20,
     display: "inline-block",
@@ -57,10 +57,12 @@ const styleMap = {
   },
   section: {
     display: "inline-block",
-    padding: "10px 0",
+    padding: "15px 0",
   },
-  PARAGRAPH: {
+  paragraph: {
     display: "inline",
+    margin: 0,
+    padding: 0,
     color: colors.BLACK(),
     fontWeight: 400,
     fontSize: 16,
@@ -76,8 +78,7 @@ const styleMap = {
     },
   },
   xref: {
-    fontStyle: "italic",
-    display: "inline",
+    fontStyle: "italic", //will inherit inline styles so not needed
   },
   meta: {
     display: "inline-block",
@@ -86,14 +87,14 @@ const styleMap = {
     whiteSpace: "normal",
     lineHeight: 1.3,
   },
-  BACK: {
+  back: {
     display: "inline-block",
     fontSize: 10,
     fontWeight: 300,
     whiteSpace: "normal",
     lineHeight: 1,
   },
-  HIDDEN: {
+  hidden: {
     height: 0,
     maxHeight: 0,
     overflow: "hidden",
@@ -190,8 +191,8 @@ class PaperDraft extends React.Component {
         try {
           const blocksFromHTML = convertFromHTML({
             htmlToStyle: (nodeName, node, currentStyle) => {
-              if (idsToRemove[node.id]) {
-                return currentStyle.clear().add("HIDDEN");
+              if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
+                return currentStyle.add("hidden");
               }
 
               switch (nodeName) {
@@ -201,6 +202,7 @@ class PaperDraft extends React.Component {
                   if (node.textContent.trim().length > 1) {
                     return currentStyle.add("title");
                   } else {
+                    idsToRemove[node.id] = true;
                     return currentStyle.add("hidden");
                   }
                 case "p":
@@ -240,8 +242,18 @@ class PaperDraft extends React.Component {
         }
       })
       .catch((err) => {
+        console.log("err", err);
         this.setState({ fetching: false });
       });
+  };
+
+  hideChildElements = (children) => {
+    // console.log("children", children)
+    for (let i = 0; i < children.length; i++) {
+      let child = children[i];
+      // console.log("child", child.currentStyle)
+      // child.setAttribute("style", "height:0px;display:none;overflow:hidden;");
+    }
   };
 
   findAnnotatedText = (contentBlock, callback, contentState) => {
@@ -437,18 +449,18 @@ class PaperDraft extends React.Component {
               {icons.pencil}
             </span>
           </h3>
-          {/* <div className={css(!readOnly && styles.editor)}> */}
-          <Editor
-            editorState={editorState}
-            onChange={this.onChange}
-            customStyleMap={styleMap}
-            onBlur={this.onBlur}
-            onFocus={this.onFocus}
-            blockRendererFn={this.blockRenderer}
-            // readOnly={readOnly}
-            readOnly={false}
-          />
-          {/* </div> */}
+          <div className={css(!readOnly && styles.editor)}>
+            <Editor
+              editorState={editorState}
+              onChange={this.onChange}
+              customStyleMap={styleMap}
+              onBlur={this.onBlur}
+              onFocus={this.onFocus}
+              blockRendererFn={this.blockRenderer}
+              // readOnly={readOnly}
+              readOnly={false}
+            />
+          </div>
           {showCommentButton && this.renderShowCommentButton()}
         </div>
       </ReactPlaceholder>
