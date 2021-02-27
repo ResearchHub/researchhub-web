@@ -29,6 +29,8 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
+import "./stylesheets/paper.css";
+
 const { hasCommandModifier } = KeyBindingUtil;
 
 const styleMap = {
@@ -57,7 +59,12 @@ const styleMap = {
     display: "inline-block",
     padding: "10px 0",
   },
+<<<<<<< HEAD
   paragraph: {
+=======
+  PARAGRAPH: {
+    display: "inline",
+>>>>>>> xref are inline
     color: colors.BLACK(),
     fontWeight: 400,
     fontSize: 16,
@@ -74,6 +81,7 @@ const styleMap = {
   },
   xref: {
     fontStyle: "italic",
+    display: "inline",
   },
   meta: {
     display: "inline-block",
@@ -82,8 +90,19 @@ const styleMap = {
     whiteSpace: "normal",
     lineHeight: 1.3,
   },
+<<<<<<< HEAD
   hidden: {
     display: "none",
+=======
+  BACK: {
+    display: "inline-block",
+    fontSize: 10,
+    fontWeight: 300,
+    whiteSpace: "normal",
+    lineHeight: 1,
+  },
+  HIDDEN: {
+>>>>>>> xref are inline
     height: 0,
     maxHeight: 0,
     overflow: "hidden",
@@ -92,6 +111,7 @@ const styleMap = {
     padding: 0,
     margin: 0,
     lineHeight: 0,
+    display: "flex",
   },
 };
 
@@ -180,7 +200,7 @@ class PaperDraft extends React.Component {
           const blocksFromHTML = convertFromHTML({
             htmlToStyle: (nodeName, node, currentStyle) => {
               if (idsToRemove[node.id]) {
-                return currentStyle.add("HIDDEN");
+                return currentStyle.clear().add("HIDDEN");
               }
 
               switch (nodeName) {
@@ -199,11 +219,12 @@ class PaperDraft extends React.Component {
                 case "xref":
                   return currentStyle.add("xref");
                 case "abstract":
+                case "fig":
                 case "graphic":
                 case "front":
                 case "back":
                 case "journal":
-                  return currentStyle.add("hidden");
+                  return currentStyle.clear().add("HIDDEN");
                 case "article-id":
                   return currentStyle.add("doi");
                 default:
