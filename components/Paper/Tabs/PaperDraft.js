@@ -252,23 +252,21 @@ class PaperDraft extends React.Component {
   };
 
   onChange = (editorState) => {
-    if (this.state.readyOnly) return;
-
     this.setState({ editorState }, () => {
-      this.handleSelectedText(editorState);
+      // this.handleSelectedText(editorState);
     });
   };
 
   onFocus = () => {
-    // this.setState({ focused: true });
+    this.setState({ focused: true });
   };
 
-  onBlur = () => {
-    this.setState({
-      readOnly: true,
-      focused: false,
-    });
-  };
+  // onBlur = () => {
+  //   this.setState({
+  //     readOnly: true,
+  //     focused: false,
+  //   });
+  // };
 
   insertBlock = () => {
     const { editorState } = this.state;
@@ -297,6 +295,9 @@ class PaperDraft extends React.Component {
 
   handleSelectedText = (editorState) => {
     // const { editorState } = this.state;
+
+    const { focused } = this.state;
+
     const selection = editorState.getSelection();
     const content = editorState.getCurrentContent();
     const anchorKey = selection.getAnchorKey();
@@ -306,7 +307,7 @@ class PaperDraft extends React.Component {
 
     const selectedText = contentBlock.getText().slice(start, end);
 
-    if (this.state.focused && (selectedText && selectedText.length)) {
+    if (focused && (selectedText && selectedText.length)) {
       this.promptAddCommentButton();
     } else {
       this.setState({ showCommentButton: false });
@@ -320,9 +321,10 @@ class PaperDraft extends React.Component {
 
     const newContent = Modifier.applyEntity(content, selection, "comment");
     this.setEditorState(newContent, "apply-entity-comment");
-    // this.setState({
-    //   promptAddCommentButton: false
-    // })
+
+    this.setState({
+      promptAddCommentButton: false,
+    });
   };
 
   promptAddCommentButton = () => {
@@ -333,7 +335,7 @@ class PaperDraft extends React.Component {
 
   setComment = (content, selection) => {
     const currentStyle = this.state.editorState.getCurrentInlineStyle();
-    const inlineStyle = "HIGHLIGHT";
+    const inlineStyle = "highlight";
     let newContent;
 
     if (currentStyle.has(inlineStyle)) {
@@ -370,15 +372,23 @@ class PaperDraft extends React.Component {
   };
 
   renderShowCommentButton = () => {
-    // document.querySelector([
-    // const customStyles = {
-    //   top:
-    // };
+    const { editorState } = this.state;
+
+    const currentBlockKey = editorState.getSelection().getStartKey();
+    const currentBlockIndex =
+      editorState
+        .getCurrentContent()
+        .getBlockMap()
+        .keySeq()
+        .findIndex((k) => k === currentBlockKey) + 1;
 
     return (
       <div
         className={css(styles.addCommentButton)}
         onClick={this.applyEntityToSelection}
+        style={{
+          top: 20 * currentBlockIndex,
+        }}
       >
         {icons.commentAltPlus}
       </div>
@@ -427,16 +437,19 @@ class PaperDraft extends React.Component {
               {icons.pencil}
             </span>
           </h3>
-          <div className={css(!readOnly && styles.editor)}>
-            <Editor
-              editorState={editorState}
-              onChange={this.onChange}
-              customStyleMap={styleMap}
-              onBlur={this.onBlur}
-              blockRendererFn={this.blockRenderer}
-              readOnly={readOnly}
-            />
-          </div>
+          {/* <div className={css(!readOnly && styles.editor)}> */}
+          <Editor
+            editorState={editorState}
+            onChange={this.onChange}
+            customStyleMap={styleMap}
+            onBlur={this.onBlur}
+            onFocus={this.onFocus}
+            blockRendererFn={this.blockRenderer}
+            // readOnly={readOnly}
+            readOnly={false}
+          />
+          {/* </div> */}
+          {showCommentButton && this.renderShowCommentButton()}
         </div>
       </ReactPlaceholder>
     );
