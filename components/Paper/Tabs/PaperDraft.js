@@ -60,7 +60,7 @@ const styleMap = {
     padding: "15px 0",
   },
   paragraph: {
-    display: "inline",
+    // display: "inline",
     margin: 0,
     padding: 0,
     color: colors.BLACK(),
@@ -69,11 +69,11 @@ const styleMap = {
     width: "100%",
     lineHeight: 2,
     boxSizing: "border-box",
-    "@media only screen and (max-width: 967px)": {
+    "@media only screen and (maxWidth: 967px)": {
       fontSize: 14,
       width: "100%",
     },
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (maxWidth: 415px)": {
       fontSize: 12,
     },
   },
@@ -122,8 +122,13 @@ class PaperDraft extends React.Component {
 
     this.decorator = new CompositeDecorator([
       {
-        strategy: this.findAnnotatedText,
-        component: (props) => <AnnotatedText {...props} />,
+        strategy: this.findSectionEntity,
+        component: (props) => (
+          <SectionBlock
+            {...props}
+            onSectionEnter={this.props.setActiveSection}
+          />
+        ),
       },
     ]);
   }
@@ -146,11 +151,12 @@ class PaperDraft extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        const { setPaperSections, setActiveSection } = this.props;
+        const { setPaperSections } = this.props;
 
         const sectionTitles = [];
         const idsToRemove = {};
-        const html = decodeURIComponent(escape(window.atob(res)));
+
+        let html = decodeURIComponent(escape(window.atob(res)));
         const doc = new DOMParser().parseFromString(html, "text/xml");
         const sections = doc.getElementsByTagName("sec");
 
@@ -165,7 +171,7 @@ class PaperDraft extends React.Component {
             idsToRemove[section.id] = true;
           } else {
             sectionTitles.push(title); // push title for tabbar
-
+            section.id = `${title}-${index}`;
             // const waypoint = ReactDOMServer.renderToString(
             //   <Waypoint
             //     onEnter={() => {
@@ -176,7 +182,7 @@ class PaperDraft extends React.Component {
             //   >
             //   </Waypoint>
             // );
-            // const newSection = new DOMParser().parseFromString(waypoint, "text/xml").firstChild;
+
             // const newATag = document.createElement('a');
             // newATag.setAttribute("name", title.toLowerCase());
             // newSection.appendChild(newATag);
@@ -185,7 +191,7 @@ class PaperDraft extends React.Component {
             // newATag.appendChild(section);
           }
         }
-        // html = doc.documentElement.innerHTML;
+        html = doc.documentElement.innerHTML;
         setPaperSections(sectionTitles);
 
         try {
@@ -224,6 +230,34 @@ class PaperDraft extends React.Component {
                   return currentStyle.add("meta");
               }
             },
+            // htmlToBlock: (nodeName, node) => {
+            //   // console.log(nodeName, node);
+            //   if (nodeName === 'sec') {
+            //     const [name, index] = node.id.split("-");
+
+            //     return {
+            //         type: 'section',
+            //         data: {
+            //           name,
+            //           index,
+            //           children: node.children
+            //         }
+            //     };
+            //   }
+            // },
+
+            htmlToEntity: (nodeName, node, createEntity) => {
+              if (nodeName === "sec") {
+                const [name, index] = node.id.split("-");
+                const entity = createEntity("SECTION", "MUTABLE", {
+                  name: name || "",
+                  index: index || "",
+                });
+                // const entityKey = entity.getLastCreatedEntityKey();
+                // console.log("entityKEY", entityKey)
+                return entity;
+              }
+            },
           })(html);
 
           let editorState = EditorState.push(
@@ -256,10 +290,13 @@ class PaperDraft extends React.Component {
     }
   };
 
-  findAnnotatedText = (contentBlock, callback, contentState) => {
+  findSectionEntity = (contentBlock, callback, contentState) => {
     contentBlock.findEntityRanges((character) => {
       const entityKey = character.getEntity();
-      return entityKey !== null && entityKey === "comment";
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === "SECTION"
+      );
     }, callback);
   };
 
@@ -409,15 +446,14 @@ class PaperDraft extends React.Component {
 
   blockRenderer = (contentBlock) => {
     const type = contentBlock.getType();
-    // if (type === "article") {
-    //   return {
-    //     component: AnnotatedText,
-    //     editable: true,
-    //     props: {
-    //       foo: "bar"
-    //     }
-    //   };
-    // }
+
+    if (type === "section") {
+      return {
+        component: (props) => <SectionBlock {...props} />,
+        editable: true,
+        props: contentBlock.getData(),
+      };
+    }
   };
 
   render() {
@@ -456,9 +492,10 @@ class PaperDraft extends React.Component {
               customStyleMap={styleMap}
               onBlur={this.onBlur}
               onFocus={this.onFocus}
-              blockRendererFn={this.blockRenderer}
+              // blockRendererFn={this.blockRenderer}
               // readOnly={readOnly}
               readOnly={false}
+              // blockRenderMap={extendedBlockRenderMap}
             />
           </div>
           {showCommentButton && this.renderShowCommentButton()}
@@ -467,6 +504,29 @@ class PaperDraft extends React.Component {
     );
   }
 }
+
+const SectionBlock = (props) => {
+  const { contentState, entityKey, onSectionEnter } = props;
+  const sectionInstance = contentState.getEntity(entityKey);
+  const { name, index } = sectionInstance.getData();
+
+  const sectionName = name.toLowerCase();
+
+  return (
+    <div {...props}>
+      <Waypoint
+        onEnter={() => {
+          console.log("sectionEntered:", name, index);
+          onSectionEnter(index);
+        }}
+        topOffset={40}
+        bottomOffset={"95%"}
+      >
+        <a name={sectionName}>{props.children}</a>
+      </Waypoint>
+    </div>
+  );
+};
 
 const AnnotatedText = (props) => {
   return (
