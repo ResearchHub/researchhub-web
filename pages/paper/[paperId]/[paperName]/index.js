@@ -593,8 +593,7 @@ const Paper = (props) => {
               activeTab={activeTab}
               setActiveTab={setActiveTab}
               sections={paperSections}
-              // activeTab={activeSection}
-              // setActiveTab={setActiveSection}
+              activeSection={activeSection}
               paperExists={paperExists}
             />
           </div>
