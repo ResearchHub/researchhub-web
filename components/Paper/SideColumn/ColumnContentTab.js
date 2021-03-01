@@ -1,14 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Component
 import ColumnContainer from "./ColumnContainer";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 const ColumnContentTab = (props) => {
-  const { activeTab, setActiveTab, paperExists, sections } = props;
+  const {
+    activeTab,
+    setActiveTab,
+    paperExists,
+    sections,
+    activeSection,
+  } = props;
+
+  const [hidePaperSections, toggleHidePaperSections] = useState(false);
 
   useEffect(() => {}, [activeTab]);
 
@@ -20,7 +29,7 @@ const ColumnContentTab = (props) => {
   };
 
   const renderSections = () => {
-    const allsections = [
+    const maintabs = [
       { name: "Main", index: 0 },
       { name: "Abstract", index: 1 },
       { name: "Discussions", index: 2 },
@@ -28,17 +37,17 @@ const ColumnContentTab = (props) => {
     ];
 
     if (paperExists) {
-      allsections.splice(2, 0, { name: "Paper", index: 2 });
-      allsections.forEach((section, i) => {
+      maintabs.splice(2, 0, { name: "Paper", index: 2 });
+      maintabs.forEach((section, i) => {
         section.index = i;
       });
     }
 
     if (sections && sections.length > 0) {
-      allsections.splice(3, 0, ...sections);
+      maintabs.splice(3, 0, ...sections);
     }
 
-    const isPaperContent = (name) => {
+    const isMainTab = (name) => {
       switch (name) {
         case "Main":
         case "Abstract":
@@ -51,10 +60,16 @@ const ColumnContentTab = (props) => {
       }
     };
 
-    return allsections.map((section) => {
+    const isPaperSectionActive = (index) => {
+      const offset = 3;
+
+      return paperExists && activeTab === 2 && activeSection == index - offset;
+    };
+
+    return maintabs.map((section, sectionIndex) => {
       const { name, index } = section;
 
-      if (isPaperContent(name)) {
+      if (isMainTab(name)) {
         return (
           <a
             href={`#${name.toLowerCase()}`}
@@ -62,13 +77,26 @@ const ColumnContentTab = (props) => {
             onClick={() => handleClick(index)}
           >
             <div className={css(styles.name) + " clamp1"}>{name}</div>
+            {paperExists && index === 2 && (
+              <div
+                className={css(styles.button)}
+                onClick={() => toggleHidePaperSections(!hidePaperSections)}
+              >
+                {hidePaperSections ? icons.chevronUp : icons.chevronDown}
+              </div>
+            )}
           </a>
         );
       } else {
         return (
           <a
             href={`#${section.toLowerCase()}`}
-            className={css(styles.card, styles.small)}
+            className={css(
+              styles.card,
+              styles.small,
+              isPaperSectionActive(sectionIndex) && styles.active,
+              hidePaperSections && styles.hidden
+            )}
           >
             <div className={css(styles.name) + " clamp1"}>{section}</div>
           </a>
@@ -106,7 +134,7 @@ const styles = StyleSheet.create({
   },
   card: {
     display: "flex",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
     boxSizing: "border-box",
@@ -124,7 +152,7 @@ const styles = StyleSheet.create({
     },
   },
   small: {
-    fontSize: 14,
+    fontSize: 13,
     paddingLeft: 20,
   },
   name: {
@@ -135,6 +163,21 @@ const styles = StyleSheet.create({
     background: "#FAFAFA",
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     color: colors.BLACK(1),
+  },
+  hidden: {
+    height: 0,
+    visibility: "hidden",
+    overflow: "hidden",
+    userSelect: "none",
+    display: "none",
+  },
+  button: {
+    fontSize: 14,
+    cursor: "pointer",
+    color: colors.BLACK(0.6),
+    ":hover": {
+      color: colors.BLACK(),
+    },
   },
 });
 
