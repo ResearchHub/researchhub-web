@@ -253,8 +253,6 @@ class PaperDraft extends React.Component {
                   name: name || "",
                   index: index || "",
                 });
-                // const entityKey = entity.getLastCreatedEntityKey();
-                // console.log("entityKEY", entityKey)
                 return entity;
               }
             },
@@ -279,15 +277,6 @@ class PaperDraft extends React.Component {
         console.log("err", err);
         this.setState({ fetching: false });
       });
-  };
-
-  hideChildElements = (children) => {
-    // console.log("children", children)
-    for (let i = 0; i < children.length; i++) {
-      let child = children[i];
-      // console.log("child", child.currentStyle)
-      // child.setAttribute("style", "height:0px;display:none;overflow:hidden;");
-    }
   };
 
   findSectionEntity = (contentBlock, callback, contentState) => {
@@ -516,7 +505,6 @@ const SectionBlock = (props) => {
     <div {...props}>
       <Waypoint
         onEnter={() => {
-          console.log("sectionEntered:", name, index);
           onSectionEnter(index);
         }}
         topOffset={40}
