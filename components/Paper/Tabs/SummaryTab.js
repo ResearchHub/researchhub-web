@@ -731,7 +731,7 @@ var styles = StyleSheet.create({
     borderRadius: 4,
     paddingLeft: 50,
     "@media only screen and (max-width: 967px)": {
-      padding: 25,
+      // padding: 25,
     },
   },
   hidden: {
