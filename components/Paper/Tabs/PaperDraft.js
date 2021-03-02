@@ -29,6 +29,8 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
+import "./stylesheets/paper.css";
+
 const styleMap = {
   highlight: {
     backgroundColor: colors.BLACK(0.1),
@@ -42,6 +44,7 @@ const styleMap = {
     lineHeight: 2,
     fontFamily: "Roboto",
     width: "100%",
+    whiteSpace: "normal",
   },
   subtitle: {
     padding: "10px 0",
@@ -50,29 +53,21 @@ const styleMap = {
     display: "inline-block",
     lineHeight: 2,
     fontFamily: "CharterBT",
-  },
-  abstract: {
-    fontStyle: "italic",
-    fontSize: 14,
-    padding: "0px 0 20px",
-    display: "inline-block",
-    lineHeight: 2,
-    whiteSpace: "pre-wrap",
+    whiteSpace: "normal",
   },
   section: {
-    display: "inline-block",
-    padding: "15px 0",
+    display: "inline",
   },
   paragraph: {
-    display: "inline-block",
-    margin: 0,
-    padding: "10px 0",
+    display: "inline",
+    padding: 0,
     color: colors.BLACK(),
     fontWeight: 400,
     fontSize: 16,
     width: "100%",
     lineHeight: 2,
     boxSizing: "border-box",
+    whiteSpace: "pre-wrap",
     "@media only screen and (maxWidth: 967px)": {
       fontSize: 14,
       width: "100%",
@@ -81,22 +76,17 @@ const styleMap = {
       fontSize: 12,
     },
   },
+  span: {
+    display: "inline",
+    color: colors.BLUE(),
+  },
   xref: {
-    fontStyle: "italic", //will inherit inline styles so not needed
+    display: "inline",
+    fontStyle: "italic", //will inherit inline styles so not needed,
   },
-  meta: {
-    display: "inline-block",
-    fontSize: 10,
-    fontWeight: 300,
-    whiteSpace: "normal",
-    lineHeight: 1.3,
-  },
-  back: {
-    display: "inline-block",
-    fontSize: 10,
-    fontWeight: 300,
-    whiteSpace: "normal",
-    lineHeight: 1,
+  body: {
+    margin: 0,
+    padding: 0,
   },
   hidden: {
     height: 0,
@@ -190,11 +180,10 @@ class PaperDraft extends React.Component {
       case "front":
       case "back":
       case "journal":
-        return currentStyle.add("hidden");
       case "article-id":
-        return currentStyle.add("doi");
       default:
-        return currentStyle.add("meta");
+        // return currentStyle.add("meta");
+        return currentStyle.add("hidden");
     }
   };
 
@@ -259,25 +248,35 @@ class PaperDraft extends React.Component {
                   }
                 case "p":
                   return currentStyle.add("paragraph");
+                case "span":
+                  return currentStyle.add("span");
                 case "sec":
                   return currentStyle.add("section");
                 case "xref":
                   return currentStyle.add("xref");
+                case "body":
+                case "article":
+                  return currentStyle.add("body");
+                default:
+                  return currentStyle.add("hidden");
+              }
+            },
+            htmlToBlock: (nodeName, node) => {
+              switch (nodeName) {
                 case "abstract":
                 case "fig":
                 case "graphic":
                 case "front":
                 case "back":
                 case "journal":
-                  return currentStyle.add("hidden");
                 case "article-id":
-                  return currentStyle.add("doi");
+                  return false;
                 default:
-                  return currentStyle.add("meta");
+                  return true;
               }
             },
             htmlToEntity: this.htmlToEntity,
-          })(html);
+          })(html, { flat: true });
 
           const editorState = EditorState.set(
             EditorState.push(this.state.editorState, blocksFromHTML),
@@ -527,7 +526,6 @@ class PaperDraft extends React.Component {
               onBlur={this.onBlur}
               onFocus={this.onFocus}
               readOnly={readOnly}
-              readOnly={false}
             />
           </div>
           {showCommentButton && this.renderShowCommentButton()}
