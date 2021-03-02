@@ -29,8 +29,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-// import "./stylesheets/paper.css";
-
 const styleMap = {
   highlight: {
     backgroundColor: colors.BLACK(0.1),
@@ -47,11 +45,11 @@ const styleMap = {
   },
   subtitle: {
     padding: "10px 0",
-    fontWeight: "bold",
-    fontSize: 16,
+    fontWeight: 500,
+    fontSize: 18,
     display: "inline-block",
     lineHeight: 2,
-    // fontFamily: "CharterBT"
+    fontFamily: "CharterBT",
   },
   abstract: {
     fontStyle: "italic",
@@ -62,13 +60,13 @@ const styleMap = {
     whiteSpace: "pre-wrap",
   },
   section: {
-    display: "inline",
+    display: "inline-block",
     padding: "15px 0",
   },
   paragraph: {
-    display: "inline",
+    display: "inline-block",
     margin: 0,
-    padding: 0,
+    padding: "10px 0",
     color: colors.BLACK(),
     fontWeight: 400,
     fontSize: 16,
