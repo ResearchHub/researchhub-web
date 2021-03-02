@@ -789,7 +789,7 @@ class PaperPageCard extends React.Component {
                     ? this.props.paper
                     : null
                 }
-                showPromotion={true}
+                small={true}
               />
             </div>
             <div className={css(styles.votingMobile)}>
@@ -809,16 +809,9 @@ class PaperPageCard extends React.Component {
                     : null
                 }
                 showPromotion={true}
+                small={true}
               />
             </div>
-            {figureUrls.length > 0 && (
-              <FsLightbox
-                toggler={this.state.toggleLightbox}
-                type="image"
-                sources={[...figureUrls]}
-                slide={this.state.slideIndex}
-              />
-            )}
             <div
               className={css(
                 styles.column,
@@ -839,10 +832,11 @@ class PaperPageCard extends React.Component {
                         {paper && paper.title}
                       </h1>
                       <PaperMetadata
+                        label={"Paper Title"}
+                        containerStyles={styles.paperTitle}
                         active={
                           paper.paper_title && paper.paper_title !== paper.title
                         }
-                        label={"Paper Title"}
                         value={
                           <h3
                             className={css(styles.metadata)}
@@ -851,7 +845,6 @@ class PaperPageCard extends React.Component {
                             {paper.paper_title}
                           </h3>
                         }
-                        containerStyles={styles.paperTitle}
                       />
                     </div>
                     <div className={css(styles.column)}>
@@ -1147,11 +1140,11 @@ const styles = StyleSheet.create({
   },
   voting: {
     display: "block",
-    width: 70,
-    fontSize: 18,
+    width: 65,
+    fontSize: 16,
     position: "absolute",
     top: 0,
-    left: -17,
+    left: -12,
     "@media only screen and (max-width: 768px)": {
       display: "none",
     },
