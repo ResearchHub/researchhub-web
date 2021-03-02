@@ -143,3 +143,5 @@ export const fetchPaperFigures = async (paperId) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const fetchPaperPDF = ({ paperId }) => {};

@@ -37,7 +37,6 @@ const styleMap = {
     borderRadius: 2,
   },
   title: {
-    padding: "15px 0",
     fontWeight: 500,
     fontSize: 20,
     display: "inline-block",
@@ -47,12 +46,11 @@ const styleMap = {
     whiteSpace: "normal",
   },
   subtitle: {
-    padding: "10px 0",
     fontWeight: 500,
-    fontSize: 18,
+    fontSize: 16,
     display: "inline-block",
     lineHeight: 2,
-    fontFamily: "CharterBT",
+    fontFamily: "Roboto",
     whiteSpace: "normal",
   },
   section: {
