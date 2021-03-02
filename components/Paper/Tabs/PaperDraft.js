@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import ReactDOMServer from "react-dom/server";
-
+import Immutable from "immutable";
 import {
   Editor,
   EditorState,
@@ -11,6 +10,7 @@ import {
   RichUtils,
   convertToRaw,
   getDefaultKeyBinding,
+  DefaultDraftBlockRenderMap,
   KeyBindingUtil,
   CompositeDecorator,
 } from "draft-js";
@@ -29,9 +29,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-import "./stylesheets/paper.css";
-
-const { hasCommandModifier } = KeyBindingUtil;
+// import "./stylesheets/paper.css";
 
 const styleMap = {
   highlight: {
@@ -47,6 +45,14 @@ const styleMap = {
     fontFamily: "Roboto",
     width: "100%",
   },
+  subtitle: {
+    padding: "10px 0",
+    fontWeight: "bold",
+    fontSize: 16,
+    display: "inline-block",
+    lineHeight: 2,
+    // fontFamily: "CharterBT"
+  },
   abstract: {
     fontStyle: "italic",
     fontSize: 14,
@@ -56,11 +62,11 @@ const styleMap = {
     whiteSpace: "pre-wrap",
   },
   section: {
-    display: "inline-block",
+    display: "inline",
     padding: "15px 0",
   },
   paragraph: {
-    // display: "inline",
+    display: "inline",
     margin: 0,
     padding: 0,
     color: colors.BLACK(),
@@ -118,11 +124,13 @@ class PaperDraft extends React.Component {
       focused: false,
       fetching: true,
       expandPaper: false,
+
+      seenEntityKeys: {},
     };
 
     this.decorator = new CompositeDecorator([
       {
-        strategy: this.findSectionEntity,
+        strategy: this.findWayPointEntity,
         component: (props) => (
           <SectionBlock
             {...props}
@@ -131,13 +139,84 @@ class PaperDraft extends React.Component {
         ),
       },
     ]);
+
+    // this.blockRenderMap = Immutable.Map({
+    //   'section': {
+    //     element: 'section',
+    //     wrapper: <SectionBlock editorState={this.state.editorState} onSectionEnter={this.props.setActiveSection} />
+    //         // {...props}
+    //         // onSectionEnter={this.props.setActiveSection}
+    //     // />
+    //   },
+
+    // });
+
+    // this.extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(this.blockRenderMap);
   }
 
   componentDidMount() {
-    const { setPaperSections } = this.props;
-
     this.fetchHTML();
   }
+
+  htmlToStyle = (nodeName, node, currentStyle, idsToRemove) => {
+    const { parentNode } = node;
+
+    if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
+      return currentStyle.add("hidden");
+    }
+
+    if (parentNode.nodeName === "ABSTRACT") {
+      return currentStyle.add("hidden");
+    }
+
+    switch (nodeName) {
+      case "title":
+        if (node.textContent.trim().length) {
+          if (node.className === "header") {
+            return currentStyle.add("title");
+          }
+          return currentStyle.add("subtitle");
+        } else {
+          idsToRemove[node.id] = true;
+          return currentStyle.add("hidden");
+        }
+      case "p":
+        return currentStyle.add("paragraph");
+      case "sec":
+        return currentStyle.add("section");
+      case "xref":
+        return currentStyle.add("xref");
+      case "abstract":
+      case "fig":
+      case "graphic":
+      case "front":
+      case "back":
+      case "journal":
+        return currentStyle.add("hidden");
+      case "article-id":
+        return currentStyle.add("doi");
+      default:
+        return currentStyle.add("meta");
+    }
+  };
+
+  htmlToEntity = (nodeName, node, createEntity) => {
+    const { className } = node;
+
+    if (
+      (nodeName === "title" && className === "header") ||
+      (nodeName === "p" && className === "last-paragraph")
+    ) {
+      const [name, index] = node.dataset.props.split("-");
+
+      const entity = createEntity("WAYPOINT", "MUTABLE", {
+        name: name,
+        index: index,
+      });
+
+      return entity;
+    }
+  };
 
   fetchHTML = () => {
     fetch(
@@ -150,63 +229,32 @@ class PaperDraft extends React.Component {
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((res) => {
-        const { setPaperSections } = this.props;
-
-        const sectionTitles = [];
-        const idsToRemove = {};
-
-        let html = decodeURIComponent(escape(window.atob(res)));
-        const doc = new DOMParser().parseFromString(html, "text/xml");
-        const sections = doc.getElementsByTagName("sec");
-
-        for (let index = 0; index < sections.length; index++) {
-          const section = sections[index];
-          const title =
-            section.getElementsByTagName("title")[0].textContent.trim() || "";
-          const paragraph =
-            section.getElementsByTagName("p")[0].textContent.trim() || "";
-
-          if (title.length <= 1 || paragraph.length <= 1) {
-            idsToRemove[section.id] = true;
-          } else {
-            sectionTitles.push(title); // push title for tabbar
-            section.id = `${title}-${index}`;
-            // const waypoint = ReactDOMServer.renderToString(
-            //   <Waypoint
-            //     onEnter={() => {
-            //       setActiveSection(index)
-            //     }}
-            //     topOffset={40}
-            //     bottomOffset={"95%"}
-            //   >
-            //   </Waypoint>
-            // );
-
-            // const newATag = document.createElement('a');
-            // newATag.setAttribute("name", title.toLowerCase());
-            // newSection.appendChild(newATag);
-
-            // section.parentNode.replaceChild(newSection, section);
-            // newATag.appendChild(section);
-          }
-        }
-        html = doc.documentElement.innerHTML;
-        setPaperSections(sectionTitles);
+      .then((base64) => {
+        const { setPaperExists, setPaperSections } = this.props;
+        const [html, idsToRemove, sectionTitles] = this.formatHTMLForMarkup(
+          base64
+        );
 
         try {
           const blocksFromHTML = convertFromHTML({
             htmlToStyle: (nodeName, node, currentStyle) => {
+              const { parentNode } = node;
+
               if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
                 return currentStyle.add("hidden");
               }
 
+              if (parentNode.nodeName === "ABSTRACT") {
+                return currentStyle.add("hidden");
+              }
+
               switch (nodeName) {
-                case "article-title":
-                  return currentStyle.add("article-title");
                 case "title":
-                  if (node.textContent.trim().length > 1) {
-                    return currentStyle.add("title");
+                  if (node.textContent.trim().length) {
+                    if (node.className === "header") {
+                      return currentStyle.add("title");
+                    }
+                    return currentStyle.add("subtitle");
                   } else {
                     idsToRemove[node.id] = true;
                     return currentStyle.add("hidden");
@@ -230,46 +278,19 @@ class PaperDraft extends React.Component {
                   return currentStyle.add("meta");
               }
             },
-            // htmlToBlock: (nodeName, node) => {
-            //   // console.log(nodeName, node);
-            //   if (nodeName === 'sec') {
-            //     const [name, index] = node.id.split("-");
-
-            //     return {
-            //         type: 'section',
-            //         data: {
-            //           name,
-            //           index,
-            //           children: node.children
-            //         }
-            //     };
-            //   }
-            // },
-
-            htmlToEntity: (nodeName, node, createEntity) => {
-              if (nodeName === "sec") {
-                const [name, index] = node.id.split("-");
-                const entity = createEntity("SECTION", "MUTABLE", {
-                  name: name || "",
-                  index: index || "",
-                });
-                return entity;
-              }
-            },
+            htmlToEntity: this.htmlToEntity,
           })(html);
 
-          let editorState = EditorState.push(
-            this.state.editorState,
-            blocksFromHTML
+          const editorState = EditorState.set(
+            EditorState.push(this.state.editorState, blocksFromHTML),
+            { decorator: this.decorator }
           );
-          editorState = EditorState.set(editorState, {
-            decorator: this.decorator,
-            allowUndo: true,
-          });
 
           this.setState({ editorState, fetching: false });
-          this.props.setPaperExists(true);
-        } catch {
+          setPaperExists(true);
+          setPaperSections(sectionTitles);
+        } catch (err) {
+          console.log("er", err);
           this.setState({ fetching: false });
         }
       })
@@ -279,13 +300,74 @@ class PaperDraft extends React.Component {
       });
   };
 
-  findSectionEntity = (contentBlock, callback, contentState) => {
+  formatHTMLForMarkup = (base64) => {
+    const sectionTitles = [];
+    const idsToRemove = {};
+
+    const html = decodeURIComponent(escape(window.atob(base64)));
+    const doc = new DOMParser().parseFromString(html, "text/xml");
+    const sections = [].slice.call(doc.getElementsByTagName("sec"));
+
+    let count = 0;
+
+    sections.forEach((section) => {
+      const { parentNode } = section;
+
+      const titleNode = section.getElementsByTagName("title")[0];
+      const lastPNode = [].slice.call(section.getElementsByTagName("p")).pop();
+      const title = titleNode.textContent.trim().toLowerCase();
+      const paragraph = lastPNode.textContent.trim();
+
+      if (
+        !titleNode ||
+        !lastPNode ||
+        title.length <= 1 ||
+        paragraph.length <= 1
+      ) {
+        return (idsToRemove[section.id] = true);
+      }
+      if (
+        parentNode.nodeName === "abstract" ||
+        parentNode.nodeName === "front" ||
+        parentNode.nodeName === "back"
+      ) {
+        return (idsToRemove[section.id] = true);
+      }
+
+      if (parentNode.nodeName === "article") {
+        const data = `${title}-${count}`;
+        const header = section.children[0];
+
+        sectionTitles.push(title); // push title for tabbar
+
+        section.className = "main-section";
+
+        header.className = "header";
+        header.setAttribute("data-props", data);
+
+        lastPNode.className = "last-paragraph";
+        lastPNode.setAttribute("data-props", data);
+
+        count++;
+      }
+    });
+
+    return [doc.documentElement.innerHTML, idsToRemove, sectionTitles];
+  };
+
+  findWayPointEntity = (contentBlock, callback, contentState) => {
+    const { seenEntityKeys } = this.state;
     contentBlock.findEntityRanges((character) => {
       const entityKey = character.getEntity();
-      return (
-        entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === "SECTION"
-      );
+      if (!seenEntityKeys[entityKey]) {
+        this.setState({
+          seenEntityKeys: { ...seenEntityKeys, [entityKey]: true },
+        });
+        return (
+          entityKey !== null &&
+          contentState.getEntity(entityKey).getType() === "WAYPOINT"
+        );
+      }
     }, callback);
   };
 
@@ -305,31 +387,6 @@ class PaperDraft extends React.Component {
   //     focused: false,
   //   });
   // };
-
-  insertBlock = () => {
-    const { editorState } = this.state;
-
-    const contentState = editorState.getCurrentContent();
-
-    const contentStateWithEntity = contentState.createEntity(
-      "COMMENT",
-      "IMMUTABLE",
-      { a: "b" }
-    );
-
-    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-    const newEditorState = EditorState.set(editorState, {
-      currentContent: contentStateWithEntity,
-    });
-
-    this.setState({
-      editorState: AtomicBlockUtils.insertAtomicBlock(
-        newEditorState,
-        entityKey,
-        " "
-      ),
-    });
-  };
 
   handleSelectedText = (editorState) => {
     // const { editorState } = this.state;
@@ -433,18 +490,6 @@ class PaperDraft extends React.Component {
     );
   };
 
-  blockRenderer = (contentBlock) => {
-    const type = contentBlock.getType();
-
-    if (type === "section") {
-      return {
-        component: (props) => <SectionBlock {...props} />,
-        editable: true,
-        props: contentBlock.getData(),
-      };
-    }
-  };
-
   render() {
     const {
       fetching,
@@ -460,6 +505,8 @@ class PaperDraft extends React.Component {
         showLoadingAnimation
         customPlaceholder={
           <div style={{ padding: "30px 0 0 50px" }}>
+            <AbstractPlaceholder color="#efefef" />
+            <AbstractPlaceholder color="#efefef" />
             <AbstractPlaceholder color="#efefef" />
           </div>
         }
@@ -481,10 +528,8 @@ class PaperDraft extends React.Component {
               customStyleMap={styleMap}
               onBlur={this.onBlur}
               onFocus={this.onFocus}
-              // blockRendererFn={this.blockRenderer}
-              // readOnly={readOnly}
+              readOnly={readOnly}
               readOnly={false}
-              // blockRenderMap={extendedBlockRenderMap}
             />
           </div>
           {showCommentButton && this.renderShowCommentButton()}
@@ -496,10 +541,9 @@ class PaperDraft extends React.Component {
 
 const SectionBlock = (props) => {
   const { contentState, entityKey, onSectionEnter } = props;
+
   const sectionInstance = contentState.getEntity(entityKey);
   const { name, index } = sectionInstance.getData();
-
-  const sectionName = name.toLowerCase();
 
   return (
     <div {...props}>
@@ -510,17 +554,9 @@ const SectionBlock = (props) => {
         topOffset={40}
         bottomOffset={"95%"}
       >
-        <a name={sectionName}>{props.children}</a>
+        <a name={name}>{props.children}</a>
       </Waypoint>
     </div>
-  );
-};
-
-const AnnotatedText = (props) => {
-  return (
-    <span {...props} className={css(styles.annotatedText)}>
-      {props.children}
-    </span>
   );
 };
 
@@ -564,14 +600,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: 0,
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 967px)": {
-      justifyContent: "space-between",
-      width: "100%",
-      marginBottom: 20,
-    },
-    "@media only screen and (max-width: 500px)": {
-      flexDirection: "column",
-    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
