@@ -278,6 +278,8 @@ class PaperDraft extends React.Component {
             htmlToEntity: this.htmlToEntity,
           })(html, { flat: true });
 
+          console.log("html", html);
+
           const editorState = EditorState.set(
             EditorState.push(this.state.editorState, blocksFromHTML),
             { decorator: this.decorator }
@@ -312,18 +314,17 @@ class PaperDraft extends React.Component {
 
       const titleNode = section.getElementsByTagName("title")[0];
       const lastPNode = [].slice.call(section.getElementsByTagName("p")).pop();
+
+      if (!titleNode || !lastPNode) {
+        return (idsToRemove[section.id] = true);
+      }
+
       const title = titleNode.textContent.trim().toLowerCase();
       const paragraph = lastPNode.textContent.trim();
 
       if (
-        !titleNode ||
-        !lastPNode ||
         title.length <= 1 ||
-        paragraph.length <= 1
-      ) {
-        return (idsToRemove[section.id] = true);
-      }
-      if (
+        paragraph.length <= 1 ||
         parentNode.nodeName === "abstract" ||
         parentNode.nodeName === "front" ||
         parentNode.nodeName === "back"
