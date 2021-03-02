@@ -90,7 +90,7 @@ const ColumnContentTab = (props) => {
       } else {
         return (
           <a
-            href={`#${section.toLowerCase()}`}
+            href={`#${section}`}
             className={css(
               styles.card,
               styles.small,
@@ -152,8 +152,9 @@ const styles = StyleSheet.create({
     },
   },
   small: {
-    fontSize: 13,
+    fontSize: 14,
     paddingLeft: 20,
+    textTransform: "capitalize",
   },
   name: {
     fontWeight: 500,
