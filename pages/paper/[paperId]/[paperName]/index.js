@@ -539,7 +539,7 @@ const Paper = (props) => {
                     abstract={paper.abstract}
                     setPaperExists={setPaperExists}
                     setPaperSections={setPaperSections}
-                    activeSection={activeSection}
+                    setActiveSection={setActiveSection}
                   />
                 </a>
               </Waypoint>

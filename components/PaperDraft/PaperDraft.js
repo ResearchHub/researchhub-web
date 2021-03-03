@@ -462,12 +462,9 @@ class PaperDraft extends React.Component {
   };
 
   onSave = () => {
-    this.setState(
-      {
-        readOnly: false,
-      },
-      () => this.editor.blur()
-    );
+    this.setState({
+      readOnly: true,
+    });
   };
 
   render() {
