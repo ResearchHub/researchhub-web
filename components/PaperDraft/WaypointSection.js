@@ -15,9 +15,7 @@ const WaypointSection = (props) => {
   return (
     <div {...props}>
       <Waypoint
-        onEnter={() => {
-          onSectionEnter(index);
-        }}
+        onEnter={() => onSectionEnter(index)}
         topOffset={40}
         bottomOffset={"95%"}
       >
