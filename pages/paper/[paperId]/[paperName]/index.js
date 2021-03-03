@@ -21,7 +21,7 @@ import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import ColumnContentTab from "~/components/Paper/SideColumn/ColumnContentTab";
-import PaperDraft from "~/components/Paper/Tabs/PaperDraft";
+import PaperDraft from "~/components/PaperDraft/PaperDraft";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
