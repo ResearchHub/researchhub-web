@@ -16,12 +16,12 @@ import {
 } from "draft-js";
 import { convertFromHTML } from "draft-convert";
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
 import ReactPlaceholder from "react-placeholder/lib";
-import { Waypoint } from "react-waypoint";
 
 // Components
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
+import WaypointSection from "./WaypointSection";
+import StyleControls from "./StyleControls";
 import Button from "~/components/Form/Button";
 
 import API from "~/config/api";
@@ -29,73 +29,12 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-import "./stylesheets/paper.css";
+import "~/components/Paper/Tabs/stylesheets/paper.css";
 
 const styleMap = {
   highlight: {
     backgroundColor: colors.BLACK(0.1),
     borderRadius: 2,
-  },
-  title: {
-    fontWeight: 500,
-    fontSize: 20,
-    display: "inline-block",
-    lineHeight: 2,
-    fontFamily: "Roboto",
-    width: "100%",
-    whiteSpace: "normal",
-  },
-  subtitle: {
-    fontWeight: 500,
-    fontSize: 16,
-    display: "inline-block",
-    lineHeight: 2,
-    fontFamily: "Roboto",
-    whiteSpace: "normal",
-  },
-  section: {
-    display: "inline",
-  },
-  paragraph: {
-    display: "inline",
-    padding: 0,
-    color: colors.BLACK(),
-    fontWeight: 400,
-    fontSize: 16,
-    width: "100%",
-    lineHeight: 2,
-    boxSizing: "border-box",
-    whiteSpace: "pre-wrap",
-    "@media only screen and (maxWidth: 967px)": {
-      fontSize: 14,
-      width: "100%",
-    },
-    "@media only screen and (maxWidth: 415px)": {
-      fontSize: 12,
-    },
-  },
-  span: {
-    display: "inline",
-    color: colors.BLUE(),
-  },
-  xref: {
-    display: "inline",
-    fontStyle: "italic", //will inherit inline styles so not needed,
-  },
-  body: {
-    margin: 0,
-    padding: 0,
-  },
-  hidden: {
-    height: 0,
-    maxHeight: 0,
-    overflow: "hidden",
-    visibility: "hidden",
-    opacity: 0,
-    padding: 0,
-    margin: 0,
-    lineHeight: 0,
-    display: "none",
   },
 };
 
@@ -104,6 +43,7 @@ class PaperDraft extends React.Component {
     super(props);
 
     this.state = {
+      prevEditorState: EditorState.createEmpty(),
       editorState: EditorState.createEmpty(),
       readOnly: true,
       showCommentButton: false,
@@ -113,31 +53,18 @@ class PaperDraft extends React.Component {
 
       seenEntityKeys: {},
     };
-
+    this.editor;
     this.decorator = new CompositeDecorator([
       {
         strategy: this.findWayPointEntity,
         component: (props) => (
-          <SectionBlock
+          <WaypointSection
             {...props}
             onSectionEnter={this.props.setActiveSection}
           />
         ),
       },
     ]);
-
-    // this.blockRenderMap = Immutable.Map({
-    //   'section': {
-    //     element: 'section',
-    //     wrapper: <SectionBlock editorState={this.state.editorState} onSectionEnter={this.props.setActiveSection} />
-    //         // {...props}
-    //         // onSectionEnter={this.props.setActiveSection}
-    //     // />
-    //   },
-
-    // });
-
-    // this.extendedBlockRenderMap = DefaultDraftBlockRenderMap.merge(this.blockRenderMap);
   }
 
   componentDidMount() {
@@ -222,45 +149,31 @@ class PaperDraft extends React.Component {
 
         try {
           const blocksFromHTML = convertFromHTML({
-            htmlToStyle: (nodeName, node, currentStyle) => {
-              const { parentNode } = node;
-
+            htmlToBlock: (nodeName, node) => {
               if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
-                return currentStyle.add("hidden");
-              }
-
-              if (parentNode.nodeName === "ABSTRACT") {
-                return currentStyle.add("hidden");
+                return false;
               }
 
               switch (nodeName) {
                 case "title":
-                  if (node.textContent.trim().length) {
-                    if (node.className === "header") {
-                      return currentStyle.add("title");
-                    }
-                    return currentStyle.add("subtitle");
+                  if (node.className === "header") {
+                    return {
+                      type: "header-one",
+                      data: {
+                        props: node.dataset.props,
+                      },
+                    };
                   } else {
-                    idsToRemove[node.id] = true;
-                    return currentStyle.add("hidden");
+                    return {
+                      type: "header-two",
+                      data: {},
+                    };
                   }
                 case "p":
-                  return currentStyle.add("paragraph");
-                case "span":
-                  return currentStyle.add("span");
-                case "sec":
-                  return currentStyle.add("section");
-                case "xref":
-                  return currentStyle.add("xref");
-                case "body":
-                case "article":
-                  return currentStyle.add("body");
-                default:
-                  return currentStyle.add("hidden");
-              }
-            },
-            htmlToBlock: (nodeName, node) => {
-              switch (nodeName) {
+                  return {
+                    type: "paragraph",
+                    data: {},
+                  };
                 case "abstract":
                 case "fig":
                 case "graphic":
@@ -275,8 +188,6 @@ class PaperDraft extends React.Component {
             },
             htmlToEntity: this.htmlToEntity,
           })(html, { flat: true });
-
-          console.log("html", html);
 
           const editorState = EditorState.set(
             EditorState.push(this.state.editorState, blocksFromHTML),
@@ -377,12 +288,18 @@ class PaperDraft extends React.Component {
     this.setState({ focused: true });
   };
 
-  // onBlur = () => {
-  //   this.setState({
-  //     readOnly: true,
-  //     focused: false,
-  //   });
-  // };
+  onBlur = () => {
+    this.setState({
+      readOnly: true,
+      focused: false,
+    });
+  };
+
+  onTab = (e) => {
+    e && e.preventDefault();
+    e && e.persist();
+    this.onChange(RichUtils.onTab(e, this.state.editorState, 4));
+  };
 
   handleSelectedText = (editorState) => {
     // const { editorState } = this.state;
@@ -486,6 +403,73 @@ class PaperDraft extends React.Component {
     );
   };
 
+  toggleBlockType = (blockType) => {
+    this.onChange(RichUtils.toggleBlockType(this.state.editorState, blockType));
+  };
+
+  toggleInlineStyle = (inlineStyle) => {
+    this.onChange(
+      RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
+    );
+  };
+
+  getBlockStyle = (block) => {
+    switch (block.getType()) {
+      case "header-one":
+        return "RichEditor-h1";
+      case "header-two":
+        return "RichEditor-h2";
+      case "paragraph":
+      case "unstyled":
+        return "RichEditor-p";
+      default:
+        return null;
+    }
+  };
+
+  handleKeyCommand = (command) => {
+    const { editorState } = this.state;
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      this.onChange(newState);
+      return true;
+    }
+    return false;
+  };
+
+  toggleEdit = (e) => {
+    const { readOnly } = this.state;
+
+    this.setState(
+      {
+        readOnly: !readOnly,
+        prevEditorState: this.state.editorState,
+      },
+      () => {
+        return this.state.readOnly ? this.editor.blur() : this.editor.focus();
+      }
+    );
+  };
+
+  onCancel = () => {
+    this.setState(
+      {
+        readOnly: true,
+        editorState: this.state.prevEditorState,
+      },
+      () => this.editor.blur()
+    );
+  };
+
+  onSave = () => {
+    this.setState(
+      {
+        readOnly: false,
+      },
+      () => this.editor.blur()
+    );
+  };
+
   render() {
     const {
       fetching,
@@ -510,21 +494,43 @@ class PaperDraft extends React.Component {
         <div className={css(styles.root)}>
           <h3 className={css(styles.title, !readOnly && styles.paddingBottom)}>
             Paper
-            <span
-              className={css(styles.pencilIcon)}
-              onClick={() => this.setState({ readOnly: !readOnly })}
-            >
+            <div className={css(styles.pencilIcon)} onClick={this.toggleEdit}>
               {icons.pencil}
-            </span>
+            </div>
           </h3>
+          <div className={css(styles.toolbar, !readOnly && styles.show)}>
+            <StyleControls
+              editorState={editorState}
+              onClickBlock={this.toggleBlockType}
+              onClickInline={this.toggleInlineStyle}
+            />
+          </div>
           <div className={css(!readOnly && styles.editor)}>
             <Editor
+              ref={(ref) => (this.editor = ref)}
               editorState={editorState}
               onChange={this.onChange}
               customStyleMap={styleMap}
-              onBlur={this.onBlur}
-              onFocus={this.onFocus}
+              onTab={this.onTab}
               readOnly={readOnly}
+              spellCheck={true}
+              handleKeyCommand={this.handleKeyCommand}
+              blockStyleFn={this.getBlockStyle}
+            />
+          </div>
+          <div className={css(styles.buttonRow, !readOnly && styles.show)}>
+            <Button
+              label={"Cancel"}
+              isWhite={true}
+              customButtonStyle={styles.button}
+              onClick={this.onCancel}
+            />
+            <div className={css(styles.divider)} />{" "}
+            {/** Needed to retain ripple effect integrity */}
+            <Button
+              label={"Save"}
+              customButtonStyle={styles.button}
+              onClick={this.onSave}
             />
           </div>
           {showCommentButton && this.renderShowCommentButton()}
@@ -533,27 +539,6 @@ class PaperDraft extends React.Component {
     );
   }
 }
-
-const SectionBlock = (props) => {
-  const { contentState, entityKey, onSectionEnter } = props;
-
-  const sectionInstance = contentState.getEntity(entityKey);
-  const { name, index } = sectionInstance.getData();
-
-  return (
-    <div {...props}>
-      <Waypoint
-        onEnter={() => {
-          onSectionEnter(index);
-        }}
-        topOffset={40}
-        bottomOffset={"95%"}
-      >
-        <a name={name}>{props.children}</a>
-      </Waypoint>
-    </div>
-  );
-};
 
 const styles = StyleSheet.create({
   root: {
@@ -571,6 +556,35 @@ const styles = StyleSheet.create({
     fontSize: 14,
     cursor: "pointer",
   },
+  toolbar: {
+    background: "#fff",
+    border: "1px solid #ddd",
+    fontFamily: `'Georgia', serif`,
+    fontSize: 14,
+    padding: 15,
+    boxSizing: "border-box",
+    width: "100%",
+    display: "none",
+    position: "sticky",
+    top: -2,
+    zIndex: 2,
+  },
+  show: {
+    display: "flex",
+  },
+  buttonRow: {
+    position: "sticky",
+    bottom: 0,
+    zIndex: 2,
+    background: "#fff",
+    border: "1px solid #ddd",
+    padding: 15,
+    boxSizing: "border-box",
+    width: "100%",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    display: "none",
+  },
   editor: {
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
@@ -586,8 +600,7 @@ const styles = StyleSheet.create({
     },
   },
   title: {
-    paddingTop: 30,
-    paddingLeft: 50,
+    padding: "30px 0 20px 50px",
     fontSize: 21,
     fontWeight: 500,
     color: colors.BLACK(),
@@ -642,6 +655,24 @@ const styles = StyleSheet.create({
     width: "unset",
     padding: "0px 15px",
     boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
+  },
+  button: {
+    height: 37,
+    width: 126,
+    minWidth: 126,
+    fontSize: 15,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    borderRadius: 4,
+    userSelect: "none",
+    "@media only screen and (max-width: 577px)": {
+      width: 100,
+    },
+  },
+  divider: {
+    width: 10,
   },
 });
 
