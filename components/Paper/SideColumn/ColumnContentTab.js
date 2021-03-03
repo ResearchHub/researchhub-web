@@ -15,6 +15,7 @@ const ColumnContentTab = (props) => {
     paperExists,
     sections,
     activeSection,
+    setActiveSection,
   } = props;
 
   const [hidePaperSections, toggleHidePaperSections] = useState(false);
@@ -28,7 +29,16 @@ const ColumnContentTab = (props) => {
     }, 20);
   };
 
-  const renderSections = () => {
+  const handleSectionClick = (i) => {
+    const offset = 3;
+    const index = i - offset;
+
+    setActiveSection(index);
+    setTimeout(() => {
+      activeSection !== index && setActiveSection(index);
+    }, 20);
+  };
+  const renderTabs = () => {
     const maintabs = [
       { name: "Main", index: 0 },
       { name: "Abstract", index: 1 },
@@ -80,7 +90,10 @@ const ColumnContentTab = (props) => {
             {paperExists && index === 2 && (
               <div
                 className={css(styles.button)}
-                onClick={() => toggleHidePaperSections(!hidePaperSections)}
+                onClick={(e) => {
+                  e && e.stopPropagation();
+                  toggleHidePaperSections(!hidePaperSections);
+                }}
               >
                 {hidePaperSections ? icons.chevronUp : icons.chevronDown}
               </div>
@@ -97,6 +110,7 @@ const ColumnContentTab = (props) => {
               isPaperSectionActive(sectionIndex) && styles.active,
               hidePaperSections && styles.hidden
             )}
+            onClick={() => handleSectionClick(sectionIndex)}
           >
             <div className={css(styles.name) + " clamp1"}>{section}</div>
           </a>
@@ -108,7 +122,7 @@ const ColumnContentTab = (props) => {
   return (
     <ColumnContainer overrideStyles={styles.container}>
       <div className={css(styles.title)}>Sections</div>
-      {renderSections()}
+      {renderTabs()}
     </ColumnContainer>
   );
 };
