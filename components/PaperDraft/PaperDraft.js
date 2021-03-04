@@ -183,6 +183,11 @@ class PaperDraft extends React.Component {
                     type: "paragraph",
                     data: {},
                   };
+                case "xref":
+                  return {
+                    type: "italic",
+                    data: {},
+                  };
                 case "abstract":
                 case "fig":
                 case "graphic":
@@ -224,6 +229,11 @@ class PaperDraft extends React.Component {
     const html = decodeURIComponent(escape(window.atob(base64)));
     const doc = new DOMParser().parseFromString(html, "text/xml");
     const sections = [].slice.call(doc.getElementsByTagName("sec"));
+    const xrefs = [].slice.call(doc.getElementsByTagName("xref"));
+
+    xrefs.forEach((xref) => {
+      xref.textContent = xref.textContent.trim();
+    });
 
     let count = 0;
 
@@ -288,6 +298,8 @@ class PaperDraft extends React.Component {
   };
 
   setRawToEditorState = (rawContent) => {
+    const { setPaperDraftExists, setPaperDraftSections } = this.props;
+
     const editorState = EditorState.set(
       EditorState.createWithContent(convertFromRaw(rawContent)),
       { decorator: this.decorator }
@@ -296,6 +308,7 @@ class PaperDraft extends React.Component {
       editorState,
       fetching: false,
     });
+    setPaperDraftExists(true);
   };
 
   onChange = (editorState) => {
