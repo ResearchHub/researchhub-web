@@ -34,7 +34,7 @@
   font-size: 16px;
   line-height: 2;
   box-sizing: border-box;
-  white-space: pre-wrap;
+  white-space: normal;
   font-family: CharterBT;
   color: rgb(36, 31, 58);
 }
