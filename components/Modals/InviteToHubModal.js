@@ -232,7 +232,7 @@ const overlayStyles = {
 const mobileOverlayStyles = {
   overlay: {
     position: "fixed",
-    top: 80,
+    top: 65,
     left: 0,
     right: 0,
     bottom: 0,

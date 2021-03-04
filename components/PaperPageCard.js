@@ -19,7 +19,6 @@ import ShareAction from "~/components/ShareAction";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
-import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import { BoltSvg } from "~/config/themes/icons";
 import PaperMetadata from "./Paper/PaperMetadata";
@@ -195,7 +194,7 @@ class PaperPageCard extends React.Component {
         label: "Published",
         value: (
           <span
-            className={css(styles.metadata)}
+            className={css(styles.metadata) + " clamp1"}
             property="datePublished"
             datetime={paper.paper_publish_date}
           >
@@ -212,7 +211,7 @@ class PaperPageCard extends React.Component {
             property="sameAs"
             href={this.formatDoiUrl(paper.doi)}
             target="_blank"
-            className={css(styles.metadata, styles.link)}
+            className={css(styles.metadata, styles.link) + " clamp1"}
             rel="noreferrer noopener"
           >
             {paper.doi}
@@ -347,8 +346,8 @@ class PaperPageCard extends React.Component {
                 <BoltSvg
                   color={"rgb(255, 255, 255)"}
                   opacity={1}
-                  width={20}
-                  height={17}
+                  // width={20}
+                  // height={17}
                 />
               </span>
             </div>
@@ -416,130 +415,6 @@ class PaperPageCard extends React.Component {
         })}
       </div>
     );
-  };
-
-  renderPreview = () => {
-    const { hovered, fetching, previews } = this.state;
-    const height = 154;
-    const width = 119;
-
-    if (fetching) {
-      return (
-        <div
-          className={css(styles.previewContainer)}
-          onMouseEnter={this.setHover}
-          onMouseLeave={this.unsetHover}
-          onClick={() => !fetching && previews.length && this.toggleLightbox()}
-          style={{
-            minHeight: height,
-            maxHeight: height,
-            height,
-            width,
-            minWidth: width,
-            maxWidth: width,
-          }}
-        >
-          <ReactPlaceholder
-            ready={!fetching}
-            showLoadingAnimation
-            customPlaceholder={<PreviewPlaceholder color="#efefef" />}
-          >
-            <Carousel
-              afterSlide={(slideIndex) =>
-                this.setState({ slideIndex: slideIndex + 1 })
-              }
-              renderBottomCenterControls={(arg) => {
-                const {
-                  currentSlide,
-                  slideCount,
-                  previousSlide,
-                  nextSlide,
-                } = arg;
-                return (
-                  <div
-                    className={css(
-                      carousel.bottomControl,
-                      hovered && carousel.show
-                    )}
-                  >
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        previousSlide(e);
-                      }}
-                      className={css(
-                        carousel.button,
-                        carousel.left,
-                        hovered && carousel.show
-                      )}
-                    >
-                      {icons.angleLeft}
-                    </span>
-                    <span className={css(styles.slideCount)}>{`${currentSlide +
-                      1} / ${slideCount}`}</span>
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        nextSlide(e);
-                      }}
-                      className={css(
-                        carousel.button,
-                        carousel.right,
-                        hovered && carousel.show
-                      )}
-                    >
-                      {icons.angleRight}
-                    </span>
-                  </div>
-                );
-              }}
-              renderCenterLeftControls={null}
-              renderCenterRightControls={null}
-              wrapAround={true}
-              enableKeyboardControls={true}
-            >
-              {previews.map((preview, i) => {
-                if (i === 0) {
-                  return (
-                    <img
-                      src={preview.file}
-                      className={css(styles.image)}
-                      key={`preview-${preview.id}-${i}`}
-                      property="image"
-                      style={{
-                        minHeight: height,
-                        maxHeight: height,
-                        height,
-                        width,
-                        minWidth: width,
-                        maxWidth: width,
-                      }}
-                      alt={`Paper PDF Page:${i + 1}`}
-                    />
-                  );
-                }
-                return (
-                  <img
-                    src={preview.file}
-                    className={css(styles.image)}
-                    key={`preview-${preview.id}-${i}`}
-                    style={{
-                      minHeight: height,
-                      maxHeight: height,
-                      height,
-                      width,
-                      minWidth: width,
-                      maxWidth: width,
-                    }}
-                    alt={`Paper PDF Page:${i + 1}`}
-                  />
-                );
-              })}
-            </Carousel>
-          </ReactPlaceholder>
-        </div>
-      );
-    }
   };
 
   formatAuthors = () => {
@@ -792,26 +667,6 @@ class PaperPageCard extends React.Component {
                 small={true}
               />
             </div>
-            <div className={css(styles.votingMobile)}>
-              <VoteWidget
-                score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                selected={selectedVoteType}
-                isPaper={true}
-                horizontalView={true}
-                type={"Paper"}
-                paperPage={true}
-                promoted={this.props.paper && this.props.paper.promoted}
-                paper={
-                  this.props.paper && this.props.paper.promoted
-                    ? this.props.paper
-                    : null
-                }
-                showPromotion={true}
-                small={true}
-              />
-            </div>
             <div
               className={css(
                 styles.column,
@@ -819,7 +674,7 @@ class PaperPageCard extends React.Component {
               )}
               ref={this.metaContainerRef}
             >
-              <div className={css(styles.row)}>
+              <div className={css(styles.reverseRow)}>
                 <div
                   className={css(
                     styles.cardContainer,
@@ -849,52 +704,38 @@ class PaperPageCard extends React.Component {
                     </div>
                     <div className={css(styles.column)}>
                       {this.renderMetadata()}
-                      <div
-                        className={css(
-                          styles.uploadedByContainer,
-                          styles.mobile
-                        )}
-                      >
-                        <div className={css(styles.mobile)}>
-                          <PermissionNotificationWrapper
-                            modalMessage="promote paper"
-                            onClick={() =>
-                              this.props.openPaperTransactionModal(true)
-                            }
-                            loginRequired={true}
-                            hideRipples={false}
-                          >
-                            <div
-                              className={css(styles.promotionButton)}
-                              onMouseEnter={() => this.toggleBoostHover(true)}
-                              onMouseLeave={() => this.toggleBoostHover(false)}
-                            >
-                              <span className={css(styles.boostIcon)}>
-                                <BoltSvg
-                                  color={"rgb(255, 255, 255)"}
-                                  opacity={1}
-                                />
-                              </span>
-                              Support
-                            </div>
-                          </PermissionNotificationWrapper>
-                        </div>
-                      </div>
                     </div>
-                    <div className={css(styles.mobile)}>
+                    {/* <div className={css(styles.mobile)}>
                       {process.browser && this.renderPreview()}
                     </div>
                     <div className={css(styles.mobile, styles.preregMobile)}>
                       {paper &&
                         paper.paper_type === "PRE_REGISTRATION" &&
                         this.renderPreregistrationTag()}
-                      {/* {this.renderHubs()} */}
-                    </div>
+                      {this.renderHubs()}
+                    </div> */}
                   </div>
                 </div>
                 <div className={css(styles.rightColumn, styles.mobile)}>
-                  <div className={css(styles.actionMobileContainer)}>
-                    {this.renderActions()}
+                  <div className={css(styles.votingMobile)}>
+                    <VoteWidget
+                      score={score}
+                      onUpvote={upvote}
+                      onDownvote={downvote}
+                      selected={selectedVoteType}
+                      isPaper={true}
+                      horizontalView={true}
+                      type={"Paper"}
+                      paperPage={true}
+                      promoted={this.props.paper && this.props.paper.promoted}
+                      paper={
+                        this.props.paper && this.props.paper.promoted
+                          ? this.props.paper
+                          : null
+                      }
+                      showPromotion={true}
+                      small={true}
+                    />
                   </div>
                 </div>
               </div>
@@ -902,9 +743,6 @@ class PaperPageCard extends React.Component {
           </div>
           <div className={css(styles.bottomContainer)}>
             <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
-            {/* <div className={css(styles.bottomRow, styles.hubsRow)}>
-              {this.renderHubs()}
-            </div> */}
           </div>
         </Fragment>
       </ReactPlaceholder>
@@ -918,8 +756,6 @@ const styles = StyleSheet.create({
     display: "flex",
     position: "relative",
     overflow: "visible",
-    paddingLeft: 50,
-    // paddingRight: 10,
     boxSizing: "border-box",
   },
   overflow: {
@@ -1006,10 +842,10 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     display: "flex",
-    paddingRight: 15,
+    paddingRight: 10,
 
     "@media only screen and (max-width: 760px)": {
-      fontSize: 28,
+      fontSize: 24,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 22,
@@ -1144,7 +980,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     position: "absolute",
     top: 0,
-    left: -12,
+    left: -62,
     "@media only screen and (max-width: 768px)": {
       display: "none",
     },
@@ -1153,10 +989,7 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 768px)": {
       display: "none",
     },
-    display: "unset",
-    position: "absolute",
-    top: 35,
-    left: 5,
+    display: "block",
   },
   buttonRow: {
     width: "100%",
@@ -1194,13 +1027,8 @@ const styles = StyleSheet.create({
     opacity: 1,
     transition: "all ease-in-out 0.2s",
     cursor: "pointer",
-    "@media only screen and (max-width: 768px)": {
-      paddingBottom: 15,
-    },
   },
-  actionsContainer: {
-    // marginRight: 30,
-  },
+  actionsContainer: {},
   actionIcon: {
     padding: 5,
     borderRadius: "50%",
@@ -1223,6 +1051,15 @@ const styles = StyleSheet.create({
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+      width: 15,
+      minWidth: 15,
+      maxWidth: 15,
+      height: 15,
+      minHeight: 15,
+      maxHeight: 15,
+    },
   },
   moderatorAction: {
     ":hover": {
@@ -1242,6 +1079,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       color: colors.RED(1),
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
     },
   },
   downloadActionIcon: {
@@ -1265,11 +1105,22 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
     "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+    },
+  },
+  reverseRow: {
+    display: "flex",
+    alignItems: "flex-start",
+    width: "100%",
+    "@media only screen and (max-width: 767px)": {
       flexDirection: "column-reverse",
     },
   },
   marginLeft: {
     marginLeft: 40,
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: 0,
+    },
   },
   rightColumn: {
     display: "flex",
@@ -1309,9 +1160,10 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    margin: "15px 0px 20px 0",
-    marginTop: 0,
-    paddingLeft: 50,
+    marginBottom: 20,
+    "@media only screen and (max-width: 767px)": {
+      margin: 0,
+    },
   },
   bottomRow: {
     maxWidth: "100%",
@@ -1319,7 +1171,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
     "@media only screen and (max-width: 767px)": {
-      display: "none",
+      // display: "none",
     },
   },
   hubsRow: {},
@@ -1334,6 +1186,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       marginLeft: 0,
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      flexDirection: "row",
+      paddingBottom: 10,
     },
   },
   summary: {

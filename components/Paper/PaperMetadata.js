@@ -15,12 +15,14 @@ const PaperMetadata = (props) => {
   const { active, centered, label, value, containerStyles } = props;
   return (
     <div
-      className={css(
-        styles.container,
-        centered && styles.centered,
-        containerStyles && containerStyles,
-        (!active || !value) && styles.hidden
-      )}
+      className={
+        css(
+          styles.container,
+          centered && styles.centered,
+          containerStyles && containerStyles,
+          (!active || !value) && styles.hidden
+        ) + " clamp1"
+      }
     >
       <div className={css(styles.labelContainer)}>
         <p className={css(styles.label)}>{`${label && label}:`}</p>
@@ -35,6 +37,10 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     margin: "5px 0",
+    "@media only screen and (max-width: 768px)": {
+      width: "100%",
+      boxSizing: "border-box",
+    },
   },
   centered: {
     alignItems: "center",
@@ -54,7 +60,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     margin: 0,
     "@media only screen and (max-width: 415px)": {
-      fontSize: 15,
+      fontSize: 14,
     },
   },
   metadata: {

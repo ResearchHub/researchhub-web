@@ -94,10 +94,6 @@ const styles = StyleSheet.create({
       background: colors.GREY(1),
       color: colors.BLACK(),
     },
-    "@media only screen and (max-width: 760px)": {
-      width: 35,
-      height: 35,
-    },
     "@media only screen and (max-width: 415px)": {
       height: 33,
       width: 33,

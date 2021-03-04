@@ -984,7 +984,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     alignItems: "center",
     zIndex: 2,
-    top: 80,
+    top: 65,
     "@media only screen and (min-width: 900px)": {
       paddingLeft: 25,
       paddingRight: 25,

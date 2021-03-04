@@ -313,7 +313,7 @@ var styles = StyleSheet.create({
     backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
-    top: 80,
+    top: 65,
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,

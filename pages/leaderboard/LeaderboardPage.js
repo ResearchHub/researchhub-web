@@ -891,7 +891,7 @@ const mainFeedStyles = StyleSheet.create({
     minWidth: 220,
     position: "relative",
     position: "sticky",
-    top: 80,
+    top: 65,
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 767px)": {
       display: "none",
@@ -1025,7 +1025,7 @@ const mainFeedStyles = StyleSheet.create({
     backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
-    top: 80,
+    top: 65,
     "@media only screen and (min-width: 320px)": {
       display: "flex",
       flexDirection: "column",
