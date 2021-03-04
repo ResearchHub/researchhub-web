@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
-import Immutable from "immutable";
+import { connect } from "react-redux";
+
 import {
   Editor,
   EditorState,
@@ -9,6 +10,7 @@ import {
   Modifier,
   RichUtils,
   convertToRaw,
+  convertFromRaw,
   getDefaultKeyBinding,
   DefaultDraftBlockRenderMap,
   KeyBindingUtil,
@@ -18,11 +20,14 @@ import { convertFromHTML } from "draft-convert";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
+import { MessageActions } from "~/redux/message";
+
 // Components
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
 import WaypointSection from "./WaypointSection";
 import StyleControls from "./StyleControls";
 import Button from "~/components/Form/Button";
+import Loader from "~/components/Loader/Loader";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -121,7 +126,7 @@ class PaperDraft extends React.Component {
     ) {
       const [name, index] = node.dataset.props.split("-");
 
-      const entity = createEntity("WAYPOINT", "MUTABLE", {
+      const entity = createEntity("WAYPOINT", "IMMUTABLE", {
         name: name,
         index: index,
       });
@@ -135,16 +140,20 @@ class PaperDraft extends React.Component {
       API.PAPER({
         paperId: this.props.paperId,
         hidePublic: true,
-        route: "pdf_extract_xml_string",
+        route: "pdf_extract",
       }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((base64) => {
+      .then((res) => {
+        if (typeof res !== "string") {
+          return this.setRawToEditorState(res);
+        }
+
         const { setPaperDraftExists, setPaperDraftSections } = this.props;
         const [html, idsToRemove, sectionTitles] = this.formatHTMLForMarkup(
-          base64
+          res
         );
 
         try {
@@ -278,6 +287,17 @@ class PaperDraft extends React.Component {
     }, callback);
   };
 
+  setRawToEditorState = (rawContent) => {
+    const editorState = EditorState.set(
+      EditorState.createWithContent(convertFromRaw(rawContent)),
+      { decorator: this.decorator }
+    );
+    this.setState({
+      editorState,
+      fetching: false,
+    });
+  };
+
   onChange = (editorState) => {
     this.setState({ editorState }, () => {
       // this.handleSelectedText(editorState);
@@ -286,6 +306,7 @@ class PaperDraft extends React.Component {
 
   onFocus = () => {
     this.setState({ focused: true });
+    // this.editor.focus()
   };
 
   onBlur = () => {
@@ -462,18 +483,43 @@ class PaperDraft extends React.Component {
   };
 
   onSave = () => {
-    this.setState({
-      readOnly: true,
-    });
+    const { setMessage, showMessage } = this.props;
+    this.setState({ saving: true });
+    this.saveEdit()
+      .then((res) => {
+        setMessage("Edit saved.");
+        showMessage({ show: true });
+        this.setState({ readOnly: true, saving: false });
+      })
+      .catch((err) => {
+        setMessage("Something went wrong. Please try again!");
+        showMessage({ error: true, show: true, saving: false });
+      });
+  };
+
+  saveEdit = () => {
+    const contentState = this.state.editorState.getCurrentContent();
+
+    return fetch(
+      API.PAPER({
+        paperId: this.props.paperId,
+        hidePublic: true,
+        route: "edit_file_extract",
+      }),
+      API.POST_CONFIG({
+        data: convertToRaw(contentState),
+      })
+    ).then(Helpers.checkStatus);
   };
 
   render() {
+    const { isModerator, paperDraftExists } = this.props;
     const {
       fetching,
       editorState,
       showCommentButton,
-      expandPaper,
       readOnly,
+      saving,
     } = this.state;
 
     return (
@@ -488,14 +534,19 @@ class PaperDraft extends React.Component {
           </div>
         }
       >
-        <div className={css(styles.root)}>
+        <div className={css(styles.root, !paperDraftExists && styles.hidden)}>
           <h3 className={css(styles.title, !readOnly && styles.paddingBottom)}>
             Paper
-            <div className={css(styles.pencilIcon)} onClick={this.toggleEdit}>
-              {icons.pencil}
-            </div>
+            {isModerator && (
+              <div className={css(styles.pencilIcon)} onClick={this.toggleEdit}>
+                {icons.pencil}
+              </div>
+            )}
           </h3>
-          <div className={css(styles.toolbar, !readOnly && styles.show)}>
+          <div
+            className={css(styles.toolbar, !readOnly && styles.show)}
+            onClick={this.onFocus}
+          >
             <StyleControls
               editorState={editorState}
               onClickBlock={this.toggleBlockType}
@@ -525,9 +576,16 @@ class PaperDraft extends React.Component {
             <div className={css(styles.divider)} />{" "}
             {/** Needed to retain ripple effect integrity */}
             <Button
-              label={"Save"}
+              label={
+                saving ? (
+                  <Loader loading={true} size={10} color={"#FFF"} />
+                ) : (
+                  "Save"
+                )
+              }
               customButtonStyle={styles.button}
-              onClick={this.onSave}
+              disabled={saving}
+              onClick={!saving && this.onSave}
             />
           </div>
           {showCommentButton && this.renderShowCommentButton()}
@@ -546,6 +604,9 @@ const styles = StyleSheet.create({
       display: "flex",
       flexDirection: "column",
     },
+  },
+  hidden: {
+    display: "none",
   },
   paddingBottom: {
     paddingBottom: 30,
@@ -680,4 +741,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaperDraft;
+const mapStateToProps = (state) => ({
+  vote: state.vote,
+  auth: state.auth,
+  user: state.auth.user,
+});
+
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PaperDraft);

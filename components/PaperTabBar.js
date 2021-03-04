@@ -111,7 +111,7 @@ const PaperTabBar = (props) => {
     setTimeout(() => {
       activeTab !== index && setActiveTab(index);
     }, 20);
-    menuRef.current && menuRef.current.scrollTo(key);
+    // menuRef.current && menuRef.current.scrollTo(key);
   };
 
   function renderTab(tab, index) {

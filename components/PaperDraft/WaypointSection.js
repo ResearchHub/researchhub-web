@@ -16,6 +16,7 @@ const WaypointSection = (props) => {
     <div {...props}>
       <Waypoint
         onEnter={() => {
+          console.log("waypoint", index);
           onSectionEnter(index);
         }}
         topOffset={40}
