@@ -53,6 +53,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     boxSizing: "border-box",
+    paddingBottom: 10,
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 30,
+    },
   },
   tabs: {
     width: "100%",

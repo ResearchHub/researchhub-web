@@ -630,9 +630,9 @@ class SummaryTab extends React.Component {
 
     const classNames = [styles.container];
 
-    if (doesNotExist(summary.summary) || !summaryExists) {
-      classNames.push(styles.noSummaryContainer);
-    }
+    // if (doesNotExist(summary.summary) || !summaryExists) {
+    //   classNames.push(styles.noSummaryContainer);
+    // }
 
     return classNames;
   };
@@ -654,15 +654,15 @@ class SummaryTab extends React.Component {
     const { paper } = this.props;
 
     return (
-      <div style={{ width: "100%" }}>
-        <ReactPlaceholder
-          ready={paper && paper.id}
-          showLoadingAnimation
-          customPlaceholder={<AbstractPlaceholder color="#efefef" />}
-        >
-          {this.renderAbstract()}
-        </ReactPlaceholder>
-      </div>
+      // <div style={{ display: "flex", width: "100%" }}>
+      <ReactPlaceholder
+        ready={paper && paper.id}
+        showLoadingAnimation
+        customPlaceholder={<AbstractPlaceholder color="#efefef" />}
+      >
+        {this.renderAbstract()}
+      </ReactPlaceholder>
+      // </div>
     );
   };
 
@@ -671,43 +671,40 @@ class SummaryTab extends React.Component {
     const { showAbstract } = this.state;
 
     return (
-      <a name="summary">
-        <div
-          className={css(this.containerStyle())}
-          ref={this.props.descriptionRef}
-          id="summary-tab"
-        >
-          <div className={css(this.sectionHeaderStyle())}>
-            <h3 className={css(styles.sectionTitle)}>
-              <span className={css(styles.titleRow)}>
-                Abstract
-                <PermissionNotificationWrapper
-                  modalMessage="propose abstract edit"
-                  onClick={this.editAbstract}
-                  loginRequired={true}
-                  hideRipples={true}
-                >
-                  <div className={css(styles.action, styles.editAction)}>
-                    <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
-                  </div>
-                </PermissionNotificationWrapper>
-                {!showAbstract && (
-                  <SectionBounty
-                    paper={paper}
-                    section={"summary"}
-                    loading={!userVoteChecked}
-                    updatePaperState={updatePaperState}
-                  />
-                )}
-              </span>
-              {/* {this.renderTabs()} */}
-            </h3>
-            {/* {this.renderActions()} */}
-          </div>
-          {this.renderContent()}
+      <div
+        className={css(this.containerStyle())}
+        ref={this.props.descriptionRef}
+      >
+        <div className={css(this.sectionHeaderStyle())}>
+          <h3 className={css(styles.sectionTitle)}>
+            <span className={css(styles.titleRow)}>
+              Abstract
+              <PermissionNotificationWrapper
+                modalMessage="propose abstract edit"
+                onClick={this.editAbstract}
+                loginRequired={true}
+                hideRipples={true}
+              >
+                <div className={css(styles.action, styles.editAction)}>
+                  <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
+                </div>
+              </PermissionNotificationWrapper>
+              {!showAbstract && (
+                <SectionBounty
+                  paper={paper}
+                  section={"summary"}
+                  loading={!userVoteChecked}
+                  updatePaperState={updatePaperState}
+                />
+              )}
+            </span>
+            {/* {this.renderTabs()} */}
+          </h3>
+          {/* {this.renderActions()} */}
         </div>
+        {this.renderContent()}
         <ManageBulletPointsModal paperId={this.props.paper.id} />
-      </a>
+      </div>
     );
   }
 }
@@ -725,13 +722,12 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    marginTop: 40,
+    marginTop: 20,
     position: "relative",
     boxSizing: "border-box",
     borderRadius: 4,
-    paddingLeft: 50,
-    "@media only screen and (max-width: 967px)": {
-      // padding: 25,
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 20,
     },
   },
   hidden: {
@@ -759,9 +755,9 @@ var styles = StyleSheet.create({
       fontSize: 14,
       width: "100%",
     },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
+    // "@media only screen and (max-width: 415px)": {
+    //   fontSize: 12,
+    // },
   },
   abstractText: {
     lineHeight: 1.6,
@@ -795,10 +791,10 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingBottom: 10,
-    "@media only screen and (max-width: 967px)": {
+    "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
-      paddingBottom: 20,
+      paddingBottom: 0,
     },
   },
   sectionTitle: {
@@ -899,8 +895,8 @@ var styles = StyleSheet.create({
     margin: "0 0 20px",
     textAlign: "center",
     "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-      width: 300,
+      // fontSize: 12,
+      // width: 300,
     },
   },
   summaryActions: {

@@ -79,8 +79,6 @@ const Paper = (props) => {
   const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
   const [loadingSummary, setLoadingSummary] = useState(true);
 
-  const [paperExists, setPaperExists] = useState(false);
-
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(props.paper && props.paper.userVote)
@@ -89,8 +87,10 @@ const Paper = (props) => {
     calculateCommentCount(props.paper)
   );
 
-  const [paperSections, setPaperSections] = useState([]);
-  const [activeSection, setActiveSection] = useState(0);
+  const [paperDraftExists, setPaperDraftExists] = useState(false);
+  const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
+  const [activeSection, setActiveSection] = useState(0); // paper draft sections
+  const [activeTab, setActiveTab] = useState(0); // sections for paper page
 
   const [steps, setSteps] = useState([
     {
@@ -109,7 +109,6 @@ const Paper = (props) => {
     },
   ]);
   const [userVoteChecked, setUserVoteChecked] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
 
   const { hostname } = props;
   const { paperId } = router.query;
@@ -494,7 +493,7 @@ const Paper = (props) => {
         </Waypoint>
         <div className={css(styles.root)}>
           <div className={css(styles.container)}>
-            <div className={css(styles.paperPageContainer)}>
+            <div className={css(styles.paperPageContainer, styles.top)}>
               <PaperPageCard
                 paper={paper}
                 paperId={paperId}
@@ -511,6 +510,15 @@ const Paper = (props) => {
                 doneFetchingPaper={!loadingPaper}
                 setFlag={setFlag}
               />
+            </div>
+            <div className={css(styles.stickyComponent)}>
+              <PaperTabBar
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                paperDraftExists={paperDraftExists}
+              />
+            </div>
+            <div className={css(styles.paperPageContainer, styles.bottom)}>
               <Waypoint
                 onEnter={() => onSectionEnter(1)}
                 topOffset={40}
@@ -537,8 +545,8 @@ const Paper = (props) => {
                   <PaperDraft
                     paperId={paperId}
                     abstract={paper.abstract}
-                    setPaperExists={setPaperExists}
-                    setPaperSections={setPaperSections}
+                    setPaperDraftExists={setPaperDraftExists}
+                    setPaperDraftSections={setPaperDraftSections}
                     setActiveSection={setActiveSection}
                   />
                 </a>
@@ -550,11 +558,7 @@ const Paper = (props) => {
               bottomOffset={"95%"}
             >
               <a name="discussions" id="comments">
-                <div
-                  id="comments-tab"
-                  name="discussions"
-                  className={css(styles.space)}
-                >
+                <div className={css(styles.space)}>
                   <DiscussionTab
                     hostname={hostname}
                     paperId={paperId}
@@ -565,14 +569,13 @@ const Paper = (props) => {
                 </div>
               </a>
             </Waypoint>
-
             <Waypoint
               onEnter={() => onSectionEnter(4)}
               topOffset={40}
               bottomOffset={"95%"}
             >
               <a name="paper pdf">
-                <div id="paper-tab" className={css(styles.paperTabContainer)}>
+                <div className={css(styles.paperTabContainer)}>
                   <PaperTab
                     paperId={paperId}
                     paper={paper}
@@ -581,6 +584,14 @@ const Paper = (props) => {
                 </div>
               </a>
             </Waypoint>
+            <div className={css(styles.paperMetaContainerMobile)}>
+              <PaperSideColumn
+                authors={Object.keys(formatAuthors())}
+                paper={paper}
+                hubs={paper.hubs}
+                paperId={paperId}
+              />
+            </div>
           </div>
           <div className={css(styles.sidebar)}>
             <PaperSideColumn
@@ -590,12 +601,12 @@ const Paper = (props) => {
               paperId={paperId}
             />
             <ColumnContentTab
-              activeTab={activeTab}
+              activeTab={activeTab} // for paper page tabs
               setActiveTab={setActiveTab}
-              sections={paperSections}
-              activeSection={activeSection}
+              activeSection={activeSection} // for paper draft sections
               setActiveSection={setActiveSection}
-              paperExists={paperExists}
+              paperDraftSections={paperDraftSections}
+              paperDraftExists={paperDraftExists}
             />
           </div>
         </div>
@@ -706,19 +717,32 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1200px)": {
       width: "100%",
     },
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      borderSpacing: "0",
+      display: "flex",
+      flexDirection: "column",
+    },
   },
   sidebar: {
     display: "table-cell",
-    minWidth: 280,
+    minWidth: 250,
     maxWidth: 280,
     width: 280,
     boxSizing: "border-box",
     verticalAlign: "top",
     position: "relative",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   container: {
     display: "table-cell",
     boxSizing: "border-box",
+    position: "relative",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
   contentContainer: {
     padding: "30px 0px",
@@ -734,7 +758,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     position: "relative",
     wordBreak: "break-word",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       fontSize: 28,
     },
     "@media only screen and (max-width: 415px)": {
@@ -747,7 +771,7 @@ const styles = StyleSheet.create({
   infoSection: {
     display: "flex",
     marginTop: 10,
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
@@ -762,7 +786,7 @@ const styles = StyleSheet.create({
   authors: {
     display: "flex",
     marginRight: 41,
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       marginRight: 21,
     },
   },
@@ -772,7 +796,7 @@ const styles = StyleSheet.create({
   tags: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
@@ -786,7 +810,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#4e4c5f",
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       marginTop: 20,
       marginBottom: 20,
     },
@@ -796,13 +820,13 @@ const styles = StyleSheet.create({
     width: 70,
     left: -80,
     top: 18,
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
   mobileVoting: {
     display: "none",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
     },
   },
@@ -813,7 +837,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
@@ -823,7 +847,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   mobileRow: {
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
       justifyContent: "space-between",
       alignContent: "center",
@@ -832,7 +856,7 @@ const styles = StyleSheet.create({
   },
   mobileInfoSection: {
     display: "none",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
       marginTop: 17,
       marginBottom: 20,
@@ -841,7 +865,7 @@ const styles = StyleSheet.create({
   },
   mobileDoi: {
     display: "none",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
       opacity: 0.5,
       fontSize: 14,
@@ -849,7 +873,7 @@ const styles = StyleSheet.create({
   },
   mobileTags: {
     display: "none",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
       alignItems: "center",
       marginTop: 20,
@@ -869,7 +893,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     display: "flex",
     flexShrink: 0,
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       width: 35,
       height: 35,
     },
@@ -888,13 +912,25 @@ const styles = StyleSheet.create({
   space: {
     marginTop: 30,
   },
+  paperMetaContainerMobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 30,
+      display: "block",
+    },
+  },
   stickyComponent: {
-    top: 0,
-    position: "sticky",
-    backgroundColor: "#FFF",
-    zIndex: 4,
-    "@media only screen and (max-width: 760px)": {
-      top: 80,
+    display: "none",
+    height: 0,
+    "@media only screen and (max-width: 767px)": {
+      top: 64,
+      position: "sticky",
+      backgroundColor: "#FFF",
+      zIndex: 3,
+      display: "flex",
+      height: "unset",
+      width: "100%",
+      boxSizing: "border-box",
     },
   },
   scrollPadding: {
@@ -971,41 +1007,29 @@ const styles = StyleSheet.create({
     },
   },
   paperPageContainer: {
-    // overflowX: "hidden",
+    display: "flex",
+    flexDirection: "column",
     border: "1.5px solid #F0F0F0",
     backgroundColor: "#fff",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    padding: "20px 30px 30px 30px",
+    padding: "20px 30px 30px 80px",
     boxSizing: "border-box",
-    // backgroundColor: "#FFF",
+    "@media only screen and (max-width: 767px)": {
+      padding: 20,
+      width: "100%",
+    },
+  },
+  top: {
+    borderBottom: "none",
+    paddingBottom: 0,
+  },
+  bottom: {
+    borderTop: "none",
+    paddingTop: 0,
   },
   componentWrapper: {
-    // width: 600,
     width: 1200,
     boxSizing: "border-box",
-    // "@media only screen and (min-width: 300px)": {
-    //   width: "100%",
-    //   paddingRight: 20,
-    //   paddingLeft: 20,
-    // },
-
-    // "@media only screen and (min-width: 768px)": {
-    //   width: 680,
-    //   paddingRight: 0,
-    //   paddingLeft: 0,
-    // },
-
-    // "@media only screen and (min-width: 900px)": {
-    //   width: "80%",
-    // },
-
-    // "@media only screen and (min-width: 1280px)": {
-    //   width: 1200,
-    // },
-
-    // "@media only screen and (min-width: 1440px)": {
-    //   width: 1200,
-    // },
   },
   abstractText: {
     lineHeight: 1.6,

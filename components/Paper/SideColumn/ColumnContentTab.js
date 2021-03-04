@@ -12,8 +12,8 @@ const ColumnContentTab = (props) => {
   const {
     activeTab,
     setActiveTab,
-    paperExists,
-    sections,
+    paperDraftExists,
+    paperDraftSections,
     activeSection,
     setActiveSection,
   } = props;
@@ -26,7 +26,7 @@ const ColumnContentTab = (props) => {
     setActiveTab(i);
     setTimeout(() => {
       activeTab !== i && setActiveTab(i);
-    }, 20);
+    }, 20); // needed to override unwanted effect
   };
 
   const handleSectionClick = (i) => {
@@ -46,15 +46,15 @@ const ColumnContentTab = (props) => {
       { name: "Paper PDF", index: 3 },
     ];
 
-    if (paperExists) {
+    if (paperDraftExists) {
       maintabs.splice(2, 0, { name: "Paper", index: 2 });
       maintabs.forEach((section, i) => {
         section.index = i;
       });
     }
 
-    if (sections && sections.length > 0) {
-      maintabs.splice(3, 0, ...sections);
+    if (paperDraftSections && paperDraftSections.length) {
+      maintabs.splice(3, 0, ...paperDraftSections);
     }
 
     const isMainTab = (name) => {
@@ -73,7 +73,9 @@ const ColumnContentTab = (props) => {
     const isPaperSectionActive = (index) => {
       const offset = 3;
 
-      return paperExists && activeTab === 2 && activeSection == index - offset;
+      return (
+        paperDraftExists && activeTab === 2 && activeSection == index - offset
+      );
     };
 
     return maintabs.map((section, sectionIndex) => {
@@ -87,7 +89,7 @@ const ColumnContentTab = (props) => {
             onClick={() => handleClick(index)}
           >
             <div className={css(styles.name) + " clamp1"}>{name}</div>
-            {paperExists && index === 2 && (
+            {paperDraftExists && index === 2 && (
               <div
                 className={css(styles.button)}
                 onClick={(e) => {
