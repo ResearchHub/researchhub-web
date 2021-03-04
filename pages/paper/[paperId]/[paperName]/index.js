@@ -439,7 +439,7 @@ const Paper = (props) => {
   }
 
   function onSectionEnter(index) {
-    setActiveTab(index);
+    activeTab !== index && setActiveTab(index);
   }
 
   return (
@@ -545,9 +545,11 @@ const Paper = (props) => {
                   <PaperDraft
                     paperId={paperId}
                     abstract={paper.abstract}
+                    paperDraftExists={paperDraftExists}
                     setPaperDraftExists={setPaperDraftExists}
                     setPaperDraftSections={setPaperDraftSections}
                     setActiveSection={setActiveSection}
+                    isModerator={isModerator}
                   />
                 </a>
               </Waypoint>
@@ -585,12 +587,20 @@ const Paper = (props) => {
               </a>
             </Waypoint>
             <div className={css(styles.paperMetaContainerMobile)}>
+              {/* <Waypoint
+                onEnter={() => onSectionEnter(5)}
+                topOffset={40}
+                bottomOffset={"95%"}
+              >
+                <a name="paper details"> */}
               <PaperSideColumn
                 authors={Object.keys(formatAuthors())}
                 paper={paper}
                 hubs={paper.hubs}
                 paperId={paperId}
               />
+              {/* </a>
+              </Waypoint> */}
             </div>
           </div>
           <div className={css(styles.sidebar)}>
@@ -923,7 +933,8 @@ const styles = StyleSheet.create({
     display: "none",
     height: 0,
     "@media only screen and (max-width: 767px)": {
-      top: 64,
+      // top: 65,
+      top: -2,
       position: "sticky",
       backgroundColor: "#FFF",
       zIndex: 3,

@@ -10,7 +10,6 @@ import icons from "~/config/themes/icons";
 const BLOCK_TYPES = [
   { label: "H1", style: "header-one" },
   { label: "H2", style: "header-two" },
-  // {label: 'Blockquote', style: 'blockquote'},
   { label: "UL", style: "unordered-list-item" },
   { label: "OL", style: "ordered-list-item" },
 ];
