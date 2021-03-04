@@ -654,15 +654,17 @@ class SummaryTab extends React.Component {
     const { paper } = this.props;
 
     return (
-      <div style={{ display: "flex", width: "100%" }}>
-        <ReactPlaceholder
-          ready={paper && paper.id}
-          showLoadingAnimation
-          customPlaceholder={<AbstractPlaceholder color="#efefef" />}
-        >
-          {this.renderAbstract()}
-        </ReactPlaceholder>
-      </div>
+      <ReactPlaceholder
+        ready={paper && paper.id}
+        showLoadingAnimation
+        customPlaceholder={
+          <div style={{ paddingTop: 30, width: "100%" }}>
+            <AbstractPlaceholder color="#efefef" />
+          </div>
+        }
+      >
+        {this.renderAbstract()}
+      </ReactPlaceholder>
     );
   };
 
