@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useStore } from "react-redux";
+import ScrollMenu from "react-horizontal-scrolling-menu";
 
 // Components
 import ComponentWrapper from "./ComponentWrapper";
@@ -9,159 +10,38 @@ import Loader from "~/components/Loader/Loader";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import icons from "~/config/themes/icons";
 import colors, { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 
 const VIEW_TIMER = 3000; // 3 seconds
 
 const PaperTabBar = (props) => {
-  const store = useStore();
-  const [selectedTab, setSelectedTab] = useState("main");
-  const [tabs, setTabs] = useState(props.activeTabs.map(formatTabs));
-  const [scrollEvent, setScrollEvent] = useState(null);
-
-  const { scrollView } = props;
+  const { activeTab, setActiveTab, paperDraftExists } = props;
+  const [tabs, setTabs] = useState(getPaperTabs());
+  const menuRef = useRef();
 
   useEffect(() => {
-    window.addEventListener("scroll", scrollListener);
+    setTabs(getPaperTabs());
+  }, [paperDraftExists]);
 
-    return () => window.removeEventListener("scroll", scrollListener);
-  }, [scrollListener]);
+  // useEffect(() => {
+  //   menuRef.current && menuRef.current.scrollTo(selected);
+  // }, [activeTab])
 
-  useEffect(() => {
-    clearTimeout(scrollEvent);
-
-    setScrollEvent(
-      setTimeout(() => {
-        trackEvent("scroll", selectedTab);
-      }, VIEW_TIMER)
-    );
-  }, [selectedTab]);
-
-  function getActiveTabs() {
-    let tabs = [
+  function getPaperTabs() {
+    const paperTabs = [
       { href: "main", label: "main" },
-      // { href: "takeaways", label: "key takeaways" },
+      { href: "abstract", label: "abstract" },
+      { href: "discussions", label: "discussions" },
+      { href: "paper pdf", label: "Paper PDF" },
     ];
 
-    // tabs.push({ href: "summary", label: "abstract" });
-    tabs.push({ href: "discussions", label: "discussions" });
-    // tabs.push({ href: "figures", label: "figures" });
-    tabs.push({ href: "paper", label: "Paper PDF" });
-    // // tabs.push({ href: "citations", label: "cited by" });
-    // tabs.push({ href: "limitations", label: "limitations" });
-    return tabs;
-  }
-
-  useEffect(() => {
-    setTabs(props.activeTabs.map(formatTabs));
-  }, [props.activeTabs.length]);
-
-  useEffect(() => {
-    if (props.showAllSections) {
-      setTabs(getActiveTabs().map(formatTabs));
-    }
-  }, [props.showAllSections]);
-
-  const startTimer = () => {};
-
-  const clearTimer = () => {};
-
-  const getCoords = (elem) => {
-    // crossbrowser version
-    var box = elem.getBoundingClientRect();
-
-    var body = document.body;
-    var docEl = document.documentElement;
-
-    var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
-    var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
-
-    var clientTop = docEl.clientTop || body.clientTop || 0;
-    var clientLeft = docEl.clientLeft || body.clientLeft || 0;
-
-    var top = box.top + scrollTop - clientTop;
-    var left = box.left + scrollLeft - clientLeft;
-
-    return { top: Math.round(top), left: Math.round(left) };
-  };
-
-  const calculateOffset = (id, offset) => {
-    let offsetElement = document.getElementById(id);
-    if (!offsetElement) {
-      return 100000000;
-    }
-    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    let value =
-      getCoords(offsetElement).top + offsetElement.offsetHeight + offset;
-    return value;
-  };
-
-  function scrollListener() {
-    if (!scrollView) {
-      setSelectedTab("main");
-      return;
+    if (paperDraftExists) {
+      paperTabs.splice(2, 0, { href: "paper", label: "paper" });
     }
 
-    let navbarHeight = props.paperTabsRef.current
-      ? props.paperTabsRef.current.clientHeight + 80
-      : 139;
-
-    if (window.scrollY < 200) {
-      setSelectedTab("main");
-    }
-    // else if (
-    //   window.scrollY <= calculateOffset("takeaways-tab", -navbarHeight)
-    // ) {
-    //   setSelectedTab("key takeaways");
-    // }
-    else if (window.scrollY <= calculateOffset("summary-tab", -navbarHeight)) {
-      setSelectedTab("summary");
-      if (window.outerWidth < 667) {
-        let paperNavigation = document.getElementById("paper-navigation");
-        paperNavigation.scroll({
-          left: 0,
-          behavior: "smooth",
-        });
-      }
-    } else if (
-      window.scrollY <= calculateOffset("comments-tab", -navbarHeight)
-    ) {
-      setSelectedTab("comments");
-      if (window.outerWidth < 667) {
-        let paperNavigation = document.getElementById("paper-navigation");
-        paperNavigation.scroll({
-          left: paperNavigation.offsetWidth,
-          behavior: "smooth",
-        });
-      }
-    }
-    // else if (
-    //   window.scrollY <= calculateOffset("figures-tab", -navbarHeight)
-    // ) {
-    //   setSelectedTab("figures");
-    // }
-    else if (window.scrollY <= calculateOffset("paper-tab", -navbarHeight)) {
-      setSelectedTab("Paper PDF");
-    }
-    // else if (
-    //   window.scrollY <= calculateOffset("citedby-tab", -navbarHeight)
-    // ) {
-    //   setSelectedTab("citations");
-    // }
-    // else if (
-    //   window.scrollY <= calculateOffset("limitations-tab", -navbarHeight)
-    // ) {
-    //   setSelectedTab("limitations");
-    // }
-    else {
-      // setSelectedTab("key takeaways");
-    }
-  }
-
-  function formatTabs(tab) {
-    tab.key = `nav-link-${tab.href}`;
-    return tab;
+    return paperTabs;
   }
 
   function trackEvent(interaction, label) {
@@ -205,47 +85,6 @@ const PaperTabBar = (props) => {
       .then((res) => {});
   }
 
-  function scrollToPage(label) {
-    setSelectedTab(label);
-    if (label === "main") {
-      window.scrollTo({
-        behavior: "auto",
-        top: 0,
-      });
-    }
-    trackEvent("click", label);
-  }
-
-  function renderCount(label, selected) {
-    var count, loading;
-    switch (label) {
-      case "comments":
-        count = props.discussionCount && props.discussionCount;
-        loading = false;
-        break;
-      case "figures":
-        count = props.figureCount && props.figureCount;
-        loading = !props.fetchedFigures;
-        break;
-      case "cited-by":
-        count = props.referencedByCount && props.referencedByCount;
-        loading = props.loadingReferencedBy;
-        break;
-      default:
-        break;
-    }
-
-    if (count) {
-      return (
-        <Count
-          amount={count}
-          isSelected={selected === label}
-          loading={loading}
-        />
-      );
-    }
-  }
-
   function renderPreregistrationTag() {
     if (props.paper && props.paper.paper_type === "PRE_REGISTRATION") {
       return (
@@ -262,40 +101,59 @@ const PaperTabBar = (props) => {
     return null;
   }
 
-  function renderTab({ key, href, label, ui }, selected, index) {
+  const onClick = (key) => {
+    if (typeof key !== "string") return;
+    const [href, i] = key.split("-");
+
+    const index = Number(i);
+
+    setActiveTab(index);
+    setTimeout(() => {
+      activeTab !== index && setActiveTab(index);
+    }, 20);
+    menuRef.current && menuRef.current.scrollTo(key);
+  };
+
+  function renderTab(tab, index) {
+    const { key, href, label, ui } = tab;
     let isSelected = false;
-    let classNames = [styles.tab];
-    if (label === selected || href === selected) {
+    const classNames = [styles.tab];
+
+    if (index === activeTab || index === activeTab) {
       isSelected = true;
       classNames.push(styles.selected);
     }
 
-    if (index === 2) {
-      classNames.push(styles.lastTab);
-    }
-
     return (
-      <a
-        href={`#${href}`}
-        className={css(styles.tag)}
-        key={`paper_tab_bar_${index}`}
-      >
-        <div className={css(classNames)} onClick={() => scrollToPage(label)}>
+      <a href={`#${href}`} className={css(styles.tag)} key={`${href}-${index}`}>
+        <div className={css(classNames)} onClick={onClick}>
           {label} {ui && ui(isSelected)}
-          {renderCount(label, selected)}
         </div>
       </a>
     );
   }
 
+  const menu = tabs.map(renderTab);
+
   return (
-    <div className={css(styles.container)} id="paper-navigation">
-      <ComponentWrapper overrideStyle={styles.componentWrapper}>
-        <div className={css(styles.tabContainer)}>
-          {tabs.map((tab, index) => renderTab(tab, selectedTab, index))}
-        </div>
-        {renderPreregistrationTag()}
-      </ComponentWrapper>
+    <div className={css(styles.container)}>
+      <ScrollMenu
+        ref={menuRef}
+        data={menu}
+        arrowLeft={
+          <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+        }
+        arrowRight={
+          <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+        }
+        menuStyle={styles.tabContainer}
+        itemStyle={{ border: "none", highlight: "none", outline: "none" }}
+        hideSingleArrow={true}
+        onSelect={onClick}
+        selected={activeTab}
+        scrollToSelected={true}
+      />
+      {/* {renderPreregistrationTag()} */}
     </div>
   );
 };
@@ -340,20 +198,37 @@ const UIStyling = (props) => {
   );
 };
 
+export const NavigationArrow = ({ icon, direction, customStyles }) => {
+  const classNames = [styles.arrowContainer];
+
+  if (direction === "left") {
+    classNames.push(styles.arrowLeft);
+  } else {
+    classNames.push(styles.arrowRight);
+  }
+
+  if (customStyles) {
+    classNames.push(customStyles);
+  }
+
+  return <div className={css(classNames)}>{icon}</div>;
+};
+
 const styles = StyleSheet.create({
   container: {
     display: "flex",
     width: "100%",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     background: "#fff",
     borderBottom: "1.5px solid #F0F0F0",
-    overflow: "auto",
+    borderTop: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    padding: "0 20px 0 5px",
   },
   tabContainer: {
     display: "flex",
     width: "100%",
     justifyContent: "flex-start",
-    minWidth: 200,
   },
   firstTab: {
     paddingLeft: 0,
@@ -367,15 +242,16 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     whiteSpace: "nowrap",
     fontSize: 16,
+    fontWeight: 500,
     "@media only screen and (max-width: 767px)": {
       padding: 16,
-      fontWeight: 14,
+      fontSize: 14,
     },
 
     "@media only screen and (min-width: 1288px)": {
       marginRight: 0,
     },
-    ":hover": {
+    ":active": {
       color: colors.PURPLE(),
       cursor: "pointer",
     },
@@ -455,6 +331,35 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       height: 15,
     },
+  },
+  //
+  arrowContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    maxHeight: 30,
+    minHeight: 30,
+    height: 30,
+    maxWidth: 30,
+    minWidth: 30,
+    width: 30,
+    fontSize: 15,
+    borderRadius: "50%",
+    background: "#FFF",
+    boxSizing: "border-box",
+    color: colors.PURPLE(),
+    border: "1.5px solid rgba(151, 151, 151, 0.2)",
+    cursor: "pointer",
+    boxShadow: "0 0 15px rgba(255, 255, 255, 0.14)",
+    ":hover": {
+      background: "#FAFAFA",
+    },
+  },
+  arrowLeft: {
+    paddingRight: 2,
+  },
+  arrowRight: {
+    paddingLeft: 5,
   },
 });
 

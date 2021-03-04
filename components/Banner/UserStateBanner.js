@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   suspended: {
     backgroundColor: colors.RED(),
     position: "sticky",
-    top: 80,
+    top: 65,
     zIndex: 3,
   },
   contentContainer: {

@@ -142,7 +142,7 @@ class PaperDraft extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((base64) => {
-        const { setPaperExists, setPaperSections } = this.props;
+        const { setPaperDraftExists, setPaperDraftSections } = this.props;
         const [html, idsToRemove, sectionTitles] = this.formatHTMLForMarkup(
           base64
         );
@@ -195,8 +195,8 @@ class PaperDraft extends React.Component {
           );
 
           this.setState({ editorState, fetching: false });
-          setPaperExists(true);
-          setPaperSections(sectionTitles);
+          setPaperDraftExists(true);
+          setPaperDraftSections(sectionTitles);
         } catch (err) {
           console.log("er", err);
           this.setState({ fetching: false });
@@ -481,7 +481,7 @@ class PaperDraft extends React.Component {
         ready={!fetching}
         showLoadingAnimation
         customPlaceholder={
-          <div style={{ padding: "30px 0 0 50px" }}>
+          <div style={{ paddingTop: 30 }}>
             <AbstractPlaceholder color="#efefef" />
             <AbstractPlaceholder color="#efefef" />
             <AbstractPlaceholder color="#efefef" />
@@ -540,9 +540,12 @@ class PaperDraft extends React.Component {
 const styles = StyleSheet.create({
   root: {
     width: "100%",
-    paddingRight: 10,
     position: "relative",
     fontFamily: "CharterBT",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+      flexDirection: "column",
+    },
   },
   paddingBottom: {
     paddingBottom: 30,
@@ -564,7 +567,10 @@ const styles = StyleSheet.create({
     display: "none",
     position: "sticky",
     top: -2,
-    zIndex: 2,
+    zIndex: 4,
+    "@media only screen and (max-width: 767px)": {
+      top: 64,
+    },
   },
   show: {
     display: "flex",
@@ -585,6 +591,7 @@ const styles = StyleSheet.create({
   editor: {
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
+    padding: 20,
     ":hover": {
       borderColor: "#B3B3B3",
     },
@@ -597,7 +604,7 @@ const styles = StyleSheet.create({
     },
   },
   title: {
-    padding: "30px 0 20px 50px",
+    padding: "30px 0 20px 0",
     fontSize: 21,
     fontWeight: 500,
     color: colors.BLACK(),

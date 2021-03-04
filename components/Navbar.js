@@ -592,6 +592,7 @@ const styles = StyleSheet.create({
       justifyContent: "space-between",
       position: "sticky",
       zIndex: 4,
+      height: 65,
     },
   },
   unstickyNavbar: {
