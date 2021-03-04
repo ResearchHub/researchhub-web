@@ -76,44 +76,11 @@ class PaperDraft extends React.Component {
     this.fetchHTML();
   }
 
-  htmlToStyle = (nodeName, node, currentStyle, idsToRemove) => {
-    const { parentNode } = node;
-
-    if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
-      return currentStyle.add("hidden");
-    }
-
-    if (parentNode.nodeName === "ABSTRACT") {
-      return currentStyle.add("hidden");
-    }
-
-    switch (nodeName) {
-      case "title":
-        if (node.textContent.trim().length) {
-          if (node.className === "header") {
-            return currentStyle.add("title");
-          }
-          return currentStyle.add("subtitle");
-        } else {
-          idsToRemove[node.id] = true;
-          return currentStyle.add("hidden");
-        }
-      case "p":
-        return currentStyle.add("paragraph");
-      case "sec":
-        return currentStyle.add("section");
-      case "xref":
-        return currentStyle.add("xref");
-      case "abstract":
-      case "fig":
-      case "graphic":
-      case "front":
-      case "back":
-      case "journal":
-      case "article-id":
-      default:
-        // return currentStyle.add("meta");
-        return currentStyle.add("hidden");
+  htmlToStyle = (nodeName, node, currentStyle) => {
+    if (nodeName === "xref") {
+      return currentStyle.add("ITALIC");
+    } else {
+      return currentStyle;
     }
   };
 
@@ -156,6 +123,7 @@ class PaperDraft extends React.Component {
           res
         );
 
+        // console.log("html", html)
         try {
           const blocksFromHTML = convertFromHTML({
             htmlToBlock: (nodeName, node) => {
@@ -184,12 +152,6 @@ class PaperDraft extends React.Component {
                     data: {},
                   };
 
-                case "xref":
-                  console.log("node", node);
-                  return {
-                    type: "xref",
-                    data: {},
-                  };
                 case "abstract":
                 case "fig":
                 case "graphic":
@@ -202,6 +164,7 @@ class PaperDraft extends React.Component {
                   return true;
               }
             },
+            htmlToStyle: this.htmlToStyle,
             htmlToEntity: this.htmlToEntity,
           })(html, { flat: true });
 
@@ -450,8 +413,6 @@ class PaperDraft extends React.Component {
         return "RichEditor-h1";
       case "header-two":
         return "RichEditor-h2";
-      case "xref":
-        return "RichEditor-italic";
       case "paragraph":
       case "unstyled":
         return "RichEditor-p";
