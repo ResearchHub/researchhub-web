@@ -479,7 +479,7 @@ class PaperDraft extends React.Component {
   };
 
   saveEdit = () => {
-    const { paperId, setPaperDraftSections } = this.props;
+    const { paperId, paperDraftSections } = this.props;
     const contentState = this.state.editorState.getCurrentContent();
 
     return fetch(
@@ -490,7 +490,7 @@ class PaperDraft extends React.Component {
       }),
       API.POST_CONFIG({
         data: convertToRaw(contentState),
-        sections: setPaperDraftSections,
+        sections: paperDraftSections,
       })
     ).then(Helpers.checkStatus);
   };
@@ -596,7 +596,7 @@ const styles = StyleSheet.create({
   },
   pencilIcon: {
     marginLeft: 8,
-    color: colors.BLACK(0.6),
+    color: "rgba(36, 31, 58, 0.4)",
     fontSize: 14,
     cursor: "pointer",
   },
