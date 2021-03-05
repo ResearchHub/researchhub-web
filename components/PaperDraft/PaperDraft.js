@@ -114,6 +114,7 @@ class PaperDraft extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        console.log("res", res);
         if (typeof res !== "string") {
           return this.setRawToEditorState(res);
         }
@@ -481,6 +482,7 @@ class PaperDraft extends React.Component {
       }),
       API.POST_CONFIG({
         data: convertToRaw(contentState),
+        sections: this.props.paperDraftSections,
       })
     ).then(Helpers.checkStatus);
   };
