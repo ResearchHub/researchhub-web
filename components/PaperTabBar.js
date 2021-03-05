@@ -151,7 +151,8 @@ const PaperTabBar = (props) => {
         hideSingleArrow={true}
         onSelect={onClick}
         selected={activeTab}
-        scrollToSelected={true}
+        // scrollToSelected={true}
+        alignCenter={true}
       />
       {/* {renderPreregistrationTag()} */}
     </div>
