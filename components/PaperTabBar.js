@@ -110,8 +110,8 @@ const PaperTabBar = (props) => {
     setActiveTab(index);
     setTimeout(() => {
       activeTab !== index && setActiveTab(index);
+      menuRef.current && menuRef.current.scrollTo(key);
     }, 20);
-    // menuRef.current && menuRef.current.scrollTo(key);
   };
 
   function renderTab(tab, index) {
@@ -151,8 +151,7 @@ const PaperTabBar = (props) => {
         hideSingleArrow={true}
         onSelect={onClick}
         selected={activeTab}
-        // scrollToSelected={true}
-        alignCenter={true}
+        // alignCenter={true}
       />
       {/* {renderPreregistrationTag()} */}
     </div>
@@ -244,14 +243,6 @@ const styles = StyleSheet.create({
     whiteSpace: "nowrap",
     fontSize: 16,
     fontWeight: 500,
-    "@media only screen and (max-width: 767px)": {
-      padding: 16,
-      fontSize: 14,
-    },
-
-    "@media only screen and (min-width: 1288px)": {
-      marginRight: 0,
-    },
     ":active": {
       color: colors.PURPLE(),
       cursor: "pointer",
@@ -259,12 +250,16 @@ const styles = StyleSheet.create({
     ":hover #count_border": {
       borderColor: colors.BLACK(),
     },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
+    "@media only screen and (min-width: 1288px)": {
+      marginRight: 0,
+    },
+    "@media only screen and (max-width: 767px)": {
+      padding: 16,
+      fontSize: 14,
     },
     "@media only screen and (max-width: 321px)": {
-      fontSize: 12,
-      padding: "16px 8px 16px 8px",
+      fontSize: 14,
+      padding: 15,
     },
   },
   lastTab: {

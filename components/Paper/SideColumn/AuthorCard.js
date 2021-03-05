@@ -40,6 +40,9 @@ const styles = StyleSheet.create({
     color: colors.BLACK(1),
     fontWeight: 500,
     marginLeft: 10,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   userIcon: {
     color: "#aaa",
@@ -47,6 +50,11 @@ const styles = StyleSheet.create({
     height: 30,
     fontSize: 30 + 1,
     border: "3px solid transparent",
+    "@media only screen and (max-width: 415px)": {
+      width: 25,
+      height: 25,
+      fontSize: 25 + 1,
+    },
   },
 });
 

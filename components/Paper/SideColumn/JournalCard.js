@@ -81,6 +81,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
     background: "#EAEAEA",
     border: "1px solid #ededed",
+    "@media only screen and (max-width: 415px)": {
+      height: 25,
+      width: 25,
+      minWidth: 25,
+      maxWidth: 25,
+    },
   },
   journal: {
     fontSize: 16,
@@ -89,6 +95,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     lineHeight: 1.3,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
   column: {
     display: "flex",
@@ -107,6 +116,9 @@ const styles = StyleSheet.create({
     ":hover": {
       cursor: "pointer",
       textDecoration: "underline",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
     },
   },
 });

@@ -183,12 +183,15 @@ class PaperDraft extends React.Component {
           setPaperDraftExists(true);
           setPaperDraftSections(sectionTitles);
         } catch (err) {
-          console.log("er", err);
+          setPaperDraftExists(false);
+          setPaperDraftSections([]);
           this.setState({ fetching: false });
         }
       })
       .catch((err) => {
-        console.log("err", err);
+        const { setPaperDraftExists, setPaperDraftSections } = this.props;
+        setPaperDraftExists(false);
+        setPaperDraftSections([]);
         this.setState({ fetching: false });
       });
   };
@@ -264,19 +267,24 @@ class PaperDraft extends React.Component {
   };
 
   setRawToEditorState = (res) => {
-    const { data, sections } = res;
     const { setPaperDraftExists, setPaperDraftSections } = this.props;
-
-    const editorState = EditorState.set(
-      EditorState.createWithContent(convertFromRaw(data)),
-      { decorator: this.decorator }
-    );
-    this.setState({
-      editorState,
-      fetching: false,
-    });
-    setPaperDraftExists(true);
-    setPaperDraftSections(sections);
+    try {
+      const { data, sections } = res;
+      const editorState = EditorState.set(
+        EditorState.createWithContent(convertFromRaw(data)),
+        { decorator: this.decorator }
+      );
+      this.setState({
+        editorState,
+        fetching: false,
+      });
+      setPaperDraftExists(true);
+      setPaperDraftSections(sections);
+    } catch {
+      setPaperDraftExists(false);
+      setPaperDraftSections([]);
+      this.setState({ fetching: false });
+    }
   };
 
   onChange = (editorState) => {

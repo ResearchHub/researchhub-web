@@ -23,6 +23,7 @@ import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import ColumnContentTab from "~/components/Paper/SideColumn/ColumnContentTab";
 import PaperDraft from "~/components/PaperDraft/PaperDraft";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
+import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -512,6 +513,22 @@ const Paper = (props) => {
                 setFlag={setFlag}
               />
             </div>
+            <div className={css(styles.paperMetaContainerMobile)}>
+              {/* <Waypoint
+                  onEnter={() => onSectionEnter(5)}
+                  topOffset={40}
+                  bottomOffset={"95%"}
+                >
+                  <a name="paper details"> */}
+              <AuthorStatsDropdown
+                authors={Object.keys(formatAuthors())}
+                paper={paper}
+                hubs={paper.hubs}
+                paperId={paperId}
+              />
+              {/* </a>
+                </Waypoint> */}
+            </div>
             <div className={css(styles.stickyComponent)}>
               <PaperTabBar
                 paperId={paperId}
@@ -594,22 +611,6 @@ const Paper = (props) => {
                 </div>
               </a>
             </Waypoint>
-            <div className={css(styles.paperMetaContainerMobile)}>
-              {/* <Waypoint
-                onEnter={() => onSectionEnter(5)}
-                topOffset={40}
-                bottomOffset={"95%"}
-              >
-                <a name="paper details"> */}
-              <PaperSideColumn
-                authors={Object.keys(formatAuthors())}
-                paper={paper}
-                hubs={paper.hubs}
-                paperId={paperId}
-              />
-              {/* </a>
-              </Waypoint> */}
-            </div>
           </div>
           <div className={css(styles.sidebar)}>
             <PaperSideColumn
@@ -933,8 +934,7 @@ const styles = StyleSheet.create({
   paperMetaContainerMobile: {
     display: "none",
     "@media only screen and (max-width: 767px)": {
-      marginTop: 30,
-      display: "block",
+      display: "flex",
     },
   },
   stickyComponent: {

@@ -130,6 +130,9 @@ const styles = StyleSheet.create({
   },
   title: {
     margin: "15px 0 10px",
+    "@media only screen and (max-width: 415px)": {
+      margin: "15px 0 5px",
+    },
   },
   viewMoreButton: {
     color: "rgba(78, 83, 255)",
@@ -140,11 +143,14 @@ const styles = StyleSheet.create({
     width: "100%",
     cursor: "pointer",
     borderLeft: `3px solid #FFF`,
-    fontWeight: 500,
+    // fontWeight: 500,
     transition: "all ease-out 0.1s",
     ":hover": {
       background: "#FAFAFA",
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
     },
   },
 });
