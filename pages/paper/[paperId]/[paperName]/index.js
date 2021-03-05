@@ -22,6 +22,7 @@ import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import ColumnContentTab from "~/components/Paper/SideColumn/ColumnContentTab";
 import PaperDraft from "~/components/PaperDraft/PaperDraft";
+import TableOfContent from "~/components/PaperDraft/TableOfContent";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -544,10 +545,15 @@ const Paper = (props) => {
                 bottomOffset={"95%"}
               >
                 <a name="paper">
+                  <TableOfContent
+                    paperDraftExists={paperDraftExists}
+                    paperDraftSections={paperDraftSections}
+                  />
                   <PaperDraft
                     paperId={paperId}
                     abstract={paper.abstract}
                     paperDraftExists={paperDraftExists}
+                    paperDraftSections={paperDraftSections}
                     setPaperDraftExists={setPaperDraftExists}
                     setPaperDraftSections={setPaperDraftSections}
                     setActiveSection={setActiveSection}

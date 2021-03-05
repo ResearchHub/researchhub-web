@@ -746,7 +746,6 @@ var styles = StyleSheet.create({
     lineHeight: 2,
     display: "flex",
     justifyContent: "flex-start",
-    paddingTop: 7,
     color: colors.BLACK(),
     fontWeight: 400,
     fontSize: 16,
@@ -930,9 +929,8 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   action: {
-    color: "#241F3A",
+    color: "rgba(36, 31, 58, 0.4)",
     fontSize: 14,
-    opacity: 0.6,
     display: "flex",
     cursor: "pointer",
     transition: "all ease-out 0.1s",
@@ -974,7 +972,7 @@ var styles = StyleSheet.create({
     },
   },
   pencilIcon: {
-    marginLeft: 5,
+    marginLeft: 8,
   },
   draftContainer: {
     width: "100%",
