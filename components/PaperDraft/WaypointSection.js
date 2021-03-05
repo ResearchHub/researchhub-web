@@ -11,7 +11,6 @@ const WaypointSection = (props) => {
 
   const sectionInstance = contentState.getEntity(entityKey);
   const { name, index } = sectionInstance.getData();
-
   return (
     <div {...props}>
       <Waypoint
