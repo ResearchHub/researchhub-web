@@ -25,9 +25,9 @@ const PaperTabBar = (props) => {
     setTabs(getPaperTabs());
   }, [paperDraftExists]);
 
-  // useEffect(() => {
-  //   menuRef.current && menuRef.current.scrollTo(selected);
-  // }, [activeTab])
+  useEffect(() => {
+    menuRef.current && menuRef.current.scrollTo(`${activeTab}`);
+  }, [activeTab]);
 
   function getPaperTabs() {
     const paperTabs = [
@@ -102,10 +102,7 @@ const PaperTabBar = (props) => {
   }
 
   const onClick = (key) => {
-    if (typeof key !== "string") return;
-    const [href, i] = key.split("-");
-
-    const index = Number(i);
+    const index = Number(key);
 
     setActiveTab(index);
     setTimeout(() => {
@@ -125,7 +122,7 @@ const PaperTabBar = (props) => {
     }
 
     return (
-      <a href={`#${href}`} className={css(styles.tag)} key={`${href}-${index}`}>
+      <a href={`#${href}`} className={css(styles.tag)} key={index}>
         <div className={css(classNames)} onClick={onClick}>
           {label} {ui && ui(isSelected)}
         </div>
@@ -151,7 +148,6 @@ const PaperTabBar = (props) => {
         hideSingleArrow={true}
         onSelect={onClick}
         selected={activeTab}
-        // alignCenter={true}
       />
       {/* {renderPreregistrationTag()} */}
     </div>
