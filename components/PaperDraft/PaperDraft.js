@@ -76,6 +76,12 @@ class PaperDraft extends React.Component {
     this.fetchHTML();
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.paperId !== this.props.paperId) {
+      this.fetchHTML();
+    }
+  }
+
   htmlToStyle = (nodeName, node, currentStyle) => {
     if (nodeName === "xref") {
       return currentStyle.add("ITALIC");
@@ -114,7 +120,6 @@ class PaperDraft extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        console.log("res", res);
         if (typeof res !== "string") {
           return this.setRawToEditorState(res);
         }
@@ -258,11 +263,12 @@ class PaperDraft extends React.Component {
     }, callback);
   };
 
-  setRawToEditorState = (rawContent) => {
+  setRawToEditorState = (res) => {
+    const { data, sections } = res;
     const { setPaperDraftExists, setPaperDraftSections } = this.props;
 
     const editorState = EditorState.set(
-      EditorState.createWithContent(convertFromRaw(rawContent)),
+      EditorState.createWithContent(convertFromRaw(data)),
       { decorator: this.decorator }
     );
     this.setState({
@@ -270,6 +276,7 @@ class PaperDraft extends React.Component {
       fetching: false,
     });
     setPaperDraftExists(true);
+    setPaperDraftSections(sections);
   };
 
   onChange = (editorState) => {
@@ -472,17 +479,18 @@ class PaperDraft extends React.Component {
   };
 
   saveEdit = () => {
+    const { paperId, setPaperDraftSections } = this.props;
     const contentState = this.state.editorState.getCurrentContent();
 
     return fetch(
       API.PAPER({
-        paperId: this.props.paperId,
+        paperId,
         hidePublic: true,
         route: "edit_file_extract",
       }),
       API.POST_CONFIG({
         data: convertToRaw(contentState),
-        sections: this.props.paperDraftSections,
+        sections: setPaperDraftSections,
       })
     ).then(Helpers.checkStatus);
   };
@@ -605,7 +613,7 @@ const styles = StyleSheet.create({
     top: -2,
     zIndex: 4,
     "@media only screen and (max-width: 767px)": {
-      top: 64,
+      top: 51,
     },
   },
   show: {
