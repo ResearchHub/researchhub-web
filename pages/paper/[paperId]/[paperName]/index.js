@@ -513,8 +513,10 @@ const Paper = (props) => {
             </div>
             <div className={css(styles.stickyComponent)}>
               <PaperTabBar
+                paperId={paperId}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
+                paperDraftSections={paperDraftSections}
                 paperDraftExists={paperDraftExists}
               />
             </div>
