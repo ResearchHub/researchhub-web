@@ -19,7 +19,7 @@ const TableOfContent = (props) => {
     });
   };
   return (
-    <div className={css(styles.root)}>
+    <div className={css(styles.root, !paperDraftExists && styles.hidden)}>
       <h3 className={css(styles.title)}>Table of contents</h3>
       <div className={css(styles.sectionContainer)}>{renderContent()}</div>
     </div>
@@ -31,6 +31,11 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 767px)": {
       display: "block",
+    },
+  },
+  hidden: {
+    "@media only screen and (max-width: 767px)": {
+      display: "hidden",
     },
   },
   title: {
