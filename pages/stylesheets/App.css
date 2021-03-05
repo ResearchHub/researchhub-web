@@ -16,6 +16,12 @@
   width: 105%;
 }
 
+@media only screen and (max-width: 767px) {
+  .horizontal-menu {
+    width: 100%;
+  }
+}
+
 /* REACT-TOOLTIP */
 .__react_component_tooltip.type-dark.place-right:after {
   border-right-color: rgba(78, 83, 255, 1) !important;
