@@ -82,6 +82,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
     background: "#EAEAEA",
     border: "1px solid #ededed",
+    "@media only screen and (max-width: 415px)": {
+      height: 25,
+      width: 25,
+      minWidth: 25,
+      maxWidth: 25,
+    },
   },
   hubLink: {
     textDecoration: "none",
@@ -91,6 +97,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     padding: "10px 20px 10px 17px",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
   },
 });
 

@@ -44,6 +44,9 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     margin: 0,
     padding: "0px 15px 0px 20px",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 11,
+    },
   },
   toggleButton: {
     fontSize: 14,

@@ -10,7 +10,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 const PaperSideColumn = (props) => {
-  const { paper, paperId, authors, hubs } = props;
+  const { paper, paperId, authors, hubs, customStyle } = props;
   const [activeTab, setActiveTab] = useState(0);
 
   const renderPaperTabs = () => {
@@ -38,7 +38,7 @@ const PaperSideColumn = (props) => {
   };
 
   return (
-    <div className={css(styles.root)}>
+    <div className={css(styles.root, customStyle && customStyle)}>
       <ColumnAuthors paper={paper} authors={authors} paperId={paperId} />
       <ColumnHubs paper={paper} hubs={hubs} paperId={paperId} />
       <ColumnJournal paper={paper} paperId={paperId} />
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     paddingBottom: 10,
     "@media only screen and (max-width: 767px)": {
-      marginBottom: 30,
+      marginBottom: 50,
     },
   },
   tabs: {

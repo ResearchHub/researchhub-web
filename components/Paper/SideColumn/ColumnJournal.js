@@ -31,6 +31,9 @@ const ColumnJournal = (props) => {
 const styles = StyleSheet.create({
   title: {
     margin: "15px 0 10px",
+    "@media only screen and (max-width: 415px)": {
+      margin: "15px 0 5px",
+    },
   },
 });
 
