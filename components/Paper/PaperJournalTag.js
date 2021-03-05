@@ -13,6 +13,7 @@ import {
 
 const PaperJournalTag = (props) => {
   const { url, externalSource } = props;
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   const source = externalSource ? externalSource : getJournalFromURL(url);
@@ -22,8 +23,10 @@ const PaperJournalTag = (props) => {
   useEffect(() => {
     return imgExists(src, (exists) => {
       if (exists && !error) {
+        setLoading(false);
         return setError(false);
       } else {
+        setLoading(false);
         return setError(true);
       }
     });
@@ -114,6 +117,7 @@ const PaperJournalTag = (props) => {
   }
 
   function imgExists(url, callback) {
+    setLoading(true);
     var img = new Image();
     img.onload = function() {
       callback(true);
@@ -122,6 +126,10 @@ const PaperJournalTag = (props) => {
       callback(false);
     };
     img.src = url;
+  }
+
+  if (loading) {
+    return <span></span>;
   }
 
   if (!journal || error) {
