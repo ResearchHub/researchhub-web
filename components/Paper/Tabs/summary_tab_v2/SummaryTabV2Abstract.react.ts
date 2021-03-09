@@ -2,16 +2,16 @@ import React, { useState } from "React";
 
 type AbstractState = {
   abstract?: string;
-  shouldShowAbstract: boolean;
   shouldEditAbstract: boolean;
+  shouldShowAbstract: boolean;
 };
 type Props = {};
 
 function SummaryTabV2Abstract(props: Props) {
   const [abstractState, setAbstractState] = useState<AbstractState>({
     abstract: "",
-    shouldShowAbstract: true,
     shouldEditAbstract: false,
+    shouldShowAbstract: true,
   });
 }
 
