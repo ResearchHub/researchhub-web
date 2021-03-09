@@ -8,7 +8,7 @@ type ComponentState = {
 type Props = {};
 
 function SummaryTabV2Abstract(props: Props) {
-  const [ComponentState, setComponentState] = useState<ComponentState>({
+  const [componentState, setComponentState] = useState<ComponentState>({
     abstractBody: "",
     shouldEditAbstract: false,
     shouldShowAbstract: true,
