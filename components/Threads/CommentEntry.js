@@ -596,6 +596,7 @@ const styles = StyleSheet.create({
     overflow: "visible",
     display: "table",
     height: "100%",
+    borderSpacing: 0,
     "@media only screen and (max-width: 415px)": {
       justifyContent: "space-between",
     },
