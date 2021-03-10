@@ -502,6 +502,9 @@ const styles = StyleSheet.create({
   },
   hidden: {
     display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   paddingBottom: {
     paddingBottom: 30,
