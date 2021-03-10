@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Component
@@ -6,36 +5,10 @@ import ColumnAuthors from "./ColumnAuthors";
 import ColumnHubs from "./ColumnHubs";
 import ColumnJournal from "./ColumnJournal";
 
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 const PaperSideColumn = (props) => {
   const { paper, paperId, authors, hubs, customStyle } = props;
-  const [activeTab, setActiveTab] = useState(0);
-
-  const renderPaperTabs = () => {
-    return (
-      <div className={css(styles.tabs)}>
-        <div
-          className={css(styles.tab, styles.left, !activeTab && styles.active)}
-          onClick={() => setActiveTab(0)}
-        >
-          <img
-            src={"/static/ResearchHubIcon.png"}
-            className={css(styles.rhIcon)}
-          />
-          Details
-        </div>
-        <div
-          className={css(styles.tab, styles.right, activeTab && styles.active)}
-          onClick={() => setActiveTab(1)}
-        >
-          <span className={css(styles.commentIcon)}>{icons.comments}</span>
-          Discussion
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className={css(styles.root, customStyle && customStyle)}>

@@ -20,7 +20,7 @@ import PaperPageCard from "~/components/PaperPageCard";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
-import ColumnContentTab from "~/components/Paper/SideColumn/ColumnContentTab";
+import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperDraft from "~/components/PaperDraft/PaperDraft";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
@@ -388,7 +388,7 @@ const Paper = (props) => {
     setPaper(newState);
   }
 
-  function formatAuthors() {
+  function getAllAuthors() {
     const authors = {};
 
     if (paper.authors && paper.authors.length > 0) {
@@ -437,7 +437,7 @@ const Paper = (props) => {
       }
     }
 
-    return authors;
+    return Object.keys(authors);
   }
 
   function onSectionEnter(index) {
@@ -478,14 +478,7 @@ const Paper = (props) => {
           !props.auth.user.upload_tutorial_complete
         }
       />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          width: "100%",
-        }}
-      >
+      <div className={css(styles.root)}>
         <Waypoint
           onEnter={() => onSectionEnter(0)}
           topOffset={40}
@@ -493,8 +486,8 @@ const Paper = (props) => {
         >
           <a name="main" />
         </Waypoint>
-        <div className={css(styles.root)}>
-          <div className={css(styles.container)}>
+        <div className={css(styles.container)}>
+          <div className={css(styles.main)}>
             <div className={css(styles.paperPageContainer, styles.top)}>
               <PaperPageCard
                 paper={paper}
@@ -514,20 +507,12 @@ const Paper = (props) => {
               />
             </div>
             <div className={css(styles.paperMetaContainerMobile)}>
-              {/* <Waypoint
-                  onEnter={() => onSectionEnter(5)}
-                  topOffset={40}
-                  bottomOffset={"95%"}
-                >
-                  <a name="paper details"> */}
               <AuthorStatsDropdown
-                authors={Object.keys(formatAuthors())}
+                authors={getAllAuthors()}
                 paper={paper}
                 hubs={paper.hubs}
                 paperId={paperId}
               />
-              {/* </a>
-                </Waypoint> */}
             </div>
             <div className={css(styles.stickyComponent)}>
               <PaperTabBar
@@ -584,7 +569,7 @@ const Paper = (props) => {
               topOffset={40}
               bottomOffset={"95%"}
             >
-              <a name="discussions" id="comments">
+              <a name="discussions">
                 <div className={css(styles.space)}>
                   <DiscussionTab
                     hostname={hostname}
@@ -614,12 +599,12 @@ const Paper = (props) => {
           </div>
           <div className={css(styles.sidebar)}>
             <PaperSideColumn
-              authors={Object.keys(formatAuthors())}
+              authors={getAllAuthors()}
               paper={paper}
               hubs={paper.hubs}
               paperId={paperId}
             />
-            <ColumnContentTab
+            <PaperSections
               activeTab={activeTab} // for paper page tabs
               setActiveTab={setActiveTab}
               activeSection={activeSection} // for paper draft sections
@@ -726,6 +711,12 @@ const styles = StyleSheet.create({
     },
   },
   root: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    width: "100%",
+  },
+  container: {
     display: "table",
     width: "80%",
     marginLeft: "auto",
@@ -755,7 +746,7 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
-  container: {
+  main: {
     display: "table-cell",
     boxSizing: "border-box",
     position: "relative",
