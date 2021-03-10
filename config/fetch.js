@@ -144,4 +144,13 @@ export const fetchPaperFigures = async (paperId) => {
     .then(Helpers.parseJSON);
 };
 
-export const fetchPaperPDF = ({ paperId }) => {};
+export const fetchPaperDraft = ({ paperId }) => {
+  return fetch(
+    API.PAPER({
+      paperId: paperId,
+      hidePublic: true,
+      route: "pdf_extract",
+    }),
+    API.GET_CONFIG()
+  );
+};
