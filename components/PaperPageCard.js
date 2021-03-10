@@ -22,7 +22,7 @@ import ActionButton from "~/components/ActionButton";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import { BoltSvg } from "~/config/themes/icons";
 import PaperMetadata from "./Paper/PaperMetadata";
-
+import PaperPromotionIcon from "./Paper/PaperPromotion";
 // redux
 import { ModalActions } from "~/redux/modals";
 
@@ -666,6 +666,7 @@ class PaperPageCard extends React.Component {
                 }
                 small={true}
               />
+              <PaperPromotionIcon paper={paper} />
             </div>
             <div
               className={css(
