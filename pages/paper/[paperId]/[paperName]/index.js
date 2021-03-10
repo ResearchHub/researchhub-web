@@ -1021,7 +1021,7 @@ const styles = StyleSheet.create({
     border: "1.5px solid #F0F0F0",
     backgroundColor: "#fff",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    padding: "20px 30px 30px 80px",
+    padding: "20px 30px 30px 90px",
     boxSizing: "border-box",
     "@media only screen and (max-width: 767px)": {
       padding: 20,
