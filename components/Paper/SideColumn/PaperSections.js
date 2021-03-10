@@ -8,7 +8,7 @@ import ColumnContainer from "./ColumnContainer";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
-const ColumnContentTab = (props) => {
+const PaperSections = (props) => {
   const {
     activeTab,
     setActiveTab,
@@ -198,4 +198,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ColumnContentTab;
+export default PaperSections;
