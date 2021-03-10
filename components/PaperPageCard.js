@@ -22,7 +22,9 @@ import ActionButton from "~/components/ActionButton";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import { BoltSvg } from "~/config/themes/icons";
 import PaperMetadata from "./Paper/PaperMetadata";
-import PaperPromotionIcon from "./Paper/PaperPromotion";
+import PaperPromotionIcon from "./Paper/PaperPromotionButton";
+import PaperDiscussionIcon from "./Paper/PaperDiscussionButton";
+
 // redux
 import { ModalActions } from "~/redux/modals";
 
@@ -328,33 +330,6 @@ class PaperPageCard extends React.Component {
         ),
       },
       {
-        active: true,
-        button: (
-          <PermissionNotificationWrapper
-            modalMessage="boost paper"
-            onClick={() => this.props.openPaperTransactionModal(true)}
-            loginRequired={true}
-            hideRipples={true}
-          >
-            <div
-              className={css(styles.actionIcon, styles.downloadActionIcon)}
-              onMouseEnter={() => this.toggleBoostHover(true)}
-              onMouseLeave={() => this.toggleBoostHover(false)}
-              data-tip={"Boost Paper"}
-            >
-              <span className={css(styles.boostIcon)}>
-                <BoltSvg
-                  color={"rgb(255, 255, 255)"}
-                  opacity={1}
-                  // width={20}
-                  // height={17}
-                />
-              </span>
-            </div>
-          </PermissionNotificationWrapper>
-        ),
-      },
-      {
         active: isModerator || isSubmitter,
         button: (
           <span
@@ -581,39 +556,6 @@ class PaperPageCard extends React.Component {
     );
   };
 
-  renderTopRow = () => {
-    const { score, upvote, downvote } = this.props;
-    return (
-      <Fragment>
-        <div className={css(styles.topRow)}>
-          <div className={css(styles.mobileContainer)}>
-            <div className={css(styles.mobileVoting)}>
-              <VoteWidget
-                score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                selected={this.props.selectedVoteType}
-                isPaper={true}
-                horizontalView={true}
-                type={"Paper"}
-                promoted={this.props.paper && this.props.paper.promoted}
-                paper={
-                  this.props.paper && this.props.paper.promoted
-                    ? this.props.paper
-                    : null
-                }
-                showPromotion={true}
-              />
-            </div>
-          </div>
-        </div>
-        <div className={css(styles.hubTags, styles.mobile)}>
-          {this.renderHubs()}
-        </div>
-      </Fragment>
-    );
-  };
-
   render() {
     const {
       paper,
@@ -666,6 +608,8 @@ class PaperPageCard extends React.Component {
                 }
                 small={true}
               />
+              <PaperDiscussionIcon paper={paper} />
+              <div className={css(styles.divider)}></div>
               <PaperPromotionIcon paper={paper} />
             </div>
             <div
@@ -706,15 +650,6 @@ class PaperPageCard extends React.Component {
                     <div className={css(styles.column)}>
                       {this.renderMetadata()}
                     </div>
-                    {/* <div className={css(styles.mobile)}>
-                      {process.browser && this.renderPreview()}
-                    </div>
-                    <div className={css(styles.mobile, styles.preregMobile)}>
-                      {paper &&
-                        paper.paper_type === "PRE_REGISTRATION" &&
-                        this.renderPreregistrationTag()}
-                      {this.renderHubs()}
-                    </div> */}
                   </div>
                 </div>
                 <div className={css(styles.rightColumn, styles.mobile)}>
@@ -737,6 +672,8 @@ class PaperPageCard extends React.Component {
                       showPromotion={true}
                       small={true}
                     />
+                    <PaperDiscussionIcon paper={paper} />
+                    <PaperPromotionIcon paper={paper} />
                   </div>
                 </div>
               </div>
@@ -758,6 +695,11 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "visible",
     boxSizing: "border-box",
+  },
+  divider: {
+    width: 44,
+    border: "1px solid #E8E8F2",
+    margin: "15px 0",
   },
   overflow: {
     overflow: "visible",
@@ -981,7 +923,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     position: "absolute",
     top: 0,
-    left: -62,
+    left: -70,
     "@media only screen and (max-width: 768px)": {
       display: "none",
     },
@@ -990,7 +932,8 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 768px)": {
       display: "none",
     },
-    display: "block",
+    display: "flex",
+    alignItems: "center",
   },
   buttonRow: {
     width: "100%",
