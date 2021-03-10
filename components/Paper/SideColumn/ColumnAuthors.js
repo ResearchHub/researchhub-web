@@ -143,7 +143,6 @@ const styles = StyleSheet.create({
     width: "100%",
     cursor: "pointer",
     borderLeft: `3px solid #FFF`,
-    // fontWeight: 500,
     transition: "all ease-out 0.1s",
     ":hover": {
       background: "#FAFAFA",
