@@ -30,11 +30,11 @@ const styles = StyleSheet.create({
     padding: "8px 15px 8px 12px",
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
-    ":hover": {
-      cursor: "pointer",
-      background: "#FAFAFA",
-      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-    },
+    // ":hover": {
+    //   cursor: "pointer",
+    //   background: "#FAFAFA",
+    //   borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    // },
   },
   name: {
     color: colors.BLACK(1),

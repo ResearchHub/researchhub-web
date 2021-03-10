@@ -136,7 +136,10 @@ class PaperDraft extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then(this.handleData)
-      .catch(this.handleError);
+      .catch(() => {
+        this.handleError();
+        this.setState({ fetching: false });
+      });
   };
 
   handleData = (data) => {

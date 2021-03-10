@@ -562,6 +562,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     display: "table",
     height: "100%",
+    borderSpacing: 0,
   },
   topbar: {
     width: "100%",
