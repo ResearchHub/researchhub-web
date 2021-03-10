@@ -206,6 +206,7 @@ class PaperDraft extends React.Component {
     const { setPaperDraftExists, setPaperDraftSections } = this.props;
     setPaperDraftExists(false);
     setPaperDraftSections([]);
+    this.setState({ fetching: false });
   };
 
   updateParentState = (sectionTitles) => {
