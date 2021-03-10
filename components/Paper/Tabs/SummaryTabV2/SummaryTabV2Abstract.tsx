@@ -7,12 +7,13 @@ type ComponentState = {
 };
 type Props = {};
 
-function SummaryTabV2Abstract(props: Props) {
+function SummaryTabV2Abstract(props: Props): React.ReactElement<"div"> {
   const [componentState, setComponentState] = useState<ComponentState>({
-    abstractBody: "",
+    abstractBody: null,
     shouldEditAbstract: false,
     shouldShowAbstract: true,
   });
+  return <div>{"Hi this is AbstractSection"}</div>;
 }
 
-module.exports = SummaryTabV2Abstract;
+export default SummaryTabV2Abstract;

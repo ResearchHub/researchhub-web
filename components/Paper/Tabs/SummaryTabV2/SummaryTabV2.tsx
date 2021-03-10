@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SummaryTabV2Abstract from "./SummaryTabV2Abstract";
 
 type ComponentState = {
   didFinishedLoading: boolean;
@@ -9,7 +10,7 @@ type ComponentState = {
 };
 type Props = {};
 
-function SumamryTab(props: Props) {
+function SumamryTabV2(props: Props): React.ReactElement<"div"> {
   const [componentState, setComponentState] = useState<ComponentState>({
     didFinishedLoading: false,
     doesSummaryExists: false,
@@ -17,6 +18,13 @@ function SumamryTab(props: Props) {
     isEditing: false,
     isReadOnly: true,
   });
+
+  return (
+    <div>
+      {"Hello this is V2 of Summary Tab"}
+      <SummaryTabV2Abstract />
+    </div>
+  );
 }
 
-export default SumamryTab;
+export default SumamryTabV2;
