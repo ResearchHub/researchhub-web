@@ -15,6 +15,7 @@ import Head from "~/components/Head";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
+import SummaryTabV2 from "~/components/Paper/Tabs/SummaryTabV2/SummaryTabV2.tsx";
 // import KeyTakeawaysTab from "~/components/Paper/Tabs/KeyTakeawaysTab";
 import PaperPageCard from "~/components/PaperPageCard";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
@@ -492,7 +493,8 @@ const Paper = (props) => {
             fetchBullets={fetchBullets}
             loadingPaper={loadingPaper}
           /> */}
-          <SummaryTab
+          <SummaryTabV2 />
+          {/* <SummaryTab
             paperId={paperId}
             paper={paper}
             summary={summary}
@@ -501,7 +503,7 @@ const Paper = (props) => {
             updateSummary={setSummary}
             loadingSummary={loadingSummary}
             userVoteChecked={userVoteChecked}
-          />
+          /> */}
           <a name="comments" id="comments">
             <div id="comments-tab" className={css(styles.space)}>
               <DiscussionTab

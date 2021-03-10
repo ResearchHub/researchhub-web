@@ -1,4 +1,4 @@
-import React, { useState } from "React";
+import React, { useState } from "react";
 
 type ComponentState = {
   abstractBody?: string;
@@ -13,6 +13,7 @@ function SummaryTabV2Abstract(props: Props): React.ReactElement<"div"> {
     shouldEditAbstract: false,
     shouldShowAbstract: true,
   });
+
   return <div>{"Hi this is AbstractSection"}</div>;
 }
 

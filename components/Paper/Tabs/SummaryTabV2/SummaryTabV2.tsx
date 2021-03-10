@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import SummaryTabV2Abstract from "./SummaryTabV2Abstract";
+import SummaryTabV2Abstract from "~/components/Paper/Tabs/SummaryTabV2/SummaryTabV2Abstract.tsx";
 
 type ComponentState = {
   didFinishedLoading: boolean;
@@ -10,7 +10,7 @@ type ComponentState = {
 };
 type Props = {};
 
-function SumamryTabV2(props: Props): React.ReactElement<"div"> {
+function SummaryTabV2(props: Props): React.ReactElement<"div"> {
   const [componentState, setComponentState] = useState<ComponentState>({
     didFinishedLoading: false,
     doesSummaryExists: false,
@@ -27,4 +27,4 @@ function SumamryTabV2(props: Props): React.ReactElement<"div"> {
   );
 }
 
-export default SumamryTabV2;
+export default SummaryTabV2;
