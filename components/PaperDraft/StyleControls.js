@@ -5,7 +5,6 @@ import StyleButton from "./StyleButton";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const BLOCK_TYPES = [
   { label: "H1", style: "header-one" },

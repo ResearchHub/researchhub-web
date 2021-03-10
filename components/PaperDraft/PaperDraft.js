@@ -1,19 +1,12 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 
 import {
   Editor,
   EditorState,
-  ContentState,
-  EditorBlock,
-  AtomicBlockUtils,
-  Modifier,
   RichUtils,
   convertToRaw,
   convertFromRaw,
-  getDefaultKeyBinding,
-  DefaultDraftBlockRenderMap,
-  KeyBindingUtil,
   CompositeDecorator,
 } from "draft-js";
 import { convertFromHTML } from "draft-convert";
@@ -29,19 +22,13 @@ import StyleControls from "./StyleControls";
 import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 
+import { fetchPaperDraft } from "~/config/fetch";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 import "~/components/Paper/Tabs/stylesheets/paper.css";
-
-const styleMap = {
-  highlight: {
-    backgroundColor: colors.BLACK(0.1),
-    borderRadius: 2,
-  },
-};
 
 class PaperDraft extends React.Component {
   constructor(props) {
@@ -51,11 +38,8 @@ class PaperDraft extends React.Component {
       prevEditorState: EditorState.createEmpty(),
       editorState: EditorState.createEmpty(),
       readOnly: true,
-      showCommentButton: false,
       focused: false,
       fetching: true,
-      expandPaper: false,
-
       seenEntityKeys: {},
     };
     this.editor;
@@ -82,12 +66,50 @@ class PaperDraft extends React.Component {
     }
   }
 
+  htmlToBlock = (nodeName, node, idsToRemove) => {
+    if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
+      return false;
+    }
+
+    switch (nodeName) {
+      case "title":
+        if (node.className === "header") {
+          return {
+            type: "header-one",
+            data: {
+              props: node.dataset.props,
+            },
+          };
+        }
+
+        return {
+          type: "header-two",
+          data: {},
+        };
+      case "p":
+        return {
+          type: "paragraph",
+          data: {},
+        };
+
+      case "abstract":
+      case "fig":
+      case "graphic":
+      case "front":
+      case "back":
+      case "journal":
+      case "article-id":
+        return false;
+      default:
+        return true;
+    }
+  };
+
   htmlToStyle = (nodeName, node, currentStyle) => {
     if (nodeName === "xref") {
       return currentStyle.add("ITALIC");
-    } else {
-      return currentStyle;
     }
+    return currentStyle;
   };
 
   htmlToEntity = (nodeName, node, createEntity) => {
@@ -109,91 +131,87 @@ class PaperDraft extends React.Component {
   };
 
   fetchHTML = () => {
-    fetch(
-      API.PAPER({
-        paperId: this.props.paperId,
-        hidePublic: true,
-        route: "pdf_extract",
-      }),
-      API.GET_CONFIG()
-    )
+    const { paperId } = this.props;
+    fetchPaperDraft({ paperId })
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((res) => {
-        if (typeof res !== "string") {
-          return this.setRawToEditorState(res);
-        }
+      .then(this.handleData)
+      .catch(this.handleError);
+  };
 
-        const { setPaperDraftExists, setPaperDraftSections } = this.props;
-        const [html, idsToRemove, sectionTitles] = this.formatHTMLForMarkup(
-          res
-        );
+  handleData = (data) => {
+    if (typeof data !== "string") {
+      return this.setRawToEditorState(data);
+    } else {
+      return this.setBase64ToEditorState(data);
+    }
+  };
 
-        // console.log("html", html)
-        try {
-          const blocksFromHTML = convertFromHTML({
-            htmlToBlock: (nodeName, node) => {
-              if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
-                return false;
-              }
+  /**
+   * @param {JSON} res => Backend JSON with rawEditorState and saved Sections
+   *
+   * converts raw Draft JSON to Draft Edtior State
+   */
+  setRawToEditorState = (res) => {
+    try {
+      const { data, sections } = res;
 
-              switch (nodeName) {
-                case "title":
-                  if (node.className === "header") {
-                    return {
-                      type: "header-one",
-                      data: {
-                        props: node.dataset.props,
-                      },
-                    };
-                  } else {
-                    return {
-                      type: "header-two",
-                      data: {},
-                    };
-                  }
-                case "p":
-                  return {
-                    type: "paragraph",
-                    data: {},
-                  };
+      const editorState = EditorState.set(
+        EditorState.createWithContent(convertFromRaw(data)),
+        { decorator: this.decorator }
+      );
+      this.onChaange(editorState);
+      this.updateParentState(sections);
+    } catch {
+      this.handleError();
+    } finally {
+      this.setState({ fetching: false });
+    }
+  };
 
-                case "abstract":
-                case "fig":
-                case "graphic":
-                case "front":
-                case "back":
-                case "journal":
-                case "article-id":
-                  return false;
-                default:
-                  return true;
-              }
-            },
-            htmlToStyle: this.htmlToStyle,
-            htmlToEntity: this.htmlToEntity,
-          })(html, { flat: true });
+  /**
+   *
+   * @param {String} base64 - string returned from scrapped pdf
+   *
+   * converts base64 to custom HTML to Draft Editor State
+   */
+  setBase64ToEditorState = (base64) => {
+    const [html, idsToRemove, sectionTitles] = this.formatHTMLForMarkup(base64);
 
-          const editorState = EditorState.set(
-            EditorState.push(this.state.editorState, blocksFromHTML),
-            { decorator: this.decorator }
-          );
+    try {
+      const blocksFromHTML = convertFromHTML({
+        htmlToBlock: (nodeName, node) =>
+          this.htmlToBlock(nodeName, node, idsToRemove),
+        htmlToStyle: this.htmlToStyle,
+        htmlToEntity: this.htmlToEntity,
+      })(html, { flat: true });
 
-          this.setState({ editorState, fetching: false });
-          setPaperDraftExists(true);
-          setPaperDraftSections(sectionTitles);
-        } catch (err) {
-          setPaperDraftExists(false);
-          setPaperDraftSections([]);
-          this.setState({ fetching: false });
-        }
-      })
-      .catch((err) => {
-        const { setPaperDraftExists, setPaperDraftSections } = this.props;
-        setPaperDraftExists(false);
-        setPaperDraftSections([]);
-        this.setState({ fetching: false });
-      });
+      const { editorState } = this.state;
+
+      const updatedEditorState = EditorState.set(
+        EditorState.push(editorState, blocksFromHTML),
+        { decorator: this.decorator }
+      );
+
+      this.onChange(updatedEditorState);
+      this.updateParentState(sectionTitles);
+    } catch {
+      this.handleError();
+    } finally {
+      this.setState({ fetching: false });
+    }
+  };
+
+  handleError = (err) => {
+    const { setPaperDraftExists, setPaperDraftSections } = this.props;
+    setPaperDraftExists(false);
+    setPaperDraftSections([]);
+  };
+
+  updateParentState = (sectionTitles) => {
+    const { setPaperDraftExists, setPaperDraftSections } = this.props;
+    setPaperDraftExists(true);
+    setPaperDraftSections(sectionTitles);
   };
 
   formatHTMLForMarkup = (base64) => {
@@ -266,36 +284,13 @@ class PaperDraft extends React.Component {
     }, callback);
   };
 
-  setRawToEditorState = (res) => {
-    const { setPaperDraftExists, setPaperDraftSections } = this.props;
-    try {
-      const { data, sections } = res;
-      const editorState = EditorState.set(
-        EditorState.createWithContent(convertFromRaw(data)),
-        { decorator: this.decorator }
-      );
-      this.setState({
-        editorState,
-        fetching: false,
-      });
-      setPaperDraftExists(true);
-      setPaperDraftSections(sections);
-    } catch {
-      setPaperDraftExists(false);
-      setPaperDraftSections([]);
-      this.setState({ fetching: false });
-    }
-  };
-
   onChange = (editorState) => {
-    this.setState({ editorState }, () => {
-      // this.handleSelectedText(editorState);
-    });
+    this.setState({ editorState });
   };
 
   onFocus = () => {
     this.setState({ focused: true });
-    // this.editor.focus()
+    this.editor.focus();
   };
 
   onBlur = () => {
@@ -311,66 +306,9 @@ class PaperDraft extends React.Component {
     this.onChange(RichUtils.onTab(e, this.state.editorState, 4));
   };
 
-  handleSelectedText = (editorState) => {
-    // const { editorState } = this.state;
-
-    const { focused } = this.state;
-
-    const selection = editorState.getSelection();
-    const content = editorState.getCurrentContent();
-    const anchorKey = selection.getAnchorKey();
-    const contentBlock = content.getBlockForKey(anchorKey);
-    const start = selection.getStartOffset();
-    const end = selection.getEndOffset();
-
-    const selectedText = contentBlock.getText().slice(start, end);
-
-    if (focused && (selectedText && selectedText.length)) {
-      this.promptAddCommentButton();
-    } else {
-      this.setState({ showCommentButton: false });
-    }
-  };
-
-  applyEntityToSelection = () => {
-    const { editorState } = this.state;
-    const selection = editorState.getSelection();
-    const content = editorState.getCurrentContent();
-
-    const newContent = Modifier.applyEntity(content, selection, "comment");
-    this.setEditorState(newContent, "apply-entity-comment");
-
-    this.setState({
-      promptAddCommentButton: false,
-    });
-  };
-
-  promptAddCommentButton = () => {
-    this.setState({
-      showCommentButton: true,
-    });
-  };
-
-  setComment = (content, selection) => {
-    const currentStyle = this.state.editorState.getCurrentInlineStyle();
-    const inlineStyle = "highlight";
-    let newContent;
-
-    if (currentStyle.has(inlineStyle)) {
-      newContent = Modifier.removeInlineStyle(content, selection, inlineStyle);
-    } else {
-      newContent = Modifier.applyInlineStyle(content, selection, inlineStyle);
-    }
-
-    this.setState({
-      editorState: EditorState.push(
-        this.state.editorState,
-        newContent,
-        "change-inline-style"
-      ),
-    });
-  };
-
+  /**
+   * Used for Modifier states
+   */
   setEditorState = (content, changeType) => {
     const editorState = EditorState.push(
       this.state.editorState,
@@ -378,39 +316,7 @@ class PaperDraft extends React.Component {
       changeType
     );
 
-    this.setState({ editorState });
-  };
-
-  undo = () => {
-    const editorState = EditorState.undo(this.state.editorState);
-
-    this.setState({
-      editorState,
-    });
-  };
-
-  renderShowCommentButton = () => {
-    const { editorState } = this.state;
-
-    const currentBlockKey = editorState.getSelection().getStartKey();
-    const currentBlockIndex =
-      editorState
-        .getCurrentContent()
-        .getBlockMap()
-        .keySeq()
-        .findIndex((k) => k === currentBlockKey) + 1;
-
-    return (
-      <div
-        className={css(styles.addCommentButton)}
-        onClick={this.applyEntityToSelection}
-        style={{
-          top: 20 * currentBlockIndex,
-        }}
-      >
-        {icons.commentAltPlus}
-      </div>
-    );
+    this.onChange(editorState);
   };
 
   toggleBlockType = (blockType) => {
@@ -505,13 +411,7 @@ class PaperDraft extends React.Component {
 
   render() {
     const { isModerator, paperDraftExists } = this.props;
-    const {
-      fetching,
-      editorState,
-      showCommentButton,
-      readOnly,
-      saving,
-    } = this.state;
+    const { fetching, editorState, readOnly, saving } = this.state;
 
     return (
       <ReactPlaceholder
@@ -535,7 +435,7 @@ class PaperDraft extends React.Component {
             )}
           </h3>
           <div
-            className={css(styles.toolbar, !readOnly && styles.show)}
+            className={css(styles.toolbar, !readOnly && styles.editActive)}
             onClick={this.onFocus}
           >
             <StyleControls
@@ -544,12 +444,11 @@ class PaperDraft extends React.Component {
               onClickInline={this.toggleInlineStyle}
             />
           </div>
-          <div className={css(!readOnly && styles.editor)}>
+          <div className={css(!readOnly && styles.editorActive)}>
             <Editor
               ref={(ref) => (this.editor = ref)}
               editorState={editorState}
               onChange={this.onChange}
-              customStyleMap={styleMap}
               onTab={this.onTab}
               readOnly={readOnly}
               spellCheck={true}
@@ -557,14 +456,16 @@ class PaperDraft extends React.Component {
               blockStyleFn={this.getBlockStyle}
             />
           </div>
-          <div className={css(styles.buttonRow, !readOnly && styles.show)}>
+          <div
+            className={css(styles.buttonRow, !readOnly && styles.editActive)}
+          >
             <Button
               label={"Cancel"}
               isWhite={true}
               customButtonStyle={styles.button}
               onClick={this.onCancel}
             />
-            <div className={css(styles.divider)} />{" "}
+            <div className={css(styles.divider)} />
             {/** Needed to retain ripple effect integrity */}
             <Button
               label={
@@ -579,7 +480,6 @@ class PaperDraft extends React.Component {
               onClick={!saving && this.onSave}
             />
           </div>
-          {showCommentButton && this.renderShowCommentButton()}
         </div>
       </ReactPlaceholder>
     );
@@ -624,7 +524,7 @@ const styles = StyleSheet.create({
       top: 51,
     },
   },
-  show: {
+  editActive: {
     display: "flex",
   },
   buttonRow: {
@@ -640,7 +540,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "none",
   },
-  editor: {
+  editorActive: {
     border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
     padding: 20,
@@ -667,50 +567,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
-  },
-  annotatedText: {
-    backgroundColor: colors.LIGHT_YELLOW(),
-    borderRadius: 2,
-    cursor: "pointer",
-  },
-  addCommentButton: {
-    position: "absolute",
-    right: -40,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 18,
-    color: colors.BLACK(0.4),
-    cursor: "pointer",
-    height: 30,
-    minHeight: 30,
-    width: 30,
-    minWidth: 30,
-    padding: 2,
-    borderRadius: "50%",
-    border: "1px solid rgba(36, 31, 58, 0.1)",
-    background: "#FAFAFA",
-  },
-  blur: {
-    background:
-      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FFF 86.38%)",
-    height: "100%",
-    position: "absolute",
-    zIndex: 3,
-    top: 0,
-    width: "100%",
-  },
-  expandButton: {
-    position: "absolute",
-    bottom: 100,
-    left: "50%",
-    transform: "translateX(-50%)",
-    zIndex: 3,
-    cursor: "pointer",
-    boxSizing: "border-box",
-    width: "unset",
-    padding: "0px 15px",
-    boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
   },
   button: {
     height: 37,
