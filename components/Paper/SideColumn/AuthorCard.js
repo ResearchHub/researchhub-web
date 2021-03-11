@@ -15,10 +15,14 @@ const AuthorCard = (props) => {
     return (
       <Link
         href={"/user/[authorId]/[tabName]"}
-        as={`/user/${authorId}/contributions`}
+        as={`/user/${id}/contributions`}
       >
         <a className={css(styles.container, styles.hover)}>
-          <span className={css(styles.userIcon)}>{icons.user}</span>
+          {author.profile_image ? (
+            <img src={author.profile_image} className={css(styles.userIcon)} />
+          ) : (
+            <span className={css(styles.userIcon)}>{icons.user}</span>
+          )}
           <div className={css(styles.name) + " clamp1"}>{name}</div>
         </a>
       </Link>
@@ -30,7 +34,7 @@ const AuthorCard = (props) => {
       <a
         className={css(styles.container, styles.hover)}
         target="_blank"
-        href={`https://orcid.org/${authorOrcidId}`}
+        href={`https://orcid.org/${orcid_id}`}
         rel="noreferrer noopener"
       >
         <span className={css(styles.userIcon)}>{icons.user}</span>
@@ -65,6 +69,7 @@ const styles = StyleSheet.create({
   },
   hover: {
     textDecoration: "unset",
+    width: "100%",
     ":hover": {
       cursor: "pointer",
       background: "#FAFAFA",
@@ -83,12 +88,17 @@ const styles = StyleSheet.create({
     color: "#aaa",
     width: 30,
     height: 30,
+    minWidth: 30,
+    minHeight: 30,
     fontSize: 30 + 1,
     border: "3px solid transparent",
+    objectFit: "contain",
     "@media only screen and (max-width: 415px)": {
       width: 25,
       height: 25,
       fontSize: 25 + 1,
+      minWidth: 25,
+      minHeight: 25,
     },
   },
 });
