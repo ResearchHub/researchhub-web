@@ -52,16 +52,6 @@ class PaperDraft extends React.Component {
     }, callback);
   };
 
-  onChange = (editorState) => {
-    this.setState({ editorState });
-  };
-
->>>>>>> ee9b8b5a (revert navBar zIndex)
-=======
-    this.editor; // $ref to Editor
-  }
-
->>>>>>> 09dfb2d9 (rebase)
   onFocus = () => {
     this.setState({ isFocused: true });
     this.editor.focus();
