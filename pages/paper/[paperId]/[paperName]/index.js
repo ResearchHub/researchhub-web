@@ -49,6 +49,7 @@ import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
+  getAuthorName,
 } from "~/config/utils/";
 import * as shims from "~/redux/paper/shims";
 
@@ -389,55 +390,28 @@ const Paper = (props) => {
   }
 
   function getAllAuthors() {
-    const authors = {};
+    const { authors, raw_authors } = paper;
+    const seen = {};
 
-    if (paper.authors && paper.authors.length > 0) {
-      paper.authors.map((author) => {
-        if (author.first_name && !author.last_name) {
-          authors[author.first_name] = author;
-        } else if (author.last_name && !author.first_name) {
-          authors[author.last_name] = author;
-        } else {
-          authors[`${author.first_name} ${author.last_name}`] = author;
-        }
+    const allAuthors = [];
+
+    if (authors && authors.length) {
+      authors.forEach((author) => {
+        seen[getAuthorName(author)] = true;
+        allAuthors.push(author);
       });
-    } else {
-      try {
-        if (paper.raw_authors) {
-          let rawAuthors = paper.raw_authors;
-          if (typeof paper.raw_authors === "string") {
-            rawAuthors = JSON.parse(paper.raw_authors);
-            if (!Array.isArray(rawAuthors)) {
-              rawAuthors = [rawAuthors];
-            }
-          } else if (
-            typeof rawAuthors === "object" &&
-            !Array.isArray(rawAuthors)
-          ) {
-            authors[rawAuthors["main_author"]] = true;
-
-            rawAuthors["other_authors"].map((author) => {
-              authors[author] = true;
-            });
-
-            return authors;
-          }
-          rawAuthors.forEach((author) => {
-            if (author.first_name && !author.last_name) {
-              authors[author.first_name] = true;
-            } else if (author.last_name && !author.first_name) {
-              authors[author.last_name] = true;
-            } else {
-              authors[`${author.first_name} ${author.last_name}`] = true;
-            }
-          });
-        }
-      } catch (e) {
-        Sentry.captureException(e);
-      }
     }
 
-    return Object.keys(authors);
+    if (raw_authors && raw_authors.length) {
+      raw_authors.forEach((author) => {
+        if (!seen[getAuthorName(author)]) {
+          seen[getAuthorName(author)] = true;
+          allAuthors.push(author);
+        }
+      });
+    }
+
+    return allAuthors;
   }
 
   function onSectionEnter(index) {
@@ -496,6 +470,7 @@ const Paper = (props) => {
                 upvote={upvote}
                 downvote={downvote}
                 selectedVoteType={selectedVoteType}
+                discussionCount={discussionCount}
                 shareUrl={process.browser && window.location.href}
                 isModerator={isModerator}
                 isSubmitter={isSubmitter}
