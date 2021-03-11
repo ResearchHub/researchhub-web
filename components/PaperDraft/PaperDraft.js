@@ -451,7 +451,7 @@ class PaperDraft extends React.Component {
               editorState={editorState}
               onChange={this.onChange}
               onTab={this.onTab}
-              readOnly={readOnly}
+              readOnly={readOnly} // setting this to false will grant me access to selection
               spellCheck={true}
               handleKeyCommand={this.handleKeyCommand}
               blockStyleFn={this.getBlockStyle}
