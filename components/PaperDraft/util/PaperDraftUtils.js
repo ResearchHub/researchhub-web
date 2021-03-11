@@ -117,13 +117,15 @@ const formatHTMLForMarkup = (base64) => {
   return [doc.documentElement.innerHTML, idsToRemove, sectionTitles];
 };
 
-const formatBase64ToEditorState = ({
-  base64,
-  decorator,
-  existingEditorState,
-  onError,
-  onSuccess,
-}) => {
+/* ------------------- EXPORTS ------------------- */
+export const formatBase64ToEditorState = (payload) => {
+  const {
+    base64 = "",
+    decorator = null,
+    existingEditorState = null,
+    onError = () => {},
+    onSuccess = () => {},
+  } = payload ?? {};
   const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
   try {
     const blocksFromHTML = convertFromHTML({
@@ -131,7 +133,6 @@ const formatBase64ToEditorState = ({
       htmlToStyle,
       htmlToEntity,
     })(html, { flat: true });
-
     return EditorState.set(
       EditorState.push(existingEditorState, blocksFromHTML),
       { decorator }
@@ -143,12 +144,13 @@ const formatBase64ToEditorState = ({
   }
 };
 
-formatRawJsonToEditorState = ({
-  decorator,
-  onError,
-  onSuccess,
-  rawJson /* json formatted from backend */,
-}) => {
+export const formatRawJsonToEditorState = (payload) => {
+  const {
+    decorator = null,
+    onError = () => {},
+    onSuccess = () => {},
+    rawJson /* json formatted from backend */,
+  } = payload ?? {};
   try {
     const { data, sections } = rawJson;
     return EditorState.set(
@@ -160,9 +162,4 @@ formatRawJsonToEditorState = ({
   } finally {
     onSuccess();
   }
-};
-
-export const exportables = {
-  formatBase64ToEditorState,
-  formatRawJsonToEditorState,
 };

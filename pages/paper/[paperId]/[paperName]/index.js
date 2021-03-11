@@ -21,7 +21,7 @@ import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperSections from "~/components/Paper/SideColumn/PaperSections";
-import PaperDraft from "~/components/PaperDraft/PaperDraft";
+import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
 
@@ -551,7 +551,12 @@ const Paper = (props) => {
                     paperDraftExists={paperDraftExists}
                     paperDraftSections={paperDraftSections}
                   />
-                  <PaperDraft
+                  <PaperDraftContainer
+                    paperId={paperId}
+                    setPaperDraftExists={setPaperDraftExists}
+                    setPaperDraftSections={setPaperDraftSections}
+                  />
+                  {/* <PaperDraft
                     paperId={paperId}
                     abstract={paper.abstract}
                     paperDraftExists={paperDraftExists}
@@ -560,7 +565,7 @@ const Paper = (props) => {
                     setPaperDraftSections={setPaperDraftSections}
                     setActiveSection={setActiveSection}
                     isModerator={isModerator}
-                  />
+                  /> */}
                 </a>
               </Waypoint>
             </div>
