@@ -34,6 +34,8 @@ function PaperDraftContainer({
   paperDraftSections,
   paperId,
   paperDraftExists,
+  paperDraftSections,
+  paperId,
   setActiveSection,
   setPaperDraftExists,
   setPaperDraftSections,
@@ -113,7 +115,6 @@ function PaperDraftContainer({
 
   return (
     <div>
-      <div>HELLO THIS IS PAPERDRAFT CONTAINER</div>
       <PaperDraft
         editorState={editorState}
         handleEditorStateUpdate={setEditorState}
