@@ -29,9 +29,10 @@ const findWayPointEntity = (seenEntityKeys, setSeenEntityKeys) => (
 
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 function PaperDraftContainer({
-  isModerator,
-  paperId,
+  isViewerAllowedToEdit,
   paperDraftExists,
+  paperDraftSections,
+  paperId,
   setActiveSection,
   setPaperDraftExists,
   setPaperDraftSections,
@@ -113,13 +114,13 @@ function PaperDraftContainer({
 
   return (
     <div>
-      <div>HELLO THIS IS PAPERDRAFT CONTAINER</div>
       <PaperDraft
         editorState={editorState}
-        handleEditorStateUpdate={() => {}}
+        handleEditorStateUpdate={handleEditorStateUpdate}
         isFetching={isFetching}
-        isViewerAllowedToEdit={isModerator}
+        isViewerAllowedToEdit={isViewerAllowedToEdit}
         paperDraftExists={paperDraftExists}
+        paperDraftSections={paperDraftSections}
       />
     </div>
   );
