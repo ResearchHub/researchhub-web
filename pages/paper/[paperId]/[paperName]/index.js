@@ -560,16 +560,6 @@ const Paper = (props) => {
                     setPaperDraftExists={setPaperDraftExists}
                     setPaperDraftSections={setPaperDraftSections}
                   />
-                  {/* <PaperDraft
-                    paperId={paperId}
-                    abstract={paper.abstract}
-                    paperDraftExists={paperDraftExists}
-                    paperDraftSections={paperDraftSections}
-                    setPaperDraftExists={setPaperDraftExists}
-                    setPaperDraftSections={setPaperDraftSections}
-                    setActiveSection={setActiveSection}
-                    isModerator={isModerator}
-                  /> */}
                 </a>
               </Waypoint>
             </div>
