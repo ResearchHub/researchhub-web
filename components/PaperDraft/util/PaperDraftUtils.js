@@ -9,8 +9,10 @@ const emptyFunction = (message) => {
   }
 };
 
-const emptyFunction = () => {
-  console.warn("emptyFunction is used. this maybe a bug");
+const emptyFunction = (message) => {
+  if (message == null) {
+    console.warn("emptyFunction is used. this maybe a bug");
+  }
 };
 
 const htmlToBlock = (nodeName, node, idsToRemove) => {
@@ -137,7 +139,6 @@ export const formatBase64ToEditorState = (payload) => {
     currenEditorState = EditorState.createEmpty(),
     decorator = null,
     onError = emptyFunction,
-    onSuccess = emptyFunction,
   } = payload ?? {};
   try {
     const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
