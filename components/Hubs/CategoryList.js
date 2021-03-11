@@ -25,7 +25,7 @@ class CategoryList extends React.Component {
   }
 
   renderCategoryEntry = () => {
-    const { categories, activeCategory } = this.props;
+    const { categories, activeCategory, setActiveCategory } = this.props;
 
     return categories.map((category, i) => {
       let { category_name } = category;
@@ -39,6 +39,12 @@ class CategoryList extends React.Component {
             activeCategory === i && styles.active
           )}
           key={`${category_name}-${i}`}
+          onClick={() => {
+            setActiveCategory(i);
+            setTimeout(() => {
+              setActiveCategory(i);
+            }, 100);
+          }}
         >
           <Link href={"/hubs"} as={`/hubs#${slug}`}>
             <a className={css(styles.categoryLink)}>

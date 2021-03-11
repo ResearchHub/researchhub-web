@@ -58,7 +58,6 @@ class Index extends React.Component {
       });
       showMessage({ show: false });
     }
-    window.addEventListener("scroll", this.getScrollDirection);
   };
 
   componentDidUpdate(prevProps) {
@@ -76,21 +75,6 @@ class Index extends React.Component {
       );
     }
   }
-
-  componentDidUnmount() {
-    window.removeEventListener("scroll", this.getScrollDirection);
-  }
-
-  getScrollDirection = () => {
-    const { scrollDirection } = this.state;
-
-    if (document.body.getBoundingClientRect().top > this.scrollPos) {
-      scrollDirection !== "up" && this.setState({ scrollDirection: "up" });
-    } else {
-      scrollDirection !== "down" && this.setState({ scrollDirection: "down" });
-    }
-    this.scrollPos = document.body.getBoundingClientRect().top;
-  };
 
   setActiveCategory = (activeCategory, onLeave) => {
     const { categories, finishedLoading } = this.state;
@@ -150,20 +134,14 @@ class Index extends React.Component {
       return (
         <Waypoint
           onEnter={() => this.setActiveCategory(i)}
-          topOffset={80}
-          onLeave={() =>
-            this.setActiveCategory(
-              scrollDirection === "up" ? i - 1 : i + 1,
-              true
-            )
-          }
+          topOffset={40}
+          bottomOffset={"95%"}
         >
           <div key={categoryID}>
             <div
               id={`${i}-category`}
               name={`${slug}`}
               className={css(styles.categoryLabel) + " category"}
-              onClick={() => this.setActiveCategory(i)}
               key={categoryID}
             >
               {categoryName === "Trending" ? (
@@ -240,6 +218,7 @@ class Index extends React.Component {
           <CategoryList
             categories={categories}
             activeCategory={activeCategory}
+            setActiveCategory={this.setActiveCategory}
           />
         </div>
         <div className={css(styles.content)}>
