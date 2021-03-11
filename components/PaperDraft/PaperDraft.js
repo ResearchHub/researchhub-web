@@ -44,10 +44,6 @@ class PaperDraft extends React.Component {
     setPaperDraftSections(sectionTitles);
   };
 
-  onChange = (editorState) => {
-    this.setState({ editorState });
-  };
-
   onFocus = () => {
     this.setState({ isFocused: true });
     this.editor.focus();
@@ -63,28 +59,31 @@ class PaperDraft extends React.Component {
   onTab = (e) => {
     e && e.preventDefault();
     e && e.persist();
-    this.onChange(RichUtils.onTab(e, this.state.editorState, 4));
+    this.props.handleEditorStateUpdate(
+      RichUtils.onTab(e, this.state.editorState, 4)
+    );
   };
 
   /**
    * Used for Modifier states
    */
-  setEditorState = (content, changeType) => {
-    const editorState = EditorState.push(
-      this.state.editorState,
-      content,
-      changeType
-    );
-
-    this.onChange(editorState);
-  };
+  // setEditorState = (content, changeType) => {
+  //   const editorState = EditorState.push(
+  //     this.state.editorState,
+  //     content,
+  //     changeType
+  //   );
+  //   this.props.handleEditorStateUpdate(editorState);
+  // };
 
   toggleBlockType = (blockType) => {
-    this.onChange(RichUtils.toggleBlockType(this.state.editorState, blockType));
+    this.props.handleEditorStateUpdate(
+      RichUtils.toggleBlockType(this.state.editorState, blockType)
+    );
   };
 
   toggleInlineStyle = (inlineStyle) => {
-    this.onChange(
+    this.props.handleEditorStateUpdate(
       RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
     );
   };
@@ -107,7 +106,7 @@ class PaperDraft extends React.Component {
     const { editorState } = this.state;
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      this.onChange(newState);
+      this.props.handleEditorStateUpdate(newState);
       return true;
     }
     return false;
@@ -139,16 +138,16 @@ class PaperDraft extends React.Component {
 
   onSave = () => {
     const { setMessage, showMessage } = this.props;
-    this.setState({ saving: true });
+    this.setState({ isSaving: true });
     this.saveEdit()
       .then((res) => {
         setMessage("Edit saved.");
         showMessage({ show: true });
-        this.setState({ isReadOnly: true, saving: false });
+        this.setState({ isReadOnly: true, isSaving: false });
       })
       .catch((err) => {
         setMessage("Something went wrong. Please try again!");
-        showMessage({ error: true, show: true, saving: false });
+        showMessage({ error: true, show: true, isSaving: false });
       });
   };
 
@@ -170,12 +169,17 @@ class PaperDraft extends React.Component {
   };
 
   render() {
-    const { isViewerAllowedToEdit, paperDraftExists } = this.props;
-    const { fetching, editorState, isReadOnly, saving } = this.state;
-
+    const {
+      editorState,
+      handleEditorStateUpdate,
+      isFetching,
+      isViewerAllowedToEdit,
+      paperDraftExists,
+    } = this.props;
+    const { isReadOnly, isSaving } = this.state;
     return (
       <ReactPlaceholder
-        ready={!fetching}
+        ready={!isFetching}
         showLoadingAnimation
         customPlaceholder={
           <div style={{ paddingTop: 30 }}>
@@ -210,7 +214,7 @@ class PaperDraft extends React.Component {
             <Editor
               ref={(ref) => (this.editor = ref)}
               editorState={editorState}
-              onChange={this.onChange}
+              onChange={handleEditorStateUpdate}
               onTab={this.onTab}
               isReadOnly={isReadOnly} // setting this to false will grant me access to selection
               spellCheck={true}
@@ -231,15 +235,15 @@ class PaperDraft extends React.Component {
             {/** Needed to retain ripple effect integrity */}
             <Button
               label={
-                saving ? (
+                isSaving ? (
                   <Loader loading={true} size={10} color={"#FFF"} />
                 ) : (
                   "Save"
                 )
               }
               customButtonStyle={styles.button}
-              disabled={saving}
-              onClick={!saving && this.onSave}
+              disabled={isSaving}
+              onClick={!isSaving && this.onSave}
             />
           </div>
         </div>
