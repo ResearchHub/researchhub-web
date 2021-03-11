@@ -201,12 +201,11 @@ class SummaryTab extends React.Component {
   submitAbstract = () => {
     const { paper, setMessage, showMessage, updatePaperState } = this.props;
     showMessage({ show: true, load: true });
-    let body = {
-      abstract: this.state.abstract,
-    };
+
+    const abstract = this.state.abstract.replaceAll("\n", ""); // remove linebreak
 
     this.props
-      .patchPaper(paper.id, body)
+      .patchPaper(paper.id, { abstract })
       .then((res) => {
         if (res.payload && res.payload.errorBody) {
           if (
@@ -218,14 +217,14 @@ class SummaryTab extends React.Component {
         }
         const updatedPaper = {
           ...this.props.paper,
-          abstract: this.state.abstract,
+          abstract,
         };
         updatePaperState && updatePaperState(updatedPaper);
         showMessage({ show: false });
         setMessage("Abstract successfully edited.");
         showMessage({ show: true });
 
-        this.setState({ editAbstract: false });
+        this.setState({ editAbstract: false, abstract });
       })
       .catch((err) => {
         if (err.response.status === 429) {
@@ -432,16 +431,13 @@ class SummaryTab extends React.Component {
         );
       }
       if (paper.abstract || abstract) {
+        const formattedAbstract = abstract && abstract.replaceAll("\n", "");
+
         return (
           <Fragment>
             {readOnly && !editAbstract && (
-              <div
-                className={css(
-                  styles.abstractContainer
-                  // !externalSource && styles.whiteSpace
-                )}
-              >
-                {abstract}
+              <div className={css(styles.abstractContainer)}>
+                {formattedAbstract}
               </div>
             )}
           </Fragment>
@@ -744,6 +740,7 @@ var styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     fontFamily: "CharterBT",
+    whiteSpace: "normal",
     "@media only screen and (max-width: 967px)": {
       fontSize: 14,
       width: "100%",
@@ -773,6 +770,7 @@ var styles = StyleSheet.create({
   formContainerStyle: {
     paddingBottom: 0,
     margin: 0,
+    boxSizing: "border-box",
   },
   formInputStyle: {
     minHeight: "unset",
@@ -780,6 +778,8 @@ var styles = StyleSheet.create({
     whiteSpace: "normal",
     lineHeight: 2,
     padding: 20,
+    boxSizing: "border-box",
+    width: "100%",
   },
   sectionHeader: {
     display: "flex",
