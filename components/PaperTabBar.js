@@ -1,11 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { useStore } from "react-redux";
 import ScrollMenu from "react-horizontal-scrolling-menu";
-
-// Components
-import ComponentWrapper from "./ComponentWrapper";
-import Loader from "~/components/Loader/Loader";
 
 // Config
 import API from "~/config/api";
@@ -149,32 +144,7 @@ const PaperTabBar = (props) => {
         onSelect={onClick}
         selected={activeTab}
       />
-      {/* {renderPreregistrationTag()} */}
     </div>
-  );
-};
-
-const Count = (props) => {
-  const { amount, isSelected, loading } = props;
-  if (amount < 1) {
-    return <span id="discussion_count"></span>;
-  }
-  return (
-    <UIStyling isSelected={isSelected} loading={loading}>
-      <span id="discussion_count" className={css(styles.count)}>
-        {loading ? (
-          <Loader
-            key={"discussionLoader"}
-            loading={true}
-            size={4}
-            color={paperTabColors.FONT}
-            containerStyle={styles.customLoader}
-          />
-        ) : (
-          amount
-        )}
-      </span>
-    </UIStyling>
   );
 };
 
