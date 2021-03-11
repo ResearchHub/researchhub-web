@@ -114,6 +114,7 @@ function PaperDraftContainer({
         initEditorState={initEditorState}
         isFetching={isFetching}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
+        initEditorState={initEditorState}
         paperDraftExists={paperDraftExists}
         paperDraftSections={paperDraftSections}
         paperId={paperId}
