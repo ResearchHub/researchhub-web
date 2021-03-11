@@ -33,6 +33,7 @@ function PaperDraftContainer({
   paperDraftExists,
   paperDraftSections,
   paperId,
+  paperDraftExists,
   setActiveSection,
   setPaperDraftExists,
   setPaperDraftSections,

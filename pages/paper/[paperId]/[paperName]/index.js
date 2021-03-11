@@ -528,6 +528,18 @@ const Paper = (props) => {
                   />
                   <PaperDraftContainer
                     isViewerAllowedToEdit={isModerator}
+<<<<<<< HEAD
+=======
+                    paperDraftExists={paperDraftExists}
+                    paperDraftSections={paperDraftSections}
+                    paperId={paperId}
+                    setPaperDraftExists={setPaperDraftExists}
+                    setPaperDraftSections={setPaperDraftSections}
+                  />
+                  {/* <PaperDraft
+                    paperId={paperId}
+                    abstract={paper.abstract}
+>>>>>>> 9d02a447 (fetching is successful)
                     paperDraftExists={paperDraftExists}
                     paperDraftSections={paperDraftSections}
                     paperId={paperId}
