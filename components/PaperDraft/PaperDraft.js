@@ -41,29 +41,12 @@ class PaperDraft extends React.Component {
       seenEntityKeys: {},
     };
     this.editor;
-    this.decorator = 
   }
 
   updateParentState = (sectionTitles) => {
     const { setPaperDraftExists, setPaperDraftSections } = this.props;
     setPaperDraftExists(true);
     setPaperDraftSections(sectionTitles);
-  };
-
-  findWayPointEntity = (contentBlock, callback, contentState) => {
-    const { seenEntityKeys } = this.state;
-    contentBlock.findEntityRanges((character) => {
-      const entityKey = character.getEntity();
-      if (!seenEntityKeys[entityKey]) {
-        this.setState({
-          seenEntityKeys: { ...seenEntityKeys, [entityKey]: true },
-        });
-        return (
-          entityKey !== null &&
-          contentState.getEntity(entityKey).getType() === "WAYPOINT"
-        );
-      }
-    }, callback);
   };
 
   onChange = (editorState) => {
