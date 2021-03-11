@@ -64,7 +64,6 @@ function PaperDraftContainer({
         setPaperDraftSections(sections);
         setPaperDraftExists(true);
         setIsFetching(false);
-        // console.warn("format success!!!!");
       };
       let digestibleFormat = null;
       if (typeof data !== "string") {
@@ -89,7 +88,6 @@ function PaperDraftContainer({
 
   const handleFetchError = useCallback(
     (_err) => {
-      // console.warn("error????: ", _err);
       setPaperDraftExists(false);
       setPaperDraftSections([]);
       setIsFetching(false);
@@ -104,9 +102,6 @@ function PaperDraftContainer({
       .then(handleFetchSuccess)
       .catch(handleFetchError);
   }, [handleFetchSuccess, handleFetchError, paperId, Helpers]);
-
-  // console.warn("editorState: ", editorState);
-  // console.warn("paperDraftExists: ", paperDraftExists);
 
   return (
     <div>
