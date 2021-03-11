@@ -1,8 +1,5 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
-import { connect } from "react-redux";
-import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
 import FsLightbox from "fslightbox-react";
 
@@ -12,13 +9,11 @@ import Button from "~/components/Form/Button";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 
 // Config
-import colors from "~/config/themes/colors";
 import { fetchPaperFigures } from "~/config/fetch";
 
 const PaperPreview = (props) => {
   const [slideIndex, setSlideIndex] = useState(1);
   const [figureUrls, setFigureUrls] = useState([]);
-  const [hovered, setHovered] = useState(false);
   const [lightbox, setLightbox] = useState(false);
   const [fetching, setFetching] = useState(true);
 
@@ -64,7 +59,6 @@ const PaperPreview = (props) => {
     >
       <ReactPlaceholder
         ready={!fetching}
-        // ready={false}
         showLoadingAnimation
         customPlaceholder={<PreviewPlaceholder color="#efefef" />}
       >
