@@ -552,6 +552,9 @@ const Paper = (props) => {
                     paperDraftSections={paperDraftSections}
                   />
                   <PaperDraftContainer
+                    isViewerAllowedToEdit={isModerator}
+                    paperDraftExists={paperDraftExists}
+                    paperDraftSections={paperDraftSections}
                     paperId={paperId}
                     setPaperDraftExists={setPaperDraftExists}
                     setPaperDraftSections={setPaperDraftSections}
