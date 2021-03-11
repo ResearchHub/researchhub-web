@@ -720,12 +720,7 @@ class PaperTransactionModal extends React.Component {
     } else if (nextScreen && offChain) {
       return (
         <div className={css(styles.content, transition && styles.transition)}>
-          <div className={css(styles.description)}>
-            {
-              "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
-            }
-          </div>
-          {this.renderToggleContainer(css(styles.toggleContainer))}
+          {/* {this.renderToggleContainer(css(styles.toggleContainer))} */}
           <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Total Balance</div>
@@ -777,14 +772,9 @@ class PaperTransactionModal extends React.Component {
             this.renderSwitchNetworkMsg()
           ) : (
             <Fragment>
-              <div className={css(styles.description)}>
-                {
-                  "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
-                }
-              </div>
-              {this.renderToggleContainer(
+              {/* {this.renderToggleContainer(
                 css(styles.toggleContainer, styles.toggleContainerOnChain)
-              )}
+              )} */}
               {connectedMetaMask && (
                 <div className={css(styles.connectStatus)}>
                   <div
@@ -903,8 +893,8 @@ const styles = StyleSheet.create({
     opacity: 1,
     transition: "all ease-in-out 0.2s",
     position: "relative",
+    paddingTop: 40,
     "@media only screen and (max-width: 557px)": {
-      padding: 25,
       width: "100%",
       boxSizing: "border-box",
     },
