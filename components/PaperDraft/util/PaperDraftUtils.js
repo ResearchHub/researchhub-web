@@ -1,8 +1,11 @@
 import { EditorState, convertFromRaw } from "draft-js";
+import { convertFromHTML } from "draft-convert";
 
 const emptyFunction = (message) => {
   if (message == null) {
     console.warn("emptyFunction is used. this maybe a bug");
+  } else {
+    console.warn(message);
   }
 };
 
@@ -127,23 +130,27 @@ const formatHTMLForMarkup = (base64) => {
 export const formatBase64ToEditorState = (payload) => {
   const {
     base64 = "",
-    decorator = null,
     currenEditorState = EditorState.createEmpty(),
+    decorator = null,
     onError = emptyFunction,
+    onSuccess = emptyFunction,
   } = payload ?? {};
-  const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
   try {
+    const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
     const blocksFromHTML = convertFromHTML({
       htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
       htmlToStyle,
       htmlToEntity,
     })(html, { flat: true });
-    return EditorState.set(
+    const newEditorState = EditorState.set(
       EditorState.push(currenEditorState, blocksFromHTML),
       { decorator }
     );
-  } catch {
-    onError("");
+    onSuccess({ sections: sectionTitles });
+    return newEditorState;
+  } catch (error) {
+    debugger;
+    onError("formatBase64ToEditorState: ", error.toString());
   }
 };
 
@@ -152,15 +159,17 @@ export const formatRawJsonToEditorState = (payload) => {
     decorator = null,
     onError = emptyFunction,
     onSuccess = emptyFunction,
-    rawJson /* json formatted from backend */,
+    rawJson /* json formatted by draftJs & saved to backend */,
   } = payload ?? {};
   try {
     const { data, sections } = rawJson;
-    return EditorState.set(
+    const newEditorState = EditorState.set(
       EditorState.createWithContent(convertFromRaw(data)),
       { decorator }
     );
-  } catch {
-    onError("");
+    onSuccess({ sections });
+    return newEditorState;
+  } catch (error) {
+    onError("formatRawJsonToEditorState: ", error.toString());
   }
 };
