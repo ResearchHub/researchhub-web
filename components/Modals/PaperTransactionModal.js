@@ -285,13 +285,19 @@ class PaperTransactionModal extends React.Component {
   };
 
   sendTransaction = () => {
-    let { showMessage, setMessage, updatePaperState, paper, user } = this.props;
+    const {
+      showMessage,
+      setMessage,
+      updatePaperState,
+      paper,
+      user,
+    } = this.props;
     showMessage({ show: true, load: true });
 
-    let paperId = paper.id;
-    let userId = user.id;
+    const paperId = paper.id;
+    const userId = user.id;
 
-    let payload = {
+    const payload = {
       amount: Number(this.state.value),
       object_id: paperId,
       content_type: "paper",
@@ -305,11 +311,11 @@ class PaperTransactionModal extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         if (!this.state.offChain) {
-          let item = { ...res };
+          const item = { ...res };
           this.signTransaction(item);
         } else {
           // Send AMP Event
-          let payload = {
+          const payload = {
             event_type: "create_purchase",
             time: +new Date(),
             insert_id: `purchase_${res.id}`,
@@ -508,7 +514,7 @@ class PaperTransactionModal extends React.Component {
   };
 
   renderSwitchNetworkMsg = () => {
-    let { transition } = this.state;
+    const { transition } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
         {transition ? (
@@ -522,11 +528,6 @@ class PaperTransactionModal extends React.Component {
               Simply open MetaMask and switch over {"\n"}to the
               <b>{" Rinkeby Test Network"}</b>
             </div>
-            {/* <img
-              src={"/static/background/metamask.png"}
-              className={css(styles.image)}
-              draggable={false}
-            /> */}
           </Fragment>
         )}
       </div>
@@ -649,8 +650,8 @@ class PaperTransactionModal extends React.Component {
   };
 
   renderContent = () => {
-    let { user } = this.props;
-    let {
+    const { user } = this.props;
+    const {
       nextScreen,
       offChain,
       transition,
@@ -748,10 +749,7 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Amount</div>
               <div className={css(styles.subtitle)}>
-                {this.parseValue()} RSC = {this.parseValue()} Day
-                {this.parseValue() === 0 || this.parseValue() > 1 ? "s" : ""} of
-                Support + {this.parseValue()} Upvote
-                {this.parseValue() === 0 || this.parseValue() > 1 ? "s" : ""}
+                Select the amount of RSC
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -858,7 +856,7 @@ class PaperTransactionModal extends React.Component {
                 <div className={css(styles.column, styles.left)}>
                   <div className={css(styles.title)}>Amount</div>
                   <div className={css(styles.subtitle)}>
-                    {this.state.value} RSC = {this.state.value} Day of Support
+                    Select the amount of RSC
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
@@ -885,13 +883,13 @@ class PaperTransactionModal extends React.Component {
   };
 
   render() {
-    let { modals } = this.props;
+    const { modals } = this.props;
 
     return (
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
-        title={"Support Paper"} // this needs to
+        title={"Support Paper"}
       >
         {this.renderContent()}
       </BaseModal>
