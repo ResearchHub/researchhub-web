@@ -1,7 +1,9 @@
 import { EditorState, convertFromRaw } from "draft-js";
 
-const emptyFunction = () => {
-  console.warn("emptyFunction is used. this maybe a bug");
+const emptyFunction = (message) => {
+  if (message == null) {
+    console.warn("emptyFunction is used. this maybe a bug");
+  }
 };
 
 const htmlToBlock = (nodeName, node, idsToRemove) => {
@@ -126,9 +128,8 @@ export const formatBase64ToEditorState = (payload) => {
   const {
     base64 = "",
     decorator = null,
-    existingEditorState = null,
+    currenEditorState = EditorState.createEmpty(),
     onError = emptyFunction,
-    onSuccess = emptyFunction,
   } = payload ?? {};
   const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
   try {
@@ -138,13 +139,11 @@ export const formatBase64ToEditorState = (payload) => {
       htmlToEntity,
     })(html, { flat: true });
     return EditorState.set(
-      EditorState.push(existingEditorState, blocksFromHTML),
+      EditorState.push(currenEditorState, blocksFromHTML),
       { decorator }
     );
   } catch {
-    onError();
-  } finally {
-    onSuccess();
+    onError("");
   }
 };
 
@@ -162,8 +161,6 @@ export const formatRawJsonToEditorState = (payload) => {
       { decorator }
     );
   } catch {
-    onError();
-  } finally {
-    onSuccess();
+    onError("");
   }
 };

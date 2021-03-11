@@ -67,9 +67,11 @@ function PaperDraftContainer({
   const handleFetchSuccess = useCallback(
     (data) => {
       if (typeof data !== "string") {
-        setEditorState(formatRawJsonToEditorState(data));
+        setEditorState(
+          formatRawJsonToEditorState({ rawJson: data, decorator })
+        );
       } else {
-        setEditorState(formatBase64ToEditorState(data));
+        setEditorState(formatBase64ToEditorState({ base64: data, decorator }));
       }
     },
     [formatBase64ToEditorState, formatRawJsonToEditorState]
