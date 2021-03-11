@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 
 // Config
-import { convertNumToMonth, cslFields } from "~/config/utils/options";
+import { convertNumToMonth, cslFields } from "../../config/utils/options";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
@@ -63,6 +63,10 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
     if (arr.length > 5 && !url_is_pdf) {
       let firstAuthor = arr[0];
 
+      if (firstAuthor.literal) {
+        return `${firstAuthor.literal}, et al`;
+      }
+
       return `${firstAuthor.family}, ${firstAuthor.given &&
         firstAuthor.given[0]}., et al`;
     }
@@ -70,6 +74,9 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
       arr &&
       arr
         .map((author) => {
+          if (author.literal) {
+            return author.literal;
+          }
           return `${author.family}, ${author.given && author.given[0]}.`;
         })
         .join(", ")
