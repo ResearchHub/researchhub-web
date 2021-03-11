@@ -24,6 +24,7 @@ import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperDraft from "~/components/PaperDraft/PaperDraft";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
+import InlineComment from "~/components/PaperDraft/InlineComment/InlineComment";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -587,6 +588,8 @@ const Paper = (props) => {
               paperDraftSections={paperDraftSections}
               paperDraftExists={paperDraftExists}
             />
+
+            <InlineComment />
           </div>
         </div>
       </div>

@@ -51,14 +51,18 @@ const DiscussionPostMetadata = (props) => {
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
+
+  // const
+
   const [showDropDown, setDropDown] = useState(false);
   const [isFlagged, setFlagged] = useState(
     metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
   );
   const dropdown = useRef();
   const ellipsis = useRef();
-  let isModerator = store.getState().auth.user.moderator;
-  let isLoggedIn = store.getState().auth.isLoggedIn;
+
+  const isModerator = store.getState().auth.user.moderator;
+  const isLoggedIn = store.getState().auth.isLoggedIn;
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -103,10 +107,11 @@ const DiscussionPostMetadata = (props) => {
 
   const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
-    let { paperId, threadId, commentId, replyId } = metaData;
-    let config = isFlagged
+    const { paperId, threadId, commentId, replyId } = metaData;
+    const config = isFlagged
       ? API.DELETE_CONFIG()
       : await API.POST_CONFIG({ reason: "censor" });
+
     fetch(API.FLAG_POST({ paperId, threadId, commentId, replyId }), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)

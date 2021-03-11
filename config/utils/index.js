@@ -181,3 +181,14 @@ export function getJournalImagePath(source) {
       return src + ".svg";
   }
 }
+
+// export function formatDiscussionMetaDataProps(data, type) {
+//   const props = {
+//     authorId: data.created_by.author_profile.id,
+//     threadId: data.id,
+//     paperId: data.paper,
+//     userFlag: data.user_flag,
+//     contentType: "thread",
+//     objectId: data.id,
+//   }
+// }

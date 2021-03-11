@@ -361,11 +361,11 @@ class DiscussionEntry extends React.Component {
       this.state.comments.length > data.comment_count
         ? this.state.comments.length
         : data.comment_count;
-    let date = data.created_date;
-    let title = data.title;
-    let body = data.source === "twitter" ? data.plain_text : data.text;
-    let username = createUsername(data);
-    let metaData = {
+    const date = data.created_date;
+    const title = data.title;
+    const body = data.source === "twitter" ? data.plain_text : data.text;
+    const username = createUsername(data);
+    const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
