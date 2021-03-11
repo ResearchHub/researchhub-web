@@ -532,17 +532,6 @@ const Paper = (props) => {
                     paperDraftSections={paperDraftSections}
                     paperId={paperId}
                     setActiveSection={setActiveSection}
-<<<<<<< HEAD
-=======
-                    setPaperDraftExists={setPaperDraftExists}
-                    setPaperDraftSections={setPaperDraftSections}
-                  />
-                  {/* <PaperDraft
-                    paperId={paperId}
-                    abstract={paper.abstract}
-                    paperDraftExists={paperDraftExists}
-                    paperDraftSections={paperDraftSections}
->>>>>>> 2cc51622 (update)
                     setPaperDraftExists={setPaperDraftExists}
                     setPaperDraftSections={setPaperDraftSections}
                   />
