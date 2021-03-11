@@ -55,8 +55,12 @@ function PaperDraftContainer({
   );
 
   const handleEditorStateUpdate = useCallback(
-    (content, changeType) =>
-      setEditorState(EditorState.push(editorState, content, changeType)),
+    (content = null, changeType = null) => {
+      console.warn("content: ", content);
+      console.warn("changeType: ", changeType);
+
+      setEditorState(EditorState.push(editorState, content, changeType));
+    },
     [setEditorState]
   );
 
