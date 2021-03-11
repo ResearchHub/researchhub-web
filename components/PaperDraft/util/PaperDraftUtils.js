@@ -1,5 +1,9 @@
 import { EditorState, convertFromRaw } from "draft-js";
 
+const emptyFunction = () => {
+  console.warn("emptyFunction is used. this maybe a bug");
+};
+
 const htmlToBlock = (nodeName, node, idsToRemove) => {
   if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
     return false;
@@ -123,8 +127,8 @@ export const formatBase64ToEditorState = (payload) => {
     base64 = "",
     decorator = null,
     existingEditorState = null,
-    onError = () => {},
-    onSuccess = () => {},
+    onError = emptyFunction,
+    onSuccess = emptyFunction,
   } = payload ?? {};
   const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
   try {
@@ -147,8 +151,8 @@ export const formatBase64ToEditorState = (payload) => {
 export const formatRawJsonToEditorState = (payload) => {
   const {
     decorator = null,
-    onError = () => {},
-    onSuccess = () => {},
+    onError = emptyFunction,
+    onSuccess = emptyFunction,
     rawJson /* json formatted from backend */,
   } = payload ?? {};
   try {
