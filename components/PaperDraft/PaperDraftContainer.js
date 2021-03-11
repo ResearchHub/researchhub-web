@@ -60,16 +60,6 @@ function PaperDraftContainer({
     [seenEntityKeys, setSeenEntityKeys, setActiveSection]
   );
 
-  const handleEditorStateUpdate = useCallback(
-    (content = null, changeType = null) => {
-      console.warn("content: ", content);
-      console.warn("changeType: ", changeType);
-
-      setEditorState(EditorState.push(editorState, content, changeType));
-    },
-    [setEditorState]
-  );
-
   const handleFetchSuccess = useCallback(
     (data) => {
       const onFormatSuccess = ({ sections }) => {
