@@ -123,13 +123,10 @@ class PaperDraft extends React.Component {
   };
 
   onCancel = () => {
-    this.setState(
-      {
-        isInEditMode: true,
-        // editorState: this.state.prevEditorState, // handle this at container
-      },
-      () => this.editor.blur()
-    );
+    const { initEditorState, handleEditorStateUpdate } = this.props;
+    const { isInEditMode } = this.state;
+    handleEditorStateUpdate(initEditorState);
+    this.setState({ isInEditMode: !isInEditMode }, () => this.editor.blur());
   };
 
   onSave = () => {
