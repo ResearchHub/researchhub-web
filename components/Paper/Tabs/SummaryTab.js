@@ -412,6 +412,7 @@ class SummaryTab extends React.Component {
               value={abstract}
               onChange={this.handleAbstract}
               containerStyle={styles.formContainerStyle}
+              inputStyle={styles.formInputStyle}
             />
             <div className={css(styles.buttonRow)}>
               <Ripples
@@ -436,8 +437,8 @@ class SummaryTab extends React.Component {
             {readOnly && !editAbstract && (
               <div
                 className={css(
-                  styles.abstractContainer,
-                  !externalSource && styles.whiteSpace
+                  styles.abstractContainer
+                  // !externalSource && styles.whiteSpace
                 )}
               >
                 {abstract}
@@ -672,16 +673,18 @@ class SummaryTab extends React.Component {
           <h3 className={css(styles.sectionTitle)}>
             <span className={css(styles.titleRow)}>
               Abstract
-              <PermissionNotificationWrapper
-                modalMessage="propose abstract edit"
-                onClick={this.editAbstract}
-                loginRequired={true}
-                hideRipples={true}
-              >
-                <div className={css(styles.action, styles.editAction)}>
-                  <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
-                </div>
-              </PermissionNotificationWrapper>
+              {paper.abstract && (
+                <PermissionNotificationWrapper
+                  modalMessage="propose abstract edit"
+                  onClick={this.editAbstract}
+                  loginRequired={true}
+                  hideRipples={true}
+                >
+                  <div className={css(styles.action, styles.editAction)}>
+                    <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
+                  </div>
+                </PermissionNotificationWrapper>
+              )}
               {!showAbstract && (
                 <SectionBounty
                   paper={paper}
@@ -691,9 +694,7 @@ class SummaryTab extends React.Component {
                 />
               )}
             </span>
-            {/* {this.renderTabs()} */}
           </h3>
-          {/* {this.renderActions()} */}
         </div>
         {this.renderContent()}
         <ManageBulletPointsModal paperId={this.props.paper.id} />
@@ -747,9 +748,6 @@ var styles = StyleSheet.create({
       fontSize: 14,
       width: "100%",
     },
-    // "@media only screen and (max-width: 415px)": {
-    //   fontSize: 12,
-    // },
   },
   abstractText: {
     lineHeight: 1.6,
@@ -774,8 +772,14 @@ var styles = StyleSheet.create({
   },
   formContainerStyle: {
     paddingBottom: 0,
-    marginBottom: 0,
+    margin: 0,
+  },
+  formInputStyle: {
+    minHeight: "unset",
     fontFamily: "CharterBT",
+    whiteSpace: "normal",
+    lineHeight: 2,
+    padding: 20,
   },
   sectionHeader: {
     display: "flex",

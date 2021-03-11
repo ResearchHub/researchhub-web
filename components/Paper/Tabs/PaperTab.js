@@ -1,7 +1,7 @@
 import { useState, useRef, Fragment, useEffect } from "react";
 
 // NPM Modules
-import { connect, useStore, useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { useAlert } from "react-alert";
@@ -10,7 +10,6 @@ import Ripples from "react-ripples";
 // Component
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
-import ComponentWrapper from "~/components/ComponentWrapper";
 import FormDND from "../../Form/FormDND";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import Button from "../../Form/Button";
@@ -24,7 +23,7 @@ import { AuthActions } from "~/redux/auth";
 import colors from "../../../config/themes/colors";
 import icons from "~/config/themes/icons";
 import { defaultStyles } from "~/config/themes/styles";
-import { openExternalLink } from "~/config/utils";
+import { openExternalLink, convertHttpToHttps } from "~/config/utils";
 
 // Stylesheets
 import "./stylesheets/ReactPdf.css";
@@ -32,11 +31,8 @@ import "./stylesheets/ReactPdf.css";
 function PaperTab(props) {
   const { paper, paperId, paperPdfRef, isModerator, updatePaperState } = props;
   const alert = useAlert();
-  const store = useStore();
   const dispatch = useDispatch();
 
-  const [loadSuccess, setLoadSuccess] = useState(false);
-  const [numPages, setNumPages] = useState(0);
   const [file, setFile] = useState(
     (paper && (paper.file || paper.pdf_url)) || null
   ); // the path to file pdf
@@ -45,13 +41,7 @@ function PaperTab(props) {
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
   const [loading, toggleLoading] = useState(false);
   const [paperFile, setPaperFile] = useState({});
-  const [paperMetaData, setPaperMetadata] = useState({});
   const containerRef = useRef();
-
-  function onLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-    setLoadSuccess(true);
-  }
 
   useEffect(() => {
     setFile(paper.file || paper.pdf_url);
@@ -150,9 +140,11 @@ function PaperTab(props) {
       );
     }
     if (file) {
+      const httpsUrl = convertHttpToHttps(file);
+
       return (
         <div className={css(styles.pdfFrame)}>
-          <iframe src={file} height={800} width={"100%"} loading="lazy" />
+          <iframe src={httpsUrl} height={800} width={"100%"} loading="lazy" />
         </div>
       );
     } else {

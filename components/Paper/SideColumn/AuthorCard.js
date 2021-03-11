@@ -1,12 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
+import Link from "next/link";
 
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const AuthorCard = (props) => {
-  const { name } = props;
+  const { name, author } = props;
+
+  const { id, orcid_id } = author;
+
+  if (id) {
+    return (
+      <Link
+        href={"/user/[authorId]/[tabName]"}
+        as={`/user/${authorId}/contributions`}
+      >
+        <a className={css(styles.container, styles.hover)}>
+          <span className={css(styles.userIcon)}>{icons.user}</span>
+          <div className={css(styles.name) + " clamp1"}>{name}</div>
+        </a>
+      </Link>
+    );
+  }
+
+  if (orcid_id) {
+    return (
+      <a
+        className={css(styles.container, styles.hover)}
+        target="_blank"
+        href={`https://orcid.org/${authorOrcidId}`}
+        rel="noreferrer noopener"
+      >
+        <span className={css(styles.userIcon)}>{icons.user}</span>
+        <div className={css(styles.name) + " clamp1"}>{name}</div>
+      </a>
+    );
+  }
 
   return (
     <div className={css(styles.container)}>
@@ -18,6 +49,7 @@ const AuthorCard = (props) => {
 
 AuthorCard.propTypes = {
   name: PropTypes.string,
+  author: PropTypes.object,
 };
 
 const styles = StyleSheet.create({
@@ -30,11 +62,14 @@ const styles = StyleSheet.create({
     padding: "8px 15px 8px 12px",
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
-    // ":hover": {
-    //   cursor: "pointer",
-    //   background: "#FAFAFA",
-    //   borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-    // },
+  },
+  hover: {
+    textDecoration: "unset",
+    ":hover": {
+      cursor: "pointer",
+      background: "#FAFAFA",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
   },
   name: {
     color: colors.BLACK(1),
