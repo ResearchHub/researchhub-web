@@ -36,10 +36,7 @@ function PaperDraftContainer({
   setPaperDraftExists,
   setPaperDraftSections,
 }) {
-  if (paperId == null) {
-    return <></>;
-  }
-  const [isFetching, setIsFetchitng] = useState(true);
+  const [isFetching, setIsFetching] = useState(true);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
@@ -57,21 +54,37 @@ function PaperDraftContainer({
   );
 
   const handleEditorStateUpdate = useCallback(
-    (content, changeType) => {
-      const newEditorState = EditorState.push(editorState, content, changeType);
-      setEditorState(newEditorState);
-    },
+    (content, changeType) =>
+      setEditorState(EditorState.push(editorState, content, changeType)),
     [setEditorState]
   );
 
   const handleFetchSuccess = useCallback(
     (data) => {
+      const onFormatSuccess = ({ sections }) => {
+        /* logical ordering */
+        setPaperDraftSections(sections);
+        setPaperDraftExists(true);
+        setIsFetching(false);
+        // console.warn("format success!!!!");
+      };
       if (typeof data !== "string") {
         setEditorState(
-          formatRawJsonToEditorState({ rawJson: data, decorator })
+          formatRawJsonToEditorState({
+            currenEditorState: editorState,
+            rawJson: data,
+            decorator,
+            onSuccess: onFormatSuccess,
+          })
         );
       } else {
-        setEditorState(formatBase64ToEditorState({ base64: data, decorator }));
+        setEditorState(
+          formatBase64ToEditorState({
+            base64: data,
+            decorator,
+            onSuccess: onFormatSuccess,
+          })
+        );
       }
     },
     [formatBase64ToEditorState, formatRawJsonToEditorState]
@@ -79,11 +92,12 @@ function PaperDraftContainer({
 
   const handleFetchError = useCallback(
     (_err) => {
+      // console.warn("error????: ", _err);
       setPaperDraftExists(false);
       setPaperDraftSections([]);
-      setIsFetchitng(false);
+      setIsFetching(false);
     },
-    [setPaperDraftExists, setPaperDraftSections, setIsFetchitng]
+    [setPaperDraftExists, setPaperDraftSections, setIsFetching]
   );
 
   useEffect(() => {
@@ -94,11 +108,15 @@ function PaperDraftContainer({
       .catch(handleFetchError);
   }, [handleFetchSuccess, handleFetchError, paperId, Helpers]);
 
+  // console.warn("editorState: ", editorState);
+  // console.warn("paperDraftExists: ", paperDraftExists);
+
   return (
     <div>
+      <div>HELLO THIS IS PAPERDRAFT CONTAINER</div>
       <PaperDraft
         editorState={editorState}
-        handleEditorStateUpdate={handleEditorStateUpdate}
+        handleEditorStateUpdate={() => {}}
         isFetching={isFetching}
         isViewerAllowedToEdit={isModerator}
         paperDraftExists={paperDraftExists}
