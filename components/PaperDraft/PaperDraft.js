@@ -175,7 +175,7 @@ class PaperDraft extends React.Component {
   };
 
   render() {
-    const { isModerator, paperDraftExists } = this.props;
+    const { isViewerAllowedToEdit, paperDraftExists } = this.props;
     const { fetching, editorState, readOnly, saving } = this.state;
 
     return (
@@ -193,7 +193,7 @@ class PaperDraft extends React.Component {
         <div className={css(styles.root, !paperDraftExists && styles.hidden)}>
           <h3 className={css(styles.title, !readOnly && styles.paddingBottom)}>
             Paper
-            {isModerator && (
+            {isViewerAllowedToEdit && (
               <div className={css(styles.pencilIcon)} onClick={this.toggleEdit}>
                 {icons.pencil}
               </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Helpers } from "@quantfive/js-web-config";
 import { fetchPaperDraft } from "~/config/fetch";
 import { CompositeDecorator, EditorState } from "draft-js";
@@ -28,7 +28,9 @@ const findWayPointEntity = (contentBlock, callback, contentState) => {
 
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 function PaperDraftContainer({
+  isModerator,
   paperId,
+  paperDraftExists,
   setActiveSection,
   setPaperDraftExists,
   setPaperDraftSections,
@@ -39,31 +41,32 @@ function PaperDraftContainer({
   const [isFetching, setIsFetchitng] = useState(true);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
-  const decorator = new CompositeDecorator([
-    {
-      strategy: findWayPointEntity,
-      component: (props) => (
-        <WaypointSection {...props} onSectionEnter={setActiveSection} />
-      ),
-    },
-  ]);
+  const decorator = useMemo(
+    () =>
+      new CompositeDecorator([
+        {
+          strategy: findWayPointEntity,
+          component: (props) => (
+            <WaypointSection {...props} onSectionEnter={setActiveSection} />
+          ),
+        },
+      ]),
+    [setActiveSection]
+  );
 
-  const handleFetchSuccess = useMemo(
+  const handleFetchSuccess = useCallback(
     (data) => {
-      console.warn("data: ", data);
-      let formattedState = null;
       if (typeof data !== "string") {
-        formattedState = formatRawJsonToEditorState(data);
+        setEditorState(formatRawJsonToEditorState(data));
       } else {
-        formattedState = formatBase64ToEditorState(data);
+        setEditorState(formatBase64ToEditorState(data));
       }
-      setEditorState(formattedState);
     },
     [formatBase64ToEditorState, formatRawJsonToEditorState]
   );
 
-  const handleFetchError = useMemo(
-    (err) => {
+  const handleFetchError = useCallback(
+    (_err) => {
       setPaperDraftExists(false);
       setPaperDraftSections([]);
       setIsFetchitng(false);
@@ -82,9 +85,11 @@ function PaperDraftContainer({
   return (
     <div>
       <PaperDraft
-        isFetching={isFetching}
         editorState={editorState}
+        isFetching={isFetching}
         onChange={() => {}}
+        paperDraftExists={paperDraftExists}
+        isViewerAllowedToEdit={isModerator}
       />
     </div>
   );
