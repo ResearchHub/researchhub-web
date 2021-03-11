@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Helpers } from "@quantfive/js-web-config";
-import { connect } from "react-redux";
 import { fetchPaperDraft } from "~/config/fetch";
 import { EditorState } from "draft-js";
 import {
   formatBase64ToEditorState,
   setRawToEditorState,
 } from "./util/PaperDraftUtils";
-import { convertFromHTML } from "draft-convert";
+import WaypointSection from "./WaypointSection";
 
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 function PaperDraftContainer({
@@ -36,9 +35,9 @@ function PaperDraftContainer({
       const { setPaperDraftExists, setPaperDraftSections } = this.props;
       setPaperDraftExists(false);
       setPaperDraftSections([]);
-      this.setState({ fetching: false });
+      setIsFetchitng(false);
     },
-    [setPaperDraftExists, setPaperDraftSections]
+    [setPaperDraftExists, setPaperDraftSections, setIsFetchitng]
   );
 
   useEffect(() => {
@@ -48,6 +47,25 @@ function PaperDraftContainer({
       .then(handleFetchSuccess)
       .catch(handleFetchError);
   }, [handleFetchSuccess, handleFetchError, paperId, Helpers]);
+
+  const decorator = new CompositeDecorator([
+    {
+      strategy: this.findWayPointEntity,
+      component: (props) => (
+        <WaypointSection
+          {...props}
+          onSectionEnter={this.props.setActiveSection}
+        />
+      ),
+    },
+  ]);
+
+  
+  return (
+    <div>
+      <PaperDraft isFetching={isFetching} editorState={editorState} onChange={}/>
+    </div>
+  );
 }
 
 export default PaperDraftContainer;
