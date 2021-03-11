@@ -9,6 +9,10 @@ const emptyFunction = (message) => {
   }
 };
 
+const emptyFunction = () => {
+  console.warn("emptyFunction is used. this maybe a bug");
+};
+
 const htmlToBlock = (nodeName, node, idsToRemove) => {
   if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
     return false;
