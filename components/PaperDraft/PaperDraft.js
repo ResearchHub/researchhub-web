@@ -1,15 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  convertToRaw,
-  convertFromRaw,
-  CompositeDecorator,
-} from "draft-js";
-import { convertFromHTML } from "draft-convert";
+import { Editor, RichUtils, convertToRaw } from "draft-js";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
