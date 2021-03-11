@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
     borderBottom: "rgb(151,151,151, .2) 1px solid",
     justifyContent: "space-around",
     position: "sticky",
-    zIndex: 5,
+    zIndex: 4,
     top: 0,
     left: 0,
     backgroundColor: "#FFF",
@@ -796,7 +796,6 @@ const styles = StyleSheet.create({
   actions: {
     display: "flex",
     alignItems: "center",
-    zIndex: 99999,
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
