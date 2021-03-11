@@ -556,6 +556,7 @@ const Paper = (props) => {
                     paperDraftExists={paperDraftExists}
                     paperDraftSections={paperDraftSections}
                     paperId={paperId}
+                    setActiveSection={setActiveSection}
                     setPaperDraftExists={setPaperDraftExists}
                     setPaperDraftSections={setPaperDraftSections}
                   />
