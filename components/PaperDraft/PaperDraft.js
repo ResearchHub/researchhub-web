@@ -17,12 +17,10 @@ import { MessageActions } from "~/redux/message";
 
 // Components
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
-import WaypointSection from "./WaypointSection";
 import StyleControls from "./StyleControls";
 import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 
-import { fetchPaperDraft } from "~/config/fetch";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
@@ -43,230 +41,13 @@ class PaperDraft extends React.Component {
       seenEntityKeys: {},
     };
     this.editor;
-    this.decorator = new CompositeDecorator([
-      {
-        strategy: this.findWayPointEntity,
-        component: (props) => (
-          <WaypointSection
-            {...props}
-            onSectionEnter={this.props.setActiveSection}
-          />
-        ),
-      },
-    ]);
+    this.decorator = 
   }
-
-  componentDidMount() {
-    this.fetchHTML();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.paperId !== this.props.paperId) {
-      this.fetchHTML();
-    }
-  }
-
-  htmlToBlock = (nodeName, node, idsToRemove) => {
-    if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
-      return false;
-    }
-
-    switch (nodeName) {
-      case "title":
-        if (node.className === "header") {
-          return {
-            type: "header-one",
-            data: {
-              props: node.dataset.props,
-            },
-          };
-        }
-
-        return {
-          type: "header-two",
-          data: {},
-        };
-      case "p":
-        return {
-          type: "paragraph",
-          data: {},
-        };
-
-      case "abstract":
-      case "fig":
-      case "graphic":
-      case "front":
-      case "back":
-      case "journal":
-      case "article-id":
-        return false;
-      default:
-        return true;
-    }
-  };
-
-  htmlToStyle = (nodeName, node, currentStyle) => {
-    if (nodeName === "xref") {
-      return currentStyle.add("ITALIC");
-    }
-    return currentStyle;
-  };
-
-  htmlToEntity = (nodeName, node, createEntity) => {
-    const { className } = node;
-
-    if (
-      (nodeName === "title" && className === "header") ||
-      (nodeName === "p" && className === "last-paragraph")
-    ) {
-      const [name, index] = node.dataset.props.split("-");
-
-      const entity = createEntity("WAYPOINT", "IMMUTABLE", {
-        name: name,
-        index: index,
-      });
-
-      return entity;
-    }
-  };
-
-  fetchHTML = () => {
-    const { paperId } = this.props;
-    fetchPaperDraft({ paperId })
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(this.handleData)
-      .catch(this.handleError);
-  };
-
-  handleData = (data) => {
-    if (typeof data !== "string") {
-      return this.setRawToEditorState(data);
-    } else {
-      return this.setBase64ToEditorState(data);
-    }
-  };
-
-  /**
-   * @param {JSON} res => Backend JSON with rawEditorState and saved Sections
-   *
-   * converts raw Draft JSON to Draft Edtior State
-   */
-  setRawToEditorState = (res) => {
-    try {
-      const { data, sections } = res;
-
-      const editorState = EditorState.set(
-        EditorState.createWithContent(convertFromRaw(data)),
-        { decorator: this.decorator }
-      );
-      this.onChaange(editorState);
-      this.updateParentState(sections);
-    } catch {
-      this.handleError();
-    } finally {
-      this.setState({ fetching: false });
-    }
-  };
-
-  /**
-   *
-   * @param {String} base64 - string returned from scrapped pdf
-   *
-   * converts base64 to custom HTML to Draft Editor State
-   */
-  setBase64ToEditorState = (base64) => {
-    const [html, idsToRemove, sectionTitles] = this.formatHTMLForMarkup(base64);
-
-    try {
-      const blocksFromHTML = convertFromHTML({
-        htmlToBlock: (nodeName, node) =>
-          this.htmlToBlock(nodeName, node, idsToRemove),
-        htmlToStyle: this.htmlToStyle,
-        htmlToEntity: this.htmlToEntity,
-      })(html, { flat: true });
-
-      const { editorState } = this.state;
-
-      const updatedEditorState = EditorState.set(
-        EditorState.push(editorState, blocksFromHTML),
-        { decorator: this.decorator }
-      );
-
-      this.onChange(updatedEditorState);
-      this.updateParentState(sectionTitles);
-    } catch {
-      this.handleError();
-    } finally {
-      this.setState({ fetching: false });
-    }
-  };
-
-  handleError = (err) => {
-    const { setPaperDraftExists, setPaperDraftSections } = this.props;
-    setPaperDraftExists(false);
-    setPaperDraftSections([]);
-    this.setState({ fetching: false });
-  };
 
   updateParentState = (sectionTitles) => {
     const { setPaperDraftExists, setPaperDraftSections } = this.props;
     setPaperDraftExists(true);
     setPaperDraftSections(sectionTitles);
-  };
-
-  formatHTMLForMarkup = (base64) => {
-    const sectionTitles = [];
-    const idsToRemove = {};
-
-    const html = decodeURIComponent(escape(window.atob(base64)));
-    const doc = new DOMParser().parseFromString(html, "text/xml");
-    const sections = [].slice.call(doc.getElementsByTagName("sec"));
-
-    let count = 0;
-
-    sections.forEach((section) => {
-      const { parentNode } = section;
-
-      const titleNode = section.getElementsByTagName("title")[0];
-      const lastPNode = [].slice.call(section.getElementsByTagName("p")).pop();
-
-      if (!titleNode || !lastPNode) {
-        return (idsToRemove[section.id] = true);
-      }
-
-      const title = titleNode.textContent.trim().toLowerCase();
-      const paragraph = lastPNode.textContent.trim();
-
-      if (
-        title.length <= 1 ||
-        paragraph.length <= 1 ||
-        parentNode.nodeName === "abstract" ||
-        parentNode.nodeName === "front" ||
-        parentNode.nodeName === "back"
-      ) {
-        return (idsToRemove[section.id] = true);
-      }
-
-      if (parentNode.nodeName === "article") {
-        const data = `${title}-${count}`;
-        const header = section.children[0];
-
-        sectionTitles.push(title); // push title for tabbar
-
-        section.className = "main-section";
-
-        header.className = "header";
-        header.setAttribute("data-props", data);
-
-        lastPNode.className = "last-paragraph";
-        lastPNode.setAttribute("data-props", data);
-
-        count++;
-      }
-    });
-
-    return [doc.documentElement.innerHTML, idsToRemove, sectionTitles];
   };
 
   findWayPointEntity = (contentBlock, callback, contentState) => {

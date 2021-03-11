@@ -1,9 +1,68 @@
-import {
-  EditorState,
-  convertToRaw,
-  convertFromRaw,
-  CompositeDecorator,
-} from "draft-js";
+import { EditorState, convertFromRaw } from "draft-js";
+
+const htmlToBlock = (nodeName, node, idsToRemove) => {
+  if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
+    return false;
+  }
+
+  switch (nodeName) {
+    case "title":
+      if (node.className === "header") {
+        return {
+          type: "header-one",
+          data: {
+            props: node.dataset.props,
+          },
+        };
+      }
+
+      return {
+        type: "header-two",
+        data: {},
+      };
+    case "p":
+      return {
+        type: "paragraph",
+        data: {},
+      };
+
+    case "abstract":
+    case "fig":
+    case "graphic":
+    case "front":
+    case "back":
+    case "journal":
+    case "article-id":
+      return false;
+    default:
+      return true;
+  }
+};
+
+const htmlToStyle = (nodeName, node, currentStyle) => {
+  if (nodeName === "xref") {
+    return currentStyle.add("ITALIC");
+  }
+  return currentStyle;
+};
+
+const htmlToEntity = (nodeName, node, createEntity) => {
+  const { className } = node;
+
+  if (
+    (nodeName === "title" && className === "header") ||
+    (nodeName === "p" && className === "last-paragraph")
+  ) {
+    const [name, index] = node.dataset.props.split("-");
+
+    const entity = createEntity("WAYPOINT", "IMMUTABLE", {
+      name: name,
+      index: index,
+    });
+
+    return entity;
+  }
+};
 
 const formatHTMLForMarkup = (base64) => {
   const sectionTitles = [];
@@ -60,6 +119,7 @@ const formatHTMLForMarkup = (base64) => {
 
 const formatBase64ToEditorState = ({
   base64,
+  decorator,
   existingEditorState,
   onError,
   onSuccess,
@@ -67,17 +127,14 @@ const formatBase64ToEditorState = ({
   const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
   try {
     const blocksFromHTML = convertFromHTML({
-      htmlToBlock: (nodeName, node) =>
-        this.htmlToBlock(nodeName, node, idsToRemove),
-      htmlToStyle: this.htmlToStyle,
-      htmlToEntity: this.htmlToEntity,
+      htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
+      htmlToStyle,
+      htmlToEntity,
     })(html, { flat: true });
 
     return EditorState.set(
       EditorState.push(existingEditorState, blocksFromHTML),
-      {
-        decorator: this.decorator,
-      }
+      { decorator }
     );
   } catch {
     onError();
@@ -86,24 +143,26 @@ const formatBase64ToEditorState = ({
   }
 };
 
-formatRawToEditorState = ({
+formatRawJsonToEditorState = ({
+  decorator,
+  onError,
+  onSuccess,
   rawJson /* json formatted from backend */,
-  handleError,
 }) => {
   try {
     const { data, sections } = rawJson;
     return EditorState.set(
       EditorState.createWithContent(convertFromRaw(data)),
-      { decorator: this.decorator }
+      { decorator }
     );
-    this.updateParentState(sections);
   } catch {
-    this.handleError();
+    onError();
   } finally {
-    this.setState({ fetching: false });
+    onSuccess();
   }
 };
 
 export const exportables = {
   formatBase64ToEditorState,
+  formatRawJsonToEditorState,
 };
