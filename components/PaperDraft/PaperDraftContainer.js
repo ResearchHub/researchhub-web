@@ -59,10 +59,8 @@ function PaperDraftContainer({
   );
 
   const handleEditorStateUpdate = useCallback(
-    (content, changeType) => {
-      const newEditorState = EditorState.push(editorState, content, changeType);
-      setEditorState(newEditorState);
-    },
+    (content, changeType) =>
+      setEditorState(EditorState.push(editorState, content, changeType)),
     [setEditorState]
   );
 
@@ -97,6 +95,7 @@ function PaperDraftContainer({
 
   const handleFetchError = useCallback(
     (_err) => {
+      // console.warn("error????: ", _err);
       setPaperDraftExists(false);
       setPaperDraftSections([]);
       setIsFetching(false);
@@ -114,6 +113,7 @@ function PaperDraftContainer({
 
   return (
     <div>
+      <div>HELLO THIS IS PAPERDRAFT CONTAINER</div>
       <PaperDraft
         editorState={editorState}
         handleEditorStateUpdate={setEditorState}
