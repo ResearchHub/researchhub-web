@@ -31,16 +31,11 @@ import "~/components/Paper/Tabs/stylesheets/paper.css";
 class PaperDraft extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      prevEditorState: EditorState.createEmpty(),
-      editorState: EditorState.createEmpty(),
-      readOnly: true,
-      focused: false,
-      fetching: true,
-      seenEntityKeys: {},
+      isReadOnly: true,
+      isFocused: false,
     };
-    this.editor;
+    this.editor; // $ref to Editor
   }
 
   updateParentState = (sectionTitles) => {
@@ -54,14 +49,14 @@ class PaperDraft extends React.Component {
   };
 
   onFocus = () => {
-    this.setState({ focused: true });
+    this.setState({ isFocused: true });
     this.editor.focus();
   };
 
   onBlur = () => {
     this.setState({
-      readOnly: true,
-      focused: false,
+      isReadOnly: true,
+      isFocused: false,
     });
   };
 
@@ -119,15 +114,15 @@ class PaperDraft extends React.Component {
   };
 
   toggleEdit = (e) => {
-    const { readOnly } = this.state;
+    const { isReadOnly } = this.state;
 
     this.setState(
       {
-        readOnly: !readOnly,
+        isReadOnly: !isReadOnly,
         prevEditorState: this.state.editorState,
       },
       () => {
-        return this.state.readOnly ? this.editor.blur() : this.editor.focus();
+        return this.state.isReadOnly ? this.editor.blur() : this.editor.focus();
       }
     );
   };
@@ -135,7 +130,7 @@ class PaperDraft extends React.Component {
   onCancel = () => {
     this.setState(
       {
-        readOnly: true,
+        isReadOnly: true,
         editorState: this.state.prevEditorState,
       },
       () => this.editor.blur()
@@ -149,7 +144,7 @@ class PaperDraft extends React.Component {
       .then((res) => {
         setMessage("Edit saved.");
         showMessage({ show: true });
-        this.setState({ readOnly: true, saving: false });
+        this.setState({ isReadOnly: true, saving: false });
       })
       .catch((err) => {
         setMessage("Something went wrong. Please try again!");
@@ -176,7 +171,7 @@ class PaperDraft extends React.Component {
 
   render() {
     const { isViewerAllowedToEdit, paperDraftExists } = this.props;
-    const { fetching, editorState, readOnly, saving } = this.state;
+    const { fetching, editorState, isReadOnly, saving } = this.state;
 
     return (
       <ReactPlaceholder
@@ -191,7 +186,9 @@ class PaperDraft extends React.Component {
         }
       >
         <div className={css(styles.root, !paperDraftExists && styles.hidden)}>
-          <h3 className={css(styles.title, !readOnly && styles.paddingBottom)}>
+          <h3
+            className={css(styles.title, !isReadOnly && styles.paddingBottom)}
+          >
             Paper
             {isViewerAllowedToEdit && (
               <div className={css(styles.pencilIcon)} onClick={this.toggleEdit}>
@@ -200,7 +197,7 @@ class PaperDraft extends React.Component {
             )}
           </h3>
           <div
-            className={css(styles.toolbar, !readOnly && styles.editActive)}
+            className={css(styles.toolbar, !isReadOnly && styles.editActive)}
             onClick={this.onFocus}
           >
             <StyleControls
@@ -209,20 +206,20 @@ class PaperDraft extends React.Component {
               onClickInline={this.toggleInlineStyle}
             />
           </div>
-          <div className={css(!readOnly && styles.editorActive)}>
+          <div className={css(!isReadOnly && styles.editorActive)}>
             <Editor
               ref={(ref) => (this.editor = ref)}
               editorState={editorState}
               onChange={this.onChange}
               onTab={this.onTab}
-              readOnly={readOnly} // setting this to false will grant me access to selection
+              isReadOnly={isReadOnly} // setting this to false will grant me access to selection
               spellCheck={true}
               handleKeyCommand={this.handleKeyCommand}
               blockStyleFn={this.getBlockStyle}
             />
           </div>
           <div
-            className={css(styles.buttonRow, !readOnly && styles.editActive)}
+            className={css(styles.buttonRow, !isReadOnly && styles.editActive)}
           >
             <Button
               label={"Cancel"}

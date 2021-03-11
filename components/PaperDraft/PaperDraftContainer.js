@@ -10,14 +10,15 @@ import WaypointSection from "./WaypointSection";
 import PaperDraft from "./PaperDraft";
 
 // strategy used for the decorator
-const findWayPointEntity = (contentBlock, callback, contentState) => {
-  const { seenEntityKeys } = this.state;
+const findWayPointEntity = (seenEntityKeys, setSeenEntityKeys) => (
+  contentBlock,
+  callback,
+  contentState
+) => {
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
     if (!seenEntityKeys[entityKey]) {
-      this.setState({
-        seenEntityKeys: { ...seenEntityKeys, [entityKey]: true },
-      });
+      setSeenEntityKeys({ ...seenEntityKeys, [entityKey]: true });
       return (
         entityKey !== null &&
         contentState.getEntity(entityKey).getType() === "WAYPOINT"
@@ -40,18 +41,19 @@ function PaperDraftContainer({
   }
   const [isFetching, setIsFetchitng] = useState(true);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
   const decorator = useMemo(
     () =>
       new CompositeDecorator([
         {
-          strategy: findWayPointEntity,
+          strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
           component: (props) => (
             <WaypointSection {...props} onSectionEnter={setActiveSection} />
           ),
         },
       ]),
-    [setActiveSection]
+    [seenEntityKeys, setSeenEntityKeys, setActiveSection]
   );
 
   const handleFetchSuccess = useCallback(
