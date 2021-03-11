@@ -24,13 +24,13 @@ const PaperPromotionButton = ({ paper, openPaperTransactionModal }) => {
 
   return (
     <PermissionNotificationWrapper
-      modalMessage="boost paper"
+      modalMessage="support paper"
       onClick={() => openPaperTransactionModal(true)}
       loginRequired={true}
       hideRipples={true}
     >
       <div
-        data-tip={"Boost Paper"}
+        data-tip={"Support Paper"}
         className={css(styles.root)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}

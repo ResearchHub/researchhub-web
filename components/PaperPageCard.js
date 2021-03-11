@@ -20,10 +20,9 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
-import { BoltSvg } from "~/config/themes/icons";
 import PaperMetadata from "./Paper/PaperMetadata";
-import PaperPromotionIcon from "./Paper/PaperPromotionButton";
-import PaperDiscussionIcon from "./Paper/PaperDiscussionButton";
+import PaperPromotionButton from "./Paper/PaperPromotionButton";
+import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -33,7 +32,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
-import { openExternalLink } from "~/config/utils";
+import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
@@ -564,6 +563,7 @@ class PaperPageCard extends React.Component {
       downvote,
       selectedVoteType,
       doneFetchingPaper,
+      discussionCount,
     } = this.props;
 
     const { fetching, previews, figureUrls } = this.state;
@@ -608,9 +608,12 @@ class PaperPageCard extends React.Component {
                 }
                 small={true}
               />
-              <PaperDiscussionIcon paper={paper} />
+              <PaperDiscussionButton
+                paper={paper}
+                discussionCount={discussionCount}
+              />
               <div className={css(styles.divider)}></div>
-              <PaperPromotionIcon paper={paper} />
+              <PaperPromotionButton paper={paper} />
             </div>
             <div
               className={css(
@@ -635,7 +638,9 @@ class PaperPageCard extends React.Component {
                         label={"Paper Title"}
                         containerStyles={styles.paperTitle}
                         active={
-                          paper.paper_title && paper.paper_title !== paper.title
+                          paper.paper_title &&
+                          removeLineBreaksInStr(paper.paper_title) !==
+                            removeLineBreaksInStr(paper.title)
                         }
                         value={
                           <h3
@@ -672,8 +677,11 @@ class PaperPageCard extends React.Component {
                       showPromotion={true}
                       small={true}
                     />
-                    <PaperDiscussionIcon paper={paper} />
-                    <PaperPromotionIcon paper={paper} />
+                    <PaperDiscussionButton
+                      paper={paper}
+                      discussionCount={discussionCount}
+                    />
+                    <PaperPromotionButton paper={paper} />
                   </div>
                 </div>
               </div>

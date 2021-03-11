@@ -49,6 +49,10 @@ export function absoluteUrl(req, setLocalhost) {
   };
 }
 
+export function convertHttpToHttps(url) {
+  return url.replace(/^http:\/\//i, "https://");
+}
+
 export function openExternalLink(url) {
   const tab = window.open(url);
   tab.focus();
