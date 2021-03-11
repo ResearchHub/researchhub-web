@@ -163,7 +163,7 @@ class PaperDraft extends React.Component {
         EditorState.createWithContent(convertFromRaw(data)),
         { decorator: this.decorator }
       );
-      this.onChaange(editorState);
+      this.onChange(editorState);
       this.updateParentState(sections);
     } catch {
       this.handleError();
