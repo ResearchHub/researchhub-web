@@ -38,6 +38,9 @@ function PaperDraftContainer({
   setPaperDraftSections,
 }) {
   const [isFetching, setIsFetching] = useState(true);
+  const [initEditorState, setInitEditorState] = useState(
+    EditorState.createEmpty()
+  );
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
@@ -63,24 +66,23 @@ function PaperDraftContainer({
         setIsFetching(false);
         // console.warn("format success!!!!");
       };
+      let digestibleFormat = null;
       if (typeof data !== "string") {
-        setEditorState(
-          formatRawJsonToEditorState({
-            currenEditorState: editorState,
-            rawJson: data,
-            decorator,
-            onSuccess: onFormatSuccess,
-          })
-        );
+        digestibleFormat = formatRawJsonToEditorState({
+          currenEditorState: editorState,
+          rawJson: data,
+          decorator,
+          onSuccess: onFormatSuccess,
+        });
       } else {
-        setEditorState(
-          formatBase64ToEditorState({
-            base64: data,
-            decorator,
-            onSuccess: onFormatSuccess,
-          })
-        );
+        digestibleFormat = formatBase64ToEditorState({
+          base64: data,
+          decorator,
+          onSuccess: onFormatSuccess,
+        });
       }
+      setInitEditorState(digestibleFormat);
+      setEditorState(digestibleFormat);
     },
     [formatBase64ToEditorState, formatRawJsonToEditorState]
   );
@@ -113,6 +115,7 @@ function PaperDraftContainer({
         handleEditorStateUpdate={setEditorState}
         isFetching={isFetching}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
+        initEditorState={initEditorState}
         paperDraftExists={paperDraftExists}
         paperDraftSections={paperDraftSections}
       />
