@@ -471,14 +471,14 @@ export const PaperPromotionIcon = ({ color, emptyState }) => {
       >
         <path
           d="M17.838 1.186h0c7.927 1.252 13.252 8.472 11.971 16.08-1.281 7.615-8.713 12.833-16.647 11.58C5.235 27.593-.09 20.373 1.19 12.766 2.472 5.148 9.904-.069 17.838 1.185z"
-          stroke={color ? color : "#BBB"}
+          stroke={color ? color : "#AFADB7"}
           strokeWidth={2}
         />
         <path
           fillRule="evenodd"
           clipRule="evenodd"
           d="M13.16 10.885a.629.629 0 00-.634.622c0 .344.284.623.635.623h.497v3.292L9.3 22.164c-.323.504-.385.936-.186 1.296.2.36.605.54 1.217.54h9.981c.612 0 1.018-.18 1.217-.54.2-.36.137-.792-.186-1.296l-4.358-6.742V12.13h.495c.35 0 .635-.279.635-.623a.629.629 0 00-.635-.622h-4.32zm1.61 1.245h1.108v3.608l.174.264 2.068 2.978h-5.59l2.066-2.978.174-.264V12.13z"
-          fill={color ? color : "#BBB"}
+          fill={color ? color : "#AFADB7"}
         />
         <rect
           x={10.81}
@@ -486,7 +486,7 @@ export const PaperPromotionIcon = ({ color, emptyState }) => {
           width={2.469}
           height={2.422}
           rx={1.211}
-          fill={color ? color : "#BBB"}
+          fill={color ? color : "#AFADB7"}
         />
         <rect
           x={16.947}
@@ -494,7 +494,7 @@ export const PaperPromotionIcon = ({ color, emptyState }) => {
           width={2.469}
           height={2.422}
           rx={1.211}
-          fill={color ? color : "#BBB"}
+          fill={color ? color : "#AFADB7"}
         />
         <rect
           x={14.196}
@@ -502,7 +502,7 @@ export const PaperPromotionIcon = ({ color, emptyState }) => {
           width={1.904}
           height={1.869}
           rx={0.934}
-          fill={color ? color : "#BBB"}
+          fill={color ? color : "#AFADB7"}
         />
         <circle cx={28} cy={6} r={6} fill="#3971FF" />
         <path
