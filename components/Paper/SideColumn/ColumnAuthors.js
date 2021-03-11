@@ -8,6 +8,7 @@ import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import AuthorCard from "./AuthorCard";
 
 // Config
+import { getAuthorName } from "~/config/utils/";
 import colors from "~/config/themes/colors";
 
 const DEFAULT_PAGE_SIZE = 5;
@@ -41,8 +42,11 @@ class ColumnAuthors extends React.Component {
   renderAuthorCards = () => {
     const { authors } = this.state;
 
-    return authors.map((name, index) => {
-      return <AuthorCard name={name} key={`user_${index}`} />;
+    return authors.map((author, index) => {
+      const name = getAuthorName(author);
+      const key = `${name}-${index}`; // not all author have ids nor orcid_id -> combined list of authors and raw_authors
+
+      return <AuthorCard author={author} name={name} key={key} />;
     });
   };
 

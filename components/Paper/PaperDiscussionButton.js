@@ -5,12 +5,11 @@ import numeral from "numeral";
 import colors from "~/config/themes/colors";
 import { PaperDiscussionIcon } from "~/config/themes/icons";
 
-const PaperDiscussionButton = ({ paper }) => {
-  const { discussion_count } = paper;
+const PaperDiscussionButton = ({ discussionCount, paper }) => {
   const [hover, setHover] = useState(false);
 
   const getCount = () => {
-    return numeral(discussion_count).format("0a");
+    return numeral(discussionCount).format("0a");
   };
 
   return (
@@ -26,7 +25,7 @@ const PaperDiscussionButton = ({ paper }) => {
       </span>
       <span
         className={
-          css(styles.count, !discussion_count && styles.hide) + " count"
+          css(styles.count, !discussionCount && styles.hide) + " count"
         }
       >
         {getCount()}
