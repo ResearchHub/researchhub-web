@@ -113,11 +113,12 @@ function PaperDraftContainer({
       <PaperDraft
         editorState={editorState}
         handleEditorStateUpdate={setEditorState}
+        initEditorState={initEditorState}
         isFetching={isFetching}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
-        initEditorState={initEditorState}
         paperDraftExists={paperDraftExists}
         paperDraftSections={paperDraftSections}
+        paperId={paperId}
       />
     </div>
   );
