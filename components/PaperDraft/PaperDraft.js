@@ -69,11 +69,7 @@ class PaperDraft extends React.Component {
 
   onBlur = () => {
     this.setState({
-<<<<<<< HEAD
       isInEditMode: true,
-=======
-      isReadOnly: true,
->>>>>>> 40c9da19 (cleanup)
       isFocused: false,
     });
   };

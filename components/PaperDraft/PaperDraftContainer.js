@@ -58,6 +58,14 @@ function PaperDraftContainer({
     [seenEntityKeys, setSeenEntityKeys, setActiveSection]
   );
 
+  const handleEditorStateUpdate = useCallback(
+    (content, changeType) => {
+      const newEditorState = EditorState.push(editorState, content, changeType);
+      setEditorState(newEditorState);
+    },
+    [setEditorState]
+  );
+
   const handleFetchSuccess = useCallback(
     (data) => {
       const onFormatSuccess = ({ sections }) => {
@@ -108,6 +116,7 @@ function PaperDraftContainer({
     <div>
       <PaperDraft
         editorState={editorState}
+<<<<<<< HEAD
         handleEditorStateUpdate={setEditorState}
         initEditorState={initEditorState}
         isFetching={isFetching}
@@ -115,6 +124,12 @@ function PaperDraftContainer({
         paperDraftExists={paperDraftExists}
         paperDraftSections={paperDraftSections}
         paperId={paperId}
+=======
+        handleEditorStateUpdate={handleEditorStateUpdate}
+        isFetching={isFetching}
+        isViewerAllowedToEdit={isModerator}
+        paperDraftExists={paperDraftExists}
+>>>>>>> f1864efb (removing/commenting unused fnc or vars)
       />
     </div>
   );
