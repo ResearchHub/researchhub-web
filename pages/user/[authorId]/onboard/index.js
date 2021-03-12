@@ -8,6 +8,7 @@ import OnboardPlaceholder from "~/components/Placeholders/OnboardPlaceholder";
 import OnboardForm from "~/components/Onboard/OnboardForm";
 import OnboardHubList from "~/components/Onboard/OnboardHubList";
 import ButtonsRow from "~/components/Form/ButtonsRow";
+import Head from "~/components/Head";
 
 import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
@@ -300,6 +301,7 @@ const Index = (props) => {
 
   return (
     <div className={css(styles.root)}>
+      <Head />
       <div className={css(styles.titleContainer)}>
         <h1 className={css(styles.title)}>{formatStep()}</h1>
       </div>
