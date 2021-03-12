@@ -68,14 +68,14 @@ const Index = (props) => {
 
   const formatStep = () => {
     if (onlyHubSelection) {
-      return "Select Hubs for topics you're interested in";
+      return "Subscribe to Hubs You're Interested In";
     }
 
     switch (page) {
       case 1:
-        return "Subscribe to hubs you're interested in";
+        return "Subscribe to Hubs you're interested in";
       case 2:
-        return "Enter you proflie information";
+        return "Enter your proflie information";
       default:
         return;
     }
@@ -301,11 +301,7 @@ const Index = (props) => {
   return (
     <div className={css(styles.root)}>
       <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title)}>
-          {onlyHubSelection ? "Select Your Hubs" : "Onboarding"}
-        </h1>
-        {/* <h3 className={css(styles.subtitle)}>{formatStep()}</h3> */}
-        <h1 className={css(styles.subtitle)}>{formatStep()}</h1>
+        <h1 className={css(styles.title)}>{formatStep()}</h1>
       </div>
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
         <div className={css(styles.pageContainer)}>
