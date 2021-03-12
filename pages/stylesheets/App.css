@@ -16,6 +16,12 @@
   width: 105%;
 }
 
+@media only screen and (max-width: 767px) {
+  .horizontal-menu {
+    width: 100%;
+  }
+}
+
 /* REACT-TOOLTIP */
 .__react_component_tooltip.type-dark.place-right:after {
   border-right-color: rgba(78, 83, 255, 1) !important;
@@ -214,3 +220,11 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-line-clamp: 1;
   overflow: hidden;
 }
+
+.DraftEditor-root {
+  margin: 0px 10px 0px 0px;
+}
+
+/* .public-DraftStyleDefault-block {
+  display: none;
+} */

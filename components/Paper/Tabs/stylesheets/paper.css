@@ -1,0 +1,51 @@
+.public-DraftStyleDefault-block {
+  margin-bottom: 16px;
+}
+
+.RichEditor-h1 {
+  font-weight: 500;
+  font-size: 20px;
+  display: inline-block;
+  line-height: 2;
+  font-family: Roboto;
+  width: 100%;
+  white-space: normal;
+  padding: 0;
+  margin: 0;
+}
+
+.RichEditor-h2 {
+  font-weight: 500;
+  font-size: 16px;
+  display: inline-block;
+  line-height: 2;
+  font-family: Roboto;
+  width: 100%;
+  white-space: normal;
+  padding: 0;
+  margin: 0;
+}
+
+.RichEditor-p {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 2;
+  box-sizing: border-box;
+  white-space: normal;
+  font-family: CharterBT;
+  color: rgb(36, 31, 58);
+}
+
+@media only screen and (max-width: 967px) {
+  .RichEditor-p {
+    font-size: 14px;
+  }
+}
+
+.RichEditor-italic {
+  display: inline;
+  font-style: italic;
+}

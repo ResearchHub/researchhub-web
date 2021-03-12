@@ -588,10 +588,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       justifyContent: "space-between",
-      position: "sticky",
-      zIndex: 4,
+      height: 66,
     },
   },
   unstickyNavbar: {
