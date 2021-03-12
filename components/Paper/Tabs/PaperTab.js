@@ -261,7 +261,6 @@ function PaperTab(props) {
   }
 
   return (
-    // <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
     <div className={css(styles.container)} ref={containerRef}>
       <div className={css(styles.headerContainer)} ref={paperPdfRef}>
         <div className={css(styles.titleContainer)}>
@@ -285,7 +284,6 @@ function PaperTab(props) {
       </div>
       {handleRenderState()}
     </div>
-    // </ComponentWrapper>
   );
 }
 
@@ -307,7 +305,6 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    // padding: 50,
     padding: 25,
     backgroundColor: "#FFF",
     marginTop: 30,
