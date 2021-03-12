@@ -38,6 +38,16 @@
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
+  /* max-height: 70px; */
+}
+
+.ql-formats {
+  border-spacing: 0px !important;
+  margin-right: 0;
+}
+
+.ql-snow.ql-toolbar:after {
+  display: block !important;
 }
 
 .ql-syntax {

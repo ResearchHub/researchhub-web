@@ -20,6 +20,8 @@ import MainHeader from "../Home/MainHeader";
 import SubscribeButton from "../Home/SubscribeButton";
 import EmpytFeedScreen from "../Home/EmptyFeedScreen";
 import MobileFeedTabs from "../Home/MobileFeedTabs";
+import Button from "../Form/Button";
+import CreateFeedBanner from "../Home/CreateFeedBanner";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -38,8 +40,6 @@ import {
 } from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
-import CreateFeedBanner from "../Home/CreateFeedBanner";
-import Button from "../Form/Button";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -984,7 +984,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     alignItems: "center",
     zIndex: 2,
-    top: 80,
+    top: 65,
     "@media only screen and (min-width: 900px)": {
       paddingLeft: 25,
       paddingRight: 25,

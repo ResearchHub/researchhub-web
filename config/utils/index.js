@@ -79,3 +79,79 @@ export function getBountyAmount({ type, paper }) {
 export function capitalize(str) {
   return str.replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 }
+
+export function formatJournalName(journal) {
+  switch (journal) {
+    case "doi":
+    case "org/10":
+      return null;
+    case "org/abs/":
+    case "org/abs/2003":
+    case "org/ftp/arxiv/papers/2101/2101":
+    case "org/abs/2101":
+    case "arxiv":
+    case "Arxiv":
+      return "arxiv";
+    case "Future Science Ltd":
+      return "futurescience";
+    case "Wiley":
+      return "wiley";
+    case "Oxford University Press":
+    case "Oxford University Press (OUP)":
+      return "oup";
+    case "Microbiology Society":
+      return "mbs";
+    case "International Association for Food Protection":
+      return "iafp";
+    case "Springer Science and Business Media LLC":
+      return "springer";
+    case "Georg Thieme Verlag KG":
+      return "thieme";
+    case "Frontiers Media SA":
+    case "Frontiers in Bioengineering and Biotechnology":
+    case "frontiersin":
+      return "frontiers";
+    case "Semantic_scholar":
+    case "semantic_scholar":
+      return "semanticscholar";
+    case "Manubot":
+      return "manubot";
+    case "MDPI AG":
+      return "mdpi";
+    case "Informa UK Limited":
+      return "informa";
+    case "EMBO":
+      return "embo";
+    case "SAGE Publications":
+      return "sage";
+    case "World Scientific Pub Co Pte Lt":
+      return "wspc";
+    case "BMC Biology":
+    case "BMC Medical Genomics":
+      return "biomedcentral";
+    default:
+      if (journal && (journal.includes("abs") || journal.includes("arxiv"))) {
+        return "arxiv";
+      }
+      if (journal && journal.includes("Frontiers")) {
+        return "frontiers";
+      }
+      return journal;
+  }
+}
+
+export function getJournalImagePath(source) {
+  const src = `/static/icons/journals/${source}`;
+  switch (source) {
+    case "googleapis":
+    case "informa":
+      return src + ".webp";
+    case "biomedcentral":
+    case "sage":
+    case "sciencedirect":
+    case "wspc":
+      return src + ".png";
+    default:
+      return src + ".svg";
+  }
+}

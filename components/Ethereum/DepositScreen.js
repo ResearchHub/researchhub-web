@@ -99,10 +99,7 @@ class DepositScreen extends React.Component {
 
       fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
         .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          console.log("res", res);
-        });
+        .then(Helpers.parseJSON);
     }
   };
 

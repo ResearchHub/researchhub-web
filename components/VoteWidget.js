@@ -138,6 +138,7 @@ const VoteWidget = (props) => {
           paper={paper}
           showPromotion={showPromotion}
           type={type}
+          horizontalView={horizontalView && horizontalView}
         />
         <PermissionNotificationWrapper
           loginRequired={true}
@@ -165,7 +166,14 @@ VoteWidget.propTypes = {
 
 const ScorePill = (props) => {
   const dispatch = useDispatch();
-  const { score, paper, small, promoted, showPromotion } = props;
+  const {
+    score,
+    paper,
+    small,
+    promoted,
+    showPromotion,
+    horizontalView,
+  } = props;
 
   const openPromotionInfoModal = (e) => {
     e && e.stopPropagation();
@@ -265,6 +273,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
+  },
+  horizontalViewPill: {
+    minWidth: 50,
   },
   promotedPillContainer: {
     cursor: "help",
