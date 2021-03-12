@@ -379,9 +379,6 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     width: "100%",
-    // position: "-webkit-sticky",
-    // position: "sticky",
-    // top: 80,
     zIndex: 3,
   },
   text: {

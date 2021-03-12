@@ -59,6 +59,7 @@ import {
   faArrowToBottom,
   faBracketsCurly,
   faChartNetwork,
+  faCommentAltPlus,
   faH1,
   faH2,
   faImagePolaroid,
@@ -145,6 +146,7 @@ library.add(
   faCertificate,
   faCheck,
   faComment,
+  faCommentAltPlus,
   faCog,
   faEdit,
   faExclamationCircle,
@@ -277,6 +279,7 @@ const icons = {
   commentAltEdit: <FontAwesomeIcon icon={faCommentAltEdit} />,
   commentAltDots: <FontAwesomeIcon icon={faCommentAltDots} />,
   commentAltLine: <FontAwesomeIcon icon={faCommentAltLines} />,
+  commentAltPlus: <FontAwesomeIcon icon={faCommentAltPlus} />,
   comments: <FontAwesomeIcon icon={faComments} />,
   date: <FontAwesomeIcon icon={faCalendarDay} />,
   editHub: <FontAwesomeIcon icon={faEdit} />,
@@ -428,6 +431,8 @@ export const BoltSvg = ({ height, width, color, opacity }) => {
         fill={color ? color : "#241F3A"}
         d="M5.063 5.318H9L3.937 13V7.682H0L5.063 0v5.318z"
         opacity={opacity ? opacity : "0.5"}
+        width={width ? width : "9"}
+        height={height ? height : "13"}
       />
     </svg>
   );

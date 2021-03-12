@@ -4,21 +4,29 @@ import { StyleSheet, css } from "aphrodite";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
-import { getJournalFromURL, capitalize } from "~/config/utils";
+import {
+  getJournalFromURL,
+  capitalize,
+  getJournalImagePath,
+  formatJournalName,
+} from "~/config/utils";
 
 const PaperJournalTag = (props) => {
   const { url, externalSource } = props;
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   const source = externalSource ? externalSource : getJournalFromURL(url);
-  const journal = getJournalName(source);
-  const src = getLogoPath(journal);
+  const journal = formatJournalName(source);
+  const src = getJournalImagePath(journal);
 
   useEffect(() => {
     return imgExists(src, (exists) => {
       if (exists && !error) {
+        setLoading(false);
         return setError(false);
       } else {
+        setLoading(false);
         return setError(true);
       }
     });
@@ -109,6 +117,7 @@ const PaperJournalTag = (props) => {
   }
 
   function imgExists(url, callback) {
+    setLoading(true);
     var img = new Image();
     img.onload = function() {
       callback(true);
@@ -117,6 +126,10 @@ const PaperJournalTag = (props) => {
       callback(false);
     };
     img.src = url;
+  }
+
+  if (loading) {
+    return <span></span>;
   }
 
   if (!journal || error) {

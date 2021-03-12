@@ -134,3 +134,23 @@ export const fetchURL = async (URL) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const fetchPaperFigures = async (paperId) => {
+  return fetch(
+    API.FIGURES({ paperId, route: "get_all_figures" }),
+    API.GET_CONFIG()
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const fetchPaperDraft = ({ paperId }) => {
+  return fetch(
+    API.PAPER({
+      paperId: paperId,
+      hidePublic: true,
+      route: "pdf_extract",
+    }),
+    API.GET_CONFIG()
+  );
+};

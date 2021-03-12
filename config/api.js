@@ -122,7 +122,15 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    PAPER: ({ paperId, search, page, filters, route, progress }) => {
+    PAPER: ({
+      paperId,
+      search,
+      page,
+      filters,
+      route,
+      progress,
+      hidePublic,
+    }) => {
       let url = BASE_URL + `paper/`;
 
       let params = {
@@ -139,7 +147,9 @@ const routes = (BASE_URL) => {
 
       url = prepURL(url, params);
 
-      url += "make_public=true&";
+      if (!hidePublic) {
+        url += "make_public=true&";
+      }
 
       if (progress) {
         url += "created_location=progress";
@@ -564,6 +574,21 @@ const routes = (BASE_URL) => {
       if (!doesNotExist(ids)) {
         url += `mark_read/`;
       }
+
+      return url;
+    },
+    FIGURES: ({ paperId, route }) => {
+      let url = BASE_URL + `figure/`;
+
+      let params = {
+        querystring: {},
+        rest: {
+          route: route,
+          id: paperId,
+        },
+      };
+
+      url = prepURL(url, params);
 
       return url;
     },

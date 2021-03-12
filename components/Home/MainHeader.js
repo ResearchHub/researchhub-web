@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     alignItems: "flex-start",
     zIndex: 2,
-    top: 80,
+    top: 65,
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,

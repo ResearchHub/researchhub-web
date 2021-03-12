@@ -381,7 +381,6 @@ class SummaryTab extends React.Component {
       >
         <div className={css(styles.action, styles.editAction)}>
           <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
-          {"Edit Abstract"}
         </div>
       </PermissionNotificationWrapper>
     );
@@ -625,15 +624,7 @@ class SummaryTab extends React.Component {
   };
 
   containerStyle = () => {
-    const { summary } = this.props;
-    const { summaryExists } = this.state;
-
     const classNames = [styles.container];
-
-    if (doesNotExist(summary.summary) || !summaryExists) {
-      classNames.push(styles.noSummaryContainer);
-    }
-
     return classNames;
   };
 
@@ -654,15 +645,17 @@ class SummaryTab extends React.Component {
     const { paper } = this.props;
 
     return (
-      <div style={{ width: "100%" }}>
-        <ReactPlaceholder
-          ready={paper && paper.id}
-          showLoadingAnimation
-          customPlaceholder={<AbstractPlaceholder color="#efefef" />}
-        >
-          {this.renderAbstract()}
-        </ReactPlaceholder>
-      </div>
+      <ReactPlaceholder
+        ready={paper && paper.id}
+        showLoadingAnimation
+        customPlaceholder={
+          <div style={{ paddingTop: 30, width: "100%" }}>
+            <AbstractPlaceholder color="#efefef" />
+          </div>
+        }
+      >
+        {this.renderAbstract()}
+      </ReactPlaceholder>
     );
   };
 
@@ -671,35 +664,40 @@ class SummaryTab extends React.Component {
     const { showAbstract } = this.state;
 
     return (
-      <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-        <a name="summary">
-          <div
-            className={css(this.containerStyle())}
-            ref={this.props.descriptionRef}
-            id="summary-tab"
-          >
-            <div className={css(this.sectionHeaderStyle())}>
-              <h3 className={css(styles.sectionTitle)}>
-                <span className={css(styles.titleRow)}>
-                  Abstract
-                  {!showAbstract && (
-                    <SectionBounty
-                      paper={paper}
-                      section={"summary"}
-                      loading={!userVoteChecked}
-                      updatePaperState={updatePaperState}
-                    />
-                  )}
-                </span>
-                {/* {this.renderTabs()} */}
-              </h3>
-              {this.renderActions()}
-            </div>
-            {this.renderContent()}
-          </div>
-        </a>
+      <div
+        className={css(this.containerStyle())}
+        ref={this.props.descriptionRef}
+      >
+        <div className={css(this.sectionHeaderStyle())}>
+          <h3 className={css(styles.sectionTitle)}>
+            <span className={css(styles.titleRow)}>
+              Abstract
+              <PermissionNotificationWrapper
+                modalMessage="propose abstract edit"
+                onClick={this.editAbstract}
+                loginRequired={true}
+                hideRipples={true}
+              >
+                <div className={css(styles.action, styles.editAction)}>
+                  <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
+                </div>
+              </PermissionNotificationWrapper>
+              {!showAbstract && (
+                <SectionBounty
+                  paper={paper}
+                  section={"summary"}
+                  loading={!userVoteChecked}
+                  updatePaperState={updatePaperState}
+                />
+              )}
+            </span>
+            {/* {this.renderTabs()} */}
+          </h3>
+          {/* {this.renderActions()} */}
+        </div>
+        {this.renderContent()}
         <ManageBulletPointsModal paperId={this.props.paper.id} />
-      </ComponentWrapper>
+      </div>
     );
   }
 }
@@ -717,16 +715,12 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    // marginTop: 30,
-    backgroundColor: "#fff",
-    padding: 50,
+    marginTop: 20,
     position: "relative",
-    border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
-    "@media only screen and (max-width: 967px)": {
-      padding: 25,
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 20,
     },
   },
   hidden: {
@@ -743,7 +737,19 @@ var styles = StyleSheet.create({
     lineHeight: 2,
     display: "flex",
     justifyContent: "flex-start",
-    paddingTop: 7,
+    color: colors.BLACK(),
+    fontWeight: 400,
+    fontSize: 16,
+    width: "100%",
+    boxSizing: "border-box",
+    fontFamily: "CharterBT",
+    "@media only screen and (max-width: 967px)": {
+      fontSize: 14,
+      width: "100%",
+    },
+    // "@media only screen and (max-width: 415px)": {
+    //   fontSize: 12,
+    // },
   },
   abstractText: {
     lineHeight: 1.6,
@@ -769,25 +775,27 @@ var styles = StyleSheet.create({
   formContainerStyle: {
     paddingBottom: 0,
     marginBottom: 0,
+    fontFamily: "CharterBT",
   },
   sectionHeader: {
     display: "flex",
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: 20,
-    "@media only screen and (max-width: 967px)": {
+    paddingBottom: 10,
+    "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
-      paddingBottom: 20,
+      paddingBottom: 0,
     },
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
     margin: 0,
+    fontFamily: "Roboto",
     "@media only screen and (max-width: 967px)": {
       justifyContent: "space-between",
       width: "100%",
@@ -802,6 +810,7 @@ var styles = StyleSheet.create({
   },
   titleRow: {
     display: "flex",
+    alignItems: "center",
   },
   noSummaryContainer: {
     alignItems: "center",
@@ -878,8 +887,8 @@ var styles = StyleSheet.create({
     margin: "0 0 20px",
     textAlign: "center",
     "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-      width: 300,
+      // fontSize: 12,
+      // width: 300,
     },
   },
   summaryActions: {
@@ -911,9 +920,8 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   action: {
-    color: "#241F3A",
+    color: "rgba(36, 31, 58, 0.4)",
     fontSize: 14,
-    opacity: 0.6,
     display: "flex",
     cursor: "pointer",
     transition: "all ease-out 0.1s",
@@ -955,7 +963,7 @@ var styles = StyleSheet.create({
     },
   },
   pencilIcon: {
-    marginRight: 5,
+    marginLeft: 8,
   },
   draftContainer: {
     width: "100%",

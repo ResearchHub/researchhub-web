@@ -17,50 +17,7 @@ const PreviewPlaceholder = ({ color, hideAnimation }) => {
 
   return (
     <div className={css(styles.placeholderContainer) + animate}>
-      <TextBlock
-        className={css(styles.textRow)}
-        rows={1}
-        color={color}
-        style={{ width: "100%" }}
-      />
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
-      />
-      <TextBlock
-        className={css(styles.textRow)}
-        rows={1}
-        color={color}
-        style={{ width: "100%" }}
-      />
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
-      />
-      <TextBlock
-        className={css(styles.textRow)}
-        rows={1}
-        color={color}
-        style={{ width: "100%" }}
-      />
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
-      />
-      <TextBlock
-        className={css(styles.textRow)}
-        rows={1}
-        color={color}
-        style={{ width: "100%" }}
-      />
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
-      />
+      <RectShape style={{ width: "100%", height: 254 }} color={color} />
     </div>
   );
 };
@@ -69,7 +26,6 @@ const styles = StyleSheet.create({
   placeholderContainer: {
     borderRadius: 3,
     border: "1px solid rgb(237, 237, 237)",
-    padding: "23px 15px",
     background: "#fff",
     height: "100%",
     width: "100%",
