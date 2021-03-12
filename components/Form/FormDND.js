@@ -163,6 +163,12 @@ class FormDND extends React.Component {
             "We can't find the paper from your link. Upload the PDF or use another link."
           );
           messageActions.showMessage({ show: true, error: true });
+          this.setState({
+            fetching: false,
+            urlIsValid: false,
+            inputDisabled: false,
+          });
+          return;
         }
         if (err.response.status === 429) {
           this.props.modalActions.openRecaptchaPrompt(true);
