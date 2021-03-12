@@ -29,7 +29,7 @@ const ModeratorDeleteButton = (props) => {
     user,
     authorId,
     onAction,
-    metaData,
+    metadata,
   } = props;
 
   const containerClass = [
@@ -99,7 +99,7 @@ const ModeratorDeleteButton = (props) => {
    */
   const deletePaperPage = () => {
     showLoader();
-    let { paperId } = props.metaData;
+    let { paperId } = props.metadata;
     fetch(API.CENSOR_PAPER({ paperId }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -121,7 +121,7 @@ const ModeratorDeleteButton = (props) => {
    */
   const deletePaperPDF = () => {
     showLoader();
-    let { paperId } = props.metaData;
+    let { paperId } = props.metadata;
     fetch(API.CENSOR_PAPER_PDF({ paperId }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -164,7 +164,7 @@ const ModeratorDeleteButton = (props) => {
    * Used to delete users
    */
   const handleUserDelete = () => {
-    const { isSuspended } = metaData;
+    const { isSuspended } = metadata;
     const text = `Are you sure you want to ${
       isSuspended ? "reinstate" : "remove"
     } this user?`;
@@ -179,7 +179,7 @@ const ModeratorDeleteButton = (props) => {
   };
 
   const removeUser = () => {
-    const { authorId, setIsSuspended } = metaData;
+    const { authorId, setIsSuspended } = metadata;
     const { auth, updateUser } = props;
 
     fetch(
@@ -210,7 +210,7 @@ const ModeratorDeleteButton = (props) => {
   };
 
   const reinstateUser = () => {
-    const { authorId, setIsSuspended } = metaData;
+    const { authorId, setIsSuspended } = metadata;
     const { auth, updateUser } = props;
 
     fetch(
@@ -236,7 +236,7 @@ const ModeratorDeleteButton = (props) => {
   };
 
   const buildQuery = () => {
-    let { paperId, threadId, commentId, replyId } = props.metaData;
+    let { paperId, threadId, commentId, replyId } = props.metadata;
     let query = {};
 
     if (!doesNotExist(paperId)) {

@@ -16,7 +16,7 @@ const DEFAULT_SHIMMER_TIME = 1150;
 const ContentSupport = (props) => {
   const {
     data,
-    metaData,
+    metadata,
     fetching,
     auth,
     openLoginModal,
@@ -44,9 +44,9 @@ const ContentSupport = (props) => {
   };
 
   const isUserContent = () => {
-    if (auth.isLoggedIn && metaData && data) {
+    if (auth.isLoggedIn && metadata && data) {
       const contentAuthor =
-        metaData.contentType === "summary" ? data.proposed_by : data.created_by;
+        metadata.contentType === "summary" ? data.proposed_by : data.created_by;
       if (auth.user.id === contentAuthor.id) {
         return true;
       }
@@ -55,7 +55,7 @@ const ContentSupport = (props) => {
   };
 
   const openSupportModal = () => {
-    const params = { metaData, data, count, setCount: updateCountUI };
+    const params = { metadata, data, count, setCount: updateCountUI };
     openContentSupportModal(true, params);
   };
 

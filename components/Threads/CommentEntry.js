@@ -5,7 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 // Component
 import VoteWidget from "../VoteWidget";
 import ThreadActionBar from "./ThreadActionBar";
-import DiscussionPostMetadata from "../DiscussionPostMetadata";
+import DiscussionPostMetadata from "./DiscussionPostMetadata";
 import ReplyEntry from "./ReplyEntry";
 import ThreadTextEditor from "./ThreadTextEditor";
 

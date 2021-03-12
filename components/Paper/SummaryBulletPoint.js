@@ -19,7 +19,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import DiscussionPostMetadata from "../DiscussionPostMetadata";
+import DiscussionPostMetadata from "../Threads/DiscussionPostMetadata";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperSlug]";
 

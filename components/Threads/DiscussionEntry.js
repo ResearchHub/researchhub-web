@@ -5,7 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 // Component
 import VoteWidget from "../VoteWidget";
 import ThreadActionBar from "./ThreadActionBar";
-import DiscussionPostMetadata from "../DiscussionPostMetadata";
+import DiscussionPostMetadata from "./DiscussionPostMetadata";
 import CommentEntry from "./CommentEntry";
 import ThreadTextEditor from "./ThreadTextEditor";
 
@@ -355,41 +355,55 @@ class DiscussionEntry extends React.Component {
     }
   };
 
+  formatMetadata = () => {
+    const { created_by, id, paper, user_flag } = this.props.data;
+
+    return {
+      authorId: created_by.author_profile.id,
+      threadId: id,
+      paperId: paper,
+      userFlag: user_flag,
+      contentType: "thread",
+      objectId: id,
+    };
+  };
+
   render() {
     const { data, paper, hostname, path, mobileView } = this.props;
-    let commentCount =
-      this.state.comments.length > data.comment_count
-        ? this.state.comments.length
-        : data.comment_count;
-    const date = data.created_date;
-    const title = data.title;
-    const body = data.source === "twitter" ? data.plain_text : data.text;
-    const username = createUsername(data);
-    const metaData = {
-      authorId: data.created_by.author_profile.id,
-      threadId: data.id,
-      paperId: data.paper,
-      userFlag: data.user_flag,
-      contentType: "thread",
-      objectId: data.id,
-    };
+    const {
+      comments,
+      score,
+      highlight,
+      editing,
+      canEdit,
+      removed,
+      selectedVoteType,
+      revealComment,
+      hovered,
+    } = this.state;
+    const { plain_text, text, source, title, comment_count } = data;
+
+    const commentCount =
+      comments.length > comment_count ? comments.length : comment_count;
+    const body = source === "twitter" ? plain_text : text;
+    const metadata = this.formatMetadata();
 
     return (
       <div
         className={css(
           styles.row,
           styles.discussionCard,
-          this.state.highlight && styles.highlight
+          highlight && styles.highlight
         )}
       >
         <div className={css(styles.column, styles.left)}>
           <div className={css(styles.voteContainer)}>
             <VoteWidget
-              score={this.state.score}
+              score={score}
               styles={styles.voteWidget}
               onUpvote={this.upvote}
               onDownvote={this.downvote}
-              selected={this.state.selectedVoteType}
+              selected={selectedVoteType}
               type={"Discussion"}
               fontSize={"16px"}
               width={"44px"}
@@ -398,8 +412,8 @@ class DiscussionEntry extends React.Component {
             <div
               className={css(
                 styles.threadline,
-                this.state.revealComment && styles.activeThreadline,
-                this.state.hovered && styles.hoverThreadline
+                revealComment && styles.activeThreadline,
+                hovered && styles.hoverThreadline
               )}
               onClick={this.toggleCommentView}
             />
@@ -409,81 +423,60 @@ class DiscussionEntry extends React.Component {
           className={css(styles.column, styles.metaData)}
           ref={(element) => (this.divRef = element)}
         >
-          <div
-            className={css(
-              styles.highlight,
-              this.state.highlight && styles.active
-            )}
-          >
-            {!this.state.removed ? (
+          <div className={css(styles.highlight, highlight && styles.active)}>
+            {removed ? (
+              <div className={css(styles.content)}>
+                <div className={css(styles.removedText)}>
+                  Discussion Removed By Moderator
+                </div>
+              </div>
+            ) : (
               <Fragment>
                 <div className={css(styles.row, styles.topbar)}>
                   <DiscussionPostMetadata
-                    authorProfile={
-                      data &&
-                      getNestedValue(
-                        data,
-                        ["created_by", "author_profile"],
-                        null
-                      )
-                    }
-                    username={username}
                     data={data}
-                    date={date}
                     paper={paper}
                     threadPath={path}
                     hostname={hostname}
                     dropDownEnabled={true}
                     // Moderator
-                    metaData={metaData}
+                    metadata={metadata}
                     onRemove={this.removePostUI}
-                    // Twitter
-                    twitter={data.source === "twitter"}
-                    twitterUrl={data.url}
                   />
                 </div>
                 <div
-                  className={css(
-                    styles.content,
-                    this.state.editing && styles.contentEdit
-                  )}
+                  className={css(styles.content, editing && styles.contentEdit)}
                 >
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
                     body={true}
                     textStyles={styles.contentText}
-                    editing={this.state.editing}
+                    editing={editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
                   />
                 </div>
               </Fragment>
-            ) : (
-              <div className={css(styles.content)}>
-                <div className={css(styles.removedText)}>
-                  Discussion Removed By Moderator
-                </div>
-              </div>
             )}
             <div className={css(styles.row, styles.bottom)}>
               <ThreadActionBar
-                editing={this.state.editing}
-                toggleEdit={this.state.canEdit && this.toggleEdit}
+                editing={editing}
+                toggleEdit={canEdit && this.toggleEdit}
                 title={title}
                 count={commentCount}
-                showChildrenState={this.state.revealComment}
+                showChildrenState={revealComment}
                 onSubmit={this.submitComment}
                 onClick={this.toggleCommentView}
                 onCountHover={this.toggleHover}
                 small={mobileView}
-                isRemoved={this.state.removed}
-                hideReply={data.source === "twitter"}
+                isRemoved={removed}
+                hideReply={source === "twitter"}
               />
             </div>
           </div>
           <div className={css(styles.commentContainer)} id={"comments"}>
-            {this.state.revealComment && (
+            {revealComment && (
               <Fragment>
                 {this.renderComments()}
                 {this.renderViewMore()}

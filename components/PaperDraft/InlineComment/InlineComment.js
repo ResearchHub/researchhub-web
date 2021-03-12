@@ -5,7 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 // Component
 import VoteWidget from "~/components/VoteWidget";
 // import ThreadActionBar from "./ThreadActionBar";
-import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
+import DiscussionPostMetadata from "~/components/Threads/DiscussionPostMetadata";
 
 // Redux
 import DiscussionActions from "~/redux/discussion";

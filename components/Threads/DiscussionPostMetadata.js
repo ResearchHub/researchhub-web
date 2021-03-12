@@ -21,26 +21,27 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { createUserSummary } from "~/config/utils";
+import {
+  doesNotExist,
+  createUserSummary,
+  createUsername,
+  getNestedValue,
+} from "~/config/utils";
 import { timeAgo } from "~/config/utils/dates";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import ContentSupportModal from "./Modals/ContentSupportModal";
+import ContentSupportModal from "../Modals/ContentSupportModal";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 const DiscussionPostMetadata = (props) => {
   const {
     data,
-    metaData,
-    username,
-    authorProfile,
+    metadata,
     fetching,
     threadPath,
     dropDownEnabled,
     toggleEdit,
-    twitter,
-    twitterUrl,
     onRemove,
     onHideClick,
     smaller,
@@ -56,10 +57,15 @@ const DiscussionPostMetadata = (props) => {
 
   const [showDropDown, setDropDown] = useState(false);
   const [isFlagged, setFlagged] = useState(
-    metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
+    !doesNotExist(metadata) && !doesNotExist(metadata.userFlag)
   );
+
   const dropdown = useRef();
   const ellipsis = useRef();
+  const username = createUsername(data);
+  const authorProfile = getNestedValue(data, ["created_by", "author_profile"]);
+  const twitter = data.source === "twitter";
+  const twitterUrl = data.url;
 
   const isModerator = store.getState().auth.user.moderator;
   const isLoggedIn = store.getState().auth.isLoggedIn;
@@ -107,7 +113,7 @@ const DiscussionPostMetadata = (props) => {
 
   const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
-    const { paperId, threadId, commentId, replyId } = metaData;
+    const { paperId, threadId, commentId, replyId } = metadata;
     const config = isFlagged
       ? API.DELETE_CONFIG()
       : await API.POST_CONFIG({ reason: "censor" });
@@ -116,7 +122,9 @@ const DiscussionPostMetadata = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let message = isFlagged ? "Flag Removed " : "Post Successfully Flagged";
+        const message = isFlagged
+          ? "Flag Removed "
+          : "Post Successfully Flagged";
         dispatch(MessageActions.showMessage({ show: false }));
         dispatch(MessageActions.setMessage(message));
         dispatch(MessageActions.showMessage({ show: true }));
@@ -134,7 +142,7 @@ const DiscussionPostMetadata = (props) => {
   };
 
   const renderShareButton = () => {
-    const { hostname, threadPath, title, small } = props;
+    const { hostname, threadPath, title } = props;
     const shareUrl = hostname + threadPath;
 
     const ShareButton = (props) => {
@@ -187,7 +195,7 @@ const DiscussionPostMetadata = (props) => {
                   iconStyle={styles.expandIcon}
                   label={"Remove"}
                   actionType={"post"}
-                  metaData={metaData}
+                  metadata={metadata}
                   onRemove={onRemove}
                   isModerator={isModerator}
                 />
@@ -198,7 +206,7 @@ const DiscussionPostMetadata = (props) => {
                   icon={icons.ban}
                   label={"Ban User"}
                   actionType={"user"}
-                  metaData={metaData}
+                  metadata={metadata}
                   onRemove={onRemove}
                   isModerator={isModerator}
                 />
@@ -244,10 +252,10 @@ const DiscussionPostMetadata = (props) => {
           <User {...props} />
           <WidgetContentSupport
             data={data}
-            metaData={metaData}
+            metadata={metadata}
             fetching={fetching}
           />
-          <Timestamp {...props} />
+          <Timestamp {...props} twitter={twitter} twitterUrl={twitterUrl} />
           {renderDropdown()}
         </div>
         {renderHeadline()}
@@ -262,16 +270,12 @@ DiscussionPostMetadata.propTypes = {
   authorProfile: PropTypes.object,
 };
 
-function openTwitter(url) {
-  window.open(url, "_blank");
-}
-
 const User = (props) => {
   const { username, paper, authorProfile, smaller, twitterUrl } = props;
   let isAuthor;
-  let authorId = authorProfile.id; // for the user
+  let authorId = authorProfile && authorProfile.id; // for the user
 
-  if (paper && paper.authors && paper.authors.length && authorProfile) {
+  if (paper && (paper.authors && paper.authors.length) && authorProfile) {
     paper.authors.forEach((author) => {
       if (author.id === authorProfile.id) {
         isAuthor = true;
@@ -361,7 +365,9 @@ const Timestamp = (props) => {
 };
 
 function formatTimestamp(props) {
-  let { date } = props;
+  const { data } = props;
+  let { created_date: date } = data;
+
   date = new Date(date);
   if (props.fullDate) {
     return moment(date).format("MMM D, YYYY");

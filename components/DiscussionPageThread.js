@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useDispatch, useStore } from "react-redux";
 
 // Components
-import DiscussionPostMetadata from "~/components/DiscussionPostMetadata";
+import DiscussionPostMetadata from "~/components/Threads/DiscussionPostMetadata";
 import DiscussionThreadEditor from "~/components/DiscussionThreadEditor";
 import EditAction from "~/components/EditAction";
 import ShareAction from "~/components/ShareAction";

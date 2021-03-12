@@ -8,7 +8,7 @@ import VoteWidget from "~/components/VoteWidget";
 import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { summaryVote } from "~/config/fetch";
-import DiscussionPostMetadata from "../DiscussionPostMetadata";
+import DiscussionPostMetadata from "../Threads/DiscussionPostMetadata";
 
 const SummaryContributor = (props) => {
   const { summary, hideMeta, loadingSummary, voteStyles } = props;

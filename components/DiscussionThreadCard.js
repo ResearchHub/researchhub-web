@@ -8,7 +8,7 @@ import DiscussionActions from "~/redux/discussion";
 import { ModalActions } from "~/redux/modals";
 
 import DiscussionCard from "./DiscussionCard";
-import DiscussionPostMetadata from "./DiscussionPostMetadata";
+import DiscussionPostMetadata from "./Threads/DiscussionPostMetadata";
 import DiscussionThreadActionBar from "./DiscussionThreadActionBar";
 import { ClientLinkWrapper } from "./LinkWrapper";
 import VoteWidget from "./VoteWidget";
