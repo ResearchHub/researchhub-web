@@ -62,6 +62,11 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
   const formatAuthors = (arr) => {
     if (arr.length > 5 && !url_is_pdf) {
       let firstAuthor = arr[0];
+
+      if (firstAuthor.literal) {
+        return `${firstAuthor.literal}, et al`;
+      }
+
       return `${firstAuthor.family}, ${firstAuthor.given &&
         firstAuthor.given[0]}., et al`;
     }
@@ -69,6 +74,9 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
       arr &&
       arr
         .map((author) => {
+          if (author.literal) {
+            return author.literal;
+          }
           return `${author.family}, ${author.given && author.given[0]}.`;
         })
         .join(", ")

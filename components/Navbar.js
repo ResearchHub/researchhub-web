@@ -595,7 +595,6 @@ const styles = StyleSheet.create({
   },
   unstickyNavbar: {
     position: "initial",
-    zIndex: "unset",
   },
   tabs: {
     display: "flex",
