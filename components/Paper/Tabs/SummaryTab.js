@@ -381,7 +381,6 @@ class SummaryTab extends React.Component {
       >
         <div className={css(styles.action, styles.editAction)}>
           <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
-          {/* {"Edit Abstract"} */}
         </div>
       </PermissionNotificationWrapper>
     );
@@ -625,15 +624,7 @@ class SummaryTab extends React.Component {
   };
 
   containerStyle = () => {
-    const { summary } = this.props;
-    const { summaryExists } = this.state;
-
     const classNames = [styles.container];
-
-    // if (doesNotExist(summary.summary) || !summaryExists) {
-    //   classNames.push(styles.noSummaryContainer);
-    // }
-
     return classNames;
   };
 
