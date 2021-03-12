@@ -1,15 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  convertToRaw,
-  convertFromRaw,
-  CompositeDecorator,
-} from "draft-js";
-import { convertFromHTML } from "draft-convert";
+import { Editor, RichUtils, convertToRaw } from "draft-js";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
@@ -32,7 +24,7 @@ class PaperDraft extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isEditorEditMode: true,
+      isInEditMode: true,
       isFocused: false,
     };
     this.editor; // $ref to Editor
@@ -45,7 +37,7 @@ class PaperDraft extends React.Component {
 
   onBlur = () => {
     this.setState({
-      isEditorEditMode: true,
+      isInEditMode: true,
       isFocused: false,
     });
   };
@@ -99,9 +91,9 @@ class PaperDraft extends React.Component {
 
   handleKeyCommand = (command) => {
     const { editorState } = this.props;
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      this.props.handleEditorStateUpdate(newState);
+    const newEditorState = RichUtils.handleKeyCommand(editorState, command);
+    if (newEditorState) {
+      this.props.handleEditorStateUpdate(newEditorState);
       return true;
     }
     return false;
@@ -109,13 +101,13 @@ class PaperDraft extends React.Component {
 
   toggleEdit = (e) => {
     e.preventDefault();
-    const { isEditorEditMode } = this.state;
+    const { isInEditMode } = this.state;
     this.setState(
       {
-        isEditorEditMode: !isEditorEditMode,
+        isInEditMode: !isInEditMode,
       },
       () => {
-        return this.state.isEditorEditMode
+        return this.state.isInEditMode
           ? this.editor.blur()
           : this.editor.focus();
       }
@@ -123,13 +115,10 @@ class PaperDraft extends React.Component {
   };
 
   onCancel = () => {
-    this.setState(
-      {
-        isEditorEditMode: true,
-        // editorState: this.state.prevEditorState, // handle this at container
-      },
-      () => this.editor.blur()
-    );
+    const { initEditorState, handleEditorStateUpdate } = this.props;
+    const { isInEditMode } = this.state;
+    handleEditorStateUpdate(initEditorState);
+    this.setState({ isInEditMode: !isInEditMode }, () => this.editor.blur());
   };
 
   onSave = () => {
@@ -139,7 +128,7 @@ class PaperDraft extends React.Component {
       .then((res) => {
         setMessage("Edit saved.");
         showMessage({ show: true });
-        this.setState({ isEditorEditMode: true, isSaving: false });
+        this.setState({ isInEditMode: true, isSaving: false });
       })
       .catch((err) => {
         setMessage("Something went wrong. Please try again!");
@@ -172,7 +161,7 @@ class PaperDraft extends React.Component {
       isViewerAllowedToEdit,
       paperDraftExists,
     } = this.props;
-    const { isEditorEditMode, isSaving } = this.state;
+    const { isInEditMode, isSaving } = this.state;
     return (
       <ReactPlaceholder
         ready={!isFetching}
@@ -187,10 +176,7 @@ class PaperDraft extends React.Component {
       >
         <div className={css(styles.root, !paperDraftExists && styles.hidden)}>
           <h3
-            className={css(
-              styles.title,
-              !isEditorEditMode && styles.paddingBottom
-            )}
+            className={css(styles.title, !isInEditMode && styles.paddingBottom)}
           >
             Paper
             {isViewerAllowedToEdit && (
@@ -200,10 +186,7 @@ class PaperDraft extends React.Component {
             )}
           </h3>
           <div
-            className={css(
-              styles.toolbar,
-              !isEditorEditMode && styles.editActive
-            )}
+            className={css(styles.toolbar, !isInEditMode && styles.editActive)}
             onClick={this.onFocus}
           >
             <StyleControls
@@ -212,14 +195,14 @@ class PaperDraft extends React.Component {
               onClickInline={this.toggleInlineStyle}
             />
           </div>
-          <div className={css(!isEditorEditMode && styles.editorActive)}>
+          <div className={css(!isInEditMode && styles.editorActive)}>
             <Editor
               blockStyleFn={this.getBlockStyle}
               editorState={editorState}
               handleKeyCommand={this.handleKeyCommand}
               onChange={handleEditorStateUpdate}
               onTab={this.onTab}
-              readOnly={isEditorEditMode} // setting this to false will grant me access to selection
+              readOnly={isInEditMode} // setting this to false will grant me access to selection
               ref={(ref) => (this.editor = ref)}
               spellCheck={true}
             />
@@ -227,7 +210,7 @@ class PaperDraft extends React.Component {
           <div
             className={css(
               styles.buttonRow,
-              !isEditorEditMode && styles.editActive
+              !isInEditMode && styles.editActive
             )}
           >
             <Button
