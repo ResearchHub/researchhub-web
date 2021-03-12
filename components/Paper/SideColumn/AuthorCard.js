@@ -19,7 +19,7 @@ const AuthorCard = (props) => {
       >
         <a className={css(styles.container, styles.hover)}>
           {author.profile_image ? (
-            <img src={author.profile_image} className={css(styles.userIcon)} />
+            <img src={author.profile_image} className={css(styles.userImage)} />
           ) : (
             <span className={css(styles.userIcon)}>{icons.user}</span>
           )}
@@ -92,6 +92,22 @@ const styles = StyleSheet.create({
     minHeight: 30,
     fontSize: 30 + 1,
     border: "3px solid transparent",
+    "@media only screen and (max-width: 415px)": {
+      width: 25,
+      height: 25,
+      fontSize: 25 + 1,
+      minWidth: 25,
+      minHeight: 25,
+    },
+  },
+  userImage: {
+    borderRadius: "50%",
+    border: "1px solid #ededed",
+    width: 30,
+    height: 30,
+    minWidth: 30,
+    minHeight: 30,
+    fontSize: 30 + 1,
     objectFit: "contain",
     "@media only screen and (max-width: 415px)": {
       width: 25,
