@@ -56,7 +56,6 @@ function PaperTab(props) {
     let paperFile = acceptedFiles[0];
     dispatch(PaperActions.uploadPaperToState(paperFile, paperMetaData));
     setPaperFile(paperFile);
-    setPaperMetadata(paperMetaData);
   }
 
   function resetState() {
@@ -121,7 +120,6 @@ function PaperTab(props) {
     dispatch(PaperActions.clearPostedPaper());
     dispatch(PaperActions.removePaperFromState());
     setPaperFile({});
-    setPaperMetadata({});
   };
 
   function checkUserFirstTime() {
