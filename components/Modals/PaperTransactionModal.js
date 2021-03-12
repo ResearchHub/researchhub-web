@@ -294,8 +294,8 @@ class PaperTransactionModal extends React.Component {
     } = this.props;
     showMessage({ show: true, load: true });
 
-    const paperId = paper.id;
-    const userId = user.id;
+    const { id: paperId } = paper;
+    const { id: userId } = user;
 
     const payload = {
       amount: Number(this.state.value),
@@ -742,9 +742,9 @@ class PaperTransactionModal extends React.Component {
           </div>
           <div className={css(styles.row, styles.numbers)}>
             <div className={css(styles.column, styles.left)}>
-              <div className={css(styles.title)}>Amount</div>
+              <div className={css(styles.title)}>{"Amount"}</div>
               <div className={css(styles.subtitle)}>
-                Select the amount of RSC
+                {"Select the amount of RSC"}
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -783,11 +783,11 @@ class PaperTransactionModal extends React.Component {
                       connectedMetaMask && styles.connected
                     )}
                   />
-                  Connected wallet: MetaMask
+                  {"Connected wallet: MetaMask"}
                 </div>
               )}
               <div className={css(styles.inputLabel)}>
-                Wallet Address
+                {"Wallet Address"}
                 <span
                   className={css(styles.infoIcon)}
                   data-tip={"The address of your ETH Account (ex. 0x0000...)"}
@@ -825,9 +825,9 @@ class PaperTransactionModal extends React.Component {
 
               <div className={css(styles.row, styles.numbers, styles.border)}>
                 <div className={css(styles.column, styles.left)}>
-                  <div className={css(styles.title)}>Total Balance</div>
+                  <div className={css(styles.title)}>{"Total Balance"}</div>
                   <div className={css(styles.subtitle)}>
-                    Your current wallet balance in RSC
+                    {"Your current wallet balance in RSC"}
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
@@ -844,9 +844,9 @@ class PaperTransactionModal extends React.Component {
               </div>
               <div className={css(styles.row, styles.numbers)}>
                 <div className={css(styles.column, styles.left)}>
-                  <div className={css(styles.title)}>Amount</div>
+                  <div className={css(styles.title)}>{"Amount"}</div>
                   <div className={css(styles.subtitle)}>
-                    Select the amount of RSC
+                    {"Select the amount of RSC"}
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
