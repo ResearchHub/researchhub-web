@@ -73,11 +73,9 @@ const Index = (props) => {
 
     switch (page) {
       case 1:
-        return "Step 1: Select Hubs for topics you're interested in";
+        return "Subscribe to hubs you're interested in";
       case 2:
-        return "Step 2: User Information";
-      case 3:
-        return "Step 3: Higher Education Verification";
+        return "Enter you proflie information";
       default:
         return;
     }
@@ -86,11 +84,9 @@ const Index = (props) => {
   const formatTitle = () => {
     switch (page) {
       case 1:
-        return "Subscribe to Hubs for topics you're interested in";
+        return "Subscribe to hubs you're interested in";
       case 2:
         return "Enter your profile information";
-      case 3:
-        return "Do you have a PhD or Masters? Upload a photo to verify your account";
       default:
         return;
     }
@@ -137,23 +133,9 @@ const Index = (props) => {
             onClick: () => setPage(page - 1),
           },
           right: {
-            label: "Save",
+            label: "Save & Finish",
             onClick: saveUserInformation,
-          },
-        };
-      case 3:
-        return {
-          left: {
-            label: "Previous Step",
-            onClick: () => setPage(page - 1),
-          },
-          right: {
-            label: "Finish",
-            onClick: saveVerification,
-          },
-          farRight: {
-            label: "Skip",
-            onClick: navigateHome,
+            disabled: saving,
           },
         };
     }
@@ -222,7 +204,7 @@ const Index = (props) => {
   const saveUserInformation = () => {
     const saveButton = formRef.current.buttonRef.current;
     saveButton.click();
-    setPage(page + 1);
+    navigateHome();
   };
 
   const connectOrcidAccount = () => {
@@ -323,10 +305,10 @@ const Index = (props) => {
           {onlyHubSelection ? "Select Your Hubs" : "Onboarding"}
         </h1>
         {/* <h3 className={css(styles.subtitle)}>{formatStep()}</h3> */}
+        <h1 className={css(styles.subtitle)}>{formatStep()}</h1>
       </div>
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
         <div className={css(styles.pageContainer)}>
-          <h1 className={css(styles.pageTitle)}>{formatTitle()}</h1>
           <div className={css(styles.pageContent)}>{renderPage()}</div>
         </div>
       </ComponentWrapper>
