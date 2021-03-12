@@ -97,7 +97,6 @@ function PaperDraftContainer({
 
   const handleFetchError = useCallback(
     (_err) => {
-      // console.warn("error????: ", _err);
       setPaperDraftExists(false);
       setPaperDraftSections([]);
       setIsFetching(false);
