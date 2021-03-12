@@ -249,7 +249,7 @@ const DiscussionPostMetadata = (props) => {
       />
       <div className={css(styles.column)}>
         <div className={css(styles.firstRow)}>
-          <User {...props} />
+          <User {...props} username={username} />
           <WidgetContentSupport
             data={data}
             metadata={metadata}
@@ -489,6 +489,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     color: colors.BLACK(1),
     fontSize: 15,
+    fontWeight: 500,
     "@media only screen and (max-width: 767px)": {
       fontSize: 14,
     },
@@ -496,7 +497,12 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  smallerName: {},
+  smallerName: {
+    fontSize: 14,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 12,
+    },
+  },
   authorName: {
     fontWeight: 500,
   },
@@ -512,10 +518,9 @@ const styles = StyleSheet.create({
   headline: {
     marginTop: 3,
     marginLeft: 8,
-    color: colors.BLACK(0.5),
-    fontWeight: 300,
+    color: colors.BLACK(0.6),
+    fontWeight: 400,
     fontSize: 13,
-
     "@media only screen and (max-width: 767px)": {
       fontSize: 12,
     },

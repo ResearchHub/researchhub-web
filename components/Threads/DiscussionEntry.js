@@ -49,28 +49,18 @@ class DiscussionEntry extends React.Component {
     const { data, newCard } = this.props;
     const comments = data.comments || [];
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
-    this.setState(
-      {
-        comments,
-        score: data.score,
-        selectedVoteType,
-        revealComment: comments.length > 0 && comments.length < 6,
-        highlight: newCard,
-        removed: this.props.data.is_removed,
-        canEdit:
-          data.source !== "twitter"
-            ? this.props.auth.user.id === data.created_by.id
-            : false,
-      },
-      () => {
-        newCard &&
-          setTimeout(() => {
-            this.setState({ highlight: false }, () => {
-              this.props.newCard = false;
-            });
-          }, 10000);
-      }
-    );
+    this.setState({
+      comments,
+      score: data.score,
+      selectedVoteType,
+      revealComment: comments.length > 0 && comments.length < 6,
+      highlight: newCard,
+      removed: this.props.data.is_removed,
+      canEdit:
+        data.source !== "twitter"
+          ? this.props.auth.user.id === data.created_by.id
+          : false,
+    });
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -83,6 +73,11 @@ class DiscussionEntry extends React.Component {
             ? this.props.auth.user.id === data.created_by.id
             : false,
       });
+    }
+    if (prevState.highlight && this.props.newCard) {
+      setTimeout(() => {
+        this.setState({ highlight: false });
+      }, 10000);
     }
   };
 
@@ -133,7 +128,7 @@ class DiscussionEntry extends React.Component {
         fetching: true,
       },
       () => {
-        let { data } = this.props;
+        const { data } = this.props;
         let discussionThreadId = data.id;
         let paperId = data.paper;
         let page = this.state.page;
@@ -147,12 +142,12 @@ class DiscussionEntry extends React.Component {
           .then((res) => {
             this.setState({
               comments: [...this.state.comments, ...res.results],
-              page: this.state.page + 1,
+              page: page + 1,
               fetching: false,
             });
           })
           .catch((err) => {
-            let { setMessage, showMessage } = this.props;
+            const { setMessage, showMessage } = this.props;
             setMessage("Hm something went wrong");
             showMessage({ show: true, error: true, clickoff: true });
             this.setState({ fetching: false });
@@ -475,7 +470,7 @@ class DiscussionEntry extends React.Component {
               />
             </div>
           </div>
-          <div className={css(styles.commentContainer)} id={"comments"}>
+          <div className={css(styles.commentContainer)}>
             {revealComment && (
               <Fragment>
                 {this.renderComments()}

@@ -10,7 +10,7 @@ import { AuthActions } from "../redux/auth";
 
 import { doesNotExist } from "~/config/utils";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import icons, { voteWidgetIcons, BoltSvg } from "~/config/themes/icons";
+import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import {
   UPVOTE,
   DOWNVOTE,
@@ -22,8 +22,6 @@ import { getCurrentUserReputation, formatScore } from "../config/utils";
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
-
-  useEffect(() => {}, [props.promoted]);
 
   const {
     onUpvote,
@@ -70,6 +68,8 @@ const VoteWidget = (props) => {
     }
   }, [selected]);
 
+  useEffect(() => {}, [props.promoted]);
+
   function onUpvoteClick(e) {
     if (upvoteDisabled) {
       dispatch(ModalActions.openPermissionNotificationModal(true, "upvote"));
@@ -100,59 +100,52 @@ const VoteWidget = (props) => {
     }
   }
 
-  const openPromotionInfoModal = (e) => {
-    e && e.stopPropagation();
-    dispatch(ModalActions.openPromotionInfoModal(true, paper));
-  };
-
   return (
-    <Fragment>
-      <div
-        className={css(
-          styles.container,
-          horizontalView && styles.horizontalView,
-          props.styles
-        )}
-        style={{ fontSize: fontSize, width: width }}
+    <div
+      className={css(
+        styles.container,
+        horizontalView && styles.horizontalView,
+        props.styles
+      )}
+      style={{ fontSize: fontSize, width: width }}
+    >
+      <PermissionNotificationWrapper
+        loginRequired={true}
+        onClick={onUpvoteClick}
+        modalMessage={"vote"}
       >
-        <PermissionNotificationWrapper
-          loginRequired={true}
-          onClick={onUpvoteClick}
-          modalMessage={"vote"}
-        >
-          <UpvoteButton
-            selected={upvoteSelected}
-            disabled={upvoteDisabled || searchResult}
-            horizontalView={horizontalView && horizontalView}
-          />
-        </PermissionNotificationWrapper>
-        <ReactTooltip
-          id="reputationTooltip"
-          className={css(styles.tooltip)}
-          place="bottom"
-          effect="solid"
-        />
-        <ScorePill
-          score={promoted !== false && type === "Paper" ? promoted : score}
-          promoted={promoted}
-          paper={paper}
-          showPromotion={showPromotion}
-          type={type}
+        <UpvoteButton
+          selected={upvoteSelected}
+          disabled={upvoteDisabled || searchResult}
           horizontalView={horizontalView && horizontalView}
         />
-        <PermissionNotificationWrapper
-          loginRequired={true}
-          onClick={onDownvoteClick}
-          modalMessage={"vote"}
-        >
-          <DownvoteButton
-            selected={downvoteSelected}
-            disabled={downvoteDisabled || searchResult}
-            horizontalView={horizontalView && horizontalView}
-          />
-        </PermissionNotificationWrapper>
-      </div>
-    </Fragment>
+      </PermissionNotificationWrapper>
+      <ReactTooltip
+        id="reputationTooltip"
+        className={css(styles.tooltip)}
+        place="bottom"
+        effect="solid"
+      />
+      <ScorePill
+        score={promoted !== false && type === "Paper" ? promoted : score}
+        promoted={promoted}
+        paper={paper}
+        showPromotion={showPromotion}
+        type={type}
+        horizontalView={horizontalView && horizontalView}
+      />
+      <PermissionNotificationWrapper
+        loginRequired={true}
+        onClick={onDownvoteClick}
+        modalMessage={"vote"}
+      >
+        <DownvoteButton
+          selected={downvoteSelected}
+          disabled={downvoteDisabled || searchResult}
+          horizontalView={horizontalView && horizontalView}
+        />
+      </PermissionNotificationWrapper>
+    </div>
   );
 };
 
@@ -194,7 +187,7 @@ const ScorePill = (props) => {
 const VoteButton = (props) => {
   const { onClick, selected, disabled, horizontalView, right } = props;
 
-  let style = [styles.icon];
+  const style = [styles.icon];
 
   if (selected) {
     style.push(styles.selected);
@@ -353,7 +346,6 @@ const styles = StyleSheet.create({
     width: 200,
     padding: 15,
     fontSize: 14,
-    // background: colors.BLUE(1),
     background: "rgba(0, 0, 0, 0.7)",
     opacity: 1,
   },

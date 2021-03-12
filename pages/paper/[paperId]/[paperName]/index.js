@@ -24,7 +24,7 @@ import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperDraft from "~/components/PaperDraft/PaperDraft";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
-import InlineComment from "~/components/PaperDraft/InlineComment/InlineComment";
+import InlineCommentContainer from "~/components/PaperDraft/InlineComment/InlineCommentContainer";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -580,6 +580,7 @@ const Paper = (props) => {
               hubs={paper.hubs}
               paperId={paperId}
             />
+            <InlineCommentContainer paper={paper} />
             <PaperSections
               activeTab={activeTab} // for paper page tabs
               setActiveTab={setActiveTab}
@@ -588,8 +589,6 @@ const Paper = (props) => {
               paperDraftSections={paperDraftSections}
               paperDraftExists={paperDraftExists}
             />
-
-            <InlineComment />
           </div>
         </div>
       </div>

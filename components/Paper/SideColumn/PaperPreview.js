@@ -72,7 +72,7 @@ const PaperPreview = (props) => {
         {renderLightbox()}
         <div className={css(styles.blur)} onClick={toggleLightbox} />
         <div className={css(styles.buttonContainer)}>
-          <Button label={"Read Paper"} onClick={() => toggleLightbox()} />
+          <Button label={"Read Paper"} onClick={toggleLightbox} />
         </div>
       </ReactPlaceholder>
     </ColumnContainer>
