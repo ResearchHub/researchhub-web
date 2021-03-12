@@ -38,6 +38,9 @@ function PaperDraftContainer({
   setPaperDraftSections,
 }) {
   const [isFetching, setIsFetching] = useState(true);
+  const [initEditorState, setInitEditorState] = useState(
+    EditorState.createEmpty()
+  );
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
@@ -54,12 +57,6 @@ function PaperDraftContainer({
     [seenEntityKeys, setSeenEntityKeys, setActiveSection]
   );
 
-  const handleEditorStateUpdate = useCallback(
-    (content, changeType) =>
-      setEditorState(EditorState.push(editorState, content, changeType)),
-    [setEditorState]
-  );
-
   const handleFetchSuccess = useCallback(
     (data) => {
       const onFormatSuccess = ({ sections }) => {
@@ -68,24 +65,23 @@ function PaperDraftContainer({
         setPaperDraftExists(true);
         setIsFetching(false);
       };
+      let digestibleFormat = null;
       if (typeof data !== "string") {
-        setEditorState(
-          formatRawJsonToEditorState({
-            currenEditorState: editorState,
-            rawJson: data,
-            decorator,
-            onSuccess: onFormatSuccess,
-          })
-        );
+        digestibleFormat = formatRawJsonToEditorState({
+          currenEditorState: editorState,
+          rawJson: data,
+          decorator,
+          onSuccess: onFormatSuccess,
+        });
       } else {
-        setEditorState(
-          formatBase64ToEditorState({
-            base64: data,
-            decorator,
-            onSuccess: onFormatSuccess,
-          })
-        );
+        digestibleFormat = formatBase64ToEditorState({
+          base64: data,
+          decorator,
+          onSuccess: onFormatSuccess,
+        });
       }
+      setInitEditorState(digestibleFormat);
+      setEditorState(digestibleFormat);
     },
     [formatBase64ToEditorState, formatRawJsonToEditorState]
   );
@@ -111,11 +107,13 @@ function PaperDraftContainer({
     <div>
       <PaperDraft
         editorState={editorState}
-        handleEditorStateUpdate={handleEditorStateUpdate}
+        handleEditorStateUpdate={setEditorState}
+        initEditorState={initEditorState}
         isFetching={isFetching}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
         paperDraftExists={paperDraftExists}
         paperDraftSections={paperDraftSections}
+        paperId={paperId}
       />
     </div>
   );
