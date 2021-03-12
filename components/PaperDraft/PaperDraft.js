@@ -136,7 +136,10 @@ class PaperDraft extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then(this.handleData)
-      .catch(this.handleError);
+      .catch(() => {
+        this.handleError();
+        this.setState({ fetching: false });
+      });
   };
 
   handleData = (data) => {
@@ -160,7 +163,7 @@ class PaperDraft extends React.Component {
         EditorState.createWithContent(convertFromRaw(data)),
         { decorator: this.decorator }
       );
-      this.onChaange(editorState);
+      this.onChange(editorState);
       this.updateParentState(sections);
     } catch {
       this.handleError();
@@ -499,6 +502,9 @@ const styles = StyleSheet.create({
   },
   hidden: {
     display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   paddingBottom: {
     paddingBottom: 30,

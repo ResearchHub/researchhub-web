@@ -285,13 +285,19 @@ class PaperTransactionModal extends React.Component {
   };
 
   sendTransaction = () => {
-    let { showMessage, setMessage, updatePaperState, paper, user } = this.props;
+    const {
+      showMessage,
+      setMessage,
+      updatePaperState,
+      paper,
+      user,
+    } = this.props;
     showMessage({ show: true, load: true });
 
-    let paperId = paper.id;
-    let userId = user.id;
+    const { id: paperId } = paper;
+    const { id: userId } = user;
 
-    let payload = {
+    const payload = {
       amount: Number(this.state.value),
       object_id: paperId,
       content_type: "paper",
@@ -305,11 +311,11 @@ class PaperTransactionModal extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         if (!this.state.offChain) {
-          let item = { ...res };
+          const item = { ...res };
           this.signTransaction(item);
         } else {
           // Send AMP Event
-          let payload = {
+          const payload = {
             event_type: "create_purchase",
             time: +new Date(),
             insert_id: `purchase_${res.id}`,
@@ -508,7 +514,7 @@ class PaperTransactionModal extends React.Component {
   };
 
   renderSwitchNetworkMsg = () => {
-    let { transition } = this.state;
+    const { transition } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
         {transition ? (
@@ -522,11 +528,6 @@ class PaperTransactionModal extends React.Component {
               Simply open MetaMask and switch over {"\n"}to the
               <b>{" Rinkeby Test Network"}</b>
             </div>
-            {/* <img
-              src={"/static/background/metamask.png"}
-              className={css(styles.image)}
-              draggable={false}
-            /> */}
           </Fragment>
         )}
       </div>
@@ -649,8 +650,8 @@ class PaperTransactionModal extends React.Component {
   };
 
   renderContent = () => {
-    let { user } = this.props;
-    let {
+    const { user } = this.props;
+    const {
       nextScreen,
       offChain,
       transition,
@@ -719,12 +720,7 @@ class PaperTransactionModal extends React.Component {
     } else if (nextScreen && offChain) {
       return (
         <div className={css(styles.content, transition && styles.transition)}>
-          <div className={css(styles.description)}>
-            {
-              "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
-            }
-          </div>
-          {this.renderToggleContainer(css(styles.toggleContainer))}
+          {/* {this.renderToggleContainer(css(styles.toggleContainer))} */}
           <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Total Balance</div>
@@ -746,12 +742,9 @@ class PaperTransactionModal extends React.Component {
           </div>
           <div className={css(styles.row, styles.numbers)}>
             <div className={css(styles.column, styles.left)}>
-              <div className={css(styles.title)}>Amount</div>
+              <div className={css(styles.title)}>{"Amount"}</div>
               <div className={css(styles.subtitle)}>
-                {this.parseValue()} RSC = {this.parseValue()} Day
-                {this.parseValue() === 0 || this.parseValue() > 1 ? "s" : ""} of
-                Support + {this.parseValue()} Upvote
-                {this.parseValue() === 0 || this.parseValue() > 1 ? "s" : ""}
+                {"Select the amount of RSC"}
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -779,14 +772,9 @@ class PaperTransactionModal extends React.Component {
             this.renderSwitchNetworkMsg()
           ) : (
             <Fragment>
-              <div className={css(styles.description)}>
-                {
-                  "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
-                }
-              </div>
-              {this.renderToggleContainer(
+              {/* {this.renderToggleContainer(
                 css(styles.toggleContainer, styles.toggleContainerOnChain)
-              )}
+              )} */}
               {connectedMetaMask && (
                 <div className={css(styles.connectStatus)}>
                   <div
@@ -795,11 +783,11 @@ class PaperTransactionModal extends React.Component {
                       connectedMetaMask && styles.connected
                     )}
                   />
-                  Connected wallet: MetaMask
+                  {"Connected wallet: MetaMask"}
                 </div>
               )}
               <div className={css(styles.inputLabel)}>
-                Wallet Address
+                {"Wallet Address"}
                 <span
                   className={css(styles.infoIcon)}
                   data-tip={"The address of your ETH Account (ex. 0x0000...)"}
@@ -837,9 +825,9 @@ class PaperTransactionModal extends React.Component {
 
               <div className={css(styles.row, styles.numbers, styles.border)}>
                 <div className={css(styles.column, styles.left)}>
-                  <div className={css(styles.title)}>Total Balance</div>
+                  <div className={css(styles.title)}>{"Total Balance"}</div>
                   <div className={css(styles.subtitle)}>
-                    Your current wallet balance in RSC
+                    {"Your current wallet balance in RSC"}
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
@@ -856,9 +844,9 @@ class PaperTransactionModal extends React.Component {
               </div>
               <div className={css(styles.row, styles.numbers)}>
                 <div className={css(styles.column, styles.left)}>
-                  <div className={css(styles.title)}>Amount</div>
+                  <div className={css(styles.title)}>{"Amount"}</div>
                   <div className={css(styles.subtitle)}>
-                    {this.state.value} RSC = {this.state.value} Day of Support
+                    {"Select the amount of RSC"}
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
@@ -885,13 +873,13 @@ class PaperTransactionModal extends React.Component {
   };
 
   render() {
-    let { modals } = this.props;
+    const { modals } = this.props;
 
     return (
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
-        title={"Support Paper"} // this needs to
+        title={"Support Paper"}
       >
         {this.renderContent()}
       </BaseModal>
@@ -905,8 +893,8 @@ const styles = StyleSheet.create({
     opacity: 1,
     transition: "all ease-in-out 0.2s",
     position: "relative",
+    paddingTop: 40,
     "@media only screen and (max-width: 557px)": {
-      padding: 25,
       width: "100%",
       boxSizing: "border-box",
     },

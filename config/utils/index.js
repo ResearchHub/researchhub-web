@@ -52,6 +52,36 @@ export function truncateText(str) {
   return str;
 }
 
+export function removeLineBreaksInStr(str) {
+  return str.replace(/\r?\n |\r/g, "");
+}
+
+/**
+ *
+ * @param {String} str - any string
+ *
+ * returns string with first letter of each word capitalized
+ */
+export function capitalize(str) {
+  return str.replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+}
+
+/**
+ *
+ * @param {Object} author - author object
+ *
+ * returns the either the first / last or both is exists
+ */
+export function getAuthorName(author) {
+  if (author.first_name && !author.last_name) {
+    return author.first_name;
+  } else if (author.last_name && !author.first_name) {
+    return author.last_name;
+  } else {
+    return `${author.first_name} ${author.last_name}`;
+  }
+}
+
 export function getBountyAmount({ type, paper }) {
   if (doesNotExist(type) || doesNotExist(paper)) {
     return 0;
@@ -74,10 +104,6 @@ export function getBountyAmount({ type, paper }) {
     }
     return paper.bullet_low_quality;
   }
-}
-
-export function capitalize(str) {
-  return str.replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
 }
 
 export function formatJournalName(journal) {

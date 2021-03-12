@@ -647,6 +647,7 @@ var styles = StyleSheet.create({
     border: "none",
     height: "unset",
     color: "rgba(26, 31, 58, 0.6)",
+    background: "unset",
     padding: "3px 0px 3px 5px",
     fontSize: 14,
     ":hover": {
