@@ -12,6 +12,7 @@ import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import { fetchPaperFigures } from "~/config/fetch";
 
 const PaperPreview = (props) => {
+  const { paperId, paper } = props;
   const [slideIndex, setSlideIndex] = useState(1);
   const [figureUrls, setFigureUrls] = useState([]);
   const [lightbox, setLightbox] = useState(false);
@@ -19,11 +20,9 @@ const PaperPreview = (props) => {
 
   useEffect(() => {
     fetchFigures();
-  }, [props.paperId, props.paper]);
+  }, [paperId, paper]);
 
   const fetchFigures = () => {
-    const paperId = props.paperId;
-
     if (paperId) {
       setFetching(true);
       return fetchPaperFigures(paperId).then((res) => {
