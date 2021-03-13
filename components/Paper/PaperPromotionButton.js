@@ -14,12 +14,12 @@ import { PaperPromotionIcon } from "~/config/themes/icons";
 const PaperPromotionButton = ({ paper, openPaperTransactionModal }) => {
   const [hover, setHover] = useState(false);
 
-  const { promoted } = paper;
+  const { promoted, score } = paper;
 
   const getCount = () => {
     if (typeof promoted === "boolean") return 0;
 
-    return numeral(promoted).format("0a");
+    return numeral(promoted - score).format("0a");
   };
 
   return (
