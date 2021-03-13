@@ -76,7 +76,7 @@ const Index = (props) => {
       case 1:
         return "Subscribe to Hubs you're interested in";
       case 2:
-        return "Enter your proflie information";
+        return "Enter your profile information";
       default:
         return;
     }
