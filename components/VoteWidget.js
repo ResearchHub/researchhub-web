@@ -23,8 +23,6 @@ const VoteWidget = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
 
-  useEffect(() => {}, [props.promoted]);
-
   const {
     onUpvote,
     onDownvote,
@@ -267,9 +265,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     minWidth: 30,
-    ":hover": {
-      background: "rgba(30, 207, 49, 0.2)",
-    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
