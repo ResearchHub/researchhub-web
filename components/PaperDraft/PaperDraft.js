@@ -27,163 +27,9 @@ class PaperDraft extends React.Component {
       isInEditMode: true,
       isFocused: false,
     };
-<<<<<<< HEAD
     this.editor; // $ref to Editor
   }
 
-<<<<<<< HEAD
-=======
-  htmlToBlock = (nodeName, node, idsToRemove) => {
-    if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
-      return false;
-    }
-
-    switch (nodeName) {
-      case "title":
-        if (node.className === "header") {
-          return {
-            type: "header-one",
-            data: {
-              props: node.dataset.props,
-            },
-          };
-        }
-
-        return {
-          type: "header-two",
-          data: {},
-        };
-      case "p":
-        return {
-          type: "paragraph",
-          data: {},
-        };
-
-      case "abstract":
-      case "fig":
-      case "graphic":
-      case "front":
-      case "back":
-      case "journal":
-      case "article-id":
-        return false;
-      default:
-        return true;
-    }
-  };
-
-  htmlToStyle = (nodeName, node, currentStyle) => {
-    if (nodeName === "xref") {
-      return currentStyle.add("ITALIC");
-    }
-    return currentStyle;
-  };
-
-  htmlToEntity = (nodeName, node, createEntity) => {
-    const { className } = node;
-
-    if (
-      (nodeName === "title" && className === "header") ||
-      (nodeName === "p" && className === "last-paragraph")
-    ) {
-      const [name, index] = node.dataset.props.split("-");
-
-      const entity = createEntity("WAYPOINT", "IMMUTABLE", {
-        name: name,
-        index: index,
-      });
-
-      return entity;
-    }
-  };
-
-  fetchHTML = () => {
-    const { paperId } = this.props;
-    fetchPaperDraft({ paperId })
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(this.handleData)
-      .catch(() => {
-        this.handleError();
-        this.setState({ fetching: false });
-      });
-  };
-
-  handleData = (data) => {
-    if (typeof data !== "string") {
-      return this.setRawToEditorState(data);
-    } else {
-      return this.setBase64ToEditorState(data);
-    }
-  };
-
-  /**
-   * @param {JSON} res => Backend JSON with rawEditorState and saved Sections
-   *
-   * converts raw Draft JSON to Draft Edtior State
-   */
-  setRawToEditorState = (res) => {
-    try {
-      const { data, sections } = res;
-
-      const editorState = EditorState.set(
-        EditorState.createWithContent(convertFromRaw(data)),
-        { decorator: this.decorator }
-      );
-      this.onChange(editorState);
-      this.updateParentState(sections);
-    } catch {
-      this.handleError();
-    } finally {
-      this.setState({ fetching: false });
-    }
-  };
-
-  /**
-   *
-   * @param {String} base64 - string returned from scrapped pdf
-   *
-   * converts base64 to custom HTML to Draft Editor State
-   */
-  setBase64ToEditorState = (base64) => {
-    const [html, idsToRemove, sectionTitles] = this.formatHTMLForMarkup(base64);
-
-    try {
-      const blocksFromHTML = convertFromHTML({
-        htmlToBlock: (nodeName, node) =>
-          this.htmlToBlock(nodeName, node, idsToRemove),
-        htmlToStyle: this.htmlToStyle,
-        htmlToEntity: this.htmlToEntity,
-      })(html, { flat: true });
-
-      const { editorState } = this.state;
-
-      const updatedEditorState = EditorState.set(
-        EditorState.push(editorState, blocksFromHTML),
-        { decorator: this.decorator }
-      );
-
-      this.onChange(updatedEditorState);
-      this.updateParentState(sectionTitles);
-    } catch {
-      this.handleError();
-    } finally {
-      this.setState({ fetching: false });
-    }
-  };
-
-  handleError = (err) => {
-    const { setPaperDraftExists, setPaperDraftSections } = this.props;
-    setPaperDraftExists(false);
-    setPaperDraftSections([]);
-    this.setState({ fetching: false });
-  };
-
-=======
-    this.editor;
-  }
-
->>>>>>> e55ce90d (rebase)
   updateParentState = (sectionTitles) => {
     const { setPaperDraftExists, setPaperDraftSections } = this.props;
     setPaperDraftExists(true);
@@ -211,6 +57,11 @@ class PaperDraft extends React.Component {
   };
 
 >>>>>>> ee9b8b5a (revert navBar zIndex)
+=======
+    this.editor; // $ref to Editor
+  }
+
+>>>>>>> 09dfb2d9 (rebase)
   onFocus = () => {
     this.setState({ isFocused: true });
     this.editor.focus();
@@ -230,19 +81,6 @@ class PaperDraft extends React.Component {
       RichUtils.onTab(e, this.props.editorState, 4)
     );
   };
-
-  /**
-   * Used for Modifier states
-   */
-  // setEditorState = (content, changeType) => {
-  //   const editorState = EditorState.push(
-  // const {editorState} = this.props;
-  //     this.state.editorState,
-  //     content,
-  //     changeType
-  //   );
-  //   this.props.handleEditorStateUpdate(editorState);
-  // };
 
   toggleBlockType = (blockType) => {
     this.props.handleEditorStateUpdate(
@@ -433,9 +271,6 @@ const styles = StyleSheet.create({
   },
   hidden: {
     display: "none",
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
   },
   paddingBottom: {
     paddingBottom: 30,
