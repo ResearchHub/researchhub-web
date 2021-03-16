@@ -27,6 +27,7 @@ class PaperDraft extends React.Component {
       isInEditMode: true,
       isFocused: false,
     };
+<<<<<<< HEAD
     this.editor; // $ref to Editor
   }
 
@@ -178,64 +179,15 @@ class PaperDraft extends React.Component {
     this.setState({ fetching: false });
   };
 
+=======
+    this.editor;
+  }
+
+>>>>>>> e55ce90d (rebase)
   updateParentState = (sectionTitles) => {
     const { setPaperDraftExists, setPaperDraftSections } = this.props;
     setPaperDraftExists(true);
     setPaperDraftSections(sectionTitles);
-  };
-
-  formatHTMLForMarkup = (base64) => {
-    const sectionTitles = [];
-    const idsToRemove = {};
-
-    const html = decodeURIComponent(escape(window.atob(base64)));
-    const doc = new DOMParser().parseFromString(html, "text/xml");
-    const sections = [].slice.call(doc.getElementsByTagName("sec"));
-
-    let count = 0;
-
-    sections.forEach((section) => {
-      const { parentNode } = section;
-
-      const titleNode = section.getElementsByTagName("title")[0];
-      const lastPNode = [].slice.call(section.getElementsByTagName("p")).pop();
-
-      if (!titleNode || !lastPNode) {
-        return (idsToRemove[section.id] = true);
-      }
-
-      const title = titleNode.textContent.trim().toLowerCase();
-      const paragraph = lastPNode.textContent.trim();
-
-      if (
-        title.length <= 1 ||
-        paragraph.length <= 1 ||
-        parentNode.nodeName === "abstract" ||
-        parentNode.nodeName === "front" ||
-        parentNode.nodeName === "back"
-      ) {
-        return (idsToRemove[section.id] = true);
-      }
-
-      if (parentNode.nodeName === "article") {
-        const data = `${title}-${count}`;
-        const header = section.children[0];
-
-        sectionTitles.push(title); // push title for tabbar
-
-        section.className = "main-section";
-
-        header.className = "header";
-        header.setAttribute("data-props", data);
-
-        lastPNode.className = "last-paragraph";
-        lastPNode.setAttribute("data-props", data);
-
-        count++;
-      }
-    });
-
-    return [doc.documentElement.innerHTML, idsToRemove, sectionTitles];
   };
 
   findWayPointEntity = (contentBlock, callback, contentState) => {
