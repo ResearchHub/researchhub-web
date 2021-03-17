@@ -3,6 +3,11 @@ import { Helpers } from "@quantfive/js-web-config";
 import { fetchPaperDraft } from "~/config/fetch";
 import { CompositeDecorator, EditorState } from "draft-js";
 import {
+  getBlockStyleFn,
+  getHandleKeyCommand,
+  getHandleOnTab,
+} from "./util/PaperDraftTextEditorUtil";
+import {
   formatBase64ToEditorState,
   formatRawJsonToEditorState,
 } from "./util/PaperDraftUtils";
@@ -34,7 +39,6 @@ const getDecorator = ({
 }) =>
   new CompositeDecorator([
     {
-      strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
       component: (props) => (
         <WaypointSection {...props} onSectionEnter={setActiveSection} />
       ),
@@ -45,7 +49,6 @@ const getDecorator = ({
 function paperFetchHook({
   decorator,
   paperId,
-  setActiveSection,
   setEditorState,
   setInitEditorState,
   setIsFetching,
@@ -116,7 +119,6 @@ function PaperDraftContainer({
       paperFetchHook({
         decorator,
         paperId,
-        setActiveSection,
         setEditorState,
         setInitEditorState,
         setIsFetching,
@@ -126,7 +128,6 @@ function PaperDraftContainer({
     [
       decorator,
       paperId,
-      setActiveSection,
       setEditorState,
       setInitEditorState,
       setIsFetching,
@@ -135,33 +136,24 @@ function PaperDraftContainer({
     ]
   );
 
-  const getBlockStyleFn = (block) => {
-    switch (block.getType()) {
-      case "header-one":
-        return "RichEditor-h1";
-      case "header-two":
-        return "RichEditor-h2";
-      case "paragraph":
-      case "unstyled":
-        return "RichEditor-p";
-      default:
-        return null;
-    }
-  };
   return (
     <div>
       <PaperDraft
         textEditorProps={{
           blockStyleFn: getBlockStyleFn,
           editorState,
-          handleKeyCommand: () => {},
+          handleKeyCommand: getHandleKeyCommand({
+            editorState,
+            setEditorState,
+          }),
+          initEditorState,
           onChange: setEditorState,
-          onTab: setEditorState,
+          onTab: getHandleOnTab({
+            editorState,
+            setEditorState,
+          }),
           spellCheck: true,
         }}
-        editorState={editorState}
-        handleEditorStateUpdate={setEditorState}
-        initEditorState={initEditorState}
         isFetching={isFetching}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
         paperDraftExists={paperDraftExists}
