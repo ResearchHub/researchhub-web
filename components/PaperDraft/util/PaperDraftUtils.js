@@ -79,6 +79,7 @@ const formatHTMLForMarkup = (base64) => {
 
   const html = decodeURIComponent(escape(window.atob(base64)));
   const doc = new DOMParser().parseFromString(html, "text/xml");
+  console.warn("DOC: ", doc);
   const sections = [].slice.call(doc.getElementsByTagName("sec"));
 
   let count = 0;
@@ -135,13 +136,16 @@ export const formatBase64ToEditorState = (payload) => {
     onError = emptyFunction,
     onSuccess = emptyFunction,
   } = payload ?? {};
+  console.warn("formatBase64ToEditorState");
   try {
     const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
+    console.warn("html: ", html);
     const blocksFromHTML = convertFromHTML({
       htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
       htmlToStyle,
       htmlToEntity,
     })(html, { flat: true });
+    console.warn("blocksFromHTML: ", blocksFromHTML);
     const newEditorState = EditorState.set(
       EditorState.push(currenEditorState, blocksFromHTML),
       { decorator }
@@ -149,7 +153,6 @@ export const formatBase64ToEditorState = (payload) => {
     onSuccess({ sections: sectionTitles });
     return newEditorState;
   } catch (error) {
-    debugger;
     onError("formatBase64ToEditorState: ", error.toString());
   }
 };
@@ -162,6 +165,8 @@ export const formatRawJsonToEditorState = (payload) => {
     rawJson /* json formatted by draftJs & saved to backend */,
   } = payload ?? {};
   try {
+    console.warn("formatRawJsonToEditorState");
+
     const { data, sections } = rawJson;
     const newEditorState = EditorState.set(
       EditorState.createWithContent(convertFromRaw(data)),
