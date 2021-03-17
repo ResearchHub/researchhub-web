@@ -48,48 +48,18 @@ class PaperDraft extends React.Component {
     });
   };
 
-  onTab = (e) => {
-    e && e.preventDefault();
-    e && e.persist();
-    this.props.handleEditorStateUpdate(
-      RichUtils.onTab(e, this.props.editorState, 4)
-    );
-  };
-
   toggleBlockType = (blockType) => {
-    this.props.handleEditorStateUpdate(
-      RichUtils.toggleBlockType(this.props.editorState, blockType)
-    );
+    const {
+      textEditorProps: { editorState, onChange },
+    } = props;
+    onChange(RichUtils.toggleBlockType(editorState, blockType));
   };
 
   toggleInlineStyle = (inlineStyle) => {
-    this.props.handleEditorStateUpdate(
-      RichUtils.toggleInlineStyle(this.props.editorState, inlineStyle)
-    );
-  };
-
-  getBlockStyle = (block) => {
-    switch (block.getType()) {
-      case "header-one":
-        return "RichEditor-h1";
-      case "header-two":
-        return "RichEditor-h2";
-      case "paragraph":
-      case "unstyled":
-        return "RichEditor-p";
-      default:
-        return null;
-    }
-  };
-
-  handleKeyCommand = (command) => {
-    const { editorState } = this.props;
-    const newEditorState = RichUtils.handleKeyCommand(editorState, command);
-    if (newEditorState) {
-      this.props.handleEditorStateUpdate(newEditorState);
-      return true;
-    }
-    return false;
+    const {
+      textEditorProps: { editorState, onChange },
+    } = props;
+    onChange(RichUtils.toggleInlineStyle(editorState, inlineStyle));
   };
 
   toggleEdit = (e) => {
@@ -108,9 +78,11 @@ class PaperDraft extends React.Component {
   };
 
   onCancel = () => {
-    const { initEditorState, handleEditorStateUpdate } = this.props;
+    const {
+      textEditorProps: { initEditorState, onChange },
+    } = this.props;
     const { isInEditMode } = this.state;
-    handleEditorStateUpdate(initEditorState);
+    onChange(initEditorState);
     this.setState({ isInEditMode: !isInEditMode }, () => this.editor.blur());
   };
 
@@ -130,7 +102,11 @@ class PaperDraft extends React.Component {
   };
 
   saveEdit = () => {
-    const { editorState, paperId, paperDraftSections } = this.props;
+    const {
+      textEditorProps: { editorState },
+      paperId,
+      paperDraftSections,
+    } = this.props;
     const contentState = editorState.getCurrentContent();
 
     return fetch(
@@ -148,8 +124,8 @@ class PaperDraft extends React.Component {
 
   render() {
     const {
-      editorState,
-      handleEditorStateUpdate,
+      textEditorProps,
+      textEditorProps: { editorState },
       isFetching,
       isViewerAllowedToEdit,
       paperDraftExists,
@@ -190,14 +166,9 @@ class PaperDraft extends React.Component {
           </div>
           <div className={css(!isInEditMode && styles.editorActive)}>
             <Editor
-              blockStyleFn={this.getBlockStyle}
-              editorState={editorState}
-              handleKeyCommand={this.handleKeyCommand}
-              onChange={handleEditorStateUpdate}
-              onTab={this.onTab}
+              {...textEditorProps}
               readOnly={isInEditMode} // setting this to false will grant me access to selection
               ref={(ref) => (this.editor = ref)}
-              spellCheck={true}
             />
           </div>
           <div
