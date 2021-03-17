@@ -1,7 +1,9 @@
 import { RichUtils } from "draft-js";
 
 export const getBlockStyleFn = (block) => {
-  switch (block.getType()) {
+  const blockType = block.getType();
+
+  switch (blockType) {
     case "header-one":
       return "RichEditor-h1";
     case "header-two":
@@ -10,7 +12,8 @@ export const getBlockStyleFn = (block) => {
     case "unstyled":
       return "RichEditor-p";
     default:
-      return null;
+      console.warn("getBlockStyleFn: ", blockType);
+      return blockType;
   }
 };
 

@@ -13,7 +13,7 @@ const BLOCK_TYPES = [
   { label: "OL", style: "ordered-list-item" },
   {
     label: "Comment",
-    style: INLINE_COMMENT_KEYS.REASEARCH_HUB_PAPER_INLINE_COMMENT,
+    style: INLINE_COMMENT_KEYS.RESEARCH_HUB_PAPER_INLINE_COMMENT,
   },
 ];
 
@@ -27,16 +27,17 @@ const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
   const selection = editorState.getSelection();
 
-  const blockType = editorState
+  const selectedBlockType = editorState
     .getCurrentContent()
     .getBlockForKey(selection.getStartKey())
     .getType();
 
+  console.warn("selectedBlockType: ", selectedBlockType);
   const currentStyle = editorState.getCurrentInlineStyle();
   const blockStyleButtons = BLOCK_TYPES.map((type) => (
     <StyleButton
       key={type.label}
-      active={type.style === blockType}
+      active={type.style === selectedBlockType}
       label={type.label}
       style={type.style}
       onClick={onClickBlock}
