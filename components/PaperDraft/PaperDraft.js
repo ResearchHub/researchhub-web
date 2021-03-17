@@ -36,22 +36,6 @@ class PaperDraft extends React.Component {
     setPaperDraftSections(sectionTitles);
   };
 
-  findWayPointEntity = (contentBlock, callback, contentState) => {
-    const { seenEntityKeys } = this.state;
-    contentBlock.findEntityRanges((character) => {
-      const entityKey = character.getEntity();
-      if (!seenEntityKeys[entityKey]) {
-        this.setState({
-          seenEntityKeys: { ...seenEntityKeys, [entityKey]: true },
-        });
-        return (
-          entityKey !== null &&
-          contentState.getEntity(entityKey).getType() === "WAYPOINT"
-        );
-      }
-    }, callback);
-  };
-
   onFocus = () => {
     this.setState({ isFocused: true });
     this.editor.focus();
