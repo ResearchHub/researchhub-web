@@ -61,8 +61,6 @@ function PaperDraftContainer({
     (data) => {
       const onFormatSuccess = ({ sections }) => {
         /* logical ordering */
-        console.warn("formatSuccess");
-        console.warn("sections: ", sections);
         setPaperDraftSections(sections);
         setPaperDraftExists(true);
         setIsFetching(false);
