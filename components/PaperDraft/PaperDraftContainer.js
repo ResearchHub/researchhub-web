@@ -22,7 +22,7 @@ const findWayPointEntity = (seenEntityKeys, setSeenEntityKeys) => (
 ) => {
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
-    if (!seenEntityKeys[entityKey]) {
+    if (!Boolean(seenEntityKeys[entityKey])) {
       setSeenEntityKeys({ ...seenEntityKeys, [entityKey]: true });
       return (
         entityKey !== null &&
@@ -125,15 +125,7 @@ function PaperDraftContainer({
         setPaperDraftExists,
         setPaperDraftSections,
       }),
-    [
-      decorator,
-      paperId,
-      setEditorState,
-      setInitEditorState,
-      setIsFetching,
-      setPaperDraftExists,
-      setPaperDraftSections,
-    ]
+    [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
   return (
@@ -152,6 +144,7 @@ function PaperDraftContainer({
             editorState,
             setEditorState,
           }),
+          setInitEditorState,
           spellCheck: true,
         }}
         isFetching={isFetching}

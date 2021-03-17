@@ -103,12 +103,11 @@ class PaperDraft extends React.Component {
 
   saveEdit = () => {
     const {
-      textEditorProps: { editorState },
+      textEditorProps: { setInitEditorState, editorState },
       paperId,
       paperDraftSections,
     } = this.props;
     const contentState = editorState.getCurrentContent();
-
     return fetch(
       API.PAPER({
         paperId,
@@ -119,7 +118,12 @@ class PaperDraft extends React.Component {
         data: convertToRaw(contentState),
         sections: paperDraftSections,
       })
-    ).then(Helpers.checkStatus);
+    )
+      .then(Helpers.checkStatus)
+      .then(() =>
+        /* after saving the new initState is saved state */
+        setInitEditorState(editorState)
+      );
   };
 
   render() {
