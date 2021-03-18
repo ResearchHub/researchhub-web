@@ -1,8 +1,7 @@
-import React from "react";
 import { connect } from "react-redux";
-
-import { Editor, RichUtils, convertToRaw } from "draft-js";
+import { convertToRaw, Editor, RichUtils } from "draft-js";
 import { StyleSheet, css } from "aphrodite";
+import React from "react";
 import ReactPlaceholder from "react-placeholder/lib";
 
 import { MessageActions } from "~/redux/message";
@@ -24,33 +23,11 @@ class PaperDraft extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isInEditMode: true,
+      isReadOnly: true,
       isFocused: false,
     };
     this.editor; // $ref to Editor
   }
-
-  updateParentState = (sectionTitles) => {
-    const { setPaperDraftExists, setPaperDraftSections } = this.props;
-    setPaperDraftExists(true);
-    setPaperDraftSections(sectionTitles);
-  };
-
-  findWayPointEntity = (contentBlock, callback, contentState) => {
-    const { seenEntityKeys } = this.state;
-    contentBlock.findEntityRanges((character) => {
-      const entityKey = character.getEntity();
-      if (!seenEntityKeys[entityKey]) {
-        this.setState({
-          seenEntityKeys: { ...seenEntityKeys, [entityKey]: true },
-        });
-        return (
-          entityKey !== null &&
-          contentState.getEntity(entityKey).getType() === "WAYPOINT"
-        );
-      }
-    }, callback);
-  };
 
   onFocus = () => {
     this.setState({ isFocused: true });
@@ -59,75 +36,45 @@ class PaperDraft extends React.Component {
 
   onBlur = () => {
     this.setState({
-      isInEditMode: true,
+      isReadOnly: true,
       isFocused: false,
     });
   };
 
-  onTab = (e) => {
-    // TODO: calvinhlee -> revisit event handling and function. Currently not working.
-    e && e.preventDefault();
-    e && e.persist();
-    this.props.handleEditorStateUpdate(
-      RichUtils.onTab(e, this.props.editorState, 4)
-    );
-  };
-
-  toggleBlockType = (blockType) => {
-    this.props.handleEditorStateUpdate(
-      RichUtils.toggleBlockType(this.props.editorState, blockType)
-    );
+  toggleBlockType = (targetBlockType) => {
+    const {
+      textEditorProps: { editorState, onChange },
+    } = this.props;
+    onChange(RichUtils.toggleBlockType(editorState, targetBlockType));
   };
 
   toggleInlineStyle = (inlineStyle) => {
-    this.props.handleEditorStateUpdate(
-      RichUtils.toggleInlineStyle(this.props.editorState, inlineStyle)
-    );
+    const {
+      textEditorProps: { editorState, onChange },
+    } = this.props;
+    onChange(RichUtils.toggleInlineStyle(editorState, inlineStyle));
   };
 
-  getBlockStyle = (block) => {
-    switch (block.getType()) {
-      case "header-one":
-        return "RichEditor-h1";
-      case "header-two":
-        return "RichEditor-h2";
-      case "paragraph":
-      case "unstyled":
-        return "RichEditor-p";
-      default:
-        return null;
-    }
-  };
-
-  handleKeyCommand = (command) => {
-    const { editorState } = this.props;
-    const newEditorState = RichUtils.handleKeyCommand(editorState, command);
-    if (newEditorState) {
-      this.props.handleEditorStateUpdate(newEditorState);
-      return true;
-    }
-    return false;
-  };
-
-  toggleEdit = (_event) => {
-    const { isInEditMode } = this.state;
+  toggleEdit = (e) => {
+    e.preventDefault();
+    const { isReadOnly } = this.state;
     this.setState(
       {
-        isInEditMode: !isInEditMode,
+        isReadOnly: !isReadOnly,
       },
       () => {
-        return this.state.isInEditMode
-          ? this.editor.blur()
-          : this.editor.focus();
+        return this.state.isReadOnly ? this.editor.blur() : this.editor.focus();
       }
     );
   };
 
   onCancel = () => {
-    const { initEditorState, handleEditorStateUpdate } = this.props;
-    const { isInEditMode } = this.state;
-    handleEditorStateUpdate(initEditorState);
-    this.setState({ isInEditMode: !isInEditMode }, () => this.editor.blur());
+    const {
+      textEditorProps: { initEditorState, onChange },
+    } = this.props;
+    const { isReadOnly } = this.state;
+    onChange(initEditorState);
+    this.setState({ isReadOnly: !isReadOnly }, () => this.editor.blur());
   };
 
   onSave = () => {
@@ -137,7 +84,7 @@ class PaperDraft extends React.Component {
       .then((res) => {
         setMessage("Edit saved.");
         showMessage({ show: true });
-        this.setState({ isInEditMode: true, isSaving: false });
+        this.setState({ isReadOnly: true, isSaving: false });
       })
       .catch((err) => {
         setMessage("Something went wrong. Please try again!");
@@ -146,9 +93,12 @@ class PaperDraft extends React.Component {
   };
 
   saveEdit = () => {
-    const { editorState, paperId, paperDraftSections } = this.props;
+    const {
+      textEditorProps: { setInitEditorState, editorState },
+      paperId,
+      paperDraftSections,
+    } = this.props;
     const contentState = editorState.getCurrentContent();
-
     return fetch(
       API.PAPER({
         paperId,
@@ -159,18 +109,23 @@ class PaperDraft extends React.Component {
         data: convertToRaw(contentState),
         sections: paperDraftSections,
       })
-    ).then(Helpers.checkStatus);
+    )
+      .then(Helpers.checkStatus)
+      .then(() =>
+        /* after saving the new initState is saved state */
+        setInitEditorState(editorState)
+      );
   };
 
   render() {
     const {
-      editorState,
-      handleEditorStateUpdate,
+      textEditorProps,
+      textEditorProps: { editorState },
       isFetching,
       isViewerAllowedToEdit,
       paperDraftExists,
     } = this.props;
-    const { isInEditMode, isSaving } = this.state;
+    const { isReadOnly, isSaving } = this.state;
     return (
       <ReactPlaceholder
         ready={!isFetching}
@@ -185,7 +140,7 @@ class PaperDraft extends React.Component {
       >
         <div className={css(styles.root, !paperDraftExists && styles.hidden)}>
           <h3
-            className={css(styles.title, !isInEditMode && styles.paddingBottom)}
+            className={css(styles.title, !isReadOnly && styles.paddingBottom)}
           >
             Paper
             {isViewerAllowedToEdit && (
@@ -195,7 +150,7 @@ class PaperDraft extends React.Component {
             )}
           </h3>
           <div
-            className={css(styles.toolbar, !isInEditMode && styles.editActive)}
+            className={css(styles.toolbar, !isReadOnly && styles.editActive)}
             onClick={this.onFocus}
           >
             <StyleControls
@@ -204,23 +159,15 @@ class PaperDraft extends React.Component {
               onClickInline={this.toggleInlineStyle}
             />
           </div>
-          <div className={css(!isInEditMode && styles.editorActive)}>
+          <div className={css(!isReadOnly && styles.editorActive)}>
             <Editor
-              blockStyleFn={this.getBlockStyle}
-              editorState={editorState}
-              handleKeyCommand={this.handleKeyCommand}
-              onChange={handleEditorStateUpdate}
-              onTab={this.onTab}
-              readOnly={isInEditMode} // setting this to false will grant me access to selection
+              {...textEditorProps}
+              readOnly={isReadOnly} // setting this to false will grant me access to selection
               ref={(ref) => (this.editor = ref)}
-              spellCheck={true}
             />
           </div>
           <div
-            className={css(
-              styles.buttonRow,
-              !isInEditMode && styles.editActive
-            )}
+            className={css(styles.buttonRow, !isReadOnly && styles.editActive)}
           >
             <Button
               label={"Cancel"}
@@ -261,9 +208,6 @@ const styles = StyleSheet.create({
   },
   hidden: {
     display: "none",
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
   },
   paddingBottom: {
     paddingBottom: 30,
