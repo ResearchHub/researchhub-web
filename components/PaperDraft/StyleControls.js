@@ -32,7 +32,6 @@ const BlockStyleControls = (props) => {
     .getBlockForKey(selection.getStartKey())
     .getType();
 
-  console.warn("selectedBlockType: ", selectedBlockType);
   const currentStyle = editorState.getCurrentInlineStyle();
   const blockStyleButtons = BLOCK_TYPES.map((type) => (
     <StyleButton

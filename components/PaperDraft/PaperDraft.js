@@ -1,14 +1,7 @@
-import React from "react";
 import { connect } from "react-redux";
-import { Map } from "immutable";
-import {
-  convertToRaw,
-  Editor,
-  EditorState,
-  Modifier,
-  RichUtils,
-} from "draft-js";
+import { convertToRaw, Editor, RichUtils } from "draft-js";
 import { StyleSheet, css } from "aphrodite";
+import React from "react";
 import ReactPlaceholder from "react-placeholder/lib";
 
 import { MessageActions } from "~/redux/message";
@@ -58,89 +51,7 @@ class PaperDraft extends React.Component {
     const {
       textEditorProps: { editorState, onChange },
     } = this.props;
-    // const currentContent = editorState.getCurrentContent();
-    // const selectionState = editorState.getSelection();
-
-    const currentContentState = editorState.getCurrentContent();
-    const selectionState = editorState.getSelection();
-    const selectionStartKey = selectionState.getStartKey();
-    const targetBlock = currentContentState.getBlockForKey(selectionStartKey);
-    console.warn("targetBlock: ", targetBlock);
-    let modifiedContentState = Modifier.setBlockData(
-      currentContentState,
-      selectionState,
-      Map({})
-    );
-    // modifiedContentState = Modifier.setBlockType(
-    //   modifiedContentState,
-    //   selectionState,
-    //   "RichEditor-h1"
-    // );
-    const newEditorState = RichUtils.toggleBlockType(
-      editorState,
-      "RichEditor-h1"
-    );
-    const updatedblocktype = newEditorState
-      .getCurrentContent()
-      .getBlockForKey(selectionStartKey)
-      .getType();
-
-    // const updatedBlock = modifiedContentState.getBlockForKey(selectionStartKey);
-    console.warn("UPDATED BLOCK TYPE: ", updatedblocktype);
-
-    // const afterRemoval = Modifier.removeRange(
-    //   contentState,
-    //   selectionState,
-    //   "backward"
-    // );
-
-    // const targetSelection = afterRemoval.getSelectionAfter();
-    // const afterSplit = Modifier.splitBlock(afterRemoval, targetSelection);
-    // const insertionTarget = afterSplit.getSelectionAfter();
-
-    // const insertText = Modifier.insertText(contentState, insertionTarget, " ");
-    try {
-      onChange(
-        // EditorState.push(editorState, modifiedContentState, "change-block-type")
-        newEditorState
-      );
-    } catch (error) {
-      debugger;
-    }
-    // const newContentWithModifiedBlock = Modifier.setBlockType(
-    //   insertText,
-    //   insertText.getSelectionAfter(),
-    //   targetBlockType
-    // );
-    // onChange(EditorState.push(editorState, newContentWithModifiedBlock));
-    // var newContent = Modifier.setBlockData(
-    //   currentContent,
-    //   newContent.getSelectionAfter(),
-    //   Map({})
-    // );
-    // const modifiedBlockContentState = Modifier.setBlockType(
-    //   currentContent,
-    //   selectionState,
-    //   targetBlockType
-    // );
-    // newContent = Modifier.setBlockType(
-    //   newContent,
-    //   newContent.getSelectionAfter(),
-    //   "unstyled"
-    // );
-    // const yo = modifiedBlockContentState.getSelection();
-    // console.warn("yo: ", yo);
-    // console.warn("trying to change to: ", targetBlockType);
-    // const state0 = EditorState.push(
-    //   editorState,
-    //   modifiedBlockContentState,
-    //   "change-block-type"
-    // );
-    // const state1 = RichUtils.toggleBlockType(
-    //   EditorState.createWithContent(modifiedBlockContentState),
-    //   targetBlockType
-    // );
-    // onChange(state1);
+    onChange(RichUtils.toggleBlockType(editorState, targetBlockType));
   };
 
   toggleInlineStyle = (inlineStyle) => {
@@ -259,7 +170,7 @@ class PaperDraft extends React.Component {
           <div className={css(!isInEditMode && styles.editorActive)}>
             <Editor
               {...textEditorProps}
-              readOnly={isInEditMode} // setting this to false will grant me access to selection
+              readOnly={!isInEditMode} // setting this to false will grant me access to selection
               ref={(ref) => (this.editor = ref)}
             />
           </div>
