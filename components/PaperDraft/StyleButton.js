@@ -8,8 +8,8 @@ import icons from "~/config/themes/icons";
 const StyleButton = (props) => {
   const { onClick, label, active, style } = props;
 
-  const onToggle = (e) => {
-    e.preventDefault();
+  const onToggle = (event) => {
+    event.stopPropagation();
     onClick(style);
   };
 
