@@ -108,8 +108,7 @@ class PaperDraft extends React.Component {
     return false;
   };
 
-  toggleEdit = (e) => {
-    e.preventDefault();
+  toggleEdit = (_event) => {
     const { isInEditMode } = this.state;
     this.setState(
       {
