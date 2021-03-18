@@ -29,12 +29,6 @@ class PaperDraft extends React.Component {
     this.editor; // $ref to Editor
   }
 
-  updateParentState = (sectionTitles) => {
-    const { setPaperDraftExists, setPaperDraftSections } = this.props;
-    setPaperDraftExists(true);
-    setPaperDraftSections(sectionTitles);
-  };
-
   onFocus = () => {
     this.setState({ isFocused: true });
     this.editor.focus();
