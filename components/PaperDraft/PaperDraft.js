@@ -1,15 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import {
-  Editor,
-  EditorState,
-  RichUtils,
-  convertToRaw,
-  convertFromRaw,
-  CompositeDecorator,
-} from "draft-js";
-import { convertFromHTML } from "draft-convert";
+import { Editor, RichUtils, convertToRaw } from "draft-js";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
@@ -17,12 +9,10 @@ import { MessageActions } from "~/redux/message";
 
 // Components
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
-import WaypointSection from "./WaypointSection";
 import StyleControls from "./StyleControls";
 import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
 
-import { fetchPaperDraft } from "~/config/fetch";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
@@ -33,243 +23,17 @@ import "~/components/Paper/Tabs/stylesheets/paper.css";
 class PaperDraft extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      prevEditorState: EditorState.createEmpty(),
-      editorState: EditorState.createEmpty(),
-      readOnly: true,
-      focused: false,
-      fetching: true,
-      seenEntityKeys: {},
+      isInEditMode: true,
+      isFocused: false,
     };
-    this.editor;
-    this.decorator = new CompositeDecorator([
-      {
-        strategy: this.findWayPointEntity,
-        component: (props) => (
-          <WaypointSection
-            {...props}
-            onSectionEnter={this.props.setActiveSection}
-          />
-        ),
-      },
-    ]);
+    this.editor; // $ref to Editor
   }
-
-  componentDidMount() {
-    this.fetchHTML();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.paperId !== this.props.paperId) {
-      this.fetchHTML();
-    }
-  }
-
-  htmlToBlock = (nodeName, node, idsToRemove) => {
-    if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
-      return false;
-    }
-
-    switch (nodeName) {
-      case "title":
-        if (node.className === "header") {
-          return {
-            type: "header-one",
-            data: {
-              props: node.dataset.props,
-            },
-          };
-        }
-
-        return {
-          type: "header-two",
-          data: {},
-        };
-      case "p":
-        return {
-          type: "paragraph",
-          data: {},
-        };
-
-      case "abstract":
-      case "fig":
-      case "graphic":
-      case "front":
-      case "back":
-      case "journal":
-      case "article-id":
-        return false;
-      default:
-        return true;
-    }
-  };
-
-  htmlToStyle = (nodeName, node, currentStyle) => {
-    if (nodeName === "xref") {
-      return currentStyle.add("ITALIC");
-    }
-    return currentStyle;
-  };
-
-  htmlToEntity = (nodeName, node, createEntity) => {
-    const { className } = node;
-
-    if (
-      (nodeName === "title" && className === "header") ||
-      (nodeName === "p" && className === "last-paragraph")
-    ) {
-      const [name, index] = node.dataset.props.split("-");
-
-      const entity = createEntity("WAYPOINT", "IMMUTABLE", {
-        name: name,
-        index: index,
-      });
-
-      return entity;
-    }
-  };
-
-  fetchHTML = () => {
-    const { paperId } = this.props;
-    fetchPaperDraft({ paperId })
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(this.handleData)
-      .catch(() => {
-        this.handleError();
-        this.setState({ fetching: false });
-      });
-  };
-
-  handleData = (data) => {
-    if (typeof data !== "string") {
-      return this.setRawToEditorState(data);
-    } else {
-      return this.setBase64ToEditorState(data);
-    }
-  };
-
-  /**
-   * @param {JSON} res => Backend JSON with rawEditorState and saved Sections
-   *
-   * converts raw Draft JSON to Draft Edtior State
-   */
-  setRawToEditorState = (res) => {
-    try {
-      const { data, sections } = res;
-
-      const editorState = EditorState.set(
-        EditorState.createWithContent(convertFromRaw(data)),
-        { decorator: this.decorator }
-      );
-      this.onChange(editorState);
-      this.updateParentState(sections);
-    } catch {
-      this.handleError();
-    } finally {
-      this.setState({ fetching: false });
-    }
-  };
-
-  /**
-   *
-   * @param {String} base64 - string returned from scrapped pdf
-   *
-   * converts base64 to custom HTML to Draft Editor State
-   */
-  setBase64ToEditorState = (base64) => {
-    const [html, idsToRemove, sectionTitles] = this.formatHTMLForMarkup(base64);
-
-    try {
-      const blocksFromHTML = convertFromHTML({
-        htmlToBlock: (nodeName, node) =>
-          this.htmlToBlock(nodeName, node, idsToRemove),
-        htmlToStyle: this.htmlToStyle,
-        htmlToEntity: this.htmlToEntity,
-      })(html, { flat: true });
-
-      const { editorState } = this.state;
-
-      const updatedEditorState = EditorState.set(
-        EditorState.push(editorState, blocksFromHTML),
-        { decorator: this.decorator }
-      );
-
-      this.onChange(updatedEditorState);
-      this.updateParentState(sectionTitles);
-    } catch {
-      this.handleError();
-    } finally {
-      this.setState({ fetching: false });
-    }
-  };
-
-  handleError = (err) => {
-    const { setPaperDraftExists, setPaperDraftSections } = this.props;
-    setPaperDraftExists(false);
-    setPaperDraftSections([]);
-    this.setState({ fetching: false });
-  };
 
   updateParentState = (sectionTitles) => {
     const { setPaperDraftExists, setPaperDraftSections } = this.props;
     setPaperDraftExists(true);
     setPaperDraftSections(sectionTitles);
-  };
-
-  formatHTMLForMarkup = (base64) => {
-    const sectionTitles = [];
-    const idsToRemove = {};
-
-    const html = decodeURIComponent(escape(window.atob(base64)));
-    const doc = new DOMParser().parseFromString(html, "text/xml");
-    const sections = [].slice.call(doc.getElementsByTagName("sec"));
-
-    let count = 0;
-
-    sections.forEach((section) => {
-      const { parentNode } = section;
-
-      const titleNode = section.getElementsByTagName("title")[0];
-      const lastPNode = [].slice.call(section.getElementsByTagName("p")).pop();
-
-      if (!titleNode || !lastPNode) {
-        return (idsToRemove[section.id] = true);
-      }
-
-      const title = titleNode.textContent.trim().toLowerCase();
-      const paragraph = lastPNode.textContent.trim();
-
-      if (
-        title.length <= 1 ||
-        paragraph.length <= 1 ||
-        parentNode.nodeName === "abstract" ||
-        parentNode.nodeName === "front" ||
-        parentNode.nodeName === "back"
-      ) {
-        return (idsToRemove[section.id] = true);
-      }
-
-      if (parentNode.nodeName === "article") {
-        const data = `${title}-${count}`;
-        const header = section.children[0];
-
-        sectionTitles.push(title); // push title for tabbar
-
-        section.className = "main-section";
-
-        header.className = "header";
-        header.setAttribute("data-props", data);
-
-        lastPNode.className = "last-paragraph";
-        lastPNode.setAttribute("data-props", data);
-
-        count++;
-      }
-    });
-
-    return [doc.documentElement.innerHTML, idsToRemove, sectionTitles];
   };
 
   findWayPointEntity = (contentBlock, callback, contentState) => {
@@ -288,48 +52,36 @@ class PaperDraft extends React.Component {
     }, callback);
   };
 
-  onChange = (editorState) => {
-    this.setState({ editorState });
-  };
-
   onFocus = () => {
-    this.setState({ focused: true });
+    this.setState({ isFocused: true });
     this.editor.focus();
   };
 
   onBlur = () => {
     this.setState({
-      readOnly: true,
-      focused: false,
+      isInEditMode: true,
+      isFocused: false,
     });
   };
 
   onTab = (e) => {
+    // TODO: calvinhlee -> revisit event handling and function. Currently not working.
     e && e.preventDefault();
     e && e.persist();
-    this.onChange(RichUtils.onTab(e, this.state.editorState, 4));
-  };
-
-  /**
-   * Used for Modifier states
-   */
-  setEditorState = (content, changeType) => {
-    const editorState = EditorState.push(
-      this.state.editorState,
-      content,
-      changeType
+    this.props.handleEditorStateUpdate(
+      RichUtils.onTab(e, this.props.editorState, 4)
     );
-
-    this.onChange(editorState);
   };
 
   toggleBlockType = (blockType) => {
-    this.onChange(RichUtils.toggleBlockType(this.state.editorState, blockType));
+    this.props.handleEditorStateUpdate(
+      RichUtils.toggleBlockType(this.props.editorState, blockType)
+    );
   };
 
   toggleInlineStyle = (inlineStyle) => {
-    this.onChange(
-      RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
+    this.props.handleEditorStateUpdate(
+      RichUtils.toggleInlineStyle(this.props.editorState, inlineStyle)
     );
   };
 
@@ -348,57 +100,54 @@ class PaperDraft extends React.Component {
   };
 
   handleKeyCommand = (command) => {
-    const { editorState } = this.state;
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      this.onChange(newState);
+    const { editorState } = this.props;
+    const newEditorState = RichUtils.handleKeyCommand(editorState, command);
+    if (newEditorState) {
+      this.props.handleEditorStateUpdate(newEditorState);
       return true;
     }
     return false;
   };
 
-  toggleEdit = (e) => {
-    const { readOnly } = this.state;
-
+  toggleEdit = (_event) => {
+    const { isInEditMode } = this.state;
     this.setState(
       {
-        readOnly: !readOnly,
-        prevEditorState: this.state.editorState,
+        isInEditMode: !isInEditMode,
       },
       () => {
-        return this.state.readOnly ? this.editor.blur() : this.editor.focus();
+        return this.state.isInEditMode
+          ? this.editor.blur()
+          : this.editor.focus();
       }
     );
   };
 
   onCancel = () => {
-    this.setState(
-      {
-        readOnly: true,
-        editorState: this.state.prevEditorState,
-      },
-      () => this.editor.blur()
-    );
+    const { initEditorState, handleEditorStateUpdate } = this.props;
+    const { isInEditMode } = this.state;
+    handleEditorStateUpdate(initEditorState);
+    this.setState({ isInEditMode: !isInEditMode }, () => this.editor.blur());
   };
 
   onSave = () => {
     const { setMessage, showMessage } = this.props;
-    this.setState({ saving: true });
+    this.setState({ isSaving: true });
     this.saveEdit()
       .then((res) => {
         setMessage("Edit saved.");
         showMessage({ show: true });
-        this.setState({ readOnly: true, saving: false });
+        this.setState({ isInEditMode: true, isSaving: false });
       })
       .catch((err) => {
         setMessage("Something went wrong. Please try again!");
-        showMessage({ error: true, show: true, saving: false });
+        showMessage({ error: true, show: true, isSaving: false });
       });
   };
 
   saveEdit = () => {
-    const { paperId, paperDraftSections } = this.props;
-    const contentState = this.state.editorState.getCurrentContent();
+    const { editorState, paperId, paperDraftSections } = this.props;
+    const contentState = editorState.getCurrentContent();
 
     return fetch(
       API.PAPER({
@@ -414,12 +163,17 @@ class PaperDraft extends React.Component {
   };
 
   render() {
-    const { isModerator, paperDraftExists } = this.props;
-    const { fetching, editorState, readOnly, saving } = this.state;
-
+    const {
+      editorState,
+      handleEditorStateUpdate,
+      isFetching,
+      isViewerAllowedToEdit,
+      paperDraftExists,
+    } = this.props;
+    const { isInEditMode, isSaving } = this.state;
     return (
       <ReactPlaceholder
-        ready={!fetching}
+        ready={!isFetching}
         showLoadingAnimation
         customPlaceholder={
           <div style={{ paddingTop: 30 }}>
@@ -430,16 +184,18 @@ class PaperDraft extends React.Component {
         }
       >
         <div className={css(styles.root, !paperDraftExists && styles.hidden)}>
-          <h3 className={css(styles.title, !readOnly && styles.paddingBottom)}>
+          <h3
+            className={css(styles.title, !isInEditMode && styles.paddingBottom)}
+          >
             Paper
-            {isModerator && (
+            {isViewerAllowedToEdit && (
               <div className={css(styles.pencilIcon)} onClick={this.toggleEdit}>
                 {icons.pencil}
               </div>
             )}
           </h3>
           <div
-            className={css(styles.toolbar, !readOnly && styles.editActive)}
+            className={css(styles.toolbar, !isInEditMode && styles.editActive)}
             onClick={this.onFocus}
           >
             <StyleControls
@@ -448,20 +204,23 @@ class PaperDraft extends React.Component {
               onClickInline={this.toggleInlineStyle}
             />
           </div>
-          <div className={css(!readOnly && styles.editorActive)}>
+          <div className={css(!isInEditMode && styles.editorActive)}>
             <Editor
-              ref={(ref) => (this.editor = ref)}
-              editorState={editorState}
-              onChange={this.onChange}
-              onTab={this.onTab}
-              readOnly={readOnly}
-              spellCheck={true}
-              handleKeyCommand={this.handleKeyCommand}
               blockStyleFn={this.getBlockStyle}
+              editorState={editorState}
+              handleKeyCommand={this.handleKeyCommand}
+              onChange={handleEditorStateUpdate}
+              onTab={this.onTab}
+              readOnly={isInEditMode} // setting this to false will grant me access to selection
+              ref={(ref) => (this.editor = ref)}
+              spellCheck={true}
             />
           </div>
           <div
-            className={css(styles.buttonRow, !readOnly && styles.editActive)}
+            className={css(
+              styles.buttonRow,
+              !isInEditMode && styles.editActive
+            )}
           >
             <Button
               label={"Cancel"}
@@ -473,15 +232,15 @@ class PaperDraft extends React.Component {
             {/** Needed to retain ripple effect integrity */}
             <Button
               label={
-                saving ? (
+                isSaving ? (
                   <Loader loading={true} size={10} color={"#FFF"} />
                 ) : (
                   "Save"
                 )
               }
               customButtonStyle={styles.button}
-              disabled={saving}
-              onClick={!saving && this.onSave}
+              disabled={isSaving}
+              onClick={!isSaving && this.onSave}
             />
           </div>
         </div>
