@@ -4,6 +4,7 @@ export const getBlockStyleFn = (block) => {
   const blockType = block.getType();
 
   switch (blockType) {
+    // these are css classNames. Refer to "paper.css"
     case "header-one":
       return "RichEditor-h1";
     case "header-two":
@@ -12,7 +13,6 @@ export const getBlockStyleFn = (block) => {
     case "unstyled":
       return "RichEditor-p";
     default:
-      console.warn("getBlockStyleFn: ", blockType);
       return blockType;
   }
 };
