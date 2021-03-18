@@ -1,3 +1,4 @@
+import { INLINE_COMMENT_KEYS } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
 import React from "react";
 import StyleButton from "./StyleButton";
@@ -10,6 +11,10 @@ const BLOCK_TYPES = [
   { label: "H2", style: "header-two" },
   { label: "UL", style: "unordered-list-item" },
   { label: "OL", style: "ordered-list-item" },
+  {
+    label: "Comment",
+    style: INLINE_COMMENT_KEYS.RESEARCH_HUB_PAPER_INLINE_COMMENT,
+  },
 ];
 
 const INLINE_STYLES = [
