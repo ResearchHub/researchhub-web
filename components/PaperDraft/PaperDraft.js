@@ -65,6 +65,7 @@ class PaperDraft extends React.Component {
   };
 
   onTab = (e) => {
+    // TODO: calvinhlee -> revisit event handling and function. Currently not working.
     e && e.preventDefault();
     e && e.persist();
     this.props.handleEditorStateUpdate(
