@@ -28,8 +28,7 @@ export const getHandleKeyCommand = ({ editorState, setEditorState }) => (
   return false;
 };
 
-export const getHandleOnTab = ({ editorState, setEditorState }) => (e) => {
-  e && e.preventDefault();
-  e && e.persist();
-  setEditorState(RichUtils.onTab(e, editorState, 4));
+export const getHandleOnTab = ({ editorState, setEditorState }) => (event) => {
+  event && event.stopPropagation();
+  setEditorState(RichUtils.onTab(event, editorState, 4));
 };
