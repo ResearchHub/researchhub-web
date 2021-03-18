@@ -11,7 +11,7 @@ import {
   formatBase64ToEditorState,
   formatRawJsonToEditorState,
 } from "./util/PaperDraftUtils";
-import { inlineCommentBlockRenderer } from "../PaperDraftInlineComment/util/paperDraftInlineCommentUtil";
+import { getInlineCommentBlockRenderer } from "../PaperDraftInlineComment/util/paperDraftInlineCommentUtil";
 import WaypointSection from "./WaypointSection";
 import PaperDraft from "./PaperDraft";
 
@@ -133,7 +133,7 @@ function PaperDraftContainer({
     <div>
       <PaperDraft
         textEditorProps={{
-          blockRendererFn: inlineCommentBlockRenderer,
+          blockRendererFn: getInlineCommentBlockRenderer(null),
           blockStyleFn: getBlockStyleFn,
           editorState,
           handleKeyCommand: getHandleKeyCommand({
