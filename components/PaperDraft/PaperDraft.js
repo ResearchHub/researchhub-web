@@ -132,7 +132,6 @@ class PaperDraft extends React.Component {
       paperDraftExists,
     } = this.props;
     const { isReadOnly, isSaving } = this.state;
-    console.warn("isReadOnly : ", isReadOnly);
     return (
       <ReactPlaceholder
         ready={!isFetching}
