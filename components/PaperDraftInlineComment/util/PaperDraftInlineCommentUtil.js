@@ -5,6 +5,26 @@ export const INLINE_COMMENT_MAP = {
   CSS: "RichEditor-inline-comment", // interpreted in paper.css
 };
 
+export const formatBlockStyleToggle = ({
+  selectionBlockTypes,
+  toggledStyle,
+}) => {
+  const newSelectionBlock = [...selectionBlockTypes];
+  // if (toggledStyle !== INLINE_COMMENT_MAP.CLASS_NAME) {
+  //   return selectionBlockTypes.push;
+  // } else {
+  const targetStyleInd = newSelectionBlock.indexOf(toggledStyle);
+  if (targetStyleInd >= 0) {
+    newSelectionBlock.splice(targetStyleInd, 1);
+  } else {
+    newSelectionBlock.push(toggledStyle);
+  }
+  return newSelectionBlock.length > 0
+    ? newSelectionBlock.join(" ")
+    : "unstyled";
+  // }
+};
+
 export const getInlineCommentBlockRenderer = ({
   inlineComments,
   setInlineComments,
