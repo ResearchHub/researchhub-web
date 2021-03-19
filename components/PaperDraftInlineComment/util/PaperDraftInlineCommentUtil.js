@@ -10,7 +10,7 @@ export const INLINE_COMMENT_MAP = {
   TYPE_KEY: "RichEditor-research-hub-inline-comment", // interpreted in paper.css
 };
 
-export const formatBlockStyleToggle = ({
+export const handleBlockStyleToggle = ({
   selectionBlockTypes = new Set(),
   toggledStyle,
 }) => {
@@ -23,8 +23,11 @@ export const formatBlockStyleToggle = ({
 
   removeUnstyled(newSelectionBlockTypes);
   if (toggledStyle !== INLINE_COMMENT_MAP.TYPE_KEY) {
+    // the reason for doing this as below is because block types can directly from pdf parse or post edit
     newSelectionBlockTypes.has(toggledStyle)
       ? newSelectionBlockTypes.delete(toggledStyle)
+      : newSelectionBlockTypes.has(draftCssToCustomCss[toggledStyle])
+      ? newSelectionBlockTypes.delete(draftCssToCustomCss[toggledStyle])
       : newSelectionBlockTypes.add(
           draftCssToCustomCss[toggledStyle] ?? toggledStyle
         );
@@ -38,7 +41,7 @@ export const formatBlockStyleToggle = ({
     newSelectionBlockTypes.size === 1 &&
       newSelectionBlockTypes.add(draftCssToCustomCss.unstyled);
   }
-
+  console.warn("newSelectionBlockTypes: ", newSelectionBlockTypes);
   return newSelectionBlockTypes.size > 0
     ? newSelectionBlockTypes
     : newSelectionBlockTypes.add("unstyled");
