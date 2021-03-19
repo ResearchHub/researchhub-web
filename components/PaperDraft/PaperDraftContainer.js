@@ -104,12 +104,14 @@ function PaperDraftContainer({
   setPaperDraftExists,
   setPaperDraftSections,
 }) {
-  const [isFetching, setIsFetching] = useState(true);
-  const [seenEntityKeys, setSeenEntityKeys] = useState({});
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [initEditorState, setInitEditorState] = useState(
     EditorState.createEmpty()
   );
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [inlineComments, setInlineComments] = useState([]);
+  const [isFetching, setIsFetching] = useState(true);
+  const [seenEntityKeys, setSeenEntityKeys] = useState({});
+
   const decorator = useMemo(
     () => getDecorator({ seenEntityKeys, setSeenEntityKeys, setActiveSection }),
     [seenEntityKeys, setSeenEntityKeys, setActiveSection]
@@ -129,11 +131,15 @@ function PaperDraftContainer({
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
+  const inlineCommentBlockRenderer = useMemo(() => {
+    getInlineCommentBlockRenderer({ inlineComments, setInlineComments });
+  }, [inlineComments, setInlineComments]);
+
   return (
     <div>
       <PaperDraft
         textEditorProps={{
-          blockRendererFn: getInlineCommentBlockRenderer(null),
+          blockRendererFn: inlineCommentBlockRenderer,
           blockStyleFn: getBlockStyleFn,
           editorState,
           handleKeyCommand: getHandleKeyCommand({

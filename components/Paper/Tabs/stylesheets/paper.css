@@ -3,40 +3,54 @@
 }
 
 .RichEditor-h1 {
-  font-weight: 500;
-  font-size: 20px;
   display: inline-block;
-  line-height: 2;
   font-family: Roboto;
-  width: 100%;
-  white-space: normal;
-  padding: 0;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 2;
   margin: 0;
+  padding: 0;
+  white-space: normal;
+  width: 100%;
 }
 
 .RichEditor-h2 {
-  font-weight: 500;
-  font-size: 16px;
   display: inline-block;
-  line-height: 2;
   font-family: Roboto;
-  width: 100%;
-  white-space: normal;
-  padding: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 2;
   margin: 0;
+  padding: 0;
+  white-space: normal;
+  width: 100%;
 }
 
 .RichEditor-p {
-  display: inline;
-  padding: 0;
-  margin: 0;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 2;
   box-sizing: border-box;
-  white-space: normal;
-  font-family: CharterBT;
   color: rgb(36, 31, 58);
+  display: inline;
+  font-family: CharterBT;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 2;
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+}
+
+.RichEditor-inline-comment {
+  background-color: rgb(100, 196, 143);
+  box-sizing: inherit;
+  color: inherit;
+  display: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  margin: 0;
+  padding: 0;
+  white-space: inherit;
 }
 
 @media only screen and (max-width: 967px) {

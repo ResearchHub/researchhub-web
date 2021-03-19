@@ -1,4 +1,4 @@
-import { INLINE_COMMENT_KEYS } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import { INLINE_COMMENT_MAP } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
 import React from "react";
 import StyleButton from "./StyleButton";
@@ -13,7 +13,7 @@ const BLOCK_TYPES = [
   { label: "OL", style: "ordered-list-item" },
   {
     label: "Comment",
-    style: INLINE_COMMENT_KEYS.RESEARCH_HUB_PAPER_INLINE_COMMENT,
+    style: INLINE_COMMENT_MAP.CLASS_NAME,
   },
 ];
 
