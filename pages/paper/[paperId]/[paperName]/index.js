@@ -17,6 +17,7 @@ import InlineCommentThreadsDisplayBar from "~/components/InlineCommentDisplay/In
 import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperPageCard from "~/components/PaperPageCard";
+import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
 import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
@@ -599,6 +600,8 @@ const Paper = (props) => {
               </div>
             ) : (
               <React.Fragment>
+                <PaperPreview paper={paper} paperId={paperId} />
+
                 <PaperSideColumn
                   authors={getAllAuthors()}
                   paper={paper}
