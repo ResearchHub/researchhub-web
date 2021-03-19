@@ -1,22 +1,27 @@
-import React from "react";
+import { formatBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
-
+import React, { useMemo } from "react";
 // Config
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const StyleButton = (props) => {
-  const { onClick, label, active, style } = props;
-
+  const { style, label, onClick, selectionBlockTypes = [] } = props;
   const onToggle = (event) => {
     event.stopPropagation();
-    onClick(style);
+    const newStyle = formatBlockStyleToggle({
+      selectionBlockTypes,
+      toggledStyle: style,
+    });
+    onClick(newStyle);
   };
-
-  const className = [styles.button, active && styles.active];
-
+  const isStyleActive = useMemo(() => selectionBlockTypes.includes(style), [
+    selectionBlockTypes,
+    style,
+  ]);
   return (
-    <span className={css(className)} onClick={onToggle}>
+    <span
+      className={css([styles.button, isStyleActive && styles.active])}
+      onClick={onToggle}
+    >
       {label}
     </span>
   );

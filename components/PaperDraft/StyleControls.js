@@ -7,8 +7,8 @@ import StyleButton from "./StyleButton";
 import colors from "~/config/themes/colors";
 
 const BLOCK_TYPES = [
-  { label: "H1", style: "header-one" },
-  { label: "H2", style: "header-two" },
+  { label: "H1", style: "RichEditor-h1" },
+  { label: "H2", style: "RichEditor-h2" },
   { label: "UL", style: "unordered-list-item" },
   { label: "OL", style: "ordered-list-item" },
   {
@@ -27,28 +27,30 @@ const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
   const selection = editorState.getSelection();
 
-  const selectedBlockType = editorState
+  // selected block can have multiple block types which translates to css class
+  const selectionBlockTypes = editorState
     .getCurrentContent()
     .getBlockForKey(selection.getStartKey())
-    .getType();
-
-  const currentStyle = editorState.getCurrentInlineStyle();
-  const blockStyleButtons = BLOCK_TYPES.map((type) => (
+    .getType()
+    .split(" ");
+  const blockStyleButtons = BLOCK_TYPES.map(({ label, style }) => (
     <StyleButton
-      key={type.label}
-      active={type.style === selectedBlockType}
-      label={type.label}
-      style={type.style}
+      key={label}
+      label={label}
       onClick={onClickBlock}
+      selectionBlockTypes={selectionBlockTypes}
+      style={style}
     />
   ));
-  const inlineStylebuttons = INLINE_STYLES.map((type) => (
+
+  const currentInlineStyle = editorState.getCurrentInlineStyle();
+  const inlineStylebuttons = INLINE_STYLES.map(({ label, style }) => (
     <StyleButton
-      key={type.label}
-      active={currentStyle.has(type.style)}
-      label={type.label}
-      style={type.style}
+      active={currentInlineStyle.has(style)}
+      key={label}
+      label={label}
       onClick={onClickInline}
+      style={style}
     />
   ));
   return (
