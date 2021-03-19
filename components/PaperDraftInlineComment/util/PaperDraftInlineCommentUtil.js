@@ -7,38 +7,38 @@ const removeUnstyled = (styleSet) => {
 };
 
 export const INLINE_COMMENT_MAP = {
-  DRAFT_JS: "research-hub-inline-comment",
-  PAPER_DRAFT: "RichEditor-inline-comment", // interpreted in paper.css
+  TYPE_KEY: "RichEditor-research-hub-inline-comment", // interpreted in paper.css
 };
 
 export const formatBlockStyleToggle = ({
   selectionBlockTypes = new Set(),
   toggledStyle,
 }) => {
+  /* WE NEED TO MAKE SURE THAT ANY ADDITIONS TO THE SET IN THIS FUNCTION NEEDS TO BE THE CUSTOM CSS */
   const newSelectionBlockTypes = new Set(selectionBlockTypes);
   const styleSetSize = newSelectionBlockTypes.size;
-  console.warn("before: ", newSelectionBlockTypes);
   if (styleSetSize === 0) {
     return toggledStyle;
   }
 
   removeUnstyled(newSelectionBlockTypes);
-  console.warn("remove unstyle: ", newSelectionBlockTypes);
-
-  if (toggledStyle !== INLINE_COMMENT_MAP.DRAFT_JS) {
+  if (toggledStyle !== INLINE_COMMENT_MAP.TYPE_KEY) {
     newSelectionBlockTypes.has(toggledStyle)
       ? newSelectionBlockTypes.delete(toggledStyle)
-      : newSelectionBlockTypes.add(toggledStyle);
+      : newSelectionBlockTypes.add(
+          draftCssToCustomCss[toggledStyle] ?? toggledStyle
+        );
   }
 
-  if (toggledStyle === INLINE_COMMENT_MAP.DRAFT_JS) {
+  if (toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY) {
     // TODO: calvinhlee add delete inline comment logic here
-    newSelectionBlockTypes.add(toggledStyle);
+    newSelectionBlockTypes.add(
+      draftCssToCustomCss[toggledStyle] ?? toggledStyle
+    );
     newSelectionBlockTypes.size === 1 &&
       newSelectionBlockTypes.add(draftCssToCustomCss.unstyled);
   }
 
-  console.warn("return: ", newSelectionBlockTypes);
   return newSelectionBlockTypes.size > 0
     ? newSelectionBlockTypes
     : newSelectionBlockTypes.add("unstyled");
@@ -49,14 +49,11 @@ export const getInlineCommentBlockRenderer = ({
   setInlineComments,
 }) => (contentBlock) => {
   const type = contentBlock.getType();
-  switch (type) {
-    case INLINE_COMMENT_KEYS.DRAFT_JS:
-      return {
+  return contentBlock.split(" ").has(INLINE_COMMENT_KEYS.TYPE_KEY)
+    ? {
         component: PaperDraftInlineCommentTextWrap,
         editable: false,
-        props: { inlineComments, setInlineComments },
-      };
-    default:
-      return undefined; /* intentional undefined for DraftJS to handle */
-  }
+        props: { inlineComments, setInlineComments, styles: contentBlock },
+      }
+    : undefined; /* intentional undefined for DraftJS to handle */
 };
