@@ -25,22 +25,11 @@ const INLINE_STYLES = [
 
 const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
-  const selection = editorState.getSelection();
-
-  // selected block can have multiple block types which translates to css class
-  const selectionBlockTypes = new Set(
-    editorState
-      .getCurrentContent()
-      .getBlockForKey(selection.getStartKey())
-      .getType()
-      .split(" ")
-  );
   const blockStyleButtons = BLOCK_TYPES.map(({ label, style }) => (
     <StyleButton
       key={label}
       label={label}
-      onClick={onClickBlock}
-      selectionBlockTypes={selectionBlockTypes}
+      onClick={onClickBlock(style)}
       style={style}
     />
   ));

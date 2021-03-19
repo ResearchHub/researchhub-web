@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
 import { convertToRaw, Editor, RichUtils } from "draft-js";
+import { formatBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
 import React from "react";
 import ReactPlaceholder from "react-placeholder/lib";
-
-import { MessageActions } from "~/redux/message";
 
 // Components
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
@@ -41,11 +41,32 @@ class PaperDraft extends React.Component {
     });
   };
 
-  toggleBlockType = (targetBlockType) => {
+  toggleBlockType = (toggledBlockType) => (event) => {
+    event.stopPropagation();
     const {
       textEditorProps: { editorState, onChange },
     } = this.props;
-    onChange(RichUtils.toggleBlockType(editorState, targetBlockType));
+
+    // selected block can have multiple block types which translates to css class
+    const selection = editorState.getSelection();
+    const selectionBlockTypes = new Set(
+      editorState
+        .getCurrentContent()
+        .getBlockForKey(selection.getStartKey())
+        .getType()
+        .split(" ")
+    );
+    const newSlectionBlockTypes = formatBlockStyleToggle({
+      selectionBlockTypes,
+      toggledStyle: toggledBlockType,
+    });
+
+    onChange(
+      RichUtils.toggleBlockType(
+        editorState,
+        Array.from(newSlectionBlockTypes).join(" ")
+      )
+    );
   };
 
   toggleInlineStyle = (inlineStyle) => {
