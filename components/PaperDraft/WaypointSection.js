@@ -8,7 +8,6 @@ import icons from "~/config/themes/icons";
 
 const WaypointSection = (props) => {
   const { contentState, entityKey, onSectionEnter, children } = props;
-
   const sectionInstance = contentState.getEntity(entityKey);
   const { name, index } = sectionInstance.getData();
   return (

@@ -149,7 +149,7 @@ export const formatBase64ToEditorState = (payload) => {
     onSuccess({ sections: sectionTitles });
     return newEditorState;
   } catch (error) {
-    onError("formatBase64ToEditorState: ", error.toString());
+    onError("formatBase64ToEditorState: ", error);
   }
 };
 
@@ -169,6 +169,6 @@ export const formatRawJsonToEditorState = (payload) => {
     onSuccess({ sections });
     return newEditorState;
   } catch (error) {
-    onError("formatRawJsonToEditorState: ", error.toString());
+    onError("formatRawJsonToEditorState: ", error);
   }
 };
