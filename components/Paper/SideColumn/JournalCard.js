@@ -43,7 +43,16 @@ const JournalCard = (props) => {
             {capitalize(externalSource)}
           </span>
         )}
-        {url && <span className={css(styles.url) + " clamp1 url"}>{url}</span>}
+        {url && (
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer noopener"
+            className={css(styles.url) + " clamp1 url"}
+          >
+            {"View Original"}
+          </a>
+        )}
       </div>
     </a>
   );
@@ -113,6 +122,8 @@ const styles = StyleSheet.create({
     display: "inline-block",
     textOverflow: "ellipsis",
     color: colors.BLUE(),
+    textDecoration: "unset",
+    fontWeight: 500,
     ":hover": {
       cursor: "pointer",
       textDecoration: "underline",
