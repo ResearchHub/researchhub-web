@@ -48,12 +48,12 @@ export const getInlineCommentBlockRenderer = ({
   inlineComments,
   setInlineComments,
 }) => (contentBlock) => {
-  const type = contentBlock.getType();
-  return contentBlock.split(" ").has(INLINE_COMMENT_KEYS.TYPE_KEY)
+  const blockTypes = contentBlock.getType().split(" ");
+  return blockTypes.includes(INLINE_COMMENT_MAP.TYPE_KEY)
     ? {
         component: PaperDraftInlineCommentTextWrap,
         editable: false,
-        props: { inlineComments, setInlineComments, styles: contentBlock },
+        props: { inlineComments, setInlineComments, cssClassNames: blockTypes },
       }
     : undefined; /* intentional undefined for DraftJS to handle */
 };
