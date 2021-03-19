@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Helpers } from "@quantfive/js-web-config";
 import { fetchPaperDraft } from "~/config/fetch";
 import { CompositeDecorator, EditorState } from "draft-js";
@@ -131,9 +131,10 @@ function PaperDraftContainer({
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
-  const inlineCommentBlockRenderer = useMemo(() => {
+  const inlineCommentBlockRenderer =
+    // useMemo(() => {
     getInlineCommentBlockRenderer({ inlineComments, setInlineComments });
-  }, [inlineComments, setInlineComments]);
+  // }, [inlineComments, setInlineComments]);
 
   return (
     <div>
@@ -155,7 +156,6 @@ function PaperDraftContainer({
           setInitEditorState,
           spellCheck: true,
         }}
-        // toggleBlockType={}
         isFetching={isFetching}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
         paperDraftExists={paperDraftExists}

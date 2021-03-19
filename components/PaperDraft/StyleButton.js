@@ -5,14 +5,6 @@ import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
 
 const StyleButton = (props) => {
   const { style, label, onClick, selectionBlockTypes = new Set() } = props;
-  const onToggle = (event) => {
-    event.stopPropagation();
-    const newSlectionBlockTypes = formatBlockStyleToggle({
-      selectionBlockTypes,
-      toggledStyle: style,
-    });
-    onClick(Array.from(newSlectionBlockTypes).join(" "));
-  };
   const isStyleActive = useMemo(
     () =>
       selectionBlockTypes.has(style) ||
@@ -22,7 +14,7 @@ const StyleButton = (props) => {
   return (
     <span
       className={css([styles.button, isStyleActive && styles.active])}
-      onClick={onToggle}
+      onClick={onClick}
     >
       {label}
     </span>

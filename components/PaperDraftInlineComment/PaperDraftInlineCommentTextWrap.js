@@ -1,11 +1,11 @@
 import React from "react";
 
 function PaperDraftInlineCommentTextWrap(props) {
-  return (
-    <React.Fragment className={props.styles ?? "" /* see paper.css*/}>
-      {props.block.text}
-    </React.Fragment>
-  );
+  const { block = {}, blockProps = {} } = props ?? {};
+  const { text: blockText } = block;
+  const { cssClassNames = "" } = blockProps;
+  console.warn("props: ", props);
+  return <p className={"RichEditor-h2" /* see paper.css*/}>{blockText}</p>;
 }
 
 export default PaperDraftInlineCommentTextWrap;
