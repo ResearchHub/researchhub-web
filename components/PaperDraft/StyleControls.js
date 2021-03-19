@@ -1,6 +1,5 @@
-import React from "react";
 import { StyleSheet, css } from "aphrodite";
-
+import React from "react";
 import StyleButton from "./StyleButton";
 
 // Config
@@ -23,33 +22,34 @@ const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
   const selection = editorState.getSelection();
 
-  const blockType = editorState
+  const selectedBlockType = editorState
     .getCurrentContent()
     .getBlockForKey(selection.getStartKey())
     .getType();
 
   const currentStyle = editorState.getCurrentInlineStyle();
-
+  const blockStyleButtons = BLOCK_TYPES.map((type) => (
+    <StyleButton
+      key={type.label}
+      active={type.style === selectedBlockType}
+      label={type.label}
+      style={type.style}
+      onClick={onClickBlock}
+    />
+  ));
+  const inlineStylebuttons = INLINE_STYLES.map((type) => (
+    <StyleButton
+      key={type.label}
+      active={currentStyle.has(type.style)}
+      label={type.label}
+      style={type.style}
+      onClick={onClickInline}
+    />
+  ));
   return (
     <div className={css(styles.root)}>
-      {BLOCK_TYPES.map((type) => (
-        <StyleButton
-          key={type.label}
-          active={type.style === blockType}
-          label={type.label}
-          style={type.style}
-          onClick={onClickBlock}
-        />
-      ))}
-      {INLINE_STYLES.map((type) => (
-        <StyleButton
-          key={type.label}
-          active={currentStyle.has(type.style)}
-          label={type.label}
-          style={type.style}
-          onClick={onClickInline}
-        />
-      ))}
+      {blockStyleButtons}
+      {inlineStylebuttons}
     </div>
   );
 };
