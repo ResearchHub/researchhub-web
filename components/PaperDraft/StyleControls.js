@@ -13,7 +13,7 @@ const BLOCK_TYPES = [
   { label: "OL", style: "ordered-list-item" },
   {
     label: "Comment",
-    style: INLINE_COMMENT_MAP.DRAFT_JS,
+    style: INLINE_COMMENT_MAP.TYPE_KEY,
   },
 ];
 

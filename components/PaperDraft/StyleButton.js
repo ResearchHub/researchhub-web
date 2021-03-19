@@ -1,7 +1,7 @@
 import { formatBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
 import React, { useMemo } from "react";
-// Config
+import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
 
 const StyleButton = (props) => {
   const { style, label, onClick, selectionBlockTypes = new Set() } = props;
@@ -11,13 +11,14 @@ const StyleButton = (props) => {
       selectionBlockTypes,
       toggledStyle: style,
     });
-    console.warn("YOYOY", Array.from(newSlectionBlockTypes).join(" "));
     onClick(Array.from(newSlectionBlockTypes).join(" "));
   };
-  const isStyleActive = useMemo(() => selectionBlockTypes.has(style), [
-    selectionBlockTypes,
-    style,
-  ]);
+  const isStyleActive = useMemo(
+    () =>
+      selectionBlockTypes.has(style) ||
+      selectionBlockTypes.has(draftCssToCustomCss[style] ?? ""),
+    [selectionBlockTypes, style]
+  );
   return (
     <span
       className={css([styles.button, isStyleActive && styles.active])}
