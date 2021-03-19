@@ -15,7 +15,7 @@ const WaypointSection = (props) => {
         topOffset={40}
         bottomOffset={"95%"}
       >
-        <a name={name}>{children}</a>
+        <a name={name.toUpperCase()}>{children}</a>
       </Waypoint>
     </div>
   );
