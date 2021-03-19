@@ -4,16 +4,17 @@ import React, { useMemo } from "react";
 // Config
 
 const StyleButton = (props) => {
-  const { style, label, onClick, selectionBlockTypes = [] } = props;
+  const { style, label, onClick, selectionBlockTypes = new Set() } = props;
   const onToggle = (event) => {
     event.stopPropagation();
-    const newStyle = formatBlockStyleToggle({
+    const newSlectionBlockTypes = formatBlockStyleToggle({
       selectionBlockTypes,
       toggledStyle: style,
     });
-    onClick(newStyle);
+    console.warn("YOYOY", Array.from(newSlectionBlockTypes).join(" "));
+    onClick(Array.from(newSlectionBlockTypes).join(" "));
   };
-  const isStyleActive = useMemo(() => selectionBlockTypes.includes(style), [
+  const isStyleActive = useMemo(() => selectionBlockTypes.has(style), [
     selectionBlockTypes,
     style,
   ]);

@@ -6,7 +6,7 @@ export const draftCssToCustomCss = {
   "header-two": "RichEditor-h2",
   paragraph: "RichEditor-p",
   unstyled: "RichEditor-p",
-  [INLINE_COMMENT_MAP.CLASS_NAME]: INLINE_COMMENT_MAP.CSS,
+  [INLINE_COMMENT_MAP.DRAFT_JS]: INLINE_COMMENT_MAP.PAPER_DRAFT,
 };
 
 export const getBlockStyleFn = (block) => {
