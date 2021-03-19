@@ -17,6 +17,7 @@ import InlineCommentThreadsDisplayBar from "~/components/InlineCommentDisplay/In
 import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperPageCard from "~/components/PaperPageCard";
+import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
 import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
@@ -503,7 +504,9 @@ const Paper = (props) => {
                 paperDraftExists={paperDraftExists}
               />
             </div>
-            <div className={css(styles.paperPageContainer, styles.bottom)}>
+            <div
+              className={css(styles.paperPageContainer, styles.noMarginLeft)}
+            >
               <Waypoint
                 onEnter={() => onSectionEnter(1)}
                 topOffset={40}
@@ -521,6 +524,15 @@ const Paper = (props) => {
                   />
                 </a>
               </Waypoint>
+            </div>
+            <div
+              className={css(
+                styles.paperPageContainer,
+                styles.bottom,
+                styles.noMarginLeft,
+                !paperDraftExists && styles.hide
+              )}
+            >
               <Waypoint
                 onEnter={() => onSectionEnter(2)}
                 topOffset={40}
@@ -548,7 +560,7 @@ const Paper = (props) => {
               topOffset={40}
               bottomOffset={"95%"}
             >
-              <a name="discussions">
+              <a name="discussion">
                 <div className={css(styles.space)}>
                   <DiscussionTab
                     hostname={hostname}
@@ -583,6 +595,8 @@ const Paper = (props) => {
               </div>
             ) : (
               <React.Fragment>
+                <PaperPreview paper={paper} paperId={paperId} />
+
                 <PaperSideColumn
                   authors={getAllAuthors()}
                   paper={paper}
@@ -1023,17 +1037,25 @@ const styles = StyleSheet.create({
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     padding: "20px 30px 30px 90px",
     boxSizing: "border-box",
+    borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
       padding: 20,
       width: "100%",
     },
   },
+  noMarginLeft: {
+    padding: 30,
+    marginTop: 30,
+  },
   top: {
-    borderBottom: "none",
-    paddingBottom: 0,
+    // paddingBottom: 0,
+    minHeight: 208,
+    "@media only screen and (max-width: 767px)": {
+      borderBottom: "none",
+    },
   },
   bottom: {
-    borderTop: "none",
+    // borderTop: "none",
     paddingTop: 0,
   },
   componentWrapper: {
