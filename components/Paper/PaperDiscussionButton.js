@@ -14,11 +14,11 @@ const PaperDiscussionButton = ({ discussionCount, paper }) => {
 
   return (
     <a
-      href={"#discussions"}
+      href={"#discussion"}
       className={css(styles.root)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      data-tip={"View Discussions"}
+      data-tip={"View Discussion"}
     >
       <span className={css(styles.icon)}>
         <PaperDiscussionIcon color={hover && colors.NEW_BLUE()} />

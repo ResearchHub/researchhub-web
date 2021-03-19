@@ -275,13 +275,17 @@ class PaperTransactionModal extends React.Component {
         error: true,
       });
     }
-    return this.props.alert.show({
-      text: `Use ${value} RSC to support this paper?`,
-      buttonText: "Yes",
-      onClick: () => {
-        this.sendTransaction();
-      },
-    });
+
+    /** Add this back if we want confirmation message (3.18.21) */
+    // return this.props.alert.show({
+    //   text: `Use ${value} RSC to support this paper?`,
+    //   buttonText: "Yes",
+    //   onClick: () => {
+    //     this.sendTransaction();
+    //   },
+    // });
+
+    this.sendTransaction();
   };
 
   sendTransaction = () => {
