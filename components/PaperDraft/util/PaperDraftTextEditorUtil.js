@@ -1,8 +1,8 @@
 import { RichUtils } from "draft-js";
+import { INLINE_COMMENT_MAP } from "../../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 
 export const getBlockStyleFn = (block) => {
   const blockType = block.getType();
-
   switch (blockType) {
     // these are css classNames. Refer to "paper.css"
     case "header-one":
@@ -12,6 +12,8 @@ export const getBlockStyleFn = (block) => {
     case "paragraph":
     case "unstyled":
       return "RichEditor-p";
+    case INLINE_COMMENT_MAP.CLASS_NAME:
+      return INLINE_COMMENT_MAP.CSS;
     default:
       return blockType;
   }
