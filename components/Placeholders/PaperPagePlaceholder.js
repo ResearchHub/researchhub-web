@@ -16,13 +16,19 @@ const PaperPagePlaceholder = ({ color }) => {
         className={css(styles.textRow)}
         rows={1}
         color={color}
-        style={{ width: "90%" }}
+        style={{ width: "100%" }}
       />
       <TextBlock
         className={css(styles.textRow)}
         rows={1}
         color={color}
-        style={{ width: "90%" }}
+        style={{ width: "100%" }}
+      />
+      <TextBlock
+        className={css(styles.textRow, styles.paddingTop)}
+        rows={1}
+        color={color}
+        style={{ width: "100%" }}
       />
     </div>
   );
@@ -53,51 +59,48 @@ const PaperPagePlaceholder = ({ color }) => {
   );
 
   const metaRow = (width) => (
-    <div className={css(styles.row, styles.marginBottom)}>
-      <div style={{ width: 100 }}>
-        <TextBlock rows={1} color={color} style={{ width, marginRight: 20 }} />
+    <div className={css(styles.row)}>
+      <div style={{ width: "35%" }}>
+        <TextBlock
+          rows={1}
+          color={color}
+          style={{ width: "100%", paddingRight: 50 }}
+        />
       </div>
-      <TextBlock rows={1} color={color} style={{ width: "20%" }} />
+      <TextBlock
+        rows={1}
+        color={color}
+        style={{ paddingLeft: 30, width: "50%" }}
+      />
     </div>
   );
-
-  const button = (
-    <RectShape
-      color={color}
-      style={{ marginLeft: 35, width: 115, height: 31 }}
-    />
-  );
-
-  const tag = <RectShape color={color} style={{ width: 115, height: 31 }} />;
 
   return (
     <div
       className={css(styles.placeholderContainer) + " show-loading-animation"}
     >
-      {/* <RoundShape className={css(styles.round)} color={color} /> */}
-      <RectShape
-        color={color}
-        className={css(styles.tag)}
-        style={{ width: 115, height: 25 }}
-      />
+      <div className={css(styles.voteContainer)}>
+        <RoundShape
+          color={color}
+          style={{ width: 48, height: 28, marginBottom: 10 }}
+        />
+        <RoundShape
+          color={color}
+          style={{ width: 28, height: 25, marginTop: 15 }}
+        />
+        <RoundShape
+          color={color}
+          style={{ width: 28, height: 25, marginTop: 15 }}
+        />
+      </div>
       <div className={css(styles.spaceBetween)}>
         <div className={css(styles.column)}>
           {header}
-          {metaRow(81)}
-          {metaRow(60)}
-          {metaRow(75)}
-          {metaRow(58)}
+          {metaRow()}
+
           <div className={css(styles.row, styles.marginBottom, styles.bottom)}>
             {actions}
-            {button}
           </div>
-        </div>
-        <div className={css(styles.columnRight)}>
-          <RectShape
-            className={css(styles.textRow)}
-            color={color}
-            style={{ height: 154, width: 119 }}
-          />
         </div>
       </div>
     </div>
@@ -106,10 +109,10 @@ const PaperPagePlaceholder = ({ color }) => {
 
 const styles = StyleSheet.create({
   placeholderContainer: {
-    paddingTop: 30,
     width: "100%",
     height: "100%",
     position: "relative",
+    paddingTop: 10,
   },
   round: {
     width: 53,
@@ -118,13 +121,20 @@ const styles = StyleSheet.create({
     top: 32,
     left: -70,
   },
-  tag: {
+  voteContainer: {
     position: "absolute",
-    bottom: 15,
-    right: 0,
+    left: -70,
+    top: 10,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     paddingBottom: 20,
+  },
+  paddingTop: {
+    paddingTop: 8,
   },
   textRow: {},
   column: {
@@ -147,10 +157,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   marginBottom: {
-    margin: "5px 0",
+    marginBottom: 0,
   },
   bottom: {
     marginTop: 20,
+    marginBottom: 0,
   },
   space: {},
   label: {},
