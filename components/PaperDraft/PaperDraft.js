@@ -84,8 +84,7 @@ class PaperDraft extends React.Component {
     onChange(RichUtils.toggleInlineStyle(editorState, inlineStyle));
   };
 
-  toggleEdit = (_event) => {
-    _event.preventDefault();
+  toggleEdit = (_) => {
     const { isReadOnly } = this.state;
     this.setState(
       {
