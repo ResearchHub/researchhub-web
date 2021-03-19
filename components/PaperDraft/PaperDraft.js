@@ -1,6 +1,12 @@
 import { connect } from "react-redux";
-import { convertToRaw, Editor, RichUtils } from "draft-js";
-import { formatBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import {
+  convertToRaw,
+  Editor,
+  EditorState,
+  Modifier,
+  RichUtils,
+} from "draft-js";
+import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
 import React from "react";
@@ -48,25 +54,39 @@ class PaperDraft extends React.Component {
     } = this.props;
 
     // selected block can have multiple block types which translates to css class
-    const selection = editorState.getSelection();
+    const selectionState = editorState.getSelection();
     const selectionBlockTypes = new Set(
       editorState
         .getCurrentContent()
-        .getBlockForKey(selection.getStartKey())
+        .getBlockForKey(selectionState.getStartKey())
         .getType()
         .split(" ")
     );
-    const newSlectionBlockTypes = formatBlockStyleToggle({
+    const newSlectionBlockTypes = handleBlockStyleToggle({
       selectionBlockTypes,
       toggledStyle: toggledBlockType,
     });
-
-    onChange(
-      RichUtils.toggleBlockType(
-        editorState,
-        Array.from(newSlectionBlockTypes).join(" ")
-      )
+    // console.warn("NOW: ", Array.from(newSlectionBlockTypes).join(" "));
+    const currentContentState = editorState.getCurrentContent();
+    // let modifiedContentState = Modifier.setBlockData(
+    //   currentContentState,
+    //   selectionState,
+    //   Map({})
+    // );
+    const modifiedContentState = Modifier.setBlockType(
+      currentContentState,
+      selectionState,
+      Array.from(newSlectionBlockTypes).join(" ")
     );
+    // const updatedBlock = modifiedContentState.getBlockForKey(selectionStartKey);
+    const newEditorState = EditorState.push(editorState, modifiedContentState);
+    const updatedblocktype = newEditorState
+      .getCurrentContent()
+      .getBlockForKey(selectionState.getStartKey())
+      .getType();
+
+    console.warn("UPDATED BLOCK TYPE: ", updatedblocktype);
+    onChange(newEditorState);
   };
 
   toggleInlineStyle = (inlineStyle) => {

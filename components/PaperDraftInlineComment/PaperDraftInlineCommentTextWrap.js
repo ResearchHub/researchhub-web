@@ -4,8 +4,11 @@ function PaperDraftInlineCommentTextWrap(props) {
   const { block = {}, blockProps = {} } = props ?? {};
   const { text: blockText } = block;
   const { cssClassNames = "" } = blockProps;
-  console.warn("props: ", props);
-  return <p className={"RichEditor-h2" /* see paper.css*/}>{blockText}</p>;
+  cssClassNames.push(cssClassNames.shift());
+  console.warn("TYEPPSSSS: ", cssClassNames);
+  return (
+    <p className={cssClassNames.join(" ") /* see paper.css*/}>{blockText}</p>
+  );
 }
 
 export default PaperDraftInlineCommentTextWrap;
