@@ -7,13 +7,13 @@ import StyleButton from "./StyleButton";
 import colors from "~/config/themes/colors";
 
 const BLOCK_TYPES = [
-  { label: "H1", style: "RichEditor-h1" },
-  { label: "H2", style: "RichEditor-h2" },
+  { label: "H1", style: "header-one" },
+  { label: "H2", style: "header-two" },
   { label: "UL", style: "unordered-list-item" },
   { label: "OL", style: "ordered-list-item" },
   {
     label: "Comment",
-    style: INLINE_COMMENT_MAP.CLASS_NAME,
+    style: INLINE_COMMENT_MAP.DRAFT_JS,
   },
 ];
 
@@ -28,11 +28,13 @@ const BlockStyleControls = (props) => {
   const selection = editorState.getSelection();
 
   // selected block can have multiple block types which translates to css class
-  const selectionBlockTypes = editorState
-    .getCurrentContent()
-    .getBlockForKey(selection.getStartKey())
-    .getType()
-    .split(" ");
+  const selectionBlockTypes = new Set(
+    editorState
+      .getCurrentContent()
+      .getBlockForKey(selection.getStartKey())
+      .getType()
+      .split(" ")
+  );
   const blockStyleButtons = BLOCK_TYPES.map(({ label, style }) => (
     <StyleButton
       key={label}
