@@ -10,6 +10,7 @@ const WaypointSection = (props) => {
   const { contentState, entityKey, onSectionEnter, children } = props;
   const sectionInstance = contentState.getEntity(entityKey);
   const { name, index } = sectionInstance.getData();
+
   return (
     <div {...props}>
       <Waypoint
@@ -19,7 +20,7 @@ const WaypointSection = (props) => {
         topOffset={40}
         bottomOffset={"95%"}
       >
-        <a name={name}>{children}</a>
+        <a name={name.toUpperCase()}>{children}</a>
       </Waypoint>
     </div>
   );
