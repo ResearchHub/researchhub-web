@@ -169,7 +169,6 @@ export const formatRawJsonToEditorState = (payload) => {
     onSuccess({ sections });
     return newEditorState;
   } catch (error) {
-    debugger;
     onError("formatRawJsonToEditorState: ", error);
   }
 };
