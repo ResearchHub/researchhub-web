@@ -3,6 +3,11 @@ import { Helpers } from "@quantfive/js-web-config";
 import { fetchPaperDraft } from "~/config/fetch";
 import { CompositeDecorator, EditorState } from "draft-js";
 import {
+  getBlockStyleFn,
+  getHandleKeyCommand,
+  getHandleOnTab,
+} from "./util/PaperDraftTextEditorUtil";
+import {
   formatBase64ToEditorState,
   formatRawJsonToEditorState,
 } from "./util/PaperDraftUtils";
@@ -17,7 +22,7 @@ const findWayPointEntity = (seenEntityKeys, setSeenEntityKeys) => (
 ) => {
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
-    if (!seenEntityKeys[entityKey]) {
+    if (!Boolean(seenEntityKeys[entityKey])) {
       setSeenEntityKeys({ ...seenEntityKeys, [entityKey]: true });
       return (
         entityKey !== null &&
@@ -26,6 +31,67 @@ const findWayPointEntity = (seenEntityKeys, setSeenEntityKeys) => (
     }
   }, callback);
 };
+
+const getDecorator = ({
+  seenEntityKeys,
+  setActiveSection,
+  setSeenEntityKeys,
+}) =>
+  new CompositeDecorator([
+    {
+      component: (props) => (
+        <WaypointSection {...props} onSectionEnter={setActiveSection} />
+      ),
+      strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
+    },
+  ]);
+
+function paperFetchHook({
+  decorator,
+  paperId,
+  setEditorState,
+  setInitEditorState,
+  setIsFetching,
+  setPaperDraftExists,
+  setPaperDraftSections,
+}) {
+  const handleFetchSuccess = (data) => {
+    const onFormatSuccess = ({ sections }) => {
+      /* logical ordering */
+      setPaperDraftSections(sections);
+      setPaperDraftExists(true);
+      setIsFetching(false);
+    };
+    let digestibleFormat = null;
+    if (typeof data !== "string") {
+      digestibleFormat = formatRawJsonToEditorState({
+        rawJson: data,
+        decorator,
+        onSuccess: onFormatSuccess,
+      });
+    } else {
+      digestibleFormat = formatBase64ToEditorState({
+        base64: data,
+        decorator,
+        onSuccess: onFormatSuccess,
+      });
+    }
+    setInitEditorState(digestibleFormat);
+    setEditorState(digestibleFormat);
+  };
+
+  const handleFetchError = (_err) => {
+    setPaperDraftExists(false);
+    setPaperDraftSections([]);
+    setIsFetching(false);
+  };
+
+  fetchPaperDraft({ paperId })
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then(handleFetchSuccess)
+    .catch(handleFetchError);
+}
 
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 function PaperDraftContainer({
@@ -38,77 +104,49 @@ function PaperDraftContainer({
   setPaperDraftSections,
 }) {
   const [isFetching, setIsFetching] = useState(true);
+  const [seenEntityKeys, setSeenEntityKeys] = useState({});
   const [initEditorState, setInitEditorState] = useState(
     EditorState.createEmpty()
   );
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [seenEntityKeys, setSeenEntityKeys] = useState({});
-
   const decorator = useMemo(
-    () =>
-      new CompositeDecorator([
-        {
-          strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
-          component: (props) => (
-            <WaypointSection {...props} onSectionEnter={setActiveSection} />
-          ),
-        },
-      ]),
+    () => getDecorator({ seenEntityKeys, setSeenEntityKeys, setActiveSection }),
     [seenEntityKeys, setSeenEntityKeys, setActiveSection]
   );
 
-  const handleFetchSuccess = useCallback(
-    (data) => {
-      const onFormatSuccess = ({ sections }) => {
-        /* logical ordering */
-        setPaperDraftSections(sections);
-        setPaperDraftExists(true);
-        setIsFetching(false);
-      };
-      let digestibleFormat = null;
-      if (typeof data !== "string") {
-        digestibleFormat = formatRawJsonToEditorState({
-          currenEditorState: editorState,
-          rawJson: data,
-          decorator,
-          onSuccess: onFormatSuccess,
-        });
-      } else {
-        digestibleFormat = formatBase64ToEditorState({
-          base64: data,
-          decorator,
-          onSuccess: onFormatSuccess,
-        });
-      }
-      setInitEditorState(digestibleFormat);
-      setEditorState(digestibleFormat);
-    },
-    [formatBase64ToEditorState, formatRawJsonToEditorState]
+  useEffect(
+    () =>
+      paperFetchHook({
+        decorator,
+        paperId,
+        setEditorState,
+        setInitEditorState,
+        setIsFetching,
+        setPaperDraftExists,
+        setPaperDraftSections,
+      }),
+    [paperId] /* intentionally hard enforcing only on paperID. */
   );
-
-  const handleFetchError = useCallback(
-    (_err) => {
-      setPaperDraftExists(false);
-      setPaperDraftSections([]);
-      setIsFetching(false);
-    },
-    [setPaperDraftExists, setPaperDraftSections, setIsFetching]
-  );
-
-  useEffect(() => {
-    fetchPaperDraft({ paperId })
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(handleFetchSuccess)
-      .catch(handleFetchError);
-  }, [handleFetchSuccess, handleFetchError, paperId, Helpers]);
 
   return (
     <div>
       <PaperDraft
-        editorState={editorState}
-        handleEditorStateUpdate={setEditorState}
-        initEditorState={initEditorState}
+        textEditorProps={{
+          blockStyleFn: getBlockStyleFn,
+          editorState,
+          handleKeyCommand: getHandleKeyCommand({
+            editorState,
+            setEditorState,
+          }),
+          initEditorState,
+          onChange: setEditorState,
+          onTab: getHandleOnTab({
+            editorState,
+            setEditorState,
+          }),
+          setInitEditorState,
+          spellCheck: true,
+        }}
         isFetching={isFetching}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
         paperDraftExists={paperDraftExists}
