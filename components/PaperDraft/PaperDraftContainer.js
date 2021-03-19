@@ -155,6 +155,7 @@ function PaperDraftContainer({
           setInitEditorState,
           spellCheck: true,
         }}
+        // toggleBlockType={}
         isFetching={isFetching}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
         paperDraftExists={paperDraftExists}
