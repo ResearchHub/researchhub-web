@@ -301,7 +301,10 @@ const Index = (props) => {
 
   return (
     <div className={css(styles.root)}>
-      <Head />
+      <Head
+        title={"Onboard onto Researchhub"}
+        description={"Welcome to Researchhub!"}
+      />
       <div className={css(styles.titleContainer)}>
         <h1 className={css(styles.title)}>{formatStep()}</h1>
       </div>
