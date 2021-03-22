@@ -1,15 +1,9 @@
-import React, { useState, useEffect, Fragment } from "react";
-import Link from "next/link";
-import Router from "next/router";
-import { connect, useStore } from "react-redux";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 
 // Utility
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 const PaperMetadata = (props) => {
   const { active, centered, label, value, containerStyles } = props;
