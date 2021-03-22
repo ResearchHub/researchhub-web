@@ -1,3 +1,4 @@
+import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
 import { INLINE_COMMENT_MAP } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
 import React from "react";
@@ -39,7 +40,10 @@ const BlockStyleControls = (props) => {
   );
   const blockStyleButtons = BLOCK_TYPES.map(({ label, style }) => (
     <StyleButton
-      isActive={selectedBlockType.has(style)}
+      isStyleActive={
+        selectedBlockType.has(style) ||
+        selectedBlockType.has(draftCssToCustomCss[style] ?? "")
+      }
       key={label}
       label={label}
       onClick={onClickBlock(style)}
@@ -49,7 +53,7 @@ const BlockStyleControls = (props) => {
   const currentInlineStyle = editorState.getCurrentInlineStyle();
   const inlineStylebuttons = INLINE_STYLES.map(({ label, style }) => (
     <StyleButton
-      isActive={currentInlineStyle === style}
+      isStyleActive={currentInlineStyle === style}
       key={label}
       label={label}
       onClick={onClickInline(style)}
