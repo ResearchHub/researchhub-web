@@ -202,7 +202,7 @@ class SummaryTab extends React.Component {
     const { paper, setMessage, showMessage, updatePaperState } = this.props;
     showMessage({ show: true, load: true });
 
-    const abstract = this.state.abstract.replaceAll("\n", ""); // remove linebreak
+    const abstract = this.state.abstract; // remove linebreak
 
     this.props
       .patchPaper(paper.id, { abstract })
@@ -431,14 +431,10 @@ class SummaryTab extends React.Component {
         );
       }
       if (paper.abstract || abstract) {
-        const formattedAbstract = abstract && abstract.replaceAll("\n", "");
-
         return (
           <Fragment>
             {readOnly && !editAbstract && (
-              <div className={css(styles.abstractContainer)}>
-                {formattedAbstract}
-              </div>
+              <div className={css(styles.abstractContainer)}>{abstract}</div>
             )}
           </Fragment>
         );
@@ -740,7 +736,7 @@ var styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     fontFamily: "CharterBT",
-    whiteSpace: "normal",
+    whiteSpace: "pre-wrap",
     "@media only screen and (max-width: 967px)": {
       fontSize: 14,
       width: "100%",
