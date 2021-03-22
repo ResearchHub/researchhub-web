@@ -33,6 +33,9 @@ import VoteActions from "~/redux/vote";
 import { LimitationsActions } from "~/redux/limitations";
 import { BulletActions } from "~/redux/bullets";
 
+// Undux
+import InlineCommentUnduxStore from "~/components/PaperDraftInlineComment/undux/InlineCommentUnduxStore.ts";
+
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import {
@@ -94,6 +97,9 @@ const Paper = (props) => {
   const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
   const [activeSection, setActiveSection] = useState(0); // paper draft sections
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
+
+  // TODO: calvinhlee - add a fetch hook for exiting inline-comments
+  const [inlineComments, setInlineComments] = useState([]);
 
   const [steps, setSteps] = useState([
     {
@@ -527,11 +533,13 @@ const Paper = (props) => {
                     paperDraftSections={paperDraftSections}
                   />
                   <PaperDraftContainer
+                    inlineComments={inlineComments}
                     isViewerAllowedToEdit={isModerator}
                     paperDraftExists={paperDraftExists}
                     paperDraftSections={paperDraftSections}
                     paperId={paperId}
                     setActiveSection={setActiveSection}
+                    setInlineComments={setInlineComments}
                     setPaperDraftExists={setPaperDraftExists}
                     setPaperDraftSections={setPaperDraftSections}
                   />
@@ -671,6 +679,14 @@ Paper.getInitialProps = async (ctx) => {
   }
   props = { hostname, paper, fetchedPaper };
   return props;
+};
+
+const PaperWithInlineUndux = (props) => {
+  return (
+    <InlineCommentUnduxStore.Container>
+      <Paper {...props} />
+    </InlineCommentUnduxStore.Container>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -1045,4 +1061,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Paper);
+)(PaperWithInlineUndux);

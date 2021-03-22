@@ -7350,6 +7350,11 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
+rxjs-observable@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/rxjs-observable/-/rxjs-observable-0.0.7.tgz#12d37a52e60f1ed0660838fdc44a94eb23c373ba"
+  integrity sha512-aB3nxdX34jbr+83d2b/OERp/96EKSfx0hns06Tt5Gji49AxIPL/D+RV4+jjolPWW3fxArEi3phOEDx9l+RiCLA==
+
 rxjs@^5.0.0-beta.11:
   version "5.5.12"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.12.tgz#6fa61b8a77c3d793dbaf270bee2f43f652d741cc"
@@ -8171,6 +8176,13 @@ typedarray@^0.0.6:
 ua-parser-js@^0.7.18, ua-parser-js@^0.7.19, ua-parser-js@^0.7.20:
   version "0.7.21"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.21.tgz#853cf9ce93f642f67174273cc34565ae6f308777"
+
+undux@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/undux/-/undux-5.2.0.tgz#dadc1c1320e6af6171dbbd79a600f979149612aa"
+  integrity sha512-oL5vfOodRtuVG0GfQbD/d0t/sjlRwqLoffHbDnaUtARRKu7BV0UHOvbBjdC/B60OvjYztg1VUAOFz4TQHGYU7Q==
+  dependencies:
+    rxjs-observable "^0.0.7"
 
 unfetch@^4.0.0:
   version "4.1.0"
