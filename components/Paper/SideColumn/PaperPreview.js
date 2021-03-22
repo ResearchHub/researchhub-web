@@ -64,6 +64,13 @@ const PaperPreview = (props) => {
             slide={slideIndex}
           />
         ) : null}
+<<<<<<< HEAD
+=======
+        {/* <div className={css(styles.blur)} onClick={toggleLightbox} /> */}
+        {/* <div className={css(styles.buttonContainer)}>
+          <Button label={"Read Paper"} onClick={() => toggleLightbox()} />
+        </div> */}
+>>>>>>> 123ca4b4 (moving paper preview inside the card)
       </ReactPlaceholder>
     </ColumnContainer>
   );
