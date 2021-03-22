@@ -47,14 +47,18 @@ export const handleBlockStyleToggle = ({
 
 export const getInlineCommentBlockRenderer = ({
   inlineComments,
-  setInlineComments,
+  updateInlineComment,
 }) => (contentBlock) => {
   const blockTypes = contentBlock.getType().split(" ");
   return blockTypes.includes(INLINE_COMMENT_MAP.TYPE_KEY)
     ? {
         component: PaperDraftInlineCommentTextWrap,
         editable: true,
-        props: { inlineComments, setInlineComments, cssClassNames: blockTypes },
+        props: {
+          inlineComments,
+          updateInlineComment,
+          cssClassNames: blockTypes,
+        },
       }
     : undefined; /* intentional undefined for DraftJS to handle */
 };
