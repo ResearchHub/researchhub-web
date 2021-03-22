@@ -12,7 +12,7 @@ import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import { fetchPaperFigures } from "~/config/fetch";
 
 const PaperPreview = (props) => {
-  const { paperId, paper } = props;
+  const { paperId } = props;
   const [slideIndex, setSlideIndex] = useState(1);
   const [figureUrls, setFigureUrls] = useState([]);
   const [lightbox, setLightbox] = useState(false);
@@ -20,7 +20,7 @@ const PaperPreview = (props) => {
 
   useEffect(() => {
     fetchFigures();
-  }, [paperId, paper]);
+  }, [paperId]);
 
   const fetchFigures = () => {
     if (paperId) {
@@ -37,19 +37,6 @@ const PaperPreview = (props) => {
     setLightbox(!lightbox);
   };
 
-  const renderLightbox = () => {
-    return (
-      figureUrls.length > 0 && (
-        <FsLightbox
-          toggler={lightbox}
-          type="image"
-          sources={figureUrls}
-          slide={slideIndex}
-        />
-      )
-    );
-  };
-
   return (
     <ColumnContainer
       overrideStyles={
@@ -61,19 +48,26 @@ const PaperPreview = (props) => {
         showLoadingAnimation
         customPlaceholder={<PreviewPlaceholder color="#efefef" />}
       >
-        {figureUrls.length > 0 && (
+        {figureUrls.length > 0 ? (
           <img
             src={figureUrls[0]}
             onClick={toggleLightbox}
             className={css(styles.preview)}
             property="image"
           />
-        )}
-        {renderLightbox()}
-        <div className={css(styles.blur)} onClick={toggleLightbox} />
-        <div className={css(styles.buttonContainer)}>
+        ) : null}
+        {figureUrls.length > 0 ? (
+          <FsLightbox
+            toggler={lightbox}
+            type="image"
+            sources={figureUrls}
+            slide={slideIndex}
+          />
+        ) : null}
+        {/* <div className={css(styles.blur)} onClick={toggleLightbox} /> */}
+        {/* <div className={css(styles.buttonContainer)}>
           <Button label={"Read Paper"} onClick={() => toggleLightbox()} />
-        </div>
+        </div> */}
       </ReactPlaceholder>
     </ColumnContainer>
   );
@@ -81,26 +75,22 @@ const PaperPreview = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
     position: "relative",
     cursor: "pointer",
+    width: "unset",
+    marginLeft: "auto",
+
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   hidden: {
     display: "none",
   },
   preview: {
-    width: "100%",
-    height: 250,
+    width: 80,
+    height: 90,
     objectFit: "contain",
-  },
-  blur: {
-    background:
-      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 86.38%)",
-    height: "100%",
-    position: "absolute",
-    zIndex: 3,
-    top: 0,
-    width: "100%",
   },
   buttonContainer: {
     width: "100%",

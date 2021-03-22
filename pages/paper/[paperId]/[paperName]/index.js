@@ -726,21 +726,23 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   container: {
-    display: "table",
-    width: "80%",
     marginLeft: "auto",
     marginRight: "auto",
     boxSizing: "border-box",
     borderCollapse: "separate",
     borderSpacing: "30px 40px",
-    "@media only screen and (max-width: 1200px)": {
-      width: "100%",
-    },
     "@media only screen and (max-width: 767px)": {
       width: "100%",
       borderSpacing: "0",
       display: "flex",
       flexDirection: "column",
+    },
+    "@media only screen and (min-width: 768px)": {
+      display: "flex",
+    },
+    "@media only screen and (min-width: 1024px)": {
+      width: "80%",
+      display: "table",
     },
   },
   inlineSticky: {
@@ -749,14 +751,21 @@ const styles = StyleSheet.create({
   },
   sidebar: {
     display: "table-cell",
-    minWidth: 250,
-    maxWidth: 280,
-    width: 280,
     boxSizing: "border-box",
     verticalAlign: "top",
     position: "relative",
     "@media only screen and (max-width: 767px)": {
       display: "none",
+    },
+    "@media only screen and (min-width: 768px)": {
+      width: "20%",
+      marginLeft: 16,
+    },
+    "@media only screen and (min-width: 1024px)": {
+      minWidth: 250,
+      maxWidth: 280,
+      width: 280,
+      marginLeft: 0,
     },
   },
   main: {
@@ -765,6 +774,13 @@ const styles = StyleSheet.create({
     position: "relative",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
+    },
+    "@media only screen and (min-width: 768px)": {
+      width: "80%",
+    },
+    "@media only screen and (min-width: 1024px)": {
+      width: "unset",
+      maxWidth: 900,
     },
   },
   contentContainer: {
