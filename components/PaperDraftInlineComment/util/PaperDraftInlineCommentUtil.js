@@ -55,9 +55,9 @@ export const getInlineCommentBlockRenderer = ({
         component: PaperDraftInlineCommentTextWrap,
         editable: true,
         props: {
+          cssClassNames: blockTypes,
           inlineComments,
           updateInlineComment,
-          cssClassNames: blockTypes,
         },
       }
     : undefined; /* intentional undefined for DraftJS to handle */

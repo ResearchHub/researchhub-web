@@ -1,8 +1,9 @@
 import { Store, createConnectedStore } from "undux";
 
+/* TODO: calvinhlee inline-comment current can be in any form. 
+   Update this when format is solidified */
 export type InlineComment = { index: number };
 export type State = {
-  // TODO: calvinhlee inline-comment current can be in any form. Update this when format is solidified
   inlineComments: Array<InlineComment>;
 };
 export type InlineCommentStore = Store<State>;
