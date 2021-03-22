@@ -16,6 +16,8 @@ export const handleBlockStyleToggle = ({
 }) => {
   /* WE NEED TO MAKE SURE THAT ANY ADDITIONS TO THE SET IN THIS FUNCTION NEEDS TO BE THE CUSTOM CSS */
   let newSelectionBlockTypes = null;
+
+  /* TODO: calvinhlee - optimize below with comment removal plan*/
   if (toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY) {
     newSelectionBlockTypes = new Set([...selectionBlockTypes]);
     if (!selectionBlockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY)) {
