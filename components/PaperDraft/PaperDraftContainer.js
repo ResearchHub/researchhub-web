@@ -131,9 +131,10 @@ function PaperDraftContainer({
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
-  const inlineCommentBlockRenderer = useMemo(() => {
-    getInlineCommentBlockRenderer({ inlineComments, setInlineComments });
-  }, [inlineComments, setInlineComments]);
+  const inlineCommentBlockRenderer = getInlineCommentBlockRenderer({
+    inlineComments,
+    setInlineComments,
+  });
 
   return (
     <div>
