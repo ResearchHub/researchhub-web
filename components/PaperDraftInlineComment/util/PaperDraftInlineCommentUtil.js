@@ -25,7 +25,7 @@ export const handleBlockStyleToggle = ({
     } else {
       newSelectionBlockTypes.delete(INLINE_COMMENT_MAP.TYPE_KEY);
     }
-    return newSelectionBlockTypes.size === 1
+    return newSelectionBlockTypes.size <= 1
       ? newSelectionBlockTypes.add(draftCssToCustomCss.unstyled)
       : newSelectionBlockTypes;
   } else {
