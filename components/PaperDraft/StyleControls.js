@@ -5,7 +5,6 @@ import StyleButton from "./StyleButton";
 
 // Config
 import colors from "~/config/themes/colors";
-
 const BLOCK_TYPES = [
   { label: "H1", style: "header-one" },
   { label: "H2", style: "header-two" },
@@ -29,22 +28,31 @@ const INLINE_STYLES = [
 
 const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
+  const selection = editorState.getSelection();
+
+  const selectedBlockType = new Set(
+    editorState
+      .getCurrentContent()
+      .getBlockForKey(selection.getStartKey())
+      .getType()
+      .split(" ")
+  );
   const blockStyleButtons = BLOCK_TYPES.map(({ label, style }) => (
     <StyleButton
+      isActive={selectedBlockType.has(style)}
       key={label}
       label={label}
       onClick={onClickBlock(style)}
       style={style}
     />
   ));
-
   const currentInlineStyle = editorState.getCurrentInlineStyle();
   const inlineStylebuttons = INLINE_STYLES.map(({ label, style }) => (
     <StyleButton
-      active={currentInlineStyle.has(style)}
+      isActive={currentInlineStyle === style}
       key={label}
       label={label}
-      onClick={onClickInline}
+      onClick={onClickInline(style)}
       style={style}
     />
   ));

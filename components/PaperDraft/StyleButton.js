@@ -4,13 +4,7 @@ import React, { useMemo } from "react";
 import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
 
 const StyleButton = (props) => {
-  const { style, label, onClick, selectionBlockTypes = new Set() } = props;
-  const isStyleActive = useMemo(
-    () =>
-      selectionBlockTypes.has(style) ||
-      selectionBlockTypes.has(draftCssToCustomCss[style] ?? ""),
-    [selectionBlockTypes, style]
-  );
+  const { isStyleActive, label, onClick } = props;
   return (
     <span
       className={css([styles.button, isStyleActive && styles.active])}
