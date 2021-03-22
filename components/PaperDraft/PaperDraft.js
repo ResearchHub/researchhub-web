@@ -77,7 +77,8 @@ class PaperDraft extends React.Component {
     onChange(newEditorState);
   };
 
-  toggleInlineStyle = (inlineStyle) => {
+  toggleInlineStyle = (inlineStyle) => (event) => {
+    event.stopPropagation();
     const {
       textEditorProps: { editorState, onChange },
     } = this.props;
