@@ -66,26 +66,14 @@ class PaperDraft extends React.Component {
       selectionBlockTypes,
       toggledStyle: toggledBlockType,
     });
-    // console.warn("NOW: ", Array.from(newSlectionBlockTypes).join(" "));
     const currentContentState = editorState.getCurrentContent();
-    // let modifiedContentState = Modifier.setBlockData(
-    //   currentContentState,
-    //   selectionState,
-    //   Map({})
-    // );
+
     const modifiedContentState = Modifier.setBlockType(
       currentContentState,
       selectionState,
       Array.from(newSlectionBlockTypes).join(" ")
     );
-    // const updatedBlock = modifiedContentState.getBlockForKey(selectionStartKey);
     const newEditorState = EditorState.push(editorState, modifiedContentState);
-    const updatedblocktype = newEditorState
-      .getCurrentContent()
-      .getBlockForKey(selectionState.getStartKey())
-      .getType();
-
-    console.warn("UPDATED BLOCK TYPE: ", updatedblocktype);
     onChange(newEditorState);
   };
 
