@@ -3,17 +3,20 @@ import { Helpers } from "@quantfive/js-web-config";
 import { fetchPaperDraft } from "~/config/fetch";
 import { CompositeDecorator, EditorState } from "draft-js";
 import {
+  formatBase64ToEditorState,
+  formatRawJsonToEditorState,
+} from "./util/PaperDraftUtils";
+import {
   getBlockStyleFn,
   getHandleKeyCommand,
   getHandleOnTab,
 } from "./util/PaperDraftTextEditorUtil";
-import {
-  formatBase64ToEditorState,
-  formatRawJsonToEditorState,
-} from "./util/PaperDraftUtils";
 import { getInlineCommentBlockRenderer } from "../PaperDraftInlineComment/util/paperDraftInlineCommentUtil";
-import WaypointSection from "./WaypointSection";
+import InlineCommentUnduxStore, {
+  updateInlineComment,
+} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore.ts";
 import PaperDraft from "./PaperDraft";
+import WaypointSection from "./WaypointSection";
 
 // strategy used for the decorator
 const findWayPointEntity = (seenEntityKeys, setSeenEntityKeys) => (
@@ -96,16 +99,15 @@ function paperFetchHook({
 
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 function PaperDraftContainer({
-  inlineComments,
   isViewerAllowedToEdit,
   paperDraftExists,
   paperDraftSections,
   paperId,
   setActiveSection,
-  setInlineComments,
   setPaperDraftExists,
   setPaperDraftSections,
 }) {
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [initEditorState, setInitEditorState] = useState(
     EditorState.createEmpty()
@@ -133,8 +135,8 @@ function PaperDraftContainer({
   );
 
   const inlineCommentBlockRenderer = getInlineCommentBlockRenderer({
-    inlineComments,
-    setInlineComments,
+    inlineComments: inlineCommentStore.get("inlineComments"),
+    updateInlineComment,
   });
 
   return (
