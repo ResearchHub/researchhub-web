@@ -96,11 +96,13 @@ function paperFetchHook({
 
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 function PaperDraftContainer({
+  inlineComments,
   isViewerAllowedToEdit,
   paperDraftExists,
   paperDraftSections,
   paperId,
   setActiveSection,
+  setInlineComments,
   setPaperDraftExists,
   setPaperDraftSections,
 }) {
@@ -108,7 +110,6 @@ function PaperDraftContainer({
   const [initEditorState, setInitEditorState] = useState(
     EditorState.createEmpty()
   );
-  const [inlineComments, setInlineComments] = useState([]);
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
