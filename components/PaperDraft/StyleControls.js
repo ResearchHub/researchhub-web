@@ -9,8 +9,12 @@ import colors from "~/config/themes/colors";
 const BLOCK_TYPES = [
   { label: "H1", style: "header-one" },
   { label: "H2", style: "header-two" },
-  { label: "UL", style: "unordered-list-item" },
-  { label: "OL", style: "ordered-list-item" },
+  /* 
+    NOTE: there are various challenges that come with styling lists especially when the user is editing. 
+    We need to revisit this. 
+      { label: "UL", style: "unordered-list-item" }, 
+      { label: "OL", style: "ordered-list-item" }, 
+  */
   {
     label: "Comment",
     style: INLINE_COMMENT_MAP.TYPE_KEY,
