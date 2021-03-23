@@ -115,7 +115,7 @@ const PaperEntry = ({
           </div>
           <div className={css(styles.date, styles.text)}>
             {date &&
-              `Published: ${date && moment(date).format("DD MMMM, YYYY")}`}
+              `Published: ${date && moment(date).format("DD D MMMM, YYYY")}`}
           </div>
         </div>
       </Link>
