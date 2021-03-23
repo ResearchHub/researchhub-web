@@ -69,12 +69,12 @@ const Index = (props) => {
 
   const formatStep = () => {
     if (onlyHubSelection) {
-      return "Subscribe to Hubs You're Interested In";
+      return "Subscribe to hubs You're Interested In";
     }
 
     switch (page) {
       case 1:
-        return "Subscribe to Hubs you're interested in";
+        return "Subscribe to hubs you're interested in";
       case 2:
         return "Enter your profile information";
       default:
