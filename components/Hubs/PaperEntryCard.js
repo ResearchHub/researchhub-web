@@ -499,9 +499,8 @@ const PaperEntryCard = (props) => {
     ) {
       return (
         <div className={css(styles.metadataRow)}>
-          {renderPaperTitle()}
-          {renderRawAuthors(mobile)}
           {renderPublishDate(mobile)}
+          {renderRawAuthors(mobile)}
         </div>
       );
     }
@@ -764,8 +763,11 @@ const styles = StyleSheet.create({
   metadataRow: {
     display: "flex",
     alignItems: "flex-start",
-    flexDirection: "column",
+    // flexDirection: "column",
     width: "100%",
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+    },
   },
   metadataContainer: {
     maxWidth: "100%",
