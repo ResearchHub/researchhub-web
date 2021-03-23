@@ -1,7 +1,10 @@
 import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
-import { INLINE_COMMENT_MAP } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import {
+  getCurrSelectionBlockTypesInSet,
+  INLINE_COMMENT_MAP,
+} from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
-import React from "react";
+import React, { useMemo } from "react";
 import StyleButton from "./StyleButton";
 
 // Config
@@ -29,37 +32,37 @@ const INLINE_STYLES = [
 
 const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
-  const selection = editorState.getSelection();
-
-  const selectedBlockType = new Set(
-    editorState
-      .getCurrentContent()
-      .getBlockForKey(selection.getStartKey())
-      .getType()
-      .split(" ")
+  const currSelectedBlockTypes = getCurrSelectionBlockTypesInSet(editorState);
+  const blockStyleButtons = useMemo(
+    () =>
+      BLOCK_TYPES.map(({ label, style }) => (
+        <StyleButton
+          isStyleActive={
+            currSelectedBlockTypes.has(style) ||
+            currSelectedBlockTypes.has(draftCssToCustomCss[style] ?? "")
+          }
+          key={label}
+          label={label}
+          onClick={onClickBlock(style)}
+          style={style}
+        />
+      )),
+    [currSelectedBlockTypes, onClickBlock]
   );
-  const blockStyleButtons = BLOCK_TYPES.map(({ label, style }) => (
-    <StyleButton
-      isStyleActive={
-        selectedBlockType.has(style) ||
-        selectedBlockType.has(draftCssToCustomCss[style] ?? "")
-      }
-      key={label}
-      label={label}
-      onClick={onClickBlock(style)}
-      style={style}
-    />
-  ));
   const currentInlineStyle = editorState.getCurrentInlineStyle();
-  const inlineStylebuttons = INLINE_STYLES.map(({ label, style }) => (
-    <StyleButton
-      isStyleActive={currentInlineStyle === style}
-      key={label}
-      label={label}
-      onClick={onClickInline(style)}
-      style={style}
-    />
-  ));
+  const inlineStylebuttons = useMemo(
+    () =>
+      INLINE_STYLES.map(({ label, style }) => (
+        <StyleButton
+          isStyleActive={currentInlineStyle === style}
+          key={label}
+          label={label}
+          onClick={onClickInline(style)}
+          style={style}
+        />
+      )),
+    [currentInlineStyle, onClickInline]
+  );
   return (
     <div className={css(styles.root)}>
       {blockStyleButtons}
