@@ -1,31 +1,51 @@
+import { EditorState, Modifier } from "draft-js";
 import { draftCssToCustomCss } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineCommentTextWrap";
 
-const removeUnstyled = (styleSet) => {
-  styleSet.delete("unstyled");
-  styleSet.delete(draftCssToCustomCss.unstyled);
-};
+function getSelectedBlockFromEditorState(editorState) {
+  // TODO: calvinhlee may need to improve below to capture selection range within the block
+  const selectionState = editorState.getSelection();
+  return editorState
+    .getCurrentContent()
+    .getBlockForKey(selectionState.getStartKey());
+}
+
+function getBlockTypesFromBlock(block) {
+  return new Set(block.getType().split(" "));
+}
+
+function getModifiedContentState(editorState, newSelectionBlockTypes) {
+  return Modifier.setBlockType(
+    editorState.getCurrentContent(),
+    editorState.getSelection(),
+    Array.from(newSelectionBlockTypes).join(" ")
+  );
+}
 
 export const INLINE_COMMENT_MAP = {
   TYPE_KEY: "RichEditor-research-hub-inline-comment", // interpreted in paper.css
 };
 
-export const handleBlockStyleToggle = ({
-  selectionBlockTypes = new Set(),
+export function handleBlockStyleToggle({
+  editorState,
+  inlineCommentStore /* unduxStore see InlineCommentUnduxStore */,
   toggledStyle,
-}) => {
-  /* WE NEED TO MAKE SURE THAT ANY ADDITIONS TO THE SET IN THIS FUNCTION NEEDS TO BE THE CUSTOM CSS */
-  let newSelectionBlockTypes = null;
+}) {
+  const selectionBlock = getSelectedBlockFromEditorState(editorState);
+  const selectionBlockTypes = getBlockTypesFromBlock(selectionBlock);
 
-  /* TODO: calvinhlee - add inline-comment removal plan */
+  /* NOTE: Any additional styling should be in CUSTOM CSS - see draftCssToCustomCss */
+  let newSelectionBlockTypes = null;
   if (toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY) {
+    /* TODO: calvinhlee - add inline-comment removal plan */
     newSelectionBlockTypes = new Set([...selectionBlockTypes]);
     if (!selectionBlockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY)) {
       newSelectionBlockTypes.add(INLINE_COMMENT_MAP.TYPE_KEY);
+      inlineCommentStore;
     } else {
       newSelectionBlockTypes.delete(INLINE_COMMENT_MAP.TYPE_KEY);
     }
-    return newSelectionBlockTypes.size <= 1
+    newSelectionBlockTypes.size <= 1
       ? newSelectionBlockTypes.add(draftCssToCustomCss.unstyled)
       : newSelectionBlockTypes;
   } else {
@@ -39,11 +59,18 @@ export const handleBlockStyleToggle = ({
     if (!selectionBlockTypes.has(recognizedBlockType)) {
       newSelectionBlockTypes.add(recognizedBlockType);
     }
-    return newSelectionBlockTypes.size > 0
+    newSelectionBlockTypes.size > 0
       ? newSelectionBlockTypes
       : newSelectionBlockTypes.add("unstyled");
   }
-};
+
+  const modifiedContentState = getModifiedContentState(
+    editorState,
+    newSelectionBlockTypes
+  );
+
+  return EditorState.push(editorState, modifiedContentState);
+}
 
 export const getInlineCommentBlockRenderer = ({
   inlineComments,
