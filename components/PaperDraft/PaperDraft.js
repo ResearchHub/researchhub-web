@@ -50,30 +50,14 @@ class PaperDraft extends React.Component {
   toggleBlockType = (toggledBlockType) => (event) => {
     event.stopPropagation();
     const {
+      inlineCommentStore,
       textEditorProps: { editorState, onChange },
     } = this.props;
-
-    // selected block can have multiple block types which translates to css class
-    const selectionState = editorState.getSelection();
-    const selectionBlockTypes = new Set(
-      editorState
-        .getCurrentContent()
-        .getBlockForKey(selectionState.getStartKey())
-        .getType()
-        .split(" ")
-    );
-    const newSlectionBlockTypes = handleBlockStyleToggle({
-      selectionBlockTypes,
+    const newEditorState = handleBlockStyleToggle({
+      editorState,
+      inlineCommentStore,
       toggledStyle: toggledBlockType,
     });
-    const currentContentState = editorState.getCurrentContent();
-
-    const modifiedContentState = Modifier.setBlockType(
-      currentContentState,
-      selectionState,
-      Array.from(newSlectionBlockTypes).join(" ")
-    );
-    const newEditorState = EditorState.push(editorState, modifiedContentState);
     onChange(newEditorState);
   };
 
