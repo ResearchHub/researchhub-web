@@ -36,6 +36,7 @@ import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
+import PaperPreview from "./Paper/SideColumn/PaperPreview";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -631,9 +632,12 @@ class PaperPageCard extends React.Component {
                 >
                   <div className={css(styles.metaContainer)}>
                     <div className={css(styles.titleHeader)}>
-                      <h1 className={css(styles.title)} property={"headline"}>
-                        {paper && paper.title}
-                      </h1>
+                      <div className={css(styles.row)}>
+                        <h1 className={css(styles.title)} property={"headline"}>
+                          {paper && paper.title}
+                        </h1>
+                        <PaperPreview paperId={paper.id} />
+                      </div>
                       <PaperMetadata
                         label={"Paper Title"}
                         containerStyles={styles.paperTitle}

@@ -38,11 +38,12 @@ const PaperSections = (props) => {
       activeSection !== index && setActiveSection(index);
     }, 20);
   };
+
   const renderTabs = () => {
     const maintabs = [
       { name: "Main", index: 0 },
       { name: "Abstract", index: 1 },
-      { name: "Discussions", index: 2 },
+      { name: "Discussion", index: 2 },
       { name: "Paper PDF", index: 3 },
     ];
 
@@ -61,7 +62,7 @@ const PaperSections = (props) => {
       switch (name) {
         case "Main":
         case "Abstract":
-        case "Discussions":
+        case "Discussion":
         case "Paper PDF":
         case "Paper":
           return true;
@@ -105,7 +106,7 @@ const PaperSections = (props) => {
       } else {
         return (
           <a
-            href={`#${section}`}
+            href={`#${section.toUpperCase()}`}
             className={css(
               styles.card,
               styles.small,
@@ -123,7 +124,7 @@ const PaperSections = (props) => {
 
   return (
     <ColumnContainer overrideStyles={styles.container}>
-      <div className={css(styles.title)}>Sections</div>
+      <div className={css(styles.title)}>Page Navigation</div>
       {renderTabs()}
     </ColumnContainer>
   );
