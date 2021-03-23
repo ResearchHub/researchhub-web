@@ -64,10 +64,6 @@ const PaperPreview = (props) => {
             slide={slideIndex}
           />
         ) : null}
-        {/* <div className={css(styles.blur)} onClick={toggleLightbox} /> */}
-        {/* <div className={css(styles.buttonContainer)}>
-          <Button label={"Read Paper"} onClick={() => toggleLightbox()} />
-        </div> */}
       </ReactPlaceholder>
     </ColumnContainer>
   );
