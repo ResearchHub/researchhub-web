@@ -1,10 +1,12 @@
 import { Store, createConnectedStore } from "undux";
 
-/* TODO: calvinhlee inline-comment current can be in any form. 
-   Update this when format is solidified */
-export type InlineComment = { index: number };
+export type InlineComment = {
+  blockKey: string;
+  commentThreadID: number | string;
+};
 export type State = {
-  inlineComments: Array<InlineComment>;
+  paperID: number;
+  inlineComments: { [blockKey: string]: InlineComment };
 };
 export type InlineCommentStore = Store<State>;
 export type UpdateInlineCommentArgs = {
@@ -12,17 +14,22 @@ export type UpdateInlineCommentArgs = {
   updatedInlineComment: InlineComment;
 };
 
-const initialState: State = {
-  inlineComments: [],
-};
+const initialState: State = { paperID: null, inlineComments: {} };
+
+export function deleteInlineComment({ blockKey, store }) {
+  const newInlineComments = { ...store.get("inlineComments") };
+  delete newInlineComments[blockKey];
+  store.set("inlineComments")(newInlineComments);
+  return store;
+}
 
 export function updateInlineComment({
   store,
   updatedInlineComment,
 }: UpdateInlineCommentArgs): Store<State> {
-  const { index: targetIndex } = updatedInlineComment;
-  const newInlineComments = [...store.get("inlineComments")];
-  newInlineComments[targetIndex] = updatedInlineComment;
+  const { blockKey } = updatedInlineComment;
+  const newInlineComments = { ...store.get("inlineComments") };
+  newInlineComments[blockKey] = updatedInlineComment;
   store.set("inlineComments")(newInlineComments);
   return store;
 }

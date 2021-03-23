@@ -121,7 +121,8 @@ function PaperDraftContainer({
   );
 
   useEffect(
-    () =>
+    () => {
+      inlineCommentStore.set("paperID")(paperId);
       paperFetchHook({
         decorator,
         paperId,
@@ -130,7 +131,8 @@ function PaperDraftContainer({
         setIsFetching,
         setPaperDraftExists,
         setPaperDraftSections,
-      }),
+      });
+    },
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 

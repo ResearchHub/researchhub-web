@@ -1,5 +1,9 @@
-import { EditorState, Modifier } from "draft-js";
 import { draftCssToCustomCss } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
+import { EditorState, Modifier } from "draft-js";
+import {
+  updateInlineComment,
+  deleteInlineComment,
+} from "../undux/InlineCommentUnduxStore.ts";
 import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineCommentTextWrap";
 
 function getSelectedBlockFromEditorState(editorState) {
@@ -38,9 +42,23 @@ function handleInlineCommentBlockToggle(editorState, inlineCommentStore) {
   const newBlockTypes = new Set([...currBlockTypes]); // need to preserve curr styling
   if (!currBlockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY)) {
     newBlockTypes.add(INLINE_COMMENT_MAP.TYPE_KEY);
-    // inlineCommentStore;
+    updateInlineComment({
+      updatedInlineComment: {
+        blockKey: editorState.getSelection().getStartKey(),
+        threadID: null,
+      },
+      store: inlineCommentStore,
+    });
   } else {
     newBlockTypes.delete(INLINE_COMMENT_MAP.TYPE_KEY);
+    deleteInlineComment({
+      blockKey: editorState.getSelection().getStartKey(),
+      store: inlineCommentStore,
+    });
+    /* NOTE: Any new styling should be in custom type for consistency */
+    newBlockTypes.size === 0
+      ? newBlockTypes.add(draftCssToCustomCss.unstyled)
+      : newBlockTypes;
   }
 
   return getModifiedContentState({
