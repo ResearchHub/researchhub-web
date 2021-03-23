@@ -17,7 +17,7 @@ const PreviewPlaceholder = ({ color, hideAnimation }) => {
 
   return (
     <div className={css(styles.placeholderContainer) + animate}>
-      <RectShape style={{ width: "100%", height: 254 }} color={color} />
+      <RectShape style={{ width: 80, height: 90 }} color={color} />
     </div>
   );
 };
@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     boxSizing: "border-box",
+    marginLeft: "auto",
   },
   textRow: {
     marginTop: 5,
