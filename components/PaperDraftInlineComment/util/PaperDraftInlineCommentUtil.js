@@ -33,6 +33,18 @@ function getModifiedContentState({ blockData, editorState, newBlockTypes }) {
   );
 }
 
+function formatBlockTypes(blockTypes) {
+  // we manually add custom unstyled css when there's no regular block style
+  if (blockTypes.has("paragraph")) {
+    blockTypes.delete("paragraph");
+    blockTypes.add(draftCssToCustomCss.unstyled);
+  }
+  return (blockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY) && blockTypes.size < 2) ||
+    (!blockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY) && blockTypes.size === 0)
+    ? blockTypes.add(draftCssToCustomCss.unstyled)
+    : blockTypes;
+}
+
 function handleInlineCommentBlockToggle(editorState, inlineCommentStore) {
   /* TODO: calvinhlee - add inline-comment removal plan */
   const selectionBlock = getSelectedBlockFromEditorState(editorState);
@@ -55,16 +67,13 @@ function handleInlineCommentBlockToggle(editorState, inlineCommentStore) {
       blockKey: editorState.getSelection().getStartKey(),
       store: inlineCommentStore,
     });
-    /* NOTE: Any new styling should be in custom type for consistency */
-    newBlockTypes.size === 0
-      ? newBlockTypes.add(draftCssToCustomCss.unstyled)
-      : newBlockTypes;
   }
 
+  const formattedBlockTypes = formatBlockTypes(newBlockTypes);
   return getModifiedContentState({
     blockData: currBlockData,
     editorState,
-    newBlockTypes,
+    newBlockTypes: formattedBlockTypes,
   });
 }
 
@@ -82,14 +91,11 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
     newBlockTypes.add(toggledBlockType);
   }
 
-  // if every style was removed, we manually add custom unstyled css
-  newBlockTypes.size === 0
-    ? newBlockTypes.add(draftCssToCustomCss.unstyled)
-    : newBlockTypes;
+  const formattedBlockTypes = formatBlockTypes(newBlockTypes);
   return getModifiedContentState({
     blockData: currBlockData,
     editorState,
-    newBlockTypes,
+    newBlockTypes: formattedBlockTypes,
   });
 }
 
