@@ -14,7 +14,9 @@ import {
 import { getInlineCommentBlockRenderer } from "../PaperDraftInlineComment/util/paperDraftInlineCommentUtil";
 import InlineCommentUnduxStore, {
   updateInlineComment,
-} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore.ts";
+} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import PaperDraftInlineCommentDisplayContainer from "../PaperDraftInlineComment/PaperDraftInlineCommentDisplayContainer";
+
 import PaperDraft from "./PaperDraft";
 import WaypointSection from "./WaypointSection";
 
@@ -142,31 +144,34 @@ function PaperDraftContainer({
   });
 
   return (
-    <PaperDraft
-      textEditorProps={{
-        blockRendererFn: inlineCommentBlockRenderer,
-        blockStyleFn: getBlockStyleFn,
-        editorState,
-        handleKeyCommand: getHandleKeyCommand({
+    <>
+      <PaperDraftInlineCommentDisplayContainer />
+      <PaperDraft
+        textEditorProps={{
+          blockRendererFn: inlineCommentBlockRenderer,
+          blockStyleFn: getBlockStyleFn,
           editorState,
-          setEditorState,
-        }),
-        initEditorState,
-        onChange: setEditorState,
-        onTab: getHandleOnTab({
-          editorState,
-          setEditorState,
-        }),
-        setInitEditorState,
-        spellCheck: true,
-      }}
-      inlineCommentStore={inlineCommentStore}
-      isFetching={isFetching}
-      isViewerAllowedToEdit={isViewerAllowedToEdit}
-      paperDraftExists={paperDraftExists}
-      paperDraftSections={paperDraftSections}
-      paperId={paperId}
-    />
+          handleKeyCommand: getHandleKeyCommand({
+            editorState,
+            setEditorState,
+          }),
+          initEditorState,
+          onChange: setEditorState,
+          onTab: getHandleOnTab({
+            editorState,
+            setEditorState,
+          }),
+          setInitEditorState,
+          spellCheck: true,
+        }}
+        inlineCommentStore={inlineCommentStore}
+        isFetching={isFetching}
+        isViewerAllowedToEdit={isViewerAllowedToEdit}
+        paperDraftExists={paperDraftExists}
+        paperDraftSections={paperDraftSections}
+        paperId={paperId}
+      />
+    </>
   );
 }
 
