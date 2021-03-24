@@ -22,7 +22,7 @@ const PaperBanner = ({
 
   useEffect(() => {
     configureBanner();
-  }, [paper, bullets.bullets.length, loadingPaper]);
+  }, [paper, loadingPaper]);
 
   const configureBanner = () => {
     if (!paper) {
@@ -131,8 +131,10 @@ const PaperBanner = ({
         !showBanner && styles.hideBanner
       )}
     >
-      {type === "removed" && renderIcon()}
-      <div className={css(styles.message)}>{renderMessage()}</div>
+      <div className={css(styles.bannerInner)}>
+        {type === "removed" && renderIcon()}
+        <div className={css(styles.message)}>{renderMessage()}</div>
+      </div>
     </div>
   );
 };
@@ -152,7 +154,13 @@ const styles = StyleSheet.create({
       padding: 15,
     },
   },
-
+  bannerInner: {
+    display: "flex",
+    "@media only screen and (min-width: 768px)": {
+      width: "80%",
+      margin: "0 auto",
+    },
+  },
   desktop: {
     "@media only screen and (max-width: 767px)": {
       display: "none",
