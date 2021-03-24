@@ -29,7 +29,7 @@ class PaperDraft extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isReadOnly: true,
+      isInEditMode: true,
       isFocused: false,
     };
     this.editor; // $ref to Editor
@@ -42,7 +42,7 @@ class PaperDraft extends React.Component {
 
   onBlur = () => {
     this.setState({
-      isReadOnly: true,
+      isInEditMode: true,
       isFocused: false,
     });
   };
@@ -70,13 +70,15 @@ class PaperDraft extends React.Component {
   };
 
   toggleEdit = (_) => {
-    const { isReadOnly } = this.state;
+    const { isInEditMode } = this.state;
     this.setState(
       {
-        isReadOnly: !isReadOnly,
+        isInEditMode: !isInEditMode,
       },
       () => {
-        return this.state.isReadOnly ? this.editor.blur() : this.editor.focus();
+        return this.state.isInEditMode
+          ? this.editor.blur()
+          : this.editor.focus();
       }
     );
   };
@@ -85,9 +87,9 @@ class PaperDraft extends React.Component {
     const {
       textEditorProps: { initEditorState, onChange },
     } = this.props;
-    const { isReadOnly } = this.state;
+    const { isInEditMode } = this.state;
     onChange(initEditorState);
-    this.setState({ isReadOnly: !isReadOnly }, () => this.editor.blur());
+    this.setState({ isInEditMode: !isInEditMode }, () => this.editor.blur());
   };
 
   onSave = () => {
@@ -97,7 +99,7 @@ class PaperDraft extends React.Component {
       .then((res) => {
         setMessage("Edit saved.");
         showMessage({ show: true });
-        this.setState({ isReadOnly: true, isSaving: false });
+        this.setState({ isInEditMode: true, isSaving: false });
       })
       .catch((err) => {
         setMessage("Something went wrong. Please try again!");
@@ -138,7 +140,7 @@ class PaperDraft extends React.Component {
       isViewerAllowedToEdit,
       paperDraftExists,
     } = this.props;
-    const { isReadOnly, isSaving } = this.state;
+    const { isInEditMode, isSaving } = this.state;
     return (
       <ReactPlaceholder
         ready={!isFetching}
@@ -153,7 +155,7 @@ class PaperDraft extends React.Component {
       >
         <div className={css(styles.root, !paperDraftExists && styles.hidden)}>
           <h3
-            className={css(styles.title, !isReadOnly && styles.paddingBottom)}
+            className={css(styles.title, !isInEditMode && styles.paddingBottom)}
           >
             Paper
             {isViewerAllowedToEdit && (
@@ -163,7 +165,7 @@ class PaperDraft extends React.Component {
             )}
           </h3>
           <div
-            className={css(styles.toolbar, !isReadOnly && styles.editActive)}
+            className={css(styles.toolbar, !isInEditMode && styles.editActive)}
             onClick={this.onFocus}
           >
             <StyleControls
@@ -172,15 +174,18 @@ class PaperDraft extends React.Component {
               onClickInline={this.toggleInlineStyle}
             />
           </div>
-          <div className={css(!isReadOnly && styles.editorActive)}>
+          <div className={css(!isInEditMode && styles.editorActive)}>
             <Editor
               {...textEditorProps}
-              readOnly={isReadOnly} // setting this to false will grant me access to selection
+              readOnly={false} // setting this to false grants access to selection
               ref={(ref) => (this.editor = ref)}
             />
           </div>
           <div
-            className={css(styles.buttonRow, !isReadOnly && styles.editActive)}
+            className={css(
+              styles.buttonRow,
+              !isInEditMode && styles.editActive
+            )}
           >
             <Button
               label={"Cancel"}
