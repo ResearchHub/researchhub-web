@@ -100,9 +100,6 @@ const Paper = (props) => {
   const [activeSection, setActiveSection] = useState(0); // paper draft sections
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
 
-  // TODO: calvinhlee - add a fetch hook for exiting inline-comments
-  const [inlineComments, setInlineComments] = useState([]);
-
   const [steps, setSteps] = useState([
     {
       target: ".first-step",
@@ -547,13 +544,11 @@ const Paper = (props) => {
                     paperDraftSections={paperDraftSections}
                   />
                   <PaperDraftContainer
-                    inlineComments={inlineComments}
                     isViewerAllowedToEdit={isModerator}
                     paperDraftExists={paperDraftExists}
                     paperDraftSections={paperDraftSections}
                     paperId={paperId}
                     setActiveSection={setActiveSection}
-                    setInlineComments={setInlineComments}
                     setPaperDraftExists={setPaperDraftExists}
                     setPaperDraftSections={setPaperDraftSections}
                   />
