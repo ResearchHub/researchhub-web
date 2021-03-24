@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, Fragment } from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
@@ -59,7 +59,10 @@ import {
 } from "~/config/utils/";
 import * as shims from "~/redux/paper/shims";
 import PaperBanner from "../../../../components/Paper/PaperBanner";
+<<<<<<< HEAD
 import React from "react";
+=======
+>>>>>>> adding back paper removed banner
 
 const isServer = () => typeof window === "undefined";
 
