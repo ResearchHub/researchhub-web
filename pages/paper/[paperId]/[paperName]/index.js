@@ -56,6 +56,7 @@ import {
   getAuthorName,
 } from "~/config/utils/";
 import * as shims from "~/redux/paper/shims";
+import PaperBanner from "../../../../components/Paper/PaperBanner";
 
 const isServer = () => typeof window === "undefined";
 
@@ -424,6 +425,7 @@ const Paper = (props) => {
 
   return (
     <div>
+      <PaperBanner paper={paper} loadingPaper={loadingPaper} />
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
