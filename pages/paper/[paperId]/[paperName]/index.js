@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, Fragment } from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
@@ -56,7 +56,7 @@ import {
   getAuthorName,
 } from "~/config/utils/";
 import * as shims from "~/redux/paper/shims";
-import React from "react";
+import PaperBanner from "../../../../components/Paper/PaperBanner";
 
 const isServer = () => typeof window === "undefined";
 
@@ -428,6 +428,7 @@ const Paper = (props) => {
 
   return (
     <div>
+      <PaperBanner paper={paper} loadingPaper={loadingPaper} />
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
