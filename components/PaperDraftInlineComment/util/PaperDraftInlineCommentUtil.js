@@ -3,7 +3,7 @@ import { EditorState, Modifier } from "draft-js";
 import {
   updateInlineComment,
   deleteInlineComment,
-} from "../undux/InlineCommentUnduxStore.ts";
+} from "../undux/InlineCommentUnduxStore";
 import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineCommentTextWrap";
 
 function getSelectedBlockFromEditorState(editorState) {
