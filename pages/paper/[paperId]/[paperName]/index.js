@@ -34,7 +34,7 @@ import { LimitationsActions } from "~/redux/limitations";
 import { BulletActions } from "~/redux/bullets";
 
 // Undux
-import InlineCommentUnduxStore from "~/components/PaperDraftInlineComment/undux/InlineCommentUnduxStore.ts";
+import InlineCommentUnduxStore from "~/components/PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
