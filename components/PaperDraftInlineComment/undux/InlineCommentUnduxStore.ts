@@ -30,10 +30,6 @@ const findIndexOfCommentInStore = (
   commentThreadID: ID,
   store: InlineCommentStore
 ): number => {
-  console.warn(
-    "TRYING TO LOOK FOR THREAD. Curr Store ",
-    store.get("inlineComments")
-  );
   return (store.get("inlineComments")[blockKey] || []).findIndex(
     ({
       blockKey: storedBlockKey,
@@ -51,10 +47,6 @@ export function deleteInlineComment({
   commentThreadID,
   store,
 }: DeleteInlineCommentArgs): InlineCommentStore {
-  console.warn(
-    `TRYING TO DELETE: ${blockKey}-${commentThreadID} *** `,
-    store.get("inlineComments")
-  );
   const targetIndex = findIndexOfCommentInStore(
     blockKey,
     commentThreadID,
