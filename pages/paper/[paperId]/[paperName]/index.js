@@ -60,7 +60,7 @@ import {
   getAuthorName,
 } from "~/config/utils/";
 import * as shims from "~/redux/paper/shims";
-import PaperBanner from "../../../../components/Paper/PaperBanner";
+import React from "react";
 
 const isServer = () => typeof window === "undefined";
 
