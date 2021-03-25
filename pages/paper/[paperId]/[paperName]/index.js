@@ -597,7 +597,6 @@ const Paper = (props) => {
             ) : (
               <React.Fragment>
                 <PaperPreview paper={paper} paperId={paperId} />
-
                 <PaperSideColumn
                   authors={getAllAuthors()}
                   paper={paper}
