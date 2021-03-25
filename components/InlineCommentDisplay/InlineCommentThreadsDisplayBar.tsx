@@ -5,6 +5,7 @@ import InlineCommentUnduxStore, {
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import React, { ReactElement } from "react";
+
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
 
 export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
