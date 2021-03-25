@@ -592,7 +592,7 @@ const Paper = (props) => {
           </div>
           <div className={css(styles.sidebar)}>
             {shouldShowInlineComment ? (
-              <div className={css(styles.stickyComponent)}>
+              <div className={css(styles.inlineSticky)}>
                 <InlineCommentThreadsDisplayBar />
               </div>
             ) : (
@@ -744,6 +744,10 @@ const styles = StyleSheet.create({
       width: "80%",
       display: "table",
     },
+  },
+  inlineSticky: {
+    position: "sticky",
+    top: 40,
   },
   sidebar: {
     display: "table-cell",
