@@ -17,7 +17,7 @@ function fetchInlineCommentThreads({
   // TODO: calvinhlee - make api call here.
 }
 
-function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
+function InlineCommentThreadsDisplayBar(): ReactElement<typeof React.Fragment> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
 
@@ -30,6 +30,7 @@ function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
     (
       blockKey: string
     ): ReactElement<typeof InlineCommentThreadsDisplayContainer> => (
+      // NOTE: Thread-"s" are grouped by blockKey
       <InlineCommentThreadsDisplayContainer
         blockKey={blockKey}
         key={blockKey}
@@ -37,7 +38,9 @@ function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
     )
   );
 
-  return <div>{InlineCommentThreadsDisplayContainers}</div>;
+  return (
+    <React.Fragment>{InlineCommentThreadsDisplayContainers}</React.Fragment>
+  );
 }
 
 export default InlineCommentThreadsDisplayBar;
