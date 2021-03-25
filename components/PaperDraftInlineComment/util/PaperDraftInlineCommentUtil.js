@@ -51,20 +51,22 @@ function handleInlineCommentBlockToggle(editorState, inlineCommentStore) {
   const currBlockTypes = getBlockTypesInSet(selectionBlock);
   const currBlockData = selectionBlock.getData();
 
+  const blockKey = editorState.getSelection().getStartKey();
   const newBlockTypes = new Set([...currBlockTypes]); // need to preserve curr styling
   if (!currBlockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY)) {
     newBlockTypes.add(INLINE_COMMENT_MAP.TYPE_KEY);
     updateInlineComment({
       updatedInlineComment: {
-        blockKey: editorState.getSelection().getStartKey(),
-        threadID: null,
+        blockKey,
+        commentThreadID: null,
       },
       store: inlineCommentStore,
     });
   } else {
     newBlockTypes.delete(INLINE_COMMENT_MAP.TYPE_KEY);
     deleteInlineComment({
-      blockKey: editorState.getSelection().getStartKey(),
+      blockKey,
+      commentThreadID: null,
       store: inlineCommentStore,
     });
   }

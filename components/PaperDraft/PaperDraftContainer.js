@@ -15,7 +15,7 @@ import { getInlineCommentBlockRenderer } from "../PaperDraftInlineComment/util/p
 import InlineCommentUnduxStore, {
   updateInlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-import PaperDraftInlineCommentDisplayContainer from "../PaperDraftInlineComment/PaperDraftInlineCommentDisplayContainer";
+import InlineCommentThreadsDisplayBar from "../InlineComment/InlineCommentThreadsDisplayBar";
 
 import PaperDraft from "./PaperDraft";
 import WaypointSection from "./WaypointSection";
@@ -116,7 +116,7 @@ function PaperDraftContainer({
   );
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
-  globalThis.editorState = editorState;
+
   const decorator = useMemo(
     () => getDecorator({ seenEntityKeys, setSeenEntityKeys, setActiveSection }),
     [seenEntityKeys, setSeenEntityKeys, setActiveSection]
@@ -145,7 +145,7 @@ function PaperDraftContainer({
 
   return (
     <>
-      <PaperDraftInlineCommentDisplayContainer />
+      <InlineCommentThreadsDisplayBar />
       <PaperDraft
         textEditorProps={{
           blockRendererFn: inlineCommentBlockRenderer,
@@ -155,7 +155,6 @@ function PaperDraftContainer({
             editorState,
             setEditorState,
           }),
-          handleBeforeInput: "unhandled",
           initEditorState,
           onChange: setEditorState,
           onTab: getHandleOnTab({
