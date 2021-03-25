@@ -15,7 +15,6 @@ import { getInlineCommentBlockRenderer } from "../PaperDraftInlineComment/util/p
 import InlineCommentUnduxStore, {
   updateInlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-import InlineCommentThreadsDisplayBar from "../InlineComment/InlineCommentThreadsDisplayBar";
 
 import PaperDraft from "./PaperDraft";
 import WaypointSection from "./WaypointSection";
@@ -144,34 +143,31 @@ function PaperDraftContainer({
   });
 
   return (
-    <>
-      <InlineCommentThreadsDisplayBar />
-      <PaperDraft
-        textEditorProps={{
-          blockRendererFn: inlineCommentBlockRenderer,
-          blockStyleFn: getBlockStyleFn,
+    <PaperDraft
+      textEditorProps={{
+        blockRendererFn: inlineCommentBlockRenderer,
+        blockStyleFn: getBlockStyleFn,
+        editorState,
+        handleKeyCommand: getHandleKeyCommand({
           editorState,
-          handleKeyCommand: getHandleKeyCommand({
-            editorState,
-            setEditorState,
-          }),
-          initEditorState,
-          onChange: setEditorState,
-          onTab: getHandleOnTab({
-            editorState,
-            setEditorState,
-          }),
-          setInitEditorState,
-          spellCheck: true,
-        }}
-        inlineCommentStore={inlineCommentStore}
-        isFetching={isFetching}
-        isViewerAllowedToEdit={isViewerAllowedToEdit}
-        paperDraftExists={paperDraftExists}
-        paperDraftSections={paperDraftSections}
-        paperId={paperId}
-      />
-    </>
+          setEditorState,
+        }),
+        initEditorState,
+        onChange: setEditorState,
+        onTab: getHandleOnTab({
+          editorState,
+          setEditorState,
+        }),
+        setInitEditorState,
+        spellCheck: true,
+      }}
+      inlineCommentStore={inlineCommentStore}
+      isFetching={isFetching}
+      isViewerAllowedToEdit={isViewerAllowedToEdit}
+      paperDraftExists={paperDraftExists}
+      paperDraftSections={paperDraftSections}
+      paperId={paperId}
+    />
   );
 }
 
