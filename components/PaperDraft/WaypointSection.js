@@ -1,10 +1,5 @@
 import React from "react";
-import { StyleSheet, css } from "aphrodite";
 import { Waypoint } from "react-waypoint";
-
-// Config
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const WaypointSection = (props) => {
   const { contentState, entityKey, onSectionEnter, children } = props;
