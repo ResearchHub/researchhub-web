@@ -1,10 +1,10 @@
 import InlineCommentThreadsDisplayContainer from "./InlineCommentThreadsDisplayContainer";
 import InlineCommentUnduxStore, {
+  ID,
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-import React, { ReactElement, useEffect, useMemo } from "react";
+import React, { ReactElement, useEffect } from "react";
 
-type ID = number | string | null;
 type fetchInlineCommentThreadsArgs = {
   paperID: ID;
   inlineCommentStore: InlineCommentStore;
