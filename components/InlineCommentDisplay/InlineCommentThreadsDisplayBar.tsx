@@ -4,6 +4,7 @@ import InlineCommentUnduxStore, {
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import React, { ReactElement, useEffect } from "react";
+import { StyleSheet, css } from "aphrodite";
 
 type fetchInlineCommentThreadsArgs = {
   paperID: ID;
@@ -20,7 +21,7 @@ function fetchInlineCommentThreads({
      TODO: calvinhlee - make api call here. */
 }
 
-function InlineCommentThreadsDisplayBar(): ReactElement<typeof React.Fragment> {
+function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
 
@@ -42,8 +43,23 @@ function InlineCommentThreadsDisplayBar(): ReactElement<typeof React.Fragment> {
   );
 
   return (
-    <React.Fragment>{InlineCommentThreadsDisplayContainers}</React.Fragment>
+    <div className={css(styles.container)}>
+      {InlineCommentThreadsDisplayContainers}
+    </div>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    background: "#fff",
+    borderBottom: "1.5px solid #F0F0F0",
+    borderTop: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    display: "flex",
+    justifyContent: "flex-start",
+    padding: "0 20px 0 5px",
+    width: "100%",
+  },
+});
 
 export default InlineCommentThreadsDisplayBar;
