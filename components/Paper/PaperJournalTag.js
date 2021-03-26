@@ -142,6 +142,8 @@ const PaperJournalTag = (props) => {
 const styles = StyleSheet.create({
   logo: {
     height: 15,
+    maxWidth: 80,
+    objectFit: "contain",
     opacity: 1,
     ":hover": {
       opacity: 0.8,
