@@ -117,19 +117,6 @@ const mapStateToProps = ({ auth }: any) => ({
   auth,
 });
 
-const mapDispatchToProps = {
-  postComment: DiscussionActions.postComment,
-  postCommentPending: DiscussionActions.postCommentPending,
-  postUpvotePending: DiscussionActions.postUpvotePending,
-  postUpvote: DiscussionActions.postUpvote,
-  postDownvotePending: DiscussionActions.postDownvotePending,
-  postDownvote: DiscussionActions.postDownvote,
-  updateThread: DiscussionActions.updateThread,
-  updateThreadPending: DiscussionActions.updateThreadPending,
-  setMessage: MessageActions.setMessage,
-  showMessage: MessageActions.showMessage,
-};
-
 export default connect(
   mapStateToProps,
   {} // mapDispatchToProps
