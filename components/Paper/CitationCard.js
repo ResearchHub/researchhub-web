@@ -192,7 +192,7 @@ class CitationCard extends React.Component {
             )}
             {this.renderPreview()}
 
-            <div className={css(styles.title)} id={"clamp"}>
+            <div className={css(styles.title) + " clamp1"}>
               {citation.title && citation.title}
             </div>
           </a>
