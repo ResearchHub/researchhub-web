@@ -207,6 +207,13 @@ input[type="number"]::-webkit-outer-spin-button {
   overflow: hidden;
 }
 
+.clamp1 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
 .clamp2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -214,10 +221,24 @@ input[type="number"]::-webkit-outer-spin-button {
   overflow: hidden;
 }
 
-.clamp1 {
+.clamp3 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.clamp4 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.clamp5 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
   overflow: hidden;
 }
 
