@@ -154,3 +154,12 @@ export const fetchPaperDraft = ({ paperId }) => {
     API.GET_CONFIG()
   );
 };
+
+export const fetchLatestActivity = ({ userId }) => {
+  return fetch(
+    API.USER({ userId, route: "following_latest_activy" }),
+    API.GET_CONFIG()
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
