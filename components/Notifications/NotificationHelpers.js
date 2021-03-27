@@ -24,11 +24,11 @@ const HyperLink = (props) => {
 };
 
 const TimeStamp = (props) => {
-  const { date } = props;
+  const { date, removeIcon } = props;
 
   return (
     <span className={css(styles.timestamp)}>
-      <span className={css(styles.timestampDivider)}>•</span>
+      {!removeIcon && <span className={css(styles.timestampDivider)}>•</span>}
       {timeAgoStamp(date)}
     </span>
   );
