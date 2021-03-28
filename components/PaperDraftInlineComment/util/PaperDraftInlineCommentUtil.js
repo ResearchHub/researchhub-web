@@ -117,7 +117,7 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
 
 /* -------- EXPORTS -------- */
 export const INLINE_COMMENT_MAP = {
-  TYPE_KEY: "RichEditor-research-hub-inline-comment", // interpreted in paper.css
+  TYPE_KEY: "ResearchHub-Inline-Comment", // interpreted in paper.css
 };
 
 export function handleBlockStyleToggle({
@@ -135,23 +135,23 @@ export function handleBlockStyleToggle({
   return EditorState.push(editorState, modifiedContentState);
 }
 
-export const getInlineCommentBlockRenderer = ({
-  inlineComments,
-  updateInlineComment,
-}) => (contentBlock) => {
-  const blockTypes = contentBlock.getType().split(" ");
-  return blockTypes.includes(INLINE_COMMENT_MAP.TYPE_KEY)
-    ? {
-        component: PaperDraftInlineCommentTextWrap,
-        editable: true,
-        props: {
-          cssClassNames: blockTypes,
-          inlineComments,
-          updateInlineComment,
-        },
-      }
-    : undefined; /* intentional undefined for DraftJS to handle */
-};
+// export const getInlineCommentBlockRenderer = ({
+//   inlineComments,
+//   updateInlineComment,
+// }) => (contentBlock) => {
+//   const blockTypes = contentBlock.getType().split(" ");
+//   return blockTypes.includes(INLINE_COMMENT_MAP.TYPE_KEY)
+//     ? {
+//         component: PaperDraftInlineCommentTextWrap,
+//         editable: true,
+//         props: {
+//           cssClassNames: blockTypes,
+//           inlineComments,
+//           updateInlineComment,
+//         },
+//       }
+//     : undefined; /* intentional undefined for DraftJS to handle */
+// };
 
 export function getCurrSelectionBlockTypesInSet(editorState) {
   const block = getSelectedBlockFromEditorState(editorState);
