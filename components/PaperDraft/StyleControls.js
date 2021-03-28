@@ -33,6 +33,7 @@ const INLINE_STYLES = [
 const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
   const currSelectedBlockTypes = getCurrSelectionBlockTypesInSet(editorState);
+
   const blockStyleButtons = useMemo(
     () =>
       BLOCK_TYPES.map(({ label, style }) => (
