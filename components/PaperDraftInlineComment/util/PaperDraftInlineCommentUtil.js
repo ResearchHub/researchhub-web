@@ -1,5 +1,6 @@
 import { draftCssToCustomCss } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 import { EditorState, Modifier } from "draft-js";
+import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
 import {
   updateInlineComment,
   deleteInlineComment,
@@ -45,36 +46,49 @@ function formatBlockTypes(blockTypes) {
     : blockTypes;
 }
 
-function handleInlineCommentBlockToggle(editorState, inlineCommentStore) {
-  /* TODO: calvinhlee - add inline-comment removal plan */
+/* NOTE: This function only upserts. 
+   Deletion must be done at the Comment-UI, utilizing a direct backend-call & updating unduxStore */
+function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
   const selectionBlock = getSelectedBlockFromEditorState(editorState);
   const currBlockTypes = getBlockTypesInSet(selectionBlock);
   const currBlockData = selectionBlock.getData();
 
-  const blockKey = editorState.getSelection().getStartKey();
+  /* ---- Block Styling ---- */
   const newBlockTypes = new Set([...currBlockTypes]); // need to preserve curr styling
-  if (!currBlockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY)) {
-    newBlockTypes.add(INLINE_COMMENT_MAP.TYPE_KEY);
-    updateInlineComment({
-      updatedInlineComment: {
-        blockKey,
-        commentThreadID: null,
-      },
-      store: inlineCommentStore,
-    });
-  } else {
-    newBlockTypes.delete(INLINE_COMMENT_MAP.TYPE_KEY);
-    deleteInlineComment({
-      blockKey,
-      commentThreadID: null,
-      store: inlineCommentStore,
-    });
-  }
-
+  newBlockTypes.add(INLINE_COMMENT_MAP.TYPE_KEY); // TODO: remove after migrating to Entities
   const formattedBlockTypes = formatBlockTypes(newBlockTypes);
+
+  /* ---- Applying Entity to Draft---- */
+  const blockKey = editorState.getSelection().getStartKey();
+  const currContentState = editorState.getCurrentContent();
+  currContentState.createEntity(INLINE_COMMENT_MAP.TYPE_KEY, "MUTABLE", {
+    blockKey,
+    entityKey,
+  });
+  const entityKey = currContentState.getLastCreatedEntityKey();
+  console.warn("entityKey: ", entityKey);
+  const updatedContentWithNewEnt = Modifier.applyEntity(
+    currContentState,
+    editorState.getSelection(),
+    entityKey
+  );
+  const updatedEditorStateWithNewEnt = EditorState.set(editorState, {
+    currentContent: updatedContentWithNewEnt,
+  });
+
+  /* ---- Updating New InlineComment Data in Undux ----*/
+  updateInlineComment({
+    store: inlineCommentStore,
+    updatedInlineComment: {
+      blockKey,
+      entityKey,
+      commentThreadID: null /* backend instance not created until an api is called */,
+    },
+  });
+
   return getModifiedContentState({
     blockData: currBlockData,
-    editorState,
+    editorState: updatedEditorStateWithNewEnt,
     newBlockTypes: formattedBlockTypes,
   });
 }
@@ -113,7 +127,10 @@ export function handleBlockStyleToggle({
 }) {
   const modifiedContentState =
     toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY
-      ? handleInlineCommentBlockToggle(editorState, inlineCommentStore)
+      ? handleInlineCommentBlockToggle({
+          editorState,
+          inlineCommentStore,
+        })
       : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
   return EditorState.push(editorState, modifiedContentState);
 }
