@@ -16,7 +16,7 @@ function InlineCommentThreadsDisplayContainer({
   const targetGroupedInlineComments = unduxStore.get("inlineComments")[
     blockKey
   ];
-
+  console.warn("HEY: ", blockKey);
   const commentThreadCards = useMemo(
     (): Array<ReactElement<typeof InlineCommentThreadCard>> =>
       targetGroupedInlineComments.map(
