@@ -1,11 +1,6 @@
 import { draftCssToCustomCss } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 import { EditorState, Modifier } from "draft-js";
-import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
-import {
-  updateInlineComment,
-  deleteInlineComment,
-} from "../undux/InlineCommentUnduxStore";
-import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineCommentTextWrap";
+import { updateInlineComment } from "../undux/InlineCommentUnduxStore";
 
 function getSelectedBlockFromEditorState(editorState) {
   // TODO: calvinhlee need to improve below to capture selection range within the block
