@@ -16,7 +16,7 @@ function fetchInlineCommentThreads({
 }: fetchInlineCommentThreadsArgs): void {
   /* Unlike Waypoint (which relies on paper parsing), 
      the source of truth for InlineComments is the backend. 
-     Hence, rendering the comment displaying logic & updating unduxStore should happen with a fetch 
+     Hence, comment displaying logic & updating unduxStore should happen with a fetch 
      TODO: calvinhlee - make api call here. */
 }
 
