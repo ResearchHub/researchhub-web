@@ -4,12 +4,10 @@ import colors from "../../config/themes/colors";
 import { InlineComment } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { StyleSheet, css } from "aphrodite";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
-import React, { Fragment, ReactElement, useState } from "react";
+import React, { ReactElement } from "react";
 import InlineCommentComposer from "./InlineCommentComposer";
 
 // Redux: TODO: calvinhlee Auth shouldn't really be dependent on the redux. Need to revist and remove.
-import DiscussionActions from "../../redux/discussion";
-import { MessageActions } from "../../redux/message";
 import { emptyFunction } from "../PaperDraft/util/PaperDraftUtils";
 
 type Props = { auth: any /* redux */; inlineComment: InlineComment };
