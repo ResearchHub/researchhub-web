@@ -9,33 +9,19 @@ import {
 import {
   getBlockStyleFn,
   getHandleKeyCommand,
-  getHandleOnTab,
 } from "./util/PaperDraftTextEditorUtil";
-import { getInlineCommentBlockRenderer } from "../PaperDraftInlineComment/util/paperDraftInlineCommentUtil";
+import {
+  findWayPointEntity,
+  findInlineCommentEntity,
+} from "./util/PaperDraftDecoratorFinders";
+import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
+// import { getInlineCommentBlockRenderer } from "../PaperDraftInlineComment/util/paperDraftInlineCommentUtil";
 import InlineCommentUnduxStore, {
   updateInlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 
 import PaperDraft from "./PaperDraft";
 import WaypointSection from "./WaypointSection";
-
-// strategy used for the decorator
-const findWayPointEntity = (seenEntityKeys, setSeenEntityKeys) => (
-  contentBlock,
-  callback,
-  contentState
-) => {
-  contentBlock.findEntityRanges((character) => {
-    const entityKey = character.getEntity();
-    if (!Boolean(seenEntityKeys[entityKey])) {
-      setSeenEntityKeys({ ...seenEntityKeys, [entityKey]: true });
-      return (
-        entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === "WAYPOINT"
-      );
-    }
-  }, callback);
-};
 
 const getDecorator = ({
   seenEntityKeys,
@@ -48,6 +34,10 @@ const getDecorator = ({
         <WaypointSection {...props} onSectionEnter={setActiveSection} />
       ),
       strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
+    },
+    {
+      component: (props) => <PaperDraftInlineCommentTextWrap {...props} />,
+      strategy: findInlineCommentEntity,
     },
   ]);
 
@@ -137,15 +127,15 @@ function PaperDraftContainer({
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
-  const inlineCommentBlockRenderer = getInlineCommentBlockRenderer({
-    inlineComments: inlineCommentStore.get("inlineComments"),
-    updateInlineComment,
-  });
+  // const inlineCommentBlockRenderer = getInlineCommentBlockRenderer({
+  //   inlineComments: inlineCommentStore.get("inlineComments"),
+  //   updateInlineComment,
+  // });
 
   return (
     <PaperDraft
       textEditorProps={{
-        blockRendererFn: inlineCommentBlockRenderer,
+        // blockRendererFn: inlineCommentBlockRenderer,
         blockStyleFn: getBlockStyleFn,
         editorState,
         handleKeyCommand: getHandleKeyCommand({
@@ -154,10 +144,6 @@ function PaperDraftContainer({
         }),
         initEditorState,
         onChange: setEditorState,
-        onTab: getHandleOnTab({
-          editorState,
-          setEditorState,
-        }),
         setInitEditorState,
         spellCheck: true,
       }}
