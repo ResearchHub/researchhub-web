@@ -106,7 +106,6 @@ export function updateInlineComment({
     newInlineComments[blockKey][targetIndex] = updatedInlineComment;
   } else {
     /* if index doesn't exist, we are creating an exntirely new comment thread given a block */
-    console.warn("YO: ", updatedInlineComment);
     const targetArr = newInlineComments[blockKey];
     if (targetArr != null) {
       targetArr.push(updatedInlineComment);
