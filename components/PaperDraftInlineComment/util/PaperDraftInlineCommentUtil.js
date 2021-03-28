@@ -55,18 +55,20 @@ function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
 
   /* ---- Block Styling ---- */
   const newBlockTypes = new Set([...currBlockTypes]); // need to preserve curr styling
-  newBlockTypes.add(INLINE_COMMENT_MAP.TYPE_KEY); // TODO: remove after migrating to Entities
   const formattedBlockTypes = formatBlockTypes(newBlockTypes);
 
   /* ---- Applying Entity to Draft---- */
   const blockKey = editorState.getSelection().getStartKey();
   const currContentState = editorState.getCurrentContent();
-  currContentState.createEntity(INLINE_COMMENT_MAP.TYPE_KEY, "MUTABLE", {
-    blockKey,
-    entityKey,
-  });
+  currContentState.createEntity(
+    INLINE_COMMENT_MAP.TYPE_KEY /* entity type key */,
+    "MUTABLE",
+    /* entity meta data */
+    {
+      blockKey,
+    }
+  );
   const entityKey = currContentState.getLastCreatedEntityKey();
-  console.warn("entityKey: ", entityKey);
   const updatedContentWithNewEnt = Modifier.applyEntity(
     currContentState,
     editorState.getSelection(),
@@ -99,9 +101,7 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
   const currBlockData = selectionBlock.getData();
 
   /* NOTE: Any new styling should be in custom type for consistency */
-  const newBlockTypes = currBlockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY)
-    ? new Set([INLINE_COMMENT_MAP.TYPE_KEY])
-    : new Set();
+  const newBlockTypes = new Set();
   const toggledBlockType = draftCssToCustomCss[toggledStyle] ?? toggledStyle;
   if (!currBlockTypes.has(toggledBlockType)) {
     newBlockTypes.add(toggledBlockType);
@@ -134,24 +134,6 @@ export function handleBlockStyleToggle({
       : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
   return EditorState.push(editorState, modifiedContentState);
 }
-
-// export const getInlineCommentBlockRenderer = ({
-//   inlineComments,
-//   updateInlineComment,
-// }) => (contentBlock) => {
-//   const blockTypes = contentBlock.getType().split(" ");
-//   return blockTypes.includes(INLINE_COMMENT_MAP.TYPE_KEY)
-//     ? {
-//         component: PaperDraftInlineCommentTextWrap,
-//         editable: true,
-//         props: {
-//           cssClassNames: blockTypes,
-//           inlineComments,
-//           updateInlineComment,
-//         },
-//       }
-//     : undefined; /* intentional undefined for DraftJS to handle */
-// };
 
 export function getCurrSelectionBlockTypesInSet(editorState) {
   const block = getSelectedBlockFromEditorState(editorState);
