@@ -26,6 +26,7 @@ function InlineCommentThreadsDisplayBar(): ReactElement<typeof React.Fragment> {
   }, [paperID, inlineCommentStore]);
 
   const inlineComments = inlineCommentStore.get("inlineComments");
+  console.warn("inlineComments: ", inlineComments);
   const InlineCommentThreadsDisplayContainers = Object.keys(inlineComments).map(
     (
       blockKey: string
