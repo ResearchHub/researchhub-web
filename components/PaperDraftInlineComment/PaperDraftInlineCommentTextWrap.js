@@ -4,7 +4,6 @@ import React from "react";
 function PaperDraftInlineCommentTextWrap(props) {
   const { entityKey, contentState } = props ?? {};
   const data = contentState.getEntity(entityKey).getData();
-  console.warn("InlineComment DATA: ", data);
   return (
     <span className={css(styles.commentTextHighLight)}>{props.children}</span>
   );
@@ -15,4 +14,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(204 243 221)",
   },
 });
+
 export default PaperDraftInlineCommentTextWrap;
