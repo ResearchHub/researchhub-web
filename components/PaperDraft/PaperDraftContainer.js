@@ -1,34 +1,26 @@
+import { CompositeDecorator, EditorState } from "draft-js";
 import React, { useEffect, useMemo, useState } from "react";
 import { Helpers } from "@quantfive/js-web-config";
+import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { fetchPaperDraft } from "~/config/fetch";
-import { CompositeDecorator, EditorState } from "draft-js";
-import {
-  formatBase64ToEditorState,
-  formatRawJsonToEditorState,
-} from "./util/PaperDraftUtils";
 import {
   getBlockStyleFn,
   getHandleKeyCommand,
 } from "./util/PaperDraftTextEditorUtil";
 import {
-  findWayPointEntity,
   findInlineCommentEntity,
+  findWayPointEntity,
 } from "./util/PaperDraftDecoratorFinders";
-import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
-// import { getInlineCommentBlockRenderer } from "../PaperDraftInlineComment/util/paperDraftInlineCommentUtil";
-import InlineCommentUnduxStore, {
-  updateInlineComment,
-} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-
+import {
+  formatBase64ToEditorState,
+  formatRawJsonToEditorState,
+} from "./util/PaperDraftUtils";
 import PaperDraft from "./PaperDraft";
+import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
 import WaypointSection from "./WaypointSection";
 
-const getDecorator = ({
-  seenEntityKeys,
-  setActiveSection,
-  setSeenEntityKeys,
-}) =>
-  new CompositeDecorator([
+function getDecorator({ seenEntityKeys, setActiveSection, setSeenEntityKeys }) {
+  return new CompositeDecorator([
     {
       component: (props) => (
         <WaypointSection {...props} onSectionEnter={setActiveSection} />
@@ -40,6 +32,7 @@ const getDecorator = ({
       strategy: findInlineCommentEntity,
     },
   ]);
+}
 
 function paperFetchHook({
   decorator,
@@ -127,15 +120,9 @@ function PaperDraftContainer({
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
-  // const inlineCommentBlockRenderer = getInlineCommentBlockRenderer({
-  //   inlineComments: inlineCommentStore.get("inlineComments"),
-  //   updateInlineComment,
-  // });
-
   return (
     <PaperDraft
       textEditorProps={{
-        // blockRendererFn: inlineCommentBlockRenderer,
         blockStyleFn: getBlockStyleFn,
         editorState,
         handleKeyCommand: getHandleKeyCommand({
