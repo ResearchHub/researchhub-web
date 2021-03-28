@@ -99,9 +99,7 @@ export function updateInlineComment({
     commentThreadID,
     store
   );
-  console.warn("targetIndex: ", targetIndex);
   const newInlineComments = { ...store.get("inlineComments") };
-  console.warn("curr inline comments: ", newInlineComments);
   if (targetIndex > -1) {
     newInlineComments[blockKey][targetIndex] = updatedInlineComment;
   } else {
