@@ -9,6 +9,7 @@ import {
 } from "./util/PaperDraftTextEditorUtil";
 import {
   handleBlockStyleToggle,
+  handleInlineCommentCleanup,
   INLINE_COMMENT_MAP,
 } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import {
@@ -131,18 +132,17 @@ function PaperDraftContainer({
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
+  const currSelection = editorState.getSelection();
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
-    const selection = editorState.getSelection();
-    if (selection != null && !selection.isCollapsed()) {
-      const newEditorState = handleBlockStyleToggle({
+    if (currSelection != null && !currSelection.isCollapsed()) {
+      const updatedEditorState = handleBlockStyleToggle({
         editorState,
-        inlineCommentStore,
         toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
       });
-      setEditorState(newEditorState);
+      setEditorState(updatedEditorState);
     }
-  }, [editorState.getSelection()]);
+  }, [currSelection]);
 
   return (
     <PaperDraft
