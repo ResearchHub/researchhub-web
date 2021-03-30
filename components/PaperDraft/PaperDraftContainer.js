@@ -16,7 +16,6 @@ import {
   findWayPointEntity,
 } from "./util/PaperDraftDecoratorFinders";
 import {
-  emptyFunction,
   formatBase64ToEditorState,
   formatRawJsonToEditorState,
 } from "./util/PaperDraftUtils";
