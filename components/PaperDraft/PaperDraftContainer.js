@@ -135,14 +135,18 @@ function PaperDraftContainer({
   const currSelection = editorState.getSelection();
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
-    if (currSelection != null && !currSelection.isCollapsed()) {
+    if (
+      currSelection != null &&
+      !currSelection.isCollapsed() &&
+      !isDraftInEditMode
+    ) {
       const updatedEditorState = handleBlockStyleToggle({
         editorState,
         toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
       });
       setEditorState(updatedEditorState);
     }
-  }, [currSelection]);
+  }, [currSelection, setIsDraftInEditMode]);
 
   const handleKeyCommand = useCallback(
     ({ editorState, setEditorState }) => {
