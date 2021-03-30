@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
 import InlineCommentUnduxStore, {
   findTargetInlineComment,
@@ -10,6 +10,7 @@ function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
   const { blockKey, commentThreadID, entityKey } = props ?? {};
+  const [showPopover, setShowPopover] = useState(false);
   const unduxStore = InlineCommentUnduxStore.useStore();
 
   const targetInlineComment = useMemo(
@@ -23,20 +24,31 @@ function PaperDraftInlineCommentTextWrap(
     [blockKey, commentThreadID, entityKey, unduxStore]
   );
   const doesCommentExistInStore = targetInlineComment != null;
+
+  useEffect(() => {
+    if (!doesCommentExistInStore) {
+      setShowPopover(true);
+    }
+  }, [doesCommentExistInStore]);
+
   const hidePopoverAndInsertToStore = () => {
-    updateInlineComment({
-      store: unduxStore,
-      updatedInlineComment: {
-        blockKey,
-        commentThreadID,
-        entityKey,
+    {
+      updateInlineComment({
         store: unduxStore,
-      },
-    });
+        updatedInlineComment: {
+          blockKey,
+          commentThreadID,
+          entityKey,
+          store: unduxStore,
+        },
+      });
+      setShowPopover(false);
+    }
   };
 
   return (
     <Popover
+      onOuterAction={() => setShowPopover(false)}
       above
       body={
         <span
@@ -56,7 +68,7 @@ function PaperDraftInlineCommentTextWrap(
           {props.children}
         </span>
       }
-      isOpen={!doesCommentExistInStore}
+      isOpen={showPopover}
     />
   );
 }

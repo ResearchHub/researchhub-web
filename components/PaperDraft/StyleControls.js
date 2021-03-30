@@ -14,10 +14,6 @@ const BLOCK_TYPES = [
   { label: "H2", style: "header-two" },
   { label: "UL", style: "unordered-list-item" },
   { label: "OL", style: "ordered-list-item" },
-  {
-    label: "Comment",
-    style: INLINE_COMMENT_MAP.TYPE_KEY,
-  },
 ];
 
 const INLINE_STYLES = [
