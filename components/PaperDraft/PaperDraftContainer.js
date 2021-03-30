@@ -1,5 +1,5 @@
 import { CompositeDecorator, EditorState } from "draft-js";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Helpers } from "@quantfive/js-web-config";
 import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { fetchPaperDraft } from "~/config/fetch";
