@@ -1,29 +1,26 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
 import { connect } from "react-redux";
-import colors from "../../config/themes/colors";
 import { InlineComment } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { StyleSheet, css } from "aphrodite";
+import colors from "../../config/themes/colors";
+import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
-import React, { ReactElement } from "react";
 import InlineCommentComposer from "./InlineCommentComposer";
-
+import React, { ReactElement } from "react";
 // Redux: TODO: calvinhlee Auth shouldn't really be dependent on the redux. Need to revist and remove.
 import { emptyFunction } from "../PaperDraft/util/PaperDraftUtils";
 
 type Props = { auth: any /* redux */; inlineComment: InlineComment };
 
-function InlineCommentThreadCard({
-  auth,
-  inlineComment,
-}: Props): ReactElement<"div"> {
+function InlineCommentThreadCard({ auth }: Props): ReactElement<"div"> {
   return (
-    <div className={css(styles.root)}>
+    <ColumnContainer overrideStyles={styles.container}>
       <DiscussionPostMetadata
         authorProfile={auth.user.author_profile} // @ts-ignore
         data={{ created_by: auth.user }}
         smaller={true}
       />
-      <div className={css(styles.container)}>
+      <div className={css(styles.composerContainer)}>
         <InlineCommentComposer
           onCancel={emptyFunction /* api call & update undux store */}
           onChange={emptyFunction}
@@ -31,20 +28,35 @@ function InlineCommentThreadCard({
           value={""}
         />
       </div>
-    </div>
+    </ColumnContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    paddingLeft: 3,
+  title: {
+    display: "flex",
+    alignItems: "center",
+    background: "#fff",
+    boxSizing: "border-box",
+    height: 40,
+    fontWeight: 500,
+    paddingLeft: 20,
+    fontSize: 12,
+    letterSpacing: 1.2,
+    color: colors.BLACK(0.6),
+    textTransform: "uppercase",
   },
-  container: {
+  composerContainer: {
     alignItems: "center",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     paddingTop: 5,
+  },
+  container: {
+    marginTop: 20,
+    padding: "20px 15px",
+    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   contentBody: {
     fontSize: 14,

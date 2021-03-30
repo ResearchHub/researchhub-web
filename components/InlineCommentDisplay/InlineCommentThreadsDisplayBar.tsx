@@ -1,9 +1,12 @@
+import { css, StyleSheet } from "aphrodite";
 import InlineCommentThreadsDisplayContainer from "./InlineCommentThreadsDisplayContainer";
 import InlineCommentUnduxStore, {
   ID,
+  InlineComment,
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import React, { ReactElement, useEffect } from "react";
+import InlineCommentThreadCard from "./InlineCommentThreadCard";
 
 type fetchInlineCommentThreadsArgs = {
   paperID: ID;
@@ -20,7 +23,7 @@ function fetchInlineCommentThreads({
      TODO: calvinhlee - make api call here. */
 }
 
-function InlineCommentThreadsDisplayBar(): ReactElement<typeof React.Fragment> {
+export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
 
@@ -29,21 +32,27 @@ function InlineCommentThreadsDisplayBar(): ReactElement<typeof React.Fragment> {
   }, [paperID, inlineCommentStore]);
 
   const inlineComments = inlineCommentStore.get("inlineComments");
-  const InlineCommentThreadsDisplayContainers = Object.keys(inlineComments).map(
+  const commentThreadCards = inlineComments.map(
     (
-      blockKey: string
-    ): ReactElement<typeof InlineCommentThreadsDisplayContainer> => (
-      // NOTE: Thread-"s" are grouped by blockKey
-      <InlineCommentThreadsDisplayContainer
-        blockKey={blockKey}
-        key={blockKey}
+      inlineComment: InlineComment
+    ): ReactElement<typeof InlineCommentThreadCard> => (
+      <InlineCommentThreadCard
+        inlineComment={inlineCommentStore}
+        key={inlineComment.entityKey}
       />
     )
   );
 
   return (
-    <React.Fragment>{InlineCommentThreadsDisplayContainers}</React.Fragment>
+    <div className={css(styles.InlineCommentThreadsDisplayBar)}>
+      {commentThreadCards}
+    </div>
   );
 }
 
-export default InlineCommentThreadsDisplayBar;
+const styles = StyleSheet.create({
+  InlineCommentThreadsDisplayBar: {
+    height: 900,
+    overflow: "auto",
+  },
+});
