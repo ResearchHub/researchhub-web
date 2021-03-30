@@ -11,9 +11,17 @@ export type DeleteInlineCommentArgs = {
 };
 export type InlineComment = {
   blockKey: string;
-  entityKey: string;
   commentThreadID: ID;
+  isNewSelection: boolean;
+  entityKey: string;
 };
+export type FindTargetInlineCommentArg = {
+  blockKey: string;
+  commentThreadID: ID;
+  entityKey: string;
+  store: Store<State>;
+};
+
 export type GroupedInlineComments = {
   [blockKey: string]: Array<InlineComment>;
 };
@@ -88,11 +96,33 @@ export function deleteInlineComment({
   return store;
 }
 
+export function findTargetInlineComment({
+  blockKey,
+  commentThreadID,
+  entityKey,
+  store,
+}: FindTargetInlineCommentArg): InlineComment | null {
+  const targetIndex = findIndexOfCommentInStore(
+    blockKey,
+    entityKey,
+    commentThreadID,
+    store
+  );
+  return targetIndex > -1
+    ? store.get("inlineComments")[blockKey][targetIndex]
+    : null;
+}
+
 export function updateInlineComment({
   store,
   updatedInlineComment,
 }: UpdateInlineCommentArgs): InlineCommentStore {
-  const { blockKey, entityKey, commentThreadID } = updatedInlineComment;
+  const {
+    blockKey,
+    commentThreadID,
+    entityKey,
+    isNewSelection,
+  } = updatedInlineComment;
   const targetIndex = findIndexOfCommentInStore(
     blockKey,
     entityKey,
