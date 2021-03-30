@@ -50,12 +50,10 @@ class PaperDraft extends React.Component {
   toggleBlockType = (toggledBlockType) => (event) => {
     event.stopPropagation();
     const {
-      inlineCommentStore,
       textEditorProps: { editorState, onChange },
     } = this.props;
     const newEditorState = handleBlockStyleToggle({
       editorState,
-      inlineCommentStore,
       toggledStyle: toggledBlockType,
     });
     onChange(newEditorState);

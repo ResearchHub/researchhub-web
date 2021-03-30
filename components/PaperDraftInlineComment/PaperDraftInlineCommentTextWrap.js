@@ -19,14 +19,19 @@ function PaperDraftInlineCommentTextWrap(
         commentThreadID,
         entityKey,
         store: unduxStore,
-      }) ?? {},
+      }),
     [blockKey, commentThreadID, entityKey, unduxStore]
   );
-
-  const turnOffPopover = () => {
+  const doesCommentExistInStore = targetInlineComment != null;
+  const hidePopoverAndInsertToStore = () => {
     updateInlineComment({
       store: unduxStore,
-      updatedInlineComment: { ...targetInlineComment, isNewSelection: false },
+      updatedInlineComment: {
+        blockKey,
+        commentThreadID,
+        entityKey,
+        store: unduxStore,
+      },
     });
   };
 
@@ -37,17 +42,21 @@ function PaperDraftInlineCommentTextWrap(
         <span
           className={css(styles.popoverBodyStyle)}
           role="none"
-          onClick={turnOffPopover}
+          onClick={hidePopoverAndInsertToStore}
         >
           {"Add Comment"}
         </span>
       }
       children={
-        <span className={css(styles.commentTextHighLight)}>
+        <span
+          className={css(
+            doesCommentExistInStore ? styles.commentTextHighLight : null
+          )}
+        >
           {props.children}
         </span>
       }
-      isOpen={targetInlineComment.isNewSelection ?? false}
+      isOpen={!doesCommentExistInStore}
     />
   );
 }
