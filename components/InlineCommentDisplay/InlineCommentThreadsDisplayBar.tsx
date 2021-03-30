@@ -4,7 +4,17 @@ import InlineCommentUnduxStore, {
   InlineComment,
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+<<<<<<< HEAD
 import React, { ReactElement } from "react";
+=======
+import React, { ReactElement, useEffect } from "react";
+import InlineCommentThreadCard from "./InlineCommentThreadCard";
+
+type fetchInlineCommentThreadsArgs = {
+  paperID: ID;
+  inlineCommentStore: InlineCommentStore;
+};
+>>>>>>> ad674ac3 (cleanup)
 
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
 
