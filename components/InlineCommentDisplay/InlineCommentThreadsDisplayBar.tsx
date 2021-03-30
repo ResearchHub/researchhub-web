@@ -5,11 +5,7 @@ import InlineCommentUnduxStore, {
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import React, { ReactElement, useEffect } from "react";
-<<<<<<< HEAD
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
-=======
-import { StyleSheet, css } from "aphrodite";
->>>>>>> ed1f997e (rendering comment bar with sticky)
 
 type fetchInlineCommentThreadsArgs = {
   paperID: ID;
