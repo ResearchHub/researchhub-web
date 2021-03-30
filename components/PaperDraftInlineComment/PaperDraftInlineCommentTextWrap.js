@@ -31,19 +31,18 @@ function PaperDraftInlineCommentTextWrap(
     }
   }, [doesCommentExistInStore]);
 
-  const hidePopoverAndInsertToStore = () => {
-    {
-      updateInlineComment({
+  const hidePopoverAndInsertToStore = (event) => {
+    event.stopPropagation();
+    updateInlineComment({
+      store: unduxStore,
+      updatedInlineComment: {
+        blockKey,
+        commentThreadID,
+        entityKey,
         store: unduxStore,
-        updatedInlineComment: {
-          blockKey,
-          commentThreadID,
-          entityKey,
-          store: unduxStore,
-        },
-      });
-      setShowPopover(false);
-    }
+      },
+    });
+    setShowPopover(false);
   };
 
   return (
