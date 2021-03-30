@@ -1,13 +1,19 @@
 import { draftCssToCustomCss } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 import { EditorState, Modifier } from "draft-js";
-import { updateInlineComment } from "../undux/InlineCommentUnduxStore";
+import {
+  updateInlineComment,
+  findTargetInlineComment,
+} from "../undux/InlineCommentUnduxStore";
 
-function getSelectedBlockFromEditorState(editorState) {
+function getSelectedBlockFromEditorState(editorState, selectionState = null) {
   // TODO: calvinhlee need to improve below to capture selection range within the block
-  const selectionState = editorState.getSelection();
   return editorState
     .getCurrentContent()
-    .getBlockForKey(selectionState.getStartKey());
+    .getBlockForKey(
+      selectionState != null
+        ? selectionState
+        : editorState.getSelection().getStartKey()
+    );
 }
 
 function getBlockTypesInSet(block) {
@@ -43,7 +49,7 @@ function formatBlockTypes(blockTypes) {
 
 /* NOTE: This function only upserts. 
    Deletion must be done at the Comment-UI, utilizing a direct backend-call & updating unduxStore */
-function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
+function handleInlineCommentBlockToggle({ editorState }) {
   const selectionBlock = getSelectedBlockFromEditorState(editorState);
   const currBlockTypes = getBlockTypesInSet(selectionBlock);
   const currBlockData = selectionBlock.getData();
@@ -62,7 +68,6 @@ function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
     {
       blockKey,
       commentThreadID: null,
-      entityKey,
     }
   );
   const entityKey = currContentState.getLastCreatedEntityKey();
@@ -73,17 +78,6 @@ function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
   );
   const updatedEditorStateWithNewEnt = EditorState.set(editorState, {
     currentContent: updatedContentWithNewEnt,
-  });
-
-  /* ---- Updating New InlineComment Data in Undux ----*/
-  updateInlineComment({
-    store: inlineCommentStore,
-    updatedInlineComment: {
-      blockKey,
-      commentThreadID: null /* backend instance not created until an api is called */,
-      entityKey,
-      isNewSelection: true,
-    },
   });
 
   return getModifiedContentState({
@@ -118,16 +112,11 @@ export const INLINE_COMMENT_MAP = {
   TYPE_KEY: "ResearchHub-Inline-Comment", // interpreted in paper.css
 };
 
-export function handleBlockStyleToggle({
-  editorState,
-  inlineCommentStore /* unduxStore see InlineCommentUnduxStore */,
-  toggledStyle,
-}) {
+export function handleBlockStyleToggle({ editorState, toggledStyle }) {
   const modifiedContentState =
     toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY
       ? handleInlineCommentBlockToggle({
           editorState,
-          inlineCommentStore,
         })
       : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
   return EditorState.push(editorState, modifiedContentState);
@@ -136,4 +125,36 @@ export function handleBlockStyleToggle({
 export function getCurrSelectionBlockTypesInSet(editorState) {
   const block = getSelectedBlockFromEditorState(editorState);
   return getBlockTypesInSet(block);
+}
+
+/* Comepares prev selections & undux store. 
+   If target doesn't exist, we need to garbage collect this Entity 
+   NOTE: this MUST be called before creating a new "placeholder" comment entity */
+export function handleInlineCommentCleanup({
+  editorState,
+  inlineCommentStore,
+  prevSelection,
+}) {
+  const prevBlockStartKey = prevSelection.getStartKey();
+  const currContentState = editorState.getCurrentContent();
+  const lastCreatedEntityKey = currContentState.getLastCreatedEntityKey();
+  const targetInlineComment = findTargetInlineComment({
+    blockKey: prevBlockStartKey,
+    commentThreadID: null,
+    entityKey: lastCreatedEntityKey,
+    store: inlineCommentStore,
+  });
+  // must confirm that no such comment exists in store to delete the entity
+  if (targetInlineComment == null) {
+    debugger;
+    const updatedContentState = Modifier.applyEntity(
+      currContentState,
+      prevSelection,
+      null
+    );
+    return EditorState.set(editorState, {
+      currentContent: updatedContentState,
+    });
+  }
+  return null;
 }
