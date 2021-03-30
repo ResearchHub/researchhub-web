@@ -1,5 +1,4 @@
 import { css, StyleSheet } from "aphrodite";
-import InlineCommentThreadsDisplayContainer from "./InlineCommentThreadsDisplayContainer";
 import InlineCommentUnduxStore, {
   ID,
   InlineComment,
@@ -37,7 +36,7 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
       inlineComment: InlineComment
     ): ReactElement<typeof InlineCommentThreadCard> => (
       <InlineCommentThreadCard
-        inlineComment={inlineCommentStore}
+        inlineComment={inlineComment}
         key={inlineComment.entityKey}
       />
     )
