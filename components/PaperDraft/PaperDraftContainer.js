@@ -19,7 +19,13 @@ import PaperDraft from "./PaperDraft";
 import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
 import WaypointSection from "./WaypointSection";
 
-function getDecorator({ seenEntityKeys, setActiveSection, setSeenEntityKeys }) {
+function getDecorator({
+  editorState,
+  seenEntityKeys,
+  setActiveSection,
+  setEditorState,
+  setSeenEntityKeys,
+}) {
   return new CompositeDecorator([
     {
       component: (props) => (
@@ -28,7 +34,13 @@ function getDecorator({ seenEntityKeys, setActiveSection, setSeenEntityKeys }) {
       strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
     },
     {
-      component: (props) => <PaperDraftInlineCommentTextWrap {...props} />,
+      component: (props) => (
+        <PaperDraftInlineCommentTextWrap
+          {...props}
+          editorState={editorState}
+          setEditorState={setEditorState}
+        />
+      ),
       strategy: findInlineCommentEntity,
     },
   ]);
@@ -99,10 +111,13 @@ function PaperDraftContainer({
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
-  const decorator = useMemo(
-    () => getDecorator({ seenEntityKeys, setSeenEntityKeys, setActiveSection }),
-    [seenEntityKeys, setSeenEntityKeys, setActiveSection]
-  );
+  const decorator = getDecorator({
+    editorState,
+    seenEntityKeys,
+    setActiveSection,
+    setEditorState,
+    setSeenEntityKeys,
+  });
 
   useEffect(
     () => {
