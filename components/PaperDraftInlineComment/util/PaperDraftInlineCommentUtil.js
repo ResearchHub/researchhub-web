@@ -11,7 +11,7 @@ function getSelectedBlockFromEditorState(editorState) {
 }
 
 function getBlockTypesInSet(block) {
-  return new Set(block.getType().split(" "));
+  return block != null ? new Set(block.getType().split(" ")) : new Set();
 }
 
 function getModifiedContentState({ blockData, editorState, newBlockTypes }) {
@@ -61,6 +61,8 @@ function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
     /* entity meta data */
     {
       blockKey,
+      commentThreadID: null,
+      entityKey,
     }
   );
   const entityKey = currContentState.getLastCreatedEntityKey();
@@ -78,8 +80,9 @@ function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
     store: inlineCommentStore,
     updatedInlineComment: {
       blockKey,
-      entityKey,
       commentThreadID: null /* backend instance not created until an api is called */,
+      entityKey,
+      isNewSelection: true,
     },
   });
 
