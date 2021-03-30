@@ -1,5 +1,5 @@
 import { CompositeDecorator, EditorState } from "draft-js";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Helpers } from "@quantfive/js-web-config";
 import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { fetchPaperDraft } from "~/config/fetch";
@@ -9,7 +9,6 @@ import {
 } from "./util/PaperDraftTextEditorUtil";
 import {
   handleBlockStyleToggle,
-  handleInlineCommentCleanup,
   INLINE_COMMENT_MAP,
 } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import {
@@ -17,6 +16,7 @@ import {
   findWayPointEntity,
 } from "./util/PaperDraftDecoratorFinders";
 import {
+  emptyFunction,
   formatBase64ToEditorState,
   formatRawJsonToEditorState,
 } from "./util/PaperDraftUtils";
@@ -97,6 +97,7 @@ function PaperDraftContainer({
   setPaperDraftSections,
 }) {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const [isDraftInEditMode, setIsDraftInEditMode] = useState(false);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [initEditorState, setInitEditorState] = useState(
     EditorState.createEmpty()
@@ -144,18 +145,31 @@ function PaperDraftContainer({
     }
   }, [currSelection]);
 
+  const handleKeyCommand = useCallback(
+    ({ editorState, setEditorState }) => {
+      if (isDraftInEditMode) {
+        return getHandleKeyCommand({
+          editorState,
+          setEditorState,
+        });
+      } else {
+        return () => {};
+      }
+    },
+    [editorState, isDraftInEditMode, setEditorState]
+  );
+
   return (
     <PaperDraft
       textEditorProps={{
         blockStyleFn: getBlockStyleFn,
         editorState,
-        handleKeyCommand: getHandleKeyCommand({
-          editorState,
-          setEditorState,
-        }),
+        handleKeyCommand: handleKeyCommand({ editorState, setEditorState }),
         initEditorState,
+        isInEditMode: isDraftInEditMode,
         onChange: setEditorState,
         setInitEditorState,
+        setIsInEditMode: setIsDraftInEditMode,
         spellCheck: true,
       }}
       inlineCommentStore={inlineCommentStore}
