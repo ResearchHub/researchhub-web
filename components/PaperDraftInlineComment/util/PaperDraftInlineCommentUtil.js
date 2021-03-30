@@ -1,9 +1,5 @@
 import { draftCssToCustomCss } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 import { EditorState, Modifier } from "draft-js";
-import {
-  updateInlineComment,
-  findTargetInlineComment,
-} from "../undux/InlineCommentUnduxStore";
 
 function getSelectedBlockFromEditorState(editorState, selectionState = null) {
   // TODO: calvinhlee need to improve below to capture selection range within the block
@@ -125,36 +121,4 @@ export function handleBlockStyleToggle({ editorState, toggledStyle }) {
 export function getCurrSelectionBlockTypesInSet(editorState) {
   const block = getSelectedBlockFromEditorState(editorState);
   return getBlockTypesInSet(block);
-}
-
-/* Comepares prev selections & undux store. 
-   If target doesn't exist, we need to garbage collect this Entity 
-   NOTE: this MUST be called before creating a new "placeholder" comment entity */
-export function handleInlineCommentCleanup({
-  editorState,
-  inlineCommentStore,
-  prevSelection,
-}) {
-  const prevBlockStartKey = prevSelection.getStartKey();
-  const currContentState = editorState.getCurrentContent();
-  const lastCreatedEntityKey = currContentState.getLastCreatedEntityKey();
-  const targetInlineComment = findTargetInlineComment({
-    blockKey: prevBlockStartKey,
-    commentThreadID: null,
-    entityKey: lastCreatedEntityKey,
-    store: inlineCommentStore,
-  });
-  // must confirm that no such comment exists in store to delete the entity
-  if (targetInlineComment == null) {
-    debugger;
-    const updatedContentState = Modifier.applyEntity(
-      currContentState,
-      prevSelection,
-      null
-    );
-    return EditorState.set(editorState, {
-      currentContent: updatedContentState,
-    });
-  }
-  return null;
 }
