@@ -1,5 +1,5 @@
 import { CompositeDecorator, EditorState } from "draft-js";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Helpers } from "@quantfive/js-web-config";
 import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { fetchPaperDraft } from "~/config/fetch";
@@ -7,6 +7,10 @@ import {
   getBlockStyleFn,
   getHandleKeyCommand,
 } from "./util/PaperDraftTextEditorUtil";
+import {
+  handleBlockStyleToggle,
+  INLINE_COMMENT_MAP,
+} from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import {
   findInlineCommentEntity,
   findWayPointEntity,
@@ -19,13 +23,7 @@ import PaperDraft from "./PaperDraft";
 import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
 import WaypointSection from "./WaypointSection";
 
-function getDecorator({
-  editorState,
-  seenEntityKeys,
-  setActiveSection,
-  setEditorState,
-  setSeenEntityKeys,
-}) {
+function getDecorator({ seenEntityKeys, setActiveSection, setSeenEntityKeys }) {
   return new CompositeDecorator([
     {
       component: (props) => (
@@ -34,13 +32,7 @@ function getDecorator({
       strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
     },
     {
-      component: (props) => (
-        <PaperDraftInlineCommentTextWrap
-          {...props}
-          editorState={editorState}
-          setEditorState={setEditorState}
-        />
-      ),
+      component: (props) => <PaperDraftInlineCommentTextWrap {...props} />,
       strategy: findInlineCommentEntity,
     },
   ]);
@@ -111,15 +103,19 @@ function PaperDraftContainer({
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
-  const decorator = getDecorator({
-    editorState,
-    seenEntityKeys,
-    setActiveSection,
-    setEditorState,
-    setSeenEntityKeys,
-  });
+  const decorator = useMemo(
+    () =>
+      getDecorator({
+        seenEntityKeys,
+        setActiveSection,
+        setEditorState,
+        setSeenEntityKeys,
+      }),
+    [seenEntityKeys, setSeenEntityKeys, setActiveSection]
+  );
 
   useEffect(
+    /* backend fetch */
     () => {
       inlineCommentStore.set("paperID")(paperId);
       paperFetchHook({
@@ -134,6 +130,19 @@ function PaperDraftContainer({
     },
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
+
+  useEffect(() => {
+    /* listener to deal with editor selection & inline commenting */
+    const selection = editorState.getSelection();
+    if (selection != null && !selection.isCollapsed()) {
+      const newEditorState = handleBlockStyleToggle({
+        editorState,
+        inlineCommentStore,
+        toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
+      });
+      setEditorState(newEditorState);
+    }
+  }, [editorState.getSelection()]);
 
   return (
     <PaperDraft

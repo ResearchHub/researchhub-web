@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React from "react";
+import React, { useMemo } from "react";
 import Popover from "react-popover";
 import InlineCommentUnduxStore, {
   findTargetInlineComment,
@@ -9,20 +9,21 @@ import InlineCommentUnduxStore, {
 function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
-  const { blockKey, contentState, commentThreadID, entityKey } = props ?? {};
+  const { blockKey, commentThreadID, entityKey } = props ?? {};
   const unduxStore = InlineCommentUnduxStore.useStore();
-  const targetInlineComment =
-    findTargetInlineComment({
-      blockKey,
-      commentThreadID,
-      entityKey,
-      store: unduxStore,
-    }) ?? {};
+
+  const targetInlineComment = useMemo(
+    () =>
+      findTargetInlineComment({
+        blockKey,
+        commentThreadID,
+        entityKey,
+        store: unduxStore,
+      }) ?? {},
+    [blockKey, commentThreadID, entityKey, unduxStore]
+  );
 
   const turnOffPopover = () => {
-    const { blockKey, commentThreadID } = contentState
-      .getEntity(entityKey)
-      .getData();
     updateInlineComment({
       store: unduxStore,
       updatedInlineComment: { ...targetInlineComment, isNewSelection: false },
