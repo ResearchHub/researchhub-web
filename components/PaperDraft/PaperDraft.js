@@ -1,11 +1,5 @@
 import { connect } from "react-redux";
-import {
-  convertToRaw,
-  Editor,
-  EditorState,
-  Modifier,
-  RichUtils,
-} from "draft-js";
+import { convertToRaw, Editor, RichUtils } from "draft-js";
 import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
