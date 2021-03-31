@@ -1,7 +1,8 @@
-import { CompositeDecorator, EditorState } from "draft-js";
+import { EditorState } from "draft-js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Helpers } from "@quantfive/js-web-config";
 import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import { fetchPaperDraft } from "~/config/fetch";
 import {
   getBlockStyleFn,
@@ -12,31 +13,10 @@ import {
   INLINE_COMMENT_MAP,
 } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import {
-  findInlineCommentEntity,
-  findWayPointEntity,
-} from "./util/PaperDraftDecoratorFinders";
-import {
   formatBase64ToEditorState,
   formatRawJsonToEditorState,
 } from "./util/PaperDraftUtils";
 import PaperDraft from "./PaperDraft";
-import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
-import WaypointSection from "./WaypointSection";
-
-function getDecorator({ seenEntityKeys, setActiveSection, setSeenEntityKeys }) {
-  return new CompositeDecorator([
-    {
-      component: (props) => (
-        <WaypointSection {...props} onSectionEnter={setActiveSection} />
-      ),
-      strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
-    },
-    {
-      component: (props) => <PaperDraftInlineCommentTextWrap {...props} />,
-      strategy: findInlineCommentEntity,
-    },
-  ]);
-}
 
 function paperFetchHook({
   decorator,
@@ -85,6 +65,29 @@ function paperFetchHook({
     .catch(handleFetchError);
 }
 
+function getIsReadyForNewInlineComment({
+  editorState,
+  isDraftInEditMode,
+  unduxStore,
+}) {
+  const isGoodTimeInterval =
+    unduxStore.get("lastPromptRemovedTime") === null
+      ? true
+      : Date.now() - unduxStore.get("lastPromptRemovedTime") > 1000;
+  const activePrompt = unduxStore.get("currentPromptKey");
+  const hasActiveCommentPrompt = activePrompt != null;
+  console.warn("PromptKey: ", activePrompt);
+  console.warn("SilencedOnes: ", unduxStore.get("silencedPromptKeys"));
+  const currSelection = editorState.getSelection();
+  return (
+    isGoodTimeInterval &&
+    !hasActiveCommentPrompt &&
+    currSelection != null &&
+    !isDraftInEditMode &&
+    !currSelection.isCollapsed()
+  );
+}
+
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 function PaperDraftContainer({
   isViewerAllowedToEdit,
@@ -119,6 +122,7 @@ function PaperDraftContainer({
     /* backend fetch */
     () => {
       inlineCommentStore.set("paperID")(paperId);
+      /* calvinhlee: the way decorator is attached to parsing here for waypoint needs to be taken out */
       paperFetchHook({
         decorator,
         paperId,
@@ -132,21 +136,25 @@ function PaperDraftContainer({
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
-  const currSelection = editorState.getSelection();
+  const isReadyForNewInlineComment = getIsReadyForNewInlineComment({
+    editorState,
+    isDraftInEditMode,
+    unduxStore: inlineCommentStore,
+  });
+  console.warn("is ready: ", isReadyForNewInlineComment);
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
-    if (
-      currSelection != null &&
-      !currSelection.isCollapsed() &&
-      !isDraftInEditMode
-    ) {
+    if (isReadyForNewInlineComment) {
+      // console.warn("********* should not be called in between *******");
       const updatedEditorState = handleBlockStyleToggle({
         editorState,
+        onInlineCommentPrompt: (entityKey) =>
+          inlineCommentStore.set("currentPromptKey")(entityKey),
         toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
       });
       setEditorState(updatedEditorState);
     }
-  }, [currSelection, setIsDraftInEditMode]);
+  }, [editorState, isReadyForNewInlineComment]);
 
   const handleKeyCommand = useCallback(
     ({ editorState, setEditorState }) => {
@@ -163,6 +171,7 @@ function PaperDraftContainer({
   );
 
   return (
+    // <PaperDraftEventCaptureWrap shouldAllowEventsToPassDown={isDraftInEditMode}>
     <PaperDraft
       textEditorProps={{
         blockStyleFn: getBlockStyleFn,
@@ -182,6 +191,7 @@ function PaperDraftContainer({
       paperDraftSections={paperDraftSections}
       paperId={paperId}
     />
+    // </PaperDraftEventCaptureWrap>
   );
 }
 
