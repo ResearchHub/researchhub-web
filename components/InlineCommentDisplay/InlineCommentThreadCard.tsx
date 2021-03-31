@@ -103,7 +103,9 @@ function InlineCommentThreadCard({
       />
       <div className={css(styles.composerContainer)}>
         <InlineCommentComposer
-          onCancel={emptyFunction /* api call & update undux store */}
+          onCancel={
+            emptyFunction /* close the comment editor and bring back the side menu */
+          }
           onChange={emptyFunction}
           onSubmit={submitComment}
           value={""}
