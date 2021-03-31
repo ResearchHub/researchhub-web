@@ -10,8 +10,13 @@ function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
   const { blockKey, commentThreadID, entityKey } = props ?? {};
-  const [showPopover, setShowPopover] = useState(false);
   const unduxStore = InlineCommentUnduxStore.useStore();
+  const isSilenced = unduxStore.get("silencedPromptKeys").has(entityKey);
+  const isBeingPrompted = unduxStore.get("currentPromptKey") === entityKey;
+
+  const [showPopover, setShowPopover] = useState(
+    !isSilenced && isBeingPrompted
+  );
 
   const targetInlineComment = useMemo(
     () =>
@@ -23,16 +28,25 @@ function PaperDraftInlineCommentTextWrap(
       }),
     [blockKey, commentThreadID, entityKey, unduxStore]
   );
+
   const doesCommentExistInStore = targetInlineComment != null;
+  console.warn("isBeingPrompted: ", isBeingPrompted);
+  // console.warn("===============================");
+  // console.warn("my entityKey: ", entityKey);
+  // console.warn("prompt: ", unduxStore.get("currentPromptKey"));
+  // console.warn("isBeingPrompted: ", isBeingPrompted);
+  // console.warn("doesCommentExistInStore: ", doesCommentExistInStore);
+  // console.warn("isSilenced: ", isSilenced);
+  // console.warn("RESULT: ", isBeingPrompted && !doesCommentExistInStore);
+  // console.warn("===============================");
 
   useEffect(() => {
-    if (!doesCommentExistInStore) {
-      setShowPopover(true);
-    }
-  }, [doesCommentExistInStore]);
+    return function cleanup() {
+      unduxStore.set("currentPromptKey")(null);
+    };
+  }, []);
 
   const hidePopoverAndInsertToStore = (event) => {
-    event.stopPropagation();
     updateInlineComment({
       store: unduxStore,
       updatedInlineComment: {
@@ -42,13 +56,32 @@ function PaperDraftInlineCommentTextWrap(
         store: unduxStore,
       },
     });
+    unduxStore.set("silencedPromptKeys")(
+      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
+    );
+    unduxStore.set("lastPromptRemovedTime")(Date.now());
+    unduxStore.set("currentPromptKey")(null);
+    setShowPopover(false);
+  };
+
+  const hidePopoverAndSilence = (event) => {
+    /* calvin: below is indeed funcky. 
+    we need to figure out a better way to handle this because with deletion, 
+    there's a nasty race-condition with the way decorators are being rendered */
+    console.warn("****** hidePopoverAndSilence ******* ");
+    unduxStore.set("silencedPromptKeys")(
+      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
+    );
+    unduxStore.set("lastPromptRemovedTime")(Date.now());
+    unduxStore.set("currentPromptKey")(null);
     setShowPopover(false);
   };
 
   return (
     <Popover
-      onOuterAction={() => setShowPopover(false)}
       above
+      key={`Popver-${entityKey}`}
+      onOuterAction={isBeingPrompted ? hidePopoverAndSilence : () => {}}
       body={
         <span
           className={css(styles.popoverBodyStyle)}
@@ -63,6 +96,7 @@ function PaperDraftInlineCommentTextWrap(
           className={css(
             doesCommentExistInStore ? styles.commentTextHighLight : null
           )}
+          key={`Popver-Child-${entityKey}`}
         >
           {props.children}
         </span>

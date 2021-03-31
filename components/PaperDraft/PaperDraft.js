@@ -11,6 +11,7 @@ import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
 import StyleControls from "./StyleControls";
 import Button from "~/components/Form/Button";
 import Loader from "~/components/Loader/Loader";
+import PaperDraftEventCaptureWrap from "./PaperDraftEventCaptureWrap";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -167,18 +168,23 @@ class PaperDraft extends React.Component {
               onClickInline={this.toggleInlineStyle}
             />
           </div>
-          <div
-            style={{
-              "caret-color": !isInEditMode ? "transparent" : "black",
-            }}
-            className={css(isInEditMode && styles.editorActive)}
+          <PaperDraftEventCaptureWrap
+            shouldAllowEventsToPassDown={isInEditMode}
           >
-            <Editor
-              {...textEditorProps}
-              readOnly={false} // setting this to false grants access to selection
-              ref={(ref) => (this.editor = ref)}
-            />
-          </div>
+            <div
+              style={{
+                "caret-color": !isInEditMode ? "transparent" : "black",
+              }}
+              className={css(isInEditMode && styles.editorActive)}
+            >
+              <Editor
+                {...textEditorProps}
+                readOnly={false} // setting this to false grants access to selection
+                ref={(ref) => (this.editor = ref)}
+              />
+            </div>
+          </PaperDraftEventCaptureWrap>
+
           <div
             className={css(styles.buttonRow, isInEditMode && styles.editActive)}
           >
