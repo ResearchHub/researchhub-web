@@ -2,6 +2,22 @@
   z-index: 21474800000 !important;
 }
 
+#gtx-trans {
+  display: none !important;
+}
+
+.goog-tooltip {
+  display: none !important;
+}
+.goog-tooltip:hover {
+  display: none !important;
+}
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 /* REACT-HORIZONTAL-SCROLL-MENU */
 
 .scroll-menu-arrow {
