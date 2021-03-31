@@ -53,5 +53,6 @@ const styles = StyleSheet.create({
   InlineCommentThreadsDisplayBar: {
     height: 900,
     overflow: "auto",
+    width: 350,
   },
 });

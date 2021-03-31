@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
+import icons from "../../config/themes/icons";
 import InlineCommentUnduxStore, {
   findTargetInlineComment,
   updateInlineComment,
@@ -81,7 +82,7 @@ function PaperDraftInlineCommentTextWrap(
           role="none"
           onClick={hidePopoverAndInsertToStore}
         >
-          {"Add Comment"}
+          {"Add Comment"} {icons.chat}
         </span>
       }
       children={
@@ -107,8 +108,8 @@ const styles = StyleSheet.create({
     background: "rgb(0,0,0)",
     color: "rgb(255, 255, 255)",
     cursor: "pointer",
-    fontSize: "16px",
-    padding: "4px 8px",
+    fontSize: 14,
+    padding: "8px 16px",
     borderRadius: 5,
   },
 });
