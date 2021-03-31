@@ -1,7 +1,6 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
-import { Helpers } from "@quantfive/js-web-config";
 
 // Components
 import { InlineComment } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
@@ -10,13 +9,12 @@ import colors from "../../config/themes/colors";
 import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 import InlineCommentComposer from "./InlineCommentComposer";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 // Redux: TODO: calvinhlee Auth shouldn't really be dependent on the redux. Need to revist and remove.
 import { emptyFunction } from "../PaperDraft/util/PaperDraftUtils";
-import API from "../../config/api";
-import { sendAmpEvent } from "~/config/fetch";
+import { saveCommentToBackend } from "./api/InlineCommentCreateAPI";
 
 type Props = {
   auth: any /* redux */;
@@ -32,66 +30,26 @@ function InlineCommentThreadCard({
   setMessage,
   openRecaptchaPrompt,
 }: Props): ReactElement<"div"> {
+  const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(false);
   const router = useRouter();
-
-  /**
-   * After submitting comments, handle all side effects
-   */
-  const submitComment = (text: String, plainText: String) => {
+  const onSubmitComment = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
-
-    let params = {
-      text: text,
-      paper: paperId,
-      plain_text: plainText,
-      source: "inline_paper_body",
-      entity_key: "",
-      block_key: "",
-    };
-
-    saveCommentToBackend(params);
-  };
-
-  /**
-   * Saves comments to the backend
-   * @param { Object } params -- hash that contains text, paper (which is paper id), and plain_text as keys
-   * @returns
-   */
-  const saveCommentToBackend = (params) => {
-    return fetch(
-      API.DISCUSSION({ paperId: params.paper, twitter: null }),
-      API.POST_CONFIG(params)
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        showMessage({ show: false });
-        setMessage("Successfully Saved!");
-        showMessage({ show: true });
-        // amp events
-        let payload = {
-          event_type: "create_thread",
-          time: +new Date(),
-          user_id: auth.user ? auth.user.id && auth.user.id : null,
-          insert_id: `thread_${resp.id}`,
-          event_properties: {
-            interaction: "Post Thread",
-            paper: params.paper,
-            is_removed: resp.is_removed,
-          },
-        };
-        sendAmpEvent(payload);
-      })
-      .catch((err) => {
-        if (err.response.status === 429) {
-          showMessage({ show: false });
-          return openRecaptchaPrompt(true);
-        }
-        showMessage({ show: false });
-        setMessage("Something went wrong");
-        showMessage({ show: true, error: true });
-      });
+    saveCommentToBackend({
+      auth,
+      onSuccess: () => setIsCommentReadOnly(true),
+      openRecaptchaPrompt,
+      params: {
+        text: text,
+        paper: paperId,
+        plain_text: plainText,
+        source: "inline_paper_body",
+        entity_key: "",
+        block_key: "",
+      },
+      setMessage,
+      showMessage,
+    });
   };
 
   return (
@@ -109,12 +67,12 @@ function InlineCommentThreadCard({
       />
       <div className={css(styles.composerContainer)}>
         <InlineCommentComposer
+          isReadOnly={isCommentReadOnly}
           onCancel={
             emptyFunction /* close the comment editor and bring back the side menu */
           }
           onChange={emptyFunction}
-          onSubmit={submitComment}
-          value={""}
+          onSubmit={onSubmitComment}
         />
       </div>
     </ColumnContainer>
