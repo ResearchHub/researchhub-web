@@ -99,6 +99,12 @@ function InlineCommentThreadCard({
       <DiscussionPostMetadata
         authorProfile={auth.user.author_profile} // @ts-ignore
         data={{ created_by: auth.user }}
+        username={
+          auth.user.author_profile.first_name +
+          " " +
+          auth.user.author_profile.last_name
+        }
+        noTimeStamp={true}
         smaller={true}
       />
       <div className={css(styles.composerContainer)}>
@@ -138,71 +144,9 @@ const styles = StyleSheet.create({
   },
   container: {
     marginTop: 20,
+    width: 350,
     padding: "20px 15px",
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-  },
-  contentBody: {
-    fontSize: 14,
-    lineHeight: 2,
-    maxHeight: 150,
-    overflow: "hidden",
-    position: "relative",
-    width: "100%",
-  },
-  showMore: {
-    overflow: "visible",
-    maxHeight: "none",
-  },
-  blur: {
-    background:
-      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 85%)",
-    height: "100%",
-    position: "absolute",
-    zIndex: 3,
-    top: 0,
-    width: "100%",
-  },
-  buttonContainer: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    position: "absolute",
-    bottom: -10,
-    right: 0,
-    zIndex: 3,
-  },
-  button: {
-    background: colors.BLUE(),
-    color: "#FFF",
-    padding: "0px 10px",
-    fontSize: 12,
-    cursor: "pointer",
-    borderRadius: 3,
-    ":hover": {
-      background: colors.BLUE(),
-    },
-  },
-  bottomRow: {
-    display: "flex",
-    width: "100%",
-    alignItems: "center",
-    paddingTop: 10,
-  },
-  action: {
-    color: colors.BLACK(0.6),
-    cursor: "pointer",
-    fontSize: 14,
-    textDecoration: "underline",
-    ":hover": {
-      color: colors.BLUE(),
-    },
-  },
-  left: {
-    marginRight: 15,
-  },
-  existingCommentsContainer: {
-    display: "flex",
-    minHeight: 40,
   },
 });
 

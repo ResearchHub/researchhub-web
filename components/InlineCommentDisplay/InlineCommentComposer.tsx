@@ -21,9 +21,10 @@ function InlineCommentComposer({ onCancel, onChange, onSubmit, value }: Props) {
       onCancel={onCancel}
       onChange={onChange}
       onSubmit={onSubmit}
-      placeholder={"Leave an inline comment"}
+      placeholder={"What are your thoughts?"}
       readOnly={false}
       smallToolBar={true}
+      mediaOnly={true}
     />
   );
 }
