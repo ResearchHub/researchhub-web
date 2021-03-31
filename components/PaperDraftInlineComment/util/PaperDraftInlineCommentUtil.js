@@ -45,7 +45,10 @@ function formatBlockTypes(blockTypes) {
 
 /* NOTE: This function only upserts. 
    Deletion must be done at the Comment-UI, utilizing a direct backend-call & updating unduxStore */
-function handleInlineCommentBlockToggle({ editorState }) {
+function handleInlineCommentBlockToggle({
+  editorState,
+  onInlineCommentPrompt,
+}) {
   const selectionBlock = getSelectedBlockFromEditorState(editorState);
   const currBlockTypes = getBlockTypesInSet(selectionBlock);
   const currBlockData = selectionBlock.getData();
@@ -75,7 +78,7 @@ function handleInlineCommentBlockToggle({ editorState }) {
   const updatedEditorStateWithNewEnt = EditorState.set(editorState, {
     currentContent: updatedContentWithNewEnt,
   });
-
+  onInlineCommentPrompt(entityKey);
   return getModifiedContentState({
     blockData: currBlockData,
     editorState: updatedEditorStateWithNewEnt,
@@ -108,11 +111,16 @@ export const INLINE_COMMENT_MAP = {
   TYPE_KEY: "ResearchHub-Inline-Comment", // interpreted in paper.css
 };
 
-export function handleBlockStyleToggle({ editorState, toggledStyle }) {
+export function handleBlockStyleToggle({
+  editorState,
+  onInlineCommentPrompt,
+  toggledStyle,
+}) {
   const modifiedContentState =
     toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY
       ? handleInlineCommentBlockToggle({
           editorState,
+          onInlineCommentPrompt,
         })
       : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
   return EditorState.push(editorState, modifiedContentState);

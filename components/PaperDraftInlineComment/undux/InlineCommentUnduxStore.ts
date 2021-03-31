@@ -9,22 +9,23 @@ export type DeleteInlineCommentArgs = {
   commentThreadID: ID;
   store: InlineCommentStore;
 };
-export type InlineComment = {
-  blockKey: string;
-  commentThreadID: ID;
-  isNewSelection: boolean;
-  entityKey: string;
-};
 export type FindTargetInlineCommentArg = {
   blockKey: string;
   commentThreadID: ID;
   entityKey: string;
   store: Store<State>;
 };
+export type InlineComment = {
+  blockKey: string;
+  commentThreadID: ID;
+  entityKey: string;
+};
 export type State = {
-  // inlineComments are grouped by blockKey to encourage threads to be recognized as relevant @ UI / UX level
+  currentPromptKey: ID; // entityKey
   inlineComments: Array<InlineComment>;
+  lastPromptRemovedTime: number | null;
   paperID: ID;
+  silencedPromptKeys: Set<ID>; // entityKeys
 };
 export type UpdateInlineCommentArgs = {
   store: InlineCommentStore;
@@ -62,7 +63,13 @@ const findIndexOfCommentInStore = (
     );
 };
 
-const initialState: State = { paperID: null, inlineComments: [] };
+const initialState: State = {
+  currentPromptKey: null,
+  inlineComments: [],
+  lastPromptRemovedTime: null,
+  silencedPromptKeys: new Set(),
+  paperID: null,
+};
 
 export function deleteInlineComment({
   blockKey,
@@ -111,12 +118,7 @@ export function updateInlineComment({
   store,
   updatedInlineComment,
 }: UpdateInlineCommentArgs): InlineCommentStore {
-  const {
-    blockKey,
-    commentThreadID,
-    entityKey,
-    isNewSelection,
-  } = updatedInlineComment;
+  const { blockKey, commentThreadID, entityKey } = updatedInlineComment;
   const targetIndex = findIndexOfCommentInStore(
     blockKey,
     entityKey,
