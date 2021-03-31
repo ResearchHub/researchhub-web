@@ -3,26 +3,30 @@ import React, { useState } from "react";
 import TextEditor from "../TextEditor";
 
 type Props = {
+  isReadOnly: boolean;
   onCancel: () => void;
   onChange: (str: any) => void;
-  onSubmit: () => void;
-  value: any;
+  onSubmit: (text: String, plainText: String) => void;
 };
 
-function InlineCommentComposer({ onCancel, onChange, onSubmit, value }: Props) {
-  const [initValue, _setInitValue] = useState<any>(value);
+function InlineCommentComposer({
+  isReadOnly,
+  onCancel,
+  onChange,
+  onSubmit,
+}: Props) {
   return (
     <TextEditor
       canEdit={true}
       commentEditor={true}
       commentEditorStyles={styles.commentEditorStyles}
       focusEditor={focus}
-      initialValue={initValue}
+      initialValue={""}
       onCancel={onCancel}
       onChange={onChange}
       onSubmit={onSubmit}
       placeholder={"What are your thoughts?"}
-      readOnly={false}
+      readOnly={isReadOnly}
       smallToolBar={true}
       mediaOnly={true}
     />
