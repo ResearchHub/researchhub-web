@@ -23,7 +23,6 @@ export default function PaperDraftEventCaptureWrap({
   );
   return (
     <div
-      onClickCapture={eventSilencer}
       onKeyDownCapture={eventSilencer}
       onKeyPressCapture={eventSilencer}
       onKeyUpCapture={eventSilencer}
