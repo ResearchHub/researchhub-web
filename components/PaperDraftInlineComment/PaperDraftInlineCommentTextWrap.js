@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(204 243 221)",
   },
   popoverBodyStyle: {
-    background: "rgb(41, 41, 41)",
+    background: "rgb(0,0,0)",
     color: "rgb(255, 255, 255)",
     cursor: "pointer",
     fontSize: "16px",
