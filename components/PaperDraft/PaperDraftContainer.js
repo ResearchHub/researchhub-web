@@ -139,7 +139,6 @@ function PaperDraftContainer({
     isDraftInEditMode,
     unduxStore: inlineCommentStore,
   });
-  globalThis.editorState = editorState;
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
     if (isReadyForNewInlineComment) {
