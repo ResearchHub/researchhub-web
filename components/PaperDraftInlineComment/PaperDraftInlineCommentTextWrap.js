@@ -82,7 +82,7 @@ function PaperDraftInlineCommentTextWrap(
           role="none"
           onClick={hidePopoverAndInsertToStore}
         >
-          {"Add Comment"} {icons.chat}
+          {"Add Comment"}
         </span>
       }
       children={
