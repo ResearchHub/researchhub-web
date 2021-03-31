@@ -145,7 +145,6 @@ function PaperDraftContainer({
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
     if (isReadyForNewInlineComment) {
-      // console.warn("********* should not be called in between *******");
       const updatedEditorState = handleBlockStyleToggle({
         editorState,
         onInlineCommentPrompt: (entityKey) =>
@@ -154,7 +153,11 @@ function PaperDraftContainer({
       });
       setEditorState(updatedEditorState);
     }
-  }, [editorState, isReadyForNewInlineComment]);
+  }, [
+    editorState,
+    inlineCommentStore.get("currentPromptKey"),
+    isReadyForNewInlineComment,
+  ]);
 
   const handleKeyCommand = useCallback(
     ({ editorState, setEditorState }) => {
