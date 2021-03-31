@@ -39,6 +39,12 @@ function PaperDraftInlineCommentTextWrap(
   const doesCommentExistInStore = targetInlineComment != null;
 
   const hidePopoverAndInsertToStore = (event) => {
+    event.stopPropagation();
+    unduxStore.set("silencedPromptKeys")(
+      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
+    );
+    unduxStore.set("lastPromptRemovedTime")(Date.now());
+    unduxStore.set("currentPromptKey")(null);
     updateInlineComment({
       store: unduxStore,
       updatedInlineComment: {
@@ -48,11 +54,6 @@ function PaperDraftInlineCommentTextWrap(
         store: unduxStore,
       },
     });
-    unduxStore.set("silencedPromptKeys")(
-      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
-    );
-    unduxStore.set("lastPromptRemovedTime")(Date.now());
-    unduxStore.set("currentPromptKey")(null);
     setShowPopover(false);
   };
 
