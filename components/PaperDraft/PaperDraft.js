@@ -174,7 +174,7 @@ class PaperDraft extends React.Component {
           >
             <div
               style={{
-                "caret-color": !isInEditMode ? "transparent" : "black",
+                caretColor: !isInEditMode ? "transparent" : "black",
               }}
               className={css(isInEditMode && styles.editorActive)}
             >
